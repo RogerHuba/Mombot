@@ -642,13 +642,20 @@ echo "**### DEBUG $shipBlastPlanet " $shipBlastPlanet
 	if ($player~TURNS < $turn_limit)
 		setvar $switchboard~message "Hit our turn limited; stopping.*"
 		gosub :switchboard~switchboard
-		halt
+		goto :goHomeandhalt
+		
 	end
 	
 	:endloop
 	add $loopi 1
 	
     end
+
+:goHomeandhalt
+ send "* * * "
+    send "m" $cashDumpSector "*y"
+    waitfor "All Systems Ready, shall we engage?"
+    send "y"
 halt
 
 
@@ -715,6 +722,7 @@ return
 		gosub :switchboard~switchboard
 		setvar $switchboard~message "Suggest enemy is waiting at dock; suggest combat mission*"
 		gosub :switchboard~switchboard
+		goto :goHomeandhalt
 		halt
 
 	:checkDockThereYes
