@@ -1,0 +1,24 @@
+- sgrid {figs} {armids} {limpets} {min_unfigged} {safety} {planets} {warp} {norefurb}
+  Surround gridder. Visits all targeted sectors and surrounds     
+  them before twarping back.                                      
+   - [figs]        = Number of fighters to drop                   
+                         - Default: 1                             
+   - [armids]      = Number of armid mines to drop                
+                         - Default: 3                             
+   - [limps]       = Number of limpet mines to drop               
+                         - Default: 3                             
+   - [min_unfigged]  = Minimum unfigged sectors needed to surround 
+                         - Default: 3                             
+   - [safety]      = 'ultra', 'safe', and 'none'                  
+              none = Will surround all figged sectors             
+              safe = Will surround sectors that have corp limps   
+             ultra = Like safe, but needs friendly armids too     
+                         - Default: none                          
+   - [planets]     = 'all', 'shielded'                            
+               all = Avoid all planets in target sectors          
+          shielded = Avoid only shielded planets in target sectors
+                         - Default: all                           
+   - [warp]        = 'twarp' or 'bwarp'                           
+                         - Default: twarp                         
+   - [norefurb]    = Turns off auto refurbing of mines at Stardock
+   - [restart]     = Automatically restarts gridding when finished

@@ -1,0 +1,3 @@
+- mowgrid {min_targets (per mow)}                                
+    Mows to figged sectprs in an attempt to grid.           
+    Does not do so safely.                                  

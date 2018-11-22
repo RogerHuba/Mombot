@@ -1,0 +1,8 @@
+- surroundthis [param] {figstodrop} {alarm}    
+    Mows to surround sectors defined in sector param given. 
+    Does not do so safely.                                  
+                                                            
+    [param]  - sector parameter to surround            
+    {figstodrop}  - fighters to drop in surrounding sectors 
+    {alarm}  - activate alarm                               
+                                                            

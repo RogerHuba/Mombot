@@ -1,0 +1,30 @@
+====================AS OF MARCH 28/09==============================
+-Ansi Spoofing fix in main bot file with respect to ALL
+-Divide by zero problem in FIGS.ts (when no grid exists)
+-FIGS command Buf Fixed: wont error out when there are Zero
+ Fighters deployed.
+-Fixed "F" command. Doesn't return a result that is a 
+ Backdoor and therefore much farther than you'd think.
+-MoveFig Command Bug Fix: Wont Crash if used when Zero Sector
+ Fighers are present
+-NEGO.001.ts $MCIC_FILE value was missing, script otput data 
+ to a file call '0' (zero). Sigh
+-Adjusted Finder Command to include Deployed Mine Data in output
+UGrid:  Check for Torps upon starting
+
+
+
+====================Errors==============================
+Fillsector - Unknown planet number. Display planet to bot so it can know the planet number. 
+
+
+====================Upgrades Needed==============================
+FARM - General options
+BOT - Add quickpanel options to BOT (quick ppt, ssm)
+stats - more information
+
+====================Wish List==============================
+Grid:  Surround option | Corp/Player Targeting
+MassUpgrade- Should be able to start from Cidatel or Planet prompt
+backdoor check for sd, terra, rylos, alpha or custom sector
+daemon that stops any script if turns are too low.  Also possible auto defense for people powering up or entering sector if in general mode.

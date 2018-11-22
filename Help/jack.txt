@@ -1,0 +1,10 @@
+                     
+   
+                  <<<< jack >>>>
+   
+     jack [planet number]  
+     Sits in a port waiting for a ship to enter.  
+     It then pops out and attacks.
+        
+     Works best with saveme on.
+              
