@@ -411,6 +411,7 @@ goto :start_over
     saveVar $PLAYER~FIGHTERS
     saveVar $PLAYER~SHIELDS
     saveVar $PLAYER~TOTAL_HOLDS
+    saveVar $PLAYER~TURNS
     saveVar $PLAYER~ORE_HOLDS
     saveVar $PLAYER~ORGANIC_HOLDS
     saveVar $PLAYER~EQUIPMENT_HOLDS
