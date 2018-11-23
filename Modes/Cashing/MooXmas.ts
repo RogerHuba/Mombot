@@ -1425,7 +1425,7 @@ return
 :checkDanger
 	# Density check will be stoped by own figs, so we assume explored is safe for now
 		
-	if (($nDensity[$dIndex] = 0) or ($nDensity[$dIndex] = 100))
+	if (($nDensity[$dIndex] = 0) or (($nDensity[$dIndex] = 100) and (PORT.EXISTS[$dSector] = 1)))
 		setVar $danger 0
 		#echo "* ## Sector has safe density: " $dSector
 	else
