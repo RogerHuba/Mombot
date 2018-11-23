@@ -851,7 +851,7 @@ return
 	pause
 		:restockBack1
 			killalltriggers
-			send "pss"
+			send "q * Q * Q * * pss"
 			setVar $SWITCHBOARD~message "Failed to leave dock!! Hopefully on dock..*"
 			gosub :SWITCHBOARD~switchboard
 			halt	
