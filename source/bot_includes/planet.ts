@@ -439,7 +439,7 @@ setVar $_ck_ptradesetting $GAME~ptradesetting
 
 if ($startingLocation = "Citadel")
     send "Q"
-elseif ($startingLocation = "Planet")
+elseif ($startingLocation = "Planet ")
     setVar $startingLocation "Planet"
 end
 gosub :getPlanetInfo
@@ -535,7 +535,6 @@ pause
         setVar $fueltosell $planetfuel
     end
 
-
     if ($_ck_pnego_fueltosell = "-1")
      setVar $fueltosell 0
     end
@@ -544,7 +543,6 @@ pause
     if ($orgtosell > $planetorg)
         setVar $orgtosell $planetorg
     end
-
 
     if ($_ck_pnego_orgtosell = "-1")
      setVar $orgtosell 0
@@ -782,7 +780,7 @@ pause
                 killtrigger sellorg
                 killtrigger sellequ
                 killtrigger donewithport
-                if (($ore_sell_failures > 1) or ($org_sell_failures > 4) or ($equ_sell_failures > 4))
+                if (($ore_sell_failures > 4) or ($org_sell_failures > 4) or ($equ_sell_failures > 4))
                     setVar $selloutput $selloutput & "Multiple Haggle Failures - Please cut and paste this haggling session and email to Cherokee*"
                     return
                 elseif (($fueltosell = 0) and ($orgtosell = 0) and ($equiptosell = 0))
@@ -943,7 +941,7 @@ pause
 
             elseif ($portmaxinit >= 416)
                 setVar $MCIC "-79"
-                setVar $multiple "1428"
+                setVar $multiple "1429"
 
             elseif ($portmaxinit >= 414)
                 setVar $MCIC "-78"
@@ -1613,14 +1611,7 @@ pause
         else
             setVar $forcefail 0
         end
-	setSectorParameter $player~current_sector "MCIC" $mcic
-	if ($prodtosell = "ore")
-		setSectorParameter $player~current_sector "ORE-MCIC" $mcic
-	elseif ($prodtosell = "org")
-		setSectorParameter $player~current_sector "ORG-MCIC" $mcic
-	elseif ($prodtosell = "equ")
-		setSectorParameter $player~current_sector "EQU-MCIC" $mcic
-	end
+        setSectorParameter $player~current_sector "MCIC" $mcic
 
         if ($forcefail = 0)
             setVar $old_offer $offer
