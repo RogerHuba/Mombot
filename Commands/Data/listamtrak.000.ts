@@ -65,6 +65,8 @@ gosub :SWITCHBOARD~switchboard
 		add $i 1
 	end
 
+halt
+
 
 #INCLUDES:
 include "source\module_includes\bot"
