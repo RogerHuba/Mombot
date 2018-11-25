@@ -62,6 +62,7 @@
 	
 	setVar $TAGLINE     "LoneStar's Passive Gridder"
 	setVar $TAGLINEB     $BOT~bot_name
+	setVar $TAGLINEC     $BOT~bot_name
 
 	setVar $Turn_Limit 20
 	setArray $CHKD	SECTORS
@@ -219,7 +220,7 @@
 		setArray $MCIC	SECTORS
 		fileExists $tst $Track_File
 		if ($tst)
-			Echo "***" & $TAGLINEc & " Reading Ports File"
+			#Echo "***" & $TAGLINEc & " Reading Ports File"
 			setVar $i 1
 			read $Track_File $tst $i
 			while ($tst <> EOF)
@@ -234,20 +235,20 @@
             	add $i 1
             	read $Track_File $tst $i
 			end
-			echo "; " & $Results & " Ports allready Processed!**"
+			#echo "; " & $Results & " Ports allready Processed!**"
 		end
-		Echo "**" & $TAGLINEc & " Loading ck's EQUIP Haggle Tracker**"
+		#Echo "**" & $TAGLINEc & " Loading ck's EQUIP Haggle Tracker**"
 		load $FILENAME
 		setDelayTrigger		LOAD_DELAY	:LOAD_DELAY		3000
 		setTextLineTrigger	LOADED		:LOADED			"Credits        :"
 		pause
 		:LOAD_DELAY
 		killAllTriggers
-		Echo "**" & $TAGLINEc & " EQUIP HAGGLE Tracker Not Loaded.**"
+		#Echo "**" & $TAGLINEc & " EQUIP HAGGLE Tracker Not Loaded.**"
 		halt
 		:LOADED
 		killAllTriggers
-		Echo "**" & $TAGLINEc & " EQUIP Haggle Tracker LOADED!!**"
+		#Echo "**" & $TAGLINEc & " EQUIP Haggle Tracker LOADED!!**"
 	else
 	    send "   j   y   "
 	end
@@ -255,11 +256,11 @@
 	write $LOG_FName "-------------------------{ " & $Stamp & " }-------------------------"
 	echo "***"
 	if ($Update_Figs)
-		echo ($TAGLINEc & " " & ANSI_8&"<"&ANSI_15&"ReFreshing Deployed Fighter Data"&ANSI_8&">*")
+		#echo ($TAGLINEc & " " & ANSI_8&"<"&ANSI_15&"ReFreshing Deployed Fighter Data"&ANSI_8&">*")
 		gosub :Build_FIG_LIST
 	end
 
-	echo ($TAGLINEc & " " & ANSI_8&"<"&ANSI_15&"Reading Figs"&ANSI_8&">*")
+	#echo ($TAGLINEc & " " & ANSI_8&"<"&ANSI_15&"Reading Figs"&ANSI_8&">*")
 	setVar $idx 1
 	while ($idx <= SECTORS)
 		getSectorParameter $idx "FIGSEC" $flag
@@ -301,9 +302,9 @@
 	end
 
    	window status 500 245 (" " & $TAGLINE & " v" & $Version)
-   	echo "**"
-	echo ($TAGLINEc & " " & ANSI_8&"<"&ANSI_15&"Gridded Sectors: "&ANSI_14&$DEP_FIGS&ANSI_8&">*")
-	echo ($TAGLINEc & " " & ANSI_8&"<"&ANSI_15&"Limp'd Sector  : "&ANSI_14&$DEP_LIMP&ANSI_8&">**")
+   	#echo "**"
+	#echo ($TAGLINEc & " " & ANSI_8&"<"&ANSI_15&"Gridded Sectors: "&ANSI_14&$DEP_FIGS&ANSI_8&">*")
+	#echo ($TAGLINEc & " " & ANSI_8&"<"&ANSI_15&"Limp'd Sector  : "&ANSI_14&$DEP_LIMP&ANSI_8&">**")
 
     send " C ;UYQ "
 	waitfor "Max Figs Per Attack:"
@@ -343,7 +344,7 @@
 				gosub :Haggel_Checker
 			elseif (($player~ORE_HOLDS < ($player~TOTAL_HOLDS - $EQU_MIN)) AND ($TWARP_TYPE <> "No"))
 				if ((PORT.CLASS[$player~CURRENT_SECTOR] = 3) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 4) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 5) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 7))
-					Echo "***Stupid Attmpt**"
+					#Echo "***Stupid Attmpt**"
 					send "PT** 0* 0*  "
 				end
 			end
@@ -604,11 +605,11 @@
 
 			:We_Done
 			#get here, there's no hope
-			Echo "**" & $TAGLINEc & " " & " No Target To Find. Try updating CIM***"
+			echo "**" & $TAGLINEc & " " & " No Target To Find. Try updating CIM***"
 			halt
 
 	        :We_Got_Game
-	        Echo "***Focus " & $FOCUS & "**"
+	        #Echo "***Focus " & $FOCUS & "**"
 	        if ($HOLO)
 				setVar $cx 1
 				setVar $cn 0
@@ -726,7 +727,7 @@
 					goto :We_Done
 				:Sector__Good
 					killAllTriggers
-					echo ("**" & $TAGLINEc & " " & ANSI_8&"<"&ANSI_15&"Twarping To Jump Point: "&ANSI_14&$Focus&ANSI_8&">*")
+					#echo ("**" & $TAGLINEc & " " & ANSI_8&"<"&ANSI_15&"Twarping To Jump Point: "&ANSI_14&$Focus&ANSI_8&">*")
 
 					setVar $DROP_STR ""
 					if ($DROPING_MINES <> 0)
@@ -765,7 +766,7 @@
 		end
 
 		:Next_Target
-		Echo "**Target " & $TARGET & "**"
+		#Echo "**Target " & $TARGET & "**"
 
 		setVar $figsToDrop 1
 		if (SECTOR.DENSITY[$Target] = 0)
@@ -1034,6 +1035,9 @@
     	add $ii 1
 	end
 	setWindowContents status ("*" & $Window_TXT)
+	setvar $window_content $Window_TXT
+	replacetext $window_content "*" "[][]"
+	savevar $window_content
 	return
 
 :CommaSize
