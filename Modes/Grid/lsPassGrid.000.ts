@@ -51,9 +51,9 @@
 	setVar $BOT~help[9]  $BOT~tab&"    {ports}         Grabs port reports"
 	setVar $BOT~help[10]  $BOT~tab&"    {holo}         Holo Scans to ensure sectors safe"
 	setVar $BOT~help[11]  $BOT~tab&"    {guard}       Ensures corp planet at SD to invoke Guardian"
-	setVar $BOT~help[13]  $BOT~tab&"                   "
-	setVar $BOT~help[14]  $BOT~tab&"    Doesn't require ZTM but works better"
-	setVar $BOT~help[15]  $BOT~tab&"    Works best with T-Warp to reroute"
+	setVar $BOT~help[12]  $BOT~tab&"                   "
+	setVar $BOT~help[13]  $BOT~tab&"    Doesn't require ZTM but works better"
+	setVar $BOT~help[14]  $BOT~tab&"    Works best with T-Warp to reroute"
 
 	gosub :BOT~help_file
 
@@ -61,6 +61,7 @@
 	gosub :BOT~banner
 	
 	setVar $TAGLINE     "LoneStar's Passive Gridder"
+	setVar $TAGLINEB     $BOT~bot_name
 
 	setVar $Turn_Limit 20
 	setArray $CHKD	SECTORS
@@ -991,7 +992,7 @@
 	if ($UNLIM)
 		setVar $Window_TXT ($Window_TXT & " Turns     : Unlimited*")
 	else
-		setVar $CashAmount $TURNS
+		setVar $CashAmount $player~TURNS
 		gosub :CommaSize
 		setVar $Window_TXT ($Window_TXT & " Turns     : " & $CashAmount)
 		setVar $CashAmount $Turn_Limit
