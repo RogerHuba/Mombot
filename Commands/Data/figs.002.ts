@@ -41,6 +41,7 @@
 	getSectorParameter 2 "EQU_COUNT" $previousEquipCount
 	getSectorParameter 2 "EQS_COUNT" $previousEquipSellCount
 	getSectorParameter 2 "FB_COUNT" $previousFuelBuyCount
+	
 	if ($previousCount = "")
                setVar $previousCount 0
         end
@@ -808,6 +809,7 @@ return
 		setSectorParameter 2 "ORG_COUNT" $upgradedOrgCount
 		setSectorParameter 2 "EQU_COUNT" $upgradedEquipCount
 		setSectorParameter 2 "EQS_COUNT" $upgradedEquipSellCount
+		setSectorParameter 2 "FB_COUNT" $upgradedFuelBuyCount
 
 return
 # ============================== END REFRESH FIGHTERS (FIGS) SUB ==============================
