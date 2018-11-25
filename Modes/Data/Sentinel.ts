@@ -39,7 +39,7 @@
 
 	
 	setVar $BOT~help[1] $BOT~tab&" sentinel {cim} {clv} {cycletime}"
-	setVar $BOT~help[2] $BOT~tab&" Sentinel - Originally written by Xide*"
+	setVar $BOT~help[2] $BOT~tab&" Sentinel - Originally written by Xide"
 	setVar $BOT~help[3] $BOT~tab&" Options:"
 	setVar $BOT~help[4] $BOT~tab&"    - {cim}    - does cim hunting - Default off"
 	setVar $BOT~help[5] $BOT~tab&"    - {clv}    - checks clv for changes - Default off"
