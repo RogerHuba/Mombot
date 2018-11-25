@@ -40,6 +40,7 @@
 	getSectorParameter 2 "ORG_COUNT" $previousOrgCount
 	getSectorParameter 2 "EQU_COUNT" $previousEquipCount
 	getSectorParameter 2 "EQS_COUNT" $previousEquipSellCount
+	getSectorParameter 2 "FB_COUNT" $previousFuelBuyCount
 	if ($previousCount = "")
                setVar $previousCount 0
         end
@@ -54,6 +55,9 @@
         end
 	if ($previousEquipSellCount = "")
                setVar $previousEquipSellCount 0
+        end
+	if ($previousFuelBuyCount = "")
+               setVar $previousFuelBuyCount 0
         end
 	gosub :refreshFighters
 	gosub :turnOnAnsi
@@ -87,6 +91,11 @@
 	if ($gridEquipSellChange > 0)
 		setVar $gridEquipSellChange "+"&$gridEquipSellChange
 	end
+	setVar $gridFuelBuyChange $upgradedFuelBuyCount-$previousFuelBuyCount
+	if ($gridFuelBuyChange > 0)
+		setVar $gridFuelBuyChange "+"&$gridFuelBuyChange
+	end
+	
 	setVar $inputVariable $1scount
 	gosub :formatNumberForSpaces
 	setVar $1scountformatted $outputVariable
@@ -130,7 +139,7 @@
 		gosub :landingsub
 	end
 
-	send "'*{"&$switchboard~bot_name&"}*          - Fighter Grid Report -*          - "&$count&" sectors, "&$personalCount&" personal. ("&$percent&"%) ("&$gridChange&" Change)*          - T: "&$tollCount&"  O: "&$offCount&"  D:"&$defCount&"*          - DE: "&$1sCountformatted&""&$1percentformatted&" 2S: "&$2sCountformatted&""&$2percentformatted&" 3S: "&$3sCountformatted&""&$3percentformatted&"*          - 4S: "&$4sCountformatted&""&$4percentformatted&" 5S: "&$5sCountformatted&""&$5percentformatted&" 6S: "&$6sCountformatted&""&$6percentformatted&"*          - Upgraded Sxx: "&$upgradedFuelCount&" ("&$gridFuelChange&" Change)*          - Upgraded xBx: "&$upgradedOrgCount&" ("&$gridOrgChange&" Change)*          - Upgraded xxB: "&$upgradedEquipCount&" ("&$gridEquipChange&" Change)*          - Upgraded xxS: "&$upgradedEquipSellCount&" ("&$gridEquipSellChange&" Change)**"
+	send "'*{"&$switchboard~bot_name&"}*          - Fighter Grid Report -*          - "&$count&" sectors, "&$personalCount&" personal. ("&$percent&"%) ("&$gridChange&" Change)*          - T: "&$tollCount&"  O: "&$offCount&"  D:"&$defCount&"*          - DE: "&$1sCountformatted&""&$1percentformatted&" 2S: "&$2sCountformatted&""&$2percentformatted&" 3S: "&$3sCountformatted&""&$3percentformatted&"*          - 4S: "&$4sCountformatted&""&$4percentformatted&" 5S: "&$5sCountformatted&""&$5percentformatted&" 6S: "&$6sCountformatted&""&$6percentformatted&"*          - Upgraded Sxx: "&$upgradedFuelCount&" ("&$gridFuelChange&" Change)*          - Upgraded xBx: "&$upgradedOrgCount&" ("&$gridOrgChange&" Change)*          - Upgraded xxB: "&$upgradedEquipCount&" ("&$gridEquipChange&" Change)*          - Upgraded xxS: "&$upgradedEquipSellCount&" ("&$gridEquipSellChange&" Change)*          - Upgraded Bxx: "&$upgradedFuelBuyCount&" ("&$gridFuelBuyChange&" Change)**"
 halt
 #=============================== END REFRESH FIGHTERS ============================================
 
@@ -657,6 +666,7 @@ return
 		setVar $equipSellCount 0
 		setVar $upgradedEquipCount 0
 		setVar $upgradedEquipSellCount 0
+		setVar $upgradedFuelBuyCount 0
 		setVar $upgradedOrgCount 0
 		setVar $upgradedFuelCount 0
 
@@ -729,6 +739,15 @@ return
 						if ($currentFuel > 10000)
 							add $upgradedFuelCount 1
 						end
+					else
+						setVar $currentFuel (PORT.Fuel[$i]*100)
+						if (port.percentFuel[$i] <> 0)
+							divide $currentFuel port.percentFuel[$i]
+						end
+						if ($currentFuel > 10000)
+							add $upgradedFuelBuyCount 1
+						end
+
 					end
 				end
 				setVar $tempWarpCount SECTOR.WARPINCOUNT[$i]
