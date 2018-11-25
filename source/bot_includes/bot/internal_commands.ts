@@ -581,7 +581,7 @@ return
     goto :BOT~wait_for_command
 #============================ END BOT PROMPT COMMUNICATION ================================
 :about
-    gosub :doSplashScreen
+    gosub :menus~doSplashScreen
     echo "*" CURRENTANSILINE
     goto :BOT~wait_for_command
 # ======================== START TURN BOT ON/OFF (BOT) SUBROUTINE =========================
