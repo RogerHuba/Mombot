@@ -12,11 +12,13 @@
 	setVar $BOT~help[4]   $BOT~tab&"     Requires twarp.                "
 	setVar $BOT~help[5]   $BOT~tab&"                     "
 	setVar $BOT~help[6]   $BOT~tab&"             file - path to target file"
-	setVar $BOT~help[7]   $BOT~tab&"     sector param - Will target sectors marked with sector param. "
+	setVar $BOT~help[7]   $BOT~tab&"     sector param - Will target sector marked with sector param."
 	setVar $BOT~help[8]   $BOT~tab&"                     "
-	setVar $BOT~help[9]   $BOT~tab&"                    Using UNFIGGED as param will target all sectors "
-	setVar $BOT~help[10]  $BOT~tab&"                    where FIGSEC is not true. "
+	setVar $BOT~help[9]   $BOT~tab&"                    Using UNFIGGED as param will target all"
+	setVar $BOT~help[10]  $BOT~tab&"                    sectors where FIGSEC is not true. "
 	setVar $BOT~help[11]  $BOT~tab&"          {share} - reports figged sectors over subspace"
+	setVar $BOT~help[12]  $BOT~tab&"          "
+	setVar $BOT~help[13]  $BOT~tab&"          Planet avoid options can be set in the bot menu"
 	
 	gosub :BOT~help_file
 
@@ -42,6 +44,9 @@
 	if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
 		send "m*** t*l2*t*l3*s*l1*s*l2*s*l3*t*t1* q q * * "
 	end
+
+	loadVar $PLAYER~surroundAvoidShieldedOnly 
+	loadVar $PLAYER~surroundAvoidAllPlanets 
 
 	send "c;q"
 	waitFor "Offensive Odds:"
@@ -161,6 +166,8 @@
 		if (($destination = 0) and ($stripped_database <> ""))
 			goto :get_new_random_path
 		end
+		loadVar $PLAYER~surroundAvoidShieldedOnly 
+		loadVar $PLAYER~surroundAvoidAllPlanets 
 		if ($gridtargets = true)
 			#if gridding targets, check to see if someone already gridded the target
 			if ($destination <> "0")
@@ -254,13 +261,42 @@
 						waitFor "Long Range Scan"						
 						add $total_turns 1
 					end
-					if ((SECTOR.DENSITY[$course[$j]] >= 500) and (SECTOR.PLANETCOUNT[$COURSE[$j]] > 0) and ($course[$j] > 10) and ($course[$j] <> $map~stardock))
-						setVar $SWITCHBOARD~message "Planet in my path in sector "&$COURSE[$j]&".  Wandering somewhere else..*"
-						gosub :SWITCHBOARD~switchboard
-						send "cv"&$COURSE[$j]&"*q"
-						waiton "will now be avoided in future navigation calculation"
-						goto :abort
+	
+					if ($PLAYER~surroundAvoidAllPlanets = TRUE)
+						if ((SECTOR.DENSITY[$course[$j]] >= 500) and (SECTOR.PLANETCOUNT[$COURSE[$j]] > 0) and ($course[$j] > 10) and ($course[$j] <> $map~stardock))
+							setVar $SWITCHBOARD~message "Planet in my path in sector "&$COURSE[$j]&".  Wandering somewhere else..*"
+							gosub :SWITCHBOARD~switchboard
+							send "cv"&$COURSE[$j]&"*q"
+							waiton "will now be avoided in future navigation calculation"
+							goto :abort
+						end
+					else 
+						if ($PLAYER~surroundAvoidShieldedOnly = TRUE)
+							if ((SECTOR.DENSITY[$course[$j]] >= 500) and (SECTOR.PLANETCOUNT[$COURSE[$j]] > 0) and ($course[$j] > 10) and ($course[$j] <> $map~stardock))
+								setVar $containsShieldedPlanet FALSE
+								setvar $test_sector $course[$j]
+								if (SECTOR.PLANETCOUNT[$test_sector] > 0)
+								    setVar $p 1
+								    while ($p <= SECTOR.PLANETCOUNT[$test_sector])
+								        getWord SECTOR.PLANETS[$test_sector][$p] $test 1
+								        if ($test = "<<<<")
+								            setVar $containsShieldedPlanet TRUE
+								        end
+								        add $p 1
+								    end
+								end
+
+								if (containsShieldedPlanet = TRUE)
+									setVar $SWITCHBOARD~message "Shielded Planet in my path in sector "&$COURSE[$j]&".  Wandering somewhere else..*"
+									gosub :SWITCHBOARD~switchboard
+									send "cv"&$COURSE[$j]&"*q"
+									waiton "will now be avoided in future navigation calculation"
+									goto :abort
+								end
+							end
+						end
 					end
+
 					if (SECTOR.FIGS.QUANTITY[$COURSE[$j]] >= ($offodd*2))
 						setVar $SWITCHBOARD~message "Too many fighters for me to take on in sector "&$COURSE[$j]&". Wandering somewhere else..*"
 						gosub :SWITCHBOARD~switchboard
