@@ -193,51 +193,98 @@
 			:try_to_skip_ahead
 			gosub :getCourses
 			if ($valid)
-				setVar $j 3
+				setVar $j $courseLength
 				setVar $closestFiggedSector 0	
-				while ($j <= $courseLength)
-					getSectorParameter $COURSE[$j] "FIGSEC" $isFigged
-					if (($COURSE[$j] <= 10) OR ($COURSE[$j] = $map~stardock))
-						setvar $isFigged TRUE
-					end
-					if ($isFigged = TRUE)
-						setVar $closestFiggedSector $COURSE[$j]
-						setVar $index $j
-						if ($j = $courseLength)
-							setVar $PLAYER~warpto $closestFiggedSector
-							gosub :PLAYER~twarp
-							gosub :PLAYER~current_prompt
-							if ($PLAYER~twarpSuccess = TRUE)
-								setVar $j $index
-								add $total_turns $player~turns_per_warp
-							else
-								setSectorParameter $closestFiggedSector "FIGSEC" FALSE
-								setVar $j 3
+				if ($gridTargets = true)
+					while ($j >= 3)
+						getSectorParameter $COURSE[$j] "FIGSEC" $isFigged
+						if (($COURSE[$j] <= 10) OR ($COURSE[$j] = $map~stardock))
+							setvar $isFigged TRUE
+						end
+						if ($isFigged = TRUE)
+							setVar $closestFiggedSector $COURSE[$j]
+							setVar $index $j
+							#if ($j = $courseLength)
+								setVar $PLAYER~warpto $closestFiggedSector
+								gosub :PLAYER~twarp
+								gosub :PLAYER~current_prompt
+								if ($PLAYER~twarpSuccess = TRUE)
+									setVar $j $index
+									add $total_turns $player~turns_per_warp
+								else
+									setSectorParameter $closestFiggedSector "FIGSEC" FALSE
+									setVar $j $courseLength
+								end
+								goto :mowfromhere
+							#end
+						else
+							if ($j = 3)
+								goto :mowfromhere
 							end
-							goto :mowfromhere
-						end
-					else
-						if ($j = 3)
-							goto :mowfromhere
-						end
-						if ($closestFiggedSector > 0)
-							setVar $PLAYER~warpto $closestFiggedSector
-							gosub :PLAYER~twarp
-							gosub :PLAYER~current_prompt
-							if ($PLAYER~twarpSuccess = TRUE)
-								setVar $j ($index + 1)
-								add $total_turns $player~turns_per_warp
-								setvar $twarp_from $player~current_sector
-								setvar $twarp_to $closestFiggedSector
-								gosub :window
-							else
-								setSectorParameter $closestFiggedSector "FIGSEC" FALSE
-								setVar $j 3
+							if ($closestFiggedSector > 0)
+								setVar $PLAYER~warpto $closestFiggedSector
+								gosub :PLAYER~twarp
+								gosub :PLAYER~current_prompt
+								if ($PLAYER~twarpSuccess = TRUE)
+									setVar $j ($index + 1)
+									add $total_turns $player~turns_per_warp
+									setvar $twarp_from $player~current_sector
+									setvar $twarp_to $closestFiggedSector
+									gosub :window
+								else
+									setSectorParameter $closestFiggedSector "FIGSEC" FALSE
+									setVar $j $courseLength
+								end
+								goto :mowfromhere
 							end
-							goto :mowfromhere
 						end
+						subtract $j 1	
 					end
-					add $j 1	
+				else
+					while ($j <= $courseLength)
+						getSectorParameter $COURSE[$j] "FIGSEC" $isFigged
+						if (($COURSE[$j] <= 10) OR ($COURSE[$j] = $map~stardock))
+							setvar $isFigged TRUE
+						end
+						if ($isFigged = TRUE)
+							setVar $closestFiggedSector $COURSE[$j]
+							setVar $index $j
+							if ($j = $courseLength)
+								setVar $PLAYER~warpto $closestFiggedSector
+								gosub :PLAYER~twarp
+								gosub :PLAYER~current_prompt
+								if ($PLAYER~twarpSuccess = TRUE)
+									setVar $j $index
+									add $total_turns $player~turns_per_warp
+								else
+									setSectorParameter $closestFiggedSector "FIGSEC" FALSE
+									setVar $j 3
+								end
+								goto :mowfromhere
+							end
+						else
+							if ($j = 3)
+								goto :mowfromhere
+							end
+							if ($closestFiggedSector > 0)
+								setVar $PLAYER~warpto $closestFiggedSector
+								gosub :PLAYER~twarp
+								gosub :PLAYER~current_prompt
+								if ($PLAYER~twarpSuccess = TRUE)
+									setVar $j ($index + 1)
+									add $total_turns $player~turns_per_warp
+									setvar $twarp_from $player~current_sector
+									setvar $twarp_to $closestFiggedSector
+									gosub :window
+								else
+									setSectorParameter $closestFiggedSector "FIGSEC" FALSE
+									setVar $j 3
+								end
+								goto :mowfromhere
+							end
+						end
+						add $j 1	
+					end
 				end
 				setVar $j 3
 				:mowfromhere
