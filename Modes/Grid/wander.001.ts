@@ -193,9 +193,9 @@
 			:try_to_skip_ahead
 			gosub :getCourses
 			if ($valid)
-				setVar $j $courseLength
 				setVar $closestFiggedSector 0	
 				if ($gridTargets = true)
+					setVar $j $courseLength
 					while ($j >= 3)
 						getSectorParameter $COURSE[$j] "FIGSEC" $isFigged
 						if (($COURSE[$j] <= 10) OR ($COURSE[$j] = $map~stardock))
@@ -213,7 +213,7 @@
 									add $total_turns $player~turns_per_warp
 								else
 									setSectorParameter $closestFiggedSector "FIGSEC" FALSE
-									setVar $j $courseLength
+									setVar $j 3
 								end
 								goto :mowfromhere
 							#end
@@ -233,7 +233,7 @@
 									gosub :window
 								else
 									setSectorParameter $closestFiggedSector "FIGSEC" FALSE
-									setVar $j $courseLength
+									setVar $j 3
 								end
 								goto :mowfromhere
 							end
@@ -241,6 +241,7 @@
 						subtract $j 1	
 					end
 				else
+					setVar $j 3
 					while ($j <= $courseLength)
 						getSectorParameter $COURSE[$j] "FIGSEC" $isFigged
 						if (($COURSE[$j] <= 10) OR ($COURSE[$j] = $map~stardock))
