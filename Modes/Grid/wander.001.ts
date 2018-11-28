@@ -392,6 +392,8 @@
 						goto :abort
 					end
 					setVar $result "m  "&$COURSE[$j]&"* "
+					setVar $player~current_sector $COURSE[$j]
+					saveVar $player~current_sector
 					setVar $figsToDrop 1
 					add $total_turns $player~turns_per_warp
 					if (($COURSE[$j] > 10) AND ($COURSE[$j] <> $MAP~STARDOCK))
@@ -483,6 +485,8 @@
 					end
 					if ($adjacentTarget > 0)
 						setVar $result "m  "&$adjacentTarget&"* "
+						setVar $player~current_sector $adjacentTarget
+						saveVar $player~current_sector
 						setVar $figsToDrop 1
 						add $total_turns $player~turns_per_warp
 						if (($adjacentTarget > 10) AND ($adjacentTarget <> $MAP~STARDOCK))
@@ -724,12 +728,12 @@ return
 	setvar $i 1
 	setvar $isFigged false
 	setarray $displayArray 6
-	setvar $displayArray[1] ""
-	setvar $displayArray[2] ""
-	setvar $displayArray[3] ""
-	setvar $displayArray[4] ""
-	setvar $displayArray[5] ""
-	setvar $displayArray[6] ""
+	setvar $displayArray[1] "     "
+	setvar $displayArray[2] "     "
+	setvar $displayArray[3] "     "
+	setvar $displayArray[4] "     "
+	setvar $displayArray[5] "     "
+	setvar $displayArray[6] "     "
 
 	while ((SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] > 0) and ($isFigged <> TRUE))
 		getSectorParameter SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] "FIGSEC" $isFigged
@@ -749,9 +753,48 @@ return
 	end
 
 	setvar $window_content $window_content&$displayArray[1]&"  "&$displayArray[5]&"  "&$displayArray[2]&"[][]"
-	setvar $window_content $window_content&"        \   |  /[][]"
+	setvar $window_content $window_content&"        "
+	if ($displayArray[1] <> "     ")
+		setvar $window_content $window_content&"\"
+	else
+		setvar $window_content $window_content&" "
+	end
+	setvar $window_content $window_content&"   "
+	if (displayArray[5] <> "     ")
+		setvar $window_content $window_content&"|"
+	else
+		setvar $window_content $window_content&" "
+	end
+	setvar $window_content $window_content&"  "
+	if ($displayArray[2] = "     ")
+		setvar $window_content $window_content&"/"
+	else
+		setvar $window_content $window_content&" "
+	end
+	setvar $window_content $window_content&"[][]"
+
 	setvar $window_content $window_content&"         "&$displayCenter&"  [][]"
-	setvar $window_content $window_content&"        /   |   \[][]"
+
+	setvar $window_content $window_content&"        "
+	if ($displayArray[3] <> "     ")
+		setvar $window_content $window_content&"/"
+	else
+		setvar $window_content $window_content&" "
+	end
+	setvar $window_content $window_content&"   "
+	if (displayArray[6] <> "     ")
+		setvar $window_content $window_content&"|"
+	else
+		setvar $window_content $window_content&" "
+	end
+	setvar $window_content $window_content&"  "
+	if ($displayArray[4] = "     ")
+		setvar $window_content $window_content&"\"
+	else
+		setvar $window_content $window_content&" "
+	end
+	setvar $window_content $window_content&"[][]"
+
 	setvar $window_content $window_content&$displayArray[3]&"  "&$displayArray[6]&"  "&$displayArray[4]&"[][]"
 	
 	savevar $window_content
