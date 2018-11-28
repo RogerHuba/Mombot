@@ -18,9 +18,6 @@
 	setVar $PLAYER~save TRUE
 
 
-	gosub :PLAYER~quikstats
-	gosub :player~getInfo
-
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 
 
