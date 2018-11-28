@@ -1,3 +1,4 @@
+	reqRecording
 	logging off
 	gosub :BOT~loadVars
 	loadVar $MAP~STARDOCK
