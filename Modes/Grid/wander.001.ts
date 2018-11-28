@@ -715,11 +715,38 @@ return
 	if ($nearest = true)
 		setVar $window_content $window_content&"Nearest unfigged: "&$destination&" ("&$distanceThere&" hop(s))[][]"
 	end
-	if ($adjacentTarget > 0)
-		setVar $window_content $window_content&"Adjacent Sector: "&$adjacentTarget&"[][]"
-	else
-		setVar $window_content $window_content&"No Adjacent Sector Found [][]"
+	#if ($adjacentTarget > 0)
+	#	setVar $window_content $window_content&"Adjacent Sector: "&$adjacentTarget&"[][]"
+	#else
+	#	setVar $window_content $window_content&"No Adjacent Sector Found [][]"
+	#end
+	
+	setvar $i 1
+	setvar $isFigged false
+	setarray $displayArray 6
+	setvar $displayArray[1] ""
+	setvar $displayArray[2] ""
+	setvar $displayArray[3] ""
+	setvar $displayArray[4] ""
+	setvar $displayArray[5] ""
+	setvar $displayArray[6] ""
+
+	while ((SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] > 0) and ($isFigged <> TRUE))
+		getSectorParameter SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] "FIGSEC" $isFigged
+		if ($isFigged <> TRUE)
+			setVar $displayArray[$i] SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i]
+		else
+			setVar $displayArray[$i] "["&SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i]&"]"
+		end
+		add $i 1
 	end
+
+	setvar $window_content $window_content&$displayArray[1]&"  "&$displayArray[5]&"  "&$displayArray[2]&"[][]"
+	setvar $window_content $window_content&"        \   |  /[][]"
+	setvar $window_content $window_content&"         "&$PLAYER~CURRENT_SECTOR&"  [][]"
+	setvar $window_content $window_content&"        /   |   \[][]"
+	setvar $window_content $window_content&$displayArray[3]&"  "&$displayArray[6]&"  "&$displayArray[4]&"[][]"
+	
 	savevar $window_content
 return
 
