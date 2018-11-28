@@ -17,8 +17,9 @@
 	setVar $BOT~help[9]   $BOT~tab&"                    Using UNFIGGED as param will target all"
 	setVar $BOT~help[10]  $BOT~tab&"                    sectors where FIGSEC is not true. "
 	setVar $BOT~help[11]  $BOT~tab&"          {share} - reports figged sectors over subspace"
-	setVar $BOT~help[12]  $BOT~tab&"          "
-	setVar $BOT~help[13]  $BOT~tab&"          Planet avoid options can be set in the bot menu"
+	setVar $BOT~help[12]  $BOT~tab&"        {nearest} - does nearest fig calc when possible"
+	setVar $BOT~help[13]  $BOT~tab&"          "
+	setVar $BOT~help[14]  $BOT~tab&"          Planet avoid options can be set in the bot menu"
 	
 	gosub :BOT~help_file
 
@@ -101,6 +102,14 @@
 		setvar $share false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " near "
+	if ($pos > 0)
+		setvar $nearest true
+	else
+		setvar $nearest false
+	end
+
+
 	getWord $bot~user_command_line $bot~parm1 1 "EMPTY"
 	if (($bot~parm1 = "auto") OR ($bot~parm1 = "EMPTY"))
 	
@@ -152,16 +161,45 @@
 			setvar $loop 0
 		:get_new_random_path
 			replaceText $database "  " " "
-			getRnd $random 1 $databaseCount
-			getWord $database $destination $random
-			getWordPos $tried_paths $pos " "&$destination&" "
-			if (($destination <> 0) AND ($pos > 0))
-				add $loop 1
-				if ($loop > $loop_limit)
-					goto :stop_gridder
+			if ($nearest = TRUE)
+				getNearestWarps $nearArray $player~current_sector
+				setVar $i 1
+				setvar $destination 0
+				while ($i <= $nearArray)
+					setVar $focus $nearArray[$i]
+					getSectorParameter $focus "FIGSEC" $isFigged
+					getWordPos $database $pos " "&$focus&" "
+					if (($isFigged <> TRUE) and ($pos > 0))
+                        getDistance $distanceThere $player~current_sector $focus
+                        getDistance $distanceBack $focus $player~current_sector
+                        if ($distanceThere < 0)
+                                send "^f"&$player~current_sector&"*"&$focus&"*q"
+                                waitOn "ENDINTERROG"
+                                getDistance $distanceThere $player~current_sector $focus
+                        end
+                        if ($distanceBack < 0)
+                                send "^f"&$focus&"*"&$player~current_sector&"*q"
+                                waitOn "ENDINTERROG"
+                                getDistance $distanceBack $focus $player~current_sector
+                        end
+                        setvar $destination $focus
+						goto :check_answer
+					end
+					add $i 1
 				end
-				goto :get_new_random_path
+			else
+				getRnd $random 1 $databaseCount
+				getWord $database $destination $random
+				getWordPos $tried_paths $pos " "&$destination&" "
+				if (($destination <> 0) AND ($pos > 0))
+					add $loop 1
+					if ($loop > $loop_limit)
+						goto :stop_gridder
+					end
+					goto :get_new_random_path
+				end
 			end
+		:check_answer
 		setvar $stripped_database $database
 		replaceText $stripped_database " " ""
 		if (($destination = 0) and ($stripped_database <> ""))
@@ -471,7 +509,7 @@
 						send $result
 						goto :checkForAdjacent
 					else
-						echo "** NO ADJACENT**"
+
 					end
 
 			else
@@ -641,7 +679,7 @@ halt
 :noPath
 	killAllTriggers
 
-	if (($gridTargets <> TRUE) AND ($PLAYER~unlimitedGame <> TRUE) AND ($tried <= 0))
+	if (($gridTargets <> TRUE) AND ($PLAYER~unlimitedGame <> TRUE) AND ($tried <= 0) AND ($nearest <> TRUE))
 		if (($courseLength <= 10) AND (($courseLength - $courseFighters) <= 0)) OR (($courseLength > 10) AND ($player~fuel_ore < 150) AND (($courseLength - $courseFighters) <= 3))
 			setVar $valid FALSE
 		end
@@ -674,10 +712,13 @@ return
 		add $c 1
 	end
 	setVar $window_content $course_print&"[][]Total turns: "&$total_turns&"[][]Total gridded: "&$total_gridded&"[][]"
+	if ($nearest = true)
+		setVar $window_content $window_content&"Nearest unfigged: "&$destination&" ("&$distanceThere&" hop(s))[][]"
+	end
 	if ($adjacentTarget > 0)
-		setVar $window_content $window_content&"[][]Adjacent Sector: "&$adjacentSector&"[][]"
+		setVar $window_content $window_content&"Adjacent Sector: "&$adjacentTarget&"[][]"
 	else
-		setVar $window_content $window_content&"[][]No Adjacent Sector Found [][]"
+		setVar $window_content $window_content&"No Adjacent Sector Found [][]"
 	end
 	savevar $window_content
 return
