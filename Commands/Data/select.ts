@@ -7,8 +7,11 @@
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-	setVar $BOT~help[1]   $BOT~tab&"enemy {planets | traders}"
-	setVar $BOT~help[2]   $BOT~tab&"     Displays planets or traders from database information"
+	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored}"
+	setVar $BOT~help[2]   $BOT~tab&"     Searches TWX database for known info."
+	setVar $BOT~help[3]   $BOT~tab&"        "
+	setVar $BOT~help[4]   $BOT~tab&"     Example: >select traders bubble=false figsec=true "
+
 	
 	gosub :BOT~help_file
 
@@ -89,9 +92,21 @@ while ($i <= SECTORS)
 								setvar $skip true
 							end
 						else
-							setVar $SWITCHBOARD~message $SWITCHBOARD~message&"You must select either planets, ships, unexplored, anomoly, or traders.*"
-							gosub :SWITCHBOARD~switchboard
-							halt
+							if (($bot~parm1 = "explore") or ($bot~parm1 = "explored"))
+								if (SECTOR.EXPLORED[$i] <> "YES")
+									setvar $skip true
+								end
+							else
+								if (($bot~parm1 = "trader") or ($bot~parm1 = "traders"))
+									if ((SECTOR.SHIPCOUNT[$i] <= 0) and (SECTOR.TRADERCOUNT <= 0))
+										setvar $skip true
+									end
+								else
+									setVar $SWITCHBOARD~message $SWITCHBOARD~message&"You must select either planets, ships, unexplored, explored, anomoly, or traders.*"
+									gosub :SWITCHBOARD~switchboard
+									halt
+								end
+							end
 						end
 					end
 				end
