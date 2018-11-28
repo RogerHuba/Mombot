@@ -7,6 +7,7 @@
 	setVar $BOT~help[2] $BOT~tab&"     "
 	setVar $BOT~help[3] $BOT~tab&"Will ether probe all sectors marked with param selected."
 	setVar $BOT~help[4] $BOT~tab&"Example: BUBBLE, DE, MSLSEC"
+	setVar $BOT~help[5] $BOT~tab&"      {unexplored) - only probes unexplored sectors"
 	gosub :BOT~help_file
 
 	if ($bot~parm1 <> "0")
@@ -38,7 +39,12 @@
 	end
 	send "*"
 
-
+	getWordPos $bot~user_command_line $pos "unexplored"
+	if ($pos > 0)
+		setvar $unexplored true
+	else
+		setvar $unexplored false
+	end
 
 	gosub :getTargets
 
@@ -96,7 +102,7 @@
 		getWordPos $path_database $pos " "&$i&" "
 		if ($pos <= 0)
 			getSectorParameter $i $PARAM $isTrue
-			if (($isTrue = TRUE) and (SECTOR.EXPLORED[$i] <> "YES"))
+			if (($isTrue = TRUE) and (((SECTOR.EXPLORED[$i] <> "YES") and ($unexplored = true)) or ($unexplored = false)))
 				setVar $randomSectors $randomSectors&" "&$i&"  "
 				add $databasecount 1
 				getCourse $path $player~current_sector $i 

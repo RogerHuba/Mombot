@@ -722,7 +722,7 @@ return
 	#if ($adjacentTarget > 0)
 	#	setVar $window_content $window_content&"Adjacent Sector: "&$adjacentTarget&"[][]"
 	#else
-	#	setVar $window_content $window_content&"No Adjacent Sector Found [][]"
+	#	setVar $window_content $window_content&"No Adjacent Sector Found [][] [][]"
 	#end
 	
 	setvar $i 1
@@ -760,13 +760,13 @@ return
 		setvar $window_content $window_content&" "
 	end
 	setvar $window_content $window_content&"   "
-	if (displayArray[5] <> "     ")
+	if ($displayArray[5] <> "     ")
 		setvar $window_content $window_content&"|"
 	else
 		setvar $window_content $window_content&" "
 	end
 	setvar $window_content $window_content&"  "
-	if ($displayArray[2] = "     ")
+	if ($displayArray[2] <> "     ")
 		setvar $window_content $window_content&"/"
 	else
 		setvar $window_content $window_content&" "
@@ -782,13 +782,13 @@ return
 		setvar $window_content $window_content&" "
 	end
 	setvar $window_content $window_content&"   "
-	if (displayArray[6] <> "     ")
+	if ($displayArray[6] <> "     ")
 		setvar $window_content $window_content&"|"
 	else
 		setvar $window_content $window_content&" "
 	end
 	setvar $window_content $window_content&"  "
-	if ($displayArray[4] = "     ")
+	if ($displayArray[4] <> "     ")
 		setvar $window_content $window_content&"\"
 	else
 		setvar $window_content $window_content&" "
