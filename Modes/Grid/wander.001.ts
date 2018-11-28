@@ -67,6 +67,7 @@
 	setvar $total_turns 0
 	setvar $total_gridded 0
 	setvar $archived ""
+	setvar $adjacentTarget 0 
 
 	if (($PLAYER~ORE_HOLDS < $PLAYER~TOTAL_HOLDS) AND ($player~ore_holds < 100))
 		setVar $SWITCHBOARD~message "You need to fill all your holds with fuel. This is going to be a long drive.*"
@@ -194,7 +195,7 @@
 			gosub :getCourses
 			if ($valid)
 				setVar $closestFiggedSector 0	
-				if ($gridTargets = true)
+				if (($gridTargets = true) and ($unfigged <> TRUE))
 					setVar $j $courseLength
 					while ($j >= 3)
 						getSectorParameter $COURSE[$j] "FIGSEC" $isFigged
@@ -429,6 +430,50 @@
 					end
 					add $j 1	
 				end
+				//check for adjacent non-figged sectors without twarping away first.
+				:checkForAdjacent
+					gosub :PLAYER~quikstats
+					setvar $i 1
+					setvar $isFigged false
+					setvar $adjacentTarget 0
+					while ((SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] > 0) and ($isFigged <> TRUE))
+						getSectorParameter SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] "FIGSEC" $isFigged
+						if (($isFigged <> TRUE) and (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] > 10) AND (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] <> $MAP~STARDOCK))
+							setVar $adjacentTarget SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i]
+						end
+						add $i 1
+					end
+					if ($adjacentTarget > 0)
+						setVar $result "m  "&$adjacentTarget&"* "
+						setVar $figsToDrop 1
+						add $total_turns $player~turns_per_warp
+						if (($adjacentTarget > 10) AND ($adjacentTarget <> $MAP~STARDOCK))
+							setVar $result $result&"za"&$maxFigAttack&"* z * "	
+						end
+						if (($adjacentTarget > 10) AND ($adjacentTarget <> $MAP~STARDOCK))
+							setVar $result $result&"f "&$figsToDrop&"* c d *"
+							getSectorParameter $adjacentTarget "FIGSEC" $isFigged
+							if ($isfigged <> true)
+								add $total_gridded 1
+								setSectorParameter $adjacentTarget "FIGSEC" TRUE
+								setvar $figged_sectors $figged_sectors&" "&$adjacentTarget&" "
+
+								gosub :window
+							end
+							setVar $temp " "&$adjacentTarget&" "
+							getWordPos $database $pos $temp
+							if ($pos > 0)
+								replaceText $database $temp " "
+								subtract $databasecount 1	
+							end
+						end
+						setVar $result $result&"**   "
+						send $result
+						goto :checkForAdjacent
+					else
+						echo "** NO ADJACENT**"
+					end
+
 			else
 
 				setvar $tried_paths $tried_paths&" "&$destination&" "
@@ -629,6 +674,11 @@ return
 		add $c 1
 	end
 	setVar $window_content $course_print&"[][]Total turns: "&$total_turns&"[][]Total gridded: "&$total_gridded&"[][]"
+	if ($adjacentTarget > 0)
+		setVar $window_content $window_content&"[][]Adjacent Sector: "&$adjacentSector&"[][]"
+	else
+		setVar $window_content $window_content&"[][]No Adjacent Sector Found [][]"
+	end
 	savevar $window_content
 return
 
