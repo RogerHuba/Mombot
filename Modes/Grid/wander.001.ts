@@ -741,9 +741,16 @@ return
 		add $i 1
 	end
 
+	getSectorParameter $PLAYER~CURRENT_SECTOR "FIGSEC" $isFigged
+	if ($isFigged = TRUE)
+		setvar $displayCenter "["&$PLAYER~CURRENT_SECTOR&"]"
+	else
+		setvar $displayCenter $PLAYER~CURRENT_SECTOR
+	end
+
 	setvar $window_content $window_content&$displayArray[1]&"  "&$displayArray[5]&"  "&$displayArray[2]&"[][]"
 	setvar $window_content $window_content&"        \   |  /[][]"
-	setvar $window_content $window_content&"         "&$PLAYER~CURRENT_SECTOR&"  [][]"
+	setvar $window_content $window_content&"         "&$displayCenter&"  [][]"
 	setvar $window_content $window_content&"        /   |   \[][]"
 	setvar $window_content $window_content&$displayArray[3]&"  "&$displayArray[6]&"  "&$displayArray[4]&"[][]"
 	
