@@ -10,6 +10,7 @@
 	setVar $parm8 $BOT~parm8
 	setVar $user_command_line $BOT~user_command_line
 
+	loadvar $GAME~ptradesetting
 
 	setVar $BOT~help[1] $BOT~tab&"Visits all ports in grid and buys fuel"
 	setVar $BOT~help[2] $BOT~tab&"and sells/buys organics and equipment."
