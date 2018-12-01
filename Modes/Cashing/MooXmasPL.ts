@@ -842,7 +842,7 @@ return
 		send "u   y  n  .  n  *  c * *  "
 	end
 	if ($doDockCashDump = TRUE)
-		send "t  c  y  t" $dumpcash "*  *  *  "
+		send "t  c  y  q   z   t" $dumpcash "*  *  *  "
 	end
 
 	send "m  " $returnSpot  "*   y   y  "
@@ -863,24 +863,39 @@ return
 
 :checkCorpAtDock
 
-
 	send "taq"
-	waitfor "Corp Member Name"
-
-	setTextLineTrigger CorpAtDock :CorpAtDock $stardock
-	setTextLineTrigger CorpNotAtDock1 :CorpNotAtDock1 "Corporate command"
+	waitfor "-----------------------------------------------------------------------------"
+	:CorpAtDockLookAgain
+	
+	setTextLineTrigger CorpAtDock :CorpAtDock ""
 	pause
 		:CorpNotAtDock1
 			killalltriggers
-			setVar $corpNotAtDock TRUE
-			goto :doneAtDock
+			
+			
 		:CorpAtDock
 			killalltriggers
-			setVar $corpNotAtDock FALSE
+			getWord CURRENTLINE $chk 1
+			if ($chk = "Corporate")
+				goto :doneAtDock
+			end
+			getLength CURRENTLINE $clen
+			if ($clen > 48)
+				
+				cutText CURRENTLINE $sector 40 5
+				striptext $sector " "
+				echo "#" $sector "#*"
+				if ($sector = $stardock)
+					setVar $corpNotAtDock FALSE
+				end
+			end
+			goto :CorpAtDockLookAgain
+
 
 	:doneAtDock
 
 return
+
 
 
 :checkCorpPlanet
@@ -1036,11 +1051,9 @@ return
 	# we don't really want to sit outside of SD.
 
 	setVar $explored[$stardock] 1
-	setAvoid $stardock
 	setVar $a 1
 	while ($a <= SECTOR.WARPCOUNT[$stardock])
 		# Avoids warps out of StarDock
-		setAvoid SECTOR.WARPS[$stardock][$a]
 		setVar $explored[SECTOR.WARPS[$stardock][$a]] 1
 		add $a 1
 	end

@@ -1,24 +1,5 @@
-# tcyt123^M^M^M^M - drop creds
-# Log missed ports/oppurtunities to explore 
-
-# TEST IF WE GET DONE BY 100 DENSITy
-
-# Check port in current sector
-#
-#	Internal Haggle failes easily - 2 attempts - then tkae whatever!
-#  Swine, go peddle your wares somewhere else, you make me sick.
-
-# rename planets to LS orienator or pimp
-# Add in EP Haggle
-
-# REFURB MODE
-# Check figs before blowing
-#  check planet up'd
-
-#MOOXmasPL	- checks CY list for ports to use
-#		- Option to make them - Should perfect this one as really this one is just go direct to a list 
-
-# share wander data? 276
+# Forfull version 'menu' option to do own menu
+# i cleanup types, none, bad all
 
 
 gosub :BOT~loadVars
@@ -66,7 +47,7 @@ loadvar $bot~$MCIC_FILE
 	
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation <> "Command")
-		setVar $SWITCHBOARD~message "MooXmas -  must be started from Command prompt.*"
+		setVar $SWITCHBOARD~message "must be started from Command prompt.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
@@ -82,6 +63,7 @@ loadvar $bot~$MCIC_FILE
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
+	
 
 	if ($player~ORE_HOLDS < 100)
 		setVar $SWITCHBOARD~message "MooXmas - We need ore in our holds.*"
@@ -163,7 +145,7 @@ loadvar $bot~$MCIC_FILE
 		setVar $corpCashDump TRUE
 		setvar $switchboard~message "We will furb ourselves.*"
 		if ($player~ALIGNMENT < 1000)
-			setVar $SWITCHBOARD~message "MooXmas - You're just not good enough for this script (alignment).*"
+			setVar $SWITCHBOARD~message "You're just not good enough for this script (alignment).*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
@@ -191,12 +173,6 @@ setVar $stat_atomics 0
 setVar $stat_dollarsgross 0
 setVar $stat_dollarsnet 0
 setVar $stat_dollarsspent 0
-
-
-
-setvar $_CK_PTRADESETTING  100
-saveVar $_CK_PTRADESETTING
-
 
 window moo 300 300 "Explore and Trade" 
 
@@ -244,33 +220,10 @@ setWindowContents moo $stuff
 	setVar $planetsInSectorReq 99
 	setVar $planetsCreated 0
 	
+	# Trading Min Fuel - we'll stop using a port when we get here
 	setVar $tradingMinFuel 40
 
-	setVar $ftrs 1
-	if ($dropToll)
-		setVar $ftrsType "t"
-	elseif ($dropOffensive)
-		setVar $ftrsType "o"
-	else
-		setVar $ftrsType "d"
-	end
-	
-	# need to get this from bto
-	setVar $maxFightersToAttack 250
-
-	setVar $setGridFighters 1
-	setVar $setGridFightersOwner "c"
-	setVar $setGridFightersType $ftrsType
-
-	setVar $setGridMines 0
-	setVar $setGridLimpets 0
-	setVar $noMinesLeft 0
-	setVar $noLimpetsLeft 0
-	
-
-	
-	setVar $thisScriptName "MooXmas.ts"
-	
+	# try and grab fuel at this
 	setVar $minOre 120
 	
 	setArray $explored SECTORS
@@ -280,37 +233,8 @@ setWindowContents moo $stuff
 	setVar $futureDestsAdded 0
 	setVar $futurePortsAdded 0
 
-	
+	# future use we might choose not to haggle - unlimitd turns?
 	setVar $haggle 1
-
-	clearAllAvoids
-
-
-	# CHECK WE AREN't RUNNING TWO
-	listActiveScripts $scripts
-	setVar $a 1
-	setVar $c 0
-
-	while ($a <= $scripts)
-		if ($scripts[$a] = $thisScriptName)
-			#stop $scripts[$a]
-			add $c 1
-			
-			#return
-		end
-		add $a 1
-	end
-
-	if ($c > 1)
-		echo "Script running multiple times: kill all!"
-		stop $thisScriptName
-		stop $thisScriptName
-		halt
-	end
-
-	send "d"
-	waitfor "Re-Display"
-	waitfor "Help)?"
 
 
 	fileExists $figlchk $mooExploredFile
@@ -339,23 +263,17 @@ setWindowContents moo $stuff
 	end
 	
 
-
-	
 	fileExists $figlchk $mooGoodPortsFile
-	if ($figlchk = 1)
-	
-		
+	if ($figlchk = 1)	
 		readToArray $mooGoodPortsFile $goodList
 		setVar $i 1
 		while ($i <= $goodList)
-			
 			
 			getWord $goodList[$i] $sec 1
 			getWord $goodList[$i] $goodport 2
 			getWord $goodList[$i] $den 3
 			getWord $goodList[$i] $warps 4
 			
-
 			if ($explored[$sec] <> 1)
 				add $futureDestsAdded 1
 				add $futurePortsAdded 1
@@ -385,41 +303,10 @@ setWindowContents moo $stuff
 	setvar $switchboard~message "... and we are off!*"
 	gosub :switchboard~switchboard
 
-
-	send "v"
-	setTextTrigger starDockTrigger :starDockTrigger "The StarDock is located in sector"
-	pause
-	:starDockTrigger
-		getWord CURRENTLINE $stardock 7
-		stripText $stardock "."
-		killalltriggers
-
-
-	gosub :quikstats
+	gosub :player~quikstats
 
 	gosub :setVoidSectors
 
-
-
-	#determine if ship has t-warp - turn option on and check if we have drive
-		
-	setVar $setGridHasTranswarp 0
-	send "cuyqi"
-	waitfor "Trader Name    :"
-
-	:checkTwarpTriggers
-	setTextLineTrigger checkTwarpYes :checkTwarpYes "TransWarp Power"
-	setTextLineTrigger checkTwarpFinish :checkTwarpFinish "Credits        :"
-	pause
-	:checkTwarpYes
-		killTrigger checkTwarpYes
-		killTrigger checkTwarpFinish
-		setVar $setGridHasTranswarp 1
-		goto :checkTwarpTriggers
-
-	:checkTwarpFinish
-		killTrigger checkTwarpYes
-		killTrigger checkTwarpFinish
 
 
 
@@ -447,7 +334,7 @@ setWindowContents moo $stuff
 			halt
 		end
 		if ($player~FIGHTERS < 301)
-			setVar $SWITCHBOARD~message "MooXmas - Need more than 300 figs, you'll hit debree and die!*"
+			setVar $SWITCHBOARD~message "Need more than 300 figs, you'll hit debree and die!*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
@@ -470,8 +357,10 @@ setWindowContents moo $stuff
 		goSub :getNextSector
 
 		if ($gridSectorPostTwarp > 0)
-			setVar $twarpToSector $gridSector
-			goSub :twarpToSector
+			setVar $player~warpto $gridSector
+			gosub :player~twarp
+			add $stat_moves 1
+
 			setVar $gridSectorPostTwarp 0
 			# Need to skip trading at next port as it'll be used
 			# saves wasing time re checking
@@ -527,8 +416,8 @@ return
 		end
 		
 	end 
+return
 
-	return
 
 
 :createAndSell
@@ -617,9 +506,8 @@ return
 	
 	
 	
-	:theEndNextSector
-	
 return
+
 
 :checkSafeToBlow
 
@@ -705,16 +593,18 @@ return
 
 	end
 
-	setVar $doDockCashDump FALSE
-	if ($PLAYER~CREDITS > 1100000)
-		setVar $corpNotAtDock TRUE
-		gosub :checkCorpAtDock
-		if ($corpNotAtDock = FALSE)
-			setVar $doDockCashDump TRUE
+	if ($corpCashDump = TRUE)
+
+		setVar $doDockCashDump FALSE
+		if ($PLAYER~CREDITS > 1100000)
+			setVar $corpNotAtDock TRUE
+			gosub :checkCorpAtDock
+			if ($corpNotAtDock = FALSE)
+				setVar $doDockCashDump TRUE
+			end
+
 		end
-
-	end
-
+	end 
 	send "m" $stardock "*y"
 	waitfor "Locating beam pinpointed, TransWarp"
 	send "y  "
@@ -787,14 +677,16 @@ return
 				send "c" $shieldsToBuy "*"
 			
 			
-		
+	
+	if ($corpCashDump = TRUE)
 
-	if ($doDockCashDump = TRUE)
-		goSUb :player~quikstats
-		if ($PLAYER~CREDITS > 1100000)
-			setVar $dumpcash ($PLAYER~CREDITS - 150000)
-		else
-			setVar $doDockCashDump FALSE
+		if ($doDockCashDump = TRUE)
+			goSUb :player~quikstats
+			if ($PLAYER~CREDITS > 1100000)
+				setVar $dumpcash ($PLAYER~CREDITS - 150000)
+			else
+				setVar $doDockCashDump FALSE
+			end
 		end
 	end
 
@@ -804,10 +696,11 @@ return
 		send "u   y  n  .  n  *  c * *  "
 	end
 	
-	if ($doDockCashDump = TRUE)
-		send "t  c  y  t" $dumpcash "*  *  *  "
+	if ($corpCashDump = TRUE)
+		if ($doDockCashDump = TRUE)
+			send "t  c  y  q   z   t" $dumpcash "*  *  *  "
+		end
 	end
-
 	send "m  " $returnSpot  "*   y   y  "
 	setTextLineTrigger restockBack1 :restockBack1 "<Set NavPoint>"
 	setTextLineTrigger restockBack2 :restockBack2  "Systems Ready, shall we engag"
@@ -826,20 +719,34 @@ return
 
 :checkCorpAtDock
 
-
 	send "taq"
-	waitfor "Corp Member Name"
-
-	setTextLineTrigger CorpAtDock :CorpAtDock $stardock
-	setTextLineTrigger CorpNotAtDock1 :CorpNotAtDock1 "Corporate command"
+	waitfor "-----------------------------------------------------------------------------"
+	:CorpAtDockLookAgain
+	
+	setTextLineTrigger CorpAtDock :CorpAtDock ""
 	pause
 		:CorpNotAtDock1
 			killalltriggers
-			setVar $corpNotAtDock TRUE
-			goto :doneAtDock
+			
+			
 		:CorpAtDock
 			killalltriggers
-			setVar $corpNotAtDock FALSE
+			getWord CURRENTLINE $chk 1
+			if ($chk = "Corporate")
+				goto :doneAtDock
+			end
+			getLength CURRENTLINE $clen
+			if ($clen > 48)
+				
+				cutText CURRENTLINE $sector 40 5
+				striptext $sector " "
+				
+				if ($sector = $stardock)
+					setVar $corpNotAtDock FALSE
+				end
+			end
+			goto :CorpAtDockLookAgain
+
 
 	:doneAtDock
 
@@ -873,251 +780,6 @@ return
 
 return
 
-:createPlanetsSub
-
-	
-		
-		## Planet Creation
-		:startPlanetCreation
-		
-		setVar $planetToBang 0
-		setVar $planetsInSector 0
-		setVar $planets 0
-		setVar $planeti 1
-
-		setVar $planetsCreated 0
-		send "lq*"
-		setVar $startLogging 0
-
-		:checkPlanetsInSector
-			setTextLineTrigger checkPlanetsInSectorNoPlanet :checkPlanetsInSectorNoPlanet "There isn't a planet in this sector."
-			setTextLineTrigger checkPlanetsInSectorStart :checkPlanetsInSectorStart "------------------------------------------------------------------------------"
-			setTextLineTrigger checkPlanetsInSectorPlanet :checkPlanetsInSectorPlanet "<"
-			setTextTrigger checkPlanetsInSectorFinish :checkPlanetsInSectorFinish "Land on which planet"
-			pause
-			:checkPlanetsInSectorStart
-				killAllTriggers
-	
-				setVar $startLogging 1
-				goto :checkPlanetsInSector
-			:checkPlanetsInSectorNoPlanet
-				killAllTriggers
-				goto :checkPlaneysFinishWait
-			:checkPlanetsInSectorPlanet
-				killAllTriggers 
-		
-				if ($startLogging = 1)
-			
-			
-					getWord CURRENTLINE $cPlanetNum 1
-
-					if ($cPlanetNum = "Land")
-						goto :checkPlanetsInSectorFinish
-					elseif ($cPlanetNum = "<")
-						getWord CURRENTLINE $cPlanetNum 2
-						stripText $cPlanetNum ">"
-					else
-						stripText $cPlanetNum ">"
-						stripText $cPlanetNum "<"
-					end
-					add $planetsInSector 1
-	
-					setVar $planets[$planeti] $cPlanetNum
-					add $planeti 1
-				end
-				
-				goto :checkPlanetsInSector
-
-			:checkPlanetsInSectorFinish
-				killAllTriggers
-				
-
-		:checkPlaneysFinishWait
-		waitfor "Command ["
-
-		setVar $inMakePlanet 0
-		setVar $go 1
-		#while ($planetsInSector < $planetsInSectorReq)
-		while ($go = 1)
-			:startMakingPlanets
-			
-			if ($planetsInSector > 0)
-				setVar $planets 0
-				setVar $planeti 1
-
-				#Update Planet Numbers
-				send "lq*"
-				setVar $startLogging 0
-				:updatePlanetsInSector
-				setTextLineTrigger updatePlanetsInSectorNoPlanet :updatePlanetsInSectorNoPlanet "There isn't a planet in this sector."
-				setTextLineTrigger updatePlanetsInSectorStart :updatePlanetsInSectorStart "------------------------------------------------------------------------------"
-				setTextLineTrigger updatePlanetsInSectorPlanet :updatePlanetsInSectorPlanet "<"
-				setTextTrigger updatePlanetsInSectorFinish :updatePlanetsInSectorFinish "Land on which planet"
-				pause
-				:updatePlanetsInSectorStart
-					killAllTriggers
-					setVar $startLogging 1
-					goto :updatePlanetsInSector
-				:updatePlanetsInSectorNoPlanet
-					killAllTriggers
-					goto :updatePlanetsFinishWait
-				:updatePlanetsInSectorPlanet
-					killAllTriggers 
-					
-					if ($startLogging = 1)
-			
-						getWord CURRENTLINE $cPlanetNum 1
-						if ($cPlanetNum = "Land")
-							goto :updatePlanetsInSectorFinish
-						elseif ($cPlanetNum = "<")
-							getWord CURRENTLINE $cPlanetNum 2
-							stripText $cPlanetNum ">"
-						else
-							stripText $cPlanetNum ">"
-							stripText $cPlanetNum "<"
-						end
-						#add $planetsInSector 1
-						setVar $planets[$planeti] $cPlanetNum
-						add $planeti 1
-					end
-					goto :updatePlanetsInSector
-
-				:updatePlanetsInSectorFinish
-					killAllTriggers
-			end
-			
-			
-			:updatePlanetsFinishWait
-			setVar $goodPlanet 0
-			send "uyn.*p"
-			:buildPlanet
-			setTextLineTrigger buildPlanet1 :buildPlanet1 "You don't have any Genesis Torpedoes to launch!"
-			setTextLineTrigger buildPlanet2 :buildPlanet2 "For building this planet you receive"
-			
-			pause
-
-			:buildPlanet1
-				killAllTriggers
-				send "*"
-				gosub :restock
-				
-				goto :updatePlanetsFinishWait
-				
-			:buildPlanet2
-				killAllTriggers
-				add $stat_torps 1
-
-			:makePlanet
-						
-			setTextLineTrigger makePlanet1 :makePlanet1 $setVarPlanetType1
-			setTextLineTrigger makePlanet2 :makePlanet2 $setVarPlanetType2
-			setTextLineTrigger makePlanet3 :makePlanet3 $setVarPlanetType3
-			setTextLineTrigger makePlanet4 :makePlanet4 $setVarPlanetType4
-			setTextLineTrigger makePlanet5 :makePlanet5 $setVarPlanetType5
-			#setTextLineTrigger markGoodPlanet :markGoodPlanet "hat do you want to name this planet?"
-			setTextLineTrigger makePlanetDone :makePlanetDone "Should this be a (C)orporate planet or (P)ersonal planet?"
-			pause
-			
-			:makePlanet1
-			:makePlanet2
-			:makePlanet3
-			:makePlanet4
-			:makePlanet5
-			#:markGoodPlanet
-		
-				killAllTriggers
-				setVar $goodPlanet 1
-				goto :makePlanetDone
-			:makePlanetDone 
-				killAllTriggers
-			add $planetsInSector 1
-		
-			if ($goodPlanet = 1)
-				setVar $inMakePlanet 1
-				send "lq*"
-				setVar $planetCheck 0
-				setVar $planetChecki 1
-				setVar $newPlanet 0
-				setVar $startLogging 0
-
-				:goodPlanetCheck
-				setTextLineTrigger goodPlanetCheckPlanet :goodPlanetCheckPlanet "<"
-				setTextTrigger goodPlanetCheckFinish :goodPlanetCheckFinish "Land on which planet"
-				setTextLineTrigger goodPlanetCheckstart :goodPlanetCheckstart "------------------------------------------------------------------------------"
-				pause
-				:goodPlanetCheckstart
-					killAllTriggers
-					setVar $startLogging 1
-					goto :goodPlanetCheck
-				:goodPlanetCheckPlanet
-					killAllTriggers 
-					if ($startLogging = 1)
-
-			
-						getWord CURRENTLINE $cPlanetNum 1
-						if ($cPlanetNum = "Land")
-							goto :goodPlanetCheckFinish
-						elseif ($cPlanetNum = "<")
-							getWord CURRENTLINE $cPlanetNum 2
-							stripText $cPlanetNum ">"
-						else
-							stripText $cPlanetNum ">"
-							stripText $cPlanetNum "<"
-						end
-						
-						setVar $planetCheck[$planetChecki] $cPlanetNum
-						add $planetChecki 1
-		
-					end
-					
-					goto :goodPlanetCheck
-				:goodPlanetCheckFinish
-					killAllTriggers
-			#loop through and see which planet isn't in the existing list
-
-				setVar $i 1
-				while ($i < $planetChecki)
-					setVar $y 1
-					setVar $found 0
-					
-					while ($y < $planetsInSector)
-						
-						if ($planetCheck[$i] = $planets[$y])
-							setVar $found 1
-						end 
-						add $y 1
-					end
-					if ($found = 0)
-						setVar $newPlanet $planetCheck[$i]
-					end 
-					add $i 1
-				end
-				
-				if ($newPlanet > 0)
-					setVar $shipBlastPlanet $newPlanet
-				else
-					setVar $newPlanet $shipBlastPlanet
-				end
-				
-		
-			
-				gosub :portStartTrade
-				setVar $fuelPerc PORT.PERCENTFUEL[CURRENTSECTOR]
-	
-				if ($fuelPerc < $tradingMinFuel)
-
-					return
-				end
-
-			end
-			:endMakingPlanets
-			
-
-			setVar $planetsCreated 1
-		end
-
-		
-return
 
 ######################################## END TRADE ROUTINES
 
@@ -1375,14 +1037,13 @@ return
 
 :setVoidSectors
 
+	
 	# we don't really want to sit outside of SD.
 
 	setVar $explored[$stardock] 1
-	setAvoid $stardock
 	setVar $a 1
 	while ($a <= SECTOR.WARPCOUNT[$stardock])
 		# Avoids warps out of StarDock
-		setAvoid SECTOR.WARPS[$stardock][$a]
 		setVar $explored[SECTOR.WARPS[$stardock][$a]] 1
 		add $a 1
 	end
@@ -1607,120 +1268,12 @@ return
 		send "m" $gridSector "**"
 		add $stat_moves 1
 	else
-		gosub :gridSector
-	end
-
-return
-
-
-:gridSector
-	setVar $cSector CURRENTSECTOR
-	getDistance $isItNextDoor $cSector $gridSector 
-	
-	setVar $gridCommand ""
-	if ($setGridHasTranswarp = 1)
-		setVar $gridCommand "m" & $gridSector & "*  a z "  & $maxFightersToAttack & "*  *  zn"
-	else
-		setVar $gridCommand "m" & $gridSector & "*  a z "  & $maxFightersToAttack &  "*  n *  zn"
-	end
-	
-	if ($setGridFighters > 0)
-		setVar $gridCommand $gridCommand & "f " & $setGridFighters & "* " & $setGridFightersOwner & " " & $setGridFightersType & " "
-	end	
-	if ($setGridMines > 0)
-		setVar $gridCommand $gridCommand & "h1 " & $setGridMines & "*  c  n  n  * "
-	end
-	if (($setGridLimpets > 0) and ($anomoly[$gridSector] = 0))
-		setVar $gridCommand $gridCommand & "h2 " & $setGridLimpets & "*  c  n  n  * "
-	end
-	setVar $gridCommand $gridCommand & "cr*q"
-
-	
-	setSectorParameter $gridSector "FIGSEC" TRUE
-	send $gridCommand
-	
-	#Covers the two attack scenarios, kill something, or nothing there.
-	send "zn"
-	setTextLineTrigger gridSectorNothing :gridSectorNothing "There is nothing here to attack."
-	setTextLineTrigger gridSectorInstructions :gridSectorInstructions "Do you want instructions"
-	setTextLineTrigger gridSectorError :gridSectorError "Stop in this sector ("
-	
-	pause
-		:gridSectorError
 		
-		
-		:gridSectorNothing
-		:gridSectorInstructions
-		killTrigger gridSectorError
-		killTrigger gridSectorNothing
-		killTrigger gridSectorInstructions
-	
-
-	#deploy Fighters/Mines/Limpets Scenario
-	if ($setGridFighters > 0)
-		:gridSectorFinish
-		
-			setTextLineTrigger gridSectorDeployLimpet :gridSectorDeployLimpet "How many Limpet mines do you want"
-			setTextLineTrigger gridSectorDeployMines :gridSectorDeployMines "How many Armid mines do you want defending"
-			setTextLineTrigger gridSectorFighters :gridSectorFighters "fighter(s) in close support."
-			setTextLineTrigger gridSectorDone :gridSectorDone "Do you want instructions"
-			pause
-			:gridSectorDeployLimpet
-				killTrigger gridSectorFighters
-				killTrigger gridSectorDeployMines
-				killTrigger gridSectorDeployLimpet
-				killTrigger gridSectorDone
-				setTextLineTrigger gridSectorDeployLimpetOnBoard :gridSectorDeployLimpetOnBoard "Limpet mine(s) on board."
-				setTextLineTrigger gridSectorDeployLimpetAvailable :gridSectorDeployLimpetAvailable "You don't have that many mines available."
-				pause
-				:gridSectorDeployLimpetOnBoard
-					killTrigger gridSectorDeployLimpetOnBoard
-					killTrigger gridSectorDeployLimpetAvailable
-					goto :gridSectorFinish
-				:gridSectorDeployLimpetAvailable
-					killTrigger gridSectorDeployLimpetOnBoard
-					killTrigger gridSectorDeployLimpetAvailable
-					setVar $noLimpetsLeft 1
-					goto :gridSectorFinish
-
-
-			:gridSectorDeployMines
-				killTrigger gridSectorFighters
-				killTrigger gridSectorDeployMines
-				killTrigger gridSectorDeployLimpet
-				killTrigger gridSectorDone
-				setTextLineTrigger gridSectorDeployMinesOnBoard :gridSectorDeployMinesOnBoard "Armid mine(s) on board."
-				setTextLineTrigger gridSectorDeployMinesAvailable :gridSectorDeployMinesAvailable "You don't have that many mines available."
-				pause
-				:gridSectorDeployMinesOnBoard
-					killTrigger gridSectorDeployMinesOnBoard
-					killTrigger gridSectorDeployMinesAvailable
-					goto :gridSectorFinish
-				:gridSectorDeployMinesAvailable
-					killTrigger gridSectorDeployMinesOnBoard
-					killTrigger gridSectorDeployMinesAvailable
-					setVar $noMinesLeft 1
-					goto :gridSectorFinish
-			:gridSectorFighters
-				killTrigger gridSectorFighters
-				killTrigger gridSectorDeployMines
-				killTrigger gridSectorDeployLimpet
-				killTrigger gridSectorDone
-				getWord CURRENTLINE $shipCurrentFighters 4
-				stripText $shipCurrentFighters ","
-				goto :gridSectorFinish
-			:gridSectorDone
-				killTrigger gridSectorDeployLimpet
-				killTrigger gridSectorDeployMines
-				killTrigger gridSectorFighters
-				killTrigger gridSectorDone
-
-		add $stat_figsdown 1
-		add $stat_moves 1
+		setVar $PLAYER~moveIntoSector $gridSector
+		gosub :PLAYER~moveIntoSector
 	end
-
-
-
+	add $stat_figsdown 1
+	add $stat_moves 1
 return
 
 :holoScan
@@ -1833,288 +1386,258 @@ return
 			KillTrigger densityScanEnd
 	return
 
-:twarpToSector
-	
-	setVar $twarpToSectorSucess 0
-	#getDistance $nextdoorcheck CURRENTSECTOR $twarpToSector
-	
-
-		send "m" $twarpToSector "*y"
-	
-		
-		setTextLineTrigger twarpToSectorYes :twarpToSectorYes "Locating beam pinpointed, TransWarp"
-		setTextLineTrigger twarpToSectorNextdor :twarpToSectorNextdor "Sector  :"
-		setTextLineTrigger twarpToSectorNo :twarpToSectorNo "*** WARNING *** No locating beam found for sector"
-		setTextLineTrigger twarpToSectorNoFuel :twarpToSectorNoFuel "You do not have enough Fuel Ore to make the jump"
-		pause
-
-		:twarpToSectorNoFuel
-			killTrigger twarpToSectorNo
-			killTrigger twarpToSectorYes
-			killTrigger twarpToSectorNoFuel
-			killTrigger twarpToSectorNextdor
-			setVar $twarpToSectorSucess 2
-			return
-		:twarpToSectorNo
-			killTrigger twarpToSectorNo
-			killTrigger twarpToSectorYes
-			killTrigger twarpToSectorNoFuel
-			killTrigger twarpToSectorNextdor
-			echo "*## Uh Oh - No Lock, May need to do something useful here"
-			echo "* next @ will exit twarp function and script will continue"
-			waitfor "next@"
-			setVar $twarpToSectorSucess 0
-			return
-		:twarpToSectorYes
-		
-			killTrigger twarpToSectorNextdor
-			killTrigger twarpToSectorNo
-			killTrigger twarpToSectorYes
-			killTrigger twarpToSectorNoFuel
-			send "y"
-			setTextLineTrigger twarpToSectorEngaged :twarpToSectorEngaged "ansWarp Drive Engaged!"
-			
-			pause
-			:twarpToSectorEngaged
-				setVar $getFuel 1
-				killTrigger twarpToSectorEngaged
-				setVar $twarpToSectorSucess 1
-				goto :twarpToSectorArrived
-			
-		:twarpToSectorNextdor
-			killTrigger twarpToSectorNextdor
-			killTrigger twarpToSectorNo
-			killTrigger twarpToSectorYes
-			killTrigger twarpToSectorNoFuel
-			send "q"
-
-	:twarpToSectorArrived
-		waitFor "Warps to Sector"
-		setTextTrigger twarpToSectorMined :twarpToSectorMined "Mined Sector: Do you wish to Avoid this sector in the future?"
-		setTextTrigger twarpToSectorDone :twarpToSectorDone "Help)?"
-		pause
-		:twarpToSectorMined
-			send "n"
-		:twarpToSectorDone
-			
-			send "sd"
-			killTrigger twarpToSectorMined
-			killTrigger twarpToSectorDone
-			
-	add $stat_moves 1
-	
-return
 
 
 halt
 
 
-:voidadjacent
-	return
-	setVar $voidSector $tradingSector1
-	setVar $otherSect $tradingSector2
-	gosub :voidadjacentPPT
-	setVar $voidSector $tradingSector2
-	setVar $otherSect $tradingSector1
-	gosub :voidadjacentPPT
-
-return
-:clearadjacent
-	return
-	setVar $voidSector $tradingSector1
-	setVar $otherSect $tradingSector2
-	gosub :clearadjacentPPT
-	setVar $voidSector $tradingSector2
-	setVar $otherSect $tradingSector1
-	gosub :clearadjacentPPT
-
-return
-
-:voidadjacentPPT
-    getSector $voidSector $sectorInfo
-    if ($sectorInfo.warp[1] = 0)
-        send "'This sector has no warps, maybe you need to scan it first*"
-        halt
-    else
-        setVar $voidsect 0
-        :voids
-        add $voidsect 1
-        if ($voidsect < 7)
-            if ($sectorInfo.warp[$voidsect] <> 0)
-		if ($sectorInfo.warp[$voidsect] <> $otherSect)
-			send "CV" & $sectorInfo.warp[$voidsect] & "*Q"
-		end
-            end
-            goto :voids
-        end
-
-        send "'{" $bot_name "} - Avoids set on adjacent sectors!*"
-        send "/"
-        waitfor " Sect "    
-    end
-return
-
-:clearadjacentPPT
-    getSector $voidSector $sectorInfo
-    if ($sectorInfo.warp[1] = 0)
-        send "'{" $bot_name "} -This sector has no warps, try to scan it first!*"
-        halt
-    else
-        setVar $voidsect 0
-        :clearvoids
-        add $voidsect 1
-        if ($voidsect < 7)
-            if ($sectorInfo.warp[$voidsect] <> 0)
-		if ($sectorInfo.warp[$voidsect] <> $otherSect)
-			send "CV0*YN" & $sectorInfo.warp[$voidsect] & "*Q"
-		end
-            end
-            goto :clearvoids
-        end
-
-        send "'{" $bot_name "} - Avoids cleared on adjacent sectors!*"
-        send "/"
-        waitfor " Sect "
-    end
-return
 
 
-:quikstats
+:createPlanetsSub
 
-
-     	setVar $CURRENT_PROMPT 		"Undefined"
-	killtrigger noprompt
-	killtrigger prompt1
-	killtrigger prompt2
-	killtrigger prompt3
-	killtrigger prompt4
-	killtrigger statlinetrig
-	killtrigger getLine2
-	setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
-	setTextLineTrigger 	statlinetrig 	:statStart 		#179
-	send #145&"/"
-	pause
-
-	:allPrompts
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
-		#getWord currentansiline $checkPrompt 1
-		#getWord currentline $tempPrompt 1
-		#getWordPos $checkPrompt $pos "[35m"
-		#if ($pos > 0)
-		#	setVar $CURRENT_PROMPT $tempPrompt
-		#end
-		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
-		pause
-
-	:statStart
-		killtrigger prompt
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger noprompt
-		setVar $stats ""
-		setVar $wordy ""
-
-
-	:statsline
-		killtrigger statlinetrig
-		killtrigger getLine2
-		setVar $line2 CURRENTLINE
-		replacetext $line2 #179 " "
-		striptext $line2 ","
-		setVar $stats $stats & $line2
-		getWordPos $line2 $pos "Ship"
-		if ($pos > 0)
-			goto :gotStats
-		else
-			setTextLineTrigger getLine2 :statsline
-			pause
-		end
-
-	:gotStats
-		setVar $stats $stats & " @@@"
-
-		setVar $current_word 0
-		while ($wordy <> "@@@")
-			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
-			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
-			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
-			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
-			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
-			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
-			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
-			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
-			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
-			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
-			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
-			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
-			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
-			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
-			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
-			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
-			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
-			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
-			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
-			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
-			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
-			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
-			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
-			elseif ($wordy = "Corp")
-				getWord $stats $CORP   			($current_word + 1)
-			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
-			end
-			add $current_word 1
-			getWord $stats $wordy $current_word
-		end
-		setVar $t_holds $ORE_HOLDS
-		add $t_holds $ORGANIC_HOLDS
-		add $t_holds $EQUIPMENT_HOLDS
-		add $t_holds $COLONIST_HOLDS
-		setVar $EMPTY_HOLDS $TOTAL_HOLDS
-		subtract $EMPTY_HOLDS $t_holds
+	
 		
-	:doneQuikstats
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger statlinetrig
-		killtrigger getLine2
+		## Planet Creation
+		:startPlanetCreation
+		
+		setVar $planetToBang 0
+		setVar $planetsInSector 0
+		setVar $planets 0
+		setVar $planeti 1
 
+		setVar $planetsCreated 0
+		send "lq*"
+		setVar $startLogging 0
+
+		:checkPlanetsInSector
+			setTextLineTrigger checkPlanetsInSectorNoPlanet :checkPlanetsInSectorNoPlanet "There isn't a planet in this sector."
+			setTextLineTrigger checkPlanetsInSectorStart :checkPlanetsInSectorStart "------------------------------------------------------------------------------"
+			setTextLineTrigger checkPlanetsInSectorPlanet :checkPlanetsInSectorPlanet "<"
+			setTextTrigger checkPlanetsInSectorFinish :checkPlanetsInSectorFinish "Land on which planet"
+			pause
+			:checkPlanetsInSectorStart
+				killAllTriggers
+	
+				setVar $startLogging 1
+				goto :checkPlanetsInSector
+			:checkPlanetsInSectorNoPlanet
+				killAllTriggers
+				goto :checkPlaneysFinishWait
+			:checkPlanetsInSectorPlanet
+				killAllTriggers 
+		
+				if ($startLogging = 1)
+			
+			
+					getWord CURRENTLINE $cPlanetNum 1
+
+					if ($cPlanetNum = "Land")
+						goto :checkPlanetsInSectorFinish
+					elseif ($cPlanetNum = "<")
+						getWord CURRENTLINE $cPlanetNum 2
+						stripText $cPlanetNum ">"
+					else
+						stripText $cPlanetNum ">"
+						stripText $cPlanetNum "<"
+					end
+					add $planetsInSector 1
+	
+					setVar $planets[$planeti] $cPlanetNum
+					add $planeti 1
+				end
+				
+				goto :checkPlanetsInSector
+
+			:checkPlanetsInSectorFinish
+				killAllTriggers
+				
+
+		:checkPlaneysFinishWait
+		waitfor "Command ["
+
+		setVar $inMakePlanet 0
+		setVar $go 1
+		#while ($planetsInSector < $planetsInSectorReq)
+		while ($go = 1)
+			:startMakingPlanets
+			
+			if ($planetsInSector > 0)
+				setVar $planets 0
+				setVar $planeti 1
+
+				#Update Planet Numbers
+				send "lq*"
+				setVar $startLogging 0
+				:updatePlanetsInSector
+				setTextLineTrigger updatePlanetsInSectorNoPlanet :updatePlanetsInSectorNoPlanet "There isn't a planet in this sector."
+				setTextLineTrigger updatePlanetsInSectorStart :updatePlanetsInSectorStart "------------------------------------------------------------------------------"
+				setTextLineTrigger updatePlanetsInSectorPlanet :updatePlanetsInSectorPlanet "<"
+				setTextTrigger updatePlanetsInSectorFinish :updatePlanetsInSectorFinish "Land on which planet"
+				pause
+				:updatePlanetsInSectorStart
+					killAllTriggers
+					setVar $startLogging 1
+					goto :updatePlanetsInSector
+				:updatePlanetsInSectorNoPlanet
+					killAllTriggers
+					goto :updatePlanetsFinishWait
+				:updatePlanetsInSectorPlanet
+					killAllTriggers 
+					
+					if ($startLogging = 1)
+			
+						getWord CURRENTLINE $cPlanetNum 1
+						if ($cPlanetNum = "Land")
+							goto :updatePlanetsInSectorFinish
+						elseif ($cPlanetNum = "<")
+							getWord CURRENTLINE $cPlanetNum 2
+							stripText $cPlanetNum ">"
+						else
+							stripText $cPlanetNum ">"
+							stripText $cPlanetNum "<"
+						end
+						#add $planetsInSector 1
+						setVar $planets[$planeti] $cPlanetNum
+						add $planeti 1
+					end
+					goto :updatePlanetsInSector
+
+				:updatePlanetsInSectorFinish
+					killAllTriggers
+			end
+			
+			
+			:updatePlanetsFinishWait
+			setVar $goodPlanet 0
+			send "uyn.*p"
+			:buildPlanet
+			setTextLineTrigger buildPlanet1 :buildPlanet1 "You don't have any Genesis Torpedoes to launch!"
+			setTextLineTrigger buildPlanet2 :buildPlanet2 "For building this planet you receive"
+			
+			pause
+
+			:buildPlanet1
+				killAllTriggers
+				send "*"
+				gosub :restock
+				
+				goto :updatePlanetsFinishWait
+				
+			:buildPlanet2
+				killAllTriggers
+				add $stat_torps 1
+
+			:makePlanet
+						
+			setTextLineTrigger makePlanet1 :makePlanet1 $setVarPlanetType1
+			setTextLineTrigger makePlanet2 :makePlanet2 $setVarPlanetType2
+			setTextLineTrigger makePlanet3 :makePlanet3 $setVarPlanetType3
+			setTextLineTrigger makePlanet4 :makePlanet4 $setVarPlanetType4
+			setTextLineTrigger makePlanet5 :makePlanet5 $setVarPlanetType5
+			#setTextLineTrigger markGoodPlanet :markGoodPlanet "hat do you want to name this planet?"
+			setTextLineTrigger makePlanetDone :makePlanetDone "Should this be a (C)orporate planet or (P)ersonal planet?"
+			pause
+			
+			:makePlanet1
+			:makePlanet2
+			:makePlanet3
+			:makePlanet4
+			:makePlanet5
+			#:markGoodPlanet
+		
+				killAllTriggers
+				setVar $goodPlanet 1
+				goto :makePlanetDone
+			:makePlanetDone 
+				killAllTriggers
+			add $planetsInSector 1
+		
+			if ($goodPlanet = 1)
+				setVar $inMakePlanet 1
+				send "lq*"
+				setVar $planetCheck 0
+				setVar $planetChecki 1
+				setVar $newPlanet 0
+				setVar $startLogging 0
+
+				:goodPlanetCheck
+				setTextLineTrigger goodPlanetCheckPlanet :goodPlanetCheckPlanet "<"
+				setTextTrigger goodPlanetCheckFinish :goodPlanetCheckFinish "Land on which planet"
+				setTextLineTrigger goodPlanetCheckstart :goodPlanetCheckstart "------------------------------------------------------------------------------"
+				pause
+				:goodPlanetCheckstart
+					killAllTriggers
+					setVar $startLogging 1
+					goto :goodPlanetCheck
+				:goodPlanetCheckPlanet
+					killAllTriggers 
+					if ($startLogging = 1)
+
+			
+						getWord CURRENTLINE $cPlanetNum 1
+						if ($cPlanetNum = "Land")
+							goto :goodPlanetCheckFinish
+						elseif ($cPlanetNum = "<")
+							getWord CURRENTLINE $cPlanetNum 2
+							stripText $cPlanetNum ">"
+						else
+							stripText $cPlanetNum ">"
+							stripText $cPlanetNum "<"
+						end
+						
+						setVar $planetCheck[$planetChecki] $cPlanetNum
+						add $planetChecki 1
+		
+					end
+					
+					goto :goodPlanetCheck
+				:goodPlanetCheckFinish
+					killAllTriggers
+			#loop through and see which planet isn't in the existing list
+
+				setVar $i 1
+				while ($i < $planetChecki)
+					setVar $y 1
+					setVar $found 0
+					
+					while ($y < $planetsInSector)
+						
+						if ($planetCheck[$i] = $planets[$y])
+							setVar $found 1
+						end 
+						add $y 1
+					end
+					if ($found = 0)
+						setVar $newPlanet $planetCheck[$i]
+					end 
+					add $i 1
+				end
+				
+				if ($newPlanet > 0)
+					setVar $shipBlastPlanet $newPlanet
+				else
+					setVar $newPlanet $shipBlastPlanet
+				end
+				
+		
+			
+				gosub :portStartTrade
+				setVar $fuelPerc PORT.PERCENTFUEL[CURRENTSECTOR]
+	
+				if ($fuelPerc < $tradingMinFuel)
+
+					return
+				end
+
+			end
+			:endMakingPlanets
+			
+
+			setVar $planetsCreated 1
+		end
+
+		
 return
-# ============================== END QUICKSTATS SUB==============================
 
 
 :blastPlanet
@@ -2148,7 +1671,7 @@ send "l" $shipBlastPlanet "*zdy *"
 		send "q"
 		waitfor "Blasting off from"
 		waitfor "Command ["
-		goSub :quikstats
+		goSub :player~quikstats
 
 		goSub :restock
 
@@ -2292,7 +1815,7 @@ return
 	saveVar $_ck_pnego_current_sector 
 
 if ($unlimited = 1)
-	setVar $TURNS 999
+	setVar $PLAYER~TURNS 999
 end
 	setvar $_ck_pnego_turns $player~TURNS
 	saveVar $_ck_pnego_turns 
@@ -2435,7 +1958,7 @@ return
 	
 	
 	if ($unlimited = 1)
-		setVar $TURNS 999
+		setVar $player~TURNS 999
 	end
 
 
@@ -2465,9 +1988,9 @@ return
 	pause
 	:epsellwait2
 		killalltriggers
-		send "'{" $bot_name "} - Ep Haggle timed out on Haggle*"
 		
-		send "*"
+		setvar $switchboard~message "Ep Haggle timed out on Haggle*"
+		gosub :switchboard~switchboard
 	
 	:sellempty2
 		killalltriggers
