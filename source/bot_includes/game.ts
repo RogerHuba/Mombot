@@ -44,6 +44,7 @@
         setTextLineTrigger settings35 :findHoloScanner "Holographic Scanner="
         setTextLineTrigger settings36 :findDensityScan "Density Scanner="
         setTextLineTrigger settings38 :findMaxPlanets "Max Planet Sector="
+        setTextLineTrigger settings39 :findMaxGamePlanets ", sectors"
         pause
         :findGold
             getWord CURRENTLINE $check 2
@@ -61,6 +62,12 @@
             stripText $check "Sector="
             setVar $MAX_PLANETS_PER_SECTOR $check
             saveVar $MAX_PLANETS_PER_SECTOR
+            pause
+        :findMaxGamePlanets
+            getWord CURRENTLINE $check 9
+	    stripText $check "."
+            setVar $MAX_PLANETS_IN_GAME $check
+            saveVar $MAX_PLANETS_IN_GAME
             pause
         :findMBBS
             getWord CURRENTLINE $mbbs_ck 2
@@ -343,6 +350,7 @@
             saveVar $LSD_HOLOCOST
             pause
         :findDensityScan
+	
             getWord CURRENTLINE $DENSITY_COST 2
             stripText $DENSITY_COST "Scanner="
             stripText $DENSITY_COST ","
