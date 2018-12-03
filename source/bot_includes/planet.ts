@@ -780,7 +780,7 @@ pause
                 killtrigger sellorg
                 killtrigger sellequ
                 killtrigger donewithport
-                if (($ore_sell_failures > 4) or ($org_sell_failures > 4) or ($equ_sell_failures > 4))
+                if (($ore_sell_failures > 1) or ($org_sell_failures > 4) or ($equ_sell_failures > 4))
                     setVar $selloutput $selloutput & "Multiple Haggle Failures - Please cut and paste this haggling session and email to Cherokee*"
                     return
                 elseif (($fueltosell = 0) and ($orgtosell = 0) and ($equiptosell = 0))
@@ -1511,6 +1511,11 @@ pause
         setTextLineTrigger sellscrewup8 :sellscrewup "WHAT?!@!? you must be crazy!"
         setTextLineTrigger sellscrewup9 :sellscrewup "So, you think I'm as stupid as you look? Make a real offer."
         setTextLineTrigger sellscrewup10 :sellscrewup "What do you take me for, a fool?  Make a real offer!"
+        setTextLineTrigger sellscrewup11 :sellscrewup "Swine, go peddle your wares somewhere else, you make me sick."
+        setTextLineTrigger sellscrewup12 :sellscrewup "I see you are as stupid as you look, get lost..."
+        setTextLineTrigger sellscrewup13 :sellscrewup "HA!  You think me a fool?  Thats insane!  Get out of here!"
+        setTextLineTrigger sellscrewup14 :sellscrewup "Get lost creep, that junk isn't worth half that much!"
+        setTextLineTrigger sellscrewup15 :sellscrewup "I think you'd better leave if you value your life!"
         pause
         pause
     :sellscrewup
@@ -1528,7 +1533,16 @@ pause
         killtrigger sellscrewup8 
         killtrigger sellscrewup9 
         killtrigger sellscrewup10 
-        
+        killtrigger sellscrewup11 
+        killtrigger sellscrewup12
+        killtrigger sellscrewup13 
+        killtrigger sellscrewup14 
+	killtrigger sellscrewup15 
+	echo "*## PICKUP up sell fail"
+        goto :sellhagglefailed
+	echo "*### HSOULD NOT GET HERE NOW"
+	# HAMMER -  This used to send anohter off but on v2 it sends you to the next product or command prompt
+	# I'm wondering if this is a version issue? i.e. between v1 and v2.
         multiply $counter 98
         divide $counter 100
         send $counter & "*"
@@ -1548,7 +1562,12 @@ pause
         killtrigger sellscrewup8 
         killtrigger sellscrewup9 
         killtrigger sellscrewup10 
-        add $midhaggles 1
+        killtrigger sellscrewup11 
+        killtrigger sellscrewup12
+        killtrigger sellscrewup13 
+        killtrigger sellscrewup14 
+	killtrigger sellscrewup15
+	 add $midhaggles 1
         setVar $old_offer $offer
         setVar $old_counter $counter
         getWord CURRENTLINE $offer 5
@@ -1589,7 +1608,13 @@ pause
         killtrigger sellscrewup7 
         killtrigger sellscrewup8 
         killtrigger sellscrewup9 
-        killtrigger sellscrewup10 
+        killtrigger sellscrewup10
+        killtrigger sellscrewup11 
+        killtrigger sellscrewup12
+        killtrigger sellscrewup13 
+        killtrigger sellscrewup14 
+	killtrigger sellscrewup15
+
         # ore -  51,  54,  56   so...  25000, make sure we get 1 mid
         # org -  94,  99, 102   so...  15000, make sure we get 1 mid...  25,000, make sure we get 2 mids
         # equ - 160, 166, 170   so...  12000, make sure we get 1 mid...  20,000, make sure we get 2 mids
@@ -1612,6 +1637,13 @@ pause
             setVar $forcefail 0
         end
         setSectorParameter $player~current_sector "MCIC" $mcic
+	if ($prodtosell = "ore")
+		setSectorParameter $player~current_sector "ORE-MCIC" $mcic
+	elseif ($prodtosell = "org")
+		setSectorParameter $player~current_sector "ORG-MCIC" $mcic
+	elseif ($prodtosell = "equ")
+		setSectorParameter $player~current_sector "EQU-MCIC" $mcic
+	end
 
         if ($forcefail = 0)
             setVar $old_offer $offer
@@ -1651,6 +1683,12 @@ pause
         killtrigger sellscrewup8 
         killtrigger sellscrewup9 
         killtrigger sellscrewup10 
+        killtrigger sellscrewup11 
+        killtrigger sellscrewup12
+        killtrigger sellscrewup13 
+        killtrigger sellscrewup14 
+	killtrigger sellscrewup15
+
         goto :sellhagglefailed
     :sellexperience
         killtrigger sellprice 
@@ -1667,6 +1705,11 @@ pause
         killtrigger sellscrewup8 
         killtrigger sellscrewup9 
         killtrigger sellscrewup10 
+        killtrigger sellscrewup11 
+        killtrigger sellscrewup12
+        killtrigger sellscrewup13 
+        killtrigger sellscrewup14 
+
         getWord CURRENTLINE $exp_bonus 7
         add $EXPERIENCE $exp_bonus
         goto :sellofferloop
@@ -1685,7 +1728,11 @@ pause
         killtrigger sellscrewup8 
         killtrigger sellscrewup9 
         killtrigger sellscrewup10 
-
+        killtrigger sellscrewup11 
+        killtrigger sellscrewup12
+        killtrigger sellscrewup13 
+        killtrigger sellscrewup14 
+	killtrigger sellscrewup15
         setVar $oldcredits $PLAYER~credits
         getWord CURRENTLINE $CREDITS 3
         stripText $CREDITS ","
