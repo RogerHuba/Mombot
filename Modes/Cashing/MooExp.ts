@@ -19,7 +19,7 @@ setVar $BOT~help[9]  $BOT~tab&"                to equipment"
 setVar $BOT~help[10]  $BOT~tab&"    {bad/all}    Clean bad/all planets post trading. default none."
 setVar $BOT~help[11]  $BOT~tab&"    {guard}       Ensures corp planet at SD to invoke Guardian"
 setVar $BOT~help[12]  $BOT~tab&"    {ephag}       Default is NEG but set to use EP Haggle"
-setVar $BOT~help[13]  $BOT~tab&"    {furb}       Safe Furb - Corp mate runs xmasfurb"
+setVar $BOT~help[13]  $BOT~tab&"    {furb}       Safe Furb - Corp mate runs moofurb"
 setVar $BOT~help[14] $BOT~tab&"    "
 setVar $BOT~help[15] $BOT~tab&"    Auto refurbs - requires fed safe if not using furb"
 setVar $BOT~help[16] $BOT~tab&"    Stores sectors to go back to when script reruns."
@@ -27,7 +27,7 @@ setVar $BOT~help[17] $BOT~tab&"    AUTOCLEANUP if planets above 90%"
 
 gosub :BOT~help_file
 
-setVar $BOT~script_title "Moo XMas - Lets bring on the festivities!"
+setVar $BOT~script_title "Moo Explorer - Lets bring on the festivities!"
 gosub :BOT~banner
 
 gosub :player~quikstats
@@ -53,20 +53,20 @@ if ($startingLocation <> "Command")
 end
 
 if (($player~TWARP_TYPE <> 1) and ($player~TWARP_TYPE <> 2))
-	setVar $SWITCHBOARD~message "MooXmas - Twarp = good, No Twarp = bad.*"
+	setVar $SWITCHBOARD~message "MooExp - Twarp = good, No Twarp = bad.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
 end
 
 if ($player~FIGHTERS < 301)
-	setVar $SWITCHBOARD~message "MooXmas - Need more than 300 figs, you'll hit debree and die!*"
+	setVar $SWITCHBOARD~message "MooExp - Need more than 300 figs, you'll hit debree and die!*"
 	gosub :SWITCHBOARD~switchboard
 	halt
 end
 
 
 if ($player~ORE_HOLDS < 100)
-	setVar $SWITCHBOARD~message "MooXmas - We need ore in our holds.*"
+	setVar $SWITCHBOARD~message "MooExp - We need ore in our holds.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
 end
@@ -577,7 +577,7 @@ return
 	gosub :player~quikstats
 
 	:pickupTryAgain
-	send "'XmasTime@ " $SWITCHBOARD~bot_name " " $player~SHIP_NUMBER " " CURRENTSECTOR "*"
+	send "'MooTime@ " $SWITCHBOARD~bot_name " " $player~SHIP_NUMBER " " CURRENTSECTOR "*"
 	
 	
 	setTextLineTrigger pickupok :pickupok "Roger, gifts on route"
