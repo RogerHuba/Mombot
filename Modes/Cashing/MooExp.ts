@@ -95,7 +95,6 @@ end
 # it will make up to this many planets in sector before blasting them
 # however will leave when port empty
 
-
 setVar $preferredPlanetSlot $bot~parm2
 isNumber $number $preferredPlanetSlot
 
@@ -268,18 +267,13 @@ setVar $FUEL_MIN_MOO 750
 setVar $ORGANICS_MIN_MOO 500
 setVar $EQUIPMENT_MIN_MOO 250
 
-setVar $planetToBang 0
 setVar $planetsInSector 0
 setVar $planets 0
 setVar $planeti 1
 
 
-
 # Trading Min - we'll stop using a port when we get here
 setVar $tradingMinProduct 40
-
-
-
 
 
 # NEED TO GET THIS FROM GAME  -THen ALLOW SAY 80% used by script
@@ -344,9 +338,6 @@ setArray $portBlocked SECTORS
 setArray $futureDestinations SECTORS
 setVar $futureDestsAdded 0
 setVar $futurePortsAdded 0
-
-# future use we might choose not to haggle - unlimitd turns?
-setVar $haggle 1
 
 
 fileExists $figlchk $mooExploredFile
@@ -1433,6 +1424,7 @@ halt
 		setTextLineTrigger checkSafeToBlowCit4 :checkSafeToBlowCit4 "Level 4"
 		setTextLineTrigger checkSafeToBlowCit5 :checkSafeToBlowCit5 "Level 5"
 		setTextLineTrigger checkSafeToBlowCit6 :checkSafeToBlowCit6 "Level 6"
+		setTextLineTrigger checkSafeToBlowCit7 :checkSafeToBlowCit7 "<<<< SHIELDED PLANET >>>>"
 		setTextTrigger checkSafeToBlowFinish :checkSafeToBlowFinish "Land on which planet"
 		pause
 
@@ -1442,10 +1434,14 @@ halt
 		:checkSafeToBlowCit4
 		:checkSafeToBlowCit5
 		:checkSafeToBlowCit6
+		
 			killalltriggers
 			setVar $safeToBlow 0
 			return
-
+		:checkSafeToBlowCit7
+			killalltriggers
+			setVar $safeToBlow 0
+			return
 		:checkSafeToBlowFinish
 		:checkSafeToBlowNoPlanet
 			killalltriggers
@@ -1459,7 +1455,6 @@ return
 
 
 
-	setVar $planetToBang 0
 	setVar $planetsInSector 0
 	setVar $planets 0
 	setVar $planeti 1
@@ -1822,6 +1817,7 @@ send "l" $shipBlastPlanet "*zdy *"
 	setVar $goodPlanet 0
 
 return
+
 :reCheckPlanets
 
 	if ($checkNewPlanet = 1)
@@ -2030,9 +2026,9 @@ echo "*### PLANET FOUND! WE COUNTED WRONG SOMEWHERE"
 		setVar $planet~_ck_pnego_orgtosell $tradeOrg
 		setVar $planet~_ck_pnego_equiptosell $tradeEquip
 		
-
+		gosub :player~quikstats
 		gosub :planet~planetNeg
-
+send "'" $planet~exit_message "*"
 		gosub :player~quikstats
 		stripText $player~credits ","
 		setVar $creditsNow $player~credits
