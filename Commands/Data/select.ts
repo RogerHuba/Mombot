@@ -7,12 +7,16 @@
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored | sector}"
-	setVar $BOT~help[2]   $BOT~tab&"     Searches TWX database for known info."
-	setVar $BOT~help[3]   $BOT~tab&"        "
-	setVar $BOT~help[4]   $BOT~tab&"     Example: >select traders bubble=false figsec=true "
+	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored "
+	setVar $BOT~help[2]   $BOT~tab&"       | ports}"
+	setVar $BOT~help[3]   $BOT~tab&"     Searches TWX database for known info."
+	setVar $BOT~help[4]   $BOT~tab&"      "
+	setVar $BOT~help[5]   $BOT~tab&"     {mark:PARAM} marks sectors PARAM=1 defult QUERY=1 "
+	setVar $BOT~help[6]   $BOT~tab&"     selectors = > < "
+	setVar $BOT~help[7]   $BOT~tab&"      "
+	setVar $BOT~help[8]   $BOT~tab&"     Example: >select traders bubble=false equ-mcic<-60 "
 
-	
+	# ham select ports ore-mcic<-70
 	gosub :BOT~help_file
 
 	#setVar $BOT~script_title "Select"
@@ -24,23 +28,66 @@
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 
 
+setVar $mark "QUERY"
 setvar $i 1
-setArray $sector_params 100 1
+
+# $sector_params param
+# $sector_params[1] true/false
+#
+setArray $sector_params 100 3
 setvar $sector_param_count 0
-while ($word <> "<>1<>2<>3<>")
-	getWord $bot~user_command_line $word $i "<>1<>2<>3<>"
-	getWordPos $word $pos "="
+while ($word <> "@@@###@@@")
+	getWord $bot~user_command_line $word $i "@@@###@@@"
+
+	getWordPos $word $pos "mark:"
 	if ($pos > 0)
-		add $sector_param_count 1
-		replaceText $word "=" " "
-		getWord $word $sector_params[$sector_param_count] 1
-		upperCase $sector_params[$sector_param_count]
-		getWord $word $sector_params[$sector_param_count][1] 2
-		if ($sector_params[$sector_param_count][1] = "true")
-			setvar $sector_params[$sector_param_count][1] 1
-		end
-		if ($sector_params[$sector_param_count][1] = "false")
-			setvar $sector_params[$sector_param_count][1] 0
+		replaceText $word "mark:" ""
+		setVar $mark $word
+		uppercase $mark
+	else
+		getWordPos $word $pos "="
+		if ($pos > 0)
+			add $sector_param_count 1
+			replaceText $word "=" " "
+			getWord $word $sector_params[$sector_param_count] 1
+			upperCase $sector_params[$sector_param_count]
+			getWord $word $sector_params[$sector_param_count][1] 2
+			if ($sector_params[$sector_param_count][1] = "true")
+				setvar $sector_params[$sector_param_count][1] 1
+			end
+			if ($sector_params[$sector_param_count][1] = "false")
+				setvar $sector_params[$sector_param_count][1] 0
+			end
+			setvar $sector_params[$sector_param_count][2] "="
+		else
+		
+			setVar $selectchar ""
+
+			getWordPos $word $pos ">"
+			if ($pos > 0)
+				setVar $selectchar ">"
+				replaceText $word ">" " "
+			else
+				getWordPos $word $pos "<"
+				if ($pos > 0)
+					setVar $selectchar "<"
+					replaceText $word "<" " "
+				else
+					getWordPos $word $pos "!"
+					if ($pos > 0)
+						setVar $selectchar "!"
+						replaceText $word "!" " "
+					end
+				end
+			end
+
+			if ($selectchar <> "")
+				add $sector_param_count 1
+				getWord $word $sector_params[$sector_param_count] 1
+				upperCase $sector_params[$sector_param_count]
+				getWord $word $sector_params[$sector_param_count][1] 2
+				setvar $sector_params[$sector_param_count][2] $selectchar
+			end
 		end
 	end
 	add $i 1
@@ -53,19 +100,47 @@ setvar $i 1
 while ($i <= SECTORS)    
 	setvar $j 1
 	setvar $skip false
+	
 	while (($j <= $sector_param_count) and ($skip <> true))
 		getSectorParameter $i $sector_params[$j] $value
-		if ($value = $sector_params[$j][1])
-			//possible candidate
-		else
-			if (($value = "") and ($sector_params[$j][1] = 0))
+		
+		if ($sector_params[$j][2] = "=")
+			
+			if ($value = $sector_params[$j][1])
 				//possible candidate
+			else
+				if (($value = "") and ($sector_params[$j][1] = 0))
+					//possible candidate
+				else
+					setvar $skip true
+				end
+			end
+		else
+			
+			if ($value <> "")
+				if ($sector_params[$j][2] = ">")
+					
+					if ($value > $sector_params[$j][1])
+						//possible candidate
+					else
+						setvar $skip true
+					end
+				elseif ($sector_params[$j][2] = "<")
+					
+					if ($value < $sector_params[$j][1])
+						//possible candidate
+					else
+						setvar $skip true
+					end
+				end
 			else
 				setvar $skip true
 			end
 		end
+		
 		add $j 1
 	end
+	
 	if ($skip <> true)
 		if (($bot~parm1 = "planet") or ($bot~parm1 = "planets"))
 			if (SECTOR.PLANETCOUNT[$i] <= 0)
@@ -102,10 +177,12 @@ while ($i <= SECTORS)
 										setvar $skip true
 									end
 								else
-									if (($bot~parm1 = "sector") or ($bot~parm1 = "sectors"))
-
+									if (($bot~parm1 = "port") or ($bot~parm1 = "ports"))
+										if (SECTOR.EXISTS[$i]= 1)
+											setvar $skip true
+										end
 									else
-										setVar $SWITCHBOARD~message $SWITCHBOARD~message&"You must select either sectors, planets, ships, unexplored, explored, anomoly, or traders.*"
+										setVar $SWITCHBOARD~message $SWITCHBOARD~message&"You must select either planets, ships, unexplored, explored, anomoly, or traders.*"
 										gosub :SWITCHBOARD~switchboard
 										halt
 									end
@@ -120,14 +197,14 @@ while ($i <= SECTORS)
 	if ($skip <> true)
 		add $count 1
 		getSectorParameter $i "FIGSEC" $isFigged
-		setSectorParameter $i "QUERY" TRUE
+		setSectorParameter $i $mark TRUE
 		if ($isFigged = true)
 			setvar $results $results&"["&$i&"] "
 		else
 			setvar $results $results&$i&" "
 		end
 	else
-		setSectorParameter $i "QUERY" ""
+		setSectorParameter $i $mark ""
 	end
 	add $i 1
 end
