@@ -702,24 +702,41 @@ return
                     setVar $temp $HELP_ARRAY[$i]
                     getLength $temp $length
                     setVar $isTooLong FALSE
-                    while ($length > 70)
-                        setVar $isTooLong TRUE
-                        cutText $temp $temp 71 ($length-70)
-                        getLength $temp $length
+                    setvar $next_line ""
+                    if (($SWITCHBOARD~self_command = true) or ($BOT~silent_running = TRUE))
+                        while ($length > 75)
+                            setVar $isTooLong TRUE
+                            cutText $temp $next_line 76 ($length-75)
+                            cutText $temp $HELP_ARRAY[$i] 1 75
+                            getLength $next_line $length
+                        end
+                        setvar $line $HELP_ARRAY[$i]
+                        gosub :format_help_line
+                        setvar $HELP_ARRAY[$i] $line
+                        if ($next_line <> "")
+                            setVar $line $next_line 
+                            gosub :format_help_line
+                            setvar $next_line $line
+                        end
+
                     end
-                    setVar $helpOutput $helpOutput&$HELP_ARRAY[$i]
+                    setVar $helpOutput $helpOutput&$HELP_ARRAY[$i]&"*"
+                    if ($next_line <> "")
+                        setVar $helpOutput $helpOutput&""&$next_line&"*"
+                    end
                     if ($length <= 1)
                         setVar $helpOutput $helpOutput&"  "
                     end
-                    setVar $helpOutput $helpOutput&"*"
+                    #setVar $helpOutput "   "&$helpOutput&"*"
                     add $i 1
                 end
-                setVar $helpOutput "  *"&"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"&$helpOutput&"  *     *-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"
-
-                setVar $SWITCHBOARD~message $helpOutput
+                
                 if (($SWITCHBOARD~self_command = true) or ($BOT~silent_running = TRUE))
+                    setVar $helpOutput "  *"&ansi_14&"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*  *"&ansi_15&$helpOutput&ansi_14&"  *     *-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"&ansi_15
+                    setVar $SWITCHBOARD~message $helpOutput
                     gosub :SWITCHBOARD~switchboard
                 else
+                    setVar $helpOutput "  *"&"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"&$helpOutput&"  *     *-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"
                     send "'*{"&$SWITCHBOARD~bot_name&"} - *"&$helpOutput&"*"
                 end
             else
@@ -934,3 +951,17 @@ return
     end
 return
 # ============================== BOT SECURITY ==============================
+
+:format_help_line
+
+    replaceText $line "[" ansi_2&"["&ansi_6
+    replaceText $line "]" ansi_2&"]"&ansi_13
+    replaceText $line "-" ansi_7&"-"&ansi_13
+    replaceText $line "<<<<" ansi_14&"<"&ansi_7&"<"&ansi_14&"<"&ansi_7&"<"&ansi_15
+    replaceText $line ">>>>" ansi_7&">"&ansi_14&">"&ansi_7&">"&ansi_14&">"
+    replaceText $line "{" ansi_2&"{"&ansi_6
+    replaceText $line "}" ansi_2&"}"&ansi_13
+    replaceText $line "Options:" ansi_6&"Options"&ansi_2&":"&ansi_13
+    setvar $line ansi_13&$line&ansi_15
+
+return
