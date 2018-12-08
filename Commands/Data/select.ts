@@ -129,7 +129,7 @@ while ($word <> "@@@###@@@")
 end
 
 
-setVar $results "Displaying results for: select "&$original_query&"* *"
+setVar $results ""
 setvar $count 0
 setvar $i 1
 while ($i <= SECTORS)    
@@ -343,7 +343,11 @@ if ($SWITCHBOARD~self_command <> TRUE) or ($bot~silent_running <> TRUE)
     setVar $SWITCHBOARD~self_command 2
 end
 
-setVar $SWITCHBOARD~message $results&"* *Your query returned "&$count&" results.*All result sectors are now marked with QUERY sector parameter.*You can also display individual results with the sector bot command.*"
+if ($count > 1000)
+	setVar $SWITCHBOARD~message "Displaying results for: select "&$original_query&"* *Your query returned "&$count&" results.*This is too many to display on subspace. *If you'd like to narrow your search, add more parameters.*All result sectors are now marked with QUERY sector parameter.*You can also display individual results with the sector bot command.*"
+else
+	setVar $SWITCHBOARD~message $results&"* *Your query returned "&$count&" results.*All result sectors are now marked with QUERY sector parameter.*You can also display individual results with the sector bot command.*"
+end
 gosub :SWITCHBOARD~switchboard
 
 halt
