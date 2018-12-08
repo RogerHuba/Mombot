@@ -36,6 +36,21 @@ setvar $i 1
 #
 setArray $sector_params 100 3
 setvar $sector_param_count 0
+
+getWordPos $bot~user_command_line $pos #34
+if ($pos > 0)
+	getText $bot~user_command_line $like " "&#34 #34
+	if ($like <> "")
+		#remove like statement from command line
+		stripText $bot~user_command_line #34&$like&#34
+		stripText $bot~user_command_line " like "
+	end
+	#echo "**[Like statement found]["&$like&"]**"
+else
+	setVar $like ""
+end
+
+
 while ($word <> "@@@###@@@")
 	getWord $bot~user_command_line $word $i "@@@###@@@"
 
@@ -145,17 +160,68 @@ while ($i <= SECTORS)
 		if (($bot~parm1 = "planet") or ($bot~parm1 = "planets"))
 			if (SECTOR.PLANETCOUNT[$i] <= 0)
 				setvar $skip true
+			else
+				if ($like <> "")
+					setvar $j 1
+					setvar $isFound false
+					while (($j <= SECTOR.PLANETCOUNT[$i]) and ($isFound <> true))
+						setvar $temp SECTOR.PLANETS[$i][$j]
+						lowercase $temp
+						getwordpos $temp $pos $like
+						if ($pos > 0)
+							setvar $isFound true
+						end
+						add $j 1
+					end
+					if ($isFound <> true)
+						setvar $skip true
+					end
+				end
 			end
 		else
 			if (($bot~parm1 = "trader") or ($bot~parm1 = "traders"))
 				if (SECTOR.TRADERCOUNT[$i] <= 0)
 					setvar $skip true
+				else
+					if ($like <> "")
+						setvar $j 1
+						setvar $isFound false
+						while (($j <= SECTOR.TRADERCOUNT[$i]) and ($isFound <> true))
+							setvar $temp SECTOR.TRADERS[$i][$j]
+							lowercase $temp
+							getwordpos $temp $pos $like
+							if ($pos > 0)
+								setvar $isFound true
+							end
+							add $j 1
+						end
+						if ($isFound <> true)
+							setvar $skip true
+						end
+					end
 				end
 			else
 				if (($bot~parm1 = "ship") or ($bot~parm1 = "ships"))
 					if (SECTOR.SHIPCOUNT[$i] <= 0)
 						setvar $skip true
-					end 
+					else 
+						if ($like <> "")
+							setvar $j 1
+							setvar $isFound false
+							while (($j <= SECTOR.SHIPCOUNT[$i]) and ($isFound <> true))
+								setvar $temp SECTOR.SHIPS[$i][$j]
+								lowercase $temp
+								getwordpos $temp $pos $like
+								if ($pos > 0)
+									setvar $isFound true
+								end
+								add $j 1
+							end
+							if ($isFound <> true)
+								setvar $skip true
+							end
+						end
+					end
 				else
 					if (($bot~parm1 = "unexplore") or ($bot~parm1 = "unexplored"))
 						if (SECTOR.EXPLORED[$i] = "YES")
@@ -175,11 +241,48 @@ while ($i <= SECTORS)
 								if (($bot~parm1 = "trader") or ($bot~parm1 = "traders"))
 									if ((SECTOR.SHIPCOUNT[$i] <= 0) and (SECTOR.TRADERCOUNT <= 0))
 										setvar $skip true
+									else
+
+										if ($like <> "")
+											setvar $j 1
+											setvar $isFound false
+											while (($j <= SECTOR.TRADERCOUNT[$i]) and ($isFound <> true))
+												setvar $temp SECTOR.TRADERS[$i][$j]
+												lowercase $temp
+												getwordpos $temp $pos $like
+												if ($pos > 0)
+													setvar $isFound true
+												end
+												add $j 1
+											end
+											setvar $j 1
+											while (($j <= SECTOR.SHIPCOUNT[$i]) and ($isFound <> true))
+												setvar $temp SECTOR.SHIPS[$i][$j]
+												lowercase $temp
+												getwordpos $temp $pos $like
+												if ($pos > 0)
+													setvar $isFound true
+												end
+												add $j 1
+											end
+											if ($isFound <> true)
+												setvar $skip true
+											end
+										end
 									end
 								else
 									if (($bot~parm1 = "port") or ($bot~parm1 = "ports"))
-										if (SECTOR.EXISTS[$i]= 1)
+										if (PORT.EXISTS[$i]= 1)
 											setvar $skip true
+										else
+											if ($like <> "")
+												setvar $temp PORT.NAME[$i]
+												lowercase $temp
+												getwordpos $temp $pos $like
+												if ($pos <= 0)
+													setvar $skip true
+												end
+											end
 										end
 									else
 										setVar $SWITCHBOARD~message $SWITCHBOARD~message&"You must select either planets, ships, unexplored, explored, anomoly, or traders.*"
