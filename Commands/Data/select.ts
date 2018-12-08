@@ -299,16 +299,16 @@ while ($i <= SECTORS)
 												if ($portClassOk[PORT.CLASS[$i]] = 0)
 													setvar $skip true
 												end
-											else
-												if ($like <> "")
-													setvar $temp PORT.NAME[$i]
-													lowercase $temp
-													getwordpos $temp $pos $like
-													if ($pos <= 0)
-														setvar $skip true
-													end
+											end
+											if (($like <> "") and ($skip <> true))
+												setvar $temp PORT.NAME[$i]
+												lowercase $temp
+												getwordpos $temp $pos $like
+												if ($pos <= 0)
+													setvar $skip true
 												end
 											end
+										
 										end
 									else
 										setVar $SWITCHBOARD~message $SWITCHBOARD~message&"You must select either planets, ships, unexplored, explored, anomoly, ports, or traders.*"
