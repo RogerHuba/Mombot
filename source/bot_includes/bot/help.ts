@@ -189,8 +189,8 @@ return
 
 :get_hint_tips
 
-    setArray $hints 9
-    setvar $hints 9
+    setArray $hints 11
+    setvar $hints 11
     setvar $hints[1] "You can run most commands silently by adding a 'silent' parameter*  to any command line.*  There is also a silent option in the bot preference menu to*  keep things quiet on the ss channel."
     setvar $hints[2] "There are different surround options in the bot menu.*  Press tab-~ to see them. TAB-s will surround."
     setvar $hints[3] "There are variables you can use in the command line as shortcuts:*    h - home sector*    r - rylos*    a - alpha centauri*    b - backdoor to stardock*    s - stardock*    x - safe ship*    l - safe planet*  *  If you place these into any script, the letter will be replaced*  with a sector number for each.*  *  (Except the safe ship, that will be replaced with the ship number.)"
@@ -200,7 +200,8 @@ return
     setvar $hints[7] "Don't forget the gridding menu!  Just press > >.*  The photon menu is one more >."
     setvar $hints[8] "Always add new alien ships to your bot by using the storeship command.*  That will make capturing them easier."
     setvar $hints[9] "Your bot will grab the planet number of the planet you are landing on.*  If you want to reland, just use the l command.  No number required!"
-
+    setvar $hints[10] "Need to restart a bot?  Try the 'reboot' command.*  It will kill your current bot and reload a new one."
+    setvar $hints[11] "If your bot doesn't seem to have the correct game info, try using*  the 'refresh' command."
     getRnd $selected_hint 1 $hints
     setvar $hint_tip $hints[$selected_hint]
 
