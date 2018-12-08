@@ -8,14 +8,17 @@
 	loadvar $switchboard~self_command
 
 	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored "
-	setVar $BOT~help[2]   $BOT~tab&"       | ports}"
-	setVar $BOT~help[3]   $BOT~tab&"     Searches TWX database for known info."
-	setVar $BOT~help[4]   $BOT~tab&"      "
-	setVar $BOT~help[5]   $BOT~tab&"     {mark:PARAM} marks sectors PARAM=1 defult QUERY=1 "
-	setVar $BOT~help[6]   $BOT~tab&"     selectors = > < "
-	setVar $BOT~help[7]   $BOT~tab&"      "
-	setVar $BOT~help[8]   $BOT~tab&"     Example: >select traders bubble=false equ-mcic<-60 "
-
+	setVar $BOT~help[2]   $BOT~tab&"       | ports} {BBB | XXB | SSX etc} {mark:PARAM}"
+	setVar $BOT~help[3]   $BOT~tab&"     "
+	setVar $BOT~help[4]   $BOT~tab&"     Searches TWX database for known info."
+	setVar $BOT~help[5]   $BOT~tab&"      "
+	setVar $BOT~help[6]   $BOT~tab&"     {mark:PARAM}  marks sectors PARAM=1 defult QUERY=1 "
+	setVar $BOT~help[7]   $BOT~tab&"                   selectors = > < like"
+	setVar $BOT~help[8]   $BOT~tab&"     {BBB | SSX}   match PORTS query to this pattern"
+	setVar $BOT~help[9]   $BOT~tab&"                   X is wildcard."
+	setVar $BOT~help[10]   $BOT~tab&"      "
+	setVar $BOT~help[11]   $BOT~tab&"     Example: >select traders bubble=false equ-mcic<-60 "
+	setVar $BOT~help[12]   $BOT~tab&"              >select planet like "&#34&"<<<< (a)"&#34
 	# ham select ports ore-mcic<-70
 	gosub :BOT~help_file
 
@@ -29,6 +32,10 @@
 
 
 setVar $mark "QUERY"
+setVar $portClassOk 8
+setVar $portClassWanted 0
+
+
 setvar $i 1
 
 # $sector_params param
@@ -37,10 +44,12 @@ setvar $i 1
 setArray $sector_params 100 3
 setvar $sector_param_count 0
 
+setvar $original_query $bot~user_command_line
 getWordPos $bot~user_command_line $pos #34
 if ($pos > 0)
 	getText $bot~user_command_line $like " "&#34 #34
 	if ($like <> "")
+
 		#remove like statement from command line
 		stripText $bot~user_command_line #34&$like&#34
 		stripText $bot~user_command_line " like "
@@ -53,6 +62,15 @@ end
 
 while ($word <> "@@@###@@@")
 	getWord $bot~user_command_line $word $i "@@@###@@@"
+	
+	getLength $word $l
+	if ($l = 3)
+		setVar $portReqF 0
+		goSub :checkPortRequirements
+		if ($portReqF = 1)
+			goto :nextWord
+		end
+	end
 
 	getWordPos $word $pos "mark:"
 	if ($pos > 0)
@@ -60,6 +78,7 @@ while ($word <> "@@@###@@@")
 		setVar $mark $word
 		uppercase $mark
 	else
+		
 		getWordPos $word $pos "="
 		if ($pos > 0)
 			add $sector_param_count 1
@@ -105,11 +124,12 @@ while ($word <> "@@@###@@@")
 			end
 		end
 	end
+	:nextWord
 	add $i 1
 end
 
 
-setVar $results "Displaying results for: select "&$bot~user_command_line&"* *"
+setVar $results "Displaying results for: select "&$original_query&"* *"
 setvar $count 0
 setvar $i 1
 while ($i <= SECTORS)    
@@ -272,20 +292,26 @@ while ($i <= SECTORS)
 									end
 								else
 									if (($bot~parm1 = "port") or ($bot~parm1 = "ports"))
-										if (PORT.EXISTS[$i]= 1)
+										if (PORT.EXISTS[$i] <> 1)
 											setvar $skip true
 										else
-											if ($like <> "")
-												setvar $temp PORT.NAME[$i]
-												lowercase $temp
-												getwordpos $temp $pos $like
-												if ($pos <= 0)
+											if ($portClassWanted = 1)
+												if ($portClassOk[PORT.CLASS[$i]] = 0)
 													setvar $skip true
+												else
+													if ($like <> "")
+														setvar $temp PORT.NAME[$i]
+														lowercase $temp
+														getwordpos $temp $pos $like
+														if ($pos <= 0)
+															setvar $skip true
+														end
+													end
 												end
 											end
 										end
 									else
-										setVar $SWITCHBOARD~message $SWITCHBOARD~message&"You must select either planets, ships, unexplored, explored, anomoly, or traders.*"
+										setVar $SWITCHBOARD~message $SWITCHBOARD~message&"You must select either planets, ships, unexplored, explored, anomoly, ports, or traders.*"
 										gosub :SWITCHBOARD~switchboard
 										halt
 									end
@@ -358,6 +384,80 @@ halt
 
 halt
 
+:checkPortRequirements
+
+	# Mark them all ok, and we'll rule them out
+	setVar $i 1
+	while ($i <= 8)
+		setVar $portClassOk[$i] 1
+		add $i 1
+	end
+
+	setVar $tword $word
+	uppercase $tword
+	cutText $tword $f 1 1
+	cutText $tword $o 2 1
+	cutText $tword $e 3 1
+	if (($f = "B") or ($f = "S") or ($f = "X"))
+		if (($o = "B") or ($o = "S") or ($o = "X"))
+			if (($e = "B") or ($e = "S") or ($e = "X"))
+				setVar $portClassWanted 1
+			end
+		end
+	end
+	if ($portClassWanted = 0)
+		return
+	end
+	# 0 - zzz
+	# 1 - BBS
+	# 2 - BSB
+	# 3 - SBB
+	# 4 - SSB
+	# 5 - SBS
+	# 6 - BSS
+	# 7 - SSS
+	# 8 - BBB
+
+	if ($f = "B")
+		setVar $portClassOk[3] 0
+		setVar $portClassOk[4] 0
+		setVar $portClassOk[5] 0
+		setVar $portClassOk[7] 0
+	elseif ($f = "S")
+		setVar $portClassOk[1] 0
+		setVar $portClassOk[2] 0
+		setVar $portClassOk[6] 0
+		setVar $portClassOk[8] 0
+	end
+		
+	if ($o = "B")
+		setVar $portClassOk[2] 0
+		setVar $portClassOk[4] 0
+		setVar $portClassOk[6] 0
+		setVar $portClassOk[7] 0
+	elseif ($o = "S")
+		setVar $portClassOk[1] 0
+		setVar $portClassOk[3] 0
+		setVar $portClassOk[5] 0
+		setVar $portClassOk[8] 0
+	end
+			
+			
+	if ($e = "B")
+		setVar $portClassOk[1] 0
+		setVar $portClassOk[5] 0
+		setVar $portClassOk[6] 0
+		setVar $portClassOk[7] 0
+	elseif ($e = "S")
+		setVar $portClassOk[2] 0
+		setVar $portClassOk[3] 0
+		setVar $portClassOk[4] 0
+		setVar $portClassOk[8] 0
+	
+	end
+	setVar $portReqF 1
+
+return
 
 
 #INCLUDES:
