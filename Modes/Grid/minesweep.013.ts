@@ -52,9 +52,12 @@
 	setVar $BOT~help[7]  $BOT~tab&"[safe]    - Will do repeated Exit/Enters until all Enemy"
 	setVar $BOT~help[8]  $BOT~tab&"            mines are gone slow but safe"
 	setVar $BOT~help[9]  $BOT~tab&"[fast]    - Will do a rapid fire of exit enters, this isn't"
-	setVar $BOT~help[10] $BOT~tab&"            safe as you'll will ne sitting in sector."
+	setVar $BOT~help[10] $BOT~tab&"            safe as you'll will be sitting in sector."
 	setVar $BOT~help[11] $BOT~tab&"[A:1]     - Specify Number of Armid Mines to Deploy"
 	setVar $BOT~help[12] $BOT~tab&"[L:1]     - Specify Number of Limpet Mines to Deploy"
+	setVar $BOT~help[13] $BOT~tab&"[ps]      - Do passive surround to grid safely"
+	setVar $BOT~help[14] $BOT~tab&"            Limps, Armids, Fig, and planet avoidance "
+	setVar $BOT~help[15] $BOT~tab&"            controlled by bot surround menu"
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Mine Sweeper"
@@ -103,6 +106,13 @@
 		setVar $REFURB FALSE
 	else
 		setVar $REFURB TRUE
+	end
+
+	getWordPos $TEMP $pos " ps "
+	if ($pos = 0)
+		setVar $passive_surround FALSE
+	else
+		setVar $passive_surround TRUE
 	end
 
 	getWordPos $TEMP $pos " disr "
@@ -239,6 +249,9 @@
 	else
 		send $S & " - Targeting Safe Sectors!*"
 	end
+	if ($passive_surround)
+		send $S & " - Doing passive surround if possible!*"
+	end
 	send $S & " - Deploying: " & $grid_armids & " Armids, " & $grid_limpets & " Limpets*"
 	send "*"
 		
@@ -304,6 +317,35 @@
 					waiton "Message sent on sub-space channel"
 			halt
 		end
+		if ($passive_surround)
+			setvar $PLAYER~surroundOverwrite FALSE
+			setVar $PLAYER~surroundPassive   TRUE
+			savevar $PLAYER~surroundOverwrite
+			savevar $PLAYER~surroundPassive
+
+			loadvar $PLAYER~surroundFigs
+			loadvar $PLAYER~surroundMine
+			loadvar $PLAYER~surroundLimp
+			loadVar $PLAYER~surroundAvoidAllPlanets 
+			loadVar $PLAYER~surroundAvoidShieldedOnly
+			
+			send "q q szh* s*/ "
+
+
+			gosub :PLAYER~surround
+			setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $PLANET~PLANET & "*  * j m  * * *  t * t 1* c * "
+			send $land_mac
+
+			getWordPos $PLAYER~surroundOutput $pos "planet"
+			if ($pos > 0)
+				setVar $SWITCHBOARD~message $PLAYER~surroundOutput 
+				if ($SWITCHBOARD~self_command <> TRUE)
+					setVar $SWITCHBOARD~self_command 2
+				end
+				gosub :SWITCHBOARD~switchboard
+			end
+		end
+	
 	end
 	halt
 :checkShip

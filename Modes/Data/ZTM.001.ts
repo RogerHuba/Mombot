@@ -98,7 +98,7 @@ setVar $location $PLAYER~CURRENT_PROMPT
     if ($passescompare = "Oneways")
         setVar $passescompare "6"
     end
-    #setVar $pass $resumepass
+    setVar $pass $resumepass
     # initend should be = SECTORS
     setVar $initend SECTORS
     setVar $end $initend

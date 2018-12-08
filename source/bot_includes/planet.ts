@@ -610,15 +610,31 @@ pause
         write $output_file $generalOutput
 
         if ($oreselloutput <> "")
-            send $oreselloutput
+            #send $oreselloutput
+            setVar $SWITCHBOARD~message "  *"&$oreselloutput
+            if ($SWITCHBOARD~self_command <> TRUE)
+                setVar $SWITCHBOARD~self_command 2
+            end
+            gosub :SWITCHBOARD~switchboard
+
             write $output_file $oreselloutput
         end
         if ($orgselloutput <> "")
-            send $orgselloutput
+            #send $orgselloutput
+            setVar $SWITCHBOARD~message "  *"&$orgselloutput
+            if ($SWITCHBOARD~self_command <> TRUE)
+                setVar $SWITCHBOARD~self_command 2
+            end
+            gosub :SWITCHBOARD~switchboard
             write $output_file $orgselloutput
         end
         if ($equselloutput <> "")
-            send $equselloutput
+            #send $equselloutput
+            setVar $SWITCHBOARD~message "  *"&$equselloutput
+            if ($SWITCHBOARD~self_command <> TRUE)
+                setVar $SWITCHBOARD~self_command 2
+            end
+            gosub :SWITCHBOARD~switchboard
             write $output_file $equselloutput
         end
         setVar $exit_message "Done with port"
@@ -851,7 +867,7 @@ pause
         end
 
         if ($percentfrombase = 100)
-            echo "* 100% port*"
+            #echo "* 100% port*"
             # return to 10 scale
             divide $portmaxinit 10
 
@@ -1763,7 +1779,8 @@ pause
         setVar $perunit $counter
         divide $perunit $portbuying
 
-        setVar $selloutput "'"
+        #setVar $selloutput "'"
+        setVar $selloutput ""
         setVar $selloutput $selloutput & $portbuying & " " & $prodtosell & " for " & $counter & " cr"
         setVar $selloutput $selloutput & " - "
         if ($prodtosell = "ore")
