@@ -42,8 +42,8 @@
 	
 	setVar $BOT~help[1]  $BOT~tab&"       LS Passive Gridder - Still the best "
 	setVar $BOT~help[2]  $BOT~tab&"       "
-	setVar $BOT~help[3]  $BOT~tab&" lspassgrid [stopturns] {a1/a2/a3} {l1/l2/l3} {ports} {holo}  "
-	setVar $BOT~help[4]  $BOT~tab&" "
+	setVar $BOT~help[3]  $BOT~tab&" lspassgrid [stopturns] {a1/a2/a3} {l1/l2/l3} {ports} {holo}"
+	setVar $BOT~help[4]  $BOT~tab&"                          "
 	setVar $BOT~help[5]  $BOT~tab&" Options:"
 	setVar $BOT~help[6]  $BOT~tab&"    [stopturns]     Passive Grid Stops at here"
 	setVar $BOT~help[7]  $BOT~tab&"	   {a1/a2/a3}      Drop 1/2/3 Armid Mines"

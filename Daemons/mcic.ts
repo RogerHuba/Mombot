@@ -162,6 +162,7 @@ while ($count <= SECTORS)
 		end
 		if ($MCIC < 1)
 			setsectorparameter $sector "MCIC" $MCIC
+			setSectorParameter $sector "EQU-MCIC" $MCIC
 		else
 			add $notAdded 1
 		end
@@ -248,6 +249,7 @@ else
 	setVar $portType $portType & "S"
 end
 setsectorparameter CURRENTSECTOR "MCIC" $MCIC
+setSectorParameter CURRENTSECTOR "EQU-MCIC" $MCIC
 echo ANSI_10 "*" CURRENTSECTOR & " (" & $portType & ") - " & $haggletype & " - MCIC approx " & $MCIC & "*"
 goto :start
 

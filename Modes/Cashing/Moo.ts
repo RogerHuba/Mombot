@@ -484,10 +484,10 @@ setVar $loopi 1
 	if ($dumpCashOnPlanet > 0)
 		gosub :player~quikstats
 		if ($player~CREDITS > $dumpCashOnPlanet)
-		    send "m" $cashDumpSector "*y"
-		    waitfor "All Systems Ready, shall we engage?"
-		    send "y"
-		    waitfor "TransWarp Drive Engaged!"
+		   
+		    setVar $player~warpto $cashDumpSector
+		    gosub :player~twarp
+		   
 		    send "l" & $cashDumpPlanet&"* t n t 1 * C"
 		    send "TT"
 		    waitfor "credits, and the Treasury"
@@ -1014,10 +1014,10 @@ return
 	setVar $returnSpot CURRENTSECTOR
 
 	if ($player~FIGHTERS < $safeFighters)
-		send "m" $cashDumpSector "*y"
-		waitfor "All Systems Ready, shall we engage?"
-		send "y"
-		waitfor "TransWarp Drive Engaged!"
+		
+		setVar $player~warpto $cashDumpSector
+		gosub :player~twarp
+
 		send "l" & $cashDumpPlanet&"*mnt*tnt1*q"
 		
 		waitfor "Blasting off from"
