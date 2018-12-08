@@ -14,20 +14,12 @@ gosub :BOT~loadVars
 	setVar $BOT~help[11] $BOT~tab&"    {p:x}         When either product hits this % it will stop "
 	setVar $BOT~help[12] $BOT~tab&"                   - Defaults to 30% (p:30)"
 	setVar $BOT~help[13] $BOT~tab&"    {k:x}         k:5 - Keep this many holds of equipment at end of run. "
-	setVar $BOT~help[14] $BOT~tab&"                   Used so we can test port MCICs as we travel."
+	setVar $BOT~help[14] $BOT~tab&"                   Used so we can test port MCICs as we travel"
 	
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Paired Port Trade"
 	gosub :BOT~banner
-
-
-# We need min percentages
-# We need haggle option
-# PPT hag 50
-
-#setVar $PLAYER~moveIntoSector SECTOR.WARPS[CURRENTSECTOR][$sector]
-#gosub :PLAYER~moveIntoSector	
 	
 	
 	# 0 means we keep none
