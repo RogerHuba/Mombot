@@ -298,14 +298,14 @@ while ($i <= SECTORS)
 											if ($portClassWanted = 1)
 												if ($portClassOk[PORT.CLASS[$i]] = 0)
 													setvar $skip true
-												else
-													if ($like <> "")
-														setvar $temp PORT.NAME[$i]
-														lowercase $temp
-														getwordpos $temp $pos $like
-														if ($pos <= 0)
-															setvar $skip true
-														end
+												end
+											else
+												if ($like <> "")
+													setvar $temp PORT.NAME[$i]
+													lowercase $temp
+													getwordpos $temp $pos $like
+													if ($pos <= 0)
+														setvar $skip true
 													end
 												end
 											end
