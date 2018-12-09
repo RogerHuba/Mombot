@@ -1,51 +1,79 @@
-loadVar $bot_name
-loadVar $user_command_line
-loadVar $parm1
-loadVar $parm2
-loadVar $parm3
-loadVar $parm4
-loadVar $parm5
-loadVar $parm6
-loadVar $parm7
-loadVar $parm8
+	reqRecording
+	gosub :BOT~loadVars
+	setVar $BOT~command "ldrop"
+	loadVar $BOT~bot_turn_limit
+	loadVar $MAP~stardock
+	loadvar $bot~subspace
+	loadvar $switchboard~self_command
+
+	setVar $BOT~help[1]   $BOT~tab&"ldrop [delay] {kill} {direct} {return} "
+	setVar $BOT~help[2]   $BOT~tab&"       "
+	setVar $BOT~help[3]   $BOT~tab&"     {kill} - attempts to kill after drop "
+	setVar $BOT~help[4]   $BOT~tab&"   {direct} - try to drop directly into the limp sector"
+	setVar $BOT~help[5]   $BOT~tab&"   {return} - after drop, return to starting sector "
+	setVar $BOT~help[6]   $BOT~tab&"              and scan again"
+	setVar $BOT~help[7]   $BOT~tab&"    {delay} - how many milliseconds to wait before drop"
+	gosub :BOT~help_file
+
+	setVar $BOT~script_title "Limpet Dropper"
+	gosub :BOT~banner
+
+	setVar $PLAYER~save TRUE
+
+
+	getSectorParameter SECTORS "FIGSEC" $isFigged
+
+
+
 setArray $dropSector 1000
 
 
 
-getWordPos $user_command_line $pos "direct"
+getWordPos $bot~user_command_line $pos "direct"
 if ($pos > 0)
 	setVar $direct TRUE
 else
 	setVar $direct FALSE
 end
+getWordPos $bot~user_command_line $pos "kill"
+if ($pos > 0)
+	setVar $kill TRUE
+else
+	setVar $kill FALSE
+end
+getWordPos $bot~user_command_line $pos "return"
+if ($pos > 0)
+	setVar $return TRUE
+else
+	setVar $return FALSE
+end
+
+isNumber $test $bot~parm1
+if ($test = TRUE)
+	setVar $delay $bot~parm1
+else
+	setVar $delay 0
+end
 		
 # ======================     START LIMP DROPPER (LDROP) SUBROUTINE    ==========================
 :ldrop_start
-	isNumber $test $parm1
-	if ($test = TRUE)
-		setVar $delay $parm1
-	else
-		setVar $delay 0
-	end
-	gosub :quikstats~quikstats
-	setVar $startingLocation $quikstats~CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~CURRENT_PROMPT
 	if ($startingLocation <> "Citadel")
-		send "'{" $bot_name "} - Must start from Citadel*"
+		setVar $SWITCHBOARD~message "Must start from Citadel.*"
+		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 	send "q"
-	gosub :planetinfo~getPlanetInfo
+	gosub :planet~getPlanetInfo
 	send "q"
-	getWordPos $user_command_line $pos "kill"
-	if ($pos > 0)
-		setVar $kill TRUE
-		setVar $targeting~PLANET $planetinfo~PLANET
+	
+	if ($kill)
+		setVar $targeting~PLANET $planet~PLANET
 		gosub :targeting~initialize_targeting
-	else
-		setVar $kill FALSE
 	end
 	
-	setvar $home $quikstats~CURRENT_SECTOR
+	setvar $home $player~CURRENT_SECTOR
 
 	:ldrop_re_scan
 		setvar $i 0
@@ -118,14 +146,15 @@ end
 			pause
 		end
 	:go_go_go
-		send "l "&$planetinfo~PLANET&"* cp "&$adjsec&"*y"
+		send "l "&$planet~PLANET&"* cp "&$adjsec&"*y"
 		settextlinetrigger no_fig :ldrop_no_fig "Your own fighters must be in the destination"
 		settextlinetrigger in_sector :ldrop_in_sector "-=-=-=- Planetary TransWarp Drive Engaged! -=-=-=-"
 		pause
 
 	:ldrop_no_fig
 		killtrigger in_sector
-		send "'{" $bot_name "} - No Adjacent fig in drop sector*"
+		setVar $SWITCHBOARD~message "No Adjacent fig in drop sector.*"
+		gosub :SWITCHBOARD~switchboard
 		goto :ldrop_scan
 
 	:ldrop_in_sector
@@ -134,6 +163,9 @@ end
 			gosub :targeting~scanit_cit_kill
 		else
 			send "s* "
+		end
+		if ($return)
+			goto :ldrop_return_home
 		end
 		halt
 
@@ -159,9 +191,12 @@ end
 # ======================     END LIMP DROPPER (LDROP) SUBROUTINE    ==========================
 
 
-
-
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\quikstats"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\planetinfo"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\targeting"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\shipstats"
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"
+include "source\bot_includes\targeting"
