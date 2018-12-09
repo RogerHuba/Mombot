@@ -16,7 +16,7 @@
 	setVar $BOT~help[7]   $BOT~tab&"                   selectors = > < like"
 	setVar $BOT~help[8]   $BOT~tab&"     {BBB | SSX}   match PORTS query to this pattern"
 	setVar $BOT~help[9]   $BOT~tab&"                   X is wildcard."
-	setVar $BOT~help[10]   $BOT~tab&"      "
+	setVar $BOT~help[10]   $BOT~tab&"    {secure | paranoid}  "
 	setVar $BOT~help[11]   $BOT~tab&"     Example: >select traders bubble=false equ-mcic<-60 "
 	setVar $BOT~help[12]   $BOT~tab&"              >select planet like "&#34&"<<<< (a)"&#34
 	# ham select ports ore-mcic<-70
@@ -34,7 +34,8 @@
 setVar $mark "QUERY"
 setVar $portClassOk 8
 setVar $portClassWanted 0
-
+#final filter of search results 0 - none, 1 - secure (figs surrounded) 2- PAranoid (Figs + Limps)
+setVar $securityLevel 0
 
 setvar $i 1
 
@@ -63,6 +64,7 @@ end
 while ($word <> "@@@###@@@")
 	getWord $bot~user_command_line $word $i "@@@###@@@"
 	
+
 	getLength $word $l
 	if ($l = 3)
 		setVar $portReqF 0
@@ -70,6 +72,12 @@ while ($word <> "@@@###@@@")
 		if ($portReqF = 1)
 			goto :nextWord
 		end
+	elseif ($word = "secure")
+		setVar $securityLevel 1
+		goto :nextWord
+	elseif ($word = "paranoid")
+		setVar $securityLevel 2
+		goto :nextWord
 	end
 
 	getWordPos $word $pos "mark:"
@@ -324,13 +332,35 @@ while ($i <= SECTORS)
 		end
 	end
 	if ($skip <> true)
-		add $count 1
-		getSectorParameter $i "FIGSEC" $isFigged
-		setSectorParameter $i $mark TRUE
-		if ($isFigged = true)
-			setvar $results $results&"["&$i&"] "
+		setVar $securityBreach 0
+		if ($securityLevel > 0)
+			setVar $di 1
+			while ($di <= SECTOR.WARPINCOUNT[$i])
+				getSectorParameter SECTOR.WARPSIN[$i][$di] "FIGSEC" $hasFig
+		
+				if ($hasFig <> 1)
+					add $securityBreach 1
+				end
+				if ($securityLevel = 2)
+					getSectorParameter SECTOR.WARPSIN[$i][$di] "LIMPSEC" $hasLimp
+					if ($hasLimp <> 1)
+						add $securityBreach 1
+					end
+				end
+				add $di 1
+			end
+		end
+		if ($securityBreach = 0)
+			add $count 1
+			getSectorParameter $i "FIGSEC" $isFigged
+			setSectorParameter $i $mark TRUE
+			if ($isFigged = true)
+				setvar $results $results&"["&$i&"] "
+			else
+				setvar $results $results&$i&" "
+			end
 		else
-			setvar $results $results&$i&" "
+			setSectorParameter $i $mark ""
 		end
 	else
 		setSectorParameter $i $mark ""
@@ -395,10 +425,10 @@ halt
 :checkPortRequirements
 
 	# Mark them all ok, and we'll rule them out
-	setVar $i 1
-	while ($i <= 8)
-		setVar $portClassOk[$i] 1
-		add $i 1
+	setVar $pi 1
+	while ($pi <= 8)
+		setVar $portClassOk[$pi] 1
+		add $pi 1
 	end
 
 	setVar $tword $word
