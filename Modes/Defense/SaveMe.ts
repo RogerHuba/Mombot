@@ -1,12 +1,12 @@
 	reqRecording
 	gosub :BOT~loadVars
-	setVar $BOT~command "ldrop"
+	setVar $BOT~command "saveme"
 	loadVar $BOT~bot_turn_limit
 	loadVar $MAP~stardock
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-	setVar $BOT~help[1]    $BOT~tab&"saveme [delay] {"&#34&"target name"&#34&"} "
+	setVar $BOT~help[1]    $BOT~tab&"saveme [on/off] {delay} {"&#34&"target name"&#34&"} "
 	setVar $BOT~help[2]    $BOT~tab&"       "
 	setVar $BOT~help[3]    $BOT~tab&"      {delay} - number of seconds to wait before "
 	setVar $BOT~help[4]    $BOT~tab&"                moving planet back to starting sector"         
@@ -20,8 +20,6 @@
 	setVar $BOT~help[12]   $BOT~tab&"               - Originally written by Cherokee"
 	gosub :BOT~help_file
 
-	setVar $BOT~script_title "Limpet Dropper"
-	gosub :BOT~banner
 
 	setVar $PLAYER~save TRUE
 
@@ -89,19 +87,19 @@
 		end
 		if ($returnHome)
 			if ($targetingPerson)
-				setvar $switchboard~message "'Saveme - Running from planet " & $planet~PLANET & " for "&$target&", " & $savemeDelay & " second return home delay.*"
+				setvar $switchboard~message "Saveme - Running from planet " & $planet~PLANET & " for "&$target&", " & $savemeDelay & " second return home delay.*"
 				gosub :switchboard~switchboard
 			else
-				setvar $switchboard~message "'Saveme - Running from planet " & $planet~PLANET & ", " & $savemeDelay & " second return home delay.*"
+				setvar $switchboard~message "Saveme - Running from planet " & $planet~PLANET & ", " & $savemeDelay & " second return home delay.*"
 				gosub :switchboard~switchboard
 			end
 
 		else
 			if ($targetingPerson)
-				setvar $switchboard~message "'Saveme - Running from planet " & $planet~PLANET & " for "&$target&".*"
+				setvar $switchboard~message "Saveme - Running from planet " & $planet~PLANET & " for "&$target&".*"
 				gosub :switchboard~switchboard
 			else
-				setvar $switchboard~message "'Saveme - Running from planet " & $planet~PLANET & ".*"
+				setvar $switchboard~message "Saveme - Running from planet " & $planet~PLANET & ".*"
 				gosub :switchboard~switchboard
 			end
 		end
@@ -161,7 +159,7 @@
 		:there
                 	killtrigger abort
 	                killtrigger nofig
-			send "'Saveme script activated - Planet " & $planet~PLANET & " to " & $target_sector & " on attempt " & $j & ".*"
+			send "Saveme script activated - Planet " & $planet~PLANET & " to " & $target_sector & " on attempt " & $j & ".*"
         	        send "IS*"
 			if ($returnHome)
 				setDelayTrigger savemereturn :returnsaveme ($savemeDelay*1000)
@@ -259,7 +257,7 @@ pause
 	killalltriggers
 	gosub :authenticateannounce
 	if ($auth_result)
-		setvar $switchboard~message "'*Save Me - Running from planet " & $planet~PLANET & "*---Command List---*" & $bot~bot_name & " Deploy Mines*" & $bot~bot_name & " Personal Limp*----End of List---** "
+		setvar $switchboard~message "*Save Me - Running from planet " & $planet~PLANET & "*---Command List---*" & $bot~bot_name & " Deploy Mines*" & $bot~bot_name & " Personal Limp*----End of List---** "
 		gosub :switchboard~message
 	end
 	waitOn "----End of List---"
