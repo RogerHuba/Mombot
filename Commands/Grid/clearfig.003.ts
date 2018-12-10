@@ -1,37 +1,34 @@
-loadVar $bot_name
-loadVar $user_command_line
-loadVar $parm1
-loadVar $parm2
-loadVar $parm3
-loadVar $parm4
-loadVar $parm5
-loadVar $parm6
-loadVar $parm7
-loadVar $parm8
-loadVar $stardock
+	reqRecording
+	gosub :BOT~loadVars
+	setVar $BOT~command "clearfig"
+	loadVar $BOT~bot_turn_limit
+	loadVar $MAP~stardock
+	loadvar $bot~subspace
+	loadvar $switchboard~self_command
 
-loadVar $unlimitedGame
-loadVar $ptradesetting
-loadVar $bot_turn_limit
-loadVar $command
+	setVar $BOT~help[1]   $BOT~tab&"clearfig  [sector] {defend}  "
+	setVar $BOT~help[2]   $BOT~tab&"      clears adjacent fighters and calls saveme  "
+	setVar $BOT~help[3]   $BOT~tab&"      "
+	setVar $BOT~help[4]   $BOT~tab&"   - [defend] for offensive fighters,just enters/retreats"
+	setVar $BOT~help[5]   $BOT~tab&"      "
+	setVar $BOT~help[6]   $BOT~tab&"    - From Citadel prompt grabs fighters from planet"
+	setVar $BOT~help[7]   $BOT~tab&"    - From Command prompt grabs fighters from the sector "
+	gosub :BOT~help_file
 
-	fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
-	if ($doesHelpFileExist <> TRUE)
-		write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" [sector] {defend}                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "     clears adjacent fighters and calls saveme              " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "     - [defend] for offensive fighters,just enters/retreats "
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "     - From Citadel prompt grabs fighters from planet       " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "     - From Command prompt grabs fighters from the sector   " 
-		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
-	end
+	setVar $BOT~script_title "Adjacent Fig Clear"
+	gosub :BOT~banner
+
+	setVar $PLAYER~save TRUE
+
+
+	getSectorParameter SECTORS "FIGSEC" $isFigged
+
 	
 
 # ======================     START ADJACENT FIGHTER CLEAR (FIGCLEAR) SUBROUTINES     ==========================
 :adjfig
-	gosub :quikstats~quikstats
-	setVar $startingLocation $quikstats~CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~player~current_prompt
 	if (($startingLocation <> "Citadel") AND ($startingLocation <> "Command"))
 	        send "'{" $bot_name "} - Must start at Citadel or Command Prompt.*"
 	        halt
@@ -39,29 +36,30 @@ loadVar $command
 	setVar $pgridSector $parm1
 	isNumber $test $pgridSector
 	if ($test = 0)
-		send "'{" $bot_name "} - Invalid FIGCLEAR number.*"
+		setVar $SWITCHBOARD~message "Invalid CLEARFIG sector.*"
+		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-
 	if ($pgridSector = 0)
-		send "'{" $bot_name "} - Invalid FIGCLEAR number.*"
+		setVar $SWITCHBOARD~message "Invalid CLEARFIG sector.*"
+		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 	if ($pgridSector < 11)
-		send "'{" $bot_name "} - Cannot FIGCLEAR into FedSpace!*"
+		setVar $SWITCHBOARD~message "Cannot CLEARFIG into FedSpace!*"
+		gosub :SWITCHBOARD~switchboard
 		halt
-	elseif ($pgridSector = $STARDOCK)
-		send "'{" $bot_name "} - Cannot FIGCLEAR into STARDOCK!*"
+	elseif ($pgridSector = $map~STARDOCK)
+		setVar $SWITCHBOARD~message "Cannot CLEARFIG into STARDOCK!*"
+		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 	if ($startingLocation = "Citadel")
 		send "q"
-		gosub :planetinfo~getPlanetInfo
+		gosub :planet~getPlanetInfo
 		send "m * * * c "
 	end
-	if ($shipstats~SHIP_MAX_ATTACK <= 0)
-		gosub :shipstats~getShipStats
-	end
+	gosub :ship~getShipStats
 	
 	getWordPos $user_command_line $pos "def"
 	if ($pos > 0)
@@ -72,59 +70,67 @@ loadVar $command
 
 	setVar $i 1
 	setVar $isFound false
-	while (SECTOR.WARPS[$quikstats~current_Sector][$i] > 0)
-		if (SECTOR.WARPS[$quikstats~current_Sector][$i] = $pgridSector)
+	while (SECTOR.WARPS[$player~current_Sector][$i] > 0)
+		if (SECTOR.WARPS[$player~current_Sector][$i] = $pgridSector)
 			setVar $isFound TRUE
 		end
 		add $i 1
 	end
-	if ($isFound = FALSE)
-		send "'{" $bot_name "} - Cannot FIGCLEAR.  Sector not Adjacent, aborting..*"
+	if ($isFound <> true)
+		setVar $SWITCHBOARD~message "Cannot CLEARFIG.  Sector not Adjacent, aborting..*"
+		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	send "'{" $bot_name "} - Fig Clearing sector " & $pgridSector & "* c v* y* "&$pgridSector&"* q "
+	setVar $SWITCHBOARD~message "Fig Clearing sector " & $pgridSector & "*"
+	gosub :SWITCHBOARD~switchboard
+
+	#clear any possible avoid to the sector
+	send "c v* y* "&$pgridSector&"* q "
+	
 	setVar $mac "     * "
 	setVar $i 1
-	if ($defend = FALSE)
-		while ($quikstats~FIGHTERS >= $shipstats~SHIP_MAX_ATTACK)
-			setVar $mac $mac&"a z " & ($shipstats~SHIP_MAX_ATTACK-1) & "* * "
+	if ($defend <> true)
+		while ($player~FIGHTERS >= $ship~SHIP_MAX_ATTACK)
+			setVar $mac $mac&"a z " & ($ship~SHIP_MAX_ATTACK-1) & "* * "
 			add $i 1
-			subtract $quikstats~FIGHTERS ($shipstats~SHIP_MAX_ATTACK-1)
+			subtract $player~FIGHTERS ($ship~SHIP_MAX_ATTACK-1)
 		end
 	end
 	setVar $mac $mac & "j r * f  z  1  * z  c  d  * "
 
-        :attackAdjSector
-		gosub :quikstats~quikstats
-		if ($quikstats~FIGHTERS < $shipstats~SHIP_FIGHTERS_MAX)
-        	      send "'{" $bot_name "} - Unable to proceed, not enough fighters.*"
-        	      halt
+	:attackAdjSector
+		gosub :player~quikstats
+		if ($player~FIGHTERS < $ship~SHIP_FIGHTERS_MAX)
+			setVar $SWITCHBOARD~message "Unable to proceed, not enough fighters.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
 		end
 		if ($startingLocation = "Citadel")
 			send "Q Q * "
 		end
-		send "m " $pgridSector & $mac
-        	gosub :quikstats~quikstats
+		send "m " $pgridSector & $mac & "'" & $pgridSector & "=saveme*"
+		gosub :player~quikstats
 
-		if ($quikstats~CURRENT_SECTOR = $pgridSector)
-			send "'" & $pgridSector & "=saveme*"
+		if ($player~CURRENT_SECTOR = $pgridSector)
 			if ($startingLocation = "Citadel")
 				setVar $i 0
-		        	while ($i < 15)
-		      		        add $i 1
-					send "l j" & #8 & $planetinfo~PLANET & "*  *  "
+				while ($i < 30)
+					add $i 1
+					send "l j" & #8 & $planet~PLANET & "*  *  "
 				end
-		        end
-			send "'{" $bot_name "} - Successfully Fig Cleared sector " & $pgridSector & "*"
+			end
+			setVar $SWITCHBOARD~message "Successfully Fig Cleared sector " & $pgridSector & "*"
+			gosub :SWITCHBOARD~switchboard
 		else
-	                if ($startingLocation = "Citadel")
-				send "l j" & #8 & $planetinfo~PLANET & "*  *  "
-	                	gosub :current_prompt
-	                	if ($CURRENT_PROMPT = "Planet")
-	                	        send "m* * *"
-	                	else
-				    	send "'{" $bot_name "} - Had to stop, planet appears to be gone.*"
-	                	        halt
+			if ($startingLocation = "Citadel")
+				send "l j" & #8 & $planet~PLANET & "*  *  "
+				gosub :player~current_prompt
+				if ($player~current_prompt = "Planet")
+					send "m* * *"
+				else
+					setVar $SWITCHBOARD~message "Had to stop, planet appears to be gone.*"
+					gosub :SWITCHBOARD~switchboard
+					halt
 				end
 			else
 				send " F"
@@ -142,23 +148,14 @@ loadVar $command
 	halt
 
 
-:current_prompt
-	setTextTrigger 	prompt		:allPromptsCatch	 	#145 & #8
-	send #145
-	pause
-
-	:allPromptsCatch
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		if ($CURRENT_PROMPT = 0)
-			getWord CURRENTANSILINE $CURRENT_PROMPT 1
-		end
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
-return
 # ======================     END ADJACENT FIGHTER CLEAR (FIGCLEAR) SUBROUTINES     ==========================
 
-
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\quikstats"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\planetinfo"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\pwarp"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\shipstats"
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"
+include "source\bot_includes\targeting"
