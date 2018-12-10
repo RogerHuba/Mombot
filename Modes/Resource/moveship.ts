@@ -13,16 +13,17 @@ logging off
 	loadVar $BOT~silent_running
 
 
-	setVar $BOT~help[1] $BOT~tab&"Moves empty ships from one sector to another."
-	setVar $BOT~help[2] $BOT~tab&"                "
-	setVar $BOT~help[3] $BOT~tab&"moveship [sector] {back} "
-	setVar $BOT~help[4] $BOT~tab&"                  "
-	setVar $BOT~help[5] $BOT~tab&"[sector] - target sector"
-	setVar $BOT~help[6] $BOT~tab&"[back]   - will grab ships from target sector and bring"
-	setVar $BOT~help[7] $BOT~tab&"           them back to current sector   "
-	setVar $BOT~help[8] $BOT~tab&"                          "
-	setVar $BOT~help[9] $BOT~tab&"           Can use either planet or SXX port in        "
-	setVar $BOT~help[10] $BOT~tab&"           starting sector for fuel."
+	setVar $BOT~help[1]  $BOT~tab&"Moves empty ships from one sector to another."
+	setVar $BOT~help[2]  $BOT~tab&"                "
+	setVar $BOT~help[3]  $BOT~tab&"moveship [sector] {back} {sell} "
+	setVar $BOT~help[4]  $BOT~tab&"                  "
+	setVar $BOT~help[5]  $BOT~tab&"[sector] - target sector"
+	setVar $BOT~help[6]  $BOT~tab&"  [back] - will grab ships from target sector and bring"
+	setVar $BOT~help[7]  $BOT~tab&"           them back to current sector   "
+	setVar $BOT~help[8]  $BOT~tab&"  [sell] - if moving to stardock, attempt to sell ships"
+	setVar $BOT~help[9]  $BOT~tab&"                          "
+	setVar $BOT~help[10] $BOT~tab&"           Can use either planet or SXX port in        "
+	setVar $BOT~help[11] $BOT~tab&"           starting sector for fuel."
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Ship Mover"
@@ -62,6 +63,13 @@ logging off
 		setVar $silent_running TRUE
 	else
 		setVar $silent_running FALSE
+	end
+
+	getWordPos $user_command_line $pos "sell"
+	if ($pos > 0)
+		setVar $sellship TRUE
+	else
+		setVar $sellship FALSE
 	end
 
 	getWordPos $user_command_line $pos "silent"
@@ -120,6 +128,9 @@ logging off
 	setVar $figcnt SECTOR.FIGS.QUANTITY[$startSector]
 	setVar $figowner SECTOR.FIGS.OWNER[$startSector]
 	if (($figcnt = 0) OR (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
+		if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
+			gosub :PLANET~landingSub
+		end
 		setVar $SWITCHBOARD~message "No friendly fighters deployed in current sector!*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -232,6 +243,11 @@ logging off
 						halt
 					end
 					send "w  "
+					if (($moveSector = $map~stardock) and ($sellship = true))
+						gosub :player~quikstats
+						gosub :port~shipsell
+						send "q q q * * *"
+					end
 					setVar $PLAYER~CURRENT_SECTOR $moveSector
 					setVar $PLAYER~WARPTO $startSector
 					gosub :PLAYER~twarp
@@ -294,8 +310,10 @@ halt
 # ============================== END Move Ship (moveship) Sub ==============================
 
 
+
 #INCLUDES:
 include "source\module_includes\bot"
+include "source\module_includes\port"
 include "source\bot_includes\player"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
