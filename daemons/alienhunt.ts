@@ -360,8 +360,8 @@ return
 			saveVar $BOT~parm1
 			saveVar $BOT~command
 			saveVar $BOT~user_command_line
-			load "scripts\MomBot\Commands\Grid\xenter.cts"
-			setEventTrigger		xenterended		:xenterended "SCRIPT STOPPED" "scripts\MomBot\Commands\Grid\xenter.cts"
+			load "scripts\mombot\commands\grid\xenter.cts"
+			setEventTrigger		xenterended		:xenterended "SCRIPT STOPPED" "scripts\mombot\commands\grid\xenter.cts"
 			pause
 			:xenterended
 			
@@ -390,8 +390,8 @@ return
 				saveVar $BOT~parm1
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
-				load "scripts\MomBot\Modes\Resource\moveship.cts"
-				setEventTrigger		moveshipended2		:moveshipended "SCRIPT STOPPED" "scripts\MomBot\Modes\Resource\moveship.cts"
+				load "scripts\mombot\modes\resource\moveship.cts"
+				setEventTrigger		moveshipended2		:moveshipended "SCRIPT STOPPED" "scripts\mombot\modes\resource\moveship.cts"
 				pause
 				:moveshipended
 				gosub :PLAYER~quikstats
@@ -402,8 +402,8 @@ return
 					saveVar $BOT~parm1
 					saveVar $BOT~command
 					saveVar $BOT~user_command_line
-					load "scripts\MomBot\Modes\Grid\mow.cts"
-					setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\MomBot\Modes\Grid\mow.cts"
+					load "scripts\mombot\modes\grid\mow.cts"
+					setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
 					pause
 					:mowended
 					gosub :PLANET~landingSub
@@ -418,8 +418,8 @@ return
 				saveVar $BOT~parm1
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
-				load "scripts\MomBot\commands\resource\buy.cts"
-				setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\MomBot\commands\resource\mow.cts"
+				load "scripts\mombot\commands\resource\buy.cts"
+				setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\mombot\commands\resource\mow.cts"
 				pause
 				:mowended
 			end

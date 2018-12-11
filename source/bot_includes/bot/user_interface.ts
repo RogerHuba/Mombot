@@ -689,9 +689,9 @@ return
                 end
                 add $i 1
             end
-            fileExists $doesExist "scripts\MomBot\Help\"&$BOT~parm1&".txt"
+            fileExists $doesExist "scripts\mombot\help\"&$BOT~parm1&".txt"
             if ($doesExist)
-                readToArray "scripts\MomBot\Help\"&$BOT~parm1&".txt" $HELP_ARRAY
+                readToArray "scripts\mombot\help\"&$BOT~parm1&".txt" $HELP_ARRAY
                 setVar $i 1
                 setVar $helpOutput ""
                 while ($i <= $HELP_ARRAY)
@@ -795,8 +795,8 @@ return
         setVar $j 1
         while ($j <= 7)
             if ($i = 3)
-                fileExists $doesExist "scripts\MomBot\"&$BOT~CATAGORIES[$i]&"\"&$BOT~command&".cts"
-                fileExists $doesExistHidden "scripts\MomBot\"&$BOT~CATAGORIES[$i]&"\_"&$BOT~command&".cts"
+                fileExists $doesExist "scripts\mombot\"&$BOT~CATAGORIES[$i]&"\"&$BOT~command&".cts"
+                fileExists $doesExistHidden "scripts\mombot\"&$BOT~CATAGORIES[$i]&"\_"&$BOT~command&".cts"
                 if (($doesExist) OR ($doesExistHidden))
                     setVar $currentCategory $BOT~CATAGORIES[$i]
                     if ($doesExistHidden)
@@ -808,8 +808,8 @@ return
                     return
                 end
             else
-                fileExists $doesExist "scripts\MomBot\"&$BOT~CATAGORIES[$i]&"\"&$BOT~TYPES[$j]&"\"&$BOT~command&".cts"
-                fileExists $doesExistHidden "scripts\MomBot\"&$BOT~CATAGORIES[$i]&"\"&$BOT~TYPES[$j]&"\_"&$BOT~command&".cts"
+                fileExists $doesExist "scripts\mombot\"&$BOT~CATAGORIES[$i]&"\"&$BOT~TYPES[$j]&"\"&$BOT~command&".cts"
+                fileExists $doesExistHidden "scripts\mombot\"&$BOT~CATAGORIES[$i]&"\"&$BOT~TYPES[$j]&"\_"&$BOT~command&".cts"
                 if (($doesExist) OR ($doesExistHidden))
                     setVar $currentCategory $BOT~CATAGORIES[$i]
                     if ($doesExistHidden)
@@ -835,13 +835,13 @@ return
     gosub :MAIN~module_vars
     if ($currentCategory = "Modes") 
         stop $BOT~LAST_LOADED_MODULE
-        setVar $BOT~LAST_LOADED_MODULE "scripts\MomBot\"&$BOT~ModuleCategory&$BOT~command&".cts"
+        setVar $BOT~LAST_LOADED_MODULE "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
         setVar $BOT~mode $formatted_command
         savevar $bot~mode
     end
-    stop "scripts\MomBot\"&$BOT~ModuleCategory&$BOT~command&".cts"
-    stop "scripts\MomBot\"&$BOT~ModuleCategory&$BOT~command&".cts"
-    load "scripts\MomBot\"&$BOT~ModuleCategory&$BOT~command&".cts"  
+    stop "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
+    stop "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
+    load "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"  
 return
 #============================ END COMMAND PROCESSING/EXTERNAL MODULE RUNNING =======================
 #============================== HOTKEY CONTROL ==============================

@@ -394,7 +394,7 @@ if ($pos > 0)
         getWordPos "<><><>"&$scripts[$i] $pos "<><><>__mom_bot"
         if ($pos > 0)
             if ($rebooted = FALSE)
-                load "scripts\MomBot\"&$scripts[$i]
+                load "scripts\mombot\"&$scripts[$i]
             end
             stop $scripts[$i]
             setVar $found TRUE

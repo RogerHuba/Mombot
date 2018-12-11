@@ -609,14 +609,14 @@ gosub :PLAYER~init
     getFileList $startup_scripts "scripts\Mombot\Startups\*.cts"
     setVar $i 1 
     while ($i <= $startup_scripts)
-        stop "scripts\MomBot\Startups\"&$startup_scripts[$i]
-        stop "scripts\MomBot\Startups\"&$startup_scripts[$i]
-        stop "scripts\MomBot\Startups\"&$startup_scripts[$i]
-        stop "scripts\MomBot\Startups\"&$startup_scripts[$i]
+        stop "scripts\mombot\startups\"&$startup_scripts[$i]
+        stop "scripts\mombot\startups\"&$startup_scripts[$i]
+        stop "scripts\mombot\startups\"&$startup_scripts[$i]
+        stop "scripts\mombot\startups\"&$startup_scripts[$i]
         setVar $BOT~command $startup_scripts[$i]
         replacetext $BOT~command ".cts" ""
         saveVar $BOT~command
-        load "scripts\MomBot\Startups\"&$startup_scripts[$i]
+        load "scripts\mombot\startups\"&$startup_scripts[$i]
         add $i 1
     end
 

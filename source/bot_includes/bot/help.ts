@@ -12,8 +12,8 @@
         setVar $SWITCHBOARD~message $SWITCHBOARD~message&" *"
         setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  ---------------------------------------------------------------*"
     else
-        getFileList $commandList "scripts\MomBot\Commands\"&$BOT~parm1&"\*.cts"
-        getFileList $modeList "scripts\MomBot\Modes\"&$BOT~parm1&"\*.cts"
+        getFileList $commandList "scripts\mombot\commands\"&$BOT~parm1&"\*.cts"
+        getFileList $modeList "scripts\mombot\modes\"&$BOT~parm1&"\*.cts"
         setVar $maxStringLength 34
         setVar $paddingDashes "                                 "
         upperCase $BOT~parm1
@@ -30,7 +30,7 @@
                 setVar $tempCommand $commandList[$i]&"###"
                 getWord $currentList $next ($i+1)
                 getWord $currentList $next2 ($i+2)
-                stripText $tempCommand "scripts\MomBot\Commands\"&$BOT~parm1&"\"
+                stripText $tempCommand "scripts\mombot\commands\"&$BOT~parm1&"\"
                 stripText $tempCommand ".cts###"
                 upperCase $tempCommand
                 cutText $tempCommand&" " $hidden 1 1
@@ -58,7 +58,7 @@
             setVar $i 1
             while ($i <= $modelist)
                 setVar $tempCommand $modelist[$i]&"###"
-                stripText $tempCommand "scripts\MomBot\Modes\"&$BOT~parm1&"\"
+                stripText $tempCommand "scripts\mombot\modes\"&$BOT~parm1&"\"
                 stripText $tempCommand ".cts###"
                 upperCase $tempCommand
                 cutText $tempCommand&" " $hidden 1 1
@@ -152,7 +152,7 @@ return
     echo ansi_13 "  ----------------------------- "&ANSI_14&"Hot Keys"&ANSI_13&" -----------------------------*"
     gosub :MENUS~echoHotKeys
     echo ansi_13 "  ----------------------------- "&ANSI_14&"Daemons"&ANSI_13&" ------------------------------*"
-    getFileList $daemonList "scripts\MomBot\Daemons\*.cts"
+    getFileList $daemonList "scripts\mombot\daemons\*.cts"
     if ($daemonList > 0)
         setVar $paddingDashes "                                 "
         setVar $currentList ""
@@ -160,7 +160,7 @@ return
         setVar $i 1
         while ($i <= $daemonList)
             setVar $tempCommand $daemonList[$i]&"###"
-            stripText $tempCommand "scripts\MomBot\Daemons\"&$BOT~parm1&"\"
+            stripText $tempCommand "scripts\mombot\daemons\"&$BOT~parm1&"\"
             stripText $tempCommand ".cts###"
             setVar $currentList $currentList&" "&$tempCommand&" "
             add $i 1

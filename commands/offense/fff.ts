@@ -246,7 +246,7 @@ return
 return
 
 :startbot
-	load "scripts\Mombot\" & $momname
+	load "scripts\mombot\" & $momname
 	halt
 return
 

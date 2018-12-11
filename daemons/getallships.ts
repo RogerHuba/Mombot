@@ -152,10 +152,10 @@ logging off
 					saveVar $BOT~parm2
 					saveVar $BOT~command
 					saveVar $BOT~user_command_line
-					stop "scripts\MomBot\Modes\Resource\moveship.cts"
+					stop "scripts\mombot\modes\Resource\moveship.cts"
 					gosub :PLAYER~quikstats
-					setEventTrigger		moveshipended2		:moveshipended "SCRIPT STOPPED" "scripts\MomBot\Modes\Resource\moveship.cts"
-					load "scripts\MomBot\Modes\Resource\moveship.cts"
+					setEventTrigger		moveshipended2		:moveshipended "SCRIPT STOPPED" "scripts\mombot\modes\Resource\moveship.cts"
+					load "scripts\mombot\modes\Resource\moveship.cts"
 					pause
 					:moveshipended
 				end
