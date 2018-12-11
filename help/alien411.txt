@@ -1,0 +1,8 @@
+                     
+   
+                <<<< alien411 >>>>
+   
+     Author: Lonestar  
+     Will grab any alien sectors in database.
+      
+     Will add alien sectors as sector parameters.

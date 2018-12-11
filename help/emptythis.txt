@@ -1,0 +1,9 @@
+- emptythis [param] {figstodrop} {true/false} {alarm}    
+    Twarps to figged param sectors and picks up fighters.   
+    Does not do so safely.                                  
+                                                            
+    [param]  - sector parameter to move to                   
+    {true}   - go to the param if it's equal to TRUE (1)     
+    {false}  - go to the param if it's equal to FALSE (0)   
+    {alarm}  - activate alarm                               
+                                                            

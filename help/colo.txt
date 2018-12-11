@@ -1,0 +1,16 @@
+                     
+   
+                  <<<< colo >>>>
+   
+     Gets colos from Terra  
+       
+     colo [r/s/m/t] {misc} {t/b} {c:x}  
+              
+     Options: 
+        - [r/s/m/t] = [r]ed/[s]peed/[m]ilk/[t]imed
+          red   = jump sector - sector next to terra
+          milk  = min colos - min colos before grab (default 0)
+          timed = delay  - time to wait each cycle (default 15 seconds)
+        - [misc]  = cycles/min colos/delay
+        - [t/b]   = [t]warp/[b]warp  (defy
+        - [c:x]   = [c]amo holds (example: c:3 adds 3 holds extra fuel)
