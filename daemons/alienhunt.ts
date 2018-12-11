@@ -22,7 +22,7 @@
 	setVar $BOT~help[8]  $BOT~tab&"   {corp} - Doesn't turn everything personal."
 	setVar $BOT~help[9]  $BOT~tab&"   {sell} - Sell everyship you capture at dock and deposit the cash."
 	setVar $BOT~help[10] $BOT~tab&" {refuel} - Refuel planet if possible."
-	setVar $BOT~help[10] $BOT~tab&"{upgrade} - Upgrade fuel port if possible."
+	setVar $BOT~help[11] $BOT~tab&"{upgrade} - Upgrade fuel port if possible."
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Alien Hunter"
