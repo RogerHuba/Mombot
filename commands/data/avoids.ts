@@ -1,0 +1,149 @@
+	logging off
+		gosub :BOT~loadVars
+	setVar $parm1 $BOT~parm1
+	setVar $parm2 $BOT~parm2
+	setVar $parm3 $BOT~parm3
+	setVar $parm4 $BOT~parm4
+	setVar $parm5 $BOT~parm5
+	setVar $parm6 $BOT~parm6
+	setVar $parm7 $BOT~parm7
+	setVar $parm8 $BOT~parm8
+	setVar $user_command_line $BOT~user_command_line
+
+
+	 setVar $BOT~help[1] $BOT~tab&"Set, clear, or display avoids"
+	 setVar $BOT~help[2] $BOT~tab&"Using the avoids command without a parameter will display"
+	 setVar $BOT~help[3] $BOT~tab&"current avoids over subspace. "
+	 setVar $BOT~help[4] $BOT~tab&"       "
+	 setVar $BOT~help[5] $BOT~tab&"Options:"
+	 setVar $BOT~help[6] $BOT~tab&"        {set} -  Will set an avoid "
+	 setVar $BOT~help[7] $BOT~tab&"                                        "
+	 setVar $BOT~help[8] $BOT~tab&"      {clear} -  Will clear an avoid if a sector number"
+	 setVar $BOT~help[9] $BOT~tab&"                 is provided, otherwise 'clear' by itself"
+	setVar $BOT~help[10] $BOT~tab&"                 will clear all avoids."
+	setVar $BOT~help[11] $BOT~tab&"       "
+	setVar $BOT~help[12] $BOT~tab&"Usage: "
+	setVar $BOT~help[13] $BOT~tab&"       >avoids set 45"
+	setVar $BOT~help[14] $BOT~tab&"       >avoids clear 45"
+	setVar $BOT~help[15] $BOT~tab&"       >avoids clear"
+	gosub :BOT~help_file
+
+
+	setVar $AVOIDS		" "
+	setVar $Temp		""
+	setVar $Void_CNT	0
+	gosub :PLAYER~quikstats
+
+	if ($PLAYER~CURRENT_PROMPT = "Command") OR ($PLAYER~CURRENT_PROMPT = "Citadel")
+		if ($parm1 = "clear")
+			isNumber $tst $parm2
+			if ($tst)
+				if ($parm2 = 0)
+					send "cv0*yyq"
+					setVar $SWITCHBOARD~message "All Avoids Cleared*"
+					gosub :SWITCHBOARD~switchboard
+					halt
+				else
+					send "cv0*yn" & $parm2 & "*q"
+					setTextLineTrigger	Cleared		:Cleared	"has been cleared and will be used in future plots."
+					setTextLineTrigger	NoClear		:NoClear	"Invalid sector number"
+					pause
+					:NoClear
+					killAllTriggers
+					setVar $SWITCHBOARD~message "Invalid sector number*"
+					gosub :SWITCHBOARD~switchboard
+					halt
+					:Cleared
+					killAllTriggers
+					getWord CURRENTLINE $parm2 1
+					isNumber $tst $parm2
+					if ($tst = 0)
+						setVar $parm2 0
+					end
+					setVar $SWITCHBOARD~message $parm2&" has been cleared and will be used in future plots.*"
+					gosub :SWITCHBOARD~switchboard
+					halt
+				end
+			else
+				setVar $SWITCHBOARD~message "Syntax Error*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
+		elseif ($parm1 = "set")
+			isnumber $tst $parm2
+			if ($tst)
+            	if ($parm2 > 0) and ($parm2 <= sectors)
+            		send "cv"&$parm2&"*q"
+					setTextLineTrigger		Setted		:Setted		"will now be avoided in future navigation calculations."
+					setTextTrigger			NotSet		:NotSet		"Do you wish to clear some avoids?"
+					pause
+					:NotSet
+					killAllTriggers
+					send "nq"
+					setVar $SWITCHBOARD~message $parm2&" Is Not a Valid Sector Number*"
+					gosub :SWITCHBOARD~switchboard
+					halt
+					:Setted
+					killAllTriggers
+					getWord CURRENTLINE	$parm2 2
+					isNumber $tst $parm2
+					if ($tst = 0)
+						setVar $parm2 0
+					end
+					setVar $SWITCHBOARD~message $parm2&" will now be avoided in future navigation calculations.*"
+					gosub :SWITCHBOARD~switchboard
+					halt
+				end
+			else
+				setVar $SWITCHBOARD~message "Syntax error*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
+		end
+		send "cxq"
+	else
+		setVar $SWITCHBOARD~message "Must be started from the Command or Citadel Prompt*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	waitfor "<List Avoided Sectors>"
+	setTextLineTrigger		NoAvoid	:NoAvoid	"No Sectors are currently being avoided."
+	setTextLineTrigger		Done	:Done		"Computer command"
+	setTextLineTrigger		Line	:Line
+	pause
+	:Line
+    	if ((CURRENTLINE <> "") AND (CURRENTLINE <> "0"))
+			setVar $Temp (" " & CURRENTLINE & " +++ ")
+			While ($Temp <> "+++")
+				getWord $Temp $Avoided 1
+				isNumber $tst $Avoided
+				if ($tst <> 0)
+					setVar $AVOIDS ($AVOIDS & $Avoided & " ")
+					replacetext $Temp (" " & $Avoided & " ") ""
+					add $Void_CNT 1
+				else
+					setVar $Temp "+++"
+				end
+			end
+		end
+		setTextLineTrigger		Line	:Line
+		pause
+	:NoAvoid
+		killAlltriggers
+		setVar $SWITCHBOARD~message "No Sectors are currently being avoided.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	:Done
+		killAllTriggers
+		if ($SWITCHBOARD~self_command = FALSE)
+			setVar $SWITCHBOARD~self_command 2
+		end
+
+		setVar $SWITCHBOARD~message $Void_CNT & " Avoids Found:*  *"&$AVOIDS & "*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+
+
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"

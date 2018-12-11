@@ -1,0 +1,244 @@
+	reqRecording
+	logging off
+	gosub :BOT~loadVars
+	loadVar $MAP~STARDOCK
+	loadVar $MAP~BACKDOOR
+
+	setVar $BOT~help[1] $BOT~tab&"probethis {param}  "
+	setVar $BOT~help[2] $BOT~tab&"     "
+	setVar $BOT~help[3] $BOT~tab&"Will ether probe all sectors marked with param selected."
+	setVar $BOT~help[4] $BOT~tab&"Example: BUBBLE, DE, MSLSEC"
+	setVar $BOT~help[5] $BOT~tab&"      {unexplored) - only probes unexplored sectors"
+	gosub :BOT~help_file
+
+	if ($bot~parm1 <> "0")
+		setVar $PARAM $bot~parm1
+		upperCase $PARAM
+	end
+	gosub :player~quikstats
+	setVar $startingLocation $PLAYER~CURRENT_PROMPT
+	send "** "
+	if (($startingLocation <> "Citadel") AND ($startingSector <> "Planet"))
+		if ($startingLocation = "Command")
+			setVar $restock FALSE
+		else
+			setVar $SWITCHBOARD~message "Must be in Command, Citadel or Planet prompt to run*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+	end
+
+	if ($startingLocation = "Citadel")
+		send "s* q "
+	end
+
+	setVar $shipCount 0
+	if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
+		gosub :PLANET~GETPLANETINFO
+		send "q "
+		setvar $restock TRUE
+	end
+	send "*"
+
+	getWordPos $bot~user_command_line $pos "unexplored"
+	if ($pos > 0)
+		setvar $unexplored true
+	else
+		setvar $unexplored false
+	end
+
+	gosub :getTargets
+
+	setvar $switchboard~message "Starting up probe this!  Probing all unexplored sectors with "&$PARAM&" set.*"
+	gosub :switchboard~switchboard
+
+	if ($databasecount <= 0)
+		setvar $switchboard~message "No sector parameters found for "&$PARAM&" set to a value of "&$output&" or already figged.*"
+		gosub :switchboard~switchboard
+	end
+
+
+
+
+	:do_again
+		gosub :player~quikstats
+		if ($player~eprobes <= 0)
+			if (($player~credits > 100000) AND ($restock = TRUE))
+				gosub :restock
+			else
+				setVar $switchboard~message "Out of e-probes and can't restock.*"
+				gosub :switchboard~switchboard
+				halt
+			end
+		end
+		getWord $randomSectors $destination 1
+		if ($destination = 0)
+			setVar $switchboard~message "All sectors probed.*"
+			gosub :switchboard~switchboard
+			halt		
+		else
+			send "e"&$destination&"*"
+			settextlinetrigger 1 :next "Probe Self Destructs"
+			settextlinetrigger 2 :next "Probe Destroyed!"
+			settextlinetrigger 3 :next "You are already in that sector!"
+			pause
+		end
+
+		:next
+			killtrigger 1
+			killtrigger 2
+			killtrigger 3
+			setVar $temp " "&$destination&" "
+			replaceText $randomSectors $temp " "
+			subtract $databasecount 1	
+	goto :do_again
+
+:getTargets
+	setVar $databasecount 0
+	setVar $randomSectors "  "
+	setVar $path_database "  "
+	setVar $perc 0
+	setVar $i 1
+	while ($i <= SECTORS)
+		getWordPos $path_database $pos " "&$i&" "
+		if ($pos <= 0)
+			getSectorParameter $i $PARAM $isTrue
+			if (($isTrue = TRUE) and (((SECTOR.EXPLORED[$i] <> "YES") and ($unexplored = true)) or ($unexplored = false)))
+				setVar $randomSectors $randomSectors&" "&$i&"  "
+				add $databasecount 1
+				getCourse $path $player~current_sector $i 
+				if ($path = "-1")
+					send "/"
+					waitOn #179
+					echo ANSI_14 "Updating database...*" ANSI_7
+					send "^f"&$player~current_sector&"*"&$i&"**q"
+					waitOn "ENDINTERROG"
+					getCourse $path $player~current_sector $i 
+				end
+				setVar $j 2
+				while ($j <= $path)
+					setVar $path_database $path_database&" "&$path[$j]&" "
+					add $j 1
+				end
+			end
+		end
+		setVar $percTest (($i * 100) / SECTORS)
+		if ($percTest > $perc)
+			setVar $perc (($i * 100) / SECTORS)
+			echo "*"
+			echo #27 "["&($perc / 2)&"C"
+			echo ANSI_14 "°" ANSI_15 " " $perc "%" #27 & "[1A   "
+		end
+		add $i 1
+	end
+return
+
+:restock
+KillAllTriggers
+SetTextLineTrigger sdyes :sdyes "Commerce report for Stargate Alpha I:"
+SetTextLineTrigger sdno1  :sdno  "You have never visted sector"
+SetTextLineTrigger sdno2  :sdno  "I have no information about a port in that sector."
+setDelayTrigger sdno3 :sdno 10000
+#had to add WaitFors b/c AllKeys was bypassing display
+send "C"
+WaitFor "<Computer activated>"
+send "R"
+WaitFor "What sector is the port"
+send $map~stardock "*"
+
+Pause
+Pause
+
+:sdno
+	send "q"
+	setVar $SWITCHBOARD~message "SD is not in that sector, or never been visited!! Shutting down in starting sector.*"
+	gosub :SWITCHBOARD~switchboard
+	HALT
+
+:sdyes
+	send "ql "&$PLANET~PLANET&"* t * l 1 * t * l 2 * t * l 3 * s * l 1 * s * l 2 * s * l 3 * t * t1*m* * * q "
+	WaitFor "Command [TL"
+
+if (($map~backdoor <> 0) and ($player~ALIGNMENT < 1000))
+	KillAlltriggers
+	SetTextTrigger nofig :nofig "Do you want to make this jump blind?"
+	SetTextTrigger ready1 :ready1 "Locating beam pinpointed,"
+    SetTextTrigger nofuel2 :nofuel "You do not have enough Fuel Ore to make the jump"	
+	send "m" $map~backdoor "*y"
+	Pause
+    Pause
+End
+SetTextTrigger nofig :nofig "Do you want to make this jump blind?"
+SetTextTrigger ready2 :ready2 "All Systems Ready, shall we engage?"
+SetTextTrigger nofuel1 :nofuel "You do not have enough Fuel Ore to make the jump"	
+send "nsy"
+Pause
+Pause
+
+:nofig
+KillAlltriggers
+send "n"
+setVar $SWITCHBOARD~message "No fig at target sector. Shutting Down*"
+gosub :SWITCHBOARD~switchboard
+HALT
+
+:nofuel
+KillAlltriggers
+setVar $SWITCHBOARD~message "No fuel for twarp. Shutting Down*"
+gosub :SWITCHBOARD~switchboard
+HALT
+
+:ready1
+KillAlltriggers
+SetTextTrigger limpet :limpet "ort official runs up"
+SetTextTrigger buytorps :buytorps "<StarDock> Where to?"
+send "YNS P S"
+Pause
+Pause
+
+:ready2
+KillAllTriggers
+SetTextTrigger limpet :limpet "ort official runs up"
+SetTextTrigger buytorps :buytorps "<StarDock> Where to?"
+send "Y PS"
+Pause
+Pause
+
+:limpet
+send "Y"
+Pause
+
+:buytorps
+KillAlltriggers
+SetTextTrigger torps :torps "How many Probes do you want"
+send "HE"
+Pause
+Pause
+
+:torps 
+GetWord CURRENTLINE $numtorps 8
+StripText $numtorps ")"
+send $numtorps & "*"
+send "Q Q M " & $player~current_sector & " * Y"
+SetTextTrigger nofig :nofig "Do you want to make this jump blind?"
+SetTextTrigger ready3 :ready3 "Locating beam pinpointed,"
+SetTextTrigger nofuel :nofuel "You do not have enough Fuel Ore to make the jump"
+Pause
+Pause
+
+:ready3
+send "Y"
+WaitFor "Command [TL"
+send "l "&$planet~planet&"* t n l 1* q q * j y * "
+Return
+
+
+
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"

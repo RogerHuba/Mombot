@@ -1,0 +1,16 @@
+                     
+   
+                  <<<< patp >>>>
+   
+                   PATP - Pay At The Pump               
+       patp [min port fuel] {upgrade} {buyhalf} {docim} {destroyports}
+            
+             
+     Options:
+         [min port fuel]  minimum fuel a port must have to visit it
+         [upgrade]        upgrades fuel in each port
+         [buyhalf]        empties ports halfway
+         [docim]          does cim check before patp
+         [destroyports]   destroys every port it drains if you 
+         [bubble]         only visits bubble sectors  
+                          have enough fighters

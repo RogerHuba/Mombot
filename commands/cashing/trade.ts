@@ -1,0 +1,387 @@
+gosub :BOT~loadVars
+
+
+	setVar $BOT~help[1]  $BOT~tab&"       Day 1 trader aimed at doing the best trade and testing MCIC "
+	setVar $BOT~help[2]  $BOT~tab&"       Keep equipment/empty holds so you always have ability to test ports."
+	setVar $BOT~help[3]  $BOT~tab&"       Script will attempt to haggle at any port for equip buy or sell."
+	setVar $BOT~help[4]  $BOT~tab&"       Best used with EP Haggle to get MCIC for buy/sell in megarob games."
+	setVar $BOT~help[5]  $BOT~tab&"        - Avoids trading small amounts of Fuel/Org to avoid experience."
+	setVar $BOT~help[6]  $BOT~tab&"       "
+	setVar $BOT~help[7]  $BOT~tab&"       trade {h/t} {q}"
+	setVar $BOT~help[8]  $BOT~tab&"       "
+	setVar $BOT~help[9]  $BOT~tab&" Options:"
+	setVar $BOT~help[10]  $BOT~tab&"    {q}       How much equipment to keep post trade. "
+	setVar $BOT~help[11]  $BOT~tab&"              - Default is 5"
+	setVar $BOT~help[12]  $BOT~tab&"    {h/t}     h  - internal haggle; "
+	setVar $BOT~help[13] $BOT~tab&"               t  - 3rd party haggle like EP - DEFAULT."
+	
+	gosub :BOT~help_file
+
+	setVar $BOT~script_title "Trade"
+	gosub :BOT~banner
+
+
+	
+	setVar $haggle "t"
+	setVar $keepEquip 5
+	
+	getWord $bot~user_command_line $parm1 1
+	getWord $bot~user_command_line $parm2 2
+
+	
+	if ($parm1 <> "")
+
+		if ($parm1 = "h")
+			setVar $haggle "h"
+		elseif ($parm1 = "t")
+			setVar $haggle "t"
+		else
+			isNumber $test $parm1
+			if ($test = FALSE)
+				setVar $SWITCHBOARD~message "Pleae enter a number for the equip to keep.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			else
+				setVar $keepEquip $parm1
+			end
+		end
+	
+	end
+	if ($parm2 <> "")
+		if ($parm2 = "h")
+			setVar $haggle "h"
+		elseif ($parm2 = "t")
+			setVar $haggle "t"
+		else
+			isNumber $test $parm2
+			if ($test = FALSE)
+				setVar $SWITCHBOARD~message "Please enter a number for the equip to keep2.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			else
+				setVar $keepEquip $parm2
+			end
+			
+		end
+	end
+	if ($keepEquip = 0)
+		setVar $keepEquip 5
+	end
+	
+
+
+	gosub :player~quikstats
+	
+	setVar $startingLocation $PLAYER~CURRENT_PROMPT
+	if ($startingLocation <> "Command")
+		setVar $SWITCHBOARD~message "Trade Must start at command prompt.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+
+	end
+
+	
+	
+	setVar $empty_holds ($PLAYER~TOTAL_HOLDS - ($player~ORE_HOLDS + $player~ORGANIC_HOLDS + $player~EQUIPMENT_HOLDS + $PLAYER~COLONIST_HOLDS))
+
+	if ($PLAYER~COLONIST_HOLDS > 0)
+		setVar $SWITCHBOARD~message "Don't bore the tourists, offload the colonists.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+
+
+	gosub :chkFtr
+	
+	setVar $virtFreeHolds $empty_holds
+	setVar $sellOre 0
+	setVar $sellOrg 0
+	setVar $sellEquip 0
+
+	setVar $buyOre 0
+	setVar $buyOrg 0
+	setVar $buyEquip 0
+
+	if (($player~ORE_HOLDS > 0) and (PORT.BUYFUEL[CURRENTSECTOR] = 1))
+		setVar $sellOre $player~ORE_HOLDS
+		setVar $virtFreeHolds ($virtFreeHolds + $sellOre)
+	end
+
+	if (($player~ORGANIC_HOLDS > 0) and (PORT.BUYORG[CURRENTSECTOR] = 1))
+		setVar $sellOrg $player~ORGANIC_HOLDS
+		setVar $virtFreeHolds ($virtFreeHolds + $sellOrg)
+	end
+
+	if (($player~EQUIPMENT_HOLDS > 0) and (PORT.BUYEQUIP[CURRENTSECTOR] = 1))
+		if ($player~EQUIPMENT_HOLDS <= $keepEquip)
+			setVar $sellEquip 1
+			setVar $virtFreeHolds ($virtFreeHolds + 1)
+		else
+			setVar $sellEquip ($player~EQUIPMENT_HOLDS - $keepEquip)
+			setVar $virtFreeHolds ($virtFreeHolds + $sellEquip)
+		end
+		
+	end
+
+	if ($virtFreeHolds > $keepEquip)
+	
+		if (PORT.BUYEQUIP[CURRENTSECTOR] = 0)
+			setVar $buyEquip ($virtFreeHolds - $keepEquip)
+
+		else
+			if (PORT.BUYORG[CURRENTSECTOR] = 0)
+				setVar $buyOrg ($virtFreeHolds - $keepEquip)
+				if ($buyOrg < $keepEquip)
+					setVar $buyOrg 0
+				end 
+			else
+				if (PORT.BUYFUEL[CURRENTSECTOR] = 0)
+					setVar $buyOre ($virtFreeHolds - $keepEquip)
+					if ($buyOre < $keepEquip)
+						setVar $buyOre 0
+					end 
+				end
+			end
+		end
+	else
+		if (($virtFreeHolds <= $keepEquip) and ($virtFreeHolds > 0))
+			if (PORT.BUYEQUIP[CURRENTSECTOR] = 0)
+				setVar $buyEquip 1
+			end
+		end
+	end
+
+
+	setVar $trading ($sellOre + $sellOrg + $sellEquip + $buyOre + $buyOrg + $buyEquip)
+	if ($trading > 0)
+		gosub :voidadjacent
+		goSub :portandtrade
+		gosub :clearadjacent
+	else
+		setVar $SWITCHBOARD~message "Nothing to trade; have a nice day!*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	
+
+halt
+
+
+:portandtrade
+	
+	//
+	setVar $report 0
+	send "p   t"
+	waitfor "Commerce report for"
+	
+	setTextLineTrigger checkCash :checkCash "empty cargo holds"
+	setTextLineTrigger portFail :portFail "ou don't have anything they want, and they don't have anything you can b"
+	pause
+	:portFail
+		setVar $SWITCHBOARD~message "Oops nothing to trade; script fail?*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	:checkCash
+		killAllTriggers
+		
+
+
+	killalltriggers
+	:tradeloop
+	setTextTrigger sell1 :sell1 "How many holds of Fuel Ore do you want to sell"
+	setTextTrigger sell2 :sell2 "How many holds of Organics do you want to sell"
+	setTextTrigger sell3 :sell3 "How many holds of Equipment do you want to sell"
+	setTextTrigger buy1 :buy1 "How many holds of Fuel Ore do you want to buy"
+	setTextTrigger buy2 :buy2 "How many holds of Organics do you want to buy"
+	setTextTrigger buy3 :buy3 "How many holds of Equipment do you want to buy"
+	setTextTrigger tradeloopdone :tradeloopdone "Command ["
+	pause
+
+	:sell1
+		killalltriggers
+		setVar $PLAYER~multiplier 105
+		if ($sellOre > 0)
+			setVar $tradeQuant $sellOre
+			gosub :doTrade
+		else
+			gosub :noTrade
+		end
+		goto :tradeloop
+	:sell2
+		killalltriggers
+		setVar $PLAYER~multiplier 105
+		if ($sellOrg > 0)
+			setVar $tradeQuant $sellOrg
+			gosub :doTrade
+		else
+			gosub :noTrade
+		end
+		goto :tradeloop
+	:sell3
+		killalltriggers
+		setVar $PLAYER~multiplier 105
+		if ($sellEquip > 0)
+			setVar $tradeQuant $sellEquip
+			gosub :doTrade
+		else
+			gosub :noTrade
+		end
+		goto :tradeloop
+		
+	:buy1
+		killalltriggers
+		setVar $PLAYER~multiplier 95
+		if ($buyOre > 0)
+			setVar $tradeQuant $buyOre
+			gosub :doTrade
+		else
+			gosub :noTrade
+		end
+		goto :tradeloop
+	:buy2
+		killalltriggers
+		setVar $PLAYER~multiplier 95
+		if ($buyOrg > 0)
+			setVar $tradeQuant $buyOrg
+			gosub :doTrade
+		else
+			gosub :noTrade
+		end
+		goto :tradeloop
+	:buy3
+		killalltriggers
+		setVar $PLAYER~multiplier 95
+
+		if ($buyEquip > 0)
+			setVar $tradeQuant $buyEquip
+			gosub :doTrade
+		else
+			gosub :noTrade
+		end
+		goto :tradeloop
+
+	:tradeloopdone
+		killalltriggers
+return
+
+
+:noTrade
+	send "0*"
+	waitfor "empty cargo holds."
+return
+
+:doTrade
+	
+	send $tradeQuant "*"
+	
+		
+	if ($haggle = "t")
+		waitfor "Agreed,"
+		setTextLineTrigger tradeFin :tradeFin "empty cargo holds"
+		pause
+		:tradeFin
+			killAllTriggers
+			getWord CURRENTLINE $nCredits 3
+			stripText $nCredits ","
+			
+			if ($nCredits = $cCredits)
+				setVar $report 1
+			else
+				setVar $cCredits $nCredits
+			end	
+	elseif ($haggle = "h")
+	
+		gosub :PLAYER~startHaggle
+	end
+	
+return
+
+
+
+
+
+:chkFtr
+	
+	if (SECTOR.FIGS.QUANTITY[CURRENTSECTOR] = 0)
+		if (CURRENTSECTOR > 10)
+			send "f   1  *  c  d "
+
+		end
+	end
+
+return
+
+
+
+:voidadjacent
+	
+	setVar $voidSector CURRENTSECTOR
+	gosub :voidadjacentPPT
+	
+
+return
+:clearadjacent
+	
+	setVar $voidSector CURRENTSECTOR
+	gosub :clearadjacentPPT
+
+return
+
+:voidadjacentPPT
+    getSector $voidSector $sectorInfo
+    if ($sectorInfo.warp[1] = 0)
+        send "'This sector has no warps, maybe you need to scan it first*"
+        halt
+    else
+        setVar $voidsect 0
+        :voids
+        add $voidsect 1
+        if ($voidsect < 7)
+            if ($sectorInfo.warp[$voidsect] <> 0)
+		
+		send "CV" & $sectorInfo.warp[$voidsect] & "*Q"
+		
+            end
+            goto :voids
+        end
+	setVar $SWITCHBOARD~message "Avoids set on adjacent sectors!*"
+	gosub :SWITCHBOARD~switchboard
+       
+        send "/"
+        waitfor " Sect "    
+    end
+return
+
+:clearadjacentPPT
+    getSector $voidSector $sectorInfo
+    if ($sectorInfo.warp[1] = 0)
+        send "'{" $bot_name "} -This sector has no warps, try to scan it first!*"
+        halt
+    else
+        setVar $voidsect 0
+        :clearvoids
+        add $voidsect 1
+        if ($voidsect < 7)
+            if ($sectorInfo.warp[$voidsect] <> 0)
+		
+		send "CV0*YN" & $sectorInfo.warp[$voidsect] & "*Q"
+		
+            end
+            goto :clearvoids
+        end
+
+        setVar $SWITCHBOARD~message "Avoids cleared on adjacent sectors!*"
+	gosub :SWITCHBOARD~switchboard
+       
+        send "/"
+        waitfor " Sect "
+    end
+return
+
+halt
+
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"

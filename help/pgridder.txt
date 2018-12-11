@@ -1,0 +1,10 @@
+                     
+   
+                <<<< pgridder >>>>
+   
+     Pgrids automatically until stopped. pgrid {fighterToDrop} 
+               
+     Requires corpie running saveme
+      
+        Options:
+               {fightersToDrop} - how many figs to drop in sector

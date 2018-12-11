@@ -142,7 +142,10 @@
 
 	gosub :PLAYER~quikstats
 	
-	setVar $PLAYER~surroundFigs 1
+	loadvar $PLAYER~surroundFigs 
+	if ($PLAYER~surroundFigs <= 0)
+		setvar $PLAYER~surroundFigs 1
+	end
 	setVar $PLAYER~onlyAliens TRUE
 	setVar $PLAYER~cappingAliens TRUE
 	setVar $PLAYER~defenderCapping TRUE
@@ -392,3 +395,4 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+
