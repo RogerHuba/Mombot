@@ -18,10 +18,11 @@
 	setVar $BOT~help[4]  $BOT~tab&"Best to use with a defender ship."
 	setVar $BOT~help[5]  $BOT~tab&"         "
 	setVar $BOT~help[6]  $BOT~tab&"Options: "
-	setVar $BOT~help[7]  $BOT~tab&" {off}   - Turns off script and sets planet and ship corporate."
-	setVar $BOT~help[8]  $BOT~tab&"{corp}   - Doesn't turn everything personal."
-	setVar $BOT~help[9]  $BOT~tab&"{sell}   - Sell everyship you capture at dock and deposit the cash."
-	setVar $BOT~help[10] $BOT~tab&"{refuel} - Refuel planet if possible."
+	setVar $BOT~help[7]  $BOT~tab&"    {off} - Turns off script and sets planet and ship corporate."
+	setVar $BOT~help[8]  $BOT~tab&"   {corp} - Doesn't turn everything personal."
+	setVar $BOT~help[9]  $BOT~tab&"   {sell} - Sell everyship you capture at dock and deposit the cash."
+	setVar $BOT~help[10] $BOT~tab&" {refuel} - Refuel planet if possible."
+	setVar $BOT~help[10] $BOT~tab&"{upgrade} - Upgrade fuel port if possible."
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Alien Hunter"
@@ -77,6 +78,13 @@
 		setvar $refuel true
 	else
 		setvar $refuel false
+	end
+
+	getwordpos $bot~user_command_line $pos "upgrade"
+	if ($pos > 0)
+		setvar $upgrade true
+	else
+		setvar $upgrade false
 	end
 
 	getwordpos $bot~user_command_line $pos "sell"
@@ -412,16 +420,63 @@ return
 		end
 		if ($startingSector = $player~current_sector)
 			if ($refuel = true)
-				setVar $BOT~command "buy"
-				setVar $BOT~user_command_line " buy f silent"
-				setVar $BOT~parm1 "f"
-				saveVar $BOT~parm1
-				saveVar $BOT~command
-				saveVar $BOT~user_command_line
-				load "scripts\mombot\commands\resource\buy.cts"
-				setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\mombot\commands\resource\mow.cts"
-				pause
-				:mowended
+				if ($upgrade)
+					killAllTriggers
+					gosub :PLAYER~quikstats
+					send "q"
+					waitOn "Planet command (?"
+					gosub :PLANET~getPlanetInfo
+					send "c"
+					setVar $total_creds_needed (300*7000)
+					if ($total_creds_needed > $PLAYER~CREDITS)
+						setVar $cashonhand $PLANET~citadel_credits
+						add $cashonhand $PLAYER~CREDITS
+						if ($cashonhand > $total_creds_needed)
+						        send "T T " & $PLAYER~CREDITS & "* "
+				        		send "T F " & $total_creds_needed & "* "
+				        		setVar $PLAYER~CREDITS $total_creds_needed
+		    				end
+					end
+					send "q q *O 1"
+					waitOn ", 0 to quit)"
+					getWord CURRENTLINE $upgradeAmount 9
+					stripText $upgradeAmount "("
+					send $upgradeAmount&"* * *CR*Q"
+					waitOn "What sector is the port in? ["&$PLAYER~CURRENT_SECTOR&"]"
+					setTextLineTrigger getFuel2 :fuelDuring "Fuel Ore"
+					pause
+					:fuelDuring
+						killalltriggers
+						getWord CURRENTLINE $totalPortFuel 4
+						waitOn "<Computer deactivated>"
+					gosub :PLAYER~quikstats
+					gosub :PLANET~landOnPlanetEnterCitadel
+				end
+				if (($PLANET~planet_fuel_max-$PLANET~planet_fuel) < $totalPortFuel)
+					setVar $turnsToEmpty (($PLANET~planet_fuel_max-$PLANET~planet_fuel)/$PLAYER~TOTAL_HOLDS)
+					add $totalHolds ($PLANET~planet_fuel_max-$PLANET~planet_fuel)
+					setVar $isDone TRUE
+				else
+					setVar $turnsToEmpty ($totalPortFuel/$PLAYER~TOTAL_HOLDS)
+					add $totalHolds $totalPortFuel
+				end
+				setVar $PLAYER~buyobject "f"
+				setVar $PLAYER~buytype "s"
+				setVar $PLAYER~buydownRoundsFromParam $turnsToEmpty
+				gosub :PLAYER~buy
+				gosub :PLAYER~quikstats
+				send "c r*q "
+				
+				if ($PLAYER~exit_message <> "Normal Exit")
+					setVar $SWITCHBOARD~message $PLAYER~exit_message&"*"
+					gosub :SWITCHBOARD~switchboard
+				end
+				if (($PLAYER~unlimitedGame = FALSE) AND (($PLAYER~turns-$turnsToEmpty) <= $BOT~bot_turn_limit))
+					setVar $SWITCHBOARD~message "Turns too low to continue.*"
+	        		gosub :SWITCHBOARD~switchboard
+					halt	        
+				end
+
 			end
 		end
 		killalltriggers
