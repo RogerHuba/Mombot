@@ -8,17 +8,20 @@
 	setVar $parm7 $BOT~parm7
 	setVar $parm8 $BOT~parm8
 	loadVar $MAP~STARDOCK
+	loadVar $MAP~home_sector
 	setVar $user_command_line $BOT~user_command_line
 
 
-	setVar $BOT~help[1] $BOT~tab&"Hunts down aliens and captures their ships.  "
-	setVar $BOT~help[2] $BOT~tab&"Will automatically turn ships and planet personal."
-	setVar $BOT~help[3] $BOT~tab&"Will use shields on planet as well."
-	setVar $BOT~help[4] $BOT~tab&"Best to use with a defender ship."
-	setVar $BOT~help[5] $BOT~tab&"         "
-	setVar $BOT~help[6] $BOT~tab&"Options: "
-	setVar $BOT~help[7] $BOT~tab&" {off} - Turns off script and sets planet and ship corporate."
-	setVar $BOT~help[8] $BOT~tab&"{corp} - Doesn't turn everything personal."
+	setVar $BOT~help[1]  $BOT~tab&"Hunts down aliens and captures their ships.  "
+	setVar $BOT~help[2]  $BOT~tab&"Will automatically turn ships and planet personal."
+	setVar $BOT~help[3]  $BOT~tab&"Will use shields on planet as well."
+	setVar $BOT~help[4]  $BOT~tab&"Best to use with a defender ship."
+	setVar $BOT~help[5]  $BOT~tab&"         "
+	setVar $BOT~help[6]  $BOT~tab&"Options: "
+	setVar $BOT~help[7]  $BOT~tab&" {off}   - Turns off script and sets planet and ship corporate."
+	setVar $BOT~help[8]  $BOT~tab&"{corp}   - Doesn't turn everything personal."
+	setVar $BOT~help[9]  $BOT~tab&"{sell}   - Sell everyship you capture at dock and deposit the cash."
+	setVar $BOT~help[10] $BOT~tab&"{refuel} - Refuel planet if possible."
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Alien Hunter"
@@ -67,6 +70,13 @@
 		setvar $corp true
 	else
 		setvar $corp false
+	end
+
+	getwordpos $bot~user_command_line $pos "refuel"
+	if ($pos > 0)
+		setvar $refuel true
+	else
+		setvar $refuel false
 	end
 
 	getwordpos $bot~user_command_line $pos "sell"
@@ -357,10 +367,26 @@ return
 			
 			setVar $emptyShips SECTOR.SHIPCOUNT[$PLAYER~CURRENT_SECTOR]
 			if ($emptyShips > 0)
+				setvar $i 1
+				setvar $found_keeper false
+				while ($i <= $emptyShips)
+					setvar $ship_name SECTOR.SHIPS[$player~current_sector][$i]
+					lowercase $ship_name
+					getwordpos $ship_name $pos "alien starship"
+					if ($pos > 0)
+						setvar $found_keeper true
+					end
+					add $i 1
+				end
 				setVar $BOT~command "moveship"
 				loadVar $MAP~stardock
-				setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
-				setVar $BOT~parm1 $MAP~stardock
+				if ($found_keeper = true)
+					setVar $BOT~user_command_line " moveship h silent"
+					setVar $BOT~parm1 $MAP~home_sector
+				else
+					setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
+					setVar $BOT~parm1 $MAP~stardock
+				end
 				saveVar $BOT~parm1
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
@@ -382,6 +408,20 @@ return
 					:mowended
 					gosub :PLANET~landingSub
 				end
+			end
+		end
+		if ($startingSector = $player~current_sector)
+			if ($refuel = true)
+				setVar $BOT~command "buy"
+				setVar $BOT~user_command_line " buy f silent"
+				setVar $BOT~parm1 "f"
+				saveVar $BOT~parm1
+				saveVar $BOT~command
+				saveVar $BOT~user_command_line
+				load "scripts\MomBot\commands\resource\buy.cts"
+				setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\MomBot\commands\resource\mow.cts"
+				pause
+				:mowended
 			end
 		end
 		killalltriggers
