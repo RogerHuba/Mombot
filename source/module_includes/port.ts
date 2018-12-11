@@ -1,5 +1,4 @@
 
-    logging off
 #============================== MAX PORT ==============================
 :upgrade_port
 :max
@@ -384,11 +383,11 @@ end
         gosub :player~quikstats
         setVar $CashAmount ($player~CREDITS - $CASH)
         gosub :CommaSize
-        send "'{" $bot_name "} - You sold " $inc " ships. You made $" $CashAmount " credits.*"
+        send "'{" $bot~bot_name "} - You sold " $inc " ships. You made $" $CashAmount " credits.*"
         waitfor "Message sent on sub-space channel"
         
     elseif ($inc < 1)
-        send "'{" $bot_name "} - No Ships to Sell.*"
+        send "'{" $bot~bot_name "} - No Ships to Sell.*"
         waitfor "Message sent on sub-space channel"
         
     end

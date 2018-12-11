@@ -1,5 +1,4 @@
-	logging off
-		gosub :BOT~loadVars
+	gosub :BOT~loadVars
 	setVar $parm1 $BOT~parm1
 	setVar $parm2 $BOT~parm2
 	setVar $parm3 $BOT~parm3
@@ -18,7 +17,8 @@
 	setVar $BOT~help[4] $BOT~tab&"Best to use with a defender ship."
 	setVar $BOT~help[5] $BOT~tab&"         "
 	setVar $BOT~help[6] $BOT~tab&"Options: "
-	setVar $BOT~help[7] $BOT~tab&"{off} - Turns off script and sets planet and ship corporate."
+	setVar $BOT~help[7] $BOT~tab&" {off} - Turns off script and sets planet and ship corporate."
+	setVar $BOT~help[8] $BOT~tab&"{corp} - Doesn't turn everything personal."
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Alien Hunter"
@@ -62,6 +62,19 @@
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
+	getwordpos $bot~user_command_line $pos "corp"
+	if ($pos > 0)
+		setvar $corp true
+	else
+		setvar $corp false
+	end
+
+	getwordpos $bot~user_command_line $pos "sell"
+	if ($pos > 0)
+		setvar $sell true
+	else
+		setvar $sell false
+	end
 
 	gosub :PLAYER~getInfo
 	setVar $homesector $PLAYER~CURRENT_SECTOR
@@ -86,21 +99,28 @@
 	killalltriggers
 	send "l"&$PLANET~PLANET&"*"
 	waitOn "Planet command"
-	send "op**tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*m***cm0*co*pq"
-	
+	if ($corp <> true)
+		send "op**tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*m***cm0*co*pq"
+	else
+		send "**tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*m***cm0*"
+	end	
 	gosub :PLAYER~quikstats
 	if ($PLAYER~CURRENT_PROMPT = "Citadel")
-		setVar $SWITCHBOARD~message "Made ship and planet personal for convenience. Turning off military reaction.*"
+		if ($corp <> true)
+			setVar $SWITCHBOARD~message "Made ship and planet personal for convenience. Turning off military reaction.*"
+		else
+			setVar $SWITCHBOARD~message "Keeping planet and ship corporate for safety. Might be annoying. Turning off military reaction.*"
+		end
 		gosub :SWITCHBOARD~switchboard
 	else
 		setVar $SWITCHBOARD~message "Something went wrong during startup. Ship and planet should be personal now, so be careful.*"
 		gosub :SWITCHBOARD~switchboard
 	end
 
-	setTextTrigger need_ig :planet_ig_was_off "Your Interdictor Generator is now ACTIVE"
-	setTextTrigger skip_ig :skipplanetig "This Citadel does not have an Interdictor Generator."
-	send "n"
-	waitOn "Do you want to change this setting? (Y/N)"
+	#setTextTrigger need_ig :planet_ig_was_off "Your Interdictor Generator is now ACTIVE"
+	#setTextTrigger skip_ig :skipplanetig "This Citadel does not have an Interdictor Generator."
+	#send "n"
+	#waitOn "Do you want to change this setting? (Y/N)"
 	goto :skipplanetig
 
 	:planet_ig_was_off
@@ -114,6 +134,11 @@
 	send "*ls0*la0*"
 	setVar $SWITCHBOARD~message "Turning off quasar cannons.*"
 	gosub :SWITCHBOARD~switchboard
+
+	if ($sell = true)
+		setVar $SWITCHBOARD~message "Selling every ship after capture.  Will deposit money in the citadel.*"
+		gosub :SWITCHBOARD~switchboard
+	end
 
 	gosub :PLAYER~quikstats
 	
@@ -322,8 +347,8 @@ return
 			saveVar $BOT~parm1
 			saveVar $BOT~command
 			saveVar $BOT~user_command_line
-			load "scripts\MomBot\Modes\General\xenter.cts"
-			setEventTrigger		xenterended		:xenterended "SCRIPT STOPPED" "scripts\MomBot\Modes\General\xenter.cts"
+			load "scripts\MomBot\Commands\Grid\xenter.cts"
+			setEventTrigger		xenterended		:xenterended "SCRIPT STOPPED" "scripts\MomBot\Commands\Grid\xenter.cts"
 			pause
 			:xenterended
 			
@@ -331,7 +356,7 @@ return
 			if ($emptyShips > 0)
 				setVar $BOT~command "moveship"
 				loadVar $MAP~stardock
-				setVar $BOT~user_command_line " moveship "&$MAP~stardock&" silent"
+				setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
 				setVar $BOT~parm1 $MAP~stardock
 				saveVar $BOT~parm1
 				saveVar $BOT~command

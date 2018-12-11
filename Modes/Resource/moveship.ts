@@ -1,5 +1,4 @@
-logging off
-		gosub :BOT~loadVars
+	gosub :BOT~loadVars
 	setVar $parm1 $BOT~parm1
 	setVar $parm2 $BOT~parm2
 	setVar $parm3 $BOT~parm3
@@ -15,7 +14,7 @@ logging off
 
 	setVar $BOT~help[1]  $BOT~tab&"Moves empty ships from one sector to another."
 	setVar $BOT~help[2]  $BOT~tab&"                "
-	setVar $BOT~help[3]  $BOT~tab&"moveship [sector] {back} {sell} "
+	setVar $BOT~help[3]  $BOT~tab&"moveship [sector] {back} {sell} {dep} "
 	setVar $BOT~help[4]  $BOT~tab&"                  "
 	setVar $BOT~help[5]  $BOT~tab&"[sector] - target sector"
 	setVar $BOT~help[6]  $BOT~tab&"  [back] - will grab ships from target sector and bring"
@@ -72,6 +71,13 @@ logging off
 		setVar $sellship FALSE
 	end
 
+	getWordPos $user_command_line $pos "dep"
+	if ($pos > 0)
+		setVar $dep TRUE
+	else
+		setVar $dep FALSE
+	end
+
 	getWordPos $user_command_line $pos "silent"
 	if ($pos > 0)
 		setVar $SWITCHBOARD~self_command TRUE
@@ -124,6 +130,7 @@ logging off
 	end
 	send "*"
 	gosub :PLAYER~quikstats
+	setvar $starting_credits $player~credits
 	killtrigger PLAYER~getLine2
 	setVar $figcnt SECTOR.FIGS.QUANTITY[$startSector]
 	setVar $figowner SECTOR.FIGS.OWNER[$startSector]
@@ -302,6 +309,22 @@ logging off
 		end
 		if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
 			gosub :PLANET~landingSub
+			if ($dep = true)
+				setVar $BOT~command "dep"
+				loadVar $MAP~stardock
+				setVar $BOT~user_command_line " dep "&($player~credits-$starting_credits)
+				setVar $BOT~parm1 ($player~credits-$starting_credits)
+				setvar $parm1 $bot~parm1
+				saveVar $BOT~parm1
+				saveVar $parm1
+				saveVar $BOT~command
+				saveVar $BOT~user_command_line
+				load "scripts\MomBot\Commands\General\dep.cts"
+				setEventTrigger		depended		:depended "SCRIPT STOPPED" "scripts\MomBot\Commands\General\dep.cts"				
+				pause
+				:depended
+
+			end
 		end
 		setVar $SWITCHBOARD~message "All ships moved successfully.*"
 		gosub :SWITCHBOARD~switchboard
