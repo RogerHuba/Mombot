@@ -25,6 +25,8 @@
 	setVar $BOT~help[9]  $BOT~tab&"   {sell} - Sell everyship you capture at dock and deposit the cash."
 	setVar $BOT~help[10] $BOT~tab&" {refuel} - Refuel planet if possible."
 	setVar $BOT~help[11] $BOT~tab&"{upgrade} - Upgrade fuel port if possible."
+	setVar $BOT~help[12] $BOT~tab&" {cannon} - Will reset cannon levels after hunting alien."
+	setVar $BOT~help[13] $BOT~tab&" {return} - Return to starting sector after each hunt."
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Alien Hunter"
@@ -96,12 +98,28 @@
 		setvar $sell false
 	end
 
+	getwordpos $bot~user_command_line $pos "cannon"
+	if ($pos > 0)
+		setvar $cannon true
+	else
+		setvar $cannon false
+	end
+
+	getwordpos $bot~user_command_line $pos "return"
+	if ($pos > 0)
+		setvar $return true
+	else
+		setvar $return false
+	end
+
 	gosub :PLAYER~getInfo
 	setVar $homesector $PLAYER~CURRENT_SECTOR
     	
 	killalltriggers	
 	send "q"
 	gosub :PLANET~getPlanetInfo	
+	setvar $starting_sector_cannon $planet~sector_cannon
+	setvar $starting_atmos_cannon $planet~atmosphere_cannon
 
 	setTextTrigger need_ig :ig_was_off "Your Interdictor generator is now OFF"
 	setTextTrigger skip_ig :skipig "is not equipped with an Interdictor Generator"
@@ -124,6 +142,12 @@
 	else
 		send "**tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*m***cm0*"
 	end	
+
+	if ($cannon = false)
+		send "*ls0*la0*"
+		setVar $SWITCHBOARD~message "Turning off quasar cannons.*"
+		gosub :SWITCHBOARD~switchboard
+	end
 	gosub :PLAYER~quikstats
 	if ($PLAYER~CURRENT_PROMPT = "Citadel")
 		if ($corp <> true)
@@ -151,9 +175,6 @@
 	:skipplanetig
 	killalltriggers
 
-	send "*ls0*la0*"
-	setVar $SWITCHBOARD~message "Turning off quasar cannons.*"
-	gosub :SWITCHBOARD~switchboard
 
 	if ($sell = true)
 		setVar $SWITCHBOARD~message "Selling every ship after capture.  Will deposit money in the citadel.*"
@@ -161,7 +182,7 @@
 	end
 
 	gosub :PLAYER~quikstats
-	
+
 	loadvar $PLAYER~surroundFigs 
 	if ($PLAYER~surroundFigs <= 0)
 		setvar $PLAYER~surroundFigs 1
@@ -182,11 +203,18 @@
 
 	while (TRUE)
 		gosub :PLAYER~quikstats
+		if (($player~current_prompt = "Citadel") and ($cannon = true))
+			send " *ls"&$starting_sector_cannon&"* la"&$starting_atmos_cannon&"*"  
+		end
 		if ($PLAYER~FIGHTERS < $SHIP~SHIP_FIGHTERS_MAX)
 			setVar $SWITCHBOARD~message "Not enough fighters to continue the hunt.*"
+			gosub :switchboard~switchboard
 			send "p"&$homeSector&"*y"
 			send "'"&$SWITCHBOARD~bot_name&" scrub seek*"
 			halt
+		end
+		if ($return = true)
+			send "p"&$homeSector&"*y"
 		end
 		setVar $lastTarget ""
 		setVar $thisTarget ""
@@ -210,6 +238,7 @@
 	pause
 	:checkFighter
 		killalltriggers
+
 		cutText CURRENTLINE&" " $radio 1 1
 		getText CURRENTLINE $dropSector $START_FIG_HIT $END_FIG_HIT
 		getText CURRENTANSILINE $alien_check $START_FIG_HIT_OWNER $END_FIG_HIT_OWNER
@@ -219,7 +248,7 @@
 			pause
 		end
 		if ($dropSector <> $CURRENT_SECTOR)
-			send "p " $dropSector "*y"
+			send "*ls0* la0*  p " $dropSector "*y"
 			setTextLineTrigger pwarpNotOk :pwarpTryAdjacent "You do not have any fighters in Sector "
 			setTextLineTrigger pwarpOk :pwarpConfirmed " Planetary TransWarp Drive Engaged! "
 			setTextLineTrigger pwarpOk2 :pwarpConfirmed "You are already in that sector!"
