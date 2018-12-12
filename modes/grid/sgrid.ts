@@ -58,7 +58,7 @@
 		write "scripts\MOMBot\Help\"&$command&".txt" "                         - Default: 3                             " 
 		write "scripts\MOMBot\Help\"&$command&".txt" "   - [limps]       = Number of limpet mines to drop               " 
 		write "scripts\MOMBot\Help\"&$command&".txt" "                         - Default: 3                             " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "   - [min_unfigged]  = Minimum unfigged sectors needed to surround " 
+		write "scripts\MOMBot\Help\"&$command&".txt" "   - [min_unfigged]= Minimum unfigged sectors needed to surround  " 
 		write "scripts\MOMBot\Help\"&$command&".txt" "                         - Default: 3                             " 
 		write "scripts\MOMBot\Help\"&$command&".txt" "   - [safety]      = 'ultra', 'safe', and 'none'                  " 
 		write "scripts\MOMBot\Help\"&$command&".txt" "              none = Will surround all figged sectors             " 

@@ -885,6 +885,9 @@ return
             setVar $figOwner SECTOR.FIGS.OWNER[$ADJ_SEC]
             setVar $mineOwner SECTOR.MINES.OWNER[$ADJ_SEC]
             setVar $limpOwner SECTOR.LIMPETS.OWNER[$ADJ_SEC]
+            getWord $figOwner $alienCheck 1
+            lowercase $alienCheck
+            
             if (($surroundOverwrite = FALSE) AND (($figOwner = "belong to your Corp") OR ($figOwner = "yours")))
                 add $yourOwnCount 1
                 if ($yourOwnCount = $totalWarps)
@@ -900,7 +903,7 @@ return
                 setVar $surroundOutput $surroundOutput&"(Surround) Avoided shielded planet in sector "&$adj_sec&".*"
             elseif ($distance > 1)
                 setVar $surroundOutput $surroundOutput&"(Surround) Avoided one way in sector "&$adj_sec&".*"
-            elseif (($surroundPassive = TRUE) AND (((SECTOR.ANOMALY[$ADJ_SEC] = TRUE) AND (($limpOwner <> "belong to your Corp") AND ($limpOwner <> "yours"))) OR (SECTOR.FIGS.QUANTITY[$ADJ_SEC] > 0) OR ((SECTOR.MINES.QUANTITY[$ADJ_SEC] > 0) AND (($mineOwner <> "belong to your Corp") AND ($mineOwner <> "yours")))))
+            elseif (($surroundPassive = TRUE) AND (((SECTOR.ANOMALY[$ADJ_SEC] = TRUE) AND (($limpOwner <> "belong to your Corp") AND ($limpOwner <> "yours"))) OR ((SECTOR.FIGS.QUANTITY[$ADJ_SEC] > 0) and ($alienCheck <> "the")) OR ((SECTOR.MINES.QUANTITY[$ADJ_SEC] > 0) AND (($mineOwner <> "belong to your Corp") AND ($mineOwner <> "yours")))))
                 setVar $surroundOutput $surroundOutput&"(Surround) Avoided non-passive situation in sector "&$adj_sec&".*"
             else
                 if ($dropOffensive = TRUE)

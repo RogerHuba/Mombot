@@ -165,7 +165,8 @@ return
 
 :getFakeTraders
     setVar $federalsInSector FALSE
-        getWordPos $sectorData $posShips "[0m[33mShips   [1m:"
+    setvar $federalCount 0
+    getWordPos $sectorData $posShips "[0m[33mShips   [1m:"
     getWordPos $sectorData $posTraders "[0m[33mTraders [1m:"
     getWordPos $sectorData $posFederals "[0m[33mFederals[1m:"
     if ($posFederals > 0)
@@ -201,6 +202,12 @@ return
         getWordPos $temp $pos4 "[0;32mw/ "&#27&"[1;33m"
         if ((($pos4 > 0) OR ($pos > 0) OR ($pos2 > 0)) AND ($pos3 <= 0))
             setVar $PLAYER~FAKETRADERS[($fakeTraderCount+1)] $temp
+            getWordPos $temp $posa "Zyrain"
+            getWordPos $temp $posb "Clausewitz"
+            getWordPos $temp $posc "Nelson"
+            if (($posa > 0) or ($posb > 0) or ($posc > 0))
+                add federalCount 1
+            end
             add $fakeTraderCount 1
         end
         getText $fakeData $temp $STARTLINE $ENDLINE
