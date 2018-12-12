@@ -120,6 +120,7 @@
 	gosub :PLANET~getPlanetInfo	
 	setvar $starting_sector_cannon $planet~sector_cannon
 	setvar $starting_atmos_cannon $planet~atmosphere_cannon
+	setvar $sector_total ((($PLANET~PLANET_FUEL * $starting_sector_cannon) / 100)/3)
 
 	setTextTrigger need_ig :ig_was_off "Your Interdictor generator is now OFF"
 	setTextTrigger skip_ig :skipig "is not equipped with an Interdictor Generator"
@@ -203,18 +204,30 @@
 
 	while (TRUE)
 		gosub :PLAYER~quikstats
-		if (($player~current_prompt = "Citadel") and ($cannon = true))
-			send " *ls"&$starting_sector_cannon&"* la"&$starting_atmos_cannon&"*"  
-		end
 		if ($PLAYER~FIGHTERS < $SHIP~SHIP_FIGHTERS_MAX)
 			setVar $SWITCHBOARD~message "Not enough fighters to continue the hunt.*"
 			gosub :switchboard~switchboard
 			send "p"&$homeSector&"*y"
 			send "'"&$SWITCHBOARD~bot_name&" scrub seek*"
+			if ($cannon = true)
+				send " *ls"&$percentToSet&"* la"&$starting_atmos_cannon&"*"  
+			end
 			halt
 		end
 		if ($return = true)
 			send "p"&$homeSector&"*y"
+		end
+		if ($cannon = true)
+	        setVar $percentToSet (((3*$sector_total)*100)/$PLANET~PLANET_FUEL)
+            if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $cannonDamage)
+                add $percentToSet 1
+            end
+            if ($percentToSet > 100)
+                setVar $percentToSet 100
+            end
+
+			send " *ls"&$percentToSet&"* la"&$starting_atmos_cannon&"*"  
+
 		end
 		setVar $lastTarget ""
 		setVar $thisTarget ""
@@ -362,6 +375,7 @@ return
 	        send "q "
 			gosub :PLAYER~surround
             gosub :PLANET~landingSub
+            send "q m*** c "
 	        setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
 	        gosub :SWITCHBOARD~switchboard
 	        echo "*" & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
@@ -373,16 +387,18 @@ return
 		gosub :PLAYER~quikstats
 		setvar $startingLocation $player~current_prompt
 		setVar $SECTOR~federalCount 0
+		setvar $SECTOR~fakeTraderCount 1
 		setVar $targetsFound FALSE
+		gosub :PLAYER~quikstats
 		while ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
-		    goSub :SECTOR~getSectorData			
+			setvar $player~startingLocation $player~current_prompt
+			goSub :SECTOR~getSectorData			
 		    if ($SECTOR~realTraderCount > $SECTOR~corpieCount)
 		    	setvar $targetsFound true
 		    	gosub :PLANET~landingSub
 				gosub :player~fastCitadelAttack
 				send "q q q* * "    	
-				setVar $SWITCHBOARD~message "Just attacked (and hopefully killed) a trader in my sector! Sector "&$player~current_sector&".*"
-				gosub :SWITCHBOARD~switchboard
+				send "'Just attacked (and hopefully killed) a trader in my sector! Sector "&$player~current_sector&".*"
 		    end
 		    if ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
 		    	setVar $targetsFound TRUE
