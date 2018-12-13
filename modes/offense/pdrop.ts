@@ -426,7 +426,7 @@ reqRecording
 			setVar $isFound TRUE
 		else
 			add $i 1
-			setVar $checkSector SECTOR.WARPS[$sector][$i]
+			setVar $checkSector SECTOR.WARPS[$dropSector][$i]
 		end
 	end
 	

@@ -92,7 +92,7 @@ logging off
 	gosub :SWITCHBOARD~switchboard
 	:tryshipscan
 		send "|xnq*@|"
-		setTextLineTrigger statlinetrig :shipline "-----------------------------------------------------------------------------"
+		setTextLineTrigger statlinetrig :shipline "-----------------------------"
 		setTextLineTrigger towalreadyon :continuetowon "You shut off your Tractor Beam."
 		setTextLineTrigger doneships :gotShips "Average Interval Lag:"
 		pause
@@ -122,6 +122,7 @@ logging off
 
 
 	:gotShips
+		killtrigger getline
 		if ($startingLocation <> "Command")
 			send "l "&$PLANET~PLANET&"* c    "
 		else
@@ -145,17 +146,17 @@ logging off
 				if ((($bubble = TRUE) AND ($isBubble = TRUE)) OR (($bubble = FALSE) AND ($isBubble <> TRUE)))
 					setVar $sectors_done $sectors_done&" "&$theShips[$i]&" "
 					setVar $BOT~command "moveship"
-					setVar $BOT~user_command_line "moveship "&$theShips[$i]&" back "
+					setVar $BOT~user_command_line "moveship "&$theShips[$i]&" back silent "
 					setVar $BOT~parm1 $theShips[$i]
 					setVar $BOT~parm2 "back"
 					saveVar $BOT~parm1
 					saveVar $BOT~parm2
 					saveVar $BOT~command
 					saveVar $BOT~user_command_line
-					stop "scripts\mombot\modes\Resource\moveship.cts"
+					stop "scripts\mombot\modes\resource\moveship.cts"
 					gosub :PLAYER~quikstats
-					setEventTrigger		moveshipended2		:moveshipended "SCRIPT STOPPED" "scripts\mombot\modes\Resource\moveship.cts"
-					load "scripts\mombot\modes\Resource\moveship.cts"
+					setEventTrigger		moveshipended2		:moveshipended "SCRIPT STOPPED" "scripts\mombot\modes\resource\moveship.cts"
+					load "scripts\mombot\modes\resource\moveship.cts"
 					pause
 					:moveshipended
 				end

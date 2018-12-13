@@ -56,8 +56,15 @@
 		halt
 	end
 
-
 	getWordPos $user_command_line $pos "back"
+	if ($pos > 0)
+		setVar $back TRUE
+	else
+		setVar $back FALSE
+	end
+
+
+	getWordPos $user_command_line $pos "silent"
 	if ($pos > 0)
 		setVar $silent_running TRUE
 	else

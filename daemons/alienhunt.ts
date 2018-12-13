@@ -27,6 +27,7 @@
 	setVar $BOT~help[11] $BOT~tab&"{upgrade} - Upgrade fuel port if possible."
 	setVar $BOT~help[12] $BOT~tab&" {cannon} - Will reset cannon levels after hunting alien."
 	setVar $BOT~help[13] $BOT~tab&" {return} - Return to starting sector after each hunt."
+	setVar $BOT~help[14] $BOT~tab&"{passive} - Surround passively when hunting."
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Alien Hunter"
@@ -103,6 +104,13 @@
 		setvar $cannon true
 	else
 		setvar $cannon false
+	end
+
+	getwordpos $bot~user_command_line $pos "passive"
+	if ($pos > 0)
+		setvar $passive true
+	else
+		setvar $passive false
 	end
 
 	getwordpos $bot~user_command_line $pos "return"
@@ -188,7 +196,9 @@
 	if ($PLAYER~surroundFigs <= 0)
 		setvar $PLAYER~surroundFigs 1
 	end
-	setvar $player~surroundPassive true
+	if ($passive = true)
+		setvar $player~surroundPassive true
+	end
 	setVar $PLAYER~onlyAliens TRUE
 	setVar $PLAYER~cappingAliens TRUE
 	setVar $PLAYER~defenderCapping TRUE

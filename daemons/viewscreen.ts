@@ -28,8 +28,8 @@ setvar $logFileName $bot~folder&"/"&$year & $month & $day & ".comms"
 
 setvar $count 1
 setvar $comstring ""
-setVar $comsize 300
-setVar $figsize 10
+setVar $comsize 280
+setVar $figsize 20
 setVar $comm_window_size 29
 setVar $comm_window_start_index 1
 setArray $coms $comsize
@@ -107,6 +107,16 @@ setVar $figs[7] ""
 setVar $figs[8] ""
 setVar $figs[9] ""
 setVar $figs[10] ""
+setVar $figs[11] ""
+setVar $figs[12] ""
+setVar $figs[13] ""
+setVar $figs[14] ""
+setVar $figs[15] ""
+setVar $figs[16] ""
+setVar $figs[17] ""
+setVar $figs[18] ""
+setVar $figs[19] ""
+setVar $figs[20] ""
 
 :start
 if ($BOT~botIsDeaf)
