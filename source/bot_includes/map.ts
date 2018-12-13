@@ -475,7 +475,12 @@ return
         if ($k <> 1)
             setVar $output $output&ANSI_2&" - "
         end
-        setVar $output $output&ANSI_11&SECTOR.WARPS[$i][$k]
+        getSectorParameter SECTOR.WARPS[$i][$k] "FIGSEC" $check
+        if ($check = true)
+            setVar $output $output&ANSI_11&"["&SECTOR.WARPS[$i][$k]&"]"
+        else
+            setVar $output $output&ANSI_11&SECTOR.WARPS[$i][$k]
+        end
         add $k 1
     end
     setVar $k 1
