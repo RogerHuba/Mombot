@@ -15,7 +15,8 @@ return
     loadVar $command 
     loadVar $SWITCHBOARD~bot_name
     setVar $bot_name $SWITCHBOARD~bot_name
-    
+    loadvar $planet~planet_file
+    loadvar $ship~cap_file
     loadVar $user_command_line 
     loadVar $parm1
     loadVar $parm2

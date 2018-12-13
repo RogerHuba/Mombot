@@ -188,6 +188,7 @@
 	if ($PLAYER~surroundFigs <= 0)
 		setvar $PLAYER~surroundFigs 1
 	end
+	setvar $player~surroundPassive true
 	setVar $PLAYER~onlyAliens TRUE
 	setVar $PLAYER~cappingAliens TRUE
 	setVar $PLAYER~defenderCapping TRUE
@@ -242,12 +243,19 @@
 
 :validateFighterHit
 	setTextLineTrigger fig :checkFighter "Deployed Fighters Report Sector"
+	setTextTrigger armid :attackSectorMine "Your mines in "
 	setTextLineTrigger liftsoff :pwarpConfirmed " lifts off from "
 	gosub :BOT~disconnect_triggers
 	pause
 
-
-
+	:attackSectorMine
+		gosub :validateMineHit
+		if ($isValid = true)
+			goto :go_to_drop_sector
+		else
+			setTextTrigger armid :attackSectorMine "Your mines in "
+			pause
+		end
 	pause
 	:checkFighter
 		killalltriggers
@@ -260,6 +268,7 @@
 			setTextLineTrigger fig :checkFighter "Deployed Fighters Report Sector"
 			pause
 		end
+	:go_to_drop_sector
 		if ($dropSector <> $CURRENT_SECTOR)
 			send "*ls0* la0*  p " $dropSector "*y"
 			setTextLineTrigger pwarpNotOk :pwarpTryAdjacent "You do not have any fighters in Sector "
@@ -436,6 +445,7 @@ return
 					setvar $ship_name SECTOR.SHIPS[$player~current_sector][$i]
 					lowercase $ship_name
 					getwordpos $ship_name $pos "alien starship"
+					send "'[["&$ship_name&"]]*"
 					if ($pos > 0)
 						setvar $found_keeper true
 					end
@@ -542,6 +552,23 @@ return
 		end
 		killalltriggers
 return
+
+:validateMineHit
+	setVar $isValid FALSE
+	cutText CURRENTLINE&"    " $ck 1 1
+	if ($ck <> "Y")
+		return
+	end
+	getText CURRENTLINE $dropSector "Your mines in " " did"
+	getText CURRENTANSILINE&"[][][]" $alien_check "Your mines in" "[][][]"
+	getWordPos CURRENTLINE $pos " damage to "
+	getWordPos $alien_check $apos $ALIEN_ANSI
+	if (($apos > 0) OR ($pos = 0))
+		return
+	end
+	setVar $isValid TRUE
+return
+
 
 #INCLUDES:
 include "source\module_includes\bot"

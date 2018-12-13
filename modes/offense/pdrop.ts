@@ -1,95 +1,95 @@
-
+reqRecording
 # Mind Over Matter Planet Drop
 # Author: Mind Dagger
 
-	logging off
-	setVar $FIG_FILE 		"_MOM_" & GAMENAME & ".figs"
-	setVar $LIMP_FILE 		"_MOM_" & GAMENAME & ".limps"
-	setVar $ARMID_FILE 		"_MOM_" & GAMENAME & ".armids"
+	gosub :BOT~loadVars
+	setVar $BOT~command "pdrop"
+	loadVar $BOT~bot_turn_limit
+	loadVar $MAP~stardock
+	loadvar $bot~subspace
+	loadvar $switchboard~self_command
+
+	setVar $BOT~help[1]   $BOT~tab&"pdrop [on/off]{delay}{drop type}{trigger}{return}{kill} "
+	setVar $BOT~help[2]   $BOT~tab&"       "
+	setVar $BOT~help[3]   $BOT~tab&"     - [delay]     = delay before dropping in milliseconds      "
+	setVar $BOT~help[4]   $BOT~tab&"     - [drop type] = [d]irect, [a]djacent, [s]urround, "
+	setvar $BOT~help[5]   $BOT~tab&"                     or [da] direct, then adjacent"
+	setVar $BOT~help[6]   $BOT~tab&"     - [delay]     = delay before dropping in milliseconds "
+	setVar $BOT~help[7]   $BOT~tab&"     - [trigger]   = [f]igs, [fm] figs/mines,  "
+	setVar $BOT~help[8]   $BOT~tab&"                     [m]ines, [uf] No-Fig Mines"
+	setVar $BOT~help[9]   $BOT~tab&"     - [return]    = will return planet home after 10 seconds"
+	setVar $BOT~help[10]  $BOT~tab&"     - [kill]      = checks for enemy, and kills if possible"
+	gosub :BOT~help_file
+
+	setVar $BOT~script_title "Planet Dropper"
+	gosub :BOT~banner
+
+	setVar $PLAYER~save TRUE
+
+
+	getSectorParameter SECTORS "FIGSEC" $isFigged
+
+
 	setVar $START_FIG_HIT "Deployed Fighters Report Sector "
 	setVar $END_FIG_HIT   ":"
         setVar $ALIEN_ANSI    #27 & "[1;36m" & #27 & "["
         setVar $START_FIG_HIT_OWNER ":"
 	setVar $END_FIG_HIT_OWNER "'s"
-	logging off
-	loadVar $bot_name
-	loadVar $unlimitedGame		
-	loadVar $bot_turn_limit		
-	loadVar $user_command_line	
-	loadVar $parm1			
-	loadVar $parm2			
-	loadVar $parm3			
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
-	loadVar $stardock
-	loadVar $backdoor
-	loadVar $rylos
-	loadVar $alpha_centauri
-	loadVar $command
-	fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
-	if ($doesHelpFileExist <> TRUE)
-		write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" [on/off]{delay}{drop type}{trigger}{return}{kill}" 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    - [delay]     = delay before dropping in milliseconds       " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    - [drop type] = [d]irect, [a]djacent, [da] direct, then adjacent, or [s]urround" 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    - [delay]     = delay before dropping in milliseconds       " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    - [trigger]   = [f]igs, [fm] figs/mines, [m]ines, [uf] No-Fig Mines" 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    - [return]    = will return planet home after 10 seconds" 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    - [kill]      = checks sector for enemy, and kills if possible" 
-		send "'{" $bot_name "} - Writing help file for "&$command&" in Help directory.*"
-	end
-	getWord $user_command_line $parm1 1
-	getWord $user_command_line $parm2 2
-	getWord $user_command_line $parm3 3
-	getWord $user_command_line $parm4 4
-	getWord $user_command_line $parm5 5
-	getWord $user_command_line $parm6 6
-	getWord $user_command_line $parm7 7
-	getWord $user_command_line $parm8 8
+	loadVar $map~stardock
+	loadVar $map~backdoor
+	loadVar $map~rylos
+	loadVar $map~alpha_centauri
+	loadVar $bot~command
+	getWord $bot~user_command_line $bot~parm1 1
+	getWord $bot~user_command_line $bot~parm2 2
+	getWord $bot~user_command_line $bot~parm3 3
+	getWord $bot~user_command_line $bot~parm4 4
+	getWord $bot~user_command_line $bot~parm5 5
+	getWord $bot~user_command_line $bot~parm6 6
+	getWord $bot~user_command_line $bot~parm7 7
+	getWord $bot~user_command_line $bot~parm8 8
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	if ($isFigged = "")
-		send "'{" $bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
+		send "'{" $bot~bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
 		halt
 	end
 	
-	gosub :quikstats
-	setVar $startingLocation $CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~current_prompt
 	setVar $script_ver "Mind Over Matter Bot P-drop"
 	if ($startingLocation <> "Citadel")
-		send "'{" $bot_name "} - This script must be run from the Citadel Prompt*"
+		send "'{" $bot~bot_name "} - This script must be run from the Citadel Prompt*"
 		setVar $mode "General"
 	        halt
 	end
-	if ($parm1 <> "on")
-		send "'{" $bot_name "} - Please use [on/off] {delay} {drop type} {trigger type} {kill} {return}*"
+	if ($bot~parm1 <> "on")
+		send "'{" $bot~bot_name "} - Please use [on/off] {delay} {drop type} {trigger type} {kill} {return}*"
 		halt
 	end
-	setVar $user_command_line $user_command_line&" "
-	isNumber $test $parm2
+	setVar $bot~user_command_line $bot~user_command_line&" "
+	isNumber $test $bot~parm2
 	if ($test)
-		setVar $dropDelay $parm2
+		setVar $dropDelay $bot~parm2
 	else
 		setVar $dropDelay 0
 	end
-	getWordPos $user_command_line $pos " d "
+	getWordPos $bot~user_command_line $pos " d "
 	if ($pos > 0)
 		setVar $dropDescription "Direct"
 	else
-		getWordPos $user_command_line $pos " a "
+		getWordPos $bot~user_command_line $pos " a "
 		if ($pos > 0)
 			setVar $dropDescription "Adjacent"
 		else
-			getWordPos $user_command_line $pos " da "
+			getWordPos $bot~user_command_line $pos " da "
 			if ($pos > 0)
 				setVar $dropDescription "Direct, then Adjacent"
 			else
-				getWordPos $user_command_line $pos " s "
+				getWordPos $bot~user_command_line $pos " s "
 				if ($pos > 0)
 					setVar $dropDescription "Surround"
 				else
-					getWordPos $user_command_line $pos " ad "
+					getWordPos $bot~user_command_line $pos " ad "
 					if ($pos > 0)
 						setVar $dropDescription "Adjacent, then Direct"
 					else
@@ -99,19 +99,19 @@
 			end
 		end
 	end
-	getWordPos $user_command_line $pos " f "
+	getWordPos $bot~user_command_line $pos " f "
 	if ($pos > 0)
 		setVar $triggerDescription "Fighters"
 	else
-		getWordPos $user_command_line $pos " fm "
+		getWordPos $bot~user_command_line $pos " fm "
 		if ($pos > 0)
 			setVar $triggerDescription "Fighters and Mines"
 		else
-			getWordPos $user_command_line $pos " m "
+			getWordPos $bot~user_command_line $pos " m "
 			if ($pos > 0)
 				setVar $triggerDescription "Mines"
 			else
-				getWordPos $user_command_line $pos " uf "
+				getWordPos $bot~user_command_line $pos " uf "
 				if ($pos > 0)
 					setVar $triggerDescription "Unfigged Mines"
 				else
@@ -120,7 +120,7 @@
 			end
 		end
 	end
-	getWordPos $user_command_line $pos "return"
+	getWordPos $bot~user_command_line $pos "return"
 	if ($pos > 0)
 		setVar $returnHome TRUE
 		setVar $returnHomeDelay 10
@@ -129,7 +129,7 @@
 		setVar $returnHomeDelay 0
 	end
 
-	getWordPos $user_command_line $pos "kill"
+	getWordPos $bot~user_command_line $pos "kill"
 	if ($pos > 0)
 		setVar $attackOnSight TRUE
 	else
@@ -137,8 +137,8 @@
 	end
 	setVar $randomAttack TRUE
 
-	gosub :quikstats
-	if ($CORPORATION > 0)
+	gosub :player~quikstats
+	if ($player~corporation > 0)
 		gosub :getCorpies
 	end
 	gosub :getName
@@ -208,7 +208,7 @@
 
 	gosub :planetStats
 	
-	setVar $message "'*  {"&$bot_name&"} - Planet Dropper Currently Running On Planet "&$planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*        Drop Type: "&$dropDescription&" On "&$triggerDescription
+	setVar $message "'*  {"&$bot~bot_name&"} - Planet Dropper Currently Running On Planet "&$planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*        Drop Type: "&$dropDescription&" On "&$triggerDescription
 	if ($targetingPerson)
 		setVar $message $message&"*        Targeting: (Player) "&$target
 	else
@@ -249,11 +249,11 @@
 	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	send $message
-	gosub :quikstats
-	setVar $homeSector $CURRENT_SECTOR
+	gosub :player~quikstats
+	setVar $homeSector $player~current_sector
 	:startTargeting
 		killAllTriggers
-		if (($returnHome = TRUE) AND ($isManual <> TRUE) AND ($CURRENT_SECTOR <> $homeSector))
+		if (($returnHome = TRUE) AND ($isManual <> TRUE) AND ($player~current_sector <> $homeSector))
 			setVar $timeInMilli (($returnHomeDelay * 1000)+100)			
 			echo ANSI_6 "*    [" ANSI_14 "Returning Home In " ANSI_15 $returnHomeDelay ANSI_14 " Seconds" ANSI_6 "]*" ANSI_7
 			setDelayTrigger homeDelay :goHome $timeInMilli
@@ -355,7 +355,7 @@
 					goSub :checkForVictims
 				end	
 				goSub :getSectorLocation
-				if ($CURRENT_SECTOR <> $dropSector)
+				if ($player~current_sector <> $dropSector)
 					setSectorParameter $dropSector "FIGSEC" FALSE
 				end
 			elseif ($dropDescription = "Adjacent")			
@@ -380,7 +380,7 @@
 					goSub :checkForVictims
 				end
 			else
-				if ($dropSector <> $CURRENT_SECTOR)
+				if ($dropSector <> $player~current_sector)
 					send "p " $dropSector "*y"
 					setTextTrigger pwarpNotOk :pwarpTryAdjacent "You do not have any fighters in Sector "
 					setTextTrigger pwarpOk :pwarpDone " Planetary TransWarp Drive Engaged! "
@@ -388,7 +388,7 @@
 
 					:pwarpDone
 						killAllTriggers
-						setVar $CURRENT_SECTOR $dropSector
+						setVar $player~current_sector $dropSector
 						if ($attackOnSight)
 							goSub :checkForVictims
 						end
@@ -538,7 +538,7 @@ return
 
 :planetStats
 	send "q "
-	gosub :quikstats
+	gosub :player~quikstats
 	send "*"
 	waitOn "Planet #"
 	getWord CURRENTLINE $planet 2
@@ -645,7 +645,7 @@ return
 				stripText $temp ""
 				setVar $TRADERS[($realTraderCount+1)] $temp
 				setVar $TRADERS[($realTraderCount+1)][1] $tempCorp
-				if ($TRADERS[($realTraderCount+1)][1] = $CORPORATION)
+				if ($TRADERS[($realTraderCount+1)][1] = $player~corporation)
 					add $corpieCount 1
 				end
 				add $realTraderCount 1
@@ -796,7 +796,7 @@ return
 	setVar $targetString  "q a z "
 	setVar $isFound FALSE
 	getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
-	if ($FIGHTERS > 0)
+	if ($player~fighters > 0)
 		if ((($sec > 10) AND ($sec <> STARDOCK)) AND ($beaconPos > 0))
 			setVar $targetString $targetString&"* "
 		end
@@ -816,7 +816,7 @@ return
 		while (($c <= $realTraderCount) AND ($isFound = FALSE))
 			if ((($sec <= 10) OR ($sec = STARDOCK)) AND $TRADERS[$c][2] = TRUE)
 				setVar $targetString $targetString&"* "
-			elseif ($TRADERS[$c][1] = $CORPORATION)
+			elseif ($TRADERS[$c][1] = $player~corporation)
 				setVar $targetString $targetString&"* "
 			elseif (($targetingPerson = TRUE) AND ($TRADERS[$c] <> $target))
 				setVar $targetString $targetString&"* "
@@ -898,7 +898,7 @@ return
 	stripText $temp "Turns"
 	stripText $temp " "
 	replacetext $temp #179 ""
-	setVar $CURRENT_SECTOR $temp
+	setVar $player~current_sector $temp
 return
 
 
@@ -1067,152 +1067,12 @@ return
 	setVar $isValid TRUE
 return
 
-:quikstats
-	setVar $CURRENT_PROMPT 		"Undefined"
-	setVar $CORPORATION 0
-	killtrigger noprompt
-	killtrigger prompt1
-	killtrigger prompt2
-	killtrigger prompt3
-	killtrigger prompt4
-	killtrigger statlinetrig
-	killtrigger getLine2
-	setTextTrigger 		prompt1 	:allPrompts 		"(?="
-	setTextLineTrigger 	prompt2 	:secondaryPrompts 	"(?)"
-	setTextLineTrigger 	statlinetrig 	:statStart 		#179
-	setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
-	setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
-	send "^Q/"
-	pause
 
-	:allPrompts
-		getWord currentansiline $checkPrompt 1
-		getWord currentline $tempPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
-		end
-		setTextLineTrigger prompt1 :allPrompts "(?="
-		pause
-	:secondaryPrompts
-		getWord currentansiline $checkPrompt 1
-		getWord currentline $tempPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
-		end
-		setTextLineTrigger prompt2 :secondaryPrompts "(?)"		
-		pause
-	:terraPrompts
-		killtrigger prompt3
-		killtrigger prompt4
-		getWord currentansiline $checkPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $CURRENT_PROMPT "Terra"
-		end
-		setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
-		setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
-		pause
-	
-	:statStart
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger noprompt
-		setVar $stats ""
-		setVar $wordy ""
-		
-	
-	:statsline
-		killtrigger statlinetrig
-		killtrigger getLine2
-		setVar $line2 CURRENTLINE
-		replacetext $line2 #179 " "
-		striptext $line2 ","
-		setVar $stats $stats & $line2
-		getWordPos $line2 $pos "Ship"
-		if ($pos > 0)
-			goto :gotStats
-		else
-			setTextLineTrigger getLine2 :statsline 
-			pause
-		end
-		
-
-	:gotStats
-		setVar $stats $stats & " @@@"
-
-		setVar $current_word 0
-		while ($wordy <> "@@@")
-			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
-			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
-			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
-			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
-			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
-			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
-			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
-			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
-			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
-			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
-			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
-			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
-			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
-			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
-			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
-			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
-			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
-			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
-			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
-			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
-			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
-			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
-			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
-			elseif ($wordy = "Corp")
-				getWord $stats $CORPORATION		($current_word + 1)
-			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
-			end
-			add $current_word 1
-			getWord $stats $wordy $current_word
-		end
-	:doneQuikstats
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger statlinetrig
-		killtrigger getLine2
-	
-return
-# ============================== END QUICKSTATS SUB==============================
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"
