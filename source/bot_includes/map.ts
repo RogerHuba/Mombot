@@ -1,4 +1,38 @@
+
+
+#0 = Empty Sector, Anomaly YES = Cloaked Ship
+#1 = Marker Beacon
+#2 = Limpet Mine, Anomaly YES
+#5 = Single Fighter
+#10 = Single Armid Mine
+#21 = Navigational Hazard (per 1 percent)
+#38 = Unmanned Ship
+#40 = Manned Ship - Trader, Alien, or Ferrengi Assault Trader
+#50 = Destroyed Starport
+#77 = Ferrengi Scorpion Ship
+#100 = Starport, Ferrengi Battle Cruiser or Ferrengi Dreadnaught
+#462 = Federation Starship under Admiral Nelson
+#489 = Federation Starship under Captain Zyrain
+#500 = Planet
+#512 = Federation Starship under Admiral Clausewitz
+
+
+
+
+
+
 :displayAdjacentGridAnsi
+setvar $marker_beacon 1
+setvar $limpet_mine 2
+setvar $armid_mine 10
+setvar $fighter 5
+setvar $hazard 21
+setvar $unmanned_ship 38
+setvar $manned_ship 40
+setvar $destroyed_port 50
+setvar $port 100
+setvar $planet 500
+
     setVar $i 1
     if (CURRENTSECTOR = 0)
         gosub :player~quikstats
@@ -62,17 +96,40 @@
             if (SECTOR.DENSITY[$ADJ_SEC] = "-1")
                 echo "???        "
             else
+                setvar $calculated_density 0
+                setvar $calculated_density ($calculated_density + ((SECTOR.figs.quantity[$ADJ_SEC]) * ($fighter))) 
+                setvar $calculated_density ($calculated_density + ((SECTOR.MINES.QUANTITY[$ADJ_SEC] * $armid_mine))) 
+                setvar $calculated_density ($calculated_density + ((SECTOR.LIMPETS.QUANTITY[$ADJ_SEC] * $limpet_mine))) 
+                setvar $calculated_density ($calculated_density + ((SECTOR.NAVHAZ[$ADJ_SEC] * $hazard)))
+                if (PORT.EXISTS[$ADJ_SEC])
+                    setvar $calculated_density ($calculated_density + $port) 
+                end
+                setvar $calculated_density ($calculated_density + (((SECTOR.planetcount[$ADJ_SEC]) * $planet)))
+                setvar $calculated_density ($calculated_density + (((SECTOR.tradercount[$ADJ_SEC]) * $manned_ship)))
+                setvar $calculated_density ($calculated_density + (((SECTOR.shipcount[$ADJ_SEC]) * $unmanned_ship)))
                 setVar $dens SECTOR.DENSITY[$ADJ_SEC]
                 getLength SECTOR.DENSITY[$ADJ_SEC] $densLength
+                
                 if ($densLength >= 9)
                     echo "HIGH      "
                 else
-                    setVar $d $densLength
-                    while ($d <= 10)
-                        setVar $dens $dens&" "
-                        add $d 1
-                    end
+                    #setVar $d $densLength
+                    #while ($d <= 10)
+                    #    setVar $dens $dens&" "
+                    #    add $d 1
+                    #end
                     echo $dens
+                end
+                if ($calculated_density < $dens)
+                    if (SECTOR.ANOMOLY[$ADJ_SEC] = true)
+                        echo ansi_3 " [" ansi_12 "Enemy Limpets Detected" ansi_3 "]"
+                    end
+                elseif ($calculated_density = $dens)
+                    if ($SECTOR.ANOMOLY[$ADJ_SEC] = true)
+                        echo ansi_3 " /\/\" ansi_12 "Cloaked Ship Detected" ansi_3 "\/\/"
+                    end
+                else
+                    echo ansi_3 " [" ansi_12 "Odd Density Detected" ansi_3 "]"
                 end
                 
             end
