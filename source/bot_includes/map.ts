@@ -129,7 +129,7 @@ setvar $planet 500
                         echo ansi_3 " /\/\" ansi_12 "Cloaked Ship Detected" ansi_3 "\/\/"
                     end
                 else
-                    echo ansi_3 " [" ansi_12 "Odd Density Detected" ansi_3 "]"
+                    #echo ansi_3 " [" ansi_12 "Odd Density Detected" ansi_3 "]"
                 end
                 
             end
