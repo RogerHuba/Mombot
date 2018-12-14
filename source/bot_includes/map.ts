@@ -7,6 +7,12 @@
     if ($test)
         while (SECTOR.WARPS[CURRENTSECTOR][$i] > 0)
             setVar $ADJ_SEC SECTOR.WARPS[CURRENTSECTOR][$i]
+            setvar $isaliens false
+            setVar $adjSectorOwner SECTOR.FIGS.OWNER[$ADJ_SEC]
+            getSectorParameter $adj_sec "FIGSEC" $isFigged
+            if ($isFigged <> true)
+                setvar $isFigged false
+            end
             setVar $containsShieldedPlanet FALSE
             setVar $shieldedPlanets 0
             if ($ADJ_SEC >= 10000)
@@ -20,56 +26,27 @@
             else
                 setVar $adjust "    "
             end
-            echo ANSI_13 "* (" ANSI_10 $i ANSI_13 ")" ANSI_15 " - " ANSI_13 "<" ANSI_14 SECTOR.WARPS[CURRENTSECTOR][$i] ANSI_13 ">" $adjust ANSI_15 " Warps: " ANSI_7  SECTOR.WARPCOUNT[$ADJ_SEC] 
+
+           
+            gosub :format_sector_owner
+            echo ANSI_13 "* (" ANSI_10 $i ANSI_13 ")" ANSI_15 " - " ANSI_13 "<" $color $ADJ_SEC ANSI_13 ">" $adjust ANSI_5 
+            echo " " ansi_15 "["
+
+           
+            echo $color $temp
+
+            echo ansi_15 "]"
+
+
+            echo "   Warps" ANSI_14 ": " ANSI_14  SECTOR.WARPCOUNT[$ADJ_SEC] "   "
             getSectorParameter $ADJ_SEC "FIGSEC" $isFigged
             getSectorParameter $ADJ_SEC "MSLSEC" $isMSL
+            getSectorParameter $ADJ_SEC "BUBBLE" $isBubble
             if ($isFigged = "")
                 setVar $isFigged FALSE
             end
             if ($isMSL = "")
                 setVar $isMSL FALSE
-            end
-            setVar $adjSectorOwner SECTOR.FIGS.OWNER[$ADJ_SEC]
-            if (($isFigged) OR (($adjSectorOwner = "belong to your Corp") OR ($adjSectorOwner = "yours")) AND (SECTOR.FIGS.QUANTITY[$ADJ_SEC] > 0))
-                echo ANSI_15 " Owner: " ANSI_14 "   OURS   "
-            else
-                getWord $adjSectorOwner $alienCheck 1
-                if (($ADJ_SEC < 11) OR ($ADJ_SEC = $stardock))
-                    echo ANSI_15 " Owner: " ANSI_9 " FEDSPACE " 
-                elseif ($ADJ_SEC = $rylos)
-                    echo ANSI_15 " Owner: " ANSI_9 "  RYLOS   " 
-                elseif ($ADJ_SEC = $alpha_centauri)
-                    echo ANSI_15 " Owner: " ANSI_9 "  ALPHA   " 
-                elseif ($adjSectorOwner = "Rogue Mercenaries")
-                    echo ANSI_15 " Owner: " ANSI_7 "  ROGUE   " 
-                elseif ($alienCheck = "the")
-                    echo ANSI_15 " Owner: " ANSI_2 "  ALIENS  " 
-                elseif ($alienCheck = "The")
-                    echo ANSI_15 " Owner: " ANSI_2 "  ALIENS  " 
-                elseif (($adjSectorOwner <> "") AND ($adjSectorOwner <> "Unknown"))
-                    setVar $heads TRUE
-                    getWord $adjSectorOwner $temp 3
-                    stripText $temp ","
-                    upperCase $temp
-                    getLength $temp $tempLength
-                    if ($tempLength >= 10)
-                        cutText $temp $temp 1 10
-                    else
-                        while ((10 - $tempLength) > 0)
-                            if ($heads)
-                                setVar $temp $temp&" "
-                                setVar $heads FALSE
-                            else
-                                setVar $temp " "&$temp
-                                setVar $heads TRUE
-                            end
-                            getLength $temp $tempLength
-                        end
-                    end
-                    echo ANSI_15 " Owner: " ANSI_12 $temp
-                else
-                    echo ANSI_15 " Owner: " ANSI_13 "   NONE   "
-                end
             end
             isNumber $isNumber SECTOR.ANOMALY[$ADJ_SEC]
             if ($isNumber)
@@ -100,12 +77,15 @@
                 
             end
             if ($isMSL = TRUE)
-                echo ANSI_15 "[" ANSI_14 "MSL" ANSI_15 "]" ANSI_7 
+                echo ANSI_15 " [" ANSI_14 "MSL" ANSI_15 "]" ANSI_7 
+            end
+            if ($isBubble = true)
+                echo ANSI_15 " [" ANSI_10 "BUBBLE" ANSI_15 "]" ANSI_7 
             end
             setVar $output ""
             if (PORT.EXISTS[$adj_sec])
                 setVar $class PORT.CLASS[$adj_sec]
-                setVar $output $output&ANSI_5&"    Port   "&ANSI_14&": "&ANSI_11&PORT.NAME[$adj_sec]&ANSI_14&", "&ANSI_5&"Class "&ANSI_11&$class&" "
+                setVar $output $output&ANSI_5&"           Port"&ANSI_14&"    : "&ANSI_11&PORT.NAME[$adj_sec]&ANSI_14&", "&ANSI_5&"Class "&ANSI_11&$class&" "
                 if (($class <> "0") AND ($class <> "9"))
                     setVar $output $output&ANSI_5&"("
                     if (PORT.BUYFUEL[$adj_sec])
@@ -129,7 +109,23 @@
                 echo "*    "&$output&""
             end
             if (SECTOR.FIGS.QUANTITY[$adj_sec] > 0)
-                echo ANSI_5&"*    Fighters   : "&ANSI_11&SECTOR.FIGS.QUANTITY[$adj_sec]&ANSI_5&" ("&SECTOR.FIGS.OWNER[$adj_sec]&") "&ANSI_6&"["&SECTOR.FIGS.TYPE[$adj_sec]&"]"
+                setvar $fig_count SECTOR.FIGS.QUANTITY[$adj_sec]
+
+                if ((SECTOR.FIGS.OWNER[$adj_sec] = "belong to your Corp") or (SECTOR.FIGS.OWNER[$adj_sec] = "yours"))
+                    setvar $fig_owner ansi_11&"("&ansi_3&SECTOR.FIGS.OWNER[$adj_sec]&ansi_11&") "&ansi_6&"["&SECTOR.FIGS.TYPE[$adj_sec]&"]"
+                    setvar $fighter_color ansi_14
+                elseif ($isaliens = true)
+                    setvar $fig_owner ansi_10&"("&ansi_2&SECTOR.FIGS.OWNER[$adj_sec]&ansi_10&") "&ansi_6&"["&SECTOR.FIGS.TYPE[$adj_sec]&"]"
+                    setvar $fighter_color ansi_10
+                else
+                    setvar $fig_owner ansi_12&"("&ansi_4&SECTOR.FIGS.OWNER[$adj_sec]&ansi_12&") "&ansi_6&"["&SECTOR.FIGS.TYPE[$adj_sec]&"]"
+                    setvar $fighter_color ansi_12
+                end
+                setvar $value $fig_count
+                gosub :commas
+                setvar $fig_count $value
+                echo ANSI_5&"*               Fighters"&ANSI_14&": "&$fighter_color&$fig_count&ANSI_5&" "&$fig_owner
+
             end
             setVar $p 1
             setVar $output "*"
@@ -152,10 +148,10 @@
                     setVar $temp ANSI_2&$temp
                 end
                 if ($p = 1)
-                    setVar $temp ANSI_5&"     Planets "&ANSI_14&"  : "&$temp
+                    setVar $temp ANSI_5&"               Planets "&ANSI_14&": "&$temp
                     setVar $output $output&$temp&""
                 else
-                    setVar $output $output&"                 "&$temp&""
+                    setVar $output $output&"                         "&$temp&""
                 end
                 if ($p < SECTOR.PLANETCOUNT[$adj_sec])
                     setVar $output $output&"*"
@@ -167,15 +163,15 @@
             end
             setVar $p 1
             if (SECTOR.TRADERCOUNT[$adj_sec] > 0)
-                echo ANSI_6 "*        Traders: "&ANSI_7
+                echo ANSI_6 "*               Traders" ansi_15 " : "&ANSI_7
             end
             while ($p <= SECTOR.TRADERCOUNT[$adj_sec])
-                echo "*             "&ANSI_11&SECTOR.TRADERS[$adj_sec][$p]
+                echo "*                         "&ANSI_11&SECTOR.TRADERS[$adj_sec][$p]
                 add $p 1
             end
             setVar $p 1
             if (SECTOR.SHIPCOUNT[$adj_sec] > 0)
-                echo ANSI_6 "*       Ships   : "&ANSI_11&"("&SECTOR.SHIPCOUNT[$adj_sec]&") Empty Ships"
+                echo ANSI_5 "*               Ships   " ansi_15 ": "&ANSI_11&"("&SECTOR.SHIPCOUNT[$adj_sec]&") Empty Ships"
             end
             add $i 1
         end
@@ -506,4 +502,98 @@ return
 return
 :addFigToData
     setSectorParameter $target "FIGSEC" TRUE
+return
+
+:commas
+        if ($value < 1000)
+                #do nothing
+        elseif ($value < 1000000)
+        getLength $value $len
+                setVar $len ($len - 3)
+                cutText $value $tmp 1 $len
+                cutText $value $tmp1 ($len + 1) 999
+                setVar $tmp $tmp & "," & $tmp1
+                setVar $value $tmp
+        elseif ($value <= 999999999)
+                getLength $value $len
+                setVar $len ($len - 6)
+                cutText $value $tmp 1 $len
+                setVar $tmp $tmp & ","
+                cutText $value $tmp1 ($len + 1) 3
+                setVar $tmp $tmp & $tmp1 & ","
+                cutText $value $tmp1 ($len + 4) 999
+                setVar $tmp $tmp & $tmp1
+                setVar $value $tmp
+        end
+        return
+
+:format_sector_owner
+            setvar $most_recent_data false
+            setvar $datetime date&" "&time
+            if ($datetime = SECTOR.UPDATED[$adj_sec])
+                setvar $most_recent_data true
+            end
+            if ($most_recent_data = true)
+                if ((($adjSectorOwner = "belong to your Corp") OR ($adjSectorOwner = "yours")) AND (SECTOR.FIGS.QUANTITY[$ADJ_SEC] > 0))
+                    setSectorParameter $adj_sec "FIGSEC" TRUE
+                    setvar $isFigged true
+                else
+                    setSectorParameter $adj_sec "FIGSEC" FALSE
+                    setvar $isFigged false
+                end
+            end
+            if (($isFigged = true) OR (($adjSectorOwner = "belong to your Corp") OR ($adjSectorOwner = "yours")) AND (SECTOR.FIGS.QUANTITY[$ADJ_SEC] > 0))
+                setvar $text "OURS"
+                setvar $color ansi_14
+            else
+                getWord $adjSectorOwner $alienCheck 1
+                if (($ADJ_SEC < 11) OR ($ADJ_SEC = $stardock))
+                    setvar $color ansi_9
+                    setvar $text "FEDSPACE" 
+                elseif ($ADJ_SEC = $rylos)
+                    setvar $color ansi_9
+                    setvar $text "RYLOS" 
+                elseif ($ADJ_SEC = $alpha_centauri)
+                    setvar $color ansi_9
+                    setvar $text "ALPHA" 
+                elseif ($adjSectorOwner = "Rogue Mercenaries")
+                    setvar $color ansi_7
+                    setvar $text "ROGUE" 
+                elseif ($alienCheck = "the")
+                    setvar $color ansi_2
+                    setvar $text "ALIEN" 
+                    setvar $isaliens true
+                elseif ($alienCheck = "The")
+                    setvar $color ansi_2
+                    setvar $text "ALIEN" 
+                    setvar $isaliens true
+                elseif (($adjSectorOwner <> "") AND ($adjSectorOwner <> "Unknown"))
+                    setVar $heads TRUE
+                    getWord $adjSectorOwner $temp 3
+                    stripText $temp ","
+                    upperCase $temp
+                    setvar $text $temp
+                    setvar $color ansi_12
+                else
+                    setvar $text "NONE"
+                    setvar $color ansi_13
+                end
+            end
+            setvar $temp $text
+            getLength $temp $tempLength
+            setvar $length 10
+            if ($tempLength >= $length)
+                cutText $temp $temp 1 $length
+            else
+                while (($length - $tempLength) > 0)
+                    if ($heads)
+                        setVar $temp $temp&" "
+                        setVar $heads FALSE
+                    else
+                        setVar $temp " "&$temp
+                        setVar $heads TRUE
+                    end
+                    getLength $temp $tempLength
+                end
+            end
 return

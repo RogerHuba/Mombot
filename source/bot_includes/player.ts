@@ -8,6 +8,7 @@
 # ============================ START SECTOR DATA VARIABLES ==========================
     setArray $TRADERS   50
     setArray $FAKETRADERS   50
+    setArray $EMPTYSHIPS   50
     setVar $ranksLength     47
     setArray $ranks     $ranksLength
     setVar $ranks[1]    "36mCivilian"
@@ -574,8 +575,8 @@ return
             add $c 1
         end
     else
-        setVar $SWITCHBOARD~message "You have no targets.*" 
-        gosub :SWITCHBOARD~switchboard
+        echo "*You have no targets.*" 
+        #gosub :SWITCHBOARD~switchboard
         goto :stoppingPoint
     end
     if ($isFound = TRUE)
@@ -590,8 +591,8 @@ return
             end
         end
     else
-        setVar $SWITCHBOARD~message "You have no valid targets.*" 
-        gosub :SWITCHBOARD~switchboard
+        echo "*You have no valid targets.*" 
+        #gosub :SWITCHBOARD~switchboard
         goto :stoppingPoint
     end
     send $attackString&"* "
@@ -681,8 +682,8 @@ return
         end
     end
     if ($isFound = FALSE)
-        setVar $SWITCHBOARD~message "You have no targets.*" 
-        gosub :SWITCHBOARD~switchboard
+        echo "*You have no targets.*" 
+        #gosub :SWITCHBOARD~switchboard
         goto :capstoppingPoint
     else
         setVar $attackString ""

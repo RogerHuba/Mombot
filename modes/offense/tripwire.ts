@@ -54,7 +54,7 @@
 		halt
 	end
 	
-	if ($PLAYER~ATOMIC < 1)
+	if (($PLAYER~ATOMIC < 1) and ($move_planet <> true))
 		setVar $SWITCHBOARD~message "Tripwire requires at least one atomic detonator. (Just in case)*"
 		gosub :SWITCHBOARD~switchboard
 		halt

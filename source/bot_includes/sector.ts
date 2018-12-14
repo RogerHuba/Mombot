@@ -50,19 +50,22 @@ return
             stripText $temp "[0m[33mTraders [1m:"
             setVar $j 1
             setVar $isFound FALSE
-            while (($j < $ranksLength) AND ($isFound = FALSE))
-                getWordPos $temp $pos $ranks[$j]    
-                if ($pos > 0)
-                    getLength $ranks[$j] $length
-                    cutText $temp $temp ($pos+$length+1) 9999
-                    if ($j <= 10)
-                        setVar $TRADERS[($realTraderCount+1)][2] TRUE
-                    else
-                        setVar $TRADERS[($realTraderCount+1)][2] FALSE
+            #only check for fed safe if you are in fed sector
+            if (($player~current_sector <= 10) or ($player~current_sector = STARDOCK))
+                while (($j < $player~ranksLength) AND ($isFound = FALSE))
+                    getWordPos $temp $pos $player~ranks[$j]    
+                    if ($pos > 0)
+                        getLength $player~ranks[$j] $length
+                        cutText $temp $temp ($pos+$length+1) 9999
+                        if ($j <= 10)
+                            setVar $player~traders[($realTraderCount+1)][2] TRUE
+                        else
+                            setVar $player~traders[($realTraderCount+1)][2] FALSE
+                        end
+                        setVar $isFound TRUE
                     end
-                    setVar $isFound TRUE
+                    add $j 1
                 end
-                add $j 1
             end
             getWordPos $temp $pos "[0;32m w/"
             getWordPos $temp $pos2 "[0;35m[[31mOwned by[35m]"
@@ -80,8 +83,8 @@ return
                 cutText $temp $temp 1 $pos
                 stripText $temp ""
                 lowercase $temp
-                setVar $TRADERS[($realTraderCount+1)] $temp
-                setVar $TRADERS[($realTraderCount+1)][1] $tempCorp
+                setVar $player~traders[($realTraderCount+1)] $temp
+                setVar $player~traders[($realTraderCount+1)][1] $tempCorp
                 if ($tempCorp = $player~CORP)
                     add $corpieCount 1
                 end
@@ -106,9 +109,9 @@ return
                     end
                     add $s 1
                 end
-                setVar $TRADERS[($realTraderCount)][3] $shipname
+                setVar $player~traders[($realTraderCount)][3] $shipname
                 if ($isDefender = TRUE)
-                    setVar $TRADERS[($realTraderCount)][1] 100000
+                    setVar $player~traders[($realTraderCount)][1] 100000
                     add $defenderShips 1
                 end
             end
@@ -149,8 +152,8 @@ return
                     striptext $temp "[34m[[1;36m"
                     striptext $temp "[0;34m]"
                 end
-                setVar $EMPTYSHIPS[($emptyShipCount+1)] $temp
-                if (($EMPTYSHIPS[($emptyShipCount+1)] = $player~CORP) OR ($EMPTYSHIPS[($emptyShipCount+1)] = $player~TRADER_NAME))
+                setVar $player~emptyships[($emptyShipCount+1)] $temp
+                if (($player~emptyships[($emptyShipCount+1)] = $player~CORP) OR ($player~emptyships[($emptyShipCount+1)] = $player~TRADER_NAME))
                     add $myShipCount 1
                 end
                 add $emptyShipCount 1
