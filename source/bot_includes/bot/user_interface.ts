@@ -332,9 +332,9 @@ return
                     setVar $scantext ""
                 end
                 if ($doHolo = TRUE)
-                    setVar $scantext $scantext&"s hzn* "
+                    setVar $scantext $scantext&"szhzn* "
                 elseif ($doDens = TRUE)
-                    setVar $scantext $scantext&"s dz* "
+                    setVar $scantext $scantext&"sdz* "
                 end
                 if ($PLAYER~CURRENT_PROMPT = "Citadel")
                     setVar $scantext $scantext&"l "&$PLANET~PLANET&"*  c  "

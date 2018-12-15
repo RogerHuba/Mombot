@@ -936,6 +936,12 @@ return
             end
             add $i 1
         end
+        if (($surroundFigs > 0) AND ($FIGHTERS > $surroundFigs))
+            setVar $surroundString $surroundString&"f z" & $surroundFigs & "*zc"&$deployFig&"*  "
+            subtract $FIGHTERS $surroundFigs
+            setVar $target $CURRENT_SECTOR
+            setSectorParameter $target "FIGSEC" TRUE
+        end
         send $surroundString
 return
 

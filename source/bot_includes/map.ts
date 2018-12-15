@@ -47,6 +47,7 @@ setvar $planet 500
             setvar $adjMineOwner SECTOR.MINES.OWNER[$adj_sec]
 
             getSectorParameter $adj_sec "FIGSEC" $isFigged
+            getSectorParameter $adj_sec "LIMPSEC" $isLimped
             if ($isFigged <> true)
                 setvar $isFigged false
             end
@@ -127,9 +128,12 @@ setvar $planet 500
                     echo $dens
                 end
                 if ($calculated_density < $dens)
-                    if ((SECTOR.ANOMOLY[$ADJ_SEC] = true) and ((($adjLimpOwner <> "belong to your Corp") AND ($adjLimpOwner <> "yours")) AND (SECTOR.LIMPETS.QUANTITY[$ADJ_SEC] <= 0)))
-                        echo ansi_3 " [" ansi_12 "Enemy Limpets Detected" ansi_3 "]"
-                        setSectorParameter $adj_sec "LIMPSEC" TRUE
+                    if (($isLimped <> true) and (SECTOR.ANOMOLY[$ADJ_SEC] = true) and ((($adjLimpOwner <> "belong to your Corp") AND ($adjLimpOwner <> "yours")) AND (SECTOR.LIMPETS.QUANTITY[$ADJ_SEC] <= 0)))
+                        setvar $possible_limpets (($dens-$calculated_density)/2)
+                        if ($possible_limpets <= 0)
+                            setvar $possible_limpets 1
+                        end
+                        echo ansi_3 " [" ansi_12  $possible_limpets " Enemy Limpets Detected" ansi_3 "]"
                     end
                 elseif ($calculated_density = $dens)
                     if ($SECTOR.ANOMOLY[$ADJ_SEC] = true)
@@ -182,8 +186,13 @@ setvar $planet 500
                     setvar $fig_owner ansi_10&"("&ansi_2&SECTOR.FIGS.OWNER[$adj_sec]&ansi_10&") "&ansi_6&"["&SECTOR.FIGS.TYPE[$adj_sec]&"]"
                     setvar $fighter_color ansi_10
                 else
-                    setvar $fig_owner ansi_12&"("&ansi_4&SECTOR.FIGS.OWNER[$adj_sec]&ansi_12&") "&ansi_6&"["&SECTOR.FIGS.TYPE[$adj_sec]&"]"
-                    setvar $fighter_color ansi_12
+                    if ($isFigged <> true)
+                        setvar $fig_owner ansi_12&"("&ansi_4&SECTOR.FIGS.OWNER[$adj_sec]&ansi_12&") "&ansi_6&"["&SECTOR.FIGS.TYPE[$adj_sec]&"]"
+                        setvar $fighter_color ansi_12
+                    else
+                        setvar $fig_owner ansi_11&"("&ansi_3&"Database hasn't updated yet."&ansi_11&") "
+                        setvar $fighter_color ansi_14                    
+                    end
                 end
                 setvar $value $fig_count
                 gosub :commas
@@ -604,6 +613,19 @@ return
                     setSectorParameter $adj_sec "FIGSEC" FALSE
                     setvar $isFigged false
                 end
+                if ((SECTOR.ANOMOLY[$ADJ_SEC] = true) and ((($adjLimpOwner = "belong to your Corp") or ($adjLimpOwner = "yours")) AND (SECTOR.LIMPETS.QUANTITY[$ADJ_SEC] > 0)))
+                    setSectorParameter $adj_sec "LIMPSEC" TRUE
+                    setvar $isLimped true
+                else
+                    setSectorParameter $adj_sec "LIMPSEC" FALSE
+                    setvar $isLimped false
+                end
+                if ((($adjMineOwner = "belong to your Corp") or ($adjMineOwner = "yours")) AND (SECTOR.MINES.QUANTITY[$ADJ_SEC] > 0))
+                    setSectorParameter $adj_sec "MINESEC" TRUE
+                else
+                    setSectorParameter $adj_sec "MINESEC" FALSE
+                end
+
             end
             if (($isFigged = true) OR (($adjSectorOwner = "belong to your Corp") OR ($adjSectorOwner = "yours")) AND (SECTOR.FIGS.QUANTITY[$ADJ_SEC] > 0))
                 setvar $text "OURS"
