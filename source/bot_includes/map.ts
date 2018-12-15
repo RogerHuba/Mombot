@@ -43,6 +43,9 @@ setvar $planet 500
             setVar $ADJ_SEC SECTOR.WARPS[CURRENTSECTOR][$i]
             setvar $isaliens false
             setVar $adjSectorOwner SECTOR.FIGS.OWNER[$ADJ_SEC]
+            setvar $adjLimpOwner SECTOR.LIMPETS.OWNER[$adj_sec]
+            setvar $adjMineOwner SECTOR.MINES.OWNER[$adj_sec]
+
             getSectorParameter $adj_sec "FIGSEC" $isFigged
             if ($isFigged <> true)
                 setvar $isFigged false
@@ -101,6 +104,9 @@ setvar $planet 500
                 setvar $calculated_density ($calculated_density + ((SECTOR.MINES.QUANTITY[$ADJ_SEC] * $armid_mine))) 
                 setvar $calculated_density ($calculated_density + ((SECTOR.LIMPETS.QUANTITY[$ADJ_SEC] * $limpet_mine))) 
                 setvar $calculated_density ($calculated_density + ((SECTOR.NAVHAZ[$ADJ_SEC] * $hazard)))
+                if (SECTOR.BEACON[$i] <> "")
+                    setvar $calculated_density ($calculated_density + $marker_beacon) 
+                end
                 if (PORT.EXISTS[$ADJ_SEC])
                     setvar $calculated_density ($calculated_density + $port) 
                 end
@@ -121,8 +127,9 @@ setvar $planet 500
                     echo $dens
                 end
                 if ($calculated_density < $dens)
-                    if (SECTOR.ANOMOLY[$ADJ_SEC] = true)
+                    if ((SECTOR.ANOMOLY[$ADJ_SEC] = true) and ((($adjLimpOwner = "belong to your Corp") OR ($adjLimpOwner = "yours"))  AND (SECTOR.LIMPETS.QUANTITY[$ADJ_SEC] > 0)))
                         echo ansi_3 " [" ansi_12 "Enemy Limpets Detected" ansi_3 "]"
+                        setSectorParameter $adj_sec "LIMPSEC" TRUE
                     end
                 elseif ($calculated_density = $dens)
                     if ($SECTOR.ANOMOLY[$ADJ_SEC] = true)
@@ -279,7 +286,6 @@ return
             if ($isMSL = "")
                 setVar $isMSL FALSE
             end
-            setVar $adjSectorOwner SECTOR.FIGS.OWNER[$ADJ_SEC]
             if (($isFigged) OR (($adjSectorOwner = "belong to your Corp") OR ($adjSectorOwner = "yours")) AND (SECTOR.FIGS.QUANTITY[$ADJ_SEC] > 0))
                 setvar $map $map&ANSI_15&" Owner: "&ANSI_14&"   OURS   "
             else
