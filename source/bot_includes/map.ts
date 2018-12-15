@@ -127,7 +127,7 @@ setvar $planet 500
                     echo $dens
                 end
                 if ($calculated_density < $dens)
-                    if ((SECTOR.ANOMOLY[$ADJ_SEC] = true) and ((($adjLimpOwner = "belong to your Corp") OR ($adjLimpOwner = "yours"))  AND (SECTOR.LIMPETS.QUANTITY[$ADJ_SEC] > 0)))
+                    if ((SECTOR.ANOMOLY[$ADJ_SEC] = true) and ((($adjLimpOwner <> "belong to your Corp") AND ($adjLimpOwner <> "yours")) AND (SECTOR.LIMPETS.QUANTITY[$ADJ_SEC] <= 0)))
                         echo ansi_3 " [" ansi_12 "Enemy Limpets Detected" ansi_3 "]"
                         setSectorParameter $adj_sec "LIMPSEC" TRUE
                     end
