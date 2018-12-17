@@ -28,12 +28,12 @@
 # ======================     START ADJACENT FIGHTER CLEAR (FIGCLEAR) SUBROUTINES     ==========================
 :adjfig
 	gosub :player~quikstats
-	setVar $startingLocation $player~current_prompt
+	setVar $startingLocation $player~player~current_prompt
 	if (($startingLocation <> "Citadel") AND ($startingLocation <> "Command"))
-	        send "'{" $bot~bot_name "} - Must start at Citadel or Command Prompt.*"
+	        send "'{" $bot_name "} - Must start at Citadel or Command Prompt.*"
 	        halt
 	end
-	setVar $pgridSector $bot~parm1
+	setVar $pgridSector $parm1
 	isNumber $test $pgridSector
 	if ($test = 0)
 		setVar $SWITCHBOARD~message "Invalid CLEARFIG sector.*"

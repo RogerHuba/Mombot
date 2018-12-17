@@ -14,13 +14,9 @@
 #
 # safetoblow - SHIELDED CHECK - Call Saveme!
 #
-#
-# ham select ports BBB AMTRAK=false MSLSEC=false MOOPORT=false secure 
-# ham select ports BBB AMTRAK=false MSLSEC=false MOOPORT=false figsec=true secure 
+
 
 gosub :BOT~loadVars
-
-setVar $goMSG ""
 
 loadVar $game~port_max
 loadVar $game~ptradesetting
@@ -63,8 +59,6 @@ gosub :BOT~banner
 gosub :player~quikstats
 setvar $startturns $player~turns
 
-
-
 # try and grab fuel at this
 setVar $minOre 120
 if ($player~TOTAL_HOLDS < $minOre)
@@ -75,8 +69,8 @@ end
 
 if ($BOT~bot_turn_limit < 1)
 	setVar $turn_limit 50
-	setvar $goMSG $goMSG & "Turn Limit not set in bot - setting to 50.*"
-	
+	setvar $switchboard~message "Turn Limit not set in bot - setting to 50.*"
+	gosub :switchboard~switchboard
 else
 	setVar $turn_limit $BOT~bot_turn_limit
 end
@@ -89,9 +83,11 @@ if (($startingLocation <> "Command") and ($startingLocation <> "Citadel"))
 	halt
 else
 	if ($startingLocation = "Command")
-		setvar $goMSG $goMSG & "Starting from sector level - no planet cash dump or fig top ups!*"
+		setVar $SWITCHBOARD~message "Starting from sector level - no planet cash dump or fig top ups!*"
+		gosub :SWITCHBOARD~switchboard
 	else
-		setvar $goMSG $goMSG & "Starting on planet - will dump cash and top up figs here.*"
+		setVar $SWITCHBOARD~message "Starting on planet - will dump cash and top up figs here.*"
+		gosub :SWITCHBOARD~switchboard
 	end
 	
 end
@@ -109,7 +105,8 @@ if (($number = 1) and ($preferredPlanetSlot <> 0))
 		gosub :switchboard~switchboard
 		halt
 	else
-		setvar $goMSG $goMSG & "We will create a max of " & $preferredPlanetSlot & " planets.*"
+		setvar $switchboard~message "We will create a max of " & $preferredPlanetSlot & " planets.*"
+		gosub :switchboard~switchboard
 		setVar $moo_preferred_slot $preferredPlanetSlot
 		SaveVar $moo_preferred_slot 
 	end
@@ -129,24 +126,23 @@ end
 # 
 
 setVar $PrimaryProduct 0
-setVar $prodmsg ""
 
 # Did they select a new one?
 getWordPos $bot~user_command_line $pos " f"
 if ($pos > 0)
 	setVar $PrimaryProduct 1
-	setVar $prodmsg "Primary product will be Fuel.*"
+	setVar $SWITCHBOARD~message "Primary product will be Fuel.*"
 end
 
 getWordPos $bot~user_command_line $pos " o"
 if ($pos > 0)
-	setVar $prodmsg "Primary product will be Organics.*"
+	setVar $SWITCHBOARD~message "Primary product will be Organics.*"
 	setVar $PrimaryProduct 2
 end
 
 getWordPos $bot~user_command_line $pos " e"
 if ($pos > 0)
-	setVar $prodmsg "Primary product will be Equipment.*"
+	setVar $SWITCHBOARD~message "Primary product will be Equipment.*"
 	setVar $PrimaryProduct 3
 end
 if ($PrimaryProduct = 0)
@@ -154,15 +150,17 @@ if ($PrimaryProduct = 0)
 		setVar $PrimaryProduct $moo_primary_product
 	else
 		setVar $PrimaryProduct 3
-		setVar $prodmsg "Primary product not found - defualt to equip.*"
+		setVar $SWITCHBOARD~message "Primary product not found - defualt to equip.*"
+		gosub :SWITCHBOARD~switchboard
 	end
 else
 	# update primary product
 	setVar $moo_primary_product $PrimaryProduct
 	saveVar $moo_primary_product
+	gosub :SWITCHBOARD~switchboard
 end
 
-setvar $goMSG $goMSG & $prodmsg
+
 
 
 #   skimpl upgraded param (5th) everything file
@@ -179,81 +177,84 @@ setVar $searchParam ""
 # sector file
 setVar $sectorfile ""
 
-
-setVar $modemsg ""
-
 if ($modestring = "skimpl")
 	setVar $mode 1
-	setVar $modemsg "Sourcing sectors from personal planet list, Skim Mode.*"
+	setVar $SWITCHBOARD~message "Sourcing sectors from personal planet list, Skim Mode.*"
 	setVar $skimMode 1
 elseif ($modestring = "pl")
 	setVar $mode 1
-	setVar $modemsg "Sourcing sectors from personal planet list.*"
+	setVar $SWITCHBOARD~message "Sourcing sectors from personal planet list.*"
 elseif ($modestring = "upgraded")
 	setVar $mode 2
-	setVar $modemsg "Sourcing sectors from anything upgraded.*"
+	setVar $SWITCHBOARD~message "Sourcing sectors from anything upgraded.*"
 elseif ($modestring = "everything")
 	setVar $mode 4
-	setVar $modemsg "Sourcing sectors from any good port.*"
+	setVar $SWITCHBOARD~message "Sourcing sectors from any good port.*"
 else
 	getWordPos $modestring $pos ".txt"
 	if ($pos > 0)
 		setVar $mode 5
-		setVar $modemsg "Sourcing sectors from listed in " & $modestring & ".*"
+		setVar $SWITCHBOARD~message "Sourcing sectors from listed in " & $modestring & ".*"
 		setVar $sectorfile $modestring
 	else
 		setVar $mode 3
-		setVar $modemsg "Sourcing sectors with Param: " & $modestring & ".*"
+		setVar $SWITCHBOARD~message "Sourcing sectors with Param: " & $modestring & ".*"
 		setVar $searchParam $modestring
 		upperCase $searchParam
 	end
 end
-setvar $goMSG $goMSG & $modemsg
+gosub :SWITCHBOARD~switchboard
 	
 
 getWordPos $bot~user_command_line $pos "guard"
 if ($pos > 0)
 	setVar $useGuard TRUE
-	setvar $goMSG $goMSG & "Creating a corp planet at SD.*"
+	setvar $switchboard~message "Creating a corp planet at SD.*"
 else
 	setVar $useGuard FALSE
-	setvar $goMSG $goMSG & "Not Creating Guardian Planets.*"
+	setvar $switchboard~message "Not Creating Guardian Planets.*"
 end
+
+gosub :switchboard~switchboard
 
 
 getWordPos $bot~user_command_line $pos "figs"
 	if ($pos > 0)
 	setVar $furbfigs TRUE
-	setvar $goMSG $goMSG & "We are restocking fighters.*"
+	setvar $switchboard~message "We are restocking fighters.*"
 else
 	setVar $furbfigs FALSE
-	setvar $goMSG $goMSG & "We are NOT restocking fighters.*"
+	setvar $switchboard~message "We are NOT restocking fighters.*"
 end
 
 
 getWordPos $bot~user_command_line $pos "ephag"
 if ($pos > 0)
 	setVar $useEp TRUE
-	setvar $goMSG $goMSG & "Using Ep Haggle*"
+	setvar $switchboard~message "Using Ep Haggle*"
 else
 	setVar $useEp FALSE
-	setvar $goMSG $goMSG & "Using internal NEG for haggle.*"
+	setvar $switchboard~message "Using internal NEG for haggle.*"
 end
+gosub :switchboard~switchboard
+
 
 
 setVar $userCleanup 0
+gosub :switchboard~switchboard
 getWordPos $bot~user_command_line $pos "all"
 if ($pos > 0)
 	setVar $userCleanup 2
-	setvar $goMSG $goMSG & "We are blowing ALL planets post trade.*"
+	setvar $switchboard~message "We are blowing ALL planets post trade.*"
 else
 	getWordPos $bot~user_command_line $pos "bad"
 	if ($pos > 0)
 		setVar $userCleanup 1
-		setvar $goMSG $goMSG & "We are just blowing dud planets.*"
+		setvar $switchboard~message "We are just blowing dud planets.*"
 	end
 end
 setVar $cleanup $userCleanup
+gosub :switchboard~switchboard
 
 # Requires SAFE
 
@@ -261,19 +262,20 @@ getWordPos $bot~user_command_line $pos "paranoid"
 if ($pos > 0)
 	setVar $paranoid TRUE
 	setVar $surroundedSectorsOnly 1
-	setvar $goMSG $goMSG & "Incoming Sectors require figs and limpets*"
+	setvar $switchboard~message "Incoming Sectors require figs and limpets*"
 else
 	setVar $paranoid FALSE
 	getWordPos $bot~user_command_line $pos "safe"
 	if ($pos > 0)
 		setVar $surroundedSectorsOnly 1
-		setvar $goMSG $goMSG & "Incoming Sectors require figs.*"
+		setvar $switchboard~message "Incoming Sectors require figs.*"
 	else
 		setVar $surroundedSectorsOnly 0
-		setvar $goMSG $goMSG & "Loose Cannon Mode Engaged!!!*"
+		setvar $switchboard~message "Loose Cannon Mode Engaged!!!*"
 	end
 		
 end
+gosub :switchboard~switchboard
 
 
 setVar $stat_dollarsgross 0
@@ -386,7 +388,7 @@ setVar $sectorsOkPlanetID 0
 setVar $planetsWithProducts 0
 
 setVar $sectorsNoFig 0
-setVar $sectorsNoFigi 0
+setVar $sectorsNoFigi 1
 
 
 setVar $startSectors 0
@@ -462,11 +464,6 @@ end
 
 gosub :getPortReports 
 gosub :filterPortsAndReport
-
-
-setVar $SWITCHBOARD~message $goMSG
-gosub :switchboard~switchboard
-
 
 setVar $stat_targets $sectorsOki
 waitfor "Engage!!!"
@@ -1786,15 +1783,7 @@ return
 :filterPortsAndReport
 	setVar $loopi 1
 	setVar $noLimpets 0
-	# stores them
-	setVar $noLimpetReport 0
-	# reports them
-	setVar $sectorNoLimpetsMsg ""
-	setVar $noLRi 0
 	setVar $noFigs 0
-	setVar $noFigsReport 0
-	setVar $noFigsMsg ""
-	setVar $noFRi 0
 
 	while ($loopi < $readi)
 		setVar $portOk 0
@@ -1843,8 +1832,6 @@ return
 					getSectorParameter SECTOR.WARPSIN[$sector][$i] "FIGSEC" $hasFig
 					if ($hasFig = 0)
 						setVar $danger 1
-						add $noFRi 1
-						setVar $noFigsReport[$noFRi] SECTOR.WARPSIN[$sector][$i]
 					end
 					add $i 1
 				end
@@ -1855,8 +1842,6 @@ return
 						getSectorParameter SECTOR.WARPSIN[$sector][$i] "LIMPSEC" $hasFig
 						if ($hasFig = 0)
 							setVar $ldanger 1
-							add $noLRi 1
-							setVar $noLimpetReport[$noLRi] SECTOR.WARPSIN[$sector][$i]
 						end
 						add $i 1
 					end
@@ -1875,12 +1860,12 @@ return
 					add $sectorsOki 1
 				else
 					if ($danger = 1)
-						echo "*## Skipping Sector - Incoming Warps aren't figged " $sector
+						echo "*## Slipping Sector - Incoming Warps aren't figged" $sector
 						
 						add $noFigs 1
 					end
 					if ($ldanger = 1)
-						echo "*## Skipping Sector - Incoming Warps missing limpets " $sector
+						echo "*## Slipping Sector - Incoming Warps missing limpets" $sector
 						add $noLimpets 1
 					end
 					
@@ -1900,54 +1885,27 @@ return
 			
 		end
 		if ($ftrOk = 0)
-			add $sectorsNoFigi 1
 			setVar $sectorsNoFig[$sectorsNoFigi] $sector
+			add $sectorsNoFigi 1
 		end 
-		if ($surroundedSectorsOnly = 1)
-			getSectorParameter $sector "LIMPSEC" $hasl
-			if ($hasl = 0)
-				add $noLRi 1
-				setVar $noLimpetReport[$noLRi] $sector
-			end
-		end
+
 		add $loopi 1
 	end
 
 	setVar $sectorNoFigsReport ""
 
-	if ($sectorsNoFigi > 0)
-		echo "**############# PRIMARY PORTS MISSING FIGHTERS8**"
+	if ($sectorsNoFigi > 1)
+		echo "**############# PORTS MISSING FIGHTERS8**"
 		setVar $i 1
-		while ($i <= $sectorsNoFigi)
+		while ($i < $sectorsNoFigi)
 			echo "*# " $sectorsNoFig[$i]
 			setVar $sectorNoFigsReport  $sectorNoFigsReport & $sectorsNoFig[$i] & " "
 			add $i 1
 		end
 
 	end
-
-	if ($noLRi > 0)
-		echo "**############# INCOMING SECTORS MISSING LIMPS"
-		setVar $i 1
-		while ($i <= $noLRi)
-			echo "*# " $noLimpetReport[$i]
-			setVar $sectorNoLimpetsMsg  $sectorNoLimpetsMsg & $noLimpetReport[$i] & " "
-			add $i 1
-		end
-
-	end
-	if ($noFRi > 0)
-		echo "**############# INCOMING SECTORS MISSING FIGS"
-		setVar $i 1
-		while ($i <= $noFRi)
-			echo "*# " $noFigsReport[$i]
-			setVar $noFigsMsg  $noFigsMsg & $noFigsReport[$i] & " "
-			add $i 1
-		end
-
-	end
-
 	setVar $loopi 1
+
 	echo "###" SECTORS GOOD TO GO " ###**" 
 	while ($loopi < $sectorsOki)
 		echo "*" $sectorsOk[$loopi]
@@ -1957,17 +1915,15 @@ return
 
 
 	setVar $startmsg "We are visiting " & $sectorsOki & " sectors with target ports."
-	if ($sectorsNoFigi > 0)
+	if ($sectorsNoFigi > 1)
 		setVar $startmsg $startmsg & "*There are " & $sectorsNoFigi  & " ports with no fighters."
 		setVar $startmsg $startmsg & "*" & $sectorNoFigsReport
 	end
 	if ($noFigs > 1)
 		setVar $startmsg $startmsg & "*There are " & $noFigs  & " ports missing incoming fighters."
-		setVar $startmsg $startmsg & "*" & $noFigsMsg
 	end
 	if ($noLimpets > 1)
 		setVar $startmsg $startmsg & "*There are " & $noLimpets  & " ports missing incoming Limpets."
-		setVar $startmsg $startmsg & "*" & $sectorNoLimpetsMsg
 	end
 	setVar $startmsg  $startmsg & "*Dumping cash on planet: " & $cashDumpPlanet
 	setVar $startmsg  $startmsg & "*Stopping at turns: " & $turn_limit
