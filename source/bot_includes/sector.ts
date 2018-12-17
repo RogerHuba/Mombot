@@ -102,10 +102,10 @@ return
                 setVar $isFound FALSE
                 setVar $s 1
                 setVar $isDefender FALSE
-                while (($isFound = FALSE) AND ($s < $shipCounter))
-                    if ($shipname = $shipList[$s])
+                while (($isFound = FALSE) AND ($s < $ship~shipCounter))
+                    if ($shipname = $ship~shipList[$s])
                         setVar $isFound TRUE
-                        setVar $isDefender $shipList[$s][8]
+                        setVar $isDefender $ship~shipList[$s][8]
                     end
                     add $s 1
                 end
@@ -203,6 +203,7 @@ return
         getWordPos $temp $pos2 "[33m, [0;32mwith"
         getWordPos $temp $pos3 "[0;35m[[31mOwned by[35m]"
         getWordPos $temp $pos4 "[0;32mw/ "&#27&"[1;33m"
+        getWordPos $temp $pos5 "in[36m "
         if ((($pos4 > 0) OR ($pos > 0) OR ($pos2 > 0)) AND ($pos3 <= 0))
             setVar $PLAYER~FAKETRADERS[($fakeTraderCount+1)] $temp
             getWordPos $temp $posa "Zyrain"
@@ -213,6 +214,18 @@ return
             end
             add $fakeTraderCount 1
         end
+        #for capturing alien ship recognition once ansi ships are in array in bot
+        if ($pos5 > 0)
+            getText $temp $shipname "[1;31m"  ")"
+            #getText $shipname $shipname "m"&#27 #27&"["
+            if ($shipname = "")
+                getText $temp $shipname "(" ")"&#13
+                getText $shipname&"ENDOFSHIP" $shipname "m"&#27&"[" "ENDOFSHIP"
+            end
+            getText $shipname&"ENDOFSHIP" $shipname "m" "ENDOFSHIP"
+            send "'["&$shipname&"]*"
+        end
+
         getText $fakeData $temp $STARTLINE $ENDLINE
     end
 return

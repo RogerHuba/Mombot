@@ -161,7 +161,7 @@ reqRecording
 
 	gosub :planetStats
 	
-	setVar $message "'*  {"&$bot~bot_name&"} - Planet Dropper Currently Running On Planet "&$planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*        Drop Type: "&$dropDescription&" On "&$triggerDescription
+	setVar $message "'*  {"&$bot~bot_name&"} - Planet Dropper Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*        Drop Type: "&$dropDescription&" On "&$triggerDescription
 	if ($targetingPerson)
 		setVar $message $message&"*        Targeting: (Player) "&$target
 	else
@@ -178,7 +178,7 @@ reqRecording
 		setVar $message $message&"*       Drop Delay: "&$dropDelay&" ms"
 	end
 	if ($attackOnSight)
-		setVar $message $message&"*        Auto Kill: Enabled With "&$planetFighters&" Fighters"
+		setVar $message $message&"*        Auto Kill: Enabled With "&$planet~planetFighters&" Fighters"
 	end
 	if ($returnHome)
 		setVar $message $message&"*      Return Home: Enabled With "&$returnHomeDelay&" Second Delay"
@@ -494,10 +494,10 @@ return
 	gosub :player~quikstats
 	send "*"
 	waitOn "Planet #"
-	getWord CURRENTLINE $planet 2
+	getWord CURRENTLINE $planet~planet 2
 	waitOn "Fighters"
-	getWord CURRENTLINE $planetFighters 5
-	stripText $planet "#"
+	getWord CURRENTLINE $planet~planetFighters 5
+	stripText $planet~planet "#"
 	send "c"
 return
 
@@ -506,7 +506,7 @@ return
 return
 
 :landOnPlanetEnterCitadel
-	send "l " $planet "* c"
+	send "l " $planet~planet "* c"
 	waitOn "<Enter Citadel>"
 return
 
@@ -534,12 +534,28 @@ return
 	echo ANSI_6 "[" ANSI_14 $script_ver " waiting for targets.." ANSI_6 "]*" ANSI_7
 return
 
+:scanit_again
+	killAllTriggers
+	gosub :player~quikstats
+	gosub :sector~getSectorData
+	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+		goSub :player~fastCitadelAttack
+		goto :scanit_again
+	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
+		gosub :player~fastCapture
+		goto :scanit_again
+	end
+	goto :halt
 
 
 :checkForVictims
+	setvar $player~startingLocation "Citadel"
 	gosub :sector~getSectorData
-	if ($sector~corpieCount < $sector~realTraderCount)
+	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
 		goSub :player~fastCitadelAttack
+		goto :checkForVictims
+	elseif (($sector~emptyShipCount > $sector~myShipCount))
+		gosub :player~fastCapture
 		goto :checkForVictims
 	end
 return	
@@ -549,16 +565,16 @@ return
 :getDropperStats
 	send "c;q"
 	waitFor "Figs Per Attack:"
-	getWord CURRENTLINE $maxFigAttack 5
+	getWord CURRENTLINE $ship~SHIP_MAX_ATTACK 5
 
 	send "q m****c "
 	waitOn "Planet #"
-	getWord CURRENTLINE $planet 2
+	getWord CURRENTLINE $planet~planet 2
 	waitOn "Fighters        N/A"
-	getWord CURRENTLINE $planetFighters 5
+	getWord CURRENTLINE $planet~planetFighters 5
 	waitOn "<Enter Citadel>"
 
-	stripText $planet "#"
+	stripText $planet~planet "#"
 	SetVar $isManual FALSE
 	gosub :getstats
 return
