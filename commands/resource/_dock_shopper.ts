@@ -221,7 +221,7 @@
         setVar $LSD__T2Twarp $LSD_Selection
     elseif ($LSD_Selection = "Y")
         #-------------------------------------------- Tow a Ship
-        if ($TWARP_TYPE = 2)
+        if ($player~TWARP_TYPE = 2)
             getInput $LSD_selection ANSI_15 & #27 & "[1A" & #27 & "[K" & ANSI_14 & "*Tow and Outfit a Ship (0 to Cancel)?"
             isNumber $LSD_tst $LSD_selection
             if ($LSD_tst <> 0)
