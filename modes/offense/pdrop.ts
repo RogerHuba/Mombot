@@ -8,6 +8,7 @@ reqRecording
 	loadVar $MAP~stardock
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
+	loadvar $ship~ship_max_attack
 
 	setVar $BOT~help[1]   $BOT~tab&"pdrop [on/off]{delay}{drop type}{trigger}{return}{kill} "
 	setVar $BOT~help[2]   $BOT~tab&"       "
@@ -536,7 +537,6 @@ return
 
 :scanit_again
 	killAllTriggers
-	gosub :player~quikstats
 	gosub :sector~getSectorData
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
 		goSub :player~fastCitadelAttack
@@ -549,14 +549,17 @@ return
 
 
 :checkForVictims
-	setvar $player~startingLocation "Citadel"
+	send "q q z n a y y " $ship~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~PLANET "*  m  *** q z n a y y " $ship~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~PLANET "*  m  *** q z n a y y " $ship~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~PLANET "*  m  *** q z n a y y " $ship~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~PLANET "*  m  *** q z n a y y " $ship~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~PLANET "*  m  *** c s* @"
+	gosub :player~quikstats
+	:scanit_again
+	setvar $player~startingLocation $player~current_prompt
 	gosub :sector~getSectorData
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
 		goSub :player~fastCitadelAttack
-		goto :checkForVictims
+		goto :scanit_again
 	elseif (($sector~emptyShipCount > $sector~myShipCount))
 		gosub :player~fastCapture
-		goto :checkForVictims
+		goto :scanit_again
 	end
 return	
 
