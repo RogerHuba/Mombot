@@ -7,12 +7,15 @@
 	loadvar $switchboard~self_command
 
 	setVar $BOT~help[1]   $BOT~tab&"ldrop [delay] {kill} {direct} {return} "
-	setVar $BOT~help[2]   $BOT~tab&"       "
-	setVar $BOT~help[3]   $BOT~tab&"     {kill} - attempts to kill after drop "
-	setVar $BOT~help[4]   $BOT~tab&"   {direct} - try to drop directly into the limp sector"
-	setVar $BOT~help[5]   $BOT~tab&"   {return} - after drop, return to starting sector "
-	setVar $BOT~help[6]   $BOT~tab&"              and scan again"
-	setVar $BOT~help[7]   $BOT~tab&"    {delay} - how many milliseconds to wait before drop"
+	setVar $BOT~help[2]   $BOT~tab&"      {figs:n} {0ffensive} "
+	setVar $BOT~help[3]   $BOT~tab&"       "
+	setVar $BOT~help[4]   $BOT~tab&"     {kill} - attempts to kill after drop "
+	setVar $BOT~help[5]   $BOT~tab&"   {direct} - try to drop directly into the limp sector"
+	setVar $BOT~help[6]   $BOT~tab&"   {return} - after drop, return to starting sector "
+	setVar $BOT~help[7]   $BOT~tab&"              and scan again"
+	setVar $BOT~help[8]   $BOT~tab&"    {delay} - how many milliseconds to wait before drop"
+	setVar $BOT~help[9]   $BOT~tab&"   {figs:n} - drop this many figs to sector on landing"
+	setVar $BOT~help[10]   $BOT~tab&"  {offensive} - make figs offensive, default defense."
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Limpet Dropper"
@@ -28,6 +31,22 @@
 setArray $dropSector 1000
 
 
+getWordPos $bot~user_command_line $pos "figs:"
+if ($pos > 0)
+	setVar $dropftrs TRUE
+	setVar $cline $bot~user_command_line & " "
+	getText $cline $dropFigQuant "figs:" " "
+
+	getWordPos $bot~user_command_line $pos "offensive"
+	if ($pos > 0)
+		setVar $dropftrsType "o"
+	else
+		setVar $dropftrsType "d"
+	end
+	
+else
+	setVar $dropftrs FALSE
+end
 
 getWordPos $bot~user_command_line $pos "direct"
 if ($pos > 0)
@@ -55,6 +74,8 @@ else
 	setVar $delay 0
 end
 		
+setVar $moveFigMacro ""
+
 # ======================     START LIMP DROPPER (LDROP) SUBROUTINE    ==========================
 :ldrop_start
 	gosub :player~quikstats
@@ -66,8 +87,52 @@ end
 	end
 	send "q"
 	gosub :planet~getPlanetInfo
-	send "q"
 	
+	
+	if ($dropftrs)
+		send "c"
+		send "c;q"
+		setTextLineTrigger shipMaxFtrs :shipMaxFtrs "Max Fighters:"
+		pause
+		:shipMaxFtrs
+			killtrigger shipMaxFtrs
+			getText CURRENTLINE $maxShipFigs "Max Fighters:" "Offensive Odds:"
+			replaceText $maxShipFigs " " ""
+			replaceText $maxShipFigs "," ""
+
+
+		if ($PLANET~PLANET_FIGHTERS < $dropFigQuant)
+			setVar $SWITCHBOARD~message "There are only " & $PLANET~PLANET_FIGHTERS & " fighters on the planet.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+
+		setVar $SWITCHBOARD~message "Dropping " & $dropFigQuant & " on landing; Cannons not changed.*"
+		gosub :SWITCHBOARD~switchboard
+
+		setVar $moveFigMacro ""
+		setVar $moved 0
+
+		while ($moved < $dropFigQuant)
+			
+			setVar $toMove ($dropFigQuant - $moved)
+
+			if ($toMove >= $maxShipFigs)
+				setVar $thisMove $maxShipFigs
+				setVar $moved ($moved + $thisMove)
+			else
+				setVar $thisMove $toMove
+				setVar $moved $moved + $thisMove
+			end
+
+			setVar $moveFigMacro $moveFigMacro & "q m n t* q fz " & $moved & "* * zc" & $dropftrsType & " * l" & $PLANET~PLANET & " *m* t * c"
+		end
+
+	end
+	
+
+
+	send "q"
 	if ($kill)
 		setVar $targeting~PLANET $planet~PLANET
 		gosub :targeting~initialize_targeting
@@ -159,18 +224,37 @@ end
 
 	:ldrop_in_sector
 		killalltriggers
+		if ($dropftrs)
+			send $moveFigMacro
+		end
+
 		if ($kill)
 			gosub :targeting~scanit_cit_kill
 		else
 			send "s* "
 		end
 		if ($return)
+			if ($dropftrs)
+				setVar $BOT~command "movefig"
+				setVar $BOT~user_command_line " movefig p "& $dropFigQuant 
+				setVar $BOT~parm1 $p
+				setVar $BOT~parm2 $dropFigQuant
+				saveVar $BOT~parm1
+				saveVar $BOT~parm2
+				saveVar $BOT~command
+				saveVar $BOT~user_command_line
+				load "scripts\mombot\modes\resource\movefig.cts"
+				setEventTrigger        moveended        :moveended "SCRIPT STOPPED" "scripts\mombot\modes\resource\movefig.cts"
+				pause
+				:moveended
+					
+			end
 			goto :ldrop_return_home
 		end
 		halt
 
 	:ldrop_return_home
-		send "p "&$home&"* "
+		send "p "&$home&"* y"
 		goto :ldrop_scan
 
 	:ldrop_get_adj
