@@ -304,8 +304,12 @@ reqRecording
 			
 		:getDropSector
 			if ($dropDescription = "Direct")
-				send "p " $dropSector "* y "
+				setvar $send "p "&$dropSector&"* y "
+				setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** c  "
+				send $send
+
 				if ($attackOnSight)
+
 					goSub :checkForVictims
 				end	
 				goSub :getSectorLocation
@@ -549,7 +553,6 @@ return
 
 
 :checkForVictims
-	send "q q z n a y y " $ship~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~PLANET "*  m  *** q z n a y y " $ship~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~PLANET "*  m  *** q z n a y y " $ship~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~PLANET "*  m  *** q z n a y y " $ship~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~PLANET "*  m  *** q z n a y y " $ship~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~PLANET "*  m  *** c s* @"
 	gosub :player~quikstats
 	:scanit_again
 	setvar $player~startingLocation $player~current_prompt
