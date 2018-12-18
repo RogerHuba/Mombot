@@ -779,6 +779,31 @@ return
 	setVar $isValid TRUE
 return
 
+:findAdjacent
+        getSectorParameter $dropSector "FIGSEC" $isFigged
+        if (($triggerDescription = "Unfigged Mines") AND ($isFigged = TRUE))
+                return
+        else
+                setVar $i 1
+                setVar $checkSector SECTOR.WARPS[$dropSector][$i]
+                setArray $targetSectors 6
+                setVar $targetCount 0
+                while ($checkSector > 0)
+                        getSectorParameter $checkSector "FIGSEC" $isFigged
+                        if ($isFigged = TRUE)
+                                add $targetCount 1
+                                setVar $targetSectors[$targetCount] $checkSector
+                        end
+                        add $i 1
+                        setVar $checkSector SECTOR.WARPS[$dropSector][$i]
+                end
+                if ($targetCount <= 0)
+                        echo "No Targets..*"
+                        setVar $targetSectors[1] $CURRENT_LOCATION
+                end
+        end
+
+return
 
 #INCLUDES:
 include "source\module_includes\bot"
