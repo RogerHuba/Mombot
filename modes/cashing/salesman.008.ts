@@ -12,20 +12,24 @@
 
 	loadvar $GAME~ptradesetting
 
-	setVar $BOT~help[1] $BOT~tab&"Visits all ports in grid and buys fuel"
-	setVar $BOT~help[2] $BOT~tab&"and sells/buys organics and equipment."
-	setVar $BOT~help[3] $BOT~tab&" "
-	setVar $BOT~help[4] $BOT~tab&"salesman [min port product] ({neg}otiate OR {hold}byhold) {skipcim} {upgradefuel}"
-	setVar $BOT~help[5] $BOT~tab&"         "
-	setVar $BOT~help[6] $BOT~tab&"Options: "
-	setVar $BOT~help[7] $BOT~tab&"   {neg/hold}    Determines planet negotiate or hold selling approach"
-	setVar $BOT~help[8] $BOT~tab&"   {docim}       Does cim before starting route"
-	setVar $BOT~help[9] $BOT~tab&"   {upgradefuel} Upgrades fuel ports selling fuel"
-	setVar $BOT~help[10] $BOT~tab&"   {nohaggle}    Doesn't haggle when buying product to keep from gaining exp"
+	setVar $BOT~help[1]  $BOT~tab&"Visits all ports in grid and buys fuel"
+	setVar $BOT~help[2]  $BOT~tab&"and sells/buys organics and equipment."
+	setVar $BOT~help[3]  $BOT~tab&" "
+	setVar $BOT~help[4]  $BOT~tab&"salesman [min port product] ({neg}otiate OR {hold}byhold)"
+	setVar $BOT~help[5]  $BOT~tab&"{docim} {upgradefuel}"
+	setVar $BOT~help[6]  $BOT~tab&"         "
+	setVar $BOT~help[7]  $BOT~tab&"Options: "
+	setVar $BOT~help[8]  $BOT~tab&"   {neg/hold}    Determines planet negotiate or hold selling"
+	setVar $BOT~help[9]  $BOT~tab&"   {docim}       Does cim before starting route"
+	setVar $BOT~help[10] $BOT~tab&"   {upgradefuel} Upgrades fuel ports selling fuel"
+	setVar $BOT~help[11] $BOT~tab&"   {nohaggle}    Doesn't haggle when buying product"
+	setVar $BOT~help[12] $BOT~tab&"   {sellfuel}    Sells fuel during travels"
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Traveling Salesman"
 	gosub :BOT~banner
+
+	setVar $PLAYER~save TRUE
 
 		
 :merchant
@@ -63,6 +67,13 @@
 		setVar $upgrade_fuel TRUE
 	else
 		setVar $upgrade_fuel FALSE
+	end
+
+	getWordPos $user_command_line $pos "sellfuel"
+	if ($pos > 0)
+		setVar $sellfuel TRUE
+	else
+		setVar $sellfuel FALSE
 	end
 
 	setVar $minimumFuel $parm1
@@ -133,7 +144,7 @@
 			end
 			getSectorParameter $focus "BUSTED" $isBusted
 			# If this sector is our xxB, we're done!
-			if (($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0) AND (((PORT.FUEL[$focus] >= $minimumFuel) AND (PORT.BUYFUEL[$focus] = FALSE)) OR (PORT.ORG[$focus] >= $minimumFuel) OR (PORT.EQUIP[$focus] >= $minimumFuel)) AND ($isBusted <> TRUE))
+			if (($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0) AND ((PORT.FUEL[$focus] >= $minimumFuel) OR (PORT.ORG[$focus] >= $minimumFuel) OR (PORT.EQUIP[$focus] >= $minimumFuel)) AND ($isBusted <> TRUE))
 				# fig found 0 hops
 				setVar $NearFig $focus
 				setVar $checkedPorts[$NearFig] TRUE
@@ -174,13 +185,13 @@
 
 
 
-				if (($upgrade_fuel) AND (PORT.BUYFUEL[$NearFig] = FALSE))
-					killAllTriggers
-					gosub :PLAYER~quikstats
-					send "q"
-					waitOn "Planet command (?"
-					gosub :PLANET~getPlanetInfo
-					send "c"
+				killAllTriggers
+				gosub :PLAYER~quikstats
+				send "q"
+				waitOn "Planet command (?"
+				gosub :PLANET~getPlanetInfo
+				send "c"
+				if ((($upgrade_fuel) AND (PORT.BUYFUEL[$NearFig] = FALSE)) and ($PLANET~planetfuel < ($planetfuelmax-65000)))
 					setVar $total_creds_needed (300*7000)
 					if ($total_creds_needed > $PLAYER~CREDITS)
 						setVar $cashonhand $PLANET~citadel_credits
@@ -210,6 +221,11 @@
 				if ($planetNegotiate = TRUE)
 					killAllTriggers
 					setVar $PLANET~_ck_pnego_fueltosell "-1"
+					if ($PLANET~planetfuel >= 100000)
+						setVar $PLANET~_ck_pnego_fueltosell "max"
+					else
+						setVar $PLANET~_ck_pnego_fueltosell "-1"
+					end
 					if ($PLANET~planetorg >= 500)
 						setVar $PLANET~_ck_pnego_orgtosell "max"
 					else
@@ -238,6 +254,31 @@
 					getWord CURRENTLINE $totalPortEquipment 3		
 					
 					waitOn "<Computer deactivated>"
+					if ((PORT.BUYFUEL[$NearFig] = TRUE) AND ($sellfuel) AND ($PLANET~planetfuel >= 100000))
+						if ($PLANET~planetFuel < $totalPortFuel)
+							setVar $turnsSellingProduct (($PLANET~planetFuel/$PLAYER~TOTAL_HOLDS)-1)
+						else
+							setVar $turnsSellingProduct (($totalPortFuel/$PLAYER~TOTAL_HOLDS))
+						end
+						if (($PLAYER~unlimitedGame = FALSE) AND (($PLAYER~TURNS - $turnsSellingProduct) <= $BOT~bot_turn_limit))
+							setVar $SWITCHBOARD~message "Turns too low to continue.*"
+							gosub :SWITCHBOARD~switchboard
+							send "l "&$PLANET~planet&"* c "
+							goto :doneMerchant
+						end
+						send "l "&$PLAYER~planet&"* t n l 1* t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* q jy "
+							
+						while ($turnsSellingProduct > 0)
+							send "l " $PLANET~planet "*  t  *  * 2*  q P * *"
+							gosub :PLAYER~startHaggle
+							send "0 * 0 *  /"
+							if ($PLAYER~ni <> TRUE)
+								subtract $turnsSellingProduct 1
+								add $totalFuelHolds $PLAYER~TOTAL_HOLDS
+							end
+							waitOn "³Turns"
+						end
+					end
 					if ((PORT.BUYORG[$NearFig] = TRUE) AND ($sellingOrg))
 						if ($PLANET~planetOrg < $totalPortOrganics)
 							setVar $turnsSellingProduct (($PLANET~planetOrg/$PLAYER~TOTAL_HOLDS)-1)

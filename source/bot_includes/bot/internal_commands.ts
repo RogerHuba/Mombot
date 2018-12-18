@@ -450,18 +450,6 @@ goto :BOT~wait_for_command
 goto :BOT~wait_for_command
 # ============================== END LOGIN (login) Sub ==============================
 
-# ============================== CLEAR BUSTS ==================================
-:clearbusts
-    delete $BOT~BUST_FILE
-    setVar $i 1
-    while ($i <= SECTORS)
-        setSectorParameter $i "BUSTED" FALSE
-        add $i 1
-    end
-    setVar $SWITCHBOARD~message "Bust file for this bot has been cleared.*"
-    gosub :SWITCHBOARD~switchboard
-    goto :BOT~wait_for_command
-# ============================== END CLEAR BUSTS ==============================
 
 
 

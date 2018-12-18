@@ -1,0 +1,35 @@
+	logging off
+	gosub :BOT~loadVars
+	loadVar $BOT~BUST_FILE
+	
+		
+	setVar $BOT~help[1] $BOT~tab&"clearbusts"
+	setVar $BOT~help[2] $BOT~tab&"  - Will clear all busts in database."
+	gosub :BOT~help_file
+
+	setVar $BOT~script_title "Bust Clearer"
+	gosub :BOT~banner
+
+# ============================== CLEAR BUSTS ==================================
+:clearbusts
+    #delete $BOT~BUST_FILE
+    setVar $i 11
+    while ($i <= SECTORS)   
+    	setSectorParameter $i "BUSTED" ""
+    	add $i 1
+    end
+    setVar $SWITCHBOARD~message "Bust file for this bot has been cleared.*"
+    gosub :SWITCHBOARD~switchboard
+    halt
+# ============================== END CLEAR BUSTS ==============================
+
+
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"
+
