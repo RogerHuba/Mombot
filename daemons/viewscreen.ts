@@ -698,8 +698,8 @@ return
     else
         if ($window_content <> "")
             setVar $output $output&ANSI_13&"                                                    Script status window                                    *"
-            setVar $output $output&ANSI_15&"-------------------------------------------------------------------------------------------------------------------------*"
-            setVar $output $output&ANSI_10&""&ANSI_7&$window_content&"*"
+            setVar $output $output&ANSI_15&"-----------------------------------------------------------------------------------------------------------------------------*"
+            setVar $output $output&ANSI_10&""&ANSI_15&$window_content&"*"
         end
         setVar $output $output&ANSI_15&"-----------------------------------------------------------------------------------------------------------------------------*"
         setVar $output $output&ANSI_13&"                                   Communications                                                      Stats                 *"
