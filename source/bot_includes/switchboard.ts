@@ -4,7 +4,8 @@
 
 
 :switchboard
-
+    loadvar $BOT~botIsDeaf
+    
     setVar $MSG_Header_Echo     (ANSI_9 & "{"&ANSI_14&$bot_name&ANSI_9&"} " & ANSI_15)
     setVar $MSG_Header_SS_1     ("'{"&$bot_name&"} - ")
     setVar $MSG_Header_SS_2     ("'*{"&$bot_name&"} - *")
@@ -81,6 +82,10 @@
             if ($BOT~botIsDeaf <> TRUE)
                 Echo "*" & $MSG_Header_Echo & $new_message
                 send #145
+            else
+                setvar $window_content $new_message
+                replaceText $window_content "*" "[][]"
+                saveVar $window_content
             end
         elseif ($multiple_lines = false)
             send $MSG_Header_SS_1 & $new_message

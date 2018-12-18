@@ -28,6 +28,7 @@
 	setVar $BOT~help[12] $BOT~tab&" {cannon} - Will reset cannon levels after hunting alien."
 	setVar $BOT~help[13] $BOT~tab&" {return} - Return to starting sector after each hunt."
 	setVar $BOT~help[14] $BOT~tab&"{passive} - Surround passively when hunting."
+	setVar $BOT~help[15] $BOT~tab&"   {home} - Move ships to starting sector instead of stardock."
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Alien Hunter"
@@ -118,6 +119,13 @@
 		setvar $return true
 	else
 		setvar $return false
+	end
+
+	getwordpos $bot~user_command_line $pos "home"
+	if ($pos > 0)
+		setvar $home true
+	else
+		setvar $home false
 	end
 
 	gosub :PLAYER~getInfo
@@ -467,8 +475,13 @@ return
 					setVar $BOT~user_command_line " moveship h silent"
 					setVar $BOT~parm1 $MAP~home_sector
 				else
-					setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
-					setVar $BOT~parm1 $MAP~stardock
+					if ($home = true)
+						setVar $BOT~user_command_line " moveship "&$homesector&" sell dep silent"
+						setVar $BOT~parm1 $homesector
+					else
+						setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
+						setVar $BOT~parm1 $MAP~stardock
+					end
 				end
 				saveVar $BOT~parm1
 				saveVar $BOT~command
