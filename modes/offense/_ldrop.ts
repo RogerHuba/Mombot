@@ -6,10 +6,10 @@
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-	setVar $BOT~help[1]   $BOT~tab&"ldrop [delay] {kill} {direct} {return} "
-	setVar $BOT~help[2]   $BOT~tab&"      {figs:n} {0ffensive} "
-	setVar $BOT~help[3]   $BOT~tab&"       "
-	setVar $BOT~help[4]   $BOT~tab&"     {kill} - attempts to kill after drop "
+	setVar $BOT~help[1]   $BOT~tab&"ldrop [delay] {kill} {direct} {return} {figs:n} {0ffensive}"
+	setVar $BOT~help[2]   $BOT~tab&"      "
+	setVar $BOT~help[3]   $BOT~tab&"  "
+	setVar $BOT~help[4]   $BOT~tab&"     {kill} - attempts to kill after drop"
 	setVar $BOT~help[5]   $BOT~tab&"   {direct} - try to drop directly into the limp sector"
 	setVar $BOT~help[6]   $BOT~tab&"   {return} - after drop, return to starting sector "
 	setVar $BOT~help[7]   $BOT~tab&"              and scan again"
