@@ -13,9 +13,14 @@
 		setArray $checked SECTORS
 		setVar $que[1] $PLAYER~CURRENT_SECTOR
 		setVar $checked[$PLAYER~CURRENT_SECTOR] 1
+		setvar $a 1
+		while (SECTOR.WARPS[$player~current_sector][$a] > 0)
+			setVar $checked[SECTOR.WARPS[$player~current_sector][$a]] 1	
+			add $a 1
+		end
 		:try_again
 		while ($bottom <= $top)
-			# Now, pull out the next sector in the que, and make it our focus
+			# Now, pull out the next sector in the queue, and make it our focus
 			setVar $focus $que[$bottom]
 			getsectorparameter $focus "FIGSEC" $isFigged
 			getsectorparameter $focus "BUBBLE" $isBubble
@@ -24,7 +29,7 @@
 				setVar $nearfig $focus
 				goto :pwarp_away
 			end
-			# That wasn't it, so let's add all the adjacents to the que for future testing.
+			# That wasn't it, so let's add all the adjacents to the queue for future testing.
 			setVar $a 1
 			while (SECTOR.WARPS[$focus][$a] > 0)
 				setVar $adjacent SECTOR.WARPS[$focus][$a]
