@@ -20,6 +20,7 @@ reqRecording
 	setVar $BOT~help[8]   $BOT~tab&"                     [m]ines, [uf] No-Fig Mines"
 	setVar $BOT~help[9]   $BOT~tab&"     - [return]    = will return planet home after 10 seconds"
 	setVar $BOT~help[10]  $BOT~tab&"     - [kill]      = checks for enemy, and kills if possible"
+	setVar $BOT~help[11]  $BOT~tab&"     - [fastkill]  = does kill mac without checking"
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Planet Dropper"
@@ -138,6 +139,14 @@ reqRecording
 	end
 	setVar $randomAttack TRUE
 
+	getWordPos $bot~user_command_line $pos "fastkill"
+	if ($pos > 0)
+		setVar $fastkill TRUE
+	else
+		setVar $fastkill FALSE
+	end
+	setVar $randomAttack TRUE
+
 	gosub :player~quikstats
 	if ($player~corporation > 0)
 		gosub :getCorpies
@@ -180,6 +189,9 @@ reqRecording
 	end
 	if ($attackOnSight)
 		setVar $message $message&"*        Auto Kill: Enabled With "&$planet~planetFighters&" Fighters"
+	end
+	if ($fastkill)
+		setVar $message $message&"*        Fast Kill: Will attempt kill macro at every pdrop attempt"
 	end
 	if ($returnHome)
 		setVar $message $message&"*      Return Home: Enabled With "&$returnHomeDelay&" Second Delay"
@@ -305,7 +317,9 @@ reqRecording
 		:getDropSector
 			if ($dropDescription = "Direct")
 				setvar $send "p "&$dropSector&"* y "
-				setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** c  "
+				if ($fastkill = true)
+					setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** c  "
+				end
 				send $send
 
 				if ($attackOnSight)
@@ -433,7 +447,11 @@ return
 :dopwarp
 	:planetDrop
 		killAllTriggers
-		send "p " $gotoSector "*y"
+		setvar $send "p "&$gotoSector&"*y"
+		if ($fastkill = true)
+			setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** c  "
+		end
+		send $send
 		setTextLineTrigger pwarpNo :pwarpNo "You do not have any fighters in Sector "
 		setTextLineTrigger pwarpYes :pwarpYes " Planetary TransWarp Drive Engaged! "
 		setTextLineTrigger pwarpAlreadyThere :pwarpFinished "You are already in that sector!"
@@ -761,6 +779,31 @@ return
 	setVar $isValid TRUE
 return
 
+:findAdjacent
+        getSectorParameter $dropSector "FIGSEC" $isFigged
+        if (($triggerDescription = "Unfigged Mines") AND ($isFigged = TRUE))
+                return
+        else
+                setVar $i 1
+                setVar $checkSector SECTOR.WARPS[$dropSector][$i]
+                setArray $targetSectors 6
+                setVar $targetCount 0
+                while ($checkSector > 0)
+                        getSectorParameter $checkSector "FIGSEC" $isFigged
+                        if ($isFigged = TRUE)
+                                add $targetCount 1
+                                setVar $targetSectors[$targetCount] $checkSector
+                        end
+                        add $i 1
+                        setVar $checkSector SECTOR.WARPS[$dropSector][$i]
+                end
+                if ($targetCount <= 0)
+                        echo "No Targets..*"
+                        setVar $targetSectors[1] $CURRENT_LOCATION
+                end
+        end
+
+return
 
 #INCLUDES:
 include "source\module_includes\bot"

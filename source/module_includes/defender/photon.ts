@@ -18,7 +18,7 @@
 	end
 
 :fire_photon
-	send "p"&$adjsec&"*y c p y "&$sector&"**q"
+	send "p"&$adjsec&"*  y  c  p  y  "&$sector&"**q"
 	setTextLineTrigger	1	:photon_missed	      "That is not an adjacent sector"
 	setTextLineTrigger	2	:photon_gotem	      "Photon Missile launched into sector"
 	setTextLineTrigger	3	:photon_fed 	      "The Feds do not permit Photon Torpedos"

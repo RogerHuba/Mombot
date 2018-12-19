@@ -23,7 +23,10 @@
 	setVar $END_FIG_HIT_OWNER "'s"
 
 
-	setVar $BOT~help[1] $BOT~tab&"Grid defender "
+	setVar $BOT~help[1] $BOT~tab&"Grid defender {f}   "
+	setVar $BOT~help[2] $BOT~tab&"    f - Photon fighter hits "
+	setVar $BOT~help[3] $BOT~tab&"    l - Photon limpet hits "
+	setVar $BOT~help[4] $BOT~tab&"    a - Photon armid hits "
 	gosub :BOT~help_file
 
 	setvar $script_ver "Grid Defender"
@@ -63,6 +66,27 @@
 		halt
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " f "
+	if ($pos > 0)
+		setvar $fighter true
+	else
+		setvar $fighter false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " l "
+	if ($pos > 0)
+		setvar $limpet true
+	else
+		setvar $limpet false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " a "
+	if ($pos > 0)
+		setvar $armid true
+	else
+		setvar $armid false
+	end
+
 	gosub :PLAYER~getInfo
 	gosub :killtriggers
 	send "q"
@@ -95,9 +119,15 @@
 
 	:processing
 		gosub :killtriggers
-		setTextTrigger 1 :attackSectorLimpet "Limpet mine in "
-		setTextTrigger 2 :attackSectorMine "Your mines in "
-		setTextTrigger 3 :attackSectorFighter "Deployed Fighters "
+		if ($limpet)
+			setTextTrigger 1 :attackSectorLimpet "Limpet mine in "
+		end
+		if ($armid)
+			setTextTrigger 2 :attackSectorMine "Your mines in "
+		end
+		if ($fighter)
+			setTextTrigger 3 :attackSectorFighter "Deployed Fighters "
+		end
 		setTextTrigger 4 :pausing "Planet command (?="
 		setTextTrigger 5 :pausing "Computer command ["
 		setTextTrigger 6 :pausing "Corporate command ["

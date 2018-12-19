@@ -154,7 +154,7 @@ settextlinetrigger lookForSelfMul :lookForCom "S: "
 settextlinetrigger figHit :figHitProcess "of your fighters in sector"
 settextlinetrigger offFigHit :figHitProcess "Your fighters in sector"
 #setTextLineTrigger enter :enterProcess "Deployed Fighters Report Sector "
-settextlinetrigger limpet :limpetProcess "Limpet mine in "
+#settextlinetrigger limpet :limpetProcess "Limpet mine in "
 
 loadVar $BOT~botIsDeaf
 if ($BOT~botIsDeaf)
@@ -676,7 +676,13 @@ return
 
 :refreshChatMenu
     loadVar $BOT~who_is_online 
+    loadVar $window_content
+    if ($window_content = "")
+        loadvar $switchboard~window_content
+        setvar $window_content $switchboard~window_content
+    end
     replaceText $BOT~who_is_online "," "*"
+    replaceText $window_content "[][]" "*"
     gosub :getStats
     setVar $output #27 & "[2J"
     setVar $output $output&"**"
@@ -690,12 +696,10 @@ return
         gosub :MAP~displayNavigation
         setvar $output $output&$map~map&"*"
     else
-        loadVar $window_content
         if ($window_content <> "")
-            replaceText $window_content "[][]" "*"
             setVar $output $output&ANSI_13&"                                                    Script status window                                    *"
-            setVar $output $output&ANSI_15&"-------------------------------------------------------------------------------------------------------------------------*"
-            setVar $output $output&ANSI_10&""&ANSI_7&$window_content&"*"
+            setVar $output $output&ANSI_15&"-----------------------------------------------------------------------------------------------------------------------------*"
+            setVar $output $output&ANSI_10&""&ANSI_15&$window_content&"*"
         end
         setVar $output $output&ANSI_15&"-----------------------------------------------------------------------------------------------------------------------------*"
         setVar $output $output&ANSI_13&"                                   Communications                                                      Stats                 *"

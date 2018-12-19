@@ -256,7 +256,7 @@ return
     setVar $internalCommandLists[3]  " hkill kill cap "
     setVar $internalCommandLists[4]  " refurb scrub "
     setVar $internalCommandLists[5]  " surround exit mow "
-    setVar $internalCommandLists[6]  " clearbusts "
+    setVar $internalCommandLists[6]  " "
     setVar $internalCommandLists[7]  " find bustcount sector storeship setvar getvar "
     setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow l m t b p port x shipstore w d finder xenter status countbusts countbust "
     setVar $internalCommandList     $internalCommandLists[1]&$internalCommandLists[2]&$internalCommandLists[3]&$internalCommandLists[4]&$internalCommandLists[5]&$internalCommandLists[6]&$internalCommandLists[7]
