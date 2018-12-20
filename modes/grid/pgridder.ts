@@ -58,6 +58,8 @@
 	divide $offodd 12
 	setVar $max_figs $player~FIGHTERS
 
+
+	setvar $avoided_sectors " "
 	:getplanetnum
 		send "qD"
 		waitOn "Planet #"
@@ -95,11 +97,12 @@
 			setVar $focus $que[$bottom]
 			getSectorParameter $focus "FIGSEC" $isFigged
 			setVar $checked[$focus] TRUE
-			if ($focus <> $player~current_sector)
+			getwordpos $avoided_sectors $pos " "&$focus&" "
+			if (($focus <> $player~current_sector) and ($pos <= 0))
 				if ($isFigged <> TRUE)
 					setVar $a 1
-					while (SECTOR.WARPSIN[$focus][$a] > 0)
-						setVar $adjacent SECTOR.WARPSIN[$focus][$a]
+					while (SECTOR.WARPS[$focus][$a] > 0)
+						setVar $adjacent SECTOR.WARPS[$focus][$a]
 						getSectorParameter $adjacent "FIGSEC" $isFigged
 						if (($isFigged = TRUE))
 							setVar $travelTo $focus
@@ -115,7 +118,7 @@
 			# That wasn't it, so let's add all the adjacents to the que for future testing.
 			setVar $a 1
 			while (SECTOR.WARPS[$focus][$a] > 0)
-				setVar $adjacent SECTOR.WARPSIN[$focus][$a]
+				setVar $adjacent SECTOR.WARPS[$focus][$a]
 				# But only add them if they haven't been added previously
 				if ($adjacent > 0)
 					if ($checked[$adjacent] = 0)
@@ -134,6 +137,7 @@
 		gosub :SWITCHBOARD~switchboard
      	goto :done
 		:continue
+			setvar $output ""
 			if ($NearFig > 0)
 				killtrigger warped
 				killtrigger same
@@ -169,6 +173,25 @@
 						end
 						add $i 1
 					end
+					
+					setvar $containsShieldedPlanetWithUs false
+					setVar $i 1
+					if (SECTOR.PLANETCOUNT[$player~current_sector] > 1)
+						while ($i <= SECTOR.PLANETCOUNT[$player~current_sector])
+							getWord SECTOR.PLANETS[$player~current_sector][$i] $test 1
+							if ($test = "<<<<")
+								setVar $containsShieldedPlanetWithUs TRUE
+							end
+							add $i 1
+						end
+					end
+
+					if ($containsShieldedPlanetWithUs = true)
+						setVar $SWITCHBOARD~message "There is a shielded planet in sector with us!  Either take it or get out of here!*"
+						gosub :SWITCHBOARD~switchboard
+						halt
+					end
+					
 					setVar $figowner SECTOR.FIGS.OWNER[$boomsec]
 					setVar $figCount SECTOR.FIGS.QUANTITY[$boomsec]
 					getWord $figOwner $alienCheck 1
@@ -239,6 +262,8 @@
 							setVar $SWITCHBOARD~message "Planet Gridder halting*"
 							gosub :SWITCHBOARD~switchboard
 							halt
+					else
+						setvar $avoided_sectors $avoided_sectors&" "&$boomsec&" "
 					end
 
 				:report				
