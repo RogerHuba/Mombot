@@ -253,6 +253,7 @@ goSub :checkAvoidedSectors
 	gosub :xenter
 	gosub :xenter
 	gosub :xenter
+	send "y1"&$player~current_sector&"** "
 	gosub :landOnPlanetEnterCitadel
 	setVar $limpetBefore $player~limpets
 	setVar $limpetAfter $limpetBefore
@@ -712,6 +713,18 @@ goSub :checkAvoidedSectors
 									end
 									add $j 1
 								end
+								setvar $j 1
+								while ((SECTOR.WARPSIN[$adjinf][$j]) > 0)
+									getSectorParameter SECTOR.WARPSIN[$adjinf][$j] "FIGSEC"  $isFigged
+									if ($isFigged = "")
+										setVar $isFigged FALSE
+									end
+									if ($isFigged = FALSE)
+										goto :not_an_orphan_sector
+									end
+									add $j 1
+								end
+
 								setVar $database $database&" "&$targetSectorCount&" "
 								setVar $adjacentDatabase $adjacentDatabase&" "&$adjinf&" "
 								setVar $move[$targetSectorCount] $adjinf
@@ -814,7 +827,7 @@ return
         setVar $mac ""
 	if ($gridExistingOnly)
 		if ($grid_figs > 0)
-			setVar $mac "f " & $grid_figs & "*cd"
+			setVar $mac "f " & $grid_figs & "*cd "
 		end
 		if (($grid_armids > 0) AND ($player~armids > 0))
 			setVar $mac $mac & "h1 z" & $grid_armids & "*zc*"
@@ -824,7 +837,7 @@ return
 		end
 	else
 		if ($grid_figs > 0)
-			setVar $mac "f " & $grid_figs & "*cd"
+			setVar $mac "f " & $grid_figs & "*cd "
 		end
 		if (($grid_armids > 0) AND ($player~armids > 0))
 			setVar $mac $mac & "h1 z" & $grid_armids & "*zc*"
@@ -836,7 +849,11 @@ return
 return
 
 :assemble_attack_mac
-        setVar $attack_mac "* za" & $figs & "* jr * "
+        if ($attackretreat = true)
+        	setVar $attack_mac "* za" & $figs & "* jr * "
+        else
+        	setVar $attack_mac "* za" & $figs & "* * "
+        end
 return
 
 :assemble_return_mac
@@ -850,7 +867,7 @@ return
 		setVar $return_mac "x   "&$xport_ship&"*  *  "
 	end
 	setVar $return_mac $return_mac&$homesec & "* y y * * "
-
+	#setvar $return_mac $return_mac&"n1yy"
 return
 
 :assemble_land_mac
