@@ -43,6 +43,8 @@
 	getSectorParameter SECTORS "LIMPSEC" $isLimped
 
 
+	setvar $player~save true
+
 	setVar $BOT~help[1]  $BOT~tab&"Visits sectors in list and clears limps and armids."
 	setVar $BOT~help[2]  $BOT~tab&"         "
 	setVar $BOT~help[3]  $BOT~tab&"[furb]    - Will Attempt to buy Mines and/or Disruptors"
@@ -58,6 +60,8 @@
 	setVar $BOT~help[13] $BOT~tab&"[ps]      - Do passive surround to grid safely"
 	setVar $BOT~help[14] $BOT~tab&"            Limps, Armids, Fig, and planet avoidance "
 	setVar $BOT~help[15] $BOT~tab&"            controlled by bot surround menu"
+	setVar $BOT~help[16] $BOT~tab&"[bwarp]   - bwarp clearing"
+	setVar $BOT~help[17] $BOT~tab&"[reckless]- bwarp recklessly, with no safeties"
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Mine Sweeper"
@@ -106,6 +110,27 @@
 		setVar $REFURB FALSE
 	else
 		setVar $REFURB TRUE
+	end
+
+	getWordPos $TEMP $pos " bwarp "
+	if ($pos = 0)
+		setVar $bwarp FALSE
+	else
+		setVar $bwarp TRUE
+	end
+
+	getWordPos $TEMP $pos " reckless "
+	if ($pos = 0)
+		setVar $reckless FALSE
+	else
+		setVar $reckless TRUE
+	end
+
+	getWordPos $TEMP $pos " ps "
+	if ($pos = 0)
+		setVar $passive_surround FALSE
+	else
+		setVar $passive_surround TRUE
 	end
 
 	getWordPos $TEMP $pos " ps "
@@ -188,6 +213,11 @@
 	goSub :checkAvoidedSectors
 	send "q"
 	gosub :PLANET~getPlanetInfo
+	if (($bwarp = true) and ($planet~PLANET_TRANSPORT < 1))
+		setVar $SWITCHBOARD~message "Planet does not have a transporter!  Can not do bwarp clearing.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
 
 	if ($grid_limpets = 0) AND ($grid_armids = 0)
 		setVar $SWITCHBOARD~message "Nothing To Do!*"
@@ -468,7 +498,7 @@ return
 			halt
 		end
 
-		if ($TWARP_TYPE = "No")
+		if ($player~twarp_type = "No")
 			setVar $SWITCHBOARD~message "Must Have Twarp 1 or 2**"
 			gosub :SWITCHBOARD~switchboard
 			halt
@@ -516,10 +546,19 @@ return
 		if ($msg = "")
 			waitfor "You leave the Galactic Bank."
 		else
-			setVar $SWITCHBOARD~message "Unknown Problem Detected. Check TA!*"
-			gosub :SWITCHBOARD~switchboard
-			send "*"
-			halt
+			if ($photoned = true)
+				loadvar $game~PHOTON_DURATION
+				send "L Z" & #8 & $PLANET~PLANET  & "*  c * "
+				send "'{" $bot~bot_name "} - Waiting for photon to wear off..*"		 
+				setDelayTrigger restart_from_photon :attemptRefurb (($game~photon_duration * 60000) + 1000)
+				pause
+
+			else
+				setVar $SWITCHBOARD~message "Unknown Problem Detected. Check TA!*"
+				gosub :SWITCHBOARD~switchboard
+				send "*"
+				halt
+			end
 		end
 		gosub :PLAYER~quikstats
 
@@ -710,8 +749,17 @@ return
 		killAllTriggers
 		send ("'Unknown Problem Occured, Attempting to reach Command Prompt!*  P D 0* 0* 0* * *** * C  Q  Q  Q  Q  Q  Z  2  2  C  Q  *  Z  *  ***  *  *  ^Q")
 		waitfor ": ENDINTERROG"
+		setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $PLANET~PLANET & "*  * j m  * * *  t * t 1* c * "
+		send $land_mac
+
 		gosub :PLAYER~quikstats
 		send ("'Unknown Problem Occured, at '"&$PLAYER~CURRENT_PROMPT&"' Prompt!*")
+		if ($player~current_prompt = "Citadel")
+			loadvar $game~PHOTON_DURATION
+			send "'{" $bot~bot_name "} - Waiting for photon to wear off..*"		 
+			setDelayTrigger restart_from_photon2 :DisRupt (($game~photon_duration * 60000) + 1000)
+			pause
+		end		
 		halt
 	:Scan_Complete
 		killAllTriggers
@@ -994,13 +1042,44 @@ return
 	setVar $LAID_ARMID $placedArmid
 	setVar $LAID_LIMP $placedLimpet
 
-	if ($FAST)
+	if ($bwarp = true)
 		setVar $i 0
-		send "q  q  q  z   n  *   "
+		setvar $bwarp_move  "b"&$player~current_sector&"*"
+		setvar $bwarp_clear "y   l j" & #8 & #8 & #8 & #8 & #8 & $PLANET~PLANET & "*  j  c  *  "
+		
 		while ($i <= 3)
-			gosub :xenter
+			if ($reckless <> true)
+				killtrigger 1
+				killtrigger 2
+				killtrigger 3
+				setTextTrigger 1 :no_bwarp_lock "Do you want to make this transport blind?"
+				setTextTrigger 2 :bwarp_lock "All Systems Ready, shall we engage?"
+				setTextLineTrigger 3 :bwarpNoFuel "This planet does not have enough Fuel Ore to transport you."
+			end
+			send $bwarp_move
+			if ($reckless <> true)
+				pause
+
+				:no_bwarp_lock
+					killalltriggers
+					send "n "
+					setVar $SWITCHBOARD~message "Fighter is gone from sector!  Stopping, check for enemies!*"
+					gosub :SWITCHBOARD~switchboard
+					halt
+
+				:bwarpNofuel
+					killalltriggers
+					setVar $SWITCHBOARD~message "Not enough fuel on the planet! Stopping.*"
+					gosub :SWITCHBOARD~switchboard
+					halt
+			end
+			:bwarp_lock
+			send $bwarp_clear
 			add $i 1
 		end
+		killtrigger 1 
+		killtrigger 2
+		killtrigger 3
 		if ($grid_armids = 0)
 			setVar $_ARMIDS_ " "
 		else
@@ -1012,20 +1091,46 @@ return
 			setVar $_LIMPS_ "h 2 z " & $grid_limpets & "* z c * "
 		end
 
-		send $_ARMIDS_&$_LIMPS_&" l "&$PLANET~Planet&"*  c  "
+		send "q  q  "&$_ARMIDS_&$_LIMPS_&" l "&$PLANET~Planet&"*  c  "
 		setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
 		setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
 		gosub :PLAYER~quikstats
 		waiton "Citadel command"
+
 	else
-		send "r y y "
-		waiton "==-- Trade Wars 2002 --=="
-		waiton "Enter your choice:"
-		setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
-		setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
-		
-		send "t*   *    *" & PASSWORD & "*    *    *   q  *  *  h 1 z "&$grid_armids&"* z c * h 2 z "&$grid_limpets&"* z c * l "&$PLANET~Planet&"*  c  "
-		waiton "Citadel command"
+		if ($FAST)
+			setVar $i 0
+			send "q  q  q  z   n  *   "
+			while ($i <= 3)
+				gosub :xenter
+				add $i 1
+			end
+			if ($grid_armids = 0)
+				setVar $_ARMIDS_ " "
+			else
+				setVar $_ARMIDS_ " h 1 z " & $grid_armids & "* z c * "
+			end
+			if ($grid_limpets = 0)
+				setVar $_LIMPS_ " "
+			else
+				setVar $_LIMPS_ "h 2 z " & $grid_limpets & "* z c * "
+			end
+
+			send $_ARMIDS_&$_LIMPS_&" l "&$PLANET~Planet&"*  c  "
+			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
+			setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
+			gosub :PLAYER~quikstats
+			waiton "Citadel command"
+		else
+			send "r y y "
+			waiton "==-- Trade Wars 2002 --=="
+			waiton "Enter your choice:"
+			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
+			setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
+			
+			send "t*   *    *" & PASSWORD & "*    *    *   q  *  *  h 1 z "&$grid_armids&"* z c * h 2 z "&$grid_limpets&"* z c * l "&$PLANET~Planet&"*  c  "
+			waiton "Citadel command"
+		end
 	end
 	if (($LAID_ARMID <> TRUE) AND ($grid_armids > 0)) OR (($LAID_LIMP <> TRUE) AND ($grid_limpets > 0))
 		goto :attemptClearingMines
@@ -1062,6 +1167,7 @@ return
 
 :DoTwarp
 	setVar $msg ""
+	setvar $photoned false
 	if ($TwarpTo > 0)
 		send "q q* mz" & $TwarpTo " * "
 		setTextTrigger there        :adj_warp "You are already in that sector!"
@@ -1113,6 +1219,7 @@ return
 		:twarpPhotoned
 			killAllTriggers
 			setVar $msg "I have been photoned and can not T-warp!"
+			setvar $photoned true
 			goto :twarpDone
 
 		:twarp_lock

@@ -324,7 +324,7 @@ goSub :checkAvoidedSectors
 			setSectorParameter $player~current_sector "MINESEC" TRUE
 		end
 	end
-	if ($TWARP = "No")
+	if ($player~TWARP = "No")
 		goto :callSaveMe
 	end
 
@@ -362,6 +362,7 @@ goSub :checkAvoidedSectors
 	end
 
 :clearit
+	loadvar $game~PHOTON_DURATION
 	KillAllTriggers
 	replaceText $database " "&$warpto&" " " "
 	subtract $databaseCount 1
@@ -372,6 +373,12 @@ goSub :checkAvoidedSectors
 		gosub :bwarp
 	else
 		halt
+	end
+
+	if ($photoned = true)
+		send "'{" $bot~bot_name "} - Waiting for photon to wear off..*"		 
+		 setDelayTrigger restart_from_photon :clearit (($game~photon_duration * 60000) + 1000)
+		 pause
 	end
 
 
@@ -432,7 +439,7 @@ goSub :checkAvoidedSectors
 				echo "**" ANSI_7
 				send "m      " $homesec "* y   y    *  *  "
 				#gosub :player~quikstats
-				#if (($TWARP = "No") OR ($player~current_sector <> $homesec))
+				#if (($player~TWARP = "No") OR ($player~current_sector <> $homesec))
 				#	goto :callSaveMe
 				#end
 				send $land_mac
@@ -467,7 +474,7 @@ goSub :checkAvoidedSectors
 			setSectorParameter $boomsec "FIGSEC" TRUE
 		end
         #gosub :player~quikstats
-		#if (($TWARP = "No") OR ($player~current_sector <> $homesec))
+		#if (($player~TWARP = "No") OR ($player~current_sector <> $homesec))
 		#	goto :callSaveMe
 		#end
 		setVar $output ""
@@ -496,7 +503,7 @@ goSub :checkAvoidedSectors
 		gosub :return_triggers
 		send $homesec "* y y  *  "
 		gosub :player~quikstats
-		if (($TWARP = "No") OR ($player~current_sector <> $homesec))
+		if (($player~TWARP = "No") OR ($player~current_sector <> $homesec))
 			goto :callSaveMe
 		end
 		send $land_mac
@@ -1124,8 +1131,10 @@ return
 
 :DoTwarp
 	setVar $msg ""
+	setvar $paused false
+	setvar $photoned false
 	if ($warpto > 0)
-		send "q q * * mz" & $warpto "*"
+		send "q t * t 1*  q * * mz" & $warpto "*"
 		setTextTrigger there        :adj_warp "You are already in that sector!"
 		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $warpto & " "
 		setTextTrigger locking      :locking "Do you want to engage the TransWarp drive?"
@@ -1179,6 +1188,14 @@ return
 		:twarpPhotoned
 			killAllTriggers
 			setVar $msg "I have been photoned and can not T-warp!"
+			send "l " & #8 & $planet~planet "* j c *   "
+			setvar $photoned true
+			goto :twarpDone
+
+		:itwarpnofuel
+			killAllTriggers
+			setVar $msg "I have no fuel!"
+			send "l " & #8 & $planet~planet "* j c *   "
 			goto :twarpDone
 
 		:twarp_lock
@@ -1201,6 +1218,7 @@ return
 		:twarpDone
 			if ($msg <> "")
 				send "'{" $bot~bot_name "} Twarp Error - " & $msg & "**"
+				setvar $paused true
 			end
 	end
 	return
