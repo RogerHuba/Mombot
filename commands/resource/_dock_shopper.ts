@@ -323,7 +323,8 @@
         gosub :prepareOrder
         setVar $item_type $LSD__Shields
         gosub :prepareOrder
-        if ($LSD_Tow <> "")
+
+	if (($LSD_Tow <> "") and ($LSD_Tow <> 0))
             setVar $LSD_Order ($LSD_Order & $LSD_Tow)
         else
             setVar $LSD_Order ($LSD_Order & 0)
