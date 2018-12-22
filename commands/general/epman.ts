@@ -12,7 +12,7 @@
 	
 	setVar $BOT~help[1] $BOT~tab&"EP Haggle Manager"
 	setVar $BOT~help[2] $BOT~tab&"	   "
-	setVar $BOT~help[3] $BOT~tab&"Make sure ephaggle.ts is in your script\Mombot Directory.*"
+	setVar $BOT~help[3] $BOT~tab&"Make sure ephaggle.ts is in your scripts\mombot Directory.*"
 	setVar $BOT~help[4] $BOT~tab&"Options: *"
 	setVar $BOT~help[5] $BOT~tab&"   {setup} - configures EP for first use with mombot."
 	setVar $BOT~help[6] $BOT~tab&"   {stop}  - stop EP Haggle"
@@ -206,7 +206,7 @@ return
 		pause
 		:wait2
 
-		load "scripts\MomBot\ephaggle"
+		load "scripts\mombot\ephaggle"
 		
 		setDelayTrigger delay :wait 1500
 		pause

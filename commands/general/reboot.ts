@@ -31,7 +31,7 @@
         setVar $SWITCHBOARD~message "No mombot script found to reboot.*"
         gosub :SWITCHBOARD~switchboard
     end
-    load "scripts\MomBot\"&$boot_this
+    load "scripts\mombot\"&$boot_this
     halt
 
 

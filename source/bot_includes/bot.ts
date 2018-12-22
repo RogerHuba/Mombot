@@ -166,19 +166,19 @@ return
 #####=============================================== BOT STARTUP FUNCTIONS ============================================#####
 
     gosub :MENUS~doSplashScreen
-    fileExists $exists1 "scripts/Mombot/hotkeys.cfg"
-    fileExists $exists2 "scripts/Mombot/custom_keys.cfg"
-    fileExists $exists3 "scripts/Mombot/custom_commands.cfg"
+    fileExists $exists1 "scripts/mombot/hotkeys.cfg"
+    fileExists $exists2 "scripts/mombot/custom_keys.cfg"
+    fileExists $exists3 "scripts/mombot/custom_commands.cfg"
     if ($exists1 AND $exists2 AND $exists3)
-        readToArray "scripts/Mombot/hotkeys.cfg" $hotkeys
-        readToArray "scripts/Mombot/custom_keys.cfg" $custom_keys
-        readToArray "scripts/Mombot/custom_commands.cfg" $custom_commands
+        readToArray "scripts/mombot/hotkeys.cfg" $hotkeys
+        readToArray "scripts/mombot/custom_keys.cfg" $custom_keys
+        readToArray "scripts/mombot/custom_commands.cfg" $custom_commands
     end
 
     if (($exists1 = FALSE) OR ($exists2 = FALSE) OR ($exists3 = FALSE) OR ($hotkeys <> "255") OR ($custom_keys <> "33") OR ($custom_commands <> "33"))
-        delete "scripts/Mombot/hotkeys.cfg"
-        delete "scripts/Mombot/custom_keys.cfg"
-        delete "scripts/Mombot/custom_commands.cfg"
+        delete "scripts/mombot/hotkeys.cfg"
+        delete "scripts/mombot/custom_keys.cfg"
+        delete "scripts/mombot/custom_commands.cfg"
         setArray $hotkeys 255
         setArray $custom_keys 33
         setArray $custom_commands 33
@@ -293,7 +293,7 @@ return
     setVar $END_FIG_HIT_OWNER "'s"
 # ================================END STANDARD GAME TEXT VARIABLES=================
 # ============================== START FILE VARIABLES ==============================
-    setvar $folder "scripts/Mombot/games/"&GAMENAME
+    setvar $folder "scripts/mombot/games/"&GAMENAME
     makedir $folder
     setVar  $gconfig_file           $folder&"/bot.cfg"
     setVar  $CK_FIG_FILE            $folder&"/_ck_" & GAMENAME & ".figs"
@@ -307,7 +307,7 @@ return
     setVar  $BOT_USER_FILE          $folder&"/bot_users.lst"
     setVar  $SHIP~cap_file          $folder&"/ships.cfg"
     setVar  $PLANET~planet_file     $folder&"/planets.cfg"
-    setVar  $SCRIPT_FILE            "scripts/Mombot/hotkey_scripts.cfg"
+    setVar  $SCRIPT_FILE            "scripts/mombot/hotkey_scripts.cfg"
     setVar  $BUST_FILE              $folder&"/busts.cfg"
     setVar  $MCIC_FILE              $folder&"/planet.nego"
 
@@ -606,7 +606,7 @@ gosub :PLAYER~init
     end
     gosub :save_the_variables
 
-    getFileList $startup_scripts "scripts\Mombot\Startups\*.cts"
+    getFileList $startup_scripts "scripts\mombot\Startups\*.cts"
     setVar $i 1 
     while ($i <= $startup_scripts)
         stop "scripts\mombot\startups\"&$startup_scripts[$i]
