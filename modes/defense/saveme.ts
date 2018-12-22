@@ -159,7 +159,7 @@
 		:there
                 	killtrigger abort
 	                killtrigger nofig
-			send "Saveme script activated - Planet " & $planet~PLANET & " to " & $target_sector & " on attempt " & $j & ".*"
+			send "'Saveme script activated - Planet " & $planet~PLANET & " to " & $target_sector & " on attempt " & $j & ".*"
         	        send "IS*"
 			if ($returnHome)
 				setDelayTrigger savemereturn :returnsaveme ($savemeDelay*1000)

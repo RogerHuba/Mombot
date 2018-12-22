@@ -183,7 +183,7 @@ end
 :PODINGSS
 	setVar $idx 1
 	setVar $PodResults ""
-	setVar $PodSize 20
+	setVar $PodSize 200
 	setVar $Poddings 10
 	# A 3rd 'pod' migth actually be a #SD# ...hard to tell
 	setArray $Pods $PodSize $Poddings
@@ -519,10 +519,10 @@ end
 :FED
 	setVar $idx 1
 	setVar $FedResults ""
-	setVar $BountySize 50
+	setVar $BountySize 500
 	setArray $Bounties $BountySize
 	setVar $BountyCNT 0
-	setVar $CommishSize 50
+	setVar $CommishSize 500
 	setArray $Commish $CommishSize
 	setVar $CommishCNT 0
 
@@ -612,10 +612,10 @@ end
 	setVar $idx 1
 	setVar $CorpResults ""
 	setVar $Corps_NEW 0
-	setVar $CorpArraySize 5
-	setVar $CorpMemberSize 5
+	setVar $CorpArraySize 50
+	setVar $CorpMemberSize 10
 	setArray $Corporations $CorpArraySize $CorpMemberSize
-	setVar $FiredSize 20
+	setVar $FiredSize 200
 	setArray $Fired $FiredSize
 	setVar $FiredCNT 0
 
@@ -807,7 +807,7 @@ end
 	setVar $idx 1
 	setVar $annonCNT 0
 	setVar $annonResults ""
-	setVar $annonsize 50
+	setVar $annonsize 5000
 	setArray $annon $annonsize
 
 	if (($NEWS_READ) AND ($Lines <> 0))
@@ -868,7 +868,7 @@ end
 	setVar $idx 1
 	setVar $PoppedResults ""
 	setVar $Popped 0
-	setVar $PopperSize 50
+	setVar $PopperSize 20000
 	setArray $Poppers $PopperSize 2
 	setVar $PoppingTraders 0
 
@@ -934,17 +934,17 @@ end
 	setVar $idx 1
 	setVar $PortResults ""
 	setVar $BlownCNT 0
-	setVar $PortArraySize 75
+	setVar $PortArraySize 2000
 	setArray $PortBlown $PortArraySize 52
-	setArray $NewPorts 75
+	setArray $NewPorts $PortArraySize
 	setVar $NewPortIDX 0
-	setArray $Opened 75
+	setArray $Opened $PortArraySize
 	setVar $OpenedIDX 0
-	setArray $Advanced 75
+	setArray $Advanced $PortArraySize
 	setVar $AdvancedIDX 0
-	setArray $nAdvanced 75
+	setArray $nAdvanced $PortArraySize
 	setVar $nAdvancedIDX 0
-	setVar $PortOffSize 75
+	setVar $PortOffSize $PortArraySize
 	setArray $PortOff $PortOffSize
 	SetVar $PortOffCNT 0
 
@@ -1138,7 +1138,7 @@ end
 	setVar $idx 1
 	setVar $UMass_Results "Unstable Planetary Masses: None Detected*"
 	setVar $UMass 0
-	setVar $CollidedSize 50
+	setVar $CollidedSize 500
 	setArray $Collided  $CollidedSize
 
 	if (($NEWS_READ) AND ($Lines <> 0))
@@ -1189,7 +1189,7 @@ end
 	setVar $LaunchedResults ""
 	setVar $Launched 0
 	setVar $LaunchedSize 1000
-	setArray $Launchers $LaunchedSize 500
+	setArray $Launchers $LaunchedSize 2000
 
 	if (($NEWS_READ) AND ($Lines <> 0))
 		while ($idx <= $Lines)
@@ -1321,7 +1321,7 @@ end
 :TOW_DETAIL
 	setVar $idx 1
 	setVar $TowResults ""
-	setVar $ArraySize 20
+	setVar $ArraySize 200
 	setArray $Towed $ArraySize
 	setVar $hits 0
 

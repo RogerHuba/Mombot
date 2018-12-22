@@ -360,6 +360,7 @@ return
 
 :loadplanetInfo
     setVar $planetcounter 1
+    loadvar $planet_file
     fileExists $exists $planet_file
     :count_the_planets
     if ($exists)
