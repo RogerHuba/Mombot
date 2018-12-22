@@ -15,13 +15,14 @@ loadVar $command
 loadVar $MULTIPLE_PHOTONS
 fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
 if ($doesHelpFileExist <> TRUE)
-	write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" [on/off] {a/d/p/s} {return}    "
+	write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" [on/off] {a/d/p/s} {return} {den40}  "
 	write "scripts\MOMBot\Help\"&$command&".txt" "      {a}djacent - photons adjacent sector when fig/limp/armid hit "
 	write "scripts\MOMBot\Help\"&$command&".txt" "      {d}ensity  - constant density scan, photons on density change"
 	write "scripts\MOMBot\Help\"&$command&".txt" "      {p}lanet   - standard planet warp photon script"
 	write "scripts\MOMBot\Help\"&$command&".txt" "      {s}urround - attempts to foton retreat sector"
 	write "scripts\MOMBot\Help\"&$command&".txt" "                                                "
 	write "scripts\MOMBot\Help\"&$command&".txt" "      {return}   - Returns Planet Home after Pwarp"
+	write "scripts\MOMBot\Help\"&$command&".txt" "      {den40}   - Only shoots on 40 to 499 Density Change"
 	write "scripts\MOMBot\Help\"&$command&".txt" "                                                "
 	write "scripts\MOMBot\Help\"&$command&".txt" "      Authors: Mind Dagger and The Bounty Hunter "
 
@@ -48,6 +49,14 @@ if ($pos > 0)
 else
 	setVar $auto_return FALSE
 end
+
+getWordPos " "&$user_command_line&" " $pos " den40 "
+if ($pos > 0)
+	setVar $shipchange 1
+else
+	setVar $shipchange 0
+end
+
 # ============================== START FOTON CHECK SUB ==============================
 :foton_check
 	gosub :quikstats
@@ -404,10 +413,23 @@ end
 	if ($w > $i)
 		goto :alldone
 	elseif ($density[$w] <> $dens[$w])
-		send "c p y " $adj[$w] "*  Q  "
-		send "'{" $bot_name "} - Foton Missle Fired into sector => " $adj[$w] "*"
-		gosub :turnOnAnsi
-		goto :dtorp_end
+		if ($shipchange = 1)
+			setVar $diff ($density[$w] - $den[$w])
+			if (($diff > 39) and ($diff < 495))
+				send "c p y " $adj[$w] "*  Q  "
+				send "'{" $bot_name "} - Foton Missle Fired into sector => " $adj[$w] "*"
+				gosub :turnOnAnsi
+				goto :dtorp_end
+			else
+				goto :sublooky
+			end
+
+		else
+			send "c p y " $adj[$w] "*  Q  "
+			send "'{" $bot_name "} - Foton Missle Fired into sector => " $adj[$w] "*"
+			gosub :turnOnAnsi
+			goto :dtorp_end
+		end
 	else
 		goto :sublooky
 	end
