@@ -29,7 +29,7 @@
 	setVar $grid_armids 3
 	setVar $refurb TRUE
 	loadvar $bot~command
-	setvar $folder "scripts/Mombot/games/"&GAMENAME
+	setvar $folder "scripts/mombot/games/"&GAMENAME
 	setVar $GRIDDER_FILE 		$folder&"/gridder.targets"
 	setVar $MASTER_EDGE_FILE 	$folder&"/edge_sectors.targets"
 	setVar $UNEXPLORED_FILE     $folder&"/unexplored.targets"

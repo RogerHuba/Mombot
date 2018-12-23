@@ -616,21 +616,21 @@ return
                     setVar $BOT~custom_commands[$pos] $temp
                 end
                 setVar $i 1
-                delete "scripts/Mombot/hotkeys.cfg"
-                delete "scripts/Mombot/custom_keys.cfg"
-                delete "scripts/Mombot/custom_commands.cfg"
+                delete "scripts/mombot/hotkeys.cfg"
+                delete "scripts/mombot/custom_keys.cfg"
+                delete "scripts/mombot/custom_commands.cfg"
                 while ($i <= 255)
-                    write "scripts/Mombot/hotkeys.cfg" $BOT~hotkeys[$i]
+                    write "scripts/mombot/hotkeys.cfg" $BOT~hotkeys[$i]
                     add $i 1
                 end
                 setVar $i 1
                 while ($i <= 33)
-                    write "scripts/Mombot/custom_keys.cfg" $BOT~custom_keys[$i]
+                    write "scripts/mombot/custom_keys.cfg" $BOT~custom_keys[$i]
                     add $i 1
                 end
                 setVar $i 1
                 while ($i <= 33)
-                    write "scripts/Mombot/custom_commands.cfg" $BOT~custom_commands[$i]
+                    write "scripts/mombot/custom_commands.cfg" $BOT~custom_commands[$i]
                     add $i 1
                 end
             else
