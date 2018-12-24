@@ -54,13 +54,14 @@
 	 setVar $BOT~help[9] $BOT~tab&"      {override} - won't stop if blue not fedsafe"
 	setVar $BOT~help[10] $BOT~tab&"    {planetfuel} - will grab fuel from red planets"
 	setVar $BOT~help[11] $BOT~tab&"       {twoship} - will use two ships to cash"
-	setVar $BOT~help[12] $BOT~tab&"Usage: "
-	setVar $BOT~help[13] $BOT~tab&"        >teamsdt 3 4 5"
-	setVar $BOT~help[14] $BOT~tab&"        >teamsdt 3 4 5 11 12 13"
-	setVar $BOT~help[15] $BOT~tab&"        >teamsdt 6 7 4 override"
-	setVar $BOT~help[16] $BOT~tab&"Note: "
-	setVar $BOT~help[17] $BOT~tab&"       Planet ids are only necessary when multiple planets exist"
-	setVar $BOT~help[18] $BOT~tab&"       in sector or planet scanners are on ships.   "
+	setVar $BOT~help[12] $BOT~tab&"           {X:N} - furb ship letter and holds to buy"
+	setVar $BOT~help[13] $BOT~tab&"Usage: "
+	setVar $BOT~help[14] $BOT~tab&"        >teamsdt 3 4 5"
+	setVar $BOT~help[15] $BOT~tab&"        >teamsdt 3 4 5 11 12 13"
+	setVar $BOT~help[16] $BOT~tab&"        >teamsdt 6 7 4 override"
+	setVar $BOT~help[17] $BOT~tab&"Note: "
+	setVar $BOT~help[18] $BOT~tab&"       Planet ids are only necessary when multiple planets exist"
+	setVar $BOT~help[19] $BOT~tab&"       in sector or planet scanners are on ships.   "
 	gosub :BOT~help_file
 
 
@@ -101,7 +102,22 @@
 		
 	end
 
+	setVar $custom_furb FALSE
+	getWordPos $user_command_line $pos ":"
+	if ($pos > 0)
+		setVar $stuff $user_command_line
+		getWordPos $stuff $loc ":"
+		cutText $stuff $info ($loc - 1) 99
+		getWord $info $furbinfo 1
+		replaceText $furbinfo ":" " "
+		getword $furbinfo $FURB_SHIP 1
+		getword $furbinfo $FURB_HOLDS 2
+		
+		echo "#" $FURB_SHIP "-" $FURB_HOLDS
+		
+	end
 
+	
 	isNumber $is_a_number $parm1
 	if (($is_a_number) and ($parm1 <> "0"))
 		setVar $ship1 $parm1
