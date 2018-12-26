@@ -16,6 +16,7 @@
         stripText $PLAYER~CURRENT_SECTOR ":"
         saveVar $PLANET
         saveVar $PLAYER~CURRENT_SECTOR
+        setSectorParameter $PLANET "PSECTOR" $PLAYER~CURRENT_SECTOR
 
 return
 
@@ -61,6 +62,9 @@ return
         stripText $PLAYER~CURRENT_SECTOR ":"
         getWordPos CURRENTLINE $Pos ": "
         cutText CURRENTLINE $PLANET_NAME ($Pos + 2) 999
+        savevar $planet
+        savevar $player~current_sector
+        setSectorParameter $PLANET "PSECTOR" $PLAYER~CURRENT_SECTOR
 
         setTextLineTrigger class :getclass "Class "
         pause

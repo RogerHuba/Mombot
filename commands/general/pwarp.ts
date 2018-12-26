@@ -1,21 +1,28 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $command
-    loadVar $stardock
-    loadVar $MAP~stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
-    loadvar $SWITCHBOARD~self_command 
-    loadvar $PLANET~PLANET 
+    gosub :BOT~loadVars
+    setVar $parm1 $BOT~parm1
+    setVar $parm2 $BOT~parm2
+    setVar $parm3 $BOT~parm3
+    setVar $parm4 $BOT~parm4
+    setVar $parm5 $BOT~parm5
+    setVar $parm6 $BOT~parm6
+    setVar $parm7 $BOT~parm7
+    setVar $parm8 $BOT~parm8
+    setVar $user_command_line $BOT~user_command_line
+
+
+    setVar $BOT~help[1]  $BOT~tab&"pwarp - planet warps to sector "
+    setVar $BOT~help[2]  $BOT~tab&"         "
+    setVar $BOT~help[3]  $BOT~tab&"Options: "
+    setVar $BOT~help[4]  $BOT~tab&"    p [sector] - normal planet warp"
+    setVar $BOT~help[5]  $BOT~tab&"    p planet {planet id} - planet warp to last known "
+    setVar $BOT~help[6]  $BOT~tab&"                           location of the planet id"
+    gosub :BOT~help_file
 
 # ======================     START PWARP SUBROUTINES     =================
 :pwarp
 :p
     gosub :killthetriggers
+    setvar $player~save true
     if ($parm1 <> $PLAYER~CURRENT_SECTOR)
         gosub :PLAYER~current_prompt
     else
@@ -150,6 +157,7 @@ return
 return
 
 # includes:
+include "source\module_includes\bot"
 include "source\bot_includes\player"
 include "source\bot_includes\sector"
 include "source\bot_includes\map"
