@@ -655,9 +655,7 @@ return
     getWordPos $travelCommands $pos $BOT~command
     if ($pos > 0)
         getWordPos " "&$BOT~user_command_line&" " $pos " planet "
-        echo "*"&$BOT~user_command_line&"*"
         if ($pos > 0)
-            echo "*"&$bot~parms[1]&"*"
             if ($bot~parms[1] = "planet")
                 setvar $bot~parms[1] $bot~parms[2]
                 ##  keep parm2 the same because it's the planet number  ##
