@@ -78,7 +78,7 @@
         end
         #echo "*[length of "&$new_message&":"&$length&"  position of enter:"&$pos&"] isSilent:["&$isSilent&"]*"
         #echo "*[command line: "&$bot~user_command_line&"self command:"&$self_command&"    silent running:"&$bot~silent_running&"   command:"&$bot~command&"] isSilent:["&$isSilent&"]*"
-        if (((($isSilent > 0) or ($bot~silent_running = true)) and ($self_command = true)) or (($self_command = true) and ($bot~command = "help")) and ($isBroadcast <= 0))
+        if (((($isSilent > 0) or ($bot~silent_running = true) and ($self_command = true))) or (($self_command = true) and ($bot~command = "help")) and ($isBroadcast <= 0))
             if ($BOT~botIsDeaf <> TRUE)
                 Echo "*" & $MSG_Header_Echo & $new_message
                 send #145
