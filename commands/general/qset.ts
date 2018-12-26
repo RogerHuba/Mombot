@@ -8,7 +8,8 @@
     loadVar $PLAYER~unlimitedGame        
     loadvar $SWITCHBOARD~bot_name 
     loadvar $SWITCHBOARD~self_command 
-
+    loadVar $GAME~mbbs
+    setvar $mbbs $GAME~mbbs
 
 :qset
 :q

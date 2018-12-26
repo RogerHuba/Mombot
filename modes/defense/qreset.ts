@@ -12,10 +12,10 @@
 
 
 	setVar $BOT~help[1] $BOT~tab&"qreset [planet1] [damage1] ... [planetx] [damagex] "
-	setVar $BOT~help[2] $BOT~tab&"       - Sets sector cannons for planets listed"
+	setVar $BOT~help[2] $BOT~tab&"  - Sets sector and atmos cannons for planets listed"
 	setVar $BOT~help[3] $BOT~tab&"   "
 	setVar $BOT~help[4] $BOT~tab&"qreset [damage]"
-	setVar $BOT~help[5] $BOT~tab&"       - Sets sector cannon for current planet"
+	setVar $BOT~help[5] $BOT~tab&"  - Sets sector and atmos cannon for current planet"
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Cannon Resetter"
@@ -61,6 +61,7 @@
 		#Only run from one planet
 		setVar $onePlanet TRUE
 		setVar $cannon_amount $cannonPlanet[1]
+		setvar $cannon_total $cannonPlanet[1]
 		setVar $planetMemory $PLANET~PLANET
 		if ($startingLocation = "Command")
 			setVar $SWITCHBOARD~message "Must be run from citadel if only one planet.*"
@@ -71,13 +72,28 @@
 
 	:resetTheCannons
 	killalltriggers
+	setVar $totalDamage 0
 	if ($onePlanet)
+		setVar $cannon_amount $cannonPlanet[1]
+		setvar $cannon_total $cannonPlanet[1]
 		send "q "
 		gosub :setTheCannon
+		setvar $planetMemory $planet~planet
 	else
+		setvar $cannon_amount 0
+		setvar $cannon_total 0
 		send "q q * "
-		setVar $totalDamage 0
 		setVar $planetMemory ""
+		setVar $i 1
+		while ($i <= $cannonPlanetCount)
+			add $cannon_total $cannonAmount[$i]
+			add $i 1
+		end
+		## for multiple planets, no reason to set atmos cannons above 500k, when ships don't go higher than 400k fighters ##
+
+		if ($cannon_total > 500000)
+			setvar $cannon_total 500000
+		end
 		setVar $i 1
 		while ($i <= $cannonPlanetCount)
 			getWordPos $planetMemory $pos " "&$cannonPlanet[$i]&" "
@@ -113,27 +129,52 @@
 	end
 
 	gosub :PLAYER~quikstats
-	setVar $SWITCHBOARD~message "Quasar Cannon reset mode enabled.  Planet number(s) ["&$planetMemory&"] are set for a total of "&$totalDamage&".*"
+	setVar $SWITCHBOARD~message "Quasar Cannon reset mode enabled.  Planet number(s) ["&$planetMemory&"] are set for a total of "&$totalDamage&". *"
 	gosub :SWITCHBOARD~switchboard
+	setvar $switchboard~message "Atmos cannons attempted to be set to "&$cannon_total&".*"
+	gosub :SWITCHBOARD~switchboard
+
 	goto :setmultitriggers
 	halt
 # ======================     END CANNON SETTER (CANNONSET) SUBROUTINE     ==========================
 
 :setTheCannon
+	loadvar $game~mbbs
 	gosub :PLANET~getPlanetInfo
-	if ($PLANET~PLANET_FUEL = 0)
-		setVar $percentToSet 0 
-	else
-		setVar $percentToSet (((3*$cannon_amount)*100)/$PLANET~PLANET_FUEL)
-		if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $cannon_amount)
-			add $percentToSet 1
-		end
-	end
-	if ($percentToSet > 100)
-		setVar $percentToSet 100
-	end
-	add $totalDamage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3)
-	send "c l s "&$percentToSet&"* "
+
+    ## Set sector cannons ##
+
+            setVar $percentToSet (((3*$cannon_amount)*100)/$PLANET~PLANET_FUEL)
+            if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $cannon_amount)
+                add $percentToSet 1
+            end
+            if ($percentToSet > 100)
+                setVar $percentToSet 100
+            end
+            add $totalDamage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3)
+            send "c l s "&$percentToSet&"* "
+
+    ## Then set atmos cannons ##
+            if ($game~mbbs)
+                setVar $percentToSet ((($cannon_total/2)*100)/$PLANET~PLANET_FUEL)
+                if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)*2) < $cannon_total)
+                    add $percentToSet 1
+                end
+            else
+                setVar $percentToSet (((2*$cannon_total)*100)/$PLANET~PLANET_FUEL)
+                if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/2) < $cannon_total)
+                    add $percentToSet 1
+                end
+            end
+            if ($percentToSet > 100)
+                setVar $percentToSet 100
+            end
+            if ($game~mbbs)
+                setvar $totalAtmosDamage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)*2)
+            else
+                setvar $totalAtmosDamage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)/2)             
+            end
+            send "l a "&$percentToSet&"* "
 return
 
 
