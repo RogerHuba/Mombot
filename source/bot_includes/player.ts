@@ -69,6 +69,7 @@ return
     killtrigger prompt
     killtrigger statlinetrig
     killtrigger getLine2
+    loadvar $unlimitedGame
     setTextLineTrigger  prompt      :allPrompts     #145 & #8
     setTextLineTrigger  statlinetrig    :statStart      #179
     send #145&"/"
@@ -281,7 +282,7 @@ return
                 setVar $TURNS 65000
                 setVar $unlimitedGame TRUE
             end
-                saveVar $unlimitedGame
+            saveVar $unlimitedGame
             pause
     :getHolds
         setVar $Temp (CURRENTLINE & " ")

@@ -654,22 +654,22 @@ return
     #replacing planet id's with planet sector
     getWordPos $travelCommands $pos $BOT~command
     if ($pos > 0)
-        getWordPos $BOT~user_command_line $pos " planet"
+        getWordPos " "&$BOT~user_command_line&" " $pos " planet "
+        echo "*"&$BOT~user_command_line&"*"
         if ($pos > 0)
-            setVar $i 1
+            echo "*"&$bot~parms[1]&"*"
             if ($bot~parms[1] = "planet")
                 setvar $bot~parms[1] $bot~parms[2]
                 ##  keep parm2 the same because it's the planet number  ##
                 getSectorParameter $BOT~parms[1] "PSECTOR" $BOT~parms[1]
-                echo "*Replacing planet id ["&$old_value&"] with planet sector ["&$BOT~parms[1]&"]*"
             end
+            setVar $i 1
             while ($i <= $BOT~parms)
                 if ($BOT~parms[$i] = "planet")
                     setVar $old_value $BOT~parms[1]
                     setVar $BOT~parms[$i] ""
                     setvar $bot~parms[2] $bot~parms[1]
                     getSectorParameter $BOT~parms[1] "PSECTOR" $BOT~parms[1]
-                    echo "*Replacing planet id ["&$old_value&"] with planet sector ["&$BOT~parms[1]&"]*"
                 end
                 add $i 1
             end
