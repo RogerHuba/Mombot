@@ -864,6 +864,13 @@ return
         setVar $surroundString "c v 0* y* "&$CURRENT_SECTOR&"* q "
         setVar $surroundOutput ""
         setVar $yourOwnCount 0
+        if ($dropOffensive = TRUE)
+            setVar $deployFig "o"
+        elseif ($dropToll = TRUE)
+            setVar $deployFig "t"
+        else
+            setVar $deployFig "d"
+        end
         while (SECTOR.WARPS[$CURRENT_SECTOR][$i] > 0)
             setVar $adj_sec SECTOR.WARPS[$CURRENT_SECTOR][$i]
             getDistance $distance $adj_sec $CURRENT_SECTOR
@@ -908,13 +915,6 @@ return
             elseif (($surroundPassive = TRUE) AND (((SECTOR.ANOMALY[$ADJ_SEC] = TRUE) AND (($limpOwner <> "belong to your Corp") AND ($limpOwner <> "yours"))) OR ((SECTOR.FIGS.QUANTITY[$ADJ_SEC] > 0) and ($alienCheck <> "the")) OR ((SECTOR.MINES.QUANTITY[$ADJ_SEC] > 0) AND (($mineOwner <> "belong to your Corp") AND ($mineOwner <> "yours")))))
                 setVar $surroundOutput $surroundOutput&"(Surround) Avoided non-passive situation in sector "&$adj_sec&".*"
             else
-                if ($dropOffensive = TRUE)
-                    setVar $deployFig "o"
-                elseif ($dropToll = TRUE)
-                    setVar $deployFig "t"
-                else
-                    setVar $deployFig "d"
-                end
                 setVar $surroundString $surroundString&" m z "&$adj_sec&"* z a "&$SHIP~SHIP_MAX_ATTACK&"* * "
                 if (($surroundFigs > 0) AND ($FIGHTERS > $surroundFigs))
                     setVar $surroundString $surroundString&"f z" & $surroundFigs & "*zc"&$deployFig&"*  "
