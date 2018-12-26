@@ -176,6 +176,8 @@ gosub :_START_
 				if ($parm2 <> 0)
 					send "'{" $bot_name "} - Syntax Error: Holds Value Out Of Range*"
 					halt
+				else
+					SetVar $FURB_nHOLDS 0
 				end
 			else
 				SetVar $FURB_nHOLDS $parm2
@@ -193,8 +195,7 @@ gosub :_START_
 			setVar $addHolds $FURB_nHOLDS
 			setVar $shipLetter $FURB_nLETTER
 			setVar $shipName "M()M FURB {" & $addholds & "}"
-	echo "Starting...."
-	
+	echo "Starting...." 
 			goto :startfurb
 		end
 		halt

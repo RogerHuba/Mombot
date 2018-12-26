@@ -6,16 +6,18 @@
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-	setVar $BOT~help[1]   $BOT~tab&"ldrop [delay] {kill} {direct} {return} {figs:n} {0ffensive}"
+	setVar $BOT~help[1]   $BOT~tab&"ldrop [delay] {plock/foton} {kill} {direct} {return} {figs:n} {0ffensive}"
 	setVar $BOT~help[2]   $BOT~tab&"      "
-	setVar $BOT~help[3]   $BOT~tab&"  "
-	setVar $BOT~help[4]   $BOT~tab&"     {kill} - attempts to kill after drop"
-	setVar $BOT~help[5]   $BOT~tab&"   {direct} - try to drop directly into the limp sector"
-	setVar $BOT~help[6]   $BOT~tab&"   {return} - after drop, return to starting sector "
-	setVar $BOT~help[7]   $BOT~tab&"              and scan again"
-	setVar $BOT~help[8]   $BOT~tab&"    {delay} - how many milliseconds to wait before drop"
-	setVar $BOT~help[9]   $BOT~tab&"   {figs:n} - drop this many figs to sector on landing"
-	setVar $BOT~help[10]   $BOT~tab&"  {offensive} - make figs offensive, default defense."
+	setVar $BOT~help[3]   $BOT~tab&"    {plock} - plocks sector and triggers directly or after {delay}"
+	setVar $BOT~help[3]   $BOT~tab&"              if {return} is set plock cancels and returns after 5 seconds"
+	setVar $BOT~help[4]   $BOT~tab&"    {foton} - lands 1 sector away and starts density foton"
+	setVar $BOT~help[5]   $BOT~tab&"     {kill} - attempts to kill after drop (direct or plock)"
+	setVar $BOT~help[6]   $BOT~tab&"   {direct} - try to drop directly into the limp sector"
+	setVar $BOT~help[7]   $BOT~tab&"   {return} - after drop, return to starting sector "
+	setVar $BOT~help[8]   $BOT~tab&"              and scan again"
+	setVar $BOT~help[9]   $BOT~tab&"    {delay} - how many milliseconds to wait before drop or plock"
+	setVar $BOT~help[10]   $BOT~tab&"   {figs:n} - drop this many figs to sector on landing"
+	setVar $BOT~help[11]   $BOT~tab&"  {offensive} - make figs offensive, default defense."
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Limpet Dropper"
@@ -27,6 +29,7 @@
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 
 
+gosub :player~quikstats
 
 setArray $dropSector 1000
 
@@ -46,6 +49,29 @@ if ($pos > 0)
 	
 else
 	setVar $dropftrs FALSE
+end
+
+getWordPos $bot~user_command_line $pos "plock"
+if ($pos > 0)
+	setVar $plock TRUE
+	setVar $SWITCHBOARD~message "We are running plock mode!*"
+	gosub :SWITCHBOARD~switchboard
+else
+	setVar $plock FALSE
+end
+
+getWordPos $bot~user_command_line $pos "foton"
+if ($pos > 0)
+	setVar $foton TRUE
+	if ($Player~Photons < 1)
+		setVar $SWITCHBOARD~message "No Photons on Board!!*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	setVar $SWITCHBOARD~message "We are landing and running density foton!*"
+	gosub :SWITCHBOARD~switchboard
+else
+	setVar $foton FALSE
 end
 
 getWordPos $bot~user_command_line $pos "direct"
@@ -71,8 +97,20 @@ isNumber $test $bot~parm1
 if ($test = TRUE)
 	setVar $delay $bot~parm1
 else
-	setVar $delay 0
+	isNumber $test $bot~parm2
+	if ($test = TRUE)
+		setVar $delay $bot~parm2
+	else
+		isNumber $test $bot~parm3
+		if ($test = TRUE)
+			setVar $delay $bot~parm3
+		else
+			setVar $delay 0
+		end
+	end
 end
+
+
 		
 setVar $moveFigMacro ""
 
@@ -206,10 +244,141 @@ setVar $moveFigMacro ""
 		gosub :ldrop_get_adj
 	:dropToSector
 		killalltriggers
-		if ($delay > 0)
+		if (($delay > 0) and ($plock = FALSE))
 			setDelayTrigger delay_drop :go_go_go $delay
 			pause
 		end
+	:plockFotonCheck
+		if ($foton = TRUE)
+			# see if this sector has an adjancet sector we can shoot from
+			# We are targeting the ADjacent Sector they are entering
+
+			setVar $s 1
+			while ($s <= SECTOR.WARPINCOUNT[$adjsec])
+				if (SECTOR.WARPSIN[$adjsec][$s] <> $dropSector[$i])
+
+					setVar $checkSector SECTOR.WARPSIN[$adjsec][$s]
+					getSectorParameter $checkSector "FIGSEC" $isFigged
+					if ($isFigged)
+						
+						send "l "&$planet~PLANET&"*  c"
+						send "p " $checkSector "*y"
+						setTextLineTrigger denMoveNo :denMoveNo "You do not have any fighters in Sector " & $adjsec & "."
+						setTextLineTrigger denMoveYes :denMoveYes "Locating beam pinpointed, TransWarp Locked."
+						pause
+						:denMoveNo
+							killalltriggers
+							send " q  q   "
+							goto :ldrop_scan
+						:denMoveYes
+							
+							setVar $BOT~command "foton"
+							setVar $BOT~user_command_line " foton on d" 
+							setVar $BOT~parm1 "on"
+							setVar $BOT~parm2 "d"
+							saveVar $BOT~parm1
+							saveVar $BOT~parm2
+							saveVar $BOT~command
+							saveVar $BOT~user_command_line
+							load "scripts\mombot\modes\offense\foton.cts"
+							setEventTrigger        fotonended        :fotonended "SCRIPT STOPPED" "scripts\mombot\modes\offense\foton.cts"
+							setdelaytrigger	fotonwait :fotonwait 5000
+							pause
+							:fotonwait
+								
+								stop "scripts\mombot\modes\offense\foton.cts"
+								goto :ldrop_return_home
+							:fotonended
+								killalltriggers
+								if ($return)
+									goto :ldrop_return_home
+								end
+								halt
+					end
+				end
+				add $s 1
+			end
+			goto :ldrop_scan
+		elseif ($plock = TRUE)
+
+			send "l "&$planet~PLANET&"*  c"
+			send "p " $adjsec "*"
+			setTextLineTrigger prelockNo :plockNo "You do not have any fighters in Sector " & $adjsec & "."
+			setTextLineTrigger prelockYes :plockYes "Locating beam pinpointed, TransWarp Locked."
+			
+			pause
+			:plockNo
+			:plockNo
+				killalltriggers
+				setvar $switchboard~message "Lock Missed, back drop scanning...*"
+				gosub :switchboard~switchboard
+				send " q  q   "
+				goto :ldrop_scan
+			:plockYes
+				killalltriggers
+				:settriggers
+					setvar $switchboard~message "Lock Aquired on " & $adjsec & "*"
+					gosub :switchboard~switchboard
+					killalltriggers
+					setTextLineTrigger	1	:manual			("Planet is now in sector "&$adjsec)
+					setTextTrigger 		2	:plockFinished	("Planetary TransWarp Drive shutting down.")
+					setTextTrigger 		3	:goPlock 		("Report Sector "&$adjsec&": ")
+					setTextTrigger 		4	:goPlock 		("Limpet mine in "&$adjsec&" ")
+					setTextTrigger 		5	:goPlock 		("Your mines in "&$adjsec&" ")
+					setTextTrigger 		6	:goPlock 		("Locator beam lost.")
+					setdelaytrigger	plockCancel :plockCancel 5000
+					pause
+				:plockCancel
+					killalltriggers
+					setvar $switchboard~message "Plock not triggered after 5 seconds.. resuming..*"
+					gosub :switchboard~switchboard
+					send "n  q  q   "
+					goto :ldrop_scan
+				:goPlock
+					killalltriggers
+					if ($delay > 0)
+						setdelaytrigger plockdelay :continuePlock $delay
+						pause
+					end
+					:continuePlock
+						killalltriggers
+						send "y '{" $bot_name "} - PLOCK Launched*"
+						if ($kill)
+							setVar $targeting~PLANET $planet~PLANET
+							gosub :targeting~initialize_targeting
+						else
+							send "s* "
+						end
+						if ($return)
+							setvar $switchboard~message "I will return and resume Ldrop Plock in 10 seconds...*"
+							gosub :switchboard~switchboard
+							setdelaytrigger	plockBack :plockBack 10000
+							pause
+							:plockBack
+								killalltriggers
+								goto :ldrop_return_home
+						end
+						halt
+				:plockFinished
+					killalltriggers
+					send "  s*   "
+					send "'{" $bot_name "} - PLOCK Sector Cleared*"
+					send " q  q   "
+					goto :ldrop_scan
+				:manual
+					killAllTriggers
+					if ($kill)
+						gosub :targeting~scanit_cit_kill
+					else
+						send "s* "
+					end
+					
+					halt
+			
+
+			
+		end
+
 	:go_go_go
 		send "l "&$planet~PLANET&"* cp "&$adjsec&"*y"
 		settextlinetrigger no_fig :ldrop_no_fig "Your own fighters must be in the destination"
@@ -247,6 +416,7 @@ setVar $moveFigMacro ""
 				setEventTrigger        moveended        :moveended "SCRIPT STOPPED" "scripts\mombot\modes\resource\movefig.cts"
 				pause
 				:moveended
+					killalltriggers
 					
 			end
 			goto :ldrop_return_home

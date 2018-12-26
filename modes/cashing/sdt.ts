@@ -176,7 +176,7 @@ setVar $debugdelay 0
         else
                setVar $current_sector $sector[$ship_1]
         end
-               if ($ship[$current_ship].voids = "set")
+               if (($ship[$current_ship].voids = "set") and ($current_sector <> 0))
                          gosub :clearadjacent
                end
         gosub :endCNsettings
