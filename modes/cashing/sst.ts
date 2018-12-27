@@ -25,7 +25,7 @@
 	setVar $BOT~help[5] $BOT~tab&"  - {jet} will mega jet product for extra experience "
 	setVar $BOT~help[6] $BOT~tab&"          but will stop at mulitplier of 300 holds. "
 	setVar $BOT~help[7] $BOT~tab&"  - {resetlra} will reset last rob sector and exit"
-	setVar $BOT~help[8] $BOT~tab&"  - {ep} will reset last rob sector and exit*"
+	setVar $BOT~help[8] $BOT~tab&"  - {ep} Use EP Haggle*"
 	setVar $BOT~help[9] $BOT~tab&"  - Created by Cherokee"
 	gosub :BOT~help_file
 

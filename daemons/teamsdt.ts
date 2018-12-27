@@ -55,13 +55,14 @@
 	setVar $BOT~help[10] $BOT~tab&"    {planetfuel} - will grab fuel from red planets"
 	setVar $BOT~help[11] $BOT~tab&"       {twoship} - will use two ships to cash"
 	setVar $BOT~help[12] $BOT~tab&"           {X:N} - furb ship letter and holds to buy"
-	setVar $BOT~help[13] $BOT~tab&"Usage: "
-	setVar $BOT~help[14] $BOT~tab&"        >teamsdt 3 4 5"
-	setVar $BOT~help[15] $BOT~tab&"        >teamsdt 3 4 5 11 12 13"
-	setVar $BOT~help[16] $BOT~tab&"        >teamsdt 6 7 4 override"
-	setVar $BOT~help[17] $BOT~tab&"Note: "
-	setVar $BOT~help[18] $BOT~tab&"       Planet ids are only necessary when multiple planets exist"
-	setVar $BOT~help[19] $BOT~tab&"       in sector or planet scanners are on ships.   "
+	setVar $BOT~help[13] $BOT~tab&"            {ep} - use ep Haggle"
+	setVar $BOT~help[14] $BOT~tab&"Usage: "
+	setVar $BOT~help[15] $BOT~tab&"        >teamsdt 3 4 5"
+	setVar $BOT~help[16] $BOT~tab&"        >teamsdt 3 4 5 11 12 13"
+	setVar $BOT~help[17] $BOT~tab&"        >teamsdt 6 7 4 override"
+	setVar $BOT~help[18] $BOT~tab&"Note: "
+	setVar $BOT~help[19] $BOT~tab&"       Planet ids are only necessary when multiple planets exist"
+	setVar $BOT~help[20] $BOT~tab&"       in sector or planet scanners are on ships.   "
 	gosub :BOT~help_file
 
 
@@ -101,6 +102,15 @@
 		setVar $planetfuel TRUE
 		
 	end
+	
+	setVar $ephaggle 0
+	getWordPos $bot~user_command_line $pos " ep"
+
+	IF ($pos > 0)
+		setVar $ephaggle 1
+		setVar $SWITCHBOARD~message "Using EP HAGGLE!*"
+		gosub :switchboard~switchboard
+	END
 
 	setVar $custom_furb FALSE
 	getWordPos $user_command_line $pos ":"
@@ -471,7 +481,11 @@
 				setVar $orders[1][2] ""
 				setVar $orders[2][2] ""
 			end
-			send "'red"&$orders[1]&" sdt "&$orders[1][1]&" "&$orders[2][1]&" "&$orders[1][2]&" "&$orders[2][2]&"*"
+			if ($ephaggle = 0)
+				send "'red"&$orders[1]&" sdt "&$orders[1][1]&" "&$orders[2][1]&" "&$orders[1][2]&" "&$orders[2][2]&"*"
+			else
+				send "'red"&$orders[1]&" sdt "&$orders[1][1]&" "&$orders[2][1]&" "&$orders[1][2]&" "&$orders[2][2]&" ep*"
+			end
 			settextlinetrigger badship :wrong "That is not an available ship, Script Halting."
 			settextlinetrigger lraship :lraship "last rob attempt is this sector!"
 			settextlinetrigger noexp :noexp "You need more experience to SDT!!!"
