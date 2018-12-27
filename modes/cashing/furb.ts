@@ -510,7 +510,24 @@ gosub :_START_
 			send "'{" $bot_name "} - This is not an ore selling port and I don't know the planet number, THAT SUCKS!*"
 		end
 	else
-		send "P * * * "
+	
+
+		send "P T * * 0* 0*"
+		waitfor "Enter your choice [T]"
+		waitfor "Command ["
+		gosub :PLAYER~quikstats
+		setVar $EMPTY_HOLDS ($PLAYER~TOTAL_HOLDS - ($PLAYER~ORE_HOLDS + $PLAYER~ORGANIC_HOLDS + $PLAYER~EQUIPMENT_HOLDS + $PLAYER~COLONIST_HOLDS))
+		echo $EMPTY_HOLDS
+		if ($EMPTY_HOLDS > 0)
+			send "'{" $bot_name "} - Ore at port critically low!*"
+			setdelaytrigger pauseforport :pauseforport 4000
+			pause
+			:pauseforport
+			killTrigger pauseforport
+		end
+		
+
+
 	end
 	SetTextTrigger 		noFig2 		:noFig2 		"blind?"
 	SetTextLineTrigger 	lowShipOre2 :lowShipOre2 	"You do not have enough Fuel Ore to make the jump."
