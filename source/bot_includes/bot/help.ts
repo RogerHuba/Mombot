@@ -84,7 +84,7 @@
         setVar $SWITCHBOARD~self_command 2
     end
     gosub :SWITCHBOARD~switchboard
-goto :BOT~wait_for_command
+halt
 :bufferList
     setVar $i 1
     getWord $currentList $test $i "[<><>NONE<><>]"
@@ -175,7 +175,7 @@ return
         echo ansi_15 "  *  "&$hint_tip&"*  *"
         echo ansi_13 "  --------------------------------------------------------------------***"
     end
-    goto :BOT~wait_for_command
+    halt
 :ss_help
     setVar $helpString "'*"
     setVar $helpString $helpString&"  -----------------Mind ()ver Matter Bot Help Categories--------------*"
@@ -184,7 +184,7 @@ return
     setVar $helpString $helpString&"                        [RESOURCE]|[GRID]|[GENERAL]    *"
     setVar $helpString $helpString&"  --------------------------------------------------------------------**"
     send $helpString
-    goto :BOT~wait_for_command
+    halt
 # ============================== END HELP FOR COMMANDS SUB ==============================
 
 :get_hint_tips
