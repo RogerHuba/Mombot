@@ -136,7 +136,7 @@ end
 					//echo "* $warpsInFigged: " $warpsInFigged "*"
 
 					// If warps in figged is less than total warps - meaining the potenially have a enemy fig
-					if (($warpsInFigged < SECTOR.WARPINCOUNT[$focus]) and (SECTOR.WARPINCOUNT[$focus] > 2))
+					if (($warpsInFigged < SECTOR.WARPINCOUNT[$focus]) and (SECTOR.WARPINCOUNT[$focus] > 1))
 						//Valid Target
 						setvar $target_sector $focus
 						setVar $foundSecs[$foundcount][1] $focus
@@ -186,10 +186,9 @@ return
 	getTimer $startTicks
 	#echo "*["&$seconds&"]["&$target_sector&"]*"
 	if (($seconds <> "0") and ($target_sector <> "0"))
-			echo "*IN HERE*"
-			setTextLineTrigger r1 :r1 "Report Sector "
-			setTextLineTrigger r2 :r2 "Your fighters in sector "
-			setDelaytrigger pdrop :pdrop (($seconds-1)*1000)
+			#setTextLineTrigger r1 :r1 "Report Sector "
+			#setTextLineTrigger r2 :r2 "Your fighters in sector "
+			setDelaytrigger pdrop :pdrop ((($seconds)*1000)+300)
 			pause
 		:pdrop
 			killtrigger r1

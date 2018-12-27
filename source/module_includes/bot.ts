@@ -43,7 +43,10 @@ return
 :help_file
     setVar $help_file "scripts\MOMBot\Help\"&$command&".txt"
     fileExists $doesHelpFileExist $help_file
-
+    setvar $only_help false
+    if (($parm1 = "help") or ($parm1 = "?"))
+        setvar $only_help true
+    end
     if ($doesHelpFileExist)
         setVar $i 1 
         read $help_file $help_line ($i+4)
@@ -57,6 +60,11 @@ return
         end
         if (($help[($i + 1)] <> "0") OR (($help[($i + 2)] <> "0")))
             goto :write_new_help_file
+        end
+        if ($only_help = true)
+             setVar $SWITCHBOARD~message "File for "&$command&" already up-to-date in help directory.*"
+             gosub :SWITCHBOARD~switchboard
+            halt
         end
         return
     end
@@ -84,6 +92,10 @@ return
         :done_help_file
              setVar $SWITCHBOARD~message "Writing text file for "&$command&" in help directory.*"
              gosub :SWITCHBOARD~switchboard
+
+        if ($only_help = true)
+            halt
+        end
 return
 
 :banner
