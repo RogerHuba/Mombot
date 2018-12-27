@@ -8,6 +8,8 @@ reqRecording
 
 setVar $bot~major_version   "3"
 setVar $bot~minor_version   "5beta"
+savevar $bot~major_version
+savevar $bot~minor_version
 
 goto :BOT~load_bot
 
@@ -119,7 +121,6 @@ include "mombot\source\bot_includes\map"
 include "mombot\source\bot_includes\sector"
 include "mombot\source\bot_includes\game"
 include "mombot\source\bot_includes\bot\connectivity"
-include "mombot\source\bot_includes\bot\help"
 include "mombot\source\bot_includes\bot\internal_commands"
 include "mombot\source\bot_includes\bot\menus"
 include "mombot\source\bot_includes\bot\user_interface"

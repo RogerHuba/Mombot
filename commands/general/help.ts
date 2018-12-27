@@ -203,13 +203,25 @@ halt
     end
 return
 :echo_help
+	loadvar $bot~major_version
+	loadvar $bot~minor_version
+
     echo "*"
     echo ansi_13 "  ----------------" ansi_14 "Mind " ansi_4 "()" ansi_14 "ver Matter Bot Help Categories" ansi_13 "---------------*"
         echo ansi_13 "                            Version: "&$BOT~major_version&"."&$BOT~minor_version&"*"
         echo ansi_13 "                  [OFFENSE]|[DEFENSE]|[DATA]|[CASHING]*"
     echo ansi_13 "                      [RESOURCE]|[GRID]|[GENERAL]    *"
-    echo ansi_13 "  ----------------------------- "&ANSI_14&"Hot Keys"&ANSI_13&" -----------------------------*"
-    gosub :MENUS~echoHotKeys
+    fileExists $exists1 "scripts/mombot/hotkeys.cfg"
+    fileExists $exists2 "scripts/mombot/custom_keys.cfg"
+    fileExists $exists3 "scripts/mombot/custom_commands.cfg"
+    if ($exists1 AND $exists2 AND $exists3)
+	    echo ansi_13 "  ----------------------------- "&ANSI_14&"Hot Keys"&ANSI_13&" -----------------------------*"
+        readToArray "scripts/mombot/hotkeys.cfg" $bot~hotkeys
+        readToArray "scripts/mombot/custom_keys.cfg" $bot~custom_keys
+        readToArray "scripts/mombot/custom_commands.cfg" $bot~custom_commands
+	    gosub :MENUS~echoHotKeys
+    end
+    
     echo ansi_13 "  ----------------------------- "&ANSI_14&"Daemons"&ANSI_13&" ------------------------------*"
     getFileList $daemonList "scripts\mombot\daemons\*.cts"
     if ($daemonList > 0)
@@ -278,3 +290,5 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\bot\menus"
+
