@@ -937,7 +937,7 @@ return
             end
             add $i 1
         end
-        if (($surroundFigs > 0) AND ($FIGHTERS > $surroundFigs))
+        if ((($surroundFigs > 0) AND ($FIGHTERS > $surroundFigs)) and (($current_sector <> $map~stardock) and ($current_sector > 10)))
             setVar $surroundString $surroundString&"f z" & $surroundFigs & "*zc"&$deployFig&"*  "
             subtract $FIGHTERS $surroundFigs
             setVar $target $CURRENT_SECTOR
