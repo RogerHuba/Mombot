@@ -438,7 +438,7 @@ setVar $debugdelay 0
         send "PN" & $planet[$current_ship] & "*"
 	if ($ephaggle = "y")
 
-		
+		waitfor "Registry# and Planet Name"
 		setTextTrigger youHave2 :youHave2 "You have "
 		:sellproduct2
 		setTextTrigger sellfuel2 :sellfuel2 "How many units of Fuel Ore"
