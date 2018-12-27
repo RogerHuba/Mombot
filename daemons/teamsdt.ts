@@ -573,20 +573,35 @@
 				pause
 
 			:setupfurber
+	
 				killalltriggers
 				if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planetfuel = TRUE))
 					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&"  *"
 				else
 					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&"  *"
 				end
+				
 				settexttrigger nofig :nofig "No fighter down at that ship number, drop a fig."
 				settexttrigger furb1 :furb1 "- Furb delivered"
 				pause
-
+			
 			:furb1
+	
 				killalltriggers
-				setdelaytrigger furb2 :furb2 4000
+				setdelaytrigger furb2 :furb2 5000
+				settexttrigger noOre :noore "Ore at port critically low!"
 				pause
+				:noore
+					killalltriggers
+					
+					send "'red"&$red_id&" mac o1100^mq*"
+					setdelaytrigger pdelay :pdelay 500
+					pause
+					:pdelay
+					killtrigger pdelay
+					send "'blue1 mac pt^m^m^m^m*"
+					setdelaytrigger furb2 :furb2 3000
+					pause
 
 			:furb2
 				send "'red"&$red_id&" mac ay9^m *"
