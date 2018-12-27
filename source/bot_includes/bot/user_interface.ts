@@ -725,12 +725,12 @@ return
                         end
 
                     end
-                    setVar $helpOutput $helpOutput&$HELP_ARRAY[$i]&"*"
+                    setVar $helpOutput $helpOutput&$HELP_ARRAY[$i]&"  *"
                     if ($next_line <> "")
-                        setVar $helpOutput $helpOutput&""&$next_line&"*"
+                        setVar $helpOutput $helpOutput&""&$next_line&"  *"
                     end
                     if ($length <= 1)
-                        setVar $helpOutput $helpOutput&"  "
+                        setVar $helpOutput $helpOutput&"    "
                     end
                     #setVar $helpOutput "   "&$helpOutput&"*"
                     add $i 1

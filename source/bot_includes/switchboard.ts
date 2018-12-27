@@ -23,7 +23,7 @@
 
         if ($self_command <> 0)
             #echo "*[self command:"&$self_command&"]*"
-            if ($bot~command <> "help")
+            if (($bot~command <> "help") and ($bot~only_help <> true))
                 if (($self_command > 1) or (($self_command = 1) and (($bot~silent_running <> true) and ($isSilent <= 0))))
                     striptext $message ANSI_1
                     striptext $message ANSI_2
@@ -78,7 +78,7 @@
         end
         #echo "*[length of "&$new_message&":"&$length&"  position of enter:"&$pos&"] isSilent:["&$isSilent&"]*"
         #echo "*[command line: "&$bot~user_command_line&"self command:"&$self_command&"    silent running:"&$bot~silent_running&"   command:"&$bot~command&"] isSilent:["&$isSilent&"]*"
-        if (((($isSilent > 0) or ($bot~silent_running = true) and ($self_command = true))) or (($self_command = true) and ($bot~command = "help")) and ($isBroadcast <= 0))
+        if (((($isSilent > 0) or ($bot~silent_running = true) and ($self_command = true))) or (($self_command = true) and (($bot~command = "help") or ($bot~only_help = true))) and ($isBroadcast <= 0))
             if ($BOT~botIsDeaf <> TRUE)
                 Echo "*" & $MSG_Header_Echo & $new_message
                 send #145

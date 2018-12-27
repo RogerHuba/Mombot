@@ -52,6 +52,10 @@ return
         read $help_file $help_line ($i+4)
         while ($help_line <> EOF)
             #echo $help[$i]&"<->"&$help_line&"*"
+            stripText $help[$i] #13
+            stripText $help[$i] "`"
+            stripText $help[$i] "'"
+            replaceText $help[$i] "=" "-"
             if ($help[$i] <> $help_line)
                 goto :write_new_help_file
             end
@@ -62,8 +66,7 @@ return
             goto :write_new_help_file
         end
         if ($only_help = true)
-             setVar $SWITCHBOARD~message "File for "&$command&" already up-to-date in help directory.*"
-             gosub :SWITCHBOARD~switchboard
+            gosub :display_help
             halt
         end
         return
@@ -94,9 +97,62 @@ return
              gosub :SWITCHBOARD~switchboard
 
         if ($only_help = true)
+            gosub :display_help
             halt
         end
 return
+
+:display_help
+    setVar $i 1
+    setVar $helpOutput ""
+    while (($i <= $help) and ($help[$i] <> "0"))
+        stripText $help[$i] #13
+        stripText $help[$i] "`"
+        stripText $help[$i] "'"
+        replaceText $help[$i] "=" "-"
+        setVar $temp $help[$i]
+        getLength $temp $length
+        setVar $isTooLong FALSE
+        setvar $next_line ""
+        if (($SWITCHBOARD~self_command = true) or ($silent_running = TRUE))
+            while ($length > 75)
+                setVar $isTooLong TRUE
+                cutText $temp $next_line 76 ($length-75)
+                cutText $temp $help[$i] 1 75
+                getLength $next_line $length
+            end
+            setvar $line $help[$i]
+            gosub :format_help
+            setvar $help[$i] $line
+            if ($next_line <> "")
+                setVar $line $next_line 
+                gosub :format_help
+                setvar $next_line $line
+            end
+
+        end
+        setVar $helpOutput $helpOutput&$help[$i]&"  *"
+        if ($next_line <> "")
+            setVar $helpOutput $helpOutput&""&$next_line&"  *"
+        end
+        if ($length <= 1)
+            setVar $helpOutput $helpOutput&"    "
+        end
+        #setVar $helpOutput "   "&$helpOutput&"*"
+        add $i 1
+    end
+    
+    if (($SWITCHBOARD~self_command = true) or ($silent_running = TRUE))
+        setVar $helpOutput "  *"&ansi_14&"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*  *"&ansi_15&$helpOutput&ansi_14&"  *     *-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"&ansi_15
+        setVar $SWITCHBOARD~message $helpOutput
+        gosub :SWITCHBOARD~switchboard
+    else
+        setVar $helpOutput "  *"&"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"&$helpOutput&"  *     *-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"
+        send "'*{"&$SWITCHBOARD~bot_name&"} - *"&$helpOutput&"*"
+    end
+return
+
+
 
 :banner
     setVar $SWITCHBOARD~message $script_title&" starting up!*"
@@ -135,6 +191,20 @@ while ($i <= $menu)
     add $i 1
 end
 openMenu "ScriptMenu"
+
+:format_help
+
+    replaceText $line "[" ansi_2&"["&ansi_6
+    replaceText $line "]" ansi_2&"]"&ansi_13
+    replaceText $line "-" ansi_7&"-"&ansi_13
+    replaceText $line "<<<<" ansi_14&"<"&ansi_7&"<"&ansi_14&"<"&ansi_7&"<"&ansi_15
+    replaceText $line ">>>>" ansi_7&">"&ansi_14&">"&ansi_7&">"&ansi_14&">"
+    replaceText $line "{" ansi_2&"{"&ansi_6
+    replaceText $line "}" ansi_2&"}"&ansi_13
+    replaceText $line "Options:" ansi_6&"Options"&ansi_2&":"&ansi_13
+    setvar $line ansi_13&$line&ansi_15
+
+return
 
 
 :menu_set
