@@ -1,7 +1,16 @@
   # Modified LoneStars Passive Gridder to suite MOMBOT
   # All credits to the legend himself for this one!
-
+  #
+  #	Hammer - MOdifying to use EPHaggle and Sector Params
+  #
+  #
     
+#docks at ports with no trades (not aware of own product)
+
+#and also trades twice per sector
+#Needs dual min/max equip - BUY it when below 25, Sell it always
+#MCIC tracker that runs now needs to change to EQU-MCIC OR WHATEVER WORDING IS
+
     #=--------                                                                       -------=#
      #=---------------------      LoneStar's Passive Gridder      -------------------------=#
     #=--------                                                                       -------=#
@@ -32,7 +41,8 @@
 	#                       Had to use two Arrays: $DENS and $ANOM for: Adj Warp Count, and
 	#                       Anomoly readings in adj sectors as TWX is more than a little retarded
 	#                       (SECTOR.ANOMOLY[idx] doesn't work, and SECTOR.WARPCOUNT isn't accurate)
-
+	#
+		
 	reqRecording
 	clearAllAvoids
 	gosub :BOT~loadVars
@@ -43,17 +53,18 @@
 	setVar $BOT~help[1]  $BOT~tab&"       LS Passive Gridder - Still the best "
 	setVar $BOT~help[2]  $BOT~tab&"       "
 	setVar $BOT~help[3]  $BOT~tab&" lspassgrid [stopturns] {a1/a2/a3} {l1/l2/l3} {ports} {holo}"
-	setVar $BOT~help[4]  $BOT~tab&"                          "
+	setVar $BOT~help[4]  $BOT~tab&"            {trade}"
 	setVar $BOT~help[5]  $BOT~tab&" Options:"
 	setVar $BOT~help[6]  $BOT~tab&"    [stopturns]     Passive Grid Stops at here"
 	setVar $BOT~help[7]  $BOT~tab&"	   {a1/a2/a3}      Drop 1/2/3 Armid Mines"
 	setVar $BOT~help[8]  $BOT~tab&"	   {l1/l2/l3}      Drop 1/2/3 Limpet Mines"
 	setVar $BOT~help[9]  $BOT~tab&"    {ports}         Grabs port reports"
 	setVar $BOT~help[10]  $BOT~tab&"    {holo}         Holo Scans to ensure sectors safe"
-	setVar $BOT~help[11]  $BOT~tab&"    {guard}       Ensures corp planet at SD to invoke Guardian"
-	setVar $BOT~help[12]  $BOT~tab&"                   "
-	setVar $BOT~help[13]  $BOT~tab&"    Doesn't require ZTM but works better"
-	setVar $BOT~help[14]  $BOT~tab&"    Works best with T-Warp to reroute"
+	setVar $BOT~help[11]  $BOT~tab&"    {trade}        Will trade ports looking for Equ MCIC"
+	setVar $BOT~help[12]  $BOT~tab&"                   Requires EP Haggle or equiv"
+	setVar $BOT~help[13]  $BOT~tab&""
+	setVar $BOT~help[14]  $BOT~tab&"    Doesn't require ZTM but works better"
+	setVar $BOT~help[15]  $BOT~tab&"    Works best with T-Warp to reroute"
 
 	gosub :BOT~help_file
 
@@ -91,8 +102,8 @@
 	setVar $LOG_EVENT	0
 	setVar $HOLO		FALSE
 	setVar $TRACKER	FALSE
-	setVar $FILENAME	"_ck_equip_haggle_tracker"
 	setVar $EQU_MIN 50
+	setVar $EQU_MIN_BUY 25
 	setVar $DROP_TWENTY	0
 
 	if ($MAP~rylos < 1)
@@ -133,8 +144,6 @@
 	setVar $Update_Figs FALSE
 	setVar $Update_Limps FALSE
 	
-	# False for now; may add later
-	setVar $TRACKER FALSE
 	
 	
 	setVar $Turn_Limit $bot~parm1
@@ -203,8 +212,11 @@
 		setVar $DROP_TWENTY 1
 	end
 
-	
-	
+	setVar $TRACKER FALSE
+	getWordPos $bot~user_command_line $pos "trade"
+	if ($pos > 0)
+		setVar $TRACKER TRUE
+	end
 
 	goto :Lets_Get_It_On
 
@@ -216,39 +228,22 @@
 
 	if ($TRACKER)
 		setVar $MCICd	0
-		setVar $Track_File "_ck_" & GAMENAME & ".ports"
 		setArray $MCIC	SECTORS
-		fileExists $tst $Track_File
-		if ($tst)
-			#Echo "***" & $TAGLINEc & " Reading Ports File"
-			setVar $i 1
-			read $Track_File $tst $i
-			while ($tst <> EOF)
-				#SECTOR 2928 (BSB) - Ship Haggle - MCIC approx -41
-				getWord $tst $tmp 2
-				isNumber $tst $tmp
-				if ($tst)
-					setVar $MCIC[$tst] TRUE
-					add $Results 1
-					add $MCICd 1
-				end
-            	add $i 1
-            	read $Track_File $tst $i
+
+		setVar $m 11
+		while ($m <= SECTORS)
+			getSectorParameter $m "EQUIPMENT-" $mtest
+			isNumber $tst $mtest
+			if ($tst)
+
+				setVar $MCIC[$m] TRUE
+				add $Results 1
+				add $MCICd 1
 			end
-			#echo "; " & $Results & " Ports allready Processed!**"
+			add $m 1
 		end
-		#Echo "**" & $TAGLINEc & " Loading ck's EQUIP Haggle Tracker**"
-		load $FILENAME
-		setDelayTrigger		LOAD_DELAY	:LOAD_DELAY		3000
-		setTextLineTrigger	LOADED		:LOADED			"Credits        :"
-		pause
-		:LOAD_DELAY
-		killAllTriggers
-		#Echo "**" & $TAGLINEc & " EQUIP HAGGLE Tracker Not Loaded.**"
-		halt
-		:LOADED
-		killAllTriggers
-		#Echo "**" & $TAGLINEc & " EQUIP Haggle Tracker LOADED!!**"
+
+
 	else
 	    send "   j   y   "
 	end
@@ -345,7 +340,7 @@
 			elseif (($player~ORE_HOLDS < ($player~TOTAL_HOLDS - $EQU_MIN)) AND ($TWARP_TYPE <> "No"))
 				if ((PORT.CLASS[$player~CURRENT_SECTOR] = 3) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 4) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 5) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 7))
 					#Echo "***Stupid Attmpt**"
-					send "PT** 0* 0*  "
+					send "PT** 0* 0* "
 				end
 			end
 
@@ -875,6 +870,7 @@
 			send "CR*Q"
 			waitfor "<Computer deactivated>"
 		end
+		
 		if ($player~FIGHTERS <= 10)
 			Echo "**" & $TAGLINEc & " " & "Fighter Level is Critically Low (Less Than 10)**"
 			Halt
@@ -1131,6 +1127,26 @@
 
 :Haggel_Checker
 	killAllTriggers
+	#
+	#	Been a few double ups so making some changes!
+	#		We need to trade on one of three conditions
+	#		- Low Ore and they sell ore
+	#		- Low Equip and they sell Equip
+	#		- Buy Equip and no MCIC
+
+		setVar $dotrade 0
+		if (($player~ORE_HOLDS < 75) and (PORT.BUYFUEL[$player~CURRENT_SECTOR] = 0))
+			setVar $dotrade 1
+		elseif (($player~EQUIPMENT_HOLDS < $EQU_MIN_BUY) and (PORT.BUYEQUIP[$player~CURRENT_SECTOR] = 0))
+			setVar $dotrade 1
+		elseif ((PORT.BUYEQUIP[$player~CURRENT_SECTOR] = 1) and ($MCIC[$player~CURRENT_SECTOR] = FALSE))
+			setVar $dotrade 1
+		end
+		if ($dotrade = 0)
+			return
+		end
+	# End addition
+
 		setVar $EQU_NEED2BUY ($EQU_MIN - $player~EQUIPMENT_HOLDS)
 		setVar $ORE_NEED2BUY (($player~TOTAL_HOLDS - $EQU_MIN) - $player~ORE_HOLDS)
 		if (PORT.CLASS[$player~CURRENT_SECTOR] = 1) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 5) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 6) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 7) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 3) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 4) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 2)
@@ -1138,7 +1154,7 @@
 			#waiton "<Computer deactivated>"
 			#if (PORT.EQUIP[$player~CURRENT_SECTOR] >= $EQU_NEED2BUY) AND ($EQU_NEED2BUY <> 0)
 			setTextTrigger noPort :noPort "Corp Menu"
-			send "p   t   "
+			send "pt"
 			Waiton "<Port>"
 			setTextTrigger	noFuel		:noFuel		"How many holds of Fuel Ore do you want to buy"
 			setTextTrigger	noOrg		:noOrg		"How many holds of Organics do you want to buy"
@@ -1158,7 +1174,8 @@
 				return
 			:noFuel
         		if ($ORE_NEED2BUY >= 1)
-        			send $ORE_NEED2BUY & "**"
+        			#send $ORE_NEED2BUY & "**"
+        			send $ORE_NEED2BUY & "*"
         		else
         			send "0*"
         		end
@@ -1170,10 +1187,12 @@
 			if ($MCIC[$player~CURRENT_SECTOR] = 0)
 				setVar $MCIC[$player~CURRENT_SECTOR] TRUE
 				if ($player~EQUIPMENT_HOLDS > $EQU_MIN)
-					send ($player~EQUIPMENT_HOLDS - $EQU_MIN) & "**"
+					#send ($player~EQUIPMENT_HOLDS - $EQU_MIN) & "**"
+					send ($player~EQUIPMENT_HOLDS - $EQU_MIN) & "*"
 				else
 					add $MCICd 1
-					send "5**"
+					#send "5**"
+					send "5*"
 				end
 			else
 				send "0*"
@@ -1181,7 +1200,8 @@
 			pause
 			:buyequp
 			if ($EQU_NEED2BUY >= 1)
-				send $EQU_NEED2BUY & "**"
+				#send $EQU_NEED2BUY & "**"
+				send $EQU_NEED2BUY & "*"
 			else
 				send "0*"
 			end
@@ -1191,13 +1211,15 @@
 			return
 			:fuelsell
 			if ($player~ORE_HOLDS > ($player~TOTAL_HOLDS - $EQU_MIN))
-				send $player~ORE_HOLDS - ($player~TOTAL_HOLDS - $EQU_MIN)& "**"
+				#send $player~ORE_HOLDS - ($player~TOTAL_HOLDS - $EQU_MIN)& "**"
+				send $player~ORE_HOLDS - ($player~TOTAL_HOLDS - $EQU_MIN)& "*"
 			else
 				send "0*"
 			end
 			pause
 			:orgsell
-			send "**"
+			#send "**"
+			send "*"
 			pause
 	end
 	return
