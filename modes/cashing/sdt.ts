@@ -1,52 +1,95 @@
 reqRecording
     
 :load_variables
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $bot_turn_limit
-    loadVar $parm1
-    loadVar $parm2
-    loadvar $parm3
-    loadvar $parm4
-    loadVar $subspace
-    loadVar $steal_factor
-    loadVar $unlimitedGame
-    loadVar $PTRADESETTING
+
+	loadVar $bot_name
+        loadVar $BOT~user_command_line
+	loadvar $PLAYER~unlimitedGame
+	loadvar $bot~subspace
+
+	gosub :BOT~loadVars
+	loadvar $bot~subspace
+	
+	loadVar $GAME~steal_factor
+	loadVar $BOT~bot_turn_limit
+	loadVar $game~ptradesetting
+
+	setVar $BOT~parm1 $BOT~parm1
+	setVar $BOT~parm2 $BOT~parm2
+	setVar $BOT~parm3 $BOT~parm3
+	setVar $BOT~parm4 $BOT~parm4
+	setVar $BOT~user_command_line $BOT~user_command_line
+      
+	setVar $BOT~help[1] $BOT~tab&" sdt {resetlra} [ship1] [ship2] [planet1] [planet2]        *{resetlra} {ep}*"
+	setVar $BOT~help[2] $BOT~tab&"  - Do NOT need to start in Ship 1 or Ship 2."
+	setVar $BOT~help[3] $BOT~tab&"  - First Steal will be from Ship 1."
+	setVar $BOT~help[4] $BOT~tab&"  - Checks last rob and busts from Sec Params"
+	setVar $BOT~help[5] $BOT~tab&"  - {resetlra} will reset last rob sector and exit"
+	setVar $BOT~help[6] $BOT~tab&"  - {ep} Use EP Haggle*"
+	setVar $BOT~help[7] $BOT~tab&"  - Created by Cherokee"
+	gosub :BOT~help_file
+
+	setVar $BOT~script_title "SDT - Steal Dump Transport"
+	gosub :BOT~banner
+
+	
+	if ($BOT~parm1 = "resetlra")
+		setSectorParameter 1 "LRA" 1
+		setVar $SWITCHBOARD~message "Last rob sector reset.... Halting....*"
+		gosub :switchboard~switchboard
+		halt
+	end
+
+	getWordPos $bot~user_command_line $pos " resetlra"
+	if ($pos > 0)
+		setSectorParameter 1 "LRA" 1
+		setVar $SWITCHBOARD~message "Last rob sector reset.*"
+		gosub :switchboard~switchboard
+	end
+
+
     setVar $ckSDTquiet "OFF"
     setVar $beamFurbing "n"
-    setVar $ship_1 $parm1
-    setVar $ship_2 $parm2
-    setVar $planet[$ship_1] $parm3
-    setVar $planet[$ship_2] $parm4
-    if ($parm1 = "resetlra")
-	setSectorParameter 1 "LRA" 1
-	send "'Last rob sector reset*"
-	halt
-   end
-    isNumber $test $parm1
+    setVar $ship_1 $BOT~parm1
+    setVar $ship_2 $BOT~parm2
+    setVar $planet[$ship_1] $BOT~parm3
+    setVar $planet[$ship_2] $BOT~parm4
+    
+    isNumber $test $BOT~parm1
     IF ($test)
     ELSE
        send "'{" $bot_name "} - Ship 1 Must Be a Number.*"
        HALT
     END
-    isNumber $test $parm2
+    isNumber $test $BOT~parm2
     IF ($test)
     ELSE
        send "'{" $bot_name "} - Ship 2 Must Be a Number.*"
        HALT
     END
-    isNumber $test $parm3
+    isNumber $test $BOT~parm3
     IF ($test)
     ELSE
        send "'{" $bot_name "} - Planet 1 Must Be a Number.*"
        HALT
     END
-    isNumber $test $parm4
+    isNumber $test $BOT~parm4
     IF ($test)
     ELSE
        send "'{" $bot_name "} - Planet 2 Must Be a Number.*"
        HALT
     END
+
+	setVar $epHaggleFail 0
+	setVar $ephaggle "n"
+	getWordPos $bot~user_command_line $pos " ep"
+
+	IF ($pos > 0)
+		setVar $ephaggle "y"
+		setVar $SWITCHBOARD~message "Using EP HAGGLE!*"
+		gosub :switchboard~switchboard
+	END
+
 
 # ----- make sure we are at a good prompt -----
 :verifyprompt
@@ -59,8 +102,6 @@ reqRecording
 
 logging off
 gosub :startCNsettings
-
-	
 
     getSectorParameter 1 "LRA" $last_rob_attempt
     send "'{" $bot_name "} - last rob attempt: "&$last_rob_attempt&"*"
@@ -91,6 +132,7 @@ gosub :startCNsettings
 :init
 killalltriggers
 
+
 :verifyship   
     gosub :quikstats
     IF ($SHIP_NUMBER <> $ship_1)
@@ -119,6 +161,16 @@ setVar $debugdelay 0
         setVar $equ_sold[$current_ship] 0
         gosub :getInfo
         setVar $sector[$current_ship] $current_sector
+	
+	# CHECK BUSTED SECTOR
+	getSectorParameter $current_sector "BUSTED" $bustthissec
+	if ($bustthissec = TRUE)
+		send "'{" $bot_name "} - According to my data i've busted here - ending*"
+		gosub :clearadjacent
+		 gosub :endCNsettings
+		halt
+	end
+	
         setVar $holds[$current_ship] $holds
         setVar $init_credits $credits
         setVar $init_exp $exp
@@ -141,6 +193,13 @@ setVar $debugdelay 0
         setVar $equ_sold[$current_ship] 0
         gosub :getInfo
         setVar $sector[$current_ship] $current_sector
+	getSectorParameter $current_sector "BUSTED" $bustthissec
+	if ($bustthissec = TRUE)
+		send "'{" $bot_name "} - According to my data i've busted here - ending*"
+		gosub :clearadjacent
+		 gosub :endCNsettings
+		halt
+	end
         setVar $holds[$current_ship] $holds
         send "*"
         waitFor "(?=Help)?"
@@ -313,7 +372,7 @@ setVar $debugdelay 0
 :checkUpgrade
 
     setVar $steal_holds $exp
-    divide $steal_holds $steal_factor
+    divide $steal_holds $GAME~steal_factor
     if ($steal_holds < 10)
         gosub :endCNsettings
         setVar $exit_message "You need more experience to SDT!!!"
@@ -377,6 +436,64 @@ setVar $debugdelay 0
 
         add $turns_used 1
         send "PN" & $planet[$current_ship] & "*"
+	if ($ephaggle = "y")
+
+		
+		setTextTrigger youHave2 :youHave2 "You have "
+		:sellproduct2
+		setTextTrigger sellfuel2 :sellfuel2 "How many units of Fuel Ore"
+		setTextTrigger sellorg2 :sellorg2 "How many units of Organics"
+		setTextTrigger sellequ2 :sellequ2 "How many units of Equipment"
+		pause
+		pause
+		:youHave2
+			killalltriggers
+			getWord CURRENTLINE $preCredits 3
+			striptext $preCredits ","
+			goto :sellproduct2
+		:sellfuel2
+			killalltriggers
+			send "0*"
+			goto :sellproduct2
+		:sellorg2
+			killalltriggers
+			send "0*"
+			goto :sellproduct2
+		:sellequ2
+			killalltriggers
+			send "*"
+			setTextLineTrigger equamount2 :equamount2 "Agreed,"
+			pause
+			pause
+
+			:equamount2
+				getWord CURRENTLINE $portbuying 2
+				striptext $portbuying ","
+
+				setTextLineTrigger sellempty2 :sellempty2 "You have "
+				setDelayTrigger epsellwait2 :epsellwait2 7000
+				pause
+				:epsellwait2
+					killalltriggers
+					send "'{" $bot_name "} - Ep Haggle timed out on equipment Haggle*"
+					send "'{" $bot_name "} - Ep Haggle Disabled and bot will exit at end of cycle.*"
+					setvar $ephaggle "n"
+					setVar $epHaggleFail 1
+					send "*"
+				
+				:sellempty2
+					getWord CURRENTLINE $postCredits 3
+					striptext $postCredits ","
+					setVar $diff ($postCredits - $preCredits)
+					setVar $perunit ($diff/$portbuying)
+					send "'{" $bot_name "} - Ship " & $current_ship & " - " & $portbuying & " EQU haggled for " & $diff & " credits (" & $perunit & " per unit).*"
+
+				killalltriggers
+		gosub :checkEPHaggle
+		return
+	end
+
+
         :getpercts
             setTextLineTrigger equpct :equpct "Equipment  Buying"
             pause
@@ -431,7 +548,7 @@ setVar $debugdelay 0
 
         #NEW CODE ADDED TO SUPPORT NON-100% PTRADES
         multiply $perunitinitoffer 100
-        divide $perunitinitoffer $PTRADESETTING
+        divide $perunitinitoffer $game~ptradesetting
 
         # multiply by 100 to increase accuracy of results, we'll need to divide by 100 later
         multiply $perunitinitoffer 100
@@ -787,6 +904,8 @@ setVar $debugdelay 0
     else
         send "'{" $bot_name "} - There is no equ to sell at this port*"
     end
+    
+    
     return
 
 
@@ -816,7 +935,7 @@ setVar $debugdelay 0
                 SetVar $ckLRA $sector[$current_ship]
                 SaveVar $ckLRA    
                 setSectorParameter $sector[$current_ship] "BUSTED" TRUE
-                send "'<"&$subspace&">[Busted:"&$sector[$current_ship]&"]<"&$subspace&">*"
+                send "'<"&$bot~subspace&">[Busted:"&$sector[$current_ship]&"]<"&$bot~subspace&">*"
                 #gosub :sell
                 gosub :getInfo
                 gosub :quikstats
@@ -1477,7 +1596,7 @@ setVar $debugdelay 0
 				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
 			elseif ($wordy = "Turns")
 				getWord $stats $TURNS  			($current_word + 1)
-                if ($unlimitedGame)
+                if ($PLAYER~unlimitedGame)
                     setVar $TURNS 65000
                 end
 			elseif ($wordy = "Creds")
@@ -1546,6 +1665,16 @@ setVar $debugdelay 0
 
 return
 # ============================== END QUICKSTATS SUB==============================
+
+
+:checkEPHaggle
+    if ($epHaggleFail = 1)
+	gosub :endCNsettings
+	gosub :clearadjacent
+	
+	halt
+    end
+return
 
 
 #INCLUDES:
