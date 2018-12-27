@@ -654,15 +654,20 @@ return
     #replacing planet id's with planet sector
     getWordPos $travelCommands $pos $BOT~command
     if ($pos > 0)
-        getWordPos $BOT~user_command_line $pos " planet"
+        getWordPos " "&$BOT~user_command_line&" " $pos " planet "
         if ($pos > 0)
-            setVar $i 2
+            if ($bot~parms[1] = "planet")
+                setvar $bot~parms[1] $bot~parms[2]
+                ##  keep parm2 the same because it's the planet number  ##
+                getSectorParameter $BOT~parms[1] "PSECTOR" $BOT~parms[1]
+            end
+            setVar $i 1
             while ($i <= $BOT~parms)
                 if ($BOT~parms[$i] = "planet")
                     setVar $old_value $BOT~parms[1]
                     setVar $BOT~parms[$i] ""
+                    setvar $bot~parms[2] $bot~parms[1]
                     getSectorParameter $BOT~parms[1] "PSECTOR" $BOT~parms[1]
-                    echo "*Replacing planet id ["&$old_value&"] with planet sector ["&$BOT~parms[1]&"]*"
                 end
                 add $i 1
             end
@@ -753,7 +758,11 @@ return
         end
     end
     if ($BOT~command = "0")
-        send "'["&$BOT~mode&"]{"&$SWITCHBOARD~bot_name&"} - You are logged into this bot.  Use "&$SWITCHBOARD~bot_name&" help for commands.*"
+        loadvar $player~current_sector
+        if (($player~current_sector = "0") or ($player~current_sector = ""))
+            gosub :player~quikstats
+        end
+        send "'["&$BOT~mode&"] ["&$player~current_sector&"] {"&$SWITCHBOARD~bot_name&"} - You are logged into this bot.  Use "&$SWITCHBOARD~bot_name&" help for commands.*"
         goto :BOT~wait_for_command
     end
     getWordPos " "&$BOT~user_command_line&" " $stopCheck " off "

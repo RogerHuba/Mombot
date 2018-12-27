@@ -1,15 +1,31 @@
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadVar $MAP~stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
+    gosub :BOT~loadVars
+    setVar $parm1 $BOT~parm1
+    setVar $parm2 $BOT~parm2
+    setVar $parm3 $BOT~parm3
+    setVar $parm4 $BOT~parm4
+    setVar $parm5 $BOT~parm5
+    setVar $parm6 $BOT~parm6
+    setVar $parm7 $BOT~parm7
+    setVar $parm8 $BOT~parm8
+    setVar $user_command_line $BOT~user_command_line
+
+
+    setVar $BOT~help[1]  $BOT~tab&"twarp - transwarps to sector as quickly "
+    setVar $BOT~help[2]  $BOT~tab&"        and safely as possible.   "
+    setVar $BOT~help[3]  $BOT~tab&"Options: "
+    setVar $BOT~help[4]  $BOT~tab&"    t [sector] - normal transwarp"
+    setVar $BOT~help[5]  $BOT~tab&"    t [sector] {planet id} - transwarp, then land"
+    setVar $BOT~help[6]  $BOT~tab&"    t [sector] {p} - transwarp, then port"
+    setVar $BOT~help[7]  $BOT~tab&"    t planet {planet id} - transwarp to last known "
+    setVar $BOT~help[8]  $BOT~tab&"                           location of the planet id"
+    gosub :BOT~help_file
+
 
 # ======================     START TWARP SUBROUTINES     =================
 :twarp
 :t
     setVar $warpto_p ""
+    setvar $player~save true
     gosub :PLAYER~quikstats
     setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
     setVar $validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
@@ -114,6 +130,7 @@ return
 return
 
 # includes:
+include "source\module_includes\bot"
 include "source\bot_includes\player"
 include "source\bot_includes\sector"
 include "source\bot_includes\map"

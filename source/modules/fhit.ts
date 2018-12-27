@@ -36,8 +36,10 @@ setVar $startTicks 0
 
 while ($loop = 1)
 	
+	killtrigger r1
+	killtrigger r2
 	setTextLineTrigger r1 :r1 "Report Sector "
-	setTextLineTrigger r2 :r2 "Your fighters in sectosr "
+	setTextLineTrigger r2 :r2 "Your fighters in sector "
 	pause
 
 	:r1
@@ -46,6 +48,7 @@ while ($loop = 1)
 		getWord CURRENTLINE $sec 5
 		striptext $sec ":"
 		isNumber $test $sec
+		setvar $durationticks 0
 		if ($test = 1)
 			//setVar $figList[$sec] 0
 			if ($lastfighit <> $sec)
@@ -56,24 +59,44 @@ while ($loop = 1)
 					setVar $seconds ($durationTicks / 2100000000)
 					setPrecision 0
 					getDistance $dist2 $lastfighit $sec 
+				else
+					setvar $dist2 2
 				end
 				setVar $lastfighit $sec
+				setvar $target_sector 0
 				goSub :doReport
-				getTimer $startTicks
+				gosub :attempt_drop
 			end
 		end
 		goto :theend
 	:r2
 		killAllTriggers
 		getWord CURRENTLINE $sec 5
+			if ($lastfighit <> $sec)
+				if ($lastfighit <> 0)
+					getTimer $stopTicks
+					setVar $durationTicks ($stopTicks - $startTicks)
+					setPrecision 3
+					setVar $seconds ($durationTicks / 2100000000)
+					setPrecision 0
+					getDistance $dist2 $lastfighit $sec 
+				else
+					setvar $dist2 2
+				end
+				setVar $lastfighit $sec
+				setvar $target_sector 0
+				goSub :doReport
+				gosub :attempt_drop
+			end
 		goSub :doReport
+		gosub :attempt_drop
 		goto :theend
 	
 	:theend
 end
 
 :doReport
-	setVar $foundcount 1
+	setVar $foundcount 0
 	setVar $foundSecs 0
 	setVar $searchs 0
 
@@ -91,7 +114,7 @@ end
 			getDistance $dist $sec $focus 
 			//echo "* dist: " $dist "*"
 			// Make sure we are at least 2 warps away
-			if ($dist > 1)
+			if ($dist >= $dist2)
 				// MAke sure we have 2 warps in
 				//echo "* SECTOR.WARPINCOUNT[$focus]: " SECTOR.WARPINCOUNT[$focus] "*"
 			
@@ -113,8 +136,9 @@ end
 					//echo "* $warpsInFigged: " $warpsInFigged "*"
 
 					// If warps in figged is less than total warps - meaining the potenially have a enemy fig
-					if ($warpsInFigged < SECTOR.WARPINCOUNT[$focus])
+					if (($warpsInFigged < SECTOR.WARPINCOUNT[$focus]) and (SECTOR.WARPINCOUNT[$focus] > 2))
 						//Valid Target
+						setvar $target_sector $focus
 						setVar $foundSecs[$foundcount][1] $focus
 						setVar $foundSecs[$foundcount][2] $dist
 						add $foundcount 1
@@ -135,12 +159,41 @@ end
 			end
 		end
 		add $searchs 1
-		if ($searchs > 50)
+		if ($searchs > 1000)
 			//echo "* SEARCHES EXPIRED!"
-			send "'Nothing within nearest 50 sectors*"
+			if ($foundcount <= 0)
+				send "'Nothing within nearest 50 sectors*"
+				setvar $target_sector 0
+			else
+				setVar $x 1
+				setVar $out "FH: " & $sec & " D:" & $dist2 & " T:" & $seconds
+				while ($x < $foundcount)
+					setVar $out $out & " " & $foundSecs[$x][1] & "(" &  $foundSecs[$x][2] & ")"
+					add $x 1
+				end
+				send "'" $out "*"				
+			end	
 			return
+
 		end
 		add $i 1
 	end
 
+return
+
+:attempt_drop
+	setVar $target_sector $foundSecs[1][1] 
+	getTimer $startTicks
+	#echo "*["&$seconds&"]["&$target_sector&"]*"
+	if (($seconds <> "0") and ($target_sector <> "0"))
+			echo "*IN HERE*"
+			setTextLineTrigger r1 :r1 "Report Sector "
+			setTextLineTrigger r2 :r2 "Your fighters in sector "
+			setDelaytrigger pdrop :pdrop (($seconds-1)*1000)
+			pause
+		:pdrop
+			killtrigger r1
+			killtrigger r2
+			send "p"&$target_sector&"* y  "
+	end
 return

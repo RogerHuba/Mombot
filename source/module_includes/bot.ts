@@ -32,6 +32,7 @@ return
     loadVar $silent_running
     loadVar $botIsDeaf
     loadvar $switchboard~self_command
+    loadvar $planet~planet
 
     setArray $help 60
     setVar $help 60
