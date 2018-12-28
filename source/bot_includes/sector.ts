@@ -223,7 +223,6 @@ return
                 getText $shipname&"ENDOFSHIP" $shipname "m"&#27&"[" "ENDOFSHIP"
             end
             getText $shipname&"ENDOFSHIP" $shipname "m" "ENDOFSHIP"
-            send "'["&$shipname&"]*"
         end
 
         getText $fakeData $temp $STARTLINE $ENDLINE
