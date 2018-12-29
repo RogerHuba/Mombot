@@ -730,6 +730,10 @@ return
 				setVar $go 0
 			end
 		end
+		if ($whichlist = 1)
+			send "'PRHunt active*"
+		end
+
 		add $loops 1
 		if ($loops >= $scanThisManyTimes)
 			return
