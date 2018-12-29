@@ -24,6 +24,7 @@
 	gosub :BOT~banner
 
 	setVar $PLAYER~save TRUE
+	gosub :player~init
 
 
 	getSectorParameter SECTORS "FIGSEC" $isFigged

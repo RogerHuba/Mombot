@@ -6,7 +6,11 @@
     if ($PLAYER~startingLocation = "Citadel")
         send "s* "
     else
-        send "** "
+        if ($player~fedspace = true)
+            send "*"
+        else
+            send "** "
+        end
     end
     setVar $sectorData ""
     :sectorsline_cit_kill

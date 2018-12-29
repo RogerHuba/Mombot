@@ -1,13 +1,16 @@
-	loadVar $bot_name
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
+	gosub :BOT~loadVars
+
+	setVar $BOT~help[1]  $BOT~tab&"- [on/off] {"&#34&"player name"&#34&"|corp#}"
+	setVar $BOT~help[2]  $BOT~tab&"- Citadel Capper captures enemy ships from planet citadel"
+	setVar $BOT~help[3]  $BOT~tab&"  "
+	setVar $BOT~help[4]  $BOT~tab&"- {"&#34&"player name"&#34&"}   = Player to target, name must be"
+	setVar $BOT~help[5]  $BOT~tab&"                                  surrounded by double quotes"
+	setVar $BOT~help[6]  $BOT~tab&"- {corp#}           = Corporation number to target"
+	gosub :BOT~help_file
+
+	setVar $BOT~script_title "Citadel Capper"
+	gosub :BOT~banner
+
 	if ($parm1 = "help")
 		send "'*{" $bot_name "} - citcap [on/off] {"&#34&"player name"&#34&"|corp#} *"
 		send "  Citadel Capper captures enemy ships from planet citadel*"

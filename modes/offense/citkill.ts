@@ -22,6 +22,7 @@
 
 	:cit_kill
 	killalltriggers
+	gosub :player~init
 	gosub :player~quikstats	
 	gosub :player~getInfo
 	setVar $player~startingLocation $player~CURRENT_PROMPT

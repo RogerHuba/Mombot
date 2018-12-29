@@ -17,7 +17,7 @@
 	gosub :BOT~help_file
 
 	setVar $PLAYER~save TRUE
-
+	gosub :player~init
 
 
 	setVar $ENDLINE "_ENDLINE_"

@@ -8,8 +8,8 @@
 # ============================ START SECTOR DATA VARIABLES ==========================
     setArray $TRADERS   50
     setArray $FAKETRADERS   50
-    setArray $EMPTYSHIPS   50
-    setVar $ranksLength     47
+    setArray $EMPTYSHIPS   100
+    setVar $ranksLength     46
     setArray $ranks     $ranksLength
     setVar $ranks[1]    "36mCivilian"
     setVar $ranks[2]    "36mPrivate 1st Class"
@@ -69,6 +69,7 @@ return
     killtrigger prompt
     killtrigger statlinetrig
     killtrigger getLine2
+    setvar $fedspace false
     loadvar $unlimitedGame
     setTextLineTrigger  prompt      :allPrompts     #145 & #8
     setTextLineTrigger  statlinetrig    :statStart      #179
@@ -107,6 +108,9 @@ return
         while ($wordy <> "@@@")
             if ($wordy = "Sect")
                 getWord $stats $CURRENT_SECTOR      ($current_word + 1)
+                if (($current_sector <= 10) or ($current_sector = STARDOCK) or ($current_sector = $map~stardock))
+                    setvar $fedspace true
+                end
             elseif ($wordy = "Turns")
                 getWord $stats $TURNS           ($current_word + 1)
                 if ($unlimitedGame = TRUE)
@@ -428,13 +432,15 @@ return
 	setVar $refurbString "l "&$PLANET~PLANET&"* m * * * "
 	setVar $attackString ""
 	setVar $targetString  "a z "
-	setVar $targetShotgunString "a z z y z"&$SHIP~SHIP_MAX_ATTACK&"* * a z z * y z"&$SHIP~SHIP_MAX_ATTACK&"* * a z z * * y z"&$SHIP_MAX_ATTACK&"* * "
+	setVar $targetShotgun "a z z y z"&$SHIP~SHIP_MAX_ATTACK&"* * a z z * y z"&$SHIP~SHIP_MAX_ATTACK&"* * a z z * * y z"&$SHIP_MAX_ATTACK&"* * "
 	setVar $isFound FALSE
-	getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 	if ($FIGHTERS > 0)
-		if ((($CURRENT_SECTOR > 10) AND ($CURRENT_SECTOR <> $MAP~STARDOCK)) AND ($beaconPos > 0))
-			setVar $targetString $targetString&"* "
-		end
+        if ($fedspace <> true)
+            getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
+            if ($beaconPos > 0)
+                setVar $targetString $targetString&"*"
+            end
+        end
 	else
 		gosub :quikstats
 		if ($FIGHTERS <= 0)
@@ -450,9 +456,9 @@ return
 		end
 		setVar $c 1
 		while (($c <= $SECTOR~realTraderCount) AND ($isFound = FALSE))
-			if ((($CURRENT_SECTOR <= 10) OR ($CURRENT_SECTOR = $MAP~STARDOCK)) AND $TRADERS[$c][2] = TRUE)
+			if (($fedspace = true) AND $TRADERS[$c][2] = TRUE)
 				setVar $targetString $targetString&"* "
-			elseif (($SECTOR~TRADERS[$c][1] = $CORP) OR ($TRADERS[$c][1] = 100000))
+			elseif (($traders[$c][1] = $CORP) OR ($TRADERS[$c][1] = 100000))
 				setVar $targetString $targetString&"* "	
 			elseif (($targetingCorp = TRUE) AND ($TRADERS[$c][1] <> $target))
 				setVar $targetString $targetString&"* "
@@ -544,7 +550,7 @@ return
 :fastAttack
     setVar $targetString  "a"
     setVar $isFound FALSE
-    getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
+    setVar $targetShotgun "a z z y z"&$SHIP~SHIP_MAX_ATTACK&"* * a z z * y z"&$SHIP~SHIP_MAX_ATTACK&"* * a z z * * y z"&$SHIP_MAX_ATTACK&"* * "
     :checkingFigs
         if ($FIGHTERS <= 0)
             gosub :quikstats
@@ -553,8 +559,11 @@ return
                 goto :stoppingPoint
             end
         end
-        if ((($CURRENT_SECTOR > 10) AND ($CURRENT_SECTOR <> $MAP~STARDOCK)) AND ($beaconPos > 0))
-            setVar $targetString $targetString&"*"
+        if ($fedspace <> true)
+            getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
+            if ($beaconPos > 0)
+                setVar $targetString $targetString&"*"
+            end
         end
     if (($SECTOR~emptyShipCount + $SECTOR~fakeTraderCount + $SECTOR~realTraderCount) > 0)
         setVar $i 0
@@ -565,9 +574,9 @@ return
         setVar $c 1
         while (($c <= $SECTOR~realTraderCount) AND ($isFound = FALSE))
 
-            if (($TRADERS[$c][1]) = ($CORP))
+            if (($traders[$c][1]) = ($CORP))
                 setVar $targetString $targetString&"* "
-            elseif ((($CURRENT_SECTOR <= 10) OR ($CURRENT_SECTOR = $MAP~STARDOCK)) AND $TRADERS[$c][2] = TRUE)
+            elseif (($fedspace = true) AND ($traders[$c][2] = TRUE))
                 setVar $targetString $targetString&"* "
             else
                 setVar $isFound TRUE
@@ -584,10 +593,27 @@ return
         setVar $attackString ""
         while ($FIGHTERS > 0)
             if ($FIGHTERS < $SHIP~SHIP_MAX_ATTACK)
-                setVar $attackString $attackString&$targetString&$FIGHTERS&"* * "
+                if ($shotgun)
+                    setVar $attackString $attackString&$targetShotgun&$refurbString
+                else
+                    if ($doubletap)
+                        setVar $attackString $attackString&$targetString&$fighters&"* * "&$targetString&$fighters&"* * "&$refurbString
+                    else
+                        setVar $attackString $attackString&$targetString&$fighters&"* * "&$refurbString
+                    end
+                end
                 setVar $FIGHTERS 0
             else
-                setVar $attackString $attackString&$targetString&$SHIP~SHIP_MAX_ATTACK&"* * "
+                if ($shotgun)
+                    setVar $attackString $attackString&$targetShotgun&$refurbString
+                else
+                    if ($doubletap)
+                        setVar $attackString $attackString&$targetString&$SHIP~SHIP_MAX_ATTACK&"* * "&$targetString&$SHIP~SHIP_MAX_ATTACK&"* * "&$refurbString
+                        setVar $FIGHTERS ($FIGHTERS - $SHIP~SHIP_MAX_ATTACK)
+                    else
+                        setVar $attackString $attackString&$targetString&$SHIP~SHIP_MAX_ATTACK&"* * "&$refurbString
+                    end
+                end
                 setVar $FIGHTERS ($FIGHTERS - $SHIP~SHIP_MAX_ATTACK)
             end
         end
@@ -597,7 +623,7 @@ return
         goto :stoppingPoint
     end
     send $attackString&"* "
-    gosub :quikstats
+    #gosub :quikstats
     :stoppingPoint
 return
 
@@ -605,7 +631,6 @@ return
     setVar $isFound FALSE
     setVar $targetIsAlien FALSE
     setVar $stillShields FALSE
-    getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
     :checkingFigs
         if ($FIGHTERS <= 0)
             gosub :quikstats
@@ -619,8 +644,11 @@ return
         end
     if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($onlyAliens <> TRUE))
         setVar $targetString "a "
-        if ((($CURRENT_SECTOR > 10) AND ($CURRENT_SECTOR <> $MAP~stardock)) AND ($beaconPos > 0))
-            setVar $targetString $targetString&"* "
+        if ($fedspace <> true)
+            getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
+            if ($beaconPos > 0)
+                setVar $targetString $targetString&"*"
+            end
         end
         setVar $i 0
         while ($i < ($SECTOR~emptyShipCount + $SECTOR~fakeTraderCount))
@@ -629,13 +657,13 @@ return
         end
         setVar $c 1
         while (($c <= $SECTOR~realTraderCount) AND ($isFound = FALSE))
-            if ((($CURRENT_SECTOR <= 10) OR ($CURRENT_SECTOR = $MAP~STARDOCK)) AND $TRADERS[$c][2] = TRUE)
+            if (($fedspace = true) AND $traders[$c][2] = TRUE)
                 setVar $targetString $targetString&"* "
-            elseif ($TRADERS[$c][1] = $CORP)
+            elseif ($traders[$c][1] = $CORP)
                 setVar $targetString $targetString&"* "
-            elseif (($targetingCorp = TRUE) AND ($TRADERS[$c][1] <> $target))
+            elseif (($targetingCorp = TRUE) AND ($traders[$c][1] <> $target))
                 setVar $targetString $targetString&"* "
-            elseif (($targetingPerson = TRUE) AND ($TRADERS[$c] <> $target))
+            elseif (($targetingPerson = TRUE) AND ($traders[$c] <> $target))
                 setVar $targetString $targetString&"* "
             else
                 setVar $isFound TRUE
@@ -646,8 +674,11 @@ return
     end
     if ((($SECTOR~fakeTraderCount > 0) AND ($cappingAliens = TRUE)) AND ($isFound <> TRUE))
         setVar $targetString "a "
-        if ((($CURRENT_SECTOR > 10) AND ($CURRENT_SECTOR <> $MAP~stardock)) AND ($beaconPos > 0))
-            setVar $targetString $targetString&"* "
+        if ($fedspace <> true)
+            getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
+            if ($beaconPos > 0)
+                setVar $targetString $targetString&"*"
+            end
         end
         setVar $a 1
         while (($a <= $SECTOR~fakeTraderCount) AND ($isFound = FALSE))
@@ -667,8 +698,11 @@ return
     end
     if (($isFound = FALSE) AND ($SECTOR~emptyShipCount > 0) AND ($CURRENT_SECTOR > 10) AND ($CURRENT_SECTOR <> $MAP~STARDOCK))
         setVar $targetString  "a "
-        if ((($CURRENT_SECTOR > 10) AND ($CURRENT_SECTOR <> $MAP~STARDOCK)) AND ($beaconPos > 0))
-            setVar $targetString $targetString&"* "
+        if ($fedspace <> true)
+            getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
+            if ($beaconPos > 0)
+                setVar $targetString $targetString&"*"
+            end
         end
         setVar $c 1
         setVar $isFound FALSE

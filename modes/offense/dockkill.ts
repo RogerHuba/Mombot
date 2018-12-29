@@ -19,16 +19,18 @@
 
 	setVar $BOT~script_title "Dock Killer"
 	gosub :BOT~banner
-
-goto :start_script
+	gosub :player~init
+	setVar $SWITCHBOARD~self_command TRUE
+	
+	goto :start_script
 :inac
 	gosub :PLAYER~quikstats
 :execute
-	setVar $SWITCHBOARD~self_command TRUE
-	send "@"
-	waitOn "Average Interval Lag:"
-
+		setdelaytrigger justwait :okaygo 100
+		pause
+	:okaygo
 	goSub :SECTOR~getSectorData
+	#set player~refurbString to allow fast refurbing if you have a mac#
 	goSub :PLAYER~fastAttack
 	goto :execute
 
@@ -41,8 +43,19 @@ goto :start_script
 	setVar $PLAYER~targetingPerson FALSE
 	setVar $PLAYER~targetingCorp FALSE
 	setVar $PLAYER~target ""
-	if ($parm1 <> "on")
-        	send "'{" $SWITCHBOARD~bot_name "} - Please use - dockkill [on/off]*"
+	loadvar $ship~ship_fighters_max
+	loadvar $ship~ship_max_attack
+
+	if ($parm1 = "off")
+		send "'{" $SWITCHBOARD~bot_name "} - Shutting down dockkill..*"
+		if ($player~current_sector = STARDOCK)
+			send "p ss ys *p"
+			send "'{" $SWITCHBOARD~bot_name "} - Should be on dock.*"
+		end
+		if ($player~current_sector = "1")
+			send "p ty"
+			send "'{" $SWITCHBOARD~bot_name "} - Should be on port.*"
+		end
 		halt
 	else
 		if ($startingLocation <> "Command") AND ($startingLocation <> "<StarDock>")
@@ -93,22 +106,23 @@ goto :start_script
 
 :warning
 	if (($PLAYER~CURRENT_SECTOR = STARDOCK) AND (PORT.EXISTS[STARDOCK]))
-		setVar $refurbString "p s s p "
+		setVar $player~refurbString "p s s p "
 	elseif ((($PLAYER~CURRENT_SECTOR = 1) OR (PORT.CLASS[$PLAYER~CURRENT_SECTOR] = 0)) AND (PORT.EXISTS[$PLAYER~CURRENT_SECTOR]))
-		setVar $refurbString "p t "
+		setVar $player~refurbString "p t "
 	else
-		setVar $refurbString ""
+		setVar $player~refurbString ""
 		echo "*No known class 0 or 9 port here to refurb at.*"
 	end
-	if ($refurbString <> "")
+	if ($player~refurbString <> "")
 		if ($PLAYER~CURRENT_SECTOR = STARDOCK)
-			send "p ss ys *p"
+			setvar $player~refurbString "p  s  s  p  b  "&$ship~ship_max_attack&"*  b  "&$ship~ship_max_attack&"*  c  "&$ship~max_shields&"*  q q q "
+			send "P  S G Y G Q s p"
 		elseif (($PLAYER~CURRENT_SECTOR = 1) OR (PORT.CLASS[$PLAYER~CURRENT_SECTOR] = 0))
+			setvar $player~refurbString "p  t  b "&$ship~ship_max_attack&"* b "&$ship~ship_max_attack&"* c "&$ship~max_shields&"* q "
 			send "p ty"
 		else
 			echo "*No known class 0 or 9 port here to refurb at.*"
 		end
-		gosub :setConnectionTriggers
 		waitOn "B  Fighters        :"
 		getWord CURRENTLINE $figsToBuy 8
 		waitOn "C  Shield Points   :"
