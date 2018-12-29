@@ -636,6 +636,10 @@ return
 			add $targeti 1
 			if ($targeti > $totalTargets)
 				setVar $targeti 1
+				if ($whichlist = 1)
+					send "'PRHunt active*"
+				end
+
 			end
 			add $i 1
 		end
@@ -730,10 +734,7 @@ return
 				setVar $go 0
 			end
 		end
-		if ($whichlist = 1)
-			send "'PRHunt active*"
-		end
-
+		
 		add $loops 1
 		if ($loops >= $scanThisManyTimes)
 			return
