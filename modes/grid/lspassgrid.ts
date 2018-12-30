@@ -62,9 +62,11 @@
 	setVar $BOT~help[10]  $BOT~tab&"    {holo}         Holo Scans to ensure sectors safe"
 	setVar $BOT~help[11]  $BOT~tab&"    {trade}        Will trade ports looking for Equ MCIC"
 	setVar $BOT~help[12]  $BOT~tab&"                   Requires EP Haggle or equiv"
-	setVar $BOT~help[13]  $BOT~tab&""
-	setVar $BOT~help[14]  $BOT~tab&"    Doesn't require ZTM but works better"
-	setVar $BOT~help[15]  $BOT~tab&"    Works best with T-Warp to reroute"
+	setVar $BOT~help[13]  $BOT~tab&"    {safe}         Twarps to Limpet sectors only"
+	setVar $BOT~help[14]  $BOT~tab&"    {paranoid}     Twarp to Limpet and Mines only"
+	setVar $BOT~help[15]  $BOT~tab&""
+	setVar $BOT~help[16]  $BOT~tab&"    Doesn't require ZTM but works better"
+	setVar $BOT~help[17]  $BOT~tab&"    Works best with T-Warp to reroute"
 
 	gosub :BOT~help_file
 
@@ -211,6 +213,17 @@
 	getWordPos $bot~user_command_line $pos "twenty"
 	if ($pos > 0)
 		setVar $DROP_TWENTY 1
+	end
+
+	setVar $twarp_safety 0
+	getWordPos $bot~user_command_line $pos "safe"
+	if ($pos > 0)
+		setVar $twarp_safety 1
+	end
+
+	getWordPos $bot~user_command_line $pos "paranoid"
+	if ($pos > 0)
+		setVar $twarp_safety 2
 	end
 
 	setVar $TRACKER FALSE
@@ -563,6 +576,7 @@
         end
 
         :No_Target
+	
 		if ($TWARP_TYPE <> "No")
 			#Find A Place To Twarp To
 			getNearestWarps $WarpArray $player~CURRENT_SECTOR
@@ -575,6 +589,37 @@
 					if ($tst = 0)
 						setVar $Flag 0
 						setSectorParameter $Focus "FIGSEC" FALSE
+					end
+					if ($twarp_safety = 1)
+						getSectorParameter $Focus "LIMPSEC" $Flag
+						isNumber $tst $Flag
+						if ($tst = 0)
+							setVar $Flag 0
+							setSectorParameter $Focus "LIMPSEC" FALSE
+						end
+					elseif ($twarp_safety = 2)
+						
+
+						getSectorParameter $Focus "LIMPSEC" $Flag1
+						isNumber $tst1 $Flag1
+						if ($tst1 = 0)
+							setVar $Flag1 0
+							setSectorParameter $Focus "LIMPSEC" FALSE
+						end
+
+						getSectorParameter $Focus "MINESEC" $Flag2
+						isNumber $tst2 $Flag2
+						if ($tst2 = 0)
+							setVar $Flag2 0
+							setSectorParameter $Focus "MINESEC" FALSE
+						end
+	
+						if (($Flag1 = 0) or ($Flag2 = 0))
+							setVar $Flag 0
+						else
+							setVar $Flag 1
+						end
+
 					end
 					if ($Flag <> 0)
 						if (SECTOR.WARPCOUNT[$Focus] > 1)

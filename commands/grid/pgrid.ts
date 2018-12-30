@@ -76,6 +76,37 @@
     else
         setVar $xporting FALSE
     end
+
+	setVar $surrendor TRUE
+	getWordPos " "&$user_command_line&" " $pos1 " nosur"
+	getWordPos " "&$user_command_line&" " $pos2 " nosurrender"
+	if (($pos1 > 0) or ($pos2 > 0))
+		setVar $surrendor FALSE	
+	else
+		setVar $surrendor TRUE
+	end
+	getWordPos " "&$user_command_line&" " $pos " d:"
+	setVar $validDesignatedDen FALSE
+
+	if ($pos > 0)
+		setVar $doDensityScan TRUE
+
+
+		getText $user_command_line $designatedDen "d:" " "
+		
+		isNumber $test $designatedDen
+		if ($test)
+			setVar $validDesignatedDen TRUE
+			setVar $tempDensity2 $designatedDen
+		else
+			setVar $SWITCHBOARD~message "invalid#"&$designatedDen&"# designated density*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end		
+	else
+		setVar $validDesignatedDen FALSE
+	end
+
     getWordPos " "&$user_command_line&" " $pos " r "
     if ($pos > 0)
         setVar $retreating TRUE
@@ -141,7 +172,7 @@
         setVar $waveCount 1
     end
     if ($wave > 0)
-        setVar $mac $mac & "a z"&$wave&"* r * "
+        setVar $mac $mac & "a z"&$wave&"* * r * "
     else
         if ($PLAYER~FIGHTERS < $SHIP~SHIP_MAX_ATTACK)
             setVar $mac $mac & "a z " & ($PLAYER~FIGHTERS-1) & "9999" & "* * "
@@ -165,7 +196,14 @@
     end
     if (($SCAN_TYPE <> "None") AND ($doDensityScan = TRUE))
         :density_scanning
-            setVar $tempDensity SECTOR.DENSITY[$pgridsector]
+
+		if ($validDesignatedDen = TRUE)
+			setVar $tempDensity $tempDensity2
+		else
+			setVar $tempDensity SECTOR.DENSITY[$pgridsector]
+		end
+
+           # setVar $tempDensity SECTOR.DENSITY[$pgridsector]
             setVar $pgridDensity "-99"
             send "q q sdz* l " & $PLANET~PLANET & "* c  "
             waitOn "Relative Density Scan"
@@ -214,6 +252,10 @@
     end
     if ($retreating)
         send $inCitadel & "m " & $pgridSector & $mac & "< n n n * "
+
+	if ($surrendor = TRUE)
+		send " h s y * "
+	end
         if ($PLANET~PLANET > 0)
             send "l j" & #8 & $PLANET~PLANET & "*  *  "
         end
@@ -237,8 +279,14 @@
             end
         end
     else
+
         setVar $pgridString "'" & $pgridSector & "=saveme* " & $inCitadel & "m " & $pgridSector & $mac
-        if ($xporting)
+
+	if ($surrendor = TRUE)
+		setVar $pgridString $pgridString & " h s y * "
+
+	end
+	if ($xporting)
             setVar $pgridString $pgridString & "x   " & $xportship & "* * "
         end
         send $pgridString
