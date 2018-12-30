@@ -112,6 +112,7 @@
 	if ($MAP~alpha_centauri < 1)
 		setVar $Report_ALPHA	TRUE
 	end
+	setvar $player~save true
 
 	gosub :player~quikstats
 
