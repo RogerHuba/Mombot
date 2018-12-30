@@ -32,7 +32,8 @@ setVar $BOT~help[25]  $BOT~tab&"     - Scan 15 tertiary ports 200 times"
 setVar $BOT~help[26]  $BOT~tab&"     "
 setVar $BOT~help[27]  $BOT~tab&" {bwarp} - uses bwarp from citadel prompt "
 
-
+# making a varibale for stesting
+setVar $sectors SECTORS
   
 gosub :BOT~help_file
 
@@ -40,6 +41,8 @@ setVar $BOT~script_title "PRHunt - Port Report Hunter Starting"
 gosub :BOT~banner
 
 setVar $cline $bot~user_command_line
+
+setVar  $prhunt_logfile     $bot~Folder&"/prhunt.txt"
 
 gosub :player~quikstats
 
@@ -190,8 +193,7 @@ replaceText $cline "bwarp" ""
 replaceText $cline "  " " "
 
 
-# making a varibale for stesting
-setVar $sectors SECTORS
+
 # Bot Variable
 setVar $stardock $MAP~STARDOCK
 
@@ -207,7 +209,7 @@ setVar $targetSearchDepth 1500
 setVar $maxPortScans 120
 
 # Will scan $maxPortScans port $scanTimes2ndList times - think its 120 ports per second? or 60 -check
-setVar $scanTimes2ndList 120
+setVar $scanTimes2ndList 60
 
 # time = ($maxPortScans/60) * $scanTimesMidList =  240 secs - 4 mins
 
@@ -551,7 +553,8 @@ return
 			add $gathered 1
 			setVar $sectorBlocked[$startTargets[$gathered]] 1
 			killalltriggers
-			
+			setVar $logentry " Missing On-Set (update cim?): " & $startTargets[$gathered]
+			goSub :writeLog
 			goto :startportagain
 
 
@@ -691,6 +694,9 @@ return
 					add $monitorTargetsi 1
 					setVar $monitorTargets[$monitorTargetsi] $targetList[$loopTargeti]
 					send "'PORT GONE: " $targetList[$loopTargeti] "*"
+					setVar $logentry "PORT GONE: " & $targetList[$loopTargeti]
+					goSub :writeLog
+
 				end
 
 				add $loopTargeti 1
@@ -1106,6 +1112,14 @@ return
 	setVar $SWITCHBOARD~message "Blocked Ports are updated; please restart using preferred search pattern.*"
 	gosub :SWITCHBOARD~switchboard
 return
+
+:writeLog
+
+	getTime $time
+	write $prhunt_logfile $time & " " & $logentry
+
+return
+
 
 include "source\module_includes\bot"
 include "source\bot_includes\player"

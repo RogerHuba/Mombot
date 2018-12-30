@@ -77,6 +77,14 @@
         setVar $xporting FALSE
     end
 
+	setVar $surrendor TRUE
+	getWordPos " "&$user_command_line&" " $pos1 " nosur"
+	getWordPos " "&$user_command_line&" " $pos2 " nosurrender"
+	if (($pos1 > 0) or ($pos2 > 0))
+		setVar $surrendor FALSE	
+	else
+		setVar $surrendor TRUE
+	end
 	getWordPos " "&$user_command_line&" " $pos " d:"
 	setVar $validDesignatedDen FALSE
 
@@ -244,6 +252,10 @@
     end
     if ($retreating)
         send $inCitadel & "m " & $pgridSector & $mac & "< n n n * "
+
+	if ($surrendor = TRUE)
+		send " h s y * "
+	end
         if ($PLANET~PLANET > 0)
             send "l j" & #8 & $PLANET~PLANET & "*  *  "
         end
@@ -267,8 +279,14 @@
             end
         end
     else
+
         setVar $pgridString "'" & $pgridSector & "=saveme* " & $inCitadel & "m " & $pgridSector & $mac
-        if ($xporting)
+
+	if ($surrendor = TRUE)
+		setVar $pgridString $pgridString & " h s y * "
+
+	end
+	if ($xporting)
             setVar $pgridString $pgridString & "x   " & $xportship & "* * "
         end
         send $pgridString
