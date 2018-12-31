@@ -810,8 +810,10 @@
 		#Echo "**Target " & $TARGET & "**"
 
 		setVar $figsToDrop 1
+		setvar $density_trick false
 		if (SECTOR.DENSITY[$Target] = 0)
 			if ($DROP_TWENTY = 1)
+				setvar $density_trick true
 				setVar $figsToDrop 20
 			end
 		end
@@ -844,34 +846,35 @@
 
 		setVar $DROP_STR ""
 
-		if ($DROPING_MINES <> 0)
-			if (SECTOR.WARPINCOUNT[$Target] >= 3)
-				if (($DROPING_MINES = 1) OR ($DROPING_MINES = 3))
-					if ($player~LIMPETS > $DROP_LIMP)
-						setVar $DROP_STR ($DROP_STR & "H 2 Z "&$DROP_LIMP&"* C * ")
-					else
-					   if ($DROPING_MINES = 1)
-					   	setVar $DROPING_MINES 0
-					   else
-					   	setVar $DROPING_MINES 2
-					   end
-					end
-				end
-
-				if (($DROPING_MINES = 2) OR ($DROPING_MINES = 3))
-					if ($player~ARMIDS > $DROP_ARMID)
-						setVar $DROP_STR ($DROP_STR & "H 1 Z "&$DROP_ARMID&"* C * ")
-					else
-						if ($DROPING_MINES = 2)
-							setVar $DROPING_MINES 0
+		if ($density_trick <> true)
+			if ($DROPING_MINES <> 0)
+				if (SECTOR.WARPINCOUNT[$Target] >= 3)
+					if (($DROPING_MINES = 1) OR ($DROPING_MINES = 3))
+						if ($player~LIMPETS > $DROP_LIMP)
+							setVar $DROP_STR ($DROP_STR & "H 2 Z "&$DROP_LIMP&"* C * ")
 						else
-							setVar $DROPING_MINES 1
+						   if ($DROPING_MINES = 1)
+						   	setVar $DROPING_MINES 0
+						   else
+						   	setVar $DROPING_MINES 2
+						   end
+						end
+					end
+
+					if (($DROPING_MINES = 2) OR ($DROPING_MINES = 3))
+						if ($player~ARMIDS > $DROP_ARMID)
+							setVar $DROP_STR ($DROP_STR & "H 1 Z "&$DROP_ARMID&"* C * ")
+						else
+							if ($DROPING_MINES = 2)
+								setVar $DROPING_MINES 0
+							else
+								setVar $DROPING_MINES 1
+							end
 						end
 					end
 				end
 			end
 		end
-
 		if  ($DROP_STR <> "")
 			send $DROP_STR & "  j  *"
 			waiton "Are you sure you want to jettison all cargo?"

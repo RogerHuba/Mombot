@@ -58,6 +58,7 @@ return
 :loadShipInfo
     setVar $shipcounter 1
     :count_the_ships
+    loadvar $cap_file
     fileExists $exists $cap_file
     if ($exists)
         read $cap_file $shipInf $shipcounter
@@ -231,6 +232,7 @@ return
 
     setVar $shipcounter 1
     :_readshiplist
+    loadvar $cap_file
     read $cap_file $shipInf $shipcounter
     if ($shipInf <> "EOF")
         gosub :process_ship_line
