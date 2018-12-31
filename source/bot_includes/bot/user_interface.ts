@@ -1,3 +1,6 @@
+:check_routing_all
+    setVar $temp_bot_name "all"
+    goto :do_routing
 :check_routing_team
     setVar $temp_bot_name $BOT~bot_team_name
     goto :do_routing
