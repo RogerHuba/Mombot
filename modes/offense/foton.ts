@@ -1,86 +1,89 @@
-loadVar $user_command_line
-loadVar $parm1
-loadVar $parm2
-loadVar $parm3
-loadVar $parm4
-loadVar $parm5
-loadVar $parm6
-loadVar $parm7
-loadVar $parm8
-loadVar $bot_name
-loadVar $command
+	logging off
+	gosub :BOT~loadVars
+	loadVar $game~MULTIPLE_PHOTONS
 
 
 
-loadVar $MULTIPLE_PHOTONS
-fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
-if ($doesHelpFileExist <> TRUE)
-	write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" [on/off] {a/d/p/s} {return} {den40}  "
-	write "scripts\MOMBot\Help\"&$command&".txt" "      {a}djacent - photons adjacent sector when fig/limp/armid hit "
-	write "scripts\MOMBot\Help\"&$command&".txt" "      {d}ensity  - constant density scan, photons on density change"
-	write "scripts\MOMBot\Help\"&$command&".txt" "      {p}lanet   - standard planet warp photon script"
-	write "scripts\MOMBot\Help\"&$command&".txt" "      {s}urround - attempts to foton retreat sector"
-	write "scripts\MOMBot\Help\"&$command&".txt" "                                                "
-	write "scripts\MOMBot\Help\"&$command&".txt" "      {return}   - Returns Planet Home after Pwarp"
-	write "scripts\MOMBot\Help\"&$command&".txt" "      {den40}   - Only shoots on 40 to 499 Density Change"
-	write "scripts\MOMBot\Help\"&$command&".txt" "                                                "
-	write "scripts\MOMBot\Help\"&$command&".txt" "      Authors: Mind Dagger and The Bounty Hunter "
+	setVar $BOT~help[1]  $BOT~tab&"- foton [on/off] {a/d/p/s} {return} {den40} "
+	setVar $BOT~help[2]  $BOT~tab&"  "
+	setVar $BOT~help[3]  $BOT~tab&"  Multiple use photon script.  "
+	setVar $BOT~help[4]  $BOT~tab&"  "
+	setVar $BOT~help[5]  $BOT~tab&"  Options: "
+	setVar $BOT~help[6]  $BOT~tab&"     {a}djacent - photons adjacent sector when fig/limp/armid hit"
+	setVar $BOT~help[7]  $BOT~tab&"     {d}ensity  - constant density scan, photons on density change"
+	setVar $BOT~help[8]  $BOT~tab&"     {p}lanet   - standard planet warp photon script"
+	setVar $BOT~help[9]  $BOT~tab&"     {s}urround - attempts to foton retreat sector"
+	setVar $BOT~help[10] $BOT~tab&"   "
+	setVar $BOT~help[11] $BOT~tab&"     {return}   - Returns Planet Home after Pwarp"
+	setVar $BOT~help[12] $BOT~tab&"      {den40}   - Only shoots on 40 to 499 Density Change"
+	setVar $BOT~help[13] $BOT~tab&"       {holo}   - does holo command after firing"
+	setVar $BOT~help[14] $BOT~tab&"  "
+	setVar $BOT~help[15] $BOT~tab&"       Authors: Mind Dagger and The Bounty Hunter "
+	gosub :BOT~help_file
 
-	send "'{" $bot_name "} - Writing help file for "&$command&" in Help directory.*"
-end
+	setVar $BOT~script_title "Fast Foton"
+	gosub :BOT~banner
+
 
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	if ($isFigged = "")
-		send "'{" $bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
+		send "'{" $bot~bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
 		halt
 	end
 
-getWord $user_command_line $parm1 1
-getWord $user_command_line $parm2 2
-getWord $user_command_line $parm3 3
-getWord $user_command_line $parm4 4
-getWord $user_command_line $parm5 5
-getWord $user_command_line $parm6 6
-getWord $user_command_line $parm7 7
-getWord $user_command_line $parm8 8
-getWordPos " "&$user_command_line&" " $pos " return "
+getWord $bot~user_command_line $bot~parm1 1
+getWord $bot~user_command_line $bot~parm2 2
+getWord $bot~user_command_line $bot~parm3 3
+getWord $bot~user_command_line $bot~parm4 4
+getWord $bot~user_command_line $bot~parm5 5
+getWord $bot~user_command_line $bot~parm6 6
+getWord $bot~user_command_line $bot~parm7 7
+getWord $bot~user_command_line $bot~parm8 8
+getWordPos " "&$bot~user_command_line&" " $pos " return "
 if ($pos > 0)
 	setVar $auto_return TRUE
 else
 	setVar $auto_return FALSE
 end
 
-getWordPos " "&$user_command_line&" " $pos " den40 "
+getWordPos " "&$bot~user_command_line&" " $pos " den40 "
 if ($pos > 0)
 	setVar $shipchange 1
 else
 	setVar $shipchange 0
 end
 
+getWordPos " "&$bot~user_command_line&" " $pos " holo "
+if ($pos > 0)
+	setVar $holo 1
+else
+	setVar $holo 0
+end
+
 # ============================== START FOTON CHECK SUB ==============================
 :foton_check
-	gosub :quikstats
-	setVar $startingLocation $CURRENT_PROMPT
-	if ($parm2 = "d")
+	gosub :player~quikstats
+	setVar $startingLocation $player~current_prompt
+	if ($bot~parm2 = "d")
                 goto :start_dtorp
-        elseif ($parm2 = "a")
+        elseif ($bot~parm2 = "a")
                 goto :adjphoton
-        elseif ($parm2 = "s")
+        elseif ($bot~parm2 = "s")
                 goto :surround_foton
-        elseif (($parm2 = "p") or ($parm2 = ""))
+        elseif (($bot~parm2 = "p") or ($bot~parm2 = ""))
                 goto :foton
         elseif ($isnum = 1)
-		if (($parm2 > 10) and ($parm2 <= SECTORS) and ($parm2 <> STARDOCK))
-			gosub :quikstats
-                        goto :foton_launch
-		elseif (($parm2 < 10) or ($parm2 >= SECTORS) or ($parm2 = STARDOCK))
-			send "'{" $bot_name "} - Not a Valid FOTON Sector*"
+		if (($bot~parm2 > 10) and ($bot~parm2 <= SECTORS) and ($bot~parm2 <> STARDOCK))
+			gosub :player~quikstats
+            goto :foton_launch
+		elseif (($bot~parm2 < 10) or ($bot~parm2 >= SECTORS) or ($bot~parm2 = STARDOCK))
+			send "'{" $bot~bot_name "} - Not a Valid FOTON Sector*"
 			halt
 		end
 	else
-        	send "'{" $bot_name "} - Please use foton [on/off] {a/d/p/s} {return} format*"
-        	halt
-        end
+		send "'{" $bot~bot_name "} - Please use foton [on/off] {a/d/p/s} {return} format*"
+		halt
+	end
 # ============================== END FOTON CHECK SUB ==============================
 
 
@@ -117,23 +120,23 @@ end
 # ============================== ADJACENT PHOTON (ADJPHOTON) ==============================
 :adjphoton
 
-	gosub :quikstats
-	setVar $startingLocation $CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~current_prompt
 	if ($startingLocation <> "Citadel") and ($startingLocation <> "Command")
-		send "'{" $bot_name "} - Must start at Citadel or Command prompt*"
+		send "'{" $bot~bot_name "} - Must start at Citadel or Command prompt*"
 		halt
 	end
-	if ($parm1 <> "on") and ($parm1 <> "off") and ($parm1 <> "reset")
-		send "'{" $bot_name "} - Please use - foton [on/off/reset] format*"
+	if ($bot~parm1 <> "on") and ($bot~parm1 <> "off") and ($bot~parm1 <> "reset")
+		send "'{" $bot~bot_name "} - Please use - foton [on/off/reset] format*"
 		halt
 	end
-	if ($parm1 = "on")
+	if ($bot~parm1 = "on")
 		goto :load_photon
-	elseif ($parm1 = "reset")
-		send "'{" $bot_name "} - Adjacent Foton - Resetting Sector*"
+	elseif ($bot~parm1 = "reset")
+		send "'{" $bot~bot_name "} - Adjacent Foton - Resetting Sector*"
 		goto :load_photon
 	else
-		send "'{" $bot_name "} - Please use - foton [on/off/reset] {a/d/s/p} format*"
+		send "'{" $bot~bot_name "} - Please use - foton [on/off/reset] {a/d/s/p} format*"
 		halt
 	end
 
@@ -141,7 +144,7 @@ end
 
 :load_photon
 	if ($startingLocation <> "Citadel") and ($startingLocation <> "Command")
-		send "'{" $bot_name "} - Must start at Citadel or Command prompt*"
+		send "'{" $bot~bot_name "} - Must start at Citadel or Command prompt*"
 		halt
 	end
 	if ($startingLocation = "Citadel")
@@ -153,18 +156,18 @@ end
 		waitFor "<Re-Display>"
 		waitFor "Command [TL"
 	end
-	gosub :quikstats
-	if ($PHOTONS = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+	gosub :player~quikstats
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		setVar $mode "General"
 		halt
 	end
-	if ($CURRENT_SECTOR <> $psec) and ($psec <> 0)
-		send "'{" $bot_name "} - Resetting Adjacent Photon to Sector " $CURRENT_SECTOR "*"
-		setVar $psec $CURRENT_SECTOR
+	if ($player~current_sector <> $psec) and ($psec <> 0)
+		send "'{" $bot~bot_name "} - Resetting Adjacent Photon to Sector " $player~current_sector "*"
+		setVar $psec $player~current_sector
 	end
-	setVar $psec $CURRENT_SECTOR
-		send "'{" $bot_name "} - Adjacent Foton Running in Sector " $psec " - " $PHOTONS " Photon(s) Aboard!*"
+	setVar $psec $player~current_sector
+		send "'{" $bot~bot_name "} - Adjacent Foton Running in Sector " $psec " - " $player~photons " Photon(s) Aboard!*"
 	setVar $pwarps SECTOR.WARPCOUNT[$psec]
 	goto :setAdjacentTriggers
 
@@ -186,10 +189,13 @@ end
 	if ($spoof <> "Deployed") and ($spoof <> "Limpet")
 		goto :setAdjacentTriggers
 	end
-	send "'{" $bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][1] "*"
-	subtract $photons 1
-	if ($photons = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+	send "'{" $bot~bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][1] "*"
+	if ($holo)
+		gosub :doholo
+	end
+	subtract $player~photons 1
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		setVar $mode "General"
 		halt
 	end
@@ -215,10 +221,13 @@ end
 
 :shot2
 	killtrigger missed
-	send "'{" $bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][2] "*"
-	subtract $photons 1
-	if ($photons = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+	send "'{" $bot~bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][2] "*"
+	subtract $player~photons 1
+	if ($holo)
+		gosub :doholo
+	end
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		halt
 	end
 	goto :setAdjacentTriggers
@@ -241,10 +250,13 @@ end
 
 :shot3
 	killtrigger missed
-        send "'{" $bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][3] "*"
-	subtract $photons 1
-	if ($photons = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+        send "'{" $bot~bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][3] "*"
+	subtract $player~photons 1
+	if ($holo)
+		gosub :doholo
+	end
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		halt
 	end
 	goto :setAdjacentTriggers
@@ -267,10 +279,13 @@ end
 
 :shot4
 	killtrigger missed
-	send "'{" $bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][4] "*"
-	subtract $photons 1
-	if ($photons = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+	send "'{" $bot~bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][4] "*"
+	subtract $player~photons 1
+	if ($holo)
+		gosub :doholo
+	end
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		halt
 	end
 	goto :setAdjacentTriggers
@@ -293,10 +308,13 @@ end
 
 :shot5
 	killtrigger missed
-	send "'{" $bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][5] "*"
-	subtract $photons 1
-	if ($photons = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+	send "'{" $bot~bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][5] "*"
+	subtract $player~photons 1
+	if ($holo)
+		gosub :doholo
+	end
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		halt
 	end
 	goto :setAdjacentTriggers
@@ -319,10 +337,13 @@ end
 
 :shot6
 	killtrigger missed
-	send "'{" $bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][6] "*"
-	subtract $photons 1
-	if ($photons = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+	send "'{" $bot~bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][6] "*"
+	subtract $player~photons 1
+	if ($holo)
+		gosub :doholo
+	end
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		halt
 	end
 	goto :setAdjacentTriggers
@@ -331,8 +352,8 @@ end
 
 # ======================     START DENSITY PHOTON (DTORP) SUBROUTINE    ==========================
 :start_dtorp
-	gosub :quikstats
-	setVar $startingLocation $CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~current_prompt
 	setArray $adj 7
 	setArray $dens 7
 	setArray $adjsec 7
@@ -340,19 +361,19 @@ end
 	if ($startingLocation = "Command")
 		goto :checkndtorps
 	elseif ($startingLocation = "Planet")
-		gosub :getPlanetInfo
+		gosub :planet~getplanetinfo
 		send "q"
 		goto :checkndtorps
 	elseif ($startingLocation = "Citadel")
 		send "q"
-		gosub :getPlanetInfo
+		gosub :planet~getplanetinfo
 		send "q"
 		goto :checkndtorps
 	elseif ($startingLocation = "<StarDock>")
 		send "q"
 		goto :checkndtorps
 	else
-		send "'{" $bot_name "} - Must be run from Command, Planet, Citadel, or Stardock Prompt.*"
+		send "'{" $bot~bot_name "} - Must be run from Command, Planet, Citadel, or Stardock Prompt.*"
 		halt
 	end
 
@@ -367,15 +388,15 @@ end
 :anyphots
 	killTrigger fed
 	killTrigger hmmtorps
-	gosub :turnOffAnsi
+	gosub :player~turnoffansi
 	goto :check_dens
 
 :feds
-	send "'{" $bot_name "} - Can't launch from fedspace*"
+	send "'{" $bot~bot_name "} - Can't launch from fedspace*"
 	halt
 
 :hmmtorps
-	send "'{" $bot_name "} - No Fotons*"
+	send "'{" $bot~bot_name "} - No Fotons*"
 	halt
 
 :check_dens
@@ -417,8 +438,8 @@ end
 			setVar $diff ($density[$w] - $den[$w])
 			if (($diff > 39) and ($diff < 495))
 				send "c p y " $adj[$w] "*  Q  "
-				send "'{" $bot_name "} - Foton Missle Fired into sector => " $adj[$w] "*"
-				gosub :turnOnAnsi
+				send "'{" $bot~bot_name "} - Foton Missle Fired into sector => " $adj[$w] "*"
+				gosub :player~turnonansi
 				goto :dtorp_end
 			else
 				goto :sublooky
@@ -426,8 +447,8 @@ end
 
 		else
 			send "c p y " $adj[$w] "*  Q  "
-			send "'{" $bot_name "} - Foton Missle Fired into sector => " $adj[$w] "*"
-			gosub :turnOnAnsi
+			send "'{" $bot~bot_name "} - Foton Missle Fired into sector => " $adj[$w] "*"
+			gosub :player~turnonansi
 			goto :dtorp_end
 		end
 	else
@@ -437,7 +458,7 @@ end
 :firechk
 	add $mm 1
 	if ($mm = 150)
-		send "'{" $bot_name "} - WARNING  Density Foton Running at My TA!!!*"
+		send "'{" $bot~bot_name "} - WARNING  Density Foton Running at My TA!!!*"
 		setVar $mm 0
 	end
 	setVar $y 0
@@ -450,7 +471,7 @@ end
 	killtrigger getsec
 	killtrigger alldone
 	setTextOutTrigger manual_stop :manual_stop "-"
-	setTextLineTrigger dtop_dtorp :manual_stop $bot_name & " foton off"
+	setTextLineTrigger dtop_dtorp :manual_stop $bot~bot_name & " foton off"
 	setTextLineTrigger getSec :looksec "Sector"
 	setTextTrigger allDone :donelook "Command [TL="
 	pause
@@ -478,12 +499,12 @@ end
 	killtrigger dtop_dtorp
 	killtrigger getSec
 	killtrigger allDone
-	send "'{" $bot_name "} - Density Foton Stoped . . *"
-	gosub :turnOnAnsi
+	send "'{" $bot~bot_name "} - Density Foton Stoped . . *"
+	gosub :player~turnonansi
 
 :dtorp_end
 	if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
-		gosub :landingSub
+		gosub $planet~landingsub
 		halt
 	else
 		halt
@@ -492,23 +513,23 @@ end
 
 
 :foton
-	gosub :quikstats
-	setVar $startingLocation $CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~current_prompt
 	if ($startingLocation = "Citadel")
 		goto :foton_start
 	else
-		send "'{" $bot_name "} - Must Start at Citadel.*"
+		send "'{" $bot~bot_name "} - Must Start at Citadel.*"
 		halt
 	end
 
 :foton_start
-	setVar $home_sector2 $CURRENT_SECTOR
-	if ($PHOTONS <= 0)
+	setVar $home_sector2 $player~current_sector
+	if ($player~photons <= 0)
 		goto :foton_out_of_fotons
 	end
 	send "q"
 
-	gosub :getPlanetInfo
+	gosub :planet~getplanetinfo
 	send "c"
 
 :foton_get_figs
@@ -518,9 +539,9 @@ end
 
 :foton_go
 	if ($auto_return)
-		send "'{" $bot_name "} - Foton Running From Planet " & $PLANET & " w/ Return Home enabled. " & $PHOTONS &" Photons armed and ready.*"
+		send "'{" $bot~bot_name "} - Foton Running From Planet " & $planet~planet & " w/ Return Home enabled. " & $player~photons &" Photons armed and ready.*"
 	else
-		send "'{" $bot_name "} - Foton Running From Planet " & $PLANET & ", " & $PHOTONS &" Photons armed and ready.*"
+		send "'{" $bot~bot_name "} - Foton Running From Planet " & $planet~planet & ", " & $player~photons &" Photons armed and ready.*"
 	end
 	goto :planetPhotonTriggers
 
@@ -549,7 +570,7 @@ end
 
 :foton_wrong2
 	killtrigger gotem
-	send "'{" $bot_name "} - Foton Missed! Resetting!*"
+	send "'{" $bot~bot_name "} - Foton Missed! Resetting!*"
 	if ($auto_return)
 		gosub :foton_go_home
 	end
@@ -557,7 +578,7 @@ end
 
 :foton_wrong
 	killtrigger gotem
-	send "'{" $bot_name "} - Foton Missed! Resetting!*"
+	send "'{" $bot~bot_name "} - Foton Missed! Resetting!*"
 	setSectorParameter $adjsec "FIGSEC" FALSE
 	if ($auto_return)
 		gosub :foton_go_home
@@ -566,15 +587,18 @@ end
 
 :foton_gotem
 	killtrigger wrong
-	send "'{" $bot_name "} - Foton Fired - Sector => " $sector "!*"
+	send "'{" $bot~bot_name "} - Foton Fired - Sector => " $sector "!*"
+	if ($holo)
+		gosub :doholo
+	end
 	if ($auto_return)
 		gosub :foton_go_home
 	end
-	gosub :quikstats
-	if ($PHOTONS = 0)
+	gosub :player~quikstats
+	if ($player~photons = 0)
 		goto :foton_out_of_fotons
 	end
-	if ($MULTIPLE_PHOTONS <> TRUE)
+	if ($game~multiple_photons <> TRUE)
 		setTextLineTrigger waitingforcooldown :exitcooldown "Photon Wave Duration has ended in sector "&$sector
 		pause
 		:exitcooldown
@@ -592,7 +616,7 @@ end
 		killtrigger homelock
 		killtrigger nohomelock
 		killtrigger home_now
-		send "'{" $bot_name "} - PWarp Lock To Home Failed.*"
+		send "'{" $bot~bot_name "} - PWarp Lock To Home Failed.*"
 
         :foton_home_lock
 		killtrigger homelock
@@ -680,27 +704,27 @@ end
 #return
 
 :foton_out_of_fotons
-	send "'{" $bot_name "} - No photon missles, Foton mode shutting down.*"
+	send "'{" $bot~bot_name "} - No photon missles, Foton mode shutting down.*"
 	halt
 
 :surround_foton
-	gosub :quikstats
-	setVar $startingLocation $CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~current_prompt
 	if ($startingLocation = "Citadel")
 		goto :surround_foton_start
 	else
-		send "'{" $bot_name "} - Must Start at Citadel.*"
+		send "'{" $bot~bot_name "} - Must Start at Citadel.*"
 		halt
 	end
 
 :surround_foton_start
-	setVar $home_sector2 $CURRENT_SECTOR
-	if ($PHOTONS <= 0)
+	setVar $home_sector2 $player~current_sector
+	if ($player~photons <= 0)
 		goto :foton_out_of_fotons
 	end
 	send "q"
 
-	gosub :getPlanetInfo
+	gosub :planet~getplanetinfo
 	send "c"
 
 :surround_foton_get_figs
@@ -710,9 +734,9 @@ end
 
 :surround_foton_go
 	if ($auto_return)
-		send "'{" $bot_name "} - Surround Foton Running From Planet " & $PLANET & " w/ Return Home enabled. " & $PHOTONS &" Photons armed and ready.*"
+		send "'{" $bot~bot_name "} - Surround Foton Running From Planet " & $planet~planet & " w/ Return Home enabled. " & $player~photons &" Photons armed and ready.*"
 	else
-		send "'{" $bot_name "} - Surround Foton Running From Planet " & $PLANET & ", " & $PHOTONS &" Photons armed and ready.*"
+		send "'{" $bot~bot_name "} - Surround Foton Running From Planet " & $planet~planet & ", " & $player~photons &" Photons armed and ready.*"
 	end
 	goto :surroundPhotonTriggers
 
@@ -804,7 +828,7 @@ goto :surroundPhotonTriggers
 	if ($targetCount > 0)
 		goto :trySurroundFotonAgain
 	end
-	send "'{" $bot_name "} - Foton Missed! Resetting!*"
+	send "'{" $bot~bot_name "} - Foton Missed! Resetting!*"
 	setSectorParameter $gotoSector "FIGSEC" FALSE
 	if ($auto_return)
 		gosub :foton_go_home
@@ -817,7 +841,7 @@ goto :surroundPhotonTriggers
 	if ($targetCount > 0)
 		goto :trySurroundFotonAgain
 	end
-	send "'{" $bot_name "} - Foton Missed! Resetting!*"
+	send "'{" $bot~bot_name "} - Foton Missed! Resetting!*"
 	if ($auto_return)
 		gosub :foton_go_home
 	end
@@ -826,15 +850,18 @@ goto :surroundPhotonTriggers
 :surround_foton_gotem
 	killtrigger s_wrong
 	killtrigger s_fed
-	send "'{" $bot_name "} - Foton Fired - Sector => " $retreatSector "!*"
+	send "'{" $bot~bot_name "} - Foton Fired - Sector => " $retreatSector "!*"
+	if ($holo)
+		gosub :doholo
+	end
 	if ($auto_return)
 		gosub :foton_go_home
 	end
-	gosub :quikstats
-	if ($PHOTONS = 0)
+	gosub :player~quikstats
+	if ($player~photons = 0)
 		goto :foton_out_of_fotons
 	end
-	if ($MULTIPLE_PHOTONS <> TRUE)
+	if ($game~multiple_photons <> TRUE)
 		setTextLineTrigger waitingforcooldown :exitcooldownsurround "Photon Wave Duration has ended in sector "&$retreatSector
 		pause
 		:exitcooldownsurround
@@ -852,623 +879,38 @@ goto :surroundPhotonTriggers
 
 :foton_launch_wrong
 	killtrigger launch_gotem
-	send "'{" $bot_name "} - That is not an adjacent sector!*"
+	send "'{" $bot~bot_name "} - That is not an adjacent sector!*"
         HALT
 
 :foton_launch_gotem
 	killtrigger wrong
-	send "'{" $bot_name "} - Foton Fired - Sector => " $parm2 "!*"
+	send "'{" $bot~bot_name "} - Foton Fired - Sector => " $bot~parm2 "!*"
+    if ($holo)
+    	gosub :doholo
+    end
         HALT
 
 
-
-#Author: Mind Dagger
-#Gets all planet information from planet prompt.
-#Needs: Start from Planet prompt
-
-
-
-# ==============================  START PLANET INFO SUBROUTINE  =================
-:getPlanetInfo
-
-	# ============================ START PLANET VARIABLES ==========================
-        	setVar $CURRENT_SECTOR		0
-        	setVar $PLANET			0
-		setVar $PLANET_FUEL		0
-		setVar $PLANET_FUEL_MAX		0
-		setVar $PLANET_ORGANICS		0	
-		setVar $PLANET_ORGANICS_MAX	0
-		setVar $PLANET_EQUIPMENT	0
-		setVar $PLANET_EQUIPMENT_MAX	0
-		setVar $PLANET_FIGHTERS		0
-		setVar $PLANET_FIGHTERS_MAX	0
-		setVar $CITADEL			0
-		setVar $CITADEL_CREDITS		0
-		setVar $ATMOSPHERE_CANNON	0
-		setVar $SECTOR_CANNON		0
-	# ============================  END PLANET VARIABLES ==========================
-
-
-	send "*"
-	setTextLineTrigger planetInfo2 :planetInfo2 "Planet #"
-	pause
-
-	:planetinfo2
-		setVar $CITADEL 0
-		setVar $SECTOR_CANNON 0
-		setVar $ATMOSPHERE_CANNON 0
-		setVar $CITADEL_CREDITS 0
-		getWord CURRENTLINE $PLANET 2
-		stripText $PLANET "#"
-		getWord CURRENTLINE $CURRENT_SECTOR 5
-		stripText $CURRENT_SECTOR ":"
-		waitfor "2 Build 1   Product    Amount     Amount     Maximum"
-
-        :getPlanetStuff
-		setTextLineTrigger fuelstart :fuelstart "Fuel Ore"
-		setTextLineTrigger orgstart :orgstart "Organics"
-		setTextLineTrigger equipstart :equipstart "Equipment"
-		setTextLineTrigger figstart :figstart "Fighters        N/A"
-		setTextLineTrigger citadelstart :citadelstart "Planet has a level"
-		setTextLineTrigger cannon :cannonstart ", AtmosLvl="
-		setTextTrigger planetInfoDone :planetInfoDone "Planet command (?=help)"
-		pause
-
-        :fuelstart
-		getWord CURRENTLINE $PLANET_FUEL 6
-		getWord CURRENTLINE $PLANET_FUEL_MAX 8
-		stripText $PLANET_FUEL ","
-		stripText $PLANET_FUEL_MAX ","
-		pause
-
-        :orgstart
-		getWord CURRENTLINE $PLANET_ORGANICS 5
-		getWord CURRENTLINE $PLANET_ORGANICS_MAX 7
-		stripText $PLANET_ORGANICS ","
-		stripText $PLANET_ORGANICS_MAX ","
-		pause
-
-        :equipstart
-		getWord CURRENTLINE $PLANET_EQUIPMENT 5
-		getWord CURRENTLINE $PLANET_EQUIPMENT_MAX 7
-		stripText $PLANET_EQUIPMENT ","
-		stripText $PLANET_EQUIPMENT_MAX ","
-		pause
-
-        :figstart
-		getWord CURRENTLINE $PLANET_FIGHTERS 5
-		getWord CURRENTLINE $PLANET_FIGHTERS_MAX 7
-		stripText $PLANET_FIGHTERS ","
-		stripText $PLANET_FIGHTERS_MAX ","
-		pause
-
-        :citadelstart
-		getWord CURRENTLINE $CITADEL 5
-		getWord CURRENTLINE $CITADEL_CREDITS 9
-		striptext $CITADEL_CREDITS ","
-		pause
-
-	:cannonstart
-		getWord CURRENTLINE $ATMOSPHERE_CANNON 5
-		getWord CURRENTLINE $SECTOR_CANNON 6
-		stripText $SECTOR_CANNON "SectLvl="
-		striptext $SECTOR_CANNON "%"
-		stripText $ATMOSPHERE_CANNON "AtmosLvl="
-		striptext $ATMOSPHERE_CANNON "%"
-		striptext $ATMOSPHERE_CANNON ","
-		pause
-	:planetInfoDone
-		killtrigger citadelstart
-		killtrigger cannon
+:doHolo
+	setVar $BOT~command "holo"
+	setVar $BOT~user_command_line " holo"
 	
-return
-# ==============================  END PLANET INFO SUBROUTINE  =================
-
-#Author: Mind Dagger
-#Gets player stats from the hitting the / key.  Also grabs the current prompt that you are at.
-#The only prompt this will stall on is in the middle of chatting
-#gotStats routine by Dynarri/Singularity
-
-
-
-:quikstats
-
-        # ============================ START QUIKSTAT VARIABLES ==========================
-                setVar $CURRENT_PROMPT          "Undefined"
-                setVar $PSYCHIC_PROBE           "NO"
-                setVar $PLANET_SCANNER          "NO"
-                setVar $SCAN_TYPE               "NONE"
-                setVar $CURRENT_SECTOR          0
-                setVar $TURNS                   0
-                setVar $CREDITS                 0
-                setVar $FIGHTERS                0
-                setVar $SHIELDS                 0
-                setVar $TOTAL_HOLDS             0
-                setVar $ORE_HOLDS               0
-                setVar $ORGANIC_HOLDS           0
-                setVar $EQUIPMENT_HOLDS         0
-                setVar $COLONIST_HOLDS          0
-                setVar $PHOTONS                 0
-                setVar $ARMIDS                  0
-                setVar $LIMPETS                 0
-                setVar $GENESIS                 0
-                setVar $TWARP_TYPE              0
-                setVar $CLOAKS                  0
-                setVar $BEACONS                 0
-                setVar $ATOMIC                  0
-                setVar $CORBO                   0
-                setVar $EPROBES                 0
-                setVar $MINE_DISRUPTORS         0
-                setVar $ALIGNMENT               0
-                setVar $EXPERIENCE              0
-                setVar $CORP                    0
-                setVar $SHIP_NUMBER             0
-                setVar $TURNS_PER_WARP          0
-                setVar $COMMAND_PROMPT          "Command"
-                setVar $COMPUTER_PROMPT         "Computer"
-                setVar $CITADEL_PROMPT          "Citadel"
-                setVar $PLANET_PROMPT           "Planet"
-                setVar $CORPORATE_PROMPT        "Corporate"
-                setVar $STARDOCK_PROMPT         "<Stardock>"
-                setVar $HARDWARE_PROMPT         "<Hardware"
-                setVar $SHIPYARD_PROMPT         "<Shipyard>"
-                setVar $TERRA_PROMPT            "Terra"
-        # ============================ END QUIKSTAT VARIABLES ==========================
-
-        setVar $CURRENT_PROMPT          "Undefined"
-        killtrigger noprompt
-        killtrigger prompt1
-        killtrigger prompt2
-        killtrigger prompt3
-        killtrigger prompt4
-        killtrigger statlinetrig
-        killtrigger getLine2
-        setTextTrigger          prompt1         :primaryPrompts                 "(?="
-        setTextLineTrigger      prompt2         :secondaryPrompts       "(?)"
-        setTextLineTrigger      statlinetrig    :statStart              #179
-        setTextTrigger          prompt3         :terraPrompts           "Do you wish to (L)eave or (T)ake Colonists?"
-        setTextTrigger          prompt4         :terraPrompts           "How many groups of Colonists do you want to take ("
-        send "^Q/"
-        pause
-
-        :primaryPrompts
-                getWord currentansiline $checkPrompt 1
-                getWord currentline $tempPrompt 1
-                getWordPos $checkPrompt $pos #27&"[35m"
-                if ($pos > 0)
-                        setVar $CURRENT_PROMPT $tempPrompt
-                end
-                setTextLineTrigger prompt1 :primaryPrompts "(?="
-                pause
-        :secondaryPrompts
-                getWord currentansiline $checkPrompt 1
-                getWord currentline $tempPrompt 1
-                getWordPos $checkPrompt $pos #27&"[35m"
-                if ($pos > 0)
-                        setVar $CURRENT_PROMPT $tempPrompt
-                end
-                setTextLineTrigger prompt2 :secondaryPrompts "(?)"
-                pause
-        :terraPrompts
-                killtrigger prompt3
-                killtrigger prompt4
-                getWord currentansiline $checkPrompt 1
-                getWordPos $checkPrompt $pos #27&"[35m"
-                if ($pos > 0)
-                        setVar $CURRENT_PROMPT "Terra"
-                end
-                setTextTrigger          prompt3         :terraPrompts           "Do you wish to (L)eave or (T)ake Colonists?"
-                setTextTrigger          prompt4         :terraPrompts           "How many groups of Colonists do you want to take ("
-                pause
-
-        :statStart
-                killtrigger prompt1
-                killtrigger prompt2
-                killtrigger prompt3
-                killtrigger prompt4
-                killtrigger noprompt
-                setVar $stats ""
-                setVar $wordy ""
-
-
-        :statsline
-                killtrigger statlinetrig
-                killtrigger getLine2
-                setVar $line2 CURRENTLINE
-                replacetext $line2 #179 " "
-                striptext $line2 ","
-                setVar $stats $stats & $line2
-                getWordPos $line2 $pos "Ship"
-                if ($pos > 0)
-                        goto :gotStats
-                else
-                        setTextLineTrigger getLine2 :statsline
-                        pause
-                end
-
-
-        :gotStats
-                setVar $stats $stats & " @@@"
-
-                setVar $current_word 0
-                while ($wordy <> "@@@")
-                        if ($wordy = "Sect")
-                                getWord $stats $CURRENT_SECTOR          ($current_word + 1)
-                        elseif ($wordy = "Turns")
-                                getWord $stats $TURNS                   ($current_word + 1)
-                        elseif ($wordy = "Creds")
-                                getWord $stats $CREDITS                 ($current_word + 1)
-                        elseif ($wordy = "Figs")
-                                getWord $stats $FIGHTERS                ($current_word + 1)
-                        elseif ($wordy = "Shlds")
-                                getWord $stats $SHIELDS                 ($current_word + 1)
-                        elseif ($wordy = "Hlds")
-                                getWord $stats $TOTAL_HOLDS             ($current_word + 1)
-                        elseif ($wordy = "Ore")
-                                getWord $stats $ORE_HOLDS               ($current_word + 1)
-                        elseif ($wordy = "Org")
-                                getWord $stats $ORGANIC_HOLDS           ($current_word + 1)
-                        elseif ($wordy = "Equ")
-                                getWord $stats $EQUIPMENT_HOLDS         ($current_word + 1)
-                        elseif ($wordy = "Col")
-                                getWord $stats $COLONIST_HOLDS          ($current_word + 1)
-                        elseif ($wordy = "Phot")
-                                getWord $stats $PHOTONS                 ($current_word + 1)
-                        elseif ($wordy = "Armd")
-                                getWord $stats $ARMIDS                  ($current_word + 1)
-                        elseif ($wordy = "Lmpt")
-                                getWord $stats $LIMPETS                 ($current_word + 1)
-                        elseif ($wordy = "GTorp")
-                                getWord $stats $GENESIS                 ($current_word + 1)
-                        elseif ($wordy = "TWarp")
-                                getWord $stats $TWARP_TYPE              ($current_word + 1)
-                        elseif ($wordy = "Clks")
-                                getWord $stats $CLOAKS                  ($current_word + 1)
-                        elseif ($wordy = "Beacns")
-                                getWord $stats $BEACONS                 ($current_word + 1)
-                        elseif ($wordy = "AtmDt")
-                                getWord $stats $ATOMIC                  ($current_word + 1)
-                        elseif ($wordy = "Corbo")
-                                getWord $stats $CORBO                   ($current_word + 1)
-                        elseif ($wordy = "EPrb")
-                                getWord $stats $EPROBES                 ($current_word + 1)
-                        elseif ($wordy = "MDis")
-                                getWord $stats $MINE_DISRUPTORS         ($current_word + 1)
-                        elseif ($wordy = "PsPrb")
-                                getWord $stats $PSYCHIC_PROBE           ($current_word + 1)
-                        elseif ($wordy = "PlScn")
-                                getWord $stats $PLANET_SCANNER          ($current_word + 1)
-                        elseif ($wordy = "LRS")
-                                getWord $stats $SCAN_TYPE               ($current_word + 1)
-                        elseif ($wordy = "Aln")
-                                getWord $stats $ALIGNMENT               ($current_word + 1)
-                        elseif ($wordy = "Exp")
-                                getWord $stats $EXPERIENCE              ($current_word + 1)
-                        elseif ($wordy = "Corp")
-                                getWord $stats $CORP                    ($current_word + 1)
-                        elseif ($wordy = "Ship")
-                                getWord $stats $SHIP_NUMBER             ($current_word + 1)
-                        end
-                        add $current_word 1
-                        getWord $stats $wordy $current_word
-                end
-        :doneQuikstats
-                killtrigger prompt1
-                killtrigger prompt2
-                killtrigger prompt3
-                killtrigger prompt4
-                killtrigger statlinetrig
-                killtrigger getLine2
-
-return
-# ============================== END QUICKSTATS SUB==============================
-
-
-# ============================  START PLAYER INFO SUBROUTINE  =================
-:getInfo
-	setVar $PHOTONS 0
-	setVar $SCAN_TYPE "None"
-	setVar $TWARP_TYPE 0
-	setVar $corpstring "[0]"
-	setVar $igstat 0
-	send "I"
-	waitfor "<Info>"
-	:waitForInfo
-		setTextLineTrigger getTraderName :getTraderName "Trader Name    :"
-        	setTextLineTrigger getExpAndAlign :getExpAndAlign "Rank and Exp"
-        	setTextLineTrigger getCorp :getCorp "Corp           #"
-        	setTextLineTrigger getShipType :getShipType "Ship Info      :"
-        	setTextLineTrigger getTPW :getTPW "Turns to Warp  :"
-        	setTextLineTrigger getSect :getSect "Current Sector :"
-        	setTextLineTrigger getTurns :getTurns "Turns left"
-        	setTextLineTrigger getHolds :getHolds "Total Holds"
-        	setTextLineTrigger getFighters :getFighters "Fighters       :"
-        	setTextLineTrigger getShields :getShields "Shield points  :"
-        	setTextLineTrigger getPhotons :getPhotons "Photon Missiles:"
-        	setTextLineTrigger getScanType :getScanType "LongRange Scan :"
-        	setTextLineTrigger getTwarpType1 :getTwarpType1 "  (Type 1 Jump):"
-        	setTextLineTrigger getTwarpType2 :getTwarpType2 "  (Type 2 Jump):"
-        	setTextLineTrigger getCredits :getCredits "Credits"
-        	setTextLineTrigger checkig :checkig "Interdictor ON :"
-		setTextTrigger getInfoDone :getInfoDone "Command [TL="
-        	setTextTrigger getInfoDone2 :getInfoDone "Citadel command"
-        	pause
-	:getTraderName
-	        setVar $TRADER_NAME CURRENTLINE
-	        stripText $TRADER_NAME "Trader Name    : "
-	        stripText $TRADER_NAME "3rd Class "
-	        stripText $TRADER_NAME "2nd Class "
-	        stripText $TRADER_NAME "1st Class "
-	        stripText $TRADER_NAME "Nuisance "
-	        stripText $TRADER_NAME "Menace "
-	        stripText $TRADER_NAME "Smuggler Savant "
-	        stripText $TRADER_NAME "Smuggler "
-	        stripText $TRADER_NAME "Robber "
-	        stripText $TRADER_NAME "Private "
-	        stripText $TRADER_NAME "Lance Corporal "
-	        stripText $TRADER_NAME "Corporal "
-	        stripText $TRADER_NAME "Staff Sergeant "
-	        stripText $TRADER_NAME "Gunnery Sergeant "
-	        stripText $TRADER_NAME "1st Sergeant "
-	        stripText $TRADER_NAME "Sergeant Major "
-	        stripText $TRADER_NAME "Sergeant "
-	        stripText $TRADER_NAME "Chief Warrant Officer "
-	        stripText $TRADER_NAME "Warrant Officer "
-	        stripText $TRADER_NAME "Terrorist "
-	        stripText $TRADER_NAME "Infamous Pirate "
-	        stripText $TRADER_NAME "Notorious Pirate "
-	        stripText $TRADER_NAME "Dread Pirate "
-	        stripText $TRADER_NAME "Pirate "
-	        stripText $TRADER_NAME "Galactic Scourge "
-	        stripText $TRADER_NAME "Enemy of the State "
-	        stripText $TRADER_NAME "Enemy of the People "
-	        stripText $TRADER_NAME "Enemy of Humankind "
-	        stripText $TRADER_NAME "Heinous Overlord "
-	        stripText $TRADER_NAME "Prime Evil "
-	        stripText $TRADER_NAME "Ensign "
-	        stripText $TRADER_NAME "Lieutenant J.G. "
-	        stripText $TRADER_NAME "Lieutenant Commander "
-	        stripText $TRADER_NAME "Lieutenant "
-	        stripText $TRADER_NAME "Commander "
-	        stripText $TRADER_NAME "Captain "
-	        stripText $TRADER_NAME "Commodore "
-	        stripText $TRADER_NAME "Rear Admiral "
-	        stripText $TRADER_NAME "Vice Admiral "
-	        stripText $TRADER_NAME "Fleet Admiral "
-	        stripText $TRADER_NAME "Admiral "
-	        stripText $TRADER_NAME "Civilian "
-	        stripText $TRADER_NAME "Annoyance "
-#	        if (($TRADER_NAME <> "bob") and ($TRADER_NAME <> "Bob") and ($TRADER_NAME <> "BOB"))
-#                    setVar $OkayToUse FALSE
-#               end
-		pause
-	:getExpAndAlign
-        	getWord CURRENTLINE $EXPERIENCE 5
-        	getWord CURRENTLINE $ALIGNMENT 7
-        	stripText $EXPERIENCE ","
-        	stripText $ALIGNMENT ","
-        	stripText $ALIGNMENT "Alignment="
-        	pause
-	:getCorp
-        	getWord CURRENTLINE $CORP 3
-	        stripText $CORP ","
-	        setVar $corpstring "[" & $CORP & "]"
-	        pause
-	:getShipType
-	        getWordPos CURRENTLINE $shiptypeend "Ported="
-	        subtract $shiptypeend 18
-	        cutText CURRENTLINE $SHIP_TYPE 18 $shiptypeend
-	        pause
-	:getTPW
-	        getWord CURRENTLINE $TURNS_PER_WARP 5
-	        pause
-	:getSect
-	        getWord CURRENTLINE $CURRENT_SECTOR 4
-	        pause
-	:getTurns
-	        getWord CURRENTLINE $TURNS 4
-	        if ($TURNS = "Unlimited")
-	            setVar $TURNS 65000
-		    setVar $unlimitedGame TRUE
-	        end
-		saveVar $unlimitedGame
-	        pause
-	:getHolds
-	        setVar $line CURRENTLINE
-	        getWord $line $TOTAL_HOLDS 4
-	        getWordPos $line $textpos "Ore="
-	        if ($textpos <> 0)
-	            cutText CURRENTLINE $temp $textpos 100
-	            getWord $temp $ORE_HOLDS 1
-	            stripText $ORE_HOLDS "Ore="
-	        else
-	            setVar $ORE_HOLDS 0
-	        end
-	        getWordPos $line $textpos "Organics="
-	        if ($textpos <> 0)
-	            cutText CURRENTLINE $temp $textpos 100
-	            getWord $temp $ORGANIC_HOLDS 1
-	            stripText $ORGANIC_HOLDS "Organics="
-	        else
-	            setVar $ORGANIC_HOLDS 0
-	        end
-	        getWordPos $line $textpos "Equipment="
-	        if ($textpos <> 0)
-	            cutText CURRENTLINE $temp $textpos 100
-	            getWord $temp $EQUIPMENT_HOLDS 1
-	            stripText $EQUIPMENT_HOLDS "Equipment="
-	        else
-	            setVar $EQUIPMENT_HOLDS 0
-	        end
-		getWordPos $line $textpos "Colonists="
-		if ($textpos <> 0)
-			cutText CURRENTLINE $temp $textpos 100
-			getWord $temp $COLONIST_HOLDS 1
-        		stripText $COLONIST_HOLDS "Colonists="
-        	else
-        		setVar $COLONIST_HOLDS 0
-        	end
-	        getWordPos $line $textpos "Empty="
-	        if ($textpos <> 0)
-	            cutText CURRENTLINE $temp $textpos 100
-	            getWord $temp $EMPTY_HOLDS 1
-	            stripText $EMPTY_HOLDS "Empty="
-	        else
-	            setVar $EMPTY_HOLDS 0
-	        end
-	        pause
-	:getFighters
-	        getWord CURRENTLINE $FIGHTERS 3
-	        stripText $FIGHTERS ","
-	        pause
-	:getShields
-	        getWord CURRENTLINE $SHIELDS 4
-	        stripText $SHIELDS ","
-	        pause
-	:getPhotons
-	        getWord CURRENTLINE $PHOTONS 3
-	        pause
-	:getScanType
-	        getWord CURRENTLINE $SCAN_TYPE 4
-	        pause
-	:getTwarpType1
-	        getWord CURRENTLINE $TWARP_1_RANGE 4
-	        setVar $twarp_type 1
-	        pause
-	:getTwarpType2
-	        getWord CURRENTLINE $TWARP_2_RANGE 4
-	        setVar $twarp_type 2
-	        pause
-	:getCredits
-	        getWord CURRENTLINE $CREDITS 3
-	        stripText $CREDITS ","
-	        if ($igstat = 0)
-	                setVar $igstat "NO IG"
-	        end
-	        pause
-	:checkig
-		getWord CURRENTLINE $igstat 4
-		pause
-
-	:getInfoDone
-	        killtrigger getInfoDone
-	        killtrigger getInfoDone2
-		killtrigger getTraderName
-        	killtrigger getExpAndAlign
-        	killtrigger getCorp
-        	killtrigger getShipType
-        	killtrigger getTPW
-        	killtrigger getSect
-        	killtrigger getTurns
-        	killtrigger getHolds
-        	killtrigger getFighters
-        	killtrigger getShields
-        	killtrigger getPhotons
-        	killtrigger getScanType
-        	killtrigger getTwarpType1
-        	killtrigger getTwarpType2
-        	killtrigger getCredits
-        	killtrigger checkig
-		
-return
-# ==============================  END PLAYER INFO SUBROUTINE  =================
-
-:landingSub
-        send "l" $PLANET "*z  n  z  n  *  "
-	setVar $sucessfulCitadel FALSE
-	setVar $sucessfulPlanet FALSE
-	setTextLineTrigger noplanet :noplanet "There isn't a planet in this sector."
-	setTextLineTrigger no_land :no_land "since it couldn't possibly stand"
-	setTextLineTrigger planet :planet "Planet #"
-	setTextLineTrigger wrongone :wrong_num "That planet is not in this sector."
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	load "scripts\mombot\commands\data\holo.cts"
+	setEventTrigger        holoend1        :holoend1 "SCRIPT STOPPED" "scripts\mombot\commands\data\holo.cts"
 	pause
-
-:noplanet
-	killtrigger no_land
-	killtrigger planet
-	killtrigger wrongone
-	send "'{" $bot_name "} - No Planet in Sector!*"
-	return
-
-:no_land
-	killtrigger noplanet
-	killtrigger planet
-	killtrigger wrongone
-	send "'{" $bot_name "} - This ship cannot land!*"
-	return
-
-:planet
-	getWord CURRENTLINE $pnum_ck 2
-	stripText $pnum_ck "#"
-	if ($pnum_ck <> $PLANET)
-		killtrigger no_land
-		killtrigger wrongone
-		killtrigger no_planet
-		send "q"
-		goto :wrong_num
-	end
-	killtrigger noplanet
-	killtrigger no_land
-	killtrigger wrongone
-	setTextTrigger wrong_num :wrong_num "That planet is not in this sector."
-	setTextTrigger planet :planet_prompt "Planet command"
-	pause
-
-:wrong_num
-	killtrigger planet
-	send "**'{" $bot_name "} - Incorrect Planet Number*"
-	return
-
-:planet_prompt
-	killtrigger wrong_num
-	setVar $currentBotPlanet $planet
-	saveVar $currentBotPlanet 
-	send "c"
-	setTextTrigger build_cit :build_cit "Do you wish to construct one?"
-	setTextTrigger in_cit :in_cit "Citadel command"
-	pause
-
-:build_cit
-	killtrigger in_cit
-	setVar $sucessfulPlanet TRUE
-	send "n*"
-	setVar $startingLocation "Planet"
-	return
-
-:in_cit
-	killtrigger build_cit
-	setVar $sucessfulCitadel TRUE
-	setVar $startingLocation "Citadel"
+	:holoend1
+		killalltriggers
 return
 
-:turnOffAnsi
-	send "c n"
-	killAllTriggers
-	waitOn "(1) ANSI graphics"
-	getWord CURRENTLINE $ansiStatus 5
-	waitOn "(2) Animation display"
-	getWord CURRENTLINE $animationStatus 5
-	if ($animationStatus = "On")
-		send "2"
-	end
-	if ($ansiStatus = "On")
-		send "1 q q"
-	else
-		send "q q"
-	end
-	waitOn "<Computer deactivated>"
-	return
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"
 
-:turnOnAnsi
-	send "c n"
-	killAllTriggers
-	waitfor "(1) ANSI graphics"
-	getWord CURRENTLINE $ansiStatus 5
-	if ($ansiStatus = "Off")
-		send "1 q q"
-	else
-		send "q q"
-	end
-	waitOn "<Computer deactivated>"
-	return
 
