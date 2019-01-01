@@ -835,6 +835,9 @@ return
                     GetText $LSD_temp $LSD_ShipList[$LSD_i][1] "> " "   "
                     GetText $LSD_temp $LSD_ShipList[$LSD_i][2] "   " "@@@"
                     stripText $LSD_ShipList[$LSD_i][2] " "
+                    if ($LSD_ShipList[$LSD_i][2] = "")
+                        setvar $LSD_ShipList[$LSD_i][2] "999,999,999"
+                    end
                     GetText CURRENTANSILINE  $LSD_ShipList[$LSD_i][3] "[35m> " "    "
                 end
             end

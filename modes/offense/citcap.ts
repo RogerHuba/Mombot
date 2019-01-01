@@ -11,15 +11,6 @@
 	setVar $BOT~script_title "Citadel Capper"
 	gosub :BOT~banner
 
-	if ($parm1 = "help")
-		send "'*{" $bot_name "} - citcap [on/off] {"&#34&"player name"&#34&"|corp#} *"
-		send "  Citadel Capper captures enemy ships from planet citadel*"
-		send "     *"
-		send "  - {"&#34&#34&"player name"&#34&#34&"}   = Player to target, name must be surrounded*"
-		send "    by double quotes.*"
-		send "  - {corp#}           = Corporation number to target**"
-		halt
-	end
 
 	setArray $shipList 	200
 	gosub :quikstats
@@ -30,26 +21,26 @@
 	setVar $cappingAliens TRUE
 	setVar $target ""
 	
-	if ($parm1 <> "on") AND ($parm1 <> "off")
-        	send "'{" $bot_name "} - Please use - citcap [on/off]*"
+	if ($bot~parm1 <> "on") AND ($bot~parm1 <> "off")
+        	send "'{" $bot~bot_name "} - Please use - citcap [on/off]*"
 		halt
-	elseif ($parm1 = "on")
+	elseif ($bot~parm1 = "on")
 		if ($startingLocation <> "Citadel")
-			send "'{" $bot_name "} - Citadel Capper must be run from the Citadel Prompt*"
+			send "'{" $bot~bot_name "} - Citadel Capper must be run from the Citadel Prompt*"
 			setVar $mode "General"
 			halt
 		end
-		isNumber $test $parm2
+		isNumber $test $bot~parm2
 		if ($test)
-			if ($parm2 > 0)
+			if ($bot~parm2 > 0)
 				setVar $targetingCorp TRUE
-				setVar $target $parm2
+				setVar $target $bot~parm2
 			end
 		else
-			getWordPos $parm2 $pos #34
+			getWordPos $bot~parm2 $pos #34
 			if ($pos > 0)
-				setVar $user_command_line $user_command_line&" "
-				getText $user_command_line $target " "&#34 #34&" "
+				setVar $bot~user_command_line $bot~user_command_line&" "
+				getText $bot~user_command_line $target " "&#34 #34&" "
 				if ($target <> "")
 					setVar $targetingPerson TRUE
 					stripText $target #34
@@ -63,7 +54,7 @@
 	end
 	gosub :quikstats
 	if ($CURRENT_PROMPT <> "Citadel")
-		send "'{" $bot_name "} - Must start at the citadel prompt*"
+		send "'{" $bot~bot_name "} - Must start at the citadel prompt*"
 		halt
 	end
 	setVar $CAP_FILE		"_MOM_" & GAMENAME & ".ships"
@@ -175,18 +166,18 @@
 	setVar $STARTLINE 	"_STARTLINE_"
 	setVar $isFound		FALSE
 :start_cit_cap
-	send "'{" $bot_name "} - Citadel Capper :: Powering Up!*"
+	send "'{" $bot~bot_name "} - Citadel Capper :: Powering Up!*"
 :stats_cit_cap
 	gosub :getShipStats
 :warning_cit_kill
 	send "q m * * * "
 	gosub :getPlanetInfo
 	if ($targetingPerson)
-		send "'{" $bot_name "} - Citadel Capper Targeting "&$target&" :: Running on Planet " $PLANET " :: " $PLANET_FIGHTERS " Fighters available on surface.*"
+		send "'{" $bot~bot_name "} - Citadel Capper Targeting "&$target&" :: Running on Planet " $PLANET " :: " $PLANET_FIGHTERS " Fighters available on surface.*"
 	elseif ($targetingCorp)
-		send "'{" $bot_name "} - Citadel Capper Targeting Corp "&$target&" :: Running on Planet " $PLANET " :: " $PLANET_FIGHTERS " Fighters available on surface.*"
+		send "'{" $bot~bot_name "} - Citadel Capper Targeting Corp "&$target&" :: Running on Planet " $PLANET " :: " $PLANET_FIGHTERS " Fighters available on surface.*"
 	else
-		send "'{" $bot_name "} - Citadel Capper :: Running on Planet " $PLANET " :: " $PLANET_FIGHTERS " Fighters available on surface.*"
+		send "'{" $bot~bot_name "} - Citadel Capper :: Running on Planet " $PLANET " :: " $PLANET_FIGHTERS " Fighters available on surface.*"
 	end
 	send "c "
 	goto :scanit_cit_cap
@@ -1234,3 +1225,15 @@ return
 	    setVar $return 0
 	end
 return
+
+
+
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"
+

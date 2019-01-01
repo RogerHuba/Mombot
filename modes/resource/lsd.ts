@@ -1575,6 +1575,7 @@
 	send "S B N Y " & $SelectedShip & "Y"
 	setTextLineTrigger NotEnoughCash	:NotEnoughCash "You can not afford it!"
 	setTExtLineTrigger NotEnoughEXP		:NotEnoughEXP "Hey!  You need at least "
+	settextlinetrigger notcommished     :notcommished "Hey!  You're not commissioned by the Federation to fly the"
 	setTextTrigger MakeShipCorp			:MakeShipCorp "Should this be a (C)orporate ship or (P)ersonal ship?"
 	setTextLineTrigger NameTheShip		:NameTheShip "What do you want to name this ship?"
 	setTextLineTrigger ShipsBoughtOut	:ShipsBoughtOut "Well if that don't beat all, looks like we don't have anymore ships"
@@ -1591,6 +1592,13 @@
 		send " Q Q "
 		waitfor "<StarDock> Where to?"
 		send "'{" $bot_name "} " & $TagLineB & " - Not Enough Experience To Buy Ship**"
+		setVar $NewShipNumber 0
+		return
+	:notcommished
+		killAllTriggers
+		send " Q Q "
+		waitfor "<StarDock> Where to?"
+		send "'{" $bot_name "} " & $TagLineB & " - Need fed commision to purchase this ship**"
 		setVar $NewShipNumber 0
 		return
 
@@ -1723,10 +1731,14 @@
 				if ($pos = 0)
 					add $i 1
 					GetText $temp $ShipList[$i] "<" ">"
-					GetText $temp $ShipList[$i][1] "> " "   "
-					GetText $temp $ShipList[$i][2] "   " "@@@"
+					GetText $temp $ShipList[$i][1] "> " "  "
+					GetText $temp $ShipList[$i][2] "  " "@@@"
 					stripText $ShipList[$i][2] " "
-					GetText CURRENTANSILINE  $ShipList[$i][3] "[35m> " "    "
+                    if ($ShipList[$i][2] = "")
+                        setvar $ShipList[$i][2] "999,999,999"
+                    end
+
+					GetText CURRENTANSILINE  $ShipList[$i][3] "[35m> " "  "
 				end
 			end
 		end
