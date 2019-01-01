@@ -632,6 +632,9 @@ halt
 				else
 					gosub :targeting~scanit_cit_kill
 				end
+				
+				send "p" $homeSector "*y"
+
 		else
 				
 			goSub :doHolo
