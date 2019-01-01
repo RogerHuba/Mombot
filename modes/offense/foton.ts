@@ -504,7 +504,7 @@ end
 
 :dtorp_end
 	if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
-		gosub $planet~landingsub
+		gosub :planet~landingsub
 		halt
 	else
 		halt

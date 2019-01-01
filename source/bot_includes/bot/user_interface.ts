@@ -126,10 +126,6 @@
     if ($BOT~user_command_line = "")
         echo CURRENTANSILINE
         goto :BOT~wait_for_command
-    elseif ($BOT~user_command_line = "?")
-        goto :HELP~echo_help
-    elseif ($BOT~user_command_line = "help")
-        goto :HELP~echo_help
     end
     setVar $SWITCHBOARD~self_command TRUE
     :runUserCommandLine
@@ -752,12 +748,6 @@ return
                 gosub :SWITCHBOARD~switchboard
             end
             goto :BOT~wait_for_command
-        else
-            if ($SWITCHBOARD~self_command)
-                goto :HELP~echo_help
-            else
-                goto :HELP~ss_help
-            end
         end
     end
     if ($BOT~command = "0")
