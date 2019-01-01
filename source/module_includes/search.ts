@@ -1,12 +1,8 @@
 :find
 :near
-    if (($bot~command = "finder") OR ($bot~command = "find"))
-        setVar $near $bot~parm1
-        setVar $source $bot~parm2
-    else
-        setVar $near $bot~command
-        setVar $source $bot~parm1
-    end
+    setVar $near $bot~parm1
+    setVar $source $bot~parm2
+
     isNumber $number $source
     if ($number = TRUE)
         if ($source <= 0)
@@ -15,14 +11,10 @@
         if ($source > SECTORS)
             setVar $SWITCHBOARD~message "That sector is out of bounds (Must be between 1-"&SECTORS&")*"
             gosub :SWITCHBOARD~switchboard
-            goto :wait_for_command
+            halt
         end
     else
-        if (($bot~command = "finder") OR ($bot~command = "find"))
-            setVar $bot~parm2 $bot~parm3
-        else
-            setVar $bot~parm2 $bot~parm1
-        end
+        setVar $port_type $bot~parm2
         setVar $source CURRENTSECTOR
     end
 
@@ -38,20 +30,21 @@
         goto :wait_for_command
     end
     if ($near = "fp") or ($near = "port") or ($near = "p") or ($near = "nfup") or ($near = "fup")
-        getLength $bot~parm2 $plength
-        if (($bot~parm2 = 0) OR ($plength <> 3))
-            setVar $bot~parm2 "xxx"
+
+        getLength $port_type $plength
+        if (($source = 0) OR ($plength <> 3))
+            setVar $port_type "xxx"
         end
         setVar $invalid FALSE
-        cutText $bot~parm2 $pfuel 1 1
+        cutText $port_type $pfuel 1 1
         if ($pfuel <> "s") and ($pfuel <> "b") and ($pfuel <> "x")
             setVar $invalid TRUE
         end
-        cutText $bot~parm2 $porg 2 1
+        cutText $port_type $porg 2 1
         if ($porg <> "s") and ($porg <> "b") and ($porg <> "x")
             setVar $invalid TRUE
         end
-        cutText $bot~parm2 $pequip 3 1
+        cutText $port_type $pequip 3 1
         if ($pequip <> "s") and ($pequip <> "b") and ($pequip <> "x")
             setVar $invalid TRUE
         end
@@ -60,7 +53,7 @@
             gosub :SWITCHBOARD~switchboard
             goto :wait_for_command
         end
-        setVar $ptype $bot~parm2
+        setVar $ptype $port_type
         upperCase $ptype
     end
 :near_hit

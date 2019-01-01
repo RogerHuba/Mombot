@@ -54,7 +54,7 @@
 :planet_limps
 	waitOn "Planet #"
    	GetWord CURRENTLINE $PLANET~planet 2
-  	striptext $planet "#"
+  	striptext $planet~planet "#"
 
 :start_limps
 	gosub :PLAYER~turnOffAnsi
