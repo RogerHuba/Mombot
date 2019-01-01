@@ -3,6 +3,7 @@ gosub :BOT~loadVars
 loadVar $game~port_max
 loadvar $MAP~STARDOCK
 loadVar $bot~Folder
+loadVar $game~photon_duration
 
 setVar $BOT~help[1]  $BOT~tab&" PRHunt - Port Report Hunter - Foton"
 setVar $BOT~help[2]  $BOT~tab&""
@@ -30,15 +31,34 @@ setVar $BOT~help[23]  $BOT~tab&"     prhunt 60 250 15 200 "
 setVar $BOT~help[24]  $BOT~tab&"     - Scan 60 secondary ports 250 times"
 setVar $BOT~help[25]  $BOT~tab&"     - Scan 15 tertiary ports 200 times"
 setVar $BOT~help[26]  $BOT~tab&"     "
-setVar $BOT~help[27]  $BOT~tab&" {bwarp} - uses bwarp from citadel prompt "
+setVar $BOT~help[27]  $BOT~tab&" {bwarp} - uses bwarp from citadel prompt"
+setVar $BOT~help[28]  $BOT~tab&" Additional planet (foton/fotonlist) Options:"
+setVar $BOT~help[29]  $BOT~tab&" {kill}     - pgrid into sector and attempt kill"
+setVar $BOT~help[30]  $BOT~tab&"              WARNING: Does not check for target or Saveme"
+setVar $BOT~help[31]  $BOT~tab&" {surround} - (optimistically) surrounds sector before kill "
+setVar $BOT~help[32]  $BOT~tab&" {pig}      - Bring a friend to lift and IG during kill cycle"
 
 # making a varibale for stesting
 setVar $sectors SECTORS
   
+gosub :player~init
+
 gosub :BOT~help_file
 
 setVar $BOT~script_title "PRHunt - Port Report Hunter Starting"
 gosub :BOT~banner
+
+setVar $ship~CAP_FILE		"_MOM_" & GAMENAME & ".ships"
+fileExists $CAP_FILE_chk $ship~CAP_FILE
+if ($CAP_FILE_chk)
+	gosub :ship~loadshipinfo
+else
+	gosub :ship~getShipCapStats
+	gosub :ship~loadShipInfo
+end 
+
+
+
 
 setVar $cline $bot~user_command_line
 
@@ -47,6 +67,9 @@ setVar  $prhunt_logfile     $bot~Folder&"/prhunt.txt"
 gosub :player~quikstats
 
 setVar $attackPattern ""
+setVar $fotonKill 0
+setVar $fotonSurround 0
+setVar $fotonPig 0
 
 getWordPos $cline $pos "fotonlist"
 if ($pos > 0)
@@ -56,12 +79,54 @@ if ($pos > 0)
 	# confirm list to subspace
 	setVar $attackmsg "Using port list for targets"
 	replaceText $cline "fotonlist" ""
+	getWordPos $cline $pos "kill"
+	if ($pos > 0)
+		replaceText $cline "kill" ""
+		setVar $fotonKill 1
+		
+		
+		getWordPos $cline $pos "pig"
+		if ($pos > 0)
+			replaceText $cline "pig" ""
+			setVar $fotonPig 1
+		end
+		getWordPos $cline $pos "surround"
+		if ($pos > 0)
+			replaceText $cline "surround" ""
+			setVar $fotonSurround 1
+			setVar $attackmsg $attackmsg & "*Kill Mode Engaged with Suround!*Need saveme bot on planet!"
+		else
+			setVar $attackmsg $attackmsg & "*Kill Mode Engaged!*Need saveme bot on planet!"
+		end
+	end
+
 else
 	getWordPos $cline $pos "foton"
 	if ($pos > 0)
 		setVar $attackPattern "foton"
 		setVar $attackmsg "Foton Mode - Scanning for firing solutions."
 		replaceText $cline "foton" ""
+		getWordPos $cline $pos "kill"
+		if ($pos > 0)
+			replaceText $cline "kill" ""
+			setVar $fotonKill 1
+
+			getWordPos $cline $pos "pig"
+			if ($pos > 0)
+				replaceText $cline "pig" ""
+				setVar $fotonPig 1
+			end
+
+			getWordPos $cline $pos "surround"
+			if ($pos > 0)
+				replaceText $cline "surround" ""
+				setVar $fotonSurround 1
+				setVar $attackmsg $attackmsg & "*Kill Mode Engaged with Suround!*Need saveme bot on planet!"
+			else
+				setVar $attackmsg $attackmsg & "*Kill Mode Engaged!*Need saveme bot on planet!"
+			end
+		end
+
 	else
 		getWordPos $cline $pos "checkports"
 		if ($pos > 0)
@@ -83,9 +148,16 @@ else
 	end
 end
 
+# Encase people used these switches in wrong mode
+replaceText $cline "kill" ""
+replaceText $cline "surround" ""
+replaceText $cline "pig" ""
+
 setVar $SWITCHBOARD~message $attackmsg & "*"
 gosub :SWITCHBOARD~switchboard				
+			
 				
+
 
 replaceText $cline "  " " "
 replaceText $cline "  " " "
@@ -98,7 +170,7 @@ if (($attackPattern = "fotonlist") or ($attackPattern = "foton"))
 	end
 end
 
-
+setVar $currentPlanet 0
 setVar $startingLocation $PLAYER~CURRENT_PROMPT
 if (($startingLocation <> "Command") and ($startingLocation <> "Citadel"))
 	setVar $SWITCHBOARD~message "Start from the command prompt or a citadel prompt.*"
@@ -130,6 +202,36 @@ else
 			send "q"
 			goSub :PLANET~getPlanetInfo
 			send "c"
+			setVar $currentPlanet $PLANET~PLANET
+			
+			if ($fotonKill = 1)
+				setVar $targeting~PLANET $planet~PLANET
+				gosub :targeting~initialize_targeting
+				send "qmnt*c"
+			end
+			
+			if ($fotonPig = 1)
+				send "'pig lift*"
+				setDelayTrigger pig1 :pig1 2000
+				pause
+				:pig1
+				killalltriggers
+
+				send "'pig ig on*"
+				setDelayTrigger pig2 :pig2 2000
+				pause
+				:pig2
+				killalltriggers
+
+				send "'pig land " $PLANET~PLANET "*"
+				setDelayTrigger pig3 :pig3 2000
+				pause
+				:pig3
+				killalltriggers
+				
+				send "'pig saveme on*"
+
+			end
 			getWordPos $cline $pos "bwarp"
 			if ($pos > 0)
 				replaceText $cline "bwarp" ""
@@ -157,6 +259,7 @@ else
 		end
 	end
 end
+
 
 # NUMBER OF WARPS SECTOR HAS FOR PRIMARY SEARCH
 setVar $primaryPattern 4
@@ -493,9 +596,48 @@ halt
 		waitfor "ating beam pinpointed, Tran"
 		send "y"
 	else
-		goSub :doHolo
-		#waitfor success - move home
-		send "p" $homeSector "*y"
+
+		if ($fotonKill = 1)
+			
+			setTextLineTrigger photonOver :photonOver "Photon Wave Duration has ended in sector"
+			setDelayTrigger photonOver2 :photonOver2 (($game~photon_duration * 1000) + 1000)
+			pause
+			:photonOver
+			:photonOver2
+				killalltriggers
+
+				setVar $BOT~command "pgrid " & $attacking
+				setVar $user_command_line " pgrid "& $attacking 
+				setVar $parm1 $attacking
+				saveVar $parm1
+				saveVar $BOT~command
+				saveVar $user_command_line
+				load "scripts\mombot\commands\grid\pgrid.cts"
+				setEventTrigger        pgridended        :pgridended "SCRIPT STOPPED" "scripts\mombot\commands\grid\pgrid.cts"
+				pause
+				:pgridended
+					killalltriggers
+				
+				if ($fotonPig = 1)
+					send "'pig lift*"
+				end
+				if ($fotonSurround = 1)
+					gosub :player~quikstats
+
+					send "qq"
+					gosub :PLAYER~surround
+					send "l" $currentPlanet "*c"
+					waitfor "<Enter Citadel>"
+					gosub :targeting~scanit_cit_kill
+				else
+					gosub :targeting~scanit_cit_kill
+				end
+		else
+				
+			goSub :doHolo
+			#waitfor success - move home
+			send "p" $homeSector "*y"
+		end
 	end
 
 return
@@ -1128,3 +1270,4 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\targeting"
