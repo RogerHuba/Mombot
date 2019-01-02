@@ -309,7 +309,10 @@ return
                 killtrigger 1
                 killtrigger 2
                 killtrigger 3
-                killtrigger 4
+		killtrigger 4
+
+		setVar $SWITCHBOARD~message "Port Destroyed.*"
+                gosub :SWITCHBOARD~switchboard
 
         else
             setVar $SWITCHBOARD~message "Not enough fighters.  Better reload before the you blow up this port.*"
