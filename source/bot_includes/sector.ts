@@ -70,6 +70,8 @@ return
                     end
                     add $j 1
                 end
+            else
+                setVar $player~traders[($realTraderCount+1)][2] FALSE
             end
             getWordPos $temp $pos "[0;32m w/"
             getWordPos $temp $pos2 "[0;35m[[31mOwned by[35m]"

@@ -735,13 +735,25 @@ return
             setVar $stillShields FALSE
             setVar $isSameTarget FALSE
             :cgoahead
+                killtrigger checkcaptarget
                 setTextTrigger  foundcaptarget  :foundcaptarget  "(Y/N) [N]? Y"
+                setTextLineTrigger checkcaptarget :checkcaptarget "Yes"
                 setTextLineTrigger noctarget    :nocappingtargets "Do you want instructions (Y/N) [N]?"
                 send $targetString
                 pause
+            :checkcaptarget
+                getwordpos CURRENTANSILINE $pos "[1;36mYes"
+                if ($pos > 0)
+                    goto :foundcaptarget
+                else
+                    setTextLineTrigger checkcaptarget :checkcaptarget "Yes"
+                    pause
+                end
+
             :foundcaptarget
                 killtrigger noctarget
                 killtrigger foundcaptarget
+                killtrigger checkcaptarget
                 setVar $cap_ship_info CURRENTLINE
                 setVar $thisTarget CURRENTANSILINE
                 getWord $cap_ship_info $attack_prompt 1
