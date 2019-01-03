@@ -8,13 +8,14 @@
 	setVar $BOT~help[1]  $BOT~tab&"           Visits all ports in grid and sells organics          "
 	setVar $BOT~help[2]  $BOT~tab&"           and/or equipment.       "
 	setVar $BOT~help[3]  $BOT~tab&"       "
-	setVar $BOT~help[4]  $BOT~tab&" merch [min port product] [o | e] ({neg}otiate OR {hold}byhold)  "
+	setVar $BOT~help[4]  $BOT~tab&" merch {sector param} {min port product} [o | e] ({neg}otiate OR {hold}byhold)  "
 	setVar $BOT~help[5]  $BOT~tab&"       {buyfuel} {docim}  "
 	setVar $BOT~help[6]  $BOT~tab&"       "
 	setVar $BOT~help[7]  $BOT~tab&"Options:"
 	setVar $BOT~help[8]  $BOT~tab&"    {neg/hold}   Determines planet negotiate or hold "
 	setVar $BOT~help[9]  $BOT~tab&"                 selling approach"
-	setVar $BOT~help[10] $BOT~tab&"       {docim}   Does cim check before starting"
+	setVar $BOT~help[10] $BOT~tab&"     {skipcim}   Uses current cim data and skips searching"
+	setVar $BOT~help[10] $BOT~tab&"       {docim}   Does cim check before starting and skips searching"
 	setVar $BOT~help[11] $BOT~tab&"     {buyfuel}   Buys all the fuel in fuel selling ports "
 	setVar $BOT~help[12] $BOT~tab&"                 on route  "
 	gosub :BOT~help_file
@@ -31,12 +32,17 @@
      	gosub :switchboard~switchboard
 		halt
 	end
+	setvar $parameter ""
 	setVar $minimumFuel $bot~parm1
 	isNumber $number $minimumFuel
-	if ($number <> 1)
-		setvar $switchboard~message "Minimum Port Product entered is not a number!*"
-		gosub :switchboard~switchboard
-		halt
+	if ($number <> true)
+		setvar $parameter $bot~parm1
+		uppercase $parameter
+		setVar $minimumFuel $bot~parm2
+		isNumber $number $minimumFuel
+		if ($number <> true)
+			setvar $minimumfuel 1000
+		end
 	end
 	if ($minimumFuel <= 0)
 		setvar $switchboard~message "Minimum Port Product must be greater than 0.*"
@@ -71,7 +77,7 @@
 	end
 	
 	if (($sellingOrg = FALSE) AND ($sellingEquip = FALSE))
-		setvar $switchboard~message "Please pick [o]rganics and/or [e]quipment to sell.  merch [min product] {o} {e} {skipcim} {negotiate/hold}*"
+		setvar $switchboard~message "Please pick [o]rganics and/or [e]quipment to sell.  merch [min product] {o} {e} {docim} {skipcim} {negotiate/hold}*"
 		gosub :switchboard~switchboard
 		halt
 	end
@@ -135,6 +141,12 @@
 		while ($bottom <= $top)
 			# Now, pull out the next sector in the que, and make it our focus
 			setVar $focus $que[$bottom]
+			if ($parameter <> "")
+				getsectorparameter $focus $parameter $isGoodSector
+			end
+			if (($parameter <> "") and ($isGoodSector <> true))
+				goto :notit
+			end
 			if (($docim = FALSE) AND ($skipcim = FALSE))
 				if (($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0) AND (SECTOR.EXPLORED[$focus] = "YES") AND ((($sellingOrg = TRUE) AND ($planet~planet_organics > 500) AND (PORT.BUYORG[$focus])) OR (($sellingEquip = TRUE) AND ($planet~planet_equipment > 500) AND (PORT.BUYEQUIP[$focus]))))
 					send "cr"&$focus&"*q"
@@ -149,6 +161,7 @@
 				setVar $checkedPorts[$NearFig] TRUE
 				goto :continueOn2
 			else
+				:notit
 				setVar $nearfig 0
 			end
 			# That wasn't it, so let's add all the adjacents to the que for future testing.

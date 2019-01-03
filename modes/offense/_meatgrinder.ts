@@ -19,12 +19,26 @@ logging off
 		setVar $turbo FALSE
 	end
 	
-	cutText CURRENTLINE $location 1 7
-	if ($location <> "Command")
+	gosub :player~quikstats
+	setvar $location $player~current_prompt
+
+	if (($location <> "Command") and ($location <> "Citadel") and ($location <> "Planet"))
 	        echo ANSI_12 "**This script must be started from the Command Prompt.**"
 	        halt
 	end
 	
+
+	setvar $planet_string ""
+	if (($player~current_prompt = "Citadel") or ($player~current_prompt = "Planet"))
+		if ($player~current_prompt = "Citadel")
+			send "q "
+		end
+		setvar $from_planet true
+		gosub :planet~getplanetinfo
+		send "q "
+		setvar $planet_string "l "&$PLANET~PLANET&"* n  m * * * q "
+	end
+
 	send "c;q"
 	waitOn "Max Figs Per Attack:"
 	getWord CURRENTLINE $maxFigAttack 5
@@ -56,7 +70,7 @@ logging off
 	killtrigger hit
 	killtrigger empty
 	killtrigger refurb
-	setDelayTrigger delay :continue 50
+	setDelayTrigger delay :continue 40
 	pause
 
 :continue	
@@ -69,7 +83,7 @@ logging off
 	setTextLineTrigger empty :checkEmptyAttack "'s unmanned "
 	setTextLineTrigger hit :execute "How many fighters do you wish to use ("
 
-	send $targetString&"zy z"&$maxFigAttack&"* "
+	send $targetString&"zy z"&$maxFigAttack&"* "&$planet_string
 	pause
 	
 	
@@ -119,7 +133,7 @@ end
 			setVar $refurbString ""
 			echo "*No known class 0 or 9 port here to refurb at.*"
 		end
-		if (($refurbString <> "") AND ($PLAYER~CREDITS > 500000))
+		if (($refurbString <> "") AND ($PLAYER~CREDITS > 500000) and ($player~current_prompt <> "Planet"))
 			if ($PLAYER~CURRENT_SECTOR = STARDOCK)
 				send "p ss ys *p"
 			elseif (($PLAYER~CURRENT_SECTOR = 1) OR (PORT.CLASS[$PLAYER~CURRENT_SECTOR] = 0))

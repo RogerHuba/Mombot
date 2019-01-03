@@ -496,10 +496,9 @@ return
             elseif (($characterLength > 1) OR ($characterLength <= 0))
             else
                 :treatAsUsual
-                    #TODO: Fix issue where periods are seen as zeros because of number translating it as a decimal
                     if ($BOT~charPos >= $BOT~charCount)
                         setvar $frontMacro $BOT~promptOutput
-                        setvar $tailMacro $character
+                        setvar $tailMacro ""&$character&""
                     else
                         cuttext $BOT~promptOutput $frontMacro 1 ($BOT~charPos)
                         cuttext $BOT~promptOutput $tailMacro  ($BOT~charPos+1) ($BOT~charCount - ($BOT~charPos-1))

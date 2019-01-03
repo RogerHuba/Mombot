@@ -7,7 +7,7 @@
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored "
+	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored | sector "
 	setVar $BOT~help[2]   $BOT~tab&"       | ports} {BBB | XXB | SSX etc} {mark:PARAM}"
 	setVar $BOT~help[3]   $BOT~tab&"     "
 	setVar $BOT~help[4]   $BOT~tab&"     Searches TWX database for known info."
@@ -145,7 +145,25 @@ while ($i <= SECTORS)
 	setvar $skip false
 	
 	while (($j <= $sector_param_count) and ($skip <> true))
-		getSectorParameter $i $sector_params[$j] $value
+		setvar $parameter $sector_params[$j]
+		lowercase $parameter
+		getwordpos $parameter $pos "port.o"
+		if ($pos > 0)
+			setvar $value port.fuel[$i]
+		else
+			getwordpos $parameter $pos "port.o"
+			if ($pos > 0)
+				setvar $value port.org[$i]
+			else
+				getwordpos $parameter $pos "port.e"
+				if ($pos > 0)
+					setvar $value port.equip[$i]
+				else
+					//If it's not one of these specific variables, assume sector param
+					getSectorParameter $i $sector_params[$j] $value
+				end
+			end
+		end
 		
 		if ($sector_params[$j][2] = "=")
 			
@@ -316,12 +334,17 @@ while ($i <= SECTORS)
 													setvar $skip true
 												end
 											end
-										
 										end
+										
 									else
-										setVar $SWITCHBOARD~message $SWITCHBOARD~message&"You must select either planets, ships, unexplored, explored, anomoly, ports, or traders.*"
-										gosub :SWITCHBOARD~switchboard
-										halt
+										if (($bot~parm1 = "sector") or ($bot~parm1 = "sectors"))
+
+										else
+											setVar $SWITCHBOARD~message "You must select either sectors, planets, ships, unexplored, explored, anomoly, ports, or traders.*"
+											gosub :SWITCHBOARD~switchboard
+											halt
+										end
+
 									end
 								end
 							end
