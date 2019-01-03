@@ -762,7 +762,8 @@ return
 	
 	# if list is smaller than the Max Port Scans - then lets only send that many
 	# we don't want to compromise speed
-	
+	setVar $bannerCount 0
+
 	setVar $announceTarget 0
 	setVar $scanMsg ""
 	setVar $targetFound 0
@@ -809,7 +810,13 @@ return
 			if ($targeti > $totalTargets)
 				setVar $targeti 1
 				if ($whichlist = 1)
-					send "'PRHunt active*"
+					setVar $bannerCount ($bannerCount + $totalTargets)
+					# roughly every 2 mins
+					if ($bannerCount > 7200)
+						send "'PRHunt active*"
+						setVar $bannerCount 0
+					end
+
 				end
 
 			end
