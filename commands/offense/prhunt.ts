@@ -37,12 +37,16 @@ setVar $BOT~help[29]  $BOT~tab&" {kill}     - pgrid into sector and attempt kill
 setVar $BOT~help[30]  $BOT~tab&"              WARNING: Does not check for target or Saveme"
 setVar $BOT~help[31]  $BOT~tab&" {surround} - (optimistically) surrounds sector before kill "
 setVar $BOT~help[32]  $BOT~tab&" {pig}      - Bring a friend to lift and IG during kill cycle"
+setVar $BOT~help[33]  $BOT~tab&" {direct}   - Skip secondary scan"
+
+
 
 # making a varibale for stesting
 setVar $sectors SECTORS
   
 gosub :player~init
 
+loadVar $player~surroundFigs
 gosub :BOT~help_file
 
 setVar $BOT~script_title "PRHunt - Port Report Hunter Starting"
@@ -126,6 +130,16 @@ else
 				setVar $attackmsg $attackmsg & "*Kill Mode Engaged!*Need saveme bot on planet!"
 			end
 		end
+		getWordPos $cline $pos "direct"
+		if ($pos > 0)
+			replaceText $cline "direct" ""
+			setVar $directscan 1
+			setVar $attackmsg $attackmsg & "*Skipping Secondary scan and going for direct scan"
+		else
+			setVar $directscan 0
+
+		end
+		
 
 	else
 		getWordPos $cline $pos "checkports"
@@ -381,8 +395,6 @@ if ($attackPattern <> "fotonlist")
 end
 
 
-
-
 clearAllAvoids
 	
 goSub :loadAllBlocked
@@ -410,6 +422,7 @@ waitfor "<Computer activated>"
 
 if (($attackPattern = "foton") or ($attackPattern = "announce"))
 	# Large Array of Sectors to Hunt
+		:restart1
 		setVar $startTargets 0
 		setVar $startTargetsi 0
 
@@ -444,8 +457,13 @@ if (($attackPattern = "foton") or ($attackPattern = "announce"))
 
 			setVar $targetFound 0
 			goSub :monitorList
-		
-			send "'Found a primary hit " $targetFound ", narrowing search*"
+			
+			if ($directscan = 1)
+				send "'Found a primary hit " $targetFound ", going for direct approach.*"
+				goto :skipTo3
+			else
+				send "'Found a primary hit " $targetFound ", narrowing search*"
+			end
 		#Search 2
 
 			# $targetFound now gets origin of search pattern - lets get nearest sectors and narrow the search
@@ -484,7 +502,7 @@ if (($attackPattern = "foton") or ($attackPattern = "announce"))
 end
 
 		# SEARCH 3
-			
+			:skipTo3
 			goSub :getFiringSolutions
 			
 			if ($fsi = 0)
@@ -519,15 +537,21 @@ end
 			goSub :monitorList
 
 			if ($targetFound = 0)
-				send "'Failed to find target in teritary list; resuming secondary search*"
-				setVar $i 1
-				setVar $startTargetsi $smallListSize
-				setVar $startTargets 0
-				while ($i <= $smallListSize)
-					setVar $startTargets[$i] $smallList[$i]
-					add $i 1
+				if ($directscan = 1)
+					send "'Failed to find target  - Scanning again *"
+					goto :restart1
+				else
+
+					send "'Failed to find target in teritary list; resuming secondary search*"
+					setVar $i 1
+					setVar $startTargetsi $smallListSize
+					setVar $startTargets 0
+					while ($i <= $smallListSize)
+						setVar $startTargets[$i] $smallList[$i]
+						add $i 1
+					end
+					goto :search2
 				end
-				goto :search2
 			else
 				gosub :boomboomboomshaketheroom
 			end
