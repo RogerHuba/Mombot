@@ -247,6 +247,11 @@ return
     setVar $currentBotPlanet $planet
     saveVar $currentBotPlanet 
     saveVar $PLANET
+    setVar $sucessfulPlanet TRUE
+    if ($land_and_lift = true)
+        send "m* * * q  "
+        return
+    end
     send "m* * * c*"
     setTextTrigger build_cit :build_cit "Do you wish to construct one?"
     setTextTrigger in_cit :in_cit "Citadel command"
