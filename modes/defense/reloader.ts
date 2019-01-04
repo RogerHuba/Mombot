@@ -1,7 +1,7 @@
 	logging off
 	gosub :BOT~loadVars
 
-	setVar $BOT~help[1]  $BOT~tab&"reloader [on/off] [fig minimum] {ig} {topoff}"
+	setVar $BOT~help[1]  $BOT~tab&"reloader [on/off] [fig minimum] {ig} {topoff} {fig}"
 	setVar $BOT~help[2]  $BOT~tab&"  - Sector Reloader Mode"
 	setVar $BOT~help[3]  $BOT~tab&"    Sits above planet and lands/reloads fighters when hit."
 	setVar $BOT~help[4]  $BOT~tab&"  "
@@ -11,6 +11,7 @@
 	setVar $BOT~help[8]  $BOT~tab&"                      landing and refilling"
 	setVar $BOT~help[9]  $BOT~tab&"               [ig]   Reset IG if photoned "
 	setVar $BOT~help[10] $BOT~tab&"           [topoff]   Uses fighters in sector first "
+	setVar $BOT~help[11] $BOT~tab&"              [fig]   Place fighter if sector figs attacked "
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Reloader"
@@ -40,6 +41,13 @@
 		setvar $topoff false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " fig "
+	if ($pos > 0)
+		setvar $replace_fig true
+	else
+		setvar $replace_fig false
+	end
+
 	send "\"
 	setTextLineTrigger flee_off :flee_off "Online Auto Flee is disabled."
 	setTextLineTrigger flee_on :flee_on "Online Auto Flee is enabled."
@@ -67,17 +75,36 @@ goto :_START_
 	killtrigger 1
 	killtrigger 2
 	killtrigger 3
+	killtrigger 4
 	setTextLineTrigger 1 :sub_reload "Shipboard Computers"
 	setTextLineTrigger 2 :landed		"{"&$bot~bot_name&"} - In Cit - Planet"
 	if ($ig = true)
 		setTextLineTrigger 3 :ig_turn_it_on " damaging your ship."
 	end
+	if ($replace_fig)
+		setTextLineTrigger 4 :replace_fig " of your fighters in sector "&$player~current_sector
+	end
 	pause
+
+:replace_fig
+	setvar $line currentline
+	getWord $line $test 1
+	getwordpos " "&$line&" " $pos " "&$player~current_sector&" "
+	if (($test = "F") or ($test = "R") or ($test = "P") or ($pos <= 0))
+		setTextLineTrigger 4 :replace_fig " of your fighters in sector "&$player~current_sector
+		pause
+	end
+	killtrigger 1
+	killtrigger 2
+	killtrigger 3
+	gosub :topoff
+	goto :settriggers
 
 
 :landed
 	killtrigger 1
 	killtrigger 3
+	killtrigger 4
 	send " q  q  q  q  q  z  n  ** "
 	waiton "Warps to Sector(s) :"
 	waiton "Command [TL"
@@ -107,6 +134,7 @@ goto :_START_
 	end
 	killtrigger 2
 	killtrigger 3
+	killtrigger 4
 	While ($reloaderCheck <> 0)
 		SetVar $PreviousreloaderLine $reloaderLine
 		CutText $PreviousreloaderLine $reloaderLine ($reloaderCheck + 10) 999
@@ -293,7 +321,7 @@ halt
         if ($ftrs_to_leave < 1)
             setVar $ftrs_to_leave 1
         end
-        send " " & $ftrs_to_leave & " * c d "
+        send $ftrs_to_leave & "* c d "
 return
 
 
