@@ -259,7 +259,9 @@
 
 
 	else
-	    send "   j   y   "
+		if ($player~EQUIPMENT_HOLDS > 0)
+		    send "   j   y   "
+		end
 	end
 
 	write $LOG_FName "-------------------------{ " & $Stamp & " }-------------------------"
@@ -590,36 +592,38 @@
 						setVar $Flag 0
 						setSectorParameter $Focus "FIGSEC" FALSE
 					end
-					if ($twarp_safety = 1)
-						getSectorParameter $Focus "LIMPSEC" $Flag
-						isNumber $tst $Flag
-						if ($tst = 0)
-							setVar $Flag 0
-							setSectorParameter $Focus "LIMPSEC" FALSE
-						end
-					elseif ($twarp_safety = 2)
-						
+					if ($flag <> false)
+						if ($twarp_safety = 1)
+							getSectorParameter $Focus "LIMPSEC" $Flag
+							isNumber $tst $Flag
+							if ($tst = 0)
+								setVar $Flag 0
+								setSectorParameter $Focus "LIMPSEC" FALSE
+							end
+						elseif ($twarp_safety = 2)
+							
 
-						getSectorParameter $Focus "LIMPSEC" $Flag1
-						isNumber $tst1 $Flag1
-						if ($tst1 = 0)
-							setVar $Flag1 0
-							setSectorParameter $Focus "LIMPSEC" FALSE
-						end
+							getSectorParameter $Focus "LIMPSEC" $Flag1
+							isNumber $tst1 $Flag1
+							if ($tst1 = 0)
+								setVar $Flag1 0
+								setSectorParameter $Focus "LIMPSEC" FALSE
+							end
 
-						getSectorParameter $Focus "MINESEC" $Flag2
-						isNumber $tst2 $Flag2
-						if ($tst2 = 0)
-							setVar $Flag2 0
-							setSectorParameter $Focus "MINESEC" FALSE
-						end
-	
-						if (($Flag1 = 0) or ($Flag2 = 0))
-							setVar $Flag 0
-						else
-							setVar $Flag 1
-						end
+							getSectorParameter $Focus "MINESEC" $Flag2
+							isNumber $tst2 $Flag2
+							if ($tst2 = 0)
+								setVar $Flag2 0
+								setSectorParameter $Focus "MINESEC" FALSE
+							end
+		
+							if (($Flag1 = 0) or ($Flag2 = 0))
+								setVar $Flag 0
+							else
+								setVar $Flag 1
+							end
 
+						end
 					end
 					if ($Flag <> 0)
 						if (SECTOR.WARPCOUNT[$Focus] > 1)
