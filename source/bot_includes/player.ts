@@ -1585,6 +1585,8 @@ return
         setTextLineTrigger topoff_failure2 :do_topoff_again "Too many fighters in your fleet!  You are limited to"
         pause
     :topoff_success
+        killtrigger topoff_failure1
+        killtrigger topoff_failure2
 return
 
 # ============================== ANSI CONTROLS ==========================================
