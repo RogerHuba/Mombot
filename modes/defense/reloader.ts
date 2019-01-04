@@ -98,6 +98,7 @@ goto :_START_
 	killtrigger 2
 	killtrigger 3
 	gosub :topoff
+	add $loss 1
 	goto :settriggers
 
 
