@@ -254,7 +254,7 @@ return
     setArray $INTERNALCOMMANDLISTS 7
     setVar $internalCommandLists[1]  " stopall stop listall reset emq bot relog tow refresh login logoff unlock lift with dep callin about cn extern twarp bwarp pwarp "
     setVar $internalCommandLists[2]  " " 
-    setVar $internalCommandLists[3]  " hkill kill cap "
+    setVar $internalCommandLists[3]  " hkill kill "
     setVar $internalCommandLists[4]  " refurb scrub "
     setVar $internalCommandLists[5]  " surround exit mow "
     setVar $internalCommandLists[6]  " "

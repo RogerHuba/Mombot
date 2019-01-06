@@ -16,21 +16,19 @@ logging off
     setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
     if ($PLAYER~startingLocation <> "Command")
         if ($PLAYER~startingLocation = "Citadel")
-            if ($BOT~mode <> "Citcap")
-                fileExists $SHIP~cap_file_chk $SHIP~cap_file
-                if ($SHIP~cap_file_chk <> TRUE)
-                    gosub :SHIP~getShipCapStats
-                end
-                setVar $BOT~user_command_line "citcap on"
-                goto :USER_INTERFACE~runUserCommandLine
-            else
-                setVar $BOT~user_command_line "citcap off"
-                goto :USER_INTERFACE~runUserCommandLine
-            end
+          loadvar $bot~mode
+               setVar $BOT~command "citcap"
+               setVar $BOT~user_command_line " citcap on "
+               setVar $BOT~parm1 "on"
+          saveVar $BOT~parm1
+          saveVar $BOT~command
+          saveVar $BOT~user_command_line
+          load "scripts\mombot\modes\offense\citcap.cts"
+          halt
         end
         setVar $SWITCHBOARD~message "Wrong prompt for auto capture.*"
         gosub :SWITCHBOARD~switchboard
-        goto :BOT~wait_for_command
+        halt
     end
     getWordPos $BOT~user_command_line $pos "alien"
     if ($pos > 0)
@@ -52,7 +50,7 @@ logging off
     setVar $thisTarget ""
     goSub :SECTOR~getSectorData
     goSub :PLAYER~fastCapture
-    goto :BOT~wait_for_command
+    halt
 
 #================================ END AUTO CAPTURE ===================================
 
@@ -64,4 +62,3 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
-include "source\bot_includes\user_interface"
