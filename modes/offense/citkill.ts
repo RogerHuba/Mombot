@@ -90,7 +90,7 @@
 		else
 			setVar $player~shotgun FALSE
 		end
-		setVar $ship~CAP_FILE		"_MOM_" & GAMENAME & ".ships"
+		loadvar $ship~CAP_FILE
 		fileExists $CAP_FILE_chk $ship~CAP_FILE
 		if ($CAP_FILE_chk)
 			gosub :ship~loadshipinfo
