@@ -492,57 +492,82 @@
 
 :start
 	killalltriggers
-	if ($reverse)
-             setVar $farmSector SECTORS
-    else
-             setVar $farmSector 11
-    end
 
 :inac
 :tryAgain
 		setVar $PLAYER~save TRUE
+		gosub :player~quikstats
+		setVar $bottom 1
+		setVar $top 1
+		setArray $checked SECTORS
+		setVar $que[1] $player~current_sector
+		setVar $checked[$player~current_sector] 1
+		while ($bottom <= $top)
+			# Now, pull out the next sector in the que, and make it our focus
+			setVar $focus $que[$bottom]
+			
 
-	while (($farmSector <= SECTORS) and ($farmSector > 0))
-		loadVar $BOT~botIsDeaf
-		loadVar $BOT~silent_running
-		if ($where_planets = true)
-			if ($citadels[$farmsector] <= 0)
-				goto :next_farm_sector
+			loadVar $BOT~botIsDeaf
+			loadVar $BOT~silent_running
+			if ($where_planets = true)
+				if ($citadels[$focus] <= 0)
+					goto :notit
+				end
 			end
-		end
-		if ($balance)
-			if ($citadels[$farmsector] > $game~MAX_PLANETS_PER_SECTOR)
-				getSectorParameter $farmSector $parameter $BUBBLE
-			else
-				setvar $bubble false
-			end
-		else
-			if ($amtrak)
-				getSectorParameter $farmSector "AMTRAK" $BUBBLE
-			elseif ($allplanets)
-				getWordPos $tl_planets $pos " "&$farmSector&" "
-				if ($pos > 0)
-					setVar $BUBBLE TRUE
+			if ($balance)
+				if ($citadels[$focus] > $game~MAX_PLANETS_PER_SECTOR)
+					getSectorParameter $focus $parameter $BUBBLE
 				else
-					setVar $BUBBLE FALSE
+					setvar $bubble false
 				end
 			else
-				getSectorParameter $farmSector $parameter $BUBBLE
+				if ($amtrak)
+					getSectorParameter $focus "AMTRAK" $BUBBLE
+				elseif ($allplanets)
+					getWordPos $tl_planets $pos " "&$focus&" "
+					if ($pos > 0)
+						setVar $BUBBLE TRUE
+					else
+						setVar $BUBBLE FALSE
+					end
+				else
+					getSectorParameter $focus $parameter $BUBBLE
+				end
 			end
-		end
-		 if ($BUBBLE = TRUE)
-		        goto :move_the_planet
-		 else
-		        if ($reverse)
-		             subtract $farmSector 1
-		        else
-		             add $farmSector 1
-		        end
-		        goto :tryAgain
-		 end
+
+
+			if ($BUBBLE = TRUE)
+				setvar $farmsector $focus
+			    goto :move_the_planet
+			else
+			    goto :notit
+			end
+
+
+			:notit
+			setVar $nearfig 0
+
+			# That wasn't it, so let's add all the adjacents to the que for future testing.
+			setVar $a 1
+			while (SECTOR.WARPS[$focus][$a] > 0)
+				setVar $adjacent SECTOR.WARPS[$focus][$a]
+				# But only add them if they haven't been added previously
+				if ($checked[$adjacent] = 0)
+					# Okay, this one hasn't been checked, so tag it and que it.
+					setVar $checked[$adjacent] 1
+					add $top 1
+					setVar $que[$top] $adjacent
+				end
+				add $a 1
+			end
+			# The adjacents of $focus were all queued, now on to the next one.
+			add $bottom 1
+		end	
+
+		halt
 
 		:move_the_planet
-			send "p "& $farmSector &"  *ys* "
+			send "p "& $focus &"  *ys* "
 			settextlinetrigger warp_it :warp_it "All Systems Ready, shall we engage?"
 			settextlinetrigger no_warp :no_warp "You do not have any fighters in Sector"
 			setTextLineTrigger alreadythere :warp_it "You are already in that sector!"
@@ -550,11 +575,6 @@
 
 		:no_warp
 			killalltriggers
-			if ($reverse)
-                 subtract $farmSector 1
-            else
-                 add $farmSector 1
-            end
 			goto :tryAgain
 
 		:warp_it
@@ -696,19 +716,14 @@
 			gosub :PLANET~getPlanetInfo
 			send "c"
 			:next_farm_sector
-			if ($reverse)
-                 subtract $farmSector 1
-            else
-                 add $farmSector 1
-            end
             if ($strip = TRUE)
 				if ((($get_org = TRUE) AND ($PLANET~PLANET_ORGANICS > ($PLANET~PLANET_ORGANICS_MAX-1000))) AND (($get_equ = TRUE) AND ($PLANET~PLANET_EQUIPMENT > ($PLANET~PLANET_EQUIPMENT_MAX - 1000))))
 					setVar $planetIsFull TRUE
 					goto :end
 				end
 			end
-	end
-	goto :end
+
+	goto :tryAgain
 
 :count_planets
 	send "qq*  |l"

@@ -935,7 +935,7 @@ end
 	setVar $PortResults ""
 	setVar $BlownCNT 0
 	setVar $PortArraySize 2000
-	setArray $PortBlown $PortArraySize 52
+	setArray $PortBlown $PortArraySize 3
 	setArray $NewPorts $PortArraySize
 	setVar $NewPortIDX 0
 	setArray $Opened $PortArraySize
@@ -1029,7 +1029,7 @@ end
 							else
 								setVar $PortBlown[$i][2] $temp
 							end
-							setVar $PortBlown[$i][($temp+2)] $Port_Addy & " at " & $timeCode
+							setVar $PortBlown[$i][3] $PortBlown[$i][3]&"*                                Sector "&$Port_Addy & " at " & $timeCode
 							goto :Next_Port
 						else
 							gosub :TIME_DECODE
@@ -1104,12 +1104,8 @@ end
 			while ($i <= $PortArraySize)
 				if ($PortBlown[$i][1] <> 0)
 					setVar $PortResults $PortResults & "                       " & $PortBlown[$i][2] & " by " & $PortBlown[$i][1] & "*"
-					setVar $ii 3
-					while ($PortBlown[$i][$ii] <> 0)
-						setVar $PortResults $PortResults & "                                Sector " & $PortBlown[$i][$ii] & "*"
-						add $ii 1
-					end
-				end
+					setVar $PortResults $PortResults & "                                Sector " & $PortBlown[$i][3] & "*"
+			end
 				add $i 1
 			end
 		else

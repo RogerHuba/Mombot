@@ -98,18 +98,33 @@ return
             end
             #for defender recognition once ansi ships are in array in bot
             if (($pos3 > 0) AND ($tempCorp <> $player~CORP) AND ($override <> TRUE))
-                getText $temp $shipname "(" #13
-                getText $shipname $shipname "m"&#27 #27&"["
+                getText $temp $shipname "(" ")"
+                #getText $shipname $shipname "m"&#27 #27&"["
                 if ($shipname = "")
-                    getText $temp $shipname "(" ")"&#13
-                    getText $shipname&"ENDOFSHIP" $shipname "m"&#27&"[" "ENDOFSHIP"
+                    getText $shipname $shipname "(" ")"
+                    #getText $shipname&"ENDOFSHIP" $shipname "m"&#27&"[" "ENDOFSHIP"
                 end
                 getText $shipname&"ENDOFSHIP" $shipname "m" "ENDOFSHIP"
                 setVar $isFound FALSE
                 setVar $s 1
                 setVar $isDefender FALSE
+                striptext $shipname #13
+                striptext $shipname #27
+                striptext $shipname ""
+                striptext $shipname "[0;32m"
+                striptext $shipname "[0;34m"
+                striptext $shipname "[0;35m"
+                striptext $shipname "[1;36m"
+                striptext $shipname "[1;41m"
+                striptext $shipname "[34m"
+                striptext $shipname "[32m"
+                striptext $shipname "[0m"
+
                 while (($isFound = FALSE) AND ($s < $ship~shipCounter))
-                    if ($shipname = $ship~shipList[$s])
+                    #striptext $ship~shipList[$s] " "
+                    getwordpos $shipname $pos $ship~shipList[$s]
+                    if ($pos > 0)
+                        #echo "*["&$shipname&"*][*"&$ship~shipList[$s]&"]*"
                         setVar $isFound TRUE
                         setVar $isDefender $ship~shipList[$s][8]
                     end
@@ -118,6 +133,7 @@ return
                 setVar $player~traders[($realTraderCount)][3] $shipname
                 if ($isDefender = TRUE)
                     setVar $player~traders[($realTraderCount)][1] 100000
+                    #echo "*Adding defender ship:"&$shipname&"*"
                     add $defenderShips 1
                 end
             end

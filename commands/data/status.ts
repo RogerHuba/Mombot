@@ -17,6 +17,10 @@
 :qss
 :status
     gosub :PLAYER~quikstats
+    setvar $fedsafe false
+    if (($player~experience < 1000) and ($player~alignment >= 0))
+        setvar $fedsafe true
+    end
     setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
     if ($BOT~mode = "General")
         if (($PLAYER~startingLocation = "Command") or ($PLAYER~startingLocation = "Citadel"))
@@ -36,9 +40,9 @@
         setVar $igstat "Busy"
         setVar $timeLeft "Busy"        
     end
-    setArray $h 34
-    setArray $qss 34
-    setArray $qss_var 34
+    setArray $h 35
+    setArray $qss 35
+    setArray $qss_var 35
 
     setVar $h[1]  "Sector    : "
     setVar $h[2]  "Turns     : "
@@ -74,6 +78,7 @@
     setVar $h[32] "Bot Mode  : "
     setVar $h[33] "Team Name : "
     setVar $h[34] "Planet #  : "
+    setVar $h[35] "Fed Safe  : "
     setVar $qss[1] $PLAYER~CURRENT_SECTOR
     if ($PLAYER~unlimitedGame)
         setVar $qss[2] "Unlimited"
@@ -142,13 +147,18 @@
     else
         setVar $qss[34] $PLANET~PLANET
     end
+    if ($fedsafe = true)
+        setVar $qss[35] "Yes"
+    else
+        setVar $qss[35] "No"
+    end
 
     setVar $qss_ss 0
     setVar $qss_count 1
     setVar $spc " "
     setVar $overall 15
 :qss_gather
-    while ($qss_count <= 34)
+    while ($qss_count <= 35)
         setVar $spc_count 1
         #upperCase $h[$qss_count]
         setVar $qss_var[$qss_count] $h[$qss_count]&$qss[$qss_count]
@@ -164,17 +174,18 @@
 :qss_send
                          setVar $SWITCHBOARD~message "                         --- Status Update ---                        *"
     setVar $SWITCHBOARD~message $SWITCHBOARD~message&"----------------------------------------------------------------------*"
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[1]&$qss_var[6]&$qss_var[4]&"*"
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[12]&$qss_var[15]&$qss_var[2]&"*"
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[7]&$qss_var[5]&$qss_var[13]&"*"
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[23]&$qss_var[3]&$qss_var[8]&"*"
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[11]&$qss_var[14]&$qss_var[24]&"*"
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[25]&$qss_var[9]&$qss_var[19]&"*"
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[18]&$qss_var[22]&$qss_var[26]&"*"
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[10]&$qss_var[21]&$qss_var[17]&"*"
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[20]&$qss_var[27]&$qss_var[28]&"*"
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[29]&$qss_var[30]&$qss_var[31]&"*"
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[32]&$qss_var[33]&"*"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[1]&$qss_var[27]&$qss_var[28]&"*"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[3]&$qss_var[4]&$qss_var[13]&"*"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[2]&$qss_var[5]&$qss_var[12]&"*"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[11]&$qss_var[25]&$qss_var[21]&"*"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[6]&$qss_var[26]&$qss_var[20]&"*"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[7]&$qss_var[17]&$qss_var[14]&"*"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[8]&$qss_var[22]&$qss_var[18]&"*"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[9]&$qss_var[19]&$qss_var[23]&"*"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[10]&$qss_var[15]&$qss_var[24]&"*"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[29]&$qss_var[33]&$qss_var[31]&"*"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    *"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[32]&$qss_var[30]&$qss_var[35]&"*"
     setVar $SWITCHBOARD~message $SWITCHBOARD~message&"----------------------------------------------------------------------**"
     
     if ($SWITCHBOARD~self_command <> TRUE)

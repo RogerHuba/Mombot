@@ -1,31 +1,29 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $stardock
-    loadVar $MAP~stardock
-    loadVar $safe_ship
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
-    loadvar $SWITCHBOARD~self_command 
+    gosub :BOT~loadVars
+
+    setVar $BOT~help[1]  $BOT~tab&"   Lands on a planet.          "
+    setVar $BOT~help[2]  $BOT~tab&"               "
+    setVar $BOT~help[3]  $BOT~tab&"    land {planet#}  "
+    setVar $BOT~help[4]  $BOT~tab&"        "
+    gosub :BOT~help_file
 
 
 # ============================== LAND (LAND) ==============================
 
     gosub :PLAYER~quikstats
     setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $validPrompts "Command"
+    setVar $validPrompts "Command Citadel Planet"
     gosub :checkStartingPrompt
-    isNumber $number $parm1
+    isNumber $number $bot~parm1
     loadVar $PLANET~PLANET
+    if ($planet~planet <> "0")
+        setvar $last_planet_landed $planet~planet
+    end
     if ($number = TRUE)
-        if (($parm1 = 0) AND ($PLANET~PLANET = 0))
+        if (($bot~parm1 = 0) AND ($PLANET~PLANET = 0))
             send "'{" $SWITCHBOARD~bot_name "} - Incorrect Planet number*"
             goto :wait_for_command
-        elseif ($parm1 > 0)
-            setVar $PLANET~PLANET $parm1
+        elseif ($bot~parm1 > 0)
+            setVar $PLANET~PLANET $bot~parm1
         else
         end
     else
@@ -33,13 +31,28 @@
         gosub :SWITCHBOARD~switchboard
         goto :wait_for_command
     end
+        if ($player~current_prompt <> "Command")
+            send "q q * "
+        end
         gosub :PLANET~landingSub
-    if ($PLANET~sucessfulCitadel)
+    if ($PLANET~sucessfulCitadel = true)
         setVar $SWITCHBOARD~message "In Cit - Planet "&$PLANET~PLANET&"*"
         gosub :SWITCHBOARD~switchboard
-    elseif ($PLANET~sucessfulPlanet)
+    elseif ($PLANET~sucessfulPlanet = true)
         setVar $SWITCHBOARD~message "At Planet Prompt - No Cit*"
         gosub :SWITCHBOARD~switchboard
+    else
+        if (($last_planet_landed <> "0") and ($last_planet_landed <> $planet~planet))
+            setvar $planet~planet $last_planet_landed
+            gosub :planet~landingsub
+            if ($PLANET~sucessfulCitadel)
+                setVar $SWITCHBOARD~message "In Cit - Relanded on planet "&$PLANET~PLANET&"*"
+                gosub :SWITCHBOARD~switchboard
+            elseif ($PLANET~sucessfulPlanet)
+                setVar $SWITCHBOARD~message "Relanded to planet prompt on planet "&$PLANET~PLANET&"- No Cit*"
+                gosub :SWITCHBOARD~switchboard
+            end
+        end
     end
     goto :wait_for_command
 # ============================== END LAND (LAND) SUB ==============================
@@ -83,3 +96,4 @@ include "source\bot_includes\ship"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\module_includes\prompt"
+include "source\module_includes\bot"

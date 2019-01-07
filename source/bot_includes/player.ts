@@ -631,6 +631,7 @@ return
     setVar $isFound FALSE
     setVar $targetIsAlien FALSE
     setVar $stillShields FALSE
+    setVar $refurbString "l "&$PLANET~PLANET&"* m * * * q "
     :checkingFigs
         if ($FIGHTERS <= 0)
             gosub :quikstats
@@ -643,7 +644,11 @@ return
             end
         end
     if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($onlyAliens <> TRUE))
-        setVar $targetString "a "
+        if ($startingLocation = "Citadel")
+            setVar $targetString "q q * a "
+        else
+            setVar $targetString "a "
+        end
         if ($fedspace <> true)
             getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
             if ($beaconPos > 0)
@@ -731,7 +736,9 @@ return
             setVar $cap_shield_points 0
             setVar $ship_fighters 0
             setVar $lastTarget ""
+            setvar $firstLoop true
         while ($FIGHTERS > 0)
+            killalltriggers
             setVar $stillShields FALSE
             setVar $isSameTarget FALSE
             :cgoahead
@@ -741,12 +748,15 @@ return
                 setTextLineTrigger noctarget    :nocappingtargets "Do you want instructions (Y/N) [N]?"
                 send $targetString
                 pause
+                pause
             :checkcaptarget
                 getwordpos CURRENTANSILINE $pos "[1;36mYes"
                 if ($pos > 0)
                     goto :foundcaptarget
+
                 else
                     setTextLineTrigger checkcaptarget :checkcaptarget "Yes"
+                    pause
                     pause
                 end
 
@@ -762,10 +772,35 @@ return
                 end
                 getWordPos $thisTarget $pos "[0;33m([1;36m"
                 cutText $thisTarget $thisTarget 1 $pos
-                if ($thisTarget = $lastTarget)
+                if ($pos > 0)
+                    setvar $thistarget $cap_ship_info
+                    setvar $temp $thistarget
+                    getwordpos $temp $pos " ("
+                    # get to the last " (" in the string #
+                    setvar $end_of_line_pos 0
+                    while ($pos > 0)
+                        setvar $targetpos $pos
+                        cutText $temp $possibletarget 1 $pos
+                        replacetext $temp $possibletarget ""
+                        getwordpos $temp $pos " ("
+                        if ($pos > 0)
+                            add $end_of_line_pos ($targetpos+2)
+                        end
+                    end
+                    if ($end_of_line_pos <= 0)
+                        #stupid ansi ship names possibly, just look for (Yes
+                        getwordpos $thistarget $end_of_line_pos " (Y"
+                        # get to the last " (Y" in the string #
+                        #should probably do a while loop here to get to end of string, but not worth it right now
+                    end                
+                    cutText $thistarget $thistarget 1 $end_of_line_pos
+                        
+                end
+                if (($thisTarget = $lastTarget) and ($firstLoop <> true))
                     setVar $isSameTarget TRUE
                 elseif ($lastTarget = "")
                     setVar $lastTarget $thisTarget
+                    setvar $firstLoop false
                 else
                     goto :nocappingtargets
                 end
@@ -821,12 +856,14 @@ return
                 setTextLineTrigger notarget2 :nocappingtargets "'s unmanned"
                 setTextLineTrigger theyattacked :theyattacked "Shipboard Computers "
                 pause
+                pause
 
             :combat_scan
                 getWord CURRENTLINE $shieldperc 7
                 stripText $shieldperc "%"
                 setVar $shieldPoints (($SHIELDS * $shieldperc) / 100)
                 setVar $stillShields TRUE
+                pause
                 pause
             :theyattacked
                 setVar $ship_fighters 1
