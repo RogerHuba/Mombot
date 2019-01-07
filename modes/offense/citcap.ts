@@ -52,7 +52,11 @@
 		end
 
 	end
+	setvar $player~save true
 	gosub :player~quikstats
+		setVar $player~startingLocation $player~current_prompt
+	gosub :player~init
+
 	if ($player~current_prompt <> "Citadel")
 		send "'{" $bot~bot_name "} - Must start at the citadel prompt*"
 		halt
@@ -66,9 +70,6 @@
 		gosub :ship~loadShipInfo
 	end 
 
-	setVar $player~startingLocation $player~current_prompt
-	setvar $player~save true
-	gosub :player~init
 
 
 :start_cit_cap

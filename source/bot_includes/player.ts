@@ -736,6 +736,7 @@ return
             setVar $cap_shield_points 0
             setVar $ship_fighters 0
             setVar $lastTarget ""
+            setvar $firstLoop true
         while ($FIGHTERS > 0)
             killalltriggers
             setVar $stillShields FALSE
@@ -795,10 +796,11 @@ return
                     cutText $thistarget $thistarget 1 $end_of_line_pos
                         
                 end
-                if ($thisTarget = $lastTarget)
+                if (($thisTarget = $lastTarget) and ($firstLoop <> true))
                     setVar $isSameTarget TRUE
                 elseif ($lastTarget = "")
                     setVar $lastTarget $thisTarget
+                    setvar $firstLoop false
                 else
                     goto :nocappingtargets
                 end
