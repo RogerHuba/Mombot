@@ -69,6 +69,7 @@
 		getWordPos $bot~user_command_line $pos "empty"
 		if ($pos > 0)
 			setVar $capEmptyShips TRUE
+			setvar $player~empty_ships_only true
 		else
 			setVar $capEmptyShips FALSE
 		end
@@ -178,14 +179,21 @@
 		goSub :player~fastCitadelAttack
 		goto :scanit_again
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
+		setvar $player~startinglocation "Citadel"
 		gosub :player~fastCapture
-		goto :scanit_again
+		send "l "&$PLANET~PLANET&"* m * * * c "
+		gosub :player~quikstats
+goto :scanit_again
 	end
 	goto :halt
 
 :halt
 :final
 	echo ansi_12 "*NO Targets*"
+	if ($sector~defenderShips > 0)
+		setvar $switchboard~message "Enemy defender ship in sector!  Not attacking.  Override if you want to attempt to kill them.*"
+		gosub :switchboard~switchboard
+	end
 	goto :main
 
 halt

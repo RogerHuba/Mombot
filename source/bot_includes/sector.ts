@@ -108,20 +108,38 @@ return
                 setVar $isFound FALSE
                 setVar $s 1
                 setVar $isDefender FALSE
+                replacetext $shipname ";" "m"
+                striptext $shipname "30m"
+                striptext $shipname "31m"
+                striptext $shipname "32m"
+                striptext $shipname "33m"
+                striptext $shipname "34m"
+                striptext $shipname "35m"
+                striptext $shipname "36m"
+                striptext $shipname "37m"
+                striptext $shipname "38m"
+                striptext $shipname "39m"
+                striptext $shipname "40m"
+                striptext $shipname "41m"
+                striptext $shipname "42m"
+                striptext $shipname "43m"
+                striptext $shipname "44m"
+                striptext $shipname "45m"
+                striptext $shipname "46m"
+                striptext $shipname "47m"
+                striptext $shipname "[0;30;47m"
+                striptext $shipname "[32;40m"
+                striptext $shipname "[0;"
+                striptext $shipname "[1;"
+                striptext $shipname "[0m"
+                striptext $shipname "[1m"
                 striptext $shipname #13
                 striptext $shipname #27
                 striptext $shipname ""
-                striptext $shipname "[0;32m"
-                striptext $shipname "[0;34m"
-                striptext $shipname "[0;35m"
-                striptext $shipname "[1;36m"
-                striptext $shipname "[1;41m"
-                striptext $shipname "[34m"
-                striptext $shipname "[32m"
-                striptext $shipname "[0m"
+                striptext $shipname "["
 
                 while (($isFound = FALSE) AND ($s < $ship~shipCounter))
-                    #striptext $ship~shipList[$s] " "
+                    striptext $ship~shipList[$s] "["
                     getwordpos $shipname $pos $ship~shipList[$s]
                     if ($pos > 0)
                         #echo "*["&$shipname&"*][*"&$ship~shipList[$s]&"]*"

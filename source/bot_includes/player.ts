@@ -643,12 +643,12 @@ return
                 goto :checkingFigs
             end
         end
-    if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($onlyAliens <> TRUE))
         if ($startingLocation = "Citadel")
             setVar $targetString "q q * a "
         else
             setVar $targetString "a "
         end
+    if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($onlyAliens <> TRUE) and ($empty_ships_only <> true))
         if ($fedspace <> true)
             getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
             if ($beaconPos > 0)
@@ -677,8 +677,7 @@ return
             add $c 1
         end
     end
-    if ((($SECTOR~fakeTraderCount > 0) AND ($cappingAliens = TRUE)) AND ($isFound <> TRUE))
-        setVar $targetString "a "
+    if ((($SECTOR~fakeTraderCount > 0) AND ($cappingAliens = TRUE)) AND ($isFound <> TRUE) and ($empty_ships_only <> true))
         if ($fedspace <> true)
             getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
             if ($beaconPos > 0)
@@ -702,7 +701,6 @@ return
         end
     end
     if (($isFound = FALSE) AND ($SECTOR~emptyShipCount > 0) AND ($CURRENT_SECTOR > 10) AND ($CURRENT_SECTOR <> $MAP~STARDOCK))
-        setVar $targetString  "a "
         if ($fedspace <> true)
             getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
             if ($beaconPos > 0)
@@ -744,18 +742,18 @@ return
             :cgoahead
                 killtrigger checkcaptarget
                 setTextTrigger  foundcaptarget  :foundcaptarget  "(Y/N) [N]? Y"
-                setTextLineTrigger checkcaptarget :checkcaptarget "Yes"
+                setTextTrigger checkcaptarget :checkcaptarget "Yes"
                 setTextLineTrigger noctarget    :nocappingtargets "Do you want instructions (Y/N) [N]?"
                 send $targetString
                 pause
                 pause
             :checkcaptarget
-                getwordpos CURRENTANSILINE $pos "[1;36mYes"
+                getwordpos CURRENTANSILINE $pos "36mYes"
                 if ($pos > 0)
                     goto :foundcaptarget
 
                 else
-                    setTextLineTrigger checkcaptarget :checkcaptarget "Yes"
+                    setTextTrigger checkcaptarget :checkcaptarget "Yes"
                     pause
                     pause
                 end
