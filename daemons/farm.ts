@@ -489,7 +489,8 @@
     gosub :setWindow
 
 	gosub :get_tl_list
-
+	setArray $checked SECTORS
+		
 :start
 	killalltriggers
 
@@ -499,7 +500,6 @@
 		gosub :player~quikstats
 		setVar $bottom 1
 		setVar $top 1
-		setArray $checked SECTORS
 		setVar $que[1] $player~current_sector
 		setVar $checked[$player~current_sector] 1
 		while ($bottom <= $top)
@@ -536,7 +536,7 @@
 			end
 
 
-			if ($BUBBLE = TRUE)
+			if (($BUBBLE = TRUE) and ($focus <> $player~current_sector))
 				setvar $farmsector $focus
 			    goto :move_the_planet
 			else
@@ -563,7 +563,7 @@
 			# The adjacents of $focus were all queued, now on to the next one.
 			add $bottom 1
 		end	
-
+		goto :end
 		halt
 
 		:move_the_planet

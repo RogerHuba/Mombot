@@ -144,10 +144,12 @@
 	setTextLineTrigger 	lifts 	:scanit_cit_kill 	"lifts off from"
 	setTextLineTrigger 	deffig 	:scanit_cit_kill 	"Deployed Fighters Report Sector "&$player~CURRENT_SECTOR
 	setTextLineTrigger 	secgun 	:scanit_cit_kill 	"Quasar Cannon on"
-	setTextLineTrigger 	ig	:scanit_cit_kill 	"Shipboard Computers The Interdictor Generator on"
+	setTextLineTrigger 	ig		:scanit_cit_kill 	"Shipboard Computers The Interdictor Generator on"
 	setTextLineTrigger 	power 	:scanit_cit_kill 	"is powering up weapons systems!"
+	settextlinetrigger  wave    :scanit_cit_kill    " launches a wave of fighters at the "
 	setTextLineTrigger 	exits 	:scanit_cit_kill 	"exits the game."
 	setTextLineTrigger 	enters 	:scanit_cit_kill 	"enters the game."
+	setDelayTrigger		delay	:scanit_cit_kill	30000
 	setTextTrigger 		pause 	:pausing 		"Planet command (?="
 	setTextTrigger 		pause2 	:pausing 		"Computer command ["
 	setTextTrigger 		pause3 	:pausing 		"Corporate command ["
@@ -159,7 +161,7 @@
 	echo ANSI_6 "*[" ANSI_14 "Citadel Killer paused. To restart, re-enter citadel prompt" ANSI_6 "]*" ANSI_7
 	setTextTrigger restart :restarting "Citadel command ("
 	pause
-	:restarting
+:restarting
 	killAllTriggers
 	echo ANSI_6 "*[" ANSI_14 "Citadel Killer restarted" ANSI_6 "]*" ANSI_7
 	goto :main
@@ -183,7 +185,7 @@
 		gosub :player~fastCapture
 		send "l "&$PLANET~PLANET&"* m * * * c "
 		gosub :player~quikstats
-goto :scanit_again
+		goto :scanit_again
 	end
 	goto :halt
 
