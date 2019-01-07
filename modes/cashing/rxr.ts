@@ -222,15 +222,7 @@ getSectorParameter	1 "LRA" $last_rob_attempt
 	setVar $nextShipi 0
 	setVar $nextShipCash 0
 	while ($i <= $shipi)
-		#echo "* $robSettings[$i][1] " $robSettings[$i][1] 
-		#echo "* $robSettings[$i][2] " $robSettings[$i][2] 
-		#echo "* $robSettings[$i][3] " $robSettings[$i][3] 
-		#echo "* $robSettings[$i][4] " $robSettings[$i][4] 
-		#echo "* $robSettings[$i][5] " $robSettings[$i][5] 
-		#echo "* $robSettings[$i][6] " $robSettings[$i][6] 
-		#echo "* $robSettings[$i][7] " $robSettings[$i][7] 
-		#echo "* $robSettings[$i][8] " $robSettings[$i][8] 
-	
+
 
 		if ($robSettings[$i][8] = 0)
 			if ($robSettings[$i][5] = 0)
@@ -243,7 +235,6 @@ getSectorParameter	1 "LRA" $last_rob_attempt
 								setVar $nextShipi $i
 								setVar $currentIndex $i
 								setVar $nextShipCash $robSettings[$i][7]
-	#echo "* Upgraded to unchecked"
 								# always takes precdence
 								setVar $i 100
 							elseif ($robSettings[$i][7] > $nextShipCash)
@@ -251,7 +242,6 @@ getSectorParameter	1 "LRA" $last_rob_attempt
 								setVar $nextShipi $i
 								setVar $currentIndex $i
 								setVar $nextShipCash $robSettings[$i][7]
-	#echo "* Upgraded to more cash"
 							end
 						else
 							# First good one
@@ -259,7 +249,6 @@ getSectorParameter	1 "LRA" $last_rob_attempt
 							setVar $nextShipi $i
 							setVar $currentIndex $i
 							setVar $nextShipCash $robSettings[$i][7]
-#echo "* Found first"	
 							if ($robSettings[$i][6] = 0)
 								# if we've never been here, it should always take precedence and go there.
 								setVar $i 100
@@ -417,18 +406,19 @@ return
 return
 
 :shipReport
+	# DEBUG ONLY
+	return
+	setVar $s 1
+	while ($s <= $shipi)
+		echo "*###"
+		echo "ship:" $robSettings[$s][1] 
+		echo "sector:" $robSettings[$s][2] 
+		echo "buster:" $robSettings[$s][5] 
+		echo "creditscheck:" $robSettings[$s][6] 
+		echo "credits:" $robSettings[$s][7] 
 
-setVar $s 1
-while ($s <= $shipi)
-	echo "*###"
-	echo "ship:" $robSettings[$s][1] 
-	echo "sector:" $robSettings[$s][2] 
-	echo "buster:" $robSettings[$s][5] 
-	echo "creditscheck:" $robSettings[$s][6] 
-	echo "credits:" $robSettings[$s][7] 
-
-	add $s 1
-end
+		add $s 1
+	end
 
 
 return
