@@ -111,7 +111,8 @@ goto :_START_
 	waiton "Command [TL"
 	gosub :player~quikstats
 	if ($player~current_prompt <> "Command")
-		send "'{" $bot~bot_name "} - Unable to get to Command Prompt. Halting!*"
+		setvar $switchboard~message "Unable to get to Command Prompt. Halting!*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	goto :settriggers
@@ -179,8 +180,8 @@ goto :_START_
 		if ($startingLocation = "Citadel")
 			send "c"
 		end
-		send "'{" $bot~bot_name "} - Planet Too Low On Fighters. Reloader Shutting Down*"
-		waitfor "Message sent on sub-space channel"
+		setvar $switchboard~message "Planet Too Low On Fighters. Reloader Shutting Down*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($topoff <> true)
@@ -195,14 +196,16 @@ goto :_START_
 	setVar $startingLocation $player~current_prompt
 	if ($startingLocation <> "Citadel") and ($startingLocation <> "Planet")
 		if ($planet~planet = 0)
-			send "'{" $bot~bot_name "} - Must start at planet or cit prompt*"
+			setvar $switchboard~message "Must start at planet or cit prompt*"
+			gosub :switchboard~switchboard
 			halt
 		else
-			send "'{" $bot~bot_name "} - Attempting to use planet "&$planet~planet&".*"
+			setvar $switchboard~message "Attempting to use planet "&$planet~planet&".*"
 			setvar $planet~land_and_lift true
 			gosub :planet~landingsub 
 			if ($planet~sucessfulPlanet <> true)
-				send "'{" $bot~bot_name "} - Planet does not appear to be available.  Stopping.*"
+				setvar $switchboard~message "Planet does not appear to be available.  Stopping.*"
+				gosub :switchboard~switchboard
 				halt
 			else
 				setvar $startinglocation "Planet"
@@ -218,9 +221,17 @@ goto :_START_
 	end
 	gosub :ship~getshipstats
 
-	send "'{" $bot~bot_name "} - Reloader "&$VERSION&" Active - Using Planet " $planet~planet " - " $threshold " fig threshold*"
+	if ($planet~planet_fighters > 0)
+		setvar $switchboard~message "Reloader "&$VERSION&" Active - Using Planet "&$planet~planet&" with "&$planet~PLANET_FIGHTERS&" fighters.*"
+	else
+		setvar $switchboard~message "Reloader "&$VERSION&" Active - Using Planet "&$planet~planet&".*"
+	end
+	gosub :switchboard~switchboard
+	setvar $switchboard~message "Will reload when I get below "&$threshold&" ship fighters.*"
+	gosub :switchboard~switchboard
 	if ($topoff = true)
-		send "'{" $bot~bot_name "} - Will topoff from sector figs before using planet.*"
+		setvar $switchboard~message "Will topoff from sector figs before using planet.*"
+		gosub :switchboard~switchboard
 	end
 	if ($ig = true)
 		goto :ig_turn_it_on
@@ -259,7 +270,8 @@ halt
 		killtrigger no_ig_cby
 		killtrigger ig_fine
 		killtrigger do_ig
-		send "'{" $bot~bot_name "} - No IG available on this ship.*"
+		setvar $switchboard~message "No IG available on this ship.*"
+		gosub :switchboard~switchboard
 		setvar $ig false
 		goto :settriggers
 
@@ -301,10 +313,12 @@ halt
 		killtrigger need_ig
 		if ($ig_mode = 0)
 			send "Y"
-			send "'{" $bot~bot_name "} - IG turned on!*"
+			setvar $switchboard~message "IG turned on!*"
+			gosub :switchboard~switchboard
 		else
 			send "N"
-			send "'{" $bot~bot_name "} - IG was already on.*"
+			setvar $switchboard~message "IG was already on.*"
+			gosub :switchboard~switchboard
 		end
 		goto :settriggers
 

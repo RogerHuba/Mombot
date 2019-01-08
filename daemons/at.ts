@@ -1,6 +1,7 @@
-		gosub :BOT~loadVars
+systemscript
 
 
+	gosub :BOT~loadVars
 	setVar $BOT~help[1]  $BOT~tab&"Does bot command at certain time "
 	setVar $BOT~help[2]  $BOT~tab&"      "
 	setVar $BOT~help[3]  $BOT~tab&"  at [time] [bot command]"

@@ -97,7 +97,7 @@ return
                 add $realTraderCount 1
             end
             #for defender recognition once ansi ships are in array in bot
-            if (($pos3 > 0) AND ($tempCorp <> $player~CORP) AND ($override <> TRUE))
+            if (($pos3 > 0) AND ($tempCorp <> $player~CORP) AND ($player~override <> TRUE))
                 getText $temp $shipname "(" ")"
                 #getText $shipname $shipname "m"&#27 #27&"["
                 if ($shipname = "")

@@ -53,8 +53,9 @@
 	gosub :switchboard~switchboard
 
 	if ($databasecount <= 0)
-		setvar $switchboard~message "No sector parameters found for "&$PARAM&" set to a value of "&$output&" or already figged.*"
+		setvar $switchboard~message "No sector parameters found for "&$PARAM&" set to a value of "&$output&" or already explored.*"
 		gosub :switchboard~switchboard
+		halt
 	end
 
 

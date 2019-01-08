@@ -75,9 +75,9 @@
 		end
 		getWordPos $bot~user_command_line $pos "override"
 		if ($pos > 0)
-			setVar $player~override TRUE
+			setVar $override TRUE
 		else
-			setVar $player~override FALSE
+			setVar $override FALSE
 		end
 		getWordPos $bot~user_command_line $pos "smart"
 		if ($pos > 0)
@@ -180,6 +180,13 @@
 	killAllTriggers
 	gosub :player~quikstats
 	gosub :sector~getSectorData
+	setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
+	if (($planet_count = 1) and ($overide = false))
+		setvar $one_planet true
+		setvar $player~override true
+	else
+		setvar $player~override $override
+	end
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
 		goSub :player~fastCitadelAttack
 		goto :scanit_again

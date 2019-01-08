@@ -189,6 +189,7 @@ return
     
 setVar $currentBotPlanet $PLANET
 saveVar $currentBotPlanet
+saveVar $planet_fighters
 return
 # ==============================  END PLANET INFO SUBROUTINE  =================
 
