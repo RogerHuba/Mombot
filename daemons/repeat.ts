@@ -1,13 +1,4 @@
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
 
 
 	setVar $BOT~help[1] $BOT~tab&"Repeats bot commands "
@@ -21,24 +12,24 @@
 
 	setVar $BOT~script_title "Repeater"
 	gosub :BOT~banner
-	loadVar $bot_name
-	loadVar $parm1
-	loadVar $user_command_line
+	loadVar $bot~bot_name
+	loadVar $bot~parm1
+	loadVar $bot~user_command_line
 
-	getLength $parm1 $length
-	getWordPos $user_command_line $pos $parm1
+	getLength $bot~parm1 $length
+	getWordPos $bot~user_command_line $pos $bot~parm1
 	
-	cutText $user_command_line $bot_command ($pos + $length) 9999
+	cutText $bot~user_command_line $bot_command ($pos + $length) 9999
 	
-	isNumber $test $parm1
+	isNumber $test $bot~parm1
 	if ($test <> TRUE)
-		send "'{"&$bot_name&"} - Must enter time of delay in seconds."
+		send "'{"&$bot~bot_name&"} - Must enter time of delay in seconds."
 		halt
 	end
 
-	setVar $delay ($parm1*1000)
+	setVar $delay ($bot~parm1*1000)
 	:continue
-	send "'"&$bot_name&" "&$bot_command&"*"
+	send "'"&$bot~bot_name&" "&$bot_command&"*"
 	setDelayTrigger delay :continue $delay
 	pause
 	

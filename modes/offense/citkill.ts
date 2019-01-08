@@ -134,6 +134,7 @@
 		gosub :switchboard~switchboard
 	end
 	send "c "
+	setvar $first true
 	goto :scanit_cit_kill
 
 :main
@@ -147,6 +148,8 @@
 	setTextLineTrigger 	ig		:scanit_cit_kill 	"Shipboard Computers The Interdictor Generator on"
 	setTextLineTrigger 	power 	:scanit_cit_kill 	"is powering up weapons systems!"
 	settextlinetrigger  wave    :scanit_cit_kill    " launches a wave of fighters at the "
+	settextlinetrigger  planet  :scanit_cit_kill	" launches a Genesis Torpedo into the sector!"
+	settextlinetrigger  atomic  :scanit_cit_kill    " appears from the planetary rubble."
 	setTextLineTrigger 	exits 	:scanit_cit_kill 	"exits the game."
 	setTextLineTrigger 	enters 	:scanit_cit_kill 	"enters the game."
 	setDelayTrigger		delay	:scanit_cit_kill	30000
