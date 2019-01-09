@@ -46,6 +46,7 @@
 	stripText $user_command_line $SWITCHBOARD~bot_name
     StripText $user_command_line " nmac "
     replaceText $user_command_line "^m" "*"
+    replaceText $user_command_line "^b" #8
     replaceText $user_command_line #42 "*"
     getWordPos $user_command_line $pos "`"
     getWordPos $user_command_line $pos2 "'"
