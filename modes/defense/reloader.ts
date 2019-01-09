@@ -12,6 +12,7 @@
 	setVar $BOT~help[9]  $BOT~tab&"               [ig]   Reset IG if photoned "
 	setVar $BOT~help[10] $BOT~tab&"           [topoff]   Uses fighters in sector first "
 	setVar $BOT~help[11] $BOT~tab&"              [fig]   Place fighter if sector figs attacked "
+	setVar $BOT~help[11] $BOT~tab&"           [noland]   Do not land - should be running citfill "
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Reloader"
@@ -164,7 +165,7 @@ goto :_START_
 	if ($topoff = true)
 		gosub :topoff
 	else
-		send "l " $planet~planet "*  z  n  z  n  *  m  *  *  *  "
+		send "l " $planet~planet "*  m  *  *  *  q "
 	end
 	setVar $loss 0
 	gosub :player~quikstats
@@ -177,15 +178,9 @@ goto :_START_
 				goto :reload
 			end
 		end
-		if ($startingLocation = "Citadel")
-			send "c"
-		end
 		setvar $switchboard~message "Planet Too Low On Fighters. Reloader Shutting Down*"
 		gosub :switchboard~switchboard
 		halt
-	end
-	if ($topoff <> true)
-		send "q"
 	end
 	goto :settriggers
 

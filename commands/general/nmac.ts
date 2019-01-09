@@ -24,9 +24,13 @@
         send "'{" $SWITCHBOARD~bot_name "} - Invalid Macro Count*"
         goto :wait_for_command
     end
+    getlength $nmac $length 
+    getwordpos $user_command_line $pos $nmac&" "
+    cuttext $user_command_line $user_command_line ($pos+$length+1) 9999
     gosub :macroProtections
     setVar $i 0
     while ($i < $nmac)
+
         send $user_command_line
         add $i 1
     end
@@ -38,8 +42,9 @@
     goto :wait_for_command
 # ============================== END MACROS (MAC/NMAC) SUB ==============================
 :macroProtections
-    stripText $user_command_line $SWITCHBOARD~bot_name
-    StripText $user_command_line " mac "
+
+	stripText $user_command_line $SWITCHBOARD~bot_name
+    StripText $user_command_line " nmac "
     replaceText $user_command_line "^m" "*"
     replaceText $user_command_line #42 "*"
     getWordPos $user_command_line $pos "`"
