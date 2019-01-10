@@ -304,6 +304,7 @@ return
     setVar  $LIMP_COUNT_FILE        $folder&"/limpets.cnt"
     setVar  $ARMID_COUNT_FILE       $folder&"/armids.cnt"
     setVar  $ARMID_FILE             $folder&"/armids.cfg"
+    setvar  $timer_file             $folder&"/timer.cfg"
     setVar  $GAME~GAME_SETTINGS_FILE     $folder&"/game_settings.cfg"
     setVar  $BOT_USER_FILE          $folder&"/bot_users.lst"
     setVar  $SHIP~cap_file          $folder&"/ships.cfg"

@@ -19,8 +19,8 @@
 	setVar $BOT~help[6]  $BOT~tab&"           [o] - will strip organics off planets"
 	setVar $BOT~help[7]  $BOT~tab&"           [e] - will strip equipment off planets"
 	setVar $BOT~help[8]  $BOT~tab&"        [cash] - will grab cash off planets"
-	setVar $BOT~help[9]  $BOT~tab&"     [reverse] - travels farm sectors in reverse"
-	setVar $BOT~help[10] $BOT~tab&"        [warp] - will warp planets to sell product"
+	setVar $BOT~help[9]  $BOT~tab&"        [warp] - will warp planets to sell product"
+	setVar $BOT~help[10] $BOT~tab&"        [half] - only sell half of port capacity when warping"
 	setVar $BOT~help[11] $BOT~tab&"      [shield] - will ensure 200 Shields on shielded planets"
 	setVar $BOT~help[12] $BOT~tab&"        [colo] - will colonize planets with avaliable fuel"
 	setVar $BOT~help[13] $BOT~tab&"        [coln] - will balance colonists on planets"
@@ -141,6 +141,13 @@
 		setVar $balance TRUE
 	else
 		setVar $balance FALSE
+	end
+
+	getWordPos $bot~user_command_line $pos "half"
+	if ($pos > 0)
+		setVar $half TRUE
+	else
+		setVar $half FALSE
 	end
 
 	getWordPos $bot~user_command_line $pos "silent"
@@ -1839,7 +1846,11 @@ return
 
 :merch
 	setVar $BOT~command "merch"
-	setVar $bot~user_command_line " merch 10000 o e skipcim silent"
+	if ($half = true)
+		setVar $bot~user_command_line " merch 10000 o e skipcim half silent"
+	else
+		setVar $bot~user_command_line " merch 10000 o e skipcim silent"
+	end
 	setVar $bot~parm1 "10000"
 	saveVar $bot~parm1
 	saveVar $BOT~command

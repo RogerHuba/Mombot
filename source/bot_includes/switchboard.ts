@@ -11,7 +11,7 @@
     setVar $MSG_Header_SS_1     ("'["&$bot~mode&"] {"&$bot_name&"} - ")
     setVar $MSG_Header_SS_2     ("'*["&$bot~mode&"] {"&$bot_name&"} - *")
     if ($message <> "")
-        killalltriggers
+
         if ($self_command > 0)
             setVar $length 0
         else

@@ -18,6 +18,7 @@
 	setVar $BOT~help[10] $BOT~tab&"       {docim}   Does cim check before starting and skips searching"
 	setVar $BOT~help[11] $BOT~tab&"     {buyfuel}   Buys all the fuel in fuel selling ports "
 	setVar $BOT~help[12] $BOT~tab&"                 on route  "
+	setVar $BOT~help[13] $BOT~tab&"        {half}   sell half of port (neg only for now) "
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Planet Merchant"
@@ -55,6 +56,12 @@
 		setVar $planetNegotiate FALSE
 	else
 		setVar $planetNegotiate TRUE
+	end
+	getWordPos $bot~user_command_line $pos "half"
+	if ($pos > 0)
+		setVar $sellhalf true
+	else
+		setVar $sellhalf false
 	end
 	getWordPos $bot~user_command_line&" " $pos " o "
 	if ($pos > 0)
@@ -137,6 +144,15 @@
 		setArray $checked SECTORS
 		setVar $que[1] $player~current_sector
 		setVar $checked[$player~current_sector] 1
+		loadvar $game~mbbs
+		if ($game~mbbs)
+			setvar $port_max 32767
+		else
+			setvar $port_max 65535
+		end
+		setvar $half_port_max $port_max
+		divide $half_port_max 2
+
 		:tryAgain2
 		while ($bottom <= $top)
 			# Now, pull out the next sector in the que, and make it our focus
@@ -155,7 +171,7 @@
 			end
 			# If this sector is our xxB, we're done!
 			getSectorParameter $focus "BUSTED" $isBusted
-			if (($isBusted <> TRUE) AND ($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = true) AND ((($sellingOrg) AND ($planet~planet_organics > 500) AND (PORT.BUYORG[$focus]) AND (PORT.ORG[$focus] >= $minimumFuel)) OR (($sellingEquip) AND ($planet~planet_equipment > 500) AND (PORT.BUYEQUIP[$focus]) AND (PORT.EQUIP[$focus] >= $minimumFuel))))
+			if (($isBusted <> TRUE) AND ($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = true) AND ((($sellingOrg) AND ($planet~planet_organics > 500) AND (PORT.BUYORG[$focus]) and ((PORT.PERCENTORG[$focus] > 50) and (port.org[$focus] >= $half_port_max) and ($sellhalf = true)) AND (PORT.ORG[$focus] >= $minimumFuel)) OR (($sellingEquip) AND ($planet~planet_equipment > 500) AND (PORT.BUYEQUIP[$focus]) AND ((PORT.PERCENTEQUIP[$focus] > 50) and ($sellhalf = true) and ($port.equip[$focus] >= $half_port_max)) and (PORT.EQUIP[$focus] >= $minimumFuel))))
 				# fig found 0 hops
 				setVar $NearFig $focus
 				setVar $checkedPorts[$NearFig] TRUE
@@ -203,12 +219,22 @@
 					killAllTriggers
 					setVar $planet~_ck_pnego_fueltosell "-1"
 					if ($sellingOrg)
-						setVar $planet~_ck_pnego_orgtosell "max"
+						if ($sellhalf)
+							setvar $org_to_sell (PORT.ORG[$NearFig]-$half_port_max)
+							setVar $planet~_ck_pnego_orgtosell $org_to_sell
+						else
+							setVar $planet~_ck_pnego_orgtosell "max"
+						end
 					else
 						setVar $planet~_ck_pnego_orgtosell "-1"
 					end
 					if ($sellingEquip)
-						setVar  $planet~_ck_pnego_equiptosell "max"
+						if ($sellhalf)
+							setvar $equip_to_sell (PORT.EQUIP[$NearFig]-$half_port_max)
+							setVar $planet~_ck_pnego_equiptosell $equip_to_sell
+						else
+							setVar  $planet~_ck_pnego_equiptosell "max"
+						end
 					else
 						setVar  $planet~_ck_pnego_equiptosell "-1"
 					end
