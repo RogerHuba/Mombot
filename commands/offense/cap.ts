@@ -13,6 +13,11 @@ logging off
 #============================== START AUTO CAPTURE =======================================
 :autoCap
 :cap
+	loadvar $player~targetingPerson 
+	loadvar $player~targetingCorp 
+	loadvar $player~cappingAliens 
+	loadvar $player~target 
+
     gosub :PLAYER~quikstats
     setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
     if ($PLAYER~startingLocation <> "Command")

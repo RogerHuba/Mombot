@@ -24,6 +24,7 @@
 	setVar $BOT~help[10] $BOT~tab&"   {upgradefuel} Upgrades fuel ports selling fuel"
 	setVar $BOT~help[11] $BOT~tab&"   {nohaggle}    Doesn't haggle when buying product"
 	setVar $BOT~help[12] $BOT~tab&"   {sellfuel}    Sells fuel during travels"
+	setVar $BOT~help[13] $BOT~tab&"       {grid}    Surround grid as you go"
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Traveling Salesman"
@@ -49,6 +50,13 @@
 	else
 		setVar $docim FALSE
 	end
+	getWordPos $user_command_line $pos "grid"
+	if ($pos > 0)
+		setVar $grid TRUE
+	else
+		setVar $grid FALSE
+	end
+
 	getWordPos $user_command_line $pos "nohaggle"
 	if ($pos > 0)
 		setVar $nohaggle TRUE
@@ -89,6 +97,14 @@
 		halt
 	end
 
+	loadvar $PLAYER~surroundFigs 
+	loadvar $PLAYER~surroundMine 
+	loadvar $PLAYER~surroundLimp 
+	loadvar $PLAYER~surroundAvoidAllPlanets 
+	loadvar $PLAYER~surroundAvoidShieldedOnly 
+	loadvar $PLAYER~surroundOverwrite 
+	loadvar $PLAYER~surroundPassive   
+	loadvar $PLAYER~surroundNormal    
 
 
 :merchant
@@ -361,6 +377,12 @@
 				waitOn "                            Who's Playing"
 				send "cr*q"
 				gosub :PLAYER~quikstats
+				if ($grid)
+					send "q q "
+					gosub :PLAYER~surround
+					gosub :PLAYER~quikstats
+					gosub :PLANET~landOnPlanetEnterCitadel
+				end
 			end	
 		end
 		:doneMerchant

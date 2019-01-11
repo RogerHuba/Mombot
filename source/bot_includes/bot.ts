@@ -329,7 +329,8 @@ return
     saveVar  $PLANET~planet_file     
     saveVar  $SCRIPT_FILE            
     saveVar  $BUST_FILE              
-    saveVar  $MCIC_FILE              
+    saveVar  $MCIC_FILE   
+    savevar  $timer_file
 # ============================== END FILE VARIABLES ==============================
 # ============================= START PROMPT VARIABLES ===========================
     setArray $history       100

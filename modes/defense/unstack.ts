@@ -32,12 +32,14 @@
 	setArray $planets 10000
 	gosub :PLAYER~quikstats
 	setvar $home $PLAYER~CURRENT_SECTOR
+	setvar $startinglocation $player~current_prompt
+
 	if ($PLAYER~PLANET_SCANNER = "No")
 		setVar $SWITCHBOARD~message "Unstacker must be run with a planet scanner.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
-	elseif ($PLAYER~CURRENT_PROMPT <> "Citadel")
-		setVar $SWITCHBOARD~message "Unstacker must be run from the Citadel Prompt.*"
+	elseif (($PLAYER~CURRENT_PROMPT <> "Citadel") and ($player~current_prompt <> "Command"))
+		setVar $SWITCHBOARD~message "Unstacker must be run from the Citadel or Command Prompt.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
@@ -92,10 +94,10 @@
 
 	#gosub :PLANET~loadplanetInfo
 
-    send "q"
-	gosub :PLANET~getPlanetInfo
-	send "c"
-	setvar $startingplanet $planet~planet
+#    send "q"
+#	gosub :PLANET~getPlanetInfo
+#	send "c"
+#	setvar $startingplanet $planet~planet
 	gosub :SHIP~getShipStats
 
 	gosub :get_tl_list
@@ -247,7 +249,11 @@ halt
 	if ($personal = TRUE)
 		send "cyq"
 	else
-		send "xlq"
+		if ($startinglocation = "Citadel")
+			send "xlq"
+		else
+			send "tlq"
+		end
 	end
 	pause
 	:sector_planet_line
