@@ -541,32 +541,42 @@ pause
         goto :exitneg
     end
 
-    setVar $fueltosell $planetfuel
+	if ($_ck_pnego_fueltosell = "-1")
+		setVar $fueltosell 0
+	elseif ($_ck_pnego_fueltosell = "max")
+		setVar $fueltosell $planetorg
+	else
+		setvar $fueltosell $_ck_pnego_fueltosell
+	end
+
     if ($fueltosell > $planetfuel)
         setVar $fueltosell $planetfuel
     end
 
-    if ($_ck_pnego_fueltosell = "-1")
-     setVar $fueltosell 0
-    end
-                    
-    setVar $orgtosell $planetorg
+	if ($_ck_pnego_orgtosell = "-1")
+		setVar $orgtosell 0
+	elseif ($_ck_pnego_orgtosell = "max")
+		setVar $orgtosell $planetorg
+	else
+		setvar $orgtosell $_ck_pnego_orgtosell
+	end
+
     if ($orgtosell > $planetorg)
         setVar $orgtosell $planetorg
     end
 
-    if ($_ck_pnego_orgtosell = "-1")
-     setVar $orgtosell 0
-    end
+	if ($_ck_pnego_equiptosell = "-1")
+		setVar $equiptosell 0
+	elseif ($_ck_pnego_equiptosell = "max")
+		setVar $equiptosell $planetequip
+	else
+		setvar $equiptosell $_ck_pnego_equiptosell
+	end
 
-    setVar $equiptosell $planetequip
     if ($equiptosell > $planetequip)
         setVar $equiptosell $planetequip
     end
 
-    if ($_ck_pnego_equiptosell = "-1")
-     setVar $equiptosell 0
-    end
 
             # determine if the sale can proceed, based on units desired to sell and what port is buying
             if (($PLAYER~current_sector.orebuying <> "Buying") or ($PLAYER~current_sector.orepercent < 15))
@@ -1564,7 +1574,7 @@ pause
         killtrigger sellscrewup12
         killtrigger sellscrewup13 
         killtrigger sellscrewup14 
-	killtrigger sellscrewup15 
+		killtrigger sellscrewup15 
 	echo "*## PICKUP up sell fail"
         goto :sellhagglefailed
 	echo "*### HSOULD NOT GET HERE NOW"

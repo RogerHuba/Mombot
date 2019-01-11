@@ -463,7 +463,7 @@
 
 
 	setVar $i 1
-	setArray $planets 10000
+	setArray $planets 30
 	gosub :PLAYER~quikstats
 	setvar $home $PLAYER~CURRENT_SECTOR
 	if ($PLAYER~PLANET_SCANNER = "No")
@@ -508,7 +508,7 @@
 		setVar $bottom 1
 		setVar $top 1
 		setVar $que[1] $player~current_sector
-		setVar $checked[$player~current_sector] 1
+		#setVar $checked[$player~current_sector] 1
 		while ($bottom <= $top)
 			# Now, pull out the next sector in the que, and make it our focus
 			setVar $focus $que[$bottom]
@@ -601,8 +601,8 @@
 			setVar $planetToFillFuelColonists $PLANET~PLANET_FUEL_COLONISTS
 			setVar $planetToFillOrganicsColonists $PLANET~PLANET_ORGANICS_COLONISTS
 			setVar $planetToFillEquipmentColonists $PLANET~PLANET_EQUIPMENT_COLONISTS
-			gosub :count_planets
-	        send "q m*** q* "
+			
+			send "m*** q* "
 	        if ($build = TRUE)
 	    		gosub :buildplanets
 	        end
@@ -668,7 +668,9 @@
 				end
 			end
 	        :done_moving_planets
-			gosub :count_planets
+			if ($balance = true)
+				gosub :count_planets
+	        end
 	        if ($armageddon = TRUE)
 				setVar $BOT~command "mover"
 				setVar $BOT~user_command_line "dump all fc oc ec turbo silent"
@@ -898,7 +900,7 @@ return
                         end
                         if ($defense)
 	                        if ($PLANET_CITADEL >= 3)
-								send "cls10*la20*q "                        	
+								send "cls0*la100*q "                        	
 	                        end
 	                    end
 						if ($barricade = TRUE)
@@ -1055,10 +1057,10 @@ return
                                           send "cgf200*qq* "
                                     end
                             else
-                                   send "l " & #8 & $planets[$j] & "* c gt200*"
+                                   send "qq* l " & #8 & $planets[$j] & "* c gt200*"
                             end
                         end
-                        if (($warp = TRUE) and ($PLANET_CITADEL > 3) and ($PLANET_FUEL > 5000) and (($PLANET_ORGANICS > 5000) or ($PLANET_EQUIPMENT > 5000)))
+                        if (($warp = TRUE) and ($PLANET_CITADEL > 3) and ($PLANET_FUEL > 50000) and (($PLANET_ORGANICS > 50000) or ($PLANET_EQUIPMENT > 50000)))
 							send "qq* l " & #8 & $planets[$j] & "* c "
 							gosub :merch
 							send "d"
@@ -1847,7 +1849,10 @@ return
 :merch
 	setVar $BOT~command "merch"
 	if ($half = true)
-		setVar $bot~user_command_line " merch 10000 o e skipcim half silent"
+		loadvar $game~port_max
+		setvar $half_port_max $game~port_max
+		divide $half_port_max 2
+		setVar $bot~user_command_line " merch "&$half_port_max&" o e skipcim half silent"
 	else
 		setVar $bot~user_command_line " merch 10000 o e skipcim silent"
 	end
@@ -2895,4 +2900,5 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\game"
 
