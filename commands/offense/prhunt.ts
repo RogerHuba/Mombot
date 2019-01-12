@@ -1224,7 +1224,9 @@ return
 	waitfor "<Computer activated>"
 	setVar $reportsWanted 200
 	setVar $x 11
-	
+	setVar $total 0
+	setVar $totalFree 0
+
 	:allBlockedNextWave
 	setVar $sendCount 0
 	setVar $sent 0
@@ -1235,6 +1237,7 @@ return
 			
 			send "r" $x "*"
 			add $sendCount 1
+			add $total 1
 			setVar $sent[$sendCount] $x
 		elseif ($hasFig = 1)
 			setVar $sectorHasFig[$x] 1
@@ -1270,7 +1273,7 @@ return
 		:allBlockedok
 			killalltriggers
 			add $gathered 1
-			
+			add $totalFree 1
 			goto :allBlockedagain
 		:allBlockednook
 		:allBlockedreallynotok
@@ -1284,6 +1287,8 @@ return
 
 
 	:allBlockedfinish
+	setVar $SWITCHBOARD~message $total & " unfigged ports scanned; " & $totalFree & " are still reporting*"
+	gosub :SWITCHBOARD~switchboard
 
 	setVar $SWITCHBOARD~message "Blocked Ports are updated; please restart using preferred search pattern.*"
 	gosub :SWITCHBOARD~switchboard
