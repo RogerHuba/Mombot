@@ -15,7 +15,7 @@ return
     loadVar $mode
     loadVar $command 
     loadVar $SWITCHBOARD~bot_name
-    setVar $bot_name $SWITCHBOARD~bot_name
+    setVar  $bot_name $SWITCHBOARD~bot_name
     loadvar $planet~planet_file
     loadvar $ship~cap_file
     loadVar $user_command_line 
@@ -30,10 +30,21 @@ return
     loadVar $bot_turn_limit
     loadVar $PLAYER~unlimitedGame
     loadVar $MAP~stardock
+    loadVar $MAP~rylos
+    loadVar $MAP~alpha_centauri
     loadVar $silent_running
     loadVar $botIsDeaf
     loadvar $switchboard~self_command
     loadvar $planet~planet
+    loadVar $password
+    loadvar $letter
+    loadVar $game~port_max
+	loadVar $folder
+	loadVar $game~photon_duration
+	loadVar $BOT~bot_turn_limit
+
+
+
 
     setArray $help 60
     setVar $help 60
@@ -227,3 +238,40 @@ return
     openMenu "Menu"
 
 return
+
+:commas
+	if ($value < 1000)
+		#do nothing
+	elseif ($value < 1000000)
+		getLength $value $len
+		setVar $len ($len - 3)
+		cutText $value $tmp 1 $len
+		cutText $value $tmp1 ($len + 1) 999
+		setVar $tmp $tmp & "," & $tmp1
+		setVar $value $tmp
+	elseif ($value <= 999999999)
+		getLength $value $len
+		setVar $len ($len - 6)
+		cutText $value $tmp 1 $len
+		setVar $tmp $tmp & ","
+		cutText $value $tmp1 ($len + 1) 3
+		setVar $tmp $tmp & $tmp1 & ","
+		cutText $value $tmp1 ($len + 4) 999
+		setVar $tmp $tmp & $tmp1
+		setVar $value $tmp
+	end
+return
+
+:removeFigFromData
+    getSectorParameter $target "FIGSEC" $check
+    if ($check = TRUE)
+        getSectorParameter 2 "FIG_COUNT" $figCount
+        setSectorParameter 2 "FIG_COUNT" ($figCount-1)
+    end
+    setSectorParameter $target "FIGSEC" FALSE
+return
+:addFigToData
+    setSectorParameter $target "FIGSEC" TRUE
+return
+
+

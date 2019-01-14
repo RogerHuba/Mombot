@@ -1,14 +1,5 @@
 logging off
-	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
+gosub :BOT~loadVars
 
 #HELP FILE
         setVar $BOT~help[1]  $BOT~tab&"Gets colos from Terra  "
@@ -20,7 +11,7 @@ logging off
         setVar $BOT~help[7]  $BOT~tab&"     speed = cycles - cycles to grab colos (default max)"
         setVar $BOT~help[8]  $BOT~tab&"     milk  = min colos - min colos before grab (default 0)"
         setVar $BOT~help[9]  $BOT~tab&"     timed = delay  - time to wait each cycle (default 15 seconds)"
-        setVar $BOT~help[10]  $BOT~tab&"     red   = jump sector - sector next to terra"
+        setVar $BOT~help[10]  $BOT~tab&"    red   = jump sector - sector next to terra (can place planet there too)"
         setVar $BOT~help[11]  $BOT~tab&"     speed port   = same as speed but uses port for ore"
         setVar $BOT~help[12] $BOT~tab&"   - [misc]  = cycles/min colos/delay"
         setVar $BOT~help[13] $BOT~tab&"   - [t/b]   = [t]warp/[b]warp  (defy"
@@ -40,12 +31,12 @@ goto :Start_Up_Routines
 
 	
 	if ($colo_type = "r")
-		if ($parm2 <= 0)
+		if ($bot~parm2 <= 0)
 			setVar $SWITCHBOARD~message "No jump sector defined for red colo. Halting.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
-	    setVar $PLAYER~starting_point $parm2
+	    setVar $PLAYER~starting_point $bot~parm2
 		setVar $PLAYER~destination 1
 		gosub :PLAYER~getcourse
 	    setVar $j 2
@@ -60,15 +51,27 @@ goto :Start_Up_Routines
 	        add $j 1
 	    end
     	setVar $to_mow $result
-		send "cf" $colo_sector "*"&$parm2&"*"
+    	setvar $no_twarp false
+    	if ($colo_sector <> $bot~parm2)
+			send "cf" $colo_sector "*"&$bot~parm2&"*q"
+			waitfor "The shortest path"
+			getword CURRENTLINE $colo_hops1 4
+			striptext $colo_hops1 "("
+			setVar $colo_fuel1 ($colo_hops1 * 3)
+		else
+			#already as close to terra as possible
+			setvar $colo_fuel1 0
+			setvar $colo_hops1 0
+			setvar $no_twarp true
+		end
 	else
-		send "cf" $colo_sector "*1*"
+		send "cf" $colo_sector "*1*q"
+		waitfor "The shortest path"
+		getword CURRENTLINE $colo_hops1 4
+		striptext $colo_hops1 "("
+		setVar $colo_fuel1 ($colo_hops1 * 3)
 	end
-	waitfor "The shortest path"
-	getword CURRENTLINE $colo_hops1 4
-	striptext $colo_hops1 "("
-	setVar $colo_fuel1 ($colo_hops1 * 3)
-	send "f1*" $colo_sector "*q"
+	send "cf1*" $colo_sector "*q"
 	waitfor "The shortest path"
 	getword CURRENTLINE $colo_hops2 4
 	striptext $colo_hops2 "("
@@ -676,19 +679,27 @@ goto :Start_Up_Routines
 			end
 			:colo_red
 			killalltriggers
-			if ($BWARP = TRUE)
-				if ($PLAYER~PLANET_SCANNER = "No")
-					setVar $coloBurst "b "&$jump_sector&"*y      "&$to_mow&"          l * * "
-				else
-					setVar $coloBurst "b "&$jump_sector&"*y       "&$to_mow&"          l 1* * * "
-				end
+			if ($no_twarp = true)
+					if ($PLAYER~PLANET_SCANNER = "No")
+						setVar $coloBurst $to_mow&"          l * * "
+					else
+						setVar $coloBurst $to_mow&"          l 1* * * "
+					end
 			else
-				if ($PLAYER~PLANET_SCANNER = "No")
-					setVar $coloBurst "m "&$jump_sector&"* y y       "&$to_mow&"        l * * "
-				else  
-					setVar $coloBurst "m "&$jump_sector&"* y y       "&$to_mow&"        l 1* * * "
-				end
+				if ($BWARP = TRUE)
+					if ($PLAYER~PLANET_SCANNER = "No")
+						setVar $coloBurst "b "&$jump_sector&"*y      "&$to_mow&"          l * * "
+					else
+						setVar $coloBurst "b "&$jump_sector&"*y       "&$to_mow&"          l 1* * * "
+					end
+				else
+					if ($PLAYER~PLANET_SCANNER = "No")
+						setVar $coloBurst "m "&$jump_sector&"* y y       "&$to_mow&"        l * * "
+					else  
+						setVar $coloBurst "m "&$jump_sector&"* y y       "&$to_mow&"        l 1* * * "
+					end
 
+				end
 			end
 			setVar $coloBurst $coloBurst&"m "&$colo_sector&"* y y    * l "&$PLANET~planet&"* s * * "&$colo_prod&"*"
 			if ($BWARP = TRUE)
@@ -714,9 +725,9 @@ goto :Start_Up_Routines
 			pause
 
 			:fuelRed
-			killalltriggers
-			waitfor "There are currently"
-			getword CURRENTLINE $colo_colos 4
+#			killalltriggers
+#			waitfor "There are currently"
+#			getword CURRENTLINE $colo_colos 4
 
 			setTextLineTrigger 33 :morered "The Colonists disembark"
 			setTextLineTrigger 34 :next_item_red "There isn't room on the planet"
@@ -772,10 +783,10 @@ goto :Start_Up_Routines
 halt
 
 :Start_Up_Routines
-  	getWordPos " "&$user_command_line&" " $pos " b "
+  	getWordPos " "&$bot~user_command_line&" " $pos " b "
 	if ($pos > 0)
 		setVar $Bwarp TRUE
-		getWordPos " "&$user_command_line&" " $pos " f "
+		getWordPos " "&$bot~user_command_line&" " $pos " f "
 		if ($pos > 0)
 			setVar $doubleOre TRUE
 			setVar $doubleOreGet TRUE
@@ -786,16 +797,16 @@ halt
 		setVar $Bwarp FALSE
 	end
 
-	getWordPos " "&$user_command_line&" " $pos " allore "
+	getWordPos " "&$bot~user_command_line&" " $pos " allore "
 	if ($pos > 0)
 		setVar $allore TRUE
 	else
 		setVar $allore FALSE
 	end
 
-  	getWordPos " "&$user_command_line&" " $pos " c:"
+  	getWordPos " "&$bot~user_command_line&" " $pos " c:"
 	if ($pos > 0)
-		getText " "&$user_command_line&" " $camo_holds "c:" " "
+		getText " "&$bot~user_command_line&" " $camo_holds "c:" " "
 		isNumber $test $camo_holds
 		if ($test)
 			setVar $camoHolds TRUE
@@ -810,12 +821,12 @@ halt
 # ======================     START COLO  (COLO) SUBROUTINE    ==========================
 :colo_setup
 	gosub :PLAYER~quikstats
-	getWord $user_command_line $parm1 1
-	getWord $user_command_line $parm2 2
-	getWord $user_command_line $parm3 3
-	getWord $user_command_line $parm4 4
-	getWord $user_command_line $parm5 5
-	getWord $user_command_line $parm6 6
+	getWord $bot~user_command_line $bot~parm1 1
+	getWord $bot~user_command_line $bot~parm2 2
+	getWord $bot~user_command_line $bot~parm3 3
+	getWord $bot~user_command_line $bot~parm4 4
+	getWord $bot~user_command_line $bot~parm5 5
+	getWord $bot~user_command_line $bot~parm6 6
 
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if (($startingLocation <> "Citadel") AND ($startingLocation <> "Planet"))
@@ -824,14 +835,14 @@ halt
 		halt
 	end
 	
-	if (($parm1 <> "s") AND ($parm1 <> "m") AND ($parm1 <> "t") AND ($parm1 <> "r") AND ($parm1 <> "p"))
+	if (($bot~parm1 <> "s") AND ($bot~parm1 <> "m") AND ($bot~parm1 <> "t") AND ($bot~parm1 <> "r") AND ($bot~parm1 <> "p"))
 		setVar $SWITCHBOARD~message "Please use colo [s]peed, [m]ilk, [r]ed, [t]imed*, or speed [p]ort*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 	
 	
-	setVar $colo_type $parm1
+	setVar $colo_type $bot~parm1
 	if (($colo_type = "p") and (PORT.EXISTS[CURRENTSECTOR] = 0))
 		setVar $SWITCHBOARD~message "No port here to buy fuel ore.*"
 		gosub :SWITCHBOARD~switchboard
@@ -851,11 +862,11 @@ halt
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	isNumber $test $parm2
+	isNumber $test $bot~parm2
 	if ($test <> TRUE)
-		setVar $parm2 0
+		setVar $bot~parm2 0
 	end
-	Setvar $colo_misc $parm2
+	Setvar $colo_misc $bot~parm2
 # ======================     END COLO (COLO) SUBROUTINE     ==========================
 	setVar $colo_prod 1
 	setVar $colo_delay 1000

@@ -2,21 +2,24 @@
  
 logging off
 	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
+	setvar $player~save true
+
+	setVar $BOT~help[1] $BOT~tab&"Meatgrinder tries to kill as fast as possible"
+	setVar $BOT~help[2] $BOT~tab&"    {turbo} - speed over accuracy"
+	setVar $BOT~help[3] $BOT~tab&"    {fedsafe} - If no longer fed safe, stop and hide"
+	gosub :BOT~help_file
 
 	getWordPos $BOT~user_command_line $pos "turbo"
 	if ($pos > 0)
 		setVar $turbo TRUE
 	else
 		setVar $turbo FALSE
+	end
+	getWordPos $BOT~user_command_line $pos "fedsafe"
+	if ($pos > 0)
+		setVar $fedsafe TRUE
+	else
+		setVar $fedsafe FALSE
 	end
 	
 	gosub :player~quikstats
@@ -43,6 +46,17 @@ logging off
 	waitOn "Max Figs Per Attack:"
 	getWord CURRENTLINE $maxFigAttack 5
 	setVar $i 0
+
+	gosub :sector~getSectorData
+	setvar $autoavoidcount ($sector~emptyShipCount + $sector~fakeTraderCount)
+	setvar $j 1
+	while ($j <= $autoavoidcount)
+		#add n's to attack macro to avoid feds, aliens, and empty ships
+		add $i 1
+		add $j 1
+	end
+	
+	setvar $player~startinglocation "Citadel"
 	setVar $loop 20
 
 	send "'*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*    MD/TBH Meat Grinder Powering Up!   *[+] Add No  [-] Subtract No  [%] Exit*[r] Refurb                           *-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"
@@ -50,17 +64,40 @@ logging off
 	setDelayTrigger delay :changeAttack 1000
 	pause
 
-:burst
-	if ($turbo = TRUE)
-		while ($loop < 5)
-			send $targetString&"zy z"&$maxFigAttack&"* "
-			add $loop 1
+:didihit
+	setvar $attemptedhit true
+	goto :execute
+:missed
+	if ($attemptedhit = true)
+		gosub :player~quikstats
+		if ($fedsafe = true)
+			if ((($player~alignment < 0) or ($player~experience > 1000)) and (($player~current_sector <= 10) or ($player~current_sector = $map~stardock)))
+				#not fedsafe and still attacking - need to hide!
+				if ($player~current_sector = 1)
+					send "l 1*"
+					setvar $switchboard~message "Stopping and hiding on Terra.  Not fed safe anymore!*"
+					gosub :switchboard~switchboard
+					halt
+				else
+					if ($player~current_sector = $map~stardock)
+						send "ps* "
+						setvar $switchboard~message "Stopping and hiding on Stardock.  Not fed safe anymore!*"
+						gosub :switchboard~switchboard
+						halt
+					else
+						send "'"&$bot~bot_name&" t h *"
+						setvar $switchboard~message "Stopping and attempting to twarp home.  Not fed safe anymore!*"
+						gosub :switchboard~switchboard
+						halt
+					end
+				end
+			end
 		end
-		send "@"
-		waitOn "Average Interval Lag:"
 	end
-	setVar $loop 0
+	setvar $attemptedhit false
 :execute
+:burst
+	killtrigger wait
 	killtrigger delay
 	killtrigger stop
 	killtrigger add
@@ -70,8 +107,21 @@ logging off
 	killtrigger hit
 	killtrigger empty
 	killtrigger refurb
-	setDelayTrigger delay :continue 40
-	pause
+	killtrigger toomuchmiss
+	if ($turbo = TRUE)
+		setVar $loop 0
+		setvar $send ""
+		while ($loop < 10)
+			setvar $send $send&$targetString&"zy z"&$maxFigAttack&"* "&$planet_string
+			add $loop 1
+		end
+		send $send&"@"
+		setTextLineTrigger wait :continue "Average Interval Lag:"
+		pause
+	else
+		setDelayTrigger delay :continue 10
+		pause
+	end
 
 :continue	
 	setTextOutTrigger stop :stoppingPoint "%"
@@ -79,10 +129,10 @@ logging off
 	setTextOutTrigger subtract :subtractN "-"
 	setTextOutTrigger refurb :refurb "r"
 	setTextLineTrigger fed :addN "Are you POSITIVE you want to attack this Federation StarShip?"
-	setTextLineTrigger miss :burst "Do you want instructions (Y/N) [N]?"
+	setTextLineTrigger miss :missed "Do you want instructions (Y/N) [N]?"
 	setTextLineTrigger empty :checkEmptyAttack "'s unmanned "
-	setTextLineTrigger hit :execute "How many fighters do you wish to use ("
-
+	setTextLineTrigger hit :didihit "How many fighters do you wish to use ("
+	settextlinetrigger toomuchmiss :subtractN "<Re-Display>"
 	send $targetString&"zy z"&$maxFigAttack&"* "&$planet_string
 	pause
 	
@@ -94,7 +144,8 @@ logging off
 :checkEmptyAttack
 getWordPos CURRENTLINE $pos " (Y/N) [N]? Yes"
 getWordPos CURRENTLINE $pos2 " (Y/N)Yes"
-if (($pos <= 0) AND ($pos2 <= 0))
+getWordPos CURRENTLINE $pos3 " (Y/N) -Y"
+if (($pos <= 0) AND ($pos2 <= 0) and ($pos3 <= 0))
 	setTextLineTrigger empty :checkEmptyAttack "'s unmanned "
 	pause
 end
@@ -104,6 +155,17 @@ end
 	add $i 1
 	goto :changeAttack
 :subtractN
+	killtrigger wait
+	killtrigger delay
+	killtrigger stop
+	killtrigger add
+	killtrigger subtract
+	killtrigger fed
+	killtrigger miss
+	killtrigger hit
+	killtrigger empty
+	killtrigger refurb
+	killtrigger toomuchmiss
 	subtract $i 1
 	if ($i < 0)
 		setVar $i 0

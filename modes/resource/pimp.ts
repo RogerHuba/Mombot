@@ -1,31 +1,6 @@
 reqRecording
-logging off
-# Load Game Vars
-	loadVar $bot_name
-	loadVar $unlimitedGame
-	loadVar $bot_turn_limit
-	loadVar $stardock
-	loadVar $backdoor
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
-
-		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
+gosub :BOT~loadVars
+loadvar $map~backdoor
 
 
 	setVar $BOT~help[1] $BOT~tab&"PIMP - Makes planets and strips them of product "
@@ -46,27 +21,27 @@ logging off
 		
 :pimp
 	window prodpimp 400 150 "Product Pimp Stats" ONTOP
-	gosub :quikstats
-	setVar $startingLocation $CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~current_prompt
 	getRnd $random 1 100000
 	if ($startingLocation <> "Citadel")
 		setVar $SWITCHBOARD~message "You must run Product Pimp from a Citadel prompt.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	setVar $user_command_line $user_command_line&" "
-	isNumber $test $parm1
+	setVar $bot~user_command_line $bot~user_command_line&" "
+	isNumber $test $bot~parm1
 	if ($test)
 		setVar $SWITCHBOARD~message "Invalid arguments for Product Pimp*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	else
-		getWordPos $parm1 $pos #34
+		getWordPos $bot~parm1 $pos #34
 		if ($pos > 0)
-			getText $user_command_line $targetPlanet " "&#34 #34&" "
+			getText $bot~user_command_line $targetPlanet " "&#34 #34&" "
 			if ($targetPlanet <> "")
 				setVar $om_planetname $targetPlanet
-				stripText $user_command_line " "&#34&$targetPlanet&#34&" "
+				stripText $bot~user_command_line " "&#34&$targetPlanet&#34&" "
 			else
 				setVar $om_planetname "M()M Pimp "&$random
 			end
@@ -74,20 +49,20 @@ logging off
 			setVar $om_planetname "M()M Pimp "&$random
 		end
 	end
-	setVar $user_command_line " "&$user_command_line&" "
-	getWordPos $user_command_line $pos " f "
+	setVar $bot~user_command_line " "&$bot~user_command_line&" "
+	getWordPos $bot~user_command_line $pos " f "
 	if ($pos > 0)
 		setVar $emptyFuel TRUE
 	else
 		setVar $emptyFuel FALSE
 	end
-	getWordPos $user_command_line $pos " o "
+	getWordPos $bot~user_command_line $pos " o "
 	if ($pos > 0)
 		setVar $emptyOrganics TRUE
 	else
 		setVar $emptyOrganics FALSE
 	end
-	getWordPos $user_command_line $pos " e "
+	getWordPos $bot~user_command_line $pos " e "
 	if ($pos > 0)
 		setVar $emptyEquipment TRUE
 	else
@@ -100,44 +75,44 @@ logging off
 	end
 	
 	
-	setVar $om_sdloc $stardock
+	setVar $om_sdloc $map~stardock
 	setVar $totalPlanets 0
 	setVar $stripables 0
 
-gosub :quikstats
-setVar $startingLocation $CURRENT_PROMPT
+gosub :player~quikstats
+setVar $startingLocation $player~current_prompt
 
 if ($startingLocation = "Citadel")
     send "Q"
-    gosub :getPlanetInfo
+    gosub :planet~getplanetinfo
     send "C"
     waitfor "Citadel command"
 elseif ($startingLocation = "Planet")
-    gosub :getPlanetInfo
+    gosub :planet~getplanetinfo
     send "Q"
-    send "L " & $planet & "* "
+    send "L " & $planet~planet & "* "
 end
 
-setVar $target $planet
-setvar $target_cash $citadelcredits
-SetVar $totalfuel $planetfuel
-SetVar $totalorg $planetorg
-SetVar $totalequ $planetequip
-SetVar $totalfuelmax $planetfuelmax
-SetVar $totalorgmax $planetorgmax
-SetVar $totalequmax $planetequipmax
-setVar $om_redsector $backdoor
+setVar $target $planet~planet
+setvar $target_cash $planet~citadelcredits
+SetVar $totalfuel $planet~planetfuel
+SetVar $totalorg $planet~planetorg
+SetVar $totalequ $planet~planetequip
+SetVar $totalfuelmax $planet~planetfuelmax
+SetVar $totalorgmax $planet~planetorgmax
+SetVar $totalequmax $planet~planetequipmax
+setVar $om_redsector $map~backdoor
 :inac
 killalltriggers
 :myinfo
-    if ($unlimitedGame = FALSE)
-		if ($turns < $bot_turn_limit)
+    if ($player~unlimitedGame = FALSE)
+		if ($player~turns < $bot~bot_turn_limit)
 			setVar $SWITCHBOARD~message "I have too few turns to pimp product, Script halting.*"
 			gosub :SWITCHBOARD~switchboard
 			HALT
 		end
     end
-    if (($credits + $target_cash) < 1000000)
+    if (($player~credits + $target_cash) < 1000000)
 		setVar $SWITCHBOARD~message "I have too little cash on hand, Script halting.*"
 		gosub :SWITCHBOARD~switchboard
 		HALT
@@ -146,16 +121,16 @@ killalltriggers
 :myplanetInfo
     if ($startingLocation = "Citadel")
         send "Q"
-        gosub :getPlanetInfo
+        gosub :planet~getplanetinfo
         send "C"
         waitfor "Citadel command"
     elseif ($startingLocation = "Planet")
-        gosub :getPlanetInfo
+        gosub :planet~getplanetinfo
     end
 
-    SetVar $totalfuel $planetfuel
-	SetVar $totalorg $planetorg
-	SetVar $totalequ $planetequip
+    SetVar $totalfuel $planet~planetfuel
+	SetVar $totalorg $planet~planetorg
+	SetVar $totalequ $planet~planetequip
     if ($startingLocation = "Citadel")
 		send "Q"
     end
@@ -172,19 +147,19 @@ killalltriggers
 :makePlanet
 	killalltriggers
     	gosub :setWindows
-        gosub :quikstats
-	if (($credits < 1000000) AND (($genesis <= 0) OR ($atomic <= 0)))
+        gosub :player~quikstats
+	if (($player~credits < 1000000) AND (($player~genesis <= 0) OR ($player~atomic <= 0)))
 		setVar $cashonhand $target_cash
-		add $cashonhand $CREDITS
+		add $cashonhand $player~credits
 		send "l j"&#8&$target&"* c "
 		if ($cashonhand > 5000000)
-			send "T T " & $CREDITS & "* "
+			send "T T " & $player~credits & "* "
         		send "T F " & 5000000 & "* "
-        		setVar $CREDITS 5000000
+        		setVar $player~credits 5000000
 		elseif ($cashonhand > 1000000)
-			send "T T " & $CREDITS & "* "
+			send "T T " & $player~credits & "* "
         		send "T F " & $cashonhand & "* "
-        		setVar $CREDITS $cashonhand
+        		setVar $player~credits $cashonhand
 		else
 			setVar $SWITCHBOARD~message "I have too little cash on hand, Script halting.*"
 			gosub :SWITCHBOARD~switchboard
@@ -198,21 +173,21 @@ killalltriggers
  			getWord CURRENTLINE $target_cash 9
 			striptext $target_cash ","
 		send "qqq* * "
-		gosub :quikstats
+		gosub :player~quikstats
 	end
-	if ($fighters < 1000)
+	if ($player~fighters < 1000)
         	setVar $SWITCHBOARD~message "I have too few fighters on hand, less than 1000.  Script halting.*"
 			gosub :SWITCHBOARD~switchboard
         	HALT
 	end
-	if ($unlimitedGame = FALSE)
-		if ($turns < $turn_limit)
+	if ($player~unlimitedGame = FALSE)
+		if ($player~turns < $turn_limit)
 			setVar $SWITCHBOARD~message "I have too few turns to pimp product, Script halting.*"
 			gosub :SWITCHBOARD~switchboard
 			HALT
 		end
 	end
-	if (($genesis > 0) AND ($atomic > 0))
+	if (($player~genesis > 0) AND ($player~atomic > 0))
 		send "u y * " & #8 & #8 & $om_planetname&"* p q * "
 		gosub :setWindows
 		add $totalPlanets 1
@@ -240,14 +215,14 @@ killalltriggers
         :GetPlanetNum
         setVar $line CURRENTLINE
         striptext $line "<"
-	getWord $line $planetNum 1
-        stripText $PlanetNum ">"
-        send $PlanetNum "*"
+	getWord $line $planet~planetNum 1
+        stripText $planet~planetNum ">"
+        send $planet~planetNum "*"
         #check ore
 
-	gosub :getPlanetInfo
+	gosub :planet~getplanetinfo
 
-	IF ((($PLANETFUEL < $TOTAL_HOLDS) OR ($emptyFuel = FALSE)) AND (($PLANETORG < $TOTAL_HOLDS) OR ($emptyOrganics = FALSE)) AND (($PLANETEQUIP< $TOTAL_HOLDS) OR ($emptyEquipment = FALSE)))
+	IF ((($planet~planetFUEL < $player~total_holds) OR ($emptyFuel = FALSE)) AND (($planet~planetORG < $player~total_holds) OR ($emptyOrganics = FALSE)) AND (($planet~planetEQUIP< $player~total_holds) OR ($emptyEquipment = FALSE)))
 		#Blow it up :D
         	If (($fuelcolos = "0") and ($orgcolos = "0") and ($equipcolos = "0"))
         	    killalltriggers
@@ -270,7 +245,7 @@ killalltriggers
 		SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
 		SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
 		if ($emptyFuel)
-			send "tnt1*q l j"&#8&$target&"* tnl1*q l j"&#8&$planetNum&"* "
+			send "tnt1*q l j"&#8&$target&"* tnl1*q l j"&#8&$planet~planetNum&"* "
 			setTextTrigger fuelSuccess :fuelSuccess "You load the "
 			setTextTrigger fuelEmpty :fuelEmpty "There aren't that many "
 			setTextTrigger fuelFull :fullplanet "They don't have room for that many "
@@ -280,7 +255,7 @@ killalltriggers
                 end
 
 	:fuelSuccess
-                add $totalFuel $total_holds
+                add $totalFuel $player~total_holds
                 gosub :setWindows
 		goto :tryFuel
 	:fuelEmpty
@@ -288,7 +263,7 @@ killalltriggers
 	:tryOrganics
 		killAllTriggers
 		if ($emptyOrganics)
-			send "tnt2*q l j"&#8&$target&"* tnl2*q l j"&#8&$planetNum&"* "
+			send "tnt2*q l j"&#8&$target&"* tnl2*q l j"&#8&$planet~planetNum&"* "
 			SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
 			SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
 			setTextTrigger success :orgSuccess "You load the "
@@ -300,7 +275,7 @@ killalltriggers
                 end
 
 	:orgSuccess
-                add $totalOrg $total_holds
+                add $totalOrg $player~total_holds
                 gosub :setWindows
 		goto :tryOrganics
 	:orgEmpty
@@ -310,7 +285,7 @@ killalltriggers
 		if ($emptyEquipment)
 			SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
 			SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
-			send "tnt3*q l j"&#8&$target&"* tnl3*q l j"&#8&$planetNum&"* "
+			send "tnt3*q l j"&#8&$target&"* tnl3*q l j"&#8&$planet~planetNum&"* "
 			setTextTrigger success :equSuccess "You load the "
 			setTextTrigger emptyEmpty :emptyPlanet "There aren't that many "
 			setTextTrigger fullFill :fullplanet "They don't have room for that many "
@@ -319,7 +294,7 @@ killalltriggers
 		        goto :equEmpty
                 end
 	:equSuccess
-                add $totalEqu $total_holds
+                add $totalEqu $player~total_holds
                 gosub :setWindows
 		goto :tryEquipment
 	:equEmpty
@@ -348,7 +323,7 @@ killalltriggers
 
 :nodets
 	send "QQ"
-	IF ($ALIGNMENT < 1000)
+	IF ($player~alignment < 1000)
 		setVar $SWITCHBOARD~message "Alignment less than 1000, can't refurb genesis torps and atomic dets*"
 		gosub :SWITCHBOARD~switchboard
 		HALT
@@ -385,12 +360,12 @@ Pause
 	send "QL " & $target & "* T * T 1 * M * * * Q"
 	WaitFor "Command [TL"
 
-if ($om_redsector <> 0) and ($ALIGN < 1000)
-        if ($unlimitedGame)
-		setVar $SWITCHBOARD~message "Running Product Pimp with unlimited turns and "&$credits&" credits left*"
+if ($om_redsector <> 0) and ($player~alignment < 1000)
+        if ($player~unlimitedGame)
+		setVar $SWITCHBOARD~message "Running Product Pimp with unlimited turns and "&$player~credits&" credits left*"
 		gosub :SWITCHBOARD~switchboard
 	else
-		setVar $SWITCHBOARD~message "Running Product Pimp with "&$turns&" turns and "&$credits&" credits left*"
+		setVar $SWITCHBOARD~message "Running Product Pimp with "&$player~turns&" turns and "&$player~credits&" credits left*"
 		gosub :SWITCHBOARD~switchboard
 	end
 	KillAlltriggers
@@ -403,7 +378,7 @@ if ($om_redsector <> 0) and ($ALIGN < 1000)
 	Pause
         Pause
 End
-setVar $SWITCHBOARD~message "Running Product Pimp with "&$turns&" turns and "&$credits&" credits left*"
+setVar $SWITCHBOARD~message "Running Product Pimp with "&$player~turns&" turns and "&$player~credits&" credits left*"
 gosub :SWITCHBOARD~switchboard
 SetTextTrigger nofig :nofig "Do you want to make this jump blind?"
 SetTextTrigger ready2 :ready2 "All Systems Ready, shall we engage?"
@@ -470,7 +445,7 @@ Pause
 GetWord CURRENTLINE $numdets 9
 StripText $numdets ")"
 send $numdets & "*"
-send "Q Q M " & $current_sector & " * Y"
+send "Q Q M " & $player~current_sector & " * Y"
 SetTextTrigger nofig :nofig "Do you want to make this jump blind?"
 SetTextTrigger ready3 :ready3 "Locating beam pinpointed,"
 SetTextTrigger nofuel :nofuel "You do not have enough Fuel Ore to make the jump"
@@ -495,236 +470,15 @@ Return
 
 
 
-# ==============================  START PLANET INFO SUBROUTINE  =================
-:getPlanetInfo
-    send "*"
-    setTextLineTrigger planetInfo :planetInfo "Planet #"
-    pause
-
-    :planetinfo
-        killalltriggers
-        setVar $citadel 0
-        setVar $sCannon 0
-        setVar $aCannon 0
-        setVar $citadelcredits 0
-        getWord CURRENTLINE $planet 2
-        stripText $planet "#"
-        getWord CURRENTLINE $current_sector 5
-        stripText $current_sector ":"
-        waitfor "2 Build 1   Product    Amount     Amount     Maximum"
-
-        :getPlanetStuff
-            setTextLineTrigger fuelstart :fuelstart "Fuel Ore"
-            setTextLineTrigger orgstart :orgstart "Organics"
-            setTextLineTrigger equipstart :equipstart "Equipment"
-            setTextLineTrigger figstart :figstart "Fighters        N/A"
-            setTextLineTrigger citadelstart :citadelstart "Planet has a level"
-            setTextLineTrigger cannon :cannonstart ", AtmosLvl="
-            setTextTrigger planetInfoDone :planetInfoDone "Planet command (?=help)"
-	    SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-	    SetEventTrigger	Discod2		:Discod     	"Connections have been temporarily disabled."
-            pause
-
-        :fuelstart
-            killalltriggers
-            getWord CURRENTLINE $planetfuel 6
-            getWord CURRENTLINE $planetfuelmax 8
-            stripText $planetfuel ","
-            stripText $planetfuelmax ","
-            goto :getPlanetStuff
-
-        :orgstart
-            killalltriggers
-            getWord CURRENTLINE $planetorg 5
-            getWord CURRENTLINE $planetorgmax 7
-            stripText $planetorg ","
-            stripText $planetorgmax ","
-            goto :getPlanetStuff
-
-        :equipstart
-            killalltriggers
-            getWord CURRENTLINE $planetequip 5
-            getWord CURRENTLINE $planetequipmax 7
-            stripText $planetequip ","
-            stripText $planetequipmax ","
-            goto :getPlanetStuff
-
-        :figstart
-            killalltriggers
-            getWord CURRENTLINE $planetfig 5
-            getWord CURRENTLINE $planetfigmax 7
-            stripText $planetfig ","
-            stripText $planetfigmax ","
-            goto :getPlanetStuff
-
-        :citadelstart
-            killalltriggers
-            getWord CURRENTLINE $citadel 5
-            getWord CURRENTLINE $citadelcredits 9
-            striptext $citadelcredits ","
-	    goto :getPlanetStuff
-
-	:cannonstart
-            killalltriggers
-            getWord CURRENTLINE $aCannon 5
-            getWord CURRENTLINE $sCannon 6
-            stripText $sCannon "SectLvl="
-	    striptext $sCannon "%"
-	    stripText $aCannon "AtmosLvl="
-	    striptext $aCannon "%"
-	    striptext $aCannon ","
-
-    :planetInfoDone
-	killalltriggers
-return
-# ==============================  END PLANET INFO SUBROUTINE  =================
-
-
-:quikstats
-    setVar $CURRENT_PROMPT      "Undefined"
-    killtrigger noprompt
-    killtrigger prompt
-    killtrigger statlinetrig
-    killtrigger getLine2
-    setTextLineTrigger  prompt      :allPrompts     #145 & #8
-    setTextLineTrigger  statlinetrig    :statStart      #179
-    send #145&"/"
-    pause
-    :allPrompts
-        getWord CURRENTLINE $CURRENT_PROMPT 1
-        setVar $FULL_CURRENT_PROMPT CURRENTLINE
-        stripText $FULL_CURRENT_PROMPT #145
-        stripText $FULL_CURRENT_PROMPT #8
-        stripText $CURRENT_PROMPT #145
-        stripText $CURRENT_PROMPT #8
-        setTextLineTrigger  prompt      :allPrompts     #145 & #8
-        pause
-    :statStart
-        killtrigger prompt
-        setVar $stats ""
-        setVar $wordy ""
-    :statsline
-        killtrigger statlinetrig
-        killtrigger getLine2
-        setVar $line2 CURRENTLINE
-        replacetext $line2 #179 " "
-        striptext $line2 ","
-        setVar $stats $stats & $line2
-        getWordPos $line2 $pos "Ship"
-        if ($pos > 0)
-            goto :gotStats
-        else
-            setTextLineTrigger getLine2 :statsline
-            pause
-        end
-    :gotStats
-        setVar $stats $stats & " @@@"
-        setVar $current_word 0
-        while ($wordy <> "@@@")
-            if ($wordy = "Sect")
-                getWord $stats $CURRENT_SECTOR      ($current_word + 1)
-            elseif ($wordy = "Turns")
-                getWord $stats $TURNS           ($current_word + 1)
-                if ($unlimitedGame = TRUE)
-                    setVar $TURNS 65000
-                end
-            elseif ($wordy = "Creds")
-                getWord $stats $CREDITS         ($current_word + 1)
-            elseif ($wordy = "Figs")
-                getWord $stats $FIGHTERS        ($current_word + 1)
-            elseif ($wordy = "Shlds")
-                getWord $stats $SHIELDS         ($current_word + 1)
-            elseif ($wordy = "Hlds")
-                getWord $stats $TOTAL_HOLDS         ($current_word + 1)
-            elseif ($wordy = "Ore")
-                getWord $stats $ORE_HOLDS           ($current_word + 1)
-            elseif ($wordy = "Org")
-                getWord $stats $ORGANIC_HOLDS       ($current_word + 1)
-            elseif ($wordy = "Equ")
-                getWord $stats $EQUIPMENT_HOLDS     ($current_word + 1)
-            elseif ($wordy = "Col")
-                getWord $stats $COLONIST_HOLDS      ($current_word + 1)
-            elseif ($wordy = "Phot")
-                getWord $stats $PHOTONS         ($current_word + 1)
-            elseif ($wordy = "Armd")
-                getWord $stats $ARMIDS          ($current_word + 1)
-            elseif ($wordy = "Lmpt")
-                getWord $stats $LIMPETS         ($current_word + 1)
-            elseif ($wordy = "GTorp")
-                getWord $stats $GENESIS         ($current_word + 1)
-            elseif ($wordy = "TWarp")
-                getWord $stats $TWARP_TYPE          ($current_word + 1)
-            elseif ($wordy = "Clks")
-                getWord $stats $CLOAKS          ($current_word + 1)
-            elseif ($wordy = "Beacns")
-                getWord $stats $BEACONS         ($current_word + 1)
-            elseif ($wordy = "AtmDt")
-                getWord $stats $ATOMIC          ($current_word + 1)
-            elseif ($wordy = "Corbo")
-                getWord $stats $CORBO           ($current_word + 1)
-            elseif ($wordy = "EPrb")
-                getWord $stats $EPROBES         ($current_word + 1)
-            elseif ($wordy = "MDis")
-                getWord $stats $MINE_DISRUPTORS     ($current_word + 1)
-            elseif ($wordy = "PsPrb")
-                getWord $stats $PSYCHIC_PROBE       ($current_word + 1)
-            elseif ($wordy = "PlScn")
-                getWord $stats $PLANET_SCANNER      ($current_word + 1)
-            elseif ($wordy = "LRS")
-                getWord $stats $SCAN_TYPE           ($current_word + 1)
-            elseif ($wordy = "Aln")
-                getWord $stats $ALIGNMENT           ($current_word + 1)
-            elseif ($wordy = "Exp")
-                getWord $stats $EXPERIENCE          ($current_word + 1)
-            elseif ($wordy = "Corp")
-                getWord $stats $CORP            ($current_word + 1)
-            elseif ($wordy = "Ship")
-                getWord $stats $SHIP_NUMBER         ($current_word + 1)
-            end
-            add $current_word 1
-            getWord $stats $wordy $current_word
-        end
-    :doneQuikstats
-    killtrigger statlinetrig
-    killtrigger getLine2
-    saveVar $unlimitedGame
-    saveVar $CREDITS
-    saveVar $FIGHTERS
-    saveVar $SHIELDS
-    saveVar $TOTAL_HOLDS
-    saveVar $ORE_HOLDS
-    saveVar $ORGANIC_HOLDS
-    saveVar $EQUIPMENT_HOLDS
-    saveVar $COLONIST_HOLDS
-    saveVar $PHOTONS
-    saveVar $ARMIDS
-    saveVar $LIMPETS
-    saveVar $GENESIS
-    saveVar $TWARP_TYPE
-    saveVar $CLOAKS
-    saveVar $BEACONS
-    saveVar $ATOMIC
-    saveVar $CORBO
-    saveVar $EPROBES
-    saveVar $MINE_DISRUPTORS
-    saveVar $PSYCHIC_PROBE
-    saveVar $PLANET_SCANNER
-    saveVar $SCAN_TYPE
-    saveVar $ALIGNMENT
-    saveVar $EXPERIENCE
-    saveVar $SHIP_NUMBER
-    saveVar $TRADER_NAME
-return
-# ============================== END QUICKSTATS SUB==============================
 
 
 
 
 :setWindows
-	if ($unlimitedGame)
-		setVar $window_content "Planet fuel:  "&$totalfuel&" out of "&$totalfuelmax&"*Planet Org:   "&$totalorg&" out of "&$totalorgmax&"*Planet Equip: "&$totalEqu&" out of "&$totalequmax&"*Cash:         "&$credits&"   Genesis Torps:  "&$genesis&"*Fighters:     "&$fighters&"   Atomic Dets:    "&$atomic&"*Turns:     Unlimited*"&$stripables&" out of "&$totalPlanets&" planets have had product on them.*"
+	if ($player~unlimitedGame)
+		setVar $window_content "Planet fuel:  "&$totalfuel&" out of "&$totalfuelmax&"*Planet Org:   "&$totalorg&" out of "&$totalorgmax&"*Planet Equip: "&$totalEqu&" out of "&$totalequmax&"*Cash:         "&$player~credits&"   Genesis Torps:  "&$player~genesis&"*Fighters:     "&$player~fighters&"   Atomic Dets:    "&$player~atomic&"*Turns:     Unlimited*"&$stripables&" out of "&$totalPlanets&" planets have had product on them.*"
 	else
-		setVar $window_content "Planet fuel:  "&$totalfuel&" out of "&$totalfuelmax&"*Planet Org:   "&$totalorg&" out of "&$totalorgmax&"*Planet Equip: "&$totalEqu&" out of "&$totalequmax&"*Cash:         "&$credits&"   Genesis Torps:  "&$genesis&"*Fighters:     "&$fighters&"   Atomic Dets:    "&$atomic&"*Turns:        "&$TURNS&"*"&$stripables&" out of "&$totalPlanets&" planets have had product on them.*"
+		setVar $window_content "Planet fuel:  "&$totalfuel&" out of "&$totalfuelmax&"*Planet Org:   "&$totalorg&" out of "&$totalorgmax&"*Planet Equip: "&$totalEqu&" out of "&$totalequmax&"*Cash:         "&$player~credits&"   Genesis Torps:  "&$player~genesis&"*Fighters:     "&$player~fighters&"   Atomic Dets:    "&$player~atomic&"*Turns:        "&$player~turns&"*"&$stripables&" out of "&$totalPlanets&" planets have had product on them.*"
 	end
 	setWindowContents prodpimp $window_content
 	replaceText $window_content "*" "[][]"
@@ -751,8 +505,8 @@ return
 		pause
 		:WaitingABit
 		killAllTriggers
-		gosub :quikstats
-		if ($CURRENT_PROMPT = "Command")
+		gosub :player~quikstats
+		if ($player~current_prompt = "Command")
 			send " L Z" & #8 & $target & "*  *  J  C  *  "
 			setTextLineTrigger	NotLanded	:NotLanded		"Are you sure you want to jettison all cargo?"
 			setTextLineTrigger	Landed		:Landed			"<Enter Citadel>"
@@ -776,14 +530,14 @@ return
 				send ("'{" & $bot_name & "} "&$TagLineB&" - Restarting!**")
 		    	waitfor "Message sent on sub-space channel"
 				goto :inac
-		elseif ($CURRENT_PROMPT = "Planet")
+		elseif ($player~current_prompt = "Planet")
 	   		send ("  q q q q q  * * '" & $TagLineB & " Attempting to Reach Correct Prompt...*")
 			setTextLineTrigger	EMQ_COMPLETE		:EMQ_DELAY "Attempting to Reach Correct Prompt..."
 			setDelayTrigger 	EMQ_DELAY		:EMQ_DELAY 3000
 			pause
 			
 			
-		elseif ($CURRENT_PROMPT = "Citadel")
+		elseif ($player~current_prompt = "Citadel")
 			send ("'{" & $bot_name & "} "&$TagLineB&" - Restarting!**")
 			waitfor "Message sent on sub-space channel"
 	   		goto :inac

@@ -1,17 +1,11 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadVar $password
-    loadVar $letter
-    loadvar $self_command
-    loadVar $command
-    loadVar $stardock
-    loadVar $MAP~stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
-    loadvar $SWITCHBOARD~self_command 
+    gosub :BOT~loadVars
+
+
+    setVar $BOT~help[1]  $BOT~tab&"dep {cash to deposit} "
+    setVar $BOT~help[2]  $BOT~tab&"  Deposits cash into citadel treasury."
+	setVar $BOT~help[3]  $BOT~tab&"        default is max credits possible"
+    gosub :BOT~help_file
+
     setVar $PLAYER_CASH_MAX     999999999
     setVar $PLANET~CITADEL_CASH_MAX    999999999999999
 
@@ -21,10 +15,10 @@
 :dep
 :d
     gosub :bankProtections
-    if ($parm1 <= 0)
+    if ($bot~parm1 <= 0)
         setVar $cashToTransfer $PLAYER~CREDITS
     else
-        setVar $cashToTransfer $parm1
+        setVar $cashToTransfer $bot~parm1
     end
     send "D"
     waitOn "Citadel treasury contains "
@@ -33,13 +27,16 @@
     if (($cashToTranfer+$PLANET~CITADELCash) >= $PLANET~CITADEL_CASH_MAX)
         setVar $SWITCHBOARD~message "Citadel has too much cash to do transfer (how sad for you)*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     end
     send "t t "&$cashToTransfer&"* "
     waiton "credits, and the Treasury"
+    setvar $map~value $cashtotransfer
+    gosub :map~commas
+    setvar $cashtotransfer $map~value
     setVar $SWITCHBOARD~message $cashToTransfer &" credits deposited into citadel.*"
     gosub :SWITCHBOARD~switchboard
-goto :wait_for_command
+halt
 # ============================== END DEPOSIT (DEP) ==============================
 
 
@@ -47,36 +44,18 @@ goto :wait_for_command
     gosub :PLAYER~quikstats
     setVar $validPrompts "Citadel"
     gosub :checkStartingPrompt
-    if ($parm1 = "ss")
-        setVar $parm1 ""
+    if ($bot~parm1 = "ss")
+        setVar $bot~parm1 ""
     end
-    isNumber $test $parm1 
+    isNumber $test $bot~parm1 
     if ($test = FALSE)
         setVar $SWITCHBOARD~message "Cash entered is not a number, try again.*" 
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command  
+        halt  
     end
 return
 
 
-:wait_for_command
-halt
-
-:killthetriggers
-    killalltriggers
-return
-
-:removeFigFromData
-    getSectorParameter $target "FIGSEC" $check
-    if ($check = TRUE)
-        getSectorParameter 2 "FIG_COUNT" $figCount
-        setSectorParameter 2 "FIG_COUNT" ($figCount-1)
-    end
-    setSectorParameter $target "FIGSEC" FALSE
-return
-:addFigToData
-    setSectorParameter $target "FIGSEC" TRUE
-return
 
 :checkStartingPrompt
     if ($PLAYER~CURRENT_PROMPT = "0")
@@ -86,7 +65,7 @@ return
     if ($pos <= 0)
         setVar $SWITCHBOARD~message "Invalid starting prompt: ["&$PLAYER~CURRENT_PROMPT&"]. Valid prompt(s) for this command: ["&$validPrompts&"]*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     end
 return
 

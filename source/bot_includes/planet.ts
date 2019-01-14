@@ -199,6 +199,10 @@ return
 #requires switchboard
 
 :landingSub
+	killtrigger noplanet
+	killtrigger no_land
+	killtrigger planet
+	killtrigger wrongone
     send "l" $PLANET "*z  n  z  n  *  "
     setVar $sucessfulCitadel FALSE
     setVar $sucessfulPlanet FALSE

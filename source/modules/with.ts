@@ -1,17 +1,11 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadVar $password
-    loadVar $letter
-    loadvar $self_command
-    loadVar $command
-    loadVar $stardock
-    loadVar $MAP~stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
-    loadvar $SWITCHBOARD~self_command 
+    gosub :BOT~loadVars
+
+
+    setVar $BOT~help[1]  $BOT~tab&"with {cash to withdrawl} "
+    setVar $BOT~help[2]  $BOT~tab&"  Withdrawls cash from citadel treasury.
+	setVar $BOT~help[3]  $BOT~tab&"        default is max credits possible"
+    gosub :BOT~help_file
+
     setVar $PLAYER_CASH_MAX     999999999
     setVar $PLANET~CITADEL_CASH_MAX    999999999999999
 

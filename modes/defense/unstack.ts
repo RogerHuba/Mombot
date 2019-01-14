@@ -1,5 +1,4 @@
 	reqRecording
-	logging off
 	gosub :BOT~loadVars
 
 	loadVar $GAME~GENESIS_COST

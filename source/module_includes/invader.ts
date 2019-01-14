@@ -1,5 +1,5 @@
 :check_invade_macro_params
-    gosub :killthetriggers
+    killalltriggers
     setArray $scan_array 1000
     gosub :PLAYER~quikstats
     setVar $PROMPT~startingLocation $PLAYER~current_prompt
@@ -15,44 +15,44 @@
     if ($PLAYER~PHOTONS <= 0)
         setVar $SWITCHBOARD~message "This command requires a photon*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     end
     #VALIDATION OF XPORT SHIP
-    isNumber $test $parm2
-    if ((($test = FALSE) or ($parm2 = 0)) AND ($command <> "pe") AND ($command <> "ped"))
+    isNumber $test $bot~parm2
+    if ((($test = FALSE) or ($bot~parm2 = 0)) AND ($bot~command <> "pe") AND ($bot~command <> "ped"))
         setVar $SWITCHBOARD~message "Parameter 2 invalid*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     end
     #CHECK FOR SHIP/PLANET NUMBER IN PARAMETER 3
-    isNumber $test $parm3
-    if (($test = FALSE) or ($parm3 = 0))
-        if ($command = "pxex")
-            setvar $parm3 $PLAYER~SHIP_NUMBER
-        elseif (($command = "pxel") OR ($command = "pxelk"))
+    isNumber $test $bot~parm3
+    if (($test = FALSE) or ($bot~parm3 = 0))
+        if ($bot~command = "pxex")
+            setvar $bot~parm3 $PLAYER~SHIP_NUMBER
+        elseif (($bot~command = "pxel") OR ($bot~command = "pxelk"))
             setVar $SWITCHBOARD~message "Planet Parameter in-valid*"
             gosub :SWITCHBOARD~switchboard
-            goto :wait_for_command
+            halt
         end
     end
     #VALIDATION OF ATTACK SECTOR
-    isNumber $test $parm1
+    isNumber $test $bot~parm1
     if ($test = FALSE)
-        setVar $SWITCHBOARD~message "Sector Parameter in-valid*"
+        setVar $SWITCHBOARD~message "Sector Parameter invalid*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     end
-    if (($parm1 > 10) AND ($parm1 <= SECTORS) AND ($parm1 <> $MAP~STARDOCK))
+    if (($bot~parm1 > 10) AND ($bot~parm1 <= SECTORS) AND ($bot~parm1 <> $MAP~STARDOCK))
     else
         setVar $SWITCHBOARD~message "Invalid attack sector entered*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     end
     #MAKE SURE ATTACK SECTOR IS ADJACENT
     setVar $i 1
     setVar $isFound false
     while (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] > 0)
-        if (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] = $parm1)
+        if (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] = $bot~parm1)
             setVar $isFound TRUE
         end
         add $i 1
@@ -60,16 +60,16 @@
     if ($isFound = FALSE)
         setVar $SWITCHBOARD~message "Cannot continue.  Sector not Adjacent, aborting..*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     end
-    getWordPos " "&$user_command_line&" " $pos "speed"
+    getWordPos " "&$bot~user_command_line&" " $pos "speed"
     if ($pos > 0)
         setVar $speed TRUE
     else
         setVar $speed FALSE
     end
         #CLEARING THE ATTACK SECTOR
-        send " c v * y * "&$parm1&"*  "
+        send " c v * y * "&$bot~parm1&"*  "
     #GET PLANET NUMBER IF STARTING FROM CITADEL
     if ($PLAYER~startingLocation = "Citadel")
             if ($player~credits > 0)
@@ -79,10 +79,10 @@
             gosub :PLANET~getPlanetInfo
             send "  C C  "
     end
-    setVar $enter   "m  "&$parm1&"*"
-    setVar $xport   "x   "&$parm2&"*  q  z  n  "
+    setVar $enter   "m  "&$bot~parm1&"*"
+    setVar $xport   "x   "&$bot~parm2&"*  q  z  n  "
     setVar $xport_back   "x   "&$starting_ship&"*  q  z  n  "
-    setVar $photon  "  p y"&$parm1&"*  q  "
+    setVar $photon  "  p y"&$bot~parm1&"*  q  "
 return
 
 :start_invade_macro
@@ -91,28 +91,28 @@ return
     else
         setVar $mac_starting $photon&"  "
     end
-    if ($command = "pxex")
-        setVar $mac_ending      "x   "&$parm3&"*  q  q  z  n"
+    if ($bot~command = "pxex")
+        setVar $mac_ending      "x   "&$bot~parm3&"*  q  q  z  n"
         setVar $ends_in_sector      TRUE
-    elseif ($command = "pex")
-        setVar $mac_ending      "x    "&$parm2&"*  q  q  *  z  n  *  "
+    elseif ($bot~command = "pex")
+        setVar $mac_ending      "x    "&$bot~parm2&"*  q  q  *  z  n  *  "
         setVar $ends_in_sector      TRUE
-    elseif ($command = "pel")
-        setVar $mac_ending      "l "&$parm2&"*  *"
+    elseif ($bot~command = "pel")
+        setVar $mac_ending      "l "&$bot~parm2&"*  *"
         setVar $ends_in_sector      FALSE
-    elseif ($command = "pxel")
-        setVar $mac_ending      "l "&$parm3&"*  *  "
+    elseif ($bot~command = "pxel")
+        setVar $mac_ending      "l "&$bot~parm3&"*  *  "
         setVar $ends_in_sector      FALSE
-    elseif ($command = "pxelk")
-        setVar $mac_ending      "l "&$parm3&"*  *  a"&$SHIP~SHIP_MAX_ATTACK&"*"
+    elseif ($bot~command = "pxelk")
+        setVar $mac_ending      "l "&$bot~parm3&"*  *  a"&$SHIP~SHIP_MAX_ATTACK&"*"
         setVar $ends_in_sector      FALSE
-    elseif ($command = "pelk")
-        setVar $mac_ending      "l "&$parm2&"*  *  a"&$SHIP~SHIP_MAX_ATTACK&"*"
+    elseif ($bot~command = "pelk")
+        setVar $mac_ending      "l "&$bot~parm2&"*  *  a"&$SHIP~SHIP_MAX_ATTACK&"*"
         setVar $ends_in_sector      FALSE
-    elseif (($command = "pxed") OR ($command = "ped"))
+    elseif (($bot~command = "pxed") OR ($bot~command = "ped"))
         setVar $mac_ending      "u  y  n  . *  j  c  *  "
         setVar $ends_in_sector      FALSE
-    elseif (($command = "pxedx") OR ($command = "pedx"))
+    elseif (($bot~command = "pxedx") OR ($bot~command = "pedx"))
         setVar $mac_ending      "u  y  n  . *  j  c  *  "&$xport_back
         setVar $ends_in_sector      TRUE
     else
@@ -158,7 +158,7 @@ return
             setVar $scan_array[$i] CURRENTLINE
             add $i 1
         :damage_done
-            gosub :killthetriggers
+            killalltriggers
             if ($i > 1)
                 setVar $j 1
                 send "'*"
@@ -180,9 +180,3 @@ return
     end
 return
 
-:wait_for_command
-halt
-
-:killthetriggers
-    killalltriggers
-return
