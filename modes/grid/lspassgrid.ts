@@ -2,14 +2,9 @@
   # All credits to the legend himself for this one!
   #
   #	Hammer - MOdifying to use EPHaggle and Sector Params
-  #
+  #     ham LSD 0@0@0@0@0@N@M@M@0@N@0@0@N@0@0@0@0@0@0@0
   #
     
-#docks at ports with no trades (not aware of own product)
-
-#and also trades twice per sector
-#Needs dual min/max equip - BUY it when below 25, Sell it always
-#MCIC tracker that runs now needs to change to EQU-MCIC OR WHATEVER WORDING IS
 
     #=--------                                                                       -------=#
      #=---------------------      LoneStar's Passive Gridder      -------------------------=#
@@ -64,9 +59,10 @@
 	setVar $BOT~help[12]  $BOT~tab&"                   Requires EP Haggle or equiv"
 	setVar $BOT~help[13]  $BOT~tab&"    {safe}         Twarps to Limpet sectors only"
 	setVar $BOT~help[14]  $BOT~tab&"    {paranoid}     Twarp to Limpet and Mines only"
-	setVar $BOT~help[15]  $BOT~tab&""
-	setVar $BOT~help[16]  $BOT~tab&"    Doesn't require ZTM but works better"
-	setVar $BOT~help[17]  $BOT~tab&"    Works best with T-Warp to reroute"
+	setVar $BOT~help[15]  $BOT~tab&"    {nextreport}     Next sector requires an adj port report."
+	setVar $BOT~help[16]  $BOT~tab&""
+	setVar $BOT~help[17]  $BOT~tab&"    Doesn't require ZTM but works better"
+	setVar $BOT~help[18]  $BOT~tab&"    Works best with T-Warp to reroute"
 
 	gosub :BOT~help_file
 
@@ -230,6 +226,12 @@
 	getWordPos $bot~user_command_line $pos "trade"
 	if ($pos > 0)
 		setVar $TRACKER TRUE
+	end
+
+	setVar $NextRequiresReport 0
+	getWordPos $bot~user_command_line $pos "nextreport"
+	if ($pos > 0)
+		setVar $NextRequiresReport 1
 	end
 
 	goto :Lets_Get_It_On
@@ -633,13 +635,46 @@
 								setVar $w_adj SECTOR.WARPS[$Focus][$W_i]
 								getSectorParameter $w_adj "FIGSEC" $Flag
 								isNumber $tst $Flag
+								# check for a fig, if no fig it is a candidate
 								if ($tst = 0)
 									setVar $Flag 0
 									setSectorParameter $w_adj "FIGSEC" FALSE
 								end
+								
+				
 								if (($Flag = 0) AND ($CHKD[$w_adj] <> 1))
 									setVar $CHKD[$w_adj] 1
-									goto :We_Got_Game
+									if ($NextRequiresReport = 1)
+								
+										setVar $portOk 0
+										if (PORT.EXISTS[$w_adj] = 1)
+											send "cr" $w_adj "*q"
+											waitfor "Computer activate"
+											setTextLineTrigger portexists :portexists "Commerce report for"
+											setTextLineTrigger portexistsno :portexistsno "I have no information about a port in that sector"
+											setTextLineTrigger portexistsno2 :portexistsno2 "u have never visted sector"
+											pause
+											:portexists
+												setVar $portOk 1
+								
+											:portexistsno
+											:portexistsno2
+												killtrigger portexistsno
+												killtrigger portexistsno2
+												killtrigger portexists
+											
+
+										end
+										# no port report; it's mark it as checked and try aain
+										if ($portOk = 1)
+											goto :We_Got_Game
+										end
+									else
+										
+										goto :We_Got_Game
+									end
+
+									
 								end
 		                    	add $w_i 1
 							end
