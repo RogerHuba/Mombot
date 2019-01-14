@@ -1,28 +1,13 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $command
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
-    loadvar $SWITCHBOARD~self_command 
-    setVar $INVADER~parm1 $parm1
-    setVar $INVADER~parm2 $parm2
-    setVar $INVADER~parm3 $parm3
-    setVar $INVADER~parm4 $parm4
-    setVar $INVADER~parm5 $parm5
-    setVar $INVADER~parm6 $parm6
-    setVar $INVADER~user_command_line $user_command_line
-    setVar $INVADER~command $command
+	gosub :BOT~loadVars
 
-:pxex
-:pxel
-:pxelk
-:pxe
-:pxed
+	setVar $BOT~help[1] $BOT~tab&"PXELK - Photon, Export, Enter, Land, Kill"
+	setVar $BOT~help[2] $BOT~tab&"       Used to launch a Photon into an adjacent Sector, Export"
+	setVar $BOT~help[3] $BOT~tab&"       into another ship, Enter Photon'd Sector and land on a "
+	setVar $BOT~help[4] $BOT~tab&"       Planet then sends one wave of Fighters."
+	setVar $BOT~help[5] $BOT~tab&"   "
+	setVar $BOT~help[6] $BOT~tab&"       pxelk [Sector] [ShipNumber] [PlanetNumber]"
+	gosub :BOT~help_file
+
     gosub :INVADER~check_invade_macro_params
     setVar $INVADER~speed_invade_macro  $INVADER~xport&$INVADER~enter&"       * "
     setVar $INVADER~normal_invade_macro     $INVADER~xport&$INVADER~enter&"** "

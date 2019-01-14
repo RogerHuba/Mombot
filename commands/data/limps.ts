@@ -1,28 +1,6 @@
 	logging off
 	gosub :BOT~loadVars
-	loadVar $bot_name
-	loadVar $unlimitedGame
-	loadVar $bot_turn_limit
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
-	loadVar $stardock
-	loadVar $backdoor
-	loadvar $LIMPET_COST
-	loadvar $ARMID_COST
-	loadVar $LIMPET_REMOVAL_COST
-	loadvar $password
-	loadVar $port_max
-	loadVar $ptradesetting
-	loadVar $bot~LIMP_FILE 
-	loadVar $BOT~LIMP_COUNT_FILE	
-
+	loadvar $bot~LIMP_COUNT_FILE
 
 	setVar $BOT~help[1] $BOT~tab&"Refreshes Deployed Limpet List"
 	setVar $BOT~help[2] $BOT~tab&"  - Will show difference since last command was run."
@@ -53,7 +31,7 @@
 
 :planet_limps
 	waitOn "Planet #"
-   	GetWord CURRENTLINE $PLANET~planet 2
+   	GetWord CURRENTLINE $planet~planet 2
   	striptext $planet~planet "#"
 
 :start_limps
@@ -174,39 +152,11 @@ halt
 			add $i 1
 		end
 		delete $BOT~LIMP_FILE
-		write $BOT~LIMP_FILE $output
 		delete $BOT~LIMP_COUNT_FILE
-		write $BOT~LIMP_COUNT_FILE $count
 return
 # ======================     END REFRESH LIMP (LIMPS) SUBROUTINE    ==========================
 
-#=============================== FORMATTING FOR SPACES =======================================
-:formatNumberForSpaces
-	if ($inputVariable < 10)
-		setVar $outputVariable "    " & $inputVariable
-	elseif ($inputVariable < 100)
-		setVar $outputVariable "   " & $inputVariable
-	elseif ($inputVariable < 1000)
-		setVar $outputVariable "  " & $inputVariable
-	elseif ($inputVariable < 10000)
-		setVar $outputVariable " " & $inputVariable
-	else
-		setVar $outputVariable $inputVariable
-	end
-return
 
-:formatPercentageForSpaces
-	if ($inputVariable < 10)
-		setVar $outputVariable "  (" & $inputVariable&"%)"
-	elseif ($inputVariable < 100)
-		setVar $outputVariable " (" & $inputVariable&"%)"
-	elseif ($inputVariable < 1000)
-		setVar $outputVariable "(" & $inputVariable&"%)"
-	else
-		setVar $outputVariable $inputVariable
-	end
-return
-#============================= END FORMATTING FOR SPACES =====================================
 
 #INCLUDES:
 include "source\module_includes\bot"

@@ -1,28 +1,15 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $command
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
-    loadvar $SWITCHBOARD~self_command 
-    setVar $INVADER~parm1 $parm1
-    setVar $INVADER~parm2 $parm2
-    setVar $INVADER~parm3 $parm3
-    setVar $INVADER~parm4 $parm4
-    setVar $INVADER~parm5 $parm5
-    setVar $INVADER~parm6 $parm6
-    setVar $INVADER~user_command_line $user_command_line
-    setVar $INVADER~command $command
 
-:pxex
-:pxel
-:pxelk
-:pxe
-:pxed
+	gosub :BOT~loadVars
+
+	setVar $BOT~help[1] $BOT~tab&"PXEX - Photon, Xport, Enter, Xport "
+	setVar $BOT~help[2] $BOT~tab&"       Used to launch a Photon into an adjacent Sector then immediately "
+	setVar $BOT~help[3] $BOT~tab&"       Xport into another Ship and Enter Photoned Sector; then, Xport "
+	setVar $BOT~help[4] $BOT~tab&"       back into Photon ship. "
+	setVar $BOT~help[5] $BOT~tab&"             "
+	setVar $BOT~help[6] $BOT~tab&"      pxex [Sector] [ShipNumber] "
+
+	gosub :BOT~help_file
+
     gosub :INVADER~check_invade_macro_params
     setVar $INVADER~speed_invade_macro  $INVADER~xport&$INVADER~enter&"       * "
     setVar $INVADER~normal_invade_macro     $INVADER~xport&$INVADER~enter&"** "
@@ -35,5 +22,6 @@ include "source\bot_includes\player"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"
+include "source\module_includes\bot"
 include "source\module_includes\prompt"
 include "source\module_includes\invader"

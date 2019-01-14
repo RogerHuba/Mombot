@@ -216,10 +216,10 @@ else
 			send "q"
 			goSub :PLANET~getPlanetInfo
 			send "c"
-			setVar $currentPlanet $PLANET~PLANET
+			setVar $currentPlanet $planet~planet
 			
 			if ($fotonKill = 1)
-				setVar $targeting~PLANET $planet~PLANET
+				setVar $targeting~PLANET $planet~planet
 				gosub :targeting~initialize_targeting
 				send "qmnt*c"
 			end
@@ -237,7 +237,7 @@ else
 				:pig2
 				killalltriggers
 
-				send "'pig land " $PLANET~PLANET "*"
+				send "'pig land " $planet~planet "*"
 				setDelayTrigger pig3 :pig3 2000
 				pause
 				:pig3
@@ -250,7 +250,7 @@ else
 			if ($pos > 0)
 				replaceText $cline "bwarp" ""
 				replaceText $cline "  " " "
-				if ($PLANET~Planet_TPad > 5)
+				if ($planet~planet_TPad > 5)
 					setVar $attackMethod "b"
 					setVar $SWITCHBOARD~message "Starting from planet - using bwarp.*"
 					gosub :SWITCHBOARD~switchboard
@@ -260,7 +260,7 @@ else
 					halt
 				end
 			else
-				if (($PLANET~CITADEL > 3) and ($PLANET~PLANET_FUEL > 10000))
+				if (($planet~citadel > 3) and ($planet~planet_FUEL > 10000))
 					setVar $attackMethod "p"
 					setVar $SWITCHBOARD~message "Starting from planet - using planet warp.*"
 					gosub :SWITCHBOARD~switchboard
@@ -312,7 +312,7 @@ replaceText $cline "  " " "
 
 
 # Bot Variable
-setVar $stardock $MAP~STARDOCK
+setVar $map~stardock $MAP~STARDOCK
 
 
 # Number of targets we want once we go to secondary search
@@ -432,7 +432,7 @@ if (($attackPattern = "foton") or ($attackPattern = "announce"))
 			if (PORT.EXISTS[$i] = 1)
 				if (SECTOR.WARPCOUNT[$i] >= $primaryPattern)
 					getSectorParameter $i "FIGSEC" $hasFig
-					if (($hasFig <> 1) and ($i <> $stardock))
+					if (($hasFig <> 1) and ($i <> $map~stardock))
 						add $startTargetsi 1
 						setVar $startTargets[$startTargetsi] $i
 					end
@@ -631,11 +631,11 @@ halt
 				killalltriggers
 
 				setVar $BOT~command "pgrid " & $attacking
-				setVar $user_command_line " pgrid "& $attacking 
-				setVar $parm1 $attacking
-				saveVar $parm1
+				setVar $bot~user_command_line " pgrid "& $attacking 
+				setVar $bot~parm1 $attacking
+				saveVar $bot~parm1
 				saveVar $BOT~command
-				saveVar $user_command_line
+				saveVar $bot~user_command_line
 				load "scripts\mombot\commands\grid\pgrid.cts"
 				setEventTrigger        pgridended        :pgridended "SCRIPT STOPPED" "scripts\mombot\commands\grid\pgrid.cts"
 				pause
@@ -942,7 +942,7 @@ return
 		setVar $sector $nearest[$i]
 		if (PORT.EXISTS[$sector] = 1)
 			getSectorParameter $sector "FIGSEC" $hasFig
-			if (($hasFig <> 1) and ($sector <> $stardock))
+			if (($hasFig <> 1) and ($sector <> $map~stardock))
 				
 				add $startTargetsi 1
 				setVar $startTargets[$startTargetsi] $sector
@@ -991,7 +991,7 @@ return
 	getWord $cline $sector $i
 	while (($sector <> "") and ($sector <> 0))
 		
-		if (($sector > 10) and ($sector <> $stardock))
+		if (($sector > 10) and ($sector <> $map~stardock))
 			setVar $y 1
 			setVar $hasAFig 0
 			while ($y <= SECTOR.WARPINCOUNT[$sector])
@@ -1131,7 +1131,7 @@ return
 				if (SECTOR.WARPCOUNT[$sector] > 2)
 					setVar $i 1
 					while ($i <= SECTOR.WARPCOUNT[$sector])
-						if ((SECTOR.WARPS[$sector][$i] > 10) and (SECTOR.WARPS[$sector][$i] <> $stardock))
+						if ((SECTOR.WARPS[$sector][$i] > 10) and (SECTOR.WARPS[$sector][$i] <> $map~stardock))
 							if (PORT.EXISTS[SECTOR.WARPS[$sector][$i]] = 1)
 								if (($sectorBlocked[SECTOR.WARPS[$sector][$i]] = "0") and ($sectorHasFig[SECTOR.WARPS[$sector][$i]] = "0"))
 									# found potenial target - HAs Port, Not our Fig, Reporting, and not Fed

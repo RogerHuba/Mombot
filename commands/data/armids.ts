@@ -1,14 +1,14 @@
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
+	setVar $bot~parm1 $BOT~parm1
+	setVar $bot~parm2 $BOT~parm2
+	setVar $bot~parm3 $BOT~parm3
+	setVar $bot~parm4 $BOT~parm4
+	setVar $bot~parm5 $BOT~parm5
+	setVar $bot~parm6 $BOT~parm6
+	setVar $bot~parm7 $BOT~parm7
+	setVar $bot~parm8 $BOT~parm8
+	setVar $bot~user_command_line $BOT~user_command_line
 	loadVar $BOT~ARMID_COUNT_FILE
 
 	setVar $BOT~help[1] $BOT~tab&"Refreshes Deployed Armid List"
@@ -146,33 +146,7 @@ return
 
 
 
-#=============================== FORMATTING FOR SPACES =======================================
-:formatNumberForSpaces
-	if ($inputVariable < 10)
-		setVar $outputVariable "    " & $inputVariable
-	elseif ($inputVariable < 100)
-		setVar $outputVariable "   " & $inputVariable
-	elseif ($inputVariable < 1000)
-		setVar $outputVariable "  " & $inputVariable
-	elseif ($inputVariable < 10000)
-		setVar $outputVariable " " & $inputVariable
-	else
-		setVar $outputVariable $inputVariable
-	end
-return
 
-:formatPercentageForSpaces
-	if ($inputVariable < 10)
-		setVar $outputVariable "  (" & $inputVariable&"%)"
-	elseif ($inputVariable < 100)
-		setVar $outputVariable " (" & $inputVariable&"%)"
-	elseif ($inputVariable < 1000)
-		setVar $outputVariable "(" & $inputVariable&"%)"
-	else
-		setVar $outputVariable $inputVariable
-	end
-return
-#============================= END FORMATTING FOR SPACES =====================================
 
 #INCLUDES:
 include "source\module_includes\bot"
