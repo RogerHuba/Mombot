@@ -63,13 +63,13 @@
 	else
 		setVar $sellhalf false
 	end
-	getWordPos $bot~user_command_line&" " $pos " o "
+	getWordPos " "&$bot~user_command_line&" " $pos " o "
 	if ($pos > 0)
 		setVar $sellingOrg TRUE
 	else
 		setVar $sellingOrg FALSE
 	end
-	getWordPos $bot~user_command_line&" " $pos " e "
+	getWordPos " "&$bot~user_command_line&" " $pos " e "
 	if ($pos > 0)
 		setVar $sellingEquip TRUE
 	else
@@ -166,7 +166,7 @@
 			end
 			# If this sector is our xxB, we're done!
 			getSectorParameter $focus "BUSTED" $isBusted
-			if (($isBusted <> TRUE) AND ($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = true) AND ((($sellingOrg) AND ($planet~planet_organics > 500) AND (PORT.BUYORG[$focus]) and ((PORT.PERCENTORG[$focus] > 50) and (port.org[$focus] > $half_port_max) and ($sellhalf = true)) AND (PORT.ORG[$focus] >= $minimumFuel)) OR (($sellingEquip) AND ($planet~planet_equipment > 500) AND (PORT.BUYEQUIP[$focus]) AND ((PORT.PERCENTEQUIP[$focus] > 50) and ($sellhalf = true) and (port.equip[$focus] > $half_port_max)) and (PORT.EQUIP[$focus] >= $minimumFuel))))
+			if (($isBusted <> TRUE) AND ($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = true) AND ((($sellingOrg) AND ($planet~planet_organics > 500) AND (PORT.BUYORG[$focus]) and (((PORT.PERCENTORG[$focus] > 50) and (port.org[$focus] > $half_port_max) and ($sellhalf = true)) or ($sellhalf <> true)) AND (PORT.ORG[$focus] >= $minimumFuel)) OR (($sellingEquip) AND ($planet~planet_equipment > 500) AND (PORT.BUYEQUIP[$focus]) AND (((PORT.PERCENTEQUIP[$focus] > 50) and ($sellhalf = true) and (port.equip[$focus] > $half_port_max)) or ($sellhalf <>true)) and (PORT.EQUIP[$focus] >= $minimumFuel))))
 				# fig found 0 hops
 				setVar $NearFig $focus
 				setVar $checkedPorts[$NearFig] TRUE
