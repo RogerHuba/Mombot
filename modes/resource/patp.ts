@@ -3,11 +3,11 @@
 
 
 	setVar $BOT~help[1]  $BOT~tab&"              PATP - Pay At The Pump               "
-	setVar $BOT~help[2]  $BOT~tab&"  patp {sector param} {min port fuel} {f} {o} {e} {b} {w}"
+	setVar $BOT~help[2]  $BOT~tab&"  patp {sector param} {min port prod} {f} {o} {e} {b} {w}"
 	setVar $BOT~help[3]  $BOT~tab&"       {upgrade} {buyhalf} {docim} {destroyports}"
 	setVar $BOT~help[4]  $BOT~tab&"        "
 	setVar $BOT~help[5]  $BOT~tab&"Options:"
-	setVar $BOT~help[6]  $BOT~tab&"    [min port fuel]  minimum fuel a port must have to visit it"
+	setVar $BOT~help[6]  $BOT~tab&"    [min port prod]  minimum product a port must have to visit it"
 	setVar $BOT~help[7]  $BOT~tab&"                       - default is 1000"
 	setVar $BOT~help[8]  $BOT~tab&"    [sector param]   will visit only sector params = true (1) "
 	setVar $BOT~help[9]  $BOT~tab&"                       - if blank, all valid sector will be visited "
