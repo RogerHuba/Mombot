@@ -1,5 +1,4 @@
 	reqRecording
-	logging off
 	gosub :BOT~loadVars
 
 	loadVar $GAME~GENESIS_COST
@@ -1038,13 +1037,17 @@ return
 
                         send "qq* l " & #8 & $planets[$j] & "* c "
 		        		gosub :setWindow
-                        if (($PLANET_CITADEL_CREDITS > 0) and ($cash))
-							if ($PLANET_CITADEL_CREDITS > 999999999) or (($PLANET_CITADEL_CREDITS +  $PLAYER~CREDITS) > 999999999)
-							    setVar $PLANET_CITADEL_CREDITS (999999999 - $PLAYER~CREDITS)
-							else
-						        setVar $PLANET_CITADEL_CREDITS ($PLANET_CITADEL_CREDITS + $PLAYER~CREDITS)
+                        if (($PLANET_CITADEL_CREDITS > 0) and ($cash = true))
+							while ($planet_citadel_credits > 0)
+								if ($PLANET_CITADEL_CREDITS > 999999999) or (($PLANET_CITADEL_CREDITS +  $PLAYER~CREDITS) > 999999999)
+									setVar $amount_of_cash_to_transfer (999999999 - $PLAYER~CREDITS)
+								else
+									setVar $amount_of_cash_to_transfer ($PLANET_CITADEL_CREDITS)
+								end
+								setvar $planet_citadel_credits ($planet_citadel_credits - $amount_of_cash_to_transfer)
+								send "t f " & $amount_of_cash_to_transfer & "* qq* l " & #8 & $planetToFill & "* c t t " & $amount_of_cash_to_transfer & "* qq* l " & #8 & $planets[$j] & "* c "
 							end
-							send "t f " & $PLANET_CITADEL_CREDITS & "* qq* l " & #8 & $planetToFill & "* c t t " & $citadelCash & "* qq* "
+							send "qq* "
                         end
                         if (($shield) and ($PLANET_CITADEL > 4) and ($PLANET_SHIELD_POWER < 200))
                             if ($PLAYER~SHIELDS < 2000)
