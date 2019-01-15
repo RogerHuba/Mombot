@@ -109,9 +109,9 @@
 	end
 	getWordPos " "&$bot~user_command_line&" " $pos " o "
 	if ($pos > 0)
-		setVar $buy_equipment TRUE
+		setVar $buy_organics TRUE
 	else
-		setVar $buy_equipment FALSE
+		setVar $buy_organics FALSE
 	end
 	getWordPos " "&$bot~user_command_line&" " $pos " e "
 	if ($pos > 0)
@@ -243,7 +243,7 @@
 				if ($upgrade)
 					killAllTriggers
 
-					if ($buy_fuel = true)
+					if (($buy_fuel = true) and (PORT.BUYFUEL[$NearFig] = FALSE))
 						gosub :PLAYER~quikstats
 						send "q"
 						waitOn "Planet command (?"
@@ -275,7 +275,7 @@
 						gosub :PLANET~landOnPlanetEnterCitadel
 					end
 
-					if ($buy_organics = true)
+					if (($buy_organics = true) and (PORT.BUYORG[$NearFig] = FALSE))
 						gosub :PLAYER~quikstats
 						send "q"
 						waitOn "Planet command (?"
@@ -307,7 +307,7 @@
 						gosub :PLANET~landOnPlanetEnterCitadel
 					end
 
-					if ($buy_equipment = true)
+					if (($buy_equipment = true) and (PORT.BUYEQUIP[$NearFig] = FALSE))
 						gosub :PLAYER~quikstats
 						send "q"
 						waitOn "Planet command (?"
@@ -345,7 +345,7 @@
 					divide $totalPortEquip 2
 				end
 
-				if ($buy_fuel = true)
+				if (($buy_fuel = true) and (PORT.BUYFUEL[$NearFig] = FALSE))
 					if (($PLANET~planet_fuel_max-$PLANET~planet_fuel) < $totalPortFuel)
 						setVar $turnsToEmpty (($PLANET~planet_fuel_max-$PLANET~planet_fuel)/$PLAYER~TOTAL_HOLDS)
 						add $totalFuelHolds ($PLANET~planet_fuel_max-$PLANET~planet_fuel)
@@ -381,14 +381,14 @@
 				end
 
 
-				if ($buy_organics = true)
-					if (($planet~planet_equipment_max-$planet~planet_equipment) < $totalPortEquip)
-						setVar $turnsToEmpty (($planet~planet_equipment_max-$planet~planet_equipment)/$PLAYER~TOTAL_HOLDS)
-						add $totalOrgHolds ($planet~planet_equipment_max-$planet~planet_equipment)
+				if (($buy_organics = true) and (PORT.BUYORG[$NearFig] = FALSE))
+					if (($planet~planet_organics_max-$planet~planet_organics) < $totalPortOrg)
+						setVar $turnsToEmpty (($planet~planet_organics_max-$planet~planet_organics)/$PLAYER~TOTAL_HOLDS)
+						add $totalOrgHolds ($planet~planet_organics_max-$planet~planet_organics)
 						setVar $isDone TRUE
 					else
-						setVar $turnsToEmpty ($totalPortEquip/$PLAYER~TOTAL_HOLDS)
-						add $totalOrgHolds $totalPortEquip
+						setVar $turnsToEmpty ($totalPortOrg/$PLAYER~TOTAL_HOLDS)
+						add $totalOrgHolds $totalPortOrg
 					end
 					setVar $PLAYER~buyobject "o"
 					if ($best = true)
@@ -416,7 +416,7 @@
 					end
 				end
 
-				if ($buy_equipment = true)
+				if (($buy_equipment = true) and (PORT.BUYEQUIP[$NearFig] = FALSE))
 					if (($planet~planet_equipment_max-$planet~planet_equipment) < $totalPortEquip)
 						setVar $turnsToEmpty (($planet~planet_equipment_max-$planet~planet_equipment)/$PLAYER~TOTAL_HOLDS)
 						add $totalEquipHolds ($planet~planet_equipment_max-$planet~planet_equipment)
