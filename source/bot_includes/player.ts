@@ -1666,6 +1666,14 @@ return
     #$buytype - 1/2/3
     #$buyobject - e/o/f
 
+
+# ============================== START HAGGLE VARIABLES ============================
+	setVar $overhagglemultiple 	147
+	setVar $cyclebuffer 		1
+	setVar $cyclebufferlimit 	20
+# ============================== END HAGGLE VARIABLES ============================
+
+
     send "@"
     waitOn "Average Interval Lag:"
     gosub :quikstats

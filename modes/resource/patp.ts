@@ -120,7 +120,7 @@
 		setVar $buy_equipment FALSE
 	end
 
-	if (($buy_fuel <> true) and ($buy_equipment <> true) and ($buy_equipment <> true))
+	if (($buy_fuel <> true) and ($buy_equipment <> true) and ($buy_organics <> true))
 		setvar $switchboard~message "Must pick f, o, or e to buy with pay at the pump.  We no longer only fill up on gas!*"
 		gosub :switchboard~switchboard
 		halt
@@ -191,12 +191,12 @@
 				setVar $isTargetSector TRUE
 			end
 			if ($docim = FALSE)
-				if (($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0) AND (SECTOR.EXPLORED[$focus] = "YES") AND (((($buy_fuel = true) and (PORT.FUEL[$focus] >= $minimumFuel) AND (PORT.BUYFUEL[$focus] = FALSE)) or (($buy_equipment = true) and (PORT.ORG[$focus] >= $minimumFuel) AND (PORT.BUYORG[$focus] = FALSE)) or (($buy_equipment = true) and (PORT.EQUIP[$focus] >= $minimumFuel) AND (PORT.BUYEQUIP[$focus] = FALSE)))  AND ($isBusted <> TRUE) AND ($isTargetSector = TRUE)))
+				if (($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0) AND (SECTOR.EXPLORED[$focus] = "YES") AND (((($buy_fuel = true) and (PORT.FUEL[$focus] >= $minimumFuel) AND (PORT.BUYFUEL[$focus] = FALSE)) or (($buy_organics = true) and (PORT.ORG[$focus] >= $minimumFuel) AND (PORT.BUYORG[$focus] = FALSE)) or (($buy_equipment = true) and (PORT.EQUIP[$focus] >= $minimumFuel) AND (PORT.BUYEQUIP[$focus] = FALSE)))  AND ($isBusted <> TRUE) AND ($isTargetSector = TRUE)))
 					send "cr"&$focus&"*q"
 					gosub :PLAYER~quikstats
 				end
 			end
-			if (($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0) AND (((($buy_fuel = true) and (PORT.FUEL[$focus] >= $minimumFuel) AND (PORT.BUYFUEL[$focus] = FALSE)) or (($buy_equipment = true) and (PORT.ORG[$focus] >= $minimumFuel) AND (PORT.BUYORG[$focus] = FALSE)) or (($buy_equipment = true) and (PORT.EQUIP[$focus] >= $minimumFuel) AND (PORT.BUYEQUIP[$focus] = FALSE))) AND ($isBusted <> TRUE) AND ($isTargetSector = TRUE)))
+			if (($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0) AND (((($buy_fuel = true) and (PORT.FUEL[$focus] >= $minimumFuel) AND (PORT.BUYFUEL[$focus] = FALSE)) or (($buy_organics = true) and (PORT.ORG[$focus] >= $minimumFuel) AND (PORT.BUYORG[$focus] = FALSE)) or (($buy_equipment = true) and (PORT.EQUIP[$focus] >= $minimumFuel) AND (PORT.BUYEQUIP[$focus] = FALSE))) AND ($isBusted <> TRUE) AND ($isTargetSector = TRUE)))
 				# fig found 0 hops
 				setVar $NearFig $focus
 				setVar $checkedPorts[$NearFig] TRUE
@@ -301,7 +301,7 @@
 						pause
 						:orgDuring
 							killalltriggers
-							getWord CURRENTLINE $totalPortOrg 4
+							getWord CURRENTLINE $totalPortOrg 3
 							waitOn "<Computer deactivated>"
 						gosub :PLAYER~quikstats
 						gosub :PLANET~landOnPlanetEnterCitadel
@@ -333,7 +333,7 @@
 						pause
 						:equipDuring
 							killalltriggers
-							getWord CURRENTLINE $totalPortEquip 4
+							getWord CURRENTLINE $totalPortEquip 3
 							waitOn "<Computer deactivated>"
 						gosub :PLAYER~quikstats
 						gosub :PLANET~landOnPlanetEnterCitadel
