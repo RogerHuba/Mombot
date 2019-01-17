@@ -29,33 +29,33 @@
 
 :photon_fed
 	gosub :killtriggers
-	setvar $message "Can't fire photon into fed space!*"
+	setvar $switchboard~message "Can't fire photon into fed space!*"
 	gosub :switchboard~switchboard
 	return
 
 :photon_missed
 	gosub :killtriggers
-	setvar $message "Photon Missed! Resetting!*"
+	setvar $switchboard~message "Photon Missed! Resetting!*"
 	gosub :switchboard~switchboard
 	setSectorParameter $adjsec "FIGSEC" FALSE
 	return
 
 :photon_overheated
 	gosub :killtriggers
-	setvar $message "Photon overheated.  Have to wait before firing again.*"
+	setvar $switchboard~message "Photon overheated.  Have to wait before firing again.*"
 	gosub :switchboard~switchboard
 	return
 
 :photon_none
 	gosub :killtriggers
-	setvar $message "Ran out of photons.  Need to buy more..*"
+	setvar $switchboard~message "Ran out of photons.  Need to buy more..*"
 	gosub :switchboard~switchboard
 	return
 
 
 :photon_gotem
 	gosub :killtriggers
-	setvar $message "Photon Fired - Sector => " & $sector & "!*"
+	setvar $switchboard~message "Photon Fired - Sector => " & $sector & "!*"
 	gosub :switchboard~switchboard
 	return
 
