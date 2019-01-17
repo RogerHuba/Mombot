@@ -70,6 +70,60 @@
 		killtrigger home_now
 return
 
+
+
+###################################################################################################
+# need to get more photons, but don't want to catch an enemy limpet on the way back to the planet #
+# so we need to make sure the planet we leave from has limpets, or is our bubble                  #
+###################################################################################################
+
+:navigate_to_limp
+		gosub :player~quikstats
+		setVar $bottom 1
+		setVar $top 1
+		setArray $checked SECTORS
+		setVar $que[1] $PLAYER~CURRENT_SECTOR
+		setVar $checked[$PLAYER~CURRENT_SECTOR] 0
+		:try_again
+		while ($bottom <= $top)
+			# Now, pull out the next sector in the queue, and make it our focus
+			setVar $focus $que[$bottom]
+			getsectorparameter $focus "FIGSEC" $isFigged
+			getsectorparameter $focus "LIMPSEC" $isLimped
+			getsectorparameter $focus "BUBBLE" $isBubble
+			getsectorparameter $focus "MSLSEC" $isMsl
+
+			###############################################################
+			# if it's our bubble, the assumption is the sectors are clean #
+			###############################################################
+
+			if (((($isFigged = true) and ($isLimped = true)) and ($isMsl <> true)) or ($isBubble = true))
+				setVar $nearfig $focus
+				goto :pwarp_away
+			end
+			# That wasn't it, so let's add all the adjacents to the queue for future testing.
+			setVar $a 1
+			while (SECTOR.WARPS[$focus][$a] > 0)
+				setVar $adjacent SECTOR.WARPS[$focus][$a]
+				# But only add them if they haven't been added previously
+				if ($checked[$adjacent] = 0)
+					# Okay, this one hasn't been checked, so tag it and que it.
+					setVar $checked[$adjacent] 1
+					add $top 1
+					setVar $que[$top] $adjacent
+				end
+				add $a 1
+			end
+			# The adjacents of $focus were all queued, now on to the next one.
+			add $bottom 1
+		end	
+		setVar $SWITCHBOARD~message "Can't find a route to any safe sectors to refurb photons.*"
+		gosub :SWITCHBOARD~switchboard
+		gosub :head_home
+		halt
+
+
+
 :head_home
 	send "p" $map~home_sector "*y"
 	gosub :player~quikstats

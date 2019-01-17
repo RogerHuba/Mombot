@@ -91,13 +91,13 @@ return
 	#  Check for alien hits - if the game has any #
 	###############################################
 
-	#if (($game~internalFerrengi = true) or ($game~internalAliens = true))
+	if ($game~hasAliens = true)
 		getText CURRENTANSILINE $alien_check ": " "'s"
 		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 		if ($pos > 0)
 		     return
 		end
-	#end
+	end
 
 	# Get the sector number
 	getWord CURRENTLINE $sector 5

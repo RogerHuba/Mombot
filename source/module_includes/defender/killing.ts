@@ -5,17 +5,26 @@
 		echo ANSI_14 "*spoof attempt!*"
 		return
 	end	
+
 :scanit_again
-	gosub :killtriggers
 	gosub :player~quikstats
-	setvar $player~startingLocation $player~current_prompt
+	setvar $player~startinglocation $player~current_prompt
 	gosub :sector~getSectorData
-	setvar $capemptyships true
+	setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
+	if (($planet_count = 1) and ($overide = false))
+		setvar $one_planet true
+		setvar $player~override true
+	else
+		setvar $player~override false
+	end
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-		goSub :player~fastCitadelAttack
+		gosub :player~fastCitadelAttack
 		goto :scanit_again
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
+		setvar $player~startinglocation "Citadel"
 		gosub :player~fastCapture
+		send "l "&$PLANET~PLANET&"* m * * * c "
+		gosub :player~quikstats
 		goto :scanit_again
 	end
 return
@@ -41,6 +50,9 @@ return
 		getwordpos $ship~shipList[$i] $pos $ship_type
 		if ($pos > 0)
 			setvar $last_ship_type $ship_type
+
+			setvar $switchboard~message "Setting cannon to kill "&$ship_type&" ship.*"
+			gosub :switchboard~switchboard
 				
 			##############################################################################
 			# grabbing attacking ship's max fighters +max shields + 10000 damage to offset fuel usage #
@@ -64,6 +76,9 @@ return
 				setvar $last_percentage $percentToSet
 				send "l s "&$percentToSet&"* "
 			end
+			setvar $cannon_damage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3)
+			setvar $switchboard~message "Sector cannon set to "&$cannon_damage&" damage.*"
+			gosub :switchboard~switchboard
 			return
 		end
 		add $i 1
