@@ -24,6 +24,7 @@ setVar $BOT~help[14] $BOT~tab&"    "
 setVar $BOT~help[15] $BOT~tab&"    Auto refurbs - requires fed safe if not using furb"
 setVar $BOT~help[16] $BOT~tab&"    Stores sectors to go back to when script reruns."
 setVar $BOT~help[17] $BOT~tab&"    AUTOCLEANUP if planets above 90%"
+setVar $BOT~help[18] $BOT~tab&"    mooexp [turns] [mooship1] furb ice"
 
 gosub :BOT~help_file
 
@@ -52,10 +53,18 @@ if ($startingLocation <> "Command")
 	halt
 end
 
+setVar $ice 0
+getWordPos $bot~user_command_line $pos "ice"
+if ($pos > 0)
+	setVar $ice 1
+end
+
 if (($player~TWARP_TYPE <> 1) and ($player~TWARP_TYPE <> 2))
-	setVar $SWITCHBOARD~message "MooExp - Twarp = good, No Twarp = bad.*"
-	gosub :SWITCHBOARD~switchboard
-	halt
+	if ($ice = 0)
+		setVar $SWITCHBOARD~message "MooExp - Twarp = good, No Twarp = bad.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
 end
 
 if ($player~FIGHTERS < 301)
@@ -65,7 +74,7 @@ if ($player~FIGHTERS < 301)
 end
 
 
-if ($player~ORE_HOLDS < 100)
+if (($player~ORE_HOLDS < 100) and ($ice = 0))
 	setVar $SWITCHBOARD~message "MooExp - We need ore in our holds.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
@@ -159,6 +168,9 @@ end
 gosub :switchboard~switchboard
 
 
+setVar $iceFurb FALSE
+setVar $iceShipMoo 0
+setVar $iceShipExplore 0
 
 getWordPos $bot~user_command_line $pos "furb"
 if ($pos > 0)
@@ -167,6 +179,13 @@ if ($pos > 0)
 	setVar $useGuard FALSE
 	setVar $furbfigs FALSE
 	setVar $corpCashDump FALSE
+	
+	if ($ice = 1)
+		# mooexp 1000 5 furb ice
+		setvar $switchboard~message "Using Corp Furbing: Ice T Version.*"
+		setVar $iceFurb TRUE
+		goSub :setUpIce
+	end
 else
 	setVar $corpfurb FALSE
 	setVar $corpCashDump TRUE
@@ -180,6 +199,8 @@ else
 
 end
 gosub :switchboard~switchboard
+
+
 
 getWordPos $bot~user_command_line $pos "deldata"
 if ($pos > 0)
@@ -433,7 +454,7 @@ while ($iSaySo)
 		gosub :subreport
 		halt
 	end
-	if ($player~FIGHTERS < 301)
+	if (($player~FIGHTERS < 301) and ($ice = 0))
 		setVar $SWITCHBOARD~message "Need more than 300 figs, you'll hit debree and die!*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -493,11 +514,70 @@ halt
 	if ($tradingSector1 > 0)
 		setVar $tradingSector2 CURRENTSECTOR
 		add $stat_trades 1
-		goSub :createAndSell
+		if ($ice = 1)
+			
+			goSub :icePreTrade
+			goSub :createAndSell
+			goSub :icePostTrade
+		else
+			goSub :createAndSell
+		end
+
 	end
 
 return
 
+:icePreTrade
+	# xport
+	# Twarp
+	setVar $xportShip $iceShipMoo
+	goSub :xportShip
+	gosub :player~quikstats
+	setVar $player~warpto $tradingSector2
+	gosub :player~twarp
+	add $stat_moves 1
+	gosub :player~quikstats
+
+return
+
+:icePostTrade
+	gosub :player~quikstats
+	setVar $iceShipMoo $player~SHIP_NUMBER
+
+	setVar $xportShip $iceShipExplore
+	goSub :xportShip
+return
+
+:xportShip
+
+	setVar $xportString "X  " & $xportShip & "*Q"
+        send $xportString
+        setTextLineTrigger noxportship :noxportship "That is not an available ship"
+        setTextLineTrigger noxportrange :noxportrange "only has a transport range"
+        setTextLineTrigger noxportpassword :noxportpassword "Enter the password for"
+        setTextLineTrigger xportsuccess :xportsuccess "Security code accepted"
+        pause
+        pause
+        :noxportship
+		killalltriggers
+		setVar $SWITCHBOARD~message "Ship not available for Xport, could be under attack!!*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+        :noxportrange
+		killalltriggers
+		setVar $SWITCHBOARD~message "Not enough transport range, Script Halting.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+        :noxportpassword
+		killalltriggers
+		setVar $SWITCHBOARD~message "Transport ship requires a password, Script Halting.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+        :xportsuccess
+		killalltriggers
+		return
+
+return
 
 :searchForTradingPort
 # TradeType 1: XBS/XSB	
@@ -547,7 +627,11 @@ return
 :restock
 
 	if ($corpfurb = true)
-		gosub :restockcorp
+		if ($ice = 1)
+			gosub :restockice
+		else
+			gosub :restockcorp
+		end
 	else
 		gosub :player~quikstats
 		setVar $prestockcredits $player~credits
@@ -563,6 +647,30 @@ return
 
 
 return
+
+:restockice
+	
+	# BOT_NAME - MOOSHIP - EXPLORESHIP CURRENTSECTOR
+	gosub :player~quikstats
+
+	:pickupTryAgain
+	send "'MooTime@ " $SWITCHBOARD~bot_name " " $player~SHIP_NUMBER " " $iceShipExplore " " CURRENTSECTOR "*"
+	
+	
+	setTextLineTrigger pickupok :pickupok "Roger, gifts on route"
+	setDelayTrigger pickupTimeOut :pickupTimeOut 4000
+	pause
+	:pickupTimeOut
+		killalltriggers
+		goto :pickupTryAgain
+
+	:pickupok
+		killalltriggers
+	
+	waitfor "ICEICEBABY"
+	gosub :player~quikstats
+return
+
 :restockcorp
 	
 	gosub :player~quikstats
@@ -2137,6 +2245,60 @@ return
 	
 return
 
+
+:setUpIce
+	
+	send "i"
+	waitfor "Ship Name      :"
+	setTextLineTrigger icegs :icegs "Merchant Trader Ported"
+	setTextLineTrigger icess :icess "Merchant Trader Ported"
+	pause
+		:icess
+		setVar $SWITCHBOARD~message "For ICE Explore you need to start in a Merch Trader.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+		:icegs
+		killalltriggers
+		
+	# ship is good
+	# Swap out second variable from SLOT to MOO ship num
+	setVar $iceShipMoo $preferredPlanetSlot
+	setVar $iceShipExplore $player~SHIP_NUMBER
+	
+	send "xq"
+	waitfor "--------------------"
+	setVar $foundShip 0
+	:shipScan
+	setTextLineTrigger shipCorp :shipCorp "Corp "
+	setTextLineTrigger shipEnd :shipEnd "<I> Ship details"
+	pause
+	:shipCorp
+		killAllTriggers
+		getWord CURRENTLINE $tnum 1
+		if ($tnum = $iceShipMoo)
+			setVar $foundShip 1
+			#   5  3385 POP2            Corp      500       0    0  Colonial Transwarp
+			cuttext CURRENTLINE $shipType 56 18
+			
+			if ($shipType <> "Colonial Transwarp")
+				setVar $SWITCHBOARD~message "Moo ships need to be Colonial Transwarp.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
+		end
+		goto :shipScan
+	:shipEnd
+		killAllTriggers
+	if ($foundShip = 0)
+	
+		setVar $SWITCHBOARD~message "For ICE mode you must specify MOOEXP [TURNS] [MOOSHIP] .*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+
+	end
+	setVar $preferredPlanetSlot 99
+
+return
 
 include "source\module_includes\bot"
 include "source\bot_includes\player"
