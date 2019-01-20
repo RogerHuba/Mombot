@@ -517,7 +517,7 @@ return
 	if ($PrimaryProduct = 1)
 		if (($cport = 1) or ($cport = 2) or ($cport = 6) or ($cport = 8)) 
 			setVar $prodPerc PORT.PERCENTFUEL[$portToCheck]
-			if ($prodPerc > $tradingMinProduct)
+			if ($prodPerc >= $tradingMinProduct)
 				setVar $portCheckedOk 1
 			end
 			
@@ -525,7 +525,7 @@ return
 	elseif ($PrimaryProduct = 2)
 		if (($cport = 1) or ($cport = 3) or ($cport = 5) or ($cport = 8)) 
 			setVar $prodPerc PORT.PERCENTORG[$portToCheck]
-			if ($prodPerc > $tradingMinProduct)
+			if ($prodPerc >= $tradingMinProduct)
 				setVar $portCheckedOk 1
 			end
 			
@@ -533,7 +533,7 @@ return
 	elseif ($PrimaryProduct = 3)
 		if (($cport = 2) or ($cport = 3) or ($cport = 4) or ($cport = 8)) 
 			setVar $prodPerc PORT.PERCENTEQUIP[$portToCheck]
-			if ($prodPerc > $tradingMinProduct)
+			if ($prodPerc >= $tradingMinProduct)
 				setVar $portCheckedOk 1
 			end
 			
@@ -851,7 +851,7 @@ return
 			if ($portCheckedOk = 1)
 				gosub :getPortQuants
 
-				if ($prodPerc > $tradingMinProduct)					
+				if ($prodPerc >= $tradingMinProduct)					
 					setVar $nOkToTrade[$i] 1
 
 					if ($nWarps[$i] > $maxWarpsGoodPort)
@@ -1650,17 +1650,17 @@ return
 	
 
 	if (($planetList[$planetIndexFound][2] > $FUEL_MIN_MOO) and ($MOO_FUEL = 1))
-		if ((PORT.BUYFUEL[CURRENTSECTOR] = 1) and (PORT.PERCENTFUEL[CURRENTSECTOR] > $tradingMinProduct))
+		if ((PORT.BUYFUEL[CURRENTSECTOR] = 1) and (PORT.PERCENTFUEL[CURRENTSECTOR] >= $tradingMinProduct))
 			setVar $goodPlanet 1
 		end
 	end
 	if (($planetList[$planetIndexFound][3] > $ORGANICS_MIN_MOO) and ($MOO_ORGANICS = 1))
-		if ((PORT.BUYORG[CURRENTSECTOR] = 1) and (PORT.PERCENTORG[CURRENTSECTOR] > $tradingMinProduct))
+		if ((PORT.BUYORG[CURRENTSECTOR] = 1) and (PORT.PERCENTORG[CURRENTSECTOR] >= $tradingMinProduct))
 			setVar $goodPlanet 1
 		end
 	end
 	if (($planetList[$planetIndexFound][4] > $EQUIPMENT_MIN_MOO) and ($MOO_EQUIPMENT = 1))
-		if ((PORT.BUYEQUIP[CURRENTSECTOR] = 1) and (PORT.PERCENTEQUIP[CURRENTSECTOR] > $tradingMinProduct))
+		if ((PORT.BUYEQUIP[CURRENTSECTOR] = 1) and (PORT.PERCENTEQUIP[CURRENTSECTOR] >= $tradingMinProduct))
 			setVar $goodPlanet 1
 		end
 	end
