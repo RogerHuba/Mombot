@@ -934,7 +934,7 @@ return
     setVar $i 2
 :nextTraderPage
     echo ANSI_12 "*Searching for traders in database" ANSI_14 "...*"
-    killalltriggers
+    gosub :BOT~killthetriggers
     setVar $foundSectors 0
     setVar $display ""
     while (($i <= SECTORS) AND ($foundSectors < 3))
@@ -1441,7 +1441,7 @@ return
                             pause
                         :thereIsMyCorp
                             gosub :BOT~killthetriggers
-                            getWord CURRENTLINE $PLAYER~CORPNumber 1
+                            getWord CURRENTLINE $corpNumber 1
                         :continueCorpCreation
                             gosub :BOT~killthetriggers
                             send "J"&$corpNumber&"*"&$BOT~corpPassword&"* * *CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q"

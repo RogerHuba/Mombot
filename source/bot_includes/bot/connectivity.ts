@@ -1,6 +1,7 @@
 #===================================== KEEP ALIVE ============================================
 :keepalive
         send #27
+        setvar $relog_message ""
         add $alive_count 1
     if ($alive_count >= ($BOT~echoInterval * 2))
         setVar $alive_count 0
@@ -10,6 +11,12 @@
         echo CURRENTANSILINE
     end
     if ((CONNECTED <> TRUE) AND ($BOT~doRelog = TRUE))
+        goto :relog_attempt
+    end
+    # at server game menu for some reason #
+    if ((CURRENTLINE = $game~game_menu_prompt) or (CURRENTLINE = "[Pause] - [Press Space or Enter to continue]") or (CURRENTLINE = "Enter your choice: ") or (CURRENTLINE = "Selection (? for menu): "))
+    	setvar $relog_message "Stuck on baffling prompt: ["&CURRENTLINE&"], so I relogged.*"
+        DISCONNECT
         goto :relog_attempt
     end
     send #27
@@ -32,7 +39,7 @@
         if ($BOT~doRelog <> TRUE)
             goto :BOT~wait_for_command
         end
-        killalltriggers
+	    gosub :BOT~killthetriggers
         setDelayTrigger waitForRelogDelay :continueDoingRelog 1500
         pause
         :continueDoingRelog
@@ -64,25 +71,31 @@
             killtrigger novoids
             killtrigger morepauses
             gosub :BOT~relog_freeze_trigger
-            send "Z*  *  Z*  Z   A 9999*  Z*  "
-            send "'{" $SWITCHBOARD~bot_name "} - Auto-relog activated*"
-            setTextTrigger autorelogmessage :continuerelogmessage "{"&$SWITCHBOARD~bot_name&"} - Auto-relog activated"
-            pause
+            send "Z*  *  Z*  Z   A 9999*  Z*  /"
+			setvar $switchboard~message "Auto-relog activated*"
+			gosub :switchboard~switchboard
+            waiton #179
         :continuerelogmessage
             gosub :PLAYER~quikstats
             gosub :BOT~relog_freeze_trigger
             if ($PLAYER~CURRENT_PROMPT = "Planet")
                 send "*"
-                gosub :~PLANET~getPlanetInfo
+                gosub :PLANET~getPlanetInfo
                 if ($PLANET~CITADEL > 0)
                     send "c "
-                    send "'{" $SWITCHBOARD~bot_name "} - In citadel, planet "&$PLANET~PLANET&".*"
+                    setvar $switchboard~message "In citadel, planet "&$PLANET~PLANET&".*"
+                    gosub :switchboard~switchboard
                     goto :BOT~wait_for_command
                 else
-                    send "'{" $SWITCHBOARD~bot_name "} - On planet "&$PLANET~PLANET&".*"
+                    setvar $switchboard~message "On planet "&$PLANET~PLANET&".*"
+                    gosub :switchboard~switchboard
                     goto :BOT~wait_for_command
                 end
             end
+			if ($relog_message <> "")
+				setvar $switchboard~message $relog_message
+				gosub :switchboard~switchboard
+			end
             loadVar $PLANET~PLANET
             if (($PLANET~PLANET <> 0) AND ($PLAYER~CURRENT_SECTOR <> 1) AND ($PLAYER~CURRENT_SECTOR <> $MAP~stardock))
                 setVar $LandOn $PLANET~PLANET

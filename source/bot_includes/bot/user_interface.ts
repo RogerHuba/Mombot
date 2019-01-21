@@ -770,8 +770,8 @@ return
         setVar $BOT~mode $formatted_command
         savevar $bot~mode
     end
-    stop "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
-    stop "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
+#    stop "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
+#    stop "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
     load "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"  
 return
 #============================ END COMMAND PROCESSING/EXTERNAL MODULE RUNNING =======================

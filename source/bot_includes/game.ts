@@ -1,7 +1,7 @@
 # ============================== GAME STATS ==============================
 :gamestats
     if ($PLAYER~startingLocation = "Citadel")
-        send "qqznv"
+        send "qqzn"
     end
     if (($PLAYER~startingLocation = "Command") OR ($PLAYER~startingLocation = "Citadel"))
         send "vqyn"
@@ -367,7 +367,28 @@
             saveVar $steal_factor
             setVar $rob_factor ((3*100)/$rob_factor)
             saveVar $rob_factor
-            send "t*n*"
+
+            send "x*"
+
+			setTextTrigger      prompt          :allPromptsCatch        ""
+			setDelayTrigger     prompt_delay    :current_prompt_delay   5000
+			send "?"
+			pause
+			:current_prompt_delay
+				# should have the last line in the server menu by now #
+				killtrigger prompt
+				goto :back_to_game
+
+			:allPromptsCatch
+				setvar $game_menu_prompt CURRENTLINE
+				setvar $game_menu_prompt_ansi CURRENTANSILINE
+				savevar $game_menu_prompt
+				savevar $game_menu_prompt_ansi
+				setTextTrigger      prompt          :allPromptsCatch        ""
+				pause
+
+			:back_to_game
+            send $bot~letter&" * t*n*"
             if (PASSWORD = "")
                 send $BOT~password
             else

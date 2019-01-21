@@ -186,6 +186,7 @@ return
     :planetInfoDone
         killtrigger citadelstart
         killtrigger cannon
+        killtrigger underConst
     
 setVar $currentBotPlanet $PLANET
 saveVar $currentBotPlanet

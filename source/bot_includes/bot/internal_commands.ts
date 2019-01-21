@@ -502,6 +502,7 @@ goto :BOT~wait_for_command
 # ----- CN settings -----
 :cn
 :cn9
+	gosub :BOT~killthetriggers
     gosub :PLAYER~current_prompt
     setVar $BOT~validPrompts "Citadel Command Computer"
     gosub :BOT~checkStartingPrompt
@@ -608,6 +609,7 @@ goto :BOT~wait_for_command
 # ====================== END TURN BOT ON/OFF (BOT) SUBROUTINE ==========================
 #============================= REFRESH BOT SUB ===============================================
 :refresh
+    gosub :BOT~killthetriggers
     gosub :PLAYER~quikstats
     setVar $BOT~validPrompts "Citadel Command"
     gosub :BOT~checkStartingPrompt
@@ -638,6 +640,7 @@ goto :BOT~wait_for_command
 #####===============================================  BOT HELP SECTION ================================================#####
 :holo_kill
 :hkill
+    gosub :BOT~killthetriggers
     setVar $CIT FALSE
     if ($PLAYER~surround_before_hkill = TRUE)
             setVar $PLAYER~insurround_before_hkill TRUE

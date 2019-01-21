@@ -508,6 +508,8 @@ gosub :PLAYER~init
         saveVar $echoInterval
     end
     setVar $botIsOff FALSE
+    loadvar $game~game_menu_prompt_ansi
+    loadvar $game~game_menu_prompt
     loadvar $alarm_list
     loadVar $PLAYER~offenseCapping
     loadVar $PLAYER~cappingAliens

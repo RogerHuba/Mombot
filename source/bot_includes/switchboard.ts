@@ -46,25 +46,44 @@
                     end
                 end
             end
-            while ($i <= ($length))
-                setVar $spacing $spacing&" "
-                add $i 1
-            end
+			while ($i <= ($length))
+				setVar $spacing $spacing&" "
+				add $i 1
+			end
 
-            setVar $new_message ""
-            setVar $message_line ""
-            replaceText $message "**" "{END_OF_LINE}"
-            replaceText $message "*"  "{END_OF_LINE}"
-            getText ("{START_OF_MESSAGE}"&$message) $message_line "{START_OF_MESSAGE}" "{END_OF_LINE}"
-            while ($message_line <> "")
-                setVar $new_message $new_message&$spacing&$message_line&"*"
-                getLength ("{START_OF_MESSAGE}"&$message_line&"{END_OF_LINE}") $cutlength
-                cutText ("{START_OF_MESSAGE}"&$message&"     ") $message ($cutlength+1) 99999
-                getText ("{START_OF_MESSAGE}"&$message) $message_line "{START_OF_MESSAGE}" "{END_OF_LINE}"
-            end
-        else
-            setVar $new_message $message
-        end
+			setVar $new_message ""
+			setVar $message_line ""
+
+
+			getlength $message $message_length
+			setvar $line_length 70
+			setvar $increment $line_length
+			setvar $pos 1
+			while ($message_length > ($pos+$increment))
+				cutText $message $first_half  $pos $line_length
+				cutText $message $second_half ($pos+$line_length) 999999
+				setvar $message $first_half&"*"&$second_half
+				add $message_length 1
+				add $increment $line_length
+				add $pos ($increment+1)
+			end
+
+			setvar $new_message $message
+#			replaceText $message "**" "{END_OF_LINE}"
+#			replaceText $message "*"  "{END_OF_LINE}"
+
+
+
+#			getText ("{START_OF_MESSAGE}"&$message) $message_line "{START_OF_MESSAGE}" "{END_OF_LINE}"
+#			while ($message_line <> "")
+#				setVar $new_message $new_message&$spacing&$message_line&"*"
+#				getLength ("{START_OF_MESSAGE}"&$message_line&"{END_OF_LINE}") $cutlength
+#				cutText ("{START_OF_MESSAGE}"&$message&"     ") $message ($cutlength+1) 99999
+#				getText ("{START_OF_MESSAGE}"&$message) $message_line "{START_OF_MESSAGE}" "{END_OF_LINE}"
+#			end
+		else
+			setVar $new_message $message
+		end
 
         getWordPos " "&$new_message&" " $pos "*"
         getlength $new_message $length
