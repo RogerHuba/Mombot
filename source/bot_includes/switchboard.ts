@@ -109,8 +109,8 @@ return
 		while ($i <= $message_length)
 			cutText $message $character $i 1
 			if (($character = " ") and ($length > $next_length))
-				cutText $message $first_half  1 $i
-				cutText $message $second_half $i 999999999
+				cutText $message $first_half  1 ($i)
+				cutText $message $second_half ($i+1) 999999999
 				setvar $message $first_half&"*"&$second_half
 				setvar $length 0
 			end
