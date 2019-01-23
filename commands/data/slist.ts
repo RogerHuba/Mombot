@@ -1,11 +1,11 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $stardock
- loadvar $SWITCHBOARD~bot_name 
+    gosub :BOT~loadVars
+
+
+    setVar $BOT~help[1]  $BOT~tab&"Ship list"
+    setVar $BOT~help[2]  $BOT~tab&"  Displays ship list on subspace"
+    setVar $BOT~help[3]  $BOT~tab&"    {fed} - display on fed space"
+    gosub :BOT~help_file
+
 
 #=============================== SS SCANNING =============================================
 :slist
@@ -158,16 +158,16 @@
             if ($scan_macro = "d") OR ($scan_macro = "s")
                 send "* "
             else
-                send " l " & $PLANET~PLANET & "* c s* "
+                send " l " & $planet~planet & "* c s* "
             end
         end
         gosub :spitItOut
         halt
     :no_turns_available1
-        send "'{" $SWITCHBOARD~bot_name "} - No turns available.** "
+        setvar $switchboard~message "No turns available.** "
         halt
         :no_scanner_available1
-        send "'{" $SWITCHBOARD~bot_name "} - No scanner available.** "
+        setvar $switchboard~message "No scanner available.** "
         halt
     :no_scanner_available2
         setVar $current_line "-=-=-=-=-=-=-=-=-=-| Relative Density Scan |-=-=-=-=-=-=-=-=-=-"
@@ -183,21 +183,21 @@
     setArray $scan_array 30
     gosub :PLAYER~quikstats
 
-    isNumber $test $parm1   
+    isNumber $test $bot~parm1   
     setVar $startingLocation $PLAYER~current_prompt 
-    if ((($PLAYER~current_prompt = "Citadel") OR ($PLAYER~current_prompt = "Planet")) OR (($PLAYER~current_prompt = "Command") AND (($parm1 <> "0") AND ($test = TRUE))))
+    if ((($PLAYER~current_prompt = "Citadel") OR ($PLAYER~current_prompt = "Planet")) OR (($PLAYER~current_prompt = "Command") AND (($bot~parm1 <> "0") AND ($test = TRUE))))
         
-        if (($parm1 <> "0") AND ($test = TRUE))
+        if (($bot~parm1 <> "0") AND ($test = TRUE))
             send "  q  q *"
-            setVar $LandOn $parm1
-            setVar $PLANET~Planet $parm1
+            setVar $LandOn $bot~parm1
+            setVar $planet~planet $bot~parm1
             gosub :PLANET~landingSub
             gosub :PLAYER~current_prompt
             if ($PLAYER~current_prompt = "Citadel")
                 send "q "
                 waitOn "Planet command ("
             elseif ($PLAYER~current_prompt <> "Planet")
-                send "'{" & $SWITCHBOARD~bot_name & "} PScan - Problem with landing on the planet you provided.*"
+                setvar $switchboard~message "PScan - Problem with landing on the planet you provided.*"
                 halt
             end
             gosub :start_pscan
@@ -208,10 +208,10 @@
             gosub :start_pscan
         end
     elseif ($Location = "Command")
-            send "'{" $SWITCHBOARD~bot_name "} PScan - If Starting From Sector Please Specify Planet Number.*"
+            setvar $switchboard~message "PScan - If Starting From Sector Please Specify Planet Number.*"
             halt
     else
-        send "'{" & $SWITCHBOARD~bot_name & "} PScan - Please Start from Command, Citadel, or Planet Prompt*"
+        setvar $switchboard~message "PScan - Please Start from Command, Citadel, or Planet Prompt*"
     end
     if ($gotScan)
         gosub :SpitItOut
@@ -269,7 +269,7 @@ return
 return
 :SpitItOut
     setVar $i 1
-    getWordPos $user_command_line $pos "fed"
+    getWordPos $bot~user_command_line $pos "fed"
     if ($pos > 0)
         send "`*"
     else
@@ -300,7 +300,11 @@ return
 #================================ END SS SCANNER =======================================    
 
 # includes:
+include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\sector"
+include "source\bot_includes\map"
+include "source\bot_includes\ship"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\module_includes\prompt"

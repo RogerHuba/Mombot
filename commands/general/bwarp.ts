@@ -1,104 +1,78 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $command
-    loadVar $stardock
-    loadVar $MAP~stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
-    loadvar $SWITCHBOARD~self_command 
+    gosub :BOT~loadVars
+
+    setVar $BOT~help[1]  $BOT~tab&"bwarp - planet transports to sector as quickly "
+    setVar $BOT~help[2]  $BOT~tab&"        and safely as possible.   "
+    setVar $BOT~help[3]  $BOT~tab&"Options: "
+    setVar $BOT~help[4]  $BOT~tab&"    t [sector] - normal bwarp"
+    setVar $BOT~help[5]  $BOT~tab&"    t [sector] {p} - bwarp, then port"
+    setVar $BOT~help[6]  $BOT~tab&"    t planet {planet id} - bwarp to last known "
+    setVar $BOT~help[7]  $BOT~tab&"                           location of the planet id"
+    gosub :BOT~help_file
 
 # ======================     START BWARP SUBROUTINES     =================
 :Bwarp
 :b
-    gosub :killthetriggers
-    if ($parm1 <> $PLAYER~CURRENT_SECTOR)
+    killalltriggers
+    if ($bot~parm1 <> $PLAYER~CURRENT_SECTOR)
         gosub :PLAYER~current_prompt
     else
         gosub :PLAYER~quikstats
     end
     setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $validPrompts "Citadel"
-    gosub :checkStartingPrompt
+    setVar $bot~validPrompts "Citadel"
+    gosub :bot~checkstartingprompt
     gosub :travelProtections
     gosub :PLAYER~bwarp
-    goto :wait_for_command
+    halt
 # ======================     END BWARP SUBROUTINES     ==========================
 
 
 :travelProtections
-    isNumber $test $parm1
+    isNumber $test $bot~parm1
     if ($test = FALSE)
         setVar $SWITCHBOARD~message "Sector must be entered as a number*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     else
-        if ($parm2 = "p")
+        if ($bot~parm2 = "p")
             setVar $warpto_p "p z t *"
-            if ($parm1 = $MAP~stardock)
+            if ($bot~parm1 = $MAP~stardock)
                 setVar $warpto_p "p z s h *"
             end
         else
-            isNumber $test $parm2
+            isNumber $test $bot~parm2
             if ($test = FALSE)
                 setVar $warpto_p ""
             else
-                setVar $warpto_p $parm2
+                setVar $warpto_p $bot~parm2
             end
         end
-        setVar $PLAYER~warpto $parm1
+        setVar $PLAYER~warpto $bot~parm1
         if ($PLAYER~CURRENT_SECTOR = $PLAYER~warpto)
             setVar $SWITCHBOARD~message "Already in that sector!*"
             gosub :SWITCHBOARD~switchboard
-            goto :wait_for_command
+            halt
         elseif (($PLAYER~warpto <= 0) OR ($PLAYER~warpto > SECTORS))
             setVar $SWITCHBOARD~message "Destination sector is out of range!*"
             gosub :SWITCHBOARD~switchboard
-            goto :wait_for_command
+            halt
         end
     end
 return
 
 
-:wait_for_command
-halt
 
-:killthetriggers
-    killalltriggers
-return
 
-:removeFigFromData
-    getSectorParameter $target "FIGSEC" $check
-    if ($check = TRUE)
-        getSectorParameter 2 "FIG_COUNT" $figCount
-        setSectorParameter 2 "FIG_COUNT" ($figCount-1)
-    end
-    setSectorParameter $target "FIGSEC" FALSE
-return
-:addFigToData
-    setSectorParameter $target "FIGSEC" TRUE
-return
 
-:checkStartingPrompt
-    if ($PLAYER~CURRENT_PROMPT = "0")
-        gosub :PLAYER~current_prompt
-    end
-    getWordPos " "&$validPrompts&" " $pos $PLAYER~CURRENT_PROMPT
-    if ($pos <= 0)
-        setVar $SWITCHBOARD~message "Invalid starting prompt: ["&$PLAYER~CURRENT_PROMPT&"]. Valid prompt(s) for this command: ["&$validPrompts&"]*"
-        gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
-    end
-return
+
+
+
 
 # includes:
 include "source\bot_includes\player"
 include "source\bot_includes\sector"
-include "source\bot_includes\map"
 include "source\bot_includes\ship"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\module_includes\prompt"
+include "source\module_includes\bot"

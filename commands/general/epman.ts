@@ -1,13 +1,4 @@
 	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
 	
 	
 	setVar $BOT~help[1] $BOT~tab&"EP Haggle Manager"
@@ -44,24 +35,24 @@
 	setVar $EP_supp "On"
 
 	
-	if ($parm1 = "setup")
+	if ($bot~parm1 = "setup")
 		setVar $silent 1
 		goSub :killEP
 		goSub :writeSettings
 		setVar $SWITCHBOARD~message "EP Haggle settings created*"
 		gosub :SWITCHBOARD~switchboard
 		goSub :loadEP
-	elseif ($parm1 = "stop")
+	elseif ($bot~parm1 = "stop")
 		gosub :killEp
-	elseif ($parm1 = "start")
+	elseif ($bot~parm1 = "start")
 		gosub :loadEP
 
-	elseif ($parm1 = "show")
+	elseif ($bot~parm1 = "show")
 		gosub :showSettings
-	elseif ($parm1 = "plan")
-		isNumber $test $parm2
+	elseif ($bot~parm1 = "plan")
+		isNumber $test $bot~parm2
 		If ($test)
-			setVar $EP_plan $parm2
+			setVar $EP_plan $bot~parm2
 			gosub :saveAndRestart
 		else
 			setVar $SWITCHBOARD~message "Planetory Trade should be 1-100.*"
@@ -69,72 +60,72 @@
 			halt
 		end
 		
-	elseif ($parm1 = "hold")
-		if (($parm2 <> "on") and ($parm2 <> "off"))
+	elseif ($bot~parm1 = "hold")
+		if (($bot~parm2 <> "on") and ($bot~parm2 <> "off"))
 			setVar $SWITCHBOARD~message "Haggle and Hold should be set to on or off.*"
 			gosub :SWITCHBOARD~switchboard
 		else
-			if ($parm2 = "on")
+			if ($bot~parm2 = "on")
 				setVar $EP_hh "On"
 			else
 				setVar $EP_hh "Off"
 			end
 			gosub :saveAndRestart
 		end
-	elseif ($parm1 = "mbbs")
-		if (($parm2 <> "on") and ($parm2 <> "off"))
+	elseif ($bot~parm1 = "mbbs")
+		if (($bot~parm2 <> "on") and ($bot~parm2 <> "off"))
 			setVar $SWITCHBOARD~message "MBBS should be set to on or off.*"
 			gosub :SWITCHBOARD~switchboard
 		else
-			if ($parm2 = "on")
+			if ($bot~parm2 = "on")
 				setVar $EP_mbbs "On"
 			else
 				setVar $EP_mbbs "Off"
 			end
 			gosub :saveAndRestart
 		end
-	elseif ($parm1 = "worst")
-		if (($parm2 <> "on") and ($parm2 <> "off"))
+	elseif ($bot~parm1 = "worst")
+		if (($bot~parm2 <> "on") and ($bot~parm2 <> "off"))
 			setVar $SWITCHBOARD~message "Worst Price should be set to on or off.*"
 			gosub :SWITCHBOARD~switchboard
 		else
-			if ($parm2 = "on")
+			if ($bot~parm2 = "on")
 				setVar $EP_wp "On"
 			else
 				setVar $EP_wp "Off"
 			end
 			gosub :saveAndRestart
 		end
-	elseif ($parm1 = "blue")
-		if (($parm2 <> "on") and ($parm2 <> "off"))
+	elseif ($bot~parm1 = "blue")
+		if (($bot~parm2 <> "on") and ($bot~parm2 <> "off"))
 			setVar $SWITCHBOARD~message "Blue Trade should be set to on or off.*"
 			gosub :SWITCHBOARD~switchboard
 		else
-			if ($parm2 = "on")
+			if ($bot~parm2 = "on")
 				setVar $EP_blue "On"
 			else
 				setVar $EP_blue "Off"
 			end
 			gosub :saveAndRestart
 		end
-	elseif ($parm1 = "active")
-		if (($parm2 <> "on") and ($parm2 <> "off"))
+	elseif ($bot~parm1 = "active")
+		if (($bot~parm2 <> "on") and ($bot~parm2 <> "off"))
 			setVar $SWITCHBOARD~message "Set EP Haggle Activity to on or off.*"
 			gosub :SWITCHBOARD~switchboard
 		else
-			if ($parm2 = "on")
+			if ($bot~parm2 = "on")
 				setVar $EP_active "Active"
 			else
 				setVar $EP_active "Inactive"
 			end
 			gosub :saveAndRestart
 		end
-	elseif ($parm1 = "swath")
-		if (($parm2 <> "on") and ($parm2 <> "off"))
+	elseif ($bot~parm1 = "swath")
+		if (($bot~parm2 <> "on") and ($bot~parm2 <> "off"))
 			setVar $SWITCHBOARD~message "Set Swath Capture to on or off.*"
 			gosub :SWITCHBOARD~switchboard
 		else
-			if ($parm2 = "on")
+			if ($bot~parm2 = "on")
 				setVar $EP_swath "On"
 			else
 				setVar $EP_swath "Off"

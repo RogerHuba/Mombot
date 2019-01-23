@@ -1,15 +1,9 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadVar $command
-    loadvar $self_command
-    loadVar $stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
+	gosub :BOT~loadVars
+		
+	setVar $BOT~help[1] $BOT~tab&"Reboot"
+	setVar $BOT~help[2] $BOT~tab&"  - Kill bot and restart it"
+	gosub :BOT~help_file
 
-    gosub :killthetriggers
     listActiveScripts $scripts
     setVar $i 1
     setVar $found FALSE
@@ -35,12 +29,14 @@
     halt
 
 
-:wait_for_command
-halt
 
-:killthetriggers
-    killalltriggers
-return
 
-# includes:
+
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
 include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"

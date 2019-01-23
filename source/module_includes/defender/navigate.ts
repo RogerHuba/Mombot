@@ -97,9 +97,18 @@ return
 			# if it's our bubble, the assumption is the sectors are clean #
 			###############################################################
 
-			if (((($isFigged = true) and ($isLimped = true)) and ($isMsl <> true)) or ($isBubble = true))
+			if ((((($isFigged = true) and ($isLimped = true)) and ($isMsl <> true)) or ($isBubble = true)) and (sector.navhaz[$focus] <= 0))
 				setVar $nearfig $focus
-				goto :pwarp_away
+				gosub :pwarp_away
+				send "s* "
+				if (sector.navhaz[$nearfig] > 0)
+					########################################
+					# don't restock where there is nav haz #
+					########################################
+					goto :try_again
+				else
+					return
+				end
 			end
 			# That wasn't it, so let's add all the adjacents to the queue for future testing.
 			setVar $a 1

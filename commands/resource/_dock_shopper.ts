@@ -1,11 +1,4 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $stardock
-    loadVar $backdoor
+	gosub :BOT~loadVars
 
 #=============================================  DOCK SHOPPER MENU  ==================================================
 :dock_shopper
@@ -16,7 +9,7 @@
     setVar $LSD_Ships_Names         "][LSD]["
     setVar $LSD_Ships_File          "LSD_" & GAMENAME & ".ships"
     setVar $LSD_ShipListMax         50
-    setVar $LSD_BOTTING         $bot_name
+    setVar $LSD_BOTTING         $bot~bot_name
     setVar $LSD__PAD            "@"
     setArray $LSD_ShipList          $LSD_ShipListMax 3
 # ============================ END DOCK SHOPPER VARIABLES ==========================
@@ -44,7 +37,7 @@
     setVar $LSD__TOTAL 0
     setVar $LSD_Tow 0
     setVar $LSD_Order ""
-    setVar $SWITCHBOARD~bot_name $bot_name
+    setVar $SWITCHBOARD~bot_name $bot~bot_name
     setVar $SWITCHBOARD~self_command $self_command
     gosub :PLAYER~quikstats
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
@@ -54,11 +47,11 @@
     if ($startingLocation = "Citadel")
         send " Q DC  "
         waitfor "Planet #"
-        getword CURRENTLINE $PLANET 2
-        stripText $PLANET "#"
-        isNumber $LSD_tst $PLANET
+        getword CURRENTLINE $planet~planet 2
+        stripText $planet~planet "#"
+        isNumber $LSD_tst $planet~planet
         if ($LSD_tst = 0)
-            setVar $PLANET 0
+            setVar $planet~planet 0
         end
     end
     gosub :LoadShipData
@@ -149,7 +142,7 @@
     echo ANSI_5 & "*    <" & ANSI_8 & "Z" & ANSI_5 & ">" & ANSI_5 & " Max Out Ship On Everything!"
     echo ANSI_5 & "*    <" & ANSI_15 & "V" & ANSI_5 & ">" & ANSI_5 & " Name Of Bot To Command " & ANSI_14&": "
     if ($LSD_BOTTING = "") OR ($LSD_BOTTING = "0")
-        setVar $LSD_BOTTING $bot_name
+        setVar $LSD_BOTTING $bot~bot_name
     end
     echo ANSI_15 & $LSD_BOTTING
     echo "*        " #27 "[1m" ANSI_4 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196
@@ -257,7 +250,7 @@
     elseif ($LSD_selection = "V")
         getInput $LSD_BOTTING ("  " & ANSI_5 & "Enter the Bot Name To Issue LSD Command Too? ")
         if ($LSD_BOTTING = $LSD__PAD)
-            setVar $LSD_BOTTING $bot_name
+            setVar $LSD_BOTTING $bot~bot_name
         end
     elseif ($LSD_selection = "1")
         setVar $item_name "Cargo Holds"
@@ -353,9 +346,9 @@
         else
             setVar $LSD_Order ($LSD_Order & $LSD_Ships_Names)
         end
-        if ($LSD_BOTTING = $bot_name)
+        if ($LSD_BOTTING = $bot~bot_name)
             setVar $LSD_Order ($LSD_Order & "              ")
-            setVar $user_command_line "lsd " & $LSD_Order
+            setVar $bot~user_command_line "lsd " & $LSD_Order
             gosub :doAddHistory
         end
         setVar $LSD_Attempt 1
@@ -363,7 +356,7 @@
             killalltriggers
             setTextLineTrigger  NeedtoLogin     :NeedtoLogin    "Send a corporate memo to login."
             setTextLineTrigger  BotsBusy        :BotsBusy       "- Time Left   = "
-            setTextLineTrigger  BotsNotBusy     :BotsNotBusy    "Bot Mode  : General"
+            setTextLineTrigger  BotsNotBusy     :BotsNotBusy    "Bot Mode  : "
             setTextLineTrigger  BotsNotBusy3    :BotsNotBusy    "Mode        = General"
             setDelayTrigger     BotNotThere     :BotNotThere    4000
             send ("'" & $LSD_BOTTING & " Status*")
@@ -406,7 +399,7 @@
             halt
         :BotsNotBusy
             killalltriggers
-            if ($LSD_BOTTING = $bot_name)
+            if ($LSD_BOTTING = $bot~bot_name)
                 goto :MODE_RESET
             end
             setTextLineTrigger  MODE_RESET  :MODE_RESET "All non-system scripts and modules killed, and modes reset."
@@ -971,13 +964,18 @@ return
 return
 :doAddHistory
         loadVar $BOT~historyString
-        setVar $BOT~history[1] $user_command_line
+        setVar $BOT~history[1] $bot~user_command_line
         setVar $BOT~historyString $BOT~history[1]&"<<|HS|>>"&$BOT~historyString
         saveVar $BOT~historyString
 return
 #============================================= END DOCK SHOPPER MENU  ==================================================
 
-include "source\bot_includes\player"
-include "source\bot_includes\game"
-include "source\bot_includes\switchboard"
+#INCLUDES:
+include "source\module_includes\bot"
 include "source\module_includes\prompt"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"

@@ -1,18 +1,11 @@
-   loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $stardock
-    loadVar $backdoor
-    killalltriggers
-    setVar $SWITCHBOARD~bot_name $bot_name
-    setVar $SWITCHBOARD~self_command $self_command
-    gosub :PLAYER~current_prompt
-    setvar $startingLocation $PLAYER~current_prompt
-    
-    if ($startingLocation = "Citadel")
+ 	gosub :BOT~loadVars
+
+	setVar $SWITCHBOARD~bot_name $bot~bot_name
+	setVar $SWITCHBOARD~self_command $self_command
+	gosub :PLAYER~current_prompt
+	setvar $startingLocation $PLAYER~current_prompt
+
+	if ($startingLocation = "Citadel")
 
 		setVar $PROMPT~validPrompts "Citadel"
 		setVar $PROMPT~startingLocation $startingLocation
@@ -37,8 +30,8 @@
 		send "q*c "
 		pause
 		:getp
-		    getWord CURRENTLINE $PLANET 2
-		    stripText $PLANET "#"
+		    getWord CURRENTLINE $planet~planet 2
+		    stripText $planet~planet "#"
 		    waitOn "Citadel command (?="
 		:print_the__planet_menu
 		:planet_menu_without_clear
@@ -89,7 +82,7 @@
 		                echo ANSI_12 "**Bad sector number!*"
 		                goto :planetMacMenu
 		            end
-		            send "q q c  w  y" & $test & "*  *  *  q  l " $PLANET "* c s*  "
+		            send "q q c  w  y" & $test & "*  *  *  q  l " $planet~planet "* c s*  "
 		            waitOn "Computer command [TL="
 		            waitOn "Citadel command (?=help)"
 		            halt
@@ -99,7 +92,7 @@
 		            halt
 		        end
 		    elseif ($chosen_option = "B")
-		        send "q q  x* *    l j"&#8&$PLANET&"* c @"
+		        send "q q  x* *    l j"&#8&$planet~planet&"* c @"
 		        waitOn "Average Interval Lag:"
 		        halt
 		    elseif ($chosen_option = "C")
@@ -122,7 +115,7 @@
 		        setTextLineTrigger tdet_trg4 :txport_noaccess2 "Access denied!"
 		        setTextLineTrigger tdet_trg5 :txport_xprtgood2 "Security code accepted, engaging transporter control."
 		        setTextTrigger tdet_trg6 :txport_go_ahead2 "Average Interval Lag:"
-		        send "q q  x    " & $shipnum & "    *    *    *    l j"&#8&$PLANET&"*  @"
+		        send "q q  x    " & $shipnum & "    *    *    *    l j"&#8&$planet~planet&"*  @"
 		        pause
 		        goto :print_the__planet_menu
 		        :txport_notavail2
@@ -149,11 +142,11 @@
 		            echo $msg
 		            halt
 		    elseif ($chosen_option = "D")
-		        send "q q  lj"&#8&$PLANET&"* c @"
+		        send "q q  lj"&#8&$planet~planet&"* c @"
 		        waitOn "Average Interval Lag:"
 		        halt
 		    elseif ($chosen_option = "E")
-		        send "q q b z y  l j"&#8&$PLANET&"* c @"
+		        send "q q b z y  l j"&#8&$planet~planet&"* c @"
 		        waitOn "Average Interval Lag:"
 		        halt
 		    elseif ($chosen_option = "G")
@@ -163,7 +156,7 @@
 		              echo ANSI_12 "**Not a Planet Number!*"
 		              goto :planetMacMenu
 		        else
-		            setvar $psimac_planet_swap "q q l "&$test&"*"&$PLANET&"* c"
+		            setvar $psimac_planet_swap "q q l "&$test&"*"&$planet~planet&"* c"
 		            send $psimac_planet_swap
 		        end
 		        halt
@@ -218,7 +211,7 @@
 		:perslimp
 		gosub :PLAYER~quikstats
 		if ($PLAYER~LIMPETS > 0)
-		    send "q q z n h21  *  p z n n * l " $PLANET "* c s* "
+		    send "q q z n h21  *  p z n n * l " $planet~planet "* c s* "
 		    setVar $depType "limpets"
 		    setTextLineTrigger toomanypl :toomany "!  You are limited to "
 		    setTextLineTrigger plclear :plclear "Done. You have "
@@ -250,7 +243,7 @@
 		gosub :PLAYER~quikstats
 
 		if ($PLAYER~LIMPETS > 0)
-		    send "q q z n h2z" & $psimac_corp_limpet_drop_amt & "* z c *  l " $PLANET "* c s* "
+		    send "q q z n h2z" & $psimac_corp_limpet_drop_amt & "* z c *  l " $planet~planet "* c s* "
 		    if ($psimac_corp_limpet_drop_amt > 1)
 		        setVar $depType "Limpets"
 		    else        
@@ -292,7 +285,7 @@
 		    else
 		        setVar $depType "Armid"
 		    end
-		    send "q q z n h1z" & $psimac_corp_armid_drop_amt & " * z c *  l " $PLANET "* c s* "
+		    send "q q z n h1z" & $psimac_corp_armid_drop_amt & " * z c *  l " $planet~planet "* c s* "
 		    setTextLineTrigger toomanya :toomany "!  You are limited to "
 		    setTextLineTrigger aclear :aclear "Done. You have "
 		    setTextLineTrigger enemya :noadown "These mines are not under your control."
@@ -321,25 +314,25 @@
 		waitOn "Citadel command (?=help)"
 		halt
 		:dscan2
-		send "q q z n sdzn l " $PLANET "* c  "
+		send "q q z n sdzn l " $planet~planet "* c  "
 		waitOn "<Enter Citadel>"
 		waitOn "Citadel command (?=help)"
 		gosub :MAP~displayAdjacentGridAnsi
 		return
 		:hscan
-		send "q q z n s hzn* l " $PLANET "*  c  "
+		send "q q z n s hzn* l " $planet~planet "*  c  "
 		waitOn "<Enter Citadel>"
 		waitOn "Citadel command (?=help)"
 		gosub :MAP~displayAdjacentGridAnsi
 		return
 		:lifta
-		send "q q z n a y y " $SHIP_MAX_ATTACK "* * z n q z n  l " $PLANET "*  m  *** c s* @"
+		send "q q z n a y y " $SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** c s* @"
 		waitOn "Average Interval Lag:"
 		goto :getPlanetMacroInput
 		:dropfig
 		gosub :PLAYER~quikstats
-		if ($FIGHTERS > 0)
-		    send " q q f z" & $psimac_corp_ftr_drop_amt & "* z c d *  l " $PLANET "* c s* "
+		if ($player~fighters > 0)
+		    send " q q f z" & $psimac_corp_ftr_drop_amt & "* z c d *  l " $planet~planet "* c s* "
 		    if ($psimac_corp_ftr_drop_amt > 1)
 		        setVar $depType "Fighters"
 		    else
@@ -365,7 +358,7 @@
 		killalltriggers
 		send "'"&$psimac_corp_ftr_drop_amt&" Corporate "&$depType&" Deployed!*"
 		setVar $target $PLAYER~CURRENT_SECTOR
-		gosub :addFigToData
+		gosub :bot~addfigtodata
 		waitOn "Citadel command (?=help)"
 		halt
 		:nofigdown

@@ -1,16 +1,9 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $stardock
-    loadVar $password
-    loadVar $PLANET~PLANET
+	gosub :BOT~loadVars
 
-    killalltriggers
+	setVar $BOT~help[1]  $BOT~tab&"clear - clear all enemy armids and limpets from sector "
+	gosub :BOT~help_file
     
-    setVar $SWITCHBOARD~bot_name $bot_name
+    setVar $SWITCHBOARD~bot_name $bot~bot_name
     setVar $SWITCHBOARD~self_command $self_command
 
     gosub :PLAYER~QUIKSTATS
@@ -24,7 +17,7 @@
         gosub :PLANET~getPlanetInfo
         send "c  s*"
     else
-                 send "*"
+		send "*"
     end
     setVar $beforeLimpets $PLAYER~LIMPETS
     setVar $beforeArmids  $PLAYER~ARMIDS
@@ -48,19 +41,19 @@
         gosub :SWITCHBOARD~switchboard
         halt
     end
-    send "'{" $bot_name "} - Clearing Current Sector*"
+    setvar $switchboard~message "Clearing Current Sector*"
     send "q qq z n *  "
     gosub :clear_sector_deployEquipment
     while (($placedLimpet = FALSE) OR ($placedArmid = FALSE))
         gosub :clear_sector_attemptClearingMines
     end
     if ($startingLocation = "Citadel")
-        setVar $SWITCHBOARD~bot_name $bot_name
+        setVar $SWITCHBOARD~bot_name $bot~bot_name
         gosub :PLANET~landingSub
     end
     setSectorParameter $PLAYER~CURRENT_SECTOR "LIMPSEC" TRUE
     setSectorParameter $PLAYER~CURRENT_SECTOR "MINESEC" TRUE
-    send "'{" $bot_name "} - Sector Cleared*"
+    setvar $switchboard~message "Sector Cleared*"
     halt
     :clear_sector_attemptClearingMines
         setVar $i 0
@@ -102,7 +95,11 @@
         return
 
 # includes:
+include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\sector"
+include "source\bot_includes\map"
+include "source\bot_includes\ship"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\module_includes\prompt"

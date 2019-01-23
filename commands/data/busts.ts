@@ -1,10 +1,12 @@
-loadVar $bot_name
-loadVar $user_command_line
-loadVar $bot_turn_limit
-loadVar $parm1
-loadVar $parm2
-send "'{" $bot_name "} - Scanning BUSTED SectorParameter ...*"
-waiton "Message sent on sub-space channel"
+	gosub :BOT~loadVars
+
+	setVar $BOT~help[1] $BOT~tab&"busts -"
+	setVar $BOT~help[2] $BOT~tab&"    displays all busted sectors on subspace"
+	gosub :BOT~help_file
+
+setvar $switchboard~message "Scanning BUSTED SectorParameter ...*"
+gosub :switchboard~switchboard
+
 setVar $IDX 11
 setVar $COUNT 0
 setVar $COLUMN 1
@@ -28,14 +30,12 @@ while ($IDX <= SECTORS)
 	end
 	add $IDX 1
 end
-send "'*"
-waiton "Type sub-space message"
-send "{" $bot_name "} - "&$COUNT&" Busts Found In DataBase*"
+setvar $switchboard~message $COUNT&" Busts Found In DataBase*"
 if ($COUNT <> 0)
-	send $STRING & "*"
+	setvar $switchboard~message $switchboard~message&$STRING&"*"
 end
-send "*"
-waiton "Sub-space comm-link terminated"
+setvar $switchboard~message $switchboard~message&"*"
+gosub :switchboard~switchboard
 halt
 
 :PAD
@@ -47,3 +47,13 @@ while ($PAD_i <= (5 - $LEN))
 	add $PAD_i 1
 end
 return
+
+
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"

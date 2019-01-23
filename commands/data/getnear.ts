@@ -1,4 +1,12 @@
-gosub :quikstats
+    gosub :BOT~loadVars
+
+
+    setVar $BOT~help[1]  $BOT~tab&"getnear {port amount} "
+    setVar $BOT~help[2]  $BOT~tab&"  Finds ports nearby with amounts of product."
+	setVar $BOT~help[3]  $BOT~tab&"        default is port max for game settings"
+    gosub :BOT~help_file
+
+gosub :player~quikstats
 setVar $CNT 0
 setVar $BUYER 0
 setVar $B 0
@@ -7,41 +15,41 @@ setVar $S 0
 loadVar $GAME~port_max
 loadvar $switchboard~BOT_NAME
 loadVar $bot~parm1
-setvar $port_max $GAME~port_max
-setvar $bot_name $switchboard~BOT_NAME
-setvar $parm1 $bot~parm1
+setvar $game~port_max $GAME~port_max
+setvar $bot~bot_name $switchboard~BOT_NAME
+setvar $bot~parm1 $bot~parm1
 
-if ($PORT_MAX = 0)
-	send "'{" & $BOT_NAME & "} Unable To Determine Port Max From CFG File*"
+if ($game~PORT_MAX = 0)
+	send "'{" & $bot~bot_name & "} Unable To Determine Port Max From CFG File*"
 	waitfor "Message sent on sub-space channel"
 	halt
 end
 
-isnumber $tst $parm1
+isnumber $tst $bot~parm1
 if ($tst = 0)
-	setVar $parm1 $PORT_MAX
+	setVar $bot~parm1 $game~port_max
 else
-	if ($parm1 > $PORT_MAX)
-		setVar $parm1 $PORT_MAX
+	if ($bot~parm1 > $game~port_max)
+		setVar $bot~parm1 $game~port_max
 	end
-	if ($parm1 < 1)
-		setVar $parm1 $PORT_MAX
+	if ($bot~parm1 < 1)
+		setVar $bot~parm1 $game~port_max
 	end
 end
 
-send "'{" & $BOT_NAME & "} Searching For Ports BUYERS & SELLERS ...*"
+send "'{" & $bot~bot_name & "} Searching For Ports BUYERS & SELLERS ...*"
 waitfor "Message sent on sub-space channel"
 
-getNearestWarps $LOOKUP $CURRENT_SECTOR
+getNearestWarps $LOOKUP $player~current_sector
 setVar $IDX 1
 while ($IDX <= $LOOKUP)
 	setVar $Focus $LOOKUP[$IDX]
 	if (PORT.EXISTS[$Focus])
 		if (PORT.CLASS[$Focus] = 2) OR (PORT.CLASS[$Focus] = 3) OR (PORT.CLASS[$Focus] = 4) OR (PORT.CLASS[$Focus] = 8)
-			if (PORT.EQUIP[$Focus] >= $parm1)
+			if (PORT.EQUIP[$Focus] >= $bot~parm1)
 				getSectorParameter $Focus "FIGSEC" $FIG
 				if ($FIG <> "0")
-					getDistance $DIST $CURRENT_SECTOR $FOCUS
+					getDistance $DIST $player~current_sector $FOCUS
 					if ($DIST = "-1")
 						setVar $DIST 0
 					end
@@ -56,10 +64,10 @@ while ($IDX <= $LOOKUP)
 			end
 		end
 		if (PORT.CLASS[$Focus] = 1) OR (PORT.CLASS[$Focus] = 5) OR (PORT.CLASS[$Focus] = 6) OR (PORT.CLASS[$Focus] = 7)
-			if (PORT.EQUIP[$Focus] >= $parm1)
+			if (PORT.EQUIP[$Focus] >= $bot~parm1)
 				getSectorParameter $Focus "FIGSEC" $FIG
 				if ($FIG <> "0")
-					getDistance $DIST $CURRENT_SECTOR $FOCUS
+					getDistance $DIST $player~current_sector $FOCUS
 					if ($DIST = "-1")
 						setVar $DIST 0
 					end
@@ -83,8 +91,8 @@ end
 setVar $idx 1
 send "'*"
 waiton "Type sub-space message"
-send "{" & $BOT_NAME & "} GETNEAREST CASHING PORT : " & $CNT & " Found >= "&$parm1&" units*"
-getlength "{" & $BOT_NAME & "}" $LEN
+send "{" & $bot~bot_name & "} GETNEAREST CASHING PORT : " & $CNT & " Found >= "&$bot~parm1&" units*"
+getlength "{" & $bot~bot_name & "}" $LEN
 setVar $PAD ""
 setVar $i 1
 while ($i <= $LEN)
@@ -159,153 +167,6 @@ halt
 	setVar $STR ($STR & " " & $PAD & $NUM & " (" & port.percentequip[$FOCUS] & "%)")
 	return
 
-:quikstats
-	setVar $CURRENT_PROMPT 		"Undefined"
-	killtrigger noprompt
-	killtrigger prompt1
-	killtrigger prompt2
-	killtrigger prompt3
-	killtrigger prompt4
-	killtrigger statlinetrig
-	killtrigger getLine2
-	setTextTrigger 		prompt1 		:allPrompts 		"(?="
-	setTextLineTrigger 	prompt2 		:secondaryPrompts 	"(?)"
-	setTextLineTrigger 	statlinetrig 	:statStart 			#179
-	setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
-	setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
-	send "^Q/"
-	pause
-
-	:allPrompts
-		getWord currentansiline $checkPrompt 1
-		getWord currentline $tempPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
-		end
-		setTextLineTrigger prompt1 :allPrompts "(?="
-		pause
-	:secondaryPrompts
-		getWord currentansiline $checkPrompt 1
-		getWord currentline $tempPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
-		end
-		setTextLineTrigger prompt2 :secondaryPrompts "(?)"
-		pause
-	:terraPrompts
-		killtrigger prompt3
-		killtrigger prompt4
-		getWord currentansiline $checkPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $CURRENT_PROMPT "Terra"
-		end
-		setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
-		setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
-		pause
-
-	:statStart
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger noprompt
-		setVar $stats ""
-		setVar $wordy ""
-
-	:statsline
-		killtrigger statlinetrig
-		killtrigger getLine2
-		setVar $line2 CURRENTLINE
-		replacetext $line2 #179 " "
-		striptext $line2 ","
-		setVar $stats $stats & $line2
-		getWordPos $line2 $pos "Ship"
-		if ($pos > 0)
-			goto :gotStats
-		else
-			setTextLineTrigger getLine2 :statsline
-			pause
-		end
-
-	:gotStats
-		setVar $stats $stats & " @@@"
-		setVar $current_word 0
-		while ($wordy <> "@@@")
-			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
-			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  				($current_word + 1)
-				if ($UNLIM)
-					setVar $TURNS 65536
-				end
-			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  			($current_word + 1)
-			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   			($current_word + 1)
-			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  			($current_word + 1)
-			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
-			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
-			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   			($current_word + 1)
-			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   			($current_word + 1)
-			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   			($current_word + 1)
-			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  			($current_word + 1)
-			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
-			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   			($current_word + 1)
-			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 			($current_word + 1)
-			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  			($current_word + 1)
-			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   			($current_word + 1)
-			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   			($current_word + 1)
-			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
-			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
-			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
-			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
-			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
-			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
-			elseif ($wordy = "Corp")
-				getWord $stats $CORP   				($current_word + 1)
-			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
-			end
-			add $current_word 1
-			getWord $stats $wordy $current_word
-		end
-	:doneQuikstats
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger statlinetrig
-		killtrigger getLine2
-return
-
 
 :PAD
 	setVar $PAD ""
@@ -316,3 +177,12 @@ return
 		add $PAD_i 1
 	end
 	return
+
+# includes:
+include "source\bot_includes\player"
+include "source\bot_includes\sector"
+include "source\bot_includes\ship"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\module_includes\prompt"
+include "source\module_includes\bot"

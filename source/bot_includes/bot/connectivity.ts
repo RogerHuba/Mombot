@@ -13,12 +13,18 @@
     if ((CONNECTED <> TRUE) AND ($BOT~doRelog = TRUE))
         goto :relog_attempt
     end
-    # at server game menu for some reason #
-    if ((CURRENTLINE = $game~game_menu_prompt) or (CURRENTLINE = "[Pause] - [Press Space or Enter to continue]") or (CURRENTLINE = "Enter your choice: ") or (CURRENTLINE = "Selection (? for menu): "))
-    	setvar $relog_message "Stuck on baffling prompt: ["&CURRENTLINE&"], so I relogged.*"
-        DISCONNECT
-        goto :relog_attempt
-    end
+    
+    # if the last line hasn't changed for the last two keep alive checks #
+	if ($last_prompt_seen = CURRENTLINE)
+		# at server game menu for some reason #
+		if ((CURRENTLINE = $game~game_menu_prompt) or (CURRENTLINE = "[Pause] - [Press Space or Enter to continue]") or (CURRENTLINE = "Enter your choice: ") or (CURRENTLINE = "Selection (? for menu): "))
+			setvar $relog_message "Stuck on baffling prompt: ["&CURRENTLINE&"], so I relogged.*"
+			DISCONNECT
+			goto :relog_attempt
+		end
+		# TODO - add checking for subprompt interactivity turned off and resetting prompts that turn off comms if stuck there #
+	end
+    setvar $last_prompt_seen CURRENTLINE
     send #27
     setDelayTrigger     keepalive               :keepalive           30000
     pause

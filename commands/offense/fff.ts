@@ -65,7 +65,7 @@ setVar $Hit_Sector_pre 2
 	# SHIP ATTACK STRING
 	#send "c" $warpto "* y * * c p y " $Hit_Sector " * * qsd"
 	# PLANET ATTACK STRING
-	send "p" $warpto "* y * * c p y " $Hit_Sector " * * qq q sdl" $planetNum "* c "
+	send "p" $warpto "* y * * c p y " $Hit_Sector " * * qq q sdl" $planet~planetNum "* c "
 
 	
 	setTextLineTrigger	fired	:fired          "Photon Missile launched into sec"
@@ -334,23 +334,23 @@ return
 	gosub :BOT~banner
 	
 		
-	getWord $bot~user_command_line $parm1 1
-	getWord $bot~user_command_line $parm2 2
+	getWord $bot~user_command_line $bot~parm1 1
+	getWord $bot~user_command_line $bot~parm2 2
 
-	if (($parm1 = "zero") or ($parm1 = "first"))
+	if (($bot~parm1 = "zero") or ($bot~parm1 = "first"))
 		setVar $numberofhits 0
 		setVar $noreset 1
-	elseif ($parm1 <> 0)
-		isNumber $test $parm1
+	elseif ($bot~parm1 <> 0)
+		isNumber $test $bot~parm1
 		if ($test)
-			setVar $numberofhits $parm1
+			setVar $numberofhits $bot~parm1
 		else
 			setVar $numberofhits 1
 		end
-		if ($parm2 <> 0)
-			isNumber $test $parm2
+		if ($bot~parm2 <> 0)
+			isNumber $test $bot~parm2
 			if ($test)
-				setVar $fizzletime ($parm2 * 1000)
+				setVar $fizzletime ($bot~parm2 * 1000)
 			else
 				setVar $SWITCHBOARD~message "Hit Threshold should be a number.*"
 				gosub :SWITCHBOARD~switchboard
@@ -362,7 +362,7 @@ return
 	end
 
 	# in future we will support b-warp
-	setVar $planetMode 1
+	setVar $planet~planetMode 1
 
 	gosub :player~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
@@ -384,11 +384,11 @@ return
 	end
 	send "qdc"
 	waitfor "Planet #"
-	getWord CURRENTLINE $planetNum 2
-	stripText $planetNum "#"
+	getWord CURRENTLINE $planet~planetNum 2
+	stripText $planet~planetNum "#"
 	waitfor "<Enter Citadel>"
 
-	send "qql" $planetNum "*c"
+	send "qql" $planet~planetNum "*c"
 	waitfor "<Enter Citadel>"
 
 	setVar $momname "" 

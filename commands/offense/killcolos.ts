@@ -1,15 +1,4 @@
-		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	loadVar $MAP~STARDOCK
-	setVar $user_command_line $BOT~user_command_line
-
+	gosub :BOT~loadVars
 
 	setVar $BOT~help[1] $BOT~tab&"Kill all colos on a planet if possible with fighters"
 	gosub :BOT~help_file

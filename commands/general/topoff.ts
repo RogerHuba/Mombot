@@ -1,17 +1,11 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
-    loadVar $SWITCHBOARD~self_command
+    gosub :BOT~loadVars
+
+    setVar $BOT~help[1]  $BOT~tab&"topoff - fill up ship with fighters from sector "
+    gosub :BOT~help_file
 
 #============================== START TOPOFF (TOPOFF) ==============================
 :topoff
-    gosub :killthetriggers
+    killalltriggers
     gosub :PLAYER~current_prompt
     setVar $PROMPT~startingLocation $PLAYER~current_prompt
     setVar $PROMPT~validPrompts "Citadel Command"
@@ -21,7 +15,7 @@
         gosub :PLANET~getPlanetInfo
         send " q "
     end
-    if ($parm1 <> "o") AND ($parm1 <> "t") AND ($parm1 <> "d")
+    if ($bot~parm1 <> "o") AND ($bot~parm1 <> "t") AND ($bot~parm1 <> "d")
         setVar $type "d"
         isNumber $test CURRENTSECTOR
         if ($test = TRUE)
@@ -38,19 +32,19 @@
                 end
             end
         end
-        setVar $parm1 $type
+        setVar $bot~parm1 $type
     end
-    setVar $to_drop $parm1
+    setVar $to_drop $bot~parm1
     gosub :do_topoff
     if ($PROMPT~startingLocation = "Citadel")
         gosub :PLANET~landingSub
     end
     setVar $SWITCHBOARD~message "TopOff complete Left "&$ftrs_to_leave&" fighters.*"
     gosub :SWITCHBOARD~switchboard
-    goto :wait_for_command
+    halt
 :do_topoff
     :do_topoff_again
-        gosub :killthetriggers
+        killalltriggers
         send " F"
         waitOn "Your ship can support up to"
         getWord CURRENTLINE $ftrs_to_leave 10
@@ -69,15 +63,16 @@ return
 #============================== END TOPOFF (TOPOFF) ==============================
 
 
-:wait_for_command
-halt
 
-:killthetriggers
-    killalltriggers
-return
+
+
 
 # includes:
+include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\sector"
+include "source\bot_includes\map"
+include "source\bot_includes\ship"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\module_includes\prompt"

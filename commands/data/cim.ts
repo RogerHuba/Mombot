@@ -160,7 +160,7 @@
 	else 
 		halt
 	end
-	send "-----" $bot_name "-----*"
+	send "-----" $bot~bot_name "-----*"
 	send "Upped Ports: (At least "&$upgradeLimit&" product level)*"
 	setVar $cimout_count 1
 	while ($cimout_count <= SECTORS)

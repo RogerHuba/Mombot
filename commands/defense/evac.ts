@@ -1,51 +1,58 @@
-loadVar $bot_name
-loadVar $user_command_line
-loadVar $parm1
-loadVar $parm2
-loadVar $parm3
-loadVar $parm4
-loadVar $parm5
-loadVar $parm6
-loadVar $parm7
-loadVar $parm8
-loadVar $stardock
-loadVar $rylos
-loadVar $alpha_centauri
-loadVar $home_sector
+	gosub :BOT~loadVars
+
+	setVar $BOT~help[1] $BOT~tab&"EVAC - Evacuate Planet(s)"
+	setVar $BOT~help[2] $BOT~tab&"       Moves all movable planets in Current-Sector to target sector."
+	setVar $BOT~help[3] $BOT~tab&"                  "
+	setVar $BOT~help[4] $BOT~tab&"      evac [sector]"
+	gosub :BOT~help_file
+
+loadVar $map~stardock
+loadVar $map~rylos
+loadVar $map~alpha_centauri
+loadVar $map~home_sector
 
 # ======================     START PLANET MOVER (EVAC) SUBROUTINE    ==========================
 	:evac_start
-		gosub :quikstats~quikstats
-		setVar $startingLocation $quikstats~CURRENT_PROMPT
+		gosub :player~quikstats
+		setVar $startingLocation $player~CURRENT_PROMPT
 		if (($startingLocation <> "Citadel") AND ($startingLocation <> "Command"))
-			send "'{" $bot_name "} - Must start from Citadel or Command Prompt*"
+			setvar $switchboard~message "Must start from Citadel or Command Prompt*"
+			gosub :switchboard~switchboard
 			halt
 		end
-		if (($parm1 = "s") and ($stardock <> 0))
-			setvar $parm1 $stardock
+		if (($bot~parm1 = "s") and ($map~stardock <> 0))
+			setvar $bot~parm1 $map~stardock
 		end
-		if (($parm1 = "r") and ($rylos <> 0))
-			setvar $parm1 $rylos
+		if (($bot~parm1 = "r") and ($map~rylos <> 0))
+			setvar $bot~parm1 $map~rylos
 		end
-		if (($parm1 = "a") and ($alpha_centauri <> 0))
-			setvar $parm1 $alpha_centauri
+		if (($bot~parm1 = "a") and ($map~alpha_centauri <> 0))
+			setvar $bot~parm1 $map~alpha_centauri
 		end
-		if (($parm1 = "h") and ($home_sector <> 0))
-			setvar $parm1 $home_sector
+		if (($bot~parm1 = "h") and ($map~home_sector <> 0))
+			setvar $bot~parm1 $map~home_sector
 		end
-		setvar $target_sector $parm1
+		setvar $target_sector $bot~parm1
+
+		if ($target_sector = $player~current_sector)
+			setvar $switchboard~message "Already in that sector!*"
+			gosub :switchboard~switchboard
+			halt
+		end
+
 	:evac_run	
-		send "'{" $bot_name "} - Starting Planet Evacuation to sector: "&$target_sector&".*"
-		setvar $evac_home $quikstats~CURRENT_SECTOR
+		setvar $switchboard~message "Starting Planet Evacuation to sector: "&$target_sector&".*"
+		gosub :switchboard~switchboard
+		setvar $evac_home $player~CURRENT_SECTOR
 		if ($startingLocation = "Citadel")
 			send "qq"
 		end
 		send "j  y  lq*"
 	
 	:evac_get_planets
-		waitOn "Registry# and Planet Name"
-		setVar $planetCount 0
-		setVar $planetSkip 0
+		#waitOn "Registry# and Planet Name"
+		setVar $planet~planetCount 0
+		setVar $planet~planetSkip 0
 		settexttrigger planetGrabber :evac_planetline "   <"
 		settexttrigger beDone :evac_done "Land on which planet "
 		settexttrigger no_scanner :evac_no_scanner "Planet command (?=help)"
@@ -61,72 +68,84 @@ loadVar $home_sector
 		replacetext $line "<" " "
 		replacetext $line ">" " "
 		striptext $line ","
-		add $planetCount 1
-		getWord $line $planet[$planetCount] 1
+
+		getWord $line $temp 1
+		if ($temp > 0)
+			add $planet~planetCount 1
+			setvar $planet~planet[$planet~planetCount] $temp
+		end
 		setTextLineTrigger getLine2 :evac_planetline "   <"
 		setTextLineTrigger getEnd :evac_done "Land on which planet "
 		pause
 
 	:evac_no_scanner
+		setvar $planet~planetcount 1
 		goto :evac_Move
 	
 	:evac_done
 		killtrigger getline2
-		setvar $evac_total $planetCount
-		setvar $planetCount 1
+		setvar $evac_total $planet~planetCount
+		setvar $i 1
 
 	:evac_move
-		send "l " $planet[$planetCount] "* "
-		gosub :planetinfo~getPlanetInfo
-		if ($planetinfo~CITADEL < 4)
-			add $planetSkip 1
-			goto :evac_twarp
-		elseif ($planetinfo~CITADEL > 3)
-			send "m * * * t n t 1 * c p " $target_sector "*"
-			settextlinetrigger warp :evac_Pwarp "Locating beam pinpointed, TransWarp"
-			settextlinetrigger no_warp :evac_no_fig "You do not have any fighters in Sector"
-			pause
-		end
+	while ($i <= $evac_total)
+			send "l " $planet~planet[$i] "* "
+			gosub :planet~getPlanetInfo
+			if ($planet~CITADEL <= 3)
+				add $planet~planetSkip 1
+				send "q q * "
+			elseif ($planet~CITADEL >= 4)
+				send "m * * * t n t 1 * c p " $target_sector "*"
+				settextlinetrigger warp :evac_Pwarp "Locating beam pinpointed, TransWarp"
+				settextlinetrigger no_warp :evac_no_fig "You do not have any fighters in Sector"
+				pause
 
-	:evac_Pwarp
-		killtrigger no_Warp
-		send "y*"
-		if ($planetCount = $evac_total)
-			subtract $planetCount $planetSkip
-			send "'{" $bot_name "} - Evac Complete. Moved: "&$planetCount&" Skipped: "&$planetSkip&". *"
-			goto :evac_end
-		end
-		send "qq  z  n  *  m" $evac_home "*y"
-		SetTextTrigger warp :evac_twarp "All Systems Ready, shall we engage?"
-		SetTextTrigger no_warp :evac_no_warp_back "Do you want to make"
-		pause
+				:evac_Pwarp
+					killtrigger no_Warp
+					send "y*"
+					if ($i < $evac_total)
+						send "qq  z  n  *  m" $evac_home "*y"
+						SetTextTrigger warp :evac_twarp "All Systems Ready, shall we engage?"
+						SetTextTrigger no_warp :evac_no_warp_back "Do you want to make"
+						pause
 
-	:evac_twarp
-		killtrigger no_Warp
-		add $planetCount 1
-		send "y  *  *  *  q  z  n  *"
-		goto :evac_move
+						:evac_twarp
+							killtrigger no_Warp
+							send "y  *  *  *  q  z  n  *"
+					end
+			end
+
+		add $i 1
+
+	end
+
+	subtract $planet~planetCount $planet~planetSkip
+	setvar $switchboard~message "Evac Complete. Moved: "&$planet~planetCount&" Skipped: "&$planet~planetSkip&". *"
+	gosub :switchboard~switchboard
+	halt
+
 
 	:evac_no_warp_back
 		killtrigger warp
-		send "'{" $bot_name "} - No Fighter at Home Sector.  Shutting down Evac.*"
-		goto :evac_end
+		setvar $switchboard~message "No Fighter at Home Sector.  Shutting down Evac.*"
+		gosub :switchboard~switchboard
+		halt
 
 	:evac_no_fig
 		killtrigger warp
-		if ($mode = "Runaway")
-			send "qqq* "
-			gosub :getNewRunAwaySector
-			setVar $target_sector $warpTo
-			goto :evac_move
-		end
-		send "'{" $bot_name "} - No Fighter at Target Sector.  Shutting down Evac.*"
+		setvar $switchboard~message "No Fighter at Target Sector.  Shutting down Evac.*"
+		gosub :switchboard~switchboard
+		halt
 
 	:evac_end
 		halt
 
 # ======================     END PLANET MOVER (EVAC) SUBROUTINE    ==========================
-
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\quikstats"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\planetinfo"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\pwarp"
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"

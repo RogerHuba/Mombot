@@ -5,6 +5,9 @@ systemscript
 ###########################################
 loadVar $MAP~stardock
 loadvar $bot~subspace
+loadvar $bot~bot_password
+loadvar $bot~bot_name
+
 setSectorParameter 1 "MSLSEC" TRUE
 setSectorParameter 2 "MSLSEC" TRUE
 setSectorParameter 3 "MSLSEC" TRUE
@@ -36,6 +39,7 @@ end
     setTextLineTrigger  getshipmaxfighters  :setShipMaxFigAttack    " TransWarp Drive:   "
     setTextLineTrigger  captureLevelPlanet  :captureLevelPlanet " Level "
     setTextLineTrigger  captureNoLevelPlanet  :captureNoLevelPlanet " No Citadel"
+    setTextLineTrigger  emergency_reboot      :emergency_reboot $bot~bot_name&" "&$bot~subspace&"<EMERGENCY REBOOT>"&$bot~bot_password
     setTextLineTrigger  shipdestroyed         :shipdestroyed "You will have to start over from scratch!"
     setTextLineTrigger  getPlanetNumberRaw    :setPlanetNumberRaw "Land on which planet <Q to abort> ? "
     setTextLineTrigger  getShipNumberRaw       :setShipNumberRaw "Choose which ship to beam to (Q=Quit) "
@@ -408,3 +412,29 @@ end
 
 setTextLineTrigger  shipdestroyed         :shipdestroyed "You will have to start over from scratch!"
 pause
+
+:emergency_reboot
+
+    listActiveScripts $scripts
+    setVar $i 1
+    setVar $found FALSE
+    setVar $rebooted FALSE
+    while ($i <= $scripts)
+        getWordPos "<><><>"&$scripts[$i] $pos "<><><>__mom_bot"
+        if ($pos > 0)
+            stop $scripts[$i]
+            if ($found = FALSE)
+                setVar $boot_this $scripts[$i]
+                setVar $found TRUE
+            end
+        end
+        add $i 1
+    end
+    if ($FOUND = FALSE)
+        ECHO "No mombot script found to reboot.*"
+    end
+    load "scripts\mombot\"&$boot_this
+
+
+    setTextLineTrigger  emergency_reboot      :emergency_reboot $bot~bot_name&" "&$bot~subspace&"<EMERGENCY REBOOT>"&$bot~bot_password
+	pause

@@ -1,11 +1,7 @@
-     loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $SWITCHBOARD~self_command
-    loadvar $SWITCHBOARD~self_command
-    loadVar $MAP~stardock
- loadvar $SWITCHBOARD~bot_name 
+	gosub :BOT~loadVars
+
+	setVar $BOT~help[1]  $BOT~tab&"climp - place corporate limpets in sector "
+	gosub :BOT~help_file
 
 # ============================== START PERSONAL LIMP (LIMP) SUB ==============================
 :climp
@@ -13,19 +9,20 @@
 
 :_limp
     gosub :mineProtections
-    if ($parm1 > $PLAYER~LIMPETS)
-        setVar $parm1 $PLAYER~LIMPETS
+    if ($bot~parm1 > $PLAYER~LIMPETS)
+        setVar $bot~parm1 $PLAYER~LIMPETS
     end
 :plimp1
     killalltriggers
     if ($PLAYER~LIMPETS <= 0)
-        send "'{" $SWITCHBOARD~bot_name "} - Out of limpets!*"
-        halt
+		setvar $switchboard~message "Out of limpets!*"
+		gosub :switchboard~switchboard
+		halt
     end
     if ($PLAYER~startingLocation = "Citadel")
-        send "q q z* h2z" $parm1 "* z " $limp " z * * *l " $PLANET~PLANET "* c"
+        send "q q z* h2z" $bot~parm1 "* z " $limp " z * * *l " $planet~planet "* c"
     elseif ($PLAYER~startingLocation = "Command")
-        send "z* h2z" $parm1 "* z " $limp " z * *"
+        send "z* h2z" $bot~parm1 "* z " $limp " z * *"
     end
     setTextLineTrigger toomanypl :toomany_limp "!  You are limited to "
     setTextLineTrigger plclear :plclear_limp "Done. You have "
@@ -48,12 +45,12 @@
     pause
 :cordown_limp
     killalltriggers
-    setVar $SWITCHBOARD~message $parm1&" Corporate Limpets Deployed!*"
+    setVar $SWITCHBOARD~message $bot~parm1&" Corporate Limpets Deployed!*"
     gosub :SWITCHBOARD~switchboard
     goto :done_limp
 :perdown_limp
     killalltriggers
-    setVar $SWITCHBOARD~message $parm1&" Personal Limpet Deployed!*"
+    setVar $SWITCHBOARD~message $bot~parm1&" Personal Limpet Deployed!*"
     gosub :SWITCHBOARD~switchboard
     goto :done_limp
 :noperdown_limp
@@ -71,7 +68,6 @@
     else
         setSectorParameter $PLAYER~CURRENT_SECTOR "LIMPSEC" FALSE
     end
-    killalltriggers
     halt
 # ============================== END PERSONAL LIMP SUB ==============================
 
@@ -84,9 +80,9 @@
         halt
     end
     setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
-    isNumber $test $parm1
-    if (($test = FALSE) OR ($parm1 = 0))
-        setVar $parm1 1
+    isNumber $test $bot~parm1
+    if (($test = FALSE) OR ($bot~parm1 = 0))
+        setVar $bot~parm1 1
     end
     setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
     setVar $PROMPT~validPrompts "Command Citadel"
@@ -99,9 +95,11 @@
 return
 
 
-# includes:
+#INCLUDES:
+include "source\module_includes\bot"
 include "source\bot_includes\player"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
+include "source\bot_includes\ship"
 include "source\bot_includes\map"
-include "source\module_includes\prompt"
+include "source\bot_includes\sector"

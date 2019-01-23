@@ -1,5 +1,4 @@
 	reqRecording
-	logging off
 	gosub :BOT~loadVars
 	setVar $BOT~command "select"
 	loadVar $BOT~bot_turn_limit
@@ -428,12 +427,12 @@ halt
 				if ($SWITCHBOARD~self_command <> TRUE)
 				    setVar $SWITCHBOARD~self_command 2
 				end
-				listSectorParameters $i $parms
+				listSectorParameters $i $bot~parms
 				setvar $j 1
 				setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  *"
-				while ($j <= $parms)
-				    getSectorParameter $i $parms[$j] $check
-				    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$parms[$j]&": "&$check&"*"
+				while ($j <= $bot~parms)
+				    getSectorParameter $i $bot~parms[$j] $check
+				    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$bot~parms[$j]&": "&$check&"*"
 				    add $j 1
 				end
 			    gosub :SWITCHBOARD~switchboard

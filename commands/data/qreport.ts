@@ -1,62 +1,61 @@
+	gosub :BOT~loadVars
 
-	loadVar $bot_name
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
-	loadVar $mbbs
+	setVar $BOT~help[1] $BOT~tab&"Quasar Report"
+	setVar $BOT~help[2] $BOT~tab&"  - Will display cannon shots based on current settings."
+	setVar $BOT~help[3] $BOT~tab&"  qreport {planet1} {planet2} ... {planetx}"
+	gosub :BOT~help_file
+	loadVar $game~mbbs
 
 	
 # ======================     START CANNON CALCULATOR (QREPORT) SUBROUTINE    ==========================
 :cannonCalculator
-	gosub :quikstats~quikstats
-	setVar $startingLocation $quikstats~CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~CURRENT_PROMPT
 	if ($startingLocation <> "Command")
-		send "'{" $bot_name "} - Cannon Calculator must be run from command prompt*"
+		setvar $switchboard~message "Cannon Calculator must be run from command prompt*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	setArray $cannonPlanet 100
 	setArray $cannonFuel 100
 	setArray $cannonPercent 100
 	setVar $cannonPlanetCount 0
-	getWord $user_command_line $temp 1	
+	getWord $bot~user_command_line $temp 1	
 	while ($temp <> 0)
 		add $cannonPlanetCount 1
 		setVar $cannonPlanet[$cannonPlanetCount] $temp
-		getWord $user_command_line $temp $cannonPlanetCount+1
+		getWord $bot~user_command_line $temp $cannonPlanetCount+1
 	end
 	if ($cannonPlanetCount <= 0)
-		send "'{" $bot_name "} - No planet numbers entered*"
+		setvar $switchboard~message "No planet numbers entered*"
+		gosub :switchboard~switchboard
 		halt
 	end
-	setVar $planetMemory " "
+	setVar $planet~planetMemory " "
 	setVar $i 1
 	while ($i <= $cannonPlanetCount)
-		getWordPos $planetMemory $pos " "&$cannonPlanet[$i]&" "
+		getWordPos $planet~planetMemory $pos " "&$cannonPlanet[$i]&" "
 		if ($pos > 0)
 
 		else
-			setVar $planetMemory $planetMemory&" "&$cannonPlanet[$i]&" "
+			setVar $planet~planetMemory $planet~planetMemory&" "&$cannonPlanet[$i]&" "
 			send "l "&$cannonPlanet[$i]&"** "
 			setTextLineTrigger wrongPlanet :badPlanet "That planet is not in this sector."
 			setTextLineTrigger badPlanet :badPlanet "Invalid registry number, landing aborted."
 			setTextLineTrigger goodPlanet :goodPlanet "Claimed by:"
 			pause
 			:badPlanet
-				send "'{" $bot_name "} - Planet number " $cannonPlanet[$i] " entered not valid. *"
+				setvar $switchboard~message "Planet number "&$cannonPlanet[$i]&" entered not valid. *"
+				gosub :switchboard~switchboard
+
 				halt
 			:goodPlanet
 				killtrigger wrongplanet
 				killtrigger badplanet
-				gosub :planetinfo~getPlanetInfo
+				gosub :planet~getPlanetInfo
 				send "q "
-				setVar $cannonFuel[$i] $planetinfo~PLANET_FUEL
-				setVar $cannonPercent[$i] $planetinfo~SECTOR_CANNON
+				setVar $cannonFuel[$i] $planet~planet_FUEL
+				setVar $cannonPercent[$i] $planet~SECTOR_CANNON
 
 
 		end
@@ -65,7 +64,7 @@
 	end
 	setVar $count 1
 	setVar $quasarOutput "'*"
-	setVar $quasarOutput $quasarOutput&"{"&$bot_name&"}    Sector Quasar Report    {"&$bot_name&"}*  (Planet "
+	setVar $quasarOutput $quasarOutput&"{"&$bot~bot_name&"}    Sector Quasar Report    {"&$bot~bot_name&"}*  (Planet "
 	setVar $i 1
 	while ($i <= $cannonPlanetCount)
 		if (($i = $cannonPlanetCount) AND ($i > 1))
@@ -83,7 +82,7 @@
 		setVar $cannonDamage 0
 		setVar $i 1
 		while ($i <= $cannonPlanetCount)
-			if ($mbbs)
+			if ($game~mbbs)
 				add $cannonDamage ((($cannonFuel[$i] * $cannonPercent[$i]) / 100)/2)
 			else
 				add $cannonDamage ((($cannonFuel[$i] * $cannonPercent[$i]) / 100)/3)
@@ -107,11 +106,17 @@
 		setVar $quasarOutput $quasarOutput&"  Shot "&$count&": "&$formattedCannonDamage&" points of damage.*"
 		add $count 1
 	end
-	setVar $quasarOutput $quasarOutput&"{"&$bot_name&"}    Sector Quasar Report    {"&$bot_name&"}**"
+	setVar $quasarOutput $quasarOutput&"{"&$bot~bot_name&"}    Sector Quasar Report    {"&$bot~bot_name&"}**"
 	send $quasarOutput
 	halt
 # ======================     END CANNON CALCULATOR (QREPORT) SUBROUTINE     ==========================
 
-# includes:
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\quikstats"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\planetinfo"
+
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"

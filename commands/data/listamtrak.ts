@@ -1,32 +1,9 @@
-	logging off
-		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
+gosub :BOT~loadVars
 
-	loadVar $bot_name
-	loadVar $unlimitedGame		
-	loadVar $bot_turn_limit		
-	loadVar $user_command_line	
-	loadVar $parm1			
-	loadVar $parm2			
-	loadVar $parm3			
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
-	loadVar $stardock
-	loadVar $backdoor
-	loadVar $rylos
-	loadVar $alpha_centauri
-	loadVar $command
+#HELP FILE
+     setVar $BOT~help[1]  $BOT~tab&"listamtrak   "
+     setVar $BOT~help[2]  $BOT~tab&"    Creates list of amtrak sectors   "
+     gosub :BOT~help_file
 
 setVar $SWITCHBOARD~message "Creating list of AMTRAK sectors..*"
 gosub :SWITCHBOARD~switchboard
@@ -47,7 +24,7 @@ gosub :SWITCHBOARD~switchboard
 				getWordPos $path_database $pos " "&$test_sector&" "
 				if ($pos <= 0)
 					getSectorParameter $test_sector $PARAM $isTrue
-					if (($isTrue <> TRUE) AND ($test_sector <> $stardock) AND ($test_sector > 10) AND ($test_sector <> $rylos) AND ($test_sector <> $alpha_centauri))
+					if (($isTrue <> TRUE) AND ($test_sector <> $map~stardock) AND ($test_sector > 10) AND ($test_sector <> $map~rylos) AND ($test_sector <> $map~alpha_centauri))
 						setVar $path_database $path_database&$test_sector&"  "
 						setSectorParameter $test_sector "AMTRAK" TRUE
 					end	

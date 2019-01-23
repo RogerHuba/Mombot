@@ -1,25 +1,23 @@
-loadVar $user_command_line
-loadVar $parm1
-loadVar $parm2
-loadVar $parm3
-loadVar $parm4
-loadVar $parm5
-loadVar $parm6
-loadVar $parm7
-loadVar $parm8
-loadVar $bot_name
+	gosub :BOT~loadVars
+	loadVar $BOT~ARMID_COUNT_FILE
+
+	setVar $BOT~help[1] $BOT~tab&"CALL - Call SaveMe Command"
+	setVar $BOT~help[2] $BOT~tab&"       Used to trigger a SaveMe Script"
+	setVar $BOT~help[3] $BOT~tab&"     "
+	setVar $BOT~help[4] $BOT~tab&"       - Originally written by Cherokee"
+	gosub :BOT~help_file
 
 		
 :callSaveMe
 	killAllTriggers
 	send "q q q * * * * "
-	gosub :quikstats
+	gosub :player~quikstats
     	setVar $figstodeploy 1
-	setVar $savetarget $CURRENT_SECTOR
+
 
 	gosub :deployfigs
-	send "'" & $savetarget & "=saveme*"
-	send "'pickup " & $CURRENT_SECTOR  & " ::*"
+	send "'" & $player~current_sector & "=saveme*"
+	send "'pickup " & $player~current_sector  & " ::*"
 	
 
 :waitforhelp
@@ -42,8 +40,8 @@ loadVar $bot_name
 
     :friendlyplanet
         killalltriggers
-        getText CURRENTLINE $planet "Saveme script activated - Planet " " to "
-        send "L " & $planet & "* C 'I landed on planet " & $planet & "*"
+        getText CURRENTLINE $planet~planet "Saveme script activated - Planet " " to "
+        send "L " & $planet~planet & "* C 'I landed on planet " & $planet~planet & "*"
         halt
 
     :towlocked
@@ -58,7 +56,7 @@ loadVar $bot_name
     if ($figstodeploy = 0)
         setVar $figstodeploy 1
     end
-    if (($CURRENT_SECTOR  < 11) or ($CURRENT_SECTOR  = STARDOCK))
+    if (($player~current_sector  < 11) or ($player~current_sector  = STARDOCK))
         send "'Can't deploy figs in fed*"
         return
     end
@@ -87,126 +85,13 @@ loadVar $bot_name
         end
 return
 
-#=================================QUIKSTATS================================================
-:quikstats
-	setVar $CURRENT_PROMPT 		"Undefined"
-	killtrigger noprompt
-	killtrigger prompt
-	killtrigger prompt1
-	killtrigger prompt2
-	killtrigger prompt3
-	killtrigger prompt4
-	killtrigger statlinetrig
-	killtrigger getLine2
-	setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
-	setTextLineTrigger 	statlinetrig 	:statStart 		#179
-	send #145&"/"
-	pause
 
-	:allPrompts
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
-		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
-		pause
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"
 
-	:statStart
-		killtrigger prompt
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger noprompt
-		setVar $stats ""
-		setVar $wordy ""
-
-
-	:statsline
-		killtrigger statlinetrig
-		killtrigger getLine2
-		setVar $line2 CURRENTLINE
-		replacetext $line2 #179 " "
-		striptext $line2 ","
-		setVar $stats $stats & $line2
-		getWordPos $line2 $pos "Ship"
-		if ($pos > 0)
-			goto :gotStats
-		else
-			setTextLineTrigger getLine2 :statsline
-			pause
-		end
-
-	:gotStats
-		setVar $stats $stats & " @@@"
-
-		setVar $current_word 0
-		while ($wordy <> "@@@")
-			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
-			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
-			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
-			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
-			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
-			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
-			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
-			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
-			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
-			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
-			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
-			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
-			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
-			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
-			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
-			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
-			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
-			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
-			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
-			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
-			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
-			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
-			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
-			elseif ($wordy = "Corp")
-				getWord $stats $CORP   			($current_word + 1)
-			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
-			end
-			add $current_word 1
-			getWord $stats $wordy $current_word
-		end
-	:doneQuikstats
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger statlinetrig
-		killtrigger getLine2
-
-return
-# ============================== END QUICKSTATS SUB==============================

@@ -1,15 +1,9 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $command
-    loadVar $stardock
-    loadVar $MAP~stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
-    loadvar $SWITCHBOARD~self_command 
+gosub :BOT~loadVars
+
+#HELP FILE
+     setVar $BOT~help[1]  $BOT~tab&"extern   "
+     setVar $BOT~help[2]  $BOT~tab&"    Says how much time until midnight game time.   "
+     gosub :BOT~help_file
 
 :extern
     gosub :PLAYER~current_prompt
@@ -17,7 +11,7 @@
     if (($startingLocation <> "Citadel") AND ($startingLocation <> "Command"))
         setVar $SWITCHBOARD~message "Wrong prompt for extern check.*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     else
         gosub :get_time_until_extern
             if ($hours_left < 10)
@@ -31,7 +25,7 @@
             end
         setVar $SWITCHBOARD~message "Time until extern: "&$hours_left&":"&$minutes_left&":"&$seconds_left&"*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
 
     end
 :get_time_until_extern
@@ -64,42 +58,12 @@
 return
 
 
-:wait_for_command
-halt
-
-:killthetriggers
-    killalltriggers
-return
-
-:removeFigFromData
-    getSectorParameter $target "FIGSEC" $check
-    if ($check = TRUE)
-        getSectorParameter 2 "FIG_COUNT" $figCount
-        setSectorParameter 2 "FIG_COUNT" ($figCount-1)
-    end
-    setSectorParameter $target "FIGSEC" FALSE
-return
-:addFigToData
-    setSectorParameter $target "FIGSEC" TRUE
-return
-
-:checkStartingPrompt
-    if ($PLAYER~CURRENT_PROMPT = "0")
-        gosub :PLAYER~current_prompt
-    end
-    getWordPos " "&$validPrompts&" " $pos $PLAYER~CURRENT_PROMPT
-    if ($pos <= 0)
-        setVar $SWITCHBOARD~message "Invalid starting prompt: ["&$PLAYER~CURRENT_PROMPT&"]. Valid prompt(s) for this command: ["&$validPrompts&"]*"
-        gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
-    end
-return
 
 # includes:
 include "source\bot_includes\player"
 include "source\bot_includes\sector"
-include "source\bot_includes\map"
 include "source\bot_includes\ship"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\module_includes\prompt"
+include "source\module_includes\bot"

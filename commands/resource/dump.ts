@@ -1,31 +1,23 @@
-loadVar $bot_name
-loadVar $user_command_line
-loadVar $parm1
-loadVar $parm2
-loadVar $parm3
-loadVar $parm4
-loadVar $parm5
-loadVar $parm6
-loadVar $parm7
-loadVar $parm8
+	gosub :BOT~loadVars
 
-if ($parm1 = "help")
-	send "'*{" $bot_name "} - dump [type] - Jettisons colos off of planet*"
-	send "  - [type] = use [f]uel, [o]rg, [e]quip, or [a]ll**"
-	halt
-end	
+	setVar $BOT~help[1]   $BOT~tab&"- dump [type] - Jettisons colos off of planet" 
+	setVar $BOT~help[2]   $BOT~tab&"     [type] = use [f]uel, [o]rg, [e]quip, or [a]ll " 
+	gosub :BOT~help_file
+
 
 # ======================     START COLO DUMP (DUMP) SUBROUTINE    ==========================
 :colo_dump
-	gosub :quikstats~quikstats
-	setVar $startingLocation $quikstats~CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~CURRENT_PROMPT
 	if (($startingLocation <> "Planet") and ($startingLocation <> "Citadel"))
-        	send "'{" $bot_name "} - Colo Dump must be run from Citadel or Planet prompt.*"
+        	setvar $switchboard~message "Colo Dump must be run from Citadel or Planet prompt.*"
+			gosub :switchboard~switchboard
+
 		halt
 	end
 
 	:getcolosfrom
-		setvar $cologroup $parm1
+		setvar $cologroup $bot~parm1
 		setVar $colosDumped 0
 		setVar $coloCounting FALSE
 		setVar $numberColosToDump 0
@@ -42,19 +34,23 @@ end
 			setVar $cologroup 1
 			setvar $colodisplay "All"
 		else
-			isNumber $test $parm1
+			isNumber $test $bot~parm1
 			if ($test)
-				if ($parm1 > 0)
-					setVar $numberColosToDump $parm1
+				if ($bot~parm1 > 0)
+					setVar $numberColosToDump $bot~parm1
 					setVar $colodisplay $numberColosToDump
 					setVar $cologroup 1
 					setVar $coloCounting TRUE
 				else
-					send "'{" $bot_name "} - Please use [F]uel, [O]rganics, [E]quipment, [A]ll, or a Number.*"
+					setvar $switchboard~message "Please use [F]uel, [O]rganics, [E]quipment, [A]ll, or a Number.*"
+					gosub :switchboard~switchboard
+
 					halt
 				end
 			else
-				send "'{" $bot_name "} - Please use [F]uel, [O]rganics, [E]quipment, [A]ll, or a Number.*"
+				setvar $switchboard~message "Please use [F]uel, [O]rganics, [E]quipment, [A]ll, or a Number.*"
+				gosub :switchboard~switchboard
+
 				halt
 			end
 
@@ -62,13 +58,14 @@ end
 		if ($startingLocation = "Citadel")
 			send "q"
 		end
-		gosub :planetinfo~getPlanetInfo
-		send "'{" $bot_name "} - Dumping "&$colodisplay&" Colonists from Planet: "&$planetinfo~PLANET&".*"
+		gosub :planet~getPlanetInfo
+		setvar $switchboard~message "Dumping "&$colodisplay&" Colonists from Planet: "&$planet~planet&".*"
+		gosub :switchboard~switchboard
 		killTrigger 1
 		send "q j y "
 
 	:sub_Land
-		send "l j"&#8&$planetinfo~PLANET&"* s n t "&$cologroup&"* "
+		send "l j"&#8&$planet~planet&"* s n t "&$cologroup&"* "
 		settexttrigger next_group :next_group "There aren't that many on the planet!"
 		settexttrigger keep_dumping :keep_dumping "The Colonists file aboard your ship, eager to head out."
 		if (($coloCounting) AND ($colosDumped >= $numberColosToDump))
@@ -78,14 +75,15 @@ end
 
 	:next_group
 		killtrigger keep_dumping
-		if ($parm1 = "a") and ($cologroup < 3)
+		if ($bot~parm1 = "a") and ($cologroup < 3)
 			add $cologroup 1
 			goto :sub_land
 		else
 			:doneDumping
 				killtrigger next_group
 				killtrigger keep_dumping
-				send "'{" $bot_name "} - Finished Dumping "&$colodisplay&" Colonists from Planet: "&$planetinfo~PLANET&".*"
+				setvar $switchboard~message "Finished Dumping "&$colodisplay&" Colonists from Planet: "&$planet~planet&".*"
+				gosub :switchboard~switchboard
 				send "s n l 1* s n l 2* s n l 3* "
 				if ($startingLocation = "Citadel")
 					send "c"
@@ -98,10 +96,17 @@ end
 		killtrigger next_group
 		send "q j y "
 		if ($coloCounting)
-			add $colosDumped $quikstats~TOTAL_HOLDS
+			add $colosDumped $player~TOTAL_HOLDS
 		end
 		goto :sub_land
 # ======================     END COLO DUMP (DUMP) SUBROUTINE    ==========================
 
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\quikstats"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\planetinfo"
+# includes:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\sector"
+include "source\bot_includes\map"
+include "source\bot_includes\ship"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\module_includes\prompt"

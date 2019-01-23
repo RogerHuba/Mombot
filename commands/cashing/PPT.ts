@@ -28,28 +28,28 @@ gosub :BOT~loadVars
 	setVar $haggle "t"
 	
 
-	getWord $bot~user_command_line $parm1 1
-	getWord $bot~user_command_line $parm2 2
-	getWord $bot~user_command_line $parm3 3
+	getWord $bot~user_command_line $bot~parm1 1
+	getWord $bot~user_command_line $bot~parm2 2
+	getWord $bot~user_command_line $bot~parm3 3
 	
 
 	
-	if ($parm2 <> "")
-		if ($parm2 = "h")
+	if ($bot~parm2 <> "")
+		if ($bot~parm2 = "h")
 			setVar $haggle "h"
-		elseif ($parm2 = "n")
+		elseif ($bot~parm2 = "n")
 			setVar $haggle "n"
-		elseif ($parm2 = "t")
+		elseif ($bot~parm2 = "t")
 			setVar $haggle "t"
 		
 		end
 	end
-	if ($parm3 <> "")
-		if ($parm3 = "h")
+	if ($bot~parm3 <> "")
+		if ($bot~parm3 = "h")
 			setVar $haggle "h"
-		elseif ($parm3 = "n")
+		elseif ($bot~parm3 = "n")
 			setVar $haggle "n"
-		elseif ($parm3 = "t")
+		elseif ($bot~parm3 = "t")
 			setVar $haggle "t"
 		
 			
@@ -105,30 +105,30 @@ gosub :BOT~loadVars
 
 	end
 
-	if ($parm1 = "0")
-		setVar $parm1 "?"
+	if ($bot~parm1 = "0")
+		setVar $bot~parm1 "?"
 	end
 
-	isNumber $test $parm1
-	if (($test = FALSE) AND ($parm1 <> "?"))
+	isNumber $test $bot~parm1
+	if (($test = FALSE) AND ($bot~parm1 <> "?"))
 		
 		setVar $SWITCHBOARD~message "Invalid sector. Please enter a sector number or '?'.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 
-	if ($parm1 = "h")
+	if ($bot~parm1 = "h")
 		setVar $haggle "h"
-	elseif ($parm1 = "n")
+	elseif ($bot~parm1 = "n")
 		setVar $haggle "n"
-	elseif ($parm1 = "t")
+	elseif ($bot~parm1 = "t")
 		setVar $haggle "t"
 	end
 
 	setVar $tradingSector1 0
 	setVar $tradingType 0
 	:pptUpdateData
-	if ($parm1 = "?")
+	if ($bot~parm1 = "?")
 		setVar $i 1
 		send "c"
 		waitfor "<Computer activated>"
@@ -145,7 +145,7 @@ gosub :BOT~loadVars
 		goSub :displayPortReport
 		setVar $tradingSector2 CURRENTSECTOR
 	else
-		setVar $tradingSector1 $parm1
+		setVar $tradingSector1 $bot~parm1
 		setVar $tradingSector2 CURRENTSECTOR
 		isNumber $res $tradingSector1
 		if ($res = 0)
@@ -818,7 +818,8 @@ return
             goto :voids
         end
 
-        send "'{" $bot_name "} - Avoids set on adjacent sectors!*"
+        setvar $switchboard~message "Avoids set on adjacent sectors!*"
+        gosub :switchboard~switchboard
         send "/"
         waitfor " Sect "    
     end
@@ -827,7 +828,8 @@ return
 :clearadjacentPPT
     getSector $voidSector $sectorInfo
     if ($sectorInfo.warp[1] = 0)
-        send "'{" $bot_name "} -This sector has no warps, try to scan it first!*"
+        setvar $switchboard~message "This sector has no warps, try to scan it first!*"
+        gosub :switchboard~switchboard
         halt
     else
         setVar $voidsect 0
@@ -842,7 +844,8 @@ return
             goto :clearvoids
         end
 
-        send "'{" $bot_name "} - Avoids cleared on adjacent sectors!*"
+        setvar $switchboard~message "Avoids cleared on adjacent sectors!*"
+        gosub :switchboard~switchboard
         send "/"
         waitfor " Sect "
     end

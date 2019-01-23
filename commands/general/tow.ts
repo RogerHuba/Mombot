@@ -1,112 +1,80 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $command
-    loadVar $stardock
-    loadVar $MAP~stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
-    loadvar $SWITCHBOARD~self_command 
+   gosub :BOT~loadVars
+
+    setVar $BOT~help[1]  $BOT~tab&"tow - tow another ship "
+    gosub :BOT~help_file
 
 
   # ============================== START TOW (TOW) ==============================
 :tow
     gosub :PLAYER~quikstats
-    setVar $validPrompts "Command"
-    gosub :checkStartingPrompt
-    isNumber $test $parm1
+    setVar $bot~validPrompts "Command"
+    gosub :bot~checkstartingprompt
+    isNumber $test $bot~parm1
     if ($test = FALSE)
         setVar $SWITCHBOARD~message "Ship to tow must be entered as a number*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
-    elseif ($parm1 < 1)
+        halt
+    elseif ($bot~parm1 < 1)
         setVar $SWITCHBOARD~message "Ship to tow must be entered as a number*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     else
-        setVar $shipToTow $parm1
+        setVar $shipToTow $bot~parm1
     end
     :towCheck
-            gosub :killthetriggers
+            killalltriggers
             send "w"
             SetTextTrigger towOffContinue   :towCheck "You shut off your Tractor Beam."
                 SetTextTrigger towOff           :towContinue "Do you wish to tow a manned ship? (Y/N)"
                 pause
         :towContinue
-                gosub :killthetriggers
+                killalltriggers
                 send "*"
                 SetTextTrigger towNoGo          :towNoGo "You do not own any other ships in this sector!"
                 SetTextTrigger towReady         :towOff "Choose which ship to tow (Q=Quit)"
                 pause
     :towOff
-        gosub :killthetriggers
+        killalltriggers
         send $shipToTow & "*"
                 setTextTrigger towNoGo2           :towNoGo2 "Command [TL="
             setTextTrigger Tow_PassWord   :Tow_PassWord "Enter the password for"
             setTextLineTrigger waitOnTow      :goodTow "You lock your Tractor Beam on "
             pause
     :Tow_PassWord
-        gosub :killthetriggers
+        killalltriggers
         send "*"
         setVar $SWITCHBOARD~message "That ship has a PassWord Set.*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     :towNoGo
-                gosub :killthetriggers
+                killalltriggers
         setVar $SWITCHBOARD~message "There are no ships in the sector I can tow.*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     :towNoGo2
-                gosub :killthetriggers
+                killalltriggers
         setVar $SWITCHBOARD~message "That ship number is not in the sector.*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     :goodTow
-        gosub :killthetriggers
+        killalltriggers
         setVar $SWITCHBOARD~message "Tow locked onto ship number " & $shipToTow & "*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
 # ============================== END TOW (TOW) ==============================
 
-:wait_for_command
-halt
 
-:killthetriggers
-    killalltriggers
-return
 
-:removeFigFromData
-    getSectorParameter $target "FIGSEC" $check
-    if ($check = TRUE)
-        getSectorParameter 2 "FIG_COUNT" $figCount
-        setSectorParameter 2 "FIG_COUNT" ($figCount-1)
-    end
-    setSectorParameter $target "FIGSEC" FALSE
-return
-:addFigToData
-    setSectorParameter $target "FIGSEC" TRUE
-return
 
-:checkStartingPrompt
-    if ($PLAYER~CURRENT_PROMPT = "0")
-        gosub :PLAYER~current_prompt
-    end
-    getWordPos " "&$validPrompts&" " $pos $PLAYER~CURRENT_PROMPT
-    if ($pos <= 0)
-        setVar $SWITCHBOARD~message "Invalid starting prompt: ["&$PLAYER~CURRENT_PROMPT&"]. Valid prompt(s) for this command: ["&$validPrompts&"]*"
-        gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
-    end
-return
+
+
+
 
 # includes:
 include "source\bot_includes\player"
 include "source\bot_includes\sector"
-include "source\bot_includes\map"
 include "source\bot_includes\ship"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\module_includes\prompt"
+include "source\module_includes\bot"

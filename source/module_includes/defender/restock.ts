@@ -90,7 +90,7 @@
 		setVar $ore_req (($dist1 + $dist2) * 3)
 
 		if ($PLAYER~ORE_HOLDS < $ore_req)
-			send "'{" $SWITCHBOARD~bot_name "} - Not Enough ORE In Holds To Make Round Trip**"
+			send "'{" $SWITCHBOARD~bot_name "} - Not Enough ORE In Holds To Make Round Trip.  Needs "&$ore_req&".**"
 			halt
 		end
 
@@ -342,7 +342,7 @@ return
 	halt
 
 :DoPurchases
-	send "h "
+	send "|h "
 	waitfor "<Hardware Emporium>"
 	#=============================================== PURCHASE LIMPS
 	if ($_Limps  <> "")
@@ -400,5 +400,5 @@ return
 		waitfor "<Hardware Emporium>"
 	end
 
-
+	send "|"
 	return

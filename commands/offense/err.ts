@@ -1,14 +1,5 @@
 logging off
      gosub :BOT~loadVars
-     setVar $parm1 $BOT~parm1
-     setVar $parm2 $BOT~parm2
-     setVar $parm3 $BOT~parm3
-     setVar $parm4 $BOT~parm4
-     setVar $parm5 $BOT~parm5
-     setVar $parm6 $BOT~parm6
-     setVar $parm7 $BOT~parm7
-     setVar $parm8 $BOT~parm8
-     setVar $user_command_line $BOT~user_command_line
 
 #HELP FILE
      setVar $BOT~help[1]  $BOT~tab&"Enter Sector and Retreat until back in original sector (pod or actual retreat).  "
@@ -25,7 +16,7 @@ logging off
 	  gosub :SWITCHBOARD~switchboard
           halt
      end
-     isNumber $test $parm1
+     isNumber $test $bot~parm1
 		if ($test)
                 else
                         setVar $SWITCHBOARD~message "SECTOR must be a number*"
@@ -37,11 +28,11 @@ logging off
           if ($player~credits > 0)
                send "t t"&$player~credits&"* "
           end
-          send "cv0*yn" & $parm1 & "*qq"
+          send "cv0*yn" & $bot~parm1 & "*qq"
           gosub :PLANET~getPlanetInfo
           send "q"
      end
-     send $parm1 & "*  *  *  "
+     send $bot~parm1 & "*  *  *  "
 :looper
      killtrigger 1
      killtrigger 2
@@ -52,7 +43,7 @@ logging off
      :done
      gosub :PLAYER~quikstats
      if ($PLAYER~CURRENT_SECTOR = $StartSector)
-          send "l "&$PLANET~planet&"* "
+          send "l "&$planet~planet&"* "
      else
           setVar $SWITCHBOARD~message "Not in start sector - something is likely wrong.,*"
           gosub :SWITCHBOARD~switchboard

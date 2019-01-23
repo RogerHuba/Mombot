@@ -9,7 +9,7 @@
     setVar $BOT~help[7] $BOT~tab&"        "
     gosub :BOT~help_file
 
-    loadvar $PLANET~PLANET
+    loadvar $planet~planet
     loadvar $bot~mode
     loadvar $BOT~bot_team_name
 
@@ -111,10 +111,10 @@
     setVar $qss[26] $PLAYER~EXPERIENCE
     setVar $qss[27] $PLAYER~SHIP_NUMBER
     if (($PLAYER~startingLocation = "Planet") OR ($PLAYER~startingLocation = "Citadel"))
-        if ($PLANET~PLANET = "0")
+        if ($planet~planet = "0")
             setVar $qss[28] "None"
         else
-            setVar $qss[28] $PLANET~PLANET
+            setVar $qss[28] $planet~planet
         end
     else
         setVar $qss[28] "None"
@@ -142,10 +142,10 @@
     else
         setVar $qss[33] $BOT~bot_team_name
     end
-    if ($PLANET~PLANET = "0")
+    if ($planet~planet = "0")
         setVar $qss[34] "None"
     else
-        setVar $qss[34] $PLANET~PLANET
+        setVar $qss[34] $planet~planet
     end
     if ($fedsafe = true)
         setVar $qss[35] "Yes"
@@ -194,27 +194,13 @@
         setVar $SWITCHBOARD~message "   *"&$SWITCHBOARD~message
     end
     gosub :SWITCHBOARD~switchboard
-goto :wait_for_command
+halt
 # ============================== END QSS SUB ==============================
 
-:wait_for_command
-halt
 
-:killthetriggers
-    killalltriggers
-return
 
-:removeFigFromData
-    getSectorParameter $target "FIGSEC" $check
-    if ($check = TRUE)
-        getSectorParameter 2 "FIG_COUNT" $figCount
-        setSectorParameter 2 "FIG_COUNT" ($figCount-1)
-    end
-    setSectorParameter $target "FIGSEC" FALSE
-return
-:addFigToData
-    setSectorParameter $target "FIGSEC" TRUE
-return
+
+
 
 # includes:
 include "source\bot_includes\player"

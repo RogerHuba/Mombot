@@ -1,6 +1,4 @@
 	gosub :BOT~loadVars
-	loadVar $BOT~bot_turn_limit
-	loadVar $PLAYER~unlimitedGame
 
 	setVar $BOT~help[1]   $BOT~tab&"  port {build/create} {destroy/kill} {upgrade/max}                "
 	setVar $BOT~help[2]   $BOT~tab&"  Options:"
@@ -22,7 +20,7 @@
 	gosub :BOT~help_file
 
 
-	setVar $bot_name $SWITCHBOARD~bot_name
+	setVar $bot~bot_name $SWITCHBOARD~bot_name
 	
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT

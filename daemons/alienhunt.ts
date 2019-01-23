@@ -251,11 +251,13 @@
 		setVar $lastTarget ""
 		setVar $thisTarget ""
 
+		gosub :attackandmoveship
 		echo "*Waiting for something to hunt..*"
 		:BOT~restart
 		gosub :validateFighterHit
 		gosub :attackandmoveship
 		gosub :dosurround
+		gosub :attackandmoveship
 	end
 	halt
 
@@ -287,7 +289,7 @@
 			pause
 		end
 	:go_to_drop_sector
-		if ($dropSector <> $CURRENT_SECTOR)
+		if ($dropSector <> $player~current_sector)
 			send "*ls0* la0*  p " $dropSector "*y"
 			setTextLineTrigger pwarpNotOk :pwarpTryAdjacent "You do not have any fighters in Sector "
 			setTextLineTrigger pwarpOk :pwarpConfirmed " Planetary TransWarp Drive Engaged! "
@@ -401,8 +403,7 @@ return
 	        gosub :PLANET~getPlanetInfo
 	        send "q "
 			gosub :PLAYER~surround
-            gosub :PLANET~landingSub
-            send "q m*** c "
+            send "l "&$planet~planet&"* m*** c "
 	        setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
 	        gosub :SWITCHBOARD~switchboard
 	        echo "*" & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
@@ -410,29 +411,28 @@ return
 return
 
 :attackandmoveship
-		send "q q q* * "
 		gosub :PLAYER~quikstats
 		setvar $startingLocation $player~current_prompt
 		setVar $SECTOR~federalCount 0
 		setvar $SECTOR~fakeTraderCount 1
 		setVar $targetsFound FALSE
-		gosub :PLAYER~quikstats
 		while ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
 			setvar $player~startingLocation $player~current_prompt
 			goSub :SECTOR~getSectorData			
 		    if ($SECTOR~realTraderCount > $SECTOR~corpieCount)
 		    	setvar $targetsFound true
-		    	gosub :PLANET~landingSub
-				gosub :player~fastCitadelAttack
-				send "q q q* * "    	
+		    	gosub :player~fastCitadelAttack
 				send "'Just attacked (and hopefully killed) a trader in my sector! Sector "&$player~current_sector&".*"
 		    end
 		    if ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
 		    	setVar $targetsFound TRUE
-				goSub :PLAYER~fastCapture
+		    	goSub :PLAYER~fastCapture
 		    end
 		end
-		gosub :PLANET~landingSub
+		gosub :PLAYER~quikstats
+		if ($player~current_prompt = "Command")
+			gosub :PLANET~landingSub
+		end
 		send "q m*** c "
 		gosub :PLAYER~quikstats
 		setVar $startingSector $PLAYER~CURRENT_SECTOR
@@ -460,13 +460,13 @@ return
 				setvar $i 1
 				setvar $found_keeper false
 				while ($i <= $emptyShips)
-					setvar $ship_name SECTOR.SHIPS[$player~current_sector][$i]
-					lowercase $ship_name
-					getwordpos $ship_name $pos "alien starship"
-					send "'[["&$ship_name&"]]*"
-					if ($pos > 0)
-						setvar $found_keeper true
-					end
+					#setvar $ship_name SECTOR.SHIPS[$player~current_sector][$i]
+					#lowercase $ship_name
+					#getwordpos $ship_name $pos "alien starship"
+					#send "'[["&$ship_name&"]]*"
+					#if ($pos > 0)
+					#	setvar $found_keeper true
+					#end
 					add $i 1
 				end
 				setVar $BOT~command "moveship"
@@ -475,12 +475,17 @@ return
 					setVar $BOT~user_command_line " moveship h silent"
 					setVar $BOT~parm1 $MAP~home_sector
 				else
-					if ($home = true)
-						setVar $BOT~user_command_line " moveship "&$homesector&" sell dep silent"
-						setVar $BOT~parm1 $homesector
+					if ($sell)
+						if ($home = true)
+							setVar $BOT~user_command_line " moveship "&$homesector&" silent"
+							setVar $BOT~parm1 $homesector
+						else
+							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
+							setVar $BOT~parm1 $MAP~stardock
+						end
 					else
-						setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
-						setVar $BOT~parm1 $MAP~stardock
+							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" silent"
+							setVar $BOT~parm1 $MAP~stardock						
 					end
 				end
 				saveVar $BOT~parm1
@@ -493,8 +498,8 @@ return
 				gosub :PLAYER~quikstats
 				if ($startingSector <> $PLAYER~CURRENT_SECTOR)
 					setVar $BOT~command "mow"
-					setVar $BOT~user_command_line " mow "&$startSector&" 1"
-					setVar $BOT~parm1 $startSector
+					setVar $BOT~user_command_line " mow "&$startingSector&" 1"
+					setVar $BOT~parm1 $startingSector
 					saveVar $BOT~parm1
 					saveVar $BOT~command
 					saveVar $BOT~user_command_line
@@ -512,7 +517,8 @@ return
 				killalltriggers
 				setvar $is_fuel_buyer PORT.BUYFUEL[$startingSector]
 				setvar $is_port PORT.EXISTS[$startingSector]
-				if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true))
+				setvar $class PORT.CLASS[$startingSector]
+				if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0))
 					if ($upgrade = true)
 						killAllTriggers
 						send "q"

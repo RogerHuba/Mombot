@@ -198,20 +198,20 @@ end
   setVar $plntCnt 0
   setVar $i 11
   while ($i < SECTORS)
-       if ($planets[$i] > 0)
+       if ($planet~planets[$i] > 0)
           add $plntCnt 1
           add $plCnt 1
           setVar $padit 6
           if ($baseID = "Base")
              SetVar $inStr $plCnt
              gosub :padLeft
-             send "  " $padL $plCnt "        " $planets[$i]
+             send "  " $padL $plCnt "        " $planet~planets[$i]
           else
              setVar $instr $i
              gosub :padLeft
-             send "  " $padL $i "        " $planets[$i]
+             send "  " $padL $i "        " $planet~planets[$i]
           end
-          if ($planets[$i] > $maxPlanets)
+          if ($planet~planets[$i] > $maxPlanets)
              send "    OVERLOADED"
           else
              send "    Checked Ok"
@@ -426,7 +426,7 @@ if ($shipTypes[1] <> "You do not own any other ships!")
    send "q"
 end
 killalltriggers
-setArray $Planets SECTORS
+setArray $planet~planets SECTORS
 send "tl"
 waitfor "========="
 
@@ -455,20 +455,20 @@ waitfor "========="
 :findplanet
  killalltriggers
  getword CURRENTLINE $plSector 1
- add $planets[$plSector] 1
- if ($planets[$plSector] = 1)
+ add $planet~planets[$plSector] 1
+ if ($planet~planets[$plSector] = 1)
     setVar $baseDetail[$plSector] ""
  end
  cuttext CURRENTLINE $cit 77 1
  if ($cit = "l")
      add $cits[1] 1
-     setVar $planetCits "0"
+     setVar $planet~planetCits "0"
  else
-     setVar $planetCits $cit
+     setVar $planet~planetCits $cit
      add $cit 1
      add $cits[$cit] 1
  end
- setVar $baseDetail[$plSector] $baseDetail[$plSector] & " " & $planetCits
+ setVar $baseDetail[$plSector] $baseDetail[$plSector] & " " & $planet~planetCits
  setTextLineTrigger getCash :cash ")"
  pause
  :cash
@@ -621,20 +621,20 @@ end
   setVar $plntCnt 0
   setVar $i 11
   while ($i < SECTORS)
-       if ($planets[$i] > 0)
+       if ($planet~planets[$i] > 0)
           add $plntCnt 1
           add $plCnt 1
           setVar $padit 10
           if ($baseID = "Base")
              SetVar $inStr $plCnt
              gosub :padLeft
-             setVar $winDisp $winDisp & "  " & $padL & $plCnt & "        " & $planets[$i]
+             setVar $winDisp $winDisp & "  " & $padL & $plCnt & "        " & $planet~planets[$i]
           else
              setVar $instr $i
              gosub :padLeft
-             setVar $winDisp $winDisp &  "  " & $padL & $i & "        " & $planets[$i]
+             setVar $winDisp $winDisp &  "  " & $padL & $i & "        " & $planet~planets[$i]
           end
-          if ($planets[$i] > $maxPlanets)
+          if ($planet~planets[$i] > $maxPlanets)
              setVar $winDisp $winDisp &  "              OVERLOADED"
           else
              setVar $winDisp $winDisp &  "              Checked Ok"

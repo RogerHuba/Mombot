@@ -1,10 +1,5 @@
-	reqRecording
 	gosub :BOT~loadVars
 	setVar $BOT~command "clearfig"
-	loadVar $BOT~bot_turn_limit
-	loadVar $MAP~stardock
-	loadvar $bot~subspace
-	loadvar $switchboard~self_command
 
 	setVar $BOT~help[1]   $BOT~tab&"clearfig  [sector] {defend}  "
 	setVar $BOT~help[2]   $BOT~tab&"      clears adjacent fighters and calls saveme  "
@@ -30,7 +25,8 @@
 	gosub :player~quikstats
 	setVar $startingLocation $player~current_prompt
 	if (($startingLocation <> "Citadel") AND ($startingLocation <> "Command"))
-	        send "'{" $bot~bot_name "} - Must start at Citadel or Command Prompt.*"
+	        setvar $switchboard~message "Must start at Citadel or Command Prompt.*"
+			gosub :switchboard~switchboard
 	        halt
 	end
 	setVar $pgridSector $bot~parm1
@@ -61,7 +57,7 @@
 	end
 	gosub :ship~getShipStats
 	
-	getWordPos $user_command_line $pos "def"
+	getWordPos $bot~user_command_line $pos "def"
 	if ($pos > 0)
 		setVar $defend TRUE
 	else
@@ -116,14 +112,14 @@
 				setVar $i 0
 				while ($i < 30)
 					add $i 1
-					send "l j" & #8 & $planet~PLANET & "*  *  "
+					send "l j" & #8 & $planet~planet & "*  *  "
 				end
 			end
 			setVar $SWITCHBOARD~message "Successfully Fig Cleared sector " & $pgridSector & "*"
 			gosub :SWITCHBOARD~switchboard
 		else
 			if ($startingLocation = "Citadel")
-				send "l j" & #8 & $planet~PLANET & "*  *  "
+				send "l j" & #8 & $planet~planet & "*  *  "
 				gosub :player~current_prompt
 				if ($player~current_prompt = "Planet")
 					send "m* * *"

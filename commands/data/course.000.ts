@@ -1,37 +1,32 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
-    loadvar $SWITCHBOARD~self_command 
-
+	gosub :BOT~loadVars
+		
+	setVar $BOT~help[1] $BOT~tab&"Shows course path to sectors"
+	setVar $BOT~help[2] $BOT~tab&"   course {start sector} {end sector}"
+	setVar $BOT~help[3] $BOT~tab&"   course {end sector}"
+	gosub :BOT~help_file
 
 # =============================== START COURSE DISPLAY ===============================
 :course
-    gosub :killthetriggers
+    killalltriggers
     gosub :PLAYER~quikstats
-    isNumber $test $parm1
-    if (($parm1 = "0") OR ($parm1 = "") OR ($test = FALSE))
+    isNumber $test $bot~parm1
+    if (($bot~parm1 = "0") OR ($bot~parm1 = "") OR ($test = FALSE))
         setVar $SWITCHBOARD~message "Sectors entered not valid.*"
         gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
+        halt
     end
-    isNumber $test $parm2
-    if (($test = FALSE) OR ($parm2 = "0"))
-        setVar $destination $parm1
+    isNumber $test $bot~parm2
+    if (($test = FALSE) OR ($bot~parm2 = "0"))
+        setVar $destination $bot~parm1
         setVar $start $PLAYER~CURRENT_SECTOR
     else
-        if ($parm2 > 0)
-            setVar $start $parm1
-            setVar $destination $parm2
+        if ($bot~parm2 > 0)
+            setVar $start $bot~parm1
+            setVar $destination $bot~parm2
         else
             setVar $SWITCHBOARD~message "Sectors entered not valid.*"
             gosub :SWITCHBOARD~switchboard
-            goto :wait_for_command
+            halt
         end
     end
     send "^f"&$start&"*"&$destination&"*q "
@@ -41,30 +36,41 @@
     setVar $directions ""
     while ($i <= $course)
         getSectorParameter $course[$i] "FIGSEC" $isFigged
+        if ($isFigged = "")
+        	setvar $isFigged false
+        end
         if ($isFigged)
             setVar $directions $directions&"["&$course[$i]&"]"
         else
             setVar $directions $directions&$course[$i]  
         end
-        if ($i <> $course)
-            setVar $directions $directions&" > "
-        end
+        setVar $directions $directions&" > "
         add $i 1
     end
+	getSectorParameter $course[$i] "FIGSEC" $isFigged
+    if ($isFigged = "")
+    	setvar $isFigged false
+    end
+	if ($isFigged)
+		setVar $directions $directions&"["&$destination&"]"
+	else
+		setVar $directions $directions&$destination  
+	end
     setVar $SWITCHBOARD~message "Path from "&$start&" to "&$destination&": "&$directions&"*"
     gosub :SWITCHBOARD~switchboard
-    goto :wait_for_command
+    halt
 #================================== END COURSE DISPLAY ==============================
 
-:wait_for_command
-halt
 
-:killthetriggers
-    killalltriggers
-return
+
+
 
 # includes:
+include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\sector"
+include "source\bot_includes\map"
+include "source\bot_includes\ship"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\module_includes\prompt"

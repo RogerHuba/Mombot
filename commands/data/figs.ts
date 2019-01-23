@@ -23,14 +23,14 @@
 		gosub :planet~getplanetinfo
 		send "q"
 	else
-		send "'{" $switchboard~bot_name "} - Unknown Prompt*"
+		setvar $switchboard~message "Unknown Prompt*"
 		halt
 	end
 
 
 :start_figs
 	gosub :player~turnoffansi
-	send "'{" $switchboard~bot_name "} Loading current fighter locations. . .*"
+	setvar $switchboard~message "Loading current fighter locations. . .*"
 	getSectorParameter 2 "FIG_COUNTR" $previousCount
 	getSectorParameter 2 "FUEL_COUNT" $previousFuelCount
 	getSectorParameter 2 "ORG_COUNT" $previousOrgCount

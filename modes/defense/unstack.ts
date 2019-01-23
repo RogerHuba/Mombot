@@ -93,10 +93,13 @@
 
 	#gosub :PLANET~loadplanetInfo
 
-#    send "q"
-#	gosub :PLANET~getPlanetInfo
-#	send "c"
-#	setvar $startingplanet $planet~planet
+	if (($startingLocation = "Citadel") and ($restack <> true))
+		send "q"
+		gosub :PLANET~getPlanetInfo
+		send "c"
+		setvar $startingplanet $planet~planet
+		savevar $startingplanet
+	end
 	gosub :SHIP~getShipStats
 
 	gosub :get_tl_list
@@ -105,6 +108,14 @@
 		gosub :restack
 		setvar $switchboard~message "I restacked every planet the best I could.  I would double check though.*"
 		gosub :switchboard~switchboard
+		gosub :player~quikstats
+		if (($player~current_prompt = "Citadel") or ($player~current_prompt = "Command"))
+			send "q q * "
+			loadvar $startingplanet
+			setvar $planet~planet $startingplanet
+			gosub :planet~landingsub
+		end
+
 
 		halt
 	end
@@ -309,6 +320,7 @@ return
 				gosub :switchboard~switchboard
 				halt
 			end
+			loadvar $startingplanet
 			setvar $planet~planet $startingplanet
 			gosub :planet~landingsub
 			goto :next_sector

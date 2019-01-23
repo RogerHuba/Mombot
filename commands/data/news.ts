@@ -36,49 +36,38 @@
 #
 #[1;36mWookie[5;31m captured [1;36mLostone's [30;46mBattlestar[32;40m!
 # ============================== START NEWS MODULE (news)  ==============================
-	loadVar $bot_name
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
+gosub :BOT~loadVars
+
+#HELP FILE
+	setVar $BOT~help[1]   $BOT~tab&"news   "
+	setVar $BOT~help[2]   $BOT~tab&"    Daily news reader "
+	setVar $BOT~help[3]   $BOT~tab&"    rep         - Overall reporting of events in the Log*"
+	setVar $BOT~help[4]   $BOT~tab&"    foton       - Lists fotons fired*"
+	setVar $BOT~help[5]   $BOT~tab&"    tow         - Who was towed*"
+	setVar $BOT~help[6]   $BOT~tab&"    ports       - Port activity (construction, demolition, Openings)*"
+	setVar $BOT~help[7]   $BOT~tab&"    planets     - Who popped planet(s) and how many*"
+	setVar $BOT~help[8]   $BOT~tab&"    corp        - Corporate news, formations, hirings, firings, etc.*"
+	setVar $BOT~help[9]   $BOT~tab&"    fed         - Awarded Commish, Bounties*"
+	setVar $BOT~help[10]  $BOT~tab&"    pods        - Itemized list of who podded*"
+	setVar $BOT~help[11]  $BOT~tab&"    overloads   - List of sectors with overloaded planets*"
+	setVar $BOT~help[12]  $BOT~tab&"    announce    - Reporting of any announcements made*"
+
+	setVar $BOT~help[13]  $BOT~tab&"      "
+	setVar $BOT~help[14]  $BOT~tab&"      Author: Lonestar"
+	gosub :BOT~help_file
+
 	loadvar $game~PHOTON_COST
 
-getWord $user_command_line $parm1 1
-getWord $user_command_line $parm2 2
-getWord $user_command_line $parm3 3
-getWord $user_command_line $parm4 4
-getWord $user_command_line $parm5 5
-getWord $user_command_line $parm6 6
-getWord $user_command_line $parm7 7
-getWord $user_command_line $parm8 8
-
-if ($parm1 = "help")
-	send "'*{" $bot_name "} - news [category] {r}*"
+if ($bot~parm1 = "help")
+	send "'*{" $bot~bot_name "} - news [category] {r}*"
 	send " Categories Allowed:*"
-	send "    rep         - Overall reporting of events in the Log*"
-	send "    foton       - Lists fotons fired*"
-	send "    tow         - Who was towed*"
-	send "    ports       - Port activity (construction, demolition, Openings)*"
-	send "    planets     - Who popped planet(s) and how many*"
-	#send "    obits       - CBY's, Fuses, Captures, etc. !!COMMING SOON!!*"
-	send "    corp        - Corporate news, formations, hirings, firings, etc.*"
-	send "    fed         - Awarded Commish, Bounties*"
-	send "    pods        - Itemized list of who podded*"
-	#send "    invasions   - Planet invasions  !!COMMING SOON!!*"
-	send "    overloads   - List of sectors with overloaded planets*"
-	send "    announce    - Reporting of any announcements made*"
 	send "                *"
 	halt
 end		
 
 :Read_News_Paper
-	setVar $News_Param1 $Parm1
-	setVar $News_Param2 $Parm2
+	setVar $News_Param1 $bot~parm1
+	setVar $News_Param2 $bot~parm2
 	
 # ============================== END NEWS MODULE (news) ==============================
 	setVar $News_Version "v2.0"
@@ -86,12 +75,12 @@ end
 	setVar $UNDER_CONSTRUCTION	"    *    Feature Currently Not Implemented*     *"
 	setVar $NEWS_HEADER			"-------------=[Lonestar's M()M Dailies News Reader " & $News_Version & "]=-------------*"
 	setVar $Universal_File_Err	"    *    Problem Reading Data File*    *    "
-	setVar $Unexpected_EOF		"** '{" & $bot_name & "} - Unexpected End Of Array. Halting.*"
+	setVar $Unexpected_EOF		"** '{" & $bot~bot_name & "} - Unexpected End Of Array. Halting.*"
 	setVar $NEWS_EMPTY			"[32mNo log entries today."
 	# A brief scan for $NEW_EMPTY, result indicated by $NEWS_VALIDATED
 	setVar $NEWS_VALIDATED		FALSE
 	setVar $NEWS_FOOTER			""
-	setVar $NEWS_FILE			"_MOM_" & GAMENAME & ".news"
+	setVar $NEWS_FILE			$bot~folder&"/news.log"
 	# First line in NEWS file, indicates last update --local computer time/date.
 	setVar $file_header			""
 	setVar $NEWS_READ			FALSE
@@ -99,11 +88,12 @@ end
 	# Actual Lines is a count of Log data that excludes Date Time Stamping
 	setVar $ActualLines			0
 
-	gosub :quikstats
-	setVar $startingLocal $CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocal $player~current_prompt
 
 	if (($startingLocal <> "Citadel") and ($startingLocal <> "Command"))
-		send "'{" & $bot_name & "} - Must start at citadel or command prompt*"
+		setvar $switchboard~message "Must start at citadel or command prompt*"
+		gosub :switchboard~switchboard
 		halt
 	end
 
@@ -313,20 +303,20 @@ end
 					add $podCNT 1
 					gosub :TIME_DECODE
 					getText $currentline $Trader "[1;36m" "'s [0"
-					getText $currentline $planetoid "invading [1;36m" "[0;32m!"
+					getText $currentline $planet~planetoid "invading [1;36m" "[0;32m!"
 					while ($i <= $PodSize)
 						if ($Pods[$i] = $Trader)
 							setVar $ii 1
 							while ($ii <= $Poddings)
 								if ($Pods[$i][$ii] = 0)
-									setVar $Pods[$i][$ii] $timeCode & " Ship was Destroyed Invading " & $planetoid & "!"
+									setVar $Pods[$i][$ii] $timeCode & " Ship was Destroyed Invading " & $planet~planetoid & "!"
 									goto :Next_Podding
 								end
 								add $ii 1
 							end
 						elseif ($Pods[$i] = 0)
         					setVar $Pods[$i] $Trader
-        					setVar $Pods[$i][1] $timeCode & " Ship was Destroyed Invading " & $planetoid & "!"
+        					setVar $Pods[$i][1] $timeCode & " Ship was Destroyed Invading " & $planet~planetoid & "!"
         					goto :Next_Podding
 						end
 						add $i 1
@@ -754,9 +744,9 @@ end
     				while ($i <= $FiredSize)
                     	if ($Fired[$i] = 0)
                     		getText $currentline $Trader "[1;36m" "[0;32m removed"
-                    		getText $currentline $CorpNumber "Corp#[1;33m" "[0;32m."
+                    		getText $currentline $player~corpnumber "Corp#[1;33m" "[0;32m."
 							gosub :TIME_DECODE
-                        	setVar $Fired[$i] $timeCode & " " & $Trader & " removed from Corp #" & $CorpNumber
+                        	setVar $Fired[$i] $timeCode & " " & $Trader & " removed from Corp #" & $player~corpnumber
 							goto :Next_CorpItem
 						end
 						add $i 1
@@ -1401,11 +1391,13 @@ end
 	setVar $Lines $NEWS_ARRAY
 
 	if (($file_header = "EOF") OR ($Lines <= 0))
-		send "'{" & $bot_name & "} - Problem Reading File. Try A Refresh. Halting*"
+		setvar $switchboard~message "Problem Reading File. Try A Refresh. Halting*"
+		gosub :switchboard~switchboard
 		halt
 	else
-		send "'{" & $bot_name & "} - Loading NEWS::AS OF " & $file_header & "*"
-		waitfor "(?="
+		setvar $switchboard~message "Loading NEWS::AS OF " & $file_header & "*"
+		gosub :switchboard~switchboard
+		#waitfor "(?="
 	end
 	return
 #=-------------------------------------------------------------------------------------------
@@ -1442,7 +1434,9 @@ end
 	Delete $NEWS_FILE
 	setVar $STOP_DATE ""
 	saveVar $NEWS_Yest
-	send "'{" & $bot_name & "} - Reading Log To File... Comms will be off during this...*| C D"
+	setvar $switchboard~message "Reading Log To File... Comms will be off during this...*"
+	gosub :switchboard~switchboard
+	send "| C D"
 	setVar $s TIME & "-" & DATE
 	getTime $s "h:nna/p - d/m/yyy"
 	write  $NEWS_FILE $s
@@ -1600,149 +1594,12 @@ end
 		setVar $NEWS_READ TRUE
 		waitOn "<Computer deactivated>"
 	return
-#=-------------------------------------------------------------------------------------------
-:quikstats
-	setVar $CURRENT_PROMPT 		"Undefined"
-	killtrigger noprompt
-	killtrigger prompt1
-	killtrigger prompt2
-	killtrigger prompt3
-	killtrigger prompt4
-	killtrigger statlinetrig
-	killtrigger getLine2
-	setTextTrigger 		prompt1 		:allPrompts 		"(?="
-	setTextLineTrigger 	prompt2 		:secondaryPrompts 	"(?)"
-	setTextLineTrigger 	statlinetrig 	:statStart 			#179
-	setTextTrigger		prompt3         	:terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
-	setTextTrigger		prompt4         	:terraPrompts		"How many groups of Colonists do you want to take ("
 
-	send "^Q/"
-	pause
-
-	:allPrompts
-		getWord currentansiline $checkPrompt 1
-		getWord currentline $tempPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
-		end
-		setTextLineTrigger prompt1 :allPrompts "(?="
-		pause
-	:secondaryPrompts
-		getWord currentansiline $checkPrompt 1
-		getWord currentline $tempPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
-		end
-		setTextLineTrigger prompt2 :secondaryPrompts "(?)"
-		pause
-	:terraPrompts
-		killtrigger prompt3
-		killtrigger prompt4
-		getWord currentansiline $checkPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $CURRENT_PROMPT "Terra"
-		end
-		setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
-		setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
-		pause
-
-	:statStart
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger noprompt
-		setVar $stats ""
-		setVar $wordy ""
-
-	:statsline
-		killtrigger statlinetrig
-		killtrigger getLine2
-		setVar $line2 CURRENTLINE
-		replacetext $line2 #179 " "
-		striptext $line2 ","
-		setVar $stats $stats & $line2
-		getWordPos $line2 $pos "Ship"
-		if ($pos > 0)
-			goto :gotStats
-		else
-			setTextLineTrigger getLine2 :statsline
-			pause
-		end
-
-	:gotStats
-		setVar $stats $stats & " @@@"
-
-		setVar $current_word 0
-		while ($wordy <> "@@@")
-			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
-			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
-			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
-			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
-			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
-			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS  		($current_word + 1)
-			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
-			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
-			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
-			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
-			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
-			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
-			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
-			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
-			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
-			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
-			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
-			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
-			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE 	($current_word + 1)
-			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
-			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
-			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
-			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    	($current_word + 1)
-			elseif ($wordy = "Corp")
-				getWord $stats $CORP   			($current_word + 1)
-			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   	($current_word + 1)
-			end
-			add $current_word 1
-			getWord $stats $wordy $current_word
-		end
-	:doneQuikstats
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger statlinetrig
-		killtrigger getLine2
-	return
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"

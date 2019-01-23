@@ -1,15 +1,5 @@
-        logging off
         gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-	loadVar $silent_running
+	loadVar $bot~silent_running
 
 	setVar $BOT~help[1]  $BOT~tab&"Dataminer - Grabs Game Information.  "
 	setVar $BOT~help[2]  $BOT~tab&"       "
@@ -25,14 +15,14 @@
         gosub :BOT~help_file
         setVar $BOT~script_title "Dataminer"
         gosub :BOT~banner
-	getWordPos $user_command_line $pos "setparm"
+	getWordPos $bot~user_command_line $pos "setparm"
 	if ($pos > 0)
              setvar $setparm TRUE
         end
         gosub :PLAYER~quikstats
 
         setvar $path "dataminer\" & GAMENAME & "-"
-        getWordPos $user_command_line $pos "map"
+        getWordPos $bot~user_command_line $pos "map"
     	if ($pos > 0)
              delete $path & deadend.txt
 	     delete $path & missingdeadends.txt
@@ -51,7 +41,7 @@
              gosub :makedeadend
 
         end
-        getWordPos $user_command_line $pos "port"
+        getWordPos $bot~user_command_line $pos "port"
 	if ($pos > 0)
 	     delete $path & sellers.txt
 	     delete $path & buyers.txt
@@ -59,7 +49,7 @@
              gosub :tunnelfind
              gosub :makeMissingTunnels
         end
-        getWordPos $user_command_line $pos "tunnel"
+        getWordPos $bot~user_command_line $pos "tunnel"
 	if ($pos > 0)
 	     delete $path & tunnel.txt
 	     delete $path & tunnel_list.txt
@@ -67,12 +57,12 @@
              gosub :tunnelfind
              gosub :makeMissingTunnels
         end
-	getWordPos $user_command_line $pos "blister"
+	getWordPos $bot~user_command_line $pos "blister"
 	if ($pos > 0)
 	     delete $path & blister.txt
              gosub :blisterfind
         end
- 	getWordPos $user_command_line $pos "traffic"
+ 	getWordPos $bot~user_command_line $pos "traffic"
 	if ($pos > 0)
              delete $path & traffic.txt
              gosub :trafficfind

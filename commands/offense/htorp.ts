@@ -1,21 +1,19 @@
-loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
-    loadvar $SWITCHBOARD~self_command 
+	logging off
+	gosub :BOT~loadVars
+		
+	setVar $BOT~help[1] $BOT~tab&"htorp "
+	setVar $BOT~help[2] $BOT~tab&"  - Holoscans and then photons if enemy in adjacent sector."
+	gosub :BOT~help_file
+
 
 #===============================START HTORP (HTORP) =================================
 :htorp
-    gosub :killthetriggers
+
     gosub :PLAYER~quikstats
     if ($PLAYER~SCAN_TYPE <> "Holo")
-        send "'{" $SWITCHBOARD~bot_name "} - You can not run htorp without a holographic scanner.*"
-        goto :wait_for_command
+        setvar $switchboard~message "You can not run htorp without a holographic scanner.*"
+		gosub :switchboard~switchboard
+		halt
     end
     setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
     if ($PLAYER~startingLocation = "Command")
@@ -25,10 +23,10 @@ loadVar $bot_name
         gosub :PLANET~getPlanetInfo
     else
         echo "*Wrong prompt for htorp.*"
-        goto :wait_for_command
+        halt
     end
     if ($PLAYER~startingLocation = "Citadel")
-        send "q szh* l " & $PLANET~PLANET & "* c "
+        send "q szh* l " & $planet~planet & "* c "
     else
         send "szh* "
     end
@@ -41,7 +39,7 @@ loadVar $bot_name
     :continuehtorpsector
     if ($PLAYER~PHOTONS <= 0)
         echo ANSI_14 & "*No Photons on hand.**" & ANSI_7
-        goto :wait_for_command
+        halt
     end
     setVar $i 1
     while (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] > 0)
@@ -67,8 +65,9 @@ loadVar $bot_name
             end
             if (($targetInSector = TRUE) AND ($corpMemberInSector = FALSE))
                 send "c p y " $ADJ_SEC "* *q"
-                send "'{" $SWITCHBOARD~bot_name "} - Photon fired into sector " & $ADJ_SEC & "!*"
-                goto :wait_for_command
+                setvar $switchboard~message "Photon fired into sector " & $ADJ_SEC & "!*"
+				gosub :switchboard~switchboard
+                halt
             end
         end
         add $i 1
@@ -79,21 +78,21 @@ loadVar $bot_name
         :continuewaitforcit
     end
     echo ANSI_14 & "*No valid targets**" & ANSI_7
-    goto :wait_for_command
+    halt
 :photonedHtorp
-    send "'{" $SWITCHBOARD~bot_name "} - You have no holographic scanner, perhaps you were photoned?*"
-goto :wait_for_command
+    setvar $switchboard~message "You have no holographic scanner, perhaps you were photoned?*"
+	gosub :switchboard~switchboard
+halt
 #========================== END HTORP SUB ==============================================
 
-:wait_for_command
-halt
 
-:killthetriggers
-    killalltriggers
-return
 
-# includes:
+#INCLUDES:
+include "source\module_includes\bot"
 include "source\bot_includes\player"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
-include "source\module_includes\prompt"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"
+

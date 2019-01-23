@@ -1,57 +1,42 @@
-loadVar $bot_name
-loadVar $user_command_line
-loadVar $parm1
-loadVar $parm2
-loadVar $parm3
-loadVar $parm4
-loadVar $parm5
-loadVar $parm6
-loadVar $parm7
-loadVar $parm8
-loadVar $command
-loadVar $stardock
-loadVar $rylos
-loadVar $alpha_centauri
+	gosub :BOT~loadVars
 
-	fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
-	if ($doesHelpFileExist <> TRUE)
-		write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" [planet] {shields} {defender} {zdy}          " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    Automates planet invasion.                              " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [planet]                                                "
-		write "scripts\MOMBot\Help\"&$command&".txt" "       - Planet number to attack                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [shields]                                               " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "       - Will kill planetary shields. Stops when below 50.  " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [defender]                                              " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "       - Will land defensively to take out military reaction." 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [zdy]                                                   " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "       - Option to blow planet as soon as you land.         " 
-		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
-	end
+	setVar $BOT~help[1]   $BOT~tab&"- kazi [planet] {shields} {defender} {zdy}" 
+	setVar $BOT~help[2]   $BOT~tab&"    Automates planet invasion. " 
+	setVar $BOT~help[3]   $BOT~tab&"                           " 
+	setVar $BOT~help[4]   $BOT~tab&"    [planet]               "
+	setVar $BOT~help[5]   $BOT~tab&"       - Planet number to attack   " 
+	setVar $BOT~help[6]   $BOT~tab&"    [shields]                      " 
+	setVar $BOT~help[7]   $BOT~tab&"       - Will kill planetary shields. Stops when below 50. "  
+	setVar $BOT~help[8]   $BOT~tab&"    [defender]                                        " 
+	setVar $BOT~help[9]   $BOT~tab&"       - Will land defensively to take out military reaction." 
+	setVar $BOT~help[10]  $BOT~tab&"    [zdy]                         " 
+	setVar $BOT~help[11]  $BOT~tab&"       - Option to blow planet as soon as you land.   " 
+
+	gosub :BOT~help_file
 	
 # ======================     START KAMIKAZE (KAZI) SUBROUTINE    ==========================
 :kamikaze
-	gosub :quikstats~quikstats
-	setVar $startingLocation $quikstats~CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~CURRENT_PROMPT
 	if (($startingLocation <> "Citadel") AND ($startingLocation <> "Command"))
-		send "'{" $bot_name "} - Must start from Citadel or Command Prompt*"
+		setvar $switchboard~message "Must start from Citadel or Command Prompt*"
 		halt
 	end
 	setVar $message ""
-	setVar $planetToAttack $parm1
-	getWordPos $user_command_line $pos "zdy"
+	setVar $planet~planetToAttack $bot~parm1
+	getWordPos $bot~user_command_line $pos "zdy"
 	if ($pos > 0)
 		setVar $zdy TRUE
 	else
 		setVar $zdy FALSE
 	end
-	getWordPos $user_command_line $pos "sh"
+	getWordPos $bot~user_command_line $pos "sh"
 	if ($pos > 0)
-		setVar $shieldsOnly TRUE
+		setVar $player~shieldsOnly TRUE
 	else
-		setVar $shieldsOnly FALSE
+		setVar $player~shieldsOnly FALSE
 	end
-	getWordPos $user_command_line $pos "def"
+	getWordPos $bot~user_command_line $pos "def"
 	if ($pos > 0)
 		setVar $defender TRUE
 	else
@@ -59,27 +44,27 @@ loadVar $alpha_centauri
 	end
 	if ($startingLocation = "Citadel")
 		send "q"
-		gosub :planetinfo~getPlanetInfo
+		gosub :planet~getPlanetInfo
 		send "m * * * c "
-		gosub :shipstats~getShipStats
+		gosub :ship~getShipStats
 		send " q "
-		setVar $refurbString "l "&$planetinfo~PLANET&"* m * * * "
+		setVar $refurbString "l "&$planet~planet&"* m * * * "
 		setVar $attackString ""
-		setVar $targetString  "q l j"&#8&$planetToAttack&"*z *  @"
+		setVar $targetString  "q l j"&#8&$planet~planetToAttack&"*z *  @"
 	else
-		gosub :shipstats~getShipStats
+		gosub :ship~getShipStats
 		gosub :grabfigs
-		gosub :quikstats~quikstats
+		gosub :player~quikstats
 		setVar $attackString ""
-		setVar $targetString  "l j"&#8&$planetToAttack&"*z *  @"
+		setVar $targetString  "l j"&#8&$planet~planetToAttack&"*z *  @"
 	end
 	:tryInvadeAgain
-	gosub :quikstats~quikstats
-	if (($zdy = TRUE) AND ($quikstats~ATOMIC < 1))
-		send "'{" $bot_name "} - Cannot run zdy version of kamikaze without detonators!*"
+	gosub :player~quikstats
+	if (($zdy = TRUE) AND ($player~ATOMIC < 1))
+		setvar $switchboard~message "Cannot run zdy version of kamikaze without detonators!*"
 		halt
 	end
-	while ($quikstats~FIGHTERS = $shipstats~SHIP_FIGHTERS_MAX)
+	while ($player~FIGHTERS = $ship~SHIP_FIGHTERS_MAX)
 		setVar $attackString ""
 		send $targetString
 		setTextTrigger 		invadeShields 		:keepInvading 		"You have to destroy the fighters defending the planet to land." 
@@ -93,43 +78,43 @@ loadVar $alpha_centauri
 		pause
 		:destroyedWhile
 			killalltriggers
-			send "* * q q q q r * l j"&#8&$planetinfo~PLANET&"* j c * "
-			setVar $message "'{"&$bot_name&"} - Podded while being a kamikaze, what did you really expect? Calling saveme in case I am not safely back on the planet.*"
+			send "* * q q q q r * l j"&#8&$planet~planet&"* j c * "
+			setvar $switchboard~message "Podded while being a kamikaze, what did you really expect? Calling saveme in case I am not safely back on the planet.*"
 			send $message
 			halt
 		:noPlanetToInvade
 			killalltriggers
-			setVar $message "'{"&$bot_name&"} - Planet number entered is not in this sector.*"
+			setvar $switchboard~message "Planet number entered is not in this sector.*"
 			goto :doneInvading
 		:shieldInvade
 			killalltriggers
-			gosub :quikstats~quikstats
-			setVar $damageTaken ($shipstats~SHIP_FIGHTERS_MAX-$quikstats~FIGHTERS)
-			send "'{" $bot_name "} - "&$damageTaken&" points of damage taken from quasar cannon*"
-			setVar $quikstats~FIGHTERS ($quikstats~FIGHTERS-$damageTaken)
-			if ($quikstats~FIGHTERS <= 0)
+			gosub :player~quikstats
+			setVar $damageTaken ($ship~SHIP_FIGHTERS_MAX-$player~FIGHTERS)
+			setvar $switchboard~message ""&$damageTaken&" points of damage taken from quasar cannon*"
+			setVar $player~FIGHTERS ($player~FIGHTERS-$damageTaken)
+			if ($player~FIGHTERS <= 0)
 				goto :invadeRefurb
 			end
-			if ($shieldsOnly = TRUE)
+			if ($player~shieldsOnly = TRUE)
 				send "*"
 				waitOn " / Shields "
-				getWord CURRENTLINE $quikstats~FIGHTERS 2
-				getWord CURRENTLINE $planet_shields 5
-				if ($planet_shields < 50)
-					setVar $message "'{"&$bot_name&"} - Planet has less than 50 planetary shields.*"
+				getWord CURRENTLINE $player~FIGHTERS 2
+				getWord CURRENTLINE $planet~planet_shields 5
+				if ($planet~planet_shields < 50)
+					setvar $switchboard~message "Planet has less than 50 planetary shields.*"
 					goto :doneInvading
 				end
-				while (($planet_shields >= 50) AND ($quikstats~FIGHTERS > 0))
-					setVar $temp (((($planet_shields-45)*20)*10)/$shipstats~SHIP_OFFENSIVE_ODDS)
-					if ($temp >= $shipstats~SHIP_MAX_ATTACK)
-						if ($quikstats~FIGHTERS >= $shipstats~SHIP_MAX_ATTACK)
-							setVar $amount $shipstats~SHIP_MAX_ATTACK
-							setVar $temp ($temp-$shipstats~SHIP_MAX_ATTACK)
-							setVar $quikstats~FIGHTERS ($quikstats~FIGHTERS-$shipstats~SHIP_MAX_ATTACK)
+				while (($planet~planet_shields >= 50) AND ($player~FIGHTERS > 0))
+					setVar $temp (((($planet~planet_shields-45)*20)*10)/$ship~SHIP_OFFENSIVE_ODDS)
+					if ($temp >= $ship~SHIP_MAX_ATTACK)
+						if ($player~FIGHTERS >= $ship~SHIP_MAX_ATTACK)
+							setVar $amount $ship~SHIP_MAX_ATTACK
+							setVar $temp ($temp-$ship~SHIP_MAX_ATTACK)
+							setVar $player~FIGHTERS ($player~FIGHTERS-$ship~SHIP_MAX_ATTACK)
 						else
-							setVar $amount $quikstats~FIGHTERS
-							setVar $temp ($temp-$quikstats~FIGHTERS)
-							setVar $quikstats~FIGHTERS 0
+							setVar $amount $player~FIGHTERS
+							setVar $temp ($temp-$player~FIGHTERS)
+							setVar $player~FIGHTERS 0
 						end
 					else
 						setVar $amount $temp
@@ -137,21 +122,21 @@ loadVar $alpha_centauri
 					end
 					send "a"&$amount&"*"
 					waitOn " / Shields "
-					getWord CURRENTLINE $planet_shields 5
+					getWord CURRENTLINE $planet~planet_shields 5
 
 				end
-				if ($planet_shields < 50)
-					setVar $message "'{"&$bot_name&"} - Planet has less than 50 planetary shields.*"
+				if ($planet~planet_shields < 50)
+					setvar $switchboard~message "Planet has less than 50 planetary shields.*"
 					goto :doneInvading
 				end
 			else
-				while ($quikstats~FIGHTERS > 0)
-					if ($quikstats~FIGHTERS >= $shipstats~SHIP_MAX_ATTACK)
-						setVar $attackString $attackString&"z a "&$shipstats~SHIP_MAX_ATTACK&"* * "
-						subtract $quikstats~FIGHTERS $shipstats~SHIP_MAX_ATTACK
+				while ($player~FIGHTERS > 0)
+					if ($player~FIGHTERS >= $ship~SHIP_MAX_ATTACK)
+						setVar $attackString $attackString&"z a "&$ship~SHIP_MAX_ATTACK&"* * "
+						subtract $player~FIGHTERS $ship~SHIP_MAX_ATTACK
 					else
-						setVar $attackString $attackString&"z a "&$quikstats~FIGHTERS&"* * "
-						setVar $quikstats~FIGHTERS 0
+						setVar $attackString $attackString&"z a "&$player~FIGHTERS&"* * "
+						setVar $player~FIGHTERS 0
 					end
 				end
 				send $attackString
@@ -159,27 +144,27 @@ loadVar $alpha_centauri
 			goto :invadeRefurb
 		:keepInvading
 			killalltriggers
-			gosub :quikstats~quikstats
+			gosub :player~quikstats
 			setVar $figsToUse 9999
 			setVar $attackString ""
 			if ($defender = TRUE)
-				if ($quikstats~FIGHTERS = $shipstats~SHIP_FIGHTERS_MAX)
-					setVar $message "'{"&$bot_name&"} - No damage being taken when landing defensively.*"
+				if ($player~FIGHTERS = $ship~SHIP_FIGHTERS_MAX)
+					setvar $switchboard~message "No damage being taken when landing defensively.*"
 					goto :doneInvading
 				end
 			else
-				while ($quikstats~FIGHTERS > 0)
-					if ($quikstats~FIGHTERS >= $shipstats~SHIP_MAX_ATTACK)
-						setVar $attackString $attackString&"z a "&$shipstats~SHIP_MAX_ATTACK&"* * "
-						subtract $quikstats~FIGHTERS $shipstats~SHIP_MAX_ATTACK
+				while ($player~FIGHTERS > 0)
+					if ($player~FIGHTERS >= $ship~SHIP_MAX_ATTACK)
+						setVar $attackString $attackString&"z a "&$ship~SHIP_MAX_ATTACK&"* * "
+						subtract $player~FIGHTERS $ship~SHIP_MAX_ATTACK
 					else
-						setVar $attackString $attackString&"z a "&$quikstats~FIGHTERS&"* * "
-						setVar $quikstats~FIGHTERS 0
+						setVar $attackString $attackString&"z a "&$player~FIGHTERS&"* * "
+						setVar $player~FIGHTERS 0
 					end
 				end
 				send $attackString
-				gosub :quikstats~quikstats
-				if ($quikstats~FIGHTERS > 0)
+				gosub :player~quikstats
+				if ($player~FIGHTERS > 0)
 					gosub :claimOrDestroyPlanet
 					goto :doneInvading
 				end
@@ -191,17 +176,17 @@ loadVar $alpha_centauri
 			else
 				send "z R * "
 				gosub :grabfigs
-				gosub :quikstats~quikstats
-				if ($quikstats~FIGHTERS < 100)
+				gosub :player~quikstats
+				if ($player~FIGHTERS < 100)
 					gosub :grabfigs
 				end
 			end
-			gosub :quikstats~quikstats
+			gosub :player~quikstats
 	end
 	goto :doneInvading
 	:blockedInvading
 		killalltriggers
-		send "a y y "&$shipstats~SHIP_MAX_ATTACK&"* "&$refurbString
+		send "a y y "&$ship~SHIP_MAX_ATTACK&"* "&$refurbString
 		goto :tryInvadeAgain
 	:Invaded
 		killalltriggers
@@ -214,21 +199,22 @@ loadVar $alpha_centauri
 			send "z R * q q q q * "
 			gosub :grabfigs
 		end
-		send $message
-		send "'{" $bot_name "} - Kamikaze run ended.*"
+		gosub :switchboard~switchboard
+		setvar $switchboard~message "Kamikaze run ended.*"
+		gosub :switchboard~switchboard
 		halt
 
 	:claimOrDestroyPlanet
 		if ($zdy)
-			if ($quikstats~FIGHTERS > 1000)
-				send "z a y "&($quikstats~FIGHTERS-1000)&"* * Z D Y"
+			if ($player~FIGHTERS > 1000)
+				send "z a y "&($player~FIGHTERS-1000)&"* * Z D Y"
 			else
 				send "z d y "
 			end
-			setVar $message "'{"&$bot_name&"} - Invaded and attempting to blow planet, check for pods!*"
+			setvar $switchboard~message "Invaded and attempting to blow planet, check for pods!*"
 		else
 			send "* * * o z c * c v y q q "
-			setVar $message "'{"&$bot_name&"} - Invaded and claiming planet, attempting to evict all from citadel, check for people to kill!*"
+			setvar $switchboard~message "Invaded and claiming planet, attempting to evict all from citadel, check for people to kill!*"
 		end
 	return
 
@@ -245,6 +231,12 @@ loadVar $alpha_centauri
 return
 # ======================     END KAMIKAZE (KAZI) SUBROUTINE    ==========================
 
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\quikstats"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\planetinfo"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\shipstats"
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"
+

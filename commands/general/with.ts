@@ -45,7 +45,7 @@ halt
 # ============================== END WITHDRAW (WITH) ==============================
 :bankProtections
     gosub :PLAYER~quikstats
-    setVar $validPrompts "Citadel"
+    setVar $bot~validPrompts "Citadel"
     gosub :bot~checkstartingprompt
     if ($bot~parm1 = "ss")
         setVar $bot~parm1 ""

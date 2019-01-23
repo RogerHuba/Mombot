@@ -1,16 +1,15 @@
-	logging off
-		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
+	gosub :BOT~loadVars
 
 	loadvar $GAME~ptradesetting
+	loadVar $game~goldenabled
+	loadVar $game~mbbs
+	loadVar $game~port_max
+	loadvar $game~rob_factor
+	loadVar $game~production_rate
+	loadVar $bot~folder
+	setVar  $bot~no_credits_file $bot~folder&"/No_Credits.list"
+	savevar $bot~no_credits_file
+
 
 	setVar $BOT~help[1]  $BOT~tab&"Visits all ports in grid and buys fuel"
 	setVar $BOT~help[2]  $BOT~tab&"and sells/buys organics and equipment."
@@ -25,6 +24,7 @@
 	setVar $BOT~help[11] $BOT~tab&"   {nohaggle}    Doesn't haggle when buying product"
 	setVar $BOT~help[12] $BOT~tab&"   {sellfuel}    Sells fuel during travels"
 	setVar $BOT~help[13] $BOT~tab&"       {grid}    Surround grid as you go"
+	setVar $BOT~help[14] $BOT~tab&"        {rob}    Rob ports after buying down"
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Traveling Salesman"
@@ -44,47 +44,54 @@
 	
 	setVar $buyFuel TRUE
 	
-	getWordPos $user_command_line $pos "docim"
+	getWordPos $bot~user_command_line $pos "docim"
 	if ($pos > 0)
 		setVar $docim TRUE
 	else
 		setVar $docim FALSE
 	end
-	getWordPos $user_command_line $pos "grid"
+	getWordPos $bot~user_command_line $pos "grid"
 	if ($pos > 0)
 		setVar $grid TRUE
 	else
 		setVar $grid FALSE
 	end
 
-	getWordPos $user_command_line $pos "nohaggle"
+	getWordPos $bot~user_command_line $pos "nohaggle"
 	if ($pos > 0)
 		setVar $nohaggle TRUE
 	else
 		setVar $nohaggle FALSE
 	end
-	getWordPos $user_command_line $pos "hold"
+	getWordPos $bot~user_command_line $pos "hold"
 	if ($pos > 0)
 		setVar $planetNegotiate FALSE
 	else
 		setVar $planetNegotiate TRUE
 	end
 
-	getWordPos $user_command_line $pos "upgradefuel"
+	getWordPos $bot~user_command_line $pos "upgradefuel"
 	if ($pos > 0)
 		setVar $upgrade_fuel TRUE
 	else
 		setVar $upgrade_fuel FALSE
 	end
 
-	getWordPos $user_command_line $pos "sellfuel"
+	getWordPos $bot~user_command_line $pos "sellfuel"
 	if ($pos > 0)
 		setVar $sellfuel TRUE
 	else
 		setVar $sellfuel FALSE
 	end
 
-	setVar $minimumFuel $parm1
+	getWordPos $bot~user_command_line $pos "rob"
+	if ($pos > 0)
+		setVar $do_rob TRUE
+	else
+		setVar $do_rob FALSE
+	end
+
+	setVar $minimumFuel $bot~parm1
 	isNumber $number $minimumFuel
 	if ($number <> 1)
 		setVar $SWITCHBOARD~message " Minimum Port Product entered is not a number!*"
@@ -383,6 +390,9 @@
 					gosub :PLAYER~quikstats
 					gosub :PLANET~landOnPlanetEnterCitadel
 				end
+				if ($do_rob = true)
+					gosub :rob
+				end
 			end	
 		end
 		:doneMerchant
@@ -396,6 +406,125 @@
 :noFigAtLocation
 	setSectorParameter $NearFig "FIGSEC" FALSE
 	goto :tryAgain2
+
+
+:rob
+		
+	killalltriggers
+	gosub :player~quikstats
+	setVar $startingLocation $player~current_prompt
+	
+	getSectorParameter $player~current_sector "BUSTED" $isBusted
+	if ($isBusted = true)
+		return
+	end
+	cutText $player~alignment $neg_ck 1 1
+	
+	stripText $player~alignment "-"
+	if ($player~alignment < 100) and ($neg_ck = "-")
+		return
+	elseif ($neg_ck <> "-")
+		return
+	end
+	send "q q pr * r"
+	setTextLinetrigger valid :rob_continue "<R> Rob this Port"
+	setTextLinetrigger notvalid :rob_not_valid "<Q> Quit, nevermind"
+	pause
+	:rob_continue
+	killtrigger notvalid
+	setTextLineTrigger fake :rob_fake "Busted!"
+	setTextLinetrigger mega :rob_ok "port has in excess of"
+	pause
+
+:rob_fake
+	killalltriggers
+	if ($startingLocation = "Citadel")
+		gosub :planet~landingSub
+	end
+	setSectorParameter $player~current_sector "BUSTED" TRUE
+	setVar $SWITCHBOARD~message "Fake Busted*"
+	gosub :switchboard~switchboard
+	return
+
+:rob_ok
+	killalltriggers
+	#setvar $rob $player~experience
+	#multiply $rob 3
+	#multiply $game~rob_factor 100
+	setVar $rob ($game~rob_factor*$player~experience)
+	getWord CURRENTLINE $port_cash 11
+
+	stripText $port_cash ","
+	setVar $original_port_cash $port_cash
+	multiply $port_cash 10
+	divide $port_cash 9
+#	if (($port_cash >= 3000000) AND ($game~mbbs = TRUE))
+#		send "'{" $bot~bot_name "} - " $port_cash " credits on port.  Port is ready for Mega Rob**"
+#		gosub :planet~landingSub
+#		goto :wait_for_command
+#	end
+	if ($port_cash < $minimumPort)
+		echo "*Port has less than "&$minimumPort&" credits on it.*"
+		send "0*"
+		setVar $rob 0
+	elseif ($port_cash >= $rob) 
+		send $rob "*"
+	elseif ($port_cash < $rob)
+		setVar $rob $port_cash
+		send $rob "*"
+	end
+	if ($port_cash < $minimumPort)
+		setVar $checkedPorts[$player~current_sector] TRUE	
+		setVar $EMPTY_GRID[$player~current_sector] TRUE
+		write $bot~no_credits_file $player~current_sector		
+	end
+	setTextLineTrigger port_empty :rob_suc "Maybe some other day, eh?"
+	setTextLineTrigger mega_suc :rob_suc "Success!"
+	setTextLineTrigger mega_bust :rob_bust "Busted!"
+	pause
+
+:rob_bust
+	killalltriggers
+	if ($startingLocation = "Citadel")
+		gosub :planet~landingSub
+	end
+	setSectorParameter $player~current_sector "BUSTED" TRUE
+	send "'<"&$bot~subspace&">[Busted:"&$player~current_sector&"]<"&$bot~subspace&">* "
+	return
+
+:rob_ready_to_mega
+	killalltriggers
+	send "0*  "
+	if ($startingLocation = "Citadel")
+		gosub :planet~landingSub
+	end
+	return
+
+:rob_not_valid
+	killalltriggers
+	setVar $checkedPorts[$player~current_sector] TRUE	
+	setVar $EMPTY_GRID[$player~current_sector] TRUE
+	write $bot~no_credits_file $player~current_sector	
+	setVar $rob 0
+	setVar $original_port_cash 0	
+:rob_suc
+	killalltriggers
+	if ($startingLocation = "Citadel")
+		send "l " $planet~planet "* c t t " $rob "* "
+	end
+	if ($rob > $original_port_cash)
+		setVar $checkedPorts[$player~current_sector] TRUE	
+		setVar $EMPTY_GRID[$player~current_sector] TRUE
+		write $bot~no_credits_file $player~current_sector				
+	end
+	if ($rob > 0)
+		setVar $laststeal $player~current_sector
+		setVar $SWITCHBOARD~message "Success! - "&$rob&" credits robbed*"
+		gosub :switchboard~switchboard
+	end
+	return
+# ============================== END ROB (ROB) SUB ==============================
+
 
 #INCLUDES:
 include "source\module_includes\bot"

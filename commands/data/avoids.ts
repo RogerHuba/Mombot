@@ -1,14 +1,4 @@
-	logging off
-		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
+	gosub :BOT~loadVars
 
 
 	 setVar $BOT~help[1] $BOT~tab&"Set, clear, or display avoids"
@@ -35,16 +25,16 @@
 	gosub :PLAYER~quikstats
 
 	if ($PLAYER~CURRENT_PROMPT = "Command") OR ($PLAYER~CURRENT_PROMPT = "Citadel")
-		if ($parm1 = "clear")
-			isNumber $tst $parm2
+		if ($bot~parm1 = "clear")
+			isNumber $tst $bot~parm2
 			if ($tst)
-				if ($parm2 = 0)
+				if ($bot~parm2 = 0)
 					send "cv0*yyq"
 					setVar $SWITCHBOARD~message "All Avoids Cleared*"
 					gosub :SWITCHBOARD~switchboard
 					halt
 				else
-					send "cv0*yn" & $parm2 & "*q"
+					send "cv0*yn" & $bot~parm2 & "*q"
 					setTextLineTrigger	Cleared		:Cleared	"has been cleared and will be used in future plots."
 					setTextLineTrigger	NoClear		:NoClear	"Invalid sector number"
 					pause
@@ -55,12 +45,12 @@
 					halt
 					:Cleared
 					killAllTriggers
-					getWord CURRENTLINE $parm2 1
-					isNumber $tst $parm2
+					getWord CURRENTLINE $bot~parm2 1
+					isNumber $tst $bot~parm2
 					if ($tst = 0)
-						setVar $parm2 0
+						setVar $bot~parm2 0
 					end
-					setVar $SWITCHBOARD~message $parm2&" has been cleared and will be used in future plots.*"
+					setVar $SWITCHBOARD~message $bot~parm2&" has been cleared and will be used in future plots.*"
 					gosub :SWITCHBOARD~switchboard
 					halt
 				end
@@ -69,28 +59,28 @@
 				gosub :SWITCHBOARD~switchboard
 				halt
 			end
-		elseif ($parm1 = "set")
-			isnumber $tst $parm2
+		elseif ($bot~parm1 = "set")
+			isnumber $tst $bot~parm2
 			if ($tst)
-            	if ($parm2 > 0) and ($parm2 <= sectors)
-            		send "cv"&$parm2&"*q"
+            	if ($bot~parm2 > 0) and ($bot~parm2 <= sectors)
+            		send "cv"&$bot~parm2&"*q"
 					setTextLineTrigger		Setted		:Setted		"will now be avoided in future navigation calculations."
 					setTextTrigger			NotSet		:NotSet		"Do you wish to clear some avoids?"
 					pause
 					:NotSet
 					killAllTriggers
 					send "nq"
-					setVar $SWITCHBOARD~message $parm2&" Is Not a Valid Sector Number*"
+					setVar $SWITCHBOARD~message $bot~parm2&" Is Not a Valid Sector Number*"
 					gosub :SWITCHBOARD~switchboard
 					halt
 					:Setted
 					killAllTriggers
-					getWord CURRENTLINE	$parm2 2
-					isNumber $tst $parm2
+					getWord CURRENTLINE	$bot~parm2 2
+					isNumber $tst $bot~parm2
 					if ($tst = 0)
-						setVar $parm2 0
+						setVar $bot~parm2 0
 					end
-					setVar $SWITCHBOARD~message $parm2&" will now be avoided in future navigation calculations.*"
+					setVar $SWITCHBOARD~message $bot~parm2&" will now be avoided in future navigation calculations.*"
 					gosub :SWITCHBOARD~switchboard
 					halt
 				end

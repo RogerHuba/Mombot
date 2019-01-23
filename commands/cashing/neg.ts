@@ -1,8 +1,5 @@
-	logging off
 	gosub :BOT~loadVars
-	loadVar $PLAYER~unlimitedGame
 	loadvar $GAME~ptradesetting
-	loadvar $bot~bot_turn_limit
 
 
 	setVar $BOT~help[1]  $BOT~tab&"           Planet Negotiate Trade Agrement          "

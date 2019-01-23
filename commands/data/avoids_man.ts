@@ -1,13 +1,8 @@
-	logging off
-		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
+	gosub :BOT~loadVars
 	
-	setVar $user_command_line $BOT~user_command_line
 
-       upperCase $parm2
-       upperCase $parm3
+       upperCase $bot~parm2
+       upperCase $bot~parm3
      
 
 
@@ -40,13 +35,13 @@
 	setVar $name_arrayCount 0
 	setVar $avoids 0
 	setVar $avoidsCount 0
-	setVar $currentName "AV_" & $parm2
+	setVar $currentName "AV_" & $bot~parm2
 	setVar $found 0
 	
 	
 	gosub :PLAYER~quikstats
 
-	if ($parm1 = "list")
+	if ($bot~parm1 = "list")
 		
 		goSub :findName
 		
@@ -60,7 +55,7 @@
 		setVar $SWITCHBOARD~message $voidsList
 		gosub :SWITCHBOARD~switchboard
 		halt
-	elseif ($parm1 = "wipeall")
+	elseif ($bot~parm1 = "wipeall")
 		gosub :wipeall
 		setVar $SWITCHBOARD~message "All data wiped...*"
 		gosub :SWITCHBOARD~switchboard
@@ -69,17 +64,17 @@
 
 	if ($PLAYER~CURRENT_PROMPT = "Command") OR ($PLAYER~CURRENT_PROMPT = "Citadel")
 		
-		if (($parm1 <> "store") and ($parm1 <> "clear") and ($parm1 <> "recall") and ($parm1 <> "list") and ($parm1 <> "show"))
+		if (($bot~parm1 <> "store") and ($bot~parm1 <> "clear") and ($bot~parm1 <> "recall") and ($bot~parm1 <> "list") and ($bot~parm1 <> "show"))
 			setVar $SWITCHBOARD~message "Parm1 should be store/clear/recall/list/show*"
 			gosub :SWITCHBOARD~switchboard
 			halt	
 		end
-		if (($parm2 = "0") or ($parm2 = ""))
+		if (($bot~parm2 = "0") or ($bot~parm2 = ""))
 			setVar $SWITCHBOARD~message "Please specifiy void group name*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		else
-			getLength $parm2 $len
+			getLength $bot~parm2 $len
 			if ($len > 6)
 				setVar $SWITCHBOARD~message "Name should be no more than 6 chars.*"
 				gosub :SWITCHBOARD~switchboard
@@ -92,13 +87,13 @@
 		halt
 	end
 
-	if (($parm3 <> "") and ($parm3 <> "0"))
-		if ($parm1 = "store")
+	if (($bot~parm3 <> "") and ($bot~parm3 <> "0"))
+		if ($bot~parm1 = "store")
 			setVar $avoidsAdded 0
 			
 			setVar $i 1
 			while ($i <= SECTORS)
-				getSectorParameter $i $parm3 $v
+				getSectorParameter $i $bot~parm3 $v
 				if (($v <> "0") and ($v <> ""))
 					add $avoidsCount 1
 					add $avoidsAdded 1
@@ -107,11 +102,11 @@
 				add $i 1
 			end
 			if ($avoidsAdded = 0)
-				setVar $SWITCHBOARD~message "Did not find any with this sector PARAM:"&$parm3&"*"
+				setVar $SWITCHBOARD~message "Did not find any with this sector PARAM:"&$bot~parm3&"*"
 				gosub :SWITCHBOARD~switchboard
 				halt
 			else
-				setVar $SWITCHBOARD~message "Added "&$avoidsAdded&" to group "&$parm1&"*"
+				setVar $SWITCHBOARD~message "Added "&$avoidsAdded&" to group "&$bot~parm1&"*"
 				gosub :SWITCHBOARD~switchboard
 				halt
 			end
@@ -120,40 +115,40 @@
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
-	elseif ($parm1 = "store")
+	elseif ($bot~parm1 = "store")
 		
 		goSub :manageNames
 		gosub :storeCurrentAvoids
 		
-		setVar $SWITCHBOARD~message "Stored "&$avoidsCount&" Sectors to Group "&$parm2&"*"
+		setVar $SWITCHBOARD~message "Stored "&$avoidsCount&" Sectors to Group "&$bot~parm2&"*"
 		gosub :SWITCHBOARD~switchboard
-	elseif ($parm1 = "recall")
+	elseif ($bot~parm1 = "recall")
 		goSub :findName
 
 		if ($found = 0)
-			setVar $SWITCHBOARD~message "Could Not Find Group "&$parm2&"*"
+			setVar $SWITCHBOARD~message "Could Not Find Group "&$bot~parm2&"*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
 		gosub :recallCurrentAvoids
 		
-		setVar $SWITCHBOARD~message "Recalled "&$avoidsCount&" Sectors to Group "&$parm2&"*"
+		setVar $SWITCHBOARD~message "Recalled "&$avoidsCount&" Sectors to Group "&$bot~parm2&"*"
 		gosub :SWITCHBOARD~switchboard
-	elseif ($parm1 = "show")
+	elseif ($bot~parm1 = "show")
 		goSub :findName
 
 		if ($found = 0)
-			setVar $SWITCHBOARD~message "Could Not Find Group "&$parm2&"*"
+			setVar $SWITCHBOARD~message "Could Not Find Group "&$bot~parm2&"*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
 		gosub :displayCurrentAvoids
 		
 		
-	elseif ($parm1 = "clear")
+	elseif ($bot~parm1 = "clear")
 		goSub :findName
 		if ($found = 0)
-			setVar $SWITCHBOARD~message "Could Not Find Group "&$parm2&"*"
+			setVar $SWITCHBOARD~message "Could Not Find Group "&$bot~parm2&"*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
@@ -161,7 +156,7 @@
 	
 		gosub :clearCurrentAvoids
 
-		setVar $SWITCHBOARD~message "Cleared "&$avoidsCount&" Sectors to Group "&$parm2&"*"
+		setVar $SWITCHBOARD~message "Cleared "&$avoidsCount&" Sectors to Group "&$bot~parm2&"*"
 		gosub :SWITCHBOARD~switchboard
 	end
 halt
@@ -182,7 +177,7 @@ halt
 			setVar $name_array[$w] $word
 			add $name_arrayCount 1
 
-			if ($parm2 = $word)
+			if ($bot~parm2 = $word)
 				setVar $found 1
 			end
 		else
@@ -200,9 +195,9 @@ return
 	if ($found = 0)
 		getSectorParameter 1 "AVOIDS_MAN" $names
 		if ($names = 0)
-			setVar $names $parm2
+			setVar $names $bot~parm2
 		else
-			setVar $names $names&"|"&$parm2
+			setVar $names $names&"|"&$bot~parm2
 		end
 		setSectorParameter 1 "AVOIDS_MAN" $names
 	end
@@ -265,7 +260,7 @@ return
 		end
 		add $i 1
 	end
-	setVar $voidsInfo "Displaying "&$avoidsCount&" Voids in Group " &$parm2 &"**"
+	setVar $voidsInfo "Displaying "&$avoidsCount&" Voids in Group " &$bot~parm2 &"**"
 	setVar $voidsList $voidsInfo&$voidsList
 	setVar $SWITCHBOARD~message $voidsList&"*"
 	gosub :SWITCHBOARD~switchboard

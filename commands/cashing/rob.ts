@@ -1,5 +1,8 @@
-    gosub :BOT~loadVars
-    loadVar $GAME~rob_factor
+ 	gosub :BOT~loadVars
+	loadVar $GAME~rob_factor
+		
+	setVar $BOT~help[1] $BOT~tab&"Attempts to rob a port"
+	gosub :BOT~help_file
 
 :rob
     gosub :PLAYER~quikstats
@@ -7,14 +10,16 @@
     setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
 
     if (($PLAYER~TURNS = 0) and ($PLAYER~unlimitedGame = FALSE))
-            send "'{" $SWITCHBOARD~bot_name "} - I have no turns*"
-            goto :wait_for_command
+            setvar $switchboard~message "I have no turns*"
+            gosub :switchboard~switchboard
+            halt
         end
     gosub :PROMPT~checkStartingPrompt
     cutText $PLAYER~ALIGNMENT $neg_ck 1 1
     stripText $PLAYER~ALIGNMENT "-"
     if ((($PLAYER~ALIGNMENT < 100) and ($neg_ck = "-")) OR ($neg_ck <> "-"))
-        send "'{" $SWITCHBOARD~bot_name "} - Need -100 Alignment Minimum*"
+        setvar $switchboard~message "Need -100 Alignment Minimum*"
+        gosub :switchboard~switchboard
         goto :portrm_done
     end
     if ($PROMPT~startingLocation = "Citadel")
@@ -31,15 +36,16 @@
     setTextLinetrigger mega :port_ok "port has in excess of"
     pause
 :port_fake
-    gosub :killthetriggers
+    killalltriggers
     if ($PROMPT~startingLocation = "Citadel")
         gosub :PLANET~landingSub
     end
     setSectorParameter $PLAYER~CURRENT_SECTOR "BUSTED" TRUE
-    send "'{" $SWITCHBOARD~bot_name "} - Fake Busted*"
+    setvar $switchboard~message "Fake Busted*"
+    gosub :switchboard~switchboard
     goto :portrm_done
 :port_ok
-    gosub :killthetriggers
+    killalltriggers
     setVar $rob ($GAME~rob_factor*$PLAYER~EXPERIENCE)
     getWord CURRENTLINE $port_cash 11
     stripText $port_cash ","
@@ -51,13 +57,16 @@
             if ($PROMPT~startingLocation = "Citadel")
                 gosub :PLANET~landingSub
             end
-            send "'{" $SWITCHBOARD~bot_name "} - Port is short " $mega_short " credits*"
+            setvar $switchboard~message "Port is short "&$mega_short&" credits*"
+            gosub :switchboard~switchboard
             goto :portrm_done
         else
             goto :do_rob        
         end
-    elseif (($MBBS = TRUE) AND ($isMega = FALSE))
-        send "'{" $SWITCHBOARD~bot_name "} - " $port_cash " credits on port.  Port is ready for Mega Rob**"
+    elseif (($game~mbbs = TRUE) AND ($isMega = FALSE))
+        setvar $switchboard~message  $port_cash&" credits on port.  Port is ready for Mega Rob*"
+        gosub :switchboard~switchboard
+        send "*"
         if ($PROMPT~startingLocation = "Citadel")
             gosub :PLANET~landingSub
         end
@@ -91,7 +100,7 @@
         end
     end
 :port_bust
-    gosub :killthetriggers
+    killalltriggers
     if ($PROMPT~startingLocation = "Citadel")
         gosub :PLANET~landingSub
     end
@@ -99,18 +108,20 @@
     send "'<" & $subspace & ">[Busted:" & $PLAYER~CURRENT_SECTOR & "]<" & $subspace & ">*"
     goto :portrm_done
 :port_suc
-    gosub :killthetriggers
+    killalltriggers
     if ($PROMPT~startingLocation = "Citadel")
         gosub :PLANET~landingSub
         send "tt" $actual_cash "*"
     end
-    send "'{" $SWITCHBOARD~bot_name "} - Success! - " $actual_cash " credits robbed*"
+    setvar $switchboard~message "Success! - "&$actual_cash&" credits robbed*"
+    gosub :switchboard~switchboard
     if ($second_mega = TRUE)
-        send "'{" $SWITCHBOARD~bot_name "} - There are " $leftover_cash " credits left for a second mega*"
+        setvar $switchboard~message "There are "&$leftover_cash&" credits left for a second mega*"
+        gosub :switchboard~switchboard
     end
 :portrm_done
     setVar $isMega FALSE
-    goto :wait_for_command
+    halt
 :do_rob
     setVar $port_cash (($port_cash*10)/9)
     if ($port_cash < $rob)
@@ -124,12 +135,9 @@
     pause
 
 
-:wait_for_command
-halt
 
-:killthetriggers
-    killalltriggers
-return
+
+
 
 #INCLUDES:
 include "source\module_includes\bot"

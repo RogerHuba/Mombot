@@ -1,37 +1,36 @@
-loadVar $bot_name
-loadVar $user_command_line
-loadVar $parm1
-loadVar $parm2
-loadVar $parm3
-loadVar $parm4
-loadVar $parm5
-loadVar $parm6
-loadVar $parm7
-loadVar $parm8
+	gosub :BOT~loadVars
+
+	setVar $BOT~help[1] $BOT~tab&"HAZKILL - Remove NavHaz Command"
+	setVar $BOT~help[2] $BOT~tab&"          Scans Current-Sector and launches Genesis Torpedos"
+	setVar $BOT~help[3] $BOT~tab&"          to removes any NavHaz"
+	gosub :BOT~help_file
+
 
 
 # ============================== START NAV HAZ KILLER (navhaz) Sub ==============================
 :hazKill
 	setVar $pName "M()M - NAV HAZ KiLLA!"
-	gosub :quikstats~quikstats
-	setVar $startingLocation $quikstats~CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~CURRENT_PROMPT
 	if (($startingLocation <> "Command") AND ($startingLocation <> "Citadel"))
-	        send "'{" & $bot_name & "} - Please Start from Command or Citadel Prompts!*"
+	        setvar $switchboard~message "Please Start from Command or Citadel Prompts!*"
+	        gosub :switchboard~switchboard
 		halt
 	end
-	if ($quikstats~GENESIS <= 0)
-		send "'{" & $bot_name & "} - No Genesis Torps On Hand.*"
+	if ($player~GENESIS <= 0)
+		setvar $switchboard~message "No Genesis Torps On Hand.*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($startingLocation = "Citadel")
 		send "Q"
-		gosub :planetinfo~getPlanetInfo
+		gosub :planet~getPlanetInfo
 		send "  Q  "
 		waitfor "Command [TL="
 	end
 	send "*"
 	waitfor "(?="
-	setVar $haz SECTOR.NAVHAZ[$quikstats~CURRENT_SECTOR]
+	setVar $haz SECTOR.NAVHAZ[$player~CURRENT_SECTOR]
 	if ($haz <= 10)
 		setVar $2Bpopped 1
 	elseif ($haz <= 20)
@@ -53,9 +52,10 @@ loadVar $parm8
 	else
 		setVar $2Bpopped 10
 	end
-	if ($2Bpopped > $quikstats~GENESIS)
-		send "'{" & $bot_name & "} - Short " & ($2Bpopped - $quikstats~GENESIS) & " Genesis Torps.*"
-		setVar $2Bpopped $quikstats~GENESIS
+	if ($2Bpopped > $player~GENESIS)
+		setvar $switchboard~message "Short " & ($2Bpopped - $player~GENESIS) & " Genesis Torps.*"
+		gosub :switchboard~switchboard
+		setVar $2Bpopped $player~GENESIS
 		waitfor "Message sent on sub-space"
 	end
 	while ($2Bpopped > 0)
@@ -73,13 +73,20 @@ loadVar $parm8
 			subtract $2Bpopped 1
 	end
 	if ($startingLocation = "Citadel")
-		send " L " & $planetinfo~planet & "* C "
+		send " L " & $planet~planet & "* C "
 	end
-	send "'{" & $bot_name & "} - Nav Haz Killa Complete!*"
+	setvar $switchboard~message "Nav Haz Killa Complete!*"
+	gosub :switchboard~switchboard
 
 halt
 # ============================== END NAV HAZ KILLER (navhaz) Sub ==============================
 
 
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\quikstats"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\planetinfo"
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"

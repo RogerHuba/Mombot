@@ -166,6 +166,8 @@ return
                 getWord $stats $EXPERIENCE          ($current_word + 1)
             elseif ($wordy = "Corp")
                 getWord $stats $CORP            ($current_word + 1)
+                setvar $corpnumber $corp
+                savevar $corpnumber
             elseif ($wordy = "Ship")
                 getWord $stats $SHIP_NUMBER         ($current_word + 1)
             end
@@ -177,6 +179,7 @@ return
     killtrigger getLine2
     saveVar $unlimitedGame
 	if ($save)
+		savevar $corp
 		saveVar $CREDITS
         saveVar $CURRENT_SECTOR
         saveVar $TURNS
@@ -727,7 +730,7 @@ return
         setVar $attackString ""
         :cap_ship
             #get own offensive odds
-            setVar $unmanned "NO"
+            setVar $unmanned false
             setVar $own_odds $SHIP~SHIP_OFFENSIVE_ODDS
             setVar $cap_points 0
             setVar $max_figs 0
@@ -813,9 +816,9 @@ return
                     getWordPos $cap_ship_info $is_ship $SHIP~shipList[$type_count]
                     getWordPos $cap_ship_info $unman "'s unmanned"
                     if ($unman > 0)
-                        setVar $unmanned "YES"
+                        setVar $unmanned true
                     else
-                        setVar $unmanned "NO"
+                        setVar $unmanned false
                     end
                     if (($is_ship > 0) AND ($SHIP~shipList[$type_count] <> "0"))
                         getWord $SHIP~ship[$SHIP~shipList[$type_count]] $SHIELDS 1
@@ -877,17 +880,12 @@ return
                     setVar $ship_fighters 1
                 end
                 setVar $cap_points (($shieldPoints + $ship_fighters) * $defodds)
-                if ((($defenderCapping = TRUE) AND ($unmanned <> "YES")) AND ($targetIsAlien = TRUE))
-                    if ($ship_fighters > 100)
-                        setVar $figbuffer (($ship_fighters * 2)/100)
-                    else
-                        setVar $figbuffer 0
-                    end
+                if ((($defenderCapping = TRUE) AND ($unmanned <> true)) AND ($targetIsAlien = TRUE))
                     if ($stillShields = TRUE)
                         if ($ship_fighters > 1000)
-                             setVar $cap_points (($cap_points / $own_odds) - ($cap_points/100))
+                             setVar $cap_points (($shieldPoints / $own_odds) + ($cap_points/100))
                         else
-                            setVar $cap_points ($cap_points / $own_odds)
+                            setVar $cap_points ($shieldPoints / $own_odds)
                         end
                     else
                         setVar $cap_points 1
@@ -896,7 +894,7 @@ return
                     setVar $cap_points (($cap_points / $own_odds) - ($cap_points/100))
                 end
                 setVar $cap_points (($cap_points * 95) / 100)
-                if ($unmanned = "YES")
+                if ($unmanned = true)
                     divide $cap_points 2
                 end
                 if ($cap_points <= 0)
@@ -909,6 +907,29 @@ return
                     setVar $sendAttack $sendAttack&$refurbString
                 end
                 send $sendAttack
+                if ($cap_points = 1)
+					send $targetString&$sendAttack
+					setVar $FIGHTERS ($FIGHTERS-$cap_points)
+					send $targetString&$sendAttack
+					setVar $FIGHTERS ($FIGHTERS-$cap_points)
+					send $targetString&$sendAttack
+					setVar $FIGHTERS ($FIGHTERS-$cap_points)
+					send $targetString&$sendAttack
+					setVar $FIGHTERS ($FIGHTERS-$cap_points)
+					send $targetString&$sendAttack
+					setVar $FIGHTERS ($FIGHTERS-$cap_points)
+					send $targetString&$sendAttack
+					setVar $FIGHTERS ($FIGHTERS-$cap_points)
+					send $targetString&$sendAttack
+					setVar $FIGHTERS ($FIGHTERS-$cap_points)
+					send $targetString&$sendAttack
+					setVar $FIGHTERS ($FIGHTERS-$cap_points)
+					send $targetString&$sendAttack
+					setVar $FIGHTERS ($FIGHTERS-$cap_points)
+					send $targetString&$sendAttack                
+					setVar $FIGHTERS ($FIGHTERS-$cap_points)
+					gosub :quikstats
+                end
                 setVar $FIGHTERS ($FIGHTERS-$cap_points)
         :keepcapping
         end

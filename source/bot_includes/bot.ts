@@ -51,9 +51,6 @@ return
     end
     setVar $SWITCHBOARD~self_command FALSE
     setVar $scrubonly FALSE
-    if ($botIsOff = TRUE)
-        setTextlineTrigger activate_bot :check_routing $SWITCHBOARD~bot_name & " bot on"
-    end
     if ((CONNECTED <> TRUE) AND ($doRelog = TRUE))
         goto :CONNECTIVITY~relog_attempt
     end
@@ -72,10 +69,12 @@ return
     setVar $USER_INTERFACE~logged 0
 
     setEventTrigger     shutdownthemodule       :INTERNAL_COMMANDS~shutDown            "SCRIPT STOPPED"      $LAST_LOADED_MODULE
-    setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          $SWITCHBOARD~bot_name
-    setTextLineTrigger  own_command_team        :USER_INTERFACE~check_routing_team     $bot_team_name
-    setTextLineTrigger  own_command_all         :USER_INTERFACE~check_routing_all     "all"
-    setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "You have a corporate memo from "
+    if ($botIsOff <> TRUE)
+	    setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          $SWITCHBOARD~bot_name
+	    setTextLineTrigger  own_command_team        :USER_INTERFACE~check_routing_team     $bot_team_name
+	    setTextLineTrigger  own_command_all         :USER_INTERFACE~check_routing_all     "all"
+	    setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "You have a corporate memo from "
+    end
     setEventTrigger     relog                   :CONNECTIVITY~relog_attempt            "CONNECTION LOST"
     setTextTrigger      online_watch            :CONNECTIVITY~online_watch             "Your session will be terminated in "
     setDelayTrigger     keepalive               :CONNECTIVITY~keepalive                30000
@@ -575,6 +574,7 @@ gosub :PLAYER~init
     loadVar $safe_ship
     loadVar $pgrid_bot
     loadVar $safe_planet
+    loadvar $corppassword
 
     loadVar $bot_team_name
     loadVar $historyString

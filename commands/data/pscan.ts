@@ -1,37 +1,54 @@
-	loadvar $bot_name
-	loadvar $parm1
+	gosub :BOT~loadVars
 
+	setVar $BOT~help[1]  $BOT~tab&"PSCAN - Sends Planet Data Over SubSpace. "
+	setVar $BOT~help[2]  $BOT~tab&"      "
+	setVar $BOT~help[3]  $BOT~tab&"   pscan {Planet #}" 
+	setVar $BOT~help[4]  $BOT~tab&"       "
+	setVar $BOT~help[5]  $BOT~tab&"   [Planet #] - Is optional. However if left out you must "
+	setVar $BOT~help[6]  $BOT~tab&"                start it from Citadel,  or Planet command "
+	setVar $BOT~help[7]  $BOT~tab&"                and current planet will be displayed.  If "
+	setVar $BOT~help[8]  $BOT~tab&"                a Planet Number is specified, that planet "
+	setVar $BOT~help[9]  $BOT~tab&"                will be  displayed assuming  it's in the  "
+	setVar $BOT~help[10] $BOT~tab&"                current sector.   "
+	setVar $BOT~help[11] $BOT~tab&"             "
+	setVar $BOT~help[12] $BOT~tab&"              - Written by Lonestar "
+	gosub :BOT~help_file
+ 
 	
-	gosub :quikstats
-	setVar $Location $CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $Location $player~current_prompt
 	setVar $array_cnt 0
-	setVar $planet 0
+	setVar $planet~planet 0
 
-	if ($CURRENT_PROMPT = "Citadel")
-		if ($parm1 <> 0)
-			#get currnet planet number
+	if ($player~current_prompt = "Citadel")
+		if ($bot~parm1 <> 0)
+			#get current planet number
 			send "Q"
-			gosub :GetPlanetNumber
+			gosub :planet~getplanetinfo
 			send "  Q  "
-			setVar $LandOn $parm1
+			setVar $LandOn $bot~parm1
 			gosub :Land_OnPlanet
 			if ($LANDED)
 				send " D"
 				gosub :start
 			else
-				send " Q  Q  Q  Z  N  *  L Z"&#8&$Planet&"*  *  J  C  *  "
-				send "'{" $bot_name "} PScan - Problem landing on Planet #"&$parm1&".*"
+				send " Q  Q  Q  Z  N  *  L Z"&#8&$planet~planet&"*  *  J  C  *  "
+				setvar $switchboard~message "Problem landing on Planet #"&$bot~parm1&".*"
+				gosub :switchboard~switchboard
 				halt
 			end
 			send " Q  Q  Q  Z  N  *  "
-			setVar $LandOn $Planet
+			setVar $LandOn $planet~planet
 			gosub :Land_OnPlanet
 			if ($LANDED = 0)
-				send "'{" $bot_name "} PScan - Problem relanding on starting Planet #"&$planet&".*"
+				setvar $switchboard~message "Problem relanding on starting Planet #"&$planet~planet&".*"
+				gosub :switchboard~switchboard
 				halt
 			else
 				gosub :SpitItOut
-				send " C '{" $bot_name "} PScan - Back In Citadel on Planet #"&$planet&".*"
+				send " C "
+				setvar $switchboard~message "Back In Citadel on Planet #"&$planet~planet&".*"
+				gosub :switchboard~switchboard
 				halt
 			end
 		else
@@ -39,33 +56,38 @@
 			waitfor "Planet command"
 			gosub :start
 			gosub :SpitItOut
-			send " C  '{" $bot_name "} PScan - Back In Citadel.*"
+			send " C  "
+			setvar $switchboard~message "Back In Citadel.*"
+			gosub :switchboard~switchboard
 			halt
 		end
-	elseif ($CURRENT_PROMPT = "Planet")
-		if ($parm1 <> 0)
+	elseif ($player~current_prompt = "Planet")
+		if ($bot~parm1 <> 0)
 			#get currnet planet number
-			gosub :GetPlanetNumber
+			gosub :planet~getplanetinfo
 			send "  Q  "
-			setVar $LandOn $parm1
+			setVar $LandOn $bot~parm1
 			gosub :Land_OnPlanet
 			if ($LANDED)
 				send " D"
 				gosub :start
 			else
-				send " Q  Q  Q  Z  N  *  L Z"&#8&$Planet&"*  *  J  C  *  "
-				send "'{" $bot_name "} PScan - Problem landing on Planet #"&$parm1&".*"
+				send " Q  Q  Q  Z  N  *  L Z"&#8&$planet~planet&"*  *  J  C  *  "
+				setvar $switchboard~message "Problem landing on Planet #"&$bot~parm1&".*"
+				gosub :switchboard~switchboard
 				halt
 			end
 			send " Q  Q  Q  Z  N  *  "
-			setVar $LandOn $Planet
+			setVar $LandOn $planet~planet
 			gosub :Land_OnPlanet
 			if ($LANDED = 0)
-				send "'{" $bot_name "} PScan - Problem relanding on starting Planet #"&$planet&".*"
+				setvar $switchboard~message "Problem relanding on starting Planet #"&$planet~planet&".*"
+				gosub :switchboard~switchboard
 				halt
 			else
 				gosub :SpitItOut
-				send "'{" $bot_name "} PScan - Back on Planet #"&$planet&" (Planet Command Prompt).*"
+				setvar $switchboard~message "Back on Planet #"&$planet~planet&" (Planet Command Prompt).*"
+				gosub :switchboard~switchboard
 				halt
 			end
 		else
@@ -73,29 +95,34 @@
 			waitfor "Planet command"
 			gosub :start
 			gosub :SpitItOut
-			send "'{" $bot_name "} PScan - At Planet Prompt.*"
+			setvar $switchboard~message "At Planet Prompt.*"
+			gosub :switchboard~switchboard
 			halt
 		end
-	elseif ($CURRENT_PROMPT = "Command")
-		if ($parm1 = 0)
-			send "'{" $bot_name "} PScan - If Starting From Sector Please Specify Planet Number.*"
+	elseif ($player~current_prompt = "Command")
+		if ($bot~parm1 = 0)
+			setvar $switchboard~message "If Starting From Sector Please Specify Planet Number.*"
+			gosub :switchboard~switchboard
 			halt
 		end
-		setVar $LandOn $parm1
+		setVar $LandOn $bot~parm1
 		gosub :Land_OnPlanet
 		if ($LANDED)
 			send " D"
 			gosub :start
 		else
 			send " Q  Q  Q  Z  N  * "
-			send "'{" $bot_name "} PScan - Problem landing on Planet #"&$parm1&".*"
+			setvar $switchboard~message "Problem landing on Planet #"&$bot~parm1&".*"
+			gosub :switchboard~switchboard
 			halt
 		end
 		send " Q  Q  Q  Z  N  *  "
 		gosub :SpitItOut
-		send "'{" $bot_name "} PScan - Back At Command Prompt.*"
+		setvar $switchboard~message "Back At Command Prompt.*"
+		gosub :switchboard~switchboard
 	else
-		send "'{" & $bot_name & "} PScan - Please Start from Command, Citadel, or Planet Prompt*"
+		setvar $switchboard~message "Please Start from Command, Citadel, or Planet Prompt*"
+		gosub :switchboard~switchboard
 	end
 	halt
 
@@ -115,55 +142,27 @@
 
 		getWordPos $s $pos "Fuel Ore"
 		if ($pos <> 0)
-			getWord $s $t 7
-			getlength $t $len
-			setVar $len (11 - $len)
-			setVar $i 1
-			setVar $u ""
-			while ($i<= $len)
-				setVar $u ($u & " ")
-    			add $i 1
-    		end
-			replaceText $s ($u&$t) ""
+			getWord $s $t 8
+			cuttext $s $first_half 1 54
+			setvar $s $first_half&$t
 		end
 		getWordPos $s $pos "Organics"
 		if ($pos <> 0)
-			getWord $s $t 6
-			getlength $t $len
-			setVar $len (11 - $len)
-			setVar $i 1
-			setVar $u ""
-			while ($i<= $len)
-				setVar $u ($u & " ")
-    			add $i 1
-    		end
-			replaceText $s ($u&$t) ""
+			getWord $s $t 7
+			cuttext $s $first_half 1 54
+			setvar $s $first_half&$t
 		end
 		getWordPos $s $pos "Equipment"
 		if ($pos <> 0)
-			getWord $s $t 6
-			getlength $t $len
-			setVar $len (11 - $len)
-			setVar $i 1
-			setVar $u ""
-			while ($i<= $len)
-				setVar $u ($u&" ")
-    			add $i 1
-    		end
-			replaceText $s ($u&$t) ""
+			getWord $s $t 7
+			cuttext $s $first_half 1 54
+			setvar $s $first_half&$t
 		end
 		getWordPos $s $pos "Fighters "
 		if ($pos <> 0)
-			getWord $s $t 6
-			getlength $t $len
-			setVar $len (11 - $len)
-			setVar $i 1
-			setVar $u ""
-			while ($i<= $len)
-				setVar $u ($u & " ")
-    			add $i 1
-    		end
-			replaceText $s ($u&$t) ""
+			getWord $s $t 7
+			cuttext $s $first_half 1 54
+			setvar $s $first_half&$t
 		end
 		replacetext $s "  Item    Colonists  Colonists    Daily     Planet      Ship      Planet" "Item  Colonists Colonists    Daily     Planet    Planet"
 		replaceText $s "           (1000s)   2 Build 1   Product    Amount     Amount     Maximum"  "       (1000s)  2 Build 1   Product    Amount    Maximum"
@@ -205,11 +204,13 @@
 	pause
 	:NoPlanet
 		killAllTriggers
-		send ("'{" & $bot_name & "} - Planet #" & $LandOn & ", not in Sector!*")
+		setvar $switchboard~message "Planet #" & $LandOn & ", not in Sector!*"
+		gosub :switchboard~switchboard
 		return
 	:NotLanded
 		killAllTriggers
-		send ("'{" & $bot_name & "} - This ship cannot land!*")
+		setvar $switchboard~message "This ship cannot land!*"
+		gosub :switchboard~switchboard
 		return
 	:Landed
 		killAllTriggers
@@ -218,150 +219,14 @@
 		waitfor "Planet command"
 		return
 
-:GetPlanetNumber
-	setTextLineTrigger PlanetNumber		:PlanetNumber	"Planet #"
-	setTextLineTrigger Done				:DoneE			"Planet command"
-	send " D"
-	waitfor "Planet command"
-	pause
-	:PlanetNumber
-		killTrigger PlanetNumber
-		getWord CURRENTLINE $Planet 2
-		stripText $Planet "#"
-		isNumber $tst $Planet
-		if ($tst = 0)
-			send "'{" $bot_name "} PScan - Unable To Obtain Current Planet Number*"
-			send "C"
-			halt
-		end
-	:DoneE
-		killAllTriggers
-		return
-
-:quikstats
-   	setVar $CURRENT_PROMPT 		"Undefined"
-	killtrigger noprompt
-	killtrigger prompt1
-	killtrigger prompt2
-	killtrigger prompt3
-	killtrigger prompt4
-	killtrigger statlinetrig
-	killtrigger getLine2
-	setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
-	setTextLineTrigger 	statlinetrig 	:statStart 		#179
-	send #145&"/"
-	pause
-
-	:allPrompts
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
-		#getWord currentansiline $checkPrompt 1
-		#getWord currentline $tempPrompt 1
-		#getWordPos $checkPrompt $pos "[35m"
-		#if ($pos > 0)
-		#	setVar $CURRENT_PROMPT $tempPrompt
-		#end
-		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
-		pause
-
-	:statStart
-		killtrigger prompt
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger noprompt
-		setVar $stats ""
-		setVar $wordy ""
 
 
-	:statsline
-		killtrigger statlinetrig
-		killtrigger getLine2
-		setVar $line2 CURRENTLINE
-		replacetext $line2 #179 " "
-		striptext $line2 ","
-		setVar $stats $stats & $line2
-		getWordPos $line2 $pos "Ship"
-		if ($pos > 0)
-			goto :gotStats
-		else
-			setTextLineTrigger getLine2 :statsline
-			pause
-		end
 
-	:gotStats
-		setVar $stats $stats & " @@@"
-
-		setVar $current_word 0
-		while ($wordy <> "@@@")
-			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
-			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
-			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
-			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
-			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
-			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
-			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
-			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
-			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
-			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
-			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
-			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
-			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
-			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
-			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
-			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
-			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
-			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
-			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
-			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
-			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
-			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
-			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
-			elseif ($wordy = "Corp")
-				getWord $stats $CORP   			($current_word + 1)
-			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
-			end
-			add $current_word 1
-			getWord $stats $wordy $current_word
-		end
-	:doneQuikstats
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger statlinetrig
-		killtrigger getLine2
-
-return
-# ============================== END QUICKSTATS SUB==============================
+#INCLUDES:
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"

@@ -328,7 +328,7 @@ return
 		gosub :planet~landingSub
 	end
 	setSectorParameter $player~current_sector "BUSTED" TRUE
-	send "'<"&$subspace&">[Busted:"&$player~current_sector&"]<"&$subspace&">* "
+	send "'<"&$bot~subspace&">[Busted:"&$player~current_sector&"]<"&$bot~subspace&">* "
 	return
 
 :rob_ready_to_mega

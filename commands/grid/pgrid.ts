@@ -1,21 +1,18 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
-    loadvar $self_command
-    loadVar $stardock
+	gosub :BOT~loadVars
+
+	setVar $BOT~help[1]  $BOT~tab&"pgrid - planet grid into sector "
+	gosub :BOT~help_file
 
 # ======================     START PLANET GRID (PGRID) SUBROUTINE    ==========================
 :pgrid
-    setVar $SWITCHBOARD~bot_name $bot_name
+    setVar $SWITCHBOARD~bot_name $bot~bot_name
     setVar $SWITCHBOARD~self_command $self_command
 
     gosub :PLAYER~QUIKSTATS
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
     setVar $startingPgridSector $PLAYER~CURRENT_SECTOR
     setVar $startingShip $PLAYER~SHIP_NUMBER
-    setVar $validPrompts "Citadel Command"
+    setVar $bot~validPrompts "Citadel Command"
     setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
     setVar $PROMPT~validPrompts "Command Citadel"
@@ -26,21 +23,21 @@
     else
         setVar $inCitadel ""
     end
-    getWordPos " "&$user_command_line&" " $pos "scan"
+    getWordPos " "&$bot~user_command_line&" " $pos "scan"
     if ($pos > 0)
         setVar $doDensityScan TRUE
     else
         setVar $doDensityScan FALSE
     end
-    getWordPos " "&$user_command_line&" " $pos "unsafe"
+    getWordPos " "&$bot~user_command_line&" " $pos "unsafe"
     if ($pos > 0)
         setVar $unsafe TRUE
     else
         setVar $unsafe FALSE
     end
-    getWordPos " " & $user_command_line & " " $pos " wave:"
+    getWordPos " " & $bot~user_command_line & " " $pos " wave:"
     if ($pos > 0)
-        getText $user_command_line $wave "wave:" " "
+        getText $bot~user_command_line $wave "wave:" " "
         isNumber $test $wave
         if ($test)
             setVar $wave $wave
@@ -50,9 +47,9 @@
     else
         setVar $wave 0
     end
-    getWordPos " " & $user_command_line & " " $pos " f:"
+    getWordPos " " & $bot~user_command_line & " " $pos " f:"
     if ($pos > 0)
-        getText $user_command_line $fighterDrop "f:" " "
+        getText $bot~user_command_line $fighterDrop "f:" " "
         isNumber $test $fighterDrop
         if ($test)
             setVar $fighterDrop $fighterDrop
@@ -62,9 +59,9 @@
     else
         setVar $fighterDrop 1
     end
-    getWordPos " " & $user_command_line & " " $pos " x:"
+    getWordPos " " & $bot~user_command_line & " " $pos " x:"
     if ($pos > 0)
-        getText $user_command_line $xportShip "x:" " "
+        getText $bot~user_command_line $xportShip "x:" " "
         isNumber $test $xportShip
         if ($test)
             setVar $xporting TRUE
@@ -78,21 +75,21 @@
     end
 
 	setVar $surrendor TRUE
-	getWordPos " "&$user_command_line&" " $pos1 " nosur"
-	getWordPos " "&$user_command_line&" " $pos2 " nosurrender"
+	getWordPos " "&$bot~user_command_line&" " $pos1 " nosur"
+	getWordPos " "&$bot~user_command_line&" " $pos2 " nosurrender"
 	if (($pos1 > 0) or ($pos2 > 0))
 		setVar $surrendor FALSE	
 	else
 		setVar $surrendor TRUE
 	end
-	getWordPos " "&$user_command_line&" " $pos " d:"
+	getWordPos " "&$bot~user_command_line&" " $pos " d:"
 	setVar $validDesignatedDen FALSE
 
 	if ($pos > 0)
 		setVar $doDensityScan TRUE
 
 
-		getText $user_command_line $designatedDen "d:" " "
+		getText $bot~user_command_line $designatedDen "d:" " "
 		
 		isNumber $test $designatedDen
 		if ($test)
@@ -107,25 +104,25 @@
 		setVar $validDesignatedDen FALSE
 	end
 
-    getWordPos " "&$user_command_line&" " $pos " r "
+    getWordPos " "&$bot~user_command_line&" " $pos " r "
     if ($pos > 0)
         setVar $retreating TRUE
     else
         setVar $retreating FALSE
     end
-    setVar $pgridSector $parm1
+    setVar $pgridSector $bot~parm1
     isNumber $test $pgridSector
     if ($test = 0)
         setVar $SWITCHBOARD~message "Invalid PGRID number.*"
         gosub :SWITCHBOARD~switchboard
         halt
     end
-    isNumber $test $parm2
+    isNumber $test $bot~parm2
     if ($test = 0)
         setVar $waveCount 1
     else
-        if ($parm2 > 0)
-            setVar $waveCount $parm2
+        if ($bot~parm2 > 0)
+            setVar $waveCount $bot~parm2
         else
             setVar $waveCount 1
         end
@@ -139,7 +136,7 @@
         setVar $SWITCHBOARD~message "Cannot PGRID into FedSpace!*"
         gosub :SWITCHBOARD~switchboard
         halt
-    elseif ($pgridSector = $STARDOCK)
+    elseif ($pgridSector = $map~stardock)
         setVar $SWITCHBOARD~message "Cannot PGRID into STARDOCK!*"
         gosub :SWITCHBOARD~switchboard
         halt
@@ -165,7 +162,7 @@
         gosub :SWITCHBOARD~switchboard
         halt
     end 
-    send "'{" $bot_name "} - Planet gridding into sector " & $pgridSector & "* c v* y* " & $pgridSector & "* q "
+    setvar $switchboard~message "Planet gridding into sector " & $pgridSector & "* c v* y* " & $pgridSector & "* q "
 
     setVar $mac " * "
     if ($waveCount <= 0)
@@ -186,7 +183,7 @@
         end
     end
     if ($unsafe = true)
-        setVar $mac $mac & "f z "&$fighterDrop&" * z c d l j" & #8 & $PLANET~PLANET & "* l j" & #8 & $PLANET~PLANET & "*  "
+        setVar $mac $mac & "f z "&$fighterDrop&" * z c d l j" & #8 & $planet~planet & "* l j" & #8 & $planet~planet & "*  "
     else
         setVar $mac $mac & "j r * f z "&$fighterDrop&" * z c d * "
     end
@@ -205,7 +202,7 @@
 
            # setVar $tempDensity SECTOR.DENSITY[$pgridsector]
             setVar $pgridDensity "-99"
-            send "q q sdz* l " & $PLANET~PLANET & "* c  "
+            send "q q sdz* l " & $planet~planet & "* c  "
             waitOn "Relative Density Scan"
             setTextLineTrigger denscheck  :getDensityPgrid " " & $pgridSector & "  ==>"
             setTextLineTrigger denscheck2 :getDensityPgrid2 " " & $pgridSector & ") ==>"
@@ -256,14 +253,14 @@
 	if ($surrendor = TRUE)
 		send " h s y * "
 	end
-        if ($PLANET~PLANET > 0)
-            send "l j" & #8 & $PLANET~PLANET & "*  *  "
+        if ($planet~planet > 0)
+            send "l j" & #8 & $planet~planet & "*  *  "
         end
         gosub :PLAYER~QUIKSTATS
         if (($PLAYER~CURRENT_SECTOR <> $startingPgridSector))
             send "'" & $pgridSector & "=saveme* "
             gosub :emergencyLanding
-            send "'{" $bot_name "} - Unsuccessful retreat from sector " & $pgridSector & ". Attempted saveme call.*"
+            setvar $switchboard~message "Unsuccessful retreat from sector " & $pgridSector & ". Attempted saveme call.*"
         else
             if ($PLAYER~CURRENT_PROMPT = "Planet")
                 send "m * * * c p " & $pgridsector & "* y s* "
@@ -305,7 +302,7 @@
                     setDelayTrigger waitPgridXport :goPgridXport 3000
                     pause
                     :goPgridXport
-                        send "x   " & $startingShip & "* * l j" & #8 & $PLANET~PLANET & "*  *  "
+                        send "x   " & $startingShip & "* * l j" & #8 & $planet~planet & "*  *  "
                         gosub :PLAYER~QUIKSTATS
                         if ($PLAYER~CURRENT_PROMPT = "Planet")
                             send "m * * * c s* "
@@ -338,7 +335,7 @@
     setVar $i 0
     while ($i < 15)
         add $i 1
-        send "l j" & #8 & $PLANET~PLANET & "*  *  "
+        send "l j" & #8 & $planet~planet & "*  *  "
     end
     gosub :PLAYER~current_prompt
     if ($PLAYER~current_prompt = "Planet")
@@ -348,7 +345,11 @@ return
 # ======================     END PGRID (PGRID) SUBROUTINE     ==========================
 
 # includes:
+include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\sector"
+include "source\bot_includes\map"
+include "source\bot_includes\ship"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\module_includes\prompt"

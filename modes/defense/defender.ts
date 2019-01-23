@@ -25,11 +25,14 @@
 	setVar $END_FIG_HIT_OWNER "'s"
 
 
-	setVar $BOT~help[1] $BOT~tab&"Grid defender {f}   "
+	setVar $BOT~help[1] $BOT~tab&"Grid defender {f} {l} {a} {nocannon} {holo} {extern:11pm}  "
 	setVar $BOT~help[2] $BOT~tab&"         f - Photon fighter hits "
 	setVar $BOT~help[3] $BOT~tab&"         l - Photon limpet hits "
 	setVar $BOT~help[4] $BOT~tab&"         a - Photon armid hits "
 	setVar $BOT~help[5] $BOT~tab&"  nocannon - Will not reset cannon damages "
+	setVar $BOT~help[6] $BOT~tab&"      holo - holoscan on ss after photon "
+	setVar $BOT~help[7] $BOT~tab&"    extern - stops defender 5 minutes before extern "
+	setVar $BOT~help[8] $BOT~tab&"             as defined by local system time "
 
 	gosub :BOT~help_file
 
@@ -38,6 +41,8 @@
 	gosub :BOT~banner
 
 	setVar $PLAYER~save TRUE
+	gosub :player~init
+
 	setvar $killing~last_fighter_attack ""
 	
 	getSectorParameter SECTORS "FIGSEC" $isFigged
@@ -64,11 +69,7 @@
 		savevar $map~home_sector
 	end
 
-	if ($parm1 = "off")
-		setVar $SWITCHBOARD~message $script_ver&" shutting down.  Making ship and planet corporate again.*"
-		gosub :SWITCHBOARD~switchboard
-		halt
-	end
+
 
 	getwordpos " "&$bot~user_command_line&" " $pos " f "
 	if ($pos > 0)
@@ -98,6 +99,13 @@
 		setvar $nocannon false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " holo "
+	if ($pos > 0)
+		setvar $holo true
+	else
+		setvar $holo false
+	end
+
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
 		setvar $fighter true
 		setvar $armid true
@@ -110,9 +118,10 @@
 	gosub :PLANET~getPlanetInfo	
 	send "t*t1* c "
 
-	if ($PLAYER~photons <= 0)
-		gosub :restock~refurb_photons
-	end
+
+	#######################################################################################################
+	# need to add a check here to make sure no nav haz or enemy limpets in starting sector before furbing #
+	#######################################################################################################
 
     fileExists $SHIP~cap_file_chk $SHIP~cap_file
     if ($SHIP~cap_file_chk <> TRUE)
@@ -124,7 +133,20 @@
     gosub :SHIP~getShipStats
     gosub :player~quikstats
 
-	if ($PLAYER~photons <= 0)
+	if ($player~photons <= 0)
+		gosub :navigate~navigate_to_limp
+		gosub :killing~checkForVictims
+		if ($sector~realTraderCount = $sector~corpieCount)
+			#############################################
+			# do nothing if there is no enemy in sector #
+			#############################################
+		else
+			gosub :navigate~navigate_to_limp
+			####################################################################
+			# after navigating away, check for enemies in sector, just in case #
+			####################################################################
+			gosub :killing~checkForVictims
+		end
 		gosub :restock~refurb_photons
 	end
 
@@ -145,6 +167,38 @@
 		killtrigger 2
 		savevar $game~hasAliens
 
+
+
+	setVar $message "'*  {"&$bot~bot_name&"} - "&$script_ver&" Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+	    setvar $message $message&"*      Photon Type: Adjacent "
+	if ($fighter)
+		setVar $message $message&"*   On Fighter Hit: Yes"
+	else
+		setVar $message $message&"*   On Fighter Hit: No"
+	end
+	if ($limpet)
+		setVar $message $message&"*    On Limpet Hit: Yes"
+	else
+		setVar $message $message&"*    On Limpet Hit: No"
+	end
+	if ($armid)
+		setVar $message $message&"*     On Armid Hit: Yes"
+	else
+		setVar $message $message&"*     On Armid Hit: No"
+	end
+	if ($holo)
+		setVar $message $message&"*      Holo Report: Yes"
+	else
+		setVar $message $message&"*      Holo Report: No"
+	end
+	if ($nocannon)
+		setVar $message $message&"*     Cannon Reset: No"
+	else
+		setVar $message $message&"*     Cannon Reset: Yes"
+	end
+		setVar $message $message&"*        Auto Kill: Enabled With "&$planet~planet_Fighters&" Fighters"
+	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
+	send $message
 
     
 
@@ -173,7 +227,7 @@
 		setTextLineTrigger 10 :scan "warps into the sector."
 		setTextLineTrigger 11 :scan " lifts off from"
 		setTextLineTrigger 12 :scan "Limpet mine in "&$player~CURRENT_SECTOR
-		setTextLineTrigger 13 :scan "Deployed Fighters Report Sector "&$player~CURRENT_SECTOR
+		setTextLineTrigger 13 :scan "Deployed Fighters Report Sector "&$player~CURRENT_SECTOR&":"
 		setTextLineTrigger 14 :scan "Quasar Cannon on"
 		setTextLineTrigger 15 :scan "Shipboard Computers The Interdictor Generator on"
 		setTextLineTrigger 16 :scan " is powering up weapons systems!"
@@ -183,6 +237,7 @@
 		setTextLineTrigger 20 :scan " exits the game."
 		setTextLineTrigger 21 :scan " enters the game."
 		setDelayTrigger	   22 :announce	1200000
+		setDelayTrigger	   23 :head_home 3600000
 		pause
 			
 
@@ -191,6 +246,20 @@
 		gosub :switchboard~switchboard
 		setDelayTrigger	   22 :announce	1200000
 		pause		
+
+		:head_home 
+		gosub :player~quikstats
+		echo ansi_2&"*Checking status after inactivity..*"
+		if ($player~current_sector <> $map~home_sector)
+			setvar $switchboard~message "No activity in an hour, so heading home.*"
+			gosub :switchboard~switchboard
+			gosub :navigate~navigate_to_limp
+			gosub :killing~checkForVictims
+			gosub :restock~refurb_photons
+			send "p"&$map~home_sector&"*y "
+		end
+		goto :processing
+
 	halt
 
 
@@ -211,7 +280,11 @@
 
 
 :check_to_fire_photon
-	if (($photon~found = true) and ($fire_history[$photon~sector] <= 5) and ($photon~last_sector <> $photon~sector) and ($photon~sector <> $map~home_sector))
+	gosub :killtriggers
+	if ($photon~found = true)
+		if (($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
+			goto :can_not_fire
+		end
 		getsectorparameter $photon~sector "BUBBLE" $isBubble
 		if ($isBubble = true)
 			setvar $switchboard~message "Can not fire into bubble sector "&$photon~sector&"!*"
@@ -219,6 +292,14 @@
 			goto :can_not_fire
 		end
 		gosub :photon~photon
+		
+		#############################################
+		# holoscan sector to see if victim is there #
+		#############################################
+		if ($holo = true)
+			gosub :doholo
+		end
+
 		setvar $photon~last_sector $photon~sector
 		setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
 		gosub :navigate~navigate_away
@@ -237,6 +318,7 @@
 		####################
 		# check for refurb #
 		####################
+		gosub :player~quikstats
 		if ($player~photons <= 0)
 			gosub :navigate~navigate_to_limp
 			gosub :killing~checkForVictims
@@ -335,7 +417,7 @@
 
 :killtriggers
 	setvar $i 1
-	while ($i <= 22)
+	while ($i <= 23)
 		killtrigger ""&$i&""
 		add $i 1
 	end
@@ -343,6 +425,18 @@ return
 
 
 
+:doHolo
+	setVar $BOT~command "holo"
+	setVar $BOT~user_command_line " holo"
+	
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	load "scripts\mombot\commands\data\holo.cts"
+	setEventTrigger        holoend1        :holoend1 "SCRIPT STOPPED" "scripts\mombot\commands\data\holo.cts"
+	pause
+	:holoend1
+		killtrigger holoend1
+return
 
 
 
