@@ -562,7 +562,7 @@ return
         setVar $output $output&ANSI_11&SECTOR.BACKDOORS[$i][$k]
         add $k 1
     end
-    setVar $output $output&"**"
+    setVar $output $output&"*"
 return
 
 :removeFigFromData

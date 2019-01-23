@@ -413,6 +413,10 @@ return
 :attackandmoveship
 		gosub :PLAYER~quikstats
 		setvar $startingLocation $player~current_prompt
+		if ($player~current_prompt = "Command")
+			gosub :PLANET~landingSub		
+			gosub :PLAYER~quikstats
+		end
 		setVar $SECTOR~federalCount 0
 		setvar $SECTOR~fakeTraderCount 1
 		setVar $targetsFound FALSE

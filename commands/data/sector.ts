@@ -14,12 +14,9 @@
     setVar $MAP~displaySector $i
     gosub :MAP~displaySector
     setVar $SWITCHBOARD~message "  *"&$MAP~output
-    if ($SWITCHBOARD~self_command <> TRUE)
-        setVar $SWITCHBOARD~self_command 2
-    end
     listSectorParameters $i $bot~parms
     setvar $j 1
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  *"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"     *"
     while ($j <= $bot~parms)
         getSectorParameter $i $bot~parms[$j] $check
         setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$bot~parms[$j]&": "&$check&"*"
