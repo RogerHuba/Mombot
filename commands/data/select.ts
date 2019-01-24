@@ -1,4 +1,5 @@
 	reqRecording
+	logging off
 	gosub :BOT~loadVars
 	setVar $BOT~command "select"
 	loadVar $BOT~bot_turn_limit
@@ -7,7 +8,7 @@
 	loadvar $switchboard~self_command
 
 	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored | sector "
-	setVar $BOT~help[2]   $BOT~tab&"       | ports} {BBB | XXB | SSX etc} {mark:PARAM}"
+	setVar $BOT~help[2]   $BOT~tab&"       | ports} {BBB | XXB | SSX etc} {mark:PARAM} {dist | route}"
 	setVar $BOT~help[3]   $BOT~tab&"     "
 	setVar $BOT~help[4]   $BOT~tab&"     Searches TWX database for known info."
 	setVar $BOT~help[5]   $BOT~tab&"      "
@@ -18,6 +19,9 @@
 	setVar $BOT~help[10]   $BOT~tab&"    {secure | paranoid}  "
 	setVar $BOT~help[11]   $BOT~tab&"     Example: >select traders bubble=false equ-mcic<-60 "
 	setVar $BOT~help[12]   $BOT~tab&"              >select planet like "&#34&"<<<< (a)"&#34
+	setVar $BOT~help[13]   $BOT~tab&"            "
+	setVar $BOT~help[14]   $BOT~tab&"    {dist}  - All results include distance from current. "
+	setVar $BOT~help[15]   $BOT~tab&"    {route} - Plots a basic shortest path (slow). "
 	# ham select ports ore-mcic<-70
 	gosub :BOT~help_file
 
@@ -37,6 +41,23 @@ setVar $portClassWanted 0
 setVar $securityLevel 0
 
 setvar $i 1
+
+getWordPos $bot~user_command_line $pos "dist"
+if ($pos > 0)
+	setVar $dist 1
+	stripText $bot~user_command_line " dist "
+	stripText $bot~user_command_line " dist"
+
+end
+
+getWordPos $bot~user_command_line $pos "route"
+if ($pos > 0)
+	setVar $dist 0
+	setVar $doroute 1
+	stripText $bot~user_command_line " route "
+	stripText $bot~user_command_line " route"
+
+end
 
 # $sector_params param
 # $sector_params[1] true/false
@@ -137,6 +158,8 @@ end
 
 
 setVar $results ""
+setVar $sectorResults 0
+setVar $sectorResultsi 0
 setvar $count 0
 setvar $i 1
 while ($i <= SECTORS)    
@@ -374,13 +397,16 @@ while ($i <= SECTORS)
 		end
 		if ($securityBreach = 0)
 			add $count 1
-			getSectorParameter $i "FIGSEC" $isFigged
-			setSectorParameter $i $mark TRUE
-			if ($isFigged = true)
-				setvar $results $results&"["&$i&"] "
-			else
-				setvar $results $results&$i&" "
-			end
+			add $sectorResultsi 1
+			setVar $sectorResults[$sectorResultsi] $i
+
+			#getSectorParameter $i "FIGSEC" $isFigged
+			#setSectorParameter $i $mark TRUE
+			#if ($isFigged = true)
+			#	setvar $results $results&"["&$i&"] "
+			#else
+			#	setvar $results $results&$i&" "
+			#end
 		else
 			setSectorParameter $i $mark ""
 		end
@@ -389,6 +415,136 @@ while ($i <= SECTORS)
 	end
 	add $i 1
 end
+
+
+setVar $sortedResults 0
+setVar $sortedResultsi 0
+setVar $sortedDistance 0
+# NEed Dist and Route
+setVar $distances 0
+if ($dist = 1)
+	# Measures distance from this point of origin
+	getAllCourses $courses CURRENTSECTOR
+	setVar $y 1
+	while ($y <= $sectorResultsi)
+		setVar $distances[$y] $courses[$sectorResults[$y]]
+		add $y 1
+	end
+
+	setVar $l 1
+	while ($l <= 45)
+		
+		setVar $y 1
+		while ($y <= $sectorResultsi)
+			if ($distances[$y] = $l)
+				add $sortedResultsi 1
+				setVar $sortedResults[$sortedResultsi] $sectorResults[$y]
+				setVar $sortedDistance[$sortedResultsi] $distances[$y] 
+
+			end
+			add $y 1
+		end	
+
+
+		add $l 1
+	end
+elseif ($doroute = 1)
+	if ($sectorResultsi > 50)
+		setVar $SWITCHBOARD~message "To many results for route calculation; please narrow search.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	
+	setVar $routeDone 0
+	setVar $y 1
+	while ($y <= $sectorResultsi)
+		setVar $routeDone[$y] 0
+		add $y 1
+	end
+
+	setVar $routeCurrent CURRENTSECTOR
+	setVar $route 0
+	setVar $routei 0
+
+	setVar $go 1
+	while ($go = 1)
+		
+		setVar $found 0
+		getNearestWarps $near $routeCurrent
+		setVar $i 1
+		while ($i <= $near)
+			
+			setVar $y 1
+			while ($y <= $sectorResultsi)
+				if (($near[$i] = $sectorResults[$y]) and ($routeDone[$y] = 0))
+	
+					setVar $routeDone[$y] 1
+					setVar $found 1
+					add $routei 1
+					setVar $route[$routei] $sectorResults[$y]
+					getDistance $dist $routeCurrent $sectorResults[$y]
+					setVar $routeCurrent $sectorResults[$y]
+
+					setVar $sortedDistance[$routei] $dist
+
+					# for exit the loops
+					setVar $y 99999
+					setVar $i 99999
+				end
+				
+				add $y 1
+			end
+			add $i 1
+		end
+		
+		if ($found = 0)
+			# if ever not found, then we'll have to exit loop and report
+			setVar $go 0
+			setVar $SWITCHBOARD~message "Debug: Did we just exit route creation without completing all sectors?*"
+			gosub :SWITCHBOARD~switchboard
+		end
+
+		if ($routei = $sectorResultsi)
+			setVar $go 0
+		end
+		
+	end
+	
+	setVar $y 1
+	while ($y <= $routei)
+		setVar $sortedResults[$y] $route[$y]
+		
+		add $y 1
+	end
+
+else
+	setVar $y 1
+	while ($y <= $sectorResultsi)
+		setVar $sortedResults[$y] $sectorResults[$y]
+		setVar $sortedDistance[$y] "" 
+		add $y 1
+	end
+end
+
+
+setVar $d ""
+setVar $y 1
+while ($y <= $sectorResultsi)
+	
+	getSectorParameter $sortedResults[$y] "FIGSEC" $isFigged
+	setSectorParameter $sortedResults[$y] $mark TRUE
+	if (($dist = 1) or ($doroute = 1))
+		SetVar $d "(" & $sortedDistance[$y] &")"
+	end
+	if ($isFigged = true)
+		setvar $results $results&"["& $sortedResults[$y] &"]" & $d & " "
+	else
+		setvar $results $results& $sortedResults[$y] & $d & " "
+	end
+	
+	add $y 1
+end
+
 
 
 if ($SWITCHBOARD~self_command <> TRUE) or ($bot~silent_running <> TRUE)
@@ -409,6 +565,7 @@ gosub :SWITCHBOARD~switchboard
 halt
 
 
+
 	setvar $i 1
     while ($i <= SECTORS)
     	setvar $isBubble false
@@ -427,12 +584,12 @@ halt
 				if ($SWITCHBOARD~self_command <> TRUE)
 				    setVar $SWITCHBOARD~self_command 2
 				end
-				listSectorParameters $i $bot~parms
+				listSectorParameters $i $parms
 				setvar $j 1
 				setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  *"
-				while ($j <= $bot~parms)
-				    getSectorParameter $i $bot~parms[$j] $check
-				    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$bot~parms[$j]&": "&$check&"*"
+				while ($j <= $parms)
+				    getSectorParameter $i $parms[$j] $check
+				    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$parms[$j]&": "&$check&"*"
 				    add $j 1
 				end
 			    gosub :SWITCHBOARD~switchboard
