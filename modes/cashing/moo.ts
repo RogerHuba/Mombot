@@ -190,6 +190,18 @@ elseif ($modestring = "upgraded")
 elseif ($modestring = "everything")
 	setVar $mode 4
 	setVar $SWITCHBOARD~message "Sourcing sectors from any good port.*"
+elseif ($modestring = "sector")
+	setVar $mode 6
+	setVar $SWITCHBOARD~message "Mooing Single Sector.*"
+	setVar $mooSector $bot~parm3
+	isNumber $number $mooSector
+	if ($number = 1)
+	
+	else
+		setVar $SWITCHBOARD~message "Please use >moo sector [preferredslot] [sector] .."
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
 else
 	getWordPos $modestring $pos ".txt"
 	if ($pos > 0)
@@ -460,14 +472,18 @@ elseif ($mode = 4)
 elseif ($mode = 5)
 	goSub :sectorsFromPersonal 
 	goSub :sectorsFromFile
+elseif ($mode = 6)
+	setVar $sectors[$readi] $mooSector
+	add $readi 1
 end
 
 gosub :getPortReports 
 gosub :filterPortsAndReport
 
-setVar $stat_targets $sectorsOki
-waitfor "Engage!!!"
-
+setVar $stat_targets ($sectorsOki - 1)
+if ($mode < 6)
+	waitfor "Engage!!!"
+end
 
 if ($player~ALIGNMENT < 1000)
 	setVar $SWITCHBOARD~message "MooXmas - You're just not good enough for this script (alignment).*"
@@ -504,17 +520,21 @@ setVar $loopi 1
 		    waitfor "Blasting off from"
 		end
 
-		setVar $PLAYER~warpto $sector
-		gosub :PLAYER~twarp
+		if ($sector <> CURRENTSECTOR)
+			setVar $PLAYER~warpto $sector
+			gosub :PLAYER~twarp
+			
+			if ($PLAYER~twarpSuccess = FALSE)
+				goto :endloop
+			
+			end
+		end
 		
 	else
-		setVar $PLAYER~warpto $sector
-		gosub :PLAYER~twarp
-	end
-
-	if ($PLAYER~twarpSuccess = FALSE)
-		goto :endloop
-	
+		if ($sector <> CURRENTSECTOR)
+			setVar $PLAYER~warpto $sector
+			gosub :PLAYER~twarp
+		end
 	end
 
 	
@@ -551,12 +571,14 @@ setVar $loopi 1
     end
 
 :goHomeandhalt
- send "* * * "
-    send "m" $cashDumpSector "*y"
-    waitfor "All Systems Ready, shall we engage?"
-    send "y"
-    setvar $switchboard~message "The dishes are done dude!.*"
-    gosub :switchboard~switchboard
+	if ($cashDumpSector > 0)
+		send "* * * "
+		setVar $PLAYER~warpto $cashDumpSector
+		gosub :PLAYER~twarp
+		
+	end
+	setvar $switchboard~message "Mooooooooooo Mooooooooooo Done.*"
+	gosub :switchboard~switchboard
 halt
 
 
@@ -1044,9 +1066,7 @@ return
 
 	send "m" $stardock "*y"
 	waitfor "Locating beam pinpointed, TransWarp"
-	send "y  "
-	
-	send "p   s"
+	send "y p s"
 	goSub :limpetCheck
 	send "h"
 		send "t"
@@ -1569,7 +1589,7 @@ return
 return
 
 :sectorsFromEverything
-
+	# Need to exclude next to SD
 	setPrecision 0
 
 	setVar $i 11
@@ -1914,7 +1934,7 @@ return
 	end
 
 
-	setVar $startmsg "We are visiting " & $sectorsOki & " sectors with target ports."
+	setVar $startmsg "We are visiting " & ($sectorsOki - 1) & " sectors with target ports."
 	if ($sectorsNoFigi > 1)
 		setVar $startmsg $startmsg & "*There are " & $sectorsNoFigi  & " ports with no fighters."
 		setVar $startmsg $startmsg & "*" & $sectorNoFigsReport
@@ -1928,8 +1948,11 @@ return
 	setVar $startmsg  $startmsg & "*Dumping cash on planet: " & $cashDumpPlanet
 	setVar $startmsg  $startmsg & "*Stopping at turns: " & $turn_limit
 	
-	setVar $startmsg $startmsg & "*Send a Eng age!!! without the space to engage.*"
-		
+	if ($mode < 6)
+		setVar $startmsg $startmsg & "*Send a Eng age!!! without the space to engage.*"
+	else
+		setVar $startmsg $startmsg & "*"
+	end	
 
 	setVar $SWITCHBOARD~message $startmsg
 	gosub :SWITCHBOARD~switchboard
