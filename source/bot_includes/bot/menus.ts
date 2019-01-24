@@ -1362,6 +1362,7 @@ return
         elseif ($chosen_option = "Q")
             stop $BOT~LAST_LOADED_MODULE
             setVar $BOT~doRelog FALSE
+            savevar $bot~dorelog
             goto :BOT~wait_for_command
         elseif ($chosen_option = "Z")
             :getMowSector
@@ -1395,10 +1396,10 @@ return
             :endDelayStartGame
             killalltriggers
             if ($BOT~newGameOlder = TRUE)
-                goto :CONNECTIVITY~relog_attempt
+                goto :internal_commands~relog_attempt
             elseif ($BOT~newGameDay1 = TRUE)
                 :tryAgainNewGameDay1
-                    gosub :CONNECTIVITY~do_relog
+                    gosub :connectivity~do_relog
                     setTextLineTrigger  GameClosed1 :GameClosed     "I'm sorry, but this is a closed game."
                     setTextLineTrigger  GameClosed2 :GameClosed     "www.tradewars.com                                   Epic Interactive Strategy"
                     setTextLineTrigger  Damn_Planet :Damn_Planet        "What do you want to name your home planet?"
@@ -1456,7 +1457,7 @@ return
                     gosub :BOT~killthetriggers
             else
                 :tryAgainSD
-                    gosub :CONNECTIVITY~do_relog
+                    gosub :connectivity~do_relog
                     setTextLineTrigger  GameClosed1 :GameClosedSD       "I'm sorry, but this is a closed game."
                     setTextLineTrigger  GameClosed2 :GameClosedSD       "www.tradewars.com                                   Epic Interactive Strategy"
                         setTextLineTrigger  Damn_Planet :Damn_PlanetSD      "What do you want to name your home planet?"

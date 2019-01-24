@@ -1,5 +1,3 @@
-    loadVar $MAP~stardock
-    loadVar $PLAYER~unlimitedGame        
     gosub :BOT~loadVars
     
 
@@ -13,10 +11,10 @@
     end
     setVar $MAP~displaySector $i
     gosub :MAP~displaySector
-    setVar $SWITCHBOARD~message "  *"&$MAP~output
+    setVar $SWITCHBOARD~message $MAP~output
     listSectorParameters $i $bot~parms
     setvar $j 1
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"     *"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"     *  "
     while ($j <= $bot~parms)
         getSectorParameter $i $bot~parms[$j] $check
         setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$bot~parms[$j]&": "&$check&"*"

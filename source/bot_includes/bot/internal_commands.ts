@@ -335,7 +335,7 @@ goto :BOT~wait_for_command
     :endLogoffGame
     killtrigger logearly
     killtrigger timeBeforeRelog
-    goto :CONNECTIVITY~relog_attempt
+    goto :relog_attempt
 
 
 :calcTime
@@ -472,32 +472,19 @@ goto :BOT~wait_for_command
     setVar $BOT~user_command_line "xenter "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
     goto :USER_INTERFACE~runUserCommandLine
 
+
+:pscan
+:pinfo
+    setVar $BOT~user_command_line "pscan "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
+    goto :USER_INTERFACE~runUserCommandLine
+
 #====================================SHUTDOWN MODULE SUB =====================================
 :shutdown
     setVar $BOT~mode "General"
     savevar $bot~mode
     goto :BOT~wait_for_command
 #===================================END SHUTDOWN MODULE SUB ==================================
-:bustcount
-:countbust
-:countbusts
-    Echo "**"
-    setVar $SWITCHBOARD~message "Please StandBy, Counting*"
-    gosub :SWITCHBOARD~switchboard
-    waiton "Please StandBy, Counting"
-    setVar $i 1
-    setVar $bustCount 0
-    while ($i <= SECTORS)
-        getSectorParameter $i "BUSTED" $isBusted
-        if ($isBusted)
-            add $bustCount 1
-        end
-        add $i 1
-    end
-    setVar $SWITCHBOARD~message "This bot currently has "&$bustCount&" busts recorded in the universe*"
 
-    gosub :SWITCHBOARD~switchboard
-    goto :BOT~wait_for_command
 
 # ----- CN settings -----
 :cn
@@ -578,10 +565,12 @@ return
     setVar $SWITCHBOARD~message ""
     if ($BOT~parm1 = "on")
         setVar $BOT~botIsOff FALSE
+        saveVar $BOT~botIsOff 
         setVar $SWITCHBOARD~message "Bot Active*"
     end
     if ($BOT~parm1 = "off")
         setVar $BOT~botIsOff TRUE
+        saveVar $BOT~botIsOff 
         setVar $SWITCHBOARD~message "Bot Deactivated*"
     end
     if (($BOT~parm1 <> "off") AND ($BOT~parm1 <> "on"))
@@ -594,16 +583,17 @@ goto :BOT~wait_for_command
     if ($BOT~parm1 = "on")
         setVar $SWITCHBOARD~message "Relog Active*"
         setVar $BOT~doRelog TRUE
+        savevar $bot~dorelog
     end
     if ($BOT~parm1 = "off")
         setVar $SWITCHBOARD~message "Relog Deactivated*"
         setVar $BOT~doRelog FALSE
+        savevar $bot~dorelog
     end
     if (($BOT~parm1 <> "off") AND ($BOT~parm1 <> "on"))
         setVar $SWITCHBOARD~message "Please use relog [on/off] format.*"
         goto :BOT~wait_for_command
     end
-    saveVar $BOT~doRelog
     gosub :SWITCHBOARD~switchboard
 goto :BOT~wait_for_command
 # ====================== END TURN BOT ON/OFF (BOT) SUBROUTINE ==========================
@@ -820,6 +810,12 @@ goto :BOT~wait_for_command
 :autoCap
 :cap
     setVar $BOT~user_command_line "cap "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
+    goto :USER_INTERFACE~runUserCommandLine
+
+:do_relog
+	setvar $bot~parm1 "do_relog"
+:relog_attempt
+    setVar $BOT~user_command_line "relog "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
     goto :USER_INTERFACE~runUserCommandLine
 
 #========================= AUTO REFURB SUB ===============================================

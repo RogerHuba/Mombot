@@ -11,7 +11,7 @@
         echo CURRENTANSILINE
     end
     if ((CONNECTED <> TRUE) AND ($BOT~doRelog = TRUE))
-        goto :relog_attempt
+        goto :internal_commands~relog_attempt
     end
     
     # if the last line hasn't changed for the last two keep alive checks #
@@ -20,7 +20,7 @@
 		if ((CURRENTLINE = $game~game_menu_prompt) or (CURRENTLINE = "[Pause] - [Press Space or Enter to continue]") or (CURRENTLINE = "Enter your choice: ") or (CURRENTLINE = "Selection (? for menu): "))
 			setvar $relog_message "Stuck on baffling prompt: ["&CURRENTLINE&"], so I relogged.*"
 			DISCONNECT
-			goto :relog_attempt
+			goto :internal_commands~relog_attempt
 		end
 		# TODO - add checking for subprompt interactivity turned off and resetting prompts that turn off comms if stuck there #
 	end
@@ -35,81 +35,14 @@
 #================================= ONLINE WATCH/RELOG ========================================
 :online_watch
     if ((CONNECTED <> TRUE) AND ($BOT~doRelog = TRUE))
-        goto :relog_attempt
+        goto :internal_commands~relog_attempt
     end
     setTextTrigger      online_watch            :online_watch              "Your session will be terminated in "
     send #27
     pause
 
-    :relog_attempt
-        if ($BOT~doRelog <> TRUE)
-            goto :BOT~wait_for_command
-        end
-	    gosub :BOT~killthetriggers
-        setDelayTrigger waitForRelogDelay :continueDoingRelog 1500
-        pause
-        :continueDoingRelog
-            setvar $first_time TRUE
-            gosub :do_relog
-        :enter
-            gosub :BOT~relog_freeze_trigger
-            killtrigger relog
-            killtrigger relog2
-            killtrigger firstpause
-            send "T*"
-            setTextTrigger showtoday :continueshowtoday "Show today's log?"
-            pause
-        :continueshowtoday
-            gosub :BOT~relog_freeze_trigger
-            send "*"
-            setTextTrigger pause2 :continuepause2 "[Pause]"
-            pause
-        :continuepause2
-            gosub :BOT~relog_freeze_trigger
-            send "*"
-            setTextTrigger password :continuepassword "A password is required to enter this game."
-            pause
-        :continuepassword
-            gosub :BOT~relog_freeze_trigger
-            send $BOT~password & "*"
-        :alldone_relog
-            killtrigger clearvoids
-            killtrigger novoids
-            killtrigger morepauses
-            gosub :BOT~relog_freeze_trigger
-            send "Z*  *  Z*  Z   A 9999*  Z*  /"
-			setvar $switchboard~message "Auto-relog activated*"
-			gosub :switchboard~switchboard
-            waiton #179
-        :continuerelogmessage
-            gosub :PLAYER~quikstats
-            gosub :BOT~relog_freeze_trigger
-            if ($PLAYER~CURRENT_PROMPT = "Planet")
-                send "*"
-                gosub :PLANET~getPlanetInfo
-                if ($PLANET~CITADEL > 0)
-                    send "c "
-                    setvar $switchboard~message "In citadel, planet "&$PLANET~PLANET&".*"
-                    gosub :switchboard~switchboard
-                    goto :BOT~wait_for_command
-                else
-                    setvar $switchboard~message "On planet "&$PLANET~PLANET&".*"
-                    gosub :switchboard~switchboard
-                    goto :BOT~wait_for_command
-                end
-            end
-			if ($relog_message <> "")
-				setvar $switchboard~message $relog_message
-				gosub :switchboard~switchboard
-			end
-            loadVar $PLANET~PLANET
-            if (($PLANET~PLANET <> 0) AND ($PLAYER~CURRENT_SECTOR <> 1) AND ($PLAYER~CURRENT_SECTOR <> $MAP~stardock))
-                setVar $LandOn $PLANET~PLANET
-                setVar $BOT~user_command_line "land "&$LandOn
-                goto :USER_INTERFACE~runUserCommandLine
-            end
-    goto :BOT~wait_for_command
-#============================== END ONLINE WATCH/RELOG SUB ==============================
+
+
 :do_relog
         :thedelay
             if (CONNECTED <> TRUE)
@@ -151,7 +84,7 @@
             setTextTrigger firstpause :firstpause "[Pause]"
             pause
         :done_do_relog
-            gosub :BOT~killthetriggers
+            killalltriggers
 return
 
 :killrelogtriggers

@@ -42,9 +42,9 @@ logging off
 		setvar $planet_string "l "&$PLANET~PLANET&"* n  m * * * q "
 	end
 
-	send "c;q"
-	waitOn "Max Figs Per Attack:"
-	getWord CURRENTLINE $maxFigAttack 5
+	gosub :ship~getshipstats
+
+
 	setVar $i 0
 
 	gosub :sector~getSectorData
@@ -61,7 +61,7 @@ logging off
 
 	send "'*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*    MD/TBH Meat Grinder Powering Up!   *[+] Add No  [-] Subtract No  [%] Exit*[r] Refurb                           *-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"
 	killAllTriggers
-	setDelayTrigger delay :changeAttack 1000
+	setDelayTrigger delay :changeAttack 500
 	pause
 
 :didihit
@@ -93,8 +93,11 @@ logging off
 				end
 			end
 		end
+		setvar $attemptedhit false
+		if ($player~fighters < $ship~SHIP_FIGHTERS_MAX)
+			goto :refurb
+		end
 	end
-	setvar $attemptedhit false
 :execute
 :burst
 	killtrigger wait
@@ -111,15 +114,15 @@ logging off
 	if ($turbo = TRUE)
 		setVar $loop 0
 		setvar $send ""
-		while ($loop < 10)
-			setvar $send $send&$targetString&"zy z"&$maxFigAttack&"* "&$planet_string
+		while ($loop < 200)
+			setvar $send $send&$targetString&"z y  z"&$ship~SHIP_MAX_ATTACK&"* "&$planet_string
 			add $loop 1
 		end
 		send $send&"@"
 		setTextLineTrigger wait :continue "Average Interval Lag:"
 		pause
 	else
-		setDelayTrigger delay :continue 10
+		setDelayTrigger delay :continue 1
 		pause
 	end
 
@@ -133,7 +136,7 @@ logging off
 	setTextLineTrigger empty :checkEmptyAttack "'s unmanned "
 	setTextLineTrigger hit :didihit "How many fighters do you wish to use ("
 	settextlinetrigger toomuchmiss :subtractN "<Re-Display>"
-	send $targetString&"zy z"&$maxFigAttack&"* "&$planet_string
+	send $targetString&"zy z"&$ship~SHIP_MAX_ATTACK&"* "&$planet_string
 	pause
 	
 	
@@ -176,7 +179,7 @@ end
 
 :changeAttack
 
-	setVar $targetString  "a"
+	setVar $targetString  "a "
 	setVar $total 0
 	while ($total < $i)
 		setVar $targetString $targetString&"* "

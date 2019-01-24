@@ -15,10 +15,6 @@ return
     killalltriggers
     setDelayTrigger unfreezingTrigger :unfreezebot 100000
     return
-:relog_freeze_trigger
-      killtrigger unfreezingTrigger
-      killtrigger unfreezingTriggerBigDelay
-return
 :bigdelay_killthetriggers
       killalltriggers
       setDelayTrigger unfreezingTriggerBigDelay :unfreezebot 1800000
@@ -51,9 +47,6 @@ return
     end
     setVar $SWITCHBOARD~self_command FALSE
     setVar $scrubonly FALSE
-    if ((CONNECTED <> TRUE) AND ($doRelog = TRUE))
-        goto :CONNECTIVITY~relog_attempt
-    end
     SetTextOutTrigger   user        :USER_INTERFACE~User_Access    ">"
     settextouttrigger   UpArrow     :USER_INTERFACE~User_Access    #28
     SetTextOutTrigger   DownArrow   :USER_INTERFACE~User_Access    #29
@@ -75,7 +68,7 @@ return
 	    setTextLineTrigger  own_command_all         :USER_INTERFACE~check_routing_all     "all"
 	    setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "You have a corporate memo from "
     end
-    setEventTrigger     relog                   :CONNECTIVITY~relog_attempt            "CONNECTION LOST"
+    setEventTrigger     relog                   :INTERNAL_COMMANDS~relog            "CONNECTION LOST"
     setTextTrigger      online_watch            :CONNECTIVITY~online_watch             "Your session will be terminated in "
     setDelayTrigger     keepalive               :CONNECTIVITY~keepalive                30000
     pause
@@ -251,14 +244,14 @@ return
     end
     setVar $PLAYER~startingLocation ""
     setArray $INTERNALCOMMANDLISTS 7
-    setVar $internalCommandLists[1]  " stopall stop listall reset emq bot relog tow refresh login logoff unlock lift with dep callin about cn extern twarp bwarp pwarp "
+    setVar $internalCommandLists[1]  " stopall stop listall reset emq bot relog tow refresh login logoff unlock lift with dep callin about cn extern twarp bwarp pwarp relog"
     setVar $internalCommandLists[2]  " " 
     setVar $internalCommandLists[3]  " hkill kill "
     setVar $internalCommandLists[4]  " refurb scrub "
     setVar $internalCommandLists[5]  " surround exit mow "
     setVar $internalCommandLists[6]  " "
-    setVar $internalCommandLists[7]  " find bustcount sector storeship setvar getvar "
-    setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow l m t b p port x shipstore w d finder xenter status countbusts countbust "
+    setVar $internalCommandLists[7]  " find pscan sector storeship setvar getvar "
+    setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow l m t b p port x shipstore w d finder xenter status pinfo "
     setVar $internalCommandList     $internalCommandLists[1]&$internalCommandLists[2]&$internalCommandLists[3]&$internalCommandLists[4]&$internalCommandLists[5]&$internalCommandLists[6]&$internalCommandLists[7]
     setArray $TYPES 7
     setVar $TYPES[1] "General"
