@@ -4,7 +4,7 @@
 
 
 
-	setVar $BOT~help[1]  $BOT~tab&"- foton [on/off] {a/d/p/s} {return} {den40} "
+	setVar $BOT~help[1]  $BOT~tab&"- foton [on/off/sec] {a/d/p/s/d} {sector} {return} {den40}"
 	setVar $BOT~help[2]  $BOT~tab&"  "
 	setVar $BOT~help[3]  $BOT~tab&"  Multiple use photon script.  "
 	setVar $BOT~help[4]  $BOT~tab&"  "
@@ -13,12 +13,14 @@
 	setVar $BOT~help[7]  $BOT~tab&"     {d}ensity  - constant density scan, photons on density change"
 	setVar $BOT~help[8]  $BOT~tab&"     {p}lanet   - standard planet warp photon script"
 	setVar $BOT~help[9]  $BOT~tab&"     {s}urround - attempts to foton retreat sector"
-	setVar $BOT~help[10] $BOT~tab&"   "
-	setVar $BOT~help[11] $BOT~tab&"     {return}   - Returns Planet Home after Pwarp"
-	setVar $BOT~help[12] $BOT~tab&"      {den40}   - Only shoots on 40 to 499 Density Change"
-	setVar $BOT~help[13] $BOT~tab&"       {holo}   - does holo command after firing"
-	setVar $BOT~help[14] $BOT~tab&"  "
-	setVar $BOT~help[15] $BOT~tab&"       Authors: Mind Dagger and The Bounty Hunter "
+	setVar $BOT~help[10]  $BOT~tab&"     d{o}ck     - sits on dock and attempts to foton on adjacent fig hit"
+	setVar $BOT~help[11] $BOT~tab&"   "
+	setVar $BOT~help[12] $BOT~tab&"     {sector}   - Apply the mode from/to that sector"
+	setVar $BOT~help[13] $BOT~tab&"     {return}   - Returns Planet Home after Pwarp"
+	setVar $BOT~help[14] $BOT~tab&"      {den40}   - Only shoots on 40 to 499 Density Change"
+	setVar $BOT~help[15] $BOT~tab&"       {holo}   - does holo command after firing"
+	setVar $BOT~help[16] $BOT~tab&"  "
+	setVar $BOT~help[17] $BOT~tab&"       Authors: Mind Dagger and The Bounty Hunter "
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Fast Foton"
@@ -64,24 +66,28 @@ end
 :foton_check
 	gosub :player~quikstats
 	setVar $startingLocation $player~current_prompt
+	isNumber $isnum $bot~parm1
+
 	if ($bot~parm2 = "d")
                 goto :start_dtorp
         elseif ($bot~parm2 = "a")
                 goto :adjphoton
         elseif ($bot~parm2 = "s")
                 goto :surround_foton
+        elseif ($bot~parm2 = "o")
+                goto :dockPhoton
         elseif (($bot~parm2 = "p") or ($bot~parm2 = ""))
                 goto :foton
         elseif ($isnum = 1)
-		if (($bot~parm2 > 10) and ($bot~parm2 <= SECTORS) and ($bot~parm2 <> STARDOCK))
+		if (($bot~parm1 > 10) and ($bot~parm1 <= SECTORS) and ($bot~parm1 <> STARDOCK))
 			gosub :player~quikstats
-            goto :foton_launch
-		elseif (($bot~parm2 < 10) or ($bot~parm2 >= SECTORS) or ($bot~parm2 = STARDOCK))
+			goto :photonSector
+		elseif (($bot~parm1 < 10) or ($bot~parm1 >= SECTORS) or ($bot~parm1 = STARDOCK))
 			send "'{" $bot~bot_name "} - Not a Valid FOTON Sector*"
 			halt
 		end
 	else
-		send "'{" $bot~bot_name "} - Please use foton [on/off] {a/d/p/s} {return} format*"
+		send "'{" $bot~bot_name "} - Please use foton [on/off/sector] {a/d/p/s} {return} format*"
 		halt
 	end
 # ============================== END FOTON CHECK SUB ==============================
@@ -114,8 +120,248 @@ end
 	end
 	pause
 
+:setDockTriggers
+	killalltriggers
+	setVar $warpies 1
+	
+	While ($warpies <= $pwarps)
+		setTextTrigger dphot&$warpies :dshoot&$warpies "Deployed Fighters Report Sector "&SECTOR.WARPS[$psec][$warpies]&":"
+		setTextTrigger dlimp&$warpies :dshoot&$warpies "Limpet mine in "&SECTOR.WARPS[$psec][$warpies]&" activated"
+		add $warpies 1
+	end
+	pause
 
 
+# ============================== DOCK PHOTON ==============================================
+:dockPhoton
+
+
+	setVar $startingLocation $player~current_prompt
+	
+	if ($startingLocation <> "<StarDock>") and ($startingLocation <> "Command") and ($startingLocation <> "<Hardware")
+		send "'{" $bot~bot_name "} - Must start at Command, Stardock or Hardware*"
+		halt
+	end
+	if ($bot~parm1 <> "on") and ($bot~parm1 <> "off") and ($bot~parm1 <> "reset")
+		send "'{" $bot~bot_name "} - Please use - foton [on/off/reset] format*"
+		halt
+	end
+	if ($bot~parm1 = "on")
+		setVar $cooloff ($GAME~PHOTON_DURATION * 1000)
+		
+		if ($player~photons = 0)
+			send "'{" $bot~bot_name "} - Out of Fotons - Dock Foton Deactivated*"
+			setVar $mode "General"
+			halt
+		end
+		if ($player~TURNS < 3)
+			send "'{" $bot~bot_name "} - Need a couple of turns..*"
+			setVar $mode "General"
+			halt
+			
+		end
+		if (($player~experience < 1000) and ($player~alignment >= 0))
+			if ($fedSpacePhotons <> TRUE)
+				send "'{" $bot~bot_name "} - Fed safe people can't shoot photons from fed..*"
+				setVar $mode "General"
+				halt
+			end
+		end
+		send "'{" $bot~bot_name "} - Dock Foton Running - Shooting from the dock at adjacent sectors!*"
+		setVar $psec $player~current_sector
+		if ($startingLocation = "Command")
+			send "psh"
+		elseif ($startingLocation = "<StarDock>")
+			send "h"
+		end 
+		setVar $pwarps SECTOR.WARPCOUNT[$psec]
+		goto :setDockTriggers
+	else
+		send "'{" $bot~bot_name "} - Please use - foton [on/off/reset] {a/d/s/p/o} format*"
+		halt
+	end
+
+:dshoot1
+	killalltriggers
+	echo "#" "Photon Missile launched into sector "&SECTOR.WARPS[$psec][1] "#"
+	send "q q  c  p  y  " SECTOR.WARPS[$psec][1] "**   * q p sh"
+	killtrigger dshot
+	killtrigger dmissed
+	setTextTrigger dshot :dshot1 "Photon Missile launched into sector "&SECTOR.WARPS[$psec][1]
+	setTextTrigger dmissed :dmissed1 "<Computer deactivated>"
+	pause
+
+:dmissed1
+	killtrigger dshot
+	goto :setDockTriggers
+
+:dshot1
+	killtrigger dmissed
+	getWord CURRENTLINE $spoof 1
+	if ($spoof <> "Photon")
+		goto :setDockTriggers
+	end
+	send "'{" $bot~bot_name "} - Dock Foton Fired -> Sector " SECTOR.WARPS[$psec][1] "*"
+	
+	subtract $player~photons 1
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Dock Foton Deactivated*"
+		setVar $mode "General"
+		halt
+	end
+	setDelayTrigger cool :setDockTriggers $cooloff
+	pause
+	goto :setDockTriggers
+
+:dshoot2
+	send "q q  c  p  y  " SECTOR.WARPS[$psec][2] "**   * q p sh"
+	killtrigger dshot
+	killtrigger dmissed
+	setTextTrigger dshot :dshot2 "Photon Missile launched into sector "&SECTOR.WARPS[$psec][2]
+	setTextTrigger dmissed :dmissed2 "<Computer deactivated>"
+	pause
+
+:dmissed2
+	killtrigger dshot
+	goto :setDockTriggers
+
+:dshot2
+	killtrigger dmissed
+	getWord CURRENTLINE $spoof 1
+	if ($spoof <> "Photon")
+		goto :setDockTriggers
+	end
+	send "'{" $bot~bot_name "} - Dock Foton Fired -> Sector " SECTOR.WARPS[$psec][2] "*"
+	
+	subtract $player~photons 1
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Dock Foton Deactivated*"
+		setVar $mode "General"
+		halt
+	end
+	setDelayTrigger cool :setDockTriggers $cooloff
+	pause
+	goto :setDockTriggers
+
+:dshoot3
+	
+	send "q q  c  p  y  " SECTOR.WARPS[$psec][3] "**   * q p sh"
+	killtrigger dshot
+	killtrigger dmissed
+	setTextTrigger dshot :dshot3 "Photon Missile launched into sector "&SECTOR.WARPS[$psec][3]
+	setTextTrigger dmissed :dmissed3 "<Computer deactivated>"
+	pause
+
+:dmissed3
+	killtrigger dshot
+	goto :setDockTriggers
+
+:dshot3
+	killtrigger dmissed
+	getWord CURRENTLINE $spoof 1
+	if ($spoof <> "Photon")
+		goto :setDockTriggers
+	end
+	send "'{" $bot~bot_name "} - Dock Foton Fired -> Sector " SECTOR.WARPS[$psec][3] "*"
+	
+	subtract $player~photons 1
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Dock Foton Deactivated*"
+		setVar $mode "General"
+		halt
+	end
+	setDelayTrigger cool :setDockTriggers $cooloff
+	pause
+	goto :setDockTriggers
+
+:dshoot4
+	send "q q  c  p  y  " SECTOR.WARPS[$psec][4] "**   * q p sh"
+	killtrigger dshot
+	killtrigger dmissed
+	setTextTrigger dshot :dshot4 "Photon Missile launched into sector "&SECTOR.WARPS[$psec][4]
+	setTextTrigger dmissed :dmissed4 "<Computer deactivated>"
+	pause
+
+:dmissed4
+	killtrigger dshot
+	goto :setDockTriggers
+
+:dshot4
+	killtrigger dmissed
+	getWord CURRENTLINE $spoof 1
+	if ($spoof <> "Photon")
+		goto :setDockTriggers
+	end
+	send "'{" $bot~bot_name "} - Dock Foton Fired -> Sector " SECTOR.WARPS[$psec][4] "*"
+	
+	subtract $player~photons 1
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Dock Foton Deactivated*"
+		setVar $mode "General"
+		halt
+	end
+	setDelayTrigger cool :setDockTriggers $cooloff
+	pause
+	goto :setDockTriggers
+:dshoot5
+	send "q q  c  p  y  " SECTOR.WARPS[$psec][5] "**   * q p sh"
+	killtrigger dshot
+	killtrigger dmissed
+	setTextTrigger dshot :dshot5 "Photon Missile launched into sector "&SECTOR.WARPS[$psec][5]
+	setTextTrigger dmissed :dmissed5 "<Computer deactivated>"
+	pause
+
+:dmissed5
+	killtrigger dshot
+	goto :setDockTriggers
+
+:dshot5
+	killtrigger dmissed
+	getWord CURRENTLINE $spoof 1
+	if ($spoof <> "Photon")
+		goto :setDockTriggers
+	end
+	send "'{" $bot~bot_name "} - Dock Foton Fired -> Sector " SECTOR.WARPS[$psec][5] "*"
+	
+	subtract $player~photons 1
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Dock Foton Deactivated*"
+		setVar $mode "General"
+		halt
+	end
+	setDelayTrigger cool :setDockTriggers $cooloff
+	pause
+	goto :setDockTriggers
+
+:dshoot6
+	send "q q  c  p  y  " SECTOR.WARPS[$psec][6] "**   * q p sh"
+	killtrigger dshot
+	killtrigger dmissed
+	setTextTrigger dshot :dshot6 "Photon Missile launched into sector "&SECTOR.WARPS[$psec][6]
+	setTextTrigger dmissed :dmissed6 "<Computer deactivated>"
+	pause
+
+:dmissed6
+	killtrigger dshot
+	goto :setDockTriggers
+
+:dshot6
+	killtrigger dmissed
+	getWord CURRENTLINE $spoof 1
+	if ($spoof <> "Photon")
+		goto :setDockTriggers
+	end
+	send "'{" $bot~bot_name "} - Dock Foton Fired -> Sector " SECTOR.WARPS[$psec][6] "*"
+	
+	subtract $player~photons 1
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Dock Foton Deactivated*"
+		setVar $mode "General"
+		halt
+	end
+	setDelayTrigger cool :setDockTriggers $cooloff
+	pause
+	goto :setDockTriggers
 
 # ============================== ADJACENT PHOTON (ADJPHOTON) ==============================
 :adjphoton
@@ -902,6 +1148,112 @@ goto :surroundPhotonTriggers
 	pause
 	:holoend1
 		killalltriggers
+return
+
+
+
+:photonSector
+	setVar $startingLocation $player~current_prompt
+	
+	if ($startingLocation <> "Planet") and ($startingLocation <> "Command") and ($startingLocation <> "Citadel")
+		send "'{" $bot~bot_name "} - Must start at Command, Planet or Citadel*"
+		halt
+	end
+	
+	if ($player~photons = 0)
+		send "'{" $bot~bot_name "} - Out of Fotons - Dock Foton Deactivated*"
+		setVar $mode "General"
+		halt
+	end
+	if ($PLAYER~CURRENT_SECTOR = STARDOCK)
+		if (($player~experience < 1000) and ($player~alignment >= 0))
+			if ($fedSpacePhotons <> TRUE)
+				send "'{" $bot~bot_name "} - Fed safe people can't shoot photons from fed..*"
+				setVar $mode "General"
+				halt
+			end
+		end
+	end
+	
+	setVar $returnSector 0
+	setVar $adjsec 0
+	setVar $psec $bot~parm1
+	setVar $psecAdj 0
+	setVar $i 1
+	while ($i <= SECTOR.WARPCOUNT[$PLAYER~CURRENT_SECTOR])
+		if ($psec = SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i])
+			setVar $psecAdj 1
+		end
+		add $i 1
+	end
+
+
+
+	if (($psecAdj = 0) and ($startingLocation = "Command"))
+		# we should support at least adj photoning.. i.e. holo, pick safe sector, move, photon, return if selected
+		setVar $SWITCHBOARD~message "Photoning non adjcent sectors via TWarp not currently implemented*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	elseif ($psecAdj = 0)
+		setVar $i 1
+		while ($i <= SECTOR.WARPINCOUNT[$psec])
+			getSectorParameter SECTOR.WARPSIN[$psec][$i] "FIGSEC" $isFigged
+			if ($isFigged)
+				setVar $adjsec SECTOR.WARPSIN[$psec][$i]
+				setVar $i 7
+			end
+			add $i 1
+		end
+		if ($adjsec = 0)
+			setVar $SWITCHBOARD~message "No sector adjcent with a fighter.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		if ($startingLocation = "Planet")
+			send "c"
+		end
+		if ($auto_return = TRUE)
+			setVar $returnSector $PLAYER~CURRENT_SECTOR
+		end
+		send "p" $adjsec "*y c p y " $psec "* * q"
+	else
+		send "c p y " $psec "* * q"
+		
+	end
+
+	setTextLineTrigger launch_wrong :foton_launch_wrong2 "That is not an adjacent sector"
+	setTextLineTrigger launch_gotem :foton_launch_gotem2 "Photon Missile launched into sector"
+	setTextLineTrigger launch_wrong2 :foton_launch_wrong2 "The Feds do not permit Photon Torpedos to be launched into FedSpace"
+	pause
+	:foton_launch_wrong2
+		killAllTriggers
+		
+		setVar $SWITCHBOARD~message "That is not an adjacent sector!*"
+		gosub :SWITCHBOARD~switchboard
+		goSub :photonCheckReturn
+		halt
+	:foton_launch_gotem2
+		
+		killAllTriggers
+
+		setVar $SWITCHBOARD~message "Foton Fired - Sector => " & $bot~parm1 & "!*"
+		gosub :SWITCHBOARD~switchboard
+		if ($holo)
+			gosub :doholo
+		end
+		goSub :photonCheckReturn
+		
+halt
+
+:photonCheckReturn
+	
+	if ($returnSector > 0)
+		gosub :player~quikstats
+		if ($PLAYER~CURRENT_SECTOR <> $returnSector)
+			send "p" $returnSector "*y"
+		end
+	end
+
 return
 
 #INCLUDES:

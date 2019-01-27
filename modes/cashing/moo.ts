@@ -33,7 +33,7 @@ setVar $BOT~help[3]  $BOT~tab&"       "
 setVar $BOT~help[4]  $BOT~tab&" moo [mode] {maxplanets} {f/o/e} {all/bad}"
 setVar $BOT~help[5]  $BOT~tab&"        {guard} {figs} {ephag} {safe/paranoid}"
 setVar $BOT~help[6]  $BOT~tab&" Options:"
-setVar $BOT~help[7]  $BOT~tab&"    [mode]       skimpl/upgraded/param/everything/file"
+setVar $BOT~help[7]  $BOT~tab&"    [mode]       skimpl/upgraded/param/everything/file/sector"
 setVar $BOT~help[8]  $BOT~tab&"    {maxplanets} Max planets b4 blasting and replacing."
 setVar $BOT~help[9]  $BOT~tab&"    {f/o/e}      Primary Product, Equipment by default, set"
 setVar $BOT~help[10] $BOT~tab&"                 once only then no need to call."
@@ -50,6 +50,7 @@ setVar $BOT~help[19] $BOT~tab&"      upgraded   - Visits upgrade ports (10k+) th
 setVar $BOT~help[20] $BOT~tab&"      param      - Sectors with this param i.e. moo MOOPORTS"
 setVar $BOT~help[21] $BOT~tab&"      everything - Anything that buys the primary prod with a fig"
 setVar $BOT~help[22] $BOT~tab&"      file       - One sector per line, file must end in .txt"
+setVar $BOT~help[23] $BOT~tab&"      sector     - One sector >Moo sector {maxplanets} {sector}"
 
 gosub :BOT~help_file
 
@@ -198,7 +199,7 @@ elseif ($modestring = "sector")
 	if ($number = 1)
 	
 	else
-		setVar $SWITCHBOARD~message "Please use >moo sector [preferredslot] [sector] .."
+		setVar $SWITCHBOARD~message "Please use >Moo sector {maxplanets} {sector}"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
