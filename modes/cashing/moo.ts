@@ -101,8 +101,8 @@ end
 setVar $preferredPlanetSlot $bot~parm2
 isNumber $number $preferredPlanetSlot
 if (($number = 1) and ($preferredPlanetSlot <> 0))
-	if (($preferredPlanetSlot <= 0) or ($preferredPlanetSlot > 10))
-		setvar $switchboard~message "Preferred planet should be from 1 to 10*"
+	if (($preferredPlanetSlot <= 0) or ($preferredPlanetSlot > 20))
+		setvar $switchboard~message "Preferred planet should be from 1 to 20*"
 		gosub :switchboard~switchboard
 		halt
 	else
@@ -115,7 +115,7 @@ else
 	if ($moo_preferred_slot > 0)
 		setVar $preferredPlanetSlot $moo_preferred_slot
 	else
-		setvar $switchboard~message "Max Planets is not defined; please start with a # rom 1-10.*"
+		setvar $switchboard~message "Max Planets is not defined; please start with a # rom 1-20.*"
 		gosub :switchboard~switchboard
 		halt
 	end
