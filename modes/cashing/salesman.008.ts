@@ -214,9 +214,10 @@
 				waitOn "Planet command (?"
 				gosub :PLANET~getPlanetInfo
 				send "c"
-				if ((($upgrade_fuel) AND (PORT.BUYFUEL[$NearFig] = FALSE)) and ($PLANET~planetfuel < ($planetfuelmax-65000)))
-					setVar $total_creds_needed (300*7000)
-					if ($total_creds_needed > $PLAYER~CREDITS)
+				if ((($upgrade_fuel = true) AND (PORT.BUYFUEL[$player~current_sector] = FALSE)) and ($PLANET~planetfuel < ($planet~planetfuelmax-65000)))
+					setVar $total_creds_needed ((300*7000) + 500000)
+
+					if (($total_creds_needed > $PLAYER~CREDITS) and (($player~credits+$planet~citadel_credits) > $total_creds_needed))
 						setVar $cashonhand $PLANET~citadel_credits
 						add $cashonhand $PLAYER~CREDITS
 						if ($cashonhand > $total_creds_needed)
@@ -244,7 +245,7 @@
 				if ($planetNegotiate = TRUE)
 					killAllTriggers
 					setVar $PLANET~_ck_pnego_fueltosell "-1"
-					if ($PLANET~planetfuel >= 100000)
+					if (($PLANET~planetfuel >= 100000) and ($sellfuel = true))
 						setVar $PLANET~_ck_pnego_fueltosell "max"
 					else
 						setVar $PLANET~_ck_pnego_fueltosell "-1"
@@ -277,7 +278,7 @@
 					getWord CURRENTLINE $totalPortEquipment 3		
 					
 					waitOn "<Computer deactivated>"
-					if ((PORT.BUYFUEL[$NearFig] = TRUE) AND ($sellfuel) AND ($PLANET~planetfuel >= 100000))
+					if ((PORT.BUYFUEL[$NearFig] = TRUE) AND ($sellfuel = true) AND ($PLANET~planetfuel >= 100000))
 						if ($PLANET~planetFuel < $totalPortFuel)
 							setVar $turnsSellingProduct (($PLANET~planetFuel/$PLAYER~TOTAL_HOLDS)-1)
 						else
@@ -385,7 +386,7 @@
 				send "cr*q"
 				gosub :PLAYER~quikstats
 				if ($grid)
-					send "q q "
+					send "q m* * *  q "
 					gosub :PLAYER~surround
 					gosub :PLAYER~quikstats
 					gosub :PLANET~landOnPlanetEnterCitadel

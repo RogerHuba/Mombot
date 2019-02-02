@@ -592,8 +592,8 @@ return
         setvar $bot~parms[1] "create"
     end
     if ($BOT~command = "kill") or ($BOT~command = "destroy") or ($BOT~command = "blow")
-        setVar $BOT~command $bot~parms[1]
-        setvar $bot~parms[1] "kill"
+        #setVar $BOT~command $bot~parms[1]
+        #setvar $bot~parms[1] "kill"
         if ($bot~parms[1] = "port")
             setVar $BOT~command $bot~parms[1]
             setvar $bot~parms[1] "kill"

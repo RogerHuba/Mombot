@@ -246,12 +246,12 @@ return
     setArray $INTERNALCOMMANDLISTS 7
     setVar $internalCommandLists[1]  " stopall stop listall reset emq bot relog tow refresh login logoff unlock lift with dep callin about cn extern twarp bwarp pwarp relog"
     setVar $internalCommandLists[2]  " " 
-    setVar $internalCommandLists[3]  " hkill kill "
+    setVar $internalCommandLists[3]  " hkill kill htorp"
     setVar $internalCommandLists[4]  " refurb scrub "
     setVar $internalCommandLists[5]  " surround exit mow "
     setVar $internalCommandLists[6]  " "
     setVar $internalCommandLists[7]  " find pscan sector storeship setvar getvar "
-    setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow l m t b p port x shipstore w d finder xenter status pinfo "
+    setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow l m t b p port x shipstore w d finder xenter status pinfo holotorp"
     setVar $internalCommandList     $internalCommandLists[1]&$internalCommandLists[2]&$internalCommandLists[3]&$internalCommandLists[4]&$internalCommandLists[5]&$internalCommandLists[6]&$internalCommandLists[7]
     setArray $TYPES 7
     setVar $TYPES[1] "General"
@@ -620,7 +620,7 @@ gosub :PLAYER~init
 
 :run_bot
     if ((($PLAYER~startingLocation = "Citadel") OR ($PLAYER~startingLocation = "Command")) AND ((CONNECTED = TRUE)))
-        gosub :INTERNAL_COMMANDS~startCNsettings
+        gosub :player~startCNsettings
         gosub :PLAYER~quikstats
         gosub :PLAYER~getInfo
         send "'{" $SWITCHBOARD~bot_name "} - is ACTIVE: Version - " & $BOT~major_version & "." & $BOT~minor_version " - type " #34 $SWITCHBOARD~bot_name " help" #34 " for command list*"
