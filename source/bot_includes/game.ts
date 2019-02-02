@@ -45,6 +45,7 @@
         setTextLineTrigger settings36 :findDensityScan "Density Scanner="
         setTextLineTrigger settings38 :findMaxPlanets "Max Planet Sector="
         setTextLineTrigger settings39 :findMaxGamePlanets ", sectors"
+        setTextLineTrigger settings40 :findFedSpacePhotons "FedSpace Photons="
         pause
         :findGold
             getWord CURRENTLINE $check 2
@@ -57,6 +58,18 @@
                 saveVar $goldEnabled
             end
             pause
+	:findFedSpacePhotons
+	    getWord CURRENTLINE $check 2
+            stripText $check "Photons="
+            if ($check = "True")
+                setVar $fedSpacePhotons TRUE
+                saveVar $fedSpacePhotons
+            else
+                setVar $fedSpacePhotons FALSE
+                saveVar $fedSpacePhotons
+            end
+            pause
+		
         :findMaxPlanets
             getWord CURRENTLINE $check 3
             stripText $check "Sector="
@@ -393,6 +406,11 @@
                 send $BOT~password
             else
                 send PASSWORD
+            end
+            if ($fedSpacePhotons = "")
+		# Setting not available in v1, so forcing save here.
+		setVar $fedSpacePhotons FALSE
+		saveVar $fedSpacePhotons
             end
             send "**  zaz*z*za9999*z*"
             #if ($PLAYER~CURRENT_SECTOR > 11) and ($PLAYER~CURRENT_SECTOR <> $MAP~STARDOCK)
