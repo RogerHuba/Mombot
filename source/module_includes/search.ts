@@ -148,7 +148,7 @@
                 setVar $directions (" " & $source & $directions)
             end
         end
-        setVar $SWITCHBOARD~message $SWITCHBOARD~message&"**"
+        setVar $SWITCHBOARD~message $SWITCHBOARD~message&"*"
         if (($SWITCHBOARD~self_command <> TRUE) OR ($bot~silent_mode <> TRUE))
             setVar $SWITCHBOARD~self_command 2
         end

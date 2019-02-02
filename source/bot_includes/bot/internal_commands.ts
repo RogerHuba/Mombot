@@ -527,150 +527,20 @@ goto :BOT~wait_for_command
 #####===============================================  BOT HELP SECTION ================================================#####
 :holo_kill
 :hkill
-	gosub :BOT~killthetriggers
-	setVar $CIT FALSE
-	if ($PLAYER~surround_before_hkill = TRUE)
-			setVar $PLAYER~insurround_before_hkill TRUE
-	end
-	gosub :PLAYER~quikstats
-	gosub :BOT~killthetriggers
-	gosub :PLAYER~current_prompt
-	setVar $startingLocation $PLAYER~current_prompt
-	setVar $BOT~validPrompts "Citadel Command"
-	gosub :BOT~checkStartingPrompt
-	gosub :PLAYER~holo_kill
-	if ($SWITCHBOARD~message <> "")
-		gosub :SWITCHBOARD~switchboard
-	end
-	goto :BOT~wait_for_command
+	setVar $BOT~user_command_line "hkill "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
+	goto :USER_INTERFACE~runUserCommandLine
 
 #####==========================================  BOT INTERNAL MENUS SECTION ===========================================#####
 
 # ========================================= SETVAR ======================================================
 :getvar
-	gosub :BOT~killthetriggers
-	getWord $BOT~user_command_line $BOT~parm1 1
-	setVar $SWITCHBOARD~message ""
-	if (($BOT~parm1 = "h") OR ($BOT~parm1 = "home") OR ($BOT~parm1 = $SWITCHBOARD~bot_name))
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"Home Sector: "&$MAP~home_sector&"*"
-	end
-	if (($BOT~parm1 = "s") OR ($BOT~parm1 = "stardock") OR ($BOT~parm1 = $SWITCHBOARD~bot_name))
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"Stardock: "&$MAP~stardock&"*"
-	end
-	if (($BOT~parm1 = "r") OR ($BOT~parm1 = "rylos") OR ($BOT~parm1 = $SWITCHBOARD~bot_name))
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"Rylos: "&$MAP~rylos&"*"
-	end
-	if (($BOT~parm1 = "a") OR ($BOT~parm1 = "alpha") OR ($BOT~parm1 = $SWITCHBOARD~bot_name))
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"Alpha Centauri: "&$MAP~alpha_centauri&"*"
-	end
-	if (($BOT~parm1 = "b") OR ($BOT~parm1 = "backdoor") OR ($BOT~parm1 = $SWITCHBOARD~bot_name))
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"Backdoor: "&$MAP~backdoor&"*"
-	end
-	if (($BOT~parm1 = "x") OR ($BOT~parm1 = "safeship") OR ($BOT~parm1 = $SWITCHBOARD~bot_name))
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"Safe Ship: "&$BOT~safe_ship&"*"
-	end
-	if (($BOT~parm1 = "tl") OR ($BOT~parm1 = "turnlimit") OR ($BOT~parm1 = $SWITCHBOARD~bot_name))
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"Turn Limit: "&$BOT~bot_turn_limit&"*"
-	end
-	if (($BOT~parm1 = "pgridbot") OR ($BOT~parm1 = "pbot") OR ($BOT~parm1 = $SWITCHBOARD~bot_name))
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"PGrid Bot: "&$BOT~pgrid_bot&"*"
-	end
-	if ($SWITCHBOARD~message = "")
-		setVar $SWITCHBOARD~message "Unknown variable name entered.*"
-	end
-	if ($SWITCHBOARD~self_command <> TRUE)
-		setVar $SWITCHBOARD~self_command 2
-	end
-	gosub :SWITCHBOARD~switchboard
-goto :BOT~wait_for_command
-:setvar
-	gosub :BOT~killthetriggers
-	getWord $BOT~user_command_line $BOT~parm1 1
-	isNumber $test $BOT~parm2
-	if (($BOT~parm1 = "h") OR ($BOT~parm1 = "home"))
-		if ($test)
-			if (($BOT~parm2 <= SECTORS) AND ($BOT~parm2 >= 1))
-				setVar $MAP~home_sector $BOT~parm2
-				setVar $SWITCHBOARD~message "Home Sector variable set to: "&$MAP~home_sector&".*"
-			else
-				setVar $SWITCHBOARD~message "Variable entered not valid, keeping old value.*"
-			end
-		end
-	elseif (($BOT~parm1 = "s") OR ($BOT~parm1 = "stardock"))
-		if ($test)
-			if (($BOT~parm2 <= SECTORS) AND ($BOT~parm2 >= 1))
-				setVar $MAP~stardock $BOT~parm2
-				setVar $MAP~stardock $BOT~parm2
-				setVar $SWITCHBOARD~message "Stardock variable set to: "&$MAP~stardock&".*"
-			else
-				setVar $SWITCHBOARD~message "Variable entered not valid, keeping old value.*"
-			end
-		end
-	elseif (($BOT~parm1 = "r") OR ($BOT~parm1 = "rylos"))
-		if ($test)
-			if (($BOT~parm2 <= SECTORS) AND ($BOT~parm2 >= 1))
-				setVar $MAP~rylos $BOT~parm2
-				setVar $MAP~rylos $BOT~parm2
-				setVar $SWITCHBOARD~message "Rylos variable set to: "&$MAP~rylos&".*"
-			else
-				setVar $SWITCHBOARD~message "Variable entered not valid, keeping old value.*"
-			end
-		end
-	elseif (($BOT~parm1 = "a") OR ($BOT~parm1 = "alpha"))
-		if ($test)
-			if (($BOT~parm2 <= SECTORS) AND ($BOT~parm2 >= 1))
-				setVar $MAP~alpha_centauri $BOT~parm2
-				setVar $MAP~alpha_centauri $BOT~parm2
-				setVar $SWITCHBOARD~message "Alpha Centauri variable set to: "&$MAP~alpha_centauri&".*"
-			else
-				setVar $SWITCHBOARD~message "Variable entered not valid, keeping old value.*"
-			end
-		end
-	elseif (($BOT~parm1 = "b") OR ($BOT~parm1 = "backdoor"))
-		if ($test)
-			if (($BOT~parm2 <= SECTORS) AND ($BOT~parm2 >= 1))
-				setVar $MAP~backdoor $BOT~parm2
-				setVar $MAP~backdoor $BOT~parm2
-				setVar $SWITCHBOARD~message "Backdoor Sector variable set to: "&$MAP~backdoor&".*"
-			else
-				setVar $SWITCHBOARD~message "Variable entered not valid, keeping old value.*"
-			end
-		end
-	elseif (($BOT~parm1 = "x") OR ($BOT~parm1 = "safeship"))
-		if ($test)
-			if ($BOT~parm2 >= 1)
-				setVar $BOT~safe_ship $BOT~parm2
-				setVar $SWITCHBOARD~message "Safe Ship variable set to: "&$BOT~safe_ship&".*"
-			else
-				setVar $SWITCHBOARD~message "Variable entered not valid, keeping old value.*"
-			end
-		end
-	elseif (($BOT~parm1 = "tl") OR ($BOT~parm1 = "turnlimit"))
-		if ($test)
-			if ($BOT~parm2 >= 0)
-				setVar $BOT~bot_turn_limit $BOT~parm2
-				setVar $SWITCHBOARD~message "Turn Limit variable set to: "&$BOT~bot_turn_limit&".*"
-			else
-				setVar $SWITCHBOARD~message "Variable entered not valid, keeping old value.*"
-			end
-		end
-	elseif (($BOT~parm1 = "pgridbot") OR ($BOT~parm1 = "pbot"))
-		
-			if ($BOT~parm2 <> 0)
-				setVar $BOT~pgrid_bot $BOT~parm2
-				setVar $SWITCHBOARD~message "PGrid Bot has been set.*"
-			else
-		setVar $BOT~pgrid_bot ""
-				setVar $SWITCHBOARD~message "PGrid Bot has been cleared.*"
-			end
-		
+	setVar $BOT~user_command_line "getvar "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
+	goto :USER_INTERFACE~runUserCommandLine
 
-	else
-		setVar $SWITCHBOARD~message "Unknown variable name entered.*"
-	end
-	gosub :MENUS~preferenceStats	  
-	gosub :SWITCHBOARD~switchboard
-goto :BOT~wait_for_command
+:setvar
+	setVar $BOT~user_command_line "setvar "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
+	goto :USER_INTERFACE~runUserCommandLine
+
 # ======================================== END SETVAR ===================================================
 
 #=============================== AUTO KILL ==========================================

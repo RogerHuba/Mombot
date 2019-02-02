@@ -22,15 +22,25 @@ logging off
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 	if ($PLAYER~startingLocation <> "Command")
 		if ($PLAYER~startingLocation = "Citadel")
-          loadvar $bot~mode
-               setVar $BOT~command "citcap"
-               setVar $BOT~user_command_line " citkill on "
-               setVar $BOT~parm1 "on"
-          saveVar $BOT~parm1
-          saveVar $BOT~command
-          saveVar $BOT~user_command_line
-          load "scripts\mombot\modes\offense\citkill.cts"
-          halt
+			loadvar $bot~mode
+			if ($bot~mode <> "Citkill")
+				setVar $BOT~command "citkill"
+				setVar $BOT~user_command_line " citkill on "
+				setVar $BOT~parm1 "on"
+				saveVar $BOT~parm1
+				saveVar $BOT~command
+				saveVar $BOT~user_command_line
+				setvar $bot~mode "Citkill"
+				savevar $bot~mode
+				load "scripts\mombot\modes\offense\citkill.cts"
+			else
+				setvar $bot~mode "General"
+				savevar $bot~mode
+				stop "scripts\mombot\modes\offense\citkill.cts"
+				setVar $SWITCHBOARD~message "Citkill off.*" 
+				gosub :SWITCHBOARD~switchboard
+			end
+			halt
 		end
 		setVar $SWITCHBOARD~message "Wrong prompt for auto kill.*" 
 		gosub :SWITCHBOARD~switchboard

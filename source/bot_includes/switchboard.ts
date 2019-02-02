@@ -119,6 +119,7 @@ return
 			add $length 1
 			add $i 1
 		end
+		replacetext $second_half "***" "**"
 	end
 	setvar $new_message $message
 

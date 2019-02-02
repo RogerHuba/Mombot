@@ -1,7 +1,6 @@
 logging off
      gosub :BOT~loadVars
      loadvar $SHIP~cap_file
-     gosub :player~init
 
 
 #HELP FILE
@@ -13,24 +12,29 @@ logging off
 #============================== START AUTO CAPTURE =======================================
 :autoCap
 :cap
-	loadvar $player~targetingPerson 
-	loadvar $player~targetingCorp 
-	loadvar $player~cappingAliens 
-	loadvar $player~target 
-
     gosub :PLAYER~quikstats
     setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
     if ($PLAYER~startingLocation <> "Command")
         if ($PLAYER~startingLocation = "Citadel")
-          loadvar $bot~mode
-               setVar $BOT~command "citcap"
-               setVar $BOT~user_command_line " citcap on "
-               setVar $BOT~parm1 "on"
-          saveVar $BOT~parm1
-          saveVar $BOT~command
-          saveVar $BOT~user_command_line
-          load "scripts\mombot\modes\offense\citcap.cts"
-          halt
+			loadvar $bot~mode
+			if ($bot~mode <> "Citcap")
+				setVar $BOT~command "citcap"
+				setVar $BOT~user_command_line " citcap on "
+				setVar $BOT~parm1 "on"
+				saveVar $BOT~parm1
+				saveVar $BOT~command
+				saveVar $BOT~user_command_line
+				setvar $bot~mode "Citcap"
+				savevar $bot~mode
+				load "scripts\mombot\modes\offense\citcap.cts"
+			else
+				setvar $bot~mode "General"
+				savevar $bot~mode
+				stop "scripts\mombot\modes\offense\citcap.cts"
+				setVar $SWITCHBOARD~message "Citcap off.*" 
+				gosub :SWITCHBOARD~switchboard
+			end
+			halt
         end
         setVar $SWITCHBOARD~message "Wrong prompt for auto capture.*"
         gosub :SWITCHBOARD~switchboard

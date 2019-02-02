@@ -32,6 +32,8 @@ return
     loadVar $MAP~stardock
     loadVar $MAP~rylos
     loadVar $MAP~alpha_centauri
+    loadvar $MAP~home_sector
+    loadvar $MAP~backdoor
     loadVar $silent_running
     loadVar $botIsDeaf
     loadvar $switchboard~self_command
@@ -41,7 +43,6 @@ return
     loadVar $game~port_max
 	loadVar $folder
 	loadVar $game~photon_duration
-	loadVar $BOT~bot_turn_limit
 
 
 

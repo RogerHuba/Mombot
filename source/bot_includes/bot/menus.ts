@@ -7,6 +7,7 @@
 :refreshPreferencesMenu
     gosub :BOT~killthetriggers
     gosub :BOT~load_watcher_variables
+    gosub :bot~load_the_variables
     setArray $h 31
     setArray $qss 31
     setVar $h[2]  "                 "
@@ -366,8 +367,8 @@
                     setVar $MAP~rylos $temp
                 elseif ($temp = 0)
                     setVar $MAP~rylos RYLOS
-                    setVar $MAP~rylos RYLOS
                 end
+                savevar $MAP~rylos
             end
         elseif ($chosen_option = "A")
             gosub :BOT~killthetriggers
@@ -378,8 +379,8 @@
                     setVar $MAP~alpha_centauri $temp
                 elseif ($temp = 0)
                     setVar $MAP~alpha_centauri ALPHACENTAURI
-                    setVar $MAP~alpha_centauri ALPHACENTAURI
                 end
+                savevar $MAP~alpha_centauri 
             end
         elseif ($chosen_option = "B")
             gosub :BOT~killthetriggers
@@ -388,8 +389,8 @@
             if ($test)
                 if (($temp <= SECTORS) AND ($temp >= 1))
                     setVar $MAP~backdoor $temp
-                    setVar $MAP~backdoor $temp
                 end
+                savevar $MAP~backdoor 
             end
         elseif ($chosen_option = "H")
             gosub :BOT~killthetriggers
@@ -398,7 +399,7 @@
             if ($test)
                 if (($temp <= SECTORS) AND ($temp >= 1))
                     setVar $MAP~home_sector $temp
-                    setVar $MAP~home_sector $temp
+                    savevar $MAP~home_sector 
                 end
             end
         elseif ($chosen_option = "9")

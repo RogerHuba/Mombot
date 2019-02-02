@@ -21,7 +21,7 @@
 	gosub :BOT~banner
 
 	:cit_kill
-	killalltriggers
+	
 	gosub :player~init
 	gosub :player~quikstats	
 	gosub :player~getInfo
@@ -29,15 +29,24 @@
 	setVar $player~targetingPerson FALSE
 	setVar $player~targetingCorp FALSE
 	setVar $player~target ""
+	if ($bot~parm1 = "off")
+        setvar $switchboard~message "Shutting down citkill*"
+        gosub :switchboard~switchboard
+		halt
+	end
 	if ($bot~parm1 <> "on")
         setvar $switchboard~message "Please use - citkill [on/off]*"
         gosub :switchboard~switchboard
 		halt
 	else
+		setvar $bot~mode "Citkill"
+		saveVar $bot~mode
+		
 		if ($player~startingLocation <> "Citadel")
 			setvar $switchboard~message "Citadel Killer must be run from the Citadel Prompt*"
 			gosub :switchboard~switchboard
-			setVar $mode "General"
+			setVar $bot~mode "General"
+			savevar $bot~mode
 			halt
 		end
 		isNumber $test $bot~parm2

@@ -32,6 +32,7 @@ return
     setVar $USER_INTERFACE~temp_bot_name ""
     loadVar $botIsDeaf
     loadvar $planet~planet
+    loadvar $bot~mode
     setVar $alive_count 0
     if ($MAP~stardock <= 0)
         setVar $MAP~stardock STARDOCK
@@ -155,6 +156,85 @@ return
     gosub :MAIN~backwards_compatible
 return
 
+:load_the_variables
+    loadvar $game~game_menu_prompt_ansi
+    loadvar $game~game_menu_prompt
+    loadvar $alarm_list
+    loadVar $PLAYER~offenseCapping
+    loadVar $PLAYER~cappingAliens
+    loadVar $PLANET~PLANET
+    loadVar $GAME~ATOMIC_COST
+    loadVar $GAME~BEACON_COST
+    loadVar $GAME~CORBO_COST
+    loadVar $GAME~CLOAK_COST
+    loadVar $GAME~PROBE_COST
+    loadVar $GAME~PLANET_SCANNER_COST
+    loadVar $GAME~LIMPET_COST
+    loadVar $GAME~ARMID_COST
+    loadVar $GAME~PHOTON_COST
+    loadVar $GAME~HOLO_COST
+    loadVar $GAME~DENSITY_COST
+    loadVar $GAME~DISRUPTOR_COST
+    loadVar $GAME~GENESIS_COST
+    loadVar $GAME~TWARPI_COST
+    loadVar $GAME~TWARPII_COST
+    loadVar $GAME~PSYCHIC_COST
+    loadVar $GAME~PHOTONS_ENABLED
+    loadVar $GAME~PHOTON_DURATION
+    loadVar $GAME~MAX_COMMANDS
+    loadVar $GAME~goldEnabled
+    loadVar $GAME~mbbs
+    loadVar $GAME~MULTIPLE_PHOTONS
+    loadVar $GAME~colonist_regen
+    loadVar $GAME~ptradesetting
+    loadVar $GAME~STEAL_FACTOR
+    loadVar $GAME~rob_factor
+    loadVar $GAME~CLEAR_BUST_DAYS
+    loadVar $GAME~port_max
+    loadVar $GAME~PRODUCTION_RATE
+    loadVar $GAME~PRODUCTION_REGEN
+    loadVar $GAME~DEBRIS_LOSS
+    loadVar $GAME~RADIATION_LIFETIME
+    loadVar $GAME~LIMPET_REMOVAL_COST
+    loadVar $GAME~MAX_PLANETS_PER_SECTOR
+    loadVar $subspace
+    loadVar $password
+    loadVar $bot_password
+    loadVar $PLAYER~surroundAvoidShieldedOnly
+    loadVar $surroundAutoCapture
+    loadVar $PLAYER~surroundAvoidAllPlanets
+    loadVar $PLAYER~surroundDontAvoid
+    loadVar $MAP~stardock
+    loadVar $MAP~backdoor
+    loadVar $MAP~rylos
+    loadVar $MAP~alpha_centauri
+    loadVar $MAP~home_sector
+    loadVar $PLAYER~surroundFigs
+    loadVar $PLAYER~surroundLimp
+    loadVar $PLAYER~surroundMine
+    loadVar $SWITCHBOARD~bot_name
+    setVar $bot_name $SWITCHBOARD~bot_name
+    loadVar $PLAYER~surroundOverwrite
+    loadVar $PLAYER~surroundPassive
+    loadVar $PLAYER~surroundNormal
+    loadVar $username
+    loadVar $letter
+    loadVar $PLAYER~defenderCapping
+    loadVar $bot_turn_limit
+    loadVar $safe_ship
+    loadVar $pgrid_bot
+    loadVar $safe_planet
+    loadvar $corppassword
+
+    loadVar $bot_team_name
+    loadVar $historyString
+    loadVar $doRelog
+    loadVar $PLAYER~surround_before_hkill
+    loadVar $command_prompt_extras
+    loadVar $silent_running
+
+
+return
 :load_bot
 #####=============================================== BOT STARTUP FUNCTIONS ============================================#####
 
@@ -500,82 +580,8 @@ gosub :PLAYER~init
         saveVar $echoInterval
     end
     setVar $botIsOff FALSE
-    loadvar $game~game_menu_prompt_ansi
-    loadvar $game~game_menu_prompt
-    loadvar $alarm_list
-    loadVar $PLAYER~offenseCapping
-    loadVar $PLAYER~cappingAliens
-    loadVar $PLANET~PLANET
-    loadVar $GAME~ATOMIC_COST
-    loadVar $GAME~BEACON_COST
-    loadVar $GAME~CORBO_COST
-    loadVar $GAME~CLOAK_COST
-    loadVar $GAME~PROBE_COST
-    loadVar $GAME~PLANET_SCANNER_COST
-    loadVar $GAME~LIMPET_COST
-    loadVar $GAME~ARMID_COST
-    loadVar $GAME~PHOTON_COST
-    loadVar $GAME~HOLO_COST
-    loadVar $GAME~DENSITY_COST
-    loadVar $GAME~DISRUPTOR_COST
-    loadVar $GAME~GENESIS_COST
-    loadVar $GAME~TWARPI_COST
-    loadVar $GAME~TWARPII_COST
-    loadVar $GAME~PSYCHIC_COST
-    loadVar $GAME~PHOTONS_ENABLED
-    loadVar $GAME~PHOTON_DURATION
-    loadVar $GAME~MAX_COMMANDS
-    loadVar $GAME~goldEnabled
-    loadVar $GAME~mbbs
-    loadVar $GAME~MULTIPLE_PHOTONS
-    loadVar $GAME~colonist_regen
-    loadVar $GAME~ptradesetting
-    loadVar $GAME~STEAL_FACTOR
-    loadVar $GAME~rob_factor
-    loadVar $GAME~CLEAR_BUST_DAYS
-    loadVar $GAME~port_max
-    loadVar $GAME~PRODUCTION_RATE
-    loadVar $GAME~PRODUCTION_REGEN
-    loadVar $GAME~DEBRIS_LOSS
-    loadVar $GAME~RADIATION_LIFETIME
-    loadVar $GAME~LIMPET_REMOVAL_COST
-    loadVar $GAME~MAX_PLANETS_PER_SECTOR
-    loadVar $subspace
-    loadVar $password
-    loadVar $bot_password
-    loadVar $PLAYER~surroundAvoidShieldedOnly
-    loadVar $surroundAutoCapture
-    loadVar $PLAYER~surroundAvoidAllPlanets
-    loadVar $PLAYER~surroundDontAvoid
-    loadVar $MAP~stardock
-    loadVar $MAP~backdoor
-    loadVar $MAP~rylos
-    loadVar $MAP~alpha_centauri
-    loadVar $MAP~home_sector
-    loadVar $PLAYER~surroundFigs
-    loadVar $PLAYER~surroundLimp
-    loadVar $PLAYER~surroundMine
-    loadVar $SWITCHBOARD~bot_name
-    setVar $bot_name $SWITCHBOARD~bot_name
-    loadVar $PLAYER~surroundOverwrite
-    loadVar $PLAYER~surroundPassive
-    loadVar $PLAYER~surroundNormal
-    loadVar $username
-    loadVar $letter
-    loadVar $PLAYER~defenderCapping
-    loadVar $bot_turn_limit
-    loadVar $safe_ship
-    loadVar $pgrid_bot
-    loadVar $safe_planet
-    loadvar $corppassword
-
-    loadVar $bot_team_name
-    loadVar $historyString
-    loadVar $doRelog
-    loadVar $PLAYER~surround_before_hkill
-    loadVar $command_prompt_extras
-    loadVar $silent_running
-     if (($PLAYER~surroundAvoidShieldedOnly = FALSE) AND ($surroundAutoCapture = FALSE) AND ($PLAYER~surroundAvoidAllPlanets = FALSE) AND ($PLAYER~surroundDontAvoid = FALSE))
+    gosub :load_the_variables
+	if (($PLAYER~surroundAvoidShieldedOnly = FALSE) AND ($surroundAutoCapture = FALSE) AND ($PLAYER~surroundAvoidAllPlanets = FALSE) AND ($PLAYER~surroundDontAvoid = FALSE))
         setVar $PLAYER~surroundAvoidAllPlanets TRUE
     end
     if ($bot_team_name = 0)

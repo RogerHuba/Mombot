@@ -25,6 +25,9 @@
         	send "'{" $bot~bot_name "} - Please use - citcap [on/off]*"
 		halt
 	elseif ($bot~parm1 = "on")
+		setvar $bot~mode "Citcap"
+		saveVar $bot~mode
+
 		if ($startingLocation <> "Citadel")
 			send "'{" $bot~bot_name "} - Citadel Capper must be run from the Citadel Prompt*"
 			setVar $mode "General"
