@@ -277,35 +277,18 @@ return
 
             :surroundgrid
                 gosub :BOT~bigdelay_killthetriggers
-                gosub :PLAYER~quikstats
-                setVar $startingLocation $PLAYER~CURRENT_PROMPT
-                if ($startingLocation = "Command")
-                elseif ($startingLocation = "Citadel")
-                    send "q "
-                    gosub :PLANET~getPlanetInfo
-                    send "q "
-                elseif ($startingLocation = "Planet")
-                    gosub :PLANET~getPlanetInfo
-                    send "q "
-                end
-
-                gosub :PLAYER~surround
-                if ($BOT~surroundAutoCapture = TRUE)
-                    gosub :PLAYER~quikstats
-                    if ($startingLocation = "Citadel")
-                        setVar $PLAYER~startingLocation "Command"
-                        goSub :SECTOR~getSectorData
-                        goSub :PLAYER~fastCapture
-                        setVar $PLAYER~startingLocation "Citadel"
-                    else
-                        goSub :SECTOR~getSectorData
-                        goSub :PLAYER~fastCapture
-                    end
-
-                end
-                if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
-                    gosub :PLANET~landingSub
-                end
+				
+				setVar $BOT~command "surround"
+				setVar $BOT~user_command_line " surround"
+				setVar $BOT~parm1 ""
+				saveVar $BOT~parm1
+				saveVar $BOT~command
+				saveVar $BOT~user_command_line
+				load "scripts\mombot\commands\grid\surround.cts"
+				setEventTrigger		surroundended		:surroundended "SCRIPT STOPPED" "scripts\mombot\commands\grid\surround.cts"
+				pause
+				:surroundended
+                
                 goto :gridprompt
             :holophoton
                 setVar $doHolo TRUE

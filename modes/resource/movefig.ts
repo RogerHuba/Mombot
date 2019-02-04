@@ -176,7 +176,7 @@
 		if ($player~current_prompt = "Planet")
 			send "m*  *  **  q q * * "
 		end
-		gosub :player~topoff
+		gosub :tactics~topoff
 		setVar $planet~PLANET $starting_planet
 		gosub :planet~landingSub
 
@@ -215,6 +215,7 @@ return
 #INCLUDES:
 include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"

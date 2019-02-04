@@ -41,7 +41,7 @@
 	gosub :BOT~banner
 
 	setVar $PLAYER~save TRUE
-	gosub :player~init
+	gosub :combat~init 
 
 	setvar $killing~last_fighter_attack ""
 	
@@ -452,3 +452,5 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"
+

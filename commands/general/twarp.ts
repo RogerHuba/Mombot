@@ -26,7 +26,7 @@
         halt
     end
     gosub :travelProtections
-    gosub :PLAYER~twarp
+    gosub :tactics~twarp
     if ($PLAYER~twarpSuccess = FALSE)
         if (($PLAYER~startingLocation = "Citadel") OR ($PLAYER~startingLocation = "Planet"))
             if ($planet~planet <> 0)
@@ -100,6 +100,7 @@ return
 # includes:
 include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"
 include "source\bot_includes\sector"
 include "source\bot_includes\map"
 include "source\bot_includes\ship"

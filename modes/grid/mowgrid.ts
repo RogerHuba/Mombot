@@ -169,7 +169,7 @@ if ($no_twarp = FALSE)
 			setVar $index $j
 			if ($j = $courseLength)
 				setVar $PLAYER~warpto $closestFiggedSector
-	            gosub :PLAYER~twarp
+	            gosub :tactics~twarp
 	            gosub :PLAYER~current_prompt
 	            if ($PLAYER~twarpSuccess = TRUE)
 	            	setVar $j $index
@@ -181,7 +181,7 @@ if ($no_twarp = FALSE)
 		else
 			if ($closestFiggedSector > 0)
 				setVar $PLAYER~warpto $closestFiggedSector
-	            gosub :PLAYER~twarp
+	            gosub :tactics~twarp
 	            gosub :PLAYER~current_prompt
 	            if ($PLAYER~twarpSuccess = TRUE)
 	            	setVar $j ($index + 1)
@@ -614,3 +614,4 @@ return
 
 #-=-=-=-=-includes-=-=-=-=-
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"

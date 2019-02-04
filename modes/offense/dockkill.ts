@@ -19,7 +19,7 @@
 
 	setVar $BOT~script_title "Dock Killer"
 	gosub :BOT~banner
-	gosub :player~init
+	gosub :combat~init 
 	setVar $SWITCHBOARD~self_command TRUE
 	
 	goto :start_script
@@ -31,7 +31,7 @@
 	:okaygo
 	goSub :SECTOR~getSectorData
 	#set player~refurbString to allow fast refurbing if you have a mac#
-	goSub :PLAYER~fastAttack
+	goSub :combat~fastAttack
 	goto :execute
 
 
@@ -208,3 +208,4 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"

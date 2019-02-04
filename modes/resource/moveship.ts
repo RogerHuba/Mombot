@@ -161,7 +161,7 @@
 		end
 		setVar $PLAYER~CURRENT_SECTOR $startSector
 		setVar $PLAYER~WARPTO $moveSector
-		gosub :PLAYER~twarp
+		gosub :tactics~twarp
 		if ($PLAYER~twarpSuccess = FALSE)
 			setVar $SWITCHBOARD~message "Can not make it to move sector, shutting down*"
 			gosub :SWITCHBOARD~switchboard
@@ -213,7 +213,7 @@
 		if ($back = TRUE)
 			gosub :PLAYER~quikstats
 			setVar $PLAYER~WARPTO $startSector
-			gosub :PLAYER~twarp
+			gosub :tactics~twarp
 			if ($PLAYER~twarpSuccess = FALSE)
 				setVar $SWITCHBOARD~message "Can not make it back home, shutting down*"
 				gosub :SWITCHBOARD~switchboard
@@ -245,7 +245,7 @@
 					send "w n "&$theShips[$i]&"* "
 					setVar $PLAYER~CURRENT_SECTOR $startSector
 					setVar $PLAYER~WARPTO $moveSector
-					gosub :PLAYER~twarp
+					gosub :tactics~twarp
 					if ($PLAYER~twarpSuccess = FALSE)
 						setVar $SWITCHBOARD~message "Can not make it to move sector, shutting down*"
 						gosub :SWITCHBOARD~switchboard
@@ -264,7 +264,7 @@
 					end
 					setVar $PLAYER~CURRENT_SECTOR $moveSector
 					setVar $PLAYER~WARPTO $startSector
-					gosub :PLAYER~twarp
+					gosub :tactics~twarp
 					if ($PLAYER~twarpSuccess = FALSE)
 						setVar $SWITCHBOARD~message "Can not make it back home, shutting down*"
 						gosub :SWITCHBOARD~switchboard
@@ -281,7 +281,7 @@
 				else
 					setVar $PLAYER~CURRENT_SECTOR $startSector
 					setVar $PLAYER~WARPTO $moveSector
-					gosub :PLAYER~twarp
+					gosub :tactics~twarp
 					if ($PLAYER~twarpSuccess = FALSE)
 						setVar $SWITCHBOARD~message "Can not make it to move sector, shutting down*"
 						gosub :SWITCHBOARD~switchboard
@@ -295,7 +295,7 @@
 					send "w n "&$theShips[$i]&"* "
 					setVar $PLAYER~CURRENT_SECTOR $moveSector
 					setVar $PLAYER~WARPTO $startSector
-					gosub :PLAYER~twarp
+					gosub :tactics~twarp
 					if ($PLAYER~twarpSuccess = FALSE)
 						setVar $SWITCHBOARD~message "Can not make it back home, shutting down*"
 						gosub :SWITCHBOARD~switchboard
@@ -345,6 +345,7 @@ halt
 include "source\module_includes\bot"
 include "source\module_includes\port"
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"

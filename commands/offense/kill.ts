@@ -1,7 +1,7 @@
 logging off
      gosub :BOT~loadVars
      loadvar $SHIP~cap_file
-     gosub :player~init
+     gosub :combat~init 
 
 
 #HELP FILE
@@ -53,7 +53,7 @@ logging off
 		gosub :SHIP~getShipStats
 	end
 	goSub :SECTOR~getSectorData
-	goSub :PLAYER~fastAttack
+	goSub :combat~fastAttack
 	halt
 
 #================================ END AUTO CAPTURE ===================================
@@ -66,3 +66,5 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"
+

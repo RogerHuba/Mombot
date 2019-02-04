@@ -479,7 +479,7 @@ while ($iSaySo)
 
 	if ($gridSectorPostTwarp > 0)
 		setVar $player~warpto $gridSector
-		gosub :player~twarp
+		gosub :tactics~twarp
 		add $stat_moves 1
 
 		setVar $gridSectorPostTwarp 0
@@ -534,7 +534,7 @@ return
 	goSub :xportShip
 	gosub :player~quikstats
 	setVar $player~warpto $tradingSector2
-	gosub :player~twarp
+	gosub :tactics~twarp
 	add $stat_moves 1
 	gosub :player~quikstats
 
@@ -2302,6 +2302,7 @@ return
 
 include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"

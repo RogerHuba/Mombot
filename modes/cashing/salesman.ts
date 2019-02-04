@@ -31,6 +31,7 @@
 	gosub :BOT~banner
 
 	setVar $PLAYER~save TRUE
+	gosub :combat~init 
 
 		
 :merchant
@@ -361,7 +362,7 @@
 						else
 							setVar $PLAYER~buytype "b"
 						end
-						gosub :PLAYER~buy
+						gosub :tactics~buy
 						gosub :PLAYER~quikstats
 					end
 					if (PORT.BUYORG[$NearFig] = FALSE)
@@ -371,13 +372,13 @@
 						else
 							setVar $PLAYER~buytype "b"
 						end
-						gosub :PLAYER~buy
+						gosub :tactics~buy
 						gosub :PLAYER~quikstats
 					end
 					if (PORT.BUYFUEL[$NearFig] = FALSE)
 						setVar $PLAYER~buyobject "f"
 						setVar $PLAYER~buytype "s"
-						gosub :PLAYER~buy
+						gosub :tactics~buy
 						gosub :PLAYER~quikstats
 					end
 										
@@ -387,7 +388,7 @@
 				gosub :PLAYER~quikstats
 				if ($grid)
 					send "q m* * *  q "
-					gosub :PLAYER~surround
+					gosub :combat~surround
 					gosub :PLAYER~quikstats
 					gosub :PLANET~landOnPlanetEnterCitadel
 				end
@@ -530,9 +531,12 @@
 #INCLUDES:
 include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"
+
 

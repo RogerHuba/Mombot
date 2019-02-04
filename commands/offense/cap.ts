@@ -8,6 +8,7 @@ logging off
      setVar $BOT~help[2]  $BOT~tab&"    Captures enemy ships and attempts to not destroy them.   "
      gosub :BOT~help_file
 
+	gosub :combat~init 
 
 #============================== START AUTO CAPTURE =======================================
 :autoCap
@@ -59,7 +60,7 @@ logging off
     setVar $lastTarget ""
     setVar $thisTarget ""
     goSub :SECTOR~getSectorData
-    goSub :PLAYER~fastCapture
+    goSub :combat~fastCapture
     halt
 
 #================================ END AUTO CAPTURE ===================================
@@ -72,3 +73,5 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"
+

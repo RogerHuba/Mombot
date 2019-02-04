@@ -1,435 +1,3 @@
-#Author: Mind Dagger
-#Gets player stats from the hitting the / key.  Also grabs the current prompt that you are at.
-#The only prompt this will stall on is in the middle of chatting
-#gotStats routine by Dynarri/Singularity
-#added getinfo and current_prompt subs as well since they share the same variables they are updating
-
-:init
-# ============================ START SECTOR DATA VARIABLES ==========================
-    setArray $TRADERS   50
-    setArray $FAKETRADERS   50
-    setArray $EMPTYSHIPS   100
-    setVar $ranksLength     46
-    setArray $ranks     $ranksLength
-    setVar $ranks[1]    "36mCivilian"
-    setVar $ranks[2]    "36mPrivate 1st Class"
-    setVar $ranks[3]    "36mPrivate"
-    setVar $ranks[4]    "36mLance Corporal"
-    setVar $ranks[5]    "36mCorporal"
-    setVar $ranks[6]    "36mStaff Sergeant"
-    setVar $ranks[7]    "36mGunnery Sergeant"
-    setVar $ranks[8]    "36m1st Sergeant"
-    setVar $ranks[9]    "36mSergeant Major"
-    setVar $ranks[10]   "36mSergeant"
-    setVar $ranks[11]   "31mAnnoyance"
-    setVar $ranks[12]   "31mNuisance 3rd Class"
-    setVar $ranks[13]   "31mNuisance 2nd Class"
-    setVar $ranks[14]   "31mNuisance 1st Class"
-    setVar $ranks[15]   "31mMenace 3rd Class"
-    setVar $ranks[16]   "31mMenace 2nd Class"
-    setVar $ranks[17]   "31mMenace 1st Class"
-    setVar $ranks[18]   "31mSmuggler 3rd Class"
-    setVar $ranks[19]   "31mSmuggler 2nd Class"
-    setVar $ranks[20]   "31mSmuggler 1st Class"
-    setVar $ranks[21]   "31mSmuggler Savant"
-    setVar $ranks[22]   "31mRobber"
-    setVar $ranks[23]   "31mTerrorist"
-    setVar $ranks[24]   "31mInfamous Pirate"
-    setVar $ranks[25]   "31mNotorious Pirate"
-    setVar $ranks[26]   "31mDread Pirate"
-    setVar $ranks[27]   "31mPirate"
-    setVar $ranks[28]   "31mGalactic Scourge"
-    setVar $ranks[29]   "31mEnemy of the State"
-    setVar $ranks[30]   "31mEnemy of the People"
-    setVar $ranks[31]   "31mEnemy of Humankind"
-    setVar $ranks[32]   "31mHeinous Overlord"
-    setVar $ranks[33]   "31mPrime Evil"
-    setVar $ranks[34]   "36mChief Warrant Officer"
-    setVar $ranks[35]   "36mWarrant Officer"
-    setVar $ranks[36]   "36mEnsign"
-    setVar $ranks[37]   "36mLieutenant J.G."
-    setVar $ranks[38]   "36mLieutenant Commander"
-    setVar $ranks[39]   "36mLieutenant"
-    setVar $ranks[40]   "36mCommander"
-    setVar $ranks[41]   "36mCaptain"
-    setVar $ranks[42]   "36mCommodore"
-    setVar $ranks[43]   "36mRear Admiral"
-    setVar $ranks[44]   "36mVice Admiral"
-    setVar $ranks[45]   "36mFleet Admiral"
-    setVar $ranks[46]   "36mAdmiral"
-    setVar $lastTarget  ""
-
-# ============================ END SECTOR DATA VARIABLES ==========================
-return
-
-#=================================QUIKSTATS================================================
-:quikstats
-    setVar $CURRENT_PROMPT      "Undefined"
-    killtrigger noprompt
-    killtrigger prompt
-    killtrigger statlinetrig
-    killtrigger getLine2
-    setvar $fedspace false
-    loadvar $unlimitedGame
-    setTextLineTrigger  prompt      :allPrompts     #145 & #8
-    setTextLineTrigger  statlinetrig    :statStart      #179
-    send #145&"/"
-    pause
-    :allPrompts
-        getWord CURRENTLINE $CURRENT_PROMPT 1
-        setVar $FULL_CURRENT_PROMPT CURRENTLINE
-        stripText $FULL_CURRENT_PROMPT #145
-        stripText $FULL_CURRENT_PROMPT #8
-        stripText $CURRENT_PROMPT #145
-        stripText $CURRENT_PROMPT #8
-        setTextLineTrigger  prompt      :allPrompts     #145 & #8
-        pause
-    :statStart
-        killtrigger prompt
-        setVar $stats ""
-        setVar $wordy ""
-    :statsline
-        killtrigger statlinetrig
-        killtrigger getLine2
-        setVar $line2 CURRENTLINE
-        replacetext $line2 #179 " "
-        striptext $line2 ","
-        setVar $stats $stats & $line2
-        getWordPos $line2 $pos "Ship"
-        if ($pos > 0)
-            goto :gotStats
-        else
-            setTextLineTrigger getLine2 :statsline
-            pause
-        end
-    :gotStats
-        setVar $stats $stats & " @@@"
-        setVar $current_word 0
-        while ($wordy <> "@@@")
-            if ($wordy = "Sect")
-                getWord $stats $CURRENT_SECTOR      ($current_word + 1)
-                if (($current_sector <= 10) or ($current_sector = STARDOCK) or ($current_sector = $map~stardock))
-                    setvar $fedspace true
-                end
-            elseif ($wordy = "Turns")
-                getWord $stats $TURNS           ($current_word + 1)
-                if ($unlimitedGame = TRUE)
-                    setVar $TURNS 65000
-                end
-            elseif ($wordy = "Creds")
-                getWord $stats $CREDITS         ($current_word + 1)
-            elseif ($wordy = "Figs")
-                getWord $stats $FIGHTERS        ($current_word + 1)
-            elseif ($wordy = "Shlds")
-                getWord $stats $SHIELDS         ($current_word + 1)
-            elseif ($wordy = "Hlds")
-                getWord $stats $TOTAL_HOLDS         ($current_word + 1)
-            elseif ($wordy = "Ore")
-                getWord $stats $ORE_HOLDS           ($current_word + 1)
-            elseif ($wordy = "Org")
-                getWord $stats $ORGANIC_HOLDS       ($current_word + 1)
-            elseif ($wordy = "Equ")
-                getWord $stats $EQUIPMENT_HOLDS     ($current_word + 1)
-            elseif ($wordy = "Col")
-                getWord $stats $COLONIST_HOLDS      ($current_word + 1)
-            elseif ($wordy = "Phot")
-                getWord $stats $PHOTONS         ($current_word + 1)
-            elseif ($wordy = "Armd")
-                getWord $stats $ARMIDS          ($current_word + 1)
-            elseif ($wordy = "Lmpt")
-                getWord $stats $LIMPETS         ($current_word + 1)
-            elseif ($wordy = "GTorp")
-                getWord $stats $GENESIS         ($current_word + 1)
-            elseif ($wordy = "TWarp")
-                getWord $stats $TWARP_TYPE          ($current_word + 1)
-            elseif ($wordy = "Clks")
-                getWord $stats $CLOAKS          ($current_word + 1)
-            elseif ($wordy = "Beacns")
-                getWord $stats $BEACONS         ($current_word + 1)
-            elseif ($wordy = "AtmDt")
-                getWord $stats $ATOMIC          ($current_word + 1)
-            elseif ($wordy = "Corbo")
-                getWord $stats $CORBO           ($current_word + 1)
-            elseif ($wordy = "EPrb")
-                getWord $stats $EPROBES         ($current_word + 1)
-            elseif ($wordy = "MDis")
-                getWord $stats $MINE_DISRUPTORS     ($current_word + 1)
-            elseif ($wordy = "PsPrb")
-                getWord $stats $PSYCHIC_PROBE       ($current_word + 1)
-            elseif ($wordy = "PlScn")
-                getWord $stats $PLANET_SCANNER      ($current_word + 1)
-            elseif ($wordy = "LRS")
-                getWord $stats $SCAN_TYPE           ($current_word + 1)
-            elseif ($wordy = "Aln")
-                getWord $stats $ALIGNMENT           ($current_word + 1)
-            elseif ($wordy = "Exp")
-                getWord $stats $EXPERIENCE          ($current_word + 1)
-            elseif ($wordy = "Corp")
-                getWord $stats $CORP            ($current_word + 1)
-                setvar $corpnumber $corp
-                savevar $corpnumber
-            elseif ($wordy = "Ship")
-                getWord $stats $SHIP_NUMBER         ($current_word + 1)
-            end
-            add $current_word 1
-            getWord $stats $wordy $current_word
-        end
-    :doneQuikstats
-    killtrigger statlinetrig
-    killtrigger getLine2
-    saveVar $unlimitedGame
-	if ($save)
-		savevar $corp
-		saveVar $CREDITS
-        saveVar $CURRENT_SECTOR
-        saveVar $TURNS
-        saveVar $FIGHTERS
-        saveVar $SHIELDS
-		saveVar $TOTAL_HOLDS
-		saveVar $ORE_HOLDS
-		saveVar $ORGANIC_HOLDS
-		saveVar $EQUIPMENT_HOLDS
-		saveVar $COLONIST_HOLDS
-		saveVar $PHOTONS
-		saveVar $ARMIDS
-		saveVar $LIMPETS
-		saveVar $GENESIS
-		saveVar $TWARP_TYPE
-		saveVar $CLOAKS
-		saveVar $BEACONS
-		saveVar $ATOMIC
-		saveVar $CORBO
-		saveVar $EPROBES
-		saveVar $MINE_DISRUPTORS
-		saveVar $PSYCHIC_PROBE
-		saveVar $PLANET_SCANNER
-		saveVar $SCAN_TYPE
-		saveVar $ALIGNMENT
-		saveVar $EXPERIENCE
-		saveVar $SHIP_NUMBER
-		saveVar $TRADER_NAME
-	end
-return
-# ============================== END QUICKSTATS SUB==============================
-
-# ============================  START PLAYER INFO SUBROUTINE  =================
-:getInfo
-    setvar $NOFLIP  true
-    setVar $PHOTONS 0
-    setVar $SCAN_TYPE "None"
-    setVar $TWARP_TYPE 0
-    setVar $CORPstring "[0]"
-    setVar $igstat 0
-    :waitOnInfo
-    send "?"
-    waitOn "<!>"
-        setTextLineTrigger getInfo_CN9_Check_1      :getInfo_CN9_Check "<N> Interdictor Control"
-        setTextLineTrigger getInfo_CN9_Check_2      :getInfo_CN9_Check "<N> Move to NavPoint"
-        setTextLineTrigger getTraderName            :getTraderName "Trader Name    :"
-        setTextLineTrigger getExpAndAlign           :getExpAndAlign "Rank and Exp"
-        setTextLineTrigger getCorp                  :getCorp "Corp           #"
-        setTextLineTrigger getShipType              :getShipType "Ship Info      :"
-        setTextLineTrigger getTPW                   :getTPW "Turns to Warp  :"
-        setTextLineTrigger getSect                  :getSect "Current Sector :"
-        setTextLineTrigger getTurns                 :getTurns "Turns left"
-        setTextLineTrigger getHolds                 :getHolds "Total Holds"
-        setTextLineTrigger getFighters              :getFighters "Fighters       :"
-        setTextLineTrigger getShields               :getShields "Shield points  :"
-        setTextLineTrigger getPhotons               :getPhotons "Photon Missiles:"
-        setTextLineTrigger getScanType              :getScanType "LongRange Scan :"
-        setTextLineTrigger getTwarpType1            :getTwarpType1 "  (Type 1 Jump):"
-        setTextLineTrigger getTwarpType2            :getTwarpType2 "  (Type 2 Jump):"
-        setTextLineTrigger getCredits               :getCredits "Credits"
-        setTextLineTrigger checkig                  :checkig "Interdictor ON :"
-        send "i"
-        pause
-    :getInfo_CN9_Check
-        setvar $NOFLIP  TRUE
-        pause
-    :getTraderName
-        killTrigger getInfo_CN9_Check_1
-        killTrigger getInfo_CN9_Check_2
-        setVar $TRADER_NAME CURRENTLINE
-        stripText $TRADER_NAME "Trader Name    : "
-        setVar $i 1
-        while ($i <= $ranksLength)
-            setVar $temp $ranks[$i]
-            stripText $temp "31m"
-            stripText $temp "36m"
-            stripText $TRADER_NAME $temp&" "
-            add $i 1
-        end
-        pause
-    :getExpAndAlign
-            getWord CURRENTLINE $EXPERIENCE 5
-            getWord CURRENTLINE $ALIGNMENT 7
-            stripText $EXPERIENCE ","
-            stripText $ALIGNMENT ","
-            stripText $ALIGNMENT "Alignment="
-            pause
-    :getCorp
-            getWord CURRENTLINE $CORP 3
-            stripText $CORP ","
-            setVar $CORPstring "[" & $CORP & "]"
-            pause
-    :getShipType
-            getWordPos CURRENTLINE $shiptypeend "Ported="
-            subtract $shiptypeend 18
-            cutText CURRENTLINE $SHIP_TYPE 18 $shiptypeend
-            pause
-    :getTPW
-            getWord CURRENTLINE $TURNS_PER_WARP 5
-            pause
-    :getSect
-            getWord CURRENTLINE $CURRENT_SECTOR 4
-            pause
-    :getTurns
-            getWord CURRENTLINE $TURNS 4
-            if ($TURNS = "Unlimited")
-                setVar $TURNS 65000
-                setVar $unlimitedGame TRUE
-            end
-            saveVar $unlimitedGame
-            pause
-    :getHolds
-        setVar $Temp (CURRENTLINE & " ")
-        getText $Temp $ORE_HOLDS "Ore=" " "
-        if ($ORE_HOLDS = "")
-            setVar $ORE_HOLDS 0
-        end
-        getText $Temp $ORGANIC_HOLDS "Organics=" " "
-        if ($ORGANIC_HOLDS = "")
-            setVar $ORGANIC_HOLDS 0
-        end
-        getTExt $Temp $EQUIPMENT_HOLDS "Equipment=" " "
-        if ($EQUIPMENT_HOLDS = "")
-            setVar $EQUIPMENT_HOLDS 0
-        end
-        getTExt $Temp $COLONIST_HOLDS "Colonists=" " "
-        if ($COLONIST_HOLDS = "")
-            setVar $COLONIST_HOLDS 0
-        end
-        getText $Temp $EMPTY_HOLDS "Empty=" " "
-        if ($EMPTY_HOLDS = "")
-            setVar $EMPTY_HOLDS 0
-        end
-                pause
-    :getFighters
-            getWord CURRENTLINE $FIGHTERS 3
-            stripText $FIGHTERS ","
-            pause
-    :getShields
-            getWord CURRENTLINE $SHIELDS 4
-            stripText $SHIELDS ","
-            pause
-    :getPhotons
-            getWord CURRENTLINE $PHOTONS 3
-            pause
-    :getScanType
-            getWord CURRENTLINE $SCAN_TYPE 4
-            pause
-    :getTwarpType1
-            getWord CURRENTLINE $TWARP_1_RANGE 4
-            setVar $TWARP_TYPE 1
-            pause
-    :getTwarpType2
-            getWord CURRENTLINE $TWARP_2_RANGE 4
-            setVar $TWARP_TYPE 2
-            pause
-    :checkig
-        getWord CURRENTLINE $igstat 4
-        pause
-    :getCredits
-        getWord CURRENTLINE $CREDITS 3
-        stripText $CREDITS ","
-        if ($igstat = 0)
-            setVar $igstat "NO IG"
-        end
-    :getInfoDone
-                    killtrigger getExpAndAlign     
-                killtrigger getCorp         
-                killtrigger getShipType       
-                killtrigger getTPW           
-                killtrigger getSect          
-                killtrigger getTurns                 
-                killtrigger getHolds                 
-                killtrigger getFighters              
-                killtrigger getShields               
-                killtrigger getPhotons               
-                killtrigger getScanType             
-                killtrigger getTwarpType1          
-                killtrigger getTwarpType2           
-                killtrigger getCredits              
-                killtrigger checkig          
-                killtrigger getInfoDone          
-                killtrigger getInfoDone2   
-                killtrigger getInfo_CN9_Check_1
-                killtrigger getInfo_CN9_Check_2
-                
-                saveVar $unlimitedGame
-                
-				if ($save)
-					
-					saveVar $CREDITS
-					saveVar $FIGHTERS
-					saveVar $SHIELDS
-					saveVar $TOTAL_HOLDS
-					saveVar $ORE_HOLDS
-					saveVar $ORGANIC_HOLDS
-					saveVar $EQUIPMENT_HOLDS
-					saveVar $COLONIST_HOLDS
-					saveVar $PHOTONS
-					saveVar $ARMIDS
-					saveVar $LIMPETS
-					saveVar $GENESIS
-					saveVar $TWARP_TYPE
-					saveVar $CLOAKS
-					saveVar $BEACONS
-					saveVar $ATOMIC
-					saveVar $CORBO
-					saveVar $EPROBES
-					saveVar $MINE_DISRUPTORS
-					saveVar $PSYCHIC_PROBE
-					saveVar $PLANET_SCANNER
-					saveVar $SCAN_TYPE
-					saveVar $ALIGNMENT
-					saveVar $EXPERIENCE
-					saveVar $SHIP_NUMBER
-					saveVar $TRADER_NAME
-				end
-return
-# ==============================  END PLAYER INFO SUBROUTINE  =================
-
-
-:current_prompt
-    setTextTrigger      prompt          :allPromptsCatch        #145 & #8
-    setDelayTrigger     prompt_delay    :current_prompt_delay   5000
-    send #145
-    pause
-    :current_prompt_delay
-        setTextOutTrigger   atkeys      :current_prompt_at_keys
-        setDelayTrigger     prompt_delay    :verifyDelay        30000
-        pause
-    :current_prompt_at_keys
-        getOutText $out
-        send $out
-        killtrigger prompt_delay
-        return
-    :allPromptsCatch
-        killtrigger prompt_delay
-        getWord CURRENTLINE $CURRENT_PROMPT 1
-        if ($CURRENT_PROMPT = 0)
-            getWord CURRENTANSILINE $CURRENT_PROMPT 1
-        end
-        stripText $CURRENT_PROMPT #145
-        stripText $CURRENT_PROMPT #8
-        setVar $startingLocation $CURRENT_PROMPT
-return
-
-    :verifyDelay
-            killalltriggers
-        disconnect
-
 
 :bwarp
     send "b"
@@ -449,7 +17,7 @@ return
         killtrigger yesBwarp
         killtrigger IGBwarp
         killtrigger noBwarp
-        send $warpto&"*"
+        send $player~warpto&"*"
         setTextTrigger bwarp_lock :bwarp_no_range "This planetary transporter does not have the range."
         setTextTrigger no_bwrp_lock :no_bwarp_lock "Do you want to make this transport blind?"
         setTextTrigger bwarp_ready :bwarp_lock "All Systems Ready, shall we engage?"
@@ -469,8 +37,8 @@ return
         killtrigger bwarp_ready
         killtrigger no_bwarpfuel
         send "* "
-        setVar $target $warpto
-        setSectorParameter $target "FIGSEC" FALSE
+        setVar $player~target $player~warpto
+        setSectorParameter $player~target "FIGSEC" FALSE
         setVar $SWITCHBOARD~message "No fighter down at that destination, aborting*"
         gosub :SWITCHBOARD~switchboard
         return
@@ -480,8 +48,8 @@ return
         killtrigger bwarp_ready
         killtrigger no_bwarpfuel
         send "y     * "
-        setVar $target $warpto
-        setSectorParameter $target "FIGSEC" TRUE
+        setVar $player~target $player~warpto
+        setSectorParameter $player~target "FIGSEC" TRUE
         setVar $SWITCHBOARD~message "B-warp completed.*"
         gosub :SWITCHBOARD~switchboard
         return
@@ -503,59 +71,59 @@ return
 
 # ======================    START INTERNAL TWARP SUBROUTINE     ==========================
 :twarp
-    setVar $twarpSuccess FALSE
+    setVar $player~twarpSuccess FALSE
     setVar $original 9999999
-    setVar $target 0
-    if ($CURRENT_SECTOR = $warpto)
-        setVar $msg "Already in that sector!"
+    setVar $player~target 0
+    if ($player~current_sector = $player~warpto)
+        setVar $player~msg "Already in that sector!"
         goto :twarpDone
-    elseif (($warpto <= 0) OR ($warpto > SECTORS))
-        setVar $msg "Destination sector is out of range!"
+    elseif (($player~warpto <= 0) OR ($player~warpto > SECTORS))
+        setVar $player~msg "Destination sector is out of range!"
         goto :twarpDone
     end
-    if ($TWARP_TYPE = "No")
-        setVar $msg "No T-warp drive on this ship!"
+    if ($player~twarp_type = "No")
+        setVar $player~msg "No T-warp drive on this ship!"
         goto :twarpDone
     end
     # check adj's for Dock.. if present, then we don't need a jump sector.
     setVar $WeAreAdjDock FALSE
-    if (($warpto = $MAP~stardock) OR ($warpto <= 10))
-        setVar $target $warpto
+    if (($player~warpto = $MAP~stardock) OR ($player~warpto <= 10))
+        setVar $player~target $player~warpto
         setVar $a 1
-        setVar $START_SECTOR $CURRENT_SECTOR
+        setVar $START_SECTOR $player~current_sector
         while ($a <= SECTOR.WARPCOUNT[$START_SECTOR])
             setVar $adj_start SECTOR.WARPS[$START_SECTOR][$a]
-            if ($adj_start = $target)
+            if ($adj_start = $player~target)
                 setVar $WeAreAdjDock TRUE
             end
             add $a 1
         end
     end
     setVar $RED_adj 0
-    if (($ALIGNMENT < 1000) AND ($WeAreAdjDock = FALSE) AND (($warpto = $MAP~stardock) OR ($warpto <= 10)))
-        setVar $target $warpto
+    if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE) AND (($player~warpto = $MAP~stardock) OR ($player~warpto <= 10)))
+        setVar $player~target $player~warpto
         gosub :FindJumpSector
         if ($RED_adj <> 0)
-            setVar $original $warpto
-            setVar $WARPTO $RED_adj
+            setVar $original $player~warpto
+            setVar $player~warpto $RED_adj
         else
             waitfor "Command [TL="
-            setVar $msg "Cannot Find Jump Sector Adjacent Sector " & $target & "."
+            setVar $player~msg "Cannot Find Jump Sector Adjacent Sector " & $player~target & "."
             goto :twarpDone
         end
     end
     if ($RED_adj <> 0)
         goto :twarp_lock
     end
-    if ($startingLocation = "Citadel")
-        send "q t*t1* q q * c u y q mz" $warpto "*"
-    elseif ($startingLocation = "Planet")
-        send "t*t1* q q * c u y q mz" $warpto "*"
+    if ($player~startingLocation = "Citadel")
+        send "q t*t1* q q * c u y q mz" $player~warpto "*"
+    elseif ($player~startingLocation = "Planet")
+        send "t*t1* q q * c u y q mz" $player~warpto "*"
     else
-        send "q q q n n 0 * c u y q mz" $warpto "*"
+        send "q q q n n 0 * c u y q mz" $player~warpto "*"
     end
     setTextTrigger      there      :adj_warp       "You are already in that sector!"
-    setTextLineTrigger  adj_warp   :adj_warp       "Sector  : "&$warpto&" "
+    setTextLineTrigger  adj_warp   :adj_warp       "Sector  : "&$player~warpto&" "
     setTextTrigger      locking    :locking        "Do you want to engage the TransWarp drive?"
     setTextTrigger      igd        :twarpIgd       "An Interdictor Generator in this sector holds you fast!"
     setTextTrigger      noturns    :twarpPhotoned  "Your ship was hit by a Photon and has been disabled"
@@ -576,43 +144,43 @@ return
         pause
     :twarpNoFuel
         gosub :killtwarptriggers
-        setVar $msg "Not enough fuel for T-warp."
+        setVar $player~msg "Not enough fuel for T-warp."
         goto :twarpDone
     :twarp_adj
         gosub :killtwarptriggers
         send "z* "
-        setVar $msg "That sector is next door, just plain warping."
-        setVar $twarpSuccess TRUE
+        setVar $player~msg "That sector is next door, just plain warping."
+        setVar $player~twarpSuccess TRUE
         goto :twarpDone
     :twarpNoRoute
         gosub :killtwarptriggers
         send "n* z* "
-        setVar $msg "No route available to that sector!"
+        setVar $player~msg "No route available to that sector!"
         goto :twarpDone
     :no_twarp_lock
         gosub :killtwarptriggers
         send "n* z* "
-        setVar $target $warpto
-        setSectorParameter $target "FIGSEC" FALSE
-        setVar $msg "No fighters at T-warp point!"
+        setVar $player~target $player~warpto
+        setSectorParameter $player~target "FIGSEC" FALSE
+        setVar $player~msg "No fighters at T-warp point!"
         goto :twarpDone
     :twarpIgd
         gosub :killtwarptriggers
-        setVar $msg "My ship is being held by Interdictor!"
+        setVar $player~msg "My ship is being held by Interdictor!"
         goto :twarpDone
     :twarpPhotoned
         gosub :killtwarptriggers
-        setVar $msg "I have been photoned and can not T-warp!"
+        setVar $player~msg "I have been photoned and can not T-warp!"
         goto :twarpDone
     :twarp_lock
         gosub :killtwarptriggers
-        setVar $target $warpto
-        setSectorParameter $target "FIGSEC" TRUE
+        setVar $player~target $player~warpto
+        setSectorParameter $player~target "FIGSEC" TRUE
         send "y   *     "
-        setVar $msg "T-warp completed."
-        setVar $twarpSuccess TRUE
+        setVar $player~msg "T-warp completed."
+        setVar $player~twarpSuccess TRUE
     :twarpDone
-    if (($twarpSuccess = TRUE) AND (($original = $MAP~stardock) OR ($original <= 10)))
+    if (($player~twarpSuccess = TRUE) AND (($original = $MAP~stardock) OR ($original <= 10)))
         send "* m "&$original&"*  za9999* * "
     end
 return
@@ -633,13 +201,13 @@ return
 
 
     :getCourse
-        setArray $mowCourse 80
+        setArray $player~mowCourse 80
         setVar $sectors ""
-        if ($starting_point <= 0)
-            setVar $starting_point ""
+        if ($player~starting_point <= 0)
+            setVar $player~starting_point ""
         end
         setTextLineTrigger sectorlinetrig :sectorsline " > "
-        send "^f"&$starting_point&"*"&$destination&"**q"
+        send "^f"&$player~starting_point&"*"&$player~destination&"**q"
         pause
     :sectorsline
         killtrigger sectorlinetrig
@@ -664,30 +232,30 @@ return
         if (($pos <= 0) AND ($pos2 <= 0))
             setVar $sectors $sectors & " " & $line
         end
-        getWordPos $line $pos " "&$destination&" "
-        getWordPos $line $pos2 "("&$destination&")"
+        getWordPos $line $pos " "&$player~destination&" "
+        getWordPos $line $pos2 "("&$player~destination&")"
         getWordPos $line $pos3 "TO"
         if ((($pos > 0) OR ($pos2 > 0)) AND ($pos3 <= 0))
             goto :gotSectors
         else
             setTextLineTrigger sectorlinetrig :sectorsline " > "
-            setTextLineTrigger sectorlinetrig2 :sectorsline " "&$destination&" "
-            setTextLineTrigger sectorlinetrig3 :sectorsline " "&$destination
-            setTextLineTrigger sectorlinetrig4 :sectorsline "("&$destination&")"
+            setTextLineTrigger sectorlinetrig2 :sectorsline " "&$player~destination&" "
+            setTextLineTrigger sectorlinetrig3 :sectorsline " "&$player~destination
+            setTextLineTrigger sectorlinetrig4 :sectorsline "("&$player~destination&")"
             setTextLineTrigger donePath :sectorsline "So what's the point?"
             setTextLineTrigger donePath2 :sectorsline ": ENDINTERROG"
         end
         pause
     :gotSectors
         setVar $sectors $sectors&" :::"
-        setVar $courseLength 0
-        setVar $index 1
+        setVar $player~courseLength 0
+        setVar $player~index 1
         :keepGoing
-        getWord $sectors $mowCourse[$index] $index
-        while ($mowCourse[$index] <> ":::")
-            add $courseLength 1
-            add $index 1
-            getWord $sectors $mowCourse[$index] $index
+        getWord $sectors $player~mowCourse[$player~index] $player~index
+        while ($player~mowCourse[$player~index] <> ":::")
+            add $player~courseLength 1
+            add $player~index 1
+            getWord $sectors $player~mowCourse[$player~index] $player~index
         end
         return
     :noPath
@@ -699,8 +267,8 @@ return
     setVar $i 1
     setVar $RED_adj 0
     send "q t*t1* q*"
-    while (SECTOR.WARPSIN[$target][$i] > 0)
-        setVar $RED_adj SECTOR.WARPSIN[$target][$i]
+    while (SECTOR.WARPSIN[$player~target][$i] > 0)
+        setVar $RED_adj SECTOR.WARPSIN[$player~target][$i]
         if ($RED_adj > 10)
             send "m " & $RED_adj & "* y"
             setTextTrigger TwarpBlind           :TwarpBlind "Do you want to make this jump blind? "
@@ -747,7 +315,7 @@ return
         return
 
     :SectorLocked
-        if ($target = $MAP~stardock)
+        if ($player~target = $MAP~stardock)
             setVar $MAP~backdoor $RED_adj
             saveVar $MAP~backdoor
         end
@@ -768,87 +336,87 @@ return
         else
             setVar $mow_SHIP_MAX_ATTACK $SHIP~SHIP_MAX_ATTACK
         end
-        setVar $destination $BOT~parm1
-        isNumber $number $destination
+        setVar $player~destination $BOT~parm1
+        isNumber $number $player~destination
         if ($number <> 1)
             send "'{" $SWITCHBOARD~bot_name "} - Sector entered is not a number, cannot mow!*"
             return
-        elseif (($destination <= 0) OR ($destination > SECTORS))
+        elseif (($player~destination <= 0) OR ($player~destination > SECTORS))
             send "'{" $SWITCHBOARD~bot_name "} - Sector entered is not valid, cannot mow!*"
             return
         end
-        setVar $destination ($BOT~parm1+0)
+        setVar $player~destination ($BOT~parm1+0)
         getWordPos " "&$BOT~user_command_line&" " $pos "kill"
         if ($pos > 0)
-            setVar $mow_kill TRUE
+            setVar $player~mow_kill TRUE
         else
-            setVar $mow_kill FALSE
+            setVar $player~mow_kill FALSE
         end
         getWordPos " "&$BOT~user_command_line&" " $pos "saveme"
         if ($pos > 0)
-            setVar $mow_saveme TRUE
+            setVar $player~mow_saveme TRUE
         else
-            setVar $mow_saveme FALSE
+            setVar $player~mow_saveme FALSE
         end
         getWordPos " "&$BOT~user_command_line&" " $pos " p "
         if ($pos > 0)
-            setVar $are_we_docking TRUE
+            setVar $player~are_we_docking TRUE
         else
-            setVar $are_we_docking FALSE
+            setVar $player~are_we_docking FALSE
         end
-        setVar $figsToDrop $BOT~parm2
-        isNumber $number $figsToDrop
+        setVar $player~figsToDrop $BOT~parm2
+        isNumber $number $player~figsToDrop
         if ($number <> TRUE)
-            setVar $figsToDrop 0
+            setVar $player~figsToDrop 0
         else
-            if ($figsToDrop > 50000)
+            if ($player~figsToDrop > 50000)
                 send "'{" $SWITCHBOARD~bot_name "} - Cannot drop more than 50,000 fighters per sector!*"
                 return
-            elseif ($figsToDrop > $FIGHTERS)
+            elseif ($player~figsToDrop > $player~fighters)
                 send "'{" $SWITCHBOARD~bot_name "} - Fighters to drop cannot exceed total ship fighters.*"
                 return
             end
         end
-        if ($mow_SHIP_MAX_ATTACK > $FIGHTERS)
+        if ($mow_SHIP_MAX_ATTACK > $player~fighters)
             setVar $mow_SHIP_MAX_ATTACK 9999
         end
-        if ($CURRENT_SECTOR <> CURRENTSECTOR)
-            setVar $CURRENT_SECTOR 0
+        if ($player~current_sector <> CURRENTSECTOR)
+            setVar $player~current_sector 0
         end
         gosub :getCourse
         setVar $j 2
         setVar $result "q q q * "
-        while ($j <= $courseLength)
-            if ($mowCourse[$j] <> $CURRENT_SECTOR)
-                setVar $result $result&"m  "&$mowCourse[$j]&"*   "
-                if (($mowCourse[$j] > 10) AND ($mowCourse[$j] <> $MAP~stardock))
+        while ($j <= $player~courseLength)
+            if ($player~mowCourse[$j] <> $player~current_sector)
+                setVar $result $result&"m  "&$player~mowCourse[$j]&"*   "
+                if (($player~mowCourse[$j] > 10) AND ($player~mowCourse[$j] <> $MAP~stardock))
                     setVar $result $result&"za  "&$mow_SHIP_MAX_ATTACK&"* *  "
                 end
-                if (($figsToDrop > 0) AND ($mowCourse[$j] > 10) AND ($mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
-                    setVar $result $result&"f "&$figsToDrop&" * c d "
-                    setVar $target $mowCourse[$j]
-                    gosub :addFigToData
+                if (($player~figsToDrop > 0) AND ($player~mowCourse[$j] > 10) AND ($player~mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
+                    setVar $result $result&"f "&$player~figsToDrop&" * c d "
+                    setVar $player~target $player~mowCourse[$j]
+                    gosub :player~addFigToData
                 end
-                if (($j >= $courseLength) AND ($mow_saveme = TRUE) AND ($figstoDrop = 0))
+                if (($j >= $player~courseLength) AND ($player~mow_saveme = TRUE) AND ($player~figsToDrop = 0))
                     setVar $result $result&"f 1 * c d "
-                    setVar $target $mowCourse[$j]
-                    gosub :addFigToData
+                    setVar $player~target $player~mowCourse[$j]
+                    gosub :player~addFigToData
                 end
-                if (($called = FALSE) AND ($mow_saveme = TRUE) AND ($j >= ($courseLength-2)))
-                    setVar $result $result&"'"&$destination&"=saveme*  "
+                if (($called = FALSE) AND ($player~mow_saveme = TRUE) AND ($j >= ($player~courseLength-2)))
+                    setVar $result $result&"'"&$player~destination&"=saveme*  "
                     setVar $called TRUE
                 end
             end
             add $j 1
         end
         setVar $docking_instructions ""
-        if ($are_we_docking)
+        if ($player~are_we_docking)
             setVar $docking_instructions " p z t *"
-            if ($destination = $MAP~stardock)
+            if ($player~destination = $MAP~stardock)
                 setVar $docking_instructions " p z s g y g q h *"
             end
             setVar $result $result & $docking_instructions
-        elseif (($mow_saveme = TRUE) AND ($startingLocation = "Citadel"))
+        elseif (($player~mow_saveme = TRUE) AND ($player~startingLocation = "Citadel"))
             setVar $i 0
             while ($i < 8)
                 add $i 1
@@ -857,20 +425,20 @@ return
             end
         end
         send $result
-        gosub :quikstats
-        if (($CURRENT_PROMPT = "Command") AND ($mow_kill = TRUE))
-            setVar $startingLocation "Command"
+        gosub :player~quikstats
+        if (($player~current_prompt = "Command") AND ($player~mow_kill = TRUE))
+            setVar $player~startingLocation "Command"
             goSub :SECTOR~getSectorData
-            goSub :fastAttack
-        elseif ($CURRENT_PROMPT = "Planet")
+            goSub :combat~fastAttack
+        elseif ($player~current_prompt = "Planet")
             send "m * * * c "
-            if ($mow_kill = FALSE)
+            if ($player~mow_kill = FALSE)
                 send "s* "
             else
-                setVar $PROMPT~startingLocation "Citadel"
-                gosub :scanit_cit_kill
+                setVar $player~startingLocation "Citadel"
+                gosub :combat~scanit_cit_kill
             end
-        elseif ($are_we_docking = FALSE)
+        elseif ($player~are_we_docking = FALSE)
             send "*"
         end
 return
@@ -899,47 +467,13 @@ return
         killtrigger topoff_failure2
 return
 
-# ============================== ANSI CONTROLS ==========================================
-:turnOffAnsi
-    send "c n"
-    killalltriggers
-    waitOn "(1) ANSI graphics"
-    getWord CURRENTLINE $ansiStatus 5
-    waitOn "(2) Animation display"
-    getWord CURRENTLINE $animationStatus 5
-    if ($animationStatus = "On")
-        send "2"
-    end
-    if ($ansiStatus = "On")
-        send "1 q q"
-    else
-        send "q q"
-    end
-    waitOn "<Computer deactivated>"
-    return
-
-:turnOnAnsi
-    send "c n"
-    killalltriggers
-    waitOn "(1) ANSI graphics"
-    getWord CURRENTLINE $ansiStatus 5
-    if ($ansiStatus = "Off")
-        send "1 q q"
-    else
-        send "q q"
-    end
-    waitOn "<Computer deactivated>"
-    return
-# ==================================== END ANSI CONTROLS =====================================
-
-
 # ====================================== START BUY COMMAND ==============================================
 :buy
 
     #required params:
     #$overrided - true/false
-    #$buytype - 1/2/3
-    #$buyobject - e/o/f
+    #$player~buytype - 1/2/3
+    #$player~buyobject - e/o/f
 
 
 # ============================== START HAGGLE VARIABLES ============================
@@ -951,55 +485,55 @@ return
 
     send "@"
     waitOn "Average Interval Lag:"
-    gosub :quikstats
-    setVar $startingLocation $CURRENT_PROMPT
+    gosub :player~quikstats
+    setVar $player~startingLocation $player~current_prompt
     
-    setVar $output ""
+    setVar $player~output ""
     setVar $equiprounds 0
     setVar $orgrounds 0
     setVar $fuelrounds 0
     if ($buydownRoundsFromParam <= 0)
         setVar $buydownRoundsFromParam 999999
     end   
-    if ($buytype = "w")
+    if ($player~buytype = "w")
             setVar $buydown_mode 3
-    elseif ($buytype = "b")
+    elseif ($player~buytype = "b")
             setVar $buydown_mode 2
     else 
         setVar $buydown_mode 1
     end
-    if ($buyobject = "e")
-        setVar $buydown_equiprounds $buydownRoundsFromParam
-        setVar $buydown_orgrounds 0
-        setVar $buydown_fuelrounds 0
-    elseif ($buyobject = "o")
-        setVar $buydown_equiprounds 0
-        setVar $buydown_orgrounds $buydownRoundsFromParam
-        setVar $buydown_fuelrounds 0
-    elseif ($buyobject = "f")
-        setVar $buydown_equiprounds 0
-        setVar $buydown_orgrounds 0
-        setVar $buydown_fuelrounds $buydownRoundsFromParam
+    if ($player~buyobject = "e")
+        setVar $player~buydown_equiprounds $buydownRoundsFromParam
+        setVar $player~buydown_orgrounds 0
+        setVar $player~buydown_fuelrounds 0
+    elseif ($player~buyobject = "o")
+        setVar $player~buydown_equiprounds 0
+        setVar $player~buydown_orgrounds $buydownRoundsFromParam
+        setVar $player~buydown_fuelrounds 0
+    elseif ($player~buyobject = "f")
+        setVar $player~buydown_equiprounds 0
+        setVar $player~buydown_orgrounds 0
+        setVar $player~buydown_fuelrounds $buydownRoundsFromParam
     else
         setVar $SWITCHBOARD~message "Please use format buy [type] {speed} {#cycles} {override}*"
         gosub :SWITCHBOARD~switchboard
         return
     end
 
-    if ($startingLocation = "Citadel")
+    if ($player~startingLocation = "Citadel")
         send "Q"
     end
     send "t n l 1* t n l 2* t n l 3* s n l1*"
     waitOn "How many groups of Colonists do you want to leave"
     gosub :PLANET~getPlanetinfo
-    if ($startingLocation = "Citadel")
+    if ($player~startingLocation = "Citadel")
         send "C s* "
     else
         send "Q D"
     end
-    gosub :getinfo
-    if ($TOTAL_HOLDS <> $EMPTY_HOLDS)
-        if ($startingLocation <> "Citadel")
+    gosub :player~getinfo
+    if ($player~total_holds <> $player~empty_holds)
+        if ($player~startingLocation <> "Citadel")
             gosub :PLANET~landingSub
         end
         setVar $SWITCHBOARD~message "Planet full, cannot empty ship holds*"
@@ -1010,13 +544,13 @@ return
     gosub :getPortInfo
     if ($validPortFound <> TRUE)
         echo "*No valid port found*"
-        if ($startingLocation <> "Citadel")
+        if ($player~startingLocation <> "Citadel")
             gosub :PLANET~landingSub
         end
         gosub :clearAdjacent
         goto :buydownExit   
     end
-    if ($startingLocation = "Citadel")
+    if ($player~startingLocation = "Citadel")
         send "Q"
     else
         send "L " & $PLANET~PLANET & "* "
@@ -1028,12 +562,12 @@ return
 
 
 :getinputs
-    setVar $turns_needed 0
-        setVar $turns_allowed $TURNS
-        subtract $turns_allowed 1
+    setVar $player~turns_needed 0
+        setVar $player~turns_allowed $player~turns
+        subtract $player~turns_allowed 1
 
     # --- calculate how much fuel we can buy
-    if ($buydown_fuelrounds > 0)
+    if ($player~buydown_fuelrounds > 0)
         setVar $fuelrounds 0
         setVar $planetfuelroom $PLANET~PLANET_FUEL_MAX
         subtract $planetfuelroom $PLANET~PLANET_FUEL
@@ -1042,21 +576,21 @@ return
             setVar $maxfueltobuy $planetfuelroom
         end
         setVar $maxfuelrounds $maxfueltobuy
-        divide $maxfuelrounds $TOTAL_HOLDS
-        if ($maxfuelrounds > $turns_allowed)
-            setVar $maxfuelrounds $turns_allowed
+        divide $maxfuelrounds $player~total_holds
+        if ($maxfuelrounds > $player~turns_allowed)
+            setVar $maxfuelrounds $player~turns_allowed
         end
-        if ($maxfuelrounds > $buydown_fuelrounds)
-                setVar $maxfuelrounds $buydown_fuelrounds
+        if ($maxfuelrounds > $player~buydown_fuelrounds)
+                setVar $maxfuelrounds $player~buydown_fuelrounds
         end
         if ($maxfuelrounds > 0)
             setVar $fuelrounds $maxfuelrounds
         end
-        add $turns_needed $fuelrounds
-        subtract $turns_allowed $fuelrounds
+        add $player~turns_needed $fuelrounds
+        subtract $player~turns_allowed $fuelrounds
     end
         # --- calculate how much org we can buy
-        if ($buydown_orgrounds > 0)
+        if ($player~buydown_orgrounds > 0)
         setVar $orgrounds 0
             setVar $planetorgroom $PLANET~PLANET_ORGANICS_MAX
             subtract $planetorgroom $PLANET~PLANET_ORGANICS
@@ -1065,21 +599,21 @@ return
                 setVar $maxorgtobuy $planetorgroom
             end
             setVar $maxorgrounds $maxorgtobuy
-            divide $maxorgrounds $TOTAL_HOLDS
-            if ($maxorgrounds > $turns_allowed)
-                setVar $maxorgrounds $turns_allowed
+            divide $maxorgrounds $player~total_holds
+            if ($maxorgrounds > $player~turns_allowed)
+                setVar $maxorgrounds $player~turns_allowed
             end
-            if ($maxorgrounds > $buydown_orgrounds)
-                setVar $maxorgrounds $buydown_orgrounds
+            if ($maxorgrounds > $player~buydown_orgrounds)
+                setVar $maxorgrounds $player~buydown_orgrounds
             end
             if ($maxorgrounds > 0)
                 setVar $orgrounds $maxorgrounds
             end
-        add $turns_needed $orgrounds
-            subtract $turns_allowed $orgrounds
+        add $player~turns_needed $orgrounds
+            subtract $player~turns_allowed $orgrounds
         end 
         # --- calculate how much equip we can buy
-        if ($buydown_equiprounds > 0)
+        if ($player~buydown_equiprounds > 0)
         setVar $equiprounds 0
             setVar $planetequiproom $PLANET~PLANET_EQUIPMENT_MAX
             subtract $planetequiproom $PLANET~PLANET_EQUIPMENT
@@ -1088,21 +622,21 @@ return
                 setVar $maxequiptobuy $planetequiproom
             end
             setVar $maxequiprounds $maxequiptobuy
-            divide $maxequiprounds $TOTAL_HOLDS
-            if ($maxequiprounds > $turns_allowed)
-            setVar $maxequiprounds $turns_allowed
+            divide $maxequiprounds $player~total_holds
+            if ($maxequiprounds > $player~turns_allowed)
+            setVar $maxequiprounds $player~turns_allowed
             end
-            if ($maxequiprounds > $buydown_equiprounds)
-                setVar $maxequiprounds $buydown_equiprounds
+            if ($maxequiprounds > $player~buydown_equiprounds)
+                setVar $maxequiprounds $player~buydown_equiprounds
             end
             if ($maxequiprounds > 0)
                 setVar $equiprounds $maxequiprounds
             end
-        add $turns_needed $equiprounds
-            subtract $turns_allowed $equiprounds
+        add $player~turns_needed $equiprounds
+            subtract $player~turns_allowed $equiprounds
         end
         if (($fuelrounds = 0) and ($orgrounds = 0) and ($equiprounds = 0))
-            if ($startingLocation = "Citadel")
+            if ($player~startingLocation = "Citadel")
                     send "C "
             else
                 send "q "
@@ -1130,7 +664,7 @@ return
         # determine how much this will all cost, and get credits from citadel if needed
             if ($fuelrounds > 0)
                     setVar $fuel_creds_needed $fuelrounds
-                    multiply $fuel_creds_needed $TOTAL_HOLDS
+                    multiply $fuel_creds_needed $player~total_holds
                     multiply $fuel_creds_needed 30
                     if ($buydown_mode = "Worst Price")
                         multiply $fuel_creds_needed 3
@@ -1139,7 +673,7 @@ return
             end
     if ($orgrounds > 0)
             setVar $org_creds_needed $orgrounds
-            multiply $org_creds_needed $TOTAL_HOLDS
+            multiply $org_creds_needed $player~total_holds
             multiply $org_creds_needed 60
             if ($buydown_mode = "Worst Price")
                 multiply $org_creds_needed 3
@@ -1148,7 +682,7 @@ return
     end
     if ($equiprounds > 0)
             setVar $equip_creds_needed $equiprounds
-            multiply $equip_creds_needed $TOTAL_HOLDS
+            multiply $equip_creds_needed $player~total_holds
             multiply $equip_creds_needed 100
             if ($buydown_mode = "Worst Price")
                 multiply $equip_creds_needed 3
@@ -1159,28 +693,28 @@ return
     add $total_creds_needed $fuel_creds_needed
     add $total_creds_needed $org_creds_needed
     add $total_creds_needed $equip_creds_needed
-    setVar $startingCredits $CREDITS
-    if ($total_creds_needed > $CREDITS)
+    setVar $startingCredits $player~credits
+    if ($total_creds_needed > $player~credits)
             setVar $cashonhand $PLANET~CITADEL_CREDITS
-            add $cashonhand $CREDITS
+            add $cashonhand $player~credits
             if ($cashonhand > $total_creds_needed)
                 send "C"
-                send "T T " & $CREDITS & "* "
+                send "T T " & $player~credits & "* "
                 send "T F " & $total_creds_needed & "* "
-                setVar $CREDITS $total_creds_needed
+                setVar $player~credits $total_creds_needed
                 send "Q"
             else
-                if ($startingLocation = "Citadel")
+                if ($player~startingLocation = "Citadel")
                         send "C "
                 else
                     send "q "
             end
-                setVar $exit_message "Not enough cash onhand"
+                setVar $player~exit_message "Not enough cash onhand"
             gosub :clearAdjacent
                 goto :buydownExit
             end
     end
-    setVar $init_credits $CREDITS
+    setVar $init_credits $player~credits
 
 :buydownequip
     if ($equiproundsleft > 0)
@@ -1198,7 +732,7 @@ return
         end
         if ($equiprounds > 0)
             if ($buydown_mode = "Worst Price")
-                    setVar $output $output & " - Equipment overhaggled at " & $overhagglemultiple & "*"
+                    setVar $player~output $player~output & " - Equipment overhaggled at " & $overhagglemultiple & "*"
             end
         end
 
@@ -1215,7 +749,7 @@ return
         end
         if ($orgrounds > 0)
             if ($buydown_mode = "Worst Price")
-                setVar $output $output & " - Organics overhaggled at " & $overhagglemultiple & "*"
+                setVar $player~output $player~output & " - Organics overhaggled at " & $overhagglemultiple & "*"
             end
         end
 
@@ -1229,27 +763,27 @@ return
         end
         if ($fuelrounds > 0)
             if ($buydown_mode = "Worst Price")
-                    setVar $output $output & " - Fuel Ore overhaggled at " & $overhagglemultiple & "*"
+                    setVar $player~output $player~output & " - Fuel Ore overhaggled at " & $overhagglemultiple & "*"
             end
         end
 
 :buydownFinish
-        if ($startingLocation = "Citadel")
+        if ($player~startingLocation = "Citadel")
             send "C "
         end
-        gosub :getinfo
-        setVar $credits_spent $init_credits
-        subtract $credits_spent $CREDITS
+        gosub :player~getinfo
+        setVar $player~credits_spent $init_credits
+        subtract $player~credits_spent $player~credits
         gosub :clearAdjacent
-        if ($startingLocation = "Planet")
+        if ($player~startingLocation = "Planet")
             send "L " & $PLANET~PLANET & "* "
         end
-        if ($CREDITS > $startingCredits)
-            if ($startingLocation = "Citadel")
-                send "T T " & ($CREDITS-$startingCredits) & "* "
+        if ($player~credits > $startingCredits)
+            if ($player~startingLocation = "Citadel")
+                send "T T " & ($player~credits-$startingCredits) & "* "
             end
         end
-        setVar $exit_message "Normal Exit"
+        setVar $player~exit_message "Normal Exit"
 
     :buydownExit
             return
@@ -1271,7 +805,7 @@ return
 :buyhaggle
     killtrigger buyfirstoffer
 
-    setVar $empty $TOTAL_HOLDS
+    setVar $empty $player~total_holds
     send "*"
     setTextLineTrigger buyfirstoffer :buyfirstoffer "We'll sell them for"
     pause
@@ -1297,12 +831,12 @@ return
         striptext $offer ","
 
         gosub :swathoff
-        if ($swathoff = 0)
+        if ($player~swathoff = 0)
             send "L " & $PLANET~PLANET & "* "
-        if ($startingLocation = "Citadel")
+        if ($player~startingLocation = "Citadel")
             send "C "
         end
-            setVar $exit_message $swathOffMessage
+            setVar $player~exit_message $player~swathoffMessage
             goto :buydownExit
         end
 
@@ -1482,8 +1016,8 @@ return
         killtrigger buyscrewup8 
         killtrigger buyscrewup9 
         killtrigger buyscrewup10 
-        getWord CURRENTLINE $CREDITS 3
-        stripText $CREDITS ","
+        getWord CURRENTLINE $player~credits 3
+        stripText $player~credits ","
         setVar $oldempty $empty
         getWord CURRENTLINE $empty 6
         if ($oldempty = $empty)
@@ -1501,7 +1035,7 @@ return
 
 # ----- SUB :buynohaggle
 :buynohaggle
-    if ($swathoff = 0)
+    if ($player~swathoff = 0)
 
         waitOn "How many holds of"
         send "*"
@@ -1525,7 +1059,7 @@ return
 
 # ----- SUB :getPortInfo -----
 :getPortInfo
-    if ($startingLocation = "Citadel")
+    if ($player~startingLocation = "Citadel")
     send "S*CR*Q"
     else
         send "*CR*Q"
@@ -1588,7 +1122,7 @@ return
 # ======================     END BUYING SUBROUTINES     =================
 # =================================== ADJACENT CONTROLS ====================================
 :voidadjacent
-    getSector $CURRENT_SECTOR $sectorInfo
+    getSector $player~current_sector $sectorInfo
     if ($sectorInfo.warp[1] = 0)
         send "'This sector has no warps, maybe you need to scan it first*"
         halt
@@ -1608,7 +1142,7 @@ return
     end
 return
 :clearadjacent
-    getSector $CURRENT_SECTOR $sectorInfo
+    getSector $player~current_sector $sectorInfo
     if ($sectorInfo.warp[1] = 0)
         setVar $SWITCHBOARD~message "This sector has no warps, try to scan it first!*"
         gosub :SWITCHBOARD~switchboard
@@ -1632,7 +1166,7 @@ return
 
 # ===========================  START SWATH DISABLING SUBROUTINE  =================
 :swathoff
-    if ($swathoff = FALSE)
+    if ($player~swathoff = FALSE)
         setTextTrigger swathison :swathison "Command [TL="
         setDelayTrigger swathisoff :swathisoff 2000
         pause
@@ -1640,14 +1174,14 @@ return
         :swathison
         killtrigger swathisoff
         killtrigger swathison
-        setVar $swathOffMessage "Detected SWATH Autohaggle"
-        setVar $swathoff FALSE
+        setVar $player~swathoffMessage "Detected SWATH Autohaggle"
+        setVar $player~swathoff FALSE
         return
 
         :swathisoff
         killtrigger swathisoff
         killtrigger swathison
-        setVar $swathoff TRUE
+        setVar $player~swathoff TRUE
     end
 return
 # ==========================   END SWATH DISABLING SUBROUTINE  =================
@@ -1659,7 +1193,7 @@ return
         killtrigger strade
         killtrigger go
         killtrigger done
-    gosub :setConnectionTriggers
+    gosub :player~setConnectionTriggers
         SetTextTrigger ptrade :bunits "do you want to buy ["
         SetTextTrigger strade :sunits "do you want to sell ["
         setTextLineTrigger go :finishhaggle "Agreed, "
@@ -1691,7 +1225,7 @@ return
         killtrigger donehaggling
     killtrigger donhag
     killtrigger offerme
-        gosub :setConnectionTriggers
+        gosub :player~setConnectionTriggers
         setTextTrigger donehag :done_haggle "Command [TL="
         SetTextTrigger donehaggling :done_haggle "empty cargo holds."
         SetTextTrigger offerme :offerme "] ?"
@@ -1719,7 +1253,7 @@ return
         ELSE
            add $multiplier 1
         END
-        gosub :setConnectionTriggers
+        gosub :player~setConnectionTriggers
         send "@"
         waiton "Average Interval Lag:"
         setTextTrigger 0 :done_haggle "How many holds of"
@@ -1747,113 +1281,4 @@ return
         killtrigger offerme
     killalltriggers
 return
-
-:setConnectionTriggers
-    killtrigger discod1
-    killtrigger discod2
-    SetEventTrigger     Discod1     :Discod         "CONNECTION LOST"
-    SetEventTrigger     Discod2     :Discod         "Connections have been temporarily disabled."
-
-return
-
-#=============================== FORMATTING FOR SPACES =======================================
-:formatNumberForSpaces
-	if ($inputVariable < 10)
-		setVar $outputVariable "    " & $inputVariable
-	elseif ($inputVariable < 100)
-		setVar $outputVariable "   " & $inputVariable
-	elseif ($inputVariable < 1000)
-		setVar $outputVariable "  " & $inputVariable
-	elseif ($inputVariable < 10000)
-		setVar $outputVariable " " & $inputVariable
-	else
-		setVar $outputVariable $inputVariable
-	end
-return
-
-:formatPercentageForSpaces
-	if ($inputVariable < 10)
-		setVar $outputVariable "  (" & $inputVariable&"%)"
-	elseif ($inputVariable < 100)
-		setVar $outputVariable " (" & $inputVariable&"%)"
-	elseif ($inputVariable < 1000)
-		setVar $outputVariable "(" & $inputVariable&"%)"
-	else
-		setVar $outputVariable $inputVariable
-	end
-return
-#============================= END FORMATTING FOR SPACES =====================================
-
-:startCNsettings
-    send "CN"
-        SetTextLineTrigger ansi1 :cncheck "(1) ANSI graphics            - Off"
-        SetTextLineTrigger anim1 :cncheck "(2) Animation display        - On"
-        SetTextLineTrigger page1 :cncheck "(3) Page on messages         - On"
-        SetTextLineTrigger setsschn :setsschn "(4) Sub-space radio channel"
-        SetTextLineTrigger silence1 :cncheck "(7) Silence ALL messages     - Yes"
-        SetTextLineTrigger abortdisplay1 :cncheck "(9) Abort display on keys    - ALL KEYS"
-        SetTextLineTrigger messagedisplay1 :cncheck "(A) Message Display Mode     - Long"
-        SetTextLineTrigger screenpauses1 :cncheck "(B) Screen Pauses            - Yes"
-        SetTextLineTrigger onlineautoflee0 :cncdone "(C) Online Auto Flee         - Off"
-        SetTextLineTrigger onlineautoflee1 :cncalmostdone "(C) Online Auto Flee         - On"
-        pause
-    :cncheck
-        gosub :getCNC
-        pause
-        :setsschn
-            getWord CURRENTLINE $BOT~subspace 6
-        if ($BOT~subspace = 0)
-            getRnd $BOT~subspace 101 60000
-            send "4" & $BOT~subspace & "*"
-        end
-        saveVar $BOT~subspace
-        pause
-    :cncalmostdone
-        gosub :getCNC
-    :cncdone
-            send "QQ"
-            killtrigger 1
-            killtrigger 2
-            SetTextTrigger 1 :subStartCNcontinue "Command [TL="
-            SetTextTrigger 2 :subStartCNcontinue "Citadel command (?=help)"
-            pause
-            :subStartCNcontinue
-            killtrigger 1
-            killtrigger 2
-return
-:getCNC
-    getWord CURRENTLINE $cnc 1
-    stripText $cnc "("
-    stripText $cnc ")"
-    send $cnc&"  "
-return
-
-:moveIntoSector
-	setVar $result ""
-	setVar $dropFigs TRUE
-	setVar $result $result&"m "&$moveIntoSector&"*"
-	if (($moveIntoSector > 10) AND ($moveIntoSector <> $map~stardock))
-		if ($fighters > $ship~ship_max_attack)
-			setVar $result $result&"za"&$ship~ship_max_attack&"* * "
-		else
-			setVar $result $result&"za"&$fighters&"* * "
-		end
-	end
-	if ($surroundFigs <= 0)
-		setvar $surroundFigs 1
-	end
-	if (($moveIntoSector > 10) AND ($moveIntoSector <> $map~stardock))
-		if ($surroundFigs > 0)
-			setVar $result $result&"f  z  "&$surroundFigs&"* z  c  d  *  "
-		end
-		if ($surroundlimp > 0)
-			setVar $result $result&"  H  2  Z  "&$surroundLimp&"*  Z C  *  "
-		end
-		if ($surroundmine > 0)
-			setVar $Result $result&"  H  1  Z  "&$surroundMine&"*  Z C  *  "
-		end
-	end
-	send $result
-	return
-
 

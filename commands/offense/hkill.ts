@@ -1,6 +1,6 @@
 	logging off
 	gosub :BOT~loadVars
-	 gosub :player~init
+	 gosub :combat~init 
 
 	setVar $BOT~help[1] $BOT~tab&"hkill {surround} "
 	setVar $BOT~help[2] $BOT~tab&"  - Holoscans and then kills if enemy in adjacent sector."
@@ -21,7 +21,7 @@
 	setVar $startingLocation $PLAYER~current_prompt
 	setVar $BOT~validPrompts "Citadel Command"
 	gosub :BOT~checkStartingPrompt
-	gosub :PLAYER~holo_kill
+	gosub :combat~holo_kill
 	if ($SWITCHBOARD~message <> "")
 		gosub :SWITCHBOARD~switchboard
 	end
@@ -36,4 +36,6 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"
+
 

@@ -15,6 +15,8 @@
     gosub :BOT~help_file
 
 
+	gosub :combat~init 
+
     gosub :PLAYER~quikstats
     setVar $homeSector $PLAYER~CURRENT_SECTOR
     setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
@@ -129,7 +131,7 @@
         if ($PLAYER~CURRENT_SECTOR <> CURRENTSECTOR)
             setVar $PLAYER~CURRENT_SECTOR 0
         end
-        gosub :PLAYER~getCourse
+        gosub :tactics~getCourse
         if ($PLAYER~courseLength <= 0)
             halt
         end
@@ -185,7 +187,7 @@
         if (($PLAYER~CURRENT_PROMPT = "Command") AND ($mow_kill = TRUE))
             setVar $PROMPT~startingLocation "Command"
             goSub :SECTOR~getSectorData
-            goSub :PLAYER~fastAttack
+            goSub :combat~fastAttack
         elseif ($PLAYER~CURRENT_PROMPT = "Planet")
             send "m * * * c "
             if ($mow_kill = FALSE)
@@ -224,8 +226,11 @@ return
 include "source\module_includes\bot"
 include "source\module_includes\prompt"
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"
+

@@ -44,7 +44,7 @@ setVar $BOT~help[33]  $BOT~tab&" {direct}   - Skip secondary scan"
 # making a varibale for stesting
 setVar $sectors SECTORS
   
-gosub :player~init
+gosub :combat~init 
 
 loadVar $player~surroundFigs
 gosub :BOT~help_file
@@ -649,7 +649,7 @@ halt
 					gosub :player~quikstats
 
 					send "qq"
-					gosub :PLAYER~surround
+					gosub :combat~surround
 					send "l" $currentPlanet "*c"
 					waitfor "<Enter Citadel>"
 					gosub :targeting~scanit_cit_kill
@@ -1304,6 +1304,7 @@ return
 
 include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\combat"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"

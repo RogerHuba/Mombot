@@ -1,5 +1,7 @@
 	gosub :BOT~loadVars
-
+	loadvar $player~surroundlimp
+	loadvar $player~surroundmine
+	
 	setVar $BOT~help[1]  $BOT~tab&"clear - clear all enemy armids and limpets from sector "
 	gosub :BOT~help_file
     
@@ -42,6 +44,7 @@
         halt
     end
     setvar $switchboard~message "Clearing Current Sector*"
+    gosub :SWITCHBOARD~switchboard
     send "q qq z n *  "
     gosub :clear_sector_deployEquipment
     while (($placedLimpet = FALSE) OR ($placedArmid = FALSE))
@@ -54,6 +57,8 @@
     setSectorParameter $PLAYER~CURRENT_SECTOR "LIMPSEC" TRUE
     setSectorParameter $PLAYER~CURRENT_SECTOR "MINESEC" TRUE
     setvar $switchboard~message "Sector Cleared*"
+    gosub :SWITCHBOARD~switchboard
+        
     halt
     :clear_sector_attemptClearingMines
         setVar $i 0
@@ -67,15 +72,22 @@
         send "q y n * t* * *" $password "*    *    *       za9999*   z*   "
         return
     :clear_sector_deployEquipment
-        if ($PLAYER~ARMIDS < 3)
+    	if ($player~surroundmine <= 0)
+    		setvar $player~surroundmine 1
+    	end
+    	if ($player~surroundlimp <= 0)
+    		setvar $player~surroundlimp 1
+    	end
+
+        if ($PLAYER~ARMIDS < $player~surroundmine)
             setVar $minesToDeploy $PLAYER~ARMIDS
         else
-            setVar $minesToDeploy 3
+            setVar $minesToDeploy $player~surroundmine
         end
-        if ($PLAYER~LIMPETS < 3)
+        if ($PLAYER~LIMPETS < $player~surroundlimp)
             setVar $limpsToDeploy $PLAYER~LIMPETS
         else
-            setVar $limpsToDeploy 3
+            setVar $limpsToDeploy $player~surroundlimp
         end
         setVar $clearMac ""
         if (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours"))

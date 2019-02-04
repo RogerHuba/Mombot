@@ -124,7 +124,7 @@
 						end
 					end
 					setVar $PLAYER~warpto $destination
-		            gosub :PLAYER~twarp
+		            gosub :tactics~twarp
 		            gosub :PLAYER~current_prompt
 		            if ($PLAYER~twarpSuccess = TRUE)
 		        		send "f 0*"				
@@ -134,7 +134,7 @@
 
 
 						#setVar $PLAYER~warpto $homeSector
-			            #gosub :PLAYER~twarp
+			            #gosub :tactics~twarp
 			            #gosub :PLAYER~current_prompt
 		            end
 		        	setSectorParameter $destination "FIGSEC" FALSE
@@ -433,3 +433,4 @@ return
 
 #-=-=-=-=-includes-=-=-=-=-
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"

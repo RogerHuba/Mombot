@@ -256,7 +256,7 @@
 						setVar $PLAYER~buyobject "f"
 						setVar $PLAYER~buytype "s"
 						setVar $PLAYER~buydownRoundsFromParam $turnsToEmpty
-						gosub :PLAYER~buy
+						gosub :tactics~buy
 						gosub :PLAYER~quikstats
 					end
 				else
@@ -382,6 +382,7 @@
 #INCLUDES:
 include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"
 include "source\bot_includes\game"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"

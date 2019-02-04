@@ -22,7 +22,7 @@
 
 	:cit_kill
 	
-	gosub :player~init
+	gosub :combat~init 
 	gosub :player~quikstats	
 	gosub :player~getInfo
 	setVar $player~startingLocation $player~CURRENT_PROMPT
@@ -197,11 +197,11 @@
 		setvar $player~override $override
 	end
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-		goSub :player~fastCitadelAttack
+		goSub :combat~fastCitadelAttack
 		goto :scanit_again
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
 		setvar $player~startinglocation "Citadel"
-		gosub :player~fastCapture
+		gosub :combat~fastCapture
 		send "l "&$PLANET~PLANET&"* m * * * c "
 		gosub :player~quikstats
 		goto :scanit_again
@@ -227,5 +227,6 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"
 
 

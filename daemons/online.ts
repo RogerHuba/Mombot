@@ -1,6 +1,6 @@
 
 
-gosub :PLAYER~init
+gosub :player~init 
 
 
 window COMS 250 400 "Who's Playing?" ONTOP

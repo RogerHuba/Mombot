@@ -56,7 +56,7 @@
 		if ($startinglocation = "Command")
 			if (($PLAYER~CURRENT_SECTOR > 10) and ($PLAYER~CURRENT_SECTOR <> $MAP~STARDOCK))
 				if ($refill = TRUE)
-					gosub :PLAYER~topoff
+					gosub :tactics~topoff
 				else
 					if ($i = $bot~parm1)
 						if ($startingLocation = "Command")
@@ -90,6 +90,7 @@
 #INCLUDES:
 include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"

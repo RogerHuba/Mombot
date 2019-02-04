@@ -42,7 +42,7 @@ systemscript
 window COMS 280 650 "Stats" ONTOP
 gosub :update_window
 
-gosub :PLAYER~init
+gosub :player~init 
 
 :start_over
     setVar $CURRENT_PROMPT      "Undefined"
@@ -438,3 +438,4 @@ goto :start_over
 return
 # includes:
 include "source\bot_includes\player"
+

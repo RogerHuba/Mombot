@@ -22,6 +22,8 @@
 	setVar $BOT~script_title "Jack In The Box"
 	gosub :BOT~banner	
 
+	gosub :combat~init 
+
 	if ($parm1 <= 0)
 		setVar $SWITCHBOARD~message "Need to define saveme planet number.*"
 		gosub :SWITCHBOARD~switchboard
@@ -73,7 +75,7 @@
 :checkForVictimsFromCitadel
 	gosub :SECTOR~getSectorData
 	if ($SECTOR~corpieCount < $SECTOR~RealTraderCount)
-		goSub :PLAYER~fastCitadelAttack
+		goSub :combat~fastCitadelAttack
 		goto :checkForVictimsFromCitadel
 	end
 return
@@ -87,5 +89,7 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"
+
 
 

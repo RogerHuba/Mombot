@@ -58,7 +58,7 @@
 	setvar $player~save true
 	gosub :player~quikstats
 		setVar $player~startingLocation $player~current_prompt
-	gosub :player~init
+	gosub :combat~init 
 
 	if ($player~current_prompt <> "Citadel")
 		send "'{" $bot~bot_name "} - Must start at the citadel prompt*"
@@ -142,7 +142,7 @@
 
 :checkForCappingVictimsFromCitadel
 	gosub :sector~getSectorData
-	goSub :player~fastCapture
+	goSub :combat~fastCapture
 	if ($player~isFound)
 		send "l "&$PLANET~PLANET&"* m * * * c "
 		gosub :player~quikstats
@@ -161,4 +161,5 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"
 

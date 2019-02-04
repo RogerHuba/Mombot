@@ -389,16 +389,23 @@ if ($pos > 0)
     DISCONNECT
     setVar $BOT~isShipDestroyed TRUE
     saveVar $BOT~isShipDestroyed
-    listActiveScripts $scripts
     setVar $i 1
     setVar $found FALSE
     setVar $rebooted FALSE
     echo "Mombot rebooting..**"
+    setdelaytrigger waitforrebootlist :listokaynow 1500
+    pause
+    :listokaynow
+    listActiveScripts $scripts
     while ($i <= $scripts)
         getWordPos "<><><>"&$scripts[$i] $pos "<><><>__mom_bot"
         if ($pos > 0)
             if ($rebooted = FALSE)
+			    setdelaytrigger waitforreboot :okaynow 3000
+			    pause
+			    :okaynow
                 load "scripts\mombot\"&$scripts[$i]
+                setvar $rebooted true
             end
             stop $scripts[$i]
             setVar $found TRUE
@@ -415,10 +422,13 @@ pause
 
 :emergency_reboot
 
-    listActiveScripts $scripts
     setVar $i 1
     setVar $found FALSE
     setVar $rebooted FALSE
+    setdelaytrigger listokaynowemergency :listokaynowemergency 1500
+    pause
+    :listokaynowemergency
+    listActiveScripts $scripts
     while ($i <= $scripts)
         getWordPos "<><><>"&$scripts[$i] $pos "<><><>__mom_bot"
         if ($pos > 0)
@@ -433,8 +443,9 @@ pause
     if ($FOUND = FALSE)
         ECHO "No mombot script found to reboot.*"
     end
+    setdelaytrigger okaynowemergency :okaynowemergency 3000
+    pause
+    :okaynowemergency
     load "scripts\mombot\"&$boot_this
-
-
     setTextLineTrigger  emergency_reboot      :emergency_reboot $bot~bot_name&" "&$bot~subspace&"<EMERGENCY REBOOT>"&$bot~bot_password
 	pause

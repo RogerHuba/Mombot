@@ -24,7 +24,7 @@
 	gosub :BOT~banner
 
 	setVar $PLAYER~save TRUE
-	gosub :player~init
+	gosub :combat~init 
 
 
 	getSectorParameter SECTORS "FIGSEC" $isFigged
@@ -455,3 +455,5 @@ include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
 include "source\bot_includes\targeting"
+include "source\bot_includes\combat"
+

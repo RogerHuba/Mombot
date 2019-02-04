@@ -23,6 +23,7 @@
 	setVar $BOT~script_title "Tripwire"
 	gosub :BOT~banner
 
+	gosub :combat~init 
 
 	if ($parm1 = "move")
 		if ($parm2 <= 0 OR $parm2 > SECTORS)
@@ -172,7 +173,7 @@
 				if ($PLAYER~CURRENT_PROMPT = "Citadel")
 					setVar $PLAYER~startingLocation "Citadel"
 					goSub :SECTOR~getSectorData
-					goSub :PLAYER~fastCitadelAttack					
+					goSub :combat~fastCitadelAttack					
 				else
 					halt
 				end
@@ -249,7 +250,7 @@
 			
 			if ($PLAYER~CURRENT_PROMPT = "Command")
 				goSub :SECTOR~getSectorData
-				goSub :PLAYER~fastAttack
+				goSub :combat~fastAttack
 			else
 				send "'"&$SWITCHBOARD~bot_name&" exit*"
 				waitFor "Exit Enter"		
@@ -267,3 +268,5 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"
+

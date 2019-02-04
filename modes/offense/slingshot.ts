@@ -17,7 +17,7 @@
 	gosub :BOT~help_file
 
 	setVar $PLAYER~save TRUE
-	gosub :player~init
+	gosub :combat~init 
 
 
 	setVar $ENDLINE "_ENDLINE_"
@@ -209,7 +209,7 @@ return
 :checkForVictimsFromCitadel
 	gosub :sector~getSectorData
 	if ($sector~corpieCount < $sector~realTraderCount)
-		goSub :player~fastCitadelAttack
+		goSub :combat~fastCitadelAttack
 		goto :checkForVictimsFromCitadel
 	end
 return
@@ -225,4 +225,6 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"
+
 

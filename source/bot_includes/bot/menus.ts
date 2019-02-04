@@ -45,10 +45,10 @@
     setVar $qss[3] $SWITCHBOARD~bot_name
     setVar $qss[4] $BOT~password
     if ($BOT~bot_password = 0)
-        setVar $qss[5] "Not Defined"
-    else
-        setVar $qss[5] $BOT~bot_password
+    	setvar $bot~bot_password $bot~subspace
+    	savevar $bot~bot_password
     end
+    setVar $qss[5] $BOT~bot_password
     setVar $qss[6] $PLAYER~surroundFigs
     setVar $qss[7] $PLAYER~surroundLimp
     setVar $qss[8] $PLAYER~surroundMine
@@ -157,7 +157,7 @@
     gosub :menuSpacing
     Echo #27 & "[2J"
     Echo "**"
-    echo ANSI_11&"         General Info                     Surround/Attack Options*"
+    echo ANSI_11&"         General Info                     Gridding/Attack Options*"
     echo ANSI_10&#27&"[35m<"&#27&"[32mC"&#27&"[35m> "&ANSI_7&$qss_var[18]&ANSI_10&#27&"[35m<"&#27&"[32m3"&#27&"[35m> "&ANSI_7&$qss_var[6]&"*"
     echo ANSI_10&#27&"[35m<"&#27&"[32mP"&#27&"[35m> "&ANSI_7&$qss_var[4]&ANSI_10&#27&"[35m<"&#27&"[32m4"&#27&"[35m> "&ANSI_7&$qss_var[7]&"*"
     echo ANSI_10&#27&"[35m<"&#27&"[32mN"&#27&"[35m> "&ANSI_7&$qss_var[3]& ANSI_10&#27&"[35m<"&#27&"[32m5"&#27&"[35m> "&ANSI_7&$qss_var[8]&"*"

@@ -27,7 +27,7 @@ reqRecording
 	gosub :BOT~banner
 
 	setVar $PLAYER~save TRUE
-	gosub :player~init
+	gosub :combat~init 
 
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 
@@ -561,10 +561,10 @@ return
 	killAllTriggers
 	gosub :sector~getSectorData
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-		goSub :player~fastCitadelAttack
+		goSub :combat~fastCitadelAttack
 		goto :scanit_again
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
-		gosub :player~fastCapture
+		gosub :combat~fastCapture
 		goto :scanit_again
 	end
 	goto :halt
@@ -576,10 +576,10 @@ return
 	setvar $player~startingLocation $player~current_prompt
 	gosub :sector~getSectorData
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-		goSub :player~fastCitadelAttack
+		goSub :combat~fastCitadelAttack
 		goto :scanit_again
 	elseif (($sector~emptyShipCount > $sector~myShipCount))
-		gosub :player~fastCapture
+		gosub :combat~fastCapture
 		goto :scanit_again
 	end
 return	
@@ -813,3 +813,5 @@ include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"
+

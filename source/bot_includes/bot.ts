@@ -121,6 +121,9 @@ return
     saveVar $GAME~MULTIPLE_PHOTONS
     saveVar $alarm_list
     saveVar $echoInterval
+    if ($bot_password = 0)
+    	setvar $bot_password $subspace
+    end
     saveVar $bot_password
     saveVar $PLAYER~surroundAvoidShieldedOnly
     saveVar $PLAYER~surroundAvoidAllPlanets
@@ -200,6 +203,10 @@ return
     loadVar $subspace
     loadVar $password
     loadVar $bot_password
+        if ($bot_password = 0)
+    	setvar $bot_password $subspace
+    	savevar $bot_password
+    end
     loadVar $PLAYER~surroundAvoidShieldedOnly
     loadVar $surroundAutoCapture
     loadVar $PLAYER~surroundAvoidAllPlanets

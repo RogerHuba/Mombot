@@ -23,7 +23,7 @@ gosub :BOT~banner
 goto :Start_Up_Routines
 :colo_next
 	setVar $PLAYER~destination 1
-	gosub :PLAYER~getcourse
+	gosub :tactics~getCourse
     setVar $j 2
     setVar $result ""
     while ($j <= $PLAYER~courseLength)
@@ -39,7 +39,7 @@ goto :Start_Up_Routines
 
     setVar $PLAYER~starting_point 1
 	setVar $PLAYER~destination $PLAYER~CURRENT_SECTOR
-	gosub :PLAYER~getcourse
+	gosub :tactics~getCourse
     setVar $j 2
     setVar $result ""
     while ($j <= $PLAYER~courseLength)
@@ -107,6 +107,7 @@ halt
 #INCLUDES:
 include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"

@@ -2,13 +2,13 @@
 	setVar $BOT~command "surround"
 	setVar $PLAYER~save TRUE
 	loadvar $BOT~surroundAutoCapture
-	loadvar $surroundOverwrite
-	loadvar $surroundAvoidAllPlanets
-	loadvar $surroundAvoidShieldedOnly
-	loadvar $surroundPassive
-	loadvar $surroundLimp
-	loadvar $surroundMine
-	loadvar $surroundFigs
+	loadvar $player~surroundOverwrite
+	loadvar $player~surroundAvoidAllPlanets
+	loadvar $player~surroundAvoidShieldedOnly
+	loadvar $player~surroundPassive
+	loadvar $player~surroundLimp
+	loadvar $player~surroundMine
+	loadvar $player~surroundFigs
 
 	loadvar $shipPhotonCheck
 
@@ -19,6 +19,7 @@
 	setVar $BOT~help[5]   $BOT~tab&"      preferences menu in bot"
 	gosub :BOT~help_file
 
+	gosub :combat~init 
 
 	
     gosub :PLAYER~quikstats
@@ -51,18 +52,18 @@
         halt
     end
 
-    gosub :PLAYER~surround
+    gosub :combat~surround
 
         if ($BOT~surroundAutoCapture = TRUE)
             gosub :PLAYER~quikstats
             if ($startingLocation = "Citadel")
                 setVar $PLAYER~startingLocation "Command"
                 goSub :SECTOR~getSectorData
-                goSub :PLAYER~fastCapture
+                goSub :combat~fastCapture
                 setVar $PLAYER~startingLocation "Citadel"
             else
                 goSub :SECTOR~getSectorData
-                goSub :PLAYER~fastCapture
+                goSub :combat~fastCapture
             end
 
         end
@@ -86,3 +87,4 @@ include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
 include "source\bot_includes\targeting"
+include "source\bot_includes\combat"

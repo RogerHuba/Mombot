@@ -59,7 +59,7 @@
     if ($SHIP~SHIP_MAX_ATTACK > $PLAYER~FIGHTERS)
         setVar $SHIP~SHIP_MAX_ATTACK 9999
     end
-    gosub :PLAYER~getCourse
+    gosub :tactics~getCourse
     if ($PLAYER~courseLength <= 0)
         halt
     end
@@ -147,6 +147,7 @@ return
 
 # includes:
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\module_includes\prompt"

@@ -103,7 +103,7 @@ gosub :_START_
 					end
 					send "'{" $bot_name "} - Ship " & $bustship & " found, heading in to citadel furb.*"
 					setVar $PLAYER~warpto $bustloc
-					gosub :PLAYER~twarp
+					gosub :tactics~twarp
 					if ($PLAYER~twarpSuccess = FALSE)
 						send "'{" $bot_name "} - Couldn't TWARP - something is wrong.  Halting.*"
 						halt
@@ -115,10 +115,10 @@ gosub :_START_
 						send "q t*l3*t*t1*c "
 						setVar $PLAYER~warpto STARDOCK
 						if ($bwarp)
-							gosub :PLAYER~bwarp
+							gosub :tactics~bwarp
 						else
 							send "q q * * "
-							gosub :PLAYER~twarp
+							gosub :tactics~twarp
 						end
 						gosub :PLAYER~quikstats
 					    if ((CURRENTSECTOR = 1) OR (PORT.CLASS[CURRENTSECTOR] = 0))
@@ -786,6 +786,7 @@ return
 #INCLUDES:
 include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"

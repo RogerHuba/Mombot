@@ -13,6 +13,8 @@
 	loadvar $ship~cap_file
 	loadvar $planet~planet_file
 
+	gosub :combat~init 
+
 
 	setVar $BOT~help[1]  $BOT~tab&"Hunts down aliens and captures their ships.  "
 	setVar $BOT~help[2]  $BOT~tab&"Will automatically turn ships and planet personal."
@@ -402,7 +404,7 @@ return
 	        send "q "
 	        gosub :PLANET~getPlanetInfo
 	        send "q "
-			gosub :PLAYER~surround
+			gosub :combat~surround
             send "l "&$planet~planet&"* m*** c "
 	        setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
 	        gosub :SWITCHBOARD~switchboard
@@ -425,12 +427,12 @@ return
 			goSub :SECTOR~getSectorData			
 		    if ($SECTOR~realTraderCount > $SECTOR~corpieCount)
 		    	setvar $targetsFound true
-		    	gosub :player~fastCitadelAttack
+		    	gosub :combat~fastCitadelAttack
 				send "'Just attacked (and hopefully killed) a trader in my sector! Sector "&$player~current_sector&".*"
 		    end
 		    if ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
 		    	setVar $targetsFound TRUE
-		    	goSub :PLAYER~fastCapture
+		    	goSub :combat~fastCapture
 		    end
 		end
 		gosub :PLAYER~quikstats
@@ -565,7 +567,7 @@ return
 					setVar $PLAYER~buyobject "f"
 					setVar $PLAYER~buytype "s"
 					setVar $PLAYER~buydownRoundsFromParam $turnsToEmpty
-					gosub :PLAYER~buy
+					gosub :tactics~buy
 					gosub :PLAYER~quikstats
 					send "c r*q "
 					
@@ -606,9 +608,12 @@ return
 #INCLUDES:
 include "source\module_includes\bot"
 include "source\bot_includes\player"
+include "source\bot_includes\tactics"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
+include "source\bot_includes\combat"
+
 

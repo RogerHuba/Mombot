@@ -4,12 +4,15 @@
 	setVar $BOT~help[2] $BOT~tab&"  - Kill bot and restart it"
 	gosub :BOT~help_file
 
-    listActiveScripts $scripts
     setVar $i 1
     setVar $found FALSE
     setVar $rebooted FALSE
     setVar $SWITCHBOARD~message "Rebooting Mombot..*"
     gosub :SWITCHBOARD~switchboard
+    setdelaytrigger waitforrebootlist :listokaynow 1500
+    pause
+    :listokaynow
+    listActiveScripts $scripts
     while ($i <= $scripts)
         getWordPos "<><><>"&$scripts[$i] $pos "<><><>__mom_bot"
         if ($pos > 0)
@@ -25,6 +28,9 @@
         setVar $SWITCHBOARD~message "No mombot script found to reboot.*"
         gosub :SWITCHBOARD~switchboard
     end
+    setdelaytrigger waitforreboot :okaynow 3000
+    pause
+    :okaynow
     load "scripts\mombot\"&$boot_this
     halt
 
