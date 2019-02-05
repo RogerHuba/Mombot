@@ -31,8 +31,8 @@
 :start_figs
 	gosub :player~turnoffansi
 	setvar $switchboard~message "Loading current fighter locations. . .*"
-	getSectorParameter 3 "FIG_COUNTR" $previousCount
-	getSectorParameter 3 "FUEL_COUNT" $previousFuelCount
+	getSectorParameter 2 "FIG_COUNTR" $previousCount
+	getSectorParameter 2 "FUEL_COUNT" $previousFuelCount
 	getSectorParameter 2 "ORG_COUNT" $previousOrgCount
 	getSectorParameter 2 "EQU_COUNT" $previousEquipCount
 	getSectorParameter 2 "EQS_COUNT" $previousEquipSellCount
@@ -292,11 +292,9 @@ halt
 			end
 			add $i 1
 		end
-		delete "0"
-		delete $bot~FIG_FILE
-		delete $bot~CK_FIG_FILE
-		setSectorParameter 3 "FIG_COUNT" $count
-		setSectorParameter 3 "FIG_COUNTR" $count
+
+		setSectorParameter 2 "FIG_COUNT" $count
+		setSectorParameter 2 "FIG_COUNTR" $count
 		setSectorParameter 2 "FUEL_COUNT" $upgradedFuelCount
 		setSectorParameter 2 "ORG_COUNT" $upgradedOrgCount
 		setSectorParameter 2 "EQU_COUNT" $upgradedEquipCount
