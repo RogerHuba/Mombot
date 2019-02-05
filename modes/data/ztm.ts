@@ -233,7 +233,8 @@ setVar $location $PLAYER~CURRENT_PROMPT
 
 
 :finish    
-    echo "**SCRIPT DONE**"
+    setvar $switchboard~message "ZTM Complete.*"
+    gosub :switchboard~switchboard
     send "q"
     halt
 
