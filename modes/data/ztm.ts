@@ -289,16 +289,19 @@ return
 :plotCourse
     killtrigger getpath
     killtrigger nowarp
+    killtrigger nowarp2
     add $plotsthispass 1
     setVar $i 0
 
     setTextLineTrigger getPath :getPath "The shortest path"
     setTextLineTrigger noWarp :noWarp "No route within"
+    settextlinetrigger nowarp2 :nowarp "So what's the point?"
     pause
 
     :getPath
         killtrigger getpath
         killtrigger nowarp
+        killtrigger nowarp2
         setTextTrigger 1 :mergeLines "Computer command [TL="
         setTextLineTrigger 2  :getLine ">"
         setTextLineTrigger 3  :getLine " 1"
