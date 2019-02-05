@@ -1,8 +1,5 @@
 loadVar $bot_name
 gosub :BOT~loadVars
-setVar $parm1 $BOT~parm1
-setVar $parm2 $BOT~parm2
-setVar $parm3 $BOT~parm3
 
 
 #HELP FILE
@@ -56,7 +53,9 @@ setVar $location $PLAYER~CURRENT_PROMPT
             setVar $location "Computer"
     end
     else
-    send "'{" $bot_name "} - ZTM must be started from Command, Computer, or Citadel prompt.*"
+    setvar $switchboard~message "ZTM must be started from Command, Computer, or Citadel prompt.*"
+	gosub :switchboard~switchboard
+
     end
     
 
@@ -64,31 +63,33 @@ setVar $location $PLAYER~CURRENT_PROMPT
 :resume
     loadVar $resumepass
     loadVar $resumesector
-    if ($parm1 = "reset")
+    if ($bot~parm1 = "reset")
 	setVar $resumepass 0
     end
 
-    if ($parm2 = "reset")
+    if ($bot~parm2 = "reset")
 	setVar $resumepass 0
     end
 
-    if ($parm1 = "one")
+    if ($bot~parm1 = "one")
 	setVar $endone 1
     end
 
-    if ($parm2 = "one")
+    if ($bot~parm2 = "one")
 	setVar $endone 1
     end
 
     if ($resumepass = 7)
-        send "'{" $bot_name "} - You have already ZTM'd this game!*"
-    send "'{" $bot_name "} - Start with a fresh database if you need to ZTM again.*"
-        halt
+		setvar $switchboard~message "You have already ZTM'd this game!*"
+		gosub :switchboard~switchboard
+		setvar $switchboard~message "Start with a fresh database if you need to ZTM again.*"
+		gosub :switchboard~switchboard
+		halt
     elseif ($resumepass = 0)
-    setVar $resumepass 1
-    setVar $pass 0
+		setVar $resumepass 1
+		setVar $pass 0
     else
-    setVar $pass $resumepass
+		setVar $pass $resumepass
     end
     
 # --- INIT VARIABLES ---
@@ -114,12 +115,12 @@ setVar $location $PLAYER~CURRENT_PROMPT
     send "V0*YY"
     waitFor "Computer command [TL="
     gosub :getTime
-    echo "*----*INIT*----*"
+    #echo "*----*INIT*----*"
     gosub :loadTWX
     gosub :PLAYER~quikstats
 
 :nextpass
-    killalltriggers
+    
     if (($resume <> "Y") and ($resume <> "y"))
         if ($pass <> 0)
             echo "*DONE WITH PASS " & $pass & "*"
@@ -187,7 +188,7 @@ setVar $location $PLAYER~CURRENT_PROMPT
         goto :pass
     end
     if ($warpsout[$start] <> $warpsoutCompare)
-        echo "skipping " & $start & " - it has " & $warpsout[$start] & " warps out - looking for " & $warpsoutCompare & "*"
+        #echo "skipping " & $start & " - it has " & $warpsout[$start] & " warps out - looking for " & $warpsoutCompare & "*"
         goto :pass
     end
     subtract $end 1
@@ -233,6 +234,7 @@ setVar $location $PLAYER~CURRENT_PROMPT
 
 :finish    
     echo "**SCRIPT DONE**"
+    send "q"
     halt
 
 
@@ -273,7 +275,7 @@ setVar $location $PLAYER~CURRENT_PROMPT
 # requires parameters $start and $end
 :sendCourse
 
-    killalltriggers
+    
 	if ($endone = 1)
 		send "f" & $start & "*1**"
 	else
@@ -285,7 +287,8 @@ return
 # requires parameters $start and $end
 # returns parameters $coursePlot
 :plotCourse
-    killalltriggers
+    killtrigger getpath
+    killtrigger nowarp
     add $plotsthispass 1
     setVar $i 0
 
@@ -294,44 +297,53 @@ return
     pause
 
     :getPath
-        killalltriggers
-        setTextTrigger mergeLines :mergeLines "Computer command [TL="
-        setTextLineTrigger getLine0  :getLine ">"
-        setTextLineTrigger getLine1  :getLine " 1"
-        setTextLineTrigger getLine11 :getLine " (1"
-        setTextLineTrigger getLine2  :getLine " 2"
-        setTextLineTrigger getLine22 :getLine " (2"
-        setTextLineTrigger getLine3  :getLine " 3"
-        setTextLineTrigger getLine33 :getLine " (3"
-        setTextLineTrigger getLine4  :getLine " 4"
-        setTextLineTrigger getLine44 :getLine " (4"
-        setTextLineTrigger getLine5  :getLine " 5"
-        setTextLineTrigger getLine55 :getLine " (5"
-        setTextLineTrigger getLine6  :getLine " 6"
-        setTextLineTrigger getLine66 :getLine " (6"
-        setTextLineTrigger getLine7  :getLine " 7"
-        setTextLineTrigger getLine77 :getLine " (7"
-        setTextLineTrigger getLine8  :getLine " 8"
-        setTextLineTrigger getLine88 :getLine " (8"
-        setTextLineTrigger getLine9  :getLine " 9"
-        setTextLineTrigger getLine99 :getLine " (9"
+        killtrigger getpath
+        killtrigger nowarp
+        setTextTrigger 1 :mergeLines "Computer command [TL="
+        setTextLineTrigger 2  :getLine ">"
+        setTextLineTrigger 3  :getLine " 1"
+        setTextLineTrigger 4 :getLine " (1"
+        setTextLineTrigger 5  :getLine " 2"
+        setTextLineTrigger 6 :getLine " (2"
+        setTextLineTrigger 7  :getLine " 3"
+        setTextLineTrigger 8 :getLine " (3"
+        setTextLineTrigger 9  :getLine " 4"
+        setTextLineTrigger 10 :getLine " (4"
+        setTextLineTrigger 11 :getLine " 5"
+        setTextLineTrigger 12 :getLine " (5"
+        setTextLineTrigger 13  :getLine " 6"
+        setTextLineTrigger 14 :getLine " (6"
+        setTextLineTrigger 15  :getLine " 7"
+        setTextLineTrigger 16 :getLine " (7"
+        setTextLineTrigger 17  :getLine " 8"
+        setTextLineTrigger 18 :getLine " (8"
+        setTextLineTrigger 19  :getLine " 9"
+        setTextLineTrigger 20 :getLine " (9"
         pause
 
     :getLine
-        killalltriggers
+        setvar $z 1
+        while ($z <= 20)
+        	killtrigger $z
+        	add $z 1
+        end
         add $i 1
         setVar $line[$i] CURRENTLINE
         goto :getPath
 
 
     :noWarp
-        killalltriggers
+        killtrigger getpath
         setVar $coursePlot 0
         # send "Y"
         return
 
     :mergeLines
-        killalltriggers
+        setvar $z 1
+        while ($z <= 20)
+        	killtrigger $z
+        	add $z 1
+        end
         setVar $j 0
         setVar $coursePlot ""
         :merge
@@ -354,18 +366,18 @@ return
     add $cment 2
     setVar $realLast $lastWarp
     getWord $courseplot $thisWarp $cment
-#   echo $courseplot "*"
+   #echo $courseplot "*"
 #    pause
     getWord $courseplot $lastWarp $lstment
     isnumber $isnum $thisWarp
     if (($thisWarp <> 0) and ($isnum))
         if ($lastWarp <> 0)
-#            echo "Last Warp " & $lastWarp & "   "
+            #echo "Last Warp " & $lastWarp & "   "
             gosub :buildWarpArray
             add $traffic[$thisWarp] 1
         end
-#        echo "This Warp " & $thiswarp
-#        echo "*"
+        #echo "This Warp " & $thiswarp
+        #echo "*"
         goto :getElements
     else
         setVar $lastWarp $realLast
@@ -387,7 +399,7 @@ return
     setVar $warpnumber 0
     :voidWarps
     add $warpnumber 1
-#    echo $start & "." & $warpnumber & " = " & $warpsout[$start][$warpnumber] & "*"
+    #echo $start & "." & $warpnumber & " = " & $warpsout[$start][$warpnumber] & "*"
     if ($warpnumber = 7)
         # break out, sectors can't have more than 6 warps out
         goto :voidwarpsdone
@@ -451,7 +463,7 @@ return
             setTextTrigger CIMdone :CIMdone ": "
             pause
         :CIMspace
-            killalltriggers
+            killtrigger CIMdone
             getWord CURRENTLINE $CIMsector 1
             setVar $visited[$CIMsector] 1
             setVar $CIMwarpnumber 0
@@ -470,7 +482,7 @@ return
                 end
                 goto :CIMwarps
         :CIMdone
-            killalltriggers
+            killtrigger CIMspace
             send "Q"
             return
     end
@@ -485,17 +497,17 @@ return
         if ($TWXsector > SECTORS)
             goto :TWXdone
         end
-        getSector $TWXsector $TWXsectorInfo
+        #getSector $TWXsector $TWXsectorInfo
         setVar $TWXwarpnumber 0
         :TWXwarps
             add $TWXwarpnumber 1
             if ($TWXwarpnumber = 7)
                 goto :grabTWXsectors
             end
-            if ($TWXsectorInfo.warp[$TWXwarpnumber] <> 0)
+            if (SECTOR.WARPS[$TWXsector][$TWXwarpnumber] <> 0)
                 add $TWXWarps 1
                 setVar $lastWarp $TWXSector
-                setVar $thiswarp $TWXsectorInfo.warp[$TWXwarpnumber]
+                setVar $thiswarp SECTOR.WARPS[$TWXsector][$TWXwarpnumber]
                 gosub :buildWarpArray
             end
             goto :TWXwarps
