@@ -48,6 +48,7 @@ return
 
 
     send "*"
+    killtrigger planetInfo2
     setTextLineTrigger planetInfo2 :planetInfo2 "Planet #"
     pause
 

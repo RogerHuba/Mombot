@@ -50,7 +50,7 @@ loadVar $map~home_sector
 		send "j  y  lq*"
 	
 	:evac_get_planets
-		#waitOn "Registry# and Planet Name"
+		waitOn "Registry# and Planet Name"
 		setVar $planet~planetCount 0
 		setVar $planet~planetSkip 0
 		settexttrigger planetGrabber :evac_planetline "   <"

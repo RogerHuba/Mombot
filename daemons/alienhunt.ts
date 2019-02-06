@@ -425,6 +425,11 @@ return
 		while ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
 			gosub :PLAYER~quikstats
 			setvar $player~startingLocation $player~current_prompt
+			if ($player~current_prompt = "Command")
+				gosub :PLANET~landingSub		
+				gosub :PLAYER~quikstats
+				setvar $player~startingLocation $player~current_prompt
+			end
 			goSub :SECTOR~getSectorData			
 		    if ($SECTOR~realTraderCount > $SECTOR~corpieCount)
 		    	setvar $targetsFound true
