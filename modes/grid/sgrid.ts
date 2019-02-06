@@ -40,8 +40,8 @@
 	setVar $checkedForInfo ""
 	setVar $PLAYER~surroundFigs 1
 	setVar $attackretreat FALSE
-	gosub :combat~init 
-
+	
+	
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	getSectorParameter SECTORS "MINESEC" $isArmided
 	getSectorParameter SECTORS "LIMPSEC" $isLimped
@@ -335,7 +335,7 @@ goSub :checkAvoidedSectors
 :hittingsec
 	killalltriggers
 	setVar $PLAYER~CURRENT_SECTOR $warpto
-	gosub :combat~surround
+	gosub :grid~surround
 	send "m      " $homesec "* y   y    *  *  "
 	send $land_mac
 	getWordPos $PLAYER~surroundOutput $pos "planet"
@@ -973,5 +973,5 @@ include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
-include "source\bot_includes\combat"
+include "source\bot_includes\grid"
 

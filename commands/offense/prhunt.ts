@@ -649,7 +649,7 @@ halt
 					gosub :player~quikstats
 
 					send "qq"
-					gosub :combat~surround
+					gosub :grid~surround
 					send "l" $currentPlanet "*c"
 					waitfor "<Enter Citadel>"
 					gosub :targeting~scanit_cit_kill
@@ -1311,3 +1311,5 @@ include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
 include "source\bot_includes\targeting"
+include "source\bot_includes\grid"
+

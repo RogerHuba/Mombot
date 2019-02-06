@@ -34,7 +34,8 @@
     end
     gosub :PLANET~getPlanetInfo
     if ($planet~citadel < 3)
-        setvar $switchboard~message "Planet number " $planet~planet " does not have a quasar cannon.*"
+        setvar $switchboard~message "Planet number "&$planet~planet&" does not have a quasar cannon.*"
+        gosub :switchboard~switchboard
         if (($planet~citadel > 0) AND ($PROMPT~startingLocation = "Citadel"))
             send "c "
         end
@@ -123,5 +124,4 @@ include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
-include "source\bot_includes\sector"
 include "source\module_includes\prompt"

@@ -364,7 +364,7 @@
 			send "q q szh* s*/ "
 
 
-			gosub :combat~surround
+			gosub :grid~surround
 			setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $PLANET~PLANET & "*  * j m  * * *  t * t 1* c * "
 			send $land_mac
 
@@ -1392,4 +1392,6 @@ include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
 include "source\bot_includes\combat"
+include "source\bot_includes\grid"
+
 

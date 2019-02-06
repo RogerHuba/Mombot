@@ -404,7 +404,7 @@ return
 	        send "q "
 	        gosub :PLANET~getPlanetInfo
 	        send "q "
-			gosub :combat~surround
+			gosub :grid~surround
             send "l "&$planet~planet&"* m*** c "
 	        setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
 	        gosub :SWITCHBOARD~switchboard
@@ -423,6 +423,7 @@ return
 		setvar $SECTOR~fakeTraderCount 1
 		setVar $targetsFound FALSE
 		while ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
+			gosub :PLAYER~quikstats
 			setvar $player~startingLocation $player~current_prompt
 			goSub :SECTOR~getSectorData			
 		    if ($SECTOR~realTraderCount > $SECTOR~corpieCount)
@@ -615,5 +616,6 @@ include "source\bot_includes\ship"
 include "source\bot_includes\map"
 include "source\bot_includes\sector"
 include "source\bot_includes\combat"
+include "source\bot_includes\grid"
 
 

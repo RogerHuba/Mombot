@@ -25,13 +25,14 @@
 	setVar $BOT~help[12] $BOT~tab&"   {sellfuel}    Sells fuel during travels"
 	setVar $BOT~help[13] $BOT~tab&"       {grid}    Surround grid as you go"
 	setVar $BOT~help[14] $BOT~tab&"        {rob}    Rob ports after buying down"
+	setVar $BOT~help[15] $BOT~tab&"    {upgrade}    Slowly upgrade each port as it goes"
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Traveling Salesman"
 	gosub :BOT~banner
 
 	setVar $PLAYER~save TRUE
-	gosub :combat~init 
+
 
 		
 :merchant
@@ -63,6 +64,12 @@
 		setVar $nohaggle TRUE
 	else
 		setVar $nohaggle FALSE
+	end
+	getWordPos " "&$bot~user_command_line&" " $pos " upgrade "
+	if ($pos > 0)
+		setVar $upgrade TRUE
+	else
+		setVar $upgrade FALSE
 	end
 	getWordPos $bot~user_command_line $pos "hold"
 	if ($pos > 0)
@@ -242,6 +249,27 @@
 					gosub :PLAYER~quikstats
 					gosub :PLANET~landOnPlanetEnterCitadel
 				end
+				if (($upgrade = true) and (port.exists[$player~current_sector] = true))
+					send "q"
+					waitOn "Planet command (?"
+					gosub :PLANET~getPlanetInfo
+					send "c"
+
+					setVar $total_creds_needed ((300*100) + (500*100) + (700*100) + 500000)
+
+					if (($total_creds_needed > $PLAYER~CREDITS) and (($player~credits+$planet~citadel_credits) > $total_creds_needed))
+						setVar $cashonhand $PLANET~citadel_credits
+						add $cashonhand $PLAYER~CREDITS
+						if ($cashonhand > $total_creds_needed)
+						        send "T T " & $PLAYER~CREDITS & "* "
+				        		send "T F " & $total_creds_needed & "* "
+				        		setVar $PLAYER~CREDITS $total_creds_needed
+		    				end
+					end
+					send "q q *O 1 100*O 2 100*O 3 100** "
+					gosub :PLAYER~quikstats
+					gosub :PLANET~landOnPlanetEnterCitadel
+				end
 
 				if ($planetNegotiate = TRUE)
 					killAllTriggers
@@ -388,7 +416,7 @@
 				gosub :PLAYER~quikstats
 				if ($grid)
 					send "q m* * *  q "
-					gosub :combat~surround
+					gosub :grid~surround
 					gosub :PLAYER~quikstats
 					gosub :PLANET~landOnPlanetEnterCitadel
 				end
@@ -536,7 +564,6 @@ include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
-include "source\bot_includes\sector"
-include "source\bot_includes\combat"
+include "source\bot_includes\grid"
 
 

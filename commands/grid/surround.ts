@@ -1,7 +1,6 @@
 	gosub :BOT~loadVars
 	setVar $BOT~command "surround"
 	setVar $PLAYER~save TRUE
-	loadvar $BOT~surroundAutoCapture
 	loadvar $player~surroundOverwrite
 	loadvar $player~surroundAvoidAllPlanets
 	loadvar $player~surroundAvoidShieldedOnly
@@ -19,9 +18,6 @@
 	setVar $BOT~help[5]   $BOT~tab&"      preferences menu in bot"
 	gosub :BOT~help_file
 
-	gosub :combat~init 
-
-	
     gosub :PLAYER~quikstats
     if (($PLAYER~TURNS <= $BOT~bot_turn_limit) and ($PLAYER~unlimitedGame <> TRUE))
 			setVar $SWITCHBOARD~message "Turns Exceed Bot Turn Limit.*"
@@ -52,21 +48,8 @@
         halt
     end
 
-    gosub :combat~surround
+    gosub :grid~surround
 
-        if ($BOT~surroundAutoCapture = TRUE)
-            gosub :PLAYER~quikstats
-            if ($startingLocation = "Citadel")
-                setVar $PLAYER~startingLocation "Command"
-                goSub :SECTOR~getSectorData
-                goSub :combat~fastCapture
-                setVar $PLAYER~startingLocation "Citadel"
-            else
-                goSub :SECTOR~getSectorData
-                goSub :combat~fastCapture
-            end
-
-        end
         if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
             gosub :PLANET~landingSub
         else
@@ -85,6 +68,5 @@ include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
-include "source\bot_includes\sector"
-include "source\bot_includes\targeting"
-include "source\bot_includes\combat"
+include "source\bot_includes\grid"
+

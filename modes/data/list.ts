@@ -528,13 +528,9 @@ return
 
 #INCLUDES:
 include "source\module_includes\bot"
-include "source\module_includes\defender\killing"
-include "source\module_includes\defender\photon"
-include "source\module_includes\defender\navigate"
-include "source\module_includes\defender\restock"
 include "source\bot_includes\player"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
-include "source\bot_includes\sector"
+

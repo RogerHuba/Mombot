@@ -1,8 +1,5 @@
-	logging off
 	gosub :BOT~loadVars
-	loadVar $PLAYER~unlimitedGame
 	loadvar $GAME~ptradesetting
-	loadvar $bot~bot_turn_limit
 
 
 	setVar $BOT~help[1]  $BOT~tab&"           Planet Negotiate Trade Agrement          "
@@ -101,4 +98,4 @@ include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
-include "source\bot_includes\sector"
+
