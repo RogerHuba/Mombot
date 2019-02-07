@@ -67,24 +67,24 @@ gosub :genFormat
   setTextLineTrigger startEqu :startEqu "Equipment"
   pause
   :startOre
-    getword currentline $startPlanetFuelCol 3
-    getword currentline $startPlanetFuel 6
-    stripText $startPlanetFuelCol ","
-    stripText $startPlanetFuel ","
-    pause
+	getword currentline $startPlanetFuelCol 3
+	getword currentline $startPlanetFuel 6
+	stripText $startPlanetFuelCol ","
+	stripText $startPlanetFuel ","
+	pause
   :startOrg
-    getword currentline $startPlanetOrgCol 2
-    getword currentline $startPlanetOrg 5
-    stripText $startPlanetOrgCol ","
-    stripText $startPlanetOrg ","
-    pause
+	getword currentline $startPlanetOrgCol 2
+	getword currentline $startPlanetOrg 5
+	stripText $startPlanetOrgCol ","
+	stripText $startPlanetOrg ","
+	pause
   :startEqu
-    getword currentline $startPlanetEquCol 2
-    getword currentline $startPlanetEqu 5
-    stripText $startPlanetEquCol ","
-    stripText $startPlanetEqu ","
-    setVar $startPlanetCols ($startPlanetFuelcol + $startPlanetOrgCol + $startPlanetEquCol)
-    send "c "
+	getword currentline $startPlanetEquCol 2
+	getword currentline $startPlanetEqu 5
+	stripText $startPlanetEquCol ","
+	stripText $startPlanetEqu ","
+	setVar $startPlanetCols ($startPlanetFuelcol + $startPlanetOrgCol + $startPlanetEquCol)
+	send "c "
 
 # setup our moves
 # need a resume method
@@ -179,125 +179,125 @@ halt
    pause
 
 :beingBuilt
-     killalltriggers
-     echo ansi_12 "**" & CURRENTLINE & "!!!*"
-     send "q*  l " #8 $startPlanet "* c "
-     return
+	 killalltriggers
+	 echo ansi_12 "**" & CURRENTLINE & "!!!*"
+	 send "q*  l " #8 $startPlanet "* c "
+	 return
 
    :inProgress
-     killalltriggers
-     send "*"
-     setTextTrigger L1Cit :L1Cit "day(s) till complete"
-     pause
-     :L1Cit
-     gosub :planetUpGradeStat
-     send "q*  l " #8 $startPlanet "* c "
-     return
+	 killalltriggers
+	 send "*"
+	 setTextTrigger L1Cit :L1Cit "day(s) till complete"
+	 pause
+	 :L1Cit
+	 gosub :planetUpGradeStat
+	 send "q*  l " #8 $startPlanet "* c "
+	 return
 
    :cannotUpgrade
-     killalltriggers
-     echo ANSI_12 "***   This planet CANNOT be upgraded!**"
-     gosub :planetUpGradeStat
-     send "qq*  l " #8 $startPlanet "* c "
-     return
+	 killalltriggers
+	 echo ANSI_12 "***   This planet CANNOT be upgraded!**"
+	 gosub :planetUpGradeStat
+	 send "qq*  l " #8 $startPlanet "* c "
+	 return
 
    :colsNeeded
-     getword CURRENTLINE $colsNeeded 1
-     stripText $colsNeeded ","
-     pause
+	 getword CURRENTLINE $colsNeeded 1
+	 stripText $colsNeeded ","
+	 pause
    :fuelNeeded
-     getword CURRENTLINE $fuelNeeded 1
-     stripText $fuelNeeded ","
-     pause
+	 getword CURRENTLINE $fuelNeeded 1
+	 stripText $fuelNeeded ","
+	 pause
    :orgNeeded
-     getword CURRENTLINE $orgNeeded 1
-     stripText $orgNeeded ","
-     pause
+	 getword CURRENTLINE $orgNeeded 1
+	 stripText $orgNeeded ","
+	 pause
    :equNeeded
-     getword CURRENTLINE $equNeeded 1
-     stripText $equNeeded ","
+	 getword CURRENTLINE $equNeeded 1
+	 stripText $equNeeded ","
 
 :calcRequirements
-    killalltriggers
-    setVar $notEnoughVar 0
-    divide $colsNeeded 1000
-    subTract $colsNeeded $endPlanetCols
-    if ($colsNeeded > $startPlanetCols)
-        setVar $notEnoughVar 1
-    end
+	killalltriggers
+	setVar $notEnoughVar 0
+	divide $colsNeeded 1000
+	subTract $colsNeeded $endPlanetCols
+	if ($colsNeeded > $startPlanetCols)
+		setVar $notEnoughVar 1
+	end
    subTract $fuelNeeded $PLANET_FUEL
-    if ($fuelNeeded > $startPlanetfuel)
-        setVar $notEnoughVar 1
-    end
-    subTract $orgNeeded $PLANET_ORGANICS
-    if ($orgNeeded > $startPlanetorg)
-        setVar $notEnoughVar 1
-    end
+	if ($fuelNeeded > $startPlanetfuel)
+		setVar $notEnoughVar 1
+	end
+	subTract $orgNeeded $PLANET_ORGANICS
+	if ($orgNeeded > $startPlanetorg)
+		setVar $notEnoughVar 1
+	end
    subTract $EquNeeded $PLANET_EQUIPMENT
-    if ($EquNeeded > $startPlanetEqu)
-        setVar $notEnoughVar 1
-    end
-    if ($notEnoughVar = 1)
-         return
-    end
+	if ($EquNeeded > $startPlanetEqu)
+		setVar $notEnoughVar 1
+	end
+	if ($notEnoughVar = 1)
+		 return
+	end
 
 :goodToGo
    setVar $errorNoRoom 0
    if ($colsNeeded > 0)
-      if ($startPlanetEquCol > $colsNeeded)
-         setVar $take "snt3"
-         setVar $leave "snl1"
-         setVar $prodID 13
-      ELSEIf ($startPlanetOrgCol > $colsNeeded)
-         setVar $take "snt2"
-         setVar $leave "snl1"
-         setVar $prodID 12
-      ElseIf ($startPlanetFuelCol > $colsNeeded)
-         setVar $take "snt1"
-         setVar $leave "snl1"
-         setVar $prodID 11
-      end
-      setVar $trigger "How many groups of Colonists do you want to leave"
-      setVar $amtNeeded $colsNeeded
-      gosub :moveIt
+	  if ($startPlanetEquCol > $colsNeeded)
+		 setVar $take "snt3"
+		 setVar $leave "snl1"
+		 setVar $prodID 13
+	  ELSEIf ($startPlanetOrgCol > $colsNeeded)
+		 setVar $take "snt2"
+		 setVar $leave "snl1"
+		 setVar $prodID 12
+	  ElseIf ($startPlanetFuelCol > $colsNeeded)
+		 setVar $take "snt1"
+		 setVar $leave "snl1"
+		 setVar $prodID 11
+	  end
+	  setVar $trigger "How many groups of Colonists do you want to leave"
+	  setVar $amtNeeded $colsNeeded
+	  gosub :moveIt
    end
    if ($fuelNeeded > 0) and ($errorNoRoom = 0)
-      setVar $take "tnt1"
-      setVar $leave "tnl1"
-      setVar $trigger "How many holds of Fuel Ore do you want to leave"
-      setVar $amtNeeded $fuelNeeded
-      setVar $prodID 2
-      gosub :moveIt
+	  setVar $take "tnt1"
+	  setVar $leave "tnl1"
+	  setVar $trigger "How many holds of Fuel Ore do you want to leave"
+	  setVar $amtNeeded $fuelNeeded
+	  setVar $prodID 2
+	  gosub :moveIt
    end
    if ($orgNeeded > 0) and ($errorNoRoom = 0)
-      setVar $take "tnt2"
-      setVar $leave "tnl2"
-      setVar $trigger "How many holds of Organics do you want to leave"
-      setVar $amtNeeded $orgNeeded
-      setVar $prodID 3
-      gosub :moveIt
+	  setVar $take "tnt2"
+	  setVar $leave "tnl2"
+	  setVar $trigger "How many holds of Organics do you want to leave"
+	  setVar $amtNeeded $orgNeeded
+	  setVar $prodID 3
+	  gosub :moveIt
    end
    if ($equNeeded > 0) and ($errorNoRoom = 0)
-      setVar $take "tnt3"
-      setVar $leave "tnl3"
-      setVar $trigger "How many holds of Equipment do you want to leave"
-      setVar $amtNeeded $equNeeded
-      setVar $prodID 4
-      gosub :moveIt
+	  setVar $take "tnt3"
+	  setVar $leave "tnl3"
+	  setVar $trigger "How many holds of Equipment do you want to leave"
+	  setVar $amtNeeded $equNeeded
+	  setVar $prodID 4
+	  gosub :moveIt
    end
    if ($errorNoRoom = 0)
-      send "l  " #8 $fillPlanet "*cuy"
-      waitfor "Do you wish to construct"
-      setTextTrigger chkPrompt :chkPrompt " command"
-      pause
-      :chkPrompt
-      getword currentline $chkPrompt 1
-      if ($chkPrompt = "Citadel")
-         send "q"
-      end
+	  send "l  " #8 $fillPlanet "*cuy"
+	  waitfor "Do you wish to construct"
+	  setTextTrigger chkPrompt :chkPrompt " command"
+	  pause
+	  :chkPrompt
+	  getword currentline $chkPrompt 1
+	  if ($chkPrompt = "Citadel")
+		 send "q"
+	  end
    else
-     send "l " #8 $startPlanet "* c "
-     return
+	 send "l " #8 $startPlanet "* c "
+	 return
    end
    setDelayTrigger bogusDelay :bogusDelay 2000
    pause
@@ -310,84 +310,84 @@ halt
    multiply $temp $shipHolds
    setVar $fraction 0
    if ($temp < $amtNeeded)
-       setVar $fraction ($amtNeeded - $temp)
+	   setVar $fraction ($amtNeeded - $temp)
    elseif ($temp > $amtNeeded)
-       subtract $amtNeeded 1
-       setVar $fraction ($temp - $amtNeeded)
+	   subtract $amtNeeded 1
+	   setVar $fraction ($temp - $amtNeeded)
    end
    divide $amtNeeded $shipHolds
    add $amtNeeded 1
    setVar $i 1
    setTextTrigger noRoom :noRoom "They don't have room for that many on the planet!"
    while ($i <= $amtNeeded)
-	      gosub :setWindow
-	      send "l  " & #8 & $startPlanet & "*  " & $take & "*ql  " & #8 & $fillPlanet & "*  " & $leave & "*q"
-	      setTextLineTrigger myTurns :myTurns "One turn deducted,"
-	      setTextTrigger doneLeave :doneLeave $trigger
-	      pause
-	      :myTurns
-	       getword currentline $myTurns 4
-	       if ($minTurns > 0)
-	          if ($myTurns <= $minTurns)
-	             killtrigger doneLeave
-	             echo ANSI_12 "***!!!! " ANSI_11 "Minimum Turn Level Reached" ANSI_12 " !!!!***"
-	             send "l  " & #8 & $startPlanet & "* c "
-	             halt
-	          end
-	       pause
-	       end
-	      :doneLeave
-	       killtrigger myTurns
-	       killtrigger doneLeave
-	      if ($prodID = 11)
-	         subtract $startPlanetCols $shipHolds
-	         subtract $startPlanetFuelCol $shipHolds
-	         subTract $colsNeeded $shipHolds
-	      elseif ($prodID = 12)
-	         subtract $startPlanetCols $shipHolds
-	         subtract $startPlanetOrgCol $shipHolds
-	         subTract $colsNeeded $shipHolds
-	      elseif ($prodID = 13)
-	         subtract $startPlanetCols $shipHolds
-	         subtract $startPlanetEquCol $shipHolds
-	         subTract $colsNeeded $shipHolds
-	      elseif ($prodID = 2)
-	         subtract $startPlanetFuel $shipHolds
-	         subtract $fuelNeeded $shipHolds
-	      elseif ($prodID = 3)
-	         subTract $startPlanetOrg $shipHolds
-	         subtract $orgNeeded $shipHolds
-	      elseif ($prodID = 4)
-	         subTract $startPlanetEqu $shipHolds
-	         subTract $equNeeded $shipHolds
-	      end
-      add $i 1
+		  gosub :setWindow
+		  send "l  " & #8 & $startPlanet & "*  " & $take & "*ql  " & #8 & $fillPlanet & "*  " & $leave & "*q"
+		  setTextLineTrigger myTurns :myTurns "One turn deducted,"
+		  setTextTrigger doneLeave :doneLeave $trigger
+		  pause
+		  :myTurns
+		   getword currentline $myTurns 4
+		   if ($minTurns > 0)
+			  if ($myTurns <= $minTurns)
+				 killtrigger doneLeave
+				 echo ANSI_12 "***!!!! " ANSI_11 "Minimum Turn Level Reached" ANSI_12 " !!!!***"
+				 send "l  " & #8 & $startPlanet & "* c "
+				 halt
+			  end
+		   pause
+		   end
+		  :doneLeave
+		   killtrigger myTurns
+		   killtrigger doneLeave
+		  if ($prodID = 11)
+			 subtract $startPlanetCols $shipHolds
+			 subtract $startPlanetFuelCol $shipHolds
+			 subTract $colsNeeded $shipHolds
+		  elseif ($prodID = 12)
+			 subtract $startPlanetCols $shipHolds
+			 subtract $startPlanetOrgCol $shipHolds
+			 subTract $colsNeeded $shipHolds
+		  elseif ($prodID = 13)
+			 subtract $startPlanetCols $shipHolds
+			 subtract $startPlanetEquCol $shipHolds
+			 subTract $colsNeeded $shipHolds
+		  elseif ($prodID = 2)
+			 subtract $startPlanetFuel $shipHolds
+			 subtract $fuelNeeded $shipHolds
+		  elseif ($prodID = 3)
+			 subTract $startPlanetOrg $shipHolds
+			 subtract $orgNeeded $shipHolds
+		  elseif ($prodID = 4)
+			 subTract $startPlanetEqu $shipHolds
+			 subTract $equNeeded $shipHolds
+		  end
+	  add $i 1
    end
    if ($fraction > 0)
-       send "l  " #8 $startPlanet "*  " $take & $fraction "*ql  " #8 $fillPlanet "*  " $leave $fraction "*q"
-      if ($prodID = 11)
-         subtract $startPlanetCols $fraction
-         subtract $startPlanetFuelCol $fraction
-         subTract $colsNeeded $fraction
-      elseif ($prodID = 12)
-         subtract $startPlanetCols $fraction
-         subtract $startPlanetOrgCol $fraction
-         subTract $colsNeeded $fraction
-      elseif ($prodID = 13)
-         subtract $startPlanetCols $fraction
-         subtract $startPlanetEquCol $fraction
-         subTract $colsNeeded $fraction
-      elseif ($prodID = 2)
-         subtract $startPlanetFuel $fraction
-         subtract $fuelNeeded $fraction
-      elseif ($prodID = 3)
-         subTract $startPlanetOrg $fraction
-         subtract $orgNeeded $fraction
-      elseif ($prodID = 4)
-         subTract $startPlanetEqu $fraction
-         subTract $equNeeded $fraction
-      end
-      gosub :setWindow
+	   send "l  " #8 $startPlanet "*  " $take & $fraction "*ql  " #8 $fillPlanet "*  " $leave $fraction "*q"
+	  if ($prodID = 11)
+		 subtract $startPlanetCols $fraction
+		 subtract $startPlanetFuelCol $fraction
+		 subTract $colsNeeded $fraction
+	  elseif ($prodID = 12)
+		 subtract $startPlanetCols $fraction
+		 subtract $startPlanetOrgCol $fraction
+		 subTract $colsNeeded $fraction
+	  elseif ($prodID = 13)
+		 subtract $startPlanetCols $fraction
+		 subtract $startPlanetEquCol $fraction
+		 subTract $colsNeeded $fraction
+	  elseif ($prodID = 2)
+		 subtract $startPlanetFuel $fraction
+		 subtract $fuelNeeded $fraction
+	  elseif ($prodID = 3)
+		 subTract $startPlanetOrg $fraction
+		 subtract $orgNeeded $fraction
+	  elseif ($prodID = 4)
+		 subTract $startPlanetEqu $fraction
+		 subTract $equNeeded $fraction
+	  end
+	  gosub :setWindow
    end
    killtrigger noRoom
 return
@@ -409,16 +409,16 @@ waitfor "---------"
   setTextTrigger pNumDone :pNumDone "Land on which"
   pause
   :pNum
-    killtrigger pNumDone
+	killtrigger pNumDone
 #    getWord currentline $planet 2
-     getText currentline $planet "  <" "> "
-     stripText $planet " "
+	 getText currentline $planet "  <" "> "
+	 stripText $planet " "
 #    stripText $planet ">"
-    if ($planet <> $startPlanet)
-       add $pNumCnt 1
-       setVar $pNumber[$pNumCnt] $planet
-    end
-    goto :getPlanetNum
+	if ($planet <> $startPlanet)
+	   add $pNumCnt 1
+	   setVar $pNumber[$pNumCnt] $planet
+	end
+	goto :getPlanetNum
   :pNumDone
   send "  " #8 $startPlanet "* c"
   killtrigger pNum
@@ -427,8 +427,8 @@ waitfor "---------"
 :padR
   getLength $inString $len
   while ($len < $padLen)
-        setVar $inString $inString & " "
-        add $len 1
+		setVar $inString $inString & " "
+		add $len 1
   end
   return
 
@@ -442,8 +442,8 @@ waitfor "---------"
   gosub :padR
   setVar $stat_sector $inString
   if ($lastSector <> $sectorArray[$sectCounter])
-     setVar $lastSector $sectorArray[$sectCounter]
-     write $gameFile " *"
+	 setVar $lastSector $sectorArray[$sectCounter]
+	 write $gameFile " *"
   end
   getText currentline $UpgradeStat ", " " till complete"
   setVar $pStat "|" & currentline
@@ -503,9 +503,9 @@ return
   setVar $outputVar ""
   getLength $inputVar $cutLen
   while ($cutLen > 3)
-      cutText $inputVar $tmpVar ($cutLen - 2) 3
-      setVar $outPutVar  "," & $tmpVar & $outputVar
-      subtract $cutLen 3
+	  cutText $inputVar $tmpVar ($cutLen - 2) 3
+	  setVar $outPutVar  "," & $tmpVar & $outputVar
+	  subtract $cutLen 3
   end
   cutText $inputVar $tmpVar 1 $cutLen
   setVar $outputVar $tmpVar & $outputVar
@@ -515,7 +515,7 @@ return
 delete $autoGenFile
 setVar $useList ""
 if ($prompt = "Citadel")
-    send "q"
+	send "q"
 end
 send "*"
 waitFor "Planet #"
@@ -530,13 +530,13 @@ pause
 :autoG
 settextLineTrigger autoG :autoG "  Class "
 getwordPos CURRENTLINE $pos "Level 6"
-    getword currentline $ag 1
+	getword currentline $ag 1
 if ($pos = 0) and ($ag <> STARDOCK) and ($ag > 10)
-    if ($agSectors[$ag] = 0)
-       setVar $useList $useList & $ag & " "
-       setVar $agSectors[$ag] $ag
-       write $autoGenFile $ag
-    end
+	if ($agSectors[$ag] = 0)
+	   setVar $useList $useList & $ag & " "
+	   setVar $agSectors[$ag] $ag
+	   write $autoGenFile $ag
+	end
 end
 pause
 :agDone
@@ -551,53 +551,53 @@ pause
   setVar $line ""
   send "/"
    :setup
-     setTextLineTrigger done :done "Ship "
-     setTextLineTrigger funky :funky ""
-     pause
+	 setTextLineTrigger done :done "Ship "
+	 setTextLineTrigger funky :funky ""
+	 pause
 
   :funky
-     killtrigger done
-     setVar $line $line & currentline & "³"
-     goto :setup
+	 killtrigger done
+	 setVar $line $line & currentline & "³"
+	 goto :setup
 
   :done
-     killtrigger funky
-     setVar $line $line & currentline & "³"
+	 killtrigger funky
+	 setVar $line $line & currentline & "³"
 
-     # get the ship line and parse
-     getText $line $shipTemp "Ship" "³"
-     getword $shipTemp $ship_no 1
-     stripText $line " "
-     stripText $line ","
+	 # get the ship line and parse
+	 getText $line $shipTemp "Ship" "³"
+	 getword $shipTemp $ship_no 1
+	 stripText $line " "
+	 stripText $line ","
 
-     # parse the rest of the string
-     getText $line $ship_curSector "Sect" "³"
-     getText $line $ship_turns "Turns" "³"
-     getText $line $ship_creds "Creds" "³"
-     getText $line $ship_figs "Figs" "³"
-     getText $line $ship_shlds "Shlds" "³"
-     getText $line $ship_hlds "Hlds" "³"
-     getText $line $ship_ore "Ore" "³"
-     getText $line $ship_org "Org" "³"
-     getText $line $ship_equ "Equ" "³"
-     getText $line $ship_col "Col" "³"
-     getText $line $ship_phot "Phot" "³"
-     getText $line $ship_armd "Armd" "³"
-     getText $line $ship_lmpt "Lmpt" "³"
-     getText $line $ship_gTorp "GTorp" "³"
-     getText $line $ship_tWarp "TWarp" "³"
-     getText $line $ship_clks "Clks" "³"
-     getText $line $ship_beacns "Beacns" "³"
-     getText $line $ship_atmDt "AtmDt" "³"
-     getText $line $ship_crbo "Crbo" "³"
-     getText $line $ship_eprob "EPrb" "³"
-     getText $line $ship_mDis "MDis" "³"
-     getText $line $ship_psPrb "PsPrb" "³"
-     getText $line $ship_plScn "PlScn" "³"
-     getText $line $ship_lrs "LRS" "³"
-     getText $line $ship_aln "Aln" "³"
-     getText $line $ship_exp "Exp" "³"
-     getText $line $ship_corp "Corp" "³"
+	 # parse the rest of the string
+	 getText $line $ship_curSector "Sect" "³"
+	 getText $line $ship_turns "Turns" "³"
+	 getText $line $ship_creds "Creds" "³"
+	 getText $line $ship_figs "Figs" "³"
+	 getText $line $ship_shlds "Shlds" "³"
+	 getText $line $ship_hlds "Hlds" "³"
+	 getText $line $ship_ore "Ore" "³"
+	 getText $line $ship_org "Org" "³"
+	 getText $line $ship_equ "Equ" "³"
+	 getText $line $ship_col "Col" "³"
+	 getText $line $ship_phot "Phot" "³"
+	 getText $line $ship_armd "Armd" "³"
+	 getText $line $ship_lmpt "Lmpt" "³"
+	 getText $line $ship_gTorp "GTorp" "³"
+	 getText $line $ship_tWarp "TWarp" "³"
+	 getText $line $ship_clks "Clks" "³"
+	 getText $line $ship_beacns "Beacns" "³"
+	 getText $line $ship_atmDt "AtmDt" "³"
+	 getText $line $ship_crbo "Crbo" "³"
+	 getText $line $ship_eprob "EPrb" "³"
+	 getText $line $ship_mDis "MDis" "³"
+	 getText $line $ship_psPrb "PsPrb" "³"
+	 getText $line $ship_plScn "PlScn" "³"
+	 getText $line $ship_lrs "LRS" "³"
+	 getText $line $ship_aln "Aln" "³"
+	 getText $line $ship_exp "Exp" "³"
+	 getText $line $ship_corp "Corp" "³"
 return
 
 
@@ -612,56 +612,56 @@ setVar $sortOre 0
 :initGetDistance
 setVar $counter 1
 while ($counter <= $upGradeSectors)
-     setVar $iDist 1
-     while ($iDist <= $upGradeSectors)
-            setVar $oreChkDist $idist
-           getword $path $pos " " &  $sectorArray[$idist] & " "
-           if ($pos = 0)
-              getDistance $dist[$iDist] $baseSector $sectorArray[$iDist]
-           end
-           if ($pass = 1)
-              add $unSortOre ($dist[$iDist] * 400)
-           end
-           add $iDist 1
-     end
-     if ($pass = 1)
-       add $unSortOre ($dist[$iDist] * 400)
-       setVar $pass 2
-     end
+	 setVar $iDist 1
+	 while ($iDist <= $upGradeSectors)
+			setVar $oreChkDist $idist
+		   getword $path $pos " " &  $sectorArray[$idist] & " "
+		   if ($pos = 0)
+			  getDistance $dist[$iDist] $baseSector $sectorArray[$iDist]
+		   end
+		   if ($pass = 1)
+			  add $unSortOre ($dist[$iDist] * 400)
+		   end
+		   add $iDist 1
+	 end
+	 if ($pass = 1)
+	   add $unSortOre ($dist[$iDist] * 400)
+	   setVar $pass 2
+	 end
 
    :getNearest
-    setVar $i 1
-    setVar $temp 999
-     while ($i <= $upGradeSectors)
-       getwordpos $path $pos " " & $sectorArray[$i] & " "
-       if ($pos = 0)
-          if ($temp > $dist[$i])
-             setVar $baseSector $sectorArray[$i]
-             setVar $temp $dist[$i]
-          end
-       end
-     add $i 1
-     end
-     setVar $path $path & " " & $baseSector & " "
-     if ($temp > 0)
-        add $sortOre ($temp * 400)
-     end
-     add $counter 1
+	setVar $i 1
+	setVar $temp 999
+	 while ($i <= $upGradeSectors)
+	   getwordpos $path $pos " " & $sectorArray[$i] & " "
+	   if ($pos = 0)
+		  if ($temp > $dist[$i])
+			 setVar $baseSector $sectorArray[$i]
+			 setVar $temp $dist[$i]
+		  end
+	   end
+	 add $i 1
+	 end
+	 setVar $path $path & " " & $baseSector & " "
+	 if ($temp > 0)
+		add $sortOre ($temp * 400)
+	 end
+	 add $counter 1
 end
 
 setVar $i 1
 while ($i <= $upgradeSectors)
-      getword $path $sectorArray[$i] $i
-      add $i 1
+	  getword $path $sectorArray[$i] $i
+	  add $i 1
 end
 
 :disp
 setVar $inputVar $unSortOre
 gosub :genFormat
-     setvar $msg1 "* Unsorted Route: " & $outPutVar & " Ore Req"
+	 setvar $msg1 "* Unsorted Route: " & $outPutVar & " Ore Req"
 setVar $inputVar $sortOre
 gosub :genFormat
-     setVar $msg1 $msg1 & "* Sorted Route  : " & $outPutVar  & " Ore Req*"
+	 setVar $msg1 $msg1 & "* Sorted Route  : " & $outPutVar  & " Ore Req*"
 return
 
 

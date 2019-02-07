@@ -37,7 +37,7 @@
 		echo ansi15 "This script Version is no longer valid, contact A Mind ()ver Matter member for an extension.*"
 		echo ansi16 "This script Version is no longer valid, contact A Mind ()ver Matter member for an extension.*"
 		echo "***"
-        	halt
+			halt
 	end
 return
 # ============================== END SCRIPT VALIDATION SUB==============================
