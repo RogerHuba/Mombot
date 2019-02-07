@@ -47,15 +47,15 @@ gosub :PLAYER~quikstats
 setVar $location $PLAYER~CURRENT_PROMPT
 :checkLocation
     if (($location = "Command") OR ($location = "Citadel") OR ($location = "Computer"))
-		if ($location <> "Computer")
-			send "C"
-			waitFor "Computer command [TL="
-			setVar $location "Computer"
-		end
+        if ($location <> "Computer")
+        send "C"
+            waitFor "Computer command [TL="
+            setVar $location "Computer"
+    end
     else
-	    setvar $switchboard~message "ZTM must be started from Command, Computer, or Citadel prompt.*"
-		gosub :switchboard~switchboard
-		halt
+    setvar $switchboard~message "ZTM must be started from Command, Computer, or Citadel prompt.*"
+	gosub :switchboard~switchboard
+
     end
     
 
@@ -64,19 +64,19 @@ setVar $location $PLAYER~CURRENT_PROMPT
     loadVar $resumepass
     loadVar $resumesector
     if ($bot~parm1 = "reset")
-		setVar $resumepass 0
+	setVar $resumepass 0
     end
 
     if ($bot~parm2 = "reset")
-		setVar $resumepass 0
+	setVar $resumepass 0
     end
 
     if ($bot~parm1 = "one")
-		setVar $endone 1
+	setVar $endone 1
     end
 
     if ($bot~parm2 = "one")
-		setVar $endone 1
+	setVar $endone 1
     end
 
     if ($resumepass = 7)
@@ -86,7 +86,7 @@ setVar $location $PLAYER~CURRENT_PROMPT
 		gosub :switchboard~switchboard
 		halt
     elseif ($resumepass = 0)
-		setVar $resumepass 1
+		setVar $resumepass 0
 		setVar $pass 0
     else
 		setVar $pass $resumepass
@@ -188,7 +188,7 @@ setVar $location $PLAYER~CURRENT_PROMPT
         goto :pass
     end
     if ($warpsout[$start] <> $warpsoutCompare)
-        #echo "skipping " & $start & " - it has " & $warpsout[$start] & " warps out - looking for " & $warpsoutCompare & "*"
+        echo "skipping " & $start & " - it has " & $warpsout[$start] & " warps out - looking for " & $warpsoutCompare & "*"
         goto :pass
     end
     subtract $end 1
@@ -202,7 +202,7 @@ setVar $location $PLAYER~CURRENT_PROMPT
     end
     add $burstcontrol 1
 #    echo "*burst control is " & $burstcontrol
-    if ($burstcontrol > 20)
+    if ($burstcontrol > 10)
         gosub :plotCourse
         gosub :parseCourse
         gosub :plotCourse
@@ -536,4 +536,4 @@ include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
-
+include "source\bot_includes\sector"
