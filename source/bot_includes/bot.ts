@@ -40,12 +40,21 @@ return
     end
     if ($MAP~rylos <= 0)
         setVar $MAP~rylos RYLOS
-        setVar $rylos RYLOS
+        savevar $map~rylos
     end
     if ($MAP~alpha_centauri <= 0)
         setVar $MAP~alpha_centauri ALPHACENTAURI
         saveVar $MAP~alpha_centauri
     end
+    loadvar $map~home_sector
+    loadvar $map~rylos
+    loadvar $map~alpha_centauri
+    loadvar $map~stardock
+	loadvar $map~backdoor 
+	loadvar $bot~safe_ship
+	loadvar $bot~bot_turn_limit
+	loadvar $bot~pgrid_bot
+
     setVar $SWITCHBOARD~self_command FALSE
     setVar $scrubonly FALSE
     SetTextOutTrigger   user        :USER_INTERFACE~User_Access    ">"
