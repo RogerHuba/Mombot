@@ -955,7 +955,7 @@ setVar $debugdelay 0
                 SaveVar $ckLRA    
                 getWord CURRENTLINE $exp_bonus 4
                 add $exp $exp_bonus
-                setVar $sendString "L  " & $planet[$current_ship] & "*  TNL3*Q"
+                setVar $sendString "L " & $planet[$current_ship] & "*  TNL3*Q"
                 send $sendString
                 add $planet[$current_ship].equ $steal_holds
                 subtract $port[$current_ship].equ_on_port $steal_holds
