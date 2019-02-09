@@ -21,7 +21,7 @@
         pause
         :continueDoingRelog
             setvar $first_time TRUE
-            gosub :connectivity~do_relog
+            gosub :do_relog
         :enter
             gosub :relog_freeze_trigger
             killtrigger relog
@@ -91,6 +91,65 @@
 return
 
 
+:do_relog
+        :thedelay
+            if (CONNECTED <> TRUE)
+                connect
+            end
+            gosub :killrelogtriggers
+            setEventTrigger continuelogin :continuelogin "CONNECTION ACCEPTED"
+            pause
+            :continuelogin
+            gosub :killrelogtriggers
+            setTextTrigger relog3 :continueRelog3 "Please enter your name"
+            pause
+        :continueRelog3
+            gosub :killrelogtriggers
+            setTextTrigger loginsuccessful :continueRelog4 "Trade Wars 2002"
+            setTextTrigger loginsuccessful2 :continueRelog4 "Copyright (C) EIS"
+            send $BOT~username & "*"
+            pause
+
+        :continueRelog4
+            gosub :killrelogtriggers
+            if ($first_time)
+                setVar $first_time FALSE
+                disconnect
+                goto :do_relog
+            end
+            setTextTrigger relog69 :continueRelog5 "Make a Selection:"
+            setTextTrigger relog3 :continueRelog5 "Selection (? for menu):"
+            send "#"&#8
+            pause
+        :continueRelog5
+            gosub :killrelogtriggers
+            setTextTrigger firstpause :firstpause "[Pause]"
+            setTextTrigger enter :done_do_relog "Enter your choice"
+            send $BOT~letter
+            pause
+        :firstpause
+            send "*"
+            setTextTrigger firstpause :firstpause "[Pause]"
+            pause
+        :done_do_relog
+            killalltriggers
+return
+
+:killrelogtriggers
+    killtrigger continuelogin
+    killtrigger thedelay
+    killtrigger thedelay2
+    killtrigger relog
+    killtrigger relog2
+    killtrigger relog3
+    killtrigger relog69
+    killtrigger relog89
+    killtrigger loginsuccessful
+    killtrigger loginsuccessful2
+    killtrigger firstpause
+    killtrigger enter
+    setDelayTrigger thedelay2 :thedelay 5000
+return
 
 
 
@@ -101,4 +160,3 @@ include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
 include "source\bot_includes\ship"
 include "source\bot_includes\map"
-include "source\bot_includes\bot\connectivity"
