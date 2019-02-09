@@ -22,6 +22,7 @@
 	setVar $BOT~help[13]   $BOT~tab&"            "
 	setVar $BOT~help[14]   $BOT~tab&"    {dist}  - All results include distance from current. "
 	setVar $BOT~help[15]   $BOT~tab&"    {route} - Plots a basic shortest path (slow). "
+	setVar $BOT~help[16]   $BOT~tab&"      {ppt} - Finds port pair trading ports  "
 	# ham select ports ore-mcic<-70
 	gosub :BOT~help_file
 
@@ -48,6 +49,13 @@ if ($pos > 0)
 	stripText $bot~user_command_line " dist "
 	stripText $bot~user_command_line " dist"
 
+end
+
+getWordPos " "&$bot~user_command_line&" " $pos " ppt "
+if ($pos > 0)
+	setvar $portpair true
+	#stripText $bot~user_command_line " ppt "
+	#stripText $bot~user_command_line " ppt"
 end
 
 getWordPos $bot~user_command_line $pos "route"
@@ -348,6 +356,50 @@ while ($i <= SECTORS)
 													setvar $skip true
 												end
 											end
+											if ($portpair = true)
+												setvar $possible_ppt_classes " 1 2 4 5 "
+												getwordpos $possible_ppt_classes $pos " "&PORT.CLASS[$i]&" " 
+												if ($pos > 0)
+													setvar $isfound false
+													setvar $class PORT.CLASS[$i]
+													if ($class = "1")
+														setvar $pair "2"
+														setvar $pair2 "4"
+													elseif ($class = "2")
+														setvar $pair "5"
+														setvar $pair2 "1"
+													elseif ($class = "4")
+														setvar $pair "5"
+														setvar $pair2 "1"
+													elseif ($class = "5")
+														setvar $pair "4"
+														setvar $pair2 "2"
+													end
+													setvar $j 1
+													while (SECTOR.WARPS[$i][$j] > 0)
+														setvar $neighbor SECTOR.WARPS[$i][$j]
+														if (PORT.EXISTS[$neighbor])
+															if ((PORT.CLASS[$neighbor] = $pair) or (PORT.CLASS[$neighbor] = $pair2))
+																setvar $isfound true
+															end
+														end
+														add $j 1
+													end
+													if ($isfound <> true)
+														setvar $skip true
+													end
+												else
+													setvar $skip true
+												end
+												#1 - 4,2
+												#2 - 1,5
+												#4 - 1,5
+												#5 - 2,4
+
+
+											end
+
+
 											if (($like <> "") and ($skip <> true))
 												setvar $temp PORT.NAME[$i]
 												lowercase $temp

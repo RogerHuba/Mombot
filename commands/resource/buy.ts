@@ -455,12 +455,14 @@ return
 	setVar $startingLocation $player~current_prompt
 	if (($startingLocation <> "Citadel") and ($startingLocation <> "Planet"))
 		setvar $switchboard~message "Must start at Citadel or Planet Prompt for Buy Down*"
+		gosub :switchboard~switchboard
 		halt
 	end
 
 	if ($bot~parm1 = "sh")
 		if ($startingLocation <> "Citadel")
 			setvar $switchboard~message "Shield Buyer must be run from the Citadel"
+			gosub :switchboard~switchboard
 			halt
 		end
 		goto :shield_start
@@ -468,7 +470,8 @@ return
 	if ($bot~parm1 = "fig")
 		if ($startingLocation <> "Citadel")
 			setvar $switchboard~message "Fighter Buyer must be run from the Citadel"
-			halt
+			gosub :switchboard~switchboard
+		halt
 		end
 		goto :fighter_start
 	end
