@@ -164,8 +164,10 @@ while ($word <> "@@@###@@@")
 	add $i 1
 end
 
-
+setvar $result_memory " "
 setVar $results ""
+setarray $sectorresults sectors
+setarray $pairedports sectors
 setVar $sectorResults 0
 setVar $sectorResultsi 0
 setvar $count 0
@@ -378,8 +380,11 @@ while ($i <= SECTORS)
 													setvar $j 1
 													while (SECTOR.WARPS[$i][$j] > 0)
 														setvar $neighbor SECTOR.WARPS[$i][$j]
-														if (PORT.EXISTS[$neighbor])
+														# check and see if result for neighbor sector is already been selected as result. #
+														getwordpos $result_memory $pos " "&$neighbor&" "
+														if ((PORT.EXISTS[$neighbor]) and ($pos <= 0))
 															if ((PORT.CLASS[$neighbor] = $pair) or (PORT.CLASS[$neighbor] = $pair2))
+																setvar $pairedports[$i] $neighbor
 																setvar $isfound true
 															end
 														end
@@ -450,6 +455,7 @@ while ($i <= SECTORS)
 		if ($securityBreach = 0)
 			add $count 1
 			add $sectorResultsi 1
+			setvar $result_memory $result_memory&" "&$i&" "
 			setVar $sectorResults[$sectorResultsi] $i
 
 			#getSectorParameter $i "FIGSEC" $isFigged
@@ -588,12 +594,25 @@ while ($y <= $sectorResultsi)
 	if (($dist = 1) or ($doroute = 1))
 		SetVar $d "(" & $sortedDistance[$y] &")"
 	end
-	if ($isFigged = true)
-		setvar $results $results&"["& $sortedResults[$y] &"]" & $d & " "
-	else
-		setvar $results $results& $sortedResults[$y] & $d & " "
-	end
-	
+	if ($portpair = true)
+		getSectorParameter $pairedports[$sortedResults[$y]] "FIGSEC" $isFigged2
+		if ($isFigged2 = true)
+			setvar $pair "["&$pairedports[$sortedResults[$y]]&"]"
+		else
+			setvar $pair $pairedports[$sortedResults[$y]]
+		end
+		if ($isFigged = true)
+			setvar $results $results&"["& $sortedResults[$y] &"]<->"&$pair& $d & " "
+		else
+			setvar $results $results& $sortedResults[$y]&"<->"&$pair& $d & " "
+		end
+	else	
+		if ($isFigged = true)
+			setvar $results $results&"["& $sortedResults[$y] &"]" & $d & " "
+		else
+			setvar $results $results& $sortedResults[$y] & $d & " "
+		end
+	end	
 	add $y 1
 end
 

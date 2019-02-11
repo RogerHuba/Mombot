@@ -318,6 +318,9 @@
 			gosub :dosurround
 			gosub :attackandmoveship
 			setVar $i 1
+			if ($dropSector <= 0)
+				setvar $dropsector $player~current_sector
+			end
 			setVar $checkSector SECTOR.WARPS[$dropSector][$i]
 			while ($checkSector > 0)
 				send "p " $checkSector "*y"

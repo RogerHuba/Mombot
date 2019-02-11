@@ -70,6 +70,10 @@ return
 
 	setVar $USER_INTERFACE~authorization 0
 	setVar $USER_INTERFACE~logged 0
+	if ($bot_team_name = "0")
+		setvar $bot_team_name $bot_name
+		savevar $bot_team_name
+	end
 
 	setEventTrigger     shutdownthemodule       :INTERNAL_COMMANDS~shutDown            "SCRIPT STOPPED"      $LAST_LOADED_MODULE
 	if ($botIsOff <> TRUE)
