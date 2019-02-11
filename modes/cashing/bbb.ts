@@ -147,6 +147,7 @@ gosub :PLAYER~voidAdjacent
 
 
 if ($useplanet = TRUE)
+	send "l"
 	send "d"
 	waitfor "Planet #"
 	getword CURRENTLINE $pnum 2
