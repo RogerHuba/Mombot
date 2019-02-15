@@ -524,11 +524,22 @@ return
 	end
 	setVar $j 1
 	while ($j <= SECTOR.TRADERCOUNT[$i])
-		setVar $isShielded FALSE
 		setVar $temp SECTOR.TRADERS[$i][$j]
 		setVar $temp ANSI_2&$temp
 		if ($j = 1)
 			setVar $temp ANSI_5&"    Traders "&ANSI_14&": "&$temp
+			setVar $output $output&$temp&"*"
+		else
+			setVar $output $output&"              "&$temp&"*"
+		end
+		add $j 1
+	end
+	setVar $j 1
+	while ($j <= SECTOR.SHIPCOUNT[$i])
+		setVar $temp SECTOR.SHIPS[$i][$j]
+		setVar $temp ANSI_2&$temp
+		if ($j = 1)
+			setVar $temp ANSI_5&"      Ships "&ANSI_14&": "&$temp
 			setVar $output $output&$temp&"*"
 		else
 			setVar $output $output&"              "&$temp&"*"

@@ -264,6 +264,9 @@ return
 	setVar $player~isFound FALSE
 	setVar $targetIsAlien FALSE
 	setVar $stillShields FALSE
+
+	loadvar $ship~SHIP_MAX_ATTACK
+
 	setVar $refurbString "l "&$PLANET~PLANET&"* m * * * q "
 	:checkingFigs
 		if ($player~fighters <= 0)
@@ -277,10 +280,53 @@ return
 			end
 		end
 		if ($player~startingLocation = "Citadel")
-			setVar $targetString "q q * a "
-		else
-			setVar $targetString "a "
+			send "q q * "
 		end
+		setVar $targetString "a "
+
+	if ((($SECTOR~fakeTraderCount > 0) AND ($player~cappingAliens = TRUE)) AND ($player~isFound <> TRUE) and ($player~empty_ships_only <> true))
+		if ($player~fedspace <> true)
+			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
+			if ($beaconPos > 0)
+				setVar $targetString $targetString&"*"
+			end
+		end
+		setVar $a 1
+		while (($a <= $SECTOR~fakeTraderCount) AND ($player~isFound = FALSE))
+			getWordPos $player~faketraders[$a] $pos "Zyrain"
+			getWordPos $player~faketraders[$a] $pos2 "Clausewitz"
+			getWordPos $player~faketraders[$a] $pos3 "Nelson"
+			if (($pos <= 0) AND ($pos2 <= 0) AND ($pos3 <= 0))
+				setVar $i 0
+				setVar $player~isFound TRUE
+				setVar $targetIsAlien TRUE
+				setVar $targetString $targetString&"zy z"
+			else
+				setVar $targetString $targetString&"* "
+			end
+			add $a 1
+			
+		end
+	end
+	if (($player~isFound = FALSE) AND ($SECTOR~emptyShipCount > 0))
+		if ($player~fedspace <> true)
+			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
+			if ($beaconPos > 0)
+				setVar $targetString $targetString&"*"
+			end
+		end
+		setVar $c 1
+		setVar $player~isFound FALSE
+		while (($c <= $SECTOR~emptyShipCount) AND ($player~isFound = FALSE))
+			if (($player~emptyships[$c] = $player~CORP) OR ($player~emptyships[$c] = $player~TRADER_NAME))
+				setVar $targetString $targetString&"* " 
+			else
+				setVar $player~isFound TRUE
+				setVar $targetString $targetString&"zy z"
+			end
+			add $c 1
+		end
+	end
 	if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($player~onlyAliens <> TRUE) and ($player~empty_ships_only <> true))
 		if ($player~fedspace <> true)
 			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
@@ -303,48 +349,6 @@ return
 				setVar $targetString $targetString&"* "
 			elseif (($player~targetingPerson = TRUE) AND ($player~traders[$c] <> $target))
 				setVar $targetString $targetString&"* "
-			else
-				setVar $player~isFound TRUE
-				setVar $targetString $targetString&"zy z"
-			end
-			add $c 1
-		end
-	end
-	if ((($SECTOR~fakeTraderCount > 0) AND ($player~cappingAliens = TRUE)) AND ($player~isFound <> TRUE) and ($player~empty_ships_only <> true))
-		if ($player~fedspace <> true)
-			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
-			if ($beaconPos > 0)
-				setVar $targetString $targetString&"*"
-			end
-		end
-		setVar $a 1
-		while (($a <= $SECTOR~fakeTraderCount) AND ($player~isFound = FALSE))
-			getWordPos $player~faketraders[$a] $pos "Zyrain"
-			getWordPos $player~faketraders[$a] $pos2 "Clausewitz"
-			getWordPos $player~faketraders[$a] $pos3 "Nelson"
-			if (($pos <= 0) AND ($pos2 <= 0) AND ($pos3 <= 0))
-				setVar $i 0
-				setVar $player~isFound TRUE
-				setVar $targetIsAlien TRUE
-				setVar $targetString $targetString&"zy z"
-			else
-				setVar $targetString $targetString&"* "
-			end
-			add $a 1
-		end
-	end
-	if (($player~isFound = FALSE) AND ($SECTOR~emptyShipCount > 0) AND ($player~current_sector > 10) AND ($player~current_sector <> $MAP~STARDOCK))
-		if ($player~fedspace <> true)
-			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
-			if ($beaconPos > 0)
-				setVar $targetString $targetString&"*"
-			end
-		end
-		setVar $c 1
-		setVar $player~isFound FALSE
-		while (($c <= $SECTOR~emptyShipCount) AND ($player~isFound = FALSE))
-			if (($player~emptyships[$c] = $player~CORP) OR ($player~emptyships[$c] = $player~TRADER_NAME))
-				setVar $targetString $targetString&"* " 
 			else
 				setVar $player~isFound TRUE
 				setVar $targetString $targetString&"zy z"
@@ -399,6 +403,7 @@ return
 				setVar $thisTarget CURRENTANSILINE
 				getWord $cap_ship_info $attack_prompt 1
 				if ($attack_prompt <> "Attack")
+					killalltriggers
 					return
 				end
 				getWordPos $thisTarget $pos "[0;33m([1;36m"
@@ -415,7 +420,7 @@ return
 						replacetext $temp $possibletarget ""
 						getwordpos $temp $pos " ("
 						if ($pos > 0)
-							add $end_of_line_pos ($targetpos+2)
+							add $end_of_line_pos ($targetpos+1)
 						end
 					end
 					if ($end_of_line_pos <= 0)
@@ -427,6 +432,8 @@ return
 					cutText $thistarget $thistarget 1 $end_of_line_pos
 						
 				end
+				#echo "*["&$thistarget&"]*"
+				#echo "*["&$player~lasttarget&"]*"
 				if (($thisTarget = $player~lasttarget) and ($firstLoop <> true))
 					setVar $isSameTarget TRUE
 				elseif ($player~lasttarget = "")
@@ -443,6 +450,8 @@ return
 				setVar $is_ship 0
 				while ($type_count < $SHIP~shipcounter)
 					add $type_count 1
+					#echo "*["&$cap_ship_info&"]*"
+					#echo "*["&$SHIP~shipList[$type_count]&"]*"
 					getWordPos $cap_ship_info $is_ship $SHIP~shipList[$type_count]
 					getWordPos $cap_ship_info $unman "'s unmanned"
 					if ($unman > 0)
@@ -456,7 +465,7 @@ return
 						goto :send_attack
 					end
 				end
-				setVar $player~shields 10000
+				setVar $player~shields 16000
 				setVar $defodds 5
 				goto :send_attack
 				setVar $SWITCHBOARD~message "Unknown ship type, cannot calculate attack, you must do it manually.*" 
@@ -497,19 +506,23 @@ return
 				pause
 				pause
 			:theyattacked
+				echo "*They attacked me, switching to 1 fighter attacks.*"
 				setVar $ship_fighters 1
 			:cap_it
 				killtrigger combat_scan
 				killtrigger cap_it
 				killtrigger notarget
 				killtrigger theyattacked
-				getWord CURRENTLINE $max_figs 11
+				getWord CURRENTLINE $max_figs 11 $ship~SHIP_MAX_ATTACK
 				stripText $max_figs ","
 				stripText $max_figs ")"
 				if ($ship_fighters = "")
 					setVar $ship_fighters 1
 				end
+				#echo "*["&$defodds&"]*"
+				
 				setVar $cap_points (($shieldPoints + $ship_fighters) * $defodds)
+				#echo "*Cap Points: ["&$cap_points&"]*"
 				if ((($player~defenderCapping = TRUE) AND ($unmanned <> true)) AND ($targetIsAlien = TRUE))
 					if ($stillShields = TRUE)
 						if ($ship_fighters > 1000)
@@ -521,46 +534,33 @@ return
 						setVar $cap_points 1
 					end
 				else
-					setVar $cap_points (($cap_points / $own_odds) - ($cap_points/100))
+					setVar $cap_points ($cap_points / $own_odds)
 				end
-				setVar $cap_points (($cap_points * 95) / 100)
 				if ($unmanned = true)
 					divide $cap_points 2
 				end
+				setVar $cap_points (($cap_points * 78) / 100)
 				if ($cap_points <= 0)
 					setVar $cap_points 1
 				elseif ($cap_points > $max_figs)
 					setVar $cap_points $max_figs
 				end
-				setVar $sendAttack $cap_points&"*"
+				setVar $sendAttack "z"&$cap_points&"*  "
 				if ($player~startingLocation = "Citadel")
-					setVar $sendAttack $sendAttack&$refurbString
+					setvar $sendAttack $sendAttack&$refurbString
 				end
 				send $sendAttack
 				if ($cap_points = 1)
-					send $targetString&$sendAttack
-					setVar $player~fighters ($player~fighters-$cap_points)
-					send $targetString&$sendAttack
-					setVar $player~fighters ($player~fighters-$cap_points)
-					send $targetString&$sendAttack
-					setVar $player~fighters ($player~fighters-$cap_points)
-					send $targetString&$sendAttack
-					setVar $player~fighters ($player~fighters-$cap_points)
-					send $targetString&$sendAttack
-					setVar $player~fighters ($player~fighters-$cap_points)
-					send $targetString&$sendAttack
-					setVar $player~fighters ($player~fighters-$cap_points)
-					send $targetString&$sendAttack
-					setVar $player~fighters ($player~fighters-$cap_points)
-					send $targetString&$sendAttack
-					setVar $player~fighters ($player~fighters-$cap_points)
-					send $targetString&$sendAttack
-					setVar $player~fighters ($player~fighters-$cap_points)
-					send $targetString&$sendAttack                
-					setVar $player~fighters ($player~fighters-$cap_points)
+					setvar $i 1
+					setvar $burst ""
+					while ($i <= 10)
+						setvar $burst $burst&" "&$targetString&$sendAttack
+						setVar $player~fighters ($player~fighters-$cap_points)
+						add $i 1
+					end
+					send $burst
 					gosub :player~quikstats
 				end
-				setVar $player~fighters ($player~fighters-$cap_points)
 		:keepcapping
 		end
 	end
@@ -575,6 +575,7 @@ return
 		killtrigger theyattacked
 		send "* "
 	:capStoppingPoint
+	killalltriggers
 return
 
 

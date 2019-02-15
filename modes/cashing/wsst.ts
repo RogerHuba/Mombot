@@ -1,6 +1,7 @@
+	reqrecording
+
 	gosub :BOT~loadVars
 
-	reqrecording
 	loadVar $GAME~GENESIS_COST
 	loadVar $GAME~ATOMIC_COST
 	loadVar $MAP~STARDOCK 
@@ -588,7 +589,7 @@
 					setVar $ship2NeedsPort TRUE
 				end
 				if ($QUIET = 0)
-					send "'<"&$bot~subspace&">[Busted:"&$lastBustSector&"]<"&$bot~subspace&">* c"
+					send "'<"&$bot~subspace&">[Busted:"&$lastBustSector&"]<"&$bot~subspace&">* "
 				end
 
 			:continue

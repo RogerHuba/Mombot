@@ -1,15 +1,4 @@
 	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-	loadVar $MAP~stardock
-	loadVar $BOT~silent_running
 
 
 	setVar $BOT~help[1]  $BOT~tab&"Moves empty ships from one sector to another."
@@ -41,10 +30,10 @@
 		halt
 	end
 	setVar $startSector $PLAYER~CURRENT_SECTOR
-	isNumber $test $parm1
+	isNumber $test $bot~parm1
 	if ($test)
-		if ($parm1 > 0)
-			setVar $moveSector $parm1
+		if ($bot~parm1 > 0)
+			setVar $moveSector $bot~parm1
 		else
 			setVar $SWITCHBOARD~message "Invalid move sector entered*"
 			gosub :SWITCHBOARD~switchboard
@@ -56,7 +45,7 @@
 		halt
 	end
 
-	getWordPos $user_command_line $pos "back"
+	getWordPos $bot~user_command_line $pos "back"
 	if ($pos > 0)
 		setVar $back TRUE
 	else
@@ -64,28 +53,28 @@
 	end
 
 
-	getWordPos $user_command_line $pos "silent"
+	getWordPos $bot~user_command_line $pos "silent"
 	if ($pos > 0)
-		setVar $silent_running TRUE
+		setVar $bot~silent_running TRUE
 	else
-		setVar $silent_running FALSE
+		setVar $bot~silent_running FALSE
 	end
 
-	getWordPos $user_command_line $pos "sell"
+	getWordPos $bot~user_command_line $pos "sell"
 	if ($pos > 0)
 		setVar $sellship TRUE
 	else
 		setVar $sellship FALSE
 	end
 
-	getWordPos $user_command_line $pos "dep"
+	getWordPos $bot~user_command_line $pos "dep"
 	if ($pos > 0)
 		setVar $dep TRUE
 	else
 		setVar $dep FALSE
 	end
 
-	getWordPos $user_command_line $pos "silent"
+	getWordPos $bot~user_command_line $pos "silent"
 	if ($pos > 0)
 		setVar $SWITCHBOARD~self_command TRUE
 	end
@@ -319,11 +308,16 @@
 			if ($dep = true)
 				setVar $BOT~command "dep"
 				loadVar $MAP~stardock
-				setVar $BOT~user_command_line " dep "&($player~credits-$starting_credits)
+
+				if ($bot~silent_running = true)
+					setVar $BOT~user_command_line " dep "&($player~credits-$starting_credits)&" silent"
+				else
+					setVar $BOT~user_command_line " dep "&($player~credits-$starting_credits)
+				end
 				setVar $BOT~parm1 ($player~credits-$starting_credits)
-				setvar $parm1 $bot~parm1
+				setvar $bot~parm1 $bot~parm1
 				saveVar $BOT~parm1
-				saveVar $parm1
+				saveVar $bot~parm1
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
 				load "scripts\mombot\commands\general\dep.cts"
