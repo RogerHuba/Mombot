@@ -21,6 +21,7 @@ gosub :BOT~loadVars
 # ----- SCRIPT NAME AND VERSION -----
 setVar $scriptname "Cherokee's ZTM"
 setVar $version "1.5.0"
+setvar $already_checked " "
 
 #----- INCLUDES -----
 reqRecording
@@ -72,11 +73,11 @@ setVar $location $PLAYER~CURRENT_PROMPT
     end
 
     if ($bot~parm1 = "one")
-	setVar $endone 1
+		setVar $endone 1
     end
 
     if ($bot~parm2 = "one")
-	setVar $endone 1
+		setVar $endone 1
     end
 
     if ($resumepass = 7)
@@ -275,12 +276,19 @@ setVar $location $PLAYER~CURRENT_PROMPT
 # SUB ----- :sendCourse
 # requires parameters $start and $end
 :sendCourse
-
     
 	if ($endone = 1)
-		send "f" & $start & "*1**"
+		getwordpos $already_checked $pos " "&$start&" "
+		if ($pos <= 0)
+			setvar $already_checked $already_checked&" "&$start&" "
+			send "f" & $start & "*1**"
+		end
 	else
-		send "f" & $start & "*" & $end & "**"
+		getwordpos $already_checked $pos " "&$start&":"&$end&" "
+		if ($pos <= 0)
+			setvar $already_checked $already_checked&" "&$start&":"&$end&" "
+			send "f" & $start & "*" & $end & "**"
+		end
 	end
 return
 

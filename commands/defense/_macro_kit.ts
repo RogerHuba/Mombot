@@ -1235,4 +1235,5 @@ end
 include "source\bot_includes\player"
 include "source\bot_includes\switchboard"
 include "source\module_includes\prompt"
+include "source\module_includes\bot"
 include "source\bot_includes\map"

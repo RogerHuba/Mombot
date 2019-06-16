@@ -1,6 +1,10 @@
 logging off
      gosub :BOT~loadVars
      loadvar $SHIP~cap_file
+	loadvar $player~onlyAliens
+	loadvar $player~cappingAliens
+	loadvar $player~empty_ships_only
+	loadvar $player~defenderCapping
 
 
 #HELP FILE
@@ -9,6 +13,15 @@ logging off
      gosub :BOT~help_file
 
 	gosub :combat~init 
+
+	loadvar $ship~CAP_FILE	
+	fileExists $CAP_FILE_chk $ship~CAP_FILE
+	if ($CAP_FILE_chk)
+		gosub :ship~loadshipinfo
+	else
+		gosub :ship~getShipCapStats
+		gosub :ship~loadShipInfo
+	end 
 
 #============================== START AUTO CAPTURE =======================================
 :autoCap

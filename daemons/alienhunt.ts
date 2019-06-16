@@ -267,6 +267,10 @@
 	setTextLineTrigger fig :checkFighter "Deployed Fighters Report Sector"
 	setTextTrigger armid :attackSectorMine "Your mines in "
 	setTextLineTrigger liftsoff :pwarpConfirmed " lifts off from "
+	setTextLineTrigger 	warps 	:pwarpConfirmed 	"warps into the sector."
+	setTextLineTrigger 	power 	:pwarpConfirmed 	"is powering up weapons systems!"
+	settextlinetrigger  wave    :pwarpConfirmed    " launches a wave of fighters at the "
+	
 	gosub :BOT~disconnect_triggers
 	pause
 
@@ -314,6 +318,9 @@
 			gosub :dosurround
 			gosub :attackandmoveship
 			setVar $i 1
+			if ($dropSector <= 0)
+				setvar $dropsector $player~current_sector
+			end
 			setVar $checkSector SECTOR.WARPS[$dropSector][$i]
 			while ($checkSector > 0)
 				send "p " $checkSector "*y"

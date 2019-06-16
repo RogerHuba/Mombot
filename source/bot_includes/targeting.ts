@@ -6,14 +6,14 @@
 #Author: Mind Dagger
 
 :initialize_targeting
-        setVar $realTraderCount 0
-        setVar $fakeTraderCount 0
-        setVar $corpieCount     0
-        setVar $emptyShipCount  0
-        setVar $containsBeacon  FALSE
-        setArray $TRADERS 	200
+		setVar $realTraderCount 0
+		setVar $fakeTraderCount 0
+		setVar $corpieCount     0
+		setVar $emptyShipCount  0
+		setVar $containsBeacon  FALSE
+		setArray $TRADERS 	200
 	#The ranks[] array is used for stripping ranks to get the name of the trader (for targeting purposes)
-        setVar $ranksLength 	47
+		setVar $ranksLength 	47
 	setArray $ranks 	$ranksLength
 	setVar $ranks[1] 	"36mCivilian"
 	setVar $ranks[2] 	"36mPrivate 1st Class"
@@ -68,7 +68,7 @@ return
 
 :getSectorData
 	#Collects all sector data, and consolidates it
-        killalltriggers
+		killalltriggers
 	if ($startingLocation = "Citadel")
 		send "s* "
 	else
@@ -92,9 +92,9 @@ return
 		getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 		if ($beaconPos > 0)
 		   setVar $containsBeacon TRUE
-                else
-                    setVar $containsBeacon FALSE
-                end
+				else
+					setVar $containsBeacon FALSE
+				end
 		goSub :getTraders
 		goSub :getEmptyShips
 		goSub :getFakeTraders
@@ -102,7 +102,7 @@ return
 
 :getTraders
 	#Reads sector data and searches for real (Player) traders
-        getWordPos $sectorData $posTrader "[0m[33mTraders [1m:"
+		getWordPos $sectorData $posTrader "[0m[33mTraders [1m:"
 	if ($posTrader > 0)
 		getText $sectorData $traderData "[0m[33mTraders [1m:" "[0m[1;32mWarps to Sector(s) [33m:"
 		setVar $traderData $STARTLINE&$traderData
@@ -166,7 +166,7 @@ return
 
 :getEmptyShips
 	#Reads sector data and checks for empty (Unmanned) ships
-        getWordPos $sectorData $posShips "[0m[33mShips   [1m:"
+		getWordPos $sectorData $posShips "[0m[33mShips   [1m:"
 	if ($posShips > 0)
 		getText $sectorData $shipData "[0m[33mShips   [1m:" "[0m[1;32mWarps to Sector(s) [33m:"
 		setVar $shipData $STARTLINE&$shipData
@@ -203,7 +203,7 @@ return
 
 :getFakeTraders
 	#Reads sector data and checks for fake (Federal or Alien) traders
-        getWordPos $sectorData $posShips "[0m[33mShips   [1m:"
+		getWordPos $sectorData $posShips "[0m[33mShips   [1m:"
 	getWordPos $sectorData $posTraders "[0m[33mTraders [1m:"
 
 	if ($posTraders > 0)

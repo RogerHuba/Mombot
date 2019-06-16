@@ -301,6 +301,7 @@ return
 
 # includes:
 include "source\module_includes\bot"
+include "source\module_includes\prompt"
 include "source\bot_includes\player"
 include "source\bot_includes\sector"
 include "source\bot_includes\map"
