@@ -70,6 +70,7 @@
             gosub :PLANET~getPlanetInfo
             send "t*t1* c "
         end
+
         if ($PROMPT~startingLocation = "Command")
             gosub :SHIP~getShipStats
             setVar $mow_SHIP_MAX_ATTACK $SHIP~SHIP_MAX_ATTACK
@@ -128,6 +129,15 @@
         if ($mow_SHIP_MAX_ATTACK > $PLAYER~FIGHTERS)
             setVar $mow_SHIP_MAX_ATTACK 9999
         end
+	if ($mow_SHIP_MAX_ATTACK < 99) or ($PLAYER~FIGHTERS < 99)
+		if ($mow_SHIP_MAX_ATTACK = 0)
+			setVar $mow_SHIP_MAX_ATTACK ""
+		end
+		setVar $mow_SHIP_MAX_ATTACK $mow_SHIP_MAX_ATTACK & "998877111"
+	end
+
+
+
         if ($PLAYER~CURRENT_SECTOR <> CURRENTSECTOR)
             setVar $PLAYER~CURRENT_SECTOR 0
         end
