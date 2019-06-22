@@ -45,7 +45,7 @@
             gosub :PLANET~landingSub
         end
         setVar $target $PLAYER~warpto
-        gosub :addFigToData
+        gosub :player~addfigtodata
         setVar $SWITCHBOARD~message $PLAYER~msg&"*"
         gosub :SWITCHBOARD~switchboard
     end
@@ -88,18 +88,6 @@ return
 :wait_for_command
 halt
 
-
-:removeFigFromData
-    getSectorParameter $target "FIGSEC" $check
-    if ($check = TRUE)
-        getSectorParameter 2 "FIG_COUNT" $figCount
-        setSectorParameter 2 "FIG_COUNT" ($figCount-1)
-    end
-    setSectorParameter $target "FIGSEC" FALSE
-return
-:addFigToData
-    setSectorParameter $target "FIGSEC" TRUE
-return
 
 :checkStartingPrompt
     if ($PLAYER~CURRENT_PROMPT = "0")

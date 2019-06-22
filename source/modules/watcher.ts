@@ -95,7 +95,7 @@ pause
             if (($temp <= SECTORS) AND ($temp > 0))
                 setVar $target $temp
                 setSectorParameter $target "MSLSEC" TRUE
-                gosub :removeFigFromData
+                gosub :removefigfromdata
             end
         end
     end
@@ -116,7 +116,7 @@ pause
         if (($test = TRUE) AND ($fig_number <> "0"))
             if (($fig_hit <= SECTORS) AND ($fig_hit > 0))
                 setVar $target $fig_hit
-                gosub :removeFigFromData
+                gosub :removefigfromdata
             end
         end
     end
@@ -135,7 +135,7 @@ pause
         if ($test)
             if (($temp <= SECTORS) AND ($temp > 0))
                 setVar $target $temp
-                gosub :removeFigFromData
+                gosub :removefigfromdata
             end
         end
     end
@@ -195,7 +195,7 @@ pause
         if ($test)
             if (($temp <= SECTORS) AND ($temp > 0))
                 setVar $target $temp
-                gosub :addFigToData 
+                gosub :addfigtodata 
             end
         end
     end
@@ -215,7 +215,7 @@ pause
         if ($test)
             if (($temp <= SECTORS) AND ($temp > 0))
                 setVar $target $temp
-                gosub :removeFigFromData 
+                gosub :removefigfromdata 
             end
         end
     end
@@ -227,7 +227,7 @@ pause
     if ($test)
         if ((CURRENTSECTOR > 10) AND (CURRENTSECTOR < SECTORS))
             setVar $target CURRENTSECTOR
-            gosub :addFigToData
+            gosub :addfigtodata
         end
     end
     setTextLineTrigger      fightersadd     :addFig         "Should they be (D)efensive, (O)ffensive or Charge a (T)oll ?"

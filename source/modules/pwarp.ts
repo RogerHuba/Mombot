@@ -85,7 +85,7 @@
     :no_pwarp_lock
         gosub :killthetriggers
         setVar $target $PLAYER~warpto
-        gosub :removeFigFromData
+        gosub :player~removefigfromdata
         setVar $SWITCHBOARD~message "No fighter down at that location!*"
         gosub :SWITCHBOARD~switchboard
         return
@@ -107,7 +107,7 @@
                 setSectorParameter $PLANET~PLANET "PSECTOR" $target
             end
         end
-        gosub :addFigToData
+        gosub :player~addfigtodata
         return
     :already
         gosub :killthetriggers
@@ -123,18 +123,6 @@ halt
 
 :killthetriggers
     killalltriggers
-return
-
-:removeFigFromData
-    getSectorParameter $target "FIGSEC" $check
-    if ($check = TRUE)
-        getSectorParameter 2 "FIG_COUNT" $figCount
-        setSectorParameter 2 "FIG_COUNT" ($figCount-1)
-    end
-    setSectorParameter $target "FIGSEC" FALSE
-return
-:addFigToData
-    setSectorParameter $target "FIGSEC" TRUE
 return
 
 :checkStartingPrompt

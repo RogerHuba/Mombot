@@ -159,13 +159,13 @@
                     else
                         setVar $result $result&"f "&$figsToDrop&" * c d "
                         setVar $target $PLAYER~mowCourse[$j]
-                        gosub :addFigToData
+                        gosub :player~addfigtodata
                     end
                 end
                 if (($j >= $PLAYER~courseLength) AND ($mow_saveme = TRUE) AND ($figstoDrop = 0))
                     setVar $result $result&"f 1 * c d "
                     setVar $target $PLAYER~mowCourse[$j]
-                    gosub :addFigToData
+                    gosub :player~addfigtodata
                 end
                 if (($called = FALSE) AND ($mow_saveme = TRUE) AND ($j >= ($PLAYER~courseLength-2)))
                     setVar $result $result&"'"&$PLAYER~destination&"=saveme*  "
@@ -220,23 +220,6 @@ halt
     killalltriggers
 return
 
-:removeFigFromData
-    getSectorParameter $target "FIGSEC" $check
-    if ($check = TRUE)
-        getSectorParameter 2 "FIG_COUNT" $figCount
-        setSectorParameter 2 "FIG_COUNT" ($figCount-1)
-    end
-    setSectorParameter $target "FIGSEC" FALSE
-return
-:addFigToData
-	if ($target > 0)
-		setSectorParameter $target "FIGSEC" TRUE
-	end
-	if ($target > SECTORS)
-                send "'{" $SWITCHBOARD~bot_name "} - It seems like your sector size is wrong in your database.*"
-                halt		
-	end
-return
 
 #INCLUDES:
 include "source\module_includes\bot"

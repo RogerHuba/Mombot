@@ -365,7 +365,7 @@
 		killalltriggers
 		send "'"&$psimac_corp_ftr_drop_amt&" Corporate "&$depType&" Deployed!*"
 		setVar $target $PLAYER~CURRENT_SECTOR
-		gosub :addFigToData
+		gosub :player~addfigtodata
 		waitOn "Citadel command (?=help)"
 		halt
 		:nofigdown

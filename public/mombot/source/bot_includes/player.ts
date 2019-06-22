@@ -827,12 +827,12 @@ return
                 if (($figsToDrop > 0) AND ($mowCourse[$j] > 10) AND ($mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
                     setVar $result $result&"f "&$figsToDrop&" * c d "
                     setVar $target $mowCourse[$j]
-                    gosub :addFigToData
+                    gosub :addfigtodata
                 end
                 if (($j >= $courseLength) AND ($mow_saveme = TRUE) AND ($figstoDrop = 0))
                     setVar $result $result&"f 1 * c d "
                     setVar $target $mowCourse[$j]
-                    gosub :addFigToData
+                    gosub :addfigtodata
                 end
                 if (($called = FALSE) AND ($mow_saveme = TRUE) AND ($j >= ($courseLength-2)))
                     setVar $result $result&"'"&$destination&"=saveme*  "

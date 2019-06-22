@@ -827,12 +827,12 @@ return
 				if (($figsToDrop > 0) AND ($mowCourse[$j] > 10) AND ($mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
 					setVar $result $result&"f "&$figsToDrop&" * c d "
 					setVar $target $mowCourse[$j]
-					gosub :addFigToData
+					gosub :addfigtodata
 				end
 				if (($j >= $courseLength) AND ($mow_saveme = TRUE) AND ($figstoDrop = 0))
 					setVar $result $result&"f 1 * c d "
 					setVar $target $mowCourse[$j]
-					gosub :addFigToData
+					gosub :addfigtodata
 				end
 				if (($called = FALSE) AND ($mow_saveme = TRUE) AND ($j >= ($courseLength-2)))
 					setVar $result $result&"'"&$destination&"=saveme*  "
@@ -1856,4 +1856,19 @@ return
 	send $result
 	return
 
+:removeFigFromData
+    getSectorParameter $target "FIGSEC" $check
+    if ($check = TRUE)
+        getSectorParameter 2 "FIG_COUNT" $figCount
+        setSectorParameter 2 "FIG_COUNT" ($figCount-1)
+    end
+    setSectorParameter $target "FIGSEC" FALSE
+return
+:addFigToData
+	if (($target > 0) and ($target <= SECTORS))
+		setSectorParameter $target "FIGSEC" TRUE
+	else
+		send "'{" $SWITCHBOARD~bot_name "} - Something is wrong with your sector or universe size in the database.*"
+	end
+return
 

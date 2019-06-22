@@ -105,7 +105,7 @@
         if (($figsToDrop > 0) AND ($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
             send "f "&$figsToDrop&" * c d "
             setVar $target $PLAYER~mowCourse[$j]
-            gosub :addFigToData
+            gosub :player~addfigtodata
         end
         add $j 1
     end
@@ -131,18 +131,6 @@ halt
 
 :killthetriggers
     killalltriggers
-return
-
-:removeFigFromData
-    getSectorParameter $target "FIGSEC" $check
-    if ($check = TRUE)
-        getSectorParameter 2 "FIG_COUNT" $figCount
-        setSectorParameter 2 "FIG_COUNT" ($figCount-1)
-    end
-    setSectorParameter $target "FIGSEC" FALSE
-return
-:addFigToData
-    setSectorParameter $target "FIGSEC" TRUE
 return
 
 # includes:
