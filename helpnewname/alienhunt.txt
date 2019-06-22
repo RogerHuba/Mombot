@@ -1,0 +1,11 @@
+                     
+   
+               <<<< alienhunt >>>>
+   
+     Hunts down aliens and captures their ships.  
+     Will automatically turn ships and planet personal.
+     Will use shields on planet as well.
+     Best to use with a defender ship.
+              
+     Options: 
+     {off} - Turns off script and sets planet and ship corporate.

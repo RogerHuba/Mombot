@@ -1,0 +1,18 @@
+                     
+   
+                  <<<< news >>>>
+   
+     news   
+         Daily news reader 
+         rep         - Overall reporting of events in the Log
+         foton       - Lists fotons fired
+         tow         - Who was towed
+         ports       - Port activity (construction, demolition, Openings)
+         planets     - Who popped planet(s) and how many
+         corp        - Corporate news, formations, hirings, firings, etc.
+         fed         - Awarded Commish, Bounties
+         pods        - Itemized list of who podded
+         overloads   - List of sectors with overloaded planets
+         announce    - Reporting of any announcements made
+           
+           Author: Lonestar
