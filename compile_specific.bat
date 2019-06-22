@@ -1,0 +1,1 @@
+for /r %%n in (*mow.ts) do twxc.exe "%%n"

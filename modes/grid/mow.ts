@@ -229,7 +229,13 @@ return
     setSectorParameter $target "FIGSEC" FALSE
 return
 :addFigToData
-    setSectorParameter $target "FIGSEC" TRUE
+	if ($target > 0)
+		setSectorParameter $target "FIGSEC" TRUE
+	end
+	if ($target > SECTORS)
+                send "'{" $SWITCHBOARD~bot_name "} - It seems like your sector size is wrong in your database.*"
+                halt		
+	end
 return
 
 #INCLUDES:
