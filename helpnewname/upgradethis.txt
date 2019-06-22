@@ -1,9 +1,0 @@
-                     
-   
-              <<<< upgradethis >>>>
-   
-       Upgrades all ports until money or ports run out 
-            
-       upgradethis [port type/sector param] 
-            
-             

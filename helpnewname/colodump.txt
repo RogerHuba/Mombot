@@ -1,6 +1,0 @@
-                     
-   
-                <<<< colodump >>>>
-   
-     terradump
-     Start in non-fed sector.  Will pull colos off terra and jettison.
