@@ -102,6 +102,11 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
+source/*.cts
+source/*includes/*.cts
+games/*/*.cfg
+games/*/*.comms
+
 # dotenv environment variables file
 .env
 
