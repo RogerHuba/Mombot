@@ -112,16 +112,16 @@ return
 return
 
 #INCLUDES:
-include "mombot\source\bot_includes\bot"
-include "mombot\source\bot_includes\player"
-include "mombot\source\bot_includes\switchboard"
-include "mombot\source\bot_includes\planet"
-include "mombot\source\bot_includes\ship"
-include "mombot\source\bot_includes\map"
-include "mombot\source\bot_includes\sector"
-include "mombot\source\bot_includes\game"
-include "mombot\source\bot_includes\bot\connectivity"
-include "mombot\source\bot_includes\bot\internal_commands"
-include "mombot\source\bot_includes\bot\menus"
-include "mombot\source\bot_includes\bot\user_interface"
+include "source\bot_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+include "source\bot_includes\sector"
+include "source\bot_includes\game"
+include "source\bot_includes\bot\connectivity"
+include "source\bot_includes\bot\internal_commands"
+include "source\bot_includes\bot\menus"
+include "source\bot_includes\bot\user_interface"
 
