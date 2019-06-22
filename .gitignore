@@ -104,6 +104,7 @@ typings/
 
 source/*.cts
 source/*includes/*/*.cts
+source/*includes/*.cts
 public/mombot/source/*includes/*.cts
 games/*/*.cfg
 games/*/*.comms
