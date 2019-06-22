@@ -1865,10 +1865,8 @@ return
     setSectorParameter $target "FIGSEC" FALSE
 return
 :addFigToData
-	if (($target > 0) or ($target <= SECTORS))
+	if (($target > 0) and ($target <= SECTORS))
 		setSectorParameter $target "FIGSEC" TRUE
-	else
-		send "'{" $SWITCHBOARD~bot_name "} - Something is wrong with your sector or universe size in the database.*"
 	end
 return
 
