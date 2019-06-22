@@ -103,9 +103,13 @@ typings/
 .yarn-integrity
 
 source/*.cts
-source/*includes/*.cts
+source/*includes/*/*.cts
+public/mombot/source/*includes/*.cts
 games/*/*.cfg
 games/*/*.comms
+source/modules/*.cts
+source/modules/archive/*.cts
+source/snippets/*.cts
 
 # dotenv environment variables file
 .env
