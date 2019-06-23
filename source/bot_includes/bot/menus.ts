@@ -1395,100 +1395,11 @@ return
 			if ($BOT~newGameOlder = TRUE)
 				goto :internal_commands~relog_attempt
 			elseif ($BOT~newGameDay1 = TRUE)
-				:tryAgainNewGameDay1
-					gosub :connectivity~do_relog
-					setTextLineTrigger  GameClosed1 :GameClosed     "I'm sorry, but this is a closed game."
-					setTextLineTrigger  GameClosed2 :GameClosed     "www.tradewars.com                                   Epic Interactive Strategy"
-					setTextLineTrigger  Damn_Planet :Damn_Planet        "What do you want to name your home planet?"
-					settexttrigger       invalid_name :wrong_name    "Sorry, you cannot use the name "
-					setTextTrigger      Phew        :Phew           "Command [TL"
-					send "T***Y"&$BOT~password&"*"&$BOT~password&"**N"&$BOT~username&"*Y"&$BOT~startShipName&"*Y"
-					pause
-				:wrong_name
-					killalltriggers
-					echo "[[  {"&$SWITCHBOARD~bot_name&"} - Character name not allowed!  Start over and pick a new name!  ]]*"
-					halt
-				:GameClosed
-					killalltriggers
-					DISCONNECT
-					setDelayTrigger  WhistleWhileYouWork    :WhistleWhileYouWork 1000
-					pause
-				:WhistleWhileYouWork
-					goto :tryAgainNewGameDay1
-				:Damn_Planet
-					send ".*  Q  "
-					pause
-				:Phew
-					gosub :BOT~killthetriggers
-					if (($BOT~isCEO = TRUE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
-						setTextLineTrigger alreadyCorped :alreadyCorped "You may only be on one Corp at a time."
-						setTextTrigger continueCorpCreation :continueCorpCreation "<Create New Corporation>"
-						send "*TM"
-						pause
-						:continueCorpCreation
-							gosub :BOT~killthetriggers
-							send $BOT~corpName&"*Y"&$BOT~corpPassword&"*Y*CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q"
-					elseif (($BOT~isCEO = FALSE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
-						:checkForCorp
-							send "*TD"
-							gosub :PLAYER~quikstats
-							setTextLineTrigger thereIsMyCorp :thereIsMyCorp "    "&$BOT~corpName
-							setTextTrigger noCorpThatName :noCorpThatName "Corporate command ["
-							send "L"
-							pause
-						:noCorpThatName
-							gosub :BOT~killthetriggers
-							echo "Waiting 5 seconds to check for corp again, press [Spacebar] to cancel.*"
-							setDelayTrigger waitingForCorp :checkForCorp 5000
-							setTextOutTrigger cancelWaitingForCorp :alreadyCorped #32
-							pause
-						:thereIsMyCorp
-							gosub :BOT~killthetriggers
-							getWord CURRENTLINE $corpNumber 1
-						:continueCorpCreation
-							gosub :BOT~killthetriggers
-							send "J"&$corpNumber&"*"&$BOT~corpPassword&"* * *CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q"
-					else
-						:alreadyCorped
-							gosub :BOT~killthetriggers
-							send "* * *CN24"&$BOT~subspace&"*Q Q Q ZN* ^Q"
-					end
-					setTextLineTrigger      AllDone     :AllDone ": ENDINTERROG"
-					pause
-				:AllDone
-					gosub :BOT~killthetriggers
+				setvar $connectivity~newgame true
+				gosub :connectivity~enter_new_game
 			else
-				gosub :connectivity~do_relog
-				:tryAgainSD
-					killalltriggers
-					setTextLineTrigger  GameClosed1 :GameClosedSD       "I'm sorry, but this is a closed game."
-					setTextLineTrigger  GameClosed2 :GameClosedSD       "www.tradewars.com                                   Epic Interactive Strategy"
-					setTextLineTrigger  GameClosed3 :GameClosedSD       " day(s) to get back in."
-					setTextLineTrigger  Damn_Planet :Damn_PlanetSD      "What do you want to name your home planet?"
-					setTextTrigger      Phew        :PhewSD         	"Command [TL"
-					setDelayTrigger     delay_close :GameClosedSD 5000
-					send "T***"&$BOT~password&"***"&$BOT~startShipName&"*Y "
-					pause
-				:GameClosedSD
-					killalltriggers
-				    if (CONNECTED <> TRUE)
-				        load "scripts\mombot\commands\general\relog.cts"
-						setEventTrigger		relogended		:relogended "SCRIPT STOPPED" "scripts\mombot\commands\general\relog.cts"
-						pause
-						:relogended
-						goto :tryAgainSD
-				    end
-					setDelayTrigger  WhistleWhileYouWorkSD  :WhistleWhileYouWorkSD 300
-					setTextLineTrigger at_game_menu :tryAgainSD "T - Play Trade Wars 2002"
-					pause
-				:WhistleWhileYouWorkSD
-					send $BOT~letter&" * "
-					goto :GameClosedSD
-				:Damn_PlanetSD
-					send ".*  Q  "
-					pause
-				:PhewSD
-					gosub :BOT~killthetriggers
+				setvar $connectivity~newgame false
+				gosub :connectivity~enter_new_game
 			end
 			goto :donePreGame
 		else
