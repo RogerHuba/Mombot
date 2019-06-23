@@ -165,12 +165,12 @@
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	getSectorParameter SECTORS "MINESEC" $isArmided
 	getSectorParameter SECTORS "LIMPSEC" $isLimped
-	fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\MOMBot\Help\"&$command&".txt" "- limpshovel {bwarp}                                                     " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "  Limpet reorganizer. Dumps limpets to borders of grid or near base if no border available. " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [bwarp] - Will use planetary transporter to hit sectors. Default is twarp.                                                          " 
+		write "scripts\mombot\help\"&$command&".txt" "- limpshovel {bwarp}                                                     " 
+		write "scripts\mombot\help\"&$command&".txt" "  Limpet reorganizer. Dumps limpets to borders of grid or near base if no border available. " 
+		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
+		write "scripts\mombot\help\"&$command&".txt" "    [bwarp] - Will use planetary transporter to hit sectors. Default is twarp.                                                          " 
 		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 	end
 

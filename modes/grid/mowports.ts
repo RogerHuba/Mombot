@@ -16,11 +16,11 @@
 	loadVar $rylos
 	loadVar $alpha_centauri
 	loadVar $command
-	fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&"                                              " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    Mows to unfigged upgraded sxx, xBx, and xxB ports in grid.           " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    Does not do so safely.                                  " 
+		write "scripts\mombot\help\"&$command&".txt" "- "&$command&"                                              " 
+		write "scripts\mombot\help\"&$command&".txt" "    Mows to unfigged upgraded sxx, xBx, and xxB ports in grid.           " 
+		write "scripts\mombot\help\"&$command&".txt" "    Does not do so safely.                                  " 
 		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 	end
 	window mowWindow 250 80 "Sectors Gridded" ontop 

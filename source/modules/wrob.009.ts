@@ -75,19 +75,19 @@
 	loadVar $subspace	
 	loadvar $command
 
-	fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\MOMBot\Help\"&$command&".txt" "- wrob [minimum rob amount] {upgraded} {skipcim}            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    Travels universe robbing ports                          " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [minimum rob amount]                                    "
-		write "scripts\MOMBot\Help\"&$command&".txt" "       - Amount that must be on port before attempting rob  " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [upgraded]                                              " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "       - Will only visit upgraded ports                     " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [skipcim]                                               " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "       - Will skip running CIM port report before running   " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [CLEAR_EMPTY]                                           " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "       - Will delete the empty port file                    " 
+		write "scripts\mombot\help\"&$command&".txt" "- wrob [minimum rob amount] {upgraded} {skipcim}            " 
+		write "scripts\mombot\help\"&$command&".txt" "    Travels universe robbing ports                          " 
+		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
+		write "scripts\mombot\help\"&$command&".txt" "    [minimum rob amount]                                    "
+		write "scripts\mombot\help\"&$command&".txt" "       - Amount that must be on port before attempting rob  " 
+		write "scripts\mombot\help\"&$command&".txt" "    [upgraded]                                              " 
+		write "scripts\mombot\help\"&$command&".txt" "       - Will only visit upgraded ports                     " 
+		write "scripts\mombot\help\"&$command&".txt" "    [skipcim]                                               " 
+		write "scripts\mombot\help\"&$command&".txt" "       - Will skip running CIM port report before running   " 
+		write "scripts\mombot\help\"&$command&".txt" "    [CLEAR_EMPTY]                                           " 
+		write "scripts\mombot\help\"&$command&".txt" "       - Will delete the empty port file                    " 
 		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 	end
 

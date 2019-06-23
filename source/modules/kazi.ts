@@ -13,19 +13,19 @@ loadVar $stardock
 loadVar $rylos
 loadVar $alpha_centauri
 
-	fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" [planet] {shields} {defender} {zdy}          " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    Automates planet invasion.                              " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [planet]                                                "
-		write "scripts\MOMBot\Help\"&$command&".txt" "       - Planet number to attack                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [shields]                                               " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "       - Will kill planetary shields. Stops when below 50.  " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [defender]                                              " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "       - Will land defensively to take out military reaction." 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [zdy]                                                   " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "       - Option to blow planet as soon as you land.         " 
+		write "scripts\mombot\help\"&$command&".txt" "- "&$command&" [planet] {shields} {defender} {zdy}          " 
+		write "scripts\mombot\help\"&$command&".txt" "    Automates planet invasion.                              " 
+		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
+		write "scripts\mombot\help\"&$command&".txt" "    [planet]                                                "
+		write "scripts\mombot\help\"&$command&".txt" "       - Planet number to attack                            " 
+		write "scripts\mombot\help\"&$command&".txt" "    [shields]                                               " 
+		write "scripts\mombot\help\"&$command&".txt" "       - Will kill planetary shields. Stops when below 50.  " 
+		write "scripts\mombot\help\"&$command&".txt" "    [defender]                                              " 
+		write "scripts\mombot\help\"&$command&".txt" "       - Will land defensively to take out military reaction." 
+		write "scripts\mombot\help\"&$command&".txt" "    [zdy]                                                   " 
+		write "scripts\mombot\help\"&$command&".txt" "       - Option to blow planet as soon as you land.         " 
 		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 	end
 	
@@ -245,6 +245,6 @@ loadVar $alpha_centauri
 return
 # ======================     END KAMIKAZE (KAZI) SUBROUTINE    ==========================
 
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\quikstats"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\planetinfo"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\shipstats"
+include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\mombot\botIncludes\quikstats"
+include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\mombot\botIncludes\planetinfo"
+include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\mombot\botIncludes\shipstats"

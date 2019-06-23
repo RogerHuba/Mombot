@@ -16,17 +16,17 @@
 	loadVar $rylos
 	loadVar $alpha_centauri
 	loadVar $command
-	fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" {figstodrop} {all} {alarm} {notwarp}         " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    Mows to unfigged upgraded fuel ports in grid.           " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    Does not do so safely.                                  " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    {all} - Mows to all upgraded ports                      " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    {alarm}  - activate alarm                               " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    {notwarp} - Don't twarp near closest unfigged sector" 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    {figstodrop} - How many fighters to drop" 
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                   " 
+		write "scripts\mombot\help\"&$command&".txt" "- "&$command&" {figstodrop} {all} {alarm} {notwarp}         " 
+		write "scripts\mombot\help\"&$command&".txt" "    Mows to unfigged upgraded fuel ports in grid.           " 
+		write "scripts\mombot\help\"&$command&".txt" "    Does not do so safely.                                  " 
+		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
+		write "scripts\mombot\help\"&$command&".txt" "    {all} - Mows to all upgraded ports                      " 
+		write "scripts\mombot\help\"&$command&".txt" "    {alarm}  - activate alarm                               " 
+		write "scripts\mombot\help\"&$command&".txt" "    {notwarp} - Don't twarp near closest unfigged sector" 
+		write "scripts\mombot\help\"&$command&".txt" "    {figstodrop} - How many fighters to drop" 
+		write "scripts\mombot\help\"&$command&".txt" "                                   " 
 		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 	end
 	window mowWindow 350 450 "Sectors Gridded" ontop 

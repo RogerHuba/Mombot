@@ -16,16 +16,16 @@
 	loadVar $rylos
 	loadVar $alpha_centauri
 	loadVar $command
-	fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" [param] {figstodrop} {alarm}    " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    Mows to surround sectors defined in sector param given. " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    Does not do so safely.                                  " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [param]  - sector parameter to surround            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    {figstodrop}  - fighters to drop in surrounding sectors " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    {alarm}  - activate alarm                               " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                                            " 
+		write "scripts\mombot\help\"&$command&".txt" "- "&$command&" [param] {figstodrop} {alarm}    " 
+		write "scripts\mombot\help\"&$command&".txt" "    Mows to surround sectors defined in sector param given. " 
+		write "scripts\mombot\help\"&$command&".txt" "    Does not do so safely.                                  " 
+		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
+		write "scripts\mombot\help\"&$command&".txt" "    [param]  - sector parameter to surround            " 
+		write "scripts\mombot\help\"&$command&".txt" "    {figstodrop}  - fighters to drop in surrounding sectors " 
+		write "scripts\mombot\help\"&$command&".txt" "    {alarm}  - activate alarm                               " 
+		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
 		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 	end
 	if ($parm1 <> "0")

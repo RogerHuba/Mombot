@@ -10,11 +10,11 @@
 	loadVar $parm8
 	loadVar $command
 
-	fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" [on/off] " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "   - Outputs the distance and time from last fig hit by enemy."
-		write "scripts\MOMBot\Help\"&$command&".txt" "   - Guesses next targets based on location"
+		write "scripts\mombot\help\"&$command&".txt" "- "&$command&" [on/off] " 
+		write "scripts\mombot\help\"&$command&".txt" "   - Outputs the distance and time from last fig hit by enemy."
+		write "scripts\mombot\help\"&$command&".txt" "   - Guesses next targets based on location"
 		
 		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 	end

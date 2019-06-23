@@ -16,20 +16,20 @@
 	loadVar $rylos
 	loadVar $alpha_centauri
 	loadVar $command
-	fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" [param] {figstodrop} {true/false} {alarm}    " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    Mows to unfigged sectors defined in sector param given. " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    Does not do so safely.                                  " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    [param]  - sector parameter to move to                   " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    {figstodrop}  - fighters to drop (default is 1)          " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    {true}   - go to the param if it's equal to TRUE (1)     " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    {false}  - go to the param if it's equal to FALSE (0)   " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    {alarm}  - activate alarm                               " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    {notwarp}  - don't attempt twarp                        " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "    {all}  - visits all sectors whether fig is down or not  " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                                            " 
+		write "scripts\mombot\help\"&$command&".txt" "- "&$command&" [param] {figstodrop} {true/false} {alarm}    " 
+		write "scripts\mombot\help\"&$command&".txt" "    Mows to unfigged sectors defined in sector param given. " 
+		write "scripts\mombot\help\"&$command&".txt" "    Does not do so safely.                                  " 
+		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
+		write "scripts\mombot\help\"&$command&".txt" "    [param]  - sector parameter to move to                   " 
+		write "scripts\mombot\help\"&$command&".txt" "    {figstodrop}  - fighters to drop (default is 1)          " 
+		write "scripts\mombot\help\"&$command&".txt" "    {true}   - go to the param if it's equal to TRUE (1)     " 
+		write "scripts\mombot\help\"&$command&".txt" "    {false}  - go to the param if it's equal to FALSE (0)   " 
+		write "scripts\mombot\help\"&$command&".txt" "    {alarm}  - activate alarm                               " 
+		write "scripts\mombot\help\"&$command&".txt" "    {notwarp}  - don't attempt twarp                        " 
+		write "scripts\mombot\help\"&$command&".txt" "    {all}  - visits all sectors whether fig is down or not  " 
+		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
 		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 	end
 	if ($parm1 <> "0")

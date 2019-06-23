@@ -54,7 +54,7 @@ return
 return
 
 :help_file
-	setVar $help_file "scripts\MOMBot\Help\"&$command&".txt"
+	setVar $help_file "scripts\mombot\help\"&$command&".txt"
 	fileExists $doesHelpFileExist $help_file
 	setvar $only_help false
 	if (($parm1 = "help") or ($parm1 = "?"))
