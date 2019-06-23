@@ -390,7 +390,7 @@
 			:current_prompt_delay
 				# should have the last line in the server menu by now #
 				killtrigger prompt
-				goto :back_to_game
+				goto :WhistleWhileYouWorkSettings
 
 			:allPromptsCatch
 				setvar $game_menu_prompt CURRENTLINE
@@ -400,17 +400,38 @@
 				setTextTrigger      prompt          :allPromptsCatch        ""
 				pause
 
-			:back_to_game
-			send $bot~letter&" * t*n*"
-			if (PASSWORD = "")
-				send $BOT~password
-			else
-				send PASSWORD
-			end
+			:tryAgainSettings
+				killalltriggers
+				setTextLineTrigger  GameClosed1 :GameClosedSD       "I'm sorry, but this is a closed game."
+				setTextLineTrigger  GameClosed2 :GameClosedSD       "www.tradewars.com                                   Epic Interactive Strategy"
+				setTextLineTrigger  GameClosed3 :GameClosedSD       " day(s) to get back in."
+				setTextTrigger      Phew        :back_to_game     	"Command [TL"
+				setDelayTrigger     delay_close :GameClosedSettings 5000
+				send "T***"&$BOT~password&"***"
+				pause
+			:GameClosedSettings
+				killalltriggers
+			    if (CONNECTED <> TRUE)
+			        load "scripts\mombot\commands\general\relog.cts"
+					setEventTrigger		relogended		:relogended "SCRIPT STOPPED" "scripts\mombot\commands\general\relog.cts"
+					pause
+					:relogended
+					goto :tryAgainSettings
+			    end
+				setDelayTrigger  WhistleWhileYouWorkSettings  :WhistleWhileYouWorkSettings 300
+				setTextLineTrigger at_game_menu :tryAgainSettings "T - Play Trade Wars 2002"
+				pause
+			:WhistleWhileYouWorkSettings
+				send $BOT~letter&" * "
+				goto :GameClosedSettings
+
+
+			:back_to_game  
+			killalltriggers
 			if ($fedSpacePhotons = "")
-		# Setting not available in v1, so forcing save here.
-		setVar $fedSpacePhotons FALSE
-		saveVar $fedSpacePhotons
+				# Setting not available in v1, so forcing save here.
+				setVar $fedSpacePhotons FALSE
+				saveVar $fedSpacePhotons
 			end
 			send "**  zaz*z*za9999*z*"
 			#if ($PLAYER~CURRENT_SECTOR > 11) and ($PLAYER~CURRENT_SECTOR <> $MAP~STARDOCK)
