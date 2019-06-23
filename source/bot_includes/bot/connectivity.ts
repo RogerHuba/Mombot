@@ -106,3 +106,91 @@ return
     setDelayTrigger thedelay2 :thedelay 5000
 return
 
+:enter_new_game 
+
+	:try_again
+	gosub :do_relog
+	setTextLineTrigger  1 :closed 		"I'm sorry, but this is a closed game."
+	setTextLineTrigger  2 :closed 		"www.tradewars.com                                   Epic Interactive Strategy"
+	setTextLineTrigger  3 :closed		" day(s) to get back in."
+	setDelayTrigger     4 :closed 		5000
+	setTextLineTrigger  5 :on_planet	"What do you want to name your home planet?"
+	settexttrigger      6 :wrong_name	"Sorry, you cannot use the name "
+	setTextTrigger      7 :back_in_game	"Command [TL"
+	
+	if ($newgame)
+		send "T***Y"&$BOT~password&"*"&$BOT~password&"**N"&$BOT~username&"*Y"&$BOT~startShipName&"*Y"
+	else
+		send "T***"&$BOT~password&"***"&$BOT~startShipName&"*Y "
+	end
+	pause
+
+	:wrong_name
+		killalltriggers
+		echo "[[  {"&$SWITCHBOARD~bot_name&"} - Character name not allowed!  Start over and pick a new name!  ]]*"
+		halt
+	:closed
+		killalltriggers
+		if (CONNECTED <> TRUE)
+		    load "scripts\mombot\commands\general\relog.cts"
+			setEventTrigger		1		:relogended	"SCRIPT STOPPED" "scripts\mombot\commands\general\relog.cts"
+			pause
+			:relogended
+			goto :try_again
+		end
+		setDelayTrigger		2	:new_game_delay 300
+		setTextLineTrigger	3	:tryAgainNewGameDay1	"T - Play Trade Wars 2002"
+		pause
+	:new_game_delay
+		send $BOT~letter&" * "
+		goto :GameClosed
+	:on_planet
+		send ".*  Q  "
+		pause
+	:back_in_game
+	killalltriggers
+
+	if ($newgame)
+		gosub :BOT~killthetriggers
+		if (($BOT~isCEO = TRUE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
+			setTextLineTrigger	1 :alreadyCorped		"You may only be on one Corp at a time."
+			setTextTrigger 		2 :continueCorpCreation	"<Create New Corporation>"
+			send "*TM"
+			pause
+			:continueCorpCreation
+				gosub :BOT~killthetriggers
+				send $BOT~corpName&"*Y"&$BOT~corpPassword&"*Y*CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q"
+
+		elseif (($BOT~isCEO = FALSE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
+			:checkForCorp
+				send "*TD"
+				gosub :PLAYER~quikstats
+				setTextLineTrigger	1 :thereIsMyCorp	"    "&$BOT~corpName
+				setTextTrigger 		2 :noCorpThatName	"Corporate command ["
+				send "L"
+				pause
+			:noCorpThatName
+				gosub :BOT~killthetriggers
+				echo "[[ Waiting 5 seconds to check for corp again, press [Spacebar] to cancel. ]]*"
+				setDelayTrigger		1 :checkForCorp		5000
+				setTextOutTrigger 	2 :alreadyCorped 	#32
+				pause
+			:thereIsMyCorp
+				gosub :BOT~killthetriggers
+				getWord CURRENTLINE $corpNumber 1
+			:continueCorpCreation
+				gosub :BOT~killthetriggers
+				send "J"&$corpNumber&"*"&$BOT~corpPassword&"* * *CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q"
+		else
+			:alreadyCorped
+				gosub :BOT~killthetriggers
+				send "* * *CN24"&$BOT~subspace&"*Q Q Q ZN* ^Q"
+		end
+		setTextLineTrigger      AllDone     :AllDone ": ENDINTERROG"
+		pause
+		:AllDone
+			gosub :BOT~killthetriggers
+
+	end
+return
+
