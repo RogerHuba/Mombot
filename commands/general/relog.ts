@@ -14,8 +14,10 @@
             halt
         end
 
-        disconnect
-
+        if (connected)
+        	disconnect
+        end
+        
         killalltriggers
         setDelayTrigger waitForRelogDelay :continueDoingRelog 500
         pause
@@ -112,11 +114,6 @@ return
 
         :continueRelog4
             gosub :killrelogtriggers
-            if ($first_time)
-                setVar $first_time FALSE
-                disconnect
-                goto :do_relog
-            end
             setTextTrigger relog69 :continueRelog5 "Make a Selection:"
             setTextTrigger relog3 :continueRelog5 "Selection (? for menu):"
             send "#"&#8

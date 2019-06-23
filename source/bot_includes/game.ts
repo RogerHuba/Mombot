@@ -384,7 +384,7 @@
 			send "x*"
 
 			setTextTrigger      prompt          :allPromptsCatch        ""
-			setDelayTrigger     prompt_delay    :current_prompt_delay   5000
+			setDelayTrigger     prompt_delay    :current_prompt_delay   2000
 			send "?"
 			pause
 			:current_prompt_delay
