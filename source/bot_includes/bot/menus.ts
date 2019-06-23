@@ -1493,6 +1493,7 @@ return
 					send "'{" $SWITCHBOARD~bot_name "} - Stardock appears to be hidden in this game. Aborting mow.*"
 				else
 					setVar $MAP~stardock STARDOCK
+					savevar $map~stardock
 					setVar $mowDestination $MAP~stardock
 				end
 			end
