@@ -15,15 +15,15 @@ loadVar $ptradesetting
 loadVar $bot_turn_limit
 loadVar $command
 
-	fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" [sector] {defend}                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "     clears adjacent fighters and calls saveme              " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "     - [defend] for offensive fighters,just enters/retreats "
-		write "scripts\MOMBot\Help\"&$command&".txt" "                                                            " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "     - From Citadel prompt grabs fighters from planet       " 
-		write "scripts\MOMBot\Help\"&$command&".txt" "     - From Command prompt grabs fighters from the sector   " 
+		write "scripts\mombot\help\"&$command&".txt" "- "&$command&" [sector] {defend}                            " 
+		write "scripts\mombot\help\"&$command&".txt" "     clears adjacent fighters and calls saveme              " 
+		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
+		write "scripts\mombot\help\"&$command&".txt" "     - [defend] for offensive fighters,just enters/retreats "
+		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
+		write "scripts\mombot\help\"&$command&".txt" "     - From Citadel prompt grabs fighters from planet       " 
+		write "scripts\mombot\help\"&$command&".txt" "     - From Command prompt grabs fighters from the sector   " 
 		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 	end
 	
@@ -158,7 +158,7 @@ return
 # ======================     END ADJACENT FIGHTER CLEAR (FIGCLEAR) SUBROUTINES     ==========================
 
 
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\quikstats"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\planetinfo"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\pwarp"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\MOMBot\botIncludes\shipstats"
+include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\mombot\botIncludes\quikstats"
+include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\mombot\botIncludes\planetinfo"
+include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\mombot\botIncludes\pwarp"
+include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\mombot\botIncludes\shipstats"

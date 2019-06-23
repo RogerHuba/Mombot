@@ -42,21 +42,21 @@
   loadVar $LIMPET_REMOVAL_COST
   loadvar $password
 
-  fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
+  fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
   if ($doesHelpFileExist <> TRUE)
-    write "scripts\MOMBot\Help\"&$command&".txt" "- wppt {holoscan} {evade}" 
-    write "scripts\MOMBot\Help\"&$command&".txt" "  World PPT - Originally written by Xide                          " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                                                                  " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "   - {holoscan}    = 0 - doesn't holoscan                         " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                     1 - holoscans on odd densities               "
-    write "scripts\MOMBot\Help\"&$command&".txt" "                     2 - always holoscans (default)               " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                                                                  " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "   - {evade}       = 0 - normal (default)                         " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                     1 - paranoid                                 " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                     2 - avoids nothing                           " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                                                                  " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "   - {nohaggle}    = doesn't haggle                               " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                                                                  " 
+    write "scripts\mombot\help\"&$command&".txt" "- wppt {holoscan} {evade}" 
+    write "scripts\mombot\help\"&$command&".txt" "  World PPT - Originally written by Xide                          " 
+    write "scripts\mombot\help\"&$command&".txt" "                                                                  " 
+    write "scripts\mombot\help\"&$command&".txt" "   - {holoscan}    = 0 - doesn't holoscan                         " 
+    write "scripts\mombot\help\"&$command&".txt" "                     1 - holoscans on odd densities               "
+    write "scripts\mombot\help\"&$command&".txt" "                     2 - always holoscans (default)               " 
+    write "scripts\mombot\help\"&$command&".txt" "                                                                  " 
+    write "scripts\mombot\help\"&$command&".txt" "   - {evade}       = 0 - normal (default)                         " 
+    write "scripts\mombot\help\"&$command&".txt" "                     1 - paranoid                                 " 
+    write "scripts\mombot\help\"&$command&".txt" "                     2 - avoids nothing                           " 
+    write "scripts\mombot\help\"&$command&".txt" "                                                                  " 
+    write "scripts\mombot\help\"&$command&".txt" "   - {nohaggle}    = doesn't haggle                               " 
+    write "scripts\mombot\help\"&$command&".txt" "                                                                  " 
     send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
   end
 

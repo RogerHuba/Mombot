@@ -11,17 +11,17 @@ loadVar $bot_name
 loadVar $command
 
 loadVar $MULTIPLE_PHOTONS
-fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
+fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
 if ($doesHelpFileExist <> TRUE)
-	write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" [on/off] {a/d/p/s} {return}    "
-	write "scripts\MOMBot\Help\"&$command&".txt" "      {a}djacent - photons adjacent sector when fig/limp/armid hit "
-	write "scripts\MOMBot\Help\"&$command&".txt" "      {d}ensity  - constant density scan, photons on density change"
-	write "scripts\MOMBot\Help\"&$command&".txt" "      {p}lanet   - standard planet warp photon script"
-	write "scripts\MOMBot\Help\"&$command&".txt" "      {s}urround - attempts to foton retreat sector"
-	write "scripts\MOMBot\Help\"&$command&".txt" "                                                "
-	write "scripts\MOMBot\Help\"&$command&".txt" "      {return}   - Returns Planet Home after Pwarp"
-	write "scripts\MOMBot\Help\"&$command&".txt" "                                                "
-	write "scripts\MOMBot\Help\"&$command&".txt" "      Authors: Mind Dagger and The Bounty Hunter "
+	write "scripts\mombot\help\"&$command&".txt" "- "&$command&" [on/off] {a/d/p/s} {return}    "
+	write "scripts\mombot\help\"&$command&".txt" "      {a}djacent - photons adjacent sector when fig/limp/armid hit "
+	write "scripts\mombot\help\"&$command&".txt" "      {d}ensity  - constant density scan, photons on density change"
+	write "scripts\mombot\help\"&$command&".txt" "      {p}lanet   - standard planet warp photon script"
+	write "scripts\mombot\help\"&$command&".txt" "      {s}urround - attempts to foton retreat sector"
+	write "scripts\mombot\help\"&$command&".txt" "                                                "
+	write "scripts\mombot\help\"&$command&".txt" "      {return}   - Returns Planet Home after Pwarp"
+	write "scripts\mombot\help\"&$command&".txt" "                                                "
+	write "scripts\mombot\help\"&$command&".txt" "      Authors: Mind Dagger and The Bounty Hunter "
 
 	send "'{" $bot_name "} - Writing help file for "&$command&" in Help directory.*"
 end

@@ -15,9 +15,9 @@
 	loadVar $parm8
 	loadVar $command
 
-	fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\MOMBot\Help\"&$command&".txt" " - "&$command&" {door} - List sectors for bubble." 
+		write "scripts\mombot\help\"&$command&".txt" " - "&$command&" {door} - List sectors for bubble." 
 		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 	end
 	setVar $BUBBLE_LIST "_"&GAMENAME&"_Bubble.list"

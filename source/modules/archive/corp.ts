@@ -11,15 +11,15 @@
 
 # ============================== Corp Join/Drop (CORP) ==============================
 :corp
-        fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
+        fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
         if ($doesHelpFileExist <> TRUE)
-           write "scripts\MOMBot\Help\"&$command&".txt" "- "&$command&" [join/drop] [corp number] [password]                "
-           write "scripts\MOMBot\Help\"&$command&".txt" "      join        - Will join Corporation                          "
-           write "scripts\MOMBot\Help\"&$command&".txt" "      drop        - Will Drop current corporation                  "
-           write "scripts\MOMBot\Help\"&$command&".txt" "      corp number - The corp number to join                        "
-           write "scripts\MOMBot\Help\"&$command&".txt" "      password    - The corp password                              "
-           write "scripts\MOMBot\Help\"&$command&".txt" "*NOTE: If corp and password were previously used via bot           "
-               write "scripts\MOMBot\Help\"&$command&".txt" "       the corp number and password will be saved                  "
+           write "scripts\mombot\help\"&$command&".txt" "- "&$command&" [join/drop] [corp number] [password]                "
+           write "scripts\mombot\help\"&$command&".txt" "      join        - Will join Corporation                          "
+           write "scripts\mombot\help\"&$command&".txt" "      drop        - Will Drop current corporation                  "
+           write "scripts\mombot\help\"&$command&".txt" "      corp number - The corp number to join                        "
+           write "scripts\mombot\help\"&$command&".txt" "      password    - The corp password                              "
+           write "scripts\mombot\help\"&$command&".txt" "*NOTE: If corp and password were previously used via bot           "
+               write "scripts\mombot\help\"&$command&".txt" "       the corp number and password will be saved                  "
            send "'{" $SWITCHBOARD~bot_name "} - Writing help file for "&$command&" in Help directory.*"
         end
         gosub :PLAYER~quikstats
