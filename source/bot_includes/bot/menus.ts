@@ -1400,9 +1400,14 @@ return
 					setTextLineTrigger  GameClosed1 :GameClosed     "I'm sorry, but this is a closed game."
 					setTextLineTrigger  GameClosed2 :GameClosed     "www.tradewars.com                                   Epic Interactive Strategy"
 					setTextLineTrigger  Damn_Planet :Damn_Planet        "What do you want to name your home planet?"
+					settexttriggr       invalid_name :wrong_name    "Sorry, you cannot use the name "
 					setTextTrigger      Phew        :Phew           "Command [TL"
 					send "T***Y"&$BOT~password&"*"&$BOT~password&"**N"&$BOT~username&"*Y"&$BOT~startShipName&"*Y"
 					pause
+				:wrong_name
+					killalltriggers
+					echo "[[  {"&$SWITCHBOARD~bot_name&"} - Character name not allowed!  Start over and pick a new name!  ]]*"
+					halt
 				:GameClosed
 					killalltriggers
 					DISCONNECT
@@ -1457,9 +1462,10 @@ return
 					gosub :connectivity~do_relog
 					setTextLineTrigger  GameClosed1 :GameClosedSD       "I'm sorry, but this is a closed game."
 					setTextLineTrigger  GameClosed2 :GameClosedSD       "www.tradewars.com                                   Epic Interactive Strategy"
-						setTextLineTrigger  Damn_Planet :Damn_PlanetSD      "What do you want to name your home planet?"
+					setTextLineTrigger  GameClosed3 :GameClosedSD       " day(s) to get back in."
+					setTextLineTrigger  Damn_Planet :Damn_PlanetSD      "What do you want to name your home planet?"
 					setTextTrigger      Phew        :PhewSD         "Command [TL"
-					send "T***"&$BOT~password&"*         * *"&$BOT~startShipName&"*Y "
+					send "T***"&$BOT~password&"**       *"&$BOT~startShipName&"*Y "
 					pause
 				:GameClosedSD
 					killalltriggers
