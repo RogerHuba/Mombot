@@ -32,6 +32,7 @@ return
 	if (connected)
 		setvar $connectivity~relogging false
 	end
+	savevar $connectivity~relogging
 
 	setVar $USER_INTERFACE~routing ""
 	setVar $USER_INTERFACE~temp_bot_name ""

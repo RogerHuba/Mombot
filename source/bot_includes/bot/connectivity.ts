@@ -13,6 +13,7 @@
     if ((CONNECTED <> TRUE) AND ($BOT~doRelog = TRUE))
 		if ($relogging <> true)
 			setvar $relogging true
+			savevar $relogging
 			goto :internal_commands~relog_attempt
 		end
     end
@@ -25,6 +26,7 @@
 				setvar $relog_message "Stuck on baffling prompt: ["&CURRENTLINE&"], so I relogged.*"
 				DISCONNECT
 				setvar $relogging true
+				savevar $relogging
 				goto :internal_commands~relog_attempt
 			end
 		end
@@ -43,6 +45,7 @@
     if ((CONNECTED <> TRUE) AND ($BOT~doRelog = TRUE))
 		if ($relogging <> true)
 			setvar $relogging true
+			savevar $relogging
 			goto :internal_commands~relog_attempt
 		end
     end
