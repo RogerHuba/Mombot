@@ -45,11 +45,14 @@
 
 :do_relog
         :thedelay
-            if (CONNECTED <> TRUE)
-                connect
-            end
             gosub :killrelogtriggers
             setEventTrigger continuelogin :continuelogin "CONNECTION ACCEPTED"
+            if (CONNECTED <> TRUE)
+                ECHO "*"&ansi_15&"["&ansi_3&"ATTEMPTING TO CONNECT"&ansi_15&"]*"
+                connect
+            else
+            	goto :continueRelog3
+            end
             pause
             :continuelogin
             gosub :killrelogtriggers
