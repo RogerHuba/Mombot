@@ -1,7 +1,0 @@
-                     
-   
-              <<<< destroyports >>>>
-   
-                   destroyports               
-       Destroys all ports not marked as BUBBLE sector
-            

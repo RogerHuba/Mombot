@@ -1,8 +1,0 @@
-                     
-   
-                  <<<< max >>>>
-   
-     Upgrades a port product as much as possible.  
-              
-     Options: 
-     {noexp} - Upgrades port without experience increase.

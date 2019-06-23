@@ -1,9 +1,0 @@
-                     
-   
-                 <<<< qreset >>>>
-   
-     qreset [planet1] [damage1] ... [planetx] [damagex] 
-            - Sets sector cannons for planets listed
-        
-     qreset [damage]
-            - Sets sector cannon for current planet

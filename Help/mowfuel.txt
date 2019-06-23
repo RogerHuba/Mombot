@@ -1,7 +1,0 @@
-- mowfuel {all} {alarm}                                
-    Mows to unfigged upgraded fuel ports in grid.           
-    Does not do so safely.                                  
-                                                            
-    {all} - Mows to all upgraded ports                      
-    {alarm}  - activate alarm                               
-                                                            
