@@ -10,8 +10,7 @@
 
     :relog_attempt
     	loadvar $bot~dorelog 
-    	loadvar $connectivity~relogging 
-        if (($BOT~doRelog <> TRUE) or ($connectivity~relogging = true))
+        if ($BOT~doRelog <> TRUE)
             halt
         end
 

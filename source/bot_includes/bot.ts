@@ -31,8 +31,8 @@ return
 
 	if (connected)
 		setvar $connectivity~relogging false
+		savevar $connectivity~relogging
 	end
-	savevar $connectivity~relogging
 
 	setVar $USER_INTERFACE~routing ""
 	setVar $USER_INTERFACE~temp_bot_name ""
@@ -453,6 +453,8 @@ return
 	gosub :PLAYER~init
 # =============================== BOT STARTUP =================================
 :getInitial_Settings
+	setvar $connectivity~relogging false
+	savevar $connectivity~relogging
 	loadVar $GAME~gamestats
 	setVar $pgrid_type "Normal"
 	setVar $pgrid_end_command " scan "
