@@ -1429,14 +1429,16 @@ return
 			setVar $BOT~parm2 1
 			goto :INTERNAL_COMMANDS~mow
 		else
-			setTextTrigger      landed      :landed_on_terra    "Do you wish to (L)eave or (T)ake Colonists?"
-			setDelayTrigger     landing_timeout :landing_timeout     5000
+			setTextTrigger 		1	:landed_on_terra	"Do you wish to (L)eave or (T)ake Colonists?"
+			setDelayTrigger     2	:landing_timeout	5000
 			send "l "
 			pause
 			:landing_timeout
+				killtrigger 2
 				send "'{" $SWITCHBOARD~bot_name "} - Could not land on Terra!  Probably not in sector 1.*"
 				goto :done_landing_terra
 			:landed_on_terra
+				killtrigger 1
 				send "'{" $SWITCHBOARD~bot_name "} - Safely on Terra.*"
 			:done_landing_terra
 		end
@@ -1470,12 +1472,6 @@ return
 	setDelayTrigger     DRAW_DELAY   :DRAW_DELAY 500
 	pause
 	pause
-
-
-
-
-																															  
-
 
 	:DRAW_DELAY
 			echo ansi_4 "***"

@@ -28,6 +28,12 @@ return
 # ============================== MAIN BODY WAIT FOR COMMANDS ==============================
 :wait_for_command
 	killallTriggers
+
+	if (connected)
+		setvar $connectivity~relogging false
+		savevar $connectivity~relogging
+	end
+
 	setVar $USER_INTERFACE~routing ""
 	setVar $USER_INTERFACE~temp_bot_name ""
 	loadVar $botIsDeaf
@@ -82,7 +88,7 @@ return
 		setTextLineTrigger  own_command_all         :USER_INTERFACE~check_routing_all     "all"
 		setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "You have a corporate memo from "
 	end
-	setEventTrigger     relog                   :INTERNAL_COMMANDS~relog            "CONNECTION LOST"
+	setEventTrigger     relog                   :CONNECTIVITY~keepalive           "CONNECTION LOST"
 	setTextTrigger      online_watch            :CONNECTIVITY~online_watch             "Your session will be terminated in "
 	setDelayTrigger     keepalive               :CONNECTIVITY~keepalive                30000
 	pause
@@ -447,6 +453,8 @@ return
 	gosub :PLAYER~init
 # =============================== BOT STARTUP =================================
 :getInitial_Settings
+	setvar $connectivity~relogging false
+	savevar $connectivity~relogging
 	loadVar $GAME~gamestats
 	setVar $pgrid_type "Normal"
 	setVar $pgrid_end_command " scan "

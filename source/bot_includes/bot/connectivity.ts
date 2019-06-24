@@ -11,16 +11,24 @@
         echo CURRENTANSILINE
     end
     if ((CONNECTED <> TRUE) AND ($BOT~doRelog = TRUE))
-        goto :internal_commands~relog_attempt
+		if ($relogging <> true)
+			setvar $relogging true
+			savevar $relogging
+			goto :internal_commands~relog_attempt
+		end
     end
     
     # if the last line hasn't changed for the last two keep alive checks #
 	if ($last_prompt_seen = CURRENTLINE)
 		# at server game menu for some reason #
 		if ((CURRENTLINE = $game~game_menu_prompt) or (CURRENTLINE = "[Pause] - [Press Space or Enter to continue]") or (CURRENTLINE = "Enter your choice: ") or (CURRENTLINE = "Selection (? for menu): "))
-			setvar $relog_message "Stuck on baffling prompt: ["&CURRENTLINE&"], so I relogged.*"
-			DISCONNECT
-			goto :internal_commands~relog_attempt
+			if ($relogging <> true)
+				setvar $relog_message "Stuck on baffling prompt: ["&CURRENTLINE&"], so I relogged.*"
+				DISCONNECT
+				setvar $relogging true
+				savevar $relogging
+				goto :internal_commands~relog_attempt
+			end
 		end
 		# TODO - add checking for subprompt interactivity turned off and resetting prompts that turn off comms if stuck there #
 	end
@@ -35,7 +43,11 @@
 #================================= ONLINE WATCH/RELOG ========================================
 :online_watch
     if ((CONNECTED <> TRUE) AND ($BOT~doRelog = TRUE))
-        goto :internal_commands~relog_attempt
+		if ($relogging <> true)
+			setvar $relogging true
+			savevar $relogging
+			goto :internal_commands~relog_attempt
+		end
     end
     setTextTrigger      online_watch            :online_watch              "Your session will be terminated in "
     send #27
