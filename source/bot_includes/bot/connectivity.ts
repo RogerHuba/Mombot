@@ -245,7 +245,7 @@ return
 			if (($isNumber) and ($menus~xportToShip))
 				send "x    "&$menus~mowDestination&"  "
 			else
-				if ($bot~newGameOlder <> true)
+				if ($menus~landOnTerra = true)
 					setTextTrigger 		1	:landed_on_terra	"Do you wish to (L)eave or (T)ake Colonists?"
 					setDelayTrigger     2	:landing_timeout	5000
 					send "l "
