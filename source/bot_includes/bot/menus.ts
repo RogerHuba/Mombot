@@ -1207,8 +1207,10 @@ return
 		setVar $qss[12] "Mow To Custom TA"
 	elseif ($xportToShip)
 		setVar $qss[12] "Xport to ship"
-	else
+	elseif ($landOnTerra)
 		setVar $qss[12] "Land on Terra"
+	else
+		setVar $qss[12] "Nothing"
 	end
 	loadvar $command_to_issue
 	if (($command_to_issue = "") or ($command_to_issue = "0"))
@@ -1249,9 +1251,7 @@ return
 		echo ANSI_10&#27&"[35m<"&#27&"[32m5"&#27&"[35m> "&ANSI_7&$qss_var[10]&"*"
 	end
 	echo ANSI_10&#27&"[35m<"&#27&"[32m6"&#27&"[35m> "&ANSI_7&$qss_var[11]&"*"
-	if ($BOT~newGameOlder = FALSE)
-		echo ANSI_10&#27&"[35m<"&#27&"[32m7"&#27&"[35m> "&ANSI_7&$qss_var[12]&"*"
-	end
+	echo ANSI_10&#27&"[35m<"&#27&"[32m7"&#27&"[35m> "&ANSI_7&$qss_var[12]&"*"
 	echo ANSI_10&#27&"[35m<"&#27&"[32m8"&#27&"[35m> "&ANSI_7&$qss_var[13]&"*"
 	echo "*"
 	:getStartGameInput
@@ -1331,21 +1331,35 @@ return
 			end
 		elseif ($chosen_option = "7")
 			if ($xportToShip)
-				setVar $qss[12] "Land on Terra"
+				setVar $qss[12] "Nothing"
 				setvar $BOT~mowToDock FALSE
 				setVar $mowToAlpha FALSE
 				setVar $mowToRylos FALSE
 				setvar $xportToShip false
 				setVar $mowToOther FALSE
+				setVar $landOnTerra false
 				setVar $mowDestination ""
-			elseif (($mowToAlpha = FALSE) AND ($mowToRylos = FALSE) AND ($mowToOther = FALSE) AND ($BOT~mowToDock = FALSE))
+				setvar $do_nothing false
+			elseif (($BOT~mowToDock = false) and ($mowToAlpha = false) and ($mowToRylos = false) and ($mowToOther = false) and ($xportToShip = false) and ($landOnTerra = false))
+				setVar $qss[12] "Land on Terra"
+				setvar $do_nothing true
+				setvar $BOT~mowToDock FALSE
+				setVar $mowToAlpha false
+				setVar $mowToRylos FALSE
+				setVar $mowToOther FALSE
+				setvar $xportToShip false
+				setVar $landOnTerra true
+				setVar $mowDestination $MAP~alpha_centauri			
+			elseif ($landOnTerra)
 				setVar $qss[12] "Mow To Alpha"
 				setvar $BOT~mowToDock FALSE
 				setVar $mowToAlpha TRUE
 				setVar $mowToRylos FALSE
 				setVar $mowToOther FALSE
 				setvar $xportToShip false
+				setVar $landOnTerra false
 				setVar $mowDestination $MAP~alpha_centauri
+				setvar $do_nothing false
 			elseif ($mowToAlpha)
 				setVar $qss[12] "Mow To Rylos"
 				setvar $BOT~mowToDock FALSE
@@ -1353,7 +1367,9 @@ return
 				setVar $mowToRylos TRUE
 				setVar $mowToOther FALSE
 				setvar $xportToShip false
+				setVar $landOnTerra false
 				setVar $mowDestination $MAP~rylos
+				setvar $do_nothing false
 			elseif ($mowToRylos)
 				setVar $qss[12] "Mow To Custom TA"
 				setvar $BOT~mowToDock FALSE
@@ -1361,7 +1377,9 @@ return
 				setVar $mowToRylos FALSE
 				setVar $mowToOther TRUE
 				setvar $xportToShip false
+				setVar $landOnTerra false
 				setVar $mowDestination ""
+				setvar $do_nothing false
 			elseif ($mowToOther)
 				setVar $qss[12] "Mow to Stardock"
 				setvar $BOT~mowToDock TRUE
@@ -1369,6 +1387,8 @@ return
 				setVar $mowToRylos FALSE
 				setvar $xportToShip false
 				setVar $mowToOther FALSE
+				setVar $landOnTerra false
+				setvar $do_nothing false
 				setVar $mowDestination $MAP~stardock
 			elseif ($bot~mowToDock)
 				setVar $qss[12] "Xport to Ship"
@@ -1376,14 +1396,18 @@ return
 				setVar $mowToAlpha FALSE
 				setVar $mowToRylos FALSE
 				setVar $mowToOther FALSE
+				setVar $landOnTerra false
 				setVar $bot~mowToDock  FALSE
 				setVar $mowDestination ""
+				setvar $do_nothing false
 			end
 			savevar $xportToShip 
 			savevar $mowToAlpha 
 			savevar $mowToRylos 
 			savevar $mowToOther 
 			savevar $bot~mowToDock  
+			savevar $landOnTerra
+			savevar $do_nothing
 		elseif ($chosen_option = "8")
 			getInput $temp "Enter a command line for the bot to run after entering game (No bot name needed)"
 			setVar $command_to_issue $temp

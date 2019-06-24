@@ -1,0 +1,12 @@
+                     
+   
+                   <<<< 0 >>>>
+   
+     mow [destination] {figs} {kill} {cap} {saveme} {p} {back}
+      Options: 
+          {p} - port ship immediately upon arrival.
+       {kill} - attempt to kill immediately upon arrival.
+        {cap} - attempt to capture immediately upon arrival.
+     {saveme} - call saveme to be picked up at destination.
+       {back} - twarp back to start sector after mow
+     {hoover} - attempts to pull fighters from sectors     
