@@ -1349,28 +1349,8 @@ return
 				setVar $mowToOther FALSE
 				setvar $xportToShip false
 				setVar $landOnTerra true
-				setVar $mowDestination $MAP~alpha_centauri			
+				setVar $mowDestination ""		
 			elseif ($landOnTerra)
-				setVar $qss[12] "Mow To Alpha"
-				setvar $BOT~mowToDock FALSE
-				setVar $mowToAlpha TRUE
-				setVar $mowToRylos FALSE
-				setVar $mowToOther FALSE
-				setvar $xportToShip false
-				setVar $landOnTerra false
-				setVar $mowDestination $MAP~alpha_centauri
-				setvar $do_nothing false
-			elseif ($mowToAlpha)
-				setVar $qss[12] "Mow To Rylos"
-				setvar $BOT~mowToDock FALSE
-				setVar $mowToAlpha FALSE
-				setVar $mowToRylos TRUE
-				setVar $mowToOther FALSE
-				setvar $xportToShip false
-				setVar $landOnTerra false
-				setVar $mowDestination $MAP~rylos
-				setvar $do_nothing false
-			elseif ($mowToRylos)
 				setVar $qss[12] "Mow To Custom TA"
 				setvar $BOT~mowToDock FALSE
 				setVar $mowToAlpha FALSE
