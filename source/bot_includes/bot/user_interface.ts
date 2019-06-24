@@ -129,7 +129,7 @@
     end
     setVar $SWITCHBOARD~self_command TRUE
     :runUserCommandLine
-        setVar $BOT~user_command_line $BOT~user_command_line&"              "
+    	setVar $BOT~user_command_line $BOT~user_command_line&"              "
         setVar $authorization 9
         setVar $user_sec_level 9
         getWord $BOT~user_command_line $BOT~command 1

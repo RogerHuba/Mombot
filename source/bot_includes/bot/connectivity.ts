@@ -162,6 +162,9 @@ return
 	:back_in_game
 	killalltriggers
 
+	if ($menus~mowDestination <> "")
+		gosub :moving
+	end
 	if ($newgame)
 		gosub :BOT~killthetriggers
 		if (($BOT~isCEO = TRUE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
@@ -204,5 +207,66 @@ return
 			gosub :BOT~killthetriggers
 
 	end
+	if ($menus~mowDestination = "")
+		gosub :moving
+	end
+
+return
+
+:moving
+
+		echo #27 "[30D                        " #27 "[30D"
+		isNumber $isNumber $menus~mowDestination  
+		if ($isNumber and ((($BOT~mowToDock) OR ($menus~mowToRylos) OR ($menus~mowToAlpha) OR ($menus~mowToOther))))
+			if ($BOT~mowToDock)
+				if (((STARDOCK = "0") OR (STARDOCK = "")) and ($map~stardock = "0"))
+					send "v"
+					waitOn "-=-=-=-  Current "
+				end
+				if (((STARDOCK = "0") OR (STARDOCK = "")) and ($map~stardock = "0"))
+					send "'{" $SWITCHBOARD~bot_name "} - Stardock appears to be hidden in this game. Aborting mow.*"
+				else
+					if ((STARDOCK <> "0") and (STARDOCK <> ""))
+						setVar $MAP~stardock STARDOCK
+						savevar $map~stardock
+					end
+					setVar $menus~mowDestination $MAP~stardock
+				end
+			end
+		    setvar $BOT~user_command_line "mow "&$menus~mowDestination&" "
+		    setVar $BOT~parm1 $menus~mowDestination
+			savevar $bot~user_command_line
+		    savevar $bot~parm1
+			load "scripts\mombot\modes\grid\mow.cts"
+			setEventTrigger		1		:mowended	"SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+			pause
+			:mowended
+		else
+			if (($isNumber) and ($menus~xportToShip))
+				send "x    "&$menus~mowDestination&"  "
+			else
+				if ($bot~newGameOlder <> true)
+					setTextTrigger 		1	:landed_on_terra	"Do you wish to (L)eave or (T)ake Colonists?"
+					setDelayTrigger     2	:landing_timeout	5000
+					send "l "
+					pause
+					:landing_timeout
+						killtrigger 2
+						send "'{" $SWITCHBOARD~bot_name "} - Could not land on Terra!  Probably not in sector 1.*"
+						goto :done_landing_terra
+					:landed_on_terra
+						killtrigger 1
+						send "'{" $SWITCHBOARD~bot_name "} - Safely on Terra.*"
+					:done_landing_terra
+				end
+			end
+		end
+		if ($menus~command_to_issue <> "")
+			echo 
+			setVar $BOT~user_command_line $menus~command_to_issue
+			goto :USER_INTERFACE~runUserCommandLine
+		end
+
+
 return
 

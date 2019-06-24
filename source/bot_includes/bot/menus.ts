@@ -1161,7 +1161,7 @@ return
 	setVar $h[10] "Subspace Channel:"
 	setVar $h[11] "Delay (Minutes): "
 	setVar $h[12] "After login:     "
-	setVar $h[13] "                 "
+	setVar $h[13] "Bot command to perform:"
 	setVar $h[14] "                 "
 	setVar $h[15] "                 "
 	setVar $h[16] "                 "
@@ -1192,6 +1192,7 @@ return
 	else
 		setVar $qss[7] "No"
 	end
+	loadvar $bot~corpName
 	setVar $qss[8] $BOT~corpName
 	setVar $qss[9] $BOT~corpPassword
 	setVar $qss[10] $BOT~subspace
@@ -1204,10 +1205,17 @@ return
 		setVar $qss[12] "Mow To Rylos"
 	elseif ($mowToOther)
 		setVar $qss[12] "Mow To Custom TA"
+	elseif ($xportToShip)
+		setVar $qss[12] "Xport to ship"
 	else
 		setVar $qss[12] "Land on Terra"
 	end
-	setVar $qss[13] ""
+	loadvar $command_to_issue
+	if (($command_to_issue = "") or ($command_to_issue = "0"))
+		setVar $qss[13] "None"
+	else
+		setVar $qss[13] $command_to_issue
+	end
 	setVar $qss[14] ""
 	setVar $qss[15] ""
 	setVar $qss[16] ""
@@ -1244,6 +1252,7 @@ return
 	if ($BOT~newGameOlder = FALSE)
 		echo ANSI_10&#27&"[35m<"&#27&"[32m7"&#27&"[35m> "&ANSI_7&$qss_var[12]&"*"
 	end
+	echo ANSI_10&#27&"[35m<"&#27&"[32m8"&#27&"[35m> "&ANSI_7&$qss_var[13]&"*"
 	echo "*"
 	:getStartGameInput
 		getConsoleInput $chosen_option SINGLEKEY
@@ -1299,6 +1308,7 @@ return
 				setVar $temp ""
 			end
 			setVar $BOT~corpName $temp
+			savevar $bot~corpName
 		elseif ($chosen_option = "4") AND (($BOT~newGameDay1 = TRUE) OR ($BOT~newGameOlder = TRUE))
 			getInput $temp "What Corp Password will you use?"
 			if ($temp = "0")
@@ -1320,11 +1330,12 @@ return
 				setVar $BOT~startGameDelay $temp
 			end
 		elseif ($chosen_option = "7")
-			if ($BOT~mowToDock)
+			if ($xportToShip)
 				setVar $qss[12] "Land on Terra"
 				setvar $BOT~mowToDock FALSE
 				setVar $mowToAlpha FALSE
 				setVar $mowToRylos FALSE
+				setvar $xportToShip false
 				setVar $mowToOther FALSE
 				setVar $mowDestination ""
 			elseif (($mowToAlpha = FALSE) AND ($mowToRylos = FALSE) AND ($mowToOther = FALSE) AND ($BOT~mowToDock = FALSE))
@@ -1333,6 +1344,7 @@ return
 				setVar $mowToAlpha TRUE
 				setVar $mowToRylos FALSE
 				setVar $mowToOther FALSE
+				setvar $xportToShip false
 				setVar $mowDestination $MAP~alpha_centauri
 			elseif ($mowToAlpha)
 				setVar $qss[12] "Mow To Rylos"
@@ -1340,6 +1352,7 @@ return
 				setVar $mowToAlpha FALSE
 				setVar $mowToRylos TRUE
 				setVar $mowToOther FALSE
+				setvar $xportToShip false
 				setVar $mowDestination $MAP~rylos
 			elseif ($mowToRylos)
 				setVar $qss[12] "Mow To Custom TA"
@@ -1347,20 +1360,38 @@ return
 				setVar $mowToAlpha FALSE
 				setVar $mowToRylos FALSE
 				setVar $mowToOther TRUE
+				setvar $xportToShip false
 				setVar $mowDestination ""
 			elseif ($mowToOther)
 				setVar $qss[12] "Mow to Stardock"
 				setvar $BOT~mowToDock TRUE
 				setVar $mowToAlpha FALSE
 				setVar $mowToRylos FALSE
+				setvar $xportToShip false
 				setVar $mowToOther FALSE
 				setVar $mowDestination $MAP~stardock
+			elseif ($bot~mowToDock)
+				setVar $qss[12] "Xport to Ship"
+				setvar $xportToShip TRUE
+				setVar $mowToAlpha FALSE
+				setVar $mowToRylos FALSE
+				setVar $mowToOther FALSE
+				setVar $bot~mowToDock  FALSE
+				setVar $mowDestination ""
 			end
+			savevar $xportToShip 
+			savevar $mowToAlpha 
+			savevar $mowToRylos 
+			savevar $mowToOther 
+			savevar $bot~mowToDock  
+		elseif ($chosen_option = "8")
+			getInput $temp "Enter a command line for the bot to run after entering game (No bot name needed)"
+			setVar $command_to_issue $temp
+			savevar $command_to_issue
+
 		elseif ($chosen_option = "Q")
 			stop $BOT~LAST_LOADED_MODULE
-			setVar $BOT~doRelog FALSE
-			savevar $bot~dorelog
-			goto :BOT~wait_for_command
+			halt
 		elseif ($chosen_option = "Z")
 			:getMowSector
 			gosub :BOT~killthetriggers
@@ -1375,6 +1406,15 @@ return
 					end
 				else
 					goto :getMowSector
+				end
+			end
+			if ($xportToShip)
+				getInput $temp "What ship do you want to xport to?"
+				isNumber $test $temp
+				if ($test <> true)
+					goto :getMowSector
+				else
+					setVar $mowDestination $temp
 				end
 			end
 			setVar $INTERNAL_COMMANDS~timeToLogBackIn ($BOT~startGameDelay * 60)
@@ -1393,7 +1433,11 @@ return
 			:endDelayStartGame
 			killalltriggers
 			if ($BOT~newGameOlder = TRUE)
-				goto :internal_commands~relog_attempt
+				load "scripts\mombot\commands\general\relog.cts"
+				setEventTrigger		1		:relogended	"SCRIPT STOPPED" "scripts\mombot\commands\general\relog.cts"
+				pause
+				:relogended
+				gosub :connectivity~moving
 			elseif ($BOT~newGameDay1 = TRUE)
 				setvar $connectivity~newgame true
 				gosub :connectivity~enter_new_game
@@ -1408,41 +1452,8 @@ return
 		gosub :pregameStats
 		goto :pregameMenu
 :donePreGame
-		echo #27 "[30D                        " #27 "[30D"
-		isNumber $isNumber $mowDestination  
-		if ($isNumber and ((($BOT~mowToDock) OR ($mowToRylos) OR ($mowToAlpha) OR ($mowToOther))))
-			if ($BOT~mowToDock)
-				if ((STARDOCK = "0") OR (STARDOCK = ""))
-					send "v"
-					waitOn "-=-=-=-  Current "
-				end
-				if ((STARDOCK = "0") OR (STARDOCK = ""))
-					send "'{" $SWITCHBOARD~bot_name "} - Stardock appears to be hidden in this game. Aborting mow.*"
-				else
-					setVar $MAP~stardock STARDOCK
-					savevar $map~stardock
-					setVar $mowDestination $MAP~stardock
-				end
-			end
-			setVar $BOT~user_command_line "mow "&$mowDestination&" 1 p"
-			setVar $BOT~parm1 $mowDestination
-			setVar $BOT~parm2 1
-			goto :INTERNAL_COMMANDS~mow
-		else
-			setTextTrigger 		1	:landed_on_terra	"Do you wish to (L)eave or (T)ake Colonists?"
-			setDelayTrigger     2	:landing_timeout	5000
-			send "l "
-			pause
-			:landing_timeout
-				killtrigger 2
-				send "'{" $SWITCHBOARD~bot_name "} - Could not land on Terra!  Probably not in sector 1.*"
-				goto :done_landing_terra
-			:landed_on_terra
-				killtrigger 1
-				send "'{" $SWITCHBOARD~bot_name "} - Safely on Terra.*"
-			:done_landing_terra
-		end
-		goto :BOT~getInitial_Settings
+	goto :BOT~getInitial_Settings
+
 return
 :pregameStats
 	gosub :BOT~save_the_variables

@@ -179,6 +179,7 @@ return
 return
 
 :load_the_variables
+	loadvar $corpname
 	loadvar $game~game_menu_prompt_ansi
 	loadvar $game~game_menu_prompt
 	loadvar $alarm_list
