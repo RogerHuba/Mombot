@@ -1433,6 +1433,7 @@ return
 			:endDelayStartGame
 			killalltriggers
 			if ($BOT~newGameOlder = TRUE)
+				setvar $connectivity~newgame false
 				load "scripts\mombot\commands\general\relog.cts"
 				setEventTrigger		1		:relogended	"SCRIPT STOPPED" "scripts\mombot\commands\general\relog.cts"
 				pause

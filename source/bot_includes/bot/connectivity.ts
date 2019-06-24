@@ -262,7 +262,6 @@ return
 			end
 		end
 		if ($menus~command_to_issue <> "")
-			echo 
 			setVar $BOT~user_command_line $menus~command_to_issue
 			goto :USER_INTERFACE~runUserCommandLine
 		end
