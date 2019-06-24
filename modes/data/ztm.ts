@@ -44,18 +44,18 @@ reqRecording
 # --- CHECK LOCATION ---
 gosub :PLAYER~quikstats
 setVar $location $PLAYER~CURRENT_PROMPT
+setVar $startlocation "x"
 :checkLocation
     if (($location = "Command") OR ($location = "Citadel") OR ($location = "Computer"))
         if ($location <> "Computer")
-        send "C"
-            waitFor "Computer command [TL="
-            setVar $location "Computer"
-    end
+		send "C"
+		waitFor "Computer command [TL="
+	else
+		setVar $startlocation "comp"
+	end
     else
-    send "'{" $bot_name "} - ZTM must be started from Command, Computer, or Citadel prompt.*"
+	send "'{" $bot_name "} - ZTM must be started from Command, Computer, or Citadel prompt.*"
     end
-    
-
 
     
 # --- INIT VARIABLES ---
@@ -149,12 +149,27 @@ setVar $location $PLAYER~CURRENT_PROMPT
 
 :start
 
-setVar $msg "Starting ZTM from Pass: " & $dztm_resumepass & " Sector: " & $forwardi & "*"
-setvar $switchboard~message $msg
-gosub :switchboard~switchboard
+if ($forwardi > $maxSector)
+	setVar $forwardi 2
+end
+if ($dztm_resumepass = 7)
+	
+	setVar $msg "ZTM Appears to be complete, use >ztm p:0 s:2 to reset*"
+	setvar $switchboard~message $msg
+	gosub :switchboard~switchboard
+	if ($startlocation <> "comp")
+		send "q"
+	end
+	halt
+else
+
+	setVar $msg "Starting ZTM from Pass: " & $dztm_resumepass & " Sector: " & $forwardi & "*"
+	setvar $switchboard~message $msg
+	gosub :switchboard~switchboard
+end
 
 
-
+	
 
 	setVar $forwardSectorsFound 0
 	setVar $backSectors 0
@@ -182,6 +197,9 @@ gosub :switchboard~switchboard
 					saveVar $dztm_resumepass
 
 					setVar $forwardi 2
+					if ($dztm_resumepass = 7)
+						setVar $letsLook 0
+					end
 				elseif ($dztm_resumepass = 7)
 					setVar $letsLook 0
 				end
@@ -230,6 +248,10 @@ gosub :switchboard~switchboard
 	
 	### CHECK BACKDOORS
 	
+	setVar $msg "Checking Backdoors.*"
+	setvar $switchboard~message $msg
+	gosub :switchboard~switchboard
+
 	setVar $checki 2
 	setVar $forwardSectorsFound 0
 	setVar $forwardSectors 0
@@ -286,74 +308,13 @@ gosub :switchboard~switchboard
 
 	
 
-	#### DOUBLE CHECKING 1 SECTORS 
-	setVar $checki 2
-	setVar $forwardSectorsFound 0
-	setVar $forwardSectors 0
-	setVar $forwardSectorsTo 0
-	
-	while ($checki < $maxSector)
-		
-
-		if (SECTOR.WARPCOUNT[$checki] = 1)
-			setVar $check 0
-			setVar $checky 1
-			while ($checky <= SECTOR.WARPINCOUNT[$checki])
-
-				if (SECTOR.WARPSIN[$checki][$checky] <> SECTOR.WARPS[$checki][1])
-					setVar $check SECTOR.WARPSIN[$checki][$checky]
-					
-				end
-				add $checky 1
-			end
-
-			if ($check > 0)
-				add $forwardSectorsFound 1
-				setVar $forwardSectors[$forwardSectorsFound] $checki
-				setVar $forwardSectorsTo[$forwardSectorsFound] $check
-			end
-
-		end
-		add $checki 1
-		if ($forwardSectorsFound >= $sectorsToFind)
-			
-			setVar $i 1
-			while ($i <= $forwardSectorsFound)
-				
-				if ($useOne = 1)
-					send "f" $forwardSectors[$i] "*1**"
-				else
-					send "f" $forwardSectors[$i] "*" $forwardSectorsTo[$i] "**"
-				end
-				add $i 1
-			end
-			setVar $forwardSectorsFound 0
-			setVar $forwardSectors 0
-			setVar $forwardSectorsTo 0
-			send "/"
-			waitfor "³Turns"
-			
-		end
-
-
+	if ($startlocation <> "comp")
+		send "q"
 	end
-	
-	setVar $i 1
-	while ($i <= $forwardSectorsFound)
-		
-		if ($useOne = 1)
-			send "f" $forwardSectors[$i] "*1**"
-		else
-			send "f" $forwardSectors[$i] "*" $forwardSectorsTo[$i] "**"
-		end
-		add $i 1
-	end
-	setVar $forwardSectorsFound 0
-	setVar $forwardSectors 0
-	setVar $forwardSectorsTo 0
-	send "/"
-	waitfor "³Turns"
-
+	setVar $msg "Ztm is Complete!*"
+	setvar $switchboard~message $msg
+	gosub :switchboard~switchboard
+halt
 	#INCLUDES:
 include "source\module_includes\bot"
 include "source\bot_includes\player"
