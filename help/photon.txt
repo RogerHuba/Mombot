@@ -1,5 +1,0 @@
-                     
-   
-                 <<<< photon >>>>
-   
-     Fires photon into adjacent sector.  

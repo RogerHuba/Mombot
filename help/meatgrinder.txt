@@ -1,7 +1,0 @@
-                     
-   
-              <<<< meatgrinder >>>>
-   
-     Meatgrinder tries to kill as fast as possible
-         {turbo} - speed over accuracy
-         {fedsafe} - If no longer fed safe, stop and hide
