@@ -88,6 +88,12 @@ return
 		setTextLineTrigger  own_command_all         :USER_INTERFACE~check_routing_all     "all"
 		setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "You have a corporate memo from "
 	end
+	if (($mode = "General") and ($autoattack = true)) 
+		setTextLineTrigger 	1 	:INTERNAL_COMMANDS~kill 	"warps into the sector."
+		setTextLineTrigger 	2 	:INTERNAL_COMMANDS~kill 	"lifts off from"
+		setTextLineTrigger 	3 	:INTERNAL_COMMANDS~kill 	"is powering up weapons systems!"
+		setTextLineTrigger 	4 	:INTERNAL_COMMANDS~kill 	"enters the game."
+	end
 	setEventTrigger     relog                   :CONNECTIVITY~keepalive           "CONNECTION LOST"
 	setTextTrigger      online_watch            :CONNECTIVITY~online_watch             "Your session will be terminated in "
 	setDelayTrigger     keepalive               :CONNECTIVITY~keepalive                30000
