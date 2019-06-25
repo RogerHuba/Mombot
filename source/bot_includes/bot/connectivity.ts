@@ -261,7 +261,7 @@ return
 				end
 			end
 		end
-		if ($menus~command_to_issue <> "")
+		if (($menus~command_to_issue <> "") and ($menus~command_to_issue <> "0"))
 			setVar $BOT~user_command_line $menus~command_to_issue
 			goto :USER_INTERFACE~runUserCommandLine
 		end
