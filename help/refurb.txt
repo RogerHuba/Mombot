@@ -1,6 +1,0 @@
-                     
-   
-                 <<<< refurb >>>>
-   
-     refurb - Auto buys fighters and shields 
-         {seek} - attempts to find class 9 or 0 port

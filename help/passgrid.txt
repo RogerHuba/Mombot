@@ -1,8 +1,0 @@
-PASSGRID - Lonestar's Passive Gridder {skip} {track} {mines}
-           
-           Moves around actively scanning, avoiding enemy
-           Sectors, while dropping Fighters and Mines
-
-          - {skip} skip the fig/limp list, and just read from the files
-          - {track} keep track of mcic
-          - {mines} drop 3 limps and mines while gridding

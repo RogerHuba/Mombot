@@ -1,6 +1,0 @@
-                     
-   
-              <<<< dock_finder >>>>
-   
-     Searches for hidden dock. 
-     Assumes 6 warps out with a backdoor.

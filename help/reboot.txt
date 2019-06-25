@@ -1,6 +1,0 @@
-                     
-   
-                 <<<< reboot >>>>
-   
-     Reboot
-       - Kill bot and restart it

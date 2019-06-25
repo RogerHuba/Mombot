@@ -1,3 +1,0 @@
-- mowports                                              
-    Mows to unfigged upgraded sxx, xBx, and xxB ports in grid.           
-    Does not do so safely.                                  

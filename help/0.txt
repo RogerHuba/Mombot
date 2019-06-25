@@ -1,6 +1,0 @@
-                     
-   
-                   <<<< 0 >>>>
-   
-     relog
-       - attempt to log the bot back into the game
