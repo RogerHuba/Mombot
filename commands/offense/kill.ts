@@ -17,6 +17,11 @@ logging off
 	loadvar $player~targetingCorp 
 	loadvar $player~cappingAliens 
 	loadvar $player~target 
+	loadvar $map~stardock 
+
+	if ($bot~parm1 = "furb")
+		setvar $furb true
+	end
 
 	gosub :PLAYER~current_prompt
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
@@ -54,6 +59,12 @@ logging off
 	end
 	goSub :SECTOR~getSectorData
 	goSub :combat~fastAttack
+	if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
+		load "scripts\mombot\commands\general\refurb.cts"
+		setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
+		pause
+		:refurbended
+	end
 	halt
 
 #================================ END AUTO CAPTURE ===================================
