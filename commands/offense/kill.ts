@@ -57,15 +57,18 @@ logging off
 	if ($SHIP~SHIP_MAX_ATTACK <= 0)
 		gosub :SHIP~getShipStats
 	end
+	setvar $player~isFound false
 	goSub :SECTOR~getSectorData
 	goSub :combat~fastAttack
 	if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
-		load "scripts\mombot\commands\general\refurb.cts"
-		setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
-		pause
-		:refurbended
-		goSub :SECTOR~getSectorData
-		goSub :combat~fastAttack
+		if ($player~isFound)
+			load "scripts\mombot\commands\general\refurb.cts"
+			setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
+			pause
+			:refurbended
+			goSub :SECTOR~getSectorData
+			goSub :combat~fastAttack
+		end
 	end
 	halt
 
