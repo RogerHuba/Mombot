@@ -93,6 +93,7 @@ return
 		setTextLineTrigger 	2 	:INTERNAL_COMMANDS~autokill 	"lifts off from"
 		setTextLineTrigger 	3 	:INTERNAL_COMMANDS~autokill 	"is powering up weapons systems!"
 		setTextLineTrigger 	4 	:INTERNAL_COMMANDS~autokill 	"enters the game."
+		setTextLineTrigger 	5 	:INTERNAL_COMMANDS~autokill 	"blasts off from the "
 	end
 	setEventTrigger     relog                   :CONNECTIVITY~keepalive           "CONNECTION LOST"
 	setTextTrigger      online_watch            :CONNECTIVITY~online_watch             "Your session will be terminated in "
