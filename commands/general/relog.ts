@@ -3,6 +3,7 @@
 	loadvar $bot~letter
 	loadvar $bot~password
 		
+	setvar $bot~command "relog"	
 	setVar $BOT~help[1] $BOT~tab&"relog"
 	setVar $BOT~help[2] $BOT~tab&"  - attempt to log the bot back into the game"
 	gosub :BOT~help_file
