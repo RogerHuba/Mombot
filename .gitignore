@@ -111,6 +111,8 @@ games/*/*.comms
 source/modules/*.cts
 source/modules/archive/*.cts
 source/snippets/*.cts
+help/*
+Help/*
 
 # dotenv environment variables file
 .env
