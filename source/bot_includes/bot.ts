@@ -181,6 +181,7 @@ return
 	saveVar $newGameDay1
 	saveVar $newGameOlder
 	saveVar $pgrid_bot
+	savevar $autoattack
 	gosub :MAIN~backwards_compatible
 return
 
@@ -265,7 +266,7 @@ return
 	loadVar $PLAYER~surround_before_hkill
 	loadVar $command_prompt_extras
 	loadVar $silent_running
-
+	loadvar $autoattack
 
 return
 :load_bot
