@@ -64,6 +64,8 @@ logging off
 		setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
 		pause
 		:refurbended
+		goSub :SECTOR~getSectorData
+		goSub :combat~fastAttack
 	end
 	halt
 
