@@ -122,7 +122,7 @@ pause
         if (($test = TRUE) AND ($fig_number <> "0"))
             if (($fig_hit <= SECTORS) AND ($fig_hit > 0))
                 setVar $target $fig_hit
-                gosub :player~removefigfromdata
+                gosub :removefigfromdata
             end
         end
     end
