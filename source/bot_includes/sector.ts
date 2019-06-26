@@ -17,6 +17,14 @@
 		setVar $line CURRENTANSILINE
 		setVar $line $STARTLINE&$line&$ENDLINE
 		setVar $sectorData $sectorData&$line
+		getwordpos $line $pos "Sector  : "
+		if ($pos > 0)
+			getword $line $sector_number 3
+			isnumber $isanumber $sector_number
+			if ($isanumber)
+				setvar $player~current_sector $sector_number
+			end
+		end
 		getWordPos $line $pos "Warps to Sector(s) "
 		if ($pos > 0)
 			goto :gotSectorData
@@ -27,10 +35,10 @@
 	:gotSectorData
 		getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 		if ($beaconPos > 0)
-		   setVar $containsBeacon TRUE
-				else
-					setVar $containsBeacon FALSE
-				end
+			setVar $containsBeacon TRUE
+		else
+			setVar $containsBeacon FALSE
+		end
 		setvar $player~current_sector currentsector
 		goSub :getTraders
 		goSub :getEmptyShips

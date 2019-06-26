@@ -556,7 +556,7 @@ goto :BOT~wait_for_command
 	gosub :PLAYER~current_prompt
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 
-		if ($PLAYER~startingLocation <> "Command")
+	if ($PLAYER~startingLocation <> "Command")
 		if ($PLAYER~startingLocation = "Citadel")
 			loadvar $bot~mode
 			if ($bot~mode <> "Citkill")
