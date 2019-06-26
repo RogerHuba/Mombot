@@ -4,6 +4,12 @@ logging off
      gosub :combat~init 
 
 
+#HELP FILE
+	setvar $bot~command "kill"
+	setVar $BOT~help[1]  $BOT~tab&"kill   "
+	setVar $BOT~help[2]  $BOT~tab&"    Kills any enemy players.   "
+	gosub :BOT~help_file
+
 
 #============================== START AUTO CAPTURE =======================================
 :kill
@@ -72,15 +78,6 @@ logging off
 		setvar $in_kill_routine false
 		savevar $in_kill_routine
 	end
-
-
-	#HELP FILE
-	setvar $bot~command "kill"
-	setVar $BOT~help[1]  $BOT~tab&"kill   "
-	setVar $BOT~help[2]  $BOT~tab&"    Kills any enemy players.   "
-	gosub :BOT~help_file
-
-
 	halt
 
 #================================ END AUTO CAPTURE ===================================
