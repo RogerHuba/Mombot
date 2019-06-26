@@ -275,4 +275,6 @@ return
 	setSectorParameter $target "FIGSEC" TRUE
 return
 
+:wait_for_command
+halt
 

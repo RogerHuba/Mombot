@@ -195,11 +195,11 @@ goto :BOT~wait_for_command
 #=========================== END PHOTON HOTKEY =======================================
 
 :clear
-   setVar $BOT~user_command_line "clear"
-	goto :USER_INTERFACE~runUserCommandLine
+	setVar $BOT~user_command_line "clear"
+	goto :modules~clear
 
 :kit
-   setVar $BOT~user_command_line "macro_kit"
+	setVar $BOT~user_command_line "macro_kit"
 	goto :USER_INTERFACE~runUserCommandLine
 
 :dock_shopper

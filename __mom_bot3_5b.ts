@@ -125,4 +125,5 @@ include "source\bot_includes\bot\connectivity"
 include "source\bot_includes\bot\internal_commands"
 include "source\bot_includes\bot\menus"
 include "source\bot_includes\bot\user_interface"
+include "source\module_includes\modules"
 
