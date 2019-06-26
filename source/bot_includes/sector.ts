@@ -15,11 +15,12 @@
 	setVar $sectorData ""
 	:sectorsline_cit_kill
 		setVar $line CURRENTANSILINE
+		setVar $nonansiline CURRENTLINE
 		setVar $line $STARTLINE&$line&$ENDLINE
 		setVar $sectorData $sectorData&$line
-		getwordpos $line $pos "Sector  : "
+		getwordpos $line $pos "[1;32mSector  [33m:"
 		if ($pos > 0)
-			getword $line $sector_number 3
+			getword $nonansiline $sector_number 3
 			isnumber $isanumber $sector_number
 			if ($isanumber)
 				setvar $player~current_sector $sector_number
