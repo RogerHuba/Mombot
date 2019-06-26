@@ -12,6 +12,7 @@
 
 # includes:
 include "source\module_includes\bot"
+include "source\module_includes\modules"
 include "source\bot_includes\player"
 include "source\bot_includes\map"
 include "source\bot_includes\ship"
