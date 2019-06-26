@@ -39,6 +39,7 @@ return
 	loadVar $botIsDeaf
 	loadvar $planet~planet
 	loadvar $bot~mode
+	loadvar $in_kill_routine
 	setVar $alive_count 0
 	if ($MAP~stardock <= 0)
 		setVar $MAP~stardock STARDOCK
@@ -88,7 +89,7 @@ return
 		setTextLineTrigger  own_command_all         :USER_INTERFACE~check_routing_all     "all"
 		setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "You have a corporate memo from "
 	end
-	if (($mode = "General") and ($autoattack = true)) 
+	if (($mode = "General") and ($autoattack = true) and ($in_kill_routine <> true)) 
 		setTextLineTrigger 	1 	:INTERNAL_COMMANDS~autokill 	"warps into the sector."
 		setTextLineTrigger 	2 	:INTERNAL_COMMANDS~autokill 	"lifts off from"
 		setTextLineTrigger 	3 	:INTERNAL_COMMANDS~autokill 	"is powering up weapons systems!"

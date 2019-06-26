@@ -548,9 +548,49 @@ goto :BOT~wait_for_command
 	setvar $bot~parm1 "furb"
 	setvar $bot~parm2 "silent"
 :kill
-	setVar $BOT~user_command_line "kill "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
-	goto :USER_INTERFACE~runUserCommandLine
+	gosub :BOT~killthetriggers
+	if ($bot~parm1 = "furb")
+		setvar $furb true
+	end
 
+	gosub :PLAYER~current_prompt
+	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
+
+		if ($PLAYER~startingLocation <> "Command")
+		if ($PLAYER~startingLocation = "Citadel")
+			loadvar $bot~mode
+			if ($bot~mode <> "Citkill")
+				setVar $bot~user_command_line "citkill on override"
+				goto :USER_INTERFACE~runUserCommandLine
+			else
+				setVar $bot~user_command_line "citkill off"
+				goto :USER_INTERFACE~runUserCommandLine
+			end
+		end
+		setVar $SWITCHBOARD~message "Wrong prompt for auto kill.*" 
+		gosub :SWITCHBOARD~switchboard
+		goto :BOT~wait_for_command
+	end
+	loadVar $SHIP~SHIP_MAX_ATTACK
+	loadVar $SHIP~SHIP_FIGHTERS_MAX
+	loadVar $SHIP~SHIP_OFFENSIVE_ODDS
+	if ($SHIP~SHIP_MAX_ATTACK <= 0)
+		gosub :SHIP~getShipStats
+	end
+	setvar $player~isFound false
+	goSub :SECTOR~getSectorData
+	goSub :combat~fastAttack
+	if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
+		if ($player~isFound)
+			load "scripts\mombot\commands\general\refurb.cts"
+			setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
+			pause
+			:refurbended
+			goSub :SECTOR~getSectorData
+			goSub :combat~fastAttack
+		end
+	end
+	goto :BOT~wait_for_command
 #============================ END AUTO KILL ============================================
 :autoCapture
 :autoCap
