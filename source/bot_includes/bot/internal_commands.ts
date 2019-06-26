@@ -693,8 +693,55 @@ goto :BOT~wait_for_command
 :autoCapture
 :autoCap
 :cap
+
 	setVar $BOT~user_command_line "cap "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
-	goto :USER_INTERFACE~runUserCommandLine
+
+	gosub :BOT~killthetriggers
+	gosub :PLAYER~quikstats
+	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
+	if ($PLAYER~startingLocation <> "Command")
+		if ($PLAYER~startingLocation = "Citadel")
+			loadvar $bot~mode
+			if ($bot~mode <> "Citcap")
+				setVar $BOT~command "citcap"
+				setVar $BOT~user_command_line " citcap on "
+				setVar $BOT~parm1 "on"			
+				goto :USER_INTERFACE~runUserCommandLine
+			else
+				setVar $BOT~command "citcap"
+				setVar $BOT~user_command_line " citcap off "
+				setVar $BOT~parm1 "off"			
+				goto :USER_INTERFACE~runUserCommandLine
+			end
+			goto :BOT~wait_for_command
+		end
+		setVar $SWITCHBOARD~message "Wrong prompt for auto capture.*"
+		gosub :SWITCHBOARD~switchboard
+		goto :BOT~wait_for_command
+	end
+	getWordPos $BOT~user_command_line $pos "alien"
+	if ($pos > 0)
+		setVar $PLAYER~onlyAliens TRUE
+	else
+		setVar $PLAYER~onlyAliens FALSE
+	end
+	fileExists $SHIP~cap_file_chk $SHIP~cap_file
+	if ($SHIP~cap_file_chk <> TRUE)
+		gosub :SHIP~getShipCapStats
+	end
+	loadVar $SHIP~SHIP_MAX_ATTACK
+	loadVar $SHIP~SHIP_FIGHTERS_MAX
+	loadVar $SHIP~SHIP_OFFENSIVE_ODDS
+	if ($SHIP~SHIP_OFFENSIVE_ODDS <= 0)
+		gosub :SHIP~getShipStats
+	end
+	setVar $lastTarget ""
+	setVar $thisTarget ""
+	goSub :SECTOR~getSectorData
+	goSub :combat~fastCapture
+	
+	goto :BOT~wait_for_command
+
 
 :do_relog
 	setvar $bot~parm1 "do_relog"
