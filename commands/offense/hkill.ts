@@ -12,7 +12,9 @@
 	if ($pos > 0)
 		setVar $player~surround_before_hkill TRUE
 	else
-		setVar $player~surround_before_hkill FALSE
+		if ($player~surround_before_hkill <> true)
+			setVar $player~surround_before_hkill FALSE
+		end
 	end
 
 

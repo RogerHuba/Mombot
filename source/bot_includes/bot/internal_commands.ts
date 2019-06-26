@@ -528,7 +528,27 @@ goto :BOT~wait_for_command
 :holo_kill
 :hkill
 	setVar $BOT~user_command_line "hkill "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
-	goto :USER_INTERFACE~runUserCommandLine
+	loadvar $player~surround_before_hkill
+	getWordPos $bot~user_command_line $pos "surround"
+	if ($pos > 0)
+		setVar $player~surround_before_hkill TRUE
+	else
+		if ($player~surround_before_hkill <> true)
+			setVar $player~surround_before_hkill FALSE
+		end
+	end
+
+	setVar $player~CIT FALSE
+	gosub :PLAYER~quikstats
+	setVar $startingLocation $PLAYER~current_prompt
+	setVar $BOT~validPrompts "Citadel Command"
+	gosub :BOT~checkStartingPrompt
+	gosub :combat~holo_kill
+	if ($SWITCHBOARD~message <> "")
+		gosub :SWITCHBOARD~switchboard
+	end
+	
+	goto :BOT~wait_for_command
 
 #####==========================================  BOT INTERNAL MENUS SECTION ===========================================#####
 
