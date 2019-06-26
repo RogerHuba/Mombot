@@ -6,31 +6,31 @@
 # ============================== START EXIT ENTER SUB ==============================    
 :exit
 :xenter
-    gosub :PLAYER~quikstats
-    isNumber $test $bot~parm1
-    if ($test = FALSE)
-        setVar $bot~parm1 1
-    else
-        if ($bot~parm1 <= 0)
-            setVar $bot~parm1 1
-        end
-    end
-    getWordPos $bot~user_command_line $pos "fill"
-    if ($pos > 0)
-        setVar $refill TRUE
-    else
-        setVar $refill FALSE
-    end
-    setVar $startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $BOT~validPrompts "Command Citadel"
-    gosub :BOT~checkStartingPrompt
-    if ($startingLocation = "Citadel")
-        send "q m n t *"
-        gosub :PLANET~getPlanetInfo
-        send "c "
-    end
+	gosub :PLAYER~quikstats
+	isNumber $test $bot~parm1
+	if ($test = FALSE)
+		setVar $bot~parm1 1
+	else
+		if ($bot~parm1 <= 0)
+			setVar $bot~parm1 1
+		end
+	end
+	getWordPos $bot~user_command_line $pos "fill"
+	if ($pos > 0)
+		setVar $refill TRUE
+	else
+		setVar $refill FALSE
+	end
+	setVar $startingLocation $PLAYER~CURRENT_PROMPT
+	setVar $BOT~validPrompts "Command Citadel"
+	gosub :BOT~checkStartingPrompt
+	if ($startingLocation = "Citadel")
+		send "q m n t *"
+		gosub :PLANET~getPlanetInfo
+		send "c "
+	end
 :exit_xenter
-    setVar $i 1
+	setVar $i 1
 		if ($startingLocation = "Command")
 			setvar $exit_mac "q y * "
 			setvar $exit_enter " t* * *"&$BOT~password&"*    *    *       za9999*   z*   /"
@@ -39,7 +39,7 @@
 			setvar $exit_enter " t* * *"&$BOT~password&"*    *    *    m * * *   q  *    *    *     za9999*   z*   f z1* z c d *  l j"&#8&$planet~planet&"* c  /"
 		end
 
-    while ($i <= $bot~parm1)
+	while ($i <= $bot~parm1)
 		killtrigger 1
 		killtrigger 2
 		send $exit_mac
@@ -51,7 +51,7 @@
 		killtrigger 1
 		killtrigger 2
 		send $exit_enter
-        waitOn #179
+		waitOn #179
 
 		if ($startinglocation = "Command")
 			if (($PLAYER~CURRENT_SECTOR > 10) and ($PLAYER~CURRENT_SECTOR <> $MAP~STARDOCK))
@@ -67,8 +67,8 @@
 			end
 		end
 		add $i 1
-    end
-    :doneExitEnter
+	end
+	:doneExitEnter
 
 	gosub :PLAYER~quikstats
 	if ($bot~parm1 > 1)
