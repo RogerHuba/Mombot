@@ -267,8 +267,83 @@ goto :BOT~wait_for_command
 :holotorp
 :htorp
 	setVar $BOT~user_command_line "htorp "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4
-	goto :USER_INTERFACE~runUserCommandLine
 
+	gosub :BOT~killthetriggers
+
+	gosub :PLAYER~quikstats
+	if ($PLAYER~SCAN_TYPE <> "Holo")
+		setvar $switchboard~message "You can not run htorp without a holographic scanner.*"
+		gosub :switchboard~switchboard
+		goto :BOT~wait_for_command
+	end
+	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
+	if ($PLAYER~startingLocation = "Command")
+	
+	elseif ($PLAYER~startingLocation = "Citadel")
+		send "q "
+		gosub :PLANET~getPlanetInfo
+	else
+		echo "*Wrong prompt for htorp.*"
+		goto :BOT~wait_for_command
+	end
+	if ($PLAYER~startingLocation = "Citadel")
+		send "q szh* l " & $planet~planet & "* c "
+	else
+		send "szh* "
+	end
+	setTextLineTrigger checkForHolo :continueCheckHolo "Select (H)olo Scan or (D)ensity Scan or (Q)uit?"
+	setTextLineTrigger checkForDens :photonedhtorp "Relative Density Scan"  
+	pause
+	:continueCheckHolo
+		setTextTrigger htorpsector :continuehtorpsector "[" & $PLAYER~CURRENT_SECTOR & "]"
+		pause
+	:continuehtorpsector
+	if ($PLAYER~PHOTONS <= 0)
+		echo ANSI_14 & "*No Photons on hand.**" & ANSI_7
+		goto :BOT~wait_for_command
+	end
+	setVar $i 1
+	while (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] > 0)
+		setVar $adj_sec SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i]
+		if (SECTOR.TRADERCOUNT[$ADJ_SEC] > 0)
+			setVar $targetInSector FALSE
+			setVar $corpMemberInSector FALSE
+			setVar $j 1
+			while (SECTOR.TRADERS[$ADJ_SEC][$j] <> 0)
+				setVar $tempTarget SECTOR.TRADERS[$ADJ_SEC][$j]
+				getLength $tempTarget $targetLength
+				if ($targetLength >= 4)
+					cutText $tempTarget $targetCorp ($targetLength-4) 999
+					getText $targetCorp $targetCorp "[" "]"
+					if ($targetCorp <> $PLAYER~CORP)
+						setVar $targetInSector TRUE
+					end
+					if ($targetCorp = $PLAYER~CORP)
+						setVar $corpMemberInSector TRUE
+					end
+				end
+				add $j 1
+			end
+			if (($targetInSector = TRUE) AND ($corpMemberInSector = FALSE))
+				send "c p y " $ADJ_SEC "* *q"
+				setvar $switchboard~message "Photon fired into sector " & $ADJ_SEC & "!*"
+				gosub :switchboard~switchboard
+				goto :BOT~wait_for_command
+			end
+		end
+		add $i 1
+	end
+	if ($PLAYER~startingLocation = "Citadel")
+		setTextTrigger waitforcit :continuewaitforcit "Citadel command (?=help)"
+		pause
+		:continuewaitforcit
+	end
+	echo ANSI_14 & "*No valid targets**" & ANSI_7
+	goto :BOT~wait_for_command
+:photonedHtorp
+	setvar $switchboard~message "You have no holographic scanner, perhaps you were photoned?*"
+	gosub :switchboard~switchboard
+	goto :BOT~wait_for_command
 
 #==================================== LOG OFF SUB ===========================================
 :logoff
@@ -528,6 +603,9 @@ goto :BOT~wait_for_command
 :holo_kill
 :hkill
 	setVar $BOT~user_command_line "hkill "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
+
+	gosub :BOT~killthetriggers
+
 	loadvar $player~surround_before_hkill
 	getWordPos $bot~user_command_line $pos "surround"
 	if ($pos > 0)
