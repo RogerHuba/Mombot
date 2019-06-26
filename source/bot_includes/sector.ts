@@ -31,10 +31,10 @@
 				else
 					setVar $containsBeacon FALSE
 				end
+		setvar $player~current_sector currentsector
 		goSub :getTraders
 		goSub :getEmptyShips
 		goSub :getFakeTraders
-		setvar $player~current_sector currentsector
 return
 
 :getTraders
