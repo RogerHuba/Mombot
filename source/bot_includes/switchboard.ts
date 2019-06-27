@@ -93,6 +93,7 @@ return
 	# for messages that need to be in multiple lines #
 
 	getWordPos " "&$message&" " $pos "*"
+	#replacetext $message "*" "[[[]]]"
 	getlength $message $message_length
 
 	if ($pos < $message_length)
@@ -100,29 +101,33 @@ return
 	else
 		setvar $multiple_lines false
 	end
+	if (($bot~command <> "help") and ($bot~only_help <> true))
+		if (($self_command > 1) or (($self_command = 1) and (($bot~silent_running <> true) and ($isSilent <= 0))))
 
-	# only auto format if not already in multiple lines or help file #
-	if (($bot~only_help <> true) and ($multiple_lines <> true))
-		setvar $next_length 60
-		setvar $i 1
-		setvar $length 1
-		while ($i <= $message_length)
-			cutText $message $character $i 1
-			if (($character = " ") and ($length > $next_length))
-				cutText $message $first_half  1 $i
-				cutText $message $second_half $i 999999999
-				setvar $second_half "*"&$second_half
-				replacetext $second_half "* " "*"
-				setvar $message $first_half&$second_half
-				setvar $length 0
+			setvar $next_length 60
+			setvar $i 1
+			setvar $length 1
+			while ($i <= $message_length)
+				cutText $message $character $i 1
+				if ((($character = " ") and ($length >= $next_length)) or (($character = "*") and $length > 1))
+					if ($i < $message_length)
+						cutText $message $first_half 1 ($i-1)
+						cutText $message $second_half ($i+1) 999999999
+						#echo "["&$first_half&"]*"
+						setvar $first_half $first_half&"* "
+						#replacetext $second_half "* " "*"
+						add $i 1
+						add $message_length 1
+						setvar $message $first_half&$second_half
+						setvar $length 0
+					end
+				end
+				add $length 1
+				add $i 1
 			end
-			add $length 1
-			add $i 1
 		end
-		replacetext $second_half "***" "**"
 	end
 	setvar $new_message $message
-
 return
 
 
