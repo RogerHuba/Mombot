@@ -103,7 +103,7 @@ return
 
 	# only auto format if not already in multiple lines or help file #
 	if (($bot~only_help <> true) and ($multiple_lines <> true))
-		setvar $next_length 60
+		setvar $next_length 55
 		setvar $i 1
 		setvar $length 1
 		while ($i <= $message_length)
