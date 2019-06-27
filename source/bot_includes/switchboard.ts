@@ -4,6 +4,11 @@
 
 
 :switchboard
+
+	setvar $discord_ignore "-- "
+	# length of discord string above # 
+	setvar $discord_ignore_length 3
+
 	loadvar $BOT~botIsDeaf
 	loadvar $bot~mode
 	loadvar $nodiscord
@@ -17,8 +22,8 @@
 
 	setVar $MSG_Header_Echo     (ANSI_9 & "{"&ANSI_14&$bot_name&ANSI_9&"} " & ANSI_15)
 	if ($nodiscord)
-		setVar $MSG_Header_SS_1     ("'--["&$bot~mode&"] {"&$bot_name&"} - ")
-		setVar $MSG_Header_SS_2     ("'*--["&$bot~mode&"] {"&$bot_name&"} - *")
+		setVar $MSG_Header_SS_1     ("'"&$discord_ignore&"["&$bot~mode&"] {"&$bot_name&"} - ")
+		setVar $MSG_Header_SS_2     ("'*"&$discord_ignore&"["&$bot~mode&"] {"&$bot_name&"} - *")
 	else
 		setVar $MSG_Header_SS_1     ("'["&$bot~mode&"] {"&$bot_name&"} - ")
 		setVar $MSG_Header_SS_2     ("'*["&$bot~mode&"] {"&$bot_name&"} - *")
@@ -73,8 +78,8 @@
 		getWordPos " "&$new_message&" " $pos "*"
 		getlength $new_message $length
 		if ($nodiscord)
-			setvar $new_message "--"&$new_message
-			add $length 2
+			setvar $new_message $discord_ignore&$new_message
+			add $length $discord_ignore_length
 		end
 
 		if ($self_command > 1)
@@ -133,9 +138,9 @@ return
 						cutText $message $second_half ($i+1) 999999999
 						#echo "["&$first_half&"]*"
 						if ($nodiscord)
-							setvar $first_half $first_half&"*--"
-							add $i 2
-							add $message_length 2
+							setvar $first_half $first_half&"*"&$discord_ignore
+							add $i $discord_ignore_length
+							add $message_length $discord_ignore_length
 						else
 							setvar $first_half $first_half&"* "
 							add $i 1
