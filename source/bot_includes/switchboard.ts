@@ -6,7 +6,15 @@
 :switchboard
 	loadvar $BOT~botIsDeaf
 	loadvar $bot~mode
+	loadvar $nodiscord
 	
+	if ($nodiscord <> true)
+		getWordPos " "&$BOT~user_command_line&" " $pos " nodiscord "
+		if ($pos > 0)
+			setvar $nodiscord true
+		end
+	end
+
 	setVar $MSG_Header_Echo     (ANSI_9 & "{"&ANSI_14&$bot_name&ANSI_9&"} " & ANSI_15)
 	setVar $MSG_Header_SS_1     ("'["&$bot~mode&"] {"&$bot_name&"} - ")
 	setVar $MSG_Header_SS_2     ("'*["&$bot~mode&"] {"&$bot_name&"} - *")
