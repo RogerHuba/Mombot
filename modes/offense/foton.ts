@@ -900,6 +900,15 @@ end
 	if ($ck <> "Your")
 		goto :planetPhotonTriggers
 	end
+
+	# Check for alien hits
+
+	getText CURRENTANSILINE $alien_check "damage to" ""
+	getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+	if ($pos > 0)
+	     goto :planetPhotonTriggers
+	end
+
 	getWord CURRENTLINE $sector 4
 	return
 

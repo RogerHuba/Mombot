@@ -2,7 +2,7 @@
   # All credits to the legend himself for this one!
   #
   #	Hammer - MOdifying to use EPHaggle and Sector Params
-  #     ham LSD 0@0@0@0@0@N@M@M@0@N@0@0@N@0@0@0@0@0@0@0
+  #    
   #
     
 
@@ -48,7 +48,7 @@
 	setVar $BOT~help[1]  $BOT~tab&"       LS Passive Gridder - Still the best "
 	setVar $BOT~help[2]  $BOT~tab&"       "
 	setVar $BOT~help[3]  $BOT~tab&" lspassgrid [stopturns] {a1/a2/a3} {l1/l2/l3} {ports}"
-	setVar $BOT~help[4]  $BOT~tab&"            {holo} {trade}"
+	setVar $BOT~help[4]  $BOT~tab&"            {holo} {trade} {restock}"
 	setVar $BOT~help[5]  $BOT~tab&" Options:"
 	setVar $BOT~help[6]  $BOT~tab&"    [stopturns]     Passive Grid Stops at here"
 	setVar $BOT~help[7]  $BOT~tab&"	   {a1/a2/a3}      Drop 1/2/3 Armid Mines"
@@ -59,10 +59,11 @@
 	setVar $BOT~help[12]  $BOT~tab&"                   Requires EP Haggle or equiv"
 	setVar $BOT~help[13]  $BOT~tab&"    {safe}         Twarps to Limpet sectors only"
 	setVar $BOT~help[14]  $BOT~tab&"    {paranoid}     Twarp to Limpet and Mines only"
-	setVar $BOT~help[15]  $BOT~tab&"    {nextreport}     Next sector requires an adj port report."
-	setVar $BOT~help[16]  $BOT~tab&""
-	setVar $BOT~help[17]  $BOT~tab&"    Doesn't require ZTM but works better"
-	setVar $BOT~help[18]  $BOT~tab&"    Works best with T-Warp to reroute"
+	setVar $BOT~help[16]  $BOT~tab&"    {nextreport}   Next sector requires an adj port report."
+	setVar $BOT~help[17]  $BOT~tab&"    {restock}      Buys more Limpets and Mines."
+	setVar $BOT~help[18]  $BOT~tab&""
+	setVar $BOT~help[19]  $BOT~tab&"    Doesn't require ZTM but works better"
+	setVar $BOT~help[20]  $BOT~tab&"    Works best with T-Warp to reroute"
 
 	gosub :BOT~help_file
 
@@ -113,6 +114,9 @@
 	setvar $player~save true
 
 	gosub :player~quikstats
+	if ($player~TOTAL_HOLDS <= $EQU_MIN)
+		
+	end
 
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation <> "Command")
@@ -180,15 +184,19 @@
 	if ($pos > 0)
 		setVar $DROP_LIMP 3
 	end	
-
+	
+	setVar $LSDString ""
 	if (($DROP_ARMID > 0) and ($DROP_LIMP > 0))
 		setVar $DROPING_MINES 3
+		setVar $LSDString "0@0@0@0@0@N@M@M@0@N@0@0@N@0@0@0@0@0@0@0"
 	elseif ($DROP_ARMID > 0)
 
 		setVar $DROPING_MINES 2
+		setVar $LSDString "0@0@0@0@0@N@N@M@0@N@0@0@N@0@0@0@0@0@0@0"
 	elseif ($DROP_LIMP > 0)
 
 		setVar $DROPING_MINES 1
+		setVar $LSDString "0@0@0@0@0@N@M@N@0@N@0@0@N@0@0@0@0@0@0@0"
 	else
 		setVar $DROPING_MINES 0
 	end
@@ -233,6 +241,16 @@
 	if ($pos > 0)
 		setVar $NextRequiresReport 1
 	end
+
+	setVar $restock 0
+	getWordPos $bot~user_command_line $pos "restock"
+	if ($pos > 0)
+		setVar $restock 1
+	end
+
+	
+
+	
 
 	goto :Lets_Get_It_On
 
@@ -353,15 +371,59 @@
 			pause
 		:gotWarpInfo
 			killAllTriggers
+
 			if ($TRACKER)
 				gosub :Haggel_Checker
-			elseif (($player~ORE_HOLDS < ($player~TOTAL_HOLDS - $EQU_MIN)) AND ($TWARP_TYPE <> "No"))
+			elseif (($player~ORE_HOLDS < $player~TOTAL_HOLDS) AND ($player~TWARP_TYPE <> "No"))
+
 				if ((PORT.CLASS[$player~CURRENT_SECTOR] = 3) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 4) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 5) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 7))
 					#Echo "***Stupid Attmpt**"
 					send "PT** 0* 0* "
+					
 				end
 			end
+			if ($restock = 1)
+				if ($player~CREDITS < 100000)
+					send ("'["&$TagLineB&"] Restocking halted as credits low*")
+					setVar $restock 0
+				end
 
+				if (($player~ORE_HOLDS = $player~TOTAL_HOLDS) AND ($player~TWARP_TYPE <> "No"))
+				
+					setVar $doRestock 0
+					if (($DROP_ARMID > 0) and ($DROP_LIMP > 0))
+						if (($player~ARMIDS < 4) or ($player~LIMPETS < 4))
+							setVar $doRestock 1
+						end
+					elseif ($DROP_ARMID > 0)
+						if ($player~ARMIDS < 4)
+							setVar $doRestock 1
+						end
+					elseif ($DROP_LIMP > 0)
+						if ($player~LIMPETS < 4)
+							setVar $doRestock 1
+						end
+
+					end
+					if ($doRestock = 1)
+						setVar $BOT~command "lsd"
+						setVar $BOT~user_command_line $LSDString
+						setVar $BOT~parm1 $LSDString
+						
+						saveVar $BOT~parm1
+						
+						saveVar $BOT~command
+						saveVar $BOT~user_command_line
+						load "scripts\mombot\modes\resource\lsd.cts"
+						setEventTrigger        moveended        :moveended "SCRIPT STOPPED" "scripts\mombot\modes\resource\lsd.cts"
+						pause
+						:moveended
+							killalltriggers
+						gosub :player~quikstats
+						gosub :resetMinesAfterRestock
+					end
+				end
+			end
 		setVar $i 1
 		setArray $Adj_Targets SECTOR.WARPCOUNT[$player~CURRENT_SECTOR]
 
@@ -582,7 +644,7 @@
 
         :No_Target
 	
-		if ($TWARP_TYPE <> "No")
+		if ($player~TWARP_TYPE <> "No")
 			#Find A Place To Twarp To
 			getNearestWarps $WarpArray $player~CURRENT_SECTOR
 			getRnd $w 5 10
@@ -1376,6 +1438,20 @@
 	end
 	return
 	
+:resetMinesAfterRestock
+
+	if (($DROP_ARMID > 0) and ($DROP_LIMP > 0))
+		setVar $DROPING_MINES 3
+	elseif ($DROP_ARMID > 0)
+
+		setVar $DROPING_MINES 2
+	elseif ($DROP_LIMP > 0)
+
+		setVar $DROPING_MINES 1
+	else
+		setVar $DROPING_MINES 0
+	end
+return
 
 
 include "source\module_includes\bot"
