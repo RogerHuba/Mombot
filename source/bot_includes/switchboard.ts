@@ -16,8 +16,13 @@
 	end
 
 	setVar $MSG_Header_Echo     (ANSI_9 & "{"&ANSI_14&$bot_name&ANSI_9&"} " & ANSI_15)
-	setVar $MSG_Header_SS_1     ("'["&$bot~mode&"] {"&$bot_name&"} - ")
-	setVar $MSG_Header_SS_2     ("'*["&$bot~mode&"] {"&$bot_name&"} - *")
+	if ($nodiscord)
+		setVar $MSG_Header_SS_1     ("'--["&$bot~mode&"] {"&$bot_name&"} - ")
+		setVar $MSG_Header_SS_2     ("'*--["&$bot~mode&"] {"&$bot_name&"} - *")
+	else
+		setVar $MSG_Header_SS_1     ("'["&$bot~mode&"] {"&$bot_name&"} - ")
+		setVar $MSG_Header_SS_2     ("'*["&$bot~mode&"] {"&$bot_name&"} - *")
+	end
 	if ($message <> "")
 
 		if ($self_command > 0)
