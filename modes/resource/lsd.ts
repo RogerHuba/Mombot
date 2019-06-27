@@ -1,8 +1,8 @@
     reqRecording
-	loadvar $bot_name
-	loadVar $unlimitedGame
-	loadVar $bot_turn_limit
-	loadVar $user_command_line
+	loadvar $BOT~bot_name
+	loadVar $BOT~unlimitedGame
+	loadVar $BOT~BOT_TURN_LIMIT
+	loadVar $bot~user_command_line
 	loadVar $LSD_Order
 	gosub	:quikstats
     setVar $CURENT_VERSION 		"4.0"
@@ -18,23 +18,23 @@
 	setVar $ShipListMax			50
 	setArray $ShipList			$ShipListMax 3
     setVar $LSD__PAD "@"
-	setVar $cmd ($user_command_line & "^^%%@@")
+	setVar $cmd ($bot~user_command_line & "^^%%@@")
 	setVar $MinLength "M@M@M@M@M@Y@M@M@M@Y@M@M@Y@M@M@M@0@0@0@0"
 
 	GetLength $MinLength $Mlen
-	GetLength $user_command_line $PrmLength
+	GetLength $bot~user_command_line $PrmLength
 
 	if ($CREDITS < 10000)
-		send "'{" $bot_name "} " & $TagLineB & " - Must have more than 10,000 Creds on hand!**"
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - Must have more than 10,000 Creds on hand!**"
 		halt
 	end
 
 	if ($TWARP_TYPE = "No")
-		send "'{" $bot_name "} " & $TagLineB & " - Must have at least Twarp Type 1!**"
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - Must have at least Twarp Type 1!**"
 		halt
 	end
 	if ($PrmLength < $Mlen)
-		send "'{" $bot_name "} " & $TagLineB & " - Length Of Passed String is Too Short. Possible Data Corruption!**"
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - Length Of Passed String is Too Short. Possible Data Corruption!**"
 		halt
 	end
 
@@ -314,12 +314,12 @@
 	gosub :quikstats
 
 	if (STARDOCK <= 0)
-		send "'{" $bot_name "} " & $TagLineB & " - Cannot Find Dock!**"
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - Cannot Find Dock!**"
 		halt
 	end
 
 	if (SECTOR.EXPLORED[STARDOCK] <> "YES")
-		send "'{" $bot_name "} " & $TagLineB & " - Have Not Visited StarDock!**"
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - Have Not Visited StarDock!**"
 		halt
 	end
 
@@ -370,7 +370,7 @@
 	if (($location = "Citadel") OR ($location = "Command"))
 		gosub :CN1_AND_CN9_CHECKING
 	else
-		send "'{" $bot_name "} " & $TagLineB & " - Need To Be At Citadel Or Command Pprompt!!**"
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - Need To Be At Citadel Or Command Pprompt!!**"
 		halt
 	end
 
@@ -396,15 +396,15 @@
 	if ($TURNS = 0)
 		gosub :TurnsDetect
 		if ($UNLIM = FALSE)
-			if ($TURNS < $bot_turn_limit)
-				send "'{" $bot_name "} " & $TagLineB & " - Not have enough Turns!**"
+			if ($TURNS < $BOT~BOT_TURN_LIMIT)
+				send "'{" $BOT~bot_name "} " & $TagLineB & " - Not have enough Turns!**"
 				halt
 			end
 		end
 	end
 
 	if ($TOTAL_HOLDS <> $ORE_HOLDS)
-		send "'{" $bot_name "} " & $TagLineB & " - Please Restart with Full Ore in Holds!!**"
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - Please Restart with Full Ore in Holds!!**"
 		halt
 	end
 
@@ -412,7 +412,7 @@
 	setVar $figcnt SECTOR.FIGS.QUANTITY[$START_SECTOR]
 	setVar $figowner SECTOR.FIGS.OWNER[$START_SECTOR]
 	if (($figcnt = 0) OR (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
-		send "'{" $bot_name "} " & $TagLineB & " - Fig Required In Current Sector**"
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - Fig Required In Current Sector**"
 		halt
 	end
 
@@ -422,7 +422,7 @@
 		setVar $RUN_ONCE TRUE
 
 		if (($_Atomics = "") AND ($_Beacons = "") AND ($_Corbo = "") AND ($_Cloak = "") AND ($_Probe = "") AND ($_PScan = "") AND ($_Limps = "") AND ($_Mines = "") AND ($_Photon = "") AND ($_LRScan = "") AND ($_Disrupt = "") AND ($_GenTorp = "") AND ($_T2Twarp = "") AND ($_Holds = "") AND ($_Figs = "") AND ($_Shields = "") AND ($_Trickster = "") AND ($NumberOfShip < 1))
-			send "'{" $bot_name "} " & $TagLineB & " - Nothing To Do**"
+			send "'{" $BOT~bot_name "} " & $TagLineB & " - Nothing To Do**"
 			halt
 		end
 
@@ -456,10 +456,10 @@
 				setVar $RED_adj 0
 				gosub :FindJumpSector
 				if ($RED_adj <> 0)
-					send ("'{"&$bot_name&"} "&$TagLineB&" - Jump Sector Found"&" - Using Sector "&$RED_adj&"**")
+					send ("'{"&$BOT~bot_name&"} "&$TagLineB&" - Jump Sector Found"&" - Using Sector "&$RED_adj&"**")
 				else
 					waitfor "Command [TL="
-					send "'{" & $bot_name & "} " & $TagLineB & " - Cannot Find Jump Sector Adjacent Dock**"
+					send "'{" & $BOT~bot_name & "} " & $TagLineB & " - Cannot Find Jump Sector Adjacent Dock**"
 					halt
 				end
 			end
@@ -483,7 +483,7 @@
 
 			:noJoy
 				killAllTriggers
-				send "'{" $bot_name "} " & $TagLineB & " - Cannot Find Path to StarDock!**"
+				send "'{" $BOT~bot_name "} " & $TagLineB & " - Cannot Find Path to StarDock!**"
 				halt
 	       	:cont
 				killAllTriggers
@@ -500,13 +500,13 @@
 				end
 
 				if ($dist1 <= 0)
-					send "'{" $bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Course to Dock**"
+					send "'{" $BOT~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Course to Dock**"
 					halt
 				end
 
 				getdistance $dist2 STARDOCK $START_SECTOR
 				if ($dist2 <= 0)
-					send "'{" $bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Return Course From Dock**"
+					send "'{" $BOT~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Return Course From Dock**"
 					halt
 				end
 
@@ -520,24 +520,24 @@
 				end
 
 				if ($ORE_HOLDS < $ore_req)
-					send "'{" $bot_name "} " & $TagLineB & " - Not Enough ORE In Holds To Make Round Trip**"
+					send "'{" $BOT~bot_name "} " & $TagLineB & " - Not Enough ORE In Holds To Make Round Trip**"
 					halt
 				end
 
 				if ($TWARP_TYPE = "No")
-					send "'{" $bot_name "} " & $TagLineB & " - Must Have Twarp 1 or 2**"
+					send "'{" $BOT~bot_name "} " & $TagLineB & " - Must Have Twarp 1 or 2**"
 					halt
 				end
 
 				if ($UNLIM = 0)
 					gosub :TurnsRequired
 					if ($TurnsRequired > $TURNS)
-						send "'{" $bot_name "} " & $TagLineB & " - Not Enough Turns. " & ANSI_12 & $TurnsRequired & ANSI_15 & ", Required**"
+						send "'{" $BOT~bot_name "} " & $TagLineB & " - Not Enough Turns. " & ANSI_12 & $TurnsRequired & ANSI_15 & ", Required**"
 						halt
 					elseif ($TurnsRequired <= $TURNS)
 						setVar $tmp ($TURNS - $TurnsRequired)
-						if ($tmp <= $bot_turn_limit)
-							send "'{" $bot_name "} " & $TagLineB & " - Proceeding Will Leave Fewer Than " & $bot_turn_limit & " Turns!**"
+						if ($tmp <= $BOT~BOT_TURN_LIMIT)
+							send "'{" $BOT~bot_name "} " & $TagLineB & " - Proceeding Will Leave Fewer Than " & $BOT~BOT_TURN_LIMIT & " Turns!**"
 							halt
 	    				end
 	                end
@@ -550,7 +550,7 @@
 			pause
 			:nosoupforme
 				killAllTriggers
-				send "'{" $bot_name "} " & $TagLineB & " - StarDock appears to have been Blown Up!**"
+				send "'{" $BOT~bot_name "} " & $TagLineB & " - StarDock appears to have been Blown Up!**"
 				halt
 			:itsalive
 				killAllTriggers
@@ -568,14 +568,14 @@
 				if ($msg = "")
 					waitfor "You leave the Galactic Bank."
 				else
-					send "'{" $bot_name "} " & $TagLineB & " - Unknown Problem Detected. Check TA!**"
+					send "'{" $BOT~bot_name "} " & $TagLineB & " - Unknown Problem Detected. Check TA!**"
 					halt
 				end
 
 	    gosub :quikstats
 
         if (($Start_Creds <= 100) AND ($Start_Exp < $EXPERIECE) AND ($Start_Holds <> $TOTAL_HOLDS))
-        	send "'{" $bot_name "} " & $TagLineB & " - Appear To Have Been Podded!**"
+        	send "'{" $BOT~bot_name "} " & $TagLineB & " - Appear To Have Been Podded!**"
         	halt
 		end
 
@@ -585,7 +585,7 @@
 				setVar $shipnum $_Tow
 				gosub :DoXport
 			else
-				send "'{" $bot_name "} " & $TagLineB & " - Not at Expected StarDock Prompt!**"
+				send "'{" $BOT~bot_name "} " & $TagLineB & " - Not at Expected StarDock Prompt!**"
 				halt
 			end
 		elseif ($_Trickster <> "")
@@ -600,7 +600,7 @@
 					goto :GO_HOME_EMPTY_HANDED
 				end
 			else
-				send "'{" $bot_name "} " & $TagLineB & " - Not at Expected StarDock Prompt!**"
+				send "'{" $BOT~bot_name "} " & $TagLineB & " - Not at Expected StarDock Prompt!**"
 				halt
 			end
         end
@@ -618,7 +618,7 @@
 		    gosub :quikstats
 
 			if ($CURRENT_PROMPT <> "<StarDock>")
-				send "'{" $bot_name "} " & $TagLineB & " - Not at Expected StarDock Prompt!**"
+				send "'{" $BOT~bot_name "} " & $TagLineB & " - Not at Expected StarDock Prompt!**"
 				halt
     		end
         end
@@ -643,7 +643,7 @@
 
 		waitfor "(?="
 		if ($CURRENT_SECTOR = STARDOCK)
-			send "'{" $bot_name "} " & $TagLineB & " - Twarp Error, Should be Hiding on Dock!**"
+			send "'{" $BOT~bot_name "} " & $TagLineB & " - Twarp Error, Should be Hiding on Dock!**"
 			halt
 		end
 
@@ -657,7 +657,7 @@
 
 					gosub :quikstats
 					if ($TOTAL_HOLDS <> $ORE_HOLDS)
-						send "'{" $bot_name "} " & $TagLineB & " - Out Of Gas - Planet appears to have too little ORE to continue!**"
+						send "'{" $BOT~bot_name "} " & $TagLineB & " - Out Of Gas - Planet appears to have too little ORE to continue!**"
 						halt
 					end
 
@@ -737,7 +737,7 @@
 		setVar $_Remain $CashAmount
 
 		if (($_Tow <> 0) AND ($_Trickster = ""))
-			send "'{" & $bot_name & "} " & $TagLineB & " Complete - Spent: $" & $_Spent & " on Ship #" & $_Tow & ", OnHand: $" & $_Remain & "*"
+			send "'{" & $BOT~bot_name & "} " & $TagLineB & " Complete - Spent: $" & $_Spent & " on Ship #" & $_Tow & ", OnHand: $" & $_Remain & "*"
 			waitfor "Message sent on sub-space channel"
 		elseif ($SpeacalMSG <> "")
 			send "'*"
@@ -746,14 +746,14 @@
 			pause
 			:COMMSrON
 				killAllTriggers
-				send "'{" $bot_name "} " & $TagLineB & " Complete - Spent: $" & $_Spent & " on " & $Runs2Dock & " Ships, OnHand: $" & $_Remain & "*"
+				send "'{" $BOT~bot_name "} " & $TagLineB & " Complete - Spent: $" & $_Spent & " on " & $Runs2Dock & " Ships, OnHand: $" & $_Remain & "*"
 				send $SpeacalMSG & "*"
 				send "* * "
 				waitfor "Sub-space comm-link terminated"
 			:COMMSrOFF
 				killAllTriggers
 		else
-			send "'{" $bot_name "} " & $TagLineB & " Completed - Spent: $" & $_Spent & ", On Hand: $" & $_Remain & "*"
+			send "'{" $BOT~bot_name "} " & $TagLineB & " Completed - Spent: $" & $_Spent & ", On Hand: $" & $_Remain & "*"
 			waitfor "Message sent on sub-space channel"
 		end
 		halt
@@ -1176,7 +1176,7 @@
         :NotHere
         killAllTriggers
         send "Q* "
-        send "'{" $bot_name "} " & $TagLineB & " - Ship To Be Towed Not Found**"
+        send "'{" $BOT~bot_name "} " & $TagLineB & " - Ship To Be Towed Not Found**"
         halt
 
         :ShipScan
@@ -1188,7 +1188,7 @@
 		    :PWProtected
 	    	killAllTriggers
 	    	send " *  * "
-	    	send "'{" $bot_name "} " & $TagLineB & " - Cannot Tow A Ship With A Set Password**"
+	    	send "'{" $BOT~bot_name "} " & $TagLineB & " - Cannot Tow A Ship With A Set Password**"
 	    	halt
 
 			:TowEngaged
@@ -1197,7 +1197,7 @@
 			stripText $Turns_Req2Tow " "
 			isNumber $tst $Turns_Req2Tow
 			if ($tst = 0)
-				send "'{" $bot_name "} " & $TagLineB & " - Unable to Ascertain Turns Required.**"
+				send "'{" $BOT~bot_name "} " & $TagLineB & " - Unable to Ascertain Turns Required.**"
 				halt
 			end
 
@@ -1252,7 +1252,7 @@
      pause
      :xport_docked
      killAllTriggers
-     send "'{" $bot_name "} " & $TagLineB & " - " & $msg
+     send "'{" $BOT~bot_name "} " & $TagLineB & " - " & $msg
      return
 
 :DoTwarp
@@ -1319,7 +1319,7 @@
 			end
 		:twarpDone
 			if ($msg <> "")
-				send "'{" $bot_name "} Twarp Error - " & $msg & "**"
+				send "'{" $BOT~bot_name "} Twarp Error - " & $msg & "**"
 			end
 	end
 	return
@@ -1350,7 +1350,7 @@
 	killAllTriggers
 	send "Q/"
 	waitfor "(?="
-	send "'{" $bot_name "} Tow Error - Ship Wasn't Towed!**"
+	send "'{" $BOT~bot_name "} Tow Error - Ship Wasn't Towed!**"
 	halt
 
 	:Something2Sell
@@ -1584,21 +1584,21 @@
 		killAllTriggers
 		send " * Q Q "
 		waitfor "<StarDock> Where to?"
-		send "'{" $bot_name "} " & $TagLineB & " - The Maximum Allowable Number of Ships Has Been Reached!**"
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - The Maximum Allowable Number of Ships Has Been Reached!**"
 		setVar $NewShipNumber 0
 		return
 	:NotEnoughEXP
 		killAllTriggers
 		send " Q Q "
 		waitfor "<StarDock> Where to?"
-		send "'{" $bot_name "} " & $TagLineB & " - Not Enough Experience To Buy Ship**"
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - Not Enough Experience To Buy Ship**"
 		setVar $NewShipNumber 0
 		return
 	:notcommished
 		killAllTriggers
 		send " Q Q "
 		waitfor "<StarDock> Where to?"
-		send "'{" $bot_name "} " & $TagLineB & " - Need fed commision to purchase this ship**"
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - Need fed commision to purchase this ship**"
 		setVar $NewShipNumber 0
 		return
 
@@ -1606,7 +1606,7 @@
 		killAllTriggers
 		send " Q Q "
 		waitfor "<StarDock> Where to?"
-		send "'{" $bot_name "} " & $TagLineB & " - Purchase Failed, Unknown Reason (maybe not enough cash)!**"
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - Purchase Failed, Unknown Reason (maybe not enough cash)!**"
 		setVar $NewShipNumber 0
 		return
 
@@ -1626,7 +1626,7 @@
 		killAllTriggers
 		send " Q "
 		waitfor "<StarDock> Where to?"
-		send "'{" $bot_name "} " & $TagLineB & " - Purchase Failed**"
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - Purchase Failed**"
 		setVar $NewShipNumber 0
 		return
 	:GotNewShipNumber
@@ -1790,3 +1790,12 @@
 		setVar $ShipData_Valid FALSE
 	end
 	return
+
+
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\planet"
+include "source\bot_includes\ship"
+include "source\bot_includes\map"
+
