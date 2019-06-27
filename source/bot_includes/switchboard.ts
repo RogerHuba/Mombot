@@ -59,6 +59,10 @@
 
 		getWordPos " "&$new_message&" " $pos "*"
 		getlength $new_message $length
+		if ($nodiscord)
+			setvar $new_message "--"&$new_message
+			add $length 2
+		end
 
 		if ($self_command > 1)
 			setvar $self_command false
@@ -92,8 +96,9 @@ return
 :format_raw_message
 	# for messages that need to be in multiple lines #
 
+
 	getWordPos " "&$message&" " $pos "*"
-	#replacetext $message "*" "[[[]]]"
+	
 	getlength $message $message_length
 
 	if ($pos < $message_length)
@@ -114,10 +119,15 @@ return
 						cutText $message $first_half 1 ($i-1)
 						cutText $message $second_half ($i+1) 999999999
 						#echo "["&$first_half&"]*"
-						setvar $first_half $first_half&"* "
-						#replacetext $second_half "* " "*"
-						add $i 1
-						add $message_length 1
+						if ($nodiscord)
+							setvar $first_half $first_half&"*--"
+							add $i 2
+							add $message_length 2
+						else
+							setvar $first_half $first_half&"* "
+							add $i 1
+							add $message_length 1
+						end
 						setvar $message $first_half&$second_half
 						setvar $length 0
 					end
