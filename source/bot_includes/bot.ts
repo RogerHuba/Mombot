@@ -509,7 +509,13 @@ return
 		saveVar $doRelog
 		read $gconfig_file $bot_name 1
 		if (CONNECTED = TRUE)
-			gosub :PLAYER~quikstats            
+			gosub :PLAYER~quikstats      
+			if ($player~alignment > 0) 
+				setvar $bluehaggle true
+				setvar $worstprice false
+				savevar $bluehaggle
+				savevar $worstprice
+			end     
 		end
 		if ((($PLAYER~startingLocation = "Command") OR ($PLAYER~startingLocation = "Citadel")) AND (CONNECTED = TRUE))
 			if ($GAME~ptradesetting = 0)
