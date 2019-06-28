@@ -12,6 +12,7 @@
 	loadvar $BOT~botIsDeaf
 	loadvar $bot~mode
 	loadvar $nodiscord
+	loadvar $fedspace_output
 	
 	if ($nodiscord <> true)
 		getWordPos " "&$BOT~user_command_line&" " $pos " nodiscord "
@@ -20,13 +21,25 @@
 		end
 	end
 
+	if ($fedspace_output <> true)
+		getwordpos " "&$bot~user_command_line&" " $pos " fed "
+		if ($pos > 0)
+			setvar $fedspace_output true
+		end
+	end
+
+	if ($fedspace_output)
+		setvar $communication_starter "`"
+	else
+		setvar $communication_starter "'"
+	end
 	setVar $MSG_Header_Echo     (ANSI_9 & "{"&ANSI_14&$bot_name&ANSI_9&"} " & ANSI_15)
 	if ($nodiscord)
-		setVar $MSG_Header_SS_1     ("'"&$discord_ignore&"["&$bot~mode&"] {"&$bot_name&"} - ")
-		setVar $MSG_Header_SS_2     ("'*"&$discord_ignore&"["&$bot~mode&"] {"&$bot_name&"} - *")
+		setVar $MSG_Header_SS_1     ($communication_starter&$discord_ignore&"["&$bot~mode&"] {"&$bot_name&"} - ")
+		setVar $MSG_Header_SS_2     ($communication_starter&"*"&$discord_ignore&"["&$bot~mode&"] {"&$bot_name&"} - *")
 	else
-		setVar $MSG_Header_SS_1     ("'["&$bot~mode&"] {"&$bot_name&"} - ")
-		setVar $MSG_Header_SS_2     ("'*["&$bot~mode&"] {"&$bot_name&"} - *")
+		setVar $MSG_Header_SS_1     ($communication_starter&"["&$bot~mode&"] {"&$bot_name&"} - ")
+		setVar $MSG_Header_SS_2     ($communication_starter&"*["&$bot~mode&"] {"&$bot_name&"} - *")
 	end
 	if ($message <> "")
 
