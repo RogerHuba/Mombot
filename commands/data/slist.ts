@@ -66,7 +66,7 @@
 		add $idx 1
 		setVar $scan_array[$idx] "Ship  Sect Name                  Fighters Shields Hops Type"
 		add $idx 1
-		setVar $scan_array[$idx] "----------------------------------------------------------------------"
+		setVar $scan_array[$idx] "-----------------------------------------------------------------"
 	else
 		setTextTrigger end_of_line1 :end_of_lines "Command [TL="
 	end
