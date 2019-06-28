@@ -183,6 +183,7 @@
 
 :SpitItOut
 	setvar $switchboard~message ""
+	setvar $i 1
 	while ($i <= $idx)
 		if ($scan_array[$i] <> "0")
 				setvar $switchboard~message $switchboard~message & $scan_array[$i] & "*"
