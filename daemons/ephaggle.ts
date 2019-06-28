@@ -17,9 +17,9 @@ setvar $MCICFILENAME $folder&"/mcic.csv"
 setvar $OPTIONSFILE $folder&"/haggleopt.cfg"
 setvar $HAHTOGGLE "Off"
 setvar $WPTOGGLE "Off"
-setvar $MBBSTOGGLE "Off"
-setvar $PTRADEPERCENT 100
-setvar $BLUEHAGGLE false
+setvar $game~mbbsTOGGLE "Off"
+setvar $game~ptradesetting 100
+setvar $bot~bluehaggle false
 setvar $SWATHBIDCAP "On"
 setvar $HAGGLESTAT "Active"
 setvar $SUPPRESSMENU "Off"
@@ -41,45 +41,44 @@ setvar $SUPPRESSMENU "Off"
 
 
 :CONTINUE
-	#setvar $BLUEHAGGLE true
-	#setvar $HAGGLEANDHOLD true
-	#setvar $WORSTPRICE 0
-	#setvar $MBBS 0
+	#setvar $bot~bluehaggle true
+	#setvar $bot~haggleandhold true
+	#setvar $bot~worstprice 0
+	#setvar $game~mbbs 0
 	
-	loadvar $bluehaggle
-	loadvar $worstprice
+	loadvar $bot~bluehaggle
+	loadvar $bot~worstprice
 
-	if ($bluehaggle)
-		setvar $worstprice false
-		savevar $worstprice
+	if ($bot~bluehaggle)
+		setvar $bot~worstprice false
+		savevar $bot~worstprice
 	end
 
-	if ($worstprice)
-		setvar $bluehaggle false
-		savevar $bluehaggle
+	if ($bot~worstprice)
+		setvar $bot~bluehaggle false
+		savevar $bot~bluehaggle
 	end
 
 	loadVar $GAME~mbbs
 	loadvar $GAME~ptradesetting
 
-	setvar $mbbs $GAME~mbbs
-	setvar $PTRADEPERCENT $GAME~ptradesetting
-
-
-
-echo ANSI_11 "**EP Perfect Haggle loaded. *"
 
 
 setprecision 2
-setvar $DDTTTH ($PTRADEPERCENT / 100)
+setvar $DDTTTH ($game~ptradesetting / 100)
 setprecision 0
 
 killalltriggers
+setvar $line CURRENTANSILINE
 gosub :player~quikstats
+waitOn "Command [TL="
 
 setvar $exp $player~experience
 setvar $sector player~current_sector
 
+
+echo ANSI_11 "**  [[" ansi_3  "  EP Perfect Haggle loaded.  " ansi_11 " ]]  *"
+echo CURRENTANSILINE
 goto :waittoport
 
 
@@ -436,11 +435,11 @@ setvar $HHREPP (($PORTQTY * 10) / ($PERCENT + ".9999999999"))
 round $HHREPP 0
 setvar $MAXPRODUCTIVITY ((($PORTQTY / $PERCENT) * 10) -".4999999999")
 round $MAXPRODUCTIVITY 0
-if ($MAXPRODUCTIVITY > 3276) and ($MBBS = 1)
+if ($MAXPRODUCTIVITY > 3276) and ($game~mbbs = 1)
 	setvar $MAXPRODUCTIVITY 3276
 	goto :100
 end
-if ($MAXPRODUCTIVITY > 6553) and ($MBBS = 0)
+if ($MAXPRODUCTIVITY > 6553) and ($game~mbbs = 0)
 	setvar $MAXPRODUCTIVITY 6553
 end
 
@@ -648,8 +647,8 @@ setvar $I 1
 :162
 if ($I <= $LHTEYH)
 	if ($FINALOFFER = 1)
-		loadvar $bluehaggle
-		if (($BLUEHAGGLE = true) and ($PLANETSHIP = "SHIP"))
+		loadvar $bot~bluehaggle
+		if (($bot~bluehaggle = true) and ($PLANETSHIP = "SHIP"))
 			gosub :SUBBLUEHAGGLE
 			goto :167
 		end
@@ -730,13 +729,13 @@ end
 :196
 
 :191
-loadvar $worstprice
-if ($BID = 1) and ($WORSTPRICE = 1)
+loadvar $bot~worstprice
+if ($BID = 1) and ($bot~worstprice = 1)
 	if ($BUYSELL = "SELLING")
 		setvar $LTPEHL ($OTHYTR -1)
 	end
 end
-if ($BID > 3) and ($FINALOFFER <> 1) or ($HAGGLEANDHOLD = 1) and ($FINALOFFER = 1)
+if ($BID > 3) and ($FINALOFFER <> 1) or ($bot~haggleandhold = 1) and ($FINALOFFER = 1)
 	setvar $LTPEHL $LASTCOUNTER
 end
 if ($LTPEHL = 0)
@@ -751,7 +750,7 @@ if ($LTPEHL = 0)
 	end
 end
 setvar $TOECHO ""
-if ($FINALOFFER = 1) or ($PLANETSHIP = "SHIP") and ($WORSTPRICE = 1) and ($BUYSELL = "SELLING")
+if ($FINALOFFER = 1) or ($PLANETSHIP = "SHIP") and ($bot~worstprice = 1) and ($BUYSELL = "SELLING")
 	setvar $TOECHO ANSI_12 & "<<<  " & ANSI_11 & $PRODUCT & " MCIC = " & ANSI_14 & $LHEEHH
 	setvar $ANSILENGTH 28
 	if ($LHEEHH <> $EHPHHL)
