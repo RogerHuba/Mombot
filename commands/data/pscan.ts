@@ -182,17 +182,17 @@
 	return
 
 :SpitItOut
-	setVar $i 1
-	send "'*"
-	waitFor "Comm-link open on sub-space band"
+	setvar $switchboard~message ""
+	setvar $i 1
 	while ($i <= $idx)
-    	send $scan_array[$i] & "*"
-	    add $i 1
+		if ($scan_array[$i] <> "0")
+				setvar $switchboard~message $switchboard~message & $scan_array[$i] & "*"
+		end
+		add $i 1
 	end
-
-	send "*  "
-	waitFor "Sub-space comm-link terminated"
-	return
+	gosub :switchboard~switchboard
+	:continuecommpscan2
+return
 
 :Land_OnPlanet
 	setVar $LANDED FALSE
