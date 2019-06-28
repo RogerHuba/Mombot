@@ -675,12 +675,13 @@ return
 			setVar $doRelog FALSE
 		end
 
+		gosub :PLAYER~quikstats
+
 		stop "scripts\mombot\daemons\ephaggle.cts"
 		stop "scripts\mombot\daemons\ephaggle.cts"
 		stop "scripts\mombot\daemons\ephaggle.cts"
 		stop "scripts\mombot\daemons\ephaggle.cts"
 		load "scripts\mombot\daemons\ephaggle.cts"
-		send "'{" $SWITCHBOARD~bot_name "} - EP Haggle loaded and ready to go!."
 	else
 		echo "*{" $SWITCHBOARD~bot_name "} is ACTIVE: Version - "&$BOT~major_version&"."&$BOT~minor_version " - type " #34 $SWITCHBOARD~bot_name " help" #34 " for command list*"
 		if (($username = "") or ($letter = "") or ($doRelog = FALSE))
