@@ -674,12 +674,20 @@ return
 			send "'{" $SWITCHBOARD~bot_name "} - Auto Relog - Not Active*"
 			setVar $doRelog FALSE
 		end
+
+		stop "scripts\mombot\daemons\ephaggle.cts"
+		stop "scripts\mombot\daemons\ephaggle.cts"
+		stop "scripts\mombot\daemons\ephaggle.cts"
+		stop "scripts\mombot\daemons\ephaggle.cts"
+		load "scripts\mombot\daemons\ephaggle.cts"
+		send "'{" $SWITCHBOARD~bot_name "} - EP Haggle loaded and ready to go!."
 	else
 		echo "*{" $SWITCHBOARD~bot_name "} is ACTIVE: Version - "&$BOT~major_version&"."&$BOT~minor_version " - type " #34 $SWITCHBOARD~bot_name " help" #34 " for command list*"
 		if (($username = "") or ($letter = "") or ($doRelog = FALSE))
-			echo "{" $SWITCHBOARD~bot_name "} - Auto Relog - Not Active*"
+			echo "{"&$SWITCHBOARD~bot_name&"} - Auto Relog - Not Active*"
 			setVar $doRelog FALSE
 		end
+		echo "{"&$SWITCHBOARD~bot_name&"} - No EP Haggle is running because the bot was started offline.*"
 	end
 	saveVar $SWITCHBOARD~bot_name
 	:initiate_bot
