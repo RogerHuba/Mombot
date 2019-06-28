@@ -3,8 +3,8 @@ systemscript
 // Original File EP_HAGGLE2019.TS (compiled for TWX 2.05)
 // Brought to you by Shadow's CTS Decompiler 2.0
 
-setvar $verbose_debug_mode true
-setvar $debug_mode true
+setvar $verbose_debug_mode false
+setvar $paused_debug_mode false
 setvar $VERSION 2019
 setvar $SIGLINE "EP's Perfect Haggle, v. " & $VERSION
 
@@ -61,10 +61,13 @@ setvar $SUPPRESSMENU "Off"
 
 	loadVar $GAME~mbbs
 	loadvar $GAME~ptradesetting
-	echo "[["&$GAME~ptradesetting&"]]"
 
 	setvar $mbbs $GAME~mbbs
 	setvar $PTRADEPERCENT $GAME~ptradesetting
+
+
+
+echo ANSI_11 "**EP Perfect Haggle loaded. *"
 
 
 setprecision 2
@@ -72,10 +75,13 @@ setvar $DDTTTH ($PTRADEPERCENT / 100)
 setprecision 0
 
 killalltriggers
-send "/"
-settextlinetrigger QUICKSTAT :QUICKSTAT #179 & "Turns "
-settexttrigger CLSECTORNUM :CLSECTORNUM "] (?=Help)?"
-pause
+gosub :player~quikstats
+
+setvar $exp $player~experience
+setvar $sector player~current_sector
+
+goto :waittoport
+
 
 :CLSECTORNUM
 gettext CURRENTLINE $SECTOR "]:[" "] (?"
@@ -1169,7 +1175,7 @@ if ($FAILED = 0)
 	if ($verbose_debug_mode = TRUE)
 		echo ANSI_12 "*Derive Failed Once, Adjusting highProductivity.*"
 		gosub :LOGDERIVEFAILURE
-		if ($debug_mode = TRUE)
+		if ($paused_debug_mode = TRUE)
 			echo "*Press SPACE to continue..."
 			settextouttrigger DEBUGPAUSE :DBP1 " "
 			pause
@@ -1185,7 +1191,7 @@ end
 if ($FAILED = 1)
 	if ($verbose_debug_mode = TRUE)
 		echo ANSI_12 "*Derive Failed Twice, Resetting Productivity and MCIC values.*"
-		if ($debug_mode = TRUE)
+		if ($paused_debug_mode = TRUE)
 			echo "*Press SPACE to continue..."
 			settextouttrigger DEBUGPAUSE :DBP2 " "
 			pause
@@ -1210,7 +1216,7 @@ if ($FAILED = 1)
 end
 if ($FAILED = 2)
 	echo ANSI_12 "*Derive Failed, Port parameters could not be determined.*"
-	if ($debug_mode = TRUE)
+	if ($paused_debug_mode = TRUE)
 		echo "*Press SPACE to continue..."
 		settextouttrigger DEBUGPAUSE :DBP3 " "
 		pause
@@ -1420,3 +1426,9 @@ end
 setprecision 15
 echo ANSI_11 "COMPLETE**Data saved in the TWX Proxy folder as " $MCICFILENAME ".**"
 return
+
+
+include "source\module_includes\bot"
+include "source\module_includes\prompt"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
