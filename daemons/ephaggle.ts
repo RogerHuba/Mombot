@@ -1,6 +1,7 @@
 systemscript
 
-// Original File EP_HAGGLE2019.TS (compiled for TWX 2.05)
+// Author Elder Prophet - Incredible coding and research went into this script.  All credit to him.
+
 // Brought to you by Shadow's CTS Decompiler 2.0
 
 setvar $verbose_debug_mode false
@@ -14,7 +15,6 @@ setvar $SIGLINE "EP's Perfect Haggle, v. " & $VERSION
 setvar $MAXPTRADE 0
 setvar $folder "scripts/mombot/games/"&GAMENAME
 setvar $MCICFILENAME $folder&"/mcic.csv"
-setvar $OPTIONSFILE $folder&"/haggleopt.cfg"
 setvar $HAHTOGGLE "Off"
 setvar $WPTOGGLE "Off"
 setvar $game~mbbsTOGGLE "Off"
@@ -214,7 +214,7 @@ pause
 :STARTCREDITS
 killalltriggers
 setvar $FINALOFFER 0
-settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+#settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
 settextlinetrigger SHIPTRADE :SHIPTRADE "How many holds"
 settexttrigger DONE :WAITTOPORT "Command [TL"
 pause
@@ -247,7 +247,7 @@ end
 setvar $PLUSMINUS 1
 
 :66
-settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+#settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
 settextlinetrigger SHIPTRADE :SHIPTRADE "How many holds"
 settexttrigger DONE :WAITTOPORT "Command [TL"
 settextlinetrigger TRADEQTY :TRADEQTY "Agreed,"
@@ -274,7 +274,7 @@ if ($PERCENT[$PRODUCT] = 0)
 		settextlinetrigger GOODTRADE :GOODTRADE "For your good trading"
 		settextlinetrigger GREATTRADE :GOODTRADE "For your great trading"
 		settexttrigger DONE :WAITTOPORT "Command [TL"
-		settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+		#settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
 		settextlinetrigger SHIPTRADE :SHIPTRADE "How many holds"
 		pause
 	end
@@ -423,7 +423,7 @@ if ($PERCENT = 0)
 		settextlinetrigger GOODTRADE :GOODTRADE "For your good trading"
 		settextlinetrigger GREATTRADE :GOODTRADE "For your great trading"
 		settexttrigger DONE :WAITTOPORT "Command [TL"
-		settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+		#settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
 		settextlinetrigger SHIPTRADE :SHIPTRADE "How many holds"
 		pause
 	end
@@ -801,7 +801,7 @@ settextlinetrigger STARTCREDITS :STARTCREDITS "credits"
 settextlinetrigger GOODTRADE :GOODTRADE "For your good trading"
 settextlinetrigger GREATTRADE :GOODTRADE "For your great trading"
 settexttrigger DONE :WAITTOPORT "Command [TL"
-settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+#settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
 settextlinetrigger SHIPTRADE :SHIPTRADE "How many holds"
 pause
 
