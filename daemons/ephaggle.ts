@@ -10,6 +10,19 @@ setvar $VERSION 2019
 setvar $SIGLINE "EP's Perfect Haggle, v. " & $VERSION
 
 
+gosub :BOT~loadVars
+
+setvar $bot~command "ephaggle"
+setVar $BOT~help[1]  $BOT~tab&"ephaggle {blue|worst} "
+setVar $BOT~help[2]  $BOT~tab&"  Best haggle routine "
+setVar $BOT~help[3]  $BOT~tab&"      Options:  "
+setVar $BOT~help[4]  $BOT~tab&"             blue  - haggle without gaining experience "
+setVar $BOT~help[5]  $BOT~tab&"             worst - get the worst price possible "
+setVar $BOT~help[6]  $BOT~tab&"       "
+setVar $BOT~help[7]  $BOT~tab&"      Default is normal haggle "
+setVar $BOT~help[8]  $BOT~tab&"       "
+setVar $BOT~help[9]  $BOT~tab&"      Author: Elder Prophet "
+gosub :BOT~help_file
 
 
 setvar $MAXPTRADE 0
@@ -52,13 +65,29 @@ setvar $SUPPRESSMENU "Off"
 	if ($bot~bluehaggle)
 		setvar $bot~worstprice false
 		savevar $bot~worstprice
-	end
-
-	if ($bot~worstprice)
+	elseif ($bot~worstprice)
 		setvar $bot~bluehaggle false
 		savevar $bot~bluehaggle
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " blue"
+	getwordpos " "&$bot~user_command_line&" " $pos2 " worst"
+	if ($pos > 0)
+		setvar $bot~worstprice false
+		savevar $bot~worstprice
+		setvar $bot~bluehaggle true
+		savevar $bot~bluehaggle
+	elseif ($pos2 > 0)
+		setvar $bot~worstprice true
+		savevar $bot~worstprice
+		setvar $bot~bluehaggle false
+		savevar $bot~bluehaggle
+	else
+		setvar $bot~worstprice false
+		savevar $bot~worstprice
+		setvar $bot~bluehaggle false
+		savevar $bot~bluehaggle
+	end
 	loadVar $GAME~mbbs
 	loadvar $GAME~ptradesetting
 
@@ -76,9 +105,16 @@ waitOn "Command [TL="
 setvar $exp $player~experience
 setvar $sector player~current_sector
 
+if ($bot~bluehaggle)
+	setvar $tag "Blue Haggle"
+elseif ($bot~worstprice)
+	setvar $tag "Worst Haggle"
+else
+	setvar $tag "Normal Haggle"
+end
 
-echo ANSI_11 "**  [[" ansi_3  "  EP Perfect Haggle loaded.  " ansi_11 " ]]  *"
-echo CURRENTANSILINE
+setvar $switchboard~message "EP Perfect Haggle loaded - "&$tag&"*"
+gosub :switchboard~switchboard
 goto :waittoport
 
 
