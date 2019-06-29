@@ -20,7 +20,7 @@
 	if ($startingLocation = "Command")
 	        goto :start_limps
 	elseif ($startingLocation = "Citadel")
-		send "qdq"
+		send "q"
 		gosub :PLANET~getPlanetInfo
 		send "q"
 	elseif ($startingLocation = "Planet")
