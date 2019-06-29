@@ -7,13 +7,13 @@ gosub :BOT~loadVars
 	setVar $BOT~help[4]  $BOT~tab&"       Best used with EP Haggle to get MCIC for buy/sell in megarob games."
 	setVar $BOT~help[5]  $BOT~tab&"        - Avoids trading small amounts of Fuel/Org to avoid experience."
 	setVar $BOT~help[6]  $BOT~tab&"       "
-	setVar $BOT~help[7]  $BOT~tab&"       trade {h/t} {q}"
+	setVar $BOT~help[7]  $BOT~tab&"       trade {q}"
 	setVar $BOT~help[8]  $BOT~tab&"       "
 	setVar $BOT~help[9]  $BOT~tab&" Options:"
 	setVar $BOT~help[10]  $BOT~tab&"    {q}       How much equipment to keep post trade. "
 	setVar $BOT~help[11]  $BOT~tab&"              - Default is 5"
-	setVar $BOT~help[12]  $BOT~tab&"    {h/t}     h  - internal haggle; "
-	setVar $BOT~help[13] $BOT~tab&"               t  - 3rd party haggle like EP - DEFAULT."
+	setVar $BOT~help[12]  $BOT~tab&"        "
+	setVar $BOT~help[12]  $BOT~tab&"       EP haggle will be used if it is running in the bot. "
 	
 	gosub :BOT~help_file
 
@@ -29,39 +29,31 @@ gosub :BOT~loadVars
 	getWord $bot~user_command_line $bot~parm2 2
 
 	
-	if ($bot~parm1 <> "")
 
-		if ($bot~parm1 = "h")
-			setVar $haggle "h"
-		elseif ($bot~parm1 = "t")
-			setVar $haggle "t"
-		else
-			isNumber $test $bot~parm1
-			if ($test = FALSE)
-				setVar $SWITCHBOARD~message "Pleae enter a number for the equip to keep.*"
-				gosub :SWITCHBOARD~switchboard
-				halt
-			else
-				setVar $keepEquip $bot~parm1
-			end
+	setvar $isFound false
+	listActiveScripts $scripts
+	setvar $i 1
+	while ($i <= $scripts)
+		getWordPos "<><><>"&$scripts[$i] $pos "<><><>ephaggle"
+		if ($pos > 0)
+			setvar $isFound true
 		end
-	
+		add $i 1
 	end
-	if ($bot~parm2 <> "")
-		if ($bot~parm2 = "h")
-			setVar $haggle "h"
-		elseif ($bot~parm2 = "t")
-			setVar $haggle "t"
+	if ($isFound)
+		setvar $haggle "t"
+	else
+		setvar $haggle "h"
+	end
+
+	if ($bot~parm1 <> "")
+		isNumber $test $bot~parm1
+		if ($test = FALSE)
+			setVar $SWITCHBOARD~message "Pleae enter a number for the equip to keep.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
 		else
-			isNumber $test $bot~parm2
-			if ($test = FALSE)
-				setVar $SWITCHBOARD~message "Please enter a number for the equip to keep2.*"
-				gosub :SWITCHBOARD~switchboard
-				halt
-			else
-				setVar $keepEquip $bot~parm2
-			end
-			
+			setVar $keepEquip $bot~parm1
 		end
 	end
 	if ($keepEquip = 0)
@@ -329,55 +321,55 @@ return
 return
 
 :voidadjacentPPT
-    getSector $voidSector $sectorInfo
-    if ($sectorInfo.warp[1] = 0)
-        send "'This sector has no warps, maybe you need to scan it first*"
-        halt
-    else
-        setVar $voidsect 0
-        :voids
-        add $voidsect 1
-        if ($voidsect < 7)
-            if ($sectorInfo.warp[$voidsect] <> 0)
+	getSector $voidSector $sectorInfo
+	if ($sectorInfo.warp[1] = 0)
+		send "'This sector has no warps, maybe you need to scan it first*"
+		halt
+	else
+		setVar $voidsect 0
+		:voids
+		add $voidsect 1
+		if ($voidsect < 7)
+			if ($sectorInfo.warp[$voidsect] <> 0)
 		
 		send "CV" & $sectorInfo.warp[$voidsect] & "*Q"
 		
-            end
-            goto :voids
-        end
+			end
+			goto :voids
+		end
 	setVar $SWITCHBOARD~message "Avoids set on adjacent sectors!*"
 	gosub :SWITCHBOARD~switchboard
-       
-        send "/"
-        waitfor " Sect "    
-    end
+	   
+		send "/"
+		waitfor " Sect "    
+	end
 return
 
 :clearadjacentPPT
-    getSector $voidSector $sectorInfo
-    if ($sectorInfo.warp[1] = 0)
-        setvar $switchboard~message "-This sector has no warps, try to scan it first!*"
-        gosub :SWITCHBOARD~switchboard
-        halt
-    else
-        setVar $voidsect 0
-        :clearvoids
-        add $voidsect 1
-        if ($voidsect < 7)
-            if ($sectorInfo.warp[$voidsect] <> 0)
+	getSector $voidSector $sectorInfo
+	if ($sectorInfo.warp[1] = 0)
+		setvar $switchboard~message "-This sector has no warps, try to scan it first!*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	else
+		setVar $voidsect 0
+		:clearvoids
+		add $voidsect 1
+		if ($voidsect < 7)
+			if ($sectorInfo.warp[$voidsect] <> 0)
 		
 		send "CV0*YN" & $sectorInfo.warp[$voidsect] & "*Q"
 		
-            end
-            goto :clearvoids
-        end
+			end
+			goto :clearvoids
+		end
 
-        setVar $SWITCHBOARD~message "Avoids cleared on adjacent sectors!*"
+		setVar $SWITCHBOARD~message "Avoids cleared on adjacent sectors!*"
 	gosub :SWITCHBOARD~switchboard
-       
-        send "/"
-        waitfor " Sect "
-    end
+	   
+		send "/"
+		waitfor " Sect "
+	end
 return
 
 halt
