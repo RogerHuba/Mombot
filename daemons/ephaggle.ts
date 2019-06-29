@@ -4,8 +4,8 @@ systemscript
 
 // Brought to you by Shadow's CTS Decompiler 2.0
 
-setvar $verbose_debug_mode false
-setvar $paused_debug_mode false
+setvar $verbose_debug_mode true
+setvar $paused_debug_mode true
 setvar $VERSION 2019
 setvar $SIGLINE "EP's Perfect Haggle, v. " & $VERSION
 
@@ -13,11 +13,12 @@ setvar $SIGLINE "EP's Perfect Haggle, v. " & $VERSION
 gosub :BOT~loadVars
 
 setvar $bot~command "ephaggle"
-setVar $BOT~help[1]  $BOT~tab&"ephaggle {blue|worst} "
+setVar $BOT~help[1]  $BOT~tab&"ephaggle {blue|worst} {planet"
 setVar $BOT~help[2]  $BOT~tab&"  Best haggle routine "
 setVar $BOT~help[3]  $BOT~tab&"      Options:  "
-setVar $BOT~help[4]  $BOT~tab&"             blue  - haggle without gaining experience "
-setVar $BOT~help[5]  $BOT~tab&"             worst - get the worst price possible "
+setVar $BOT~help[4]  $BOT~tab&"             blue   - haggle without gaining experience "
+setVar $BOT~help[5]  $BOT~tab&"             worst  - get the worst price possible "
+setVar $BOT~help[5]  $BOT~tab&"             planet - do planet negotiation too "
 setVar $BOT~help[6]  $BOT~tab&"       "
 setVar $BOT~help[7]  $BOT~tab&"      Default is normal haggle "
 setVar $BOT~help[8]  $BOT~tab&"       "
@@ -88,13 +89,22 @@ setvar $SUPPRESSMENU "Off"
 		setvar $bot~bluehaggle false
 		savevar $bot~bluehaggle
 	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " planet "
+	if ($pos > 0)
+		setvar $bot~planettrade true
+	else
+		setvar $bot~planettrade false
+	end
+
 	loadVar $GAME~mbbs
 	loadvar $GAME~ptradesetting
 
 
 
 setprecision 2
-setvar $DDTTTH ($game~ptradesetting / 100)
+setvar $planettrade_ratio ($game~ptradesetting / 100)
+send "'["&$planettrade_ratio&"]*"
 setprecision 0
 
 killalltriggers
@@ -113,6 +123,10 @@ else
 	setvar $tag "Normal Haggle"
 end
 
+if ($bot~planettrade)
+	setvar $tag $tag&"  - Planet trade mode as well"
+end
+
 setvar $switchboard~message "EP Perfect Haggle loaded - "&$tag&"*"
 gosub :switchboard~switchboard
 goto :waittoport
@@ -124,8 +138,8 @@ goto :WAITTOPORT
 
 :WAITTOPORT
 killalltriggers
-setarray $POPTHY 0
-setarray $DYHYPY 0
+setarray $average_price_per_hold 0
+setarray $price_ratio_per_hold 0
 setarray $LHTEYH 0
 if ($HAGGLESTAT = "Active")
 	settexttrigger SECTOR :GETSECTOR "] (?=Help)? :"
@@ -151,8 +165,8 @@ pause
 :QUICKSTATEXP
 getword CURRENTLINE $RANK 1
 if ($RANK = "Rank")
-	getword CURRENTLINE $EXP 5
-	striptext $EXP ","
+	getword CURRENTLINE $player~experience 5
+	striptext $player~experience ","
 	goto :50
 end
 setvar $TEMP CURRENTLINE & #179
@@ -161,7 +175,7 @@ striptext $TEMP ","
 striptext $TEMP " "
 isnumber $YN $TEMP
 if ($YN = 1)
-	setvar $EXP $TEMP
+	setvar $player~experience $TEMP
 end
 
 :50
@@ -180,20 +194,20 @@ if ($WORD <> "EXPERIENCE") and ($I < 20)
 	uppercase $WORD
 	goto :53
 end
-getword $LINE $EXPDELTA (($I -1))
+getword $LINE $experience_increase (($I -1))
 getword $LINE $LOSEGAIN (($I -2))
 uppercase $LOSEGAIN
 if ($LOSEGAIN = "LOSE")
-	subtract $EXP $EXPDELTA
+	subtract $player~experience $experience_increase
 	goto :56
 end
-isnumber $TRUE $EXPDELTA
+isnumber $TRUE $experience_increase
 if ($TRUE)
-	add $EXP $EXPDELTA
+	add $player~experience $experience_increase
 end
 
 :56
-round $EXP 0
+round $player~experience 0
 settextlinetrigger TRACKEXP :TRACKEXP "experience point(s)"
 pause
 
@@ -227,12 +241,12 @@ pause
 :NEGLECTEDPORT
 killtrigger "EXP"
 killtrigger "EXP2"
-getword CURRENTLINE $EXPDELTA 8
+getword CURRENTLINE $experience_increase 8
 if ($verbose_debug_mode = TRUE)
-	echo ANSI_14 "*EXP added: " $EXPDELTA
+	echo ANSI_14 "*EXP added: " $experience_increase
 end
-add $EXP $EXPDELTA
-round $EXP 0
+add $player~experience $experience_increase
+round $player~experience 0
 pause
 
 :PRODUCTINFO
@@ -250,7 +264,9 @@ pause
 :STARTCREDITS
 killalltriggers
 setvar $FINALOFFER 0
-#settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+if ($bot~planettrade)
+	settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+end
 settextlinetrigger SHIPTRADE :SHIPTRADE "How many holds"
 settexttrigger DONE :WAITTOPORT "Command [TL"
 pause
@@ -258,7 +274,7 @@ pause
 :PLANETTRADE
 killalltriggers
 setvar $PLANETSHIP "PLANET"
-setvar $PORPHT 0
+setvar $variance 0
 setvar $ROLLHH 0
 setvar $PLRYHH 0
 setvar $EDDHPO 0
@@ -268,7 +284,7 @@ goto :BUYSELL
 :SHIPTRADE
 killalltriggers
 setvar $PLANETSHIP "SHIP"
-setvar $PORPHT "-.003"
+setvar $variance "-.003"
 setvar $ROLLHH "-.003"
 setvar $PLRYHH ".003"
 
@@ -283,7 +299,9 @@ end
 setvar $PLUSMINUS 1
 
 :66
-#settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+if ($bot~planettrade)
+	settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+end
 settextlinetrigger SHIPTRADE :SHIPTRADE "How many holds"
 settexttrigger DONE :WAITTOPORT "Command [TL"
 settextlinetrigger TRADEQTY :TRADEQTY "Agreed,"
@@ -291,8 +309,8 @@ pause
 
 :TRADEQTY
 killalltriggers
-getword CURRENTLINE $TRADEQTY 2
-striptext $TRADEQTY ","
+getword CURRENTLINE $holds_to_trade 2
+striptext $holds_to_trade ","
 settextlinetrigger BUYOFFER :INITOFFER "We'll buy them for"
 settextlinetrigger SELLOFFER :INITOFFER "We'll sell them for"
 pause
@@ -310,7 +328,9 @@ if ($PERCENT[$PRODUCT] = 0)
 		settextlinetrigger GOODTRADE :GOODTRADE "For your good trading"
 		settextlinetrigger GREATTRADE :GOODTRADE "For your great trading"
 		settexttrigger DONE :WAITTOPORT "Command [TL"
-		#settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+		if ($bot~planettrade)
+			settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+		end
 		settextlinetrigger SHIPTRADE :SHIPTRADE "How many holds"
 		pause
 	end
@@ -340,29 +360,29 @@ gosub :BID
 :PREPARE
 gettime $STARTTIME
 setprecision 0
-setvar $POPTHY[FUEL] "25.5"
-setvar $POPTHY[ORGANICS] "50.5"
-setvar $POPTHY[EQUIPMENT] "90.5"
-setvar $DYHYPY[FUEL] "0.25"
-setvar $DYHYPY[ORGANICS] "0.5"
-setvar $DYHYPY[EQUIPMENT] "0.9"
-setvar $EDHPRR[FUEL] 40
-setvar $OTDEHR[FUEL] 90
-setvar $EDHPRR[ORGANICS] 30
-setvar $OTDEHR[ORGANICS] 75
-setvar $EDHPRR[EQUIPMENT] 20
-setvar $OTDEHR[EQUIPMENT] 65
+setvar $average_price_per_hold[FUEL] "25.5"
+setvar $average_price_per_hold[ORGANICS] "50.5"
+setvar $average_price_per_hold[EQUIPMENT] "90.5"
+setvar $price_ratio_per_hold[FUEL] "0.25"
+setvar $price_ratio_per_hold[ORGANICS] "0.5"
+setvar $price_ratio_per_hold[EQUIPMENT] "0.9"
+setvar $low_mcic_guess[FUEL] 40
+setvar $high_mcic_guess[FUEL] 90
+setvar $low_mcic_guess[ORGANICS] 30
+setvar $high_mcic_guess[ORGANICS] 75
+setvar $low_mcic_guess[EQUIPMENT] 20
+setvar $high_mcic_guess[EQUIPMENT] 65
 if ($PLANETSHIP = "PLANET")
-	setvar $PORPHT 0
+	setvar $variance 0
 	setvar $ROLLHH 0
 	setvar $PLRYHH 0
 	setarray $HHDYOR 0
 	setvar $EDDHPO 0
 	setvar $PELHOH 0
-	setvar $HLRHRT 0
+	setvar $under_1000_experience_rate 0
 	goto :74
 end
-setvar $PORPHT "-0.003"
+setvar $variance "-0.003"
 setvar $ROLLHH "-0.003"
 setvar $PLRYHH "0.003"
 if ($WEEKDAY = "Mon")
@@ -410,9 +430,9 @@ return
 
 :SETVARS
 setprecision 15
-setvar $ODHPTH $POPTHY[$PRODUCT]
-setvar $DYHYPY $DYHYPY[$PRODUCT]
-setvar $EHTDDH $EDDHPO
+setvar $ODHPTH $average_price_per_hold[$PRODUCT]
+setvar $price_ratio_per_hold $price_ratio_per_hold[$PRODUCT]
+setvar $base_var $EDDHPO
 if ($BUYSELL = "SELLING")
 	setvar $PLUSMINUS "-1"
 	setvar $EHYLOD 1
@@ -459,7 +479,9 @@ if ($PERCENT = 0)
 		settextlinetrigger GOODTRADE :GOODTRADE "For your good trading"
 		settextlinetrigger GREATTRADE :GOODTRADE "For your great trading"
 		settexttrigger DONE :WAITTOPORT "Command [TL"
-		#settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+		if ($bot~planettrade)
+			settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+		end
 		settextlinetrigger SHIPTRADE :SHIPTRADE "How many holds"
 		pause
 	end
@@ -491,40 +513,40 @@ end
 setsectorparameter $SECTOR $PRODUCT & "L" $LOWPRODUCTIVITY
 setsectorparameter $SECTOR $PRODUCT & "H" $HIGHPRODUCTIVITY
 setvar $ERYTLO ""
-getsectorparameter $SECTOR $PRODUCT & "-" $EDHPRR
-getsectorparameter $SECTOR $PRODUCT & "+" $OTDEHR
-isnumber $YN1 $EDHPRR
-isnumber $YN2 $OTDEHR
+getsectorparameter $SECTOR $PRODUCT & "-" $low_mcic_guess
+getsectorparameter $SECTOR $PRODUCT & "+" $high_mcic_guess
+isnumber $YN1 $low_mcic_guess
+isnumber $YN2 $high_mcic_guess
 if ($YN1) and ($YN2)
-	if (($EDHPRR * $EHYLOD) < $EDHPRR[$PRODUCT]) or (($EDHPRR * $EHYLOD) > $OTDEHR[$PRODUCT]) or (($OTDEHR * $EHYLOD) < $EDHPRR[$PRODUCT]) or (($OTDEHR * $EHYLOD) > $OTDEHR[$PRODUCT])
+	if (($low_mcic_guess * $EHYLOD) < $low_mcic_guess[$PRODUCT]) or (($low_mcic_guess * $EHYLOD) > $high_mcic_guess[$PRODUCT]) or (($high_mcic_guess * $EHYLOD) < $low_mcic_guess[$PRODUCT]) or (($high_mcic_guess * $EHYLOD) > $high_mcic_guess[$PRODUCT])
 		if ($verbose_debug_mode = TRUE)
 			echo "*Invalid Parameter previously saved for Sector " $SECTOR
-			echo "mcicMin was <" $EDHPRR ">   mcicMax was <" $OTDEHR ">    Resetting."
+			echo "mcicMin was <" $low_mcic_guess ">   mcicMax was <" $high_mcic_guess ">    Resetting."
 		end
 		setsectorparameter $SECTOR $PRODUCT & "-" ""
 		setsectorparameter $SECTOR $PRODUCT & "+" ""
-		setvar $EDHPRR ""
-		setvar $OTDEHR ""
+		setvar $low_mcic_guess ""
+		setvar $high_mcic_guess ""
 	end
 end
-if ($EDHPRR <> "") and ($OTDEHR <> "")
-	if ($EDHPRR = $OTDEHR)
+if ($low_mcic_guess <> "") and ($high_mcic_guess <> "")
+	if ($low_mcic_guess = $high_mcic_guess)
 		if ($verbose_debug_mode = TRUE)
-			echo "*Using saved MCIC of " $EDHPRR
+			echo "*Using saved MCIC of " $low_mcic_guess
 		end
 		goto :115
 	end
 	if ($verbose_debug_mode = TRUE)
-		echo "*Using saved MCIC values: " $EDHPRR " - " $OTDEHR
+		echo "*Using saved MCIC values: " $low_mcic_guess " - " $high_mcic_guess
 	end
 
 :115
 	goto :113
 end
-setvar $OTDEHR ($EHYLOD * $OTDEHR[$PRODUCT])
-round $OTDEHR 0
-setvar $EDHPRR ($EHYLOD * $EDHPRR[$PRODUCT])
-round $EDHPRR 0
+setvar $high_mcic_guess ($EHYLOD * $high_mcic_guess[$PRODUCT])
+round $high_mcic_guess 0
+setvar $low_mcic_guess ($EHYLOD * $low_mcic_guess[$PRODUCT])
+round $low_mcic_guess 0
 
 :113
 return
@@ -532,20 +554,20 @@ return
 :START
 setvar $FAILED 0
 gettime $STARTTIME
-isnumber $YN $EXP
+isnumber $YN $player~experience
 if ($YN = 0)
 	echo "*At START, but $exp is not a number, pausing..."
 	pause
 end
-if ($EXP > 999) or ($PLANETSHIP = "PLANET")
-	setvar $HLRHRT 0
+if ($player~experience > 999) or ($PLANETSHIP = "PLANET")
+	setvar $under_1000_experience_rate 0
 	goto :123
 end
-setvar $HLRHRT ($PLUSMINUS * ((1000 -$EXP) / 100))
+setvar $under_1000_experience_rate ($PLUSMINUS * ((1000 -$player~experience) / 100))
 
 :123
 setprecision 15
-setvar $OEYROT ((($ODHPTH + ($PLUSMINUS * $PELHOH)) -$HLRHRT) -((($OTDEHR[$PRODUCT] * $DYHYPY[$PRODUCT]) * $PORTQTY) / ($HHREPP * 10)))
+setvar $OEYROT ((($ODHPTH + ($PLUSMINUS * $PELHOH)) -$under_1000_experience_rate) -((($high_mcic_guess[$PRODUCT] * $price_ratio_per_hold[$PRODUCT]) * $PORTQTY) / ($HHREPP * 10)))
 setvar $LEDREO (($HIGHPRODUCTIVITY -$LOWPRODUCTIVITY) + 1)
 round $LEDREO 0
 if ($LEDREO > 10) and ($PLANETSHIP = "SHIP")
@@ -561,20 +583,20 @@ end
 gosub :CONVENTIONAL
 
 :125
-setvar $PORPHT 0
-setvar $EHTDDH 0
-setvar $DYHYPY 0
+setvar $variance 0
+setvar $base_var 0
+setvar $price_ratio_per_hold 0
 setvar $ODHPTH 0
-setarray $POPTHY 0
-setarray $DYHYPY 0
+setarray $average_price_per_hold 0
+setarray $price_ratio_per_hold 0
 return
 
 :GOODTRADE
 killtrigger "GOODTRADE"
 killtrigger "GREATTRADE"
-getword CURRENTLINE $EXPDELTA 7
-add $EXP $EXPDELTA
-round $EXP 0
+getword CURRENTLINE $experience_increase 7
+add $player~experience $experience_increase
+round $player~experience 0
 pause
 
 :FINALOFFER
@@ -602,8 +624,8 @@ setvar $BID[$BID] $OFFER
 setvar $COUNT $LHTEYH
 setvar $LHTEYH 0
 setvar $LASTCOUNTER $LTPEHL
-if ($PLANETSHIP = "PLANET") and ($DDTTTH <> 1)
-	setvar $LASTCOUNTER ($RHYEDL / $DDTTTH)
+if ($PLANETSHIP = "PLANET") and ($planettrade_ratio <> 1)
+	setvar $LASTCOUNTER ($RHYEDL / $planettrade_ratio)
 	if ($verbose_debug_mode = TRUE)
 		echo "*Faking LastCounter as " $LASTCOUNTER " instead of " $RHYEDL "."
 	end
@@ -619,8 +641,8 @@ if ($I <= $COUNT)
 	setvar $TDPLTY (((($LHTEYH[$I][1] / 1000) + $LHTEYH[$I][3]) + 1) * $TLLLHE)
 	if ($verbose_debug_mode = TRUE)
 	end
-	if ($PLANETSHIP = "PLANET") and ($DDTTTH <> 1)
-		multiply $TDPLTY $DDTTTH
+	if ($PLANETSHIP = "PLANET") and ($planettrade_ratio <> 1)
+		multiply $TDPLTY $planettrade_ratio
 	end
 	round $TDPLTY 0
 	if ($TDPLTY = $OFFER)
@@ -782,7 +804,7 @@ if ($LTPEHL = 0)
 		setvar $LTPEHL $OFFER
 	end
 	if ($PLANETSHIP = "PLANET")
-		divide $LTPEHL $DDTTTH
+		divide $LTPEHL $planettrade_ratio
 	end
 end
 setvar $TOECHO ""
@@ -812,7 +834,7 @@ if ($FINALOFFER = 1)
 	round $PADLENGTH 0
 	echo #27 "[s" #27 "[" $PADLENGTH "C" #27 "[1A" $TOECHO #27 "[u" ANSI_5
 end
-if ($PLANETSHIP = "PLANET") and ($DDTTTH <> 1)
+if ($PLANETSHIP = "PLANET") and ($planettrade_ratio <> 1)
 	gosub :SUBPTRADENOT100
 	goto :223
 end
@@ -837,7 +859,9 @@ settextlinetrigger STARTCREDITS :STARTCREDITS "credits"
 settextlinetrigger GOODTRADE :GOODTRADE "For your good trading"
 settextlinetrigger GREATTRADE :GOODTRADE "For your great trading"
 settexttrigger DONE :WAITTOPORT "Command [TL"
-#settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+if ($bot~planettrade)
+	settextlinetrigger PLANETTRADE :PLANETTRADE "How many units"
+end
 settextlinetrigger SHIPTRADE :SHIPTRADE "How many holds"
 pause
 
@@ -849,10 +873,10 @@ end
 setvar $LHTEYH 0
 setarray $LHTEYH 0
 setvar $HTOYEY 0
-setvar $MCIC $EDHPRR
-isnumber $YN1 $OTDEHR
+setvar $MCIC $low_mcic_guess
+isnumber $YN1 $high_mcic_guess
 isnumber $YN2 $EHYLOD
-setvar $HEEEOE ($OTDEHR + $EHYLOD)
+setvar $HEEEOE ($high_mcic_guess + $EHYLOD)
 round $HEEEOE 0
 
 :229
@@ -862,7 +886,7 @@ if ($MCIC <> $HEEEOE)
 		echo "*MCIC=" $MCIC
 	end
 	setvar $OOHEHY (($MCIC / 1000) + 1)
-	setvar $OTYHLY (($MCIC * ($DYHYPY[$PRODUCT] * $PORTQTY)) / 10)
+	setvar $OTYHLY (($MCIC * ($price_ratio_per_hold[$PRODUCT] * $PORTQTY)) / 10)
 	setvar $PRODUCTIVITY $LOWPRODUCTIVITY
 
 :233
@@ -871,24 +895,24 @@ if ($MCIC <> $HEEEOE)
 			echo " Productivity=" $PRODUCTIVITY
 		end
 		setvar $HTTYPY ($OTYHLY / $PRODUCTIVITY)
-		setvar $EHTDDH $EDDHPO
+		setvar $base_var $EDDHPO
 
 :237
-		if ($EHTDDH <= $PELHOH)
+		if ($base_var <= $PELHOH)
 			if ($verbose_debug_mode = TRUE)
-				echo ANSI_10 "*BaseVar=" $EHTDDH
+				echo ANSI_10 "*BaseVar=" $base_var
 			end
-			setvar $EODERY (($PLUSMINUS * $EHTDDH) + $ODHPTH)
-			setvar $EREHOR (($EODERY -$HLRHRT) -$HTTYPY)
+			setvar $EODERY (($PLUSMINUS * $base_var) + $ODHPTH)
+			setvar $calculated_price_per_hold (($EODERY -$under_1000_experience_rate) -$HTTYPY)
 			setvar $PDHHLY 0
 
 :241
-			if ($EREHOR < 4)
-				add $EREHOR 1
+			if ($calculated_price_per_hold < 4)
+				add $calculated_price_per_hold 1
 				add $PDHHLY 1
 				goto :241
 			end
-			setvar $OLDPEH ($EREHOR * $TRADEQTY)
+			setvar $OLDPEH ($calculated_price_per_hold * $holds_to_trade)
 			if ($verbose_debug_mode = TRUE)
 				setvar $ECHOEXACTPRICE $OLDPEH
 				round $ECHOEXACTPRICE 4
@@ -908,18 +932,18 @@ if ($MCIC <> $HEEEOE)
 				echo ANSI_15 " (" ANSI_12 $OLHYOY ANSI_15 " - " ANSI_12 $TDLEOH ANSI_15 ")*"
 				echo ANSI_11 "*-.003 -.002 -.001 -000- +.001 +.002 +.003*" ANSI_10
 			end
-			setvar $PORPHT $ROLLHH
+			setvar $variance $ROLLHH
 
 :251
-			if ($PORPHT <= $PLRYHH)
+			if ($variance <= $PLRYHH)
 				if ($verbose_debug_mode = TRUE)
 				end
-				setvar $LHHOLR (($OOHEHY + $PORPHT) * $OLDPEH)
-				if ($PLANETSHIP = "PLANET") and ($DDTTTH <> 1)
+				setvar $LHHOLR (($OOHEHY + $variance) * $OLDPEH)
+				if ($PLANETSHIP = "PLANET") and ($planettrade_ratio <> 1)
 					if ($verbose_debug_mode = TRUE)
-						echo "*PTrade=" $DDTTTH ", IOTest changed from " $LHHOLR " to "
+						echo "*PTrade=" $planettrade_ratio ", IOTest changed from " $LHHOLR " to "
 					end
-					multiply $LHHOLR $DDTTTH
+					multiply $LHHOLR $planettrade_ratio
 					if ($verbose_debug_mode = TRUE)
 						echo $LHHOLR "."
 					end
@@ -1005,8 +1029,8 @@ if ($MCIC <> $HEEEOE)
 				end
 
 :267
-				add $PORPHT "0.001"
-				round $PORPHT 3
+				add $variance "0.001"
+				round $variance 3
 				goto :251
 			end
 			if ($verbose_debug_mode = TRUE)
@@ -1014,8 +1038,8 @@ if ($MCIC <> $HEEEOE)
 			end
 
 :246
-			add $EHTDDH 1
-			round $EHTDDH 0
+			add $base_var 1
+			round $base_var 0
 			goto :237
 		end
 		add $PRODUCTIVITY 1
@@ -1039,14 +1063,14 @@ return
 add $LHTEYH 1
 round $LHTEYH 0
 round $MCIC 0
-round $EHTDDH 1
-round $PORPHT 3
+round $base_var 1
+round $variance 3
 setvar $LHTEYH[$LHTEYH][1] $MCIC
 if ($verbose_debug_mode = TRUE)
-	setvar $CONVENTIONALSUBECHO $CONVENTIONALSUBECHO & "*$lHtEYh[" & $LHTEYH & "][1] : MCIC=" & $MCIC & " Prod=" & $PRODUCTIVITY & " BaseVar=" & $EHTDDH & " Variance=" & $PORPHT
+	setvar $CONVENTIONALSUBECHO $CONVENTIONALSUBECHO & "*$lHtEYh[" & $LHTEYH & "][1] : MCIC=" & $MCIC & " Prod=" & $PRODUCTIVITY & " BaseVar=" & $base_var & " Variance=" & $variance
 end
-setvar $LHTEYH[$LHTEYH][2] $EHTDDH
-setvar $LHTEYH[$LHTEYH][3] $PORPHT
+setvar $LHTEYH[$LHTEYH][2] $base_var
+setvar $LHTEYH[$LHTEYH][3] $variance
 setvar $LHTEYH[$LHTEYH][4] $PRODUCTIVITY
 setvar $LHTEYH[$LHTEYH][5] $OLDPEH
 if ($ROUNDANOMALY = TRUE)
@@ -1054,7 +1078,7 @@ if ($ROUNDANOMALY = TRUE)
 end
 setvar $RPOEEL $OLDPEH
 round $RPOEEL 3
-setvar $HHDYDO ($OOHEHY + $PORPHT)
+setvar $HHDYDO ($OOHEHY + $variance)
 round $HHDYDO 3
 if ($PDHHLY > $HTOYEY)
 	setvar $HTOYEY $PDHHLY
@@ -1074,14 +1098,14 @@ end
 return
 
 :LOWPERCENT
-setvar $MCIC $EDHPRR
+setvar $MCIC $low_mcic_guess
 gettime $STARTTIME
 setvar $LHTEYH 0
 setarray $LHTEYH 0
 
 :313
-if (($MCIC * $EHYLOD) <= ($OTDEHR * $EHYLOD))
-	setvar $OEYROT ((($ODHPTH + ($PLUSMINUS * $PELHOH)) -$HLRHRT) -(($MCIC * ($DYHYPY[$PRODUCT] * $PORTQTY)) / ($LOWPRODUCTIVITY * 10)))
+if (($MCIC * $EHYLOD) <= ($high_mcic_guess * $EHYLOD))
+	setvar $OEYROT ((($ODHPTH + ($PLUSMINUS * $PELHOH)) -$under_1000_experience_rate) -(($MCIC * ($price_ratio_per_hold[$PRODUCT] * $PORTQTY)) / ($LOWPRODUCTIVITY * 10)))
 	round $OEYROT 3
 	if ($OEYROT < 4)
 		if ($verbose_debug_mode = TRUE)
@@ -1092,14 +1116,14 @@ if (($MCIC * $EHYLOD) <= ($OTDEHR * $EHYLOD))
 	end
 
 :319
-	if ($EHTDDH <= $PELHOH)
+	if ($base_var <= $PELHOH)
 
 :321
-		if ($PORPHT <= $PLRYHH)
-			setvar $TOEEEE (($OFFER -".4999999999") / ((($MCIC / 1000) + 1) + $PORPHT))
-			setvar $RYDRTH (($OFFER + ".4999999999") / ((($MCIC / 1000) + 1) + $PORPHT))
-			setvar $OLDLLY ((($MCIC * $DYHYPY) * $PORTQTY) / (10 * ((($ODHPTH + ($EHTDDH * $PLUSMINUS)) -$HLRHRT) -($RYDRTH / $TRADEQTY))))
-			setvar $HLHTLR ((($MCIC * $DYHYPY) * $PORTQTY) / (10 * ((($ODHPTH + ($EHTDDH * $PLUSMINUS)) -$HLRHRT) -($TOEEEE / $TRADEQTY))))
+		if ($variance <= $PLRYHH)
+			setvar $TOEEEE (($OFFER -".4999999999") / ((($MCIC / 1000) + 1) + $variance))
+			setvar $RYDRTH (($OFFER + ".4999999999") / ((($MCIC / 1000) + 1) + $variance))
+			setvar $OLDLLY ((($MCIC * $price_ratio_per_hold) * $PORTQTY) / (10 * ((($ODHPTH + ($base_var * $PLUSMINUS)) -$under_1000_experience_rate) -($RYDRTH / $holds_to_trade))))
+			setvar $HLHTLR ((($MCIC * $price_ratio_per_hold) * $PORTQTY) / (10 * ((($ODHPTH + ($base_var * $PLUSMINUS)) -$under_1000_experience_rate) -($TOEEEE / $holds_to_trade))))
 			if ($HLHTLR < $OLDLLY)
 				setvar $TEMP $OLDLLY
 				setvar $OLDLLY $HLHTLR
@@ -1136,26 +1160,26 @@ if (($MCIC * $EHYLOD) <= ($OTDEHR * $EHYLOD))
 						add $LHTEYH 1
 						round $LHTEYH 0
 						setvar $LHTEYH[$LHTEYH][1] $MCIC
-						setvar $LHTEYH[$LHTEYH][2] $EHTDDH
-						setvar $LHTEYH[$LHTEYH][3] $PORPHT
+						setvar $LHTEYH[$LHTEYH][2] $base_var
+						setvar $LHTEYH[$LHTEYH][3] $variance
 						setvar $LHTEYH[$LHTEYH][4] $I
-						setvar $LHTEYH[$LHTEYH][5] (((($ODHPTH + ($PLUSMINUS * $EHTDDH)) -(($PORTQTY / ($I * 10)) * ($MCIC * $DYHYPY))) -$HLRHRT) * $TRADEQTY)
+						setvar $LHTEYH[$LHTEYH][5] (((($ODHPTH + ($PLUSMINUS * $base_var)) -(($PORTQTY / ($I * 10)) * ($MCIC * $price_ratio_per_hold))) -$under_1000_experience_rate) * $holds_to_trade)
 						add $I 1
 						round $I 0
 						goto :333
 					end
 				end
 			end
-			add $PORPHT ".001"
-			round $PORPHT 3
+			add $variance ".001"
+			round $variance 3
 			goto :321
 		end
-		setvar $PORPHT $ROLLHH
-		add $EHTDDH 1
-		round $EHTDDH 0
+		setvar $variance $ROLLHH
+		add $base_var 1
+		round $base_var 0
 		goto :319
 	end
-	setvar $EHTDDH $EDDHPO
+	setvar $base_var $EDDHPO
 	add $MCIC $EHYLOD
 	round $MCIC 0
 	goto :313
@@ -1235,12 +1259,12 @@ if ($FAILED = 1)
 		end
 	end
 	setvar $FAILED 2
-	setvar $OTDEHR ($EHYLOD * $OTDEHR[$PRODUCT])
-	round $OTDEHR 0
-	setvar $EDHPRR ($EHYLOD * $EDHPRR[$PRODUCT])
-	round $EDHPRR 0
-	setsectorparameter $SECTOR $PRODUCT & "-" $EDHPRR
-	setsectorparameter $SECTOR $PRODUCT & "+" $OTDEHR
+	setvar $high_mcic_guess ($EHYLOD * $high_mcic_guess[$PRODUCT])
+	round $high_mcic_guess 0
+	setvar $low_mcic_guess ($EHYLOD * $low_mcic_guess[$PRODUCT])
+	round $low_mcic_guess 0
+	setsectorparameter $SECTOR $PRODUCT & "-" $low_mcic_guess
+	setsectorparameter $SECTOR $PRODUCT & "+" $high_mcic_guess
 	setvar $LOWPRODUCTIVITY $HHREPP
 	setsectorparameter $SECTOR $PRODUCT & "L" $HHREPP
 	setvar $HIGHPRODUCTIVITY $MAXPRODUCTIVITY
@@ -1291,9 +1315,9 @@ end
 return
 
 :SUBPTRADENOT100
-setvar $RHYEDL ($LTPEHL * $DDTTTH)
+setvar $RHYEDL ($LTPEHL * $planettrade_ratio)
 if ($verbose_debug_mode = TRUE)
-	echo "*PTradeCounter=" $LTPEHL " X " $DDTTTH " = " $RHYEDL "*"
+	echo "*PTradeCounter=" $LTPEHL " X " $planettrade_ratio " = " $RHYEDL "*"
 end
 if ($FINALOFFER = 1)
 	if ($BUYSELL = "BUYING")
