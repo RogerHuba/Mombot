@@ -9,7 +9,9 @@
 	setVar $BOT~script_title "Limpet Report"
 	gosub :BOT~banner
 
-			
+	loadVar $LIMP_COUNT_FILE 
+	loadVar $bot~LIMP_FILE
+	
 # ============================== START REFRESH LIMPETS (LIMPS) ==============================
 :limps
 	
@@ -19,20 +21,16 @@
 	        goto :start_limps
 	elseif ($startingLocation = "Citadel")
 		send "qdq"
-		goto :planet_limps
+		gosub :PLANET~getPlanetInfo
+		send "q"
 	elseif ($startingLocation = "Planet")
-		send "dq"
-		goto :planet_limps
+		gosub :PLANET~getPlanetInfo
+		send "q"
 	else
 		setVar $SWITCHBOARD~message "Unknown Prompt*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-
-:planet_limps
-	waitOn "Planet #"
-   	GetWord CURRENTLINE $planet~planet 2
-  	striptext $planet~planet "#"
 
 :start_limps
 	gosub :PLAYER~turnOffAnsi
@@ -152,7 +150,10 @@ halt
 			add $i 1
 		end
 		delete $BOT~LIMP_FILE
+		write $BOT~LIMP_FILE $output
 		delete $BOT~LIMP_COUNT_FILE
+		write $BOT~LIMP_COUNT_FILE $count
+
 return
 # ======================     END REFRESH LIMP (LIMPS) SUBROUTINE    ==========================
 
@@ -163,3 +164,5 @@ include "source\module_includes\bot"
 include "source\bot_includes\player"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
+
+
