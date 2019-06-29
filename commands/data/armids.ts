@@ -18,7 +18,7 @@
 	gosub :PLAYER~current_prompt
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation = "Command")
-	    goto :start_armids
+		goto :start_armids
 	elseif ($startingLocation = "Citadel")
 		send "q"
 		gosub :PLANET~getPlanetInfo
@@ -66,7 +66,7 @@ halt
 
 # ======================     START REFRESH ARMIDS (ARMIDS) SUBROUTINE    ==========================
 :refresharmids
-	
+	setArray $pmines SECTORS
 	:readarmidList
 		setVar $count 0
 		setVar $personalCount 0
@@ -89,17 +89,24 @@ halt
 		add $count 1
 		add $personalCount 1
 		getWord CURRENTLINE $sector 1
+		getWord CURRENTLINE $numMines 2
 		setVar $personalOutput $personalOutput&$sector&"  "
+		setVar $pmines[$sector] $numMines
 		setTextLineTrigger personal 		:personalCountarmids	"Personal "
 		pause
 	:corpCountarmids
 		add $count 1
 		add $corpCount 1
 		getWord CURRENTLINE $sector 1
+		getWord CURRENTLINE $numMines 2
 		while ($i <= $sector)
 			getWordPos $personalOutput $pos " "&$i&" "
 			if (($sector = $i) OR ($pos > 0))
-				setVar $output $output&$i&"*"
+				if ($pos > 0)
+					setVar $output $output& $pmines[$i]  &"*"
+				else
+					setVar $output $output&$numMines&"*"
+				end
 				setSectorParameter $i "MINESEC" TRUE
 			else
 				setVar $output $output&"0*"
@@ -119,7 +126,7 @@ halt
 		while ($i <= SECTORS)
 			getWordPos $personalOutput $pos " "&$i&" "
 			if ($pos > 0)
-				setVar $output $output&$i&"*"
+				setVar $output $output&$numMines&"*"
 				setSectorParameter $i "MINESEC" TRUE
 			else
 				setVar $output $output&"0*"

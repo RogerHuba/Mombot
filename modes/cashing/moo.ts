@@ -1692,6 +1692,8 @@ return
 	setTextLineTrigger pread1 :pread1 "#" 
 	setTextLineTrigger pread2 :pread2 "---" 
 	setTextLineTrigger preadDone :preadDone "======   ============  ==== ==== ==== ===== ===== " 
+	setTextLineTrigger preadDone2 :preadDone "No Planets claimed"
+
 	pause
 	:pread1
 		killAllTriggers
