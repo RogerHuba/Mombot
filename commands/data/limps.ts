@@ -9,7 +9,9 @@
 	setVar $BOT~script_title "Limpet Report"
 	gosub :BOT~banner
 
-			
+	loadVar $LIMP_COUNT_FILE 
+	loadVar $bot~LIMP_FILE
+	
 # ============================== START REFRESH LIMPETS (LIMPS) ==============================
 :limps
 	
@@ -18,21 +20,17 @@
 	if ($startingLocation = "Command")
 	        goto :start_limps
 	elseif ($startingLocation = "Citadel")
-		send "qdq"
-		goto :planet_limps
+		send "q"
+		gosub :PLANET~getPlanetInfo
+		send "q"
 	elseif ($startingLocation = "Planet")
-		send "dq"
-		goto :planet_limps
+		gosub :PLANET~getPlanetInfo
+		send "q"
 	else
 		setVar $SWITCHBOARD~message "Unknown Prompt*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-
-:planet_limps
-	waitOn "Planet #"
-   	GetWord CURRENTLINE $planet~planet 2
-  	striptext $planet~planet "#"
 
 :start_limps
 	gosub :PLAYER~turnOffAnsi
@@ -68,7 +66,8 @@ halt
 
 # ======================     START REFRESH LIMP (LIMPS) SUBROUTINE    ==========================
 :refreshLimps
-	
+	setArray $plimps SECTORS
+
 	:readLimpList
 		setVar $count 0
 		setVar $personalCount 0
@@ -91,17 +90,24 @@ halt
 		add $count 1
 		add $personalCount 1
 		getWord CURRENTLINE $sector 1
+		getWord CURRENTLINE $numMines 2
 		setVar $personalOutput $personalOutput&$sector&"  "
+		setVar $plimps[$sector] $numMines
 		setTextLineTrigger personal 		:personalCountLimps	"Personal "
 		pause
 	:corpCountLimps
 		add $count 1
 		add $corpCount 1
 		getWord CURRENTLINE $sector 1
+		getWord CURRENTLINE $numMines 2
 		while ($i <= $sector)
 			getWordPos $personalOutput $pos " "&$i&" "
 			if (($sector = $i) OR ($pos > 0))
-				setVar $output $output&$i&"*"
+				if ($pos > 0)
+					setVar $output $output& $plimps[$i] &"*"
+				else
+					setVar $output $output&$numMines&"*"
+				end
 				setSectorParameter $i "LIMPSEC" TRUE
 			else
 				setVar $output $output&"0*"
@@ -143,7 +149,7 @@ halt
 		while ($i <= SECTORS)
 			getWordPos $personalOutput $pos " "&$i&" "
 			if ($pos > 0)
-				setVar $output $output&$i&"*"
+				setVar $output $output&$numMines&"*"
 				setSectorParameter $i "LIMPSEC" TRUE
 			else
 				setVar $output $output&"0*"
@@ -152,7 +158,10 @@ halt
 			add $i 1
 		end
 		delete $BOT~LIMP_FILE
+		write $BOT~LIMP_FILE $output
 		delete $BOT~LIMP_COUNT_FILE
+		write $BOT~LIMP_COUNT_FILE $count
+
 return
 # ======================     END REFRESH LIMP (LIMPS) SUBROUTINE    ==========================
 
@@ -163,3 +172,5 @@ include "source\module_includes\bot"
 include "source\bot_includes\player"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\planet"
+
+
