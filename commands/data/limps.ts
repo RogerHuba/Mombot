@@ -66,7 +66,8 @@ halt
 
 # ======================     START REFRESH LIMP (LIMPS) SUBROUTINE    ==========================
 :refreshLimps
-	
+	setArray $plimps SECTORS
+
 	:readLimpList
 		setVar $count 0
 		setVar $personalCount 0
@@ -89,17 +90,24 @@ halt
 		add $count 1
 		add $personalCount 1
 		getWord CURRENTLINE $sector 1
+		getWord CURRENTLINE $numMines 2
 		setVar $personalOutput $personalOutput&$sector&"  "
+		setVar $plimps[$sector] $numMines
 		setTextLineTrigger personal 		:personalCountLimps	"Personal "
 		pause
 	:corpCountLimps
 		add $count 1
 		add $corpCount 1
 		getWord CURRENTLINE $sector 1
+		getWord CURRENTLINE $numMines 2
 		while ($i <= $sector)
 			getWordPos $personalOutput $pos " "&$i&" "
 			if (($sector = $i) OR ($pos > 0))
-				setVar $output $output&$i&"*"
+				if ($pos > 0)
+					setVar $output $output& $plimps[$i] &"*"
+				else
+					setVar $output $output&$numMines&"*"
+				end
 				setSectorParameter $i "LIMPSEC" TRUE
 			else
 				setVar $output $output&"0*"
@@ -141,7 +149,7 @@ halt
 		while ($i <= SECTORS)
 			getWordPos $personalOutput $pos " "&$i&" "
 			if ($pos > 0)
-				setVar $output $output&$i&"*"
+				setVar $output $output&$numMines&"*"
 				setSectorParameter $i "LIMPSEC" TRUE
 			else
 				setVar $output $output&"0*"
