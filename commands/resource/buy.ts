@@ -3,177 +3,214 @@
 #=================================QUIKSTATS================================================
 # ===========================  START SWATH DISABLING SUBROUTINE  =================
 :swathoff
-    if ($swathoff = FALSE)
-        setTextTrigger swathison :swathison "Command [TL="
-        setDelayTrigger swathisoff :swathisoff 2000
-        pause
+	if ($swathoff = FALSE)
+		setTextTrigger swathison :swathison "Command [TL="
+		setDelayTrigger swathisoff :swathisoff 2000
+		pause
 
-        :swathison
-        killalltriggers
-        setVar $swathOffMessage "Detected SWATH Autohaggle"
-        setVar $swathoff FALSE
-        return
+		:swathison
+		killalltriggers
+		setVar $swathOffMessage "Detected SWATH Autohaggle"
+		setVar $swathoff FALSE
+		return
 
-        :swathisoff
-        killalltriggers
-        setVar $swathoff TRUE
-    end
+		:swathisoff
+		killalltriggers
+		setVar $swathoff TRUE
+	end
 return
 # ==========================   END SWATH DISABLING SUBROUTINE  =================
 
 # ----- SUB :choosehaggle
 :choosehaggle
-    if ($buydown_mode = "Speedbuy")
-        gosub :buynohaggle
-    else
-        gosub :buyhaggle
-    end
-    return
+	if ($buydown_mode = "Speedbuy")
+		gosub :buynohaggle
+	else
+		setvar $isFound false
+		listActiveScripts $scripts
+		setvar $i 1
+		while ($i <= $scripts)
+			getWordPos "<><><>"&$scripts[$i] $pos "<><><>ephaggle"
+			if ($pos > 0)
+				setvar $isFound true
+			end
+			add $i 1
+		end
+		if ($isFound)
+			killalltriggers
+			if ($buydown_mode = "Worst Price")
+				#saving ephaggle mode so it can be returned when done with buy#
+				loadvar $bot~worstprice
+				setvar $original_worstprice_value $bot~worstprice
+				setvar $bot~worstprice true
+				savevar $bot~worstprice
+			end
+			send "*"
+			waitfor "Agreed,"
+			setTextLineTrigger tradeFin :tradeFin "empty cargo holds"
+			pause
+			:tradeFin
+				killAllTriggers
+				getWord CURRENTLINE $nCredits 3
+				stripText $nCredits ","
+				
+				if ($nCredits = $cCredits)
+					setVar $report 1
+				else
+					setVar $cCredits $nCredits
+				end	
+		else
+			gosub :buyhaggle
+		end
+
+
+	end
+	return
 
 # ----- SUB :buyhaggle
 :buyhaggle
-    setVar $empty $player~total_holds
-    send "*"
-    setTextLineTrigger buyfirstoffer :buyfirstoffer "We'll sell them for"
-    pause
+	setVar $empty $player~total_holds
+	send "*"
+	setTextLineTrigger buyfirstoffer :buyfirstoffer "We'll sell them for"
+	pause
 
-    :buyfirstoffer
-        getWord CURRENTLINE $offer 5
-        striptext $offer ","
+	:buyfirstoffer
+		getWord CURRENTLINE $offer 5
+		striptext $offer ","
 
-        gosub :swathoff
-        if ($swathoff = 0)
-            send "L " & $planet~planet & "* "
+		gosub :swathoff
+		if ($swathoff = 0)
+			send "L " & $planet~planet & "* "
 		if ($startingLocation = "Citadel")
 			send "C "
 		end
-            setVar $exit_message $swathOffMessage
-            goto :buydownExit
-        end
+			setVar $exit_message $swathOffMessage
+			goto :buydownExit
+		end
 
-        setVar $counter $offer
-        if ($buydown_mode = "Best Price")
-            multiply $counter 92
-            divide $counter 100
-        elseif ($buydown_mode = "Worst Price")
-            multiply $counter $overhagglemultiple
-            divide $counter 100
-        end
-        send $counter & "*"
-    :buyofferloop
-        setTextLineTrigger buyprice :buyprice "We'll sell them for"
-        setTextLineTrigger buyfinaloffer :buyfinaloffer "Our final offer"
-        setTextLineTrigger buynotinterested :buynotinterested "We're not interested."
-        setTextLineTrigger buyexperience :buyexperience "experience point(s)"
-        setTextLineTrigger buyempty :buyempty "empty cargo holds"
-        setTextLineTrigger buyscrewup1 :buyscrewup "Get real ion-brain, make me a real offer."
-        setTextLineTrigger buyscrewup2 :buyscrewup "This is the big leagues Jr.  Make a real offer."
-        setTextLineTrigger buyscrewup3 :buyscrewup "My patience grows short with you."
-        setTextLineTrigger buyscrewup4 :buyscrewup "I have much better things to do than waste my time.  Try again."
-        setTextLineTrigger buyscrewup5 :buyscrewup "HA! HA, ha hahahhah hehehe hhhohhohohohh!  You choke me up!"
-        setTextLineTrigger buyscrewup6 :buyscrewup "Quit playing around, you're wasting my time!"
-        setTextLineTrigger buyscrewup7 :buyscrewup "Make a real offer or get the "
-        setTextLineTrigger buyscrewup8 :buyscrewup "WHAT?!@!? you must be crazy!"
-        setTextLineTrigger buyscrewup9 :buyscrewup "So, you think I'm as stupid as you look? Make a real offer."
-        setTextLineTrigger buyscrewup10 :buyscrewup "What do you take me for, a fool?  Make a real offer!"
-        pause
-        pause
-    :buyscrewup
-        killalltriggers
-        if ($buydown_mode = "Best Price")
-            multiply $counter 102
-            divide $counter 100
-        elseif ($buydown_mode = "Worst Price")
-            subtract $overhagglemultiple 1
-            setVar $counter $offer
-            multiply $counter $overhagglemultiple
-            divide $counter 100
-        end
-        send $counter & "*"
-        goto :buyofferloop
-    :buyprice
-        killalltriggers
-        setVar $old_offer $offer
-        setVar $old_counter $counter
-        getWord CURRENTLINE $offer 5
-        striptext $offer ","
-        setVar $offer_pct $offer
-        multiply $offer_pct 1000
-        divide $offer_pct $old_offer
-        if ($offer_pct > 990)
-            setVar $offer_pct 990
-        end
-        multiply $counter 1000
-        divide $counter $offer_pct
-        if ($counter <= $old_counter)
-            add $counter 1
-        end
-        send $counter & "*"
-        goto :buyofferloop
-    :buyfinaloffer
-        killalltriggers
-        setVar $old_offer $offer
-        setVar $old_counter $counter
-        getWord CURRENTLINE $offer 5
-        striptext $offer ","
-        setVar $offer_change $offer
-        subtract $offer_change $old_offer
-        subtract $offer_change 1
-        multiply $offer_change 25
-        divide $offer_change 10
-        subtract $counter $offer_change
-        if ($counter = $old_counter)
-            add $counter 1
-        end
-        add $counter 1
-        send $counter & "*"
-        goto :buyofferloop
-    :buynotinterested
-        killalltriggers
-        send "0* "
-        send "0* "
-        goto :buyhagglefailed
-    :buyexperience
+		setVar $counter $offer
+		if ($buydown_mode = "Best Price")
+			multiply $counter 92
+			divide $counter 100
+		elseif ($buydown_mode = "Worst Price")
+			multiply $counter $overhagglemultiple
+			divide $counter 100
+		end
+		send $counter & "*"
+	:buyofferloop
+		setTextLineTrigger buyprice :buyprice "We'll sell them for"
+		setTextLineTrigger buyfinaloffer :buyfinaloffer "Our final offer"
+		setTextLineTrigger buynotinterested :buynotinterested "We're not interested."
+		setTextLineTrigger buyexperience :buyexperience "experience point(s)"
+		setTextLineTrigger buyempty :buyempty "empty cargo holds"
+		setTextLineTrigger buyscrewup1 :buyscrewup "Get real ion-brain, make me a real offer."
+		setTextLineTrigger buyscrewup2 :buyscrewup "This is the big leagues Jr.  Make a real offer."
+		setTextLineTrigger buyscrewup3 :buyscrewup "My patience grows short with you."
+		setTextLineTrigger buyscrewup4 :buyscrewup "I have much better things to do than waste my time.  Try again."
+		setTextLineTrigger buyscrewup5 :buyscrewup "HA! HA, ha hahahhah hehehe hhhohhohohohh!  You choke me up!"
+		setTextLineTrigger buyscrewup6 :buyscrewup "Quit playing around, you're wasting my time!"
+		setTextLineTrigger buyscrewup7 :buyscrewup "Make a real offer or get the "
+		setTextLineTrigger buyscrewup8 :buyscrewup "WHAT?!@!? you must be crazy!"
+		setTextLineTrigger buyscrewup9 :buyscrewup "So, you think I'm as stupid as you look? Make a real offer."
+		setTextLineTrigger buyscrewup10 :buyscrewup "What do you take me for, a fool?  Make a real offer!"
+		pause
+		pause
+	:buyscrewup
 		killalltriggers
-        getWord CURRENTLINE $exp_bonus 7
-        add $exp $exp_bonus
-        add $jetbonus $exp_bonus
-        goto :buyofferloop
-    :buyempty
+		if ($buydown_mode = "Best Price")
+			multiply $counter 102
+			divide $counter 100
+		elseif ($buydown_mode = "Worst Price")
+			subtract $overhagglemultiple 1
+			setVar $counter $offer
+			multiply $counter $overhagglemultiple
+			divide $counter 100
+		end
+		send $counter & "*"
+		goto :buyofferloop
+	:buyprice
 		killalltriggers
-        getWord CURRENTLINE $player~credits 3
-        stripText $player~credits ","
-        setVar $oldempty $empty
-        getWord CURRENTLINE $empty 6
-        if ($oldempty = $empty)
-            goto :buyhagglefailed
-        else
-            goto :buyhagglesucceeded
-        end
-    :buyhagglefailed
-        setVar $buyhaggle 0
-        return
-    :buyhagglesucceeded
-        setVar $buyhaggle 1
-        return
+		setVar $old_offer $offer
+		setVar $old_counter $counter
+		getWord CURRENTLINE $offer 5
+		striptext $offer ","
+		setVar $offer_pct $offer
+		multiply $offer_pct 1000
+		divide $offer_pct $old_offer
+		if ($offer_pct > 990)
+			setVar $offer_pct 990
+		end
+		multiply $counter 1000
+		divide $counter $offer_pct
+		if ($counter <= $old_counter)
+			add $counter 1
+		end
+		send $counter & "*"
+		goto :buyofferloop
+	:buyfinaloffer
+		killalltriggers
+		setVar $old_offer $offer
+		setVar $old_counter $counter
+		getWord CURRENTLINE $offer 5
+		striptext $offer ","
+		setVar $offer_change $offer
+		subtract $offer_change $old_offer
+		subtract $offer_change 1
+		multiply $offer_change 25
+		divide $offer_change 10
+		subtract $counter $offer_change
+		if ($counter = $old_counter)
+			add $counter 1
+		end
+		add $counter 1
+		send $counter & "*"
+		goto :buyofferloop
+	:buynotinterested
+		killalltriggers
+		send "0* "
+		send "0* "
+		goto :buyhagglefailed
+	:buyexperience
+		killalltriggers
+		getWord CURRENTLINE $exp_bonus 7
+		add $exp $exp_bonus
+		add $jetbonus $exp_bonus
+		goto :buyofferloop
+	:buyempty
+		killalltriggers
+		getWord CURRENTLINE $player~credits 3
+		stripText $player~credits ","
+		setVar $oldempty $empty
+		getWord CURRENTLINE $empty 6
+		if ($oldempty = $empty)
+			goto :buyhagglefailed
+		else
+			goto :buyhagglesucceeded
+		end
+	:buyhagglefailed
+		setVar $buyhaggle 0
+		return
+	:buyhagglesucceeded
+		setVar $buyhaggle 1
+		return
 
 # ----- SUB :buynohaggle
 :buynohaggle
-    if ($swathoff = 0)
-        waitOn "How many holds of"
-        send "*"
-        gosub :swathoff
-        send "*"
-    else
-        send "**"
-    end
-    add $cyclebuffer 1
-    if ($cyclebuffer = $cyclebufferlimit)
-        setVar $cyclebuffer 1
-        send "/"
-        waitOn " Sect "
-    end
-    return
+	if ($swathoff = 0)
+		waitOn "How many holds of"
+		send "*"
+		gosub :swathoff
+		send "*"
+	else
+		send "**"
+	end
+	add $cyclebuffer 1
+	if ($cyclebuffer = $cyclebufferlimit)
+		setVar $cyclebuffer 1
+		send "/"
+		waitOn " Sect "
+	end
+	return
 
 :Initiate_Buy_Down
 	setVar $player~turns_needed 0
@@ -203,71 +240,73 @@ return
 		add $player~turns_needed $fuelrounds
 		subtract $player~turns_allowed $fuelrounds
 	end
-    	# --- calculate how much org we can buy
+		# --- calculate how much org we can buy
 	if ($buydown_orgrounds > 0)
 		setVar $orgrounds 0
-    	setVar $planet~planetorgroom $planet~planet_ORGANICS_MAX
-    	subtract $planet~planetorgroom $planet~planet_ORGANICS
-    	setVar $maxorgtobuy $orgselling
-    	if ($orgselling > $planet~planetorgroom)
-        	setVar $maxorgtobuy $planet~planetorgroom
-    	end
-    	setVar $maxorgrounds $maxorgtobuy
-    	divide $maxorgrounds $player~total_holds
-    	if ($maxorgrounds > $player~turns_allowed)
-        	setVar $maxorgrounds $player~turns_allowed
-    	end
-    	if ($maxorgrounds > $buydown_orgrounds)
-    		setVar $maxorgrounds $buydown_orgrounds
-    	end
-    	if ($maxorgrounds > 0)
-        	setVar $orgrounds $maxorgrounds
-    	end
-		add $player~turns_needed $orgrounds
-    	subtract $player~turns_allowed $orgrounds
-	end
-   	# --- calculate how much equip we can buy
-   	if ($buydown_equiprounds > 0)
-		setVar $equiprounds 0
-    	setVar $planet~planetequiproom $planet~planet_EQUIPMENT_MAX
-    	subtract $planet~planetequiproom $planet~planet_EQUIPMENT
-    	setVar $maxequiptobuy $equipselling
-    	if ($equipselling > $planet~planetequiproom)
-        	setVar $maxequiptobuy $planet~planetequiproom
-    	end
-    	setVar $maxequiprounds $maxequiptobuy
-    	divide $maxequiprounds $player~total_holds
-    	if ($maxequiprounds > $player~turns_allowed)
-		setVar $maxequiprounds $player~turns_allowed
-    	end
-    	if ($maxequiprounds > $buydown_equiprounds)
-    		setVar $maxequiprounds $buydown_equiprounds
-    	end
-    	if ($maxequiprounds > 0)
-        	setVar $equiprounds $maxequiprounds
-    	end
-		add $player~turns_needed $equiprounds
-    	subtract $player~turns_allowed $equiprounds
-   	end
-   	if (($fuelrounds = 0) and ($orgrounds = 0) and ($equiprounds = 0))
-       	if ($startingLocation = "Citadel")
-			send "C "
-       	else
-    		send "q "
+		setVar $planet~planetorgroom $planet~planet_ORGANICS_MAX
+		subtract $planet~planetorgroom $planet~planet_ORGANICS
+		setVar $maxorgtobuy $orgselling
+		if ($orgselling > $planet~planetorgroom)
+			setVar $maxorgtobuy $planet~planetorgroom
 		end
-       	setVar $exit_message "Nothing to buy"
+		setVar $maxorgrounds $maxorgtobuy
+		divide $maxorgrounds $player~total_holds
+		if ($maxorgrounds > $player~turns_allowed)
+			setVar $maxorgrounds $player~turns_allowed
+		end
+		if ($maxorgrounds > $buydown_orgrounds)
+			setVar $maxorgrounds $buydown_orgrounds
+		end
+		if ($maxorgrounds > 0)
+			setVar $orgrounds $maxorgrounds
+		end
+		add $player~turns_needed $orgrounds
+		subtract $player~turns_allowed $orgrounds
+	end
+	# --- calculate how much equip we can buy
+	if ($buydown_equiprounds > 0)
+		setVar $equiprounds 0
+		setVar $planet~planetequiproom $planet~planet_EQUIPMENT_MAX
+		subtract $planet~planetequiproom $planet~planet_EQUIPMENT
+		setVar $maxequiptobuy $equipselling
+		if ($equipselling > $planet~planetequiproom)
+			setVar $maxequiptobuy $planet~planetequiproom
+		end
+		setVar $maxequiprounds $maxequiptobuy
+		divide $maxequiprounds $player~total_holds
+		if ($maxequiprounds > $player~turns_allowed)
+		setVar $maxequiprounds $player~turns_allowed
+		end
+		if ($maxequiprounds > $buydown_equiprounds)
+			setVar $maxequiprounds $buydown_equiprounds
+		end
+		if ($maxequiprounds > 0)
+			setVar $equiprounds $maxequiprounds
+		end
+		add $player~turns_needed $equiprounds
+		subtract $player~turns_allowed $equiprounds
+	end
+	if (($fuelrounds = 0) and ($orgrounds = 0) and ($equiprounds = 0))
+		if ($startingLocation = "Citadel")
+			send "C "
+		else
+			send "q "
+		end
+		setVar $exit_message "Nothing to buy"
 		gosub :clearAdjacent
-       	goto :buydownExit
-   	end
+		goto :buydownExit
+	end
 
-  	:getMode
-   		if ($buydown_mode = 1)
-       		setVar $buydown_mode "Speedbuy"
-   		elseif ($buydown_mode = 2)
-       		setVar $buydown_mode "Best Price"
-   		elseif ($buydown_mode = 3)
-       		setVar $buydown_mode "Worst Price"
-   		end
+	:getMode
+		if ($buydown_mode = 1)
+			setVar $buydown_mode "Speedbuy"
+		elseif ($buydown_mode = 2)
+			setVar $buydown_mode "Best Price"
+			setvar $bot~worstprice false
+			savevar $bot~worstprice
+		elseif ($buydown_mode = 3)
+			setVar $buydown_mode "Worst Price"
+		end
 		send "'*{" $bot~bot_name "}*Buying down using " & $buydown_mode & "*" $fuelrounds & " rounds of fuel*" $orgrounds & " rounds of org*" $equiprounds & " rounds of equip**"
 		setVar $fuelroundsleft $fuelrounds
 		setVar $orgroundsleft $orgrounds
@@ -287,22 +326,22 @@ return
 			end
 		end
 		if ($orgrounds > 0)
-    		setVar $org_creds_needed $orgrounds
-    		multiply $org_creds_needed $player~total_holds
-    		multiply $org_creds_needed 60
-    		if ($buydown_mode = "Worst Price")
-        		multiply $org_creds_needed 3
-        		divide $org_creds_needed 2
-    		end
+			setVar $org_creds_needed $orgrounds
+			multiply $org_creds_needed $player~total_holds
+			multiply $org_creds_needed 60
+			if ($buydown_mode = "Worst Price")
+				multiply $org_creds_needed 3
+				divide $org_creds_needed 2
+			end
 		end
 		if ($equiprounds > 0)
-    		setVar $equip_creds_needed $equiprounds
-    		multiply $equip_creds_needed $player~total_holds
-    		multiply $equip_creds_needed 100
-    		if ($buydown_mode = "Worst Price")
-        		multiply $equip_creds_needed 3
-        		divide $equip_creds_needed 2
-    		end
+			setVar $equip_creds_needed $equiprounds
+			multiply $equip_creds_needed $player~total_holds
+			multiply $equip_creds_needed 100
+			if ($buydown_mode = "Worst Price")
+				multiply $equip_creds_needed 3
+				divide $equip_creds_needed 2
+			end
 		end
 		setVar $total_creds_needed 0
 		add $total_creds_needed $fuel_creds_needed
@@ -310,32 +349,36 @@ return
 		add $total_creds_needed $equip_creds_needed
 		setVar $startingCredits $player~credits
 		if ($total_creds_needed > $player~credits)
-    		setVar $cashonhand $planet~citadel_credits
-    		add $cashonhand $player~credits
-    		if ($cashonhand > $total_creds_needed)
-        		send "C"
-        		send "T T " & $player~credits & "* "
-        		send "T F " & $total_creds_needed & "* "
-        		setVar $player~credits $total_creds_needed
-        		setvar $switchboard~message "Withdrew funds from the Treasury to complete the buydown*"
-        		gosub :switchboard~switchboard
-        		send "Q"
-    		else
-	    		if ($startingLocation = "Citadel")
+			setVar $cashonhand $planet~citadel_credits
+			add $cashonhand $player~credits
+			if ($cashonhand > $total_creds_needed)
+				send "C"
+				send "T T " & $player~credits & "* "
+				send "T F " & $total_creds_needed & "* "
+				setVar $player~credits $total_creds_needed
+				setvar $switchboard~message "Withdrew funds from the Treasury to complete the buydown*"
+				gosub :switchboard~switchboard
+				send "Q"
+			else
+				if ($startingLocation = "Citadel")
 					send "C "
 				else
 					send "q "
 				end
 				setVar $exit_message "Not enough cash onhand"
 				gosub :clearAdjacent
-	        	goto :buydownExit
-	   		end
+				goto :buydownExit
+			end
 		end
 		setVar $init_credits $player~credits
 
 :buydownequip
 	if ($equiproundsleft > 0)
-		send "Q P T  "
+		if ($buydown_mode = "Speedbuy")
+			send "Q P T  "
+		else
+			send "Q P T"
+		end
 		if ($fuelselling > 0)
 			send "0* "
 		end
@@ -354,35 +397,43 @@ return
 	end
 
 :buydownorg
-   	if ($orgroundsleft > 0)
-       	send "Q P T  "
-       	if ($fuelselling > 0)
+	if ($orgroundsleft > 0)
+		if ($buydown_mode = "Speedbuy")
+			send "Q P T  "
+		else
+			send "Q P T"
+		end
+		if ($fuelselling > 0)
 			send "0*"
-       	end
-       	gosub :choosehaggle
-       	send "0* L " & $planet~planet & "* t n l 2* "
-       	subtract $orgroundsleft 1
-       	goto :buydownorg
-   	end
-   	if ($orgrounds > 0)
-       	if ($buydown_mode = "Worst Price")
-       		setVar $output $output & " - Organics overhaggled at " & $overhagglemultiple & "*"
-       	end
-   	end
+		end
+		gosub :choosehaggle
+		send "0* L " & $planet~planet & "* t n l 2* "
+		subtract $orgroundsleft 1
+		goto :buydownorg
+	end
+	if ($orgrounds > 0)
+		if ($buydown_mode = "Worst Price")
+			setVar $output $output & " - Organics overhaggled at " & $overhagglemultiple & "*"
+		end
+	end
 
 :buydownfuel
-   	if ($fuelroundsleft > 0)
-       	send "Q P T "
-       	gosub :choosehaggle
-       	send "0* 0* L " & $planet~planet & "* t n l 1* "
-       	subtract $fuelroundsleft 1
-       	goto :buydownfuel
-   	end
-   	if ($fuelrounds > 0)
-       	if ($buydown_mode = "Worst Price")
+	if ($fuelroundsleft > 0)
+		if ($buydown_mode = "Speedbuy")
+			send "Q P T  "
+		else
+			send "Q P T"
+		end
+		gosub :choosehaggle
+		send "0* 0* L " & $planet~planet & "* t n l 1* "
+		subtract $fuelroundsleft 1
+		goto :buydownfuel
+	end
+	if ($fuelrounds > 0)
+		if ($buydown_mode = "Worst Price")
 			setVar $output $output & " - Fuel Ore overhaggled at " & $overhagglemultiple & "*"
-       	end
-   	end
+		end
+	end
 
 :buydownFinish
 
@@ -408,7 +459,7 @@ return
 		send "T T " & ($player~credits-$startingCredits) & "* "
 		setvar $switchboard~message "I put back extra funds taken for buydown.*"
 		gosub :switchboard~switchboard
-   	end
+	end
 
 
 	setvar $switchboard~message $output&"   *"
@@ -422,6 +473,9 @@ return
 	end
 	gosub :switchboard~switchboard
 	setVar $exit_message "Normal Exit"
+
+	setvar $bot~worstprice $original_worstprice_value
+	savevar $bot~worstprice
 
 	goto :buydownExit
 #==================================   END BUY DOWN (BUY) SUB  ========================================
@@ -441,9 +495,11 @@ return
 	setVar $BOT~help[10] $BOT~tab&"  - buy [hardware] {amount}"
 	setVar $BOT~help[11] $BOT~tab&"  - [hardware]= [fig]hters or [sh]ields or [m]ines"
 	setVar $BOT~help[12] $BOT~tab&"  - [amount]  = number to purchase, default is maximum"
-	setVar $BOT~help[13] $BOT~tab&"    "
-	setVar $BOT~help[14] $BOT~tab&"  - Originally written by Cherokee. "
+	setVar $BOT~help[13] $BOT~tab&"      "
+	setVar $BOT~help[14] $BOT~tab&"  - Originally written by Cherokee.     "
+	setVar $BOT~help[15] $BOT~tab&"  - Now integrated with EP Haggle if it's running "
 	gosub :BOT~help_file
+	
 
 	loadVar $game~port_max
 # ============================== START HAGGLE VARIABLES ============================
@@ -505,23 +561,25 @@ return
 	else
 		setVar $buydownRoundsFromParam 999999
 	end
-	if ($bot~parm2 = "w")
-       		setVar $buydown_mode 3
-	elseif ($bot~parm2 = "b")
-	        setVar $buydown_mode 2
+	getwordpos " "&$bot~user_command_line&" " $isworst " w "
+	getwordpos " "&$bot~user_command_line&" " $isbest " b "
+	if ($isworst > 0)
+		setVar $buydown_mode 3
+	elseif ($isbest > 0)
+		setVar $buydown_mode 2
 	else
-   		setVar $buydown_mode 1
+		setVar $buydown_mode 1
 	end
 	if ($bot~parm1 = "e")
-        setVar $buydown_equiprounds $buydownRoundsFromParam
+		setVar $buydown_equiprounds $buydownRoundsFromParam
 		setVar $buydown_orgrounds 0
 		setVar $buydown_fuelrounds 0
 	elseif ($bot~parm1 = "o")
-	        setVar $buydown_equiprounds 0
+			setVar $buydown_equiprounds 0
 		setVar $buydown_orgrounds $buydownRoundsFromParam
 		setVar $buydown_fuelrounds 0
 	elseif ($bot~parm1 = "f")
-        setVar $buydown_equiprounds 0
+		setVar $buydown_equiprounds 0
 		setVar $buydown_orgrounds 0
 		setVar $buydown_fuelrounds $buydownRoundsFromParam
 	else
@@ -574,7 +632,7 @@ return
 
 	if ($validPortFound <> TRUE)
 		setVar $exit_message "No valid port found"
-       	if ($startingLocation <> "Citadel")
+		if ($startingLocation <> "Citadel")
 			gosub :planet~landingsub
 		end
 		gosub :clearAdjacent
@@ -587,7 +645,7 @@ return
 		send "L " & $planet~planet & "* "
 	end
 
-    waiton "Planet command (?="
+	waiton "Planet command (?="
 	Goto :Initiate_Buy_Down
 
 :buydownExit
@@ -625,11 +683,11 @@ return
 
 :fighter_start
 	setVar $buys FALSE
- 	setVar $canBuy 0
- 	setVar $amountToBuy $bot~parm2
- 	setVar $buyAll FALSE
+	setVar $canBuy 0
+	setVar $amountToBuy $bot~parm2
+	setVar $buyAll FALSE
 	setVar $totalFigsPurchased 0
-    isNumber $test $amountToBuy
+	isNumber $test $amountToBuy
 	if ($test <> TRUE)
 		setVar $buyAll TRUE
 	else
@@ -934,50 +992,50 @@ return
 # ----- SUB :getPortInfo -----
 :getPortInfo
 	send "C R*Q"
-    setVar $validPortFound FALSE
-    setTextLineTrigger foundport	:foundport2		"Items     Status  Trading % of max OnBoard"
-    setTextLineTrigger noport		:noport2		"I have no information about a port in that sector."
-    setTextLineTrigger noport2		:noport2		"You have never visted sector"
-    setTextLineTrigger noport3		:noport2		"credits / next hold"
-    setTextLineTrigger noport4		:noport2		"A  Cargo holds     :"
-    pause
+	setVar $validPortFound FALSE
+	setTextLineTrigger foundport	:foundport2		"Items     Status  Trading % of max OnBoard"
+	setTextLineTrigger noport		:noport2		"I have no information about a port in that sector."
+	setTextLineTrigger noport2		:noport2		"You have never visted sector"
+	setTextLineTrigger noport3		:noport2		"credits / next hold"
+	setTextLineTrigger noport4		:noport2		"A  Cargo holds     :"
+	pause
 
-    :noport2
+	:noport2
 		killAllTriggers
 		return
 
-    :foundport2
+	:foundport2
 		killtrigger foundport
 		killtrigger noport
 		killtrigger noport2
 		killtrigger noport3
 		setVar $fuelselling 0
-        setVar $orgselling 0
-        setVar $equipselling 0
+		setVar $orgselling 0
+		setVar $equipselling 0
 		setVar $validPortFound TRUE
-        :getselling
-            setTextLineTrigger portfuelinfo 	:portfuelinfo2 		"Fuel Ore   Selling"
-            setTextLineTrigger portorginfo 		:portorginfo2 		"Organics   Selling"
-            setTextLineTrigger portequipinfo 	:portequipinfo2 	"Equipment  Selling"
-            setTextLineTrigger gotallportinfo 	:gotallportinfo2 	"<Computer deactivated>"
-            pause
+		:getselling
+			setTextLineTrigger portfuelinfo 	:portfuelinfo2 		"Fuel Ore   Selling"
+			setTextLineTrigger portorginfo 		:portorginfo2 		"Organics   Selling"
+			setTextLineTrigger portequipinfo 	:portequipinfo2 	"Equipment  Selling"
+			setTextLineTrigger gotallportinfo 	:gotallportinfo2 	"<Computer deactivated>"
+			pause
 
-        :portfuelinfo2
-            getWord CURRENTLINE $fuelselling 4
-            setTextLineTrigger portfuelinfo :portfuelinfo2 "Fuel Ore   Selling"
-            pause
+		:portfuelinfo2
+			getWord CURRENTLINE $fuelselling 4
+			setTextLineTrigger portfuelinfo :portfuelinfo2 "Fuel Ore   Selling"
+			pause
 
-        :portorginfo2
-            getWord CURRENTLINE $orgselling 3
-            setTextLineTrigger portorginfo :portorginfo2 "Organics   Selling"
-		    pause
+		:portorginfo2
+			getWord CURRENTLINE $orgselling 3
+			setTextLineTrigger portorginfo :portorginfo2 "Organics   Selling"
+			pause
 
-        :portequipinfo2
-            getWord CURRENTLINE $equipselling 3
-            setTextLineTrigger portequipinfo :portequipinfo2 "Equipment  Selling"
-		    pause
+		:portequipinfo2
+			getWord CURRENTLINE $equipselling 3
+			setTextLineTrigger portequipinfo :portequipinfo2 "Equipment  Selling"
+			pause
 
-        :gotallportinfo2
+		:gotallportinfo2
 			killAllTriggers
 	return
 
