@@ -104,7 +104,6 @@ setvar $SUPPRESSMENU "Off"
 
 setprecision 2
 setvar $planettrade_ratio ($game~ptradesetting / 100)
-send "'["&$planettrade_ratio&"]*"
 setprecision 0
 
 killalltriggers
