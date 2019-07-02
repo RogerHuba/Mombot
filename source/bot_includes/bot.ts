@@ -96,8 +96,6 @@ return
 		setTextLineTrigger 	4 	:INTERNAL_COMMANDS~autokill 	"enters the game."
 		setTextLineTrigger 	5 	:INTERNAL_COMMANDS~autokill 	"blasts off from the "
 		setTextLineTrigger 	6 	:INTERNAL_COMMANDS~autokill 	"Scanners detect a wormhole opening in this sector!"
-		
-
 	end
 	setEventTrigger     relog                   :CONNECTIVITY~keepalive           "CONNECTION LOST"
 	setTextTrigger      online_watch            :CONNECTIVITY~online_watch             "Your session will be terminated in "
@@ -388,7 +386,7 @@ return
 	setArray $corpy 30
 # ============================== START BOT VARIABLES ============================
 	SetVar $gameStats       FALSE
-	SetVar $script_name         "Mind ()ver Matter Bot "
+	SetVar $script_name		"Mind ()ver Matter Bot "
 	SetVar $mode            "General"
 	setVar $SWITCHBOARD~self_command        FALSE
 	SetVar $OkayToUse               TRUE
