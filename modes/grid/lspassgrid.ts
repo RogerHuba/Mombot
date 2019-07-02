@@ -2,8 +2,11 @@
   # All credits to the legend himself for this one!
   #
   #	Hammer - MOdifying to use EPHaggle and Sector Params
-  #    
-  #
+  #            - Add filters for density
+  #            - Smarter filter on twarp/next sector
+  #		- paranoid/safe options - NextReport options
+  #   to do - remove aliens, enter sectors with level 4 planets (dangerous!)
+  #		- Store "explored" sectors for a while - option to clear it. so it can resume
     
 
     #=--------                                                                       -------=#
@@ -44,11 +47,13 @@
 
 	loadVar $MAP~rylos
 	loadVar $MAP~alpha_centauri
-	
+	loadVar $BOT~LIMP_FILE 		
+	loadVar $BOT~ARMID_FILE 
+
 	setVar $BOT~help[1]  $BOT~tab&"       LS Passive Gridder - Still the best "
 	setVar $BOT~help[2]  $BOT~tab&"       "
 	setVar $BOT~help[3]  $BOT~tab&" lspassgrid [stopturns] {a1/a2/a3} {l1/l2/l3} {ports}"
-	setVar $BOT~help[4]  $BOT~tab&"            {holo} {trade} {restock}"
+	setVar $BOT~help[4]  $BOT~tab&"            {holo} {trade} {restock} {filter}"
 	setVar $BOT~help[5]  $BOT~tab&" Options:"
 	setVar $BOT~help[6]  $BOT~tab&"    [stopturns]     Passive Grid Stops at here"
 	setVar $BOT~help[7]  $BOT~tab&"	   {a1/a2/a3}      Drop 1/2/3 Armid Mines"
@@ -61,9 +66,10 @@
 	setVar $BOT~help[14]  $BOT~tab&"    {paranoid}     Twarp to Limpet and Mines only"
 	setVar $BOT~help[16]  $BOT~tab&"    {nextreport}   Next sector requires an adj port report."
 	setVar $BOT~help[17]  $BOT~tab&"    {restock}      Buys more Limpets and Mines."
-	setVar $BOT~help[18]  $BOT~tab&""
-	setVar $BOT~help[19]  $BOT~tab&"    Doesn't require ZTM but works better"
-	setVar $BOT~help[20]  $BOT~tab&"    Works best with T-Warp to reroute"
+	setVar $BOT~help[18]  $BOT~tab&"    {filter}       Filters mines/armids/planets to detect."
+	setVar $BOT~help[19]  $BOT~tab&"                   safe sectors"
+	setVar $BOT~help[20]  $BOT~tab&"    Doesn't require ZTM but works better"
+	setVar $BOT~help[21]  $BOT~tab&"    Works best with T-Warp to reroute"
 
 	gosub :BOT~help_file
 
@@ -104,6 +110,11 @@
 	setVar $EQU_MIN 50
 	setVar $EQU_MIN_BUY 25
 	setVar $DROP_TWENTY	0
+	setVar $FILTER_DENSITY 0
+
+	setVar $planetsInSectors SECTORS
+	
+	
 
 	if ($MAP~rylos < 1)
 		setVar $Report_RYLOS 	TRUE
@@ -200,6 +211,17 @@
 	else
 		setVar $DROPING_MINES 0
 	end
+	
+	setVar $allLimps 0
+	setVar $allArmids 0
+
+	getWordPos $bot~user_command_line $pos "filter"
+	if ($pos > 0)
+		setVar $FILTER_DENSITY 1
+		readToArray $BOT~LIMP_FILE $allLimps
+		readToArray $BOT~ARMID_FILE $allArmids
+	end
+
 
 	setVar $Update_Port FALSE
 	getWordPos $bot~user_command_line $pos "ports"
@@ -249,6 +271,9 @@
 	end
 
 	
+	if ($FILTER_DENSITY = 1)
+		goSub :getPersonalPlanets
+	end
 
 	
 
@@ -426,17 +451,32 @@
 			end
 		setVar $i 1
 		setArray $Adj_Targets SECTOR.WARPCOUNT[$player~CURRENT_SECTOR]
+		setArray $Filtered_Density SECTOR.WARPCOUNT[$player~CURRENT_SECTOR]
 
 		while ($i <= SECTOR.WARPCOUNT[$player~CURRENT_SECTOR])
-        	setVar $adj SECTOR.WARPS[$player~CURRENT_SECTOR][$i]
+        		setVar $adj SECTOR.WARPS[$player~CURRENT_SECTOR][$i]
 			setVar $Adj_Targets[$i] 10
-
+			setVar $currentDensity SECTOR.DENSITY[$adj]
+			
+			if ($FILTER_DENSITY = 1)
+				if ($planetsInSectors[$adj] > 0)
+					subtract $currentDensity (500 * $planetsInSectors[$adj])
+				end
+				if ($allLimps[$adj] > 0)
+					subtract $currentDensity (2 * $allLimps[$adj])
+					setVar $ANOM[$i] "No"
+				end
+				if ($allArmids[$adj] > 0)
+					subtract $currentDensity (10 * $allArmids[$adj])
+				end
+					
+			end
 			if (SECTOR.NAVHAZ[$adj] <> 0)
 				setVar $filter 0
 				setVar $Filter (SECTOR.NAVHAZ[$adj] * 21)
-				setVar $Filter (SECTOR.DENSITY[$adj] - $Filter)
+				setVar $Filter ($currentDensity - $Filter)
 			else
-				setVar $filter SECTOR.DENSITY[$adj]
+				setVar $filter $currentDensity
 			end
 
 			if ($adj < 10)
@@ -453,12 +493,16 @@
 
 			getSectorParameter $adj "FIGSEC" $Flag
 			isNumber $tst $Flag
+
 			if ($tst = 0)
 				setVar $Flag 0
 				setSectorParameter $adj "FIGSEC" FALSE
 			end
-			if ((SECTOR.DENSITY[$adj] > 200) AND ($Flag = 0))
-				setVar $StrMsg ("Sect: " & $buff & $adj & " Den: " & SECTOR.DENSITY[$adj] & " Haz: " & SECTOR.NAVHAZ[$adj] & "% Filtered: " & $Filter)
+
+			# Log anything interesting
+
+			if (($currentDensity > 200) AND ($Flag = 0))
+				setVar $StrMsg ("Sect: " & $buff & $adj & " Den: " & $currentDensity & " Haz: " & SECTOR.NAVHAZ[$adj] & "% Filtered: " & $Filter)
 				write $LOG_FName $StrMsg
 				add $LOG_EVENT 1
 				setVar $LOG_TEXT $StrMsg
@@ -466,7 +510,7 @@
 				send ("'["&$TagLineB&"] " & $StrMsg & "*")
 				waitfor "Message sent on sub-space channel"
 			elseif (SECTOR.NAVHAZ[$adj] <> 0)
-				setVar $StrMsg ("NavHaz in Sect: " & $buff & $adj & " Den: " & SECTOR.DENSITY[$adj] & " Haz: " & SECTOR.NAVHAZ[$adj] & "% Filtered: " & $Filter)
+				setVar $StrMsg ("NavHaz in Sect: " & $buff & $adj & " Den: " & $currentDensity & " Haz: " & SECTOR.NAVHAZ[$adj] & "% Filtered: " & $Filter)
 				write $LOG_FName $StrMsg
 				add $LOG_EVENT 1
 				setVar $LOG_TEXT $StrMsg
@@ -474,18 +518,8 @@
 				send ("'["&$TagLineB&"] " & $StrMsg & "*")
 				waitfor "Message sent on sub-space channel"
 			end
-			if (((SECTOR.DENSITY[$adj] = 0) OR (SECTOR.DENSITY[$adj] = 5)) AND ($ANOM[$i] = "Yes"))
-				setVar $StrMsg ("Cloaked Ship, Sect: " & $buff & $adj & " Den: " & SECTOR.DENSITY[$adj] & " Haz: " & SECTOR.NAVHAZ[$adj] & "% Filtered: " & $Filter)
-				write $LOG_FName $StrMsg
-				add $LOG_EVENT 1
-				setVar $LOG_TEXT $StrMsg
-				gosub :Move_Down
-				send ("'["&$TagLineB&"] " & $StrMsg & "*")
-				waitfor "Message sent on sub-space channel"
-			end
-
-			if ((SECTOR.DENSITY[$adj] = 40) OR (SECTOR.DENSITY[$adj] = 45) OR (SECTOR.DENSITY[$adj] = 140) OR (SECTOR.DENSITY[$adj] = 145))
-				setVar $StrMsg ("Possible Trader, Sect: " & $buff & $adj & " Den: " & SECTOR.DENSITY[$adj] & " Haz: " & SECTOR.NAVHAZ[$adj] & "% Filtered: " & $Filter)
+			if ((($currentDensity = 0) OR ($currentDensity = 5)) AND ($ANOM[$i] = "Yes"))
+				setVar $StrMsg ("Cloaked Ship, Sect: " & $buff & $adj & " Den: " & $currentDensity & " Haz: " & SECTOR.NAVHAZ[$adj] & "% Filtered: " & $Filter)
 				write $LOG_FName $StrMsg
 				add $LOG_EVENT 1
 				setVar $LOG_TEXT $StrMsg
@@ -494,97 +528,120 @@
 				waitfor "Message sent on sub-space channel"
 			end
 
+			if (($currentDensity = 40) OR ($currentDensity = 45) OR ($currentDensity = 140) OR ($currentDensity = 145))
+				setVar $StrMsg ("Possible Trader, Sect: " & $buff & $adj & " Den: " & $currentDensity & " Haz: " & SECTOR.NAVHAZ[$adj] & "% Filtered: " & $Filter)
+				write $LOG_FName $StrMsg
+				add $LOG_EVENT 1
+				setVar $LOG_TEXT $StrMsg
+				gosub :Move_Down
+				send ("'["&$TagLineB&"] " & $StrMsg & "*")
+				waitfor "Message sent on sub-space channel"
+			end
+
+			# END LOG
+
+			# Skip Limps
 			if (($ANOM[$i] = "Yes") AND ($Limps[$adj] = 0))
-            	goto :Next_ADJ_Please
+            			goto :Next_ADJ_Please
 			end
+
+			#prioritise sectors nextdoor
 			if ($flag = 0)
-	            if ((SECTOR.DENSITY[$adj] = 0) OR (SECTOR.DENSITY[$adj] = 100))
-	            	if (SECTOR.NAVHAZ[$adj] = 0)
+				if (($currentDensity = 0) OR ($currentDensity = 100))
+	            			if (SECTOR.NAVHAZ[$adj] = 0)
 						if (SECTOR.EXPLORED[$adj] <> "YES")
 							if ($DENS[$i] > 1)
 								setVar $Adj_Targets[$i] 1
 								goto :Next_ADJ_Please
 							end
-		                end
-		            end
+						end
+					end
 				end
 
-	            if ((SECTOR.DENSITY[$adj] = 0) OR (SECTOR.DENSITY[$adj] = 100))
-	            	if (SECTOR.NAVHAZ[$adj] = 0)
+				if (($currentDensity = 0) OR ($currentDensity = 100))
+	            			if (SECTOR.NAVHAZ[$adj] = 0)
 						if (SECTOR.EXPLORED[$adj] = "YES")
 							if ($DENS[$i] > 1)
 								setVar $Adj_Targets[$i] 2
 								goto :Next_ADJ_Please
 							end
-		                end
-		            end
+						end
+					end
 				end
-	            if ((SECTOR.DENSITY[$adj] = 0) OR (SECTOR.DENSITY[$adj] = 100))
-	            	if (SECTOR.NAVHAZ[$adj] = 0)
+				if (($currentDensity = 0) OR ($currentDensity = 100))
+	            			if (SECTOR.NAVHAZ[$adj] = 0)
 						if (SECTOR.EXPLORED[$adj] <> "YES")
 							if ($DENS[$i] >= 1)
 								setVar $Adj_Targets[$i] 3
 								goto :Next_ADJ_Please
 							end
-		                end
-		            end
+						end
+					end
 				end
-	            if ((SECTOR.DENSITY[$adj] = 0) OR (SECTOR.DENSITY[$adj] = 100))
-	            	if (SECTOR.NAVHAZ[$adj] = 0)
+				if (($currentDensity = 0) OR ($currentDensity = 100))
+	            			if (SECTOR.NAVHAZ[$adj] = 0)
 						if (SECTOR.EXPLORED[$adj] = "YES")
 							if ($DENS[$i] >= 1)
 								setVar $Adj_Targets[$i] 4
 								goto :Next_ADJ_Please
 							end
-		                end
-		            end
+						end
+					end
 				end
 			end
-            if ((SECTOR.DENSITY[$adj] = 105) OR (SECTOR.DENSITY[$adj] = 5))
-            	if (SECTOR.NAVHAZ[$adj] = 0)
+
+			if (($currentDensity = 105) OR ($currentDensity = 5))
+            			if (SECTOR.NAVHAZ[$adj] = 0)
 					if (SECTOR.EXPLORED[$adj] <> "YES")
 						if ($Flag <> 0)
 							if ($DENS[$i] > 1)
 								setVar $Adj_Targets[$i] 5
 								goto :Next_ADJ_Please
 							end
-		                end
-	                end
-	            end
+						end
+					end
+				end
 			end
-
-            if ((SECTOR.DENSITY[$adj] = 105) OR (SECTOR.DENSITY[$adj] = 5))
-				#if (SECTOR.EXPLORED[$adj] <> "YES")
-				if (SECTOR.WARPCOUNT[$adj] >= 5)
-					if (SECTOR.NAVHAZ[$adj] = 0)
-						if ($Flag = 1)
-							if ($DENS[$i] >= 1)
-								if ($CHKD[$ADJ] = 0)
-									setVar $Adj_Targets[$i] 6
-									goto :Next_ADJ_Please
+			
+			# The next two seem illogical because there explored and figged. 
+			# However, I assume if you have no t-warp, it makes sense.
+			# Hammer: Adding twarp filter
+			
+			if ($player~TWARP_TYPE = "No")
+				# If density is 105 or 5, and 5+ warps, no hz, has fig, not checked - go there? but why
+				if (($currentDensity = 105) OR ($currentDensity = 5))
+					#if (SECTOR.EXPLORED[$adj] <> "YES")
+					if (SECTOR.WARPCOUNT[$adj] >= 5)
+						if (SECTOR.NAVHAZ[$adj] = 0)
+							if ($Flag = 1)
+								if ($DENS[$i] >= 1)
+									if ($CHKD[$ADJ] = 0)
+										setVar $Adj_Targets[$i] 6
+										goto :Next_ADJ_Please
+									end
 								end
 							end
-		                end
-		            end
-                end
-			end
-            if ((SECTOR.DENSITY[$adj] = 105) OR (SECTOR.DENSITY[$adj] = 5))
-				#if (SECTOR.EXPLORED[$adj] <> "YES")
-				if (SECTOR.WARPCOUNT[$adj] > 1)
-					if (SECTOR.NAVHAZ[$adj] = 0)
-						if ($Flag = 1)
-							if ($DENS[$i] >= 1)
-								if ($CHKD[$ADJ] = 0)
-									setVar $Adj_Targets[$i] 6
-									goto :Next_ADJ_Please
+						end
+					end
+				end
+				if (($currentDensity = 105) OR ($currentDensity = 5))
+					#if (SECTOR.EXPLORED[$adj] <> "YES")
+					if (SECTOR.WARPCOUNT[$adj] > 1)
+						if (SECTOR.NAVHAZ[$adj] = 0)
+							if ($Flag = 1)
+								if ($DENS[$i] >= 1)
+									if ($CHKD[$ADJ] = 0)
+										setVar $Adj_Targets[$i] 6
+										goto :Next_ADJ_Please
+									end
 								end
 							end
-		                end
-		            end
-                end
+						end
+					end
+				end
 			end
 			:Next_ADJ_Please
-        	add $i 1
+        		add $i 1
 		end
 
 		setVar $idx 1
@@ -768,10 +825,10 @@
 					gosub :Display_Holo
 				end
 	        end
-
+				setVar $engagestring "Y"
 				send " M" & $Focus & "*Y"
 				setTextLineTrigger		Sector__Good	:Sector__Good	"Locating beam pinpointed, TransWarp"
-				setTextLineTrigger		Sector__Here	:Sector__Good	"NavPoint Settings (?=Help)"
+				setTextLineTrigger		Sector__Here	:Sector__GoodNav	"<Set NavPoint>"
 				setTextLineTrigger		Sector__Bad		:Sector__Bad	"No locating beam found"
 				setTextTrigger				Sector__Far		:Sector__Far	"You do not have enough Fuel Ore to make the jump."
 				pause
@@ -868,6 +925,9 @@
                     	add $c 1
 					end
 					goto :We_Done
+				:Sector__GoodNav
+					send "*q"
+					setVar $engagestring ""
 				:Sector__Good
 					killAllTriggers
 					#echo ("**" & $TAGLINEc & " " & ANSI_8&"<"&ANSI_15&"Twarping To Jump Point: "&ANSI_14&$Focus&ANSI_8&">*")
@@ -900,7 +960,7 @@
 							end
 						end
 					end
-					send "Y  *  A Z " & $maxFigAttack & "998877665544332211 n  *  **   " & $DROP_STR
+					send $engagestring "  *  A Z " & $maxFigAttack & "998877665544332211 n  *  **   " & $DROP_STR
 					gosub :player~quikstats
 			goto :To_The_Top
 		else
@@ -909,7 +969,6 @@
 		end
 
 		:Next_Target
-		#Echo "**Target " & $TARGET & "**"
 
 		setVar $figsToDrop 1
 		setvar $density_trick false
@@ -1404,16 +1463,16 @@
 	while (SECTOR.WARPS[$player~CURRENT_SECTOR][$Holo_i] > 0)
 		setVar $Holo_adj SECTOR.WARPS[$player~CURRENT_SECTOR][$Holo_i]
 		if ((SECTOR.PLANETCOUNT[$Holo_adj] > 0) OR (SECTOR.TRADERCOUNT[$Holo_adj] > 0) OR (SECTOR.SHIPCOUNT[$Holo_adj] > 0))
-	       	setVar $figOwner SECTOR.FIGS.OWNER[$Holo_adj]
+	       		setVar $figOwner SECTOR.FIGS.OWNER[$Holo_adj]
 			if ((SECTOR.FIGS.QUANTITY[$Holo_adj] >= 100) AND (($figOwner <> "belong to your Corp") OR ($figOwner <> "yours")))
 				while ($Holo_ptr <= $Line_Pointer)
-	            	getWordPos $HoloOutput[$Holo_ptr] $Holo_pos ("Sector  : " & $Holo_adj)
-	            	setVar $AvoidFlag ($AvoidFlag & " " & $Holo_adj)
+	            			getWordPos $HoloOutput[$Holo_ptr] $Holo_pos ("Sector  : " & $Holo_adj)
+	            			setVar $AvoidFlag ($AvoidFlag & " " & $Holo_adj)
 					if ($Holo_pos <> 0)
 						setvar $Holo_s ($Holo_s & $HoloOutput[$Holo_ptr] & "*")
 						:Lets_Go_Again
-	                   	add $Holo_ptr 1
-	                   	getWordPos $HoloOutput[$Holo_ptr] $pos "Warps to Sector(s) :"
+						add $Holo_ptr 1
+						getWordPos $HoloOutput[$Holo_ptr] $pos "Warps to Sector(s) :"
 						if (($HoloOutput[$Holo_ptr] <> "") AND ($pos = 0))
 							setvar $Holo_s ($Holo_s & $HoloOutput[$Holo_ptr] & "*")
 						else
@@ -1422,7 +1481,7 @@
 						end
 						goto :Lets_Go_Again
 					end
-	            	add $Holo_ptr 1
+	            			add $Holo_ptr 1
 				end
 			end
 		end
@@ -1451,6 +1510,35 @@
 	else
 		setVar $DROPING_MINES 0
 	end
+return
+
+
+:getPersonalPlanets
+
+	# Planet list from personal planets - relies on no shields being present
+	setVar $planetsInSectors SECTORS
+
+	send "cyq"
+	waitfor "<Computer activated>"
+	waitfor "Sector  Planet Name"
+
+	:pread
+	setTextLineTrigger pread1 :pread1 "#" 
+	setTextLineTrigger preadDone :preadDone "======   ============  ==== ==== ==== ===== ===== " 
+	setTextLineTrigger preadDone2 :preadDone "No Planets claimed"
+	pause
+	:pread1
+		killAllTriggers
+		getWord CURRENTLINE $sector 1
+		add $planetsInSectors[$sector] 1
+		goto :pread
+	
+	:preadDone
+		killAllTriggers
+
+
+	
+
 return
 
 
