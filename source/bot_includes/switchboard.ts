@@ -145,7 +145,7 @@ return
 		setvar $multiple_lines false
 	end
 	if (($bot~command <> "help") and ($bot~only_help <> true))
-		if (($self_command > 1) or (($self_command = 1) and (($bot~silent_running <> true) and ($isSilent <= 0))))
+		if (($self_command = 0) or ($self_command > 1) or (($self_command = 1) and (($bot~silent_running <> true) and ($isSilent <= 0))))
 
 			setvar $next_length 60
 			setvar $i 1
