@@ -31,6 +31,7 @@
 	setVar $BOT~help[13] $BOT~tab&" {return} - Return to starting sector after each hunt."
 	setVar $BOT~help[14] $BOT~tab&"{passive} - Surround passively when hunting."
 	setVar $BOT~help[15] $BOT~tab&"   {home} - Move ships to starting sector instead of stardock."
+	setVar $BOT~help[16] $BOT~tab&"   {scan} - Holo and density before surrounding."
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Alien Hunter"
@@ -40,8 +41,8 @@
 
 	setVar $START_FIG_HIT "Deployed Fighters Report Sector "
 	setVar $END_FIG_HIT   ":"
-    setVar $ALIEN_ANSI    #27 & "[1;36m" & #27 & "["
-    setVar $START_FIG_HIT_OWNER ":"
+	setVar $ALIEN_ANSI    #27 & "[1;36m" & #27 & "["
+	setVar $START_FIG_HIT_OWNER ":"
 	setVar $END_FIG_HIT_OWNER "'s"
 	setVar $CAP_FILE	"_MOM_" & GAMENAME & ".ships"
 
@@ -129,6 +130,15 @@
 	else
 		setvar $home false
 	end
+
+	getwordpos $bot~user_command_line $pos "scab"
+	if ($pos > 0)
+		setVar $scan true
+	else
+		setvar $scan false
+	end
+
+	
 
 	gosub :PLAYER~getInfo
 	setVar $homesector $PLAYER~CURRENT_SECTOR
@@ -239,13 +249,13 @@
 			send "p"&$homeSector&"*y"
 		end
 		if ($cannon = true)
-	        setVar $percentToSet (((3*$sector_total)*100)/$PLANET~PLANET_FUEL)
-            if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $cannonDamage)
-                add $percentToSet 1
-            end
-            if ($percentToSet > 100)
-                setVar $percentToSet 100
-            end
+			setVar $percentToSet (((3*$sector_total)*100)/$PLANET~PLANET_FUEL)
+			if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $cannonDamage)
+				add $percentToSet 1
+			end
+			if ($percentToSet > 100)
+				setVar $percentToSet 100
+			end
 
 			send " *ls"&$percentToSet&"* la"&$starting_atmos_cannon&"*"  
 
@@ -402,12 +412,37 @@ return
 return
 
 :dosurround
-		    gosub :PLAYER~quikstats
-		    if (($PLAYER~TURNS <= $BOT~bot_turn_limit) and ($PLAYER~unlimitedGame <> TRUE))
-	                setVar $SWITCHBOARD~message "Turns Exceed Bot Turn Limit.*"
-	        		gosub :SWITCHBOARD~switchboard
-	                halt
+		gosub :PLAYER~quikstats
+		if (($PLAYER~TURNS <= $BOT~bot_turn_limit) and ($PLAYER~unlimitedGame <> TRUE))
+			setVar $SWITCHBOARD~message "Turns Exceed Bot Turn Limit.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
 	        end
+		
+		if ($scan = TRUE)
+			setVar $BOT~command "dscan"
+			setVar $BOT~user_command_line " dscan silent"
+			setVar $BOT~parm1 "silent"
+			saveVar $BOT~parm1
+			saveVar $BOT~command
+			saveVar $BOT~user_command_line
+			load "scripts\mombot\commands\data\dscan.cts"
+			setEventTrigger		dscandone		:dscandone "SCRIPT STOPPED" "scripts\mombot\commands\data\dscan.cts"
+			pause
+			:dscandone
+			
+			setVar $BOT~command "holo"
+			setVar $BOT~user_command_line " holo silent"
+			setVar $BOT~parm1 "silent"
+			saveVar $BOT~parm1
+			saveVar $BOT~command
+			saveVar $BOT~user_command_line
+			load "scripts\mombot\commands\data\holo.cts"
+			setEventTrigger		holodone		:holodone "SCRIPT STOPPED" "scripts\mombot\commands\data\holo.cts"
+			pause
+			:holodone
+
+		end
 	        send "q "
 	        gosub :PLANET~getPlanetInfo
 	        send "q "
