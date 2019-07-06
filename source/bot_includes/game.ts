@@ -422,7 +422,7 @@
 				setTextLineTrigger at_game_menu :tryAgainSettings "T - Play Trade Wars 2002"
 				pause
 			:WhistleWhileYouWorkSettings
-				send $BOT~letter&" * "
+				send $BOT~letter&"*"
 				goto :GameClosedSettings
 
 
