@@ -66,10 +66,12 @@
 	setVar $BOT~help[14]  $BOT~tab&"    {paranoid}     Twarp to Limpet and Mines only"
 	setVar $BOT~help[16]  $BOT~tab&"    {nextreport}   Next sector requires an adj port report."
 	setVar $BOT~help[17]  $BOT~tab&"    {restock}      Buys more Limpets and Mines."
-	setVar $BOT~help[18]  $BOT~tab&"    {filter}       Filters mines/armids/planets to detect."
-	setVar $BOT~help[19]  $BOT~tab&"                   safe sectors"
-	setVar $BOT~help[20]  $BOT~tab&"    Doesn't require ZTM but works better"
-	setVar $BOT~help[21]  $BOT~tab&"    Works best with T-Warp to reroute"
+	setVar $BOT~help[18]  $BOT~tab&"    {filter}       Filters mines/armids/planets to detect"
+	setVar $BOT~help[19]  $BOT~tab&"                   safe sectors. run >limps >armids 1st"
+	setVar $BOT~help[20]  $BOT~tab&"    {ignorea}      Uses holo scan to passive grid alien figs"
+	setVar $BOT~help[21]  $BOT~tab&"    {resume}       Roughly resumes last run"
+	setVar $BOT~help[22]  $BOT~tab&"    Doesn't require ZTM but works better"
+	setVar $BOT~help[23]  $BOT~tab&"    Works best with T-Warp to reroute"
 
 	gosub :BOT~help_file
 
@@ -271,15 +273,8 @@
 	end
 
 
-	getWordPos $bot~user_command_line $pos "reset"
+	getWordPos $bot~user_command_line $pos "resume"
 	if ($pos > 0)
-
-		setvar $r 11
-		while ($r <= SECTORS)
-			setSectorParameter $r "LSCHK" FALSE
-			add $r 1
-		end
-	else
 		setvar $r 11
 		while ($r <= SECTORS)
 			getSectorParameter $r "LSCHK" $lschk
@@ -288,6 +283,13 @@
 			else
 				setVar $CHKD[$r] 0
 			end
+			add $r 1
+		end
+		
+	else
+		setvar $r 11
+		while ($r <= SECTORS)
+			setSectorParameter $r "LSCHK" FALSE
 			add $r 1
 		end
 		
