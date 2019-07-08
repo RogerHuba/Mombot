@@ -67,7 +67,8 @@ setVar $startlocation "x"
 
 	setVar $forwardi 2
 	setVar $backi $maxSector
-	
+	# How many paths to do at once.
+	setVar $sectorsToFind 40
 	setVar $forwardSectors 0
 
 # ADD THESE IN LATER
@@ -123,6 +124,13 @@ setVar $startlocation "x"
 		else
 			setVar $error 1
 		end
+	else
+		# Just to be safe we'll take one loop off
+		setVar $dztm_resumesectorforward ($dztm_resumesectorforward - $sectorsToFind)
+		if ($dztm_resumesectorforward < 2)
+			setVar $dztm_resumesectorforward 2
+		end
+
 	end
 
 	if ($error = 1)
@@ -135,7 +143,7 @@ setVar $startlocation "x"
 		setVar $forwardi $dztm_resumesectorforward
 	end
 
-	setVar $sectorsToFind 40
+	
 
 
 
@@ -172,12 +180,12 @@ end
 	
 
 	setVar $forwardSectorsFound 0
-	setVar $backSectors 0
 	setVar $letsLook 1
+	setVar $donePasses 0
 
 	while ($letsLook = 1)
 
-		
+		:resumePasses
 		while ($forwardSectorsFound < $sectorsToFind)
 			
 			if (SECTOR.WARPCOUNT[$forwardi] = $dztm_resumepass)
@@ -207,10 +215,11 @@ end
 			end
 		end
 		:breakoutSearch
-
+		
+		
 		setVar $i 1
 		while ($i <= $forwardSectorsFound)
-			
+			gosub :checkConnection
 			if ($dztm_resumepass > 0)
 				setVar $y 1
 				while ($y <= SECTOR.WARPCOUNT[$forwardSectors[$i]])
@@ -233,9 +242,8 @@ end
 			end
 			add $i 1
 		end
-		send "/"
-		waitfor "³Shlds"
-		waitfor "³PlScn"
+		
+		goSub :waitForComplete
 		# Remove 
 		setVar $dztm_resumesectorforward $forwardi
 		saveVar $dztm_resumesectorforward
@@ -247,11 +255,12 @@ end
 	
 	
 	### CHECK BACKDOORS
-	
+	setVar $donePasses 1
 	setVar $msg "Checking Backdoors.*"
 	setvar $switchboard~message $msg
 	gosub :switchboard~switchboard
-
+	
+	:resumeBackdoor
 	setVar $checki 2
 	setVar $forwardSectorsFound 0
 	setVar $forwardSectors 0
@@ -276,7 +285,7 @@ end
 		end
 		add $checki 1
 		if ($forwardSectorsFound >= $sectorsToFind)
-			
+			gosub :checkConnection
 			setVar $i 1
 			while ($i <= $forwardSectorsFound)
 				send "f" $forwardSectors[$i] "*" $forwardSectorsTo[$i] "**"
@@ -293,6 +302,7 @@ end
 
 	end
 	
+	gosub :checkConnection
 	setVar $i 1
 	while ($i <= $forwardSectorsFound)
 		
@@ -303,8 +313,7 @@ end
 	setVar $forwardSectorsFound 0
 	setVar $forwardSectors 0
 	setVar $forwardSectorsTo 0
-	send "/"
-	waitfor "³Turns"
+	goSub :waitForComplete
 
 	
 
@@ -314,7 +323,86 @@ end
 	setVar $msg "Ztm is Complete!*"
 	setvar $switchboard~message $msg
 	gosub :switchboard~switchboard
+
 halt
+
+		
+:waitForComplete
+	send "/"
+	killalltriggers
+	setDelayTrigger     timeout :timeout 		8000
+	setTextLineTrigger  finishedPaths :finishedPaths	"³Shlds"
+	pause
+	
+	:timeout
+		killalltriggers
+		goSub :waitForSafeResume
+
+		setVar $forwardSectorsFound 0
+		if ($donePasses = 1)
+			goto :resumeBackdoor
+		else
+			# go back a bit ot make sure we don't miss any warps
+			subtract $forwardi 100
+			if ($forwardi < 2)
+				setVar $forwardi 2
+			end
+			goto :resumePasses
+		end
+		halt
+	:finishedPaths
+		killalltriggers
+		waitfor "³PlScn"
+return
+
+:waitForSafeResume
+	setVar $TagLine				"[ZTM]"
+	setVar $TagLineB			"[ZTM]"
+	killAllTriggers
+	Echo "**" & ANSI_14 & $TagLineB & ANSI_15 & " Disconnected **"
+	:Disco_Test
+	if (CONNECTED <> TRUE)
+		setDelayTrigger		Emancipate_CPU		:Emancipate_CPU 3000
+		Echo "**" & ANSI_14 & $TagLineB & ANSI_15 & " Auto Resume Initiated - Awaiting Connection!**"
+		pause
+		:Emancipate_CPU
+		goto :Disco_Test
+	end
+	waitfor "(?="
+	setDelayTrigger		WaitingABit		:WaitingABit	10000
+	Echo "**" & ANSI_14 & $TagLineB & ANSI_15 & " Connected - Will resume in 10 seconds**"
+	pause
+	:WaitingABit
+	killAllTriggers
+	gosub :PLAYER~quikstats
+	setVar $location $PLAYER~CURRENT_PROMPT
+	
+	if ($location = "Command")
+		send "c"
+		waitfor "<Computer activated>"
+		setvar $switchboard~message $TagLineB&" - Restarting!*"
+		gosub :switchboard~switchboard
+		return
+	elseif ($location = "Citadel")
+		setvar $switchboard~message $TagLineB&" - Restarting!*"
+		gosub :switchboard~switchboard
+		send "c"
+		waitfor "<Computer activated>"
+		return
+	else
+		setvar $switchboard~message $TagLineB&" - Connection returned but wrong prompt - halting.."
+		gosub :switchboard~switchboard
+		halt
+	end
+
+return
+
+:checkConnection
+	if (CONNECTED <> TRUE)
+		halt
+	end
+	
+return
 	#INCLUDES:
 include "source\module_includes\bot"
 include "source\bot_includes\player"
