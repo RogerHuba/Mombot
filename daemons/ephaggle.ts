@@ -4,8 +4,8 @@ systemscript
 
 // Brought to you by Shadow's CTS Decompiler 2.0
 
-setvar $verbose_debug_mode true
-setvar $paused_debug_mode true
+setvar $verbose_debug_mode false
+setvar $paused_debug_mode false
 setvar $VERSION 2019
 setvar $SIGLINE "EP's Perfect Haggle, v. " & $VERSION
 
