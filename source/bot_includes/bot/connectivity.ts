@@ -92,6 +92,7 @@
 			gosub :killrelogtriggers
 			setTextTrigger firstpause :firstpause "[Pause]"
 			setTextTrigger enter :done_do_relog "Enter your choice"
+			setTextTrigger notopen :game_not_open "This game will open"
 			send $BOT~letter
 			pause
 		:firstpause
@@ -100,6 +101,24 @@
 			pause
 		:done_do_relog
 			killalltriggers
+			return
+		:game_not_open			
+			killalltriggers
+			if (CONNECTED <> TRUE)
+				goto :thedelay
+			end
+			setDelayTrigger		2	:new_game_delay2 5000
+			setTextTrigger		3	:tryAgainNewGameDay1	"Enter your choice:"
+			setTextLineTrigger      4       :tryAgainEnterGame	"This game will open"
+			send $BOT~letter&" * "
+			pause
+			:new_game_delay2
+				goto :game_not_open
+			:tryAgainEnterGame
+				goto :game_not_open
+			:tryAgainNewGameDay1
+				killalltriggers
+	
 return
 
 :killrelogtriggers
@@ -115,6 +134,7 @@ return
 	killtrigger loginsuccessful2
 	killtrigger firstpause
 	killtrigger enter
+	killtrigger notopen
 	setDelayTrigger thedelay2 :thedelay 5000
 return
 
@@ -122,6 +142,7 @@ return
 
 	:try_again
 	gosub :do_relog
+	:GameClosed
 	setTextLineTrigger  1 :closed 		"I'm sorry, but this is a closed game."
 	setTextLineTrigger  2 :closed 		"www.tradewars.com                                   Epic Interactive Strategy"
 	setTextLineTrigger  3 :closed		" day(s) to get back in."
@@ -129,7 +150,7 @@ return
 	setTextLineTrigger  5 :on_planet	"What do you want to name your home planet?"
 	settexttrigger      6 :wrong_name	"Sorry, you cannot use the name "
 	setTextTrigger      7 :back_in_game	"Command [TL"
-	
+
 	if ($newgame)
 		send "T***Y"&$BOT~password&"*"&$BOT~password&"**N"&$BOT~username&"*Y"&$BOT~startShipName&"*Y"
 	else

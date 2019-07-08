@@ -31,7 +31,6 @@
 	setVar $BOT~help[13] $BOT~tab&" {return} - Return to starting sector after each hunt."
 	setVar $BOT~help[14] $BOT~tab&"{passive} - Surround passively when hunting."
 	setVar $BOT~help[15] $BOT~tab&"   {home} - Move ships to starting sector instead of stardock."
-	setVar $BOT~help[16] $BOT~tab&"   {scan} - Holo and density before surrounding."
 	gosub :BOT~help_file
 
 	setVar $BOT~script_title "Alien Hunter"
@@ -72,6 +71,12 @@
 		send "qoccco*cq"
 		waitOn "<Computer deactivated>"
 		setVar $SWITCHBOARD~message "Alien hunter shutting down.  Making ship and planet corporate again.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+	if ($player~photons > 0)
+		setVar $SWITCHBOARD~message "Please pick a ship with no photons.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
@@ -131,12 +136,7 @@
 		setvar $home false
 	end
 
-	getwordpos $bot~user_command_line $pos "scab"
-	if ($pos > 0)
-		setVar $scan true
-	else
-		setvar $scan false
-	end
+	
 
 	
 
@@ -419,30 +419,18 @@ return
 			halt
 	        end
 		
-		if ($scan = TRUE)
-			setVar $BOT~command "dscan"
-			setVar $BOT~user_command_line " dscan silent"
-			setVar $BOT~parm1 "silent"
-			saveVar $BOT~parm1
-			saveVar $BOT~command
-			saveVar $BOT~user_command_line
-			load "scripts\mombot\commands\data\dscan.cts"
-			setEventTrigger		dscandone		:dscandone "SCRIPT STOPPED" "scripts\mombot\commands\data\dscan.cts"
-			pause
-			:dscandone
-			
-			setVar $BOT~command "holo"
-			setVar $BOT~user_command_line " holo silent"
-			setVar $BOT~parm1 "silent"
-			saveVar $BOT~parm1
-			saveVar $BOT~command
-			saveVar $BOT~user_command_line
-			load "scripts\mombot\commands\data\holo.cts"
-			setEventTrigger		holodone		:holodone "SCRIPT STOPPED" "scripts\mombot\commands\data\holo.cts"
-			pause
-			:holodone
-
-		end
+	
+		setVar $BOT~command "dscan"
+		setVar $BOT~user_command_line " dscan silent"
+		setVar $BOT~parm1 "silent"
+		saveVar $BOT~parm1
+		saveVar $BOT~command
+		saveVar $BOT~user_command_line
+		load "scripts\mombot\commands\data\dscan.cts"
+		setEventTrigger		dscandone		:dscandone "SCRIPT STOPPED" "scripts\mombot\commands\data\dscan.cts"
+		pause
+		:dscandone
+		
 	        send "q "
 	        gosub :PLANET~getPlanetInfo
 	        send "q "
