@@ -847,6 +847,7 @@ if ($PLANETSHIP = "PLANET") and ($FINALOFFER = 1)
 	goto :223
 end
 round $LTPEHL 0
+echo "$LTPEHL:*"
 send $LTPEHL "*"
 
 :223
@@ -1328,6 +1329,7 @@ if ($FINALOFFER = 1)
 :379
 end
 round $RHYEDL 0
+echo "$RHYEDL:*"
 send $RHYEDL "*"
 return
 
