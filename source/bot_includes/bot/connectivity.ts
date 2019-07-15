@@ -34,6 +34,7 @@
 	end
 	setvar $last_prompt_seen CURRENTLINE
 	send #27
+	killtrigger keepalive
 	setDelayTrigger     keepalive               :keepalive           30000
 	pause
 #=================================== END KEEP ALIVE ==========================================
