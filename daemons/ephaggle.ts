@@ -4,8 +4,8 @@ systemscript
 
 // Brought to you by Shadow's CTS Decompiler 2.0
 
-setvar $verbose_debug_mode true
-setvar $paused_debug_mode true
+setvar $verbose_debug_mode false
+setvar $paused_debug_mode false
 setvar $VERSION 2019
 setvar $SIGLINE "EP's Perfect Haggle, v. " & $VERSION
 
@@ -847,6 +847,7 @@ if ($PLANETSHIP = "PLANET") and ($FINALOFFER = 1)
 	goto :223
 end
 round $LTPEHL 0
+echo "$LTPEHL:*"
 send $LTPEHL "*"
 
 :223
@@ -1328,6 +1329,7 @@ if ($FINALOFFER = 1)
 :379
 end
 round $RHYEDL 0
+echo "$RHYEDL:*"
 send $RHYEDL "*"
 return
 

@@ -66,10 +66,12 @@
 	setVar $BOT~help[14]  $BOT~tab&"    {paranoid}     Twarp to Limpet and Mines only"
 	setVar $BOT~help[16]  $BOT~tab&"    {nextreport}   Next sector requires an adj port report."
 	setVar $BOT~help[17]  $BOT~tab&"    {restock}      Buys more Limpets and Mines."
-	setVar $BOT~help[18]  $BOT~tab&"    {filter}       Filters mines/armids/planets to detect."
-	setVar $BOT~help[19]  $BOT~tab&"                   safe sectors"
-	setVar $BOT~help[20]  $BOT~tab&"    Doesn't require ZTM but works better"
-	setVar $BOT~help[21]  $BOT~tab&"    Works best with T-Warp to reroute"
+	setVar $BOT~help[18]  $BOT~tab&"    {filter}       Filters mines/armids/planets to detect"
+	setVar $BOT~help[19]  $BOT~tab&"                   safe sectors. run >limps >armids 1st"
+	setVar $BOT~help[20]  $BOT~tab&"    {ignorea}      Uses holo scan to passive grid alien figs"
+	setVar $BOT~help[21]  $BOT~tab&"    {resume}       Roughly resumes last run"
+	setVar $BOT~help[22]  $BOT~tab&"    Doesn't require ZTM but works better"
+	setVar $BOT~help[23]  $BOT~tab&"    Works best with T-Warp to reroute"
 
 	gosub :BOT~help_file
 
@@ -270,7 +272,35 @@
 		setVar $restock 1
 	end
 
-	
+
+	getWordPos $bot~user_command_line $pos "resume"
+	if ($pos > 0)
+		setvar $r 11
+		while ($r <= SECTORS)
+			getSectorParameter $r "LSCHK" $lschk
+			if ($lschk = TRUE)
+				setVar $CHKD[$r] 1
+			else
+				setVar $CHKD[$r] 0
+			end
+			add $r 1
+		end
+		
+	else
+		setvar $r 11
+		while ($r <= SECTORS)
+			setSectorParameter $r "LSCHK" FALSE
+			add $r 1
+		end
+		
+	end
+
+	setVar $ignorea 0
+	getWordPos $bot~user_command_line $pos "ignorea"
+	if ($pos > 0)
+		setVar $ignorea 1
+	end
+
 	if ($FILTER_DENSITY = 1)
 		goSub :getPersonalPlanets
 	end
@@ -449,15 +479,19 @@
 					end
 				end
 			end
-		setVar $i 1
+		
 		setArray $Adj_Targets SECTOR.WARPCOUNT[$player~CURRENT_SECTOR]
 		setArray $Filtered_Density SECTOR.WARPCOUNT[$player~CURRENT_SECTOR]
 
+		setVar $holoRequired 0
+		setVar $firstFilter 1
+
+
+		:refilter
+		setVar $i 1
 		while ($i <= SECTOR.WARPCOUNT[$player~CURRENT_SECTOR])
-        		setVar $adj SECTOR.WARPS[$player~CURRENT_SECTOR][$i]
-			setVar $Adj_Targets[$i] 10
+			setVar $adj SECTOR.WARPS[$player~CURRENT_SECTOR][$i]
 			setVar $currentDensity SECTOR.DENSITY[$adj]
-			
 			if ($FILTER_DENSITY = 1)
 				if ($planetsInSectors[$adj] > 0)
 					subtract $currentDensity (500 * $planetsInSectors[$adj])
@@ -471,6 +505,55 @@
 				end
 					
 			end
+			if ($ignorea = 1)
+				if ($firstFilter = 1)
+					getSectorParameter $adj "FIGSEC" $Flag
+					isNumber $tst $Flag
+					if ($tst = 0)
+						setVar $Flag 0
+						setSectorParameter $adj "FIGSEC" FALSE
+					end
+					if (($flag = 0) and (($currentDensity <> 0) and $currentDensity <> 100))
+						# not our fig there, and density not passive
+						setVar $holoRequired 1
+					end
+				else
+					setVar $figsowner SECTOR.FIGS.OWNER[$adj]
+					getWordPos $figsowner $whereowner "belong to"
+		
+					if ($whereowner = 0)
+						if (SECTOR.FIGS.QUANTITY[$adj] < $player~FIGHTERS)
+							subtract $currentDensity (SECTOR.FIGS.QUANTITY[$adj] * 5)
+						end
+					end
+					
+
+				end
+				
+			end
+
+			setVar $Filtered_Density[$i] $currentDensity
+			add $i 1
+		end 
+
+		if ($holoRequired = 1)
+			setVar $firstfilter 0
+			setVar $holoRequired 0
+			send "zn"
+			waitfor "o you want instructions (Y/N) [N]?"
+			gosub :Do_Holo
+	
+
+			goto :refilter
+			
+		end
+
+		setVar $i 1
+		while ($i <= SECTOR.WARPCOUNT[$player~CURRENT_SECTOR])
+        		setVar $adj SECTOR.WARPS[$player~CURRENT_SECTOR][$i]
+			setVar $Adj_Targets[$i] 10
+			setVar $currentDensity $Filtered_Density[$i]
+			
 			if (SECTOR.NAVHAZ[$adj] <> 0)
 				setVar $filter 0
 				setVar $Filter (SECTOR.NAVHAZ[$adj] * 21)
@@ -1435,7 +1518,7 @@
 	return
 :Do_Holo
 	setArray $HoloOutput 2000
-    setVar $Line_Pointer 1
+	setVar $Line_Pointer 1
                 	send "SzH*  "
 	setTextLineTrigger	TurnsGone		:TurnsGone		"Do you want instructions (Y/N) [N]?"
 	setTextLineTrigger	DoneScan		:DoneScan		"Warps to Sector(s) :"
