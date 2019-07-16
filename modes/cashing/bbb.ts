@@ -178,7 +178,6 @@ while ($y < $trips)
 
 	send $oreholds "*"
 	gosub :PLAYER~startHaggle
-	gosub :weareselling
 	if ($quant < $org_holds)
 		setvar $switchboard~message "Low on available organics, Halting...*"
 		gosub :switchboard~switchboard
@@ -189,7 +188,6 @@ while ($y < $trips)
 
 	send $org_holds "*"
 	gosub :PLAYER~startHaggle
-	gosub :weareselling
 	if ($quant < $equip_holds)
 		setvar $switchboard~message "Low on available equipment, Halting...*"
 		gosub :switchboard~switchboard
