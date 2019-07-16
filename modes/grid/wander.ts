@@ -451,7 +451,12 @@
 						goto :callSaveMe
 					end
 					if (($PLAYER~TOTAL_HOLDS <> $PLAYER~ORE_HOLDS) AND (($player~ore_holds < 100) OR ($player~unlimited_game = TRUE)) AND ((PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = TRUE) AND (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = FALSE) AND (PORT.CLASS[$PLAYER~CURRENT_SECTOR] > 0) AND (PORT.CLASS[$PLAYER~CURRENT_SECTOR] < 9)))
-						send "pt****   "
+						gosub :player~isEpHaggle
+						if ($player~isEpHaggle)
+							send "pt*"
+						else
+							send "pt****   "
+						end
 						add $total_turns 1
 						gosub :PLAYER~quikstats
 					end
