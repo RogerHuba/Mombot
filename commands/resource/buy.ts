@@ -26,17 +26,8 @@ return
 	if ($buydown_mode = "Speedbuy")
 		gosub :buynohaggle
 	else
-		setvar $isFound false
-		listActiveScripts $scripts
-		setvar $i 1
-		while ($i <= $scripts)
-			getWordPos "<><><>"&$scripts[$i] $pos "<><><>ephaggle"
-			if ($pos > 0)
-				setvar $isFound true
-			end
-			add $i 1
-		end
-		if ($isFound)
+		gosub :player~isEpHaggle
+		if ($isEpHaggle)
 			killalltriggers
 			if ($buydown_mode = "Worst Price")
 				#saving ephaggle mode so it can be returned when done with buy#
