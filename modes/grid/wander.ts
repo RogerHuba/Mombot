@@ -454,6 +454,7 @@
 						gosub :player~isEpHaggle
 						if ($player~isEpHaggle)
 							send "pt*"
+							waiton "Agreed,"
 						else
 							send "pt****   "
 						end
