@@ -177,12 +177,7 @@ while ($y < $trips)
 	end
 
 	send $oreholds "*"
-	if ($internalHaggle = TRUE)
-		gosub :PLAYER~startHaggle
-	else
-		waitfor "How many holds of Fuel Ore do you"
-		waitfor "You have"
-	end
+	gosub :PLAYER~startHaggle
 	gosub :weareselling
 	if ($quant < $org_holds)
 		setvar $switchboard~message "Low on available organics, Halting...*"
@@ -193,12 +188,7 @@ while ($y < $trips)
 	end
 
 	send $org_holds "*"
-	if ($internalHaggle = TRUE)
-		gosub :PLAYER~startHaggle
-	else
-		waitfor "How many holds of Organics do you want"
-		waitfor "You have"
-	end
+	gosub :PLAYER~startHaggle
 	gosub :weareselling
 	if ($quant < $equip_holds)
 		setvar $switchboard~message "Low on available equipment, Halting...*"
@@ -208,13 +198,7 @@ while ($y < $trips)
 		halt
 	end
 	send $equip_holds "*"
-	if ($internalHaggle = TRUE)
-		gosub :PLAYER~startHaggle
-	else
-		waitfor "How many holds of Equipment do you wa"
-		waitfor "You have"
-	end
-
+	gosub :PLAYER~startHaggle
 	gosub :player~quikstats
 
 
