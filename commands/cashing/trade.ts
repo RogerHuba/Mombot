@@ -30,22 +30,6 @@ gosub :BOT~loadVars
 
 	
 
-	setvar $isFound false
-	listActiveScripts $scripts
-	setvar $i 1
-	while ($i <= $scripts)
-		getWordPos "<><><>"&$scripts[$i] $pos "<><><>ephaggle"
-		if ($pos > 0)
-			setvar $isFound true
-		end
-		add $i 1
-	end
-	if ($isFound)
-		setvar $haggle "t"
-	else
-		setvar $haggle "h"
-	end
-
 	if ($bot~parm1 <> "")
 		isNumber $test $bot~parm1
 		if ($test = FALSE)

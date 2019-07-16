@@ -1651,26 +1651,54 @@ return
 	end
 return
 # ==========================   END SWATH DISABLING SUBROUTINE  =================
-
+ 
 :startHaggle
+
+setvar $isEpHaggle false
+listActiveScripts $scripts
+setvar $i 1
+while ($i <= $scripts)
+	getWordPos "<><><>"&$scripts[$i] $pos "<><><>ephaggle"
+	if ($pos > 0)
+		setvar $isEpHaggle true
+	end
+	add $i 1
+end
+if ($isEpHaggle)
+	waitfor "Agreed,"
+	setTextLineTrigger tradeFin :tradeFin "empty cargo holds"
+	pause
+	:tradeFin
+		killtrigger tradeFin
+		getWord CURRENTLINE $nCredits 3
+		stripText $nCredits ","
+		
+		if ($nCredits = $cCredits)
+			setVar $report 1
+		else
+			setVar $cCredits $nCredits
+		end	
+else
 	setVar $hfactor 5
-:units
+	:units
 		killtrigger ptrade
 		killtrigger strade
 		killtrigger go
 		killtrigger done
-	gosub :setConnectionTriggers
+		gosub :setConnectionTriggers
 		SetTextTrigger ptrade :bunits "do you want to buy ["
 		SetTextTrigger strade :sunits "do you want to sell ["
 		setTextLineTrigger go :finishhaggle "Agreed, "
 		setTextLineTrigger done :donehaggle "empty cargo holds."
 		pause
 
-:finishhaggle
+	:finishhaggle
 		killtrigger done
 		gosub :haggle
 
-:donehaggle
+	:donehaggle
+end
+
  
 return
 
