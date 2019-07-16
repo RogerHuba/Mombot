@@ -80,14 +80,14 @@ reqRecording
        HALT
     END
 
-	setVar $epHaggleFail 0
-	setVar $ephaggle "n"
-	getWordPos $bot~user_command_line $pos " ep"
-
-	IF ($pos > 0)
+	gosub :player~isEpHaggle
+	if ($isEphaggle)
 		setVar $ephaggle "y"
 		setVar $SWITCHBOARD~message "Using EP HAGGLE!*"
 		gosub :switchboard~switchboard
+	else
+		setVar $epHaggleFail 0
+		setVar $ephaggle "n"
 	END
 
 
