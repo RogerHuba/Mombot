@@ -27,7 +27,7 @@ return
 		gosub :buynohaggle
 	else
 		gosub :player~isEpHaggle
-		if ($isEpHaggle)
+		if ($player~isEpHaggle)
 			killalltriggers
 			if ($buydown_mode = "Worst Price")
 				#saving ephaggle mode so it can be returned when done with buy#

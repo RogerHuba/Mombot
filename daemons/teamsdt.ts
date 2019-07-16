@@ -55,7 +55,7 @@
 	setVar $BOT~help[10] $BOT~tab&"    {planetfuel} - will grab fuel from red planets"
 	setVar $BOT~help[11] $BOT~tab&"       {twoship} - will use two ships to cash"
 	setVar $BOT~help[12] $BOT~tab&"           {X:N} - furb ship letter and holds to buy"
-	setVar $BOT~help[13] $BOT~tab&"            {ep} - use ep Haggle"
+	setVar $BOT~help[13] $BOT~tab&"                 - Uses EP Haggle if running in bot"
 	setVar $BOT~help[14] $BOT~tab&"Usage: "
 	setVar $BOT~help[15] $BOT~tab&"        >teamsdt 3 4 5"
 	setVar $BOT~help[16] $BOT~tab&"        >teamsdt 3 4 5 11 12 13"
@@ -104,9 +104,8 @@
 	end
 	
 	setVar $ephaggle 0
-	getWordPos $bot~user_command_line $pos " ep"
-
-	IF ($pos > 0)
+	gosub :player~isEpHaggle
+	IF ($player~isEpHaggle)
 		setVar $ephaggle 1
 		setVar $SWITCHBOARD~message "Using EP HAGGLE!*"
 		gosub :switchboard~switchboard

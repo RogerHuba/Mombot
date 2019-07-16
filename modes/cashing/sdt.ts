@@ -20,12 +20,12 @@ reqRecording
 	setVar $BOT~parm4 $BOT~parm4
 	setVar $BOT~user_command_line $BOT~user_command_line
       
-	setVar $BOT~help[1] $BOT~tab&" sdt {resetlra} [ship1] [ship2] [planet1] [planet2]        *{resetlra} {ep}*"
+	setVar $BOT~help[1] $BOT~tab&" sdt {resetlra} [ship1] [ship2] [planet1] [planet2] {resetlra}*"
 	setVar $BOT~help[2] $BOT~tab&"  - Do NOT need to start in Ship 1 or Ship 2."
 	setVar $BOT~help[3] $BOT~tab&"  - First Steal will be from Ship 1."
 	setVar $BOT~help[4] $BOT~tab&"  - Checks last rob and busts from Sec Params"
 	setVar $BOT~help[5] $BOT~tab&"  - {resetlra} will reset last rob sector and exit"
-	setVar $BOT~help[6] $BOT~tab&"  - {ep} Use EP Haggle*"
+	setVar $BOT~help[6] $BOT~tab&"  - Will use EP Haggle if running in bot"
 	setVar $BOT~help[7] $BOT~tab&"  - Created by Cherokee"
 	gosub :BOT~help_file
 
@@ -81,7 +81,7 @@ reqRecording
     END
 
 	gosub :player~isEpHaggle
-	if ($isEphaggle)
+	if ($player~isEphaggle)
 		setVar $ephaggle "y"
 		setVar $SWITCHBOARD~message "Using EP HAGGLE!*"
 		gosub :switchboard~switchboard
