@@ -18,7 +18,7 @@
 		loadVar $BOT~bot_turn_limit
 		loadVar $GAME~steal_factor
 	
-	setVar $BOT~help[1] $BOT~tab&" sst {resetlra} [ship1] [ship2] {jet} {resetlra}*"
+	setVar $BOT~help[1] $BOT~tab&" sst {resetlra} [ship1] [ship2] {jet} {resetlra}"
 	setVar $BOT~help[2] $BOT~tab&"  - Do NOT need to start in Ship 1 or Ship 2."
 	setVar $BOT~help[3] $BOT~tab&"  - First Steal will be from Ship 1."
 	setVar $BOT~help[4] $BOT~tab&"  - Checks last rob and busts from Sec Params"
@@ -41,14 +41,16 @@
 		isNumber $test $parm1
 		IF ($test)
 		ELSE
-		   send "'{" $bot_name "} - Ship 1 Must Be a Number.*"
-		   HALT
+			setVar $SWITCHBOARD~message "Ship 1 Must Be a Number.*"
+			gosub :switchboard~switchboard
+			HALT
 		END
 		isNumber $test $parm2
 		IF ($test)
 		ELSE
-		   send "'{" $bot_name "} - Ship 2 Must Be a Number.*"
-		   HALT
+			setVar $SWITCHBOARD~message "Ship 2 Must Be a Number.*"
+			gosub :switchboard~switchboard
+			HALT
 		END
 		setVar $ship_1 $parm1
 		setVar $ship_2 $parm2
@@ -61,7 +63,7 @@
 				setVar $jet "y"
 		END
 		gosub :player~isEpHaggle
-		if ($isEphaggle)
+		if ($player~isEphaggle)
 			setVar $ephaggle "y"
 			setVar $SWITCHBOARD~message "Using EP HAGGLE!*"
 			gosub :switchboard~switchboard
@@ -83,12 +85,12 @@
 		END
 :verifyship
 		IF ($SHIP_NUMBER <> $ship_1)
-			   send "x " $ship_1 "* q z n"
+			send "x " $ship_1 "* q z n"
 		END
 		gosub :quikstats
 		IF ($SHIP_NUMBER <> $ship_1)
-			   send "'{" $bot_name "} - Cannot Xport to Ship 1.  Check Xport Range.  Halting.*"
-			   HALT
+			send "'{" $bot_name "} - Cannot Xport to Ship 1.  Check Xport Range.  Halting.*"
+			HALT
 		END
 logging off
 
@@ -135,12 +137,10 @@ setvar $sec2void 0
 	getSectorParameter	1 "LRA" $last_rob_attempt
 
 	send "'{" $bot_name "} - last rob attempt: "&$last_rob_attempt&"*"
-   
-   
 	if ($last_rob_attempt = $current_sector)
 		send "'{" $bot_name "} - last rob attempt is this sector! HAlting*"
-		 gosub :endCNsettings
-		 gosub :clearadjacent
+		gosub :endCNsettings
+		gosub :clearadjacent
 		halt
 	end
 	gosub :voidAdjacent
@@ -149,7 +149,7 @@ setvar $sec2void 0
 	if ($bustthissec = TRUE)
 		send "'{" $bot_name "} - According to my data i've busted here - ending*"
 		gosub :clearadjacent
-		 gosub :endCNsettings
+		gosub :endCNsettings
 		halt
 	end
 	
