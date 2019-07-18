@@ -622,7 +622,7 @@ goto :BOT~wait_for_command
 	setVar $startingLocation $PLAYER~current_prompt
 	setVar $BOT~validPrompts "Citadel Command"
 	gosub :BOT~checkStartingPrompt
-	gosub :combat~holo_kill
+	gosub :combat~holokill
 	if ($SWITCHBOARD~message <> "")
 		gosub :SWITCHBOARD~switchboard
 	end
