@@ -30,7 +30,7 @@
     if ($PLAYER~twarpSuccess = FALSE)
         if (($PLAYER~startingLocation = "Citadel") OR ($PLAYER~startingLocation = "Planet"))
             if ($planet~planet <> 0)
-                gosub :PLAYER~current_prompt
+                gosub  :player~currentPrompt
                 if ($PLAYER~CURRENT_PROMPT = "Command")
                     gosub :PLANET~landingSub
                 end

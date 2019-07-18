@@ -21,7 +21,7 @@
 		if (($scan_macro = " sh") and (($PLAYER~SCAN_TYPE = "None") OR ($PLAYER~SCAN_TYPE = "Density")))
 				goto :no_scanner_available1
 		end
-	gosub :PLAYER~current_prompt
+	gosub  :player~currentPrompt
 	setArray $scan_array 1000
 	setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
 	if ($scan_macro = "") OR ($scan_macro = 0)
@@ -192,7 +192,7 @@
 			setVar $LandOn $bot~parm1
 			setVar $planet~planet $bot~parm1
 			gosub :PLANET~landingSub
-			gosub :PLAYER~current_prompt
+			gosub  :player~currentPrompt
 			if ($PLAYER~current_prompt = "Citadel")
 				send "q "
 				waitOn "Planet command ("

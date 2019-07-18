@@ -639,7 +639,7 @@
 											setVar $PLAYER~warpto $farmsector
 											gosub :player~quikstats
 											gosub :tactics~twarp
-											gosub :PLAYER~current_prompt
+											gosub  :player~currentPrompt
 											if ($PLAYER~twarpSuccess <> TRUE)
 												setvar $switchboard~message "Twarp failed during planet balancing. "&$player~msg&" Halting!*"
 												gosub :switchboard~switchboard

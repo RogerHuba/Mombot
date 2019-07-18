@@ -24,7 +24,7 @@
     if ($PLAYER~twarpSuccess = FALSE)
         if (($PLAYER~startingLocation = "Citadel") OR ($PLAYER~startingLocation = "Planet"))
             if ($PLANET~PLANET <> 0)
-                gosub :PLAYER~current_prompt
+                gosub  :player~currentPrompt
                 if ($PLAYER~CURRENT_PROMPT = "Command")
                     gosub :PLANET~landingSub
                 end
@@ -91,7 +91,7 @@ halt
 
 :checkStartingPrompt
     if ($PLAYER~CURRENT_PROMPT = "0")
-        gosub :PLAYER~current_prompt
+        gosub  :player~currentPrompt
     end
     getWordPos " "&$validPrompts&" " $pos $PLAYER~CURRENT_PROMPT
     if ($pos <= 0)

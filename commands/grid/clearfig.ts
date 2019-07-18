@@ -120,7 +120,7 @@
 		else
 			if ($startingLocation = "Citadel")
 				send "l j" & #8 & $planet~planet & "*  *  "
-				gosub :player~current_prompt
+				gosub  :player~currentPrompt
 				if ($player~current_prompt = "Planet")
 					send "m* * *"
 				else

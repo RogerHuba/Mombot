@@ -9,7 +9,7 @@ loadVar $surround_before_hkill
             setVar $insurround_before_hkill TRUE
     end
     killalltriggers
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
     setVar $PROMPT~validPrompts "Citadel Command"
     gosub :PROMPT~checkStartingPrompt
@@ -87,7 +87,7 @@ loadVar $surround_before_hkill
                 setVar $insurround_before_hkill FALSE
             end
         
-            gosub :PLAYER~current_prompt
+            gosub  :player~currentPrompt
             setVar $PROMPT~validPrompts "Command"
             gosub :PROMPT~checkStartingPrompt
             goSub :SECTOR~getSectorData

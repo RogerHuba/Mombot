@@ -6,7 +6,7 @@ gosub :BOT~loadVars
      gosub :BOT~help_file
 
 :extern
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
     if (($startingLocation <> "Citadel") AND ($startingLocation <> "Command"))
         setVar $SWITCHBOARD~message "Wrong prompt for extern check.*"

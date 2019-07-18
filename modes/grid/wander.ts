@@ -246,7 +246,7 @@
 							#if ($j = $courseLength)
 								setVar $PLAYER~warpto $closestFiggedSector
 								gosub :tactics~twarp
-								gosub :PLAYER~current_prompt
+								gosub  :player~currentPrompt
 								if ($PLAYER~twarpSuccess = TRUE)
 									setVar $j $index
 									add $total_turns $player~turns_per_warp
@@ -263,7 +263,7 @@
 							if ($closestFiggedSector > 0)
 								setVar $PLAYER~warpto $closestFiggedSector
 								gosub :tactics~twarp
-								gosub :PLAYER~current_prompt
+								gosub  :player~currentPrompt
 								if ($PLAYER~twarpSuccess = TRUE)
 									setVar $j ($index + 1)
 									add $total_turns $player~turns_per_warp
@@ -292,7 +292,7 @@
 							if ($j = $courseLength)
 								setVar $PLAYER~warpto $closestFiggedSector
 								gosub :tactics~twarp
-								gosub :PLAYER~current_prompt
+								gosub  :player~currentPrompt
 								if ($PLAYER~twarpSuccess = TRUE)
 									setVar $j $index
 									add $total_turns $player~turns_per_warp
@@ -309,7 +309,7 @@
 							if ($closestFiggedSector > 0)
 								setVar $PLAYER~warpto $closestFiggedSector
 								gosub :tactics~twarp
-								gosub :PLAYER~current_prompt
+								gosub  :player~currentPrompt
 								if ($PLAYER~twarpSuccess = TRUE)
 									setVar $j ($index + 1)
 									add $total_turns $player~turns_per_warp

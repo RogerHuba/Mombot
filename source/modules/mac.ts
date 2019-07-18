@@ -57,7 +57,7 @@
     getWordPos $cbyCheck $posc "c"
     getWordPos $cbyCheck $posb "b"
     getWordPos $cbyCheck $posy "y"
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     if (($PLAYER~CURRENT_PROMPT = "Computer") AND ($posb > 0) AND ($posy > 0))
         send "'{" $SWITCHBOARD~bot_name "} - Self Destruct Protection Activated*"
         goto :wait_for_command

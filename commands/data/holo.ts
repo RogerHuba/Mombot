@@ -20,7 +20,7 @@
 		if (($scan_macro = " sh") and (($PLAYER~SCAN_TYPE = "None") OR ($PLAYER~SCAN_TYPE = "Density")))
 				goto :no_scanner_available1
 		end
-	gosub :PLAYER~current_prompt
+	gosub  :player~currentPrompt
 	setArray $scan_array 1000
 	setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
 	if ($scan_macro = "") OR ($scan_macro = 0)

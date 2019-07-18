@@ -656,7 +656,7 @@ return
 			gosub :player~quikstats
 		end
 	
-		gosub :player~current_prompt
+		gosub  :player~currentPrompt
 		if ($player~current_prompt <> "Command")
 			setVar $SWITCHBOARD~message "Wrong prompt for holokill kill.*"
 			return

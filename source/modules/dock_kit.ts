@@ -12,7 +12,7 @@
     killalltriggers
     setVar $SWITCHBOARD~bot_name $bot_name
     setVar $SWITCHBOARD~self_command $self_command
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     setVar $PROMPT~validPrompts "<StarDock> <Hardware <Libram <FedPolice> <Shipyards> <Tavern>"
     setVar $startingLocation $PLAYER~current_prompt
     setVar $PROMPT~startingLocation $startingLocation

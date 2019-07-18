@@ -6,7 +6,7 @@
 #============================== START TOPOFF (TOPOFF) ==============================
 :topoff
     killalltriggers
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     setVar $PROMPT~startingLocation $PLAYER~current_prompt
     setVar $PROMPT~validPrompts "Citadel Command"
     gosub :PROMPT~checkStartingPrompt

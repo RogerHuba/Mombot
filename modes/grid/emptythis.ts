@@ -125,7 +125,7 @@
 					end
 					setVar $PLAYER~warpto $destination
 		            gosub :tactics~twarp
-		            gosub :PLAYER~current_prompt
+		            gosub  :player~currentPrompt
 		            if ($PLAYER~twarpSuccess = TRUE)
 		        		send "f 0*"				
 
@@ -135,7 +135,7 @@
 
 						#setVar $PLAYER~warpto $homeSector
 			            #gosub :tactics~twarp
-			            #gosub :PLAYER~current_prompt
+			            #gosub  :player~currentPrompt
 		            end
 		        	setSectorParameter $destination "FIGSEC" FALSE
 		            gosub :PLAYER~quikstats

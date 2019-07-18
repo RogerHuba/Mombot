@@ -15,7 +15,7 @@
     getWord $user_command_line $parm1 1
     getWord $user_command_line $parm2 2
     gosub :doQsetProtections
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
     setVar $PROMPT~validPrompts "Planet Citadel"
     gosub :PROMPT~checkStartingPrompt

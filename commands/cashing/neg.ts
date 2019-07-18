@@ -34,7 +34,7 @@
 	killtrigger 1
 	killtrigger 2
 
-	gosub :player~current_prompt
+	gosub  :player~currentPrompt
 	setVar $startingLocation $player~CURRENT_PROMPT
 	
 	#send "'[" $startingLocation "]*"

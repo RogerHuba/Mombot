@@ -28,7 +28,7 @@ logging off
 			setvar $furb true
 		end
 
-		gosub :PLAYER~current_prompt
+		gosub  :player~currentPrompt
 		setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 		if ($PLAYER~startingLocation <> "Command")
 			if ($PLAYER~startingLocation = "Citadel")

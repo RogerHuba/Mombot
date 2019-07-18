@@ -388,7 +388,7 @@ return
 # ============================== START LOGIN (login) Sub ==============================
 :login
 	gosub :BOT~killthetriggers
-	gosub :PLAYER~current_prompt
+	gosub  :player~currentPrompt
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $BOT~validPrompts "Citadel Command"
 	gosub :BOT~checkStartingPrompt
@@ -406,7 +406,7 @@ goto :BOT~wait_for_command
 # ============================== START STORE SHIP ====================================
 :storeship
 :shipstore
-		gosub :PLAYER~current_prompt
+		gosub  :player~currentPrompt
 		setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 		setVar $BOT~validPrompts "Command Citadel"
 		gosub :BOT~checkStartingPrompt

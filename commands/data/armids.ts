@@ -15,7 +15,7 @@
 # ============================== START REFRESH ARMIDS (ARMIDS) ==============================
 :armids
 	
-	gosub :PLAYER~current_prompt
+	gosub  :player~currentPrompt
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation = "Command")
 		goto :start_armids

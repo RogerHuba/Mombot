@@ -62,7 +62,7 @@
     getWordPos $cbyCheck $posc "c"
     getWordPos $cbyCheck $posb "b"
     getWordPos $cbyCheck $posy "y"
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     if (($PLAYER~CURRENT_PROMPT = "Computer") AND ($posb > 0) AND ($posy > 0))
         setvar $switchboard~message "Self Destruct Protection Activated*"
         gosub :switchboard~switchboard

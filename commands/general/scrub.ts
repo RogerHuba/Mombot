@@ -10,7 +10,7 @@
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 	if (($startingLocation <> "Command") AND ($startingLocation <> "Citadel"))
-		gosub :PLAYER~current_prompt
+		gosub  :player~currentPrompt
 		setVar $BOT~validPrompts "Citadel Command"
 		gosub :BOT~checkStartingPrompt
 	end
@@ -34,7 +34,7 @@
 			setVar $back $PLAYER~CURRENT_SECTOR
 			setVar $PLAYER~warpto $MAP~stardock
 			gosub :tactics~twarp
-			gosub :PLAYER~current_prompt
+			gosub  :player~currentPrompt
 			if ($PLAYER~twarpSuccess = TRUE)
 				send "p ss ys *p"
 			else

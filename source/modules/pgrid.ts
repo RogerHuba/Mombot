@@ -266,7 +266,7 @@
         add $i 1
         send "l j" & #8 & $PLANET~PLANET & "*  *  "
     end
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     if ($PLAYER~current_prompt = "Planet")
         send "m * * * c s* "
     end

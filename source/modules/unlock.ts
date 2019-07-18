@@ -16,7 +16,7 @@
 # ============================== START UNLOCK (unlock) Sub ==============================
 :unlock
     setVar $unlock_attempt 0
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     setVar $validPrompts "Citadel"
     gosub :checkStartingPrompt
     send "'{" $SWITCHBOARD~bot_name "} - Unlock ship initiated*ryy"
@@ -70,7 +70,7 @@ return
 
 :checkStartingPrompt
     if ($PLAYER~CURRENT_PROMPT = "0")
-        gosub :PLAYER~current_prompt
+        gosub  :player~currentPrompt
     end
     getWordPos " "&$validPrompts&" " $pos $PLAYER~CURRENT_PROMPT
     if ($pos <= 0)

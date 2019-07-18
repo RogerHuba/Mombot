@@ -14,7 +14,7 @@
 :b
     killalltriggers
     if ($bot~parm1 <> $PLAYER~CURRENT_SECTOR)
-        gosub :PLAYER~current_prompt
+        gosub  :player~currentPrompt
     else
         gosub :PLAYER~quikstats
     end

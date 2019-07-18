@@ -14,7 +14,7 @@
 :q
     getWord $bot~user_command_line $bot~parm1 1
     getWord $bot~user_command_line $bot~parm2 2
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
     setVar $PROMPT~validPrompts "Planet Citadel"
     gosub :PROMPT~checkStartingPrompt

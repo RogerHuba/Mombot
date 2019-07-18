@@ -170,7 +170,7 @@ if ($no_twarp = FALSE)
 			if ($j = $courseLength)
 				setVar $PLAYER~warpto $closestFiggedSector
 	            gosub :PLAYER~twarp
-	            gosub :PLAYER~current_prompt
+	            gosub  :player~currentPrompt
 	            if ($PLAYER~twarpSuccess = TRUE)
 	            	setVar $j $index
 	            else
@@ -182,7 +182,7 @@ if ($no_twarp = FALSE)
 			if ($closestFiggedSector > 0)
 				setVar $PLAYER~warpto $closestFiggedSector
 	            gosub :PLAYER~twarp
-	            gosub :PLAYER~current_prompt
+	            gosub  :player~currentPrompt
 	            if ($PLAYER~twarpSuccess = TRUE)
 	            	setVar $j ($index + 1)
 	            else

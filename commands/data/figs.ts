@@ -10,7 +10,7 @@
 
 #================================ REFRESH FIGHTERS ===============================================
 :figs
-	gosub :player~current_prompt
+	gosub  :player~currentPrompt
 	setVar $startingLocation $player~current_prompt
 	if ($startingLocation = "Command")
 	        goto :start_figs

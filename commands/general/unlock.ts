@@ -6,7 +6,7 @@
 # ============================== START UNLOCK (unlock) Sub ==============================
 :unlock
     setVar $unlock_attempt 0
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     setVar $bot~validPrompts "Citadel"
     gosub :bot~checkstartingprompt
     setvar $switchboard~message "Unlock ship initiated*"

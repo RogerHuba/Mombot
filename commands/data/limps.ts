@@ -15,7 +15,7 @@
 # ============================== START REFRESH LIMPETS (LIMPS) ==============================
 :limps
 	
-	gosub :PLAYER~current_prompt
+	gosub  :player~currentPrompt
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation = "Command")
 	        goto :start_limps

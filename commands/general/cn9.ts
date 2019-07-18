@@ -9,7 +9,7 @@
 	gosub :BOT~help_file
 
 
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     setVar $BOT~validPrompts "Citadel Command Computer"
     gosub :bot~checkStartingPrompt
     if ($PLAYER~startingLocation = "Computer")
