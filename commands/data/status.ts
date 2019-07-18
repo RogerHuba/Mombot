@@ -73,15 +73,15 @@
     setVar $h[27] "Ship ID   : "
     setVar $h[28] "Planet #  : "
     setVar $h[29] "Time Left : "
-    setVar $h[30] "Prompt    : "
+    setVar $h[30] "    Prompt: "
     setVar $h[31] "IG Status : "
-    setVar $h[32] "Bot Mode  : "
+    setVar $h[32] "  Bot Mode: "
     setVar $h[33] "Team Name : "
     setVar $h[34] "Planet #  : "
-    setVar $h[35] "Fed Safe  : "
+    setVar $h[35] "  Fed Safe: "
     setVar $qss[1] $PLAYER~CURRENT_SECTOR
     if ($PLAYER~unlimitedGame)
-        setVar $qss[2] "Unlimited"
+        setVar $qss[2] "Unlim"
     else
         setVar $qss[2] $PLAYER~TURNS
     end
@@ -120,7 +120,7 @@
         setVar $qss[28] "None"
     end
     if ($timeLeft = "00:00:00")
-        setVar $qss[29] "Unlimited"
+        setVar $qss[29] "Unlim"
     else
         setVar $qss[29] $timeLeft
     end
@@ -162,7 +162,7 @@
         setVar $spc_count 1
         #upperCase $h[$qss_count]
         setVar $qss_var[$qss_count] $h[$qss_count]&$qss[$qss_count]
-        setVar $total_length 22
+        setVar $total_length 18
         getLength $qss_var[$qss_count] $text_length
         subtract $total_length $text_length
         while ($total_length >= 0)
@@ -173,7 +173,7 @@
     end
 :qss_send
                          setVar $SWITCHBOARD~message "                         --- Status Update ---                        *"
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"----------------------------------------------------------------------*"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"---------------------------------------------------------------------*"
     setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[1]&$qss_var[27]&$qss_var[28]&"*"
     setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[3]&$qss_var[4]&$qss_var[13]&"*"
     setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[2]&$qss_var[5]&$qss_var[12]&"*"
@@ -186,7 +186,7 @@
     setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[29]&$qss_var[33]&$qss_var[31]&"*"
     setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    *"
     setVar $SWITCHBOARD~message $SWITCHBOARD~message&$qss_var[32]&$qss_var[30]&$qss_var[35]&"*"
-    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"----------------------------------------------------------------------**"
+    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"---------------------------------------------------------------------**"
     
     if ($SWITCHBOARD~self_command <> TRUE)
         setVar $SWITCHBOARD~self_command 2

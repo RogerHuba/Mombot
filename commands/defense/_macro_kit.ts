@@ -292,7 +292,7 @@
 		    setTextLineTrigger notenoughca :notenough "You don't have that many mines available."
 		    pause
 		else
-		    send "'Out of armids!*"
+			send "'Out of armids!*"
 		    waitOn "Citadel command (?=help)"
 		    halt
 		end

@@ -36,3 +36,5 @@ return
 		stripText $CURRENT_PROMPT #8
 		setVar $startingLocation $CURRENT_PROMPT
 return
+
+include "source\bot_includes\switchboard"
