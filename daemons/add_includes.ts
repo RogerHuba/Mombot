@@ -32,7 +32,10 @@ halt
 	end
 	if (($pos > 0) and ($pos2 <= 0))
 		add $paths 1
-		setvar $paths[$paths] $prepath&$include
+		fileExists $includeExists "scripts\mombot\"&$prepath&$include&".ts"
+		if ($includeExists)
+			setvar $paths[$paths] $prepath&$include
+		end
 		setvar $doublecheck $doublecheck&" "&$include&" "
 	end
 	if (($command_pos > 0) and ($command_pos2 <= 0))
