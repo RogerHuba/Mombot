@@ -390,7 +390,7 @@
 						else
 							setVar $PLAYER~buytype "b"
 						end
-						gosub :tactics~buy
+						gosub :player~buy
 						gosub :PLAYER~quikstats
 					end
 					if (PORT.BUYORG[$NearFig] = FALSE)
@@ -400,13 +400,13 @@
 						else
 							setVar $PLAYER~buytype "b"
 						end
-						gosub :tactics~buy
+						gosub :player~buy
 						gosub :PLAYER~quikstats
 					end
 					if (PORT.BUYFUEL[$NearFig] = FALSE)
 						setVar $PLAYER~buyobject "f"
 						setVar $PLAYER~buytype "s"
-						gosub :tactics~buy
+						gosub :player~buy
 						gosub :PLAYER~quikstats
 					end
 										

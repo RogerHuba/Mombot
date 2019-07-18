@@ -358,7 +358,7 @@ setWindowContents moo $stuff
 
 		if ($gridSectorPostTwarp > 0)
 			setVar $player~warpto $gridSector
-			gosub :tactics~twarp
+			gosub :player~twarp
 			add $stat_moves 1
 
 			setVar $gridSectorPostTwarp 0

@@ -59,7 +59,7 @@
     if ($SHIP~SHIP_MAX_ATTACK > $PLAYER~FIGHTERS)
         setVar $SHIP~SHIP_MAX_ATTACK 9999
     end
-    gosub :tactics~getCourse
+    gosub :player~getCourse
     if ($PLAYER~courseLength <= 0)
         halt
     end

@@ -410,7 +410,7 @@ goto :BOT~wait_for_command
 		setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 		setVar $BOT~validPrompts "Command Citadel"
 		gosub :BOT~checkStartingPrompt
-		gosub :SHIP~save_the_ship
+		gosub :ship~savetheship
 		goto :BOT~wait_for_command
 # ================================== END STORE SHIP ==============================================
 

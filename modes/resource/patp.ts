@@ -251,7 +251,7 @@
 				setVar $PLAYER~buyobject "f"
 				setVar $PLAYER~buytype "s"
 				setVar $PLAYER~buydownRoundsFromParam $turnsToEmpty
-				gosub :tactics~buy
+				gosub :player~buy
 				gosub :PLAYER~quikstats
 				send "c r*q "
 				

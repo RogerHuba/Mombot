@@ -638,7 +638,7 @@
 											setvar $player~startinglocation "Citadel"
 											setVar $PLAYER~warpto $farmsector
 											gosub :player~quikstats
-											gosub :tactics~twarp
+											gosub :player~twarp
 											gosub  :player~currentPrompt
 											if ($PLAYER~twarpSuccess <> TRUE)
 												setvar $switchboard~message "Twarp failed during planet balancing. "&$player~msg&" Halting!*"

@@ -141,7 +141,7 @@
         if ($PLAYER~CURRENT_SECTOR <> CURRENTSECTOR)
             setVar $PLAYER~CURRENT_SECTOR 0
         end
-        gosub :tactics~getCourse
+        gosub :player~getCourse
         if ($PLAYER~courseLength <= 0)
             halt
         end

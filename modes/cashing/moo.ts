@@ -503,7 +503,7 @@ setVar $loopi 1
 		if ($player~CREDITS > $dumpCashOnPlanet)
 		   
 		    setVar $player~warpto $cashDumpSector
-		    gosub :tactics~twarp
+		    gosub :player~twarp
 		   
 		    send "l" & $cashDumpPlanet&"* t n t 1 * C"
 		    send "TT"
@@ -523,7 +523,7 @@ setVar $loopi 1
 
 		if ($sector <> CURRENTSECTOR)
 			setVar $PLAYER~warpto $sector
-			gosub :tactics~twarp
+			gosub :player~twarp
 			
 			if ($PLAYER~twarpSuccess = FALSE)
 				goto :endloop
@@ -534,7 +534,7 @@ setVar $loopi 1
 	else
 		if ($sector <> CURRENTSECTOR)
 			setVar $PLAYER~warpto $sector
-			gosub :tactics~twarp
+			gosub :player~twarp
 		end
 	end
 
@@ -575,7 +575,7 @@ setVar $loopi 1
 	if ($cashDumpSector > 0)
 		send "* * * "
 		setVar $PLAYER~warpto $cashDumpSector
-		gosub :tactics~twarp
+		gosub :player~twarp
 		
 	end
 	setvar $switchboard~message "Mooooooooooo Mooooooooooo Done.*"
@@ -1039,7 +1039,7 @@ return
 	if ($player~FIGHTERS < $safeFighters)
 		
 		setVar $player~warpto $cashDumpSector
-		gosub :tactics~twarp
+		gosub :player~twarp
 
 		send "l" & $cashDumpPlanet&"*mnt*tnt1*q"
 		

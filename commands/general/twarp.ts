@@ -26,7 +26,7 @@
         halt
     end
     gosub :travelProtections
-    gosub :tactics~twarp
+    gosub :player~twarp
     if ($PLAYER~twarpSuccess = FALSE)
         if (($PLAYER~startingLocation = "Citadel") OR ($PLAYER~startingLocation = "Planet"))
             if ($planet~planet <> 0)

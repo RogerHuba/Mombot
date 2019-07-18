@@ -38,7 +38,7 @@ goto :Start_Up_Routines
 		end
 	    setVar $PLAYER~starting_point $bot~parm2
 		setVar $PLAYER~destination 1
-		gosub :tactics~getCourse
+		gosub :player~getCourse
 	    setVar $j 2
 	    setVar $result ""
 	    while ($j <= $PLAYER~courseLength)

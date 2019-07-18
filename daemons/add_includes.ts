@@ -22,7 +22,7 @@
 halt
 
 :check_for_include
-	getwordpos $lowercase_script_line $pos  $include&"~"
+	getwordpos $lowercase_script_line $pos  ":"&$include&"~"
 	getwordpos $doublecheck $pos2 " "&$include&" "
 	setvar $command_pos 0
 	setvar $command_pos2 0
@@ -37,7 +37,7 @@ halt
 	end
 	if (($command_pos > 0) and ($command_pos2 <= 0))
 		add $paths 1
-		setvar $paths[$paths] $prepath&$include&"\"&$command
+		setvar $paths[$paths] $prepath&$include&"\"&$command&"\"&$include
 		setvar $doublecheck2 $doublecheck2&" "&$include&"~"&$command&" "		
 	end
 return
@@ -66,3 +66,79 @@ return
 				getword $module_includes $include $l "JUNK"
 				while ($include <> "JUNK")
 					setvar $command ""
+					setvar $prepath "source\module_includes\"
+					gosub :check_for_include
+					getDirList $includeList "scripts\mombot\"&$prepath&$include&"\????????????????????????"
+					setvar $m 1
+					while ($m <= $includeList)
+						setvar $command $includeList[$m]
+						gosub :check_for_include
+						add $m 1
+					end
+					add $l 1
+					getword $module_includes $include $l "JUNK"
+				end
+				setvar $l 1
+				getword $bot_includes $include $l "JUNK"
+				while ($include <> "JUNK")
+					setvar $command ""
+					setvar $prepath "source\bot_includes\"
+					gosub :check_for_include
+					getDirList $includeList "scripts\mombot\"&$prepath&$include&"\????????????????????????"
+					setvar $m 1
+					while ($m <= $includeList)
+						setvar $command $includeList[$m]
+						gosub :check_for_include
+						add $m 1
+					end
+					add $l 1
+					getword $bot_includes $include $l "JUNK"
+				end
+				setvar $l 1
+				getword $bot_bot_includes $include $l "JUNK"
+				while ($include <> "JUNK")
+					setvar $command ""
+					setvar $prepath "source\bot_includes\bot\"
+					gosub :check_for_include
+					getDirList $includeList "scripts\mombot\"&$prepath&$include&"\????????????????????????"
+					setvar $m 1
+					while ($m <= $includeList)
+						setvar $command $includeList[$m]
+						gosub :check_for_include
+						add $m 1
+					end
+					add $l 1
+					getword $bot_bot_includes $include $l "JUNK"
+				end
+
+
+				getwordpos $lowercase_script_line $pos  "source\"
+				getwordpos $lowercase_script_line $pos2 "_includes\"
+				if (($pos > 0) and ($pos2 > 0))
+					goto :write_new_script_file
+				end
+				setvar $script[$k] $script_line
+
+				add $k 1
+				read $script_file $script_line $k
+			end
+
+			:write_new_script_file
+				delete $script_file
+				setvar $k 1
+				while ($script[$k] <> "0")
+					write $script_file $script[$k]
+					add $k 1
+				end
+				setvar $path_count 1 
+				while ($path_count <= $paths)
+					write $script_file "include "&#34&$paths[$path_count]&#34
+					add $path_count 1
+				end
+
+			add $j 1
+		end
+
+
+
+return

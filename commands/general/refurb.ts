@@ -34,7 +34,7 @@
 			gosub :PLAYER~quikstats
 			setVar $back $PLAYER~CURRENT_SECTOR
 			setVar $PLAYER~warpto $MAP~stardock
-			gosub :tactics~twarp
+			gosub :player~twarp
 			gosub  :player~currentPrompt
 			if ($PLAYER~twarpSuccess = TRUE)
 				send "p ss ys *p"
@@ -73,7 +73,7 @@
 		if ($BOT~parm1 = "seek")
 			gosub :PLAYER~quikstats
 			setVar $PLAYER~warpto $back
-			gosub :tactics~twarp
+			gosub :player~twarp
 			if ($PLAYER~twarpSuccess <> TRUE)
 				setVar $SWITCHBOARD~message $PLAYER~msg&"*"
 				gosub :SWITCHBOARD~switchboard

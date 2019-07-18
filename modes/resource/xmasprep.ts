@@ -215,7 +215,7 @@ while ($i <= $pathi)
 		halt
 	end
 	setVar $player~warpto $gotoSector
-	gosub :tactics~twarp
+	gosub :player~twarp
 
 	goSub :player~quikstats
 	

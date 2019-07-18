@@ -148,7 +148,7 @@ goto :BOT~wait_for_command
 		if ($startinglocation = "Command")
 			if (($PLAYER~CURRENT_SECTOR > 10) and ($PLAYER~CURRENT_SECTOR <> $MAP~STARDOCK))
 				if ($refill = TRUE)
-					gosub :tactics~topoff
+					gosub :player~topoff
 				else
 					if ($i = $bot~parm1)
 						if ($startingLocation = "Command")

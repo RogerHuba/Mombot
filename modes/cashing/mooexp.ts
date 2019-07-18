@@ -479,7 +479,7 @@ while ($iSaySo)
 
 	if ($gridSectorPostTwarp > 0)
 		setVar $player~warpto $gridSector
-		gosub :tactics~twarp
+		gosub :player~twarp
 		add $stat_moves 1
 
 		setVar $gridSectorPostTwarp 0
@@ -534,7 +534,7 @@ return
 	goSub :xportShip
 	gosub :player~quikstats
 	setVar $player~warpto $tradingSector2
-	gosub :tactics~twarp
+	gosub :player~twarp
 	add $stat_moves 1
 	gosub :player~quikstats
 
