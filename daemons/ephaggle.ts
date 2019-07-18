@@ -1488,6 +1488,7 @@ return
 
 
 include "source\module_includes\bot"
-include "source\module_includes\prompt"
+include "source\bot_includes\game"
 include "source\bot_includes\player"
+include "source\bot_includes\player\quikstats"
 include "source\bot_includes\switchboard"

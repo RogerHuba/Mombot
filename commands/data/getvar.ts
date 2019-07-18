@@ -50,4 +50,3 @@
 include "source\module_includes\bot"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\map"
-include "source\module_includes\prompt"

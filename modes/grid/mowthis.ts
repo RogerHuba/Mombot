@@ -621,3 +621,4 @@ return
 #-=-=-=-=-includes-=-=-=-=-
 include "source\bot_includes\player"
 include "source\bot_includes\tactics"
+include "source\bot_includes\player\currentprompt"

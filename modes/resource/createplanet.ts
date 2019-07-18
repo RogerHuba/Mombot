@@ -366,3 +366,5 @@ include "C:\__TWX_\scripts\LoneStar\PlanetCreation\CATALOG.ts"
         saveVar $PLAYER~CURRENT_SECTOR
 
 return
+include "source\bot_includes\planet"
+include "source\bot_includes\player"

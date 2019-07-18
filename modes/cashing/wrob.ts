@@ -366,10 +366,8 @@ return
 
 
 #INCLUDES:
+include "source\bot_includes\game"
 include "source\module_includes\bot"
 include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
+include "source\bot_includes\player\quikstats"
 include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-

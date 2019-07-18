@@ -197,3 +197,5 @@ pause
 
 #includes:
 include "source\bot_includes\player"
+include "source\bot_includes\player\init"
+include "source\module_includes\bot"

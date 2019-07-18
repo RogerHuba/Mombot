@@ -311,6 +311,9 @@ return
 #INCLUDES:
 include "source\module_includes\bot"
 include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
+include "source\bot_includes\player\currentprompt"
 include "source\bot_includes\planet"
-
+include "source\bot_includes\switchboard"
+include "source\bot_includes\player\turnoffansi"
+include "source\bot_includes\player\turnonansi"
+include "source\bot_includes\player\formatnumberforspaces"

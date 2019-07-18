@@ -37,8 +37,4 @@
 include "source\module_includes\bot"
 include "source\module_includes\strip"
 include "source\module_includes\dump"
-include "source\bot_includes\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-
-
