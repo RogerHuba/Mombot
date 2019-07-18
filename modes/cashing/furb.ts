@@ -784,11 +784,10 @@ echo "*### $citadel_furb " $citadel_furb
 return
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
+include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\player\bwarp\player"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\module_includes\bot"

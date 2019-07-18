@@ -437,5 +437,5 @@ goto :start_over
 
 return
 # includes:
-include "source\bot_includes\player"
-
+include "0"
+include "source\bot_includes\player\init\player"

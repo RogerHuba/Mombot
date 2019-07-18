@@ -9,10 +9,3 @@ goto :modules~xenter
 #INCLUDES:
 include "source\module_includes\bot"
 include "source\module_includes\modules"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-

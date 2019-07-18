@@ -808,10 +808,10 @@ return
 
 #INCLUDES:
 include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
+include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\player\currentprompt\player"
+include "source\bot_includes\player\isephaggle\player"
+include "source\bot_includes\player\starthaggle\player"
