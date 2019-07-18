@@ -176,7 +176,7 @@
 		if ($player~current_prompt = "Planet")
 			send "m*  *  **  q q * * "
 		end
-		gosub :tactics~topoff
+		gosub :player~topoff
 		setVar $planet~PLANET $starting_planet
 		gosub :planet~landingSub
 

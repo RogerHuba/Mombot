@@ -26,7 +26,7 @@ goto :Starting
 	:continuePlock
 	send "y '{" $bot_name "} - PLOCK Launched*"
 	if ($plockKill)
-		gosub :targeting~scanit_cit_kill
+		gosub :targeting~scanitcitkill
 		halt
 	else
 		send "s* "
@@ -39,7 +39,7 @@ goto :Starting
 :manual
 	killAllTriggers
 	if ($plockKill)
-		gosub :targeting~scanit_cit_kill
+		gosub :targeting~scanitcitkill
 	else
 		send "s* "
 	end
@@ -72,7 +72,7 @@ loadVar $bot_name
 	if ($pos > 0)
 		setVar $plockKill TRUE
 		setVar $targeting~PLANET $planetinfo~PLANET
-		gosub :targeting~initialize_targeting
+		gosub :targeting~initializetargeting
 
 	else
 		setVar $plockKill FALSE

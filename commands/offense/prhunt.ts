@@ -220,7 +220,7 @@ else
 			
 			if ($fotonKill = 1)
 				setVar $targeting~PLANET $planet~planet
-				gosub :targeting~initialize_targeting
+				gosub :targeting~initializetargeting
 				send "qmnt*c"
 			end
 			
@@ -652,9 +652,9 @@ halt
 					gosub :grid~surround
 					send "l" $currentPlanet "*c"
 					waitfor "<Enter Citadel>"
-					gosub :targeting~scanit_cit_kill
+					gosub :targeting~scanitcitkill
 				else
-					gosub :targeting~scanit_cit_kill
+					gosub :targeting~scanitcitkill
 				end
 				
 				send "p" $homeSector "*y"

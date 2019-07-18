@@ -25,7 +25,7 @@ gosub :BOT~banner
 goto :Start_Up_Routines
 :colo_next
 	setVar $PLAYER~destination 1
-	gosub :tactics~getCourse
+	gosub :player~getCourse
     setVar $j 2
     setVar $result "q * "
     while ($j <= $PLAYER~courseLength)
@@ -41,7 +41,7 @@ goto :Start_Up_Routines
 
     setVar $PLAYER~starting_point 1
 	setVar $PLAYER~destination $PLAYER~CURRENT_SECTOR
-	gosub :tactics~getCourse
+	gosub :player~getCourse
     setVar $j 2
     setVar $result ""
     while ($j <= $PLAYER~courseLength)

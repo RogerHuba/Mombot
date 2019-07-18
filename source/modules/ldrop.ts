@@ -40,7 +40,7 @@ end
 	if ($pos > 0)
 		setVar $kill TRUE
 		setVar $targeting~PLANET $planetinfo~PLANET
-		gosub :targeting~initialize_targeting
+		gosub :targeting~initializetargeting
 	else
 		setVar $kill FALSE
 	end
@@ -131,7 +131,7 @@ end
 	:ldrop_in_sector
 		killalltriggers
 		if ($kill)
-			gosub :targeting~scanit_cit_kill
+			gosub :targeting~scanitcitkill
 		else
 			send "s* "
 		end

@@ -173,7 +173,7 @@ setVar $moveFigMacro ""
 	send "q"
 	if ($kill)
 		setVar $targeting~PLANET $planet~PLANET
-		gosub :targeting~initialize_targeting
+		gosub :targeting~initializetargeting
 	end
 	
 	setvar $home $player~CURRENT_SECTOR
@@ -345,7 +345,7 @@ setVar $moveFigMacro ""
 						send "y '{" $bot_name "} - PLOCK Launched*"
 						if ($kill)
 							setVar $targeting~PLANET $planet~PLANET
-							gosub :targeting~initialize_targeting
+							gosub :targeting~initializetargeting
 						else
 							send "s* "
 						end
@@ -368,7 +368,7 @@ setVar $moveFigMacro ""
 				:manual
 					killAllTriggers
 					if ($kill)
-						gosub :targeting~scanit_cit_kill
+						gosub :targeting~scanitcitkill
 					else
 						send "s* "
 					end
@@ -398,7 +398,7 @@ setVar $moveFigMacro ""
 		end
 
 		if ($kill)
-			gosub :targeting~scanit_cit_kill
+			gosub :targeting~scanitcitkill
 		else
 			send "s* "
 		end

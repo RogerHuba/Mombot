@@ -22,7 +22,7 @@
     setVar $bot~validPrompts "Citadel"
     gosub :bot~checkstartingprompt
     gosub :travelProtections
-    gosub :tactics~bwarp
+    gosub :player~bwarp
     halt
 # ======================     END BWARP SUBROUTINES     ==========================
 

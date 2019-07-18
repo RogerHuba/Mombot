@@ -155,7 +155,7 @@ if ($no_twarp = FALSE)
 			setVar $index $j
 			if ($j = $courseLength)
 				setVar $PLAYER~warpto $closestFiggedSector
-	            gosub :tactics~twarp
+	            gosub :player~twarp
 	            gosub  :player~currentPrompt
 	            if ($PLAYER~twarpSuccess = TRUE)
 	            	setVar $j $index
@@ -167,7 +167,7 @@ if ($no_twarp = FALSE)
 		else
 			if ($closestFiggedSector > 0)
 				setVar $PLAYER~warpto $closestFiggedSector
-	            gosub :tactics~twarp
+	            gosub :player~twarp
 	            gosub  :player~currentPrompt
 	            if ($PLAYER~twarpSuccess = TRUE)
 	            	setVar $j ($index + 1)

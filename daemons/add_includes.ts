@@ -1,24 +1,23 @@
 :add_includes
 
 	setvar $directories "cashing data defense general grid offense resource"
-	setvar $directories "cashing "
 	setvar $i 1
 	getword $directories $directory $i "JUNK"
 	while ($directory <> "JUNK")
 		setvar $folder "scripts\mombot\commands\"&$directory&"\"
 		getFileList $scriptList $folder&"*.ts"
 		gosub :reconfigure_scripts
-halt
-#		setvar $folder "scripts\mombot\modes\"&$directory&"\"
-#		getFileList $scriptList $folder&"*.ts"
-#		gosub :reconfigure_scripts
+
+		setvar $folder "scripts\mombot\modes\"&$directory&"\"
+		getFileList $scriptList $folder&"*.ts"
+		gosub :reconfigure_scripts
 
 		add $i 1
 		getword $directories $directory $i "JUNK"
 	end
-#	setvar $folder "scripts\mombot\daemons\"
-#	getFileList $scriptList $folder&"*.ts"
-#	gosub :reconfigure_scripts
+	setvar $folder "scripts\mombot\daemons\"
+	getFileList $scriptList $folder&"*.ts"
+	gosub :reconfigure_scripts
 
 halt
 
@@ -38,7 +37,7 @@ halt
 	end
 	if (($command_pos > 0) and ($command_pos2 <= 0))
 		add $paths 1
-		setvar $paths[$paths] $prepath&$include&"\"&$command
+		setvar $paths[$paths] $prepath&$include&"\"&$command&"\"&$include
 		setvar $doublecheck2 $doublecheck2&" "&$include&"~"&$command&" "		
 	end
 return
@@ -51,6 +50,7 @@ return
 			setarray $paths 1000
 			setvar $paths 0 
 			setvar $doublecheck " "
+			setvar $doublecheck2 " "
 			setvar $script_file $folder&$scriptList[$j]
 			setVar $k 1 
 			read $script_file $script_line $k
@@ -59,60 +59,57 @@ return
 				lowercase $lowercase_script_line
 
 				setvar $bot_includes " combat game grid map planet player sector ship switchboard tactics targeting validation "
-				setvar $bot_includes " player  "
-				#setvar $bot_bot_includes " connectivity help internal_commands listener menus user_interface "
-				#setvar $module_includes " bot citadel dump invader modules port prompt search strip "
+				setvar $bot_bot_includes " connectivity help internal_commands listener menus user_interface "
+				setvar $module_includes " bot citadel dump invader modules port prompt search strip "
 
 				setvar $l 1
-#				getword $module_includes $include $l "JUNK"
-#				while ($include <> "JUNK")
-#					setvar $command ""
-#					setvar $prepath "source\module_includes\"
-#					gosub :check_for_include
-#					getDirList $includeList "scripts\mombot\"&$prepath&$include
-#					setvar $m 1
-#					while ($m <= $includeList)
-#						setvar $command $includeList[$m]
-#						gosub :check_for_include
-#						add $m 1
-#					end
-#					add $l 1
-#					getword $module_includes $include $l "JUNK"
-#				end
+				getword $module_includes $include $l "JUNK"
+				while ($include <> "JUNK")
+					setvar $command ""
+					setvar $prepath "source\module_includes\"
+					gosub :check_for_include
+					getDirList $includeList "scripts\mombot\"&$prepath&$include&"\????????????????????????"
+					setvar $m 1
+					while ($m <= $includeList)
+						setvar $command $includeList[$m]
+						gosub :check_for_include
+						add $m 1
+					end
+					add $l 1
+					getword $module_includes $include $l "JUNK"
+				end
 				setvar $l 1
 				getword $bot_includes $include $l "JUNK"
 				while ($include <> "JUNK")
 					setvar $command ""
 					setvar $prepath "source\bot_includes\"
 					gosub :check_for_include
-					getDirList $includeList "scripts\mombot\"&$prepath&$include
-					echo "[["&"scripts\mombot\"&$prepath&$include&"]]*"
+					getDirList $includeList "scripts\mombot\"&$prepath&$include&"\????????????????????????"
 					setvar $m 1
 					while ($m <= $includeList)
 						setvar $command $includeList[$m]
-						echo "[["&$includeList[$m]&"]]*"
 						gosub :check_for_include
 						add $m 1
 					end
 					add $l 1
 					getword $bot_includes $include $l "JUNK"
 				end
-#				setvar $l 1
-#				getword $bot_bot_includes $include $l "JUNK"
-#				while ($include <> "JUNK")
-#					setvar $command ""
-#					setvar $prepath "source\bot_includes\bot\"
-#					gosub :check_for_include
-#					getDirList $includeList "scripts\mombot\"&$prepath&$include
-#					setvar $m 1
-#					while ($m <= $includeList)
-#						setvar $command $includeList[$m]
-#						gosub :check_for_include
-#						add $m 1
-#					end
-#					add $l 1
-#					getword $bot_bot_includes $include $l "JUNK"
-#				end
+				setvar $l 1
+				getword $bot_bot_includes $include $l "JUNK"
+				while ($include <> "JUNK")
+					setvar $command ""
+					setvar $prepath "source\bot_includes\bot\"
+					gosub :check_for_include
+					getDirList $includeList "scripts\mombot\"&$prepath&$include&"\????????????????????????"
+					setvar $m 1
+					while ($m <= $includeList)
+						setvar $command $includeList[$m]
+						gosub :check_for_include
+						add $m 1
+					end
+					add $l 1
+					getword $bot_bot_includes $include $l "JUNK"
+				end
 
 
 				getwordpos $lowercase_script_line $pos  "source\"
