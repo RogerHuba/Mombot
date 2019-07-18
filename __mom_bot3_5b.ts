@@ -135,10 +135,12 @@ include "source\bot_includes\combat\holokill\combat"
 include "source\bot_includes\planet\loadplanetinfo\planet"
 include "source\bot_includes\planet\landonplanetentercitadel\planet"
 include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\getplanetstats\planet"
 include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\grid\surround\grid"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\map\displayadjacentgridansi\map"
+include "source\bot_includes\game\gamestats\game"
 
 
 
