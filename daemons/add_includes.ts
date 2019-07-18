@@ -22,7 +22,7 @@
 halt
 
 :check_for_include
-	getwordpos $lowercase_script_line $pos  $include&"~"
+	getwordpos $lowercase_script_line $pos  ":"&$include&"~"
 	getwordpos $doublecheck $pos2 " "&$include&" "
 	setvar $command_pos 0
 	setvar $command_pos2 0
