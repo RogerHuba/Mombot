@@ -1792,4 +1792,3 @@
 	return
 
 
-include "source\module_includes\bot"

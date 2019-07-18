@@ -51,6 +51,5 @@ halt
 
 # includes:
 include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\player\currentprompt"
+include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\switchboard"

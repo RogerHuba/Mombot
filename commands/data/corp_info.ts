@@ -724,6 +724,4 @@ halt
 
 #INCLUDES:
 include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\player\quikstats"
-include "source\bot_includes\planet"
+include "source\bot_includes\player\quikstats\player"

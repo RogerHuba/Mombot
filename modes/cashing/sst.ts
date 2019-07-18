@@ -1470,9 +1470,7 @@ return
 		return
 	
 #INCLUDES:
-include "source\bot_includes\player"
 include "source\module_includes\bot"
-include "source\bot_includes\game"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\player\isephaggle"
-include "source\bot_includes\player\quikstats"
+include "source\bot_includes\player\isephaggle\player"
+include "source\bot_includes\player\quikstats\player"

@@ -1368,5 +1368,3 @@ loadVar $SWITCHBOARD~bot_name
 	return
 	
 
-include "source\module_includes\bot"
-include "source\bot_includes\switchboard"

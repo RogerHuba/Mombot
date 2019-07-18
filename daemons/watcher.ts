@@ -449,8 +449,3 @@ pause
     load "scripts\mombot\"&$boot_this
     setTextLineTrigger  emergency_reboot      :emergency_reboot $bot~bot_name&" "&$bot~subspace&"<EMERGENCY REBOOT>"&$bot~bot_password
 	pause
-include "source\bot_includes\map"
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"

@@ -70,9 +70,7 @@ return
 
 # includes:
 include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\player\currentprompt"
-include "source\bot_includes\player\quikstats"
-include "source\bot_includes\tactics"
+include "source\bot_includes\player\currentprompt\player"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\bwarp\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\map"

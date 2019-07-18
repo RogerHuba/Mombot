@@ -1267,10 +1267,9 @@ return
 
 #INCLUDES:
 include "source\module_includes\bot"
-include "source\bot_includes\game"
-include "source\bot_includes\player"
-include "source\bot_includes\player\quikstats"
-include "source\bot_includes\planet"
-include "source\bot_includes\player\turnoffansi"
-include "source\bot_includes\player\turnonansi"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\player\turnoffansi\player"
+include "source\bot_includes\player\turnonansi\player"
+include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\switchboard"

@@ -118,5 +118,4 @@ return
 # includes:
 include "source\module_includes\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\player"
-include "source\bot_includes\player\currentprompt"
+include "source\bot_includes\player\currentprompt\player"

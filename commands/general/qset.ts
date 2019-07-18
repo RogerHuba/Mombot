@@ -119,9 +119,7 @@ return
 
 #INCLUDES:
 include "source\module_includes\bot"
-include "source\bot_includes\game"
-include "source\bot_includes\player"
-include "source\bot_includes\player\currentprompt"
+include "source\bot_includes\player\currentprompt\player"
 include "source\module_includes\prompt"
-include "source\bot_includes\planet"
+include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\switchboard"

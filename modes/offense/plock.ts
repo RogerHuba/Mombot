@@ -126,4 +126,5 @@ include "C:\__TWX_\scripts\MomBot\botIncludes\quikstats.ts"
 include "C:\__TWX_\scripts\MomBot\botIncludes\shipstats.ts"
 include "C:\__TWX_\scripts\MomBot\botIncludes\planetinfo.ts"
 
-include "source\bot_includes\targeting"
+include "source\bot_includes\targeting\scanitcitkill\targeting"
+include "source\bot_includes\targeting\initializetargeting\targeting"
