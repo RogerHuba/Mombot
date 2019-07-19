@@ -22,12 +22,12 @@
 	if ($isFigged = "")
 		setVar $SWITCHBOARD~message "It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
 		gosub :SWITCHBOARD~switchboard
-		goto :wait_for_command
+		halt
 	end
 	if ($near <> "owner") and ($near <> "ufde") and ($near <> "f") and ($near <> "nf") and ($near <> "fde") and ($near <> "uf") and ($near <> "fp") and ($near <> "nfup") and ($near <> "fup") and ($near <> "p") and ($near <> "de") and ($near <> "fig") and ($near <> "nofig") and ($near <> "figport") and ($near <> "port") and ($near <> "deadend")
 		setVar $SWITCHBOARD~message "Please use - [type] [sector] format*"      
 		gosub :SWITCHBOARD~switchboard
-		goto :wait_for_command
+		halt
 	end
 	if ($near = "fp") or ($near = "port") or ($near = "p") or ($near = "nfup") or ($near = "fup")
 
@@ -51,7 +51,7 @@
 		if ($invalid)
 			setVar $SWITCHBOARD~message "Please use - [fp/p] [sector] [port type] format."      
 			gosub :SWITCHBOARD~switchboard
-			goto :wait_for_command
+			halt
 		end
 		setVar $ptype $port_type
 		upperCase $ptype
@@ -314,23 +314,4 @@ return
 	setVar $return_data "Nothing found for that search."
 return
 #=============================== END FIND =======================================================
-
-:wait_for_command
-halt
-
-:killthetriggers
-	killalltriggers
-return
-
-:removeFigFromData
-	getSectorParameter $target "FIGSEC" $check
-	if ($check = TRUE)
-		getSectorParameter 2 "FIG_COUNT" $figCount
-		setSectorParameter 2 "FIG_COUNT" ($figCount-1)
-	end
-	setSectorParameter $target "FIGSEC" FALSE
-return
-:addFigToData
-	setSectorParameter $target "FIGSEC" TRUE
-return
 
