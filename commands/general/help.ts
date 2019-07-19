@@ -31,7 +31,7 @@
             fileExists $doesExist "scripts\mombot\help\"&$BOT~parm1&".txt"
             if ($doesExist)
                 readToArray "scripts\mombot\help\"&$BOT~parm1&".txt" $bot~help
-                gosub :bot~display_help
+                gosub :bot~displayhelp
 
             else
                 setVar $SWITCHBOARD~message "No help file available for "&$BOT~parm1&".*"
