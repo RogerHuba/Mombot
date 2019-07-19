@@ -14,5 +14,4 @@
 # includes:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
-include "source\module_includes\modules"
 include "source\module_includes\bot\wait_for_command\bot"
