@@ -57,3 +57,6 @@
 		send "'*{"&$SWITCHBOARD~bot_name&"} - *"&$helpOutput&"*"
 	end
 return
+
+include "source\module_includes\bot\formathelpline\bot"
+
