@@ -54,25 +54,104 @@ return
 
 		setVar $j 1
 		while ($j <= $scriptList)
-			setarray $script 5000
-			setarray $paths 1000
-			setvar $paths 0 
-			setvar $doublecheck " "
-			setvar $doublecheck2 " "
-			setvar $script_file $folder&$scriptList[$j]
-			echo "*In script: ["&$script_file&"]"
-			setVar $k 1 
-			read $script_file $script_line $k
-			while ($script_line <> EOF)
-				setvar $lowercase_script_line $script_line
-				lowercase $lowercase_script_line
-				getwordpos $lowercase_script_line $isPotentialLine "~"
-				if ($isPotentialLine > 0)
-					setvar $bot_includes " combat game grid map planet player sector ship switchboard tactics targeting validation "
-					setvar $bot_bot_includes " connectivity help internal_commands listener menus user_interface "
-					setvar $module_includes " bot invader modules port prompt search strip "
+			if ($scriptList[$j] <> "add_includes.ts")
+				setarray $script 5000
+				setarray $paths 1000
+				setvar $paths 0 
+				setvar $doublecheck " "
+				setvar $doublecheck2 " "
+				setvar $script_file $folder&$scriptList[$j]
+				echo "*In script: ["&$script_file&"]"
+				setVar $k 1 
+				read $script_file $script_line $k
+				while ($script_line <> EOF)
+					setvar $lowercase_script_line $script_line
+					lowercase $lowercase_script_line
+					getwordpos $lowercase_script_line $includepos "~"
 
-					setvar $l 1
-					getword $module_includes $include $l "JUNK"
-					while ($include <> "JUNK")
-						setvar $command ""
+					if ($includepos > 0)
+						setvar $bot_includes " combat game grid map planet player sector ship switchboard tactics targeting validation "
+						setvar $bot_bot_includes " connectivity help internal_commands listener menus user_interface "
+						setvar $module_includes " bot citadel dump invader modules port prompt search strip "
+
+						setvar $l 1
+						getword $module_includes $include $l "JUNK"
+						while ($include <> "JUNK")
+							setvar $command ""
+							setvar $prepath "source\module_includes\"
+							gosub :check_for_include
+							getDirList $includeList "scripts\mombot\"&$prepath&$include&"\????????????????????????"
+							setvar $m 1
+							while ($m <= $includeList)
+								setvar $command $includeList[$m]
+								gosub :check_for_include
+								add $m 1
+							end
+							add $l 1
+							getword $module_includes $include $l "JUNK"
+						end
+						setvar $l 1
+						getword $bot_includes $include $l "JUNK"
+						while ($include <> "JUNK")
+							setvar $command ""
+							setvar $prepath "source\bot_includes\"
+							gosub :check_for_include
+							getDirList $includeList "scripts\mombot\"&$prepath&$include&"\????????????????????????"
+							setvar $m 1
+							while ($m <= $includeList)
+								setvar $command $includeList[$m]
+								gosub :check_for_include
+								add $m 1
+							end
+							add $l 1
+							getword $bot_includes $include $l "JUNK"
+						end
+						setvar $l 1
+						getword $bot_bot_includes $include $l "JUNK"
+						while ($include <> "JUNK")
+							setvar $command ""
+							setvar $prepath "source\bot_includes\bot\"
+							gosub :check_for_include
+							getDirList $includeList "scripts\mombot\"&$prepath&$include&"\????????????????????????"
+							setvar $m 1
+							while ($m <= $includeList)
+								setvar $command $includeList[$m]
+								gosub :check_for_include
+								add $m 1
+							end
+							add $l 1
+							getword $bot_bot_includes $include $l "JUNK"
+						end
+					end
+
+					getwordpos $lowercase_script_line $pos  "source\"
+					getwordpos $lowercase_script_line $pos2 "_includes\"
+					if (($pos > 0) and ($pos2 > 0))
+						goto :write_new_script_file
+					end
+					setvar $script[$k] $script_line
+
+					add $k 1
+					read $script_file $script_line $k
+				end
+
+				:write_new_script_file
+					echo "*Writing new script: ["&$script_file&"]*"
+					delete $script_file
+					setvar $k 1
+					while ($script[$k] <> "0")
+						write $script_file $script[$k]
+						add $k 1
+					end
+					setvar $path_count 1 
+					while ($path_count <= $paths)
+						write $script_file "include "&#34&$paths[$path_count]&#34
+						add $path_count 1
+					end
+			end
+			add $j 1
+		end
+
+
+
+return
