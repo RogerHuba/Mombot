@@ -15,13 +15,13 @@
 			setvar $max_length 65
 			if (($SWITCHBOARD~self_command = true) or ($silent_running = TRUE))
 				setvar $line $help[$i]
-				gosub :format_help_line
+				gosub :formathelpline
 				setvar $help[$i] $line
 				setvar $next_line_test $next_line
 				stripText $next_line_test " "
 				if ($next_line_test <> "")
 					setVar $line $next_line 
-					gosub :format_help_line
+					gosub :formathelpline
 					setvar $next_line $line
 				end
 			else
