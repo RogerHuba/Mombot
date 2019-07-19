@@ -24,7 +24,7 @@
 			goto :write_new_help_file
 		end
 		if ($only_help = true)
-			gosub :display_help
+			gosub :displayhelp
 			halt
 		end
 		return
@@ -59,7 +59,7 @@
 			 gosub :SWITCHBOARD~switchboard
 
 		if ($only_help = true)
-			gosub :display_help
+			gosub :displayhelp
 			halt
 		end
 return
