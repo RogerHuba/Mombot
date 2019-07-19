@@ -6,7 +6,7 @@ systemscript
 	setVar $BOT~help[2]  $BOT~tab&"      "
 	setVar $BOT~help[3]  $BOT~tab&"  time "
 	setVar $BOT~help[4]  $BOT~tab&"         "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	loadVar $bot~bot_name

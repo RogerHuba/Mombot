@@ -52,7 +52,7 @@ setVar $BOT~help[21] $BOT~tab&"      everything - Anything that buys the primary
 setVar $BOT~help[22] $BOT~tab&"      file       - One sector per line, file must end in .txt"
 setVar $BOT~help[23] $BOT~tab&"      sector     - One sector >Moo sector {maxplanets} {sector}"
 
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Moo - Time to blow some crap up!"
 gosub :BOT~banner

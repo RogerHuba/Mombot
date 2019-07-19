@@ -13,7 +13,7 @@ logging off
 #HELP FILE
      setVar $BOT~help[1]  $BOT~tab&"Enter Sector and attack until out of fighters and then surrender ship).  "
      setVar $BOT~help[2]  $BOT~tab&"       "
-     gosub :BOT~help_file
+     gosub :bot~helpfile
      setVar $BOT~script_title "EAS"
      gosub :BOT~banner
 

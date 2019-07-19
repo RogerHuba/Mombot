@@ -61,7 +61,7 @@
 	setVar $BOT~help[49] $BOT~tab&"               "
 	setVar $BOT~help[50] $BOT~tab&"       {remove} plus [sector number] bubble"
 	setVar $BOT~help[51] $BOT~tab&"               - Removes BUBBLE marked sector"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	
 

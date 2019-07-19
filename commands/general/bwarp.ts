@@ -7,7 +7,7 @@
     setVar $BOT~help[5]  $BOT~tab&"    t [sector] {p} - bwarp, then port"
     setVar $BOT~help[6]  $BOT~tab&"    t planet {planet id} - bwarp to last known "
     setVar $BOT~help[7]  $BOT~tab&"                           location of the planet id"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 # ======================     START BWARP SUBROUTINES     =================
 :Bwarp

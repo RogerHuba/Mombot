@@ -56,7 +56,7 @@
 	 setVar $BOT~help[13] $BOT~tab&"Usage: "
 	setVar $BOT~help[14] $BOT~tab&"        >teamstt 3 4 5"
 	setVar $BOT~help[15] $BOT~tab&"        >teamstt 6 7 4 override"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 

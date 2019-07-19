@@ -18,7 +18,7 @@
 	setVar $BOT~help[5] $BOT~tab&"Options:"
 	setVar $BOT~help[6] $BOT~tab&"       move [sector]"
 	setVar $BOT~help[7] $BOT~tab&"       	Instead of self destructing, planet is moved to sector."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Tripwire"
 	gosub :BOT~banner

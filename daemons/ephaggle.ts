@@ -23,7 +23,7 @@ setVar $BOT~help[6]  $BOT~tab&"       "
 setVar $BOT~help[7]  $BOT~tab&"      Default is normal haggle "
 setVar $BOT~help[8]  $BOT~tab&"       "
 setVar $BOT~help[9]  $BOT~tab&"      Author: Elder Prophet "
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 
 setvar $MAXPTRADE 0

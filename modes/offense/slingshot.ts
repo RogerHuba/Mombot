@@ -14,7 +14,7 @@
 	loadvar $planet~planet~planet_file
 
 	setVar $BOT~help[1]  $BOT~tab&"Slingshot - attempts to warp into sector and attack "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $PLAYER~save TRUE
 	gosub :combat~init 

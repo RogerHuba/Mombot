@@ -17,7 +17,7 @@
 	setVar $BOT~help[15]  $BOT~tab&"             {e} - upgrade equipment"
 	setVar $BOT~help[16]  $BOT~tab&"         {noexp} - upgrade without experience increase"
 	setVar $BOT~help[16]  $BOT~tab&"                   default: s/b/b upgraded"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	setVar $bot~bot_name $SWITCHBOARD~bot_name

@@ -12,7 +12,7 @@
     setVar $BOT~help[6] $BOT~tab&"{saveme} - call saveme to be picked up at destination."
     setVar $BOT~help[7] $BOT~tab&"  {back} - twarp back to start sector after mow"
     setVar $BOT~help[8] $BOT~tab&"{hoover} - attempts to pull fighters from sectors     "
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 
 	gosub :combat~init 

@@ -18,7 +18,7 @@
 	setVar $BOT~help[10]   $BOT~tab&"         abort saveme - cancel saveme call"
 	setVar $BOT~help[11]   $BOT~tab&"         "
 	setVar $BOT~help[12]   $BOT~tab&"               - Originally written by Cherokee"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	setVar $PLAYER~save TRUE

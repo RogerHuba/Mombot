@@ -29,7 +29,7 @@
 	setVar $BOT~help[21] $BOT~tab&"       >avoids_man store trucesectors"
 	setVar $BOT~help[22] $BOT~tab&"       >avoids_man clear trucesectors"
 	setVar $BOT~help[23] $BOT~tab&"       >avoids_man store alienspace FERRENGI"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $name_array 0
 	setVar $name_arrayCount 0

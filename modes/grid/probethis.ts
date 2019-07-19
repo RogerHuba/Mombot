@@ -9,7 +9,7 @@
 	setVar $BOT~help[3] $BOT~tab&"Will ether probe all sectors marked with param selected."
 	setVar $BOT~help[4] $BOT~tab&"Example: BUBBLE, DE, MSLSEC"
 	setVar $BOT~help[5] $BOT~tab&"      {unexplored) - only probes unexplored sectors"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	if ($bot~parm1 <> "0")
 		setVar $PARAM $bot~parm1

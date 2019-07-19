@@ -73,7 +73,7 @@
 	setVar $BOT~help[22]  $BOT~tab&"    Doesn't require ZTM but works better"
 	setVar $BOT~help[23]  $BOT~tab&"    Works best with T-Warp to reroute"
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "LoneStar's Passive Gridder"
 	gosub :BOT~banner

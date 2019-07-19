@@ -4,7 +4,7 @@ gosub :BOT~loadVars
      setVar $BOT~help[1]  $BOT~tab&"msgs {d}  "
      setVar $BOT~help[2]  $BOT~tab&"   Options: "
      setVar $BOT~help[3]  $BOT~tab&"        d - Deletes messages in inbox "
-     gosub :BOT~help_file
+     gosub :bot~helpfile
 
 
 gosub :player~quikstats

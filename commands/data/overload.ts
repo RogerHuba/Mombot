@@ -7,7 +7,7 @@
     setVar $BOT~help[5] $BOT~tab&"    "
     setVar $BOT~help[6] $BOT~tab&"     under - tells you which sectors "
     setvar $bot~help[7] $bot~tab&"             have less than max planets"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 		
 # =============================== START OVERLOAD =====================================

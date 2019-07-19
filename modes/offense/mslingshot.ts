@@ -16,7 +16,7 @@
 	setVar $BOT~help[8]  $BOT~tab&"Invasion bot(s) land on the target planets "
 	setVar $BOT~help[9]  $BOT~tab&"to moth ."
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Mass Sling Shot"
 	gosub :BOT~banner

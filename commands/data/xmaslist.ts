@@ -37,7 +37,7 @@
 	setVar $BOT~help[17]  $BOT~tab&"   D: Incoming sectors with no fighters "
 	
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "XMas List"
 	gosub :BOT~banner

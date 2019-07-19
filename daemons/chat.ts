@@ -12,7 +12,7 @@ systemscript
 
 
     setVar $BOT~help[1] $BOT~tab&"Chat helper to send chat as a macro to avoid problems with scripts."
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
     setVar $BOT~script_title "Chat"
     gosub :BOT~banner

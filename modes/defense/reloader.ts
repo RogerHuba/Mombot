@@ -13,7 +13,7 @@
 	setVar $BOT~help[10] $BOT~tab&"           [topoff]   Uses fighters in sector first "
 	setVar $BOT~help[11] $BOT~tab&"              [fig]   Place fighter if sector figs attacked "
 	setVar $BOT~help[11] $BOT~tab&"           [noland]   Do not land - should be running citfill "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Reloader"
 	gosub :BOT~banner

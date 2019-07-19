@@ -25,7 +25,7 @@ setVar $BOT~help[11]  $BOT~tab&"    [sitship]      number of ship in sector to s
 setVar $BOT~help[12] $BOT~tab&"    "
 setVar $BOT~help[13] $BOT~tab&"    Please be fed safe.. or die :)"
 
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Xmas Furb Script"
 gosub :BOT~banner

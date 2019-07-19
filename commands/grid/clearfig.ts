@@ -8,7 +8,7 @@
 	setVar $BOT~help[5]   $BOT~tab&"      "
 	setVar $BOT~help[6]   $BOT~tab&"    - From Citadel prompt grabs fighters from planet"
 	setVar $BOT~help[7]   $BOT~tab&"    - From Command prompt grabs fighters from the sector "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Adjacent Fig Clear"
 	gosub :BOT~banner

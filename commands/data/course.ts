@@ -3,7 +3,7 @@
 	setVar $BOT~help[1] $BOT~tab&"Shows course path to sectors"
 	setVar $BOT~help[2] $BOT~tab&"   course {start sector} {end sector}"
 	setVar $BOT~help[3] $BOT~tab&"   course {end sector}"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 # =============================== START COURSE DISPLAY ===============================
 :course

@@ -21,7 +21,7 @@
 	setVar $BOT~help[14] $BOT~tab&"     {ec} - equipment colonists"
 	setVar $BOT~help[15] $BOT~tab&"    {fig} - fighters (strip only)"
 	setVar $BOT~help[16] $BOT~tab&"  {turbo} - Does all in a macro burst"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	if ($BOT~parm1 = "strip")
 		gosub :strip~strip

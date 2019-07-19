@@ -12,7 +12,7 @@
 	setVar $BOT~help[4]   $BOT~tab&"                     "
 	setVar $BOT~help[5]   $BOT~tab&"             file - path to target file"
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "File List Reader"
 	gosub :BOT~banner

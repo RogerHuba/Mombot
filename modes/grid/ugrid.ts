@@ -77,7 +77,7 @@
 	setVar $BOT~help[32] $BOT~tab&"   - [clear]       = Clears internal list of avoided sectors.      "
 	setVar $BOT~help[33] $BOT~tab&"   - [ship2:#]     = Second xport ship number     "
 	setVar $BOT~help[34] $BOT~tab&"   - [orphan]      = targets only orphan sectors   "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	getWord $bot~user_command_line $bot~parm1 1 "EMPTY"
 	if (($bot~parm1 = "auto") OR ($bot~parm1 = "EMPTY"))

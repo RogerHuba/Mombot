@@ -10,7 +10,7 @@ logging off
 #HELP FILE
      setVar $BOT~help[1]  $BOT~tab&"cap   "
      setVar $BOT~help[2]  $BOT~tab&"    Captures enemy ships and attempts to not destroy them.   "
-     gosub :BOT~help_file
+     gosub :bot~helpfile
 
 	gosub :combat~init 
 

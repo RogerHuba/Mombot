@@ -23,7 +23,7 @@ setVar $BOT~help[6]  $BOT~tab&"       icefurb"
 setVar $BOT~help[7] $BOT~tab&"    "
 setVar $BOT~help[8] $BOT~tab&"    Please be fed safe.. or die :)"
 
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Xmas Furb Script"
 gosub :BOT~banner

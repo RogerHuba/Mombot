@@ -15,7 +15,7 @@ gosub :BOT~loadVars
 	setVar $BOT~help[12]  $BOT~tab&"   {saveme}  when gridder is stuck it will call saveme to be safe"
 	setVar $BOT~help[13] $BOT~tab&"                   "
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Rammar's Unfigged Gridder"
 	gosub :BOT~banner

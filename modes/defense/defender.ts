@@ -34,7 +34,7 @@
 	setVar $BOT~help[7] $BOT~tab&"    extern - stops defender 5 minutes before extern "
 	setVar $BOT~help[8] $BOT~tab&"             as defined by local system time "
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setvar $script_ver "Grid Defender"
 	setVar $BOT~script_title $script_ver

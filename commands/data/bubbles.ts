@@ -7,7 +7,7 @@ gosub :BOT~loadVars
 #HELP FILE
         setVar $BOT~help[1]  $BOT~tab&"bubbles - Find bubbles quickly in game"
         setVar $BOT~help[2]  $BOT~tab&"  "
-        gosub :BOT~help_file
+        gosub :bot~helpfile
 
 	gosub :player~quikstats
 	if (($player~CURRENT_PROMPT <> "Command") AND ($player~CURRENT_PROMPT <> "Citadel"))

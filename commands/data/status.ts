@@ -7,7 +7,7 @@
 	setVar $BOT~help[5] $BOT~tab&"  - Team Name: What team name your bot respondeds to, if any"
 	setVar $BOT~help[6] $BOT~tab&"  - Bot mode:  What mode your bot is currently running"
 	setVar $BOT~help[7] $BOT~tab&"        "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	loadvar $planet~planet
 	loadvar $bot~mode

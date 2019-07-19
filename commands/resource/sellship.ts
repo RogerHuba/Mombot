@@ -3,7 +3,7 @@
 	setVar $BOT~help[1]   $BOT~tab&"  sellship   "
 	setVar $BOT~help[2]   $BOT~tab&"  "
 	setVar $BOT~help[3]   $BOT~tab&"     Sells all the ships at dock it can "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 # ============================== Start SellShip (sellship) Sub ==============================
 :sellship

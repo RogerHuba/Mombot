@@ -13,7 +13,7 @@
 	
 	setVar $BOT~help[1] $BOT~tab&"help - displays help files for commands "
 	setVar $BOT~help[2] $BOT~tab&"	   "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
         if ($BOT~parm1 <> 0)

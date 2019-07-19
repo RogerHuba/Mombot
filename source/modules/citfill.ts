@@ -6,7 +6,7 @@
 	setVar $BOT~help[3]   $BOT~tab&"         attacked or deploys fighters."
 	setVar $BOT~help[4]   $BOT~tab&"         "
 	setVar $BOT~help[5]   $BOT~tab&"          citfill [on/off] {number figs to attempt per try} "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
  

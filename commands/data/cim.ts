@@ -18,7 +18,7 @@
 	setVar $BOT~help[8]  $BOT~tab&"                                            "
 	setVar $BOT~help[9]  $BOT~tab&"    {warps}         - Perform warp data instead of "
 	setVar $BOT~help[10] $BOT~tab&"                      port CIM"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "CIM"
 	gosub :BOT~banner

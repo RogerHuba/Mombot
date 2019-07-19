@@ -3,7 +3,7 @@ gosub :BOT~loadVars
 #HELP FILE
      setVar $BOT~help[1]  $BOT~tab&"listamtrak   "
      setVar $BOT~help[2]  $BOT~tab&"    Creates list of amtrak sectors   "
-     gosub :BOT~help_file
+     gosub :bot~helpfile
 
 setVar $SWITCHBOARD~message "Creating list of AMTRAK sectors..*"
 gosub :SWITCHBOARD~switchboard

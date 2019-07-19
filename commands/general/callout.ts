@@ -3,7 +3,7 @@
 	loadVar $BOT~bot_team_name
 
 	setVar $BOT~help[1] $BOT~tab&"Reports team name and current sector."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	gosub :PLAYER~quikstats

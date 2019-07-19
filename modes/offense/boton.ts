@@ -30,7 +30,7 @@
 	setVar $BOT~help[16] $BOT~tab&"     >boton "
 
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $TagLine				"LoneStar's BWARP PHOTON"
 	setVar $TagLineB			"[LSBOTON]"

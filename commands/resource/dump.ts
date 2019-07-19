@@ -2,7 +2,7 @@
 
 	setVar $BOT~help[1]   $BOT~tab&"- dump [type] - Jettisons colos off of planet" 
 	setVar $BOT~help[2]   $BOT~tab&"     [type] = use [f]uel, [o]rg, [e]quip, or [a]ll " 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 # ======================     START COLO DUMP (DUMP) SUBROUTINE    ==========================

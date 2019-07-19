@@ -1,7 +1,7 @@
 	gosub :BOT~loadVars
 
 	setVar $BOT~help[1]  $BOT~tab&"climp - place corporate limpets in sector "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 # ============================== START PERSONAL LIMP (LIMP) SUB ==============================
 :climp

@@ -45,7 +45,7 @@
 	setVar $BOT~help[5] $BOT~tab&"    - {clv}    - checks clv for changes - Default off"
 	setVar $BOT~help[6] $BOT~tab&"    - {cycletime}    - How long between cycles; def 30secs"
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Sentinel"
 	gosub :BOT~banner

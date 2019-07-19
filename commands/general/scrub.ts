@@ -1,7 +1,7 @@
     gosub :BOT~loadVars
 
     setVar $BOT~help[1]  $BOT~tab&"scrub - Will attempt to scrub limpet off ship "
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 :scrub
 	setVar $scrubonly TRUE

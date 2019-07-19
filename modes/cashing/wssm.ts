@@ -18,7 +18,7 @@
 	setVar $BOT~help[10]  $BOT~tab&"                    where FIGSEC is not true. "
 	setVar $BOT~help[11]  $BOT~tab&"          {share} - reports figged sectors over subspace"
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Wanderer"
 	gosub :BOT~banner

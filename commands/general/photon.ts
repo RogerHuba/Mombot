@@ -2,7 +2,7 @@
 
 
 	setVar $BOT~help[1] $BOT~tab&"Fires photon into adjacent sector.  "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $target $bot~parm1 
 	isNumber $isNumber $target 

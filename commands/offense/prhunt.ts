@@ -47,7 +47,7 @@ setVar $sectors SECTORS
 gosub :combat~init 
 
 loadVar $player~surroundFigs
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "PRHunt - Port Report Hunter Starting"
 gosub :BOT~banner

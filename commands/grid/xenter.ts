@@ -1,7 +1,7 @@
 	gosub :BOT~loadVars
 
 	setVar $BOT~help[1]  $BOT~tab&"xenter - exit/enter to clear sector of enemy mines/fighters "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 # ============================== START EXIT ENTER SUB ==============================    
 goto :modules~xenter

@@ -2,7 +2,7 @@
 	loadVar $GAME~rob_factor
 		
 	setVar $BOT~help[1] $BOT~tab&"Attempts to rob a port"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 :rob
     gosub :PLAYER~quikstats

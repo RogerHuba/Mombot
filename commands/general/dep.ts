@@ -4,7 +4,7 @@
     setVar $BOT~help[1]  $BOT~tab&"dep {cash to deposit} "
     setVar $BOT~help[2]  $BOT~tab&"  Deposits cash into citadel treasury."
 	setVar $BOT~help[3]  $BOT~tab&"        default is max credits possible"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
     setVar $PLAYER_CASH_MAX     999999999
     setVar $planet~citadel_CASH_MAX    999999999999999

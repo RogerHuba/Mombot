@@ -6,7 +6,7 @@
 		
 	setVar $BOT~help[1] $BOT~tab&"cn9"
 	setVar $BOT~help[2] $BOT~tab&"  - Resets the cn settings in the game to bot desirable settings."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
     gosub  :player~currentPrompt

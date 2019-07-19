@@ -2,7 +2,7 @@
 		
 	setVar $BOT~help[1] $BOT~tab&"Reboot"
 	setVar $BOT~help[2] $BOT~tab&"  - Kill bot and restart it"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
     setVar $i 1
     setVar $found FALSE

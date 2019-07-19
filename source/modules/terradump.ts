@@ -3,7 +3,7 @@ gosub :BOT~loadVars
 
 setVar $BOT~help[1] $BOT~tab&"terradump"
 setVar $BOT~help[2] $BOT~tab&"Start in non-fed sector.  Will pull colos off terra and jettison."
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Terra Dump"
 gosub :BOT~banner

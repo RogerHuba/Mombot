@@ -54,7 +54,7 @@ gosub :BOT~loadVars
 
 	setVar $BOT~help[13]  $BOT~tab&"      "
 	setVar $BOT~help[14]  $BOT~tab&"      Author: Lonestar"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	loadvar $game~PHOTON_COST
 

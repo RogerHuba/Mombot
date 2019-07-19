@@ -3,7 +3,7 @@
 	setVar $BOT~help[1] $BOT~tab&"Quasar Report"
 	setVar $BOT~help[2] $BOT~tab&"  - Will display cannon shots based on current settings."
 	setVar $BOT~help[3] $BOT~tab&"  qreport {planet1} {planet2} ... {planetx}"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 	loadVar $game~mbbs
 
 	

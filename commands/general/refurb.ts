@@ -3,7 +3,7 @@
     setvar $bot~command "refurb"
     setVar $BOT~help[1]  $BOT~tab&"refurb - Auto buys fighters and shields "
     setVar $BOT~help[2]  $BOT~tab&"    {seek} - attempts to find class 9 or 0 port"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 :scrub
 	setVar $message ""

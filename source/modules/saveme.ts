@@ -5,7 +5,7 @@
 	setVar $BOT~help[2] $BOT~tab&"         "
 	setVar $BOT~help[3] $BOT~tab&"Options: "
 	setVar $BOT~help[4] $BOT~tab&"{plimper} - Drops personal limps in a sector."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Saveme"
 	gosub :BOT~banner

@@ -28,7 +28,7 @@
 	setVar $BOT~help[12]  $BOT~tab&"     {quiet}        - Will not braodcast BUSTED msg's on SubSpace  "
 	setVar $BOT~help[13]  $BOT~tab&"     {x100}         - Will Drop 100 Fighters per sector "
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setvar $player~save true
 

@@ -29,7 +29,7 @@ loadvar $bot~$MCIC_FILE
 	setVar $BOT~help[17] $BOT~tab&"    Stores sectors to go back to when script reruns."
 	setVar $BOT~help[18] $BOT~tab&"    AUTOCLEANUP if planets above 3500 to avoid bans!"
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Moo XMas - Lets bring on the festivities!"
 	gosub :BOT~banner

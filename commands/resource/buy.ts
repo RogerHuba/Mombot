@@ -489,7 +489,7 @@ return
 	setVar $BOT~help[13] $BOT~tab&"      "
 	setVar $BOT~help[14] $BOT~tab&"  - Originally written by Cherokee.     "
 	setVar $BOT~help[15] $BOT~tab&"  - Now integrated with EP Haggle if it's running "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 	
 
 	loadVar $game~port_max

@@ -3,7 +3,7 @@
 	setVar $BOT~help[1] $BOT~tab&"HAZ - Create 100% NavHaz in Current-Sector"
 	setVar $BOT~help[2] $BOT~tab&"      Scans the Game-Status (aka V Screen), once, to obtain"
 	setVar $BOT~help[3] $BOT~tab&"      Maximum Planets per Sector."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 

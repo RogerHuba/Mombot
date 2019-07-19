@@ -328,7 +328,7 @@ return
 	setVar $BOT~help[10]  $BOT~tab&"       "
 	setVar $BOT~help[11]  $BOT~tab&"       To Restart Normal Mode SubSpace: FFF STOP"
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Fn Fast Foton"
 	gosub :BOT~banner

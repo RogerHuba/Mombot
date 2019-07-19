@@ -441,7 +441,7 @@ halt
 	setVar $BOT~help[8] $BOT~tab&"  holds and twarps back. Requires TWarp/Ore Source "
 	setVar $BOT~help[9] $BOT~tab&"  will check top planet for fuel and a teleport option first."
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	

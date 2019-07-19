@@ -10,7 +10,7 @@
 	setVar $BOT~help[5]  $BOT~tab&"      password    - The corp password                              "
 	setVar $BOT~help[6]  $BOT~tab&"*NOTE: If corp and password were previously used via bot           "
 	setVar $BOT~help[7]  $BOT~tab&"       the corp number and password will be saved                  "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 # ============================== Corp Join/Drop (CORP) ==============================

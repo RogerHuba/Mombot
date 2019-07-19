@@ -4,7 +4,7 @@
 	setVar $BOT~help[1]  $BOT~tab&"Ship list"
 	setVar $BOT~help[2]  $BOT~tab&"  Displays ship list on subspace"
 	setVar $BOT~help[3]  $BOT~tab&"    {fed} - display on fed space"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 #=============================== SS SCANNING =============================================

@@ -6,7 +6,7 @@
 	setVar $BOT~help[4]  $BOT~tab&"- {"&#34&"player name"&#34&"}   = Player to target, name must be"
 	setVar $BOT~help[5]  $BOT~tab&"                                  surrounded by double quotes"
 	setVar $BOT~help[6]  $BOT~tab&"- {corp#}           = Corporation number to target"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Citadel Capper"
 	gosub :BOT~banner

@@ -3,7 +3,7 @@ gosub :BOT~loadVars
 
 	setVar $BOT~help[1]  $BOT~tab&"dscan "
 	setVar $BOT~help[2]  $BOT~tab&"  Sends density scan to subspace"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 #=============================== SS SCANNING =============================================

@@ -15,7 +15,7 @@ setVar $BOT~help[1] $BOT~tab&"    "
 setVar $BOT~help[2] $BOT~tab&"     "
 setVar $BOT~help[3] $BOT~tab&"Upgrades all planets in sector."
 setVar $BOT~help[4] $BOT~tab&"   Original Author: Promethius"
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 
 gosub :player~quikstats

@@ -24,7 +24,7 @@
 	setVar $BOT~help[15]   $BOT~tab&"    {route} - Plots a basic shortest path (slow). "
 	setVar $BOT~help[16]   $BOT~tab&"      {ppt} - Finds port pair trading ports  "
 	# ham select ports ore-mcic<-70
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	#setVar $BOT~script_title "Select"
 	#gosub :BOT~banner

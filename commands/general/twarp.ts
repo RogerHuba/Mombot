@@ -8,7 +8,7 @@
     setVar $BOT~help[6]  $BOT~tab&"    t [sector] {p} - transwarp, then port"
     setVar $BOT~help[7]  $BOT~tab&"    t planet {planet id} - transwarp to last known "
     setVar $BOT~help[8]  $BOT~tab&"                           location of the planet id"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 
 # ======================     START TWARP SUBROUTINES     =================

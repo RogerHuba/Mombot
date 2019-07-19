@@ -16,7 +16,7 @@
 	setVar $BOT~help[3] $BOT~tab&"   "
 	setVar $BOT~help[4] $BOT~tab&"qreset [damage]"
 	setVar $BOT~help[5] $BOT~tab&"  - Sets sector and atmos cannon for current planet"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Cannon Resetter"
 	gosub :BOT~banner

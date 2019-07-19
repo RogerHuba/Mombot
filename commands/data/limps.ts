@@ -4,7 +4,7 @@
 
 	setVar $BOT~help[1] $BOT~tab&"Refreshes Deployed Limpet List"
 	setVar $BOT~help[2] $BOT~tab&"  - Will show difference since last command was run."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Limpet Report"
 	gosub :BOT~banner

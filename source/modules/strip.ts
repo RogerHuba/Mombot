@@ -15,7 +15,7 @@
 	setVar $BOT~help[10] $BOT~tab&"           {ec}   - Strip equipment colonists"
 	setVar $BOT~help[11] $BOT~tab&"          {fig}   - Strip fighters"
 	setVar $BOT~help[12] $BOT~tab&"          {turbo} - Does in a macro burst"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	gosub :PLAYER~quikstats

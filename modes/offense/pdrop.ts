@@ -21,7 +21,7 @@ reqRecording
 	setVar $BOT~help[9]   $BOT~tab&"     - [return]    = will return planet home after 10 seconds"
 	setVar $BOT~help[10]  $BOT~tab&"     - [kill]      = checks for enemy, and kills if possible"
 	setVar $BOT~help[11]  $BOT~tab&"     - [fastkill]  = does kill mac without checking"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Dropper"
 	gosub :BOT~banner

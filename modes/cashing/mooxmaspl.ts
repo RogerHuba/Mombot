@@ -39,7 +39,7 @@ loadvar $bot~$MCIC_FILE
 	setVar $BOT~help[16]  $BOT~tab&"    {ephag}       Default is NEG but set to use EP Haggle"
 	setVar $BOT~help[17] $BOT~tab&"    "
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Moo XMas PL - Lets bring on the festivities!"
 	gosub :BOT~banner

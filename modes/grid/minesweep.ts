@@ -64,7 +64,7 @@
 	setVar $BOT~help[15] $BOT~tab&"            controlled by bot surround menu"
 	setVar $BOT~help[16] $BOT~tab&"[bwarp]   - bwarp clearing"
 	setVar $BOT~help[17] $BOT~tab&"[reckless]- bwarp recklessly, with no safeties"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Mine Sweeper"
 	gosub :BOT~banner

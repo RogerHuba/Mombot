@@ -641,7 +641,7 @@ gosub :_START_
 	setVar $BOT~help[14] $BOT~tab&"- [fake holds]    = extra holds to buy - Fake      - default is 97"
 	setVar $BOT~help[15] $BOT~tab&"- [normal letter] = ship letter to buy - Normal    - default is H"
 	setVar $BOT~help[16] $BOT~tab&"- [fake letter]   = ship letter to buy - Fake      - default is O"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	getWordPos $user_command_line $pos "planet:"

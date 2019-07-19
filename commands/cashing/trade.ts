@@ -15,7 +15,7 @@ gosub :BOT~loadVars
 	setVar $BOT~help[12]  $BOT~tab&"        "
 	setVar $BOT~help[12]  $BOT~tab&"       EP haggle will be used if it is running in the bot. "
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Trade"
 	gosub :BOT~banner

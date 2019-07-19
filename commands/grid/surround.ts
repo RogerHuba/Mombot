@@ -16,7 +16,7 @@
 	setVar $BOT~help[3]   $BOT~tab&"      "
 	setVar $BOT~help[4]   $BOT~tab&"    - Options for surround can be found in the"
 	setVar $BOT~help[5]   $BOT~tab&"      preferences menu in bot"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
     gosub :PLAYER~quikstats
     if (($PLAYER~TURNS <= $BOT~bot_turn_limit) and ($PLAYER~unlimitedGame <> TRUE))

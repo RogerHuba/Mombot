@@ -26,7 +26,7 @@
 	setVar $BOT~help[13] $BOT~tab&"       {grid}    Surround grid as you go"
 	setVar $BOT~help[14] $BOT~tab&"        {rob}    Rob ports after buying down"
 	setVar $BOT~help[15] $BOT~tab&"    {upgrade}    Slowly upgrade each port as it goes"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Traveling Salesman"
 	gosub :BOT~banner

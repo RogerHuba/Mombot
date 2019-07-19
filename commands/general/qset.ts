@@ -6,7 +6,7 @@
     setVar $BOT~help[4]  $BOT~tab&"    qset {s} [amount] - sets sector cannon to amount"
     setVar $BOT~help[5]  $BOT~tab&"    qset {a} [amount] - sets atmos cannon to amount"
     setVar $BOT~help[6]  $BOT~tab&"        qset [amount] - sets both cannons to amount"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
     loadvar $game~mbbs
 

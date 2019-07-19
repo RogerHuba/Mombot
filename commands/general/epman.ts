@@ -21,7 +21,7 @@
 	setVar $BOT~help[18] $BOT~tab&"        >epman mbbs on"
 	setVar $BOT~help[19] $BOT~tab&"        "
 	setVar $BOT~help[20] $BOT~tab&"        Changing config means to restarting EP"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	setVar $EPSettings GAMENAME&"_HaggleOpt.txt"

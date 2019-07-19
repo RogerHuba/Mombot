@@ -21,7 +21,7 @@
 	setVar $BOT~help[10] $BOT~tab&"    [CLEAR_EMPTY]                                           " 
 	setVar $BOT~help[11] $BOT~tab&"       - Will delete the empty port file                    " 
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "World Rob"
 	gosub :BOT~banner

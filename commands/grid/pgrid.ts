@@ -1,7 +1,7 @@
 	gosub :BOT~loadVars
 
 	setVar $BOT~help[1]  $BOT~tab&"pgrid - planet grid into sector "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 # ======================     START PLANET GRID (PGRID) SUBROUTINE    ==========================
 :pgrid

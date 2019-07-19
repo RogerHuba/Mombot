@@ -13,7 +13,7 @@
 	loadvar $game~DISRUPTOR_COST
 
 #	setVar $BOT~help[1] $BOT~tab&"Lister"
-#	gosub :BOT~help_file
+#	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Lister"
 	gosub :BOT~banner

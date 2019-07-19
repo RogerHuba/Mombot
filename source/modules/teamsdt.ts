@@ -51,7 +51,7 @@
 	setVar $BOT~help[16] $BOT~tab&"Note: "
 	setVar $BOT~help[17] $BOT~tab&"       Planet ids are only necessary when multiple planets exist"
 	setVar $BOT~help[18] $BOT~tab&"       in sector or planet scanners are on ships.   "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 

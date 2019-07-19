@@ -1,7 +1,7 @@
     gosub :BOT~loadVars
 
     setVar $BOT~help[1]  $BOT~tab&"topoff - fill up ship with fighters from sector "
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 #============================== START TOPOFF (TOPOFF) ==============================
 :topoff

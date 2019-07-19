@@ -28,7 +28,7 @@ setVar $BOT~help[10] $BOT~tab&"    "
 setVar $BOT~help[15] $BOT~tab&"    Requires ZTM to be safe."
 setVar $BOT~help[15] $BOT~tab&"    Run: MSL, Armids, Limps and Figs first!"
 
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Xmas Prep - Lets have a safe holiday!"
 gosub :BOT~banner

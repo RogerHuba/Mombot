@@ -12,7 +12,7 @@
 	setVar $BOT~help[10]  $BOT~tab&"    [zdy]                         " 
 	setVar $BOT~help[11]  $BOT~tab&"       - Option to blow planet as soon as you land.   " 
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 	
 # ======================     START KAMIKAZE (KAZI) SUBROUTINE    ==========================
 :kamikaze

@@ -1,7 +1,7 @@
 	gosub :BOT~loadVars
 
 	setVar $BOT~help[1]  $BOT~tab&"mines - place corporate armids and limpets in sector "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 # ============================== MINES (ARMID AND LIMP) SUB ==============================
 :mines
 

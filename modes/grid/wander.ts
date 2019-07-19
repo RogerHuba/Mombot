@@ -21,7 +21,7 @@
 	setVar $BOT~help[13]  $BOT~tab&"          "
 	setVar $BOT~help[14]  $BOT~tab&"          Planet avoid options can be set in the bot menu"
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Wanderer"
 	gosub :BOT~banner

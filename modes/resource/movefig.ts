@@ -13,7 +13,7 @@
 	setVar $BOT~help[10] $BOT~tab&"                     "
 	setVar $BOT~help[11] $BOT~tab&"     {all}  Will move fighters off of all your"
 	setVar $BOT~help[12] $BOT~tab&"            planets in sector. >figmove s only"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Movefig"
 	gosub :BOT~banner

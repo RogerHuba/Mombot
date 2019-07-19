@@ -14,7 +14,7 @@
 	setVar $BOT~help[10] $BOT~tab&"          default is to sell all org and equip"
 	setVar $BOT~help[11] $BOT~tab&"          "
 	setVar $BOT~help[12] $BOT~tab&"           - Originally written by Cherokee"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Negotiate"
 	gosub :BOT~banner

@@ -5,7 +5,7 @@
 		
 	setVar $BOT~help[1] $BOT~tab&"clearbusts"
 	setVar $BOT~help[2] $BOT~tab&"  - Will clear all busts in database."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Bust Clearer"
 	gosub :BOT~banner

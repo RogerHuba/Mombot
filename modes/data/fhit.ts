@@ -41,7 +41,7 @@ setVar $BOT~help[9]  $BOT~tab&"            - predicted sector "
 setVar $BOT~help[10]  $BOT~tab&"   {pdrop}  - attempt planet drop on predicted sector"
 
 
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Fig Hit Analysis"
 gosub :BOT~banner

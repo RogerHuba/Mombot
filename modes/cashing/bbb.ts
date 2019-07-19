@@ -16,7 +16,7 @@ gosub :BOT~loadVars
 	setVar $BOT~help[12] $BOT~tab&"    {org_holds}   Number of organics to buy each loop; default 6"
 	setVar $BOT~help[13] $BOT~tab&"    {equip_holds} Number of equip to buy each loop; default 3"
 	setVar $BOT~help[14] $BOT~tab&"    {jet}         No planet? no worries, we will just litter.. :("
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Buy Buy Buy"
 	gosub :BOT~banner

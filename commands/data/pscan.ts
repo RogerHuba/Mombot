@@ -12,7 +12,7 @@
 	setVar $BOT~help[10] $BOT~tab&"                current sector.   "
 	setVar $BOT~help[11] $BOT~tab&"             "
 	setVar $BOT~help[12] $BOT~tab&"              - Written by Lonestar "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
  
 	
 	gosub :player~quikstats

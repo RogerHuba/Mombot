@@ -18,7 +18,7 @@
 	setVar $BOT~help[9]  $BOT~tab&"       "
 	setVar $BOT~help[10]  $BOT~tab&" "
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "XMas Check"
 	gosub :BOT~banner

@@ -18,7 +18,7 @@ setVar $BOT~help[9]  $BOT~tab&"                [ufde] un-figged dead end"
 setVar $BOT~help[10] $BOT~tab&"     - {sector}    sector number that you need finder data on,  "
 setVar $BOT~help[11] $BOT~tab&"                   default is current sector"
 setVar $BOT~help[12] $BOT~tab&"     - [port type] port type (s)ell , (b)uy, or (x) either"
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 
 

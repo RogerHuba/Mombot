@@ -27,7 +27,7 @@ reqRecording
 	setVar $BOT~help[5] $BOT~tab&"  - {resetlra} will reset last rob sector and exit"
 	setVar $BOT~help[6] $BOT~tab&"  - Will use EP Haggle if running in bot"
 	setVar $BOT~help[7] $BOT~tab&"  - Created by Cherokee"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "SDT - Steal Dump Transport"
 	gosub :BOT~banner

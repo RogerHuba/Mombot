@@ -12,7 +12,7 @@
 	setVar $BOT~help[9]  $BOT~tab&" [traffic] - Create traffic analysis file"
 	setVar $BOT~help[10]  $BOT~tab&"     [ss] - Displays data over SS (NOT IMPLEMENTED)"
 
-        gosub :BOT~help_file
+        gosub :bot~helpfile
         setVar $BOT~script_title "Dataminer"
         gosub :BOT~banner
 	getWordPos $bot~user_command_line $pos "setparm"

@@ -3,7 +3,7 @@
 		
 	setVar $BOT~help[1] $BOT~tab&"htorp "
 	setVar $BOT~help[2] $BOT~tab&"  - Holoscans and then photons if enemy in adjacent sector."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 #===============================START HTORP (HTORP) =================================

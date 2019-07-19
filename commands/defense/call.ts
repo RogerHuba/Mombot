@@ -5,7 +5,7 @@
 	setVar $BOT~help[2] $BOT~tab&"       Used to trigger a SaveMe Script"
 	setVar $BOT~help[3] $BOT~tab&"     "
 	setVar $BOT~help[4] $BOT~tab&"       - Originally written by Cherokee"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 		
 :callSaveMe

@@ -33,7 +33,7 @@
 	setVar $BOT~help[29] $BOT~tab&"               - Marks sector as a Bubble Sector / Door"
 	setVar $BOT~help[30] $BOT~tab&"  {remove} plus [sector number]"
 	setVar $BOT~help[31] $BOT~tab&"               - Removes marked sector"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	
 

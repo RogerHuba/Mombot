@@ -3,7 +3,7 @@
 	setVar $BOT~help[1] $BOT~tab&"HAZKILL - Remove NavHaz Command"
 	setVar $BOT~help[2] $BOT~tab&"          Scans Current-Sector and launches Genesis Torpedos"
 	setVar $BOT~help[3] $BOT~tab&"          to removes any NavHaz"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 

@@ -4,7 +4,7 @@
 
 	setVar $BOT~help[1] $BOT~tab&"hkill {surround} "
 	setVar $BOT~help[2] $BOT~tab&"  - Holoscans and then kills if enemy in adjacent sector."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	loadvar $player~surround_before_hkill
 

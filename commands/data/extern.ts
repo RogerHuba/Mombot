@@ -3,7 +3,7 @@ gosub :BOT~loadVars
 #HELP FILE
      setVar $BOT~help[1]  $BOT~tab&"extern   "
      setVar $BOT~help[2]  $BOT~tab&"    Says how much time until midnight game time.   "
-     gosub :BOT~help_file
+     gosub :bot~helpfile
 
 :extern
     gosub  :player~currentPrompt

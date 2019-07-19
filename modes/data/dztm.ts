@@ -17,7 +17,7 @@ setVar $parm3 $BOT~parm3
         setVar $BOT~help[11] $BOT~tab&"   Examples:"
         setVar $BOT~help[12] $BOT~tab&"   >ztm s:400   - Pass 2, sector 400"
         setVar $BOT~help[13] $BOT~tab&"   >ztm one         - Plot to one"
-       gosub :BOT~help_file
+       gosub :bot~helpfile
 
 
 

@@ -6,7 +6,7 @@
     setVar $BOT~help[4]  $BOT~tab&"    p [sector] - normal planet warp"
     setVar $BOT~help[5]  $BOT~tab&"    p planet {planet id} - planet warp to last known "
     setVar $BOT~help[6]  $BOT~tab&"                           location of the planet id"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 # ======================     START PWARP SUBROUTINES     =================
 :pwarp

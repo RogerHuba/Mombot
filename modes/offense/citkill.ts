@@ -15,7 +15,7 @@
 	setVar $BOT~help[12] $BOT~tab&"- {smart}           = Notices changes in ship type/target"
 	setVar $BOT~help[13] $BOT~tab&"- {override}        = Overrides safety on attacking defender bonus ships"
 	setVar $BOT~help[14] $BOT~tab&"- {photon}          = Will fire photon to adjacent fig hits"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Citadel Killer"
 	gosub :BOT~banner

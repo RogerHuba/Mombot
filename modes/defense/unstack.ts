@@ -20,7 +20,7 @@
 	setVar $BOT~help[5]  $BOT~tab&"      Options: "
 	setVar $BOT~help[6]  $BOT~tab&"         {planet#} - will not move listed planets"
 	setVar $BOT~help[7]  $BOT~tab&"         {restack} - restacks last unstacked planets"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	
 

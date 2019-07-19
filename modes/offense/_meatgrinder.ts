@@ -7,7 +7,7 @@ logging off
 	setVar $BOT~help[1] $BOT~tab&"Meatgrinder tries to kill as fast as possible"
 	setVar $BOT~help[2] $BOT~tab&"    {turbo} - speed over accuracy"
 	setVar $BOT~help[3] $BOT~tab&"    {fedsafe} - If no longer fed safe, stop and hide"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	getWordPos $BOT~user_command_line $pos "turbo"
 	if ($pos > 0)

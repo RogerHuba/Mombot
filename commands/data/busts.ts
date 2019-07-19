@@ -2,7 +2,7 @@
 
 	setVar $BOT~help[1] $BOT~tab&"busts -"
 	setVar $BOT~help[2] $BOT~tab&"    displays all busted sectors on subspace"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 setvar $switchboard~message "Scanning BUSTED SectorParameter ...*"
 gosub :switchboard~switchboard

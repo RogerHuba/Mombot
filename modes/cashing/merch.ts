@@ -19,7 +19,7 @@
 	setVar $BOT~help[11] $BOT~tab&"     {buyfuel}   Buys all the fuel in fuel selling ports "
 	setVar $BOT~help[12] $BOT~tab&"                 on route  "
 	setVar $BOT~help[13] $BOT~tab&"        {half}   sell half of port (neg only for now) "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Merchant"
 	gosub :BOT~banner

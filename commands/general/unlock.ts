@@ -1,7 +1,7 @@
    gosub :BOT~loadVars
 
     setVar $BOT~help[1]  $BOT~tab&"unlock - unlock ship in citadel to it can be traded"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 # ============================== START UNLOCK (unlock) Sub ==============================
 :unlock

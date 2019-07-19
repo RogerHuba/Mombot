@@ -18,7 +18,7 @@
 	setVar $BOT~help[9]    $BOT~tab&"    {delay} - how many milliseconds to wait before drop or plock"
 	setVar $BOT~help[10]   $BOT~tab&"   {figs:n} - drop this many figs to sector on landing"
 	setVar $BOT~help[11]   $BOT~tab&"{offensive} - make figs offensive, default defense."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Limpet Dropper"
 	gosub :BOT~banner

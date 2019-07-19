@@ -20,7 +20,7 @@ setVar $BOT~help[6] $BOT~tab&"  Does not mega rob."
 setVar $BOT~help[7] $BOT~tab&"  "
 setVar $BOT~help[8] $BOT~tab&"  - {resetlra} will reset last rob sector and exit"
 
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Rob Xport Rob"
 gosub :BOT~banner

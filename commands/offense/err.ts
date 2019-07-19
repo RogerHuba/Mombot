@@ -4,7 +4,7 @@ logging off
 #HELP FILE
      setVar $BOT~help[1]  $BOT~tab&"Enter Sector and Retreat until back in original sector (pod or actual retreat).  "
      setVar $BOT~help[2]  $BOT~tab&"       "
-     gosub :BOT~help_file
+     gosub :bot~helpfile
      setVar $BOT~script_title "ERR"
      gosub :BOT~banner
 

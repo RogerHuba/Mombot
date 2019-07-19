@@ -16,7 +16,7 @@
 	setVar $BOT~help[3]  $BOT~tab&"  upgradethis [port type/sector param] "
 	setVar $BOT~help[4]  $BOT~tab&"       "
 	setVar $BOT~help[5]  $BOT~tab&"        "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Pay At The Pump"
 	gosub :BOT~banner

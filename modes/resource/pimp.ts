@@ -12,7 +12,7 @@ loadvar $map~backdoor
 	setVar $BOT~help[7] $BOT~tab&"          [f] - fuel"
 	setVar $BOT~help[8] $BOT~tab&"          [o] - organics"
 	setVar $BOT~help[9] $BOT~tab&"          [e] - equipment"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Product Pimp"
 	gosub :BOT~banner

@@ -19,7 +19,7 @@ setVar $parm3 $BOT~parm3
         setVar $BOT~help[12] $BOT~tab&"   >ztm p:2 s:400   - Pass 2, sector 400"
         setVar $BOT~help[13] $BOT~tab&"   >ztm one         - Plot to one"
         setVar $BOT~help[14] $BOT~tab&"   >ztm p:0 s:2 one - Start Again, Plot to one"
-       gosub :BOT~help_file
+       gosub :bot~helpfile
 
 
 

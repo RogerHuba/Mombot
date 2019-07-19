@@ -37,7 +37,7 @@ setVar $BOT~help[13] $BOT~tab&"    Auto refurbs - requires fed safe"
 setVar $BOT~help[14] $BOT~tab&"    Stores sectors to go back to when script reruns."
 setVar $BOT~help[15] $BOT~tab&"    AUTOCLEANUP if planets above 3500 to avoid bans!"
 
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Moo XMas - Lets bring on the festivities!"
 gosub :BOT~banner

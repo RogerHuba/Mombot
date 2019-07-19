@@ -3,7 +3,7 @@
 
 	setVar $BOT~help[1]  $BOT~tab&"holo "
 	setVar $BOT~help[2]  $BOT~tab&"  Sends holoscan output to subspace"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 #=============================== SS SCANNING =============================================

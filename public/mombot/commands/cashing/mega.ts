@@ -1,7 +1,7 @@
  	gosub :BOT~loadVars
 		
 	setVar $BOT~help[1] $BOT~tab&"Attempts a mega rob on port"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 :mega

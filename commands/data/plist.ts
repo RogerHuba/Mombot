@@ -1,7 +1,7 @@
 gosub :BOT~loadVars
 
 	setVar $BOT~help[1] $BOT~tab&"PLIST - Displays Sector planet scan on subspace "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 # ============================== START PLANET LIST (PLIST)  ==============================

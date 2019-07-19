@@ -4,7 +4,7 @@
 	setVar $BOT~help[2] $BOT~tab&"       Moves all movable planets in Current-Sector to target sector."
 	setVar $BOT~help[3] $BOT~tab&"                  "
 	setVar $BOT~help[4] $BOT~tab&"      evac [sector]"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 loadVar $map~stardock
 loadVar $map~rylos

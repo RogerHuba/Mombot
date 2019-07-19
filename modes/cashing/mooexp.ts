@@ -26,7 +26,7 @@ setVar $BOT~help[16] $BOT~tab&"    Stores sectors to go back to when script reru
 setVar $BOT~help[17] $BOT~tab&"    AUTOCLEANUP if planets above 90%"
 setVar $BOT~help[18] $BOT~tab&"    mooexp [turns] [mooship1] furb ice"
 
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Moo Explorer - Lets bring on the festivities!"
 gosub :BOT~banner

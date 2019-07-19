@@ -6,7 +6,7 @@
 	setVar $BOT~help[4] $BOT~tab&"      "
 	setVar $BOT~help[5] $BOT~tab&"      ped [Sector]"
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
     gosub :INVADER~check_invade_macro_params
     setVar $INVADER~speed_invade_macro  $INVADER~enter&"     *  "

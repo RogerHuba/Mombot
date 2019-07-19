@@ -16,7 +16,7 @@
 	setVar $BOT~help[1]  $BOT~tab&"              destroyports               "
 	setVar $BOT~help[2]  $BOT~tab&"  Destroys all ports not marked as BUBBLE sector"
 	setVar $BOT~help[3]  $BOT~tab&"       "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Port Destroyer"
 	gosub :BOT~banner

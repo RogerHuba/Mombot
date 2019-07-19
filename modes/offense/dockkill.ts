@@ -15,7 +15,7 @@
 	setVar $BOT~help[2] $BOT~tab&"         "
 	setVar $BOT~help[3] $BOT~tab&"Options: "
 	setVar $BOT~help[4] $BOT~tab&"{off} - Turns off script and sets planet and ship corporate."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Dock Killer"
 	gosub :BOT~banner

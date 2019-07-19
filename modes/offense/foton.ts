@@ -21,7 +21,7 @@
 	setVar $BOT~help[15] $BOT~tab&"       {holo}   - does holo command after firing"
 	setVar $BOT~help[16] $BOT~tab&"  "
 	setVar $BOT~help[17] $BOT~tab&"       Authors: Mind Dagger and The Bounty Hunter "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Fast Foton"
 	gosub :BOT~banner

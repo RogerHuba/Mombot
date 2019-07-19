@@ -31,7 +31,7 @@
 	setVar $BOT~help[13] $BOT~tab&" {return} - Return to starting sector after each hunt."
 	setVar $BOT~help[14] $BOT~tab&"{passive} - Surround passively when hunting."
 	setVar $BOT~help[15] $BOT~tab&"   {home} - Move ships to starting sector instead of stardock."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Alien Hunter"
 	gosub :BOT~banner
@@ -281,7 +281,7 @@
 	setTextLineTrigger 	power 	:pwarpConfirmed 	"is powering up weapons systems!"
 	settextlinetrigger  wave    :pwarpConfirmed    " launches a wave of fighters at the "
 	
-	gosub :BOT~disconnect_triggers
+	gosub :bot~disconnecttriggers
 	pause
 
 	:attackSectorMine

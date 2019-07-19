@@ -13,7 +13,7 @@ systemscript
 	setVar $BOT~help[9]  $BOT~tab&"               "
 	setVar $BOT~help[10]  $BOT~tab&"                     example: 5:30:00 PM"
 	setVar $BOT~help[11] $BOT~tab&"     The time is on your machine, not the game server"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	loadVar $bot~bot_name

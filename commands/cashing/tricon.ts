@@ -2,7 +2,7 @@
 		
 	setVar $BOT~help[1] $BOT~tab&"Plays tricon for you"
 	setVar $BOT~help[2] $BOT~tab&"  - Must be started at stardock"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 setVar $games $bot~parm1
 setVar $gamestoplay $games

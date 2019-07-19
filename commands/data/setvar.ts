@@ -10,7 +10,7 @@
     setVar $BOT~help[7]  $BOT~tab&"    x - safe ship"
     setVar $BOT~help[8]  $BOT~tab&"   tl - turn limit"
     setVar $BOT~help[9]  $BOT~tab&"    h - home sector"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 	getWord $BOT~user_command_line $BOT~parm1 1
 	isNumber $test $BOT~parm2

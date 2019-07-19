@@ -1,7 +1,7 @@
 	gosub :BOT~loadVars
 
 	setVar $BOT~help[1] $BOT~tab&"Kill all colos on a planet if possible with fighters"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Kill Colos"
 	gosub :BOT~banner
