@@ -866,7 +866,7 @@ return
 return
 # ============================== BOT SECURITY ==============================
 
-:format_help_line
+:formathelpline
 
 	replaceText $line "[" ansi_2&"["&ansi_6
 	replaceText $line "]" ansi_2&"]"&ansi_13
