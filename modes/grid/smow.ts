@@ -135,7 +135,7 @@ return
 
 # includes:
 include "source\bot_includes\player\quikstats\player"
-include "source\module_includes\prompt"
+include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\player\getcourse\player"
 include "source\bot_includes\player\addfigtodata\player"

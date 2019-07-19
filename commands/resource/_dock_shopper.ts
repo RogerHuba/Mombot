@@ -973,5 +973,5 @@ return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\player\quikstats\player"
-include "source\module_includes\prompt"
+include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\game\gamestats\game"
