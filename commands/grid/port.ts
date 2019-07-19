@@ -45,13 +45,13 @@
 	end
 
 	if (($bot~parm1 = "build") OR ($bot~parm1 = "create"))
-		gosub :port~build_port
+		gosub :port~buildport
 		halt
 	elseif (($bot~parm1 = "destroy") or ($bot~parm1 = "kill"))
-		gosub :port~destroy_port
+		gosub :port~destroyport
 		halt
 	elseif (($bot~parm1 = "max") or ($bot~parm1 = "upgrade"))
-		gosub :port~upgrade_port
+		gosub :port~upgradeport
 		halt
 	else
 		setVar $SWITCHBOARD~message "Option used for port helper not recognized.  Try build/create/destroy/kill/upgrade/max options.*"
