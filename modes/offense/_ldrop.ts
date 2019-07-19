@@ -446,7 +446,9 @@ setVar $moveFigMacro ""
 
 
 #INCLUDES:
-include "source\module_includes\bot"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"

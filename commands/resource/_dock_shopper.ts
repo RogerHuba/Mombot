@@ -971,7 +971,7 @@ return
 #============================================= END DOCK SHOPPER MENU  ==================================================
 
 #INCLUDES:
-include "source\module_includes\bot"
+include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\module_includes\prompt"
 include "source\bot_includes\game\gamestats\game"

@@ -98,9 +98,12 @@ return
 
 
 # includes:
-include "source\module_includes\bot"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\planet\landingsub\planet"
+include "source\module_includes\bot\addfigtodata\bot"

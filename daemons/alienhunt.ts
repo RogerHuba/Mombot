@@ -642,14 +642,17 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
+include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\combat\init\combat"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\ship\getshipcapstats\ship"
 include "source\bot_includes\ship\getshipstats\ship"
+include "source\module_includes\bot\disconnecttriggers\bot"
 include "source\bot_includes\grid\surround\grid"
 include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\sector\getsectordata\sector"

@@ -58,12 +58,14 @@ logging off
 #================================ END AUTO CAPTURE ===================================
 
 #INCLUDES:
-include "source\module_includes\bot"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\ship\getshipcapstats\ship"
 include "source\bot_includes\bot\user_interface"
 include "source\bot_includes\switchboard"
+include "source\module_includes\bot\wait_for_command\bot"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcapture\combat"

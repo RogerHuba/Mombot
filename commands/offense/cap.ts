@@ -79,7 +79,8 @@ logging off
 #================================ END AUTO CAPTURE ===================================
 
 #INCLUDES:
-include "source\module_includes\bot"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\ship\loadshipinfo\ship"
 include "source\bot_includes\ship\getshipcapstats\ship"

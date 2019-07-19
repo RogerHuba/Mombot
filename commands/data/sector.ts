@@ -30,6 +30,6 @@ halt
 
 
 # includes:
-include "source\module_includes\bot"
+include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\map\displaysector\map"
 include "source\bot_includes\switchboard"

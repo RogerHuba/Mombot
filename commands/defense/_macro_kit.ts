@@ -1232,8 +1232,9 @@ else
 		    echo #27 "[30D                        " #27 "[30D"
 		    halt
 end
-include "source\module_includes\bot"
+include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\player\currentprompt\player"
 include "source\module_includes\prompt"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\map\displayadjacentgridansi\map"
+include "source\module_includes\bot\addfigtodata\bot"

@@ -395,5 +395,7 @@ return
 return
 
 include "source\bot_includes\switchboard"
-include "source\module_includes\bot"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\quikstats\player"
