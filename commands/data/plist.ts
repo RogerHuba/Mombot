@@ -11,9 +11,9 @@ gosub :BOT~loadVars
     gosub :PLAYER~quikstats
     setVar $planet~planetOutput ""
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Citadel Command"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~validPrompts "Citadel Command"
+    gosub :bot~checkStartingPrompt
 
 :Planet_Listing_Start
     if ($startingLocation = "Citadel")

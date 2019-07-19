@@ -8,14 +8,14 @@
     setVar $isMega TRUE
 :rob
     gosub :PLAYER~quikstats
-    setVar $PROMPT~validPrompts "Citadel Command"
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~validPrompts "Citadel Command"
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
     if (($PLAYER~TURNS = 0) and ($PLAYER~unlimitedGame = FALSE))
             setvar $switchboard~message "I have no turns*"
             gosub :switchboard~switchboard
             halt
         end
-    gosub :PROMPT~checkStartingPrompt
+    gosub :bot~checkStartingPrompt
     cutText $PLAYER~ALIGNMENT $neg_ck 1 1
     stripText $PLAYER~ALIGNMENT "-"
     if ((($PLAYER~ALIGNMENT < 100) and ($neg_ck = "-")) OR ($neg_ck <> "-"))
@@ -23,7 +23,7 @@
         gosub :switchboard~switchboard
         goto :portrm_done
     end
-    if ($PROMPT~startingLocation = "Citadel")
+    if ($bot~startingLocation = "Citadel")
         send "q"
         gosub :PLANET~getPlanetInfo
         send "q"
@@ -38,7 +38,7 @@
     pause
 :port_fake
     killalltriggers
-    if ($PROMPT~startingLocation = "Citadel")
+    if ($bot~startingLocation = "Citadel")
         gosub :PLANET~landingSub
     end
     setSectorParameter $PLAYER~CURRENT_SECTOR "BUSTED" TRUE
@@ -55,7 +55,7 @@
             setVar $port_cash (($port_cash*10)/9)
             setVar $mega_short (3300000 - $port_cash)
             send "0* "
-            if ($PROMPT~startingLocation = "Citadel")
+            if ($bot~startingLocation = "Citadel")
                 gosub :PLANET~landingSub
             end
             setvar $switchboard~message "Port is short "&$mega_short&" credits*"
@@ -68,7 +68,7 @@
         setvar $switchboard~message  $port_cash&" credits on port.  Port is ready for Mega Rob*"
         gosub :switchboard~switchboard
         send "*"
-        if ($PROMPT~startingLocation = "Citadel")
+        if ($bot~startingLocation = "Citadel")
             gosub :PLANET~landingSub
         end
         goto :portrm_done
@@ -102,7 +102,7 @@
     end
 :port_bust
     killalltriggers
-    if ($PROMPT~startingLocation = "Citadel")
+    if ($bot~startingLocation = "Citadel")
         gosub :PLANET~landingSub
     end
     setSectorParameter $PLAYER~CURRENT_SECTOR "BUSTED" TRUE
@@ -110,7 +110,7 @@
     goto :portrm_done
 :port_suc
     killalltriggers
-    if ($PROMPT~startingLocation = "Citadel")
+    if ($bot~startingLocation = "Citadel")
         gosub :PLANET~landingSub
         send "tt" $actual_cash "*"
     end

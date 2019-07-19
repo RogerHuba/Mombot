@@ -10,10 +10,10 @@
     setVar $SWITCHBOARD~bot_name $bot_name
     setVar $SWITCHBOARD~self_command $self_command
     gosub  :player~currentPrompt
-    setVar $PROMPT~validPrompts "Citadel"
+    setVar $bot~validPrompts "Citadel"
     setVar $startingLocation $PLAYER~current_prompt
-    setVar $PROMPT~startingLocation $startingLocation
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $startingLocation
+    gosub :bot~checkStartingPrompt
 
     loadVar $psimac_corp_limpet_drop_amt
     if ($psimac_corp_limpet_drop_amt < 1)

@@ -55,14 +55,14 @@ getSectorParameter	1 "LRA" $last_rob_attempt
 :StartupChecks
 
 	gosub :PLAYER~quikstats
-	setVar $PROMPT~validPrompts "Command"
-	setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+	setVar $bot~validPrompts "Command"
+	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
 
 	if (($PLAYER~TURNS = 0) and ($PLAYER~unlimitedGame = FALSE))
 		send "'{" $SWITCHBOARD~bot_name "} - I have no turns*"
 		halt
 	end
-	gosub :PROMPT~checkStartingPrompt
+	gosub :bot~checkStartingPrompt
 	cutText $PLAYER~ALIGNMENT $neg_ck 1 1
 	stripText $PLAYER~ALIGNMENT "-"
 	if ((($PLAYER~ALIGNMENT < 100) and ($neg_ck = "-")) OR ($neg_ck <> "-"))

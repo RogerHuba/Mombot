@@ -19,9 +19,9 @@
 
     gosub :PLAYER~quikstats
     setVar $homeSector $PLAYER~CURRENT_SECTOR
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
+    gosub :bot~checkStartingPrompt
 
         setVar $PLAYER~destination $bot~parm1
         isNumber $number $PLAYER~destination
@@ -53,7 +53,7 @@
             setVar $SWITCHBOARD~message "Mow did not make it back to starting sector!*"
             gosub :SWITCHBOARD~switchboard
         else
-            if (($twarp_back = TRUE) and ($PLAYER~CURRENT_SECTOR = $homeSector) and ($PROMPT~startingLocation = "Citadel"))
+            if (($twarp_back = TRUE) and ($PLAYER~CURRENT_SECTOR = $homeSector) and ($bot~startingLocation = "Citadel"))
                 gosub :PLANET~landingSub
             end
             setVar $SWITCHBOARD~message "Mow completed.*"
@@ -65,13 +65,13 @@
 
 :mow
         
-        if ($PROMPT~startingLocation = "Citadel")
+        if ($bot~startingLocation = "Citadel")
             send "q"
             gosub :PLANET~getPlanetInfo
             send "t*t1* c "
         end
 
-        if ($PROMPT~startingLocation = "Command")
+        if ($bot~startingLocation = "Command")
             gosub :SHIP~getShipStats
             setVar $mow_SHIP_MAX_ATTACK $SHIP~SHIP_MAX_ATTACK
         elseif ($SHIP~SHIP_MAX_ATTACK <= 0)
@@ -184,7 +184,7 @@
                 setVar $docking_instructions " p z s g y g q h *"
             end
             setVar $result $result & $docking_instructions
-        elseif (($mow_saveme = TRUE) AND ($PROMPT~startingLocation = "Citadel"))
+        elseif (($mow_saveme = TRUE) AND ($bot~startingLocation = "Citadel"))
             setVar $i 0
             while ($i < 8)
                 add $i 1
@@ -195,7 +195,7 @@
         send $result
         gosub :PLAYER~quikstats
         if (($PLAYER~CURRENT_PROMPT = "Command") AND ($mow_kill = TRUE))
-            setVar $PROMPT~startingLocation "Command"
+            setVar $bot~startingLocation "Command"
             goSub :SECTOR~getSectorData
             goSub :combat~fastAttack
         elseif ($PLAYER~CURRENT_PROMPT = "Planet")
@@ -203,7 +203,7 @@
             if ($mow_kill = FALSE)
                 send "s* "
             else
-                setVar $PROMPT~startingLocation "Citadel"
+                setVar $bot~startingLocation "Citadel"
                 gosub :scanit_cit_kill
             end
         elseif ($are_we_docking = FALSE)

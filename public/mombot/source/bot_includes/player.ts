@@ -755,12 +755,12 @@ return
 
 :mow
         
-        if ($PROMPT~startingLocation = "Citadel")
+        if ($bot~startingLocation = "Citadel")
             send "q"
             gosub :PLANET~getPlanetInfo
             send "c "
         end
-        if ($PROMPT~startingLocation = "Command")
+        if ($bot~startingLocation = "Command")
             gosub :SHIP~getShipStats
             setVar $mow_SHIP_MAX_ATTACK $SHIP~SHIP_MAX_ATTACK
         elseif ($SHIP~SHIP_MAX_ATTACK <= 0)
@@ -867,7 +867,7 @@ return
             if ($mow_kill = FALSE)
                 send "s* "
             else
-                setVar $PROMPT~startingLocation "Citadel"
+                setVar $bot~startingLocation "Citadel"
                 gosub :scanit_cit_kill
             end
         elseif ($are_we_docking = FALSE)

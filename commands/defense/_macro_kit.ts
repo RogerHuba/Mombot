@@ -7,9 +7,9 @@
 
 	if ($startingLocation = "Citadel")
 
-		setVar $PROMPT~validPrompts "Citadel"
-		setVar $PROMPT~startingLocation $startingLocation
-		gosub :PROMPT~checkStartingPrompt
+		setVar $bot~validPrompts "Citadel"
+		setVar $bot~startingLocation $startingLocation
+		gosub :bot~checkStartingPrompt
 
 		loadVar $psimac_corp_limpet_drop_amt
 		if ($psimac_corp_limpet_drop_amt < 1)
@@ -632,9 +632,9 @@ elseif (($startingLocation = "Do") OR ($startingLocation = "How"))
 		    halt
 
 else 
-		setVar $PROMPT~validPrompts "<StarDock> <Hardware <Libram <FedPolice> <Shipyards> <Tavern> Do How Citadel"
-		setVar $PROMPT~startingLocation $startingLocation
-		gosub :PROMPT~checkStartingPrompt
+		setVar $bot~validPrompts "<StarDock> <Hardware <Libram <FedPolice> <Shipyards> <Tavern> Do How Citadel"
+		setVar $bot~startingLocation $startingLocation
+		gosub :bot~checkStartingPrompt
 
 		:print_the_menu
 		gosub :PLAYER~quikstats

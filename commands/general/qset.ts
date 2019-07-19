@@ -15,9 +15,9 @@
     getWord $bot~user_command_line $bot~parm1 1
     getWord $bot~user_command_line $bot~parm2 2
     gosub  :player~currentPrompt
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Planet Citadel"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~validPrompts "Planet Citadel"
+    gosub :bot~checkStartingPrompt
     setVar $totalDamage 0
     ## if the first param is not a number, assume they want to set only one cannon ##
     isNumber $number $bot~parm1
@@ -29,14 +29,14 @@
         setvar $cannonDamage $bot~parm1
     end
     gosub :doQsetProtections
-    if ($PROMPT~startingLocation = "Citadel")
+    if ($bot~startingLocation = "Citadel")
         send "q"
     end
     gosub :PLANET~getPlanetInfo
     if ($planet~citadel < 3)
         setvar $switchboard~message "Planet number "&$planet~planet&" does not have a quasar cannon.*"
         gosub :switchboard~switchboard
-        if (($planet~citadel > 0) AND ($PROMPT~startingLocation = "Citadel"))
+        if (($planet~citadel > 0) AND ($bot~startingLocation = "Citadel"))
             send "c "
         end
     else
@@ -50,7 +50,7 @@
             else
                 gosub :set_atmos_cannon
             end
-            if ($PROMPT~startingLocation = "Planet")
+            if ($bot~startingLocation = "Planet")
                 send "q "
             end
         end

@@ -13,10 +13,10 @@
     setVar $startingPgridSector $PLAYER~CURRENT_SECTOR
     setVar $startingShip $PLAYER~SHIP_NUMBER
     setVar $bot~validPrompts "Citadel Command"
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Command Citadel"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~validPrompts "Command Citadel"
+    gosub :bot~checkStartingPrompt
 
     if ($startingLocation = "Citadel")
         setVar $inCitadel "Q Q "

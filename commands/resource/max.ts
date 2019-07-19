@@ -25,10 +25,10 @@
 :max
     killalltriggers
     gosub :PLAYER~quikstats
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Citadel Command Planet"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~validPrompts "Citadel Command Planet"
+    gosub :bot~checkStartingPrompt
     if ($parm1 <> "f") AND ($parm1 <> "o") AND ($parm1 <> "e")
         send "'{" $SWITCHBOARD~bot_name "} - maxport [f / o / e] noexp*"
         halt

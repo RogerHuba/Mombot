@@ -16,21 +16,21 @@
         gosub :SWITCHBOARD~switchboard
         halt
     end
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
     getWord $user_command_line $parm1 1 "NONE"
     if ($parm1 = "NONE")
         setVar $parm1 3
     end
-    setVar $PROMPT~validPrompts "Command Citadel"
-    gosub :PROMPT~checkStartingPrompt
-    if ($PROMPT~startingLocation = "Citadel")
+    setVar $bot~validPrompts "Command Citadel"
+    gosub :bot~checkStartingPrompt
+    if ($bot~startingLocation = "Citadel")
         send "q "
         gosub :PLANET~getPlanetInfo
         send "c "
     end
     setVar $preDeployArmids $PLAYER~ARMIDS
     setvar $preDeployLimpets $PLAYER~LIMPETS
-    if ($PROMPT~startingLocation = "Citadel")
+    if ($bot~startingLocation = "Citadel")
         send "s* "
         setVar $start_mac "q q "
         setVar $end_mac "l "&$PLANET~PLANET&"* c "

@@ -18,9 +18,9 @@
         send "'{" $SWITCHBOARD~bot_name "} - Safe Mow can only be run when you have a long range scanner.*"
             goto :wait_for_command
     end
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
+    gosub :bot~checkStartingPrompt
     if ($PLAYER~startingLocation = "Command")
         gosub :SHIP~getShipStats
     elseif ($SHIP~SHIP_MAX_ATTACK <= 0)

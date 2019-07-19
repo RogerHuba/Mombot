@@ -88,7 +88,7 @@
 	
 
 	setVar $startingLocation $player~CURRENT_PROMPT
-	setVar $PROMPT~validPrompts "Citadel"
+	setVar $bot~validPrompts "Citadel"
 	if ($startingLocation <> "Citadel")
 		setVar $SWITCHBOARD~message "Start from the Citadel Prompt.*"
 		gosub :SWITCHBOARD~switchboard

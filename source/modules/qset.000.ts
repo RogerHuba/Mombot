@@ -16,19 +16,19 @@
     getWord $user_command_line $parm2 2
     gosub :doQsetProtections
     gosub  :player~currentPrompt
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Planet Citadel"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~validPrompts "Planet Citadel"
+    gosub :bot~checkStartingPrompt
     setVar $totalDamage 0
         setVar $cannonType $parm1
         setVar $cannonDamage $parm2
-    if ($PROMPT~startingLocation = "Citadel")
+    if ($bot~startingLocation = "Citadel")
         send "q"
     end
     gosub :PLANET~getPlanetInfo
     if ($PLANET~CITADEL < 3)
         send "'{" $SWITCHBOARD~bot_name "} - Planet number " $PLANET~PLANET " does not have a quasar cannon.*"
-        if (($PLANET~CITADEL > 0) AND ($PROMPT~startingLocation = "Citadel"))
+        if (($PLANET~CITADEL > 0) AND ($bot~startingLocation = "Citadel"))
             send "c "
         end
     else
@@ -67,7 +67,7 @@
             send "l a "&$percentToSet&"* "
             setVar $damageType "Atmosphere"
         end
-        if ($PROMPT~startingLocation = "Planet")
+        if ($bot~startingLocation = "Planet")
             send "q "
         end
         setVar $SWITCHBOARD~message "Quasar Cannon on planet "&$PLANET~PLANET&" is set to "&$totalDamage&". ("&$damageType&")*"

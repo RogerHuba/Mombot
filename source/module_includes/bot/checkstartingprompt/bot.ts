@@ -9,3 +9,5 @@
 		halt
 	end
 return
+
+include "source\bot_includes\switchboard"

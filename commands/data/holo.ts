@@ -22,12 +22,12 @@
 		end
 	gosub  :player~currentPrompt
 	setArray $scan_array 1000
-	setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
 	if ($scan_macro = "") OR ($scan_macro = 0)
 		setVar $scan_macro " sd* "
 	end
-	setVar $PROMPT~validPrompts "Citadel Command"
-	gosub :PROMPT~checkStartingPrompt
+	setVar $bot~validPrompts "Citadel Command"
+	gosub :bot~checkStartingPrompt
 	if ($PLAYER~startingLocation = "Citadel")
 		if ($scan_macro = "d")
 			setVar $scan_macro "s"

@@ -10,9 +10,9 @@ loadVar $surround_before_hkill
     end
     killalltriggers
     gosub  :player~currentPrompt
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Citadel Command"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~validPrompts "Citadel Command"
+    gosub :bot~checkStartingPrompt
         gosub :SHIP~getShipStats
 
 :holo_kill_kill_check
@@ -88,8 +88,8 @@ loadVar $surround_before_hkill
             end
         
             gosub  :player~currentPrompt
-            setVar $PROMPT~validPrompts "Command"
-            gosub :PROMPT~checkStartingPrompt
+            setVar $bot~validPrompts "Command"
+            gosub :bot~checkStartingPrompt
             goSub :SECTOR~getSectorData
             goSub :PLAYER~fastAttack
         

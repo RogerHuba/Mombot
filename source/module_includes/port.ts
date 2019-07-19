@@ -4,10 +4,10 @@
 :max
 	killalltriggers
 	gosub :PLAYER~quikstats
-	setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
-	setVar $PROMPT~validPrompts "Citadel Command"
-	gosub :PROMPT~checkStartingPrompt
+	setVar $bot~validPrompts "Citadel Command"
+	gosub :bot~checkStartingPrompt
 
 	getWordPos " "&$bot~user_command_line&" " $pos " f "
 	if ($pos > 0)
@@ -184,10 +184,10 @@ return
 :build_port
 	killalltriggers
 	gosub :PLAYER~quikstats
-	setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
-	setVar $PROMPT~validPrompts "Citadel Command"
-	gosub :PROMPT~checkStartingPrompt
+	setVar $bot~validPrompts "Citadel Command"
+	gosub :bot~checkStartingPrompt
 
 	if ($startinglocation = "Command")
 		send "** "
@@ -250,10 +250,10 @@ return
 
 :destroy_port
 	gosub :PLAYER~quikstats
-	setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
-	setVar $PROMPT~validPrompts "Citadel Command"
-	gosub :PROMPT~checkStartingPrompt
+	setVar $bot~validPrompts "Citadel Command"
+	gosub :bot~checkStartingPrompt
 
 	if ($startinglocation = "Command")
 		send "** "
