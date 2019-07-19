@@ -5,6 +5,7 @@
 
 # ============================== START EXIT ENTER SUB ==============================    
 goto :modules~xenter
+goto :bot~wait_for_command
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"

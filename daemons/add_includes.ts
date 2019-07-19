@@ -69,7 +69,7 @@ return
 
 				setvar $bot_includes " combat game grid map planet player sector ship switchboard tactics targeting validation "
 				setvar $bot_bot_includes " connectivity help internal_commands listener menus user_interface "
-				setvar $module_includes " bot citadel dump invader modules port prompt search strip killing photon restock navigate "
+				setvar $module_includes " bot invader modules port prompt search strip killing photon restock navigate "
 
 				setvar $l 1
 				getword $module_includes $include $l "JUNK"

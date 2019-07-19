@@ -9,7 +9,8 @@
     setVar $SWITCHBOARD~self_command $self_command
 
     goto :modules~clear
-
+    goto :bot~wait_for_command
+    
 # includes:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
