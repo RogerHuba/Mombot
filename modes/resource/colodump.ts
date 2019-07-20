@@ -67,7 +67,7 @@ goto :Start_Up_Routines
 halt
 
 :Start_Up_Routines
-	loadVar $unlimitedGame
+	loadVar $player~unlimitedGame
 	loadVar $bot_turn_limit
 	loadVar $bot~user_command_line
 	loadVar $bot~parm1

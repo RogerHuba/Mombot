@@ -27,7 +27,7 @@
 	waitOn "Planet command (?"
 	gosub :PLANET~getPlanetInfo
 	send "c"
-	if ($PLANET~CITADEL < 4)
+	if ($planet~CITADEL < 4)
 		setVar $SWITCHBOARD~message "You must run Port Destroyer from at least a level 4 planet.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -38,7 +38,7 @@
 	waitOn "Planet command (?"
 	gosub :PLANET~getPlanetInfo
 	
-	send "qjy l "&$PLANET~planet&"* c"
+	send "qjy l "&$planet~planet&"* c"
 	send "c;q"
 	waitFor "Figs Per Attack:"
 	getWord CURRENTLINE $SHIP~maxFigAttack 5
@@ -50,7 +50,7 @@
 	setArray $checked SECTORS
 
 	setVar $isDone FALSE
-	setVar $turnsTooLow FALSE
+	setVar $player~turnsTooLow FALSE
 	:inac
 	killalltriggers
 	while ($isDone <> TRUE)
@@ -134,7 +134,7 @@
 						killtrigger 2
 						killtrigger 3
 						killtrigger 4
-						send " a y "&$SHIP~maxFigAttack&"** l "&$PLANET~planet&"* m * * * q "
+						send " a y "&$SHIP~maxFigAttack&"** l "&$planet~planet&"* m * * * q "
 						setTextTrigger 1 :keepDestroying "Incoming laser barrage from"
 						setTextTrigger 2 :doneDestroying "You destroyed the Star Port!"
 						pause
@@ -150,13 +150,13 @@
 							killtrigger 3
 							killtrigger 4
 					else
-						send "l "&$PLANET~planet&"* m** * c "
+						send "l "&$planet~planet&"* m** * c "
 						goto :donePATP
 					end
 					if ($SWITCHBOARD~message <> "")
-						send "l "&$PLANET~planet&"* m** * c s*    "
+						send "l "&$planet~planet&"* m** * c s*    "
 					else
-						send "l "&$PLANET~planet&"*  c  s*    "
+						send "l "&$planet~planet&"*  c  s*    "
 					end
 				end
 			:tryAgain

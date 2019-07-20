@@ -18,8 +18,8 @@
 		halt
 	end
 	send "'{" $switchboard~bot_name "} - Auto IG reset mode is now ON.*"
-	setVar $PLANET 0
-	saveVar $PLANET
+	setVar $planet~planet 0
+	saveVar $planet~planet
 	goto :ig_turn_it_on
 	:photon_ig_damage_trigger
 		halt
@@ -98,8 +98,8 @@
 
 :ig_triggers
        	setTextLineTrigger turnIGon :ig_turn_it_on " damaging your ship."
-	setVar $PLANET 0
-	saveVar $PLANET
+	setVar $planet~planet 0
+	saveVar $planet~planet
 	pause
 return
 

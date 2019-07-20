@@ -196,10 +196,10 @@ else
 		if ($startingLocation = "Command")
 			setVar $attackMethod "t"
 			setVar $minOre 120
-			if ($player~TOTAL_HOLDS < $minOre)
-				setVar $minOre $player~TOTAL_HOLDS
+			if ($player~total_holds < $minOre)
+				setVar $minOre $player~total_holds
 			end
-			if ($player~ORE_HOLDS < $minOre)
+			if ($player~ore_holds < $minOre)
 				setVar $SWITCHBOARD~message "We need ore!*"
 				gosub :SWITCHBOARD~switchboard
 				halt

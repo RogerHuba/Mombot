@@ -326,7 +326,7 @@
 		gosub :MAP~displayAdjacentGridAnsi
 		return
 		:lifta
-		send "q q z n a y y " $SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** c s* @"
+		send "q q z n a y y " $ship~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** c s* @"
 		waitOn "Average Interval Lag:"
 		goto :getPlanetMacroInput
 		:dropfig
@@ -422,7 +422,7 @@ elseif (($startingLocation = "Do") OR ($startingLocation = "How"))
 		         if ($PLAYER~TWARP = "No")
 		               echo ANSI_12 "**Cannot T-warp. No Twarp drive!*"
 		               halt
-		         elseif ($PLAYER~ORE_HOLDS < 3)
+		         elseif ($player~ore_holds < 3)
 		               echo ANSI_12 "**Cannot T-warp. No ore!*"
 		               halt
 		         end
@@ -463,7 +463,7 @@ elseif (($startingLocation = "Do") OR ($startingLocation = "How"))
 		         if ($PLAYER~TWARP = "No")
 		               echo ANSI_12 "**Cannot T-warp. No Twarp drive!*"
 		               halt
-		         elseif ($PLAYER~ORE_HOLDS < 3)
+		         elseif ($player~ore_holds < 3)
 		               echo ANSI_12 "**Cannot T-warp. No ore!*"
 		               halt
 		         end
@@ -487,7 +487,7 @@ elseif (($startingLocation = "Do") OR ($startingLocation = "How"))
 		         if ($PLAYER~TWARP = "No")
 		               echo ANSI_12 "*Cannot T-warp. No Twarp drive!*"
 		               halt
-		         elseif ($PLAYER~ORE_HOLDS < 3)
+		         elseif ($player~ore_holds < 3)
 		               echo ANSI_12 "*Cannot T-warp. No ore!*"
 		               halt
 		         end
@@ -600,7 +600,7 @@ elseif (($startingLocation = "Do") OR ($startingLocation = "How"))
 		         send "^f*" & $sector & "*q"
 		         waitOn "ENDINTERROG"
 		    elseif ($chosen_option = "E")
-		         if ($CLOAKS > 0)
+		         if ($player~cloaks > 0)
 		              echo ANSI_11 "*Are you sure you want to cloak out? (y/N)*"
 		              getConsoleInput $choice singlekey
 		              upperCase $choice
@@ -690,7 +690,7 @@ else
 		     if ($PLAYER~TWARP = "No")
 		           echo ANSI_12 "**Cannot T-warp. No Twarp drive!*"
 		           halt
-		     elseif ($PLAYER~ORE_HOLDS < 3)
+		     elseif ($player~ore_holds < 3)
 		           echo ANSI_12 "**Cannot T-warp. No ore!*"
 		           halt
 		     end
@@ -731,7 +731,7 @@ else
 		     if ($PLAYER~TWARP = "No")
 		           echo ANSI_12 "**Cannot T-warp. No Twarp drive!*"
 		           halt
-		     elseif ($PLAYER~ORE_HOLDS < 3)
+		     elseif ($player~ore_holds < 3)
 		           echo ANSI_12 "**Cannot T-warp. No ore!*"
 		           halt
 		     end
@@ -751,7 +751,7 @@ else
 		     if ($PLAYER~TWARP = "No")
 		           echo ANSI_12 "*Cannot T-warp. No Twarp drive!*"
 		           halt
-		     elseif ($PLAYER~ORE_HOLDS < 3)
+		     elseif ($player~ore_holds < 3)
 		           echo ANSI_12 "*Cannot T-warp. No ore!*"
 		           halt
 		     end
@@ -907,7 +907,7 @@ else
 		           halt
 		     end
 		elseif ($chosen_option = "F")
-		     if ($PLAYER~ORE_HOLDS < 1)
+		     if ($player~ore_holds < 1)
 		           echo ANSI_12 "**You have no ore to drop!*"
 		           halt
 		     end
@@ -976,7 +976,7 @@ else
 		     send "qqq  z  n  l " & $pnum & "  *  *  z  n  z  n  *  z  d  y  p  s  h "
 		     pause
 		elseif ($chosen_option = "Z")
-		     if ($CLOAKS > 0)
+		     if ($player~cloaks > 0)
 		          echo ANSI_11 "*Are you sure you want to cloak out? (y/N)*"
 		          getConsoleInput $choice singlekey
 		          upperCase $choice
@@ -1045,7 +1045,7 @@ else
 		    echo ANSI_12 "**Out of Genesis Torps. You're going to need one for this.*"
 		    halt
 		end
-		if ($PLAYER~ORE_HOLDS < 3)
+		if ($player~ore_holds < 3)
 		    echo ANSI_12 "**There's no ore on your ship! You can't drop ore if you don't have any.*"
 		    halt
 		end

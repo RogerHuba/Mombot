@@ -63,16 +63,16 @@ loadVar $bot~parm5
 	END
 	getWordPos $bot~user_command_line $pos "c"
 	IF ($pos > 0)
-		send "q  j  y l "&$PLANET&" *  "
+		send "q  j  y l "&$planet~planet&" *  "
 		goto :MoveColonists
 	else
-		send "q  j  y l "&$PLANET&" *  "
+		send "q  j  y l "&$planet~planet&" *  "
 		goto :MoveProduct
 	END
 
 :MoveProduct
 	IF ($rounds <= $bot~parm3)
-		send "t  n  t  "&$stuff&"*  q  l "&$bot~parm2&"*  t  n  l "&$stuff&"*  q  l "&$PLANET&"*  "
+		send "t  n  t  "&$stuff&"*  q  l "&$bot~parm2&"*  t  n  l "&$stuff&"*  q  l "&$planet~planet&"*  "
 		add $rounds 1
 		goto :MoveProduct
 	ELSEIF ($rounds < 1)
@@ -81,7 +81,7 @@ loadVar $bot~parm5
 
 :MoveColonists
 	IF ($rounds <= $bot~parm3)
-		send "s  n  t  "&$stuff&"*  q  l "&$bot~parm2&"*  s  n  l "&$stuff&"*  q  l "&$PLANET&"*  "
+		send "s  n  t  "&$stuff&"*  q  l "&$bot~parm2&"*  s  n  l "&$stuff&"*  q  l "&$planet~planet&"*  "
 		add $rounds 1
 		goto :MoveColonists
 	ELSEIF ($rounds < 1)
@@ -90,7 +90,7 @@ loadVar $bot~parm5
 
 :MoveFighters
 	IF ($rounds <= $bot~parm3)
-		send "m  n  *  *  q  l  "&$bot~parm2&"*  m  n  l  *  q  l  "&$PLANET&"*  "
+		send "m  n  *  *  q  l  "&$bot~parm2&"*  m  n  l  *  q  l  "&$planet~planet&"*  "
 		add $rounds 1
 		goto :MoveFighters
 	ELSEIF ($rounds < 1)
@@ -101,7 +101,7 @@ loadVar $bot~parm5
         IF ($StartLocation = "Citadel")
                 send "c"
         END
-	send "'{" $switchboard~bot_name "} - Moved "&$bot~parm3&" loads of "&$StuffMoved&" from "&$PLANET&" to "&$bot~parm2&".*"
+	send "'{" $switchboard~bot_name "} - Moved "&$bot~parm3&" loads of "&$StuffMoved&" from "&$planet~planet&" to "&$bot~parm2&".*"
 	HALT
 
 

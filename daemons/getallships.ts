@@ -33,7 +33,7 @@ logging off
 	if (($startingLocation <> "Citadel") AND ($startingSector <> "Planet"))
 		if ($startingLocation = "Command")
 			if ((PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = TRUE) AND (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = FALSE))
-				if ($CREDITS < 50000)
+				if ($player~credits < 50000)
 					setVar $SWITCHBOARD~message "Need at least 50,000 credits to use port as fuel source*"
 					gosub :SWITCHBOARD~switchboard
 				end
@@ -115,7 +115,7 @@ logging off
 	:gotShips
 		killtrigger getline
 		if ($startingLocation <> "Command")
-			send "l "&$PLANET~PLANET&"* c    "
+			send "l "&$planet~planet&"* c    "
 		else
 			if ($fuelInSector)
 				send " p t * * 0 * * 0 * * 0 * * "

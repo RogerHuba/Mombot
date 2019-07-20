@@ -88,11 +88,11 @@
 	setVar $qss[3] $PLAYER~CREDITS
 	setVar $qss[4] $PLAYER~FIGHTERS
 	setVar $qss[5] $PLAYER~SHIELDS
-	setVar $qss[6] $PLAYER~TOTAL_HOLDS
-	setVar $qss[7] $PLAYER~ORE_HOLDS
-	setVar $qss[8] $PLAYER~ORGANIC_HOLDS
-	setVar $qss[9] $PLAYER~EQUIPMENT_HOLDS
-	setVar $qss[10] $PLAYER~COLONIST_HOLDS
+	setVar $qss[6] $player~total_holds
+	setVar $qss[7] $player~ore_holds
+	setVar $qss[8] $player~organic_holds
+	setVar $qss[9] $player~equipment_holds
+	setVar $qss[10] $player~colonist_holds
 	setVar $qss[11] $PLAYER~PHOTONS
 	setVar $qss[12] $PLAYER~ARMIDS
 	setVar $qss[13] $PLAYER~LIMPETS

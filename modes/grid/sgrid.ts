@@ -191,7 +191,7 @@
 		send "'{" $SWITCHBOARD~bot_name "} - Must start gridder from citadel prompt.*"
 		halt
 	end
-	if ($PHOTONS > 0)
+	if ($player~photons > 0)
 		send "'{" $SWITCHBOARD~bot_name "} - You should not use a ship with photons to grid.*"
 		halt
 	end
@@ -480,8 +480,8 @@ return
 return
 
 :assemble_land_mac
-	setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $PLANET~PLANET & "*  * j m  * * *  t * t 1* c * "
-	#setVar $land_mac "l " & $PLANET~PLANET & "*  m  * * *  t * t 1*  c  "
+	setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  * j m  * * *  t * t 1* c * "
+	#setVar $land_mac "l " & $planet~planet & "*  m  * * *  t * t 1*  c  "
 return
 
 # -=-=-=-=-=- return triggers -=-=-=-=-=-=-=-
@@ -499,7 +499,7 @@ return
 
 
 :landOnPlanetEnterCitadel
-	send "l " $PLANET~PLANET "* c"
+	send "l " $planet~planet "* c"
 	waitOn "<Enter Citadel>"
 	return
 :leaveCitadelAndPlanet
@@ -607,9 +607,9 @@ return
 	if ($cashNeeded > $PLAYER~CREDITS)
 		send "D" 
 		waitOn "Citadel treasury contains "
-		getWord CURRENTLINE $citadelCash 4
-		stripText $citadelCash ","
-		if ($citadelCash < $cashNeeded)
+		getWord CURRENTLINE $planet~CITADELCash 4
+		stripText $planet~CITADELCash ","
+		if ($planet~CITADELCash < $cashNeeded)
 			send "'{" & $SWITCHBOARD~bot_name & "} - Not enough cash for mine refurbs in treasury or on hand.*"	
 			halt
 		end
@@ -687,7 +687,7 @@ return
 
 		setVar $ore_req (($dist1 + $dist2) * 3)
 
-		if ($PLAYER~ORE_HOLDS < $ore_req)
+		if ($player~ore_holds < $ore_req)
 			send "'{" $SWITCHBOARD~bot_name "} - Not Enough ORE In Holds To Make Round Trip**"
 			halt
 		end
@@ -743,7 +743,7 @@ return
 		setVar $_Limps "Max"
 		setVar $_Mines "Max"
 		gosub :DoPurchases
-		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet~planet & "* p  s  s * * c *"
 		gosub :PLAYER~quikstats
 		if ($PLAYER~CURRENT_SECTOR = $MAP~stardock)
 			send "'{" $SWITCHBOARD~bot_name "} - Twarp Error, Should be Hiding on Dock!**"
@@ -796,7 +796,7 @@ return
 		:no_twarp_lock
 			killAllTriggers
 			send "n*zn"
-			send "l " & #8 & $PLANET~PLANET "*c"
+			send "l " & #8 & $planet~planet "*c"
 			setSectorParameter $warpto "FIGSEC" FALSE
 			setVar $temp " "&$warpto&" "
 			replaceText $database $temp " "

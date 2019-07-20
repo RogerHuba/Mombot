@@ -340,7 +340,7 @@ return
 		add $total_creds_needed $equip_creds_needed
 		setVar $startingCredits $player~credits
 		if ($total_creds_needed > $player~credits)
-			setVar $cashonhand $planet~citadel_credits
+			setVar $cashonhand $planet~CITADEL_CREDITS
 			add $cashonhand $player~credits
 			if ($cashonhand > $total_creds_needed)
 				send "C"

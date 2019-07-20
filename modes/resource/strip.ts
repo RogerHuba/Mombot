@@ -108,12 +108,12 @@
 	send "q ** jy "
     gosub :PLAYER~quikstats
 
-    setVar $total_holds $PLAYER~TOTAL_HOLDS
+    setVar $player~total_holds $player~total_holds
 
 	if (SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR] <= 1)
 		setVar $SWITCHBOARD~message "This script must be run with at least two planets in the sector*"
 		gosub :SWITCHBOARD~switchboard
-		send "l "&$PLANET~planet&"* "
+		send "l "&$planet~planet&"* "
 		if ($startingLocation = "Citadel")
 			send "c "
 		end
@@ -122,12 +122,12 @@
 	gosub :countPlanets
 
 :startUpMessage
-	setVar $planetToFill $PLANET~PLANET
+	setVar $planet~planetToFill $planet~planet
 	if ($bot~parm1 <> "all")
-		setVar $planetCount 1
-		setVar $planets[1] $bot~parm1
+		setVar $planet~planetCount 1
+		setVar $planet~planets[1] $bot~parm1
 	end
-	setVar $SWITCHBOARD~message "Planet Stripper Powering Up!  Filling Planet "&$planetToFill&"*"
+	setVar $SWITCHBOARD~message "Planet Stripper Powering Up!  Filling Planet "&$planet~planetToFill&"*"
 	gosub :SWITCHBOARD~switchboard
 	
 :startFilling
@@ -137,7 +137,7 @@
 	setVar $countEquipment 0
 	setVar $countColonists 0
 	:lookUpPlanetStats
-		send "l "&$planetToFill&"*"
+		send "l "&$planet~planetToFill&"*"
 		killtrigger wrongPlanet
 		killtrigger badPlanet
 		killtrigger goodPlanet
@@ -150,7 +150,7 @@
 		killtrigger badPlanet
 		killtrigger goodPlanet
 		send "q*"
-		setVar $SWITCHBOARD~message "Planet #"&$planetToFill&" is not valid for this sector*"
+		setVar $SWITCHBOARD~message "Planet #"&$planet~planetToFill&" is not valid for this sector*"
 		gosub :SWITCHBOARD~switchboard
 		halt	
 	:goodPlanet
@@ -161,50 +161,50 @@
 		end
 		send " q "
 
-	while ($i <= $planetCount)
-		if ($planetToFill <> $planets[$i])
+	while ($i <= $planet~planetCount)
+		if ($planet~planetToFill <> $planet~planets[$i])
 			gosub :PLAYER~quikstats
-			send "l "&$planets[$i]&"*   "
+			send "l "&$planet~planets[$i]&"*   "
 			gosub :PLANET~getPlanetInfo
 			send " q "
 
 			if ($emptyFuel)
-				setVar $amount_to_strip $PLANET~PLANET_FUEL
+				setVar $amount_to_strip $planet~planet_FUEL
 				setVar $category 1
 				setVar $type "t"
 				gosub :stripCategory
 				add $countFuel $count
 			end
 			if ($emptyOrganics)
-				setVar $amount_to_strip $PLANET~PLANET_ORGANICS
+				setVar $amount_to_strip $planet~planet_ORGANICS
 				setVar $category 2
 				setVar $type "t"
 				gosub :stripCategory
 				add $countOrganics $count
 			end
 			if ($emptyEquipment)
-				setVar $amount_to_strip $PLANET~PLANET_EQUIPMENT
+				setVar $amount_to_strip $planet~planet_EQUIPMENT
 				setVar $category 3
 				setVar $type "t"
 				gosub :stripCategory
 				add $countEquipment $count
 			end
 			if ($emptyFuelColonists)
-				setVar $amount_to_strip $PLANET~PLANET_FUEL_COLONISTS
+				setVar $amount_to_strip $planet~planet_FUEL_COLONISTS
 				setVar $category 1
 				setVar $type "s"
 				gosub :stripCategory
 				add $countColonists $count
 			end
 			if ($emptyOrganicColonists)
-				setVar $amount_to_strip $PLANET~PLANET_ORGANICS_COLONISTS
+				setVar $amount_to_strip $planet~planet_ORGANICS_COLONISTS
 				setVar $category 2
 				setVar $type "s"
 				gosub :stripCategory
 				add $countColonists $count
 			end
 			if ($emptyEquipmentColonists)
-				setVar $amount_to_strip $PLANET~PLANET_EQUIPMENT_COLONISTS
+				setVar $amount_to_strip $planet~planet_EQUIPMENT_COLONISTS
 				setVar $category 3
 				setVar $type "s"
 				gosub :stripCategory
@@ -217,7 +217,7 @@
 					killtrigger emptyEmpty
 					killtrigger fullFill
 					killtrigger empty
-					send "l j"&#8&$planets[$i]&"* jm ** *x q l j"&#8&$planetToFill&"* jm*jl*x q "
+					send "l j"&#8&$planet~planets[$i]&"* jm ** *x q l j"&#8&$planet~planetToFill&"* jm*jl*x q "
 					setTextTrigger success :tryFighters "The Fighters join your battle force."
 					setTextTrigger emptyEmpty :doneWithThisPlanet "There isn't room on the planet"
 					setTextTrigger fullFill :doneWithThisPlanet "They don't have room for that many "
@@ -230,7 +230,7 @@
 	end
 	:lookUpPlanetStats2
 		gosub :PLAYER~quikstats
-		send "l "&$planetToFill&"*jm ** * "
+		send "l "&$planet~planetToFill&"*jm ** * "
 		killAllTriggers
 		setTextLineTrigger wrongPlanet :badPlanet2 "That planet is not in this sector."
 		setTextLineTrigger badPlanet :badPlanet2 "Invalid registry number, landing aborted."
@@ -239,13 +239,13 @@
 	:badPlanet2
 		killAllTriggers
 		send "q*"
-		setVar $SWITCHBOARD~message "Planet #"&$planetToFill&" is not valid for this sector*"
+		setVar $SWITCHBOARD~message "Planet #"&$planet~planetToFill&" is not valid for this sector*"
 		gosub :SWITCHBOARD~switchboard
 		halt	
 	:goodPlanet2
 		killAllTriggers
 		send "q "
-		send "l "&$planetToFill&"*m* * * c * "
+		send "l "&$planet~planetToFill&"*m* * * c * "
 		gosub :endReport
 		send "/"
 		waitOn #179
@@ -271,13 +271,13 @@
 		if ($PLAYER~TURNS <= $BOT~bot_turn_limit)
 			goto :lookUpPlanetStats2
 		end
-		if (($PLAYER~total_holds > $amount_to_strip) AND ($amount_to_strip > 0))
+		if (($player~total_holds > $amount_to_strip) AND ($amount_to_strip > 0))
 			setVar $get $amount_to_strip
 		else
 			if ($amount_to_strip <= 0)
 				setVar $get 0
 			else
-				setVar $get $PLAYER~total_holds
+				setVar $get $player~total_holds
 			end
 		end
 		add $count $get
@@ -285,7 +285,7 @@
 		if ($get <= 0)
 			goto :done
 		end
-		setVar $macro "l j"&#8&$planets[$i]&"* j"&$type&"* jt"&$category&$get&"* x q l j"&#8&$planetToFill&"* j"&$type&"* jl"&$category&"* x q "
+		setVar $macro "l j"&#8&$planet~planets[$i]&"* j"&$type&"* jt"&$category&$get&"* x q l j"&#8&$planet~planetToFill&"* j"&$type&"* jl"&$category&"* x q "
 
 		
 
@@ -327,7 +327,7 @@ return
 
 :countPlanets
 
-	setVar $planetCount 0
+	setVar $planet~planetCount 0
 	killalltriggers
 	setTextLineTrigger planetGrabber :planetline "   <"
 	setTextLineTrigger beDone :done "Land on which planet "
@@ -341,8 +341,8 @@ return
 			replacetext $line "<" " "
 			replacetext $line ">" " "
 			striptext $line ","
-			add $planetCount 1
-			getWord $line $planets[$planetCount] 1
+			add $planet~planetCount 1
+			getWord $line $planet~planets[$planet~planetCount] 1
 		end
 		setTextLineTrigger getLine2 :planetline "   <"
 		setTextLineTrigger getEnd :done "Land on which planet "

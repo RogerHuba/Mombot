@@ -78,10 +78,10 @@ pause
 :setPlanetNumberRaw
     getWord CURRENTLINE $spoof 1
     if ($spoof = "Land")
-        getWord CURRENTLINE $PLANET~PLANET 9
-        isNumber $test $PLANET~PLANET
+        getWord CURRENTLINE $planet~planet 9
+        isNumber $test $planet~planet
         if ($test = TRUE)
-            saveVar $PLANET~PLANET
+            saveVar $planet~planet
         end
     end
     setTextLineTrigger  getPlanetNumberRaw    :setPlanetNumberRaw "Land on which planet <Q to abort> ? "
@@ -203,13 +203,13 @@ pause
     getWordPos CURRENTLINE $pos "} - Planet #" 
     getWordPos CURRENTLINE $pos2 " moved to sector " 
     if (($pos > 0) and ($pos2 > 0))
-        getWord CURRENTLINE $planet_id 6
-        getWord CURRENTLINE $planet_sector 10
-        replaceText $planet_id "#" ""
-        replaceText $planet_sector "." ""
-        isNumber $test $planet_sector
+        getWord CURRENTLINE $planet~planet_id 6
+        getWord CURRENTLINE $planet~planet_sector 10
+        replaceText $planet~planet_id "#" ""
+        replaceText $planet~planet_sector "." ""
+        isNumber $test $planet~planet_sector
         if ($test)
-            setSectorParameter $planet_id "PSECTOR" $planet_sector
+            setSectorParameter $planet~planet_id "PSECTOR" $planet~planet_sector
         end
     end
     setTextLineTrigger  planetmoved      :updatePlanetMovement     " moved to sector "
@@ -285,11 +285,11 @@ return
 :setPlanetNumber
     getWordPos RAWPACKET $pos "Planet " & #27 & "[1;33m#" & #27 & "[36m"
     if ($pos > 0)
-        getText RAWPACKET $PLANET~PLANET "Planet " & #27 & "[1;33m#" & #27 & "[36m" #27 & "[0;32m in sector "
-        isNumber $test $PLANET~PLANET 
+        getText RAWPACKET $planet~planet "Planet " & #27 & "[1;33m#" & #27 & "[36m" #27 & "[0;32m in sector "
+        isNumber $test $planet~planet 
         if ($test = TRUE)
-            saveVar $PLANET~PLANET
-            setSectorParameter $PLANET~PLANET "PSECTOR" CURRENTSECTOR
+            saveVar $planet~planet
+            setSectorParameter $planet~planet "PSECTOR" CURRENTSECTOR
         end
     end
     setTextLineTrigger  getPlanetNumber :setPlanetNumber    "Planet #"
@@ -345,17 +345,17 @@ return
 #do better ansi checks for spoofing
 getWordPos CURRENTANSILINE $pos "[32mLevel [1;33m"
 if ($pos > 0)
-    getWord CURRENTLINE $planet_sector 1
-    getWord CURRENTLINE $planet_id 2
-    if ($planet_id = "T")
-        getWord CURRENTLINE $planet_id 3
+    getWord CURRENTLINE $planet~planet_sector 1
+    getWord CURRENTLINE $planet~planet_id 2
+    if ($planet~planet_id = "T")
+        getWord CURRENTLINE $planet~planet_id 3
     end
-    replaceText $planet_id "#" ""
-    isNumber $test $planet_id
-    getWordPos $planet_id $pos "."
+    replaceText $planet~planet_id "#" ""
+    isNumber $test $planet~planet_id
+    getWordPos $planet~planet_id $pos "."
     if (($test = TRUE) and ($pos <= 0))
-        if ($planet_id > 0)
-            setSectorParameter $planet_id "PSECTOR" $planet_sector
+        if ($planet~planet_id > 0)
+            setSectorParameter $planet~planet_id "PSECTOR" $planet~planet_sector
         end
     end
 end
@@ -365,17 +365,17 @@ pause
 :captureNoLevelPlanet
 getWordPos CURRENTANSILINE $pos "[32m No Citadel"
 if ($pos > 0)
-    getWord CURRENTLINE $planet_sector 1
-    getWord CURRENTLINE $planet_id 2
-    if ($planet_id = "T")
-        getWord CURRENTLINE $planet_id 3
+    getWord CURRENTLINE $planet~planet_sector 1
+    getWord CURRENTLINE $planet~planet_id 2
+    if ($planet~planet_id = "T")
+        getWord CURRENTLINE $planet~planet_id 3
     end
-    replaceText $planet_id "#" ""
-    isNumber $test $planet_id
-    getWordPos $planet_id $pos "."
+    replaceText $planet~planet_id "#" ""
+    isNumber $test $planet~planet_id
+    getWordPos $planet~planet_id $pos "."
     if (($test = TRUE) and ($pos <= 0))
-        if ($planet_id > 0)
-            setSectorParameter $planet_id "PSECTOR" $planet_sector
+        if ($planet~planet_id > 0)
+            setSectorParameter $planet~planet_id "PSECTOR" $planet~planet_sector
         end
     end
 end

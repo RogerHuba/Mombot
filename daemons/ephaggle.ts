@@ -103,7 +103,7 @@ setvar $SUPPRESSMENU "Off"
 
 
 setprecision 2
-setvar $planettrade_ratio ($game~ptradesetting / 100)
+setvar $planet~planettrade_ratio ($game~ptradesetting / 100)
 setprecision 0
 
 killalltriggers
@@ -193,16 +193,16 @@ if ($WORD <> "EXPERIENCE") and ($I < 20)
 	uppercase $WORD
 	goto :53
 end
-getword $LINE $experience_increase (($I -1))
+getword $LINE $player~experience_increase (($I -1))
 getword $LINE $LOSEGAIN (($I -2))
 uppercase $LOSEGAIN
 if ($LOSEGAIN = "LOSE")
-	subtract $player~experience $experience_increase
+	subtract $player~experience $player~experience_increase
 	goto :56
 end
-isnumber $TRUE $experience_increase
+isnumber $TRUE $player~experience_increase
 if ($TRUE)
-	add $player~experience $experience_increase
+	add $player~experience $player~experience_increase
 end
 
 :56
@@ -240,11 +240,11 @@ pause
 :NEGLECTEDPORT
 killtrigger "EXP"
 killtrigger "EXP2"
-getword CURRENTLINE $experience_increase 8
+getword CURRENTLINE $player~experience_increase 8
 if ($verbose_debug_mode = TRUE)
-	echo ANSI_14 "*EXP added: " $experience_increase
+	echo ANSI_14 "*EXP added: " $player~experience_increase
 end
-add $player~experience $experience_increase
+add $player~experience $player~experience_increase
 round $player~experience 0
 pause
 
@@ -272,7 +272,7 @@ pause
 
 :PLANETTRADE
 killalltriggers
-setvar $PLANETSHIP "PLANET"
+setvar $planet~planetSHIP "PLANET"
 setvar $variance 0
 setvar $ROLLHH 0
 setvar $PLRYHH 0
@@ -282,7 +282,7 @@ goto :BUYSELL
 
 :SHIPTRADE
 killalltriggers
-setvar $PLANETSHIP "SHIP"
+setvar $planet~planetSHIP "SHIP"
 setvar $variance "-.003"
 setvar $ROLLHH "-.003"
 setvar $PLRYHH ".003"
@@ -371,7 +371,7 @@ setvar $low_mcic_guess[ORGANICS] 30
 setvar $high_mcic_guess[ORGANICS] 75
 setvar $low_mcic_guess[EQUIPMENT] 20
 setvar $high_mcic_guess[EQUIPMENT] 65
-if ($PLANETSHIP = "PLANET")
+if ($planet~planetSHIP = "PLANET")
 	setvar $variance 0
 	setvar $ROLLHH 0
 	setvar $PLRYHH 0
@@ -558,7 +558,7 @@ if ($YN = 0)
 	echo "*At START, but $exp is not a number, pausing..."
 	pause
 end
-if ($player~experience > 999) or ($PLANETSHIP = "PLANET")
+if ($player~experience > 999) or ($planet~planetSHIP = "PLANET")
 	setvar $under_1000_experience_rate 0
 	goto :123
 end
@@ -569,7 +569,7 @@ setprecision 15
 setvar $OEYROT ((($ODHPTH + ($PLUSMINUS * $PELHOH)) -$under_1000_experience_rate) -((($high_mcic_guess[$PRODUCT] * $price_ratio_per_hold[$PRODUCT]) * $PORTQTY) / ($HHREPP * 10)))
 setvar $LEDREO (($HIGHPRODUCTIVITY -$LOWPRODUCTIVITY) + 1)
 round $LEDREO 0
-if ($LEDREO > 10) and ($PLANETSHIP = "SHIP")
+if ($LEDREO > 10) and ($planet~planetSHIP = "SHIP")
 	if ($verbose_debug_mode = TRUE)
 		echo "*Productivity range = " ANSI_12 $LEDREO ANSI_10 ", using LowPercent routine*"
 	end
@@ -593,8 +593,8 @@ return
 :GOODTRADE
 killtrigger "GOODTRADE"
 killtrigger "GREATTRADE"
-getword CURRENTLINE $experience_increase 7
-add $player~experience $experience_increase
+getword CURRENTLINE $player~experience_increase 7
+add $player~experience $player~experience_increase
 round $player~experience 0
 pause
 
@@ -623,8 +623,8 @@ setvar $BID[$BID] $OFFER
 setvar $COUNT $LHTEYH
 setvar $LHTEYH 0
 setvar $LASTCOUNTER $LTPEHL
-if ($PLANETSHIP = "PLANET") and ($planettrade_ratio <> 1)
-	setvar $LASTCOUNTER ($RHYEDL / $planettrade_ratio)
+if ($planet~planetSHIP = "PLANET") and ($planet~planettrade_ratio <> 1)
+	setvar $LASTCOUNTER ($RHYEDL / $planet~planettrade_ratio)
 	if ($verbose_debug_mode = TRUE)
 		echo "*Faking LastCounter as " $LASTCOUNTER " instead of " $RHYEDL "."
 	end
@@ -640,8 +640,8 @@ if ($I <= $COUNT)
 	setvar $TDPLTY (((($LHTEYH[$I][1] / 1000) + $LHTEYH[$I][3]) + 1) * $TLLLHE)
 	if ($verbose_debug_mode = TRUE)
 	end
-	if ($PLANETSHIP = "PLANET") and ($planettrade_ratio <> 1)
-		multiply $TDPLTY $planettrade_ratio
+	if ($planet~planetSHIP = "PLANET") and ($planet~planettrade_ratio <> 1)
+		multiply $TDPLTY $planet~planettrade_ratio
 	end
 	round $TDPLTY 0
 	if ($TDPLTY = $OFFER)
@@ -705,7 +705,7 @@ setvar $I 1
 if ($I <= $LHTEYH)
 	if ($FINALOFFER = 1)
 		loadvar $bot~bluehaggle
-		if (($bot~bluehaggle = true) and ($PLANETSHIP = "SHIP"))
+		if (($bot~bluehaggle = true) and ($planet~planetSHIP = "SHIP"))
 			gosub :SUBBLUEHAGGLE
 			goto :167
 		end
@@ -802,12 +802,12 @@ if ($LTPEHL = 0)
 	if ($LTPEHL = "")
 		setvar $LTPEHL $OFFER
 	end
-	if ($PLANETSHIP = "PLANET")
-		divide $LTPEHL $planettrade_ratio
+	if ($planet~planetSHIP = "PLANET")
+		divide $LTPEHL $planet~planettrade_ratio
 	end
 end
 setvar $TOECHO ""
-if ($FINALOFFER = 1) or ($PLANETSHIP = "SHIP") and ($bot~worstprice = 1) and ($BUYSELL = "SELLING")
+if ($FINALOFFER = 1) or ($planet~planetSHIP = "SHIP") and ($bot~worstprice = 1) and ($BUYSELL = "SELLING")
 	setvar $TOECHO ANSI_12 & "<<<  " & ANSI_11 & $PRODUCT & " MCIC = " & ANSI_14 & $LHEEHH
 	setvar $ANSILENGTH 28
 	if ($LHEEHH <> $EHPHHL)
@@ -833,11 +833,11 @@ if ($FINALOFFER = 1)
 	round $PADLENGTH 0
 	echo #27 "[s" #27 "[" $PADLENGTH "C" #27 "[1A" $TOECHO #27 "[u" ANSI_5
 end
-if ($PLANETSHIP = "PLANET") and ($planettrade_ratio <> 1)
+if ($planet~planetSHIP = "PLANET") and ($planet~planettrade_ratio <> 1)
 	gosub :SUBPTRADENOT100
 	goto :223
 end
-if ($PLANETSHIP = "PLANET") and ($FINALOFFER = 1)
+if ($planet~planetSHIP = "PLANET") and ($FINALOFFER = 1)
 	if ($verbose_debug_mode = TRUE)
 		echo "*Deducting Final Counter by 1*"
 	end
@@ -938,11 +938,11 @@ if ($MCIC <> $HEEEOE)
 				if ($verbose_debug_mode = TRUE)
 				end
 				setvar $LHHOLR (($OOHEHY + $variance) * $OLDPEH)
-				if ($PLANETSHIP = "PLANET") and ($planettrade_ratio <> 1)
+				if ($planet~planetSHIP = "PLANET") and ($planet~planettrade_ratio <> 1)
 					if ($verbose_debug_mode = TRUE)
-						echo "*PTrade=" $planettrade_ratio ", IOTest changed from " $LHHOLR " to "
+						echo "*PTrade=" $planet~planettrade_ratio ", IOTest changed from " $LHHOLR " to "
 					end
-					multiply $LHHOLR $planettrade_ratio
+					multiply $LHHOLR $planet~planettrade_ratio
 					if ($verbose_debug_mode = TRUE)
 						echo $LHHOLR "."
 					end
@@ -1281,7 +1281,7 @@ if ($FAILED = 2)
 
 :DBP3
 	end
-	if ($PLANETSHIP = "PLANET")
+	if ($planet~planetSHIP = "PLANET")
 		echo "Ensure that MBBS and Planetary Trade values are correct.*"
 		goto :367
 	end
@@ -1314,9 +1314,9 @@ end
 return
 
 :SUBPTRADENOT100
-setvar $RHYEDL ($LTPEHL * $planettrade_ratio)
+setvar $RHYEDL ($LTPEHL * $planet~planettrade_ratio)
 if ($verbose_debug_mode = TRUE)
-	echo "*PTradeCounter=" $LTPEHL " X " $planettrade_ratio " = " $RHYEDL "*"
+	echo "*PTradeCounter=" $LTPEHL " X " $planet~planettrade_ratio " = " $RHYEDL "*"
 end
 if ($FINALOFFER = 1)
 	if ($BUYSELL = "BUYING")

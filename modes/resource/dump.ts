@@ -32,7 +32,7 @@
 	end
 	if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
 		gosub :PLANET~getPlanetInfo
-		setVar $startingPlanet $PLANET~PLANET
+		setVar $startingPlanet $planet~planet
 		send "q "
 	end
 	
@@ -100,7 +100,7 @@
 	send "jy* * "
     gosub :PLAYER~quikstats
 
-    setVar $total_holds $PLAYER~TOTAL_HOLDS
+    setVar $player~total_holds $player~total_holds
 
 	if (SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR] <= 0)
 		setVar $SWITCHBOARD~message "This script must be run with at least one planets in the sector*"
@@ -117,8 +117,8 @@
 
 :startUpMessage
 	if ($bot~parm1 <> "all")
-		setVar $planetCount 1
-		setVar $planets[1] $bot~parm1
+		setVar $planet~planetCount 1
+		setVar $planet~planets[1] $bot~parm1
 	end
 	setVar $SWITCHBOARD~message "Planet Dumper Powering Up!*"
 	gosub :SWITCHBOARD~switchboard
@@ -130,49 +130,49 @@
 	setVar $countEquipment 0
 	setVar $countColonists 0
 
-	while ($i <= $planetCount)
+	while ($i <= $planet~planetCount)
 			gosub :PLAYER~quikstats
-			send "l "&$planets[$i]&"*   "
+			send "l "&$planet~planets[$i]&"*   "
 			gosub :PLANET~getPlanetInfo
 			send " q "
 
 			if ($emptyFuel)
-				setVar $amount_to_strip $PLANET~PLANET_FUEL
+				setVar $amount_to_strip $planet~planet_FUEL
 				setVar $category 1
 				setVar $type "t"
 				gosub :stripCategory
 				add $countFuel $count
 			end
 			if ($emptyOrganics)
-				setVar $amount_to_strip $PLANET~PLANET_ORGANICS
+				setVar $amount_to_strip $planet~planet_ORGANICS
 				setVar $category 2
 				setVar $type "t"
 				gosub :stripCategory
 				add $countOrganics $count
 			end
 			if ($emptyEquipment)
-				setVar $amount_to_strip $PLANET~PLANET_EQUIPMENT
+				setVar $amount_to_strip $planet~planet_EQUIPMENT
 				setVar $category 3
 				setVar $type "t"
 				gosub :stripCategory
 				add $countEquipment $count
 			end
 			if ($emptyFuelColonists)
-				setVar $amount_to_strip $PLANET~PLANET_FUEL_COLONISTS
+				setVar $amount_to_strip $planet~planet_FUEL_COLONISTS
 				setVar $category 1
 				setVar $type "s"
 				gosub :stripCategory
 				add $countColonists $count
 			end
 			if ($emptyOrganicColonists)
-				setVar $amount_to_strip $PLANET~PLANET_ORGANICS_COLONISTS
+				setVar $amount_to_strip $planet~planet_ORGANICS_COLONISTS
 				setVar $category 2
 				setVar $type "s"
 				gosub :stripCategory
 				add $countColonists $count
 			end
 			if ($emptyEquipmentColonists)
-				setVar $amount_to_strip $PLANET~PLANET_EQUIPMENT_COLONISTS
+				setVar $amount_to_strip $planet~planet_EQUIPMENT_COLONISTS
 				setVar $category 3
 				setVar $type "s"
 				gosub :stripCategory
@@ -215,13 +215,13 @@
 		if ($PLAYER~TURNS <= $BOT~bot_turn_limit)
 			goto :lookUpPlanetStats2
 		end
-		if (($PLAYER~total_holds > $amount_to_strip) AND ($amount_to_strip > 0))
+		if (($player~total_holds > $amount_to_strip) AND ($amount_to_strip > 0))
 			setVar $get $amount_to_strip
 		else
 			if ($amount_to_strip <= 0)
 				setVar $get 0
 			else
-				setVar $get $PLAYER~total_holds
+				setVar $get $player~total_holds
 			end
 		end
 		add $count $get
@@ -229,7 +229,7 @@
 		if ($get <= 0)
 			goto :done
 		end
-		setVar $macro "l j"&#8&$planets[$i]&"* j"&$type&"* jt"&$category&$get&"* x q jy"
+		setVar $macro "l j"&#8&$planet~planets[$i]&"* j"&$type&"* jt"&$category&$get&"* x q jy"
 
 		
 
@@ -263,7 +263,7 @@ return
 
 :countPlanets
 
-	setVar $planetCount 0
+	setVar $planet~planetCount 0
 	killalltriggers
 	setTextLineTrigger planetGrabber :planetline "   <"
 	setTextLineTrigger beDone :done "Land on which planet "
@@ -277,8 +277,8 @@ return
 			replacetext $line "<" " "
 			replacetext $line ">" " "
 			striptext $line ","
-			add $planetCount 1
-			getWord $line $planets[$planetCount] 1
+			add $planet~planetCount 1
+			getWord $line $planet~planets[$planet~planetCount] 1
 		end
 		setTextLineTrigger getLine2 :planetline "   <"
 		setTextLineTrigger getEnd :done "Land on which planet "

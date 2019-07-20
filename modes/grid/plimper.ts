@@ -12,7 +12,7 @@ if ($player~current_prompt <> "Citadel")
 	waitfor "Message sent on sub-space channel"
 	halt
 end
-if ($TWARP_TYPE = "No")
+if ($player~twarp_type = "No")
 	send $TAGLINE & "Must Have TWARP DRIVE*"
 	waitfor "Message sent on sub-space channel"
 	halt
@@ -21,7 +21,7 @@ end
 send $TAGLINE & "Trader Vics Limpet Tracker Avoidance Script Powering Up!*"
 waiton "Message sent on sub-space channel"
 waiton "elp"
-if ($ALIGNMENT < 1000)
+if ($player~alignment < 1000)
 	send $TAGLINE & "Blue check failed, this script loads limps from sd.*"
 	waitfor "Message sent on sub-space channel"
 	halt
@@ -42,21 +42,21 @@ if ($pos <> 0)
 end
 
 setVar $MAC ""
-if ($ORE_HOLDS <> 0)
+if ($player~ore_holds <> 0)
 	setVar $MAC ($MAC & " T N L 1* ")
 end
-if ($ORGANIC_HOLDS <> 0)
+if ($player~organic_holds <> 0)
 	setVar $MAC ($MAC & " T N L 2* ")
 end
-if ($EQUIPMENT_HOLDS <> 0)
+if ($player~equipment_holds <> 0)
 	setVar $MAC ($MAC & " T N L 3* ")
 end
 
 send "tf5000000* q" & $MAC & " t n t 1* dc"
 waiton "Planet #"
-getWord CURRENTLINE $PLANET 2
-stripText $PLANET " "
-stripText $PLANET "#"
+getWord CURRENTLINE $planet~planet 2
+stripText $planet~planet " "
+stripText $planet~planet "#"
 waiton "<Enter Citadel>"
 
 gosub :MSGS_OFF
@@ -71,16 +71,16 @@ if (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours"))
 	halt
 end
 if (SECTOR.LIMPETS.OWNER[$player~current_sector] <> "yours")
-	setVar $DROP $LIMPETS
+	setVar $DROP $player~limpets
 	add $DROP SECTOR.LIMPETS.QUANTITY[$player~current_sector]
 
 	if ($DROP > 250)
 		setVar $DROP 250
 	end
 
-	send " Q Q H 2 Z " & $DROP & "* Z P * L " & $PLANET & "* C "
+	send " Q Q H 2 Z " & $DROP & "* Z P * L " & $planet~planet & "* C "
 end
-send $TAGLINE & "Blue check passed, alignment entered as " & $alignment & "*"
+send $TAGLINE & "Blue check passed, alignment entered as " & $player~alignment & "*"
 waitfor "Message sent on sub-space channel"
 send $TAGLINE & "Version "&$VERSION&" - Script activated!*"
 waitfor "Message sent on sub-space channel"
@@ -90,7 +90,7 @@ waitfor "Message sent on sub-space channel"
 
 :reload_limps
 	gosub :player~quikstats
-	if ($TOTAL_HOLDS <> $ORE_HOLDS)
+	if ($player~total_holds <> $player~ore_holds)
 		Echo $TAGLINE & "Planet Short On Gas*"
 		waitfor "Message sent on sub-space channel"
 		halt
@@ -122,7 +122,7 @@ waitfor "Message sent on sub-space channel"
 	waitfor "How many mines do you want"
 	gettext CURRENTLINE $buylimps "(Max" ")"
 	send $buylimps "*q q  "
-	send "m " & $player~current_sector & "* y y * l " $planet "* c "
+	send "m " & $player~current_sector & "* y y * l " $planet~planet "* c "
 	waitfor "Citadel command"
 
 	gosub :player~quikstats
@@ -133,7 +133,7 @@ waitfor "Message sent on sub-space channel"
 		halt
 	end
 
-	if ($LIMPETS < 10)
+	if ($player~limpets < 10)
 		send $TAGLINE & "Furb Failed. Halting*"
 		waitfor "Message sent on sub-space channel"
 		halt
@@ -145,14 +145,14 @@ waitfor "Message sent on sub-space channel"
     	halt
     end
 
-	if ($CREDITS > 50000)
-		send "tt" & ($CREDITS - 50000) & "*"
+	if ($player~credits > 50000)
+		send "tt" & ($player~credits - 50000) & "*"
 		waiton "How much to transfer?"
 	end
 
 :rerun
-if (SECTOR.LIMPETS.QUANTITY[$player~current_sector] < $LIMIT) OR ($LIMPETS < ($LIMIT + 10))
-	send "tf6000000* q t n t 1* m n t * q h 2 z 250* z p * dl " & $PLANET & "* C "
+if (SECTOR.LIMPETS.QUANTITY[$player~current_sector] < $LIMIT) OR ($player~limpets < ($LIMIT + 10))
+	send "tf6000000* q t n t 1* m n t * q h 2 z 250* z p * dl " & $planet~planet & "* C "
 	waiton "Sector  :"
 	waiton "Warps to Sector(s) :"
 	waiton "Citadel command"
@@ -194,14 +194,14 @@ goto :rerun
 :HIT2
 #this tracks limp hits while script is paused
 killAllTriggers
-subtract $LIMPETS 1
-if (SECTOR.LIMPETS.QUANTITY[$player~current_sector] < $LIMIT) OR ($LIMPETS < ($LIMIT + 10))
+subtract $player~limpets 1
+if (SECTOR.LIMPETS.QUANTITY[$player~current_sector] < $LIMIT) OR ($player~limpets < ($LIMIT + 10))
 	ECHO "***"& ANSI_12 & "                     !!!"&ANSI_15&" LIMPET LIMIT REACHED " &ANSI_12&"!!!***"
 end
 goto :Paused
 :HIT
 killAllTriggers
-subtract $LIMPETS 1
+subtract $player~limpets 1
 goto :rerun
 :FURBME
 killAllTriggers
@@ -293,60 +293,60 @@ goto :rerun
 			if ($wordy = "Sect")
 				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  				($current_word + 1)
+				getWord $stats $player~turns  				($current_word + 1)
 				if ($UNLIM)
-					setVar $TURNS 65536
+					setVar $player~turns 65536
 				end
 			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  			($current_word + 1)
+				getWord $stats $player~credits  			($current_word + 1)
 			elseif ($wordy = "Figs")
 				getWord $stats $player~fighters   			($current_word + 1)
 			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  			($current_word + 1)
+				getWord $stats $player~shields  			($current_word + 1)
 			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
+				getWord $stats $player~total_holds   		($current_word + 1)
 			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
+				getWord $stats $player~ore_holds    		($current_word + 1)
 			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
+				getWord $stats $player~organic_holds    	($current_word + 1)
 			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
+				getWord $stats $player~equipment_holds    	($current_word + 1)
 			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
+				getWord $stats $player~colonist_holds    	($current_word + 1)
 			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   			($current_word + 1)
+				getWord $stats $player~photons   			($current_word + 1)
 			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   			($current_word + 1)
+				getWord $stats $player~armids   			($current_word + 1)
 			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   			($current_word + 1)
+				getWord $stats $player~limpets   			($current_word + 1)
 			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  			($current_word + 1)
+				getWord $stats $player~genesis  			($current_word + 1)
 			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
+				getWord $stats $player~twarp_type  		($current_word + 1)
 			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   			($current_word + 1)
+				getWord $stats $player~cloaks   			($current_word + 1)
 			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 			($current_word + 1)
+				getWord $stats $player~beacons 			($current_word + 1)
 			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  			($current_word + 1)
+				getWord $stats $player~atomic  			($current_word + 1)
 			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   			($current_word + 1)
+				getWord $stats $player~corbo   			($current_word + 1)
 			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   			($current_word + 1)
+				getWord $stats $player~eprobes   			($current_word + 1)
 			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
+				getWord $stats $player~mine_disruptors   	($current_word + 1)
 			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
+				getWord $stats $player~psychic_probe  		($current_word + 1)
 			elseif ($wordy = "PlScn")
 				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
+				getWord $stats $player~scan_type    		($current_word + 1)
 			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
+				getWord $stats $player~alignment    		($current_word + 1)
 			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
+				getWord $stats $player~experience    		($current_word + 1)
 			elseif ($wordy = "Corp")
-				getWord $stats $CORP   				($current_word + 1)
+				getWord $stats $player~corp   				($current_word + 1)
 			elseif ($wordy = "Ship")
 				getWord $stats $player~ship_number   		($current_word + 1)
 			end

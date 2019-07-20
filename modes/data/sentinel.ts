@@ -856,15 +856,15 @@ pause
     return
   end
   
-  cutText $StripRankPlayer $CorpData $Len 1
+  cutText $StripRankPlayer $player~corpData $Len 1
   
-  if ($CorpData = "]")
+  if ($player~corpData = "]")
     subtract $Len 3
-    cutText $StripRankPlayer $CorpData $Len 99
-    getWord $CorpData $CorpData 1
-    StripText $StripRankPlayer " " & $CorpData
-    StripText $CorpData "["
-    StripText $CorpData "]"
+    cutText $StripRankPlayer $player~corpData $Len 99
+    getWord $player~corpData $player~corpData 1
+    StripText $StripRankPlayer " " & $player~corpData
+    StripText $player~corpData "["
+    StripText $player~corpData "]"
   end
   
   return

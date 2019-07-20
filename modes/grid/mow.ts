@@ -100,7 +100,7 @@
         getWordPos " "&$bot~user_command_line&" " $pos "back"
         if ($pos > 0)
             setVar $twarp_back TRUE
-            if ($PLAYER~ORE_HOLDS <= 10)
+            if ($player~ore_holds <= 10)
                 send "'{" $SWITCHBOARD~bot_name "} - Need more fuel ore on your ship if you want to twarp back!*"
                 halt
             end
@@ -188,8 +188,8 @@
             setVar $i 0
             while ($i < 8)
                 add $i 1
-                #setVar $result $result&"l j" & #8 & $PLANET~PLANET & "*  *  "
-                setVar $result $result&"l j" & #8 & $PLANET~PLANET & "*  *  j  c  *  *  "
+                #setVar $result $result&"l j" & #8 & $planet~planet & "*  *  "
+                setVar $result $result&"l j" & #8 & $planet~planet & "*  *  j  c  *  *  "
             end
         end
         send $result

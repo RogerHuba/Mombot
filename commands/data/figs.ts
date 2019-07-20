@@ -189,7 +189,7 @@ halt
 
 	:corpCount
 		add $count 1
-		add $corpCount 1
+		add $player~corpCount 1
 		getWord CURRENTLINE $sector 1
 		getWord CURRENTLINE $type 4
 		if ($type = "Toll")

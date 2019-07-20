@@ -31,7 +31,7 @@ logging off
 	end
 	
 
-	setvar $planet_string ""
+	setvar $planet~planet_string ""
 	if (($player~current_prompt = "Citadel") or ($player~current_prompt = "Planet"))
 		if ($player~current_prompt = "Citadel")
 			send "q "
@@ -39,7 +39,7 @@ logging off
 		setvar $from_planet true
 		gosub :planet~getplanetinfo
 		send "q "
-		setvar $planet_string "l "&$PLANET~PLANET&"* n  m * * * q "
+		setvar $planet~planet_string "l "&$planet~planet&"* n  m * * * q "
 	end
 
 	gosub :ship~getshipstats
@@ -115,7 +115,7 @@ logging off
 		setVar $loop 0
 		setvar $send ""
 		while ($loop < 200)
-			setvar $send $send&$targetString&"z y  z"&$ship~SHIP_MAX_ATTACK&"* "&$planet_string
+			setvar $send $send&$targetString&"z y  z"&$ship~SHIP_MAX_ATTACK&"* "&$planet~planet_string
 			add $loop 1
 		end
 		send $send&"@"
@@ -136,7 +136,7 @@ logging off
 	setTextLineTrigger empty :checkEmptyAttack "'s unmanned "
 	setTextLineTrigger hit :didihit "How many fighters do you wish to use ("
 	settextlinetrigger toomuchmiss :subtractN "<Re-Display>"
-	send $targetString&"zy z"&$ship~SHIP_MAX_ATTACK&"* "&$planet_string
+	send $targetString&"zy z"&$ship~SHIP_MAX_ATTACK&"* "&$planet~planet_string
 	pause
 	
 	
@@ -209,11 +209,11 @@ end
 			waitOn "B  Fighters        :"
 			getWord CURRENTLINE $figsToBuy 8
 			waitOn "C  Shield Points   :"
-			getWord CURRENTLINE $shieldsToBuy 9
+			getWord CURRENTLINE $player~shieldsToBuy 9
 			if ($PLAYER~CURRENT_SECTOR = STARDOCK)
-				setVar $leavestring "b "&$figsToBuy&"* c "&$shieldsToBuy&"* q q q "
+				setVar $leavestring "b "&$figsToBuy&"* c "&$player~shieldsToBuy&"* q q q "
 			else
-				setVar $leavestring "b "&$figsToBuy&"* c "&$shieldsToBuy&"* q "
+				setVar $leavestring "b "&$figsToBuy&"* c "&$player~shieldsToBuy&"* q "
 			end
 			send $leavestring
 		end

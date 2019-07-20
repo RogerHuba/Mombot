@@ -49,8 +49,8 @@
 						setVar $ship1NeedsPort FALSE
 						setVar $ship1Sector $focus
 						gosub :getSSTPortInfo
-						setVar $ship1TotalHolds $TOTAL_HOLDS
-						setVar $ship1Equipment $EQUIPMENT_HOLDS
+						setVar $ship1TotalHolds $player~total_holds
+						setVar $ship1Equipment $player~equipment_holds
 						gosub :displayCredits
 						send "q *q *"
 						if ($p1chk=1)
@@ -61,8 +61,8 @@
 							setvar $p1chk 1
 						end
 						waitOn "Fuel Ore"
-						getWord CURRENTLINE $planet1Fuel[$p1chk] 6
-						stripText $planet1Fuel[$p1chk] ","
+						getWord CURRENTLINE $planet~planet1Fuel[$p1chk] 6
+						stripText $planet~planet1Fuel[$p1chk] ","
 						goto :continueOnShip1   
 					:pwarpNoShip1
 						killAllTriggers	
@@ -123,8 +123,8 @@
 						setVar $ship2NeedsPort FALSE
 						setVar $ship2Sector $focus
 						gosub :getSSTPortInfo
-						setVar $ship2TotalHolds $TOTAL_HOLDS
-						setVar $ship2Equipment $EQUIPMENT_HOLDS
+						setVar $ship2TotalHolds $player~total_holds
+						setVar $ship2Equipment $player~equipment_holds
 						gosub :displayCredits
 						send "q *q *"
 						if ($p2chk=1)
@@ -135,8 +135,8 @@
 							setvar $p2chk 1
 						end
 						waitOn "Fuel Ore"
-						getWord CURRENTLINE $planet2Fuel[$p2chk] 6
-						stripText $planet2Fuel[$p2chk] ","
+						getWord CURRENTLINE $planet~planet2Fuel[$p2chk] 6
+						stripText $planet~planet2Fuel[$p2chk] ","
 						goto :continueOnShip2   
 					:pwarpNoShip2
 						killAllTriggers
@@ -157,7 +157,7 @@ return
 
 :steal
 	if (($isBusted1 <> TRUE) AND ($isBusted2 <> TRUE))
-		setVar $maxSteal ($EXPERIENCE / $steal_factor - 1)
+		setVar $maxSteal ($player~experience / $steal_factor - 1)
 		setVar $send ""
 			if ($inShip1)
 				if ($ship1Equipment > 0)
@@ -227,7 +227,7 @@ return
 			pause
     
 			:success
-				add $EXPERIENCE $stake
+				add $player~experience $stake
 				if ($inShip1)
 					setVar $ship2Equipment 1
 				else
@@ -342,57 +342,57 @@ return
 			if ($wordy = "Sect")
 				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
+				getWord $stats $player~turns  			($current_word + 1)
 			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
+				getWord $stats $player~credits  		($current_word + 1)
 			elseif ($wordy = "Figs")
 				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
+				getWord $stats $player~shields  		($current_word + 1)
 			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
+				getWord $stats $player~total_holds   		($current_word + 1)
 			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
+				getWord $stats $player~ore_holds    		($current_word + 1)
 			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
+				getWord $stats $player~organic_holds    	($current_word + 1)
 			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
+				getWord $stats $player~equipment_holds    	($current_word + 1)
 			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
+				getWord $stats $player~colonist_holds    	($current_word + 1)
 			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
+				getWord $stats $player~photons   		($current_word + 1)
 			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
+				getWord $stats $player~armids   		($current_word + 1)
 			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
+				getWord $stats $player~limpets   		($current_word + 1)
 			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
+				getWord $stats $player~genesis  		($current_word + 1)
 			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
+				getWord $stats $player~twarp_type  		($current_word + 1)
 			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
+				getWord $stats $player~cloaks   		($current_word + 1)
 			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
+				getWord $stats $player~beacons 		($current_word + 1)
 			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
+				getWord $stats $player~atomic  		($current_word + 1)
 			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
+				getWord $stats $player~corbo   		($current_word + 1)
 			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
+				getWord $stats $player~eprobes   		($current_word + 1)
 			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
+				getWord $stats $player~mine_disruptors   	($current_word + 1)
 			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
+				getWord $stats $player~psychic_probe  		($current_word + 1)
 			elseif ($wordy = "PlScn")
 				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
+				getWord $stats $player~scan_type    		($current_word + 1)
 			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
+				getWord $stats $player~alignment    		($current_word + 1)
 			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
+				getWord $stats $player~experience    		($current_word + 1)
 			elseif ($wordy = "Corp")
-				getWord $stats $CORP   			($current_word + 1)
+				getWord $stats $player~corp   			($current_word + 1)
 			elseif ($wordy = "Ship")
 				getWord $stats $player~ship_number   		($current_word + 1)
 			end
@@ -417,7 +417,7 @@ return
 	setVar $FIG_FILE "MOM_"&GAMENAME&"_Fighter_Grid.txt"
 	setVar $FIG_COUNT_FILE "MOM_"&GAMENAME&"_Fighter_Grid_Count.cnt"
 	loadVar $steal_factor
-	loadVar $unlimitedGame
+	loadVar $player~unlimitedGame
 	loadVar $bot_turn_limit
 	loadVar $bot~user_command_line
 	loadVar $bot~parm1
@@ -474,9 +474,9 @@ return
 	send "jy*"
 	setVar $cashDeposited 0
 	goSub :player~quikstats
-	setvar $startcash $CREDITS
-	setArray $planet1Fuel 3
-	setArray $planet2Fuel 3
+	setvar $startcash $player~credits
+	setArray $planet~planet1Fuel 3
+	setArray $planet~planet2Fuel 3
 	setVar $psst_Ship1 $player~ship_number
 	
 	if ($psst_Ship2 <= 0) OR ($psst_Planet1 <= 0) OR ($psst_Planet2 <= 0) OR ($steal_factor <= 0)
@@ -573,7 +573,7 @@ return
 		getSectorParameter $ship1Sector "BUSTED" $isBusted1
 		getSectorParameter $ship2Sector "BUSTED" $isBusted2
 		while ($busted = FALSE)
-			if (($unlimitedGame = FALSE) AND ($TURNS <= $bot_turn_limit))
+			if (($player~unlimitedGame = FALSE) AND ($player~turns <= $bot_turn_limit))
 				goto :endSST
 			end
 			gosub :steal
@@ -581,9 +581,9 @@ return
 		if (($ship1TotalHolds < $minRefurb) OR ($ship2TotalHolds < $minRefurb))
 			gosub :refurb
 		end
-		if (($planet1Fuel[1] < 100000) and ($planet1Fuel[2] < 100000) and ($planet1Fuel[3] < 100000))
+		if (($planet~planet1Fuel[1] < 100000) and ($planet~planet1Fuel[2] < 100000) and ($planet~planet1Fuel[3] < 100000))
 			goto :endSST
-		elseif (($planet2Fuel[1] < 100000) and ($planet2Fuel[2] < 100000) and ($planet2Fuel[3] < 100000))
+		elseif (($planet~planet2Fuel[1] < 100000) and ($planet~planet2Fuel[2] < 100000) and ($planet~planet2Fuel[3] < 100000))
 			goto :endSST
 		end
 	end
@@ -667,7 +667,7 @@ return
 			stripText $equipPerc "%"
 			setVar $x 10000
 			if ($equipPerc = 0)
- 				setVar $equipAtPort[$focus] ($TOTAL_HOLDS + 50)
+ 				setVar $equipAtPort[$focus] ($player~total_holds + 50)
 			else
 				divide $x $equipPerc
 				multiply $x $equipBuy
@@ -714,18 +714,18 @@ return
 		killtrigger furb2
 		gosub :player~quikstats
 		if ($inShip1)
-			if ($CREDITS > 5000000)
-				send "l "&$psst_Planet1 &"* c t t "&($CREDITS-5000000)&"* p "&$ship1Sector&"*y"
-				add $cashDeposited ($CREDITS-5000000)
-				setVar $CREDITS 5000000
+			if ($player~credits > 5000000)
+				send "l "&$psst_Planet1 &"* c t t "&($player~credits-5000000)&"* p "&$ship1Sector&"*y"
+				add $cashDeposited ($player~credits-5000000)
+				setVar $player~credits 5000000
 			else
 				send "l "&$psst_Planet1 &"* c p "&$ship1Sector&"*y"
 			end
 		else
-			if ($CREDITS > 5000000)
-				send "l "&$psst_Planet2&"* c t t "&($CREDITS-5000000)&"* p "&$ship2Sector&"*y"
-				add $cashDeposited ($CREDITS-5000000)
-				setVar $CREDITS 5000000
+			if ($player~credits > 5000000)
+				send "l "&$psst_Planet2&"* c t t "&($player~credits-5000000)&"* p "&$ship2Sector&"*y"
+				add $cashDeposited ($player~credits-5000000)
+				setVar $player~credits 5000000
 			else
 				send "l "&$psst_Planet2&"* c p "&$ship2Sector&"*y"
 			end
@@ -765,24 +765,24 @@ return
 			killAllTriggers
 			send "q q p ty"
 			waitOn "You have "
-			getWord CURRENTLINE $CREDITS 3
-			striptext $CREDITS ","
+			getWord CURRENTLINE $player~credits 3
+			striptext $player~credits ","
 			waitOn "A  Cargo holds     :"
 			getWord CURRENTLINE $holdsToBuy 10
 			send "a "&$holdsToBuy&"* y q q q * "
 		if ($inShip1)
-			if ($CREDITS > 5000000)
-				send "l "&$psst_Planet1 &"* c t t "&($CREDITS-5000000)&"* p "&$ship1Sector&"*y"
-				add $cashDeposited ($CREDITS-5000000)
-				setVar $CREDITS 5000000
+			if ($player~credits > 5000000)
+				send "l "&$psst_Planet1 &"* c t t "&($player~credits-5000000)&"* p "&$ship1Sector&"*y"
+				add $cashDeposited ($player~credits-5000000)
+				setVar $player~credits 5000000
 			else
 				send "l "&$psst_Planet1 &"* c p "&$ship1Sector&"*y"
 			end
 		else
-			if ($CREDITS > 5000000)
-				send "l "&$psst_Planet2&"* c t t "&($CREDITS-5000000)&"* p "&$ship2Sector&"*y"
-				add $cashDeposited ($CREDITS-5000000)
-				setVar $CREDITS 5000000
+			if ($player~credits > 5000000)
+				send "l "&$psst_Planet2&"* c t t "&($player~credits-5000000)&"* p "&$ship2Sector&"*y"
+				add $cashDeposited ($player~credits-5000000)
+				setVar $player~credits 5000000
 			else
 				send "l "&$psst_Planet2&"* c p "&$ship2Sector&"*y"
 			end
@@ -824,7 +824,7 @@ return
 	setVar $formattedDepositedCredits $spentCredits&$formattedDepositedCredits
 	
 	setVar $formattedOnHandCredits ""
-	setVar $spentCredits $CREDITS
+	setVar $spentCredits $player~credits
 	getLength $spentCredits $length
 	while ($length > 3)
 		cutText $spentCredits $snippet $length-2 9999
@@ -834,13 +834,13 @@ return
 	end
 	setVar $formattedOnHandCredits $spentCredits&$formattedOnHandCredits
 	add $portaverage $cashDeposited
-	add $portaverage $CREDITS
+	add $portaverage $player~credits
 	subtract $portaverage $startcash
 	if ($numberbusted = 0)
 		setvar $numberbusted 1
 	end
 	divide $portaverage $numberbusted
-	setWindowContents cash "    Cash Deposited: "&$formattedDepositedCredits&"*      Cash On Hand: "&$formattedOnHandCredits&"*  Busted xxB Ports: "&$numberbusted&"*     Planet 1 Fuel: "&$planet1Fuel[1]&"*     Planet 2 Fuel: "&$planet2Fuel[1]&"*  Credits per Port: "&$portaverage&"*        Experience: "&$EXPERIENCE&"*"
+	setWindowContents cash "    Cash Deposited: "&$formattedDepositedCredits&"*      Cash On Hand: "&$formattedOnHandCredits&"*  Busted xxB Ports: "&$numberbusted&"*     Planet 1 Fuel: "&$planet~planet1Fuel[1]&"*     Planet 2 Fuel: "&$planet~planet2Fuel[1]&"*  Credits per Port: "&$portaverage&"*        Experience: "&$player~experience&"*"
 
 
 return
@@ -898,11 +898,11 @@ return
 		send "l "&$psst_Planet2&"* c p "&$startingSector&"*y"
 	end
 	
-	if (($planet1Fuel[1] < 100000) and ($planet1Fuel[2] < 100000) and ($planet1Fuel[3] < 100000))
+	if (($planet~planet1Fuel[1] < 100000) and ($planet~planet1Fuel[2] < 100000) and ($planet~planet1Fuel[3] < 100000))
 		send "'{" $switchboard~bot_name "} - Planet(s) low on fuel, stopping script.  Put total of "&$formattedDepositedCredits&" credits in treasury.*"
-	elseif (($planet2Fuel[1] < 100000) and ($planet2Fuel[2] < 100000) and ($planet2Fuel[3] < 100000))
+	elseif (($planet~planet2Fuel[1] < 100000) and ($planet~planet2Fuel[2] < 100000) and ($planet~planet2Fuel[3] < 100000))
 		send "'{" $switchboard~bot_name "} - Planet(s) low on fuel, stopping script.  Put total of "&$formattedDepositedCredits&" credits in treasury.*"
-	elseif (($unlimitedGame = FALSE) AND ($TURNS <= $bot_turn_limit))
+	elseif (($player~unlimitedGame = FALSE) AND ($player~turns <= $bot_turn_limit))
 		send "'{" $switchboard~bot_name "} - Too low turns to continue Planet SST.*"
 	else	
 		send "'{" $switchboard~bot_name "} - All known xxB ports in the grid are used up.  Put total of "&$formattedDepositedCredits&" credits in treasury.*"

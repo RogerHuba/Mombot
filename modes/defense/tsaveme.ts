@@ -25,8 +25,8 @@ loadVar $switchboard~bot_name
 		setVar $type "BWarp"
 		send "qd"
 		waitFor "Planet #"
-		getWord CURRENTLINE $planet 2
-		stripText $planet "#"
+		getWord CURRENTLINE $planet~planet 2
+		stripText $planet~planet "#"
 		send " t n l 1* t n l 2* t n l 3* s n l 1* s n l 2* s n l 3* t n t 1* c s* "
 		setVar $sector $player~current_sector
 	end
@@ -54,23 +54,23 @@ loadVar $switchboard~bot_name
 		goto :main
 	end
 	getText CURRENTLINE $line "R" "=saveme"
-	cutText $line $corpy 2 6
-	stripText $line $corpy
+	cutText $line $player~corpy 2 6
+	stripText $line $player~corpy
 	stripText $line "R"
 	stripText $line "=saveme"
 	stripText $line " "
 	setVar $savesec $line
 	setVar $pos1 5
 :pos_loop
-	cutText $corpy $blank_ck $pos1 1
+	cutText $player~corpy $blank_ck $pos1 1
 	if ($blank_ck = " ")
-		cutText $corpy $corpy 1 $pos1
+		cutText $player~corpy $player~corpy 1 $pos1
 		subtract $pos1 1
 		setVar $check2 1
 		goto :pos_loop
 	end
 	if ($check2 = 1)
-		cutText $corpy $corpy 1 $pos1
+		cutText $player~corpy $player~corpy 1 $pos1
 
 	end
 :cut_zero
@@ -128,13 +128,13 @@ loadVar $switchboard~bot_name
         end
 
         :got_word_num
-        getword $current_line $corpy_figs $ftr_word
-        stripText $corpy_figs "."
-        stripText $corpy_figs ","
+        getword $current_line $player~corpy_figs $ftr_word
+        stripText $player~corpy_figs "."
+        stripText $player~corpy_figs ","
 
-	send $corpy_figs "*qzn"
-	send "wy" $corpy "*y*zn"
-	send "tfyt" $corpy_figs "*qzn"
+	send $player~corpy_figs "*qzn"
+	send "wy" $player~corpy "*y*zn"
+	send "tfyt" $player~corpy_figs "*qzn"
 	send "f"
 	if ($sec_figs > 1)
 		send $sec_figs
@@ -218,7 +218,7 @@ loadVar $switchboard~bot_name
 	gosub :player~quikstats
         if ($type = "BWarp")
               setTextLineTrigger not_at_home :exit_completely "That planet is not in this sector."
-              send " l " & $planet & "*"
+              send " l " & $planet~planet & "*"
               waitfor "Landing sequence engaged..."
               send " t n l 1* t n l 2* t n l 3* s n l 1* s n l 2* s n l 3* t n t 1* c s* "
 		if ($player~current_sector = $sector)
@@ -248,35 +248,35 @@ halt
 
         # ============================ START QUIKSTAT VARIABLES ==========================
                 setVar $player~current_prompt          "Undefined"
-                setVar $PSYCHIC_PROBE           "No"
+                setVar $player~psychic_probe           "No"
                 setVar $player~planet_scanner          "No"
-                setVar $SCAN_TYPE               "None"
+                setVar $player~scan_type               "None"
                 setVar $player~current_sector          0
-                setVar $TURNS                   0
-                setVar $CREDITS                 0
+                setVar $player~turns                   0
+                setVar $player~credits                 0
                 setVar $player~fighters                0
-                setVar $SHIELDS                 0
-                setVar $TOTAL_HOLDS             0
-                setVar $ORE_HOLDS               0
-                setVar $ORGANIC_HOLDS           0
-                setVar $EQUIPMENT_HOLDS         0
-                setVar $COLONIST_HOLDS          0
-                setVar $PHOTONS                 0
-                setVar $ARMIDS                  0
-                setVar $LIMPETS                 0
-                setVar $GENESIS                 0
-                setVar $TWARP_TYPE              0
-                setVar $CLOAKS                  0
-                setVar $BEACONS                 0
-                setVar $ATOMIC                  0
-                setVar $CORBO                   0
-                setVar $EPROBES                 0
-                setVar $MINE_DISRUPTORS         0
-                setVar $ALIGNMENT               0
-                setVar $EXPERIENCE              0
-                setVar $CORP                    0
+                setVar $player~shields                 0
+                setVar $player~total_holds             0
+                setVar $player~ore_holds               0
+                setVar $player~organic_holds           0
+                setVar $player~equipment_holds         0
+                setVar $player~colonist_holds          0
+                setVar $player~photons                 0
+                setVar $player~armids                  0
+                setVar $player~limpets                 0
+                setVar $player~genesis                 0
+                setVar $player~twarp_type              0
+                setVar $player~cloaks                  0
+                setVar $player~beacons                 0
+                setVar $player~atomic                  0
+                setVar $player~corbo                   0
+                setVar $player~eprobes                 0
+                setVar $player~mine_disruptors         0
+                setVar $player~alignment               0
+                setVar $player~experience              0
+                setVar $player~corp                    0
                 setVar $player~ship_number             0
-                setVar $TURNS_PER_WARP          0
+                setVar $player~turns_PER_WARP          0
         # ============================ END QUIKSTAT VARIABLES ==========================
 
      	setVar $player~current_prompt 		"Undefined"
@@ -338,57 +338,57 @@ halt
 			if ($wordy = "Sect")
 				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
+				getWord $stats $player~turns  			($current_word + 1)
 			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
+				getWord $stats $player~credits  		($current_word + 1)
 			elseif ($wordy = "Figs")
 				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
+				getWord $stats $player~shields  		($current_word + 1)
 			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
+				getWord $stats $player~total_holds   		($current_word + 1)
 			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
+				getWord $stats $player~ore_holds    		($current_word + 1)
 			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
+				getWord $stats $player~organic_holds    	($current_word + 1)
 			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
+				getWord $stats $player~equipment_holds    	($current_word + 1)
 			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
+				getWord $stats $player~colonist_holds    	($current_word + 1)
 			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
+				getWord $stats $player~photons   		($current_word + 1)
 			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
+				getWord $stats $player~armids   		($current_word + 1)
 			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
+				getWord $stats $player~limpets   		($current_word + 1)
 			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
+				getWord $stats $player~genesis  		($current_word + 1)
 			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
+				getWord $stats $player~twarp_type  		($current_word + 1)
 			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
+				getWord $stats $player~cloaks   		($current_word + 1)
 			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
+				getWord $stats $player~beacons 		($current_word + 1)
 			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
+				getWord $stats $player~atomic  		($current_word + 1)
 			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
+				getWord $stats $player~corbo   		($current_word + 1)
 			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
+				getWord $stats $player~eprobes   		($current_word + 1)
 			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
+				getWord $stats $player~mine_disruptors   	($current_word + 1)
 			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
+				getWord $stats $player~psychic_probe  		($current_word + 1)
 			elseif ($wordy = "PlScn")
 				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
+				getWord $stats $player~scan_type    		($current_word + 1)
 			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
+				getWord $stats $player~alignment    		($current_word + 1)
 			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
+				getWord $stats $player~experience    		($current_word + 1)
 			elseif ($wordy = "Corp")
-				getWord $stats $CORP   			($current_word + 1)
+				getWord $stats $player~corp   			($current_word + 1)
 			elseif ($wordy = "Ship")
 				getWord $stats $player~ship_number   		($current_word + 1)
 			end

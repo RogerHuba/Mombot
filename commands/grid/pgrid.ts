@@ -191,7 +191,7 @@
     if ($doDensityScan = TRUE)
         send "s* "
     end
-    if (($SCAN_TYPE <> "None") AND ($doDensityScan = TRUE))
+    if (($player~scan_type <> "None") AND ($doDensityScan = TRUE))
         :density_scanning
 
 		if ($validDesignatedDen = TRUE)

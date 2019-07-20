@@ -139,8 +139,8 @@ setVar $moveFigMacro ""
 			replaceText $maxShipFigs "," ""
 
 
-		if ($PLANET~PLANET_FIGHTERS < $dropFigQuant)
-			setVar $SWITCHBOARD~message "There are only " & $PLANET~PLANET_FIGHTERS & " fighters on the planet.*"
+		if ($planet~planet_FIGHTERS < $dropFigQuant)
+			setVar $SWITCHBOARD~message "There are only " & $planet~planet_FIGHTERS & " fighters on the planet.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
@@ -163,7 +163,7 @@ setVar $moveFigMacro ""
 				setVar $moved $moved + $thisMove
 			end
 
-			setVar $moveFigMacro $moveFigMacro & "q m n t* q fz " & $moved & "* * zc" & $dropftrsType & " * l" & $PLANET~PLANET & " *m* t * c"
+			setVar $moveFigMacro $moveFigMacro & "q m n t* q fz " & $moved & "* * zc" & $dropftrsType & " * l" & $planet~planet & " *m* t * c"
 		end
 
 	end
@@ -172,7 +172,7 @@ setVar $moveFigMacro ""
 
 	send "q"
 	if ($kill)
-		setVar $targeting~PLANET $planet~PLANET
+		setVar $targeting~PLANET $planet~planet
 		gosub :targeting~initializetargeting
 	end
 	
@@ -261,7 +261,7 @@ setVar $moveFigMacro ""
 					getSectorParameter $checkSector "FIGSEC" $isFigged
 					if ($isFigged)
 						
-						send "l "&$planet~PLANET&"*  c"
+						send "l "&$planet~planet&"*  c"
 						send "p " $checkSector "*y"
 						setTextLineTrigger denMoveNo :denMoveNo "You do not have any fighters in Sector " & $adjsec & "."
 						setTextLineTrigger denMoveYes :denMoveYes "Locating beam pinpointed, TransWarp Locked."
@@ -301,7 +301,7 @@ setVar $moveFigMacro ""
 			goto :ldrop_scan
 		elseif ($plock = TRUE)
 
-			send "l "&$planet~PLANET&"*  c"
+			send "l "&$planet~planet&"*  c"
 			send "p " $adjsec "*"
 			setTextLineTrigger prelockNo :plockNo "You do not have any fighters in Sector " & $adjsec & "."
 			setTextLineTrigger prelockYes :plockYes "Locating beam pinpointed, TransWarp Locked."
@@ -344,7 +344,7 @@ setVar $moveFigMacro ""
 						killalltriggers
 						send "y '{" $switchboard~bot_name "} - PLOCK Launched*"
 						if ($kill)
-							setVar $targeting~PLANET $planet~PLANET
+							setVar $targeting~PLANET $planet~planet
 							gosub :targeting~initializetargeting
 						else
 							send "s* "
@@ -380,7 +380,7 @@ setVar $moveFigMacro ""
 		end
 
 	:go_go_go
-		send "l "&$planet~PLANET&"* cp "&$adjsec&"*y"
+		send "l "&$planet~planet&"* cp "&$adjsec&"*y"
 		settextlinetrigger no_fig :ldrop_no_fig "Your own fighters must be in the destination"
 		settextlinetrigger in_sector :ldrop_in_sector "-=-=-=- Planetary TransWarp Drive Engaged! -=-=-=-"
 		pause

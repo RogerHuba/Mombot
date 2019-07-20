@@ -96,7 +96,7 @@
 		killtrigger next_group
 		send "q j y "
 		if ($coloCounting)
-			add $colosDumped $player~TOTAL_HOLDS
+			add $colosDumped $player~total_holds
 		end
 		goto :sub_land
 # ======================     END COLO DUMP (DUMP) SUBROUTINE    ==========================

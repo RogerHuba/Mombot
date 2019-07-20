@@ -128,7 +128,7 @@ gosub :_START_
 	setVar $gotore 0
 	setVar $trybwarp 0
 
-	setVar $planetnumok 0
+	setVar $planet~planetnumok 0
 	send "lq* "
 
 	:checkPlanetsInSector
@@ -154,7 +154,7 @@ gosub :_START_
 			goto :checkPlanetsInSector
 		:orestartplannum 
 			killalltriggers
-			setVar $planetnumok 1
+			setVar $planet~planetnumok 1
 			goto :checkPlanetsInSector
 		:orenoplanet
 		:cannotland
@@ -165,7 +165,7 @@ gosub :_START_
 			
 		:orestartplanetsok
 			killAllTriggers 
-			if ($planetnumok = 1)
+			if ($planet~planetnumok = 1)
 			
 				getWord CURRENTLINE $cPlanetNum 2
 				stripText $cPlanetNum ">"
@@ -186,8 +186,8 @@ gosub :_START_
 
 	:getplanetdetails
 		waitfor "Fuel Ore"
-		getWord CURRENTLINE $planetfuel 6
-		stripText $planetfuel ","
+		getWord CURRENTLINE $planet~planetfuel 6
+		stripText $planet~planetfuel ","
 		setTextLineTrigger tRange :tRange "TransPort power ="
 		setTextTrigger tplanet :tplanet "Planet command"
 		pause
@@ -201,7 +201,7 @@ gosub :_START_
 			setVar $trybwarp 0
 		:tdone
 		
-		if ($planetfuel > 100)
+		if ($planet~planetfuel > 100)
 			send "t n t 1 *  "
 			setVar $gotore 1
 		end

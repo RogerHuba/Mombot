@@ -7,7 +7,7 @@
 	loadVar $MAP~STARDOCK 
 	loadvar $bot~folder
 	loadvar $game~MAX_PLANETS_PER_SECTOR
-	loadvar $planet~planet~planet_file
+	loadvar $planet~planet_file
 	loadVar $BOT~botIsDeaf
 	loadVar $BOT~silent_running
 	loadvar $game~steal_factor

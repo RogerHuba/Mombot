@@ -51,7 +51,7 @@
 	end
 
 
-	setVar $limpetsGridded TRUE
+	setVar $player~limpetsGridded TRUE
 	if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
 		gosub :PLANET~landingsub
 	end
@@ -97,7 +97,7 @@ halt
 		pause
 	:corpCountLimps
 		add $count 1
-		add $corpCount 1
+		add $player~corpCount 1
 		getWord CURRENTLINE $sector 1
 		getWord CURRENTLINE $numMines 2
 		while ($i <= $sector)

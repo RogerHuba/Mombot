@@ -78,10 +78,10 @@
 		setVar $override TRUE
 	end
 
-	setVar $planetfuel FALSE
+	setVar $planet~planetfuel FALSE
 	getWordPos $bot~user_command_line $pos "planetfuel"
 	if ($pos > 0)
-		setVar $planetfuel TRUE
+		setVar $planet~planetfuel TRUE
 	end
 
 	setVar $xfurb FALSE
@@ -555,7 +555,7 @@
 				else
 
 
-					if ($planetfuel)
+					if ($planet~planetfuel)
 						send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" topp *"
 					else
 						send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&"  *"

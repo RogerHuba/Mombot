@@ -71,7 +71,7 @@ loadVar $switchboard~bot_name
 	getWordPos $bot~user_command_line $pos "kill"
 	if ($pos > 0)
 		setVar $plockKill TRUE
-		setVar $targeting~PLANET $planet~PLANET
+		setVar $targeting~PLANET $planet~planet
 		gosub :targeting~initializetargeting
 
 	else

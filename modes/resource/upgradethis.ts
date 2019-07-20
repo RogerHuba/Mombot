@@ -28,12 +28,12 @@
 	waitOn "Planet command (?"
 	gosub :PLANET~getPlanetInfo
 	send "c"
-	if ($PLANET~CITADEL < 4)
+	if ($planet~CITADEL < 4)
 		setVar $SWITCHBOARD~message "You must run upgradethis from at least a level 4 planet.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	if (($PLANET~citadel_credits + $PLAYER~CREDITS) < 10000000)
+	if (($planet~CITADEL_CREDITS + $PLAYER~CREDITS) < 10000000)
 		setVar $SWITCHBOARD~message "You must have at least 10 million credits in the citadel or on hand for upgradethis.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -58,7 +58,7 @@
 		gosub :SWITCHBOARD~switchboard
 	end
 	setVar $isDone FALSE
-	setVar $turnsTooLow FALSE
+	setVar $player~turnsTooLow FALSE
 	:inac
 	killalltriggers
 	while ($isDone <> TRUE)
@@ -127,7 +127,7 @@
 					send "c"
 					setVar $total_creds_needed (1400*8000)
 					if ($total_creds_needed > $PLAYER~CREDITS)
-						setVar $cashonhand $PLANET~citadel_credits
+						setVar $cashonhand $planet~CITADEL_CREDITS
 						add $cashonhand $PLAYER~CREDITS
 						if ($cashonhand > $total_creds_needed)
 						        send "T T " & $PLAYER~CREDITS & "* "
@@ -144,7 +144,7 @@
 					goto :donePATP
 				end
 			end
-			if (($PLAYER~CREDITS + $PLANET~citadel_credits) < 10000000)
+			if (($PLAYER~CREDITS + $planet~CITADEL_CREDITS) < 10000000)
 				setVar $isDone TRUE
 			end
 			:tryAgain
@@ -159,7 +159,7 @@
 	halt
 
 :getFuelCash
-	send "l " $PLANET~planet "*   c t f"&$total_creds_needed&"*qq"
+	send "l " $planet~planet "*   c t f"&$total_creds_needed&"*qq"
 	gosub :PLAYER~quikstats
 return
 

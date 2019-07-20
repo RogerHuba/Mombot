@@ -318,7 +318,7 @@ reqRecording
 			if ($dropDescription = "Direct")
 				setvar $send "p "&$dropSector&"* y "
 				if ($fastkill = true)
-					setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** c  "
+					setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
 				end
 				send $send
 
@@ -449,7 +449,7 @@ return
 		killAllTriggers
 		setvar $send "p "&$gotoSector&"*y"
 		if ($fastkill = true)
-			setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** c  "
+			setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
 		end
 		send $send
 		setTextLineTrigger pwarpNo :pwarpNo "You do not have any fighters in Sector "
@@ -628,8 +628,8 @@ return
         setVar $thisCorpie 0
         :corpieSubLoop
             add $thisCorpie 1
-            if ($thisCorpie <= $corpies)
-                if (($subSender = $corpie[$thisCorpie]))
+            if ($thisCorpie <= $player~corpies)
+                if (($subSender = $player~corpie[$thisCorpie]))
                     setVar $auth_result "true"
                     goto :authDone
                 end
@@ -703,7 +703,7 @@ return
 
 # ----- SUB :getCorpies
 :getCorpies
-    setVar $corpies 0
+    setVar $player~corpies 0
     send "XAQ"
     waitfor " Corp Member Name                   Sector  Fighters Shields Mines  Credits"
     waitfor "------------------------------------------------------------------------------"
@@ -716,10 +716,10 @@ return
         if (CURRENTLINE = "P indicates Trader is on a planet in that sector")
             goto :getCorpieNameDone
         end
-        add $corpies 1
-        setVar $corpieLine CURRENTLINE
-        setVar $corpieLine $corpieLine & "          "
-        cutText $corpieLine $corpie[$corpies] 1 6
+        add $player~corpies 1
+        setVar $player~corpieLine CURRENTLINE
+        setVar $player~corpieLine $player~corpieLine & "          "
+        cutText $player~corpieLine $player~corpie[$player~corpies] 1 6
         goto :waitForCorpieName
     :getCorpieNameDone
         killalltriggers

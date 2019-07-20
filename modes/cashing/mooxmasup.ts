@@ -117,14 +117,14 @@ saveVar $_CK_PTRADESETTING
 
 
 setVar $minOre 140 
-setVar $planetsPopped 0
-setVar $planetsPoppedGood 0
+setVar $planet~planetsPopped 0
+setVar $planet~planetsPoppedGood 0
 
 setVar $cashMade 0
 setVar $updateCount 1
 
 window moo 170 94 "Moo Master" 
-setvar $stuff "Planets Made: " & $planetsPopped & "*Good Planets: " & $planetsPoppedGood & "*Cash:" & $cashMade & "* Cash:" & $cashMade
+setvar $stuff "Planets Made: " & $planet~planetsPopped & "*Good Planets: " & $planet~planetsPoppedGood & "*Cash:" & $cashMade & "* Cash:" & $cashMade
 setWindowContents moo $stuff
 
 setVar $startingFighters 0
@@ -139,19 +139,19 @@ setVar $setVarPlanetType5 "Jack Frost"
 
 setVar $useSwath 0
 
-setVar $planetsInSector 0
-setVar $planets 0
-setVar $planeti 1
+setVar $planet~planetsInSector 0
+setVar $planet~planets 0
+setVar $planet~planeti 1
 
 # number of planets we want in the sector
-setVar $planetsInSectorReq 1
-setVar $planetsInSectorFAil 0
+setVar $planet~planetsInSectorReq 1
+setVar $planet~planetsInSectorFAil 0
 
 setVar $percmintostart 90
 setVar $sectorfile "ports.txt"
 setVar $percTradeToo 15
 
-setVar $planetsCreated 0
+setVar $planet~planetsCreated 0
 setVar $dumpCashOnPlanet 25000000
 
 setVar $surroundedSectorsOnly 1
@@ -180,7 +180,7 @@ setVar $cleanUp 1
 #blast Planets above sector max planets afterwards
 setVar $cleanUpTop 0
 # Number of planets edit allows
-setVar $planetsAllowed 4
+setVar $planet~planetsAllowed 4
 
 //if clean up stop is on, it'll blow the amount of plantes in "Cleanup amount"
 setVar $cleanupStop 0
@@ -193,7 +193,7 @@ setVar $dockFuel 0
 setVar $dockFuelMin 160
 
 #get ore off planet if settnigs allow it
-setVar $planetOreOk 1
+setVar $planet~planetOreOk 1
 
 
 #take planet  - not implemented but add?
@@ -247,17 +247,17 @@ if ($dumpCashOnPlanet > 0)
 
 	
 
-	setVar $planetsInSector 0
-	setVar $planets 0
-	setVar $planeti 1
+	setVar $planet~planetsInSector 0
+	setVar $planet~planets 0
+	setVar $planet~planeti 1
 	goSub :reCheckPlanets
 	waitfor "Command ["
 	
 	setVar $found 0
 	setVar $i 1
-	while ($i <= $planetsInSector)
+	while ($i <= $planet~planetsInSector)
 
-		if ($planets[$i] = $cashDumpPlanet)
+		if ($planet~planets[$i] = $cashDumpPlanet)
 			setVar $found 1
 		end
 		add $i 1
@@ -485,7 +485,7 @@ if ($player~ALIGNMENT < 1000)
 end
 
 getRnd $rNum 10000 99999 
-setVar $planetName $player~ship_number  & $rNum
+setVar $planet~planetName $player~ship_number  & $rNum
 
 
 
@@ -543,9 +543,9 @@ setVar $loopi 1
 
 	
 	:imstilltradingyeahyeahyeah
-	setVar $planetsInSector 0
-	setVar $planets 0
-	setVar $planeti 1
+	setVar $planet~planetsInSector 0
+	setVar $planet~planets 0
+	setVar $planet~planeti 1
 	
 	# BLAST EXISTING PLANETS - may take extra damage first run
 	
@@ -554,16 +554,16 @@ echo "*Entering check"
 	gosub :reCheckPlanets
 	waitfor "Command ["
 	
-echo "*# $planeti " $planeti
+echo "*# $planet~planeti " $planet~planeti
 
 	setVar $i 1
-	while ($i < $planeti)
-		setVar $shipBlastPlanet $planets[$i] 
+	while ($i < $planet~planeti)
+		setVar $shipBlastPlanet $planet~planets[$i] 
 		goSub :blastPlanet 
 		add $i 1
 	end
 echo "*## quik stats"
-	setVar $planetsCreated 0
+	setVar $planet~planetsCreated 0
 	setVar $findPlanetName 0
 	
 	gosub :player~quikstats
@@ -593,7 +593,7 @@ echo "*## quik stats"
 			killAllTriggers
 			setVar $goodPlanet 1
 			setVar $torpPopCount 0
-			add $planetsPoppedGood 1
+			add $planet~planetsPoppedGood 1
 			goto :planetBlastComplete
 			
 		:planetBlastDone
@@ -604,7 +604,7 @@ echo "*## quik stats"
 			gosub :reCheckPlanets
 			waitfor "Command ["
 	
-			setVar $shipBlastPlanet $planets[1]
+			setVar $shipBlastPlanet $planet~planets[1]
 echo "**### DEBUG $shipBlastPlanet " $shipBlastPlanet
 			goSub :blastPlanet 
 			goto :tryBuildAgain
@@ -614,7 +614,7 @@ echo "**### DEBUG $shipBlastPlanet " $shipBlastPlanet
 	
 	gosub :reCheckPlanets
 
-	setVar $tradePlanet $planets[1]
+	setVar $tradePlanet $planet~planets[1]
 	setVar $tradeOre 0
 	setVar $tradeOrg 0
 	setVar $tradeEquip 0
@@ -663,9 +663,9 @@ halt
 
 	
 
-	setVar $planetsInSector 0
-	setVar $planets 0
-	setVar $planeti 1
+	setVar $planet~planetsInSector 0
+	setVar $planet~planets 0
+	setVar $planet~planeti 1
 	send "l*"
 	setVar $startLogging 0
 	:reCheckPlanetsT
@@ -696,9 +696,9 @@ halt
 				stripText $cPlanetNum ">"
 				stripText $cPlanetNum "<"
 			end
-			add $planetsInSector 1
-			setVar $planets[$planeti] $cPlanetNum
-			add $planeti 1
+			add $planet~planetsInSector 1
+			setVar $planet~planets[$planet~planeti] $cPlanetNum
+			add $planet~planeti 1
 		end
 		goto :reCheckPlanetsT
 
@@ -758,9 +758,9 @@ return
 	setVar $restockMakePlanet 0
 	if ($useGuard = true)
 		
-		setVar $planetFound 0
+		setVar $planet~planetFound 0
 		goSub :checkCorpPlanet
-		if ($planetFound = 0)
+		if ($planet~planetFound = 0)
 			setVar $restockMakePlanet 1
 		else
 			setVar $restockMakePlanet 0
@@ -790,14 +790,14 @@ echo "*# DEBUG $restockMakePlanet " $restockMakePlanet
 		pause
 		:shipCheckBuyAtomics
 			killalltriggers
-			getWord CURRENTLINE $AtomicssAvail 9
-			stripText $AtomicssAvail ")"
-			if ($AtomicssAvail = 0)
+			getWord CURRENTLINE $player~atomicssAvail 9
+			stripText $player~atomicssAvail ")"
+			if ($player~atomicssAvail = 0)
 				echo "*### we have a problem, no Atomics purchasable waiting for next"
 				#waitfor "next@"
 				send "*"
 			else
-				send  "*a" $AtomicssAvail "*"
+				send  "*a" $player~atomicssAvail "*"
 			end
 		
 		
@@ -827,14 +827,14 @@ echo "*# DEBUG $restockMakePlanet " $restockMakePlanet
 				killalltriggers
 				getWord CURRENTLINE $shieldPrice 5
 				getWord CURRENTLINE $canBuy 9
-				setVar $shieldsToBuy $player~credits
-				subtract $shieldsToBuy 250000
-				divide $shieldsToBuy $shieldPrice
+				setVar $player~shieldsToBuy $player~credits
+				subtract $player~shieldsToBuy 250000
+				divide $player~shieldsToBuy $shieldPrice
 				
-				if ($shieldsToBuy > $canBuy)
-					setVar $shieldsToBuy $canBuy
+				if ($player~shieldsToBuy > $canBuy)
+					setVar $player~shieldsToBuy $canBuy
 				end
-				send "c" $shieldsToBuy "*"
+				send "c" $player~shieldsToBuy "*"
 			
 
 	send "qqq    *   "
@@ -943,7 +943,7 @@ return
 		setVar $newPlanetMade 0
 		goSub :reCheckPlanets
 		if ($newPlanetMade = 0)
-			setVar $tradePlanet $planets[$planetsInSectorReq]
+			setVar $tradePlanet $planet~planets[$planet~planetsInSectorReq]
 		else
 			setVar $tradePlanet $newPlanetMade
 		end
@@ -951,7 +951,7 @@ return
 	:tradePlanetLand2
 		killAllTriggers
 	Waitfor "-------  ---------  ---------  ---------  ---------  ---------  ---------"
-	if ($player~ORE_HOLDS < $minOre)
+	if ($player~ore_holds < $minOre)
 		send "tnt1*"
 		waitfor "free cargo holds."
 		send "d"
@@ -1027,8 +1027,8 @@ return
 			
 		gosub :player~quikstats
 		stripText $player~credits ","
-		setVar $creditsNow $player~credits
-		if ($creditsNow = $precredits)
+		setVar $player~creditsNow $player~credits
+		if ($player~creditsNow = $precredits)
 			echo "*################*##############"
 			echo "*#### NEG FAILED, SELLING AT COST!"
 			echo "*###############################"
@@ -1039,10 +1039,10 @@ return
 			waitfor "Land on which planet"
 			gosub :player~quikstats
 			stripText $player~credits ","
-			setVar $creditsNow $player~credits
+			setVar $player~creditsNow $player~credits
 		end
-		subtract $creditsNow $_ck_pnego_credits
-		add $stat_dollarsgross $creditsNow
+		subtract $player~creditsNow $_ck_pnego_credits
+		add $stat_dollarsgross $player~creditsNow
 		
 		send "q"
 
@@ -1072,19 +1072,19 @@ return
 		killAllTriggers
 		add $stat_torps 1
 
-	add $planetsPopped 1
+	add $planet~planetsPopped 1
 
 return
 
 
 
 :updateStats
-	setvar $stuff "Planets Made: " & $planetsPopped & "*Good Planets: " & $planetsPoppedGood & "*Cash:" & $cashMade & "* Cash:" & $cashMade
+	setvar $stuff "Planets Made: " & $planet~planetsPopped & "*Good Planets: " & $planet~planetsPoppedGood & "*Cash:" & $cashMade & "* Cash:" & $cashMade
 	setWindowContents moo $stuff
 	add $updateCount 1
 	if ($updateCount > 20)
 		setVar $updateCount 1
-		send "'Moo Update - Planets: " $planetsPoppedGood "/" $planetsPopped " Cash: " $cashMade "*"
+		send "'Moo Update - Planets: " $planet~planetsPoppedGood "/" $planet~planetsPopped " Cash: " $cashMade "*"
 	end
 return
 
@@ -1118,9 +1118,9 @@ return
 			if ($endcheck = "Land")
 				goto :checkPlanetsSafeInSectorFinish
 			end
-			cutText CURRENTLINE $planetdata 46 999
-			echo "*#" $planetdata "#"
-			getWord $planetdata $firstword 1
+			cutText CURRENTLINE $planet~planetdata 46 999
+			echo "*#" $planet~planetdata "#"
+			getWord $planet~planetdata $firstword 1
 			if ($firstword = "Level")
 				echo "*# ALERT ALERT LAERT #"
 				
@@ -1183,7 +1183,7 @@ return
 	end
 	gosub :player~quikstats
 	if (PORT.BUYFUEL[CURRENTSECTOR] = 0)
-		if ($ORE_HOLDS < 120)
+		if ($player~ore_holds < 120)
 			send "pt**"
 			waitfor "do you want to buy"
 			waitfor "You have"
@@ -1255,7 +1255,7 @@ return
 			killAllTriggers
 			getWord CURRENTLINE $checkPlanet 1
 			if ($checkPlanet = $stardock)
-				setVar $planetFound 1
+				setVar $planet~planetFound 1
 				return
 			end
 			goto :checkCorpPlanetsList
@@ -1276,12 +1276,12 @@ return
 	
 	
 	if ($unlimited = 1)
-		setVar $TURNS 999
+		setVar $player~turns 999
 	end
 
 
 	
-	if ($player~ORE_HOLDS < $minOre)
+	if ($player~ore_holds < $minOre)
 		send "l" $tradePlanet "*"
 		send "tnt1*"
 		waitfor "free cargo holds."
@@ -1316,8 +1316,8 @@ return
 		
 	gosub :player~quikstats
 	stripText $player~credits ","
-	setVar $creditsNow $player~credits
-	if ($creditsNow = $precredits)
+	setVar $player~creditsNow $player~credits
+	if ($player~creditsNow = $precredits)
 		echo "*################*##############"
 		echo "*#### NEG FAILED, SELLING AT COST!"
 		echo "*###############################"
@@ -1328,10 +1328,10 @@ return
 		waitfor "Your offer "
 		gosub :player~quikstats
 		stripText $player~credits ","
-		setVar $creditsNow $player~credits
+		setVar $player~creditsNow $player~credits
 	end
-	subtract $creditsNow $precredits
-	add $stat_dollarsgross $creditsNow
+	subtract $player~creditsNow $precredits
+	add $stat_dollarsgross $player~creditsNow
 	
 	
 

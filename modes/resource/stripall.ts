@@ -106,13 +106,13 @@
 		halt
 	end
 	setVar $i 1
-	setArray $planets 3000
+	setArray $planet~planets 3000
 	gosub :player~quikstats
-	if ($PLANET_SCANNER = "No")
+	if ($player~planet_scanner = "No")
 	        send "'{" $switchboard~bot_name "} - Planet Farmer must be run with a planet scanner.*" 
 		halt
 	end
-	if ($CURRENT_PROMPT <> "Citadel")
+	if ($player~current_prompt <> "Citadel")
 	        send "'{" $switchboard~bot_name "} - Planet Farmer must be run from the Citadel Prompt.*" 
 		halt
 	end
@@ -172,9 +172,9 @@ return
 	send "qd"
 	gosub :player~setconnectiontriggers
 	waitOn "Planet #"
-	getWord CURRENTLINE $planetToFill 2
-	stripText $planetToFill "#"
-	send "snl1*snl2*snl3*tnl1*tnl2*tnl3*  q  j  y  l "  $planetToFill "*  c"
+	getWord CURRENTLINE $planet~planetToFill 2
+	stripText $planet~planetToFill "#"
+	send "snl1*snl2*snl3*tnl1*tnl2*tnl3*  q  j  y  l "  $planet~planetToFill "*  c"
 	return
 
 :move_the_planet
@@ -211,8 +211,8 @@ return
 			gosub :getPlanetInfo
 			send "c"
 			add $i 1
-			if (($planetorg > ($planetorgmax-1000)) AND ($planetequip > ($planetequipmax - 1000)))
-				setVar $planetIsFull TRUE
+			if (($planet~planetorg > ($planet~planetorgmax-1000)) AND ($planet~planetequip > ($planet~planetequipmax - 1000)))
+				setVar $planet~planetIsFull TRUE
 				goto :end
 			end 
 	end
@@ -222,7 +222,7 @@ return
 	send "q  q  q  z  n  *|l"
 	gosub :player~setconnectiontriggers
 	waitOn "Registry# and Planet Name"
-	setVar $planetCount 0
+	setVar $planet~planetCount 0
 	killalltriggers
 	gosub :player~setconnectiontriggers
 	setTextLineTrigger planetGrabber :planetline "   <"
@@ -238,8 +238,8 @@ return
 			replacetext $line "<" " "
 			replacetext $line ">" " "
 			striptext $line ","
-			add $planetCount 1
-			getWord $line $planets[$planetCount] 1
+			add $planet~planetCount 1
+			getWord $line $planet~planets[$planet~planetCount] 1
 		end
 		gosub :player~setconnectiontriggers
 		setTextLineTrigger getLine2 :planetline "   <"
@@ -252,53 +252,53 @@ return
 :stripallplanets
 setVar $j 1
 	send "q q * * jy * "
-	while ($j <= $planetCount)
-		if ($planetToFill <> $planets[$j])
+	while ($j <= $planet~planetCount)
+		if ($planet~planetToFill <> $planet~planets[$j])
 			:tryFuel
 				killAllTriggers
 				if ($emptyFuel)
-					send "l j " & #8 & #8 & $planets[$j]&"* * "
+					send "l j " & #8 & #8 & $planet~planets[$j]&"* * "
 					setTextTrigger noplanet :doneWithThisPlanet "That planet is not in this sector."				
 					setTextTrigger planethere :continueFuel "Planet command (?=help)"
 					pause
 					:continueFuel
 					killalltriggers
-					send "tnt1*q l "&$planetToFill&"* tnl1*q "
+					send "tnt1*q l "&$planet~planetToFill&"* tnl1*q "
 					gosub :player~setconnectiontriggers
 					setTextTrigger fuelSuccess :tryFuel "You load the "				
 					setTextTrigger fuelEmpty :emptyFuel "There aren't that many "
 					setTextTrigger fuelFull :emptyFuel "They don't have room for that many "
 					pause
 					:emptyFuel
-						send "l "&$planets[$j]&"* tnl1*q jy "
+						send "l "&$planet~planets[$j]&"* tnl1*q jy "
 						send "@"
 						waitOn "Average Interval Lag:"
 				end
 			:tryOrganics
 				killAllTriggers
 				if ($emptyOrganics)
-					send "l "&$planets[$j]&"* tnt2*q l "&$planetToFill&"* tnl2*q "
+					send "l "&$planet~planets[$j]&"* tnt2*q l "&$planet~planetToFill&"* tnl2*q "
 					gosub :player~setconnectiontriggers
 					setTextTrigger success :tryOrganics "You load the "
 					setTextTrigger emptyEmpty :emptyOrganics "There aren't that many "
 					setTextTrigger fullFill :emptyOrganics "They don't have room for that many "
 					pause
 					:emptyOrganics
-						send "l "&$planets[$j]&"* tnl2*q jy "
+						send "l "&$planet~planets[$j]&"* tnl2*q jy "
 						send "@"
 						waitOn "Average Interval Lag:"
 				end
 			:tryEquipment
 				killAllTriggers
 				if ($emptyEquipment)
-					send "l "&$planets[$j]&"* tnt3*q l "&$planetToFill&"* tnl3*q "
+					send "l "&$planet~planets[$j]&"* tnt3*q l "&$planet~planetToFill&"* tnl3*q "
 					gosub :player~setconnectiontriggers
 					setTextTrigger success :tryEquipment "You load the "
 					setTextTrigger emptyEmpty :emptyEquipment "There aren't that many "
 					setTextTrigger fullFill :emptyEquipment "They don't have room for that many "
 					pause
 					:emptyEquipment
-						send "l "&$planets[$j]&"* tnl3*q jy "
+						send "l "&$planet~planets[$j]&"* tnl3*q jy "
 						send "@"
 						waitOn "Average Interval Lag:"
 				end
@@ -306,7 +306,7 @@ setVar $j 1
 			:tryFuelColonists
 				killAllTriggers
 				if ($emptyFuelColonists)
-					send "l "&$planets[$j]&"* snt1*q l "&$planetToFill&"* snl"&$coloType&"*q "
+					send "l "&$planet~planets[$j]&"* snt1*q l "&$planet~planetToFill&"* snl"&$coloType&"*q "
 					gosub :player~setconnectiontriggers
 					setTextTrigger success :tryFuelColonists "The Colonists disembark to "
 					setTextTrigger emptyEmpty :switchFuel "There isn't room on the planet"
@@ -324,7 +324,7 @@ setVar $j 1
 			:tryOrganicColonists
 				killAllTriggers
 				if ($emptyOrganicColonists)
-					send "l "&$planets[$j]&"* snt2*q l "&$planetToFill&"* snl"&$coloType&"*q "
+					send "l "&$planet~planets[$j]&"* snt2*q l "&$planet~planetToFill&"* snl"&$coloType&"*q "
 					gosub :player~setconnectiontriggers
 					setTextTrigger success :tryOrganicColonists "The Colonists disembark to "
 					setTextTrigger emptyEmpty :switchOrganics "There isn't room on the planet"
@@ -342,7 +342,7 @@ setVar $j 1
 			:tryEquipmentColonists
 				killAllTriggers
 				if ($emptyEquipmentColonists)
-					send "l "&$planets[$j]&"* snt3*q l "&$planetToFill&"* snl"&$coloType&"*q "
+					send "l "&$planet~planets[$j]&"* snt3*q l "&$planet~planetToFill&"* snl"&$coloType&"*q "
 					gosub :player~setconnectiontriggers
 					setTextTrigger success :tryEquipmentColonists "The Colonists disembark to "
 					setTextTrigger emptyEmpty :switchEquipment "There isn't room on the planet"
@@ -361,7 +361,7 @@ setVar $j 1
 			:tryFighters
 				killAllTriggers
 				if ($emptyFighters)
-					send "l "&$planets[$j]&"* m***q l "&$planetToFill&"* m*l* q "
+					send "l "&$planet~planets[$j]&"* m***q l "&$planet~planetToFill&"* m*l* q "
 					gosub :player~setconnectiontriggers
 					WaitOn "Do you wish to (L)eave or (T)ake Fighters? [T]"
 					waitOn " Max) ["
@@ -378,12 +378,12 @@ setVar $j 1
 			
 		add $j 1
 	end
-	send "l "&$planetToFill&"* c"
+	send "l "&$planet~planetToFill&"* c"
 return	
 :end
 killalltriggers
 send "p "&$home&"  *ys* "
-if ($planetIsFull)
+if ($planet~planetIsFull)
 	send "'{" $switchboard~bot_name "} - Planet Stripping Planet is full.  Ready to sell off the product!*"
 else
 	send "'{" $switchboard~bot_name "} - Planet Stripping run is complete.*"

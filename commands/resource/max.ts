@@ -49,7 +49,7 @@
             send "q"
         end
         gosub :PLANET~getPlanetInfo
-        if ($PLANET~CITADEL > 0)
+        if ($planet~CITADEL > 0)
             send "cs* "
             waitOn "<Enter Citadel>"
             waitOn "Warps to Sector(s)"
@@ -88,7 +88,7 @@
                     add $total_creds_needed (1000*$totalEquipUpgradeNeeded)
                 end
                 if ($total_creds_needed > $PLAYER~CREDITS)
-                    setVar $cashonhand $PLANET~CITADEL_CREDITS
+                    setVar $cashonhand $planet~CITADEL_CREDITS
                     add $cashonhand $PLAYER~CREDITS
                     if ($cashonhand > $total_creds_needed)
                             if ($startingLocation = "Planet")

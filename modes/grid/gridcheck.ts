@@ -1,6 +1,6 @@
 	logging off
 	loadVar $switchboard~bot_name
-	loadVar $unlimitedGame
+	loadVar $player~unlimitedGame
 	loadVar $bot_turn_limit
 	loadVar $bot~user_command_line
 	loadVar $bot~parm1
@@ -53,10 +53,10 @@
 
 :select_boomsec
 	gosub :player~quikstats
-	IF ($TOTAL_HOLDS > $ORE_HOLDS)
+	IF ($player~total_holds > $player~ore_holds)
 		goto :no_ore
 	END
-	IF ($TWARP_TYPE = "No")
+	IF ($player~twarp_type = "No")
 		send "'{" $switchboard~bot_name "} - Must have T-warp to run this script.*"
 		HALT
 	END
@@ -139,7 +139,7 @@
 :no_twarp_lock
 	killAllTriggers
 	send "n*zn"
-	send "l " & #8 & $PLANET "*c"
+	send "l " & #8 & $planet~planet "*c"
 	setSectorParameter $warpto "FIGSEC" FALSE
 	setVar $temp " "&$warpto&" "
 	replaceText $database $temp " "
@@ -212,7 +212,7 @@
 #-=-=-=-=-=- assemble macro -=-=-=-=-=-=-=-=-
 :assemble_mac
 	setVar $mac " *  z n  s z h* "
-	setVar $mac $mac & "m" & $homesec & "*yy*  l " & #8 & $PLANET & "*  z  n  z  n  *  mnt*  tnt1**  cr*  "
+	setVar $mac $mac & "m" & $homesec & "*yy*  l " & #8 & $planet~planet & "*  z  n  z  n  *  mnt*  tnt1**  cr*  "
 	return
 
 # -=-=-=-=-=- return triggers -=-=-=-=-=-=-=-
@@ -278,8 +278,8 @@
 
     :friendlyplanet
         killalltriggers
-        getText CURRENTLINE $PLANET_SAVEME "Saveme script activated - Planet " " to "
-        send "L " & #8 & $PLANET_SAVEME & "* C 'I landed on planet " & $PLANET_SAVEME & "*"
+        getText CURRENTLINE $planet~planet_SAVEME "Saveme script activated - Planet " " to "
+        send "L " & #8 & $planet~planet_SAVEME & "* C 'I landed on planet " & $planet~planet_SAVEME & "*"
         goto :PauseGridder
 
     :towlocked
@@ -383,57 +383,57 @@ return
 			if ($wordy = "Sect")
 				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
+				getWord $stats $player~turns  			($current_word + 1)
 			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
+				getWord $stats $player~credits  		($current_word + 1)
 			elseif ($wordy = "Figs")
 				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
+				getWord $stats $player~shields  		($current_word + 1)
 			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
+				getWord $stats $player~total_holds   		($current_word + 1)
 			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
+				getWord $stats $player~ore_holds    		($current_word + 1)
 			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
+				getWord $stats $player~organic_holds    	($current_word + 1)
 			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
+				getWord $stats $player~equipment_holds    	($current_word + 1)
 			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
+				getWord $stats $player~colonist_holds    	($current_word + 1)
 			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
+				getWord $stats $player~photons   		($current_word + 1)
 			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
+				getWord $stats $player~armids   		($current_word + 1)
 			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
+				getWord $stats $player~limpets   		($current_word + 1)
 			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
+				getWord $stats $player~genesis  		($current_word + 1)
 			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
+				getWord $stats $player~twarp_type  		($current_word + 1)
 			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
+				getWord $stats $player~cloaks   		($current_word + 1)
 			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
+				getWord $stats $player~beacons 		($current_word + 1)
 			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
+				getWord $stats $player~atomic  		($current_word + 1)
 			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
+				getWord $stats $player~corbo   		($current_word + 1)
 			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
+				getWord $stats $player~eprobes   		($current_word + 1)
 			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
+				getWord $stats $player~mine_disruptors   	($current_word + 1)
 			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
+				getWord $stats $player~psychic_probe  		($current_word + 1)
 			elseif ($wordy = "PlScn")
 				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
+				getWord $stats $player~scan_type    		($current_word + 1)
 			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
+				getWord $stats $player~alignment    		($current_word + 1)
 			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
+				getWord $stats $player~experience    		($current_word + 1)
 			elseif ($wordy = "Corp")
-				getWord $stats $CORP   			($current_word + 1)
+				getWord $stats $player~corp   			($current_word + 1)
 			elseif ($wordy = "Ship")
 				getWord $stats $player~ship_number   		($current_word + 1)
 			end
@@ -502,7 +502,7 @@ return
 
 
 :landOnPlanetEnterCitadel
-	send "l " & #8 & $PLANET "* c"
+	send "l " & #8 & $planet~planet "* c"
 	waitOn "<Enter Citadel>"
 	return
 :leaveCitadelAndPlanet	
@@ -578,13 +578,13 @@ return
 	pause
 
 	:planetinfo
-		setVar $CITADEL 0
-		setVar $SECTOR_CANNON 0
-		setVar $ATMOSPHERE_CANNON 0
-		setVar $CITADEL_CREDITS 0
-		getWord CURRENTLINE $PLANET 2
-		stripText $PLANET "#"
-#		send "'{" $switchboard~bot_name "} - Looking for Planet # " & $PLANET & "*"
+		setVar $planet~CITADEL 0
+		setVar $planet~SECTOR_CANNON 0
+		setVar $planet~ATMOSPHERE_CANNON 0
+		setVar $planet~CITADEL_CREDITS 0
+		getWord CURRENTLINE $planet~planet 2
+		stripText $planet~planet "#"
+#		send "'{" $switchboard~bot_name "} - Looking for Planet # " & $planet~planet & "*"
 #		HALT
 		getWord CURRENTLINE $player~current_sector 5
 		stripText $player~current_sector ":"
@@ -601,47 +601,47 @@ return
 		pause
 
         :fuelstart
-		getWord CURRENTLINE $PLANET_FUEL 6
-		getWord CURRENTLINE $PLANET_FUEL_MAX 8
-		stripText $PLANET_FUEL ","
-		stripText $PLANET_FUEL_MAX ","
+		getWord CURRENTLINE $planet~planet_FUEL 6
+		getWord CURRENTLINE $planet~planet_FUEL_MAX 8
+		stripText $planet~planet_FUEL ","
+		stripText $planet~planet_FUEL_MAX ","
 		pause
 
         :orgstart
-		getWord CURRENTLINE $PLANET_ORGANICS 5
-		getWord CURRENTLINE $PLANET_ORGANICS_MAX 7
-		stripText $PLANET_ORGANICS ","
-		stripText $PLANET_ORGANICS_MAX ","
+		getWord CURRENTLINE $planet~planet_ORGANICS 5
+		getWord CURRENTLINE $planet~planet_ORGANICS_MAX 7
+		stripText $planet~planet_ORGANICS ","
+		stripText $planet~planet_ORGANICS_MAX ","
 		pause
 
         :equipstart
-		getWord CURRENTLINE $PLANET_EQUIPMENT 5
-		getWord CURRENTLINE $PLANET_EQUIPMENT_MAX 7
-		stripText $PLANET_EQUIPMENT ","
-		stripText $PLANET_EQUIPMENT_MAX ","
+		getWord CURRENTLINE $planet~planet_EQUIPMENT 5
+		getWord CURRENTLINE $planet~planet_EQUIPMENT_MAX 7
+		stripText $planet~planet_EQUIPMENT ","
+		stripText $planet~planet_EQUIPMENT_MAX ","
 		pause
 
         :figstart
-		getWord CURRENTLINE $PLANET_FIGHTERS 5
-		getWord CURRENTLINE $PLANET_FIGHTERS_MAX 7
-		stripText $PLANET_FIGHTERS ","
-		stripText $PLANET_FIGHTERS_MAX ","
+		getWord CURRENTLINE $planet~planet_FIGHTERS 5
+		getWord CURRENTLINE $planet~planet_FIGHTERS_MAX 7
+		stripText $planet~planet_FIGHTERS ","
+		stripText $planet~planet_FIGHTERS_MAX ","
 		pause
 
         :citadelstart
-		getWord CURRENTLINE $CITADEL 5
-		getWord CURRENTLINE $CITADEL_CREDITS 9
-		striptext $CITADEL_CREDITS ","
+		getWord CURRENTLINE $planet~CITADEL 5
+		getWord CURRENTLINE $planet~CITADEL_CREDITS 9
+		striptext $planet~CITADEL_CREDITS ","
 		pause
 
 	:cannonstart
-		getWord CURRENTLINE $ATMOSPHERE_CANNON 5
-		getWord CURRENTLINE $SECTOR_CANNON 6
-		stripText $SECTOR_CANNON "SectLvl="
-		striptext $SECTOR_CANNON "%"
-		stripText $ATMOSPHERE_CANNON "AtmosLvl="
-		striptext $ATMOSPHERE_CANNON "%"
-		striptext $ATMOSPHERE_CANNON ","
+		getWord CURRENTLINE $planet~ATMOSPHERE_CANNON 5
+		getWord CURRENTLINE $planet~SECTOR_CANNON 6
+		stripText $planet~SECTOR_CANNON "SectLvl="
+		striptext $planet~SECTOR_CANNON "%"
+		stripText $planet~ATMOSPHERE_CANNON "AtmosLvl="
+		striptext $planet~ATMOSPHERE_CANNON "%"
+		striptext $planet~ATMOSPHERE_CANNON ","
 		pause
 	:planetInfoDone
 		killtrigger citadelstart

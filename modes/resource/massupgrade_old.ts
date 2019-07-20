@@ -23,7 +23,7 @@
 	loadVar $switchboard~bot_name
 	loadVar $command
 	loadVar $avoidedSectorsUgrid
-	loadVar $unlimitedGame
+	loadVar $player~unlimitedGame
 	loadVar $bot_turn_limit
 	loadVar $bot~user_command_line
 	loadVar $bot~parm1

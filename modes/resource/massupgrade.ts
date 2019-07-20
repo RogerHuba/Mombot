@@ -48,7 +48,7 @@ setarray $potential_start_planets 20000
 setvar $potential_start_planets 0
 setvar $current_start_planet 0
 setvar $original_start_planet 0
-setVar $planetsFilled 1
+setVar $planet~planetsFilled 1
 
 :startMeUp
 	killalltriggers
@@ -69,12 +69,12 @@ setVar $planetsFilled 1
   if ($original_start_planet = 0)
     setvar $original_start_planet $startplanet
   end
-	setvar $startPlanetFuelCol $planet~PLANET_FUEL_COLONISTS
-	setvar $startPlanetFuel $planet~PLANET_FUEL
-	setvar $startPlanetOrgCol $planet~PLANET_ORGANICS_COLONISTS
-	setvar $startPlanetOrg $planet~PLANET_ORGANICS
-	setvar $startPlanetEquCol $planet~PLANET_EQUIPMENT_COLONISTS
-	setvar $startPlanetEqu $planet~PLANET_EQUIPMENT
+	setvar $startPlanetFuelCol $planet~planet_FUEL_COLONISTS
+	setvar $startPlanetFuel $planet~planet_FUEL
+	setvar $startPlanetOrgCol $planet~planet_ORGANICS_COLONISTS
+	setvar $startPlanetOrg $planet~planet_ORGANICS
+	setvar $startPlanetEquCol $planet~planet_EQUIPMENT_COLONISTS
+	setvar $startPlanetEqu $planet~planet_EQUIPMENT
 	setVar $startPlanetCols ($startPlanetFuelcol + $startPlanetOrgCol + $startPlanetEquCol)
 
 	send "c "
@@ -85,8 +85,8 @@ setVar $planetsFilled 1
 gosub :setWindow
 send "qq"
 gosub :getplanetNumbers
-while ($planetsFilled <= $pNumCnt)
-	setVar $fillPlanet $pNumber[$planetsFilled]
+while ($planet~planetsFilled <= $pNumCnt)
+	setVar $fillPlanet $pNumber[$planet~planetsFilled]
 	gosub :setWindow
 	send "qq*  jy l " #8 $fillPlanet "* "
 	waitfor "Planet command"
@@ -103,7 +103,7 @@ while ($planetsFilled <= $pNumCnt)
       goto :endscript
     end
 	end
-	add $planetsFilled 1
+	add $planet~planetsFilled 1
 end
 :endScript
 send "qq*  l " & #8 & $startplanet "**c"
@@ -117,17 +117,17 @@ halt
 	getDate $dateChecked
 	setVar $citExists ""
 	gosub :PLANET~getPlanetInfo
-	lowercase $PLANET~PLANET_CLASS_NAME
-	setVar $endPlanetCols ($PLANET~PLANET_FUEL_COLONISTS + $PLANET~PLANET_ORGANICS_COLONISTS + $PLANET~PLANET_EQUIPMENT_COLONISTS)
+	lowercase $planet~planet_CLASS_NAME
+	setVar $endPlanetCols ($planet~planet_FUEL_COLONISTS + $planet~planet_ORGANICS_COLONISTS + $planet~planet_EQUIPMENT_COLONISTS)
 	setVar $i 1
 	setVar $foundPlanet FALSE
 	setVar $isAKeeper FALSE
-	while (($i <= $PLANET~planetcounter) AND ($foundPlanet = FALSE))
-		lowercase $PLANET~planetList[$i]
-		lowercase $PLANET~PLANET_CLASS_NAME
-		getWordPos $PLANET~planetList[$i] $pos $PLANET~PLANET_CLASS_NAME
+	while (($i <= $planet~planetcounter) AND ($foundPlanet = FALSE))
+		lowercase $planet~planetList[$i]
+		lowercase $planet~planet_CLASS_NAME
+		getWordPos $planet~planetList[$i] $pos $planet~planet_CLASS_NAME
 		if ($pos > 0)
-			setVar $isAKeeper $PLANET~planetList[$i][7]
+			setVar $isAKeeper $planet~planetList[$i][7]
 			setVar $foundPlanet TRUE
 		end
 		add $i 1
@@ -144,7 +144,7 @@ halt
 		send "q*  l " #8 $startPlanet "* c "
 		return		
 	end
-	if ($PLANET~citadel > 0)
+	if ($planet~citadel > 0)
 		setVar $citExists "q"
 	end
 	if ($planet~under_construction = true)
@@ -222,15 +222,15 @@ halt
 	if (($colsNeeded > $startPlanetEquCol) and ($colsNeeded > $startPlanetOrgCol) and ($colsNeeded > $startPlanetFuelCol))
 		setVar $notEnoughVar 1
 	end
-   subTract $fuelNeeded $PLANET~PLANET_FUEL
+   subTract $fuelNeeded $planet~planet_FUEL
     if ($fuelNeeded > $startPlanetfuel)
         setVar $notEnoughVar 1
     end
-    subTract $orgNeeded $PLANET~PLANET_ORGANICS
+    subTract $orgNeeded $planet~planet_ORGANICS
     if ($orgNeeded > $startPlanetorg)
         setVar $notEnoughVar 1
     end
-   subTract $EquNeeded $PLANET~PLANET_EQUIPMENT
+   subTract $EquNeeded $planet~planet_EQUIPMENT
     if ($EquNeeded > $startPlanetEqu)
         setVar $notEnoughVar 1
     end
@@ -410,13 +410,13 @@ waitfor "---------"
   pause
   :pNum
     killtrigger pNumDone
-#    getWord currentline $planet 2
-     getText currentline $planet "  <" "> "
-     stripText $planet " "
-#    stripText $planet ">"
-    if ($planet <> $startPlanet)
+#    getWord currentline $planet~planet 2
+     getText currentline $planet~planet "  <" "> "
+     stripText $planet~planet " "
+#    stripText $planet~planet ">"
+    if ($planet~planet <> $startPlanet)
        add $pNumCnt 1
-       setVar $pNumber[$pNumCnt] $planet
+       setVar $pNumber[$pNumCnt] $planet~planet
     end
     goto :getPlanetNum
   :pNumDone
@@ -482,7 +482,7 @@ gosub :genFormat
 setVar $msg $msg & "* Min Fuel Set To: " & $outPutVar
 setVar $msg $msg & "* ---------------- *"
 setVar $msg $msg & "* Upgrade Planet:  " & $fillPlanet
-setVar $msg $msg & "* Upgrading:       " & $planetsFilled & " of " & $pNumCnt & " planets"
+setVar $msg $msg & "* Upgrading:       " & $planet~planetsFilled & " of " & $pNumCnt & " planets"
 setVar $inputVar $colsNeeded
 gosub :genFormat
 setVar $msg $msg & "* Cols Needed:     " & $outPutVar

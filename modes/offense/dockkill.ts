@@ -117,11 +117,11 @@
 		waitOn "B  Fighters        :"
 		getWord CURRENTLINE $figsToBuy 8
 		waitOn "C  Shield Points   :"
-		getWord CURRENTLINE $shieldsToBuy 9
+		getWord CURRENTLINE $player~shieldsToBuy 9
 		if ($PLAYER~CURRENT_SECTOR = STARDOCK)
-			setVar $leavestring "b "&$figsToBuy&"* c "&$shieldsToBuy&"* q q q "
+			setVar $leavestring "b "&$figsToBuy&"* c "&$player~shieldsToBuy&"* q q q "
 		else
-			setVar $leavestring "b "&$figsToBuy&"* c "&$shieldsToBuy&"* q "
+			setVar $leavestring "b "&$figsToBuy&"* c "&$player~shieldsToBuy&"* q "
 		end
 		send $leavestring
 	end

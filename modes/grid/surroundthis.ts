@@ -55,8 +55,8 @@
 	:getplanetnum
 		send "qD"
 		waitOn "Planet #"
-		getWord CURRENTLINE $planet 2
-		stripText $planet "#"
+		getWord CURRENTLINE $planet~planet 2
+		stripText $planet~planet "#"
 		send "tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*mnt*qjy"
 	
 	setWindowContents mowWindow "Sectors Figged: "&$count&" out of "&SECTORS&"*"
@@ -368,8 +368,8 @@ return
 
     :friendlyplanet
         killalltriggers
-        getText CURRENTLINE $planet "Saveme script activated - Planet " " to "
-        send "L " & $planet & "* C 'I landed on planet " & $planet & "*"
+        getText CURRENTLINE $planet~planet "Saveme script activated - Planet " " to "
+        send "L " & $planet~planet & "* C 'I landed on planet " & $planet~planet & "*"
         halt
 
     :towlocked
@@ -413,7 +413,7 @@ return
 return
 
 :landOnPlanetEnterCitadel
-	send "l " $planet "* c"
+	send "l " $planet~planet "* c"
 	waitOn "<Enter Citadel>"
 	return
 :leaveCitadelAndPlanet	

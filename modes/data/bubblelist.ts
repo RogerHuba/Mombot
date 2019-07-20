@@ -1,7 +1,7 @@
 	reqRecording
 	logging off
 	loadVar $switchboard~bot_name
-	loadVar $unlimitedGame
+	loadVar $player~unlimitedGame
 	loadVar $ptradesetting
 	loadVar $bot_turn_limit
 	loadVar $bot~user_command_line

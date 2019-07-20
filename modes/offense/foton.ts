@@ -161,7 +161,7 @@ end
 			
 		end
 		if (($player~experience < 1000) and ($player~alignment >= 0))
-			if ($fedSpacePhotons <> TRUE)
+			if ($player~fedspacePhotons <> TRUE)
 				send "'{" $bot~bot_name "} - Fed safe people can't shoot photons from fed..*"
 				setVar $mode "General"
 				halt
@@ -1176,7 +1176,7 @@ return
 	end
 	if ($PLAYER~CURRENT_SECTOR = STARDOCK)
 		if (($player~experience < 1000) and ($player~alignment >= 0))
-			if ($fedSpacePhotons <> TRUE)
+			if ($player~fedspacePhotons <> TRUE)
 				send "'{" $bot~bot_name "} - Fed safe people can't shoot photons from fed..*"
 				setVar $mode "General"
 				halt

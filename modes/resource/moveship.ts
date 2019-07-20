@@ -142,7 +142,7 @@
 	gosub :SWITCHBOARD~switchboard
 	if ($back = TRUE)
 		if ($startingLocation <> "Command")
-			send "l "&$PLANET~PLANET&"* t * l 1 * t * l 2 * t * l 3 * s * l 1 * s * l 2 * s * l 3 * t * t1*m* * * q "
+			send "l "&$planet~planet&"* t * l 1 * t * l 2 * t * l 3 * s * l 1 * s * l 2 * s * l 3 * t * t1*m* * * q "
 		else
 			if ($fuelInSector)
 				send " p t * * 0 * * 0 * * 0 * * "
@@ -224,7 +224,7 @@
 			if ($theShips[$i] > 0)
 				gosub :PLAYER~quikstats
 				if ($startingLocation <> "Command")
-					send "l "&$PLANET~PLANET&"* t * t1*m* * * q "
+					send "l "&$planet~planet&"* t * t1*m* * * q "
 				else
 					if ($fuelInSector)
 						send " p t * * 0 * * 0 * * 0 * * "

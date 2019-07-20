@@ -116,9 +116,9 @@ setvar $sec2void 0
 
 # ----- SHIP 1 INIT
 	gosub :getInfo
-	setVar $init_credits $credits
+	setVar $init_credits $player~credits
 	setVar $init_exp $exp
-	setVar $init_turns $turns
+	setVar $init_turns $player~turns
 	send "'{" $switchboard~bot_name "} - Starting SST"
 	
 
@@ -177,7 +177,7 @@ setVar $skip_ships "YES"
 	gosub :sell
 	gosub :steal
 	gosub :xport
-	if ($turns > 29)
+	if ($player~turns > 29)
 		goto :sstLoop
 	else
 		send "'{" $switchboard~bot_name "} - Low Turns, Halting Script*"
@@ -191,12 +191,12 @@ setVar $skip_ships "YES"
 	
 	gosub :clearadjacent
 
-	setVar $turns_used $init_turns
-	subtract $turns_used $turns
+	setVar $player~turns_used $init_turns
+	subtract $player~turns_used $player~turns
 	gosub :player~quikstats
 
 	setVar $cash_made ($player~CREDITS - $init_credits)
-	setVar $exp_made $EXPERIENCE
+	setVar $exp_made $player~experience
 	subtract $exp_made $init_exp
 	gosub :endCNsettings
 	send "'*{" $switchboard~bot_name "} -*"
@@ -212,7 +212,7 @@ setVar $skip_ships "YES"
 	send "Ship " & $ship_2 & "'s equip multiple was " & $port[$ship_2].multiple & ".*"
 	if ($low_turns <> "YES")
 		#send "Busted in ship " & $current_ship & ".**"
-	send "Busted in ship " & $current_ship & ", FURB please, I still have " & $turns & " turns to run.**"
+	send "Busted in ship " & $current_ship & ", FURB please, I still have " & $player~turns & " turns to run.**"
 	end
 	halt
 
@@ -240,9 +240,9 @@ setVar $skip_ships "YES"
 		goto :waitForInfo
 	:getTurns
 		killAllTriggers
-		getWord CURRENTLINE $turns 4
-		if ($turns = "Unlimited")
-			setVar $turns 65535
+		getWord CURRENTLINE $player~turns 4
+		if ($player~turns = "Unlimited")
+			setVar $player~turns 65535
 		end
 		goto :waitForInfo
 	:getHolds
@@ -292,8 +292,8 @@ setVar $skip_ships "YES"
 		goto :waitForInfo
 	:getCredits
 		killAllTriggers
-		getWord CURRENTLINE $credits 3
-		stripText $credits ","
+		getWord CURRENTLINE $player~credits 3
+		stripText $player~credits ","
 		goto :waitForInfo
 	:getInfoDone
 		killalltriggers
@@ -390,7 +390,7 @@ setVar $skip_ships "YES"
 						add $upgrade_amount 1
 						setVar $cash_needed $upgrade_amount
 						multiply $cash_needed 900
-						if ($credits >= $cash_needed)
+						if ($player~credits >= $cash_needed)
 							send "o  3" & $upgrade_amount & "**"
 						else
 							send "'{" $switchboard~bot_name "} - Not enough credits on hand to upgrade the port.*"
@@ -417,7 +417,7 @@ setVar $skip_ships "YES"
 	# BSB
 	if ($port[$current_ship] = 2)
 		if ($ore[$current_ship] <> 0) or ($equ[$current_ship] <> 0)
-			subtract $turns 1
+			subtract $player~turns 1
 			send "PT"
 			if ($ore[$current_ship] <> 0)
 		gosub :cleansell
@@ -433,7 +433,7 @@ setVar $skip_ships "YES"
 	# SBB
 	elseif ($port[$current_ship] = 3)
 		if ($org[$current_ship] <> 0) or ($equ[$current_ship] <> 0)
-			subtract $turns 1
+			subtract $player~turns 1
 			send "PT"
 			if ($org[$current_ship] <> 0)
 				gosub :cleansell
@@ -447,7 +447,7 @@ setVar $skip_ships "YES"
 	# SSB
 	elseif ($port[$current_ship] = 4)
 		if ($equ[$current_ship] <> 0)
-			subtract $turns 1
+			subtract $player~turns 1
 			send "PT"
 		if ($equ[$current_ship] <> 0)
 				gosub :cleansell
@@ -458,7 +458,7 @@ setVar $skip_ships "YES"
 	# BBB
 	elseif ($port[$current_ship] = 8)
 		if ($ore[$current_ship] <> 0) or ($org[$current_ship] <> 0) or ($equ[$current_ship] <> 0)
-			subtract $turns 1
+			subtract $player~turns 1
 			send "PT"
 			if ($ore[$current_ship] <> 0)
 			   gosub :cleansell
@@ -520,7 +520,7 @@ return
 # ----- SUB :sell
 :sell
 	if ($equ[$current_ship] > 0)
-		subtract $turns 1
+		subtract $player~turns 1
 	
 	killalltriggers
 		send "PT"
@@ -622,8 +622,8 @@ return
 		goto :sellofferloop
 	:sellempty
 		killalltriggers
-		getWord CURRENTLINE $credits 3
-		stripText $credits ","
+		getWord CURRENTLINE $player~credits 3
+		stripText $player~credits ","
 		setVar $oldemp[$current_ship] $emp[$current_ship]
 		getWord CURRENTLINE $emp[$current_ship] 6
 		if ($oldemp[$current_ship] = $emp[$current_ship])
@@ -877,8 +877,8 @@ return
 		goto :buyofferloop
 	:buyempty
 		killalltriggers
-		getWord CURRENTLINE $credits 3
-		stripText $credits ","
+		getWord CURRENTLINE $player~credits 3
+		stripText $player~credits ","
 		setVar $oldemp[$current_ship] $emp[$current_ship]
 		getWord CURRENTLINE $emp[$current_ship] 6
 		if ($oldemp[$current_ship] = $emp[$current_ship])
@@ -924,7 +924,7 @@ return
 	setVar $desired_holds_on_port $steal_holds
 	add $desired_holds_on_port 2
 
-	subtract $turns 1
+	subtract $player~turns 1
 	send "PR*SZ3"
 	waitfor "furtively about"
 	setTextLineTrigger equOnPort :equOnPort "Equipment  Buying"
@@ -1029,7 +1029,7 @@ return
 	else
 		setVar $current_ship $ship_1
 	end
-	subtract $turns 1
+	subtract $player~turns 1
 	if ($skip_ships = "YES")
 		setVar $xportString "X  " & $current_ship & "*  Q"
 		send $xportString
@@ -1220,40 +1220,40 @@ return
 
 		# ============================ START QUIKSTAT VARIABLES ==========================
 				setVar $player~current_prompt          "Undefined"
-				setVar $PSYCHIC_PROBE           "No"
+				setVar $player~psychic_probe           "No"
 				setVar $player~planet_scanner          "No"
-				setVar $SCAN_TYPE               "None"
+				setVar $player~scan_type               "None"
 				setVar $player~current_sector          0
-				setVar $TURNS                   0
-				setVar $CREDITS                 0
+				setVar $player~turns                   0
+				setVar $player~credits                 0
 				setVar $player~fighters                0
-				setVar $SHIELDS                 0
-				setVar $TOTAL_HOLDS             0
-				setVar $ORE_HOLDS               0
-				setVar $ORGANIC_HOLDS           0
-				setVar $EQUIPMENT_HOLDS         0
-				setVar $COLONIST_HOLDS          0
-				setVar $PHOTONS                 0
-				setVar $ARMIDS                  0
-				setVar $LIMPETS                 0
-				setVar $GENESIS                 0
-				setVar $TWARP_TYPE              0
-				setVar $CLOAKS                  0
-				setVar $BEACONS                 0
-				setVar $ATOMIC                  0
-				setVar $CORBO                   0
-				setVar $EPROBES                 0
-				setVar $MINE_DISRUPTORS         0
-				setVar $ALIGNMENT               0
-				setVar $EXPERIENCE              0
-				setVar $CORP                    0
+				setVar $player~shields                 0
+				setVar $player~total_holds             0
+				setVar $player~ore_holds               0
+				setVar $player~organic_holds           0
+				setVar $player~equipment_holds         0
+				setVar $player~colonist_holds          0
+				setVar $player~photons                 0
+				setVar $player~armids                  0
+				setVar $player~limpets                 0
+				setVar $player~genesis                 0
+				setVar $player~twarp_type              0
+				setVar $player~cloaks                  0
+				setVar $player~beacons                 0
+				setVar $player~atomic                  0
+				setVar $player~corbo                   0
+				setVar $player~eprobes                 0
+				setVar $player~mine_disruptors         0
+				setVar $player~alignment               0
+				setVar $player~experience              0
+				setVar $player~corp                    0
 				setVar $player~ship_number             0
-				setVar $TURNS_PER_WARP          0
+				setVar $player~turns_PER_WARP          0
 				setVar $COMMAND_PROMPT          "Command"
 				setVar $COMPUTER_PROMPT         "Computer"
-				setVar $CITADEL_PROMPT          "Citadel"
-				setVar $PLANET_PROMPT           "Planet"
-				setVar $CORPORATE_PROMPT        "Corporate"
+				setVar $planet~CITADEL_PROMPT          "Citadel"
+				setVar $planet~planet_PROMPT           "Planet"
+				setVar $player~corpORATE_PROMPT        "Corporate"
 				setVar $STARDOCK_PROMPT         "<Stardock>"
 				setVar $HARDWARE_PROMPT         "<Hardware"
 				setVar $SHIPYARD_PROMPT         "<Shipyard>"
@@ -1319,57 +1319,57 @@ return
 			if ($wordy = "Sect")
 				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
+				getWord $stats $player~turns  			($current_word + 1)
 			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
+				getWord $stats $player~credits  		($current_word + 1)
 			elseif ($wordy = "Figs")
 				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
+				getWord $stats $player~shields  		($current_word + 1)
 			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
+				getWord $stats $player~total_holds   		($current_word + 1)
 			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
+				getWord $stats $player~ore_holds    		($current_word + 1)
 			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
+				getWord $stats $player~organic_holds    	($current_word + 1)
 			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
+				getWord $stats $player~equipment_holds    	($current_word + 1)
 			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
+				getWord $stats $player~colonist_holds    	($current_word + 1)
 			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
+				getWord $stats $player~photons   		($current_word + 1)
 			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
+				getWord $stats $player~armids   		($current_word + 1)
 			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
+				getWord $stats $player~limpets   		($current_word + 1)
 			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
+				getWord $stats $player~genesis  		($current_word + 1)
 			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
+				getWord $stats $player~twarp_type  		($current_word + 1)
 			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
+				getWord $stats $player~cloaks   		($current_word + 1)
 			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
+				getWord $stats $player~beacons 		($current_word + 1)
 			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
+				getWord $stats $player~atomic  		($current_word + 1)
 			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
+				getWord $stats $player~corbo   		($current_word + 1)
 			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
+				getWord $stats $player~eprobes   		($current_word + 1)
 			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
+				getWord $stats $player~mine_disruptors   	($current_word + 1)
 			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
+				getWord $stats $player~psychic_probe  		($current_word + 1)
 			elseif ($wordy = "PlScn")
 				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
+				getWord $stats $player~scan_type    		($current_word + 1)
 			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
+				getWord $stats $player~alignment    		($current_word + 1)
 			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
+				getWord $stats $player~experience    		($current_word + 1)
 			elseif ($wordy = "Corp")
-				getWord $stats $CORP   			($current_word + 1)
+				getWord $stats $player~corp   			($current_word + 1)
 			elseif ($wordy = "Ship")
 				getWord $stats $player~ship_number   		($current_word + 1)
 			end

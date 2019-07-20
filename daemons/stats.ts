@@ -13,11 +13,11 @@ systemscript
     loadVar $PLAYER~CREDITS
     loadVar $PLAYER~FIGHTERS
     loadVar $PLAYER~SHIELDS
-    loadVar $PLAYER~TOTAL_HOLDS
-    loadVar $PLAYER~ORE_HOLDS
-    loadVar $PLAYER~ORGANIC_HOLDS
-    loadVar $PLAYER~EQUIPMENT_HOLDS
-    loadVar $PLAYER~COLONIST_HOLDS
+    loadVar $player~total_holds
+    loadVar $player~ore_holds
+    loadVar $player~organic_holds
+    loadVar $player~equipment_holds
+    loadVar $player~colonist_holds
     loadVar $PLAYER~PHOTONS
     loadVar $PLAYER~ARMIDS
     loadVar $PLAYER~LIMPETS
@@ -64,9 +64,9 @@ gosub :player~init
     pause
     :allPrompts
         getWord CURRENTLINE $player~current_prompt 1
-        setVar $FULL_CURRENT_PROMPT CURRENTLINE
-        stripText $FULL_CURRENT_PROMPT #145
-        stripText $FULL_CURRENT_PROMPT #8
+        setVar $player~full_current_prompt CURRENTLINE
+        stripText $player~full_current_prompt #145
+        stripText $player~full_current_prompt #8
         stripText $player~current_prompt #145
         stripText $player~current_prompt #8
         setTextLineTrigger  prompt      :allPrompts     #145 & #8
@@ -104,15 +104,15 @@ gosub :player~init
             elseif ($wordy = "Shlds")
                 getWord $stats $PLAYER~SHIELDS         ($current_word + 1)
             elseif ($wordy = "Hlds")
-                getWord $stats $PLAYER~TOTAL_HOLDS         ($current_word + 1)
+                getWord $stats $player~total_holds         ($current_word + 1)
             elseif ($wordy = "Ore")
-                getWord $stats $PLAYER~ORE_HOLDS           ($current_word + 1)
+                getWord $stats $player~ore_holds           ($current_word + 1)
             elseif ($wordy = "Org")
-                getWord $stats $PLAYER~ORGANIC_HOLDS       ($current_word + 1)
+                getWord $stats $player~organic_holds       ($current_word + 1)
             elseif ($wordy = "Equ")
-                getWord $stats $PLAYER~EQUIPMENT_HOLDS     ($current_word + 1)
+                getWord $stats $player~equipment_holds     ($current_word + 1)
             elseif ($wordy = "Col")
-                getWord $stats $PLAYER~COLONIST_HOLDS      ($current_word + 1)
+                getWord $stats $player~colonist_holds      ($current_word + 1)
             elseif ($wordy = "Phot")
                 getWord $stats $PLAYER~PHOTONS         ($current_word + 1)
             elseif ($wordy = "Armd")
@@ -206,7 +206,7 @@ goto :start_over
     :getCorp
             getWord CURRENTLINE $PLAYER~CORP 3
             stripText $PLAYER~CORP ","
-            setVar $CORPstring "[" & $PLAYER~CORP & "]"
+            setVar $player~corpstring "[" & $PLAYER~CORP & "]"
             pause
     :getShipType
             getWordPos CURRENTLINE $shiptypeend "Ported="
@@ -228,21 +228,21 @@ goto :start_over
             pause
     :getHolds
         setVar $Temp (CURRENTLINE & " ")
-        getText $Temp $PLAYER~ORE_HOLDS "Ore=" " "
-        if ($PLAYER~ORE_HOLDS = "")
-            setVar $PLAYER~ORE_HOLDS "0"
+        getText $Temp $player~ore_holds "Ore=" " "
+        if ($player~ore_holds = "")
+            setVar $player~ore_holds "0"
         end
-        getText $Temp $PLAYER~ORGANIC_HOLDS "Organics=" " "
-        if ($PLAYER~ORGANIC_HOLDS = "")
-            setVar $PLAYER~ORGANIC_HOLDS "0"
+        getText $Temp $player~organic_holds "Organics=" " "
+        if ($player~organic_holds = "")
+            setVar $player~organic_holds "0"
         end
-        getTExt $Temp $PLAYER~EQUIPMENT_HOLDS "Equipment=" " "
-        if ($PLAYER~EQUIPMENT_HOLDS = "")
-            setVar $PLAYER~EQUIPMENT_HOLDS "0"
+        getTExt $Temp $player~equipment_holds "Equipment=" " "
+        if ($player~equipment_holds = "")
+            setVar $player~equipment_holds "0"
         end
-        getTExt $Temp $PLAYER~COLONIST_HOLDS "Colonists=" " "
-        if ($PLAYER~COLONIST_HOLDS = "")
-            setVar $PLAYER~COLONIST_HOLDS "0"
+        getTExt $Temp $player~colonist_holds "Colonists=" " "
+        if ($player~colonist_holds = "")
+            setVar $player~colonist_holds "0"
         end
         getText $Temp $PLAYER~EMPTY_HOLDS "Empty=" " "
         if ($PLAYER~EMPTY_HOLDS = "")
@@ -273,7 +273,7 @@ goto :start_over
             pause
     :getCredits
             getWord CURRENTLINE $PLAYER~CREDITS 3
-            stripText $CREDITS ","
+            stripText $player~credits ","
             if ($PLAYER~igstat = 0)
                 setVar $PLAYER~igstat "NO IG"
             end
@@ -343,8 +343,8 @@ goto :start_over
     else
         setVar $contents $contents&"    Sector : "&$PLAYER~CURRENT_SECTOR&"*"
     end
-    if ($PLANET <> 0)
-        setVar $contents $contents&"    Planet : "&$PLANET~PLANET&"*"
+    if ($planet~planet <> 0)
+        setVar $contents $contents&"    Planet : "&$planet~planet&"*"
     end
     if ($PLAYER~unlimitedGame)
         setVar $contents $contents&"     Turns : Unlimited*"
@@ -355,16 +355,16 @@ goto :start_over
     setVar $contents $contents&"     Align : "&$PLAYER~ALIGNMENT&"*"
     setVar $contents $contents&"   Credits : "&$PLAYER~CREDITS&"*"
     setVar $contents $contents&"----------------------------------*"
-    setVar $contents $contents&"Holds Info : "&$PLAYER~TOTAL_HOLDS&"*"
+    setVar $contents $contents&"Holds Info : "&$player~total_holds&"*"
     setVar $contents $contents&"----------------------------------*"
-    setVar $contents $contents&"  Fuel Ore : "&$PLAYER~ORE_HOLDS&"*"
-    setVar $contents $contents&"  Organics : "&$PLAYER~ORGANIC_HOLDS&"*"
-    setVar $contents $contents&" Equipment : "&$PLAYER~EQUIPMENT_HOLDS&"*"
-    setVar $contents $contents&" Colonists : "&$PLAYER~COLONIST_HOLDS&"*"
-    setVar $empty_holds ($total_holds - $ore_holds)
-    setVar $empty_holds ($empty_holds - $organic_holds)
-    setVar $empty_holds ($empty_holds - $equipment_holds)
-    setVar $empty_holds ($empty_holds - $colonist_holds)
+    setVar $contents $contents&"  Fuel Ore : "&$player~ore_holds&"*"
+    setVar $contents $contents&"  Organics : "&$player~organic_holds&"*"
+    setVar $contents $contents&" Equipment : "&$player~equipment_holds&"*"
+    setVar $contents $contents&" Colonists : "&$player~colonist_holds&"*"
+    setVar $empty_holds ($player~total_holds - $player~ore_holds)
+    setVar $empty_holds ($empty_holds - $player~organic_holds)
+    setVar $empty_holds ($empty_holds - $player~equipment_holds)
+    setVar $empty_holds ($empty_holds - $player~colonist_holds)
     
     setVar $contents $contents&"     Empty : "&$PLAYER~EMPTY_HOLDS&"*"
     setVar $contents $contents&"----------------------------------*"
@@ -410,12 +410,12 @@ goto :start_over
     saveVar $PLAYER~CREDITS
     saveVar $PLAYER~FIGHTERS
     saveVar $PLAYER~SHIELDS
-    saveVar $PLAYER~TOTAL_HOLDS
+    saveVar $player~total_holds
     saveVar $PLAYER~TURNS
-    saveVar $PLAYER~ORE_HOLDS
-    saveVar $PLAYER~ORGANIC_HOLDS
-    saveVar $PLAYER~EQUIPMENT_HOLDS
-    saveVar $PLAYER~COLONIST_HOLDS
+    saveVar $player~ore_holds
+    saveVar $player~organic_holds
+    saveVar $player~equipment_holds
+    saveVar $player~colonist_holds
     saveVar $PLAYER~PHOTONS
     saveVar $PLAYER~ARMIDS
     saveVar $PLAYER~LIMPETS

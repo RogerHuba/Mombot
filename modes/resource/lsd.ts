@@ -8,9 +8,9 @@
     setVar $CURENT_VERSION 		"4.0"
     setVar $TagLineB 			"LSDv" & $CURENT_VERSION
 	setVar $location 			$player~current_prompt
-    setVar $Starting_CREDITS 	$CREDITS
+    setVar $Starting_CREDITS 	$player~credits
 
-    setVar $Starting_TURNS 		$TURNS
+    setVar $Starting_TURNS 		$player~turns
     setVar $START_SECTOR 		$player~current_sector
 	setVar $ShipData_Valid		FALSE
 	setVar $Ships_Names			"][LSD]["
@@ -24,12 +24,12 @@
 	GetLength $MinLength $Mlen
 	GetLength $bot~user_command_line $PrmLength
 
-	if ($CREDITS < 10000)
+	if ($player~credits < 10000)
 		send "'{" $BOT~bot_name "} " & $TagLineB & " - Must have more than 10,000 Creds on hand!**"
 		halt
 	end
 
-	if ($TWARP_TYPE = "No")
+	if ($player~twarp_type = "No")
 		send "'{" $BOT~bot_name "} " & $TagLineB & " - Must have at least Twarp Type 1!**"
 		halt
 	end
@@ -380,30 +380,30 @@
 		pause
 		:pnum
 		killAllTriggers
-		getWord CURRENTLINE $planet 2
-		stripText $planet "#"
+		getWord CURRENTLINE $planet~planet 2
+		stripText $planet~planet "#"
 	elseif ($location = "Command")
 		send " C  V  0*  Y  N" & $START_SECTOR & "* V  0*  Y  N" & STARDOCK & "* U Y Q *  w  n  * "
 	end
 
 	gosub :player~quikstats
 
-	setVar $Start_Creds $CREDITS
-	setVar $Start_Exp $EXPERIENCE
-	setVar $Start_Holds $TOTAL_HOLDS
+	setVar $Start_Creds $player~credits
+	setVar $Start_Exp $player~experience
+	setVar $Start_Holds $player~total_holds
 
 	waitfor "(?="
-	if ($TURNS = 0)
+	if ($player~turns = 0)
 		gosub :TurnsDetect
 		if ($UNLIM = FALSE)
-			if ($TURNS < $BOT~BOT_TURN_LIMIT)
+			if ($player~turns < $BOT~BOT_TURN_LIMIT)
 				send "'{" $BOT~bot_name "} " & $TagLineB & " - Not have enough Turns!**"
 				halt
 			end
 		end
 	end
 
-	if ($TOTAL_HOLDS <> $ORE_HOLDS)
+	if ($player~total_holds <> $player~ore_holds)
 		send "'{" $BOT~bot_name "} " & $TagLineB & " - Please Restart with Full Ore in Holds!!**"
 		halt
 	end
@@ -452,7 +452,7 @@
 				add $i 1
 			end
 
-			if (($ALIGNMENT < 1000) AND ($WeAreAdjDock = FALSE))
+			if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE))
 				setVar $RED_adj 0
 				gosub :FindJumpSector
 				if ($RED_adj <> 0)
@@ -464,7 +464,7 @@
 				end
 			end
 
-			if ($ALIGNMENT >= 1000)
+			if ($player~alignment >= 1000)
 				if ($WeAreAdjDock)
 					send "^F" & STARDOCK & "*" & $START_SECTOR & "*Q/ "
 				else
@@ -493,7 +493,7 @@
 				:Latency_Delay
 
 	       		Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
-				if (($ALIGNMENT >= 1000) OR ($WeAreAdjDock))
+				if (($player~alignment >= 1000) OR ($WeAreAdjDock))
 					getdistance $dist1 $START_SECTOR STARDOCK
 				else
 					getdistance $dist1 $START_SECTOR $RED_adj
@@ -519,23 +519,23 @@
 					setVar $ore_req $ore_req + ($dist2 * 6)
 				end
 
-				if ($ORE_HOLDS < $ore_req)
+				if ($player~ore_holds < $ore_req)
 					send "'{" $BOT~bot_name "} " & $TagLineB & " - Not Enough ORE In Holds To Make Round Trip**"
 					halt
 				end
 
-				if ($TWARP_TYPE = "No")
+				if ($player~twarp_type = "No")
 					send "'{" $BOT~bot_name "} " & $TagLineB & " - Must Have Twarp 1 or 2**"
 					halt
 				end
 
 				if ($UNLIM = 0)
 					gosub :TurnsRequired
-					if ($TurnsRequired > $TURNS)
-						send "'{" $BOT~bot_name "} " & $TagLineB & " - Not Enough Turns. " & ANSI_12 & $TurnsRequired & ANSI_15 & ", Required**"
+					if ($player~turnsRequired > $player~turns)
+						send "'{" $BOT~bot_name "} " & $TagLineB & " - Not Enough Turns. " & ANSI_12 & $player~turnsRequired & ANSI_15 & ", Required**"
 						halt
-					elseif ($TurnsRequired <= $TURNS)
-						setVar $tmp ($TURNS - $TurnsRequired)
+					elseif ($player~turnsRequired <= $player~turns)
+						setVar $tmp ($player~turns - $player~turnsRequired)
 						if ($tmp <= $BOT~BOT_TURN_LIMIT)
 							send "'{" $BOT~bot_name "} " & $TagLineB & " - Proceeding Will Leave Fewer Than " & $BOT~BOT_TURN_LIMIT & " Turns!**"
 							halt
@@ -556,7 +556,7 @@
 				killAllTriggers
 				waitfor "(?="
 				setVar $msg ""
-				if (($ALIGNMENT >= 1000) AND ($WeAreAdjDock = FALSE))
+				if (($player~alignment >= 1000) AND ($WeAreAdjDock = FALSE))
 					setVar $TwarpTo STARDOCK
 					gosub :DoTwarp
 				elseif (($WeAreAdjDock = FALSE) AND ($RED_adj <> 0))
@@ -574,7 +574,7 @@
 
 	    gosub :player~quikstats
 
-        if (($Start_Creds <= 100) AND ($Start_Exp < $EXPERIECE) AND ($Start_Holds <> $TOTAL_HOLDS))
+        if (($Start_Creds <= 100) AND ($Start_Exp < $EXPERIECE) AND ($Start_Holds <> $player~total_holds))
         	send "'{" $BOT~bot_name "} " & $TagLineB & " - Appear To Have Been Podded!**"
         	halt
 		end
@@ -627,13 +627,13 @@
 
 		if ($_Tow > 0)
 			if ($location = "Citadel")
-				send "q q q  z  n  w  n  *  w  n" & $_Tow & "*  n  n  *  m " & $START_SECTOR & " *  y  y  y  *  d  w  n * L Z" & #8 & $planet & "* p  s s * * c *"
+				send "q q q  z  n  w  n  *  w  n" & $_Tow & "*  n  n  *  m " & $START_SECTOR & " *  y  y  y  *  d  w  n * L Z" & #8 & $planet~planet & "* p  s s * * c *"
 			else
 				send "q q q  z  n  w  n  *  w  n" & $_Tow & "*  n  n  *  m " & $START_SECTOR & " *  y  y  y  *  d  w  n *  p z s s *"
 			end
 		else
 			if ($location = "Citadel")
-				send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet & "* p  s  s * * c *"
+				send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet~planet & "* p  s  s * * c *"
 			else
 				send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  *  P Z S S *"
 			end
@@ -656,19 +656,19 @@
 					subtract $NumberOfShip 1
 
 					gosub :player~quikstats
-					if ($TOTAL_HOLDS <> $ORE_HOLDS)
+					if ($player~total_holds <> $player~ore_holds)
 						send "'{" $BOT~bot_name "} " & $TagLineB & " - Out Of Gas - Planet appears to have too little ORE to continue!**"
 						halt
 					end
 
 					if ($RUN_ONCE)
 						if ($UNLIM = FALSE)
-							setVar $Turn_Diff ($Starting_TURNS - $TURNS)
+							setVar $Turn_Diff ($Starting_TURNS - $player~turns)
 							setVar $Turn_Req ($Turn_Diff * $NumberOfShip)
 
-							if ($Turn_Req > $TURNS)
+							if ($Turn_Req > $player~turns)
 								setPrecision 0
-								setVar $Turn_Req ($TURNS / $Turn_Diff)
+								setVar $Turn_Req ($player~turns / $Turn_Diff)
 
 								if ($Turn_Req < 1)
 									setVar $NumberOfShip 0
@@ -677,13 +677,13 @@
 							end
 				    	end
 
-						setVar $ActualCost ($Starting_CREDITS - $CREDITS)
+						setVar $ActualCost ($Starting_CREDITS - $player~credits)
 						setVar $BottomLine ($ActualCost * $NumberOfShip)
 						setVar $BottomLine ($ActualCost + $BottomLine)
 
-						if ($BottomLine > $CREDITS)
+						if ($BottomLine > $player~credits)
 							setPrecision 0
-							setVar $NumberOfShip ($CREDITS / $ActualCost)
+							setVar $NumberOfShip ($player~credits / $ActualCost)
 							if ($NumberOfShip < 1)
 								setVar $NumberOfShip 0
 								setVar $BottomLine $ActualCost
@@ -722,17 +722,17 @@
 			send " q q "
 			waitfor "Command [TL="
 			gosub :ig_turn_it_on
-			send " l z" & #8 & $planet & "*  j  c  *  "
+			send " l z" & #8 & $planet~planet & "*  j  c  *  "
 		else
 			gosub :ig_turn_it_on
 		end
 		#end
 
 		setPrecision 0
-		setVar $CashAmount ($Starting_CREDITS - $CREDITS)
+		setVar $CashAmount ($Starting_CREDITS - $player~credits)
 		gosub :CommaSize
 		setVar $_Spent $CashAmount
-		setVar $CashAmount $CREDITS
+		setVar $CashAmount $player~credits
 		gosub :CommaSize
 		setVar $_Remain $CashAmount
 
@@ -777,151 +777,6 @@
 	end
 	return
 
-:player~quikstats
-	setVar $player~current_prompt 		"Undefined"
-	killtrigger noprompt
-	killtrigger prompt1
-	killtrigger prompt2
-	killtrigger prompt3
-	killtrigger prompt4
-	killtrigger statlinetrig
-	killtrigger getLine2
-	setTextTrigger 		prompt1 	:allPrompts 		"(?="
-	setTextLineTrigger 	prompt2 	:secondaryPrompts 	"(?)"
-	setTextLineTrigger 	statlinetrig 	:statStart 		#179
-	setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
-	setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
-	send "^Q/"
-	pause
-
-	:allPrompts
-		getWord currentansiline $checkPrompt 1
-		getWord currentline $tempPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $player~current_prompt $tempPrompt
-		end
-		setTextLineTrigger prompt1 :allPrompts "(?="
-		pause
-	:secondaryPrompts
-		getWord currentansiline $checkPrompt 1
-		getWord currentline $tempPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $player~current_prompt $tempPrompt
-		end
-		setTextLineTrigger prompt2 :secondaryPrompts "(?)"
-		pause
-	:terraPrompts
-		killtrigger prompt3
-		killtrigger prompt4
-		getWord currentansiline $checkPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $player~current_prompt "Terra"
-		end
-		setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
-		setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
-		pause
-
-	:statStart
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger noprompt
-		setVar $stats ""
-		setVar $wordy ""
-
-	:statsline
-		killtrigger statlinetrig
-		killtrigger getLine2
-		setVar $line2 CURRENTLINE
-		replacetext $line2 #179 " "
-		striptext $line2 ","
-		setVar $stats $stats & $line2
-		getWordPos $line2 $pos "Ship"
-		if ($pos > 0)
-			goto :gotStats
-		else
-			setTextLineTrigger getLine2 :statsline
-			pause
-		end
-
-	:gotStats
-		setVar $stats $stats & " @@@"
-
-		setVar $current_word 0
-		while ($wordy <> "@@@")
-			if ($wordy = "Sect")
-				getWord $stats $player~current_sector   	($current_word + 1)
-			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
-			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
-			elseif ($wordy = "Figs")
-				getWord $stats $player~fighters   		($current_word + 1)
-			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
-			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
-			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
-			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
-			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
-			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
-			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
-			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
-			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
-			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
-			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
-			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
-			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
-			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
-			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
-			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
-			elseif ($wordy = "PlScn")
-				getWord $stats $player~planet_scanner  	($current_word + 1)
-			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
-			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
-			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
-			elseif ($wordy = "Corp")
-				getWord $stats $CORP   			($current_word + 1)
-			elseif ($wordy = "Ship")
-				getWord $stats $player~ship_number   		($current_word + 1)
-			end
-			add $current_word 1
-			getWord $stats $wordy $current_word
-		end
-	:doneQuikstats
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger statlinetrig
-		killtrigger getLine2
-	return
-# ============================== END QUICKSTATS SUB==============================
 :DoPurchases
 	if ($ShipData_Valid = 0)
 		gosub :ParseShipData
@@ -1090,7 +945,7 @@
 		pause
 		:canTwarp
 			killTrigger canTwarp
-			if ($TWARP_TYPE = 1)
+			if ($player~twarp_type = 1)
 				send "U "
 			else
 				send "2 "
@@ -1144,7 +999,7 @@
 
 :LockTow
 	:TryLockAgain
-	setVar $Turns_Req2Tow 0
+	setVar $player~turns_Req2Tow 0
 	send "W"
 	setTextTrigger DoTow 		:DoTow "Do you wish to tow a manned ship? "
 	setTextLineTrigger BeamOff	:BeamOff "You shut off your Tractor Beam"
@@ -1193,9 +1048,9 @@
 
 			:TowEngaged
 			killAllTriggers
-			getText CURRENTLINE $Turns_Req2Tow "cost you " " turns"
-			stripText $Turns_Req2Tow " "
-			isNumber $tst $Turns_Req2Tow
+			getText CURRENTLINE $player~turns_Req2Tow "cost you " " turns"
+			stripText $player~turns_Req2Tow " "
+			isNumber $tst $player~turns_Req2Tow
 			if ($tst = 0)
 				send "'{" $BOT~bot_name "} " & $TagLineB & " - Unable to Ascertain Turns Required.**"
 				halt
@@ -1312,7 +1167,7 @@
 
 		:twarp_lock
 			KillAlltriggers
-			if ($ALIGNMENT >= 1000)
+			if ($player~alignment >= 1000)
 				send "y * * p s g y g q "
 			else
 				send "y  *  *  m " & STARDOCK & " *  *  p s g y g q "
@@ -1542,27 +1397,27 @@
 
 	:TurnsRequired_TPW
 	killAllTriggers
-	getWord CURRENTLINE $TurnsRequired_TPW 5
+	getWord CURRENTLINE $player~turnsRequired_TPW 5
 
 	if ($RED_adj > 0)
 		# twarp to jmp sector, then into SD sect, then twarp home
-		setVar $TurnsRequired_temp ($TurnsRequired_TPW * 3)
+		setVar $player~turnsRequired_temp ($player~turnsRequired_TPW * 3)
 		if ($_Tow > 0)
 			# 2 Turns for exporting into other ship and back again
-			add $TurnsRequired_temp 2
+			add $player~turnsRequired_temp 2
 			# 3 Turns for initial Port then x into other ship, port & shop, then x and report
 			#   b4 heading home
-			add $TurnsRequired_temp 3
+			add $player~turnsRequired_temp 3
 		else
-			add $TurnsRequired_temp 1
+			add $player~turnsRequired_temp 1
 		end
 	else
-		setVar $TurnsRequired_temp ($TurnsRequired_TPW * 2)
+		setVar $player~turnsRequired_temp ($player~turnsRequired_TPW * 2)
 		# 1 Turn to port at dock
-		add $TurnsRequired_temp 1
+		add $player~turnsRequired_temp 1
 	end
 
-	setVar $TurnsRequired $TurnsRequired_temp
+	setVar $player~turnsRequired $player~turnsRequired_temp
 	return
 
 

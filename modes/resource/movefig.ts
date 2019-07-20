@@ -79,17 +79,17 @@
 	if ($allPlanets = true)
 		gosub :countPlanets
 	else
-		setVar $planetCount 1
-		setVar $planets[1] $planet~PLANET
+		setVar $planet~planetCount 1
+		setVar $planet~planets[1] $planet~planet
 	end
 	setVar $figOwner SECTOR.FIGS.OWNER[$player~current_sector]
 	setVar $figQuant SECTOR.FIGS.QUANTITY[$player~current_sector]
 
 	setVar $sector_figs $figQuant
-	setVar $starting_planet $planet~PLANET
+	setVar $starting_planet $planet~planet
 
 	if ($figQuant <> 0) AND (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours"))
-		send "l " & $planet~PLANET & "*"
+		send "l " & $planet~planet & "*"
 		waitOn "Planet command (?=help) [D]"
 		if ($startingLocation = "Citadel")
 			send "c"
@@ -100,18 +100,18 @@
 		halt
 	end
 
-	setvar $planet_figs_room $planet~PLANET_FIGHTERS_MAX
-	subtract $planet_figs_room $planet~PLANET_FIGHTERS
+	setvar $planet~planet_figs_room $planet~planet_FIGHTERS_MAX
+	subtract $planet~planet_figs_room $planet~planet_FIGHTERS
 
 	gosub :ship~getShipStats
 
 	setVar $i 1
-	while ($i <= $planetCount)
+	while ($i <= $planet~planetCount)
 		if ($allPlanets = true)
 			gosub :player~quikstats
 			setVar $move 0
 		end
-		send "l " $planets[$i] "*"
+		send "l " $planet~planets[$i] "*"
 		waitOn "Planet command (?=help) [D]"
 		gosub :planet~getplanetinfo
 
@@ -124,7 +124,7 @@
 				end
 				setvar $end_figs $sector_figs
 				add $end_figs $move
-				if ($move > $planet~PLANET_FIGHTERS)
+				if ($move > $planet~planet_FIGHTERS)
 					setVar $SWITCHBOARD~message "Not Enough Figs on Planet*"
 					gosub :SWITCHBOARD~switchboard
 					if ($startingLocation = "Citadel")
@@ -142,7 +142,7 @@
 					if ($sector_figs > $end_figs)
 						setvar $sector_figs $end_figs
 					end
-					send "m * * *  q  f z " $sector_figs "*  z c d  *  l " $planets[$i] "*  "
+					send "m * * *  q  f z " $sector_figs "*  z c d  *  l " $planet~planets[$i] "*  "
 					add $total_moved $amount_to_grab
 		    	end
 		    	send "q q * "
@@ -153,22 +153,22 @@
 					subtract $move 500
 				end
 				setvar $end_figs $move
-				if ($planet_figs_room < $move)
-					setvar $move $planet_figs_room
+				if ($planet~planet_figs_room < $move)
+					setvar $move $planet~planet_figs_room
 				end
 				send "m n l * "
 				while ($move > $ship~SHIP_FIGHTERS_MAX)
 					subtract $sector_figs $ship~SHIP_FIGHTERS_MAX
-					send "q f z " $sector_figs "* z c d  *  l " $planets[$i] "* m n l * "
+					send "q f z " $sector_figs "* z c d  *  l " $planet~planets[$i] "* m n l * "
 					subtract $move $ship~SHIP_FIGHTERS_MAX
 				end
 				subtract $sector_figs $move
 				if ($sector_Figs <> 0)
-					send "q  f  z " $sector_figs "*  z  c  d  * l " $planets[$i] "*  m  n  l  * "
+					send "q  f  z " $sector_figs "*  z  c  d  * l " $planet~planets[$i] "*  m  n  l  * "
 				else
-					send "q  f  z * l " $planets[$i] "*  m  n  l * "
+					send "q  f  z * l " $planet~planets[$i] "*  m  n  l * "
 				end
-				#send "q  f z " $sector_figs "* z c d * l " $planets[$i] "* "
+				#send "q  f z " $sector_figs "* z c d * l " $planet~planets[$i] "* "
 			end
 			add $i 1
 	end
@@ -177,7 +177,7 @@
 			send "m*  *  **  q q * * "
 		end
 		gosub :player~topoff
-		setVar $planet~PLANET $starting_planet
+		setVar $planet~planet $starting_planet
 		gosub :planet~landingSub
 
 		setVar $SWITCHBOARD~message "fighters moved*"
@@ -188,7 +188,7 @@
 
 :countPlanets
 
-	setVar $planetCount 0
+	setVar $planet~planetCount 0
 	killalltriggers
 	setTextLineTrigger planetGrabber :planetline "   <"
 	setTextLineTrigger beDone :done "Land on which planet "
@@ -202,8 +202,8 @@
 			replacetext $line "<" " "
 			replacetext $line ">" " "
 			striptext $line ","
-			add $planetCount 1
-			getWord $line $planets[$planetCount] 1
+			add $planet~planetCount 1
+			getWord $line $planet~planets[$planet~planetCount] 1
 		end
 		setTextLineTrigger getLine2 :planetline "   <"
 		setTextLineTrigger getEnd :done "Land on which planet "

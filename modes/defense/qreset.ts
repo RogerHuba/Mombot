@@ -53,7 +53,7 @@
 		setVar $onePlanet TRUE
 		setVar $cannon_amount $cannonPlanet[1]
 		setvar $cannon_total $cannonPlanet[1]
-		setVar $planetMemory $PLANET~PLANET
+		setVar $planet~planetMemory $planet~planet
 		if ($startingLocation = "Command")
 			setVar $SWITCHBOARD~message "Must be run from citadel if only one planet.*"
 			gosub :SWITCHBOARD~switchboard
@@ -69,12 +69,12 @@
 		setvar $cannon_total $cannonPlanet[1]
 		send "q "
 		gosub :setTheCannon
-		setvar $planetMemory $planet~planet
+		setvar $planet~planetMemory $planet~planet
 	else
 		setvar $cannon_amount 0
 		setvar $cannon_total 0
 		send "q q * "
-		setVar $planetMemory ""
+		setVar $planet~planetMemory ""
 		setVar $i 1
 		while ($i <= $cannonPlanetCount)
 			add $cannon_total $cannonAmount[$i]
@@ -87,11 +87,11 @@
 		end
 		setVar $i 1
 		while ($i <= $cannonPlanetCount)
-			getWordPos $planetMemory $pos " "&$cannonPlanet[$i]&" "
+			getWordPos $planet~planetMemory $pos " "&$cannonPlanet[$i]&" "
 			if ($pos > 0)
 				
 			else
-				setVar $planetMemory $planetMemory&" "&$cannonPlanet[$i]&" "
+				setVar $planet~planetMemory $planet~planetMemory&" "&$cannonPlanet[$i]&" "
 				send "l "&$cannonPlanet[$i]&"* * "
 				setTextLineTrigger 	wrongPlanet2 		:badPlanet2 	"That planet is not in this sector."
 				setTextLineTrigger 	badPlanet2 		:badPlanet2 	"Invalid registry number, landing aborted."
@@ -120,7 +120,7 @@
 	end
 
 	gosub :PLAYER~quikstats
-	setVar $SWITCHBOARD~message "Quasar Cannon reset mode enabled.  Planet number(s) ["&$planetMemory&"] are set for a total of "&$totalDamage&". *"
+	setVar $SWITCHBOARD~message "Quasar Cannon reset mode enabled.  Planet number(s) ["&$planet~planetMemory&"] are set for a total of "&$totalDamage&". *"
 	gosub :SWITCHBOARD~switchboard
 	setvar $switchboard~message "Atmos cannons attempted to be set to "&$cannon_total&".*"
 	gosub :SWITCHBOARD~switchboard
@@ -135,25 +135,25 @@
 
     ## Set sector cannons ##
 
-            setVar $percentToSet (((3*$cannon_amount)*100)/$PLANET~PLANET_FUEL)
-            if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $cannon_amount)
+            setVar $percentToSet (((3*$cannon_amount)*100)/$planet~planet_FUEL)
+            if (((($planet~planet_FUEL * $percentToSet) / 100)/3) < $cannon_amount)
                 add $percentToSet 1
             end
             if ($percentToSet > 100)
                 setVar $percentToSet 100
             end
-            add $totalDamage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3)
+            add $totalDamage ((($planet~planet_FUEL * $percentToSet) / 100)/3)
             send "c l s "&$percentToSet&"* "
 
     ## Then set atmos cannons ##
             if ($game~mbbs)
-                setVar $percentToSet ((($cannon_total/2)*100)/$PLANET~PLANET_FUEL)
-                if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)*2) < $cannon_total)
+                setVar $percentToSet ((($cannon_total/2)*100)/$planet~planet_FUEL)
+                if (((($planet~planet_FUEL * $percentToSet) / 100)*2) < $cannon_total)
                     add $percentToSet 1
                 end
             else
-                setVar $percentToSet (((2*$cannon_total)*100)/$PLANET~PLANET_FUEL)
-                if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/2) < $cannon_total)
+                setVar $percentToSet (((2*$cannon_total)*100)/$planet~planet_FUEL)
+                if (((($planet~planet_FUEL * $percentToSet) / 100)/2) < $cannon_total)
                     add $percentToSet 1
                 end
             end
@@ -161,9 +161,9 @@
                 setVar $percentToSet 100
             end
             if ($game~mbbs)
-                setvar $totalAtmosDamage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)*2)
+                setvar $totalAtmosDamage ((($planet~planet_FUEL * $percentToSet) / 100)*2)
             else
-                setvar $totalAtmosDamage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)/2)             
+                setvar $totalAtmosDamage ((($planet~planet_FUEL * $percentToSet) / 100)/2)             
             end
             send "l a "&$percentToSet&"* "
 return

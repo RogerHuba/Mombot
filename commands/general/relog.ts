@@ -62,13 +62,13 @@
             if ($PLAYER~CURRENT_PROMPT = "Planet")
                 send "*"
                 gosub :PLANET~getPlanetInfo
-                if ($PLANET~CITADEL > 0)
+                if ($planet~CITADEL > 0)
                     send "c "
-                    setvar $switchboard~message "In citadel, planet "&$PLANET~PLANET&".*"
+                    setvar $switchboard~message "In citadel, planet "&$planet~planet&".*"
                     gosub :switchboard~switchboard
                     halt
                 else
-                    setvar $switchboard~message "On planet "&$PLANET~PLANET&".*"
+                    setvar $switchboard~message "On planet "&$planet~planet&".*"
                     gosub :switchboard~switchboard
                     halt
                 end
@@ -77,8 +77,8 @@
 				setvar $switchboard~message $relog_message
 				gosub :switchboard~switchboard
 			end
-            loadVar $PLANET~PLANET
-            if (($PLANET~PLANET <> 0) AND ($PLAYER~CURRENT_SECTOR <> 1) AND ($PLAYER~CURRENT_SECTOR <> $MAP~stardock))
+            loadVar $planet~planet
+            if (($planet~planet <> 0) AND ($PLAYER~CURRENT_SECTOR <> 1) AND ($PLAYER~CURRENT_SECTOR <> $MAP~stardock))
                 gosub :planet~landingsub
             end
     halt

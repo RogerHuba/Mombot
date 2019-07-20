@@ -54,8 +54,8 @@
 	:getplanetnum
 		send "qD"
 		waitOn "Planet #"
-		getWord CURRENTLINE $PLANET~planet 2
-		stripText $planet "#"
+		getWord CURRENTLINE $planet~planet 2
+		stripText $planet~planet "#"
 		saveVar $planet~planet
 		send "tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*mnt*c "
 	
@@ -147,7 +147,7 @@
 					killtrigger notEnoughFuel
 					setSectorParameter $nearfig "FIGSEC" TRUE
 
-					send "q q sdsh* l "&$PLANET~PLANET&"* m * * * c  " 
+					send "q q sdsh* l "&$planet~planet&"* m * * * c  " 
 					waitFor "Relative Density Scan"
 					waitFor "Long Range Scan"
 					waitFor "[" & $nearfig & "]"

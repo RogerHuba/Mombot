@@ -2,7 +2,7 @@
 									loadVar $MAP~STARDOCK
 	loadVar $MAP~home_sector
 		loadvar $ship~cap_file
-	loadvar $planet~planet~planet_file
+	loadvar $planet~planet_file
 
 	setVar $BOT~help[1]  $BOT~tab&"Slingshot - attempts to warp into sector and attack "
 	gosub :bot~helpfile

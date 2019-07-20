@@ -36,8 +36,8 @@ setvar $startcredits $player~credits
 setvar $startturns $player~turns
 # try and grab fuel at this
 setVar $minOre 120
-if ($player~TOTAL_HOLDS < $minOre)
-	setVar $minOre $player~TOTAL_HOLDS
+if ($player~total_holds < $minOre)
+	setVar $minOre $player~total_holds
 end
 
 if ($player~photons > 0)
@@ -74,7 +74,7 @@ if ($player~FIGHTERS < 301)
 end
 
 
-if (($player~ORE_HOLDS < 100) and ($ice = 0))
+if (($player~ore_holds < 100) and ($ice = 0))
 	setVar $SWITCHBOARD~message "MooExp - We need ore in our holds.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
@@ -174,11 +174,11 @@ setVar $iceShipExplore 0
 
 getWordPos $bot~user_command_line $pos "furb"
 if ($pos > 0)
-	setVar $corpfurb TRUE
+	setVar $player~corpfurb TRUE
 	setvar $switchboard~message "Using Corp Furbing.*"
 	setVar $useGuard FALSE
 	setVar $furbfigs FALSE
-	setVar $corpCashDump FALSE
+	setVar $player~corpCashDump FALSE
 	
 	if ($ice = 1)
 		# mooexp 1000 5 furb ice
@@ -187,8 +187,8 @@ if ($pos > 0)
 		goSub :setUpIce
 	end
 else
-	setVar $corpfurb FALSE
-	setVar $corpCashDump TRUE
+	setVar $player~corpfurb FALSE
+	setVar $player~corpCashDump TRUE
 	setvar $switchboard~message "We will furb ourselves.*"
 	if ($player~ALIGNMENT < 1000)
 		setVar $SWITCHBOARD~message "You're just not good enough for this script (alignment).*"
@@ -257,7 +257,7 @@ setWindowContents moo $stuff
 #reqRecording
 
 loadVar $switchboard~bot_name
-loadVar $unlimitedGame		
+loadVar $player~unlimitedGame		
 loadVar $bot_turn_limit		
 loadVar $bot~user_command_line	
 loadVar $bot~parm1			
@@ -288,9 +288,9 @@ setVar $FUEL_MIN_MOO 750
 setVar $ORGANICS_MIN_MOO 500
 setVar $EQUIPMENT_MIN_MOO 250
 
-setVar $planetsInSector 0
-setVar $planets 0
-setVar $planeti 1
+setVar $planet~planetsInSector 0
+setVar $planet~planets 0
+setVar $planet~planeti 1
 
 
 # Trading Min - we'll stop using a port when we get here
@@ -298,8 +298,8 @@ setVar $tradingMinProduct 40
 
 
 # NEED TO GET THIS FROM GAME  -THen ALLOW SAY 80% used by script
-setVar $PLANETSALLOWEDINGAME $game~MAX_PLANETS_IN_GAME
-setVar $PLANETSALLOWED (($PLANETSALLOWEDINGAME * 90) / 100)
+setVar $planet~planetSALLOWEDINGAME $game~MAX_PLANETS_IN_GAME
+setVar $planet~planetSALLOWED (($planet~planetSALLOWEDINGAME * 90) / 100)
 
 
 fileExists $mooFileChk $moo_setting_file
@@ -307,17 +307,17 @@ if ($mooFileChk = 1)
 	
 	setVar $i 1
 	readToArray $moo_setting_file $moo_settings
-	setArray $planetList $moo_settings 5
+	setArray $planet~planetList $moo_settings 5
 	while ($i <= $moo_settings)
-	    setVar $planetInf $moo_settings[$i]
+	    setVar $planet~planetInf $moo_settings[$i]
 	    gosub :process_planet_line
-	    setVar $planetList[$i] $planetName
+	    setVar $planet~planetList[$i] $planet~planetName
 	   
-	    setVar $planetList[$i][1] $PLANET_CHECKED
-	    setVar $planetList[$i][2] $PLANET_START_FUEL
-	    setVar $planetList[$i][3] $PLANET_START_ORG
-	    setVar $planetList[$i][4] $PLANET_START_EQUIP
-	    setVar $planetList[$i][5] $PLANET_TRADE_PLANET
+	    setVar $planet~planetList[$i][1] $planet~planet_CHECKED
+	    setVar $planet~planetList[$i][2] $planet~planet_START_FUEL
+	    setVar $planet~planetList[$i][3] $planet~planet_START_ORG
+	    setVar $planet~planetList[$i][4] $planet~planet_START_EQUIP
+	    setVar $planet~planetList[$i][5] $planet~planet_TRADE_PLANET
 	    
 	    add $i 1
 	end
@@ -331,23 +331,23 @@ else
 	setVar $i 1
 
 	# Fuel Org Equ
-	while ($i <= $PLANET~planetcounter)
+	while ($i <= $planet~planetcounter)
 		
 		# Class E, Red Rider Double Action BB Gun
-		setVar $p $PLANET~planetList[$i]
+		setVar $p $planet~planetList[$i]
 		getWordPos $p $loc "Class"
 		
-		cutText $p $planetname $loc 99
-		write $moo_setting_file "0 0 0 0 0 " & $planetname 
-		setVar $planetList[$i] $planetName
-		setVar $planetList[$i][1] 0
-		setVar $planetList[$i][2] 0
-		setVar $planetList[$i][3] 0
-		setVar $planetList[$i][4] 0
-		setVar $planetList[$i][5] 0
+		cutText $p $planet~planetname $loc 99
+		write $moo_setting_file "0 0 0 0 0 " & $planet~planetname 
+		setVar $planet~planetList[$i] $planet~planetName
+		setVar $planet~planetList[$i][1] 0
+		setVar $planet~planetList[$i][2] 0
+		setVar $planet~planetList[$i][3] 0
+		setVar $planet~planetList[$i][4] 0
+		setVar $planet~planetList[$i][5] 0
 		add $i 1
 	end
-	setVar $totalGamePlanets $PLANET~planetcounter
+	setVar $totalGamePlanets $planet~planetcounter
 
 end
 
@@ -446,9 +446,9 @@ while ($iSaySo)
 	setVar $firstNext 1
 	
 	gosub :player~quikstats
-	setvar $turnsNow $player~turns
+	setvar $player~turnsNow $player~turns
 
-	if ($turnsNow < $halt_turns)
+	if ($player~turnsNow < $halt_turns)
 		setvar $switchboard~message "Turn Limit Reached*"
 		gosub :switchboard~switchboard
 		gosub :subreport
@@ -626,7 +626,7 @@ return
 
 :restock
 
-	if ($corpfurb = true)
+	if ($player~corpfurb = true)
 		if ($ice = 1)
 			gosub :restockice
 		else
@@ -702,9 +702,9 @@ return
 	setVar $restockMakePlanet 0
 	if ($useGuard = true)
 		
-		setVar $planetFound 0
+		setVar $planet~planetFound 0
 		goSub :checkCorpPlanet
-		if ($planetFound = 0)
+		if ($planet~planetFound = 0)
 			setVar $restockMakePlanet 1
 		else
 			setVar $restockMakePlanet 0
@@ -712,13 +712,13 @@ return
 
 	end
 
-	if ($corpCashDump = TRUE)
+	if ($player~corpCashDump = TRUE)
 
 		setVar $doDockCashDump FALSE
 		if ($PLAYER~CREDITS > 1100000)
-			setVar $corpNotAtDock TRUE
+			setVar $player~corpNotAtDock TRUE
 			gosub :checkCorpAtDock
-			if ($corpNotAtDock = FALSE)
+			if ($player~corpNotAtDock = FALSE)
 				setVar $doDockCashDump TRUE
 			end
 
@@ -735,14 +735,14 @@ return
 		pause
 		:shipCheckBuyAtomics
 			killalltriggers
-			getWord CURRENTLINE $AtomicssAvail 9
-			stripText $AtomicssAvail ")"
-			if ($AtomicssAvail = 0)
+			getWord CURRENTLINE $player~atomicssAvail 9
+			stripText $player~atomicssAvail ")"
+			if ($player~atomicssAvail = 0)
 				echo "*### we have a problem, no Atomics purchasable waiting for next"
 				#waitfor "next@"
 				send "*"
 			else
-				send  "*a" $AtomicssAvail "*"
+				send  "*a" $player~atomicssAvail "*"
 			end
 			
 
@@ -786,18 +786,18 @@ return
 				killalltriggers
 				getWord CURRENTLINE $shieldPrice 5
 				getWord CURRENTLINE $canBuy 9
-				setVar $shieldsToBuy $player~credits
-				subtract $shieldsToBuy 250000
-				divide $shieldsToBuy $shieldPrice
+				setVar $player~shieldsToBuy $player~credits
+				subtract $player~shieldsToBuy 250000
+				divide $player~shieldsToBuy $shieldPrice
 				
-				if ($shieldsToBuy > $canBuy)
-					setVar $shieldsToBuy $canBuy
+				if ($player~shieldsToBuy > $canBuy)
+					setVar $player~shieldsToBuy $canBuy
 				end
-				send "c" $shieldsToBuy "*"
+				send "c" $player~shieldsToBuy "*"
 			
 			
 	
-	if ($corpCashDump = TRUE)
+	if ($player~corpCashDump = TRUE)
 
 		if ($doDockCashDump = TRUE)
 			goSUb :player~quikstats
@@ -815,7 +815,7 @@ return
 		send "u   y  n  .  n  *  c * *  "
 	end
 	
-	if ($corpCashDump = TRUE)
+	if ($player~corpCashDump = TRUE)
 		if ($doDockCashDump = TRUE)
 			send "t  c  y  q   z   t" $dumpcash "*  *  *  "
 		end
@@ -861,7 +861,7 @@ return
 				striptext $sector " "
 				
 				if ($sector = $stardock)
-					setVar $corpNotAtDock FALSE
+					setVar $player~corpNotAtDock FALSE
 				end
 			end
 			goto :CorpAtDockLookAgain
@@ -887,7 +887,7 @@ return
 			killAllTriggers
 			getWord CURRENTLINE $checkPlanet 1
 			if ($checkPlanet = $stardock)
-				setVar $planetFound 1
+				setVar $planet~planetFound 1
 				return
 			end
 			goto :checkCorpPlanetsList
@@ -1563,9 +1563,9 @@ return
 
 
 
-	setVar $planetsInSector 0
-	setVar $planets 0
-	setVar $planeti 1
+	setVar $planet~planetsInSector 0
+	setVar $planet~planets 0
+	setVar $planet~planeti 1
 	
 	setVar $safeToBlow 1
 	gosub :checkSafeToBlow
@@ -1583,20 +1583,20 @@ return
 
 	setVar $go 1
 
-	setVar $planetsInSectorCHK $planetsInSector
+	setVar $planet~planetsInSectorCHK $planet~planetsInSector
 
 	while ($go = 1)
 
 # ENSURE PREFERRED SLOT IS FREE 
 		
-		if ($planetsInSectorCHK >= $preferredPlanetSlot)
+		if ($planet~planetsInSectorCHK >= $preferredPlanetSlot)
 			setVar $checkNewPlanet 0
 			goSub :reCheckPlanets
-			setVar $shipBlastPlanet $planets[$preferredPlanetSlot]
+			setVar $shipBlastPlanet $planet~planets[$preferredPlanetSlot]
 			gosub :blastPlanet
 			setVar $checkNewPlanet 0
 			goSub :reCheckPlanets
-			setVar $planetsInSectorCHK $planetsInSector
+			setVar $planet~planetsInSectorCHK $planet~planetsInSector
 		end
 		
 # CREATE A PLANET
@@ -1662,7 +1662,7 @@ return
 	# Sector Clean up
 
 	# if we are above the 90% planets then auto cleanup
-	if ($tradePlanet > $PLANETSALLOWED)
+	if ($tradePlanet > $planet~planetSALLOWED)
 		setVar $cleanup 2
 	else
 		setVar $cleanup $userCleanup
@@ -1670,18 +1670,18 @@ return
 
 
 	if ($cleanup > 0)
-		setVar $planetsToBlow 0
+		setVar $planet~planetsToBlow 0
 		setVar $figsRequired 0
 		setVar $i 1
-		while ($i <= $planetsInSector)
+		while ($i <= $planet~planetsInSector)
 			
 				
-			if ($planets[$i] <> $tradePlanet)
-				add $planetsToBlow 1
-				add $figsRequired (100 * $planetsToBlow)
+			if ($planet~planets[$i] <> $tradePlanet)
+				add $planet~planetsToBlow 1
+				add $figsRequired (100 * $planet~planetsToBlow)
 			elseif ($cleanup = 2)
-				add $planetsToBlow 1
-				add $figsRequired ($figsRequired * $planetsToBlow)
+				add $planet~planetsToBlow 1
+				add $figsRequired ($figsRequired * $planet~planetsToBlow)
 			end 
 			
 			
@@ -1700,12 +1700,12 @@ return
 
 		end
 		setVar $i 1
-		while ($i <= $planetsInSector)
+		while ($i <= $planet~planetsInSector)
 			
 				
-			if ($planets[$i] <> $tradePlanet)
+			if ($planet~planets[$i] <> $tradePlanet)
 				
-				setVar $shipBlastPlanet $planets[$i]
+				setVar $shipBlastPlanet $planet~planets[$i]
 				gosub :blastPlanet
 			elseif ($cleanup = 2)
 				setVar $shipBlastPlanet $tradePlanet
@@ -1730,21 +1730,21 @@ return
 
 
 
-	setVar $planetList[$planetIndexFound][1] 1
-	setVar $planetList[$planetIndexFound][2] $PLANET~PLANET_FUEL
-	setVar $planetList[$planetIndexFound][3] $PLANET~PLANET_ORGANICS
-	setVar $planetList[$planetIndexFound][4] $PLANET~PLANET_EQUIPMENT
+	setVar $planet~planetList[$planet~planetIndexFound][1] 1
+	setVar $planet~planetList[$planet~planetIndexFound][2] $planet~planet_FUEL
+	setVar $planet~planetList[$planet~planetIndexFound][3] $planet~planet_ORGANICS
+	setVar $planet~planetList[$planet~planetIndexFound][4] $planet~planet_EQUIPMENT
 
-	if (($PLANET~PLANET_FUEL >= $FUEL_MIN_MOO) and ($MOO_FUEL = 1))
+	if (($planet~planet_FUEL >= $FUEL_MIN_MOO) and ($MOO_FUEL = 1))
 		setVar $MooThePlanet 1
 	end
-	if (($PLANET~PLANET_ORGANICS >= $ORGANICS_MIN_MOO) and ($MOO_ORGANICS = 1))
+	if (($planet~planet_ORGANICS >= $ORGANICS_MIN_MOO) and ($MOO_ORGANICS = 1))
 		setVar $MooThePlanet 1
 	end
-	if (($PLANET~PLANET_EQUIPMENT >= $EQUIPMENT_MIN_MOO) and ($MOO_EQUIPMENT = 1))
+	if (($planet~planet_EQUIPMENT >= $EQUIPMENT_MIN_MOO) and ($MOO_EQUIPMENT = 1))
 		setVar $MooThePlanet 1
 	end
-	setVar $planetList[$planetIndexFound][5] $MooThePlanet
+	setVar $planet~planetList[$planet~planetIndexFound][5] $MooThePlanet
 	
 	if ($MooThePlanet = 1)
 		goSub :checkGoodPlanet
@@ -1757,17 +1757,17 @@ return
 :checkGoodPlanet
 	
 
-	if (($planetList[$planetIndexFound][2] > $FUEL_MIN_MOO) and ($MOO_FUEL = 1))
+	if (($planet~planetList[$planet~planetIndexFound][2] > $FUEL_MIN_MOO) and ($MOO_FUEL = 1))
 		if ((PORT.BUYFUEL[CURRENTSECTOR] = 1) and (PORT.PERCENTFUEL[CURRENTSECTOR] >= $tradingMinProduct))
 			setVar $goodPlanet 1
 		end
 	end
-	if (($planetList[$planetIndexFound][3] > $ORGANICS_MIN_MOO) and ($MOO_ORGANICS = 1))
+	if (($planet~planetList[$planet~planetIndexFound][3] > $ORGANICS_MIN_MOO) and ($MOO_ORGANICS = 1))
 		if ((PORT.BUYORG[CURRENTSECTOR] = 1) and (PORT.PERCENTORG[CURRENTSECTOR] >= $tradingMinProduct))
 			setVar $goodPlanet 1
 		end
 	end
-	if (($planetList[$planetIndexFound][4] > $EQUIPMENT_MIN_MOO) and ($MOO_EQUIPMENT = 1))
+	if (($planet~planetList[$planet~planetIndexFound][4] > $EQUIPMENT_MIN_MOO) and ($MOO_EQUIPMENT = 1))
 		if ((PORT.BUYEQUIP[CURRENTSECTOR] = 1) and (PORT.PERCENTEQUIP[CURRENTSECTOR] >= $tradingMinProduct))
 			setVar $goodPlanet 1
 		end
@@ -1792,83 +1792,83 @@ return
 		:buildPlanet2
 			killAllTriggers
 			add $stat_torps 1
-			add $planetsInSectorCHK 1
+			add $planet~planetsInSectorCHK 1
 		
 			
-			setVar $planetIndexFound 0
+			setVar $planet~planetIndexFound 0
 			setVar $t 1
 			while ($t <= $totalGamePlanets)
-				setTextLineTrigger $t :MakePlanetLbl & $t $planetList[$t]
+				setTextLineTrigger $t :MakePlanetLbl & $t $planet~planetList[$t]
 				add $t 1
 			end
 			pause
 			:MakePlanetLbl1
-				setVar $planetIndexFound 1
+				setVar $planet~planetIndexFound 1
 				goto :endMakePlanetLbls
 			:MakePlanetLbl2
-				setVar $planetIndexFound 2
+				setVar $planet~planetIndexFound 2
 				goto :endMakePlanetLbls
 			:MakePlanetLbl3
-				setVar $planetIndexFound 3
+				setVar $planet~planetIndexFound 3
 				goto :endMakePlanetLbls
 			:MakePlanetLbl4
-				setVar $planetIndexFound 4
+				setVar $planet~planetIndexFound 4
 				goto :endMakePlanetLbls
 			:MakePlanetLbl5
-				setVar $planetIndexFound 5
+				setVar $planet~planetIndexFound 5
 				goto :endMakePlanetLbls
 			:MakePlanetLbl6
-				setVar $planetIndexFound 6
+				setVar $planet~planetIndexFound 6
 				goto :endMakePlanetLbls
 			:MakePlanetLbl7
-				setVar $planetIndexFound 7
+				setVar $planet~planetIndexFound 7
 				goto :endMakePlanetLbls
 			:MakePlanetLbl8
-				setVar $planetIndexFound 8
+				setVar $planet~planetIndexFound 8
 				goto :endMakePlanetLbls
 			:MakePlanetLbl9
-				setVar $planetIndexFound 9
+				setVar $planet~planetIndexFound 9
 				goto :endMakePlanetLbls
 			:MakePlanetLbl10
-				setVar $planetIndexFound 10
+				setVar $planet~planetIndexFound 10
 				goto :endMakePlanetLbls
 			:MakePlanetLbl11
-				setVar $planetIndexFound 11
+				setVar $planet~planetIndexFound 11
 				goto :endMakePlanetLbls
 			:MakePlanetLbl12
-				setVar $planetIndexFound 12
+				setVar $planet~planetIndexFound 12
 				goto :endMakePlanetLbls
 			:MakePlanetLbl13
-				setVar $planetIndexFound 13
+				setVar $planet~planetIndexFound 13
 				goto :endMakePlanetLbls
 			:MakePlanetLbl14
-				setVar $planetIndexFound 14
+				setVar $planet~planetIndexFound 14
 				goto :endMakePlanetLbls
 			:MakePlanetLbl15
-				setVar $planetIndexFound 15
+				setVar $planet~planetIndexFound 15
 				goto :endMakePlanetLbls
 			:MakePlanetLbl16
-				setVar $planetIndexFound 16
+				setVar $planet~planetIndexFound 16
 				goto :endMakePlanetLbls
 			:MakePlanetLbl17
-				setVar $planetIndexFound 17
+				setVar $planet~planetIndexFound 17
 				goto :endMakePlanetLbls
 			:MakePlanetLbl18
-				setVar $planetIndexFound 18
+				setVar $planet~planetIndexFound 18
 				goto :endMakePlanetLbls
 			:MakePlanetLbl19
-				setVar $planetIndexFound 19
+				setVar $planet~planetIndexFound 19
 				goto :endMakePlanetLbls
 			:MakePlanetLbl20
-				setVar $planetIndexFound 20
+				setVar $planet~planetIndexFound 20
 				goto :endMakePlanetLbls
 
 			:endMakePlanetLbls
 
-			if ($planetList[$planetIndexFound][1] = 0)
-				setVar $getPlanetSettingsReq $planetIndexFound
+			if ($planet~planetList[$planet~planetIndexFound][1] = 0)
+				setVar $getPlanetSettingsReq $planet~planetIndexFound
 			else
-				if ($planetList[$planetIndexFound][5] = 1)
+				if ($planet~planetList[$planet~planetIndexFound][5] = 1)
 					goSub :checkGoodPlanet
 				end
 
@@ -1933,17 +1933,17 @@ return
 		setVar $prevPlanetsInSector 0
 		setVar $prevPlanets 0
 		setVar $prevPlaneti 1
-		while ($prevPlaneti <= $planetsInSector)
+		while ($prevPlaneti <= $planet~planetsInSector)
 			
-			setVar $prevPlanets[$prevPlaneti] $planets[$prevPlaneti]
+			setVar $prevPlanets[$prevPlaneti] $planet~planets[$prevPlaneti]
 			add $prevPlanetsInSector 1
 			add $prevPlaneti 1
 		end
 	end
 	
-	setVar $planetsInSector 0
-	setVar $planets 0
-	setVar $planeti 1
+	setVar $planet~planetsInSector 0
+	setVar $planet~planets 0
+	setVar $planet~planeti 1
 	send "l*"
 	setVar $startLogging 0
 	:reCheckPlanetsT
@@ -1977,10 +1977,10 @@ return
 				stripText $cPlanetNum "<"
 			end
 
-			add $planetsInSector 1
-			setVar $planets[$planeti] $cPlanetNum
+			add $planet~planetsInSector 1
+			setVar $planet~planets[$planet~planeti] $cPlanetNum
 			
-			add $planeti 1
+			add $planet~planeti 1
 		end
 		goto :reCheckPlanetsT
 
@@ -1989,9 +1989,9 @@ return
 		waitfor "Command ["
 
 	if ($checkNewPlanet = 1)
-		setVar $planeti 1
-		while ($planeti <= $planetsInSector)
-			setVar $searchPlanet $planets[$planeti]
+		setVar $planet~planeti 1
+		while ($planet~planeti <= $planet~planetsInSector)
+			setVar $searchPlanet $planet~planets[$planet~planeti]
 			setVar $searchi 1
 			setVar $found 0
 
@@ -2004,7 +2004,7 @@ return
 			if ($found = 0)
 				setVar $newPlanetMade $searchPlanet
 			end
-			add $planeti 1
+			add $planet~planeti 1
 		end
 	end
 
@@ -2051,12 +2051,12 @@ return
 
 	gosub :player~quikstats
 	stripText $player~credits ","
-	setVar $creditsNow $player~credits
+	setVar $player~creditsNow $player~credits
 
-	subtract $creditsNow $precredits
-	add $stat_dollarsgross $creditsNow
+	subtract $player~creditsNow $precredits
+	add $stat_dollarsgross $player~creditsNow
 	
-	if (($player~ORE_HOLDS < $minOre) and (PORT.BUYFUEL[CURRENTSECTOR] = 0))
+	if (($player~ore_holds < $minOre) and (PORT.BUYFUEL[CURRENTSECTOR] = 0))
 		send "pt * * * "
 		waitfor "credits and"
 	end
@@ -2080,7 +2080,7 @@ echo "*### PLANET FOUND! WE COUNTED WRONG SOMEWHERE"
 	:tradePlanetLand2
 		killAllTriggers
 	Waitfor "-------  ---------  ---------  ---------  ---------  ---------  ---------"
-	if ($player~ORE_HOLDS < $minOre)
+	if ($player~ore_holds < $minOre)
 		send "tnt1*"
 		waitfor "free cargo holds."
 		send "d"
@@ -2139,8 +2139,8 @@ echo "*### PLANET FOUND! WE COUNTED WRONG SOMEWHERE"
 send "'" $planet~exit_message "*"
 		gosub :player~quikstats
 		stripText $player~credits ","
-		setVar $creditsNow $player~credits
-		if ($creditsNow = $precredits)
+		setVar $player~creditsNow $player~credits
+		if ($player~creditsNow = $precredits)
 			echo "*################*##############"
 			echo "*#### NEG FAILED, SELLING AT COST!"
 			echo "*###############################"
@@ -2150,7 +2150,7 @@ send "'" $planet~exit_message "*"
 			waitfor "Land on which planet"
 			gosub :player~quikstats
 			stripText $player~credits ","
-			setVar $creditsNow $player~credits
+			setVar $player~creditsNow $player~credits
 		end
 		
 		send "q"
@@ -2161,7 +2161,7 @@ return
 :planetTrade_ep
 
 
-	if ($player~ORE_HOLDS < $minOre)
+	if ($player~ore_holds < $minOre)
 		send "l" $tradePlanet "*"
 		send "tnt1*"
 		waitfor "free cargo holds."
@@ -2200,8 +2200,8 @@ return
 		
 	gosub :player~quikstats
 	stripText $player~credits ","
-	setVar $creditsNow $player~credits
-	if ($creditsNow = $precredits)
+	setVar $player~creditsNow $player~credits
+	if ($player~creditsNow = $precredits)
 		echo "*################*##############"
 		echo "*#### NEG FAILED, SELLING AT COST!"
 		echo "*###############################"
@@ -2210,7 +2210,7 @@ return
 		waitfor "Your offer "
 		gosub :player~quikstats
 		stripText $player~credits ","
-		setVar $creditsNow $player~credits
+		setVar $player~creditsNow $player~credits
 	end
 	
 
@@ -2219,18 +2219,18 @@ return
 
 
 :process_planet_line
-        getWord $planetInf $PLANET_CHECKED 1
-        getWord $planetInf $PLANET_START_FUEL 2
-        getWord $planetInf $PLANET_START_ORG 3
-        getWord $planetInf $PLANET_START_EQUIP 4
-        getWord $planetInf $PLANET_TRADE_PLANET 5
-	getLength $PLANET_CHECKED $length1
-	getLength $PLANET_START_FUEL $length2
-	getLength $PLANET_START_ORG $length3
-	getLength $PLANET_START_EQUIP $length4
-	getLength $PLANET_TRADE_PLANET $length5
+        getWord $planet~planetInf $planet~planet_CHECKED 1
+        getWord $planet~planetInf $planet~planet_START_FUEL 2
+        getWord $planet~planetInf $planet~planet_START_ORG 3
+        getWord $planet~planetInf $planet~planet_START_EQUIP 4
+        getWord $planet~planetInf $planet~planet_TRADE_PLANET 5
+	getLength $planet~planet_CHECKED $length1
+	getLength $planet~planet_START_FUEL $length2
+	getLength $planet~planet_START_ORG $length3
+	getLength $planet~planet_START_EQUIP $length4
+	getLength $planet~planet_TRADE_PLANET $length5
 	setVar $startlen ($length1 + $length2 + $length3 + $length4 + $length5 + 6)
-	cutText $planetInf $planetname $startlen 999
+	cutText $planet~planetInf $planet~planetname $startlen 999
 return
 
 :rewriteMooSettings
@@ -2239,7 +2239,7 @@ return
 	setVar $pcount 1
 	while ($pcount <= $totalGamePlanets)
 		
-		write $moo_setting_file $planetList[$pcount][1] & " " & $planetList[$pcount][2] & " " & $planetList[$pcount][3] & " "  & $planetList[$pcount][4] & " " & $planetList[$pcount][5] & " " & $planetList[$pcount]
+		write $moo_setting_file $planet~planetList[$pcount][1] & " " & $planet~planetList[$pcount][2] & " " & $planet~planetList[$pcount][3] & " "  & $planet~planetList[$pcount][4] & " " & $planet~planetList[$pcount][5] & " " & $planet~planetList[$pcount]
 		add $pcount 1
 	end
 	

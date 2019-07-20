@@ -144,7 +144,7 @@
 	gosub :sector~getSectorData
 	goSub :combat~fastCapture
 	if ($player~isFound)
-		send "l "&$PLANET~PLANET&"* m * * * c "
+		send "l "&$planet~planet&"* m * * * c "
 		gosub :player~quikstats
 		goto :checkForCappingVictimsFromCitadel
 	end

@@ -277,8 +277,8 @@ return
 	
 	:evac_get_planets
 		waitOn "Registry# and Planet Name"
-		setVar $planetCount 0
-		setVar $planetSkip 0
+		setVar $planet~planetCount 0
+		setVar $planet~planetSkip 0
 		settexttrigger planetGrabber :evac_planetline "   <"
 		settexttrigger beDone :evac_done "Land on which planet "
 		settexttrigger no_scanner :evac_no_scanner "Planet command (?=help)"
@@ -294,8 +294,8 @@ return
 		replacetext $line "<" " "
 		replacetext $line ">" " "
 		striptext $line ","
-		add $planetCount 1
-		getWord $line $planet[$planetCount] 1
+		add $planet~planetCount 1
+		getWord $line $planet~planet[$planet~planetCount] 1
 		setTextLineTrigger getLine2 :evac_planetline "   <"
 		setTextLineTrigger getEnd :evac_done "Land on which planet "
 		pause
@@ -305,14 +305,14 @@ return
 	
 	:evac_done
 		killtrigger getline2
-		setvar $evac_total $planetCount
-		setvar $planetCount 1
+		setvar $evac_total $planet~planetCount
+		setvar $planet~planetCount 1
 
 	:evac_move
-		send "l " $planet[$planetCount] "* "
+		send "l " $planet~planet[$planet~planetCount] "* "
 		gosub :planetinfo~getPlanetInfo
 		if ($planet~CITADEL < 4)
-			add $planetSkip 1
+			add $planet~planetSkip 1
 			goto :evac_twarp
 		elseif ($planet~CITADEL > 3)
 			send "m * * * t n t 1 * c p " $target_sector "*"
@@ -324,9 +324,9 @@ return
 	:evac_Pwarp
 		killtrigger no_Warp
 		send "y*"
-		if ($planetCount = $evac_total)
-			subtract $planetCount $planetSkip
-			send "'{" $switchboard~bot_name "} - Evac Complete. Moved: "&$planetCount&" Skipped: "&$planetSkip&". *"
+		if ($planet~planetCount = $evac_total)
+			subtract $planet~planetCount $planet~planetSkip
+			send "'{" $switchboard~bot_name "} - Evac Complete. Moved: "&$planet~planetCount&" Skipped: "&$planet~planetSkip&". *"
 			goto :evac_end
 		end
 		send "qq  z  n  *  m" $evac_home "*y"
@@ -336,7 +336,7 @@ return
 
 	:evac_twarp
 		killtrigger no_Warp
-		add $planetCount 1
+		add $planet~planetCount 1
 		send "y  *  *  *  q  z  n  *"
 		goto :evac_move
 

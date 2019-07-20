@@ -5,7 +5,7 @@
 
 :load_script
 	loadVar $switchboard~bot_name
-	loadVar $unlimitedGame
+	loadVar $player~unlimitedGame
 	loadVar $bot_turn_limit
 	loadVar $bot~user_command_line
 	loadVar $bot~parm1
@@ -79,7 +79,7 @@
 		send "'{" $switchboard~bot_name "} - It appears no limpet data is available.  Run a limpet grid checker that uses the sector parameter LIMPSEC. (Try limps command)*"
 		halt
 	end
-	if ($PHOTONS > 0)
+	if ($player~photons > 0)
 	       send "'Can not run with photons on your ship.*"
                halt
 	end
@@ -138,7 +138,7 @@ goSub :checkAvoidedSectors
 		echo ANSI_12 "*Not enough fighters to safely continue.*" ANSI_7
 		halt
 	end
-	if ($LIMPETS >= ($maxMines-20))
+	if ($player~limpets >= ($maxMines-20))
 		#DUMP THE EXTRA LIMPETS
 		getWord $unload_sectors $warpto 1
 		replaceText $unload_sectors " "&$warpto&" " " "
@@ -181,7 +181,7 @@ goSub :checkAvoidedSectors
 		if (($TWARP = "No") OR ($player~current_sector <> $warpto))
 			goto :callSaveMe
 		end
-		send "h2 z"&$LIMPETS&"*zc*"&$return_mac
+		send "h2 z"&$player~limpets&"*zc*"&$return_mac
 		setVar $justCheckingIfAlive TRUE
 		gosub :player~quikstats
 		if (($TWARP = "No") OR ($player~current_sector <> $homesec))
@@ -314,10 +314,10 @@ return
 	#if ($grid_figs > 0)
 	#	setVar $mac "f " & $grid_figs & "*cd"
 	#end
-	#if (($grid_armids > 0) AND ($ARMIDS > 0))
+	#if (($grid_armids > 0) AND ($player~armids > 0))
 	#	setVar $mac $mac & "h1 z0*zc*"
 	#end
-	#if (($grid_limpets > 0) AND ($LIMPETS > 0))
+	#if (($grid_limpets > 0) AND ($player~limpets > 0))
 		setVar $mac $mac & "h2 z0*zc*"
 	#end
 return
@@ -331,8 +331,8 @@ return
 return
 
 :assemble_land_mac
-	setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $planet & "*  * j m  * * *  t * t 1* c * "
-	#setVar $land_mac "l " & $planet & "*  m  * * *  t * t 1*  c  "
+	setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  * j m  * * *  t * t 1* c * "
+	#setVar $land_mac "l " & $planet~planet & "*  m  * * *  t * t 1*  c  "
 return
 
 # -=-=-=-=-=- return triggers -=-=-=-=-=-=-=-
@@ -350,7 +350,7 @@ return
 
 
 :landOnPlanetEnterCitadel
-	send "l " $planet "* c"
+	send "l " $planet~planet "* c"
 	waitOn "<Enter Citadel>"
 	return
 :leaveCitadelAndPlanet
@@ -462,12 +462,12 @@ return
 	pause
 
 	:planetinfo
-		setVar $CITADEL 0
-		setVar $SECTOR_CANNON 0
-		setVar $ATMOSPHERE_CANNON 0
-		setVar $CITADEL_CREDITS 0
-		getWord CURRENTLINE $PLANET 2
-		stripText $PLANET "#"
+		setVar $planet~CITADEL 0
+		setVar $planet~SECTOR_CANNON 0
+		setVar $planet~ATMOSPHERE_CANNON 0
+		setVar $planet~CITADEL_CREDITS 0
+		getWord CURRENTLINE $planet~planet 2
+		stripText $planet~planet "#"
 		getWord CURRENTLINE $player~current_sector 5
 		stripText $player~current_sector ":"
 		waitOn "2 Build 1   Product    Amount     Amount     Maximum"
@@ -483,47 +483,47 @@ return
 		pause
 
         :fuelstart
-		getWord CURRENTLINE $PLANET_FUEL 6
-		getWord CURRENTLINE $PLANET_FUEL_MAX 8
-		stripText $PLANET_FUEL ","
-		stripText $PLANET_FUEL_MAX ","
+		getWord CURRENTLINE $planet~planet_FUEL 6
+		getWord CURRENTLINE $planet~planet_FUEL_MAX 8
+		stripText $planet~planet_FUEL ","
+		stripText $planet~planet_FUEL_MAX ","
 		pause
 
         :orgstart
-		getWord CURRENTLINE $PLANET_ORGANICS 5
-		getWord CURRENTLINE $PLANET_ORGANICS_MAX 7
-		stripText $PLANET_ORGANICS ","
-		stripText $PLANET_ORGANICS_MAX ","
+		getWord CURRENTLINE $planet~planet_ORGANICS 5
+		getWord CURRENTLINE $planet~planet_ORGANICS_MAX 7
+		stripText $planet~planet_ORGANICS ","
+		stripText $planet~planet_ORGANICS_MAX ","
 		pause
 
         :equipstart
-		getWord CURRENTLINE $PLANET_EQUIPMENT 5
-		getWord CURRENTLINE $PLANET_EQUIPMENT_MAX 7
-		stripText $PLANET_EQUIPMENT ","
-		stripText $PLANET_EQUIPMENT_MAX ","
+		getWord CURRENTLINE $planet~planet_EQUIPMENT 5
+		getWord CURRENTLINE $planet~planet_EQUIPMENT_MAX 7
+		stripText $planet~planet_EQUIPMENT ","
+		stripText $planet~planet_EQUIPMENT_MAX ","
 		pause
 
         :figstart
-		getWord CURRENTLINE $PLANET_FIGHTERS 5
-		getWord CURRENTLINE $PLANET_FIGHTERS_MAX 7
-		stripText $PLANET_FIGHTERS ","
-		stripText $PLANET_FIGHTERS_MAX ","
+		getWord CURRENTLINE $planet~planet_FIGHTERS 5
+		getWord CURRENTLINE $planet~planet_FIGHTERS_MAX 7
+		stripText $planet~planet_FIGHTERS ","
+		stripText $planet~planet_FIGHTERS_MAX ","
 		pause
 
         :citadelstart
-		getWord CURRENTLINE $CITADEL 5
-		getWord CURRENTLINE $CITADEL_CREDITS 9
-		striptext $CITADEL_CREDITS ","
+		getWord CURRENTLINE $planet~CITADEL 5
+		getWord CURRENTLINE $planet~CITADEL_CREDITS 9
+		striptext $planet~CITADEL_CREDITS ","
 		pause
 
 	:cannonstart
-		getWord CURRENTLINE $ATMOSPHERE_CANNON 5
-		getWord CURRENTLINE $SECTOR_CANNON 6
-		stripText $SECTOR_CANNON "SectLvl="
-		striptext $SECTOR_CANNON "%"
-		stripText $ATMOSPHERE_CANNON "AtmosLvl="
-		striptext $ATMOSPHERE_CANNON "%"
-		striptext $ATMOSPHERE_CANNON ","
+		getWord CURRENTLINE $planet~ATMOSPHERE_CANNON 5
+		getWord CURRENTLINE $planet~SECTOR_CANNON 6
+		stripText $planet~SECTOR_CANNON "SectLvl="
+		striptext $planet~SECTOR_CANNON "%"
+		stripText $planet~ATMOSPHERE_CANNON "AtmosLvl="
+		striptext $planet~ATMOSPHERE_CANNON "%"
+		striptext $planet~ATMOSPHERE_CANNON ","
 		pause
 	:planetInfoDone
 		killtrigger citadelstart
@@ -535,20 +535,20 @@ return
 
 :attemptRefurb
 :attempt_Refurb
-	setVar $limpetCashNeeded ((($maxMines-$LIMPETS)*$LIMPET_COST)+$LIMPET_REMOVAL_COST)
-	setVar $armidCashNeeded ((($maxMines-$ARMIDS)*$ARMID_COST))
+	setVar $limpetCashNeeded ((($maxMines-$player~limpets)*$LIMPET_COST)+$LIMPET_REMOVAL_COST)
+	setVar $armidCashNeeded ((($maxMines-$player~armids)*$ARMID_COST))
 	setVar $cashNeeded ($limpetCashNeeded+$armidCashNeeded)
 	setVar $furbing TRUE
-	if ($cashNeeded > $CREDITS)
+	if ($cashNeeded > $player~credits)
 		send "D" 
 		waitOn "Citadel treasury contains "
-		getWord CURRENTLINE $citadelCash 4
-		stripText $citadelCash ","
-		if ($citadelCash < $cashNeeded)
+		getWord CURRENTLINE $planet~CITADELCash 4
+		stripText $planet~CITADELCash ","
+		if ($planet~CITADELCash < $cashNeeded)
 			send "'{" & $switchboard~bot_name & "} - Not enough cash for mine refurbs in treasury or on hand.*"	
 			halt
 		end
-		send "t f "&($cashNeeded-$CREDITS)&"* "
+		send "t f "&($cashNeeded-$player~credits)&"* "
 	end
 	# check adj's for Dock.. if present, then we don't need a jump sector.
 	setVar $i 1
@@ -562,7 +562,7 @@ return
 		add $i 1
 	end
 
-	if (($ALIGNMENT < 1000) AND ($WeAreAdjDock = FALSE))
+	if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE))
 		setVar $RED_adj 0
 		gosub :FindJumpSector
 		if ($RED_adj <> 0)
@@ -574,7 +574,7 @@ return
 		end
 	end
 
-	if ($ALIGNMENT >= 1000)
+	if ($player~alignment >= 1000)
 		if ($WeAreAdjDock)
 			send "^F" & $stardock & "*" & $START_SECTOR & "*Q/ "
 		else
@@ -603,7 +603,7 @@ return
 		:Latency_Delay
 
 		Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
-		if (($ALIGNMENT >= 1000) OR ($WeAreAdjDock))
+		if (($player~alignment >= 1000) OR ($WeAreAdjDock))
 			getdistance $dist1 $START_SECTOR $stardock
 		else
 			getdistance $dist1 $START_SECTOR $RED_adj
@@ -622,23 +622,23 @@ return
 
 		setVar $ore_req (($dist1 + $dist2) * 3)
 
-		if ($ORE_HOLDS < $ore_req)
+		if ($player~ore_holds < $ore_req)
 			send "'{" $switchboard~bot_name "} - Not Enough ORE In Holds To Make Round Trip**"
 			halt
 		end
 
-		if ($TWARP_TYPE = "No")
+		if ($player~twarp_type = "No")
 			send "'{" $switchboard~bot_name "} - Must Have Twarp 1 or 2**"
 			halt
 		end
 
-		if ($unlimitedGame = 0)
+		if ($player~unlimitedGame = 0)
 			gosub :TurnsRequired
-			if ($TurnsRequired > $TURNS)
-				send "'{" $switchboard~bot_name "} - Not Enough Turns. " & ANSI_12 & $TurnsRequired & ANSI_15 & ", Required**"
+			if ($player~turnsRequired > $player~turns)
+				send "'{" $switchboard~bot_name "} - Not Enough Turns. " & ANSI_12 & $player~turnsRequired & ANSI_15 & ", Required**"
 				halt
-			elseif ($TurnsRequired <= $TURNS)
-				setVar $tmp ($TURNS - $TurnsRequired)
+			elseif ($player~turnsRequired <= $player~turns)
+				setVar $tmp ($player~turns - $player~turnsRequired)
 				if ($tmp <= $bot_turn_limit)
 					send "'{" $switchboard~bot_name "} - Proceeding Will Leave Fewer Than " & $bot_turn_limit & " Turns!**"
 					halt
@@ -658,7 +658,7 @@ return
 		killAllTriggers
 		waitfor "(?="
 		setVar $msg ""
-		if (($ALIGNMENT >= 1000) AND ($WeAreAdjDock = FALSE))
+		if (($player~alignment >= 1000) AND ($WeAreAdjDock = FALSE))
 			setVar $warpto $stardock
 			gosub :DoTwarp
 		elseif (($WeAreAdjDock = FALSE) AND ($RED_adj <> 0))
@@ -678,7 +678,7 @@ return
 		setVar $_Limps "Max"
 		setVar $_Mines "Max"
 		gosub :DoPurchases
-		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet & "* p  s  s * * c *"
+		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet~planet & "* p  s  s * * c *"
 		gosub :player~quikstats
 		if ($player~current_sector = $stardock)
 			send "'{" $switchboard~bot_name "} - Twarp Error, Should be Hiding on Dock!**"
@@ -731,7 +731,7 @@ return
 		:no_twarp_lock
 			killAllTriggers
 			send "n*zn"
-			send "l " & #8 & $PLANET "*c"
+			send "l " & #8 & $planet~planet "*c"
 			setSectorParameter $warpto "FIGSEC" FALSE
 			setVar $temp " "&$warpto&" "
 			replaceText $database $temp " "
@@ -750,7 +750,7 @@ return
 
 		:twarp_lock
 			KillAlltriggers
-			if ($ALIGNMENT >= 1000)
+			if ($player~alignment >= 1000)
 				if ($furbing)
 					setVar $str "y * * p s g y g q " 
 				else
@@ -844,27 +844,27 @@ return
 
 	:TurnsRequired_TPW
 	killAllTriggers
-	getWord CURRENTLINE $TurnsRequired_TPW 5
+	getWord CURRENTLINE $player~turnsRequired_TPW 5
 
 	if ($RED_adj > 0)
 		# twarp to jmp sector, then into SD sect, then twarp home
-		setVar $TurnsRequired_temp ($TurnsRequired_TPW * 3)
+		setVar $player~turnsRequired_temp ($player~turnsRequired_TPW * 3)
 		if ($_Tow > 0)
 			# 2 Turns for exporting into other ship and back again
-			add $TurnsRequired_temp 2
+			add $player~turnsRequired_temp 2
 			# 3 Turns for initial Port then x into other ship, port & shop, then x and report
 			#   b4 heading home
-			add $TurnsRequired_temp 3
+			add $player~turnsRequired_temp 3
 		else
-			add $TurnsRequired_temp 1
+			add $player~turnsRequired_temp 1
 		end
 	else
-		setVar $TurnsRequired_temp ($TurnsRequired_TPW * 2)
+		setVar $player~turnsRequired_temp ($player~turnsRequired_TPW * 2)
 		# 1 Turn to port at dock
-		add $TurnsRequired_temp 1
+		add $player~turnsRequired_temp 1
 	end
 
-	setVar $TurnsRequired $TurnsRequired_temp
+	setVar $player~turnsRequired $player~turnsRequired_temp
 	return
 
 

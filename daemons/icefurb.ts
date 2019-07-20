@@ -31,7 +31,7 @@ gosub :BOT~banner
 gosub :player~quikstats
 
 
-if ($player~ore_Holds < 70)
+if ($player~ore_holds < 70)
 	setVar $SWITCHBOARD~message "Please load up on fuel ore.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
@@ -92,9 +92,9 @@ halt
 :report
 	goSub :player~quikstats
 	setVar $credsgained ($player~CREDITS - $startCreds)
-	setVar $turnsused ($startTruns - $player~TURNS)
+	setVar $player~turnsused ($startTruns - $player~TURNS)
 
-	setVar $thereport "Turns: " & $turnsused & " Creds Pickedup: " &  $credsgained & "*" 
+	setVar $thereport "Turns: " & $player~turnsused & " Creds Pickedup: " &  $credsgained & "*" 
 	setVar $SWITCHBOARD~message $thereport
 	gosub :SWITCHBOARD~switchboard
 return
@@ -221,7 +221,7 @@ return
 :restock
 
 	send "psht"
-	add $turnsused 1
+	add $player~turnsused 1
 	setTextTrigger shipCheckBuyTorps :shipCheckBuyTorps "How many Genesis Torpedoes do you want"
 	pause
 	:shipCheckBuyTorps
@@ -265,7 +265,7 @@ return
 :warpToSector
 	
 	send "m" $moveSec "**"
-	add $turnsused 2
+	add $player~turnsused 2
 	waitFor "Warps to Sector"
 return
 
@@ -274,7 +274,7 @@ return
 	:startWarpMove
 
 	send "m" $moveSec "*y"
-	add $turnsused 2
+	add $player~turnsused 2
 	setTextLineTrigger warpEngagedYes :warpEngagedYes "Locating beam pinpointed, TransWarp"
 	setTextLineTrigger warpEngagedNo :warpEngagedNo "You do not have enough Fuel Ore to make the jump."
 	setTextLineTrigger warpEngagedNoLock :warpEngagedNoLock "No locating beam found for sector"

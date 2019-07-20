@@ -46,7 +46,7 @@
 		setVar $adj_sec SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i]
 		if (SECTOR.TRADERCOUNT[$ADJ_SEC] > 0)
 			setVar $targetInSector FALSE
-			setVar $corpMemberInSector FALSE
+			setVar $player~corpMemberInSector FALSE
 			setVar $j 1
 			while (SECTOR.TRADERS[$ADJ_SEC][$j] <> 0)
 				setVar $tempTarget SECTOR.TRADERS[$ADJ_SEC][$j]
@@ -58,12 +58,12 @@
 						setVar $targetInSector TRUE
 					end
 					if ($targetCorp = $PLAYER~CORP)
-						setVar $corpMemberInSector TRUE
+						setVar $player~corpMemberInSector TRUE
 					end
 				end
 				add $j 1
 			end
-			if (($targetInSector = TRUE) AND ($corpMemberInSector = FALSE))
+			if (($targetInSector = TRUE) AND ($player~corpMemberInSector = FALSE))
 				send "c p y " $ADJ_SEC "* *q"
 				setvar $switchboard~message "Photon fired into sector " & $ADJ_SEC & "!*"
 				gosub :switchboard~switchboard

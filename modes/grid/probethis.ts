@@ -157,7 +157,7 @@ Pause
 	HALT
 
 :sdyes
-	send "ql "&$PLANET~PLANET&"* t * l 1 * t * l 2 * t * l 3 * s * l 1 * s * l 2 * s * l 3 * t * t1*m* * * q "
+	send "ql "&$planet~planet&"* t * l 1 * t * l 2 * t * l 3 * s * l 1 * s * l 2 * s * l 3 * t * t1*m* * * q "
 	WaitFor "Command [TL"
 
 if (($map~backdoor <> 0) and ($player~ALIGNMENT < 1000))

@@ -63,12 +63,12 @@
 	setvar $total_gridded 0
 	setvar $archived ""
 
-	if (($PLAYER~ORE_HOLDS < $PLAYER~TOTAL_HOLDS) AND ($player~ore_holds < 100))
+	if (($player~ore_holds < $player~total_holds) AND ($player~ore_holds < 100))
 		setVar $SWITCHBOARD~message "You need to fill all your holds with fuel. This is going to be a long drive.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	if ($PLAYER~$TWARP_TYPE = "No")
+	if ($PLAYER~$player~twarp_type = "No")
 		setVar $SWITCHBOARD~message "You really should use a twarp capable ship for wandering.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -306,10 +306,10 @@
 							halt
 						end
 					end
-					if ($PLAYER~$TWARP_TYPE = "No")
+					if ($PLAYER~$player~twarp_type = "No")
 						goto :callSaveMe
 					end
-					if (($PLAYER~TOTAL_HOLDS <> $PLAYER~ORE_HOLDS) AND (($player~ore_holds < 100) OR ($player~unlimited_game = TRUE)) AND ((PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = TRUE) AND (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = FALSE) AND (PORT.CLASS[$PLAYER~CURRENT_SECTOR] > 0) AND (PORT.CLASS[$PLAYER~CURRENT_SECTOR] < 9)))
+					if (($player~total_holds <> $player~ore_holds) AND (($player~ore_holds < 100) OR ($player~unlimited_game = TRUE)) AND ((PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = TRUE) AND (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = FALSE) AND (PORT.CLASS[$PLAYER~CURRENT_SECTOR] > 0) AND (PORT.CLASS[$PLAYER~CURRENT_SECTOR] < 9)))
 						send "pt****   "
 						add $total_turns 1
 						gosub :PLAYER~quikstats

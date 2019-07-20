@@ -217,7 +217,7 @@ goto :_START_
 	gosub :ship~getshipstats
 
 	if ($planet~planet_fighters > 0)
-		setvar $switchboard~message "Reloader "&$VERSION&" Active - Using Planet "&$planet~planet&" with "&$planet~PLANET_FIGHTERS&" fighters.*"
+		setvar $switchboard~message "Reloader "&$VERSION&" Active - Using Planet "&$planet~planet&" with "&$planet~planet_FIGHTERS&" fighters.*"
 	else
 		setvar $switchboard~message "Reloader "&$VERSION&" Active - Using Planet "&$planet~planet&".*"
 	end

@@ -87,10 +87,10 @@
 	if ($bot~parm4 = "override")
 		setVar $bot~parm4 "0"
 	end
-	setVar $planetfuel FALSE
+	setVar $planet~planetfuel FALSE
 	getWordPos $bot~user_command_line $pos "planetfuel"
 	if ($pos > 0)
-		setVar $planetfuel TRUE
+		setVar $planet~planetfuel TRUE
 		
 	end
 	
@@ -141,8 +141,8 @@
 	if ($twoship = TRUE)
 		isNumber $is_a_number $bot~parm3
 		if ($is_a_number)
-			setVar $planet1 $bot~parm3
-			setVar $SHIPS[1][2] $planet1
+			setVar $planet~planet1 $bot~parm3
+			setVar $SHIPS[1][2] $planet~planet1
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #1 number invalid.  Shutting down.*"
 			gosub :SWITCHBOARD~SWITCHBOARD	
@@ -151,8 +151,8 @@
 
 		isNumber $is_a_number $bot~parm4
 		if ($is_a_number) 
-			setVar $planet2 $bot~parm4
-			setVar $SHIPS[2][2] $planet2
+			setVar $planet~planet2 $bot~parm4
+			setVar $SHIPS[2][2] $planet~planet2
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #2 number invalid.  Shutting down.*"
 			gosub :SWITCHBOARD~SWITCHBOARD	
@@ -172,8 +172,8 @@
 		end
 		isNumber $is_a_number $bot~parm4
 		if ($is_a_number)
-			setVar $planet1 $bot~parm4
-			setVar $SHIPS[1][2] $planet1
+			setVar $planet~planet1 $bot~parm4
+			setVar $SHIPS[1][2] $planet~planet1
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #1 number invalid.  Shutting down.*"
 			gosub :SWITCHBOARD~SWITCHBOARD	
@@ -182,8 +182,8 @@
 
 		isNumber $is_a_number $bot~parm5
 		if ($is_a_number) 
-			setVar $planet2 $bot~parm5
-			setVar $SHIPS[2][2] $planet2
+			setVar $planet~planet2 $bot~parm5
+			setVar $SHIPS[2][2] $planet~planet2
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #2 number invalid.  Shutting down.*"
 			gosub :SWITCHBOARD~SWITCHBOARD	
@@ -192,9 +192,9 @@
 
 		isNumber $is_a_number $bot~parm6
 		if ($is_a_number)
-			setVar $planet3 $bot~parm6
+			setVar $planet~planet3 $bot~parm6
 			if ($NUMBER_CASHING_SHIPS >= 3)
-				setVar $SHIPS[3][2] $planet3
+				setVar $SHIPS[3][2] $planet~planet3
 			end
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #3 number invalid.  Shutting down.*"
@@ -492,7 +492,7 @@
 				setVar $SWITCHBOARD~MESSAGE "Fake Busts don't clear ports. .*"
 				gosub :SWITCHBOARD~SWITCHBOARD
 				
-				if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planetfuel = TRUE))
+				if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
 					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&"  *"
 				else
 					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&"  *"
@@ -565,7 +565,7 @@
 			:setupfurber
 	
 				killalltriggers
-				if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planetfuel = TRUE))
+				if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
 					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&"  *"
 				else
 					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&"  *"

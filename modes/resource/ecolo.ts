@@ -47,14 +47,14 @@ goto :Start_Up_Routines
     setVar $from_mow $result
 
 	setVar $i 1
-	while ($i <= $PLANET~planetCount)
+	while ($i <= $planet~planetCount)
 		setVar $colo_prod 1
 		while ($colo_prod < 4)
-			setVar $PLANET~planet $PLANET~planets[$i]
+			setVar $planet~planet $planet~planets[$i]
 			if ($PLAYER~PLANET_SCANNER = "No")
-				setVar $coloBurst $to_mow&"    l * * "&$from_mow&" l "&$PLANET~planet&"* s * * "&$colo_prod&"*"
+				setVar $coloBurst $to_mow&"    l * * "&$from_mow&" l "&$planet~planet&"* s * * "&$colo_prod&"*"
 			else
-				setVar $coloBurst $to_mow&"    l 1* * * "&$from_mow&" l "&$PLANET~planet&"* s * * "&$colo_prod&"*"
+				setVar $coloBurst $to_mow&"    l 1* * * "&$from_mow&" l "&$planet~planet&"* s * * "&$colo_prod&"*"
 			end
 			send $coloBurst
 			setTextLineTrigger 33 :morespeed "The Colonists disembark"
@@ -76,7 +76,7 @@ goto :Start_Up_Routines
 				#CHANGE ITEM TO NEXT
 				add $colo_prod 1
 				if ($colo_prod >= 4)
-					send "'{" $switchboard~bot_name "} - Planet "&$PLANET~planet&" is full of colonists, no more can be added.*"
+					send "'{" $switchboard~bot_name "} - Planet "&$planet~planet&" is full of colonists, no more can be added.*"
 				end
 			:morespeed
 				killtrigger 33
@@ -89,7 +89,7 @@ goto :Start_Up_Routines
 halt
 
 :Start_Up_Routines
-	loadVar $unlimitedGame
+	loadVar $player~unlimitedGame
 	loadVar $bot_turn_limit
 	loadVar $bot~user_command_line
 	loadVar $bot~parm1
@@ -120,8 +120,8 @@ halt
 	if ($bot~parm1 = "all")
 		gosub :PLANET~countPlanets
 	else
-		setVar $PLANET~planets[1] $PLANET~PLANET
-		setVar $PLANET~planetCount 1
+		setVar $planet~planets[1] $planet~planet
+		setVar $planet~planetCount 1
 	end
 	gosub :PLAYER~getInfo
 	gosub :SHIP~getShipStats

@@ -999,9 +999,9 @@ return
 	if ($cashNeeded > $player~credits)
 		send "D" 
 		waitOn "Citadel treasury contains "
-		getWord CURRENTLINE $citadelCash 4
-		stripText $citadelCash ","
-		if ($citadelCash < $cashNeeded)
+		getWord CURRENTLINE $planet~CITADELCash 4
+		stripText $planet~CITADELCash ","
+		if ($planet~CITADELCash < $cashNeeded)
 			send "'{" & $bot~bot_name & "} - Not enough cash for mine refurbs in treasury or on hand.*"	
 			halt
 		end
@@ -1079,7 +1079,7 @@ return
 
 		setVar $ore_req (($dist1 + $dist2) * 3)
 
-		if ($player~ORE_HOLDS < $ore_req)
+		if ($player~ore_holds < $ore_req)
 			send "'{" $bot~bot_name "} - Not Enough ORE In Holds To Make Round Trip**"
 			halt
 		end

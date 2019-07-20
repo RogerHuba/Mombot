@@ -126,13 +126,13 @@
 	gosub :player~quikstats
 	gosub :planet~getPlanetInfo
 	if ($player~targetingPerson)
-		setvar $switchboard~message "Citadel Killer Targeting "&$target&" :: Running on Planet "&$planet~PLANET&" :: "&$planet~PLANET_FIGHTERS&" Fighters available on surface.*"
+		setvar $switchboard~message "Citadel Killer Targeting "&$target&" :: Running on Planet "&$planet~planet&" :: "&$planet~planet_FIGHTERS&" Fighters available on surface.*"
 		gosub :switchboard~switchboard
 	elseif ($player~targetingCorp)
-		setvar $switchboard~message "Citadel Killer Targeting Corp "&$target&" :: Running on Planet "&$planet~PLANET&" :: "&$planet~PLANET_FIGHTERS&" Fighters available on surface.*"
+		setvar $switchboard~message "Citadel Killer Targeting Corp "&$target&" :: Running on Planet "&$planet~planet&" :: "&$planet~planet_FIGHTERS&" Fighters available on surface.*"
 		gosub :switchboard~switchboard
 	else
-		setvar $switchboard~message "Citadel Killer :: Running on Planet "&$planet~PLANET&" :: "&$planet~PLANET_FIGHTERS&" Fighters available on surface.*"
+		setvar $switchboard~message "Citadel Killer :: Running on Planet "&$planet~planet&" :: "&$planet~planet_FIGHTERS&" Fighters available on surface.*"
 		gosub :switchboard~switchboard
 	end
 	if ($player~shotgun)
@@ -189,8 +189,8 @@
 	killAllTriggers
 	gosub :player~quikstats
 	gosub :sector~getSectorData
-	setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
-	if (($planet_count = 1) and ($overide = false))
+	setvar $planet~planet_count SECTOR.PLANETCOUNT[$player~current_sector]
+	if (($planet~planet_count = 1) and ($overide = false))
 		setvar $one_planet true
 		setvar $player~override true
 	else
@@ -202,7 +202,7 @@
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
 		setvar $player~startinglocation "Citadel"
 		gosub :combat~fastCapture
-		send "l "&$PLANET~PLANET&"* m * * * c "
+		send "l "&$planet~planet&"* m * * * c "
 		gosub :player~quikstats
 		goto :scanit_again
 	end

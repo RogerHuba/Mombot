@@ -2,7 +2,7 @@ logging off
 
 gosub :BOT~loadVars
 loadVar $MAP~STARDOCK
-loadVar $PLANET~PLANET
+loadVar $planet~planet
 setVar $total 0
 setVar $desired 0
 gosub :player~quikstats
@@ -43,7 +43,7 @@ while (($continue = TRUE))
 	saveVar $BOT~parm2
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	waitOn " Fighters added on planet "&$planet~PLANET&"."
+	waitOn " Fighters added on planet "&$planet~planet&"."
 	getWord CURRENTLINE $added 3
 	add $total $added
 

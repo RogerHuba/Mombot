@@ -157,7 +157,7 @@ gosub :BOT~loadVars
             if ($scan_macro = "d") OR ($scan_macro = "s")
                 send "* "
             else
-                send " l " & $PLANET~PLANET & "* c s* "
+                send " l " & $planet~planet & "* c s* "
             end
         end
         gosub :spitItOut

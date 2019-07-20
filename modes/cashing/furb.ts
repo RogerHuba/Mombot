@@ -8,7 +8,7 @@ setVar	$START_CASH		0
 setVar	$FURB_COST		0
 setVar	$CK_MODE		FALSE
 setVar	$VERSION		"2.0.5"
-setVar  $citadel_furb	FALSE
+setVar  $planet~CITADEL_furb	FALSE
 
 #gets figs after furbing, when it doesn't need to (or at least lets override)
 #	- could pick up figs before furbing if below a threshold
@@ -79,7 +79,7 @@ gosub :_START_
        		halt
 		end
 
-		if ($citadel_furb)
+		if ($planet~CITADEL_furb)
 
 			killalltriggers
 			send "C ZQ "
@@ -108,7 +108,7 @@ gosub :_START_
 						send "'{" $switchboard~bot_name "} - Couldn't TWARP - something is wrong.  Halting.*"
 						halt
 					else
-						send "l "&$planet_number&"* c e y "
+						send "l "&$planet~planet_number&"* c e y "
 						if ($PLAYER~CREDITS < 1000000)
 							send "t f "&(1000000-$PLAYER~CREDITS)&"*"
 						end
@@ -214,11 +214,11 @@ gosub :_START_
 		send "'{" $switchboard~bot_name "} - Have too few Fighters/Shields To Survive 100% Haz*"
 		halt
 	end
-	if ($UNLIMITEDGAME = FALSE) and ($PLAYER~TURNS < 10)
+	if ($player~unlimitedGame = FALSE) and ($PLAYER~TURNS < 10)
 		send "'{" $switchboard~bot_name "} - Too Low On Turns To Continue*"
 		halt
 	end
-	if ($UNLIMITEDGAME = FALSE)
+	if ($player~unlimitedGame = FALSE)
 		send "'{" $switchboard~bot_name "} - Ready To Bring A Furb (" &$PLAYER~TURNS & ")*"
 	else
 		send "'{" $switchboard~bot_name "} - Ready To Bring A Furb*"
@@ -228,7 +228,7 @@ gosub :_START_
 	setVar $_str_ (ANSI_9 & "**{"&ANSI_14&$switchboard~bot_name&ANSI_9&"} " & ANSI_15 & "---------- Furb v"&$VERSION&" Running ----------*")
 	setVar $_str_ ($_str_ & ANSI_15 & "    Normal Furb Runs  "&ANSI_14&":"&ANSI_7&" " & $THE_nRUNS & "*")
 	setVar $_str_ ($_str_ & ANSI_15 & "    Fake Furb Runs    "&ANSI_14&":"&ANSI_7&" " & $THE_fRUNS & "*")
-	if ($UNLIMITEDGAME = FALSE)
+	if ($player~unlimitedGame = FALSE)
 	setVar $_str_ ($_str_ & ANSI_15 & "    Turns Left        "&ANSI_14&":"&ANSI_7&" " & $PLAYER~TURNS & "*")
 	else
 	setVar $_str_ ($_str_ & ANSI_15 & "    Turns Left        "&ANSI_14&":"&ANSI_7&" UNLIMITED*")
@@ -464,12 +464,12 @@ gosub :_START_
     :checkPort
 	send "D"
 	gosub :PLAYER~quikstats
-	if ($planet_number <> "0")
-		send "l "&$planet_number&"* tnt1* q q * "	
+	if ($planet~planet_number <> "0")
+		send "l "&$planet~planet_number&"* tnt1* q q * "	
 	elseif (PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = FALSE) OR (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = TRUE) OR (PORT.CLASS[$PLAYER~CURRENT_SECTOR] <= 0) OR (PORT.CLASS[$PLAYER~CURRENT_SECTOR] >= 9)
 		if ($topplanet = 1)
 			
-			setVar $planetnumok 0
+			setVar $planet~planetnumok 0
 			send "lq*"
 
 			:checkPlanetsInSector
@@ -481,7 +481,7 @@ gosub :_START_
 				pause
 				:orestartplannum 
 					killalltriggers
-					setVar $planetnumok 1
+					setVar $planet~planetnumok 1
 					goto :checkPlanetsInSector
 				:orenoplanet
 					killAllTriggers
@@ -489,7 +489,7 @@ gosub :_START_
 					goto :checkPlanetsFinishWait
 				:orestartplanetsok
 					killAllTriggers 
-					if ($planetnumok = 1)
+					if ($planet~planetnumok = 1)
 					
 						getWord CURRENTLINE $cPlanetNum 2
 						stripText $cPlanetNum ">"
@@ -516,7 +516,7 @@ gosub :_START_
 		waitfor "Enter your choice [T]"
 		waitfor "Command ["
 		gosub :PLAYER~quikstats
-		setVar $EMPTY_HOLDS ($PLAYER~TOTAL_HOLDS - ($PLAYER~ORE_HOLDS + $PLAYER~ORGANIC_HOLDS + $PLAYER~EQUIPMENT_HOLDS + $PLAYER~COLONIST_HOLDS))
+		setVar $EMPTY_HOLDS ($player~total_holds - ($player~ore_holds + $player~organic_holds + $player~equipment_holds + $player~colonist_holds))
 		echo $EMPTY_HOLDS
 		if ($EMPTY_HOLDS > 0)
 			send "'{" $switchboard~bot_name "} - Ore at port critically low!*"
@@ -612,7 +612,7 @@ gosub :_START_
 :_START_
 	loadVar $switchboard~bot_name
 	loadVar $bot~user_command_line
-	loadvar $UNLIMITEDGAME
+	loadvar $player~unlimitedGame
 		gosub :BOT~loadVars
 									
 
@@ -636,23 +636,23 @@ gosub :_START_
 
 
 	getWordPos $bot~user_command_line $pos "planet:"
-	setVar $planet_number 0
+	setVar $planet~planet_number 0
 	if ($pos > 0)
 		cutText $bot~user_command_line $line $pos 9999
-		getWord $line $planet_line 1
-		replaceText $planet_line ":" " "
-		getWord $planet_line $planet_number 2		
-		replaceText $bot~user_command_line "planet:"&$planet_number " "
-		isNumber $is_a_number $planet_number
+		getWord $line $planet~planet_line 1
+		replaceText $planet~planet_line ":" " "
+		getWord $planet~planet_line $planet~planet_number 2		
+		replaceText $bot~user_command_line "planet:"&$planet~planet_number " "
+		isNumber $is_a_number $planet~planet_number
 		if ($is_a_number <> TRUE)
-			setVar $planet_number 0
+			setVar $planet~planet_number 0
 		end
 	end
 
 	getWordPos $bot~user_command_line $pos "swap"
 	if ($pos > 0)
-		setVar $citadel_furb TRUE
-		if ($planet_number = "0")
+		setVar $planet~CITADEL_furb TRUE
+		if ($planet~planet_number = "0")
 			send "'{" $switchboard~bot_name "} - Planet must be defined for swap furbing.*"
 			halt
 		end
@@ -697,7 +697,7 @@ gosub :_START_
 	#	halt
 	#end
 
-	if ($UNLIMITEDGAME = FALSE) and ($PLAYER~TURNS < 30)
+	if ($player~unlimitedGame = FALSE) and ($PLAYER~TURNS < 30)
 		send "'{" $switchboard~bot_name "} - Must Have At Least 30 Turns*"
 		halt
 	end
@@ -764,12 +764,12 @@ echo "* # $bot~parm5 " $bot~parm5
 
 
 echo "***##### FURB DEBUG $FURB_nHOLDS"
-echo "*### $FURB_nHOLDS " $citadel_furb
+echo "*### $FURB_nHOLDS " $planet~CITADEL_furb
 echo "*### $FURB_nLETTER " $FURB_nLETTER
 echo "*### $FURB_fHOLDS " $FURB_fHOLDS
 echo "*### $FURB_fLETTER " $FURB_fLETTER
 echo "*### $CK_MODE " $CK_MODE
-echo "*### $citadel_furb " $citadel_furb
+echo "*### $planet~CITADEL_furb " $planet~CITADEL_furb
 
 
 return

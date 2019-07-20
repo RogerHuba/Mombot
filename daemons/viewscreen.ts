@@ -580,8 +580,8 @@ return
     else
         setVar $stats[1] "    Sector : "&$PLAYER~CURRENT_SECTOR&"*"
     end
-    if ($PLANET~PLANET <> 0)
-        setVar $stats[2] "    Planet : "&$PLANET~PLANET&"*"
+    if ($planet~planet <> 0)
+        setVar $stats[2] "    Planet : "&$planet~planet&"*"
     else
         setVar $stats[2] "    Planet : None*"
     end
@@ -594,16 +594,16 @@ return
     setVar $stats[5]  "     Align : "&$PLAYER~ALIGNMENT&"*"
     setVar $stats[6]  "   Credits : "&$PLAYER~CREDITS&"*"
     setVar $stats[7]  ANSI_7&"----------------------------------*"
-    setVar $stats[8]  "Holds Info : "&$PLAYER~TOTAL_HOLDS&"*"
+    setVar $stats[8]  "Holds Info : "&$player~total_holds&"*"
     setVar $stats[9]  ANSI_7&"----------------------------------*"
-    setVar $stats[10] "  Fuel Ore : "&$PLAYER~ORE_HOLDS&"*"
-    setVar $stats[11] "  Organics : "&$PLAYER~ORGANIC_HOLDS&"*"
-    setVar $stats[12] " Equipment : "&$PLAYER~EQUIPMENT_HOLDS&"*"
-    setVar $stats[13] " Colonists : "&$PLAYER~COLONIST_HOLDS&"*"
-    setVar $empty_holds ($total_holds - $ore_holds)
-    setVar $empty_holds ($empty_holds - $organic_holds)
-    setVar $empty_holds ($empty_holds - $equipment_holds)
-    setVar $empty_holds ($empty_holds - $colonist_holds)
+    setVar $stats[10] "  Fuel Ore : "&$player~ore_holds&"*"
+    setVar $stats[11] "  Organics : "&$player~organic_holds&"*"
+    setVar $stats[12] " Equipment : "&$player~equipment_holds&"*"
+    setVar $stats[13] " Colonists : "&$player~colonist_holds&"*"
+    setVar $empty_holds ($player~total_holds - $player~ore_holds)
+    setVar $empty_holds ($empty_holds - $player~organic_holds)
+    setVar $empty_holds ($empty_holds - $player~equipment_holds)
+    setVar $empty_holds ($empty_holds - $player~colonist_holds)
     
     setVar $stats[14] "     Empty : "&$PLAYER~EMPTY_HOLDS&"*"
     setVar $stats[15] ANSI_7&"----------------------------------*"
@@ -616,37 +616,37 @@ return
     setVar $stats[22] "Turns/Warp : "&$PLAYER~TURNS_PER_WARP&"*"
     setVar $stats[23] ANSI_7&"----------------------------------*"
   
-    cutText $PLAYER~ARMIDS&"    " $ARMIDS 0 3
-    cutText $PLAYER~CLOAKS&"    " $CLOAKS 0 3
-    cutText $PLAYER~GENESIS&"    " $GENESIS 0 3
-    cutText $PLAYER~MINE_DISRUPTORS&"    " $MINE_DISRUPTORS 0 3
-    cutText $PLAYER~EPROBES&"    " $EPROBES 0 3
-    cutText $PLAYER~TWARP_TYPE&"    " $TWARP_TYPE 0 3
-    cutText $PLAYER~SCAN_TYPE&"    " $SCAN_TYPE 0 3
+    cutText $PLAYER~ARMIDS&"    " $player~armids 0 3
+    cutText $PLAYER~CLOAKS&"    " $player~cloaks 0 3
+    cutText $PLAYER~GENESIS&"    " $player~genesis 0 3
+    cutText $PLAYER~MINE_DISRUPTORS&"    " $player~mine_disruptors 0 3
+    cutText $PLAYER~EPROBES&"    " $player~eprobes 0 3
+    cutText $PLAYER~TWARP_TYPE&"    " $player~twarp_type 0 3
+    cutText $PLAYER~SCAN_TYPE&"    " $player~scan_type 0 3
 
-    setVar $stats[24] "   EProbes : "&$eprobes&" | Beacons : "&$PLAYER~beacons&"*"
-    setVar $stats[25] "   Disrupt : "&$MINE_DISRUPTORS&" | Photons : "&$PLAYER~PHOTONS&"*"
-    setVar $stats[26] "    Armids : "&$ARMIDS&" | Limpets : "&$PLAYER~LIMPETS&"*"
-    setVar $stats[27] "   Genesis : "&$GENESIS&" | AtmDets : "&$PLAYER~ATOMIC&"*"
-    setVar $stats[28] "    Cloaks : "&$CLOAKS&" |  Corbos : "&$PLAYER~CORBO&"*"
-    setVar $stats[29] "     Twarp : "&$TWARP_TYPE&" | PlnScan : "&$PLAYER~PLANET_SCANNER&"*"
-    setVar $stats[30] "   Scanner : "&$SCAN_TYPE&" | PsiProb : "&$PLAYER~PSYCHIC_PROBE&"*"
+    setVar $stats[24] "   EProbes : "&$player~eprobes&" | Beacons : "&$PLAYER~beacons&"*"
+    setVar $stats[25] "   Disrupt : "&$player~mine_disruptors&" | Photons : "&$PLAYER~PHOTONS&"*"
+    setVar $stats[26] "    Armids : "&$player~armids&" | Limpets : "&$PLAYER~LIMPETS&"*"
+    setVar $stats[27] "   Genesis : "&$player~genesis&" | AtmDets : "&$PLAYER~ATOMIC&"*"
+    setVar $stats[28] "    Cloaks : "&$player~cloaks&" |  Corbos : "&$PLAYER~CORBO&"*"
+    setVar $stats[29] "     Twarp : "&$player~twarp_type&" | PlnScan : "&$PLAYER~PLANET_SCANNER&"*"
+    setVar $stats[30] "   Scanner : "&$player~scan_type&" | PsiProb : "&$PLAYER~PSYCHIC_PROBE&"*"
     setVar $stats[31] "     *"
 return
 
 :loadVars
-    loadVar $PLANET~planet
+    loadVar $planet~planet
     loadVar $PLAYER~unlimitedGame
     loadVar $PLAYER~CREDITS
     loadVar $PLAYER~current_sector
     loadVar $PLAYER~TURNS
     loadVar $PLAYER~FIGHTERS
     loadVar $PLAYER~SHIELDS
-    loadVar $PLAYER~TOTAL_HOLDS
-    loadVar $PLAYER~ORE_HOLDS
-    loadVar $PLAYER~ORGANIC_HOLDS
-    loadVar $PLAYER~EQUIPMENT_HOLDS
-    loadVar $PLAYER~COLONIST_HOLDS
+    loadVar $player~total_holds
+    loadVar $player~ore_holds
+    loadVar $player~organic_holds
+    loadVar $player~equipment_holds
+    loadVar $player~colonist_holds
     loadVar $PLAYER~PHOTONS
     loadVar $PLAYER~ARMIDS
     loadVar $PLAYER~LIMPETS

@@ -1,7 +1,7 @@
 logging off
 reqRecording
 loadVar $switchboard~bot_name
-loadVar $unlimitedGame
+loadVar $player~unlimitedGame
 loadVar $bot_turn_limit
 loadVar $bot~user_command_line
 loadVar $bot~parm1
@@ -33,7 +33,7 @@ gosub :player~quikstats
 		write "scripts\mombot\help\"&$command&".txt" "   - [red]          = Will Attempt negative align"
 		send "'{" $switchboard~bot_name "} - Writing help file for this command in Help directory.*"
 	end
-        if ($TOTAL_HOLDS < 10)
+        if ($player~total_holds < 10)
                 send "'{" $switchboard~bot_name "} - You need at least 10 Holds to create a planet.*"
                 HALT
         end
@@ -76,20 +76,20 @@ gosub :player~quikstats
 	end
 	getWordPos $bot~user_command_line $pos "bank" 
 	if ($pos > 0)
-		setvar $corpieBanker TRUE
+		setvar $player~corpieBanker TRUE
 	end
 	getWordPos $bot~user_command_line $pos "red" 
 	if ($pos > 0)
 		setvar $makered "true"
 	end
-if ($bot~parm1 < $EXPERIENCE)
+if ($bot~parm1 < $player~experience)
 	send "'{" $switchboard~bot_name "} - Already at or Above Desired Experience*"
 	halt
 end
 setvar $neededCycles ($bot~parm1 / 75)
 
 :check_corp
-	if ($CORP > 0)
+	if ($player~corp > 0)
 		gosub :silenceMessages
 		goto :checkAutoFlee
 	else
@@ -130,8 +130,8 @@ setvar $neededCycles ($bot~parm1 / 75)
 	waitfor "<StarDock> Where to?"
 	send " q  c  n  2  q  q  p  s"
 	waitfor "<StarDock> Where to?"
-	if ($unlimitedGame <> "1")
-		SUBTRACT $TURNS 1
+	if ($player~unlimitedGame <> "1")
+		SUBTRACT $player~turns 1
 	end
 	goto :checkCN9
 
@@ -179,7 +179,7 @@ setvar $neededCycles ($bot~parm1 / 75)
 	killtrigger howManyDets
 	getword CURRENTLINE $maxDets 9
 	striptext $maxDets ")"
-	setvar $maxDets ($maxDets + $ATOMIC)
+	setvar $maxDets ($maxDets + $player~atomic)
 	send "0*t"
 	settextlinetrigger getGTorpCost :getGTorpCost "Aldus Genesis Torpedo."
 	pause
@@ -195,7 +195,7 @@ setvar $neededCycles ($bot~parm1 / 75)
 	killtrigger howManyGtorps
 	getword CURRENTLINE $maxGtorps 9
 	striptext $maxGtorps ")"
-	setvar $maxGtorps ($maxGtorps + $GENESIS)
+	setvar $maxGtorps ($maxGtorps + $player~genesis)
 	send "0*q"
 	waitfor "See you later."
 
@@ -205,15 +205,15 @@ setvar $neededCycles ($bot~parm1 / 75)
         end
 
 :checkForProblems
-	if ($unlimitedGame = "1")
+	if ($player~unlimitedGame = "1")
 		goto :fixCN9
-	elseif ($TURNS = 0) and ($unlimitedGame <> "1")
+	elseif ($player~turns = 0) and ($player~unlimitedGame <> "1")
 		send "'{" $switchboard~bot_name "} - Turns to low to Run TBust! *"
 		gosub :hearmessages
 		HALT
-	elseif ($TURNS < 50) and ($OVERRIDE = TRUE)
+	elseif ($player~turns < 50) and ($OVERRIDE = TRUE)
 		goto :fixcn9
-	elseif ($TURNS < 50)
+	elseif ($player~turns < 50)
 		gosub :hearmessages
 		send "'{" $switchboard~bot_name "} - Turns to low to Run TBust!*"
 		halt
@@ -224,8 +224,8 @@ setvar $neededCycles ($bot~parm1 / 75)
 		send "qcn9  q  q  p  s"
 		setvar $cn9 "space"
 		waitfor "Landing on Federation StarDock."
-		if ($unlimitedGame <> "1")
-			SUBTRACT $TURNS 1
+		if ($player~unlimitedGame <> "1")
+			SUBTRACT $player~turns 1
 		end
 	end
 
@@ -235,13 +235,13 @@ setvar $neededCycles ($bot~parm1 / 75)
         else
                 setvar $maxPerCycle $maxGtorps
         end
-	setvar $totalInitialCreds ($CREDITS + $bankCreds)
-	setvar $totalCycles (((($CREDITS + $bankCreds) / ($gtorpCost + $detCost))-1) + $ATOMIC)
-	if ($CREDITS < ($gtorpCost + $detCost))
+	setvar $totalInitialCreds ($player~credits + $bankCreds)
+	setvar $totalCycles (((($player~credits + $bankCreds) / ($gtorpCost + $detCost))-1) + $player~atomic)
+	if ($player~credits < ($gtorpCost + $detCost))
 		send "'{" $switchboard~bot_name "} - Need more Credits to bust.*"
 		halt
 	else
-		setvar $totalCycles ((($CREDITS / ($gtorpCost + $detCost))-1) + $ATOMIC)
+		setvar $totalCycles ((($player~credits / ($gtorpCost + $detCost))-1) + $player~atomic)
 	end
 
 :finalPrepBeforeBusting
@@ -257,19 +257,19 @@ setvar $neededCycles ($bot~parm1 / 75)
 	waitfor "hundredths"
 	gosub :player~quikstats
 	gosub :checkStatus
-	if ($TURNS < (($neededCycles / $maxPerCycle) + 2))
-		if ($unlimitedGame <> "1")
+	if ($player~turns < (($neededCycles / $maxPerCycle) + 2))
+		if ($player~unlimitedGame <> "1")
 			gosub :hearMessages
 			send "'{" $switchboard~bot_name "} - Not Enough Turns*"
 			HALT
 		end
 	end
-	if ($ATOMIC < $maxPerCycle)
-		send "h  a  " ($maxPerCycle - $ATOMIC) "*q"
+	if ($player~atomic < $maxPerCycle)
+		send "h  a  " ($maxPerCycle - $player~atomic) "*q"
 		waitfor "See you later"
 	end
-	if ($GENESIS < $maxPerCycle)
-		send "h  t  " ($maxPerCycle - $GENESIS) "*q"
+	if ($player~genesis < $maxPerCycle)
+		send "h  t  " ($maxPerCycle - $player~genesis) "*q"
 		waitfor "See you later"
 	end
 
@@ -303,12 +303,12 @@ setvar $neededCycles ($bot~parm1 / 75)
 	waitfor "hundredths"
 	gosub :player~quikstats
 	gosub :checkStatus
-	if ($ATOMIC >= $tempCycles) AND ($GENESIS >= $tempCycles)
+	if ($player~atomic >= $tempCycles) AND ($player~genesis >= $tempCycles)
 		setvar $buyDetQty 0
 		setvar $buyTorpQty 0
 	else
-		setvar $buyDetQty ($tempCycles - $ATOMIC)
-		setvar $buyTorpQty ($tempCycles - $GENESIS)
+		setvar $buyDetQty ($tempCycles - $player~atomic)
+		setvar $buyTorpQty ($tempCycles - $player~genesis)
 	end	
 	send "h  a  " $buyDetQty "*  t  " $buyTorpQty "*  q"
 	if ($randomDelay = "TRUE")
@@ -319,7 +319,7 @@ setvar $neededCycles ($bot~parm1 / 75)
 :invalidRegNum
 	killtrigger bustOK
 	killtrigger invalidRegNum
-	setvar $planetNums ""
+	setvar $planet~planetNums ""
 	send "@"
 	waitfor "hundredths"
 	gosub :player~quikstats
@@ -342,7 +342,7 @@ setvar $neededCycles ($bot~parm1 / 75)
 	add $extraPlanets 1
 	getword CURRENTLINE $tempPlanetNum 2
 	striptext $tempPlanetNum ">"
-	setvar $planetNums $planetNums & " " & $tempPlanetNum
+	setvar $planet~planetNums $planet~planetNums & " " & $tempPlanetNum
 	settexttrigger planNum :planNum "   <"
 	pause
 
@@ -366,7 +366,7 @@ setvar $neededCycles ($bot~parm1 / 75)
 		if ($randomPlanNum[$random] = 1)
 			goto :planetNumberRandomizer
 		else
-			getword $planetNums $tempPlanetNum $random
+			getword $planet~planetNums $tempPlanetNum $random
 			setvar $rndPlanetNums $rndPlanetNums & " " & $tempPlanetNum
 			add $c 1
 			setvar $randomPlanNum[$random] 1
@@ -426,20 +426,20 @@ setvar $neededCycles ($bot~parm1 / 75)
 		send "'{" $switchboard~bot_name "} - Houston, we have a problem...*"
 		HALT
 	end
-	if ($EXPERIENCE >= $bot~parm1)
+	if ($player~experience >= $bot~parm1)
 		gosub :hearMessages
 		send "'{" $switchboard~bot_name "} - Target Exp Reached!*"
 		HALT
 	end
-	if ($TURNS < 10) AND ($unlimitedGame <> "1")
+	if ($player~turns < 10) AND ($player~unlimitedGame <> "1")
 		gosub :hearMessages
 		send "'{" $switchboard~bot_name "} - Not Enough Turns to Continue!*"
 		HALT
 	end
 
 :resume
-	if ($CREDITS < (($gtorpCost + $detCost) * $maxPerCycle))
-		if ($corpieBanker = TRUE)
+	if ($player~credits < (($gtorpCost + $detCost) * $maxPerCycle))
+		if ($player~corpieBanker = TRUE)
 			send "ge"
 			settextlinetrigger viewBankAcct :viewBankAcct "credits in your account."
 			pause
@@ -450,8 +450,8 @@ setvar $neededCycles ($bot~parm1 / 75)
 			striptext $bankCreds ","
 			send "q"
 			waitfor "<StarDock> Where to?"
-			if (($CREDITS + $bankCreds) < (($gtorpCost + $detCost) * $maxPerCycle))
-				if ($corpieBanker = TRUE)
+			if (($player~credits + $bankCreds) < (($gtorpCost + $detCost) * $maxPerCycle))
+				if ($player~corpieBanker = TRUE)
 					gosub :hearMessages
 					send "'{" $switchboard~bot_name "} - Need Creds in bank to continue. Waiting on Transfer*"
 					settextlinetrigger waitForCreds :waitForCreds "credits to your Galactic bank account."
@@ -469,20 +469,20 @@ setvar $neededCycles ($bot~parm1 / 75)
 					striptext $bankCreds ","
 					send "q"
 					waitfor "<StarDock> Where to?"
-					if (($CREDITS + $bankCreds) < (($gtorpCost + $detCost) * $maxPerCycle))
+					if (($player~credits + $bankCreds) < (($gtorpCost + $detCost) * $maxPerCycle))
 						send "'{" $switchboard~bot_name "} - Not enough Creds in bank*"
 						settextlinetrigger waitForCreds :waitForCreds "your Galactic bank account."
 						pause
 					else
 						subtract $bankCreds (($gtorpCost + $detCost) * $maxPerCycle) 
-						send "g  w" ((($gtorpCost + $detCost) * $maxPerCycle) - $CREDITS) "*  q"
+						send "g  w" ((($gtorpCost + $detCost) * $maxPerCycle) - $player~credits) "*  q"
 						gosub :silenceMessages
 						waitfor "<StarDock>"
 					end
 				end
 			else
 				subtract $bankCreds (($gtorpCost + $detCost) * $maxPerCycle)
-				send "g  w" ((($gtorpCost + $detCost) * $maxPerCycle) - $CREDITS) "*  q"
+				send "g  w" ((($gtorpCost + $detCost) * $maxPerCycle) - $player~credits) "*  q"
 				waitfor "<StarDock>"
 			end
 		end
@@ -530,7 +530,7 @@ setvar $neededCycles ($bot~parm1 / 75)
 	end
         # ============================== FIX ALIGN ===============================
  :FixAlign
-        if ($ALIGNMENT  > 0) and ($ALIGNMENT < 200)
+        if ($player~alignment  > 0) and ($player~alignment < 200)
 		send "ttmafia*y"
 		settexttrigger getMafiaPWPrice :getMafiaPWPrice "will ye pay?"
 		pause
@@ -542,7 +542,7 @@ setvar $neededCycles ($bot~parm1 / 75)
 		striptext $mafiaPWPrice ","
 		send "n*q"
 		waitfor "You make a hasty exit from the Tavern."
-		setvar $fixAlign $ALIGNMENT
+		setvar $fixAlign $player~alignment
 		setvar $fixAlignCreds (($fixAlign * 250) + $mafiaPWPrice)
 		setvar $newMafiaPW "use mombot more"
 		goto :getMafiaPW
@@ -675,57 +675,57 @@ end
 				if ($wordy = "Sect")
 					getWord $stats $player~current_sector   	($current_word + 1)
 				elseif ($wordy = "Turns")
-					getWord $stats $TURNS  			($current_word + 1)
+					getWord $stats $player~turns  			($current_word + 1)
 				elseif ($wordy = "Creds")
-					getWord $stats $CREDITS  		($current_word + 1)
+					getWord $stats $player~credits  		($current_word + 1)
 				elseif ($wordy = "Figs")
 					getWord $stats $player~fighters   		($current_word + 1)
 				elseif ($wordy = "Shlds")
-					getWord $stats $SHIELDS  		($current_word + 1)
+					getWord $stats $player~shields  		($current_word + 1)
 				elseif ($wordy = "Hlds")
-					getWord $stats $TOTAL_HOLDS   		($current_word + 1)
+					getWord $stats $player~total_holds   		($current_word + 1)
 				elseif ($wordy = "Ore")
-					getWord $stats $ORE_HOLDS    		($current_word + 1)
+					getWord $stats $player~ore_holds    		($current_word + 1)
 				elseif ($wordy = "Org")
-					getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
+					getWord $stats $player~organic_holds    	($current_word + 1)
 				elseif ($wordy = "Equ")
-					getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
+					getWord $stats $player~equipment_holds    	($current_word + 1)
 				elseif ($wordy = "Col")
-					getWord $stats $COLONIST_HOLDS    	($current_word + 1)
+					getWord $stats $player~colonist_holds    	($current_word + 1)
 				elseif ($wordy = "Phot")
-					getWord $stats $PHOTONS   		($current_word + 1)
+					getWord $stats $player~photons   		($current_word + 1)
 				elseif ($wordy = "Armd")
-					getWord $stats $ARMIDS   		($current_word + 1)
+					getWord $stats $player~armids   		($current_word + 1)
 				elseif ($wordy = "Lmpt")
-					getWord $stats $LIMPETS   		($current_word + 1)
+					getWord $stats $player~limpets   		($current_word + 1)
 				elseif ($wordy = "GTorp")
-					getWord $stats $GENESIS  		($current_word + 1)
+					getWord $stats $player~genesis  		($current_word + 1)
 				elseif ($wordy = "TWarp")
-					getWord $stats $TWARP_TYPE  		($current_word + 1)
+					getWord $stats $player~twarp_type  		($current_word + 1)
 				elseif ($wordy = "Clks")
-					getWord $stats $CLOAKS   		($current_word + 1)
+					getWord $stats $player~cloaks   		($current_word + 1)
 				elseif ($wordy = "Beacns")
-					getWord $stats $BEACONS 		($current_word + 1)
+					getWord $stats $player~beacons 		($current_word + 1)
 				elseif ($wordy = "AtmDt")
-					getWord $stats $ATOMIC  		($current_word + 1)
+					getWord $stats $player~atomic  		($current_word + 1)
 				elseif ($wordy = "Corbo")
-					getWord $stats $CORBO   		($current_word + 1)
+					getWord $stats $player~corbo   		($current_word + 1)
 				elseif ($wordy = "EPrb")
-					getWord $stats $EPROBES   		($current_word + 1)
+					getWord $stats $player~eprobes   		($current_word + 1)
 				elseif ($wordy = "MDis")
-					getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
+					getWord $stats $player~mine_disruptors   	($current_word + 1)
 				elseif ($wordy = "PsPrb")
-					getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
+					getWord $stats $player~psychic_probe  		($current_word + 1)
 				elseif ($wordy = "PlScn")
 					getWord $stats $player~planet_scanner  	($current_word + 1)
 				elseif ($wordy = "LRS")
-					getWord $stats $SCAN_TYPE    		($current_word + 1)
+					getWord $stats $player~scan_type    		($current_word + 1)
 				elseif ($wordy = "Aln")
-					getWord $stats $ALIGNMENT    		($current_word + 1)
+					getWord $stats $player~alignment    		($current_word + 1)
 				elseif ($wordy = "Exp")
-					getWord $stats $EXPERIENCE    		($current_word + 1)
+					getWord $stats $player~experience    		($current_word + 1)
 				elseif ($wordy = "Corp")
-					getWord $stats $CORP   			($current_word + 1)
+					getWord $stats $player~corp   			($current_word + 1)
 				elseif ($wordy = "Ship")
 					getWord $stats $player~ship_number   		($current_word + 1)
 				end

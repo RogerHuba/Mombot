@@ -73,9 +73,9 @@
 	end
 	getwordpos $bot~user_command_line $pos "corp"
 	if ($pos > 0)
-		setvar $corp true
+		setvar $player~corp true
 	else
-		setvar $corp false
+		setvar $player~corp false
 	end
 
 	getwordpos $bot~user_command_line $pos "refuel"
@@ -137,9 +137,9 @@
 	killalltriggers	
 	send "q"
 	gosub :PLANET~getPlanetInfo	
-	setvar $starting_sector_cannon $planet~sector_cannon
-	setvar $starting_atmos_cannon $planet~atmosphere_cannon
-	setvar $sector_total ((($PLANET~PLANET_FUEL * $starting_sector_cannon) / 100)/3)
+	setvar $starting_sector_cannon $planet~SECTOR_CANNON
+	setvar $starting_atmos_cannon $planet~ATMOSPHERE_CANNON
+	setvar $sector_total ((($planet~planet_FUEL * $starting_sector_cannon) / 100)/3)
 
 	setTextTrigger need_ig :ig_was_off "Your Interdictor generator is now OFF"
 	setTextTrigger skip_ig :skipig "is not equipped with an Interdictor Generator"
@@ -155,9 +155,9 @@
 
 	:skipig
 	killalltriggers
-	send "l"&$PLANET~PLANET&"*"
+	send "l"&$planet~planet&"*"
 	waitOn "Planet command"
-	if ($corp <> true)
+	if ($player~corp <> true)
 		send "op**tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*m***cm0*co*pq"
 	else
 		send "**tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*m***cm0*"
@@ -170,7 +170,7 @@
 	end
 	gosub :PLAYER~quikstats
 	if ($PLAYER~CURRENT_PROMPT = "Citadel")
-		if ($corp <> true)
+		if ($player~corp <> true)
 			setVar $SWITCHBOARD~message "Made ship and planet personal for convenience. Turning off military reaction.*"
 		else
 			setVar $SWITCHBOARD~message "Keeping planet and ship corporate for safety. Might be annoying. Turning off military reaction.*"
@@ -240,8 +240,8 @@
 			send "p"&$homeSector&"*y"
 		end
 		if ($cannon = true)
-			setVar $percentToSet (((3*$sector_total)*100)/$PLANET~PLANET_FUEL)
-			if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $cannonDamage)
+			setVar $percentToSet (((3*$sector_total)*100)/$planet~planet_FUEL)
+			if (((($planet~planet_FUEL * $percentToSet) / 100)/3) < $cannonDamage)
 				add $percentToSet 1
 			end
 			if ($percentToSet > 100)
@@ -470,9 +470,9 @@ return
 		gosub :PLAYER~quikstats
 		setVar $startingSector $PLAYER~CURRENT_SECTOR
 		if ($PLAYER~SHIELDS < $SHIP~SHIP_SHIELD_MAX)
-			setVar $shields_needed ($SHIP~SHIP_SHIELD_MAX - $PLAYER~SHIELDS)
-			setVar $planet_shields_to_take ($shields_needed/10)
-			send "gf"&$planet_shields_to_take&"*"
+			setVar $player~shields_needed ($SHIP~SHIP_SHIELD_MAX - $PLAYER~SHIELDS)
+			setVar $planet~planet_shields_to_take ($player~shields_needed/10)
+			send "gf"&$planet~planet_shields_to_take&"*"
 		end
 		if ($targetsFound = TRUE)
 
@@ -560,7 +560,7 @@ return
 						send "c"
 						setVar $total_creds_needed (300*7000)
 						if ($total_creds_needed > $PLAYER~CREDITS)
-							setVar $cashonhand $PLANET~citadel_credits
+							setVar $cashonhand $planet~CITADEL_CREDITS
 							add $cashonhand $PLAYER~CREDITS
 							if ($cashonhand > $total_creds_needed)
 							        send "T T " & $PLAYER~CREDITS & "* "
@@ -583,17 +583,17 @@ return
 						gosub :PLAYER~quikstats
 						gosub :PLANET~landOnPlanetEnterCitadel
 					end
-					if (($PLANET~planet_fuel_max-$PLANET~planet_fuel) < $totalPortFuel)
-						setVar $turnsToEmpty (($PLANET~planet_fuel_max-$PLANET~planet_fuel)/$PLAYER~TOTAL_HOLDS)
-						add $totalHolds ($PLANET~planet_fuel_max-$PLANET~planet_fuel)
+					if (($planet~planet_fuel_max-$planet~planet_fuel) < $totalPortFuel)
+						setVar $player~turnsToEmpty (($planet~planet_fuel_max-$planet~planet_fuel)/$player~total_holds)
+						add $totalHolds ($planet~planet_fuel_max-$planet~planet_fuel)
 						setVar $isDone TRUE
 					else
-						setVar $turnsToEmpty ($totalPortFuel/$PLAYER~TOTAL_HOLDS)
+						setVar $player~turnsToEmpty ($totalPortFuel/$player~total_holds)
 						add $totalHolds $totalPortFuel
 					end
 					setVar $PLAYER~buyobject "f"
 					setVar $PLAYER~buytype "s"
-					setVar $PLAYER~buydownRoundsFromParam $turnsToEmpty
+					setVar $PLAYER~buydownRoundsFromParam $player~turnsToEmpty
 					gosub :player~buy
 					gosub :PLAYER~quikstats
 					send "c r*q "
@@ -602,7 +602,7 @@ return
 						setVar $SWITCHBOARD~message $PLAYER~exit_message&"*"
 						gosub :SWITCHBOARD~switchboard
 					end
-					if (($PLAYER~unlimitedGame = FALSE) AND (($PLAYER~turns-$turnsToEmpty) <= $BOT~bot_turn_limit))
+					if (($PLAYER~unlimitedGame = FALSE) AND (($PLAYER~turns-$player~turnsToEmpty) <= $BOT~bot_turn_limit))
 						setVar $SWITCHBOARD~message "Turns too low to continue.*"
 		        		gosub :SWITCHBOARD~switchboard
 						halt	        

@@ -9,7 +9,7 @@
     setVar $BOT~help[7] $BOT~tab&"        "
     gosub :bot~helpfile
 
-    loadvar $PLANET~PLANET
+    loadvar $planet~planet
     loadvar $bot~mode
     loadvar $BOT~bot_team_name
 
@@ -52,16 +52,16 @@
     send "     - IG          = " $igstat "*"
     send "     - Ship        = " $player~SHIP_NUMBER "*"
     if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
-        if ($PLANET = "0")
+        if ($planet~planet = "0")
             send "     - Planet      = None*"
         else
-            send "     - Planet      = " $PLANET "*"
+            send "     - Planet      = " $planet~planet "*"
         end
     else
-        if ($planet~PLANET = "0")
+        if ($planet~planet = "0")
             send "     - Last Planet = None*"
         else
-            send "     - Last Planet = " $PLANET "*"
+            send "     - Last Planet = " $planet~planet "*"
         end
     end
     if ($bot~bot_team_name = $bot~bot_name)

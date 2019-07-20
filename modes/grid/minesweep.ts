@@ -4,7 +4,7 @@
 									loadVar $MAP~STARDOCK
 	
 	loadVar $switchboard~bot_name
-	loadVar $unlimitedGame
+	loadVar $player~unlimitedGame
 	loadVar $BOT~bot_turn_limit 
 	loadVar $bot~user_command_line
 	loadVar $bot~parm1
@@ -89,7 +89,7 @@
 		halt
 	end
 
-	if ($photons <> 0)
+	if ($player~photons <> 0)
 		setVar $SWITCHBOARD~message "Cannot Have Fotons!*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -206,7 +206,7 @@
 	goSub :checkAvoidedSectors
 	send "q"
 	gosub :PLANET~getPlanetInfo
-	if (($bwarp = true) and ($planet~PLANET_TRANSPORT < 1))
+	if (($bwarp = true) and ($planet~planet_TRANSPORT < 1))
 		setVar $SWITCHBOARD~message "Planet does not have a transporter!  Can not do bwarp clearing.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -218,21 +218,21 @@
 				halt
 	end
 
-	if (($PLAYER~ORGANIC_HOLDS + $PLAYER~EQUIPMENT_HOLDS + $PLAYER~COLONIST_HOLDS) <> 0)
+	if (($player~organic_holds + $player~equipment_holds + $player~colonist_holds) <> 0)
 		setVar $MAC ""
-		if ($PLAYER~ORGANIC_HOLDS <> 0)
+		if ($player~organic_holds <> 0)
 			setVar $MAC ($MAC & " T  N  L 2* ")
 		end
-		if ($PLAYER~EQUIPMENT_HOLDS <> 0)
+		if ($player~equipment_holds <> 0)
 			setVar $MAC ($MAC & " T  N  L 3* ")
 		end
-		if ($PLAYER~COLONIST_HOLDS <> 0)
+		if ($player~colonist_holds <> 0)
 			setVar $MAC ($MAC & " S  N  L 1* ")
 		end
 		if ($MAC <> "")
 			send $MAC & " t  n  t  1*  m  n t *  c"
 			gosub :PLAYER~quikstats
-			if (($PLAYER~ORGANIC_HOLDS + $PLAYER~EQUIPMENT_HOLDS + $PLAYER~COLONIST_HOLDS) <> 0)
+			if (($player~organic_holds + $player~equipment_holds + $player~colonist_holds) <> 0)
 				setVar $SWITCHBOARD~message "Holds Not Empty*"
 				gosub :SWITCHBOARD~switchboard
 				halt
@@ -300,7 +300,7 @@
 		send "  sz*    "
 		Waiton "Warps to Sector(s) :"
 		setVar $HAZ_Before SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
-		setVar $PLANETS_Before SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
+		setVar $planet~planetS_Before SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
 		if (SECTOR.TRADERCOUNT[$PLAYER~CURRENT_SECTOR] <> 0)
 			send "'{" & $switchboard~bot_name & "} -  Trader Is In Sector. Halting!*"
 					waiton "Message sent on sub-space channel"
@@ -316,7 +316,7 @@
 		send "  sz*    "
 		Waiton "Warps to Sector(s) :"
 		setVar $HAZ_After SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
-		setVar $PLANETS_After SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
+		setVar $planet~planetS_After SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
 		if (SECTOR.TRADERCOUNT[$PLAYER~CURRENT_SECTOR] <> 0)
 			send "'{" & $switchboard~bot_name & "} -  Trader Is In Sector. Halting!*"
 					waiton "Message sent on sub-space channel"
@@ -333,7 +333,7 @@
 					waiton "Message sent on sub-space channel"
 			halt
 		end
-		if ($PLANETS_After <> $PLANETS_Before)
+		if ($planet~planetS_After <> $planet~planetS_Before)
 			send "'{" & $switchboard~bot_name & "} -  New Planet in Sector. Halting!*"
 					waiton "Message sent on sub-space channel"
 			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
@@ -356,7 +356,7 @@
 
 
 			gosub :grid~surround
-			setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $PLANET~PLANET & "*  * j m  * * *  t * t 1* c * "
+			setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  * j m  * * *  t * t 1* c * "
 			send $land_mac
 
 			getWordPos $PLAYER~surroundOutput $pos "planet"
@@ -399,9 +399,9 @@ return
 	if ($cashNeeded > $PLAYER~CREDITS)
 		send "D"
 		waitOn "Citadel treasury contains "
-		getWord CURRENTLINE $citadelCash 4
-		stripText $citadelCash ","
-		if ($citadelCash < $cashNeeded)
+		getWord CURRENTLINE $planet~CITADELCash 4
+		stripText $planet~CITADELCash ","
+		if ($planet~CITADELCash < $cashNeeded)
 			setVar $SWITCHBOARD~message "Not enough cash for mine refurbs in treasury or on hand.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
@@ -486,7 +486,7 @@ return
 
 		setVar $ore_req (($dist1 + $dist2) * 3)
 
-		if ($PLAYER~ORE_HOLDS < $ore_req)
+		if ($player~ore_holds < $ore_req)
 			setVar $SWITCHBOARD~message "Not Enough ORE In Holds To Make Round Trip**"
 			gosub :SWITCHBOARD~switchboard
 			halt
@@ -500,12 +500,12 @@ return
 
 		if ($PLAYER~unlimitedGame = 0)
 			gosub :TurnsRequired
-			if ($TurnsRequired > $player~TURNS)
-				setVar $SWITCHBOARD~message "Not Enough Turns. " & ANSI_12 & $TurnsRequired & ANSI_15 & ", Required**"
+			if ($player~turnsRequired > $player~TURNS)
+				setVar $SWITCHBOARD~message "Not Enough Turns. " & ANSI_12 & $player~turnsRequired & ANSI_15 & ", Required**"
 				gosub :SWITCHBOARD~switchboard
 				halt
-			elseif ($TurnsRequired <= $player~TURNS)
-				setVar $tmp ($PLAYER~TURNS - $TurnsRequired)
+			elseif ($player~turnsRequired <= $player~TURNS)
+				setVar $tmp ($PLAYER~TURNS - $player~turnsRequired)
 				if ($tmp <= $BOT~bot_turn_limit)
 					setVar $SWITCHBOARD~message "Proceeding Will Leave Fewer Than " & $BOT~bot_turn_limit & " Turns!**"
 					gosub :SWITCHBOARD~switchboard
@@ -542,7 +542,7 @@ return
 		else
 			if ($photoned = true)
 				loadvar $game~PHOTON_DURATION
-				send "L Z" & #8 & $PLANET~PLANET  & "*  c * "
+				send "L Z" & #8 & $planet~planet  & "*  c * "
 				send "'{" $bot~bot_name "} - Waiting for photon to wear off..*"		 
 				setDelayTrigger restart_from_photon :attemptRefurb (($game~photon_duration * 60000) + 1000)
 				pause
@@ -559,7 +559,7 @@ return
 		setVar $_Limps "Max"
 		setVar $_Mines "Max"
 		gosub :DoPurchases
-		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $PLANET~PLANET  & "* p  s  s * * c *"
+		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet~planet  & "* p  s  s * * c *"
 		gosub :PLAYER~quikstats
 		if ($PLAYER~CURRENT_SECTOR = $MAP~stardock)
 			setVar $SWITCHBOARD~message "Twarp Error, Should be Hiding on Dock!*"
@@ -683,8 +683,8 @@ return
 
     :friendlyplanet
         killalltriggers
-        getText CURRENTLINE $PLANET~PLANET  "Saveme script activated - Planet " " to "
-        send "L " & $PLANET~PLANET  & "* C 'I landed on planet " & $PLANET~PLANET  & "*"
+        getText CURRENTLINE $planet~planet  "Saveme script activated - Planet " " to "
+        send "L " & $planet~planet  & "* C 'I landed on planet " & $planet~planet  & "*"
 		goto :pauseGridder
 
     :towlocked
@@ -743,7 +743,7 @@ return
 		killAllTriggers
 		send ("'Unknown Problem Occured, Attempting to reach Command Prompt!*  P D 0* 0* 0* * *** * C  Q  Q  Q  Q  Q  Z  2  2  C  Q  *  Z  *  ***  *  *  ^Q")
 		waitfor ": ENDINTERROG"
-		setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $PLANET~PLANET & "*  * j m  * * *  t * t 1* c * "
+		setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  * j m  * * *  t * t 1* c * "
 		send $land_mac
 
 		gosub :PLAYER~quikstats
@@ -832,7 +832,7 @@ return
 		goto :Lets_Go_Again
 	end
 	send " Q "
-	send (" Q Q Q Z N L Z" & #8 & $PLANET~PLANET  & "*  *  J  C  *  * ")
+	send (" Q Q Q Z N L Z" & #8 & $planet~planet  & "*  *  J  C  *  * ")
 	setTextTrigger		Landed		:Landed		"Citadel command (?"
 	setTextLineTrigger	NotLanded	:NotLanded	"Are you sure you want to jettison all cargo"
 	pause
@@ -924,7 +924,7 @@ return
 			pause
 			:pwarpNoFuel1
 				killalltriggers
-				setVar $SWITCHBOARD~message "Not enough fuel on planet "&$planet&". Stopping mine sweeper.*"
+				setVar $SWITCHBOARD~message "Not enough fuel on planet "&$planet~planet&". Stopping mine sweeper.*"
 				gosub :SWITCHBOARD~switchboard
 				halt
 			:pwarpYesShip1
@@ -1022,13 +1022,13 @@ return
 	end
 	gosub :PLAYER~quikstats
 	if ($PLAYER~CURRENT_PROMPT = "Command")
-		send "l "&$PLANET~planet&"* m * * * c "
+		send "l "&$planet~planet&"* m * * * c "
 	end
 	return
 
 :xenter
 	
-	send "r y n * t* * *" $password "*    *    *    m * * *  c       q    q  *     *       za9999*   z*   l j" & #8 & $PLANET~Planet & "* c   "
+	send "r y n * t* * *" $password "*    *    *    m * * *  c       q    q  *     *       za9999*   z*   l j" & #8 & $planet~planet & "* c   "
 	
 
 	return
@@ -1042,7 +1042,7 @@ return
 	if ($bwarp = true)
 		setVar $i 0
 		setvar $bwarp_move  "b"&$player~current_sector&"*"
-		setvar $bwarp_clear "y   l j" & #8 & #8 & #8 & #8 & #8 & $PLANET~PLANET & "*  j  c  *  "
+		setvar $bwarp_clear "y   l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  j  c  *  "
 		
 		while ($i <= 3)
 			if ($reckless <> true)
@@ -1088,7 +1088,7 @@ return
 			setVar $_LIMPS_ "h 2 z " & $grid_limpets & "* z c * "
 		end
 
-		send "q  q  "&$_ARMIDS_&$_LIMPS_&" l "&$PLANET~Planet&"*  c  "
+		send "q  q  "&$_ARMIDS_&$_LIMPS_&" l "&$planet~planet&"*  c  "
 		setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
 		setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
 		gosub :PLAYER~quikstats
@@ -1113,7 +1113,7 @@ return
 				setVar $_LIMPS_ "h 2 z " & $grid_limpets & "* z c * "
 			end
 
-			send $_ARMIDS_&$_LIMPS_&" l "&$PLANET~Planet&"*  c  "
+			send $_ARMIDS_&$_LIMPS_&" l "&$planet~planet&"*  c  "
 			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
 			setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
 			gosub :PLAYER~quikstats
@@ -1125,7 +1125,7 @@ return
 			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
 			setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
 			
-			send "t*   *    *" & PASSWORD & "*    *    *   q  *  *  h 1 z "&$grid_armids&"* z c * h 2 z "&$grid_limpets&"* z c * l "&$PLANET~Planet&"*  c  "
+			send "t*   *    *" & PASSWORD & "*    *    *   q  *  *  h 1 z "&$grid_armids&"* z c * h 2 z "&$grid_limpets&"* z c * l "&$planet~planet&"*  c  "
 			waiton "Citadel command"
 		end
 	end
@@ -1144,7 +1144,7 @@ return
 
 
 :deployEquipment
-	send "q  q  h  1  z " & $grid_armids & "*  z c  *  h  2  z " & $grid_limpets & "*  z c  *   l " & $PLANET~PLANET  & "*  c "
+	send "q  q  h  1  z " & $grid_armids & "*  z c  *  h  2  z " & $grid_limpets & "*  z c  *   l " & $planet~planet  & "*  c "
 	gosub :PLAYER~quikstats
 	if ($beforeSector <> $PLAYER~CURRENT_SECTOR)
 		gosub :callSaveMe
@@ -1313,27 +1313,27 @@ return
 
 	:TurnsRequired_TPW
 	killAllTriggers
-	getWord CURRENTLINE $TurnsRequired_TPW 5
+	getWord CURRENTLINE $player~turnsRequired_TPW 5
 
 	if ($RED_adj > 0)
 		# twarp to jmp sector, then into SD sect, then twarp home
-		setVar $TurnsRequired_temp ($TurnsRequired_TPW * 3)
+		setVar $player~turnsRequired_temp ($player~turnsRequired_TPW * 3)
 		if ($_Tow > 0)
 			# 2 Turns for exporting into other ship and back again
-			add $TurnsRequired_temp 2
+			add $player~turnsRequired_temp 2
 			# 3 Turns for initial Port then x into other ship, port & shop, then x and report
 			#   b4 heading home
-			add $TurnsRequired_temp 3
+			add $player~turnsRequired_temp 3
 		else
-			add $TurnsRequired_temp 1
+			add $player~turnsRequired_temp 1
 		end
 	else
-		setVar $TurnsRequired_temp ($TurnsRequired_TPW * 2)
+		setVar $player~turnsRequired_temp ($player~turnsRequired_TPW * 2)
 		# 1 Turn to port at dock
-		add $TurnsRequired_temp 1
+		add $player~turnsRequired_temp 1
 	end
 
-	setVar $TurnsRequired $TurnsRequired_temp
+	setVar $player~turnsRequired $player~turnsRequired_temp
 	return
 
 

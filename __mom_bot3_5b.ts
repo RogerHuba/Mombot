@@ -76,8 +76,8 @@ return
     saveVar $home_sector
     setVar $alarm_list $bot~alarm_list
     saveVar $alarm_list
-    setVar $unlimitedGame $player~unlimitedGame
-    saveVar $unlimitedGame
+    setVar $player~unlimitedGame $player~unlimitedGame
+    saveVar $player~unlimitedGame
     setVar $bot_turn_limit $bot~bot_turn_limit
     saveVar $bot_turn_limit
     setVar $steal_factor $game~steal_factor

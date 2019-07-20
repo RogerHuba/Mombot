@@ -27,7 +27,7 @@ gosub :BOT~banner
 goto :Start_Up_Routines
 :colo_next
 	setvar $colo_sector $PLAYER~CURRENT_SECTOR
-	setvar $mcol_holds $PLAYER~TOTAL_HOLDS
+	setvar $mcol_holds $player~total_holds
 
 	
 	if ($colo_type = "r")
@@ -77,7 +77,7 @@ goto :Start_Up_Routines
 	striptext $colo_hops2 "("
 	setVar $colo_fuel2 ($colo_hops2 * 3)
 	if ($BWARP)
-		if ($colo_hops1 > $PLANET~PLANET_TRANSPORT)
+		if ($colo_hops1 > $planet~planet_TRANSPORT)
 			setVar $SWITCHBOARD~message "B-Warp on planet not upgraded enough for B-warp Colo*"
 			gosub :SWITCHBOARD~switchboard
 			halt
@@ -154,16 +154,16 @@ goto :Start_Up_Routines
 
 :colo_land
 	if ($camoHolds = TRUE)
-		if (($camo_holds + $colo_fuel) >= $PLAYER~TOTAL_HOLDS)
+		if (($camo_holds + $colo_fuel) >= $player~total_holds)
 			setVar $SWITCHBOARD~message "Too many camo holds for this ship.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
-		send " j y l " $PLANET~planet "*  t * t 1 " ($colo_fuel+$camo_holds) "*  "
+		send " j y l " $planet~planet "*  t * t 1 " ($colo_fuel+$camo_holds) "*  "
 	else
 		if ($doubleOre = TRUE)
 			
-			send " j y l " $PLANET~planet "*  "
+			send " j y l " $planet~planet "*  "
 			if ($doubleOreGet = TRUE)
 				setVar $doubleOreGet FALSE
 				send "t * t 1 " $colo_fuel "*  "
@@ -173,12 +173,12 @@ goto :Start_Up_Routines
 			end
 		else
 			if ($colo_type = "p")
-				send " j y " $portBurst " l " $PLANET~planet "*  "
+				send " j y " $portBurst " l " $planet~planet "*  "
 				if ($BWARP)
 					send " t  n   l   1   " $leave_ore " *  "
 				end
 			else
-				send " j y l " $PLANET~planet "*  t * t 1 " $colo_fuel "*  "
+				send " j y l " $planet~planet "*  t * t 1 " $colo_fuel "*  "
 			end
 		end
 	end
@@ -202,7 +202,7 @@ goto :Start_Up_Routines
 		while (TRUE)
 			if (($PLAYER~unlimitedGame = FALSE) AND ($PLAYER~TURNS < ($BOT~bot_turn_limit+$PLAYER~TURNSPerCycle)))
 				if ($BWARP = FALSE)
-					send "l "&$PLANET~PLANET&"* "
+					send "l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
@@ -223,12 +223,12 @@ goto :Start_Up_Routines
 			:noFuel2
 				killalltriggers
 				if ($BWARP = FALSE)
-					send "* * l "&$PLANET~planet&"* "
+					send "* * l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
 				end
-				setVar $SWITCHBOARD~message "Colonizer needs more fuel on planet "&$PLANET~planet&"."
+				setVar $SWITCHBOARD~message "Colonizer needs more fuel on planet "&$planet~planet&"."
 				gosub :SWITCHBOARD~switchboard
 				halt
 
@@ -264,7 +264,7 @@ goto :Start_Up_Routines
 
 			:twarp_lock
 				killAllTriggers
-				send " y * l "&$PLANET~planet&"* s**"&$colo_prod&"* "
+				send " y * l "&$planet~planet&"* s**"&$colo_prod&"* "
 
 			setTextLineTrigger	33 				:more			"The Colonists disembark"
 			setTextLineTrigger	34				:next_item		"There isn't room on the planet"
@@ -279,7 +279,7 @@ goto :Start_Up_Routines
 			if ($colo_prod >= 4)
 				setVar $SWITCHBOARD~message "Planet is full of colonists, no more can be added. Colonizer shutting down.**"
 				gosub :SWITCHBOARD~switchboard
-				send "l "&$PLANET~planet&"* "
+				send "l "&$planet~planet&"* "
 				if ($startingLocation = "Citadel")
 					send "c "
 				end
@@ -305,7 +305,7 @@ goto :Start_Up_Routines
 		while (($i < $colo_cycles) OR ($keepGoing))
 			if (($PLAYER~unlimitedGame = FALSE) AND ($PLAYER~TURNS < ($BOT~bot_turn_limit+$PLAYER~TURNSPerCycle)))
 				if ($BWARP = FALSE)
-					send "l "&$PLANET~PLANET&"* "
+					send "l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
@@ -332,7 +332,7 @@ goto :Start_Up_Routines
 				end
 
 			end
-			setVar $coloBurst $coloBurst&"m "&$colo_sector&"* y y    * l "&$PLANET~planet&"* s * * "&$colo_prod&"*"
+			setVar $coloBurst $coloBurst&"m "&$colo_sector&"* y y    * l "&$planet~planet&"* s * * "&$colo_prod&"*"
 			
 			
 
@@ -345,7 +345,7 @@ goto :Start_Up_Routines
 
 				
 				#setVar $coloBurst $coloBurst&"  t * t 1"&$colo_fuel&"* c "
-				setVar $coloBurst $coloBurst& "   q   "&$portBurst&"l "&$PLANET~planet&"*  t  n   l   1   "&$leave_ore&" *  c "
+				setVar $coloBurst $coloBurst& "   q   "&$portBurst&"l "&$planet~planet&"*  t  n   l   1   "&$leave_ore&" *  c "
 			else
 				if ($colo_prod < 3)
 					#setVar $coloBurst $coloBurst&"s * * "&($colo_prod+1)&"* t * t 1"&$colo_fuel&"* q q * "
@@ -376,12 +376,12 @@ goto :Start_Up_Routines
 			:noFuelPort
 				killalltriggers
 				if ($BWARP <> TRUE)
-					send "* * l "&$PLANET~planet&"* "
+					send "* * l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
 				end
-				setVar $SWITCHBOARD~message "Colonizer needs more fuel on planet "&$PLANET~planet&".*"
+				setVar $SWITCHBOARD~message "Colonizer needs more fuel on planet "&$planet~planet&".*"
 				gosub :SWITCHBOARD~switchboard
 				halt
 			:doneport
@@ -389,7 +389,7 @@ goto :Start_Up_Routines
 				setVar $SWITCHBOARD~message "Terra is empty. Colonizer shutting down.*"
 				gosub :SWITCHBOARD~switchboard
 				if ($BWARP <> TRUE)
-					send "l "&$PLANET~planet&"* "
+					send "l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
@@ -405,7 +405,7 @@ goto :Start_Up_Routines
 					saveVar $mode
 					setVar $SWITCHBOARD~message "Planet is full of colonists, no more can be added. Colonizer shutting down.*"
 					gosub :SWITCHBOARD~switchboard
-					send "l "&$PLANET~planet&"* "
+					send "l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
@@ -429,7 +429,7 @@ goto :Start_Up_Routines
 		while (($i < $colo_cycles) OR ($keepGoing))
 			if (($PLAYER~unlimitedGame = FALSE) AND ($PLAYER~TURNS < ($BOT~bot_turn_limit+$PLAYER~TURNSPerCycle)))
 				if ($BWARP = FALSE)
-					send "l "&$PLANET~PLANET&"* "
+					send "l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
@@ -456,7 +456,7 @@ goto :Start_Up_Routines
 				end
 
 			end
-			setVar $coloBurst $coloBurst&"m "&$colo_sector&"* y y    * l "&$PLANET~planet&"* s * * "&$colo_prod&"*"
+			setVar $coloBurst $coloBurst&"m "&$colo_sector&"* y y    * l "&$planet~planet&"* s * * "&$colo_prod&"*"
 			if ($BWARP = TRUE)
 				if ($colo_prod < 3)
 					setVar $coloBurst $coloBurst&"s * * "&($colo_prod+1)&"* "
@@ -504,12 +504,12 @@ goto :Start_Up_Routines
 			:noFuel
 				killalltriggers
 				if ($BWARP <> TRUE)
-					send "* * l "&$PLANET~planet&"* "
+					send "* * l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
 				end
-				setVar $SWITCHBOARD~message "Colonizer needs more fuel on planet "&$PLANET~planet&".*"
+				setVar $SWITCHBOARD~message "Colonizer needs more fuel on planet "&$planet~planet&".*"
 				gosub :SWITCHBOARD~switchboard
 				halt
 			:donespeed
@@ -517,7 +517,7 @@ goto :Start_Up_Routines
 				setVar $SWITCHBOARD~message "Terra is empty. Colonizer shutting down.*"
 				gosub :SWITCHBOARD~switchboard
 				if ($BWARP <> TRUE)
-					send "l "&$PLANET~planet&"* "
+					send "l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
@@ -533,7 +533,7 @@ goto :Start_Up_Routines
 					saveVar $mode
 					setVar $SWITCHBOARD~message "Planet is full of colonists, no more can be added. Colonizer shutting down.*"
 					gosub :SWITCHBOARD~switchboard
-					send "l "&$PLANET~planet&"* "
+					send "l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
@@ -561,7 +561,7 @@ goto :Start_Up_Routines
 			gosub :PLAYER~quikstats
 			if (($PLAYER~unlimitedGame = FALSE) AND ($PLAYER~turns < ($BOT~bot_turn_limit+$PLAYER~TURNSPerCycle)))
 				if ($BWARP = FALSE)
-					send "l "&$PLANET~PLANET&"* "
+					send "l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
@@ -594,7 +594,7 @@ goto :Start_Up_Routines
 				send $colo_colos&"* "
 				setVar $colo_got $colo_colos
 			end
-			setVar $coloBurst "m "&$colo_sector&"* y y    * l "&$PLANET~planet&"* s * * "&$colo_prod&"*"
+			setVar $coloBurst "m "&$colo_sector&"* y y    * l "&$planet~planet&"* s * * "&$colo_prod&"*"
 			if ($BWARP)
 				if ($colo_prod < 3)
 					setVar $coloBurst $coloBurst&"s * * "&($colo_prod+1)&"* t * t 1"&$colo_fuel&"* c "
@@ -626,12 +626,12 @@ goto :Start_Up_Routines
 			:noFuelTimed
 				killalltriggers
 				if ($BWARP <> TRUE)
-					send "* * l "&$PLANET~PLANET&"* "
+					send "* * l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
 				end
-				setVar $SWITCHBOARD~message "Colonizer needs more fuel on planet "&$PLANET~PLANET&".*"
+				setVar $SWITCHBOARD~message "Colonizer needs more fuel on planet "&$planet~planet&".*"
 				gosub :SWITCHBOARD~switchboard
 				halt
 
@@ -644,7 +644,7 @@ goto :Start_Up_Routines
 					setVar $SWITCHBOARD~message "Planet is full of colonists, no more can be added. Colonizer shutting down.*"
 					gosub :SWITCHBOARD~switchboard
 					if ($BWARP <> TRUE)
-						send "l "&$PLANET~PLANET&"* "
+						send "l "&$planet~planet&"* "
 						if ($startingLocation = "Citadel")
 							send "c "
 						end
@@ -668,7 +668,7 @@ goto :Start_Up_Routines
 		while (TRUE)
 			if (($PLAYER~unlimitedGame = FALSE) AND ($PLAYER~TURNS < ($BOT~bot_turn_limit+$PLAYER~TURNSPerCycle)))
 				if ($BWARP = FALSE)
-					send "l "&$PLANET~PLANET&"* "
+					send "l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
@@ -701,7 +701,7 @@ goto :Start_Up_Routines
 
 				end
 			end
-			setVar $coloBurst $coloBurst&"m "&$colo_sector&"* y y    * l "&$PLANET~planet&"* s * * "&$colo_prod&"*"
+			setVar $coloBurst $coloBurst&"m "&$colo_sector&"* y y    * l "&$planet~planet&"* s * * "&$colo_prod&"*"
 			if ($BWARP = TRUE)
 				if ($colo_prod < 3)
 					setVar $coloBurst $coloBurst&"s * * "&($colo_prod+1)&"* t * t 1"&$colo_fuel&"* c "
@@ -736,12 +736,12 @@ goto :Start_Up_Routines
 			:noFuelRed
 				killalltriggers
 				if ($BWARP <> TRUE)
-					send "* * l "&$PLANET~planet&"* "
+					send "* * l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
 				end
-				setVar $SWITCHBOARD~message "Colonizer needs more fuel on planet "&$PLANET~planet&".*"
+				setVar $SWITCHBOARD~message "Colonizer needs more fuel on planet "&$planet~planet&".*"
 				gosub :SWITCHBOARD~switchboard
 				halt
 			:donered
@@ -749,7 +749,7 @@ goto :Start_Up_Routines
 				setVar $SWITCHBOARD~message "Terra is empty. Colonizer shutting down.*"
 				gosub :SWITCHBOARD~switchboard
 				if ($BWARP <> TRUE)
-					send "l "&$PLANET~planet&"* "
+					send "l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
@@ -764,7 +764,7 @@ goto :Start_Up_Routines
 					saveVar $mode
 					setVar $SWITCHBOARD~message "Planet is full of colonists, no more can be added. Colonizer shutting down.*"
 					gosub :SWITCHBOARD~switchboard
-					send "l "&$PLANET~planet&"* "
+					send "l "&$planet~planet&"* "
 					if ($startingLocation = "Citadel")
 						send "c "
 					end
