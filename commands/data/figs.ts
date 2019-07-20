@@ -31,6 +31,7 @@
 :start_figs
 	gosub :player~turnoffansi
 	setvar $switchboard~message "Loading current fighter locations. . .*"
+	gosub :switchboard~switchboard
 	getSectorParameter 2 "FIG_COUNTR" $previousCount
 	getSectorParameter 2 "FUEL_COUNT" $previousFuelCount
 	getSectorParameter 2 "ORG_COUNT" $previousOrgCount
@@ -318,3 +319,4 @@ include "source\bot_includes\player\turnoffansi\player"
 include "source\bot_includes\player\turnonansi\player"
 include "source\bot_includes\player\formatnumberforspaces\player"
 include "source\bot_includes\planet\landingsub\planet"
+include "source\bot_includes\switchboard\"
