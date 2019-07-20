@@ -1,7 +1,4 @@
-
-
 gosub :player~init 
-
 
 window COMS 250 400 "Who's Playing?" ONTOP
 setwindowcontents COMS "Starting up..*"
@@ -196,5 +193,4 @@ pause
 
 
 #includes:
-include "0"
 include "source\bot_includes\player\init\player"

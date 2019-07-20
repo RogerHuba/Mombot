@@ -1,1 +1,0 @@
-for /r %%n in (*.ts) do twxc.exe "%%n"
