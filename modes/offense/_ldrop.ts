@@ -342,7 +342,7 @@ setVar $moveFigMacro ""
 					end
 					:continuePlock
 						killalltriggers
-						send "y '{" $bot_name "} - PLOCK Launched*"
+						send "y '{" $switchboard~bot_name "} - PLOCK Launched*"
 						if ($kill)
 							setVar $targeting~PLANET $planet~PLANET
 							gosub :targeting~initializetargeting
@@ -362,7 +362,7 @@ setVar $moveFigMacro ""
 				:plockFinished
 					killalltriggers
 					send "  s*   "
-					send "'{" $bot_name "} - PLOCK Sector Cleared*"
+					send "'{" $switchboard~bot_name "} - PLOCK Sector Cleared*"
 					send " q  q   "
 					goto :ldrop_scan
 				:manual

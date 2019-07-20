@@ -517,17 +517,17 @@ return
 				if (CONNECTED = FALSE)
 					goto :Disco_Test
 				else
-					send ("'{" &$bot_name& "} - " & $TagLineB & " Problem Detected Unable to Land!*")
+					send ("'{" &$switchboard~bot_name& "} - " & $TagLineB & " Problem Detected Unable to Land!*")
 					halt
 				end
 			:NotLanded
 				killAllTriggers
-				send ("'{" &$bot_name& "} - Boton Unable To Land, Check my TA.*")
-				send ("'{" & $bot_name & "} "&$TagLineB&" - Unable To Land After Reconnect,Check My TA!**")
+				send ("'{" &$switchboard~bot_name& "} - Boton Unable To Land, Check my TA.*")
+				send ("'{" & $switchboard~bot_name & "} "&$TagLineB&" - Unable To Land After Reconnect,Check My TA!**")
 				halt
 			:Landed
 				killAllTriggers
-				send ("'{" & $bot_name & "} "&$TagLineB&" - Restarting!**")
+				send ("'{" & $switchboard~bot_name & "} "&$TagLineB&" - Restarting!**")
 		    	waitfor "Message sent on sub-space channel"
 				goto :inac
 		elseif ($player~current_prompt = "Planet")
@@ -538,7 +538,7 @@ return
 			
 			
 		elseif ($player~current_prompt = "Citadel")
-			send ("'{" & $bot_name & "} "&$TagLineB&" - Restarting!**")
+			send ("'{" & $switchboard~bot_name & "} "&$TagLineB&" - Restarting!**")
 			waitfor "Message sent on sub-space channel"
 	   		goto :inac
 	   	else

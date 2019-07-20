@@ -104,10 +104,10 @@ gosub :switchboard~switchboard
 
 getWordPos $bot~user_command_line $pos "paranoid"
 if ($pos > 0)
-	setVar $paranoid TRUE
+	setVar $bot~parmanoid TRUE
 	setvar $switchboard~message "We are going full spooked mode*"
 else
-	setVar $paranoid FALSE
+	setVar $bot~parmanoid FALSE
 	setvar $switchboard~message "Incoming sectors just need figs*"
 end
 gosub :switchboard~switchboard
@@ -388,7 +388,7 @@ while ($loopi < $readi)
 				end
 				add $i 1
 			end
-			if ($paranoid = TRUE)
+			if ($bot~parmanoid = TRUE)
 				setVar $i 1
 				
 				while ($i <= SECTOR.WARPINCOUNT[$sector])
@@ -485,7 +485,7 @@ if ($player~ALIGNMENT < 1000)
 end
 
 getRnd $rNum 10000 99999 
-setVar $planetName $SHIP_NUMBER  & $rNum
+setVar $planetName $player~ship_number  & $rNum
 
 
 
@@ -1306,7 +1306,7 @@ return
 	pause
 	:epsellwait2
 		killalltriggers
-		send "'{" $bot_name "} - Ep Haggle timed out on Haggle*"
+		send "'{" $switchboard~bot_name "} - Ep Haggle timed out on Haggle*"
 		
 		send "*"
 	

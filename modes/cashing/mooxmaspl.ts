@@ -181,12 +181,12 @@ setWindowContents moo $stuff
 	#logging off
 	#reqRecording
 
-	loadVar $bot_name
+	loadVar $switchboard~bot_name
 	loadVar $unlimitedGame		
 	loadVar $bot_turn_limit		
-	loadVar $user_command_line	
-	loadVar $parm1			
-	loadVar $parm2			
+	loadVar $bot~user_command_line	
+	loadVar $bot~parm1			
+	loadVar $bot~parm2			
 	loadVar $dropOffensive			
 	loadVar $dropToll			
 	loadVar $surroundFigs			
@@ -1294,7 +1294,7 @@ return
 	pause
 	:epsellwait2
 		killalltriggers
-		send "'{" $bot_name "} - Ep Haggle timed out on Haggle*"
+		send "'{" $switchboard~bot_name "} - Ep Haggle timed out on Haggle*"
 		
 		send "*"
 	

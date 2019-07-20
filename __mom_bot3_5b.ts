@@ -17,34 +17,25 @@ goto :BOT~load_bot
     saveVar $bot~command
     setVar $command $bot~command
     saveVar $command
-    setVar $user_command_line $bot~user_command_line
-    saveVar $user_command_line
+        saveVar $bot~user_command_line
     saveVar $bot~user_command_line
-    setVar $bot_name $bot~bot_name
-    saveVar $bot_name
-    setVar $parm1 $bot~parm1
+    setVar $switchboard~bot_name $bot~bot_name
+    saveVar $switchboard~bot_name
+        saveVar $bot~parm1
     saveVar $bot~parm1
-    saveVar $parm1
-    setVar $parm2 $bot~parm2
-    saveVar $parm2
+        saveVar $bot~parm2
     saveVar $bot~parm2
-    setVar $parm3 $bot~parm3
-    saveVar $parm3
+        saveVar $bot~parm3
     saveVar $bot~parm3
-    setVar $parm4 $bot~parm4
-    saveVar $parm4
+        saveVar $bot~parm4
     saveVar $bot~parm4
-    setVar $parm5 $bot~parm5
-    saveVar $parm5
+        saveVar $bot~parm5
     saveVar $bot~parm5
-    setVar $parm6 $bot~parm6
-    saveVar $parm6
+        saveVar $bot~parm6
     saveVar $bot~parm6
-    setVar $parm7 $bot~parm7
-    saveVar $parm7
+        saveVar $bot~parm7
     saveVar $bot~parm7
-    setVar $parm8 $bot~parm8
-    saveVar $parm8
+        saveVar $bot~parm8
     saveVar $bot~parm8
     saveVar $bot~bot_turn_limit
     saveVar $player~unlimitedGame
@@ -60,28 +51,19 @@ return
     saveVar $safe_planet
     setVar $command $bot~command
     saveVar $command
-    setVar $user_command_line $bot~user_command_line
-    saveVar $user_command_line
-    setVar $bot_name $bot~bot_name
-    saveVar $bot_name
+        saveVar $bot~user_command_line
+    setVar $switchboard~bot_name $bot~bot_name
+    saveVar $switchboard~bot_name
     setVar $self_command $bot~self_command
     saveVar $self_command
-    setVar $parm1 $bot~parm1
-    saveVar $parm1
-    setVar $parm2 $bot~parm2
-    saveVar $parm2
-    setVar $parm3 $bot~parm3
-    saveVar $parm3
-    setVar $parm4 $bot~parm4
-    saveVar $parm4
-    setVar $parm5 $bot~parm5
-    saveVar $parm5
-    setVar $parm6 $bot~parm6
-    saveVar $parm6
-    setVar $parm7 $bot~parm7
-    saveVar $parm7
-    setVar $parm8 $bot~parm8
-    saveVar $parm8
+        saveVar $bot~parm1
+        saveVar $bot~parm2
+        saveVar $bot~parm3
+        saveVar $bot~parm4
+        saveVar $bot~parm5
+        saveVar $bot~parm6
+        saveVar $bot~parm7
+        saveVar $bot~parm8
     setVar $rylos $map~rylos
     saveVar $rylos
     setVar $alpha_centauri $map~alpha_centauri
@@ -141,6 +123,7 @@ include "source\bot_includes\grid\surround\grid"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\map\displayadjacentgridansi\map"
 include "source\bot_includes\map\commas\map"
+include "source\bot_includes\map\displaysector\map"
 include "source\bot_includes\game\gamestats\game"
 
 

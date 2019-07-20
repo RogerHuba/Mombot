@@ -2,30 +2,30 @@
 	reqRecording
 #Ender Passive Grid, version 1.0
 #This is to be used in games where hitting enemy figs is NOT an option. But gridding is to be done all the same.
-loadVar $bot_name
-loadVar $user_command_line
-loadVar $parm1
-loadVar $parm2
-loadVar $parm3
-loadVar $parm4
-loadVar $parm5
-loadVar $parm6
-loadVar $parm7
-loadVar $parm8
+loadVar $switchboard~bot_name
+loadVar $bot~user_command_line
+loadVar $bot~parm1
+loadVar $bot~parm2
+loadVar $bot~parm3
+loadVar $bot~parm4
+loadVar $bot~parm5
+loadVar $bot~parm6
+loadVar $bot~parm7
+loadVar $bot~parm8
 loadVar $stardock
 loadVar $rylos
 loadVar $alpha_centauri
 loadVar $home_sector
 
         # ============================ START QUIKSTAT VARIABLES ==========================
-                setVar $CURRENT_PROMPT          "Undefined"
+                setVar $player~current_prompt          "Undefined"
                 setVar $PSYCHIC_PROBE           "No"
-                setVar $PLANET_SCANNER          "No"
+                setVar $player~planet_scanner          "No"
                 setVar $SCAN_TYPE               "None"
-                setVar $CURRENT_SECTOR          0
+                setVar $player~current_sector          0
                 setVar $TURNS                   0
                 setVar $CREDITS                 0
-                setVar $FIGHTERS                0
+                setVar $player~fighters                0
                 setVar $SHIELDS                 0
                 setVar $TOTAL_HOLDS             0
                 setVar $ORE_HOLDS               0
@@ -46,7 +46,7 @@ loadVar $home_sector
                 setVar $ALIGNMENT               0
                 setVar $EXPERIENCE              0
                 setVar $CORP                    0
-                setVar $SHIP_NUMBER             0
+                setVar $player~ship_number             0
                 setVar $TURNS_PER_WARP          0
                 setVar $COMMAND_PROMPT          "Command"
                 setVar $COMPUTER_PROMPT         "Computer"
@@ -59,18 +59,18 @@ loadVar $home_sector
                 setVar $TERRA_PROMPT            "Terra"
         # ============================ END QUIKSTAT VARIABLES ==========================
 
-getWord $user_command_line $parm1 1
-getWord $user_command_line $parm2 2
-getWord $user_command_line $parm3 3
-getWord $user_command_line $parm4 4
-getWord $user_command_line $parm5 5
-getWord $user_command_line $parm6 6
-getWord $user_command_line $parm7 7
-getWord $user_command_line $parm8 8
+getWord $bot~user_command_line $bot~parm1 1
+getWord $bot~user_command_line $bot~parm2 2
+getWord $bot~user_command_line $bot~parm3 3
+getWord $bot~user_command_line $bot~parm4 4
+getWord $bot~user_command_line $bot~parm5 5
+getWord $bot~user_command_line $bot~parm6 6
+getWord $bot~user_command_line $bot~parm7 7
+getWord $bot~user_command_line $bot~parm8 8
 
 
-	if ($parm1 = "help")
-	        send "'*{" $bot_name "} passgrid - passgrid [limpets] [mines] **"
+	if ($bot~parm1 = "help")
+	        send "'*{" $switchboard~bot_name "} passgrid - passgrid [limpets] [mines] **"
 		halt
 	end
 	
@@ -81,29 +81,29 @@ getWord $user_command_line $parm8 8
 	setArray $anom 7
 	setArray $explored 7
 
-	gosub :quikstats
-	setVar $startingLocation $CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~current_prompt
 	if (($startingLocation <> "Citadel") AND ($startingLocation <> "Command"))
-		send "'{" $bot_name "} - Passive gridder must be run from Command or Citadel prompt.*"
+		send "'{" $switchboard~bot_name "} - Passive gridder must be run from Command or Citadel prompt.*"
 		halt	
 	end
 	if (($SCAN_TYPE <> "Holo") AND ($SCAN_TYPE <> "Dens"))
-		send "'{" $bot_name "} - Must have at least Density scanner to run passive gridder.*"
+		send "'{" $switchboard~bot_name "} - Must have at least Density scanner to run passive gridder.*"
 		halt
 	end
-	getWordPos " "&$user_command_line&" " $pos " f "
+	getWordPos " "&$bot~user_command_line&" " $pos " f "
 	if ($pos > 0)
 		setVar $deployfigs TRUE
 	else
 		setVar $deployfigs FALSE
 	end
-	getWordPos " "&$user_command_line&" " $pos " l "
+	getWordPos " "&$bot~user_command_line&" " $pos " l "
 	if ($pos > 0)
 		setVar $deploylimpets TRUE
 	else
 		setVar $deploylimpets FALSE
 	end
-	getWordPos " "&$user_command_line&" " $pos " m "
+	getWordPos " "&$bot~user_command_line&" " $pos " m "
 	if ($pos > 0)
 		setVar $deploymines TRUE
 	else
@@ -275,9 +275,9 @@ getWord $user_command_line $parm8 8
 		end
 		send $attack
 		#waitFor "]:["&$warp[$bestWarp]&"]"
-	  	gosub :quikstats
-		if ($CURRENT_SECTOR <> $warp[$bestWarp])
-			send "'{" $bot_name "} - Did not make it to target sector!*"
+	  	gosub :player~quikstats
+		if ($player~current_sector <> $warp[$bestWarp])
+			send "'{" $switchboard~bot_name "} - Did not make it to target sector!*"
 			halt
 		end
 		
@@ -290,7 +290,7 @@ goto :sub_Scan
 	end
 
 	if ($counter = 2)
-	    	send "'{" $bot_name "} - Passive grid stopping. Either in dead end, or no safe options.*"
+	    	send "'{" $switchboard~bot_name "} - Passive grid stopping. Either in dead end, or no safe options.*"
 	    	HALT
 	end
 	send "<"
@@ -349,11 +349,11 @@ goto :sub_Scan
 	killAllTriggers
 	goto :haggleTracker
 
-:quikstats
+:player~quikstats
 
 
 
-     	setVar $CURRENT_PROMPT 		"Undefined"
+     	setVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt1
 	killtrigger prompt2
@@ -367,9 +367,9 @@ goto :sub_Scan
 	pause
 
 	:allPrompts
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
+		getWord CURRENTLINE $player~current_prompt 1
+		stripText $player~current_prompt #145
+		stripText $player~current_prompt #8
 		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
 		pause
 
@@ -404,13 +404,13 @@ goto :sub_Scan
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
 				getWord $stats $TURNS  			($current_word + 1)
 			elseif ($wordy = "Creds")
 				getWord $stats $CREDITS  		($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
+				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
 				getWord $stats $SHIELDS  		($current_word + 1)
 			elseif ($wordy = "Hlds")
@@ -448,7 +448,7 @@ goto :sub_Scan
 			elseif ($wordy = "PsPrb")
 				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
 				getWord $stats $SCAN_TYPE    		($current_word + 1)
 			elseif ($wordy = "Aln")
@@ -458,7 +458,7 @@ goto :sub_Scan
 			elseif ($wordy = "Corp")
 				getWord $stats $CORP   			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word

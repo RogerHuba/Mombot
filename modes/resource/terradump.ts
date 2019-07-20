@@ -1,15 +1,6 @@
 logging off
 	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 setVar $BOT~help[1] $BOT~tab&"terradump"
 setVar $BOT~help[2] $BOT~tab&"Start in non-fed sector.  Will pull colos off terra and jettison."
@@ -66,7 +57,7 @@ goto :Start_Up_Routines
 
 			:donespeed
 				killtrigger 33
-				send "'{" $bot_name "} - Terra is empty. Colonizer shutting down.*"
+				send "'{" $switchboard~bot_name "} - Terra is empty. Colonizer shutting down.*"
 				halt
 			:morespeed
 				killtrigger 33
@@ -78,16 +69,16 @@ halt
 :Start_Up_Routines
 	loadVar $unlimitedGame
 	loadVar $bot_turn_limit
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
-	loadVar $bot_name
+	loadVar $bot~user_command_line
+	loadVar $bot~parm1
+	loadVar $bot~parm2
+	loadVar $bot~parm3
+	loadVar $bot~parm4
+	loadVar $bot~parm5
+	loadVar $bot~parm6
+	loadVar $bot~parm7
+	loadVar $bot~parm8
+	loadVar $switchboard~bot_name
 
 
 # ======================     START COLO  (COLO) SUBROUTINE    ==========================
@@ -95,7 +86,7 @@ halt
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation <> "Command")
-		send "'{" $bot_name "} - Colo must be run from Command prompt*"
+		send "'{" $switchboard~bot_name "} - Colo must be run from Command prompt*"
 		halt
 	end
 	send " jy*  "

@@ -12,8 +12,8 @@
 	gosub :bot~helpfile
 
 	if ($bot~parm1 <> "0")
-		setVar $PARAM $bot~parm1
-		upperCase $PARAM
+		setVar $bot~parmAM $bot~parm1
+		upperCase $bot~parmAM
 	end
 	gosub :player~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
@@ -49,11 +49,11 @@
 
 	gosub :getTargets
 
-	setvar $switchboard~message "Starting up probe this!  Probing all unexplored sectors with "&$PARAM&" set.*"
+	setvar $switchboard~message "Starting up probe this!  Probing all unexplored sectors with "&$bot~parmAM&" set.*"
 	gosub :switchboard~switchboard
 
 	if ($databasecount <= 0)
-		setvar $switchboard~message "No sector parameters found for "&$PARAM&" set to a value of "&$output&" or already explored.*"
+		setvar $switchboard~message "No sector parameters found for "&$bot~parmAM&" set to a value of "&$output&" or already explored.*"
 		gosub :switchboard~switchboard
 		halt
 	end
@@ -103,7 +103,7 @@
 	while ($i <= SECTORS)
 		getWordPos $path_database $pos " "&$i&" "
 		if ($pos <= 0)
-			getSectorParameter $i $PARAM $isTrue
+			getSectorParameter $i $bot~parmAM $isTrue
 			if (($isTrue = TRUE) and (((SECTOR.EXPLORED[$i] <> "YES") and ($unexplored = true)) or ($unexplored = false)))
 				setVar $randomSectors $randomSectors&" "&$i&"  "
 				add $databasecount 1

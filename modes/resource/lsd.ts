@@ -4,14 +4,14 @@
 	loadVar $BOT~BOT_TURN_LIMIT
 	loadVar $bot~user_command_line
 	loadVar $LSD_Order
-	gosub	:quikstats
+	gosub	:player~quikstats
     setVar $CURENT_VERSION 		"4.0"
     setVar $TagLineB 			"LSDv" & $CURENT_VERSION
-	setVar $location 			$CURRENT_PROMPT
+	setVar $location 			$player~current_prompt
     setVar $Starting_CREDITS 	$CREDITS
 
     setVar $Starting_TURNS 		$TURNS
-    setVar $START_SECTOR 		$CURRENT_SECTOR
+    setVar $START_SECTOR 		$player~current_sector
 	setVar $ShipData_Valid		FALSE
 	setVar $Ships_Names			"][LSD]["
 	setVar $Ships_File 			"LSD_" & GAMENAME & ".ships"
@@ -311,7 +311,7 @@
 	replaceText $CustomShipName "  " "@"
 	stripText $CustomShipName "@"
 
-	gosub :quikstats
+	gosub :player~quikstats
 
 	if (STARDOCK <= 0)
 		send "'{" $BOT~bot_name "} " & $TagLineB & " - Cannot Find Dock!**"
@@ -325,7 +325,7 @@
 
     Gosub :LoadShipData
 
-	setVar $location $CURRENT_PROMPT
+	setVar $location $player~current_prompt
 	getWordPos CURRENTANSILINE $pos #27
 	if ($location = "Command")
 		if ($pos = 0)
@@ -386,7 +386,7 @@
 		send " C  V  0*  Y  N" & $START_SECTOR & "* V  0*  Y  N" & STARDOCK & "* U Y Q *  w  n  * "
 	end
 
-	gosub :quikstats
+	gosub :player~quikstats
 
 	setVar $Start_Creds $CREDITS
 	setVar $Start_Exp $EXPERIENCE
@@ -428,7 +428,7 @@
 
 	#=-------------------This is where we loop too if buying more than one ship
 	:HERE_WE_GO_AGAIN
-		setVar $CurrentShip $SHIP_NUMBER
+		setVar $CurrentShip $player~ship_number
 		add $Runs2Dock 1
 
 		if (($_Tow > 0) AND ($_Trickster = ""))
@@ -572,7 +572,7 @@
 					halt
 				end
 
-	    gosub :quikstats
+	    gosub :player~quikstats
 
         if (($Start_Creds <= 100) AND ($Start_Exp < $EXPERIECE) AND ($Start_Holds <> $TOTAL_HOLDS))
         	send "'{" $BOT~bot_name "} " & $TagLineB & " - Appear To Have Been Podded!**"
@@ -580,7 +580,7 @@
 		end
 
 		if ($_Tow > 0)
-            if ($CURRENT_PROMPT = "<StarDock>")
+            if ($player~current_prompt = "<StarDock>")
 				gosub :DoShipTowedCheck
 				setVar $shipnum $_Tow
 				gosub :DoXport
@@ -589,7 +589,7 @@
 				halt
 			end
 		elseif ($_Trickster <> "")
-            if ($CURRENT_PROMPT = "<StarDock>")
+            if ($player~current_prompt = "<StarDock>")
 				gosub :BUYSHIP
 				if ($NewShipNumber > 0)
 					setVar $_Tow $NewShipNumber
@@ -615,9 +615,9 @@
 			end
 
 			gosub :DoXport
-		    gosub :quikstats
+		    gosub :player~quikstats
 
-			if ($CURRENT_PROMPT <> "<StarDock>")
+			if ($player~current_prompt <> "<StarDock>")
 				send "'{" $BOT~bot_name "} " & $TagLineB & " - Not at Expected StarDock Prompt!**"
 				halt
     		end
@@ -639,23 +639,23 @@
 			end
 		end
 
-		gosub :quikstats
+		gosub :player~quikstats
 
 		waitfor "(?="
-		if ($CURRENT_SECTOR = STARDOCK)
+		if ($player~current_sector = STARDOCK)
 			send "'{" $BOT~bot_name "} " & $TagLineB & " - Twarp Error, Should be Hiding on Dock!**"
 			halt
 		end
 
 		if ($NumberOfShip <> "")
 			if ($NumberOfShip > 1)
-				if ($CURRENT_PROMPT = "Citadel")
+				if ($player~current_prompt = "Citadel")
 					setVar $_Tow 0
 					send " Q  T  N  T  1*  Q  "
 					waitfor "Command [TL"
 					subtract $NumberOfShip 1
 
-					gosub :quikstats
+					gosub :player~quikstats
 					if ($TOTAL_HOLDS <> $ORE_HOLDS)
 						send "'{" $BOT~bot_name "} " & $TagLineB & " - Out Of Gas - Planet appears to have too little ORE to continue!**"
 						halt
@@ -777,8 +777,8 @@
 	end
 	return
 
-:quikstats
-	setVar $CURRENT_PROMPT 		"Undefined"
+:player~quikstats
+	setVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt1
 	killtrigger prompt2
@@ -799,7 +799,7 @@
 		getWord currentline $tempPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
+			setVar $player~current_prompt $tempPrompt
 		end
 		setTextLineTrigger prompt1 :allPrompts "(?="
 		pause
@@ -808,7 +808,7 @@
 		getWord currentline $tempPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
+			setVar $player~current_prompt $tempPrompt
 		end
 		setTextLineTrigger prompt2 :secondaryPrompts "(?)"
 		pause
@@ -818,7 +818,7 @@
 		getWord currentansiline $checkPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			setVar $CURRENT_PROMPT "Terra"
+			setVar $player~current_prompt "Terra"
 		end
 		setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
 		setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
@@ -854,13 +854,13 @@
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
 				getWord $stats $TURNS  			($current_word + 1)
 			elseif ($wordy = "Creds")
 				getWord $stats $CREDITS  		($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
+				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
 				getWord $stats $SHIELDS  		($current_word + 1)
 			elseif ($wordy = "Hlds")
@@ -898,7 +898,7 @@
 			elseif ($wordy = "PsPrb")
 				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
 				getWord $stats $SCAN_TYPE    		($current_word + 1)
 			elseif ($wordy = "Aln")
@@ -908,7 +908,7 @@
 			elseif ($wordy = "Corp")
 				getWord $stats $CORP   			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word
@@ -1155,16 +1155,16 @@
     	goto :TryLockAgain
 
 	:DoTow
-		if ($CURRENT_SECTOR < 10)
-			setVar $TowingPadded $_Tow & "     " & $CURRENT_SECTOR
-		elseif ($CURRENT_SECTOR < 100)
-			setVar $TowingPadded $_Tow & "    " & $CURRENT_SECTOR
-		elseif ($CURRENT_SECTOR < 1000)
-			setVar $TowingPadded $_Tow & "   " & $CURRENT_SECTOR
-		elseif ($CURRENT_SECTOR < 10000)
-			setVar $TowingPadded $_Tow & "  " & $CURRENT_SECTOR
+		if ($player~current_sector < 10)
+			setVar $TowingPadded $_Tow & "     " & $player~current_sector
+		elseif ($player~current_sector < 100)
+			setVar $TowingPadded $_Tow & "    " & $player~current_sector
+		elseif ($player~current_sector < 1000)
+			setVar $TowingPadded $_Tow & "   " & $player~current_sector
+		elseif ($player~current_sector < 10000)
+			setVar $TowingPadded $_Tow & "  " & $player~current_sector
 		else
-			setVar $TowingPadded $_Tow & " " & $CURRENT_SECTOR
+			setVar $TowingPadded $_Tow & " " & $player~current_sector
 		end
 		send "N"
 		killAllTriggers

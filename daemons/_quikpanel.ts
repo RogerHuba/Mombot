@@ -1,18 +1,18 @@
-        loadVar $bot_name
-        loadVar $user_command_line
+        loadVar $switchboard~bot_name
+        loadVar $bot~user_command_line
         loadVar $bot_turn_limit
         loadVar $steal_factor
         loadVar $rob_factor
         loadVar $unlimitedGame
         loadVar $PTRADESETTING
-        setVar $CURRENT_PROMPT 		"Undefined"
+        setVar $player~current_prompt 		"Undefined"
         setVar $PSYCHIC_PROBE 		"No"
-        setVar $PLANET_SCANNER 		"No"
+        setVar $player~planet_scanner 		"No"
         setVar $SCAN_TYPE 		"None"
-        setVar $CURRENT_SECTOR 		0
+        setVar $player~current_sector 		0
         setVar $TURNS 			0
         setVar $CREDITS 		0
-        setVar $FIGHTERS 		0
+        setVar $player~fighters 		0
         setVar $SHIELDS 		0
         setVar $TOTAL_HOLDS 		0
         setVar $ORE_HOLDS 		0
@@ -33,7 +33,7 @@
         setVar $ALIGNMENT 		0
         setVar $EXPERIENCE		0
         setVar $CORP 			0
-        setVar $SHIP_NUMBER		0
+        setVar $player~ship_number		0
         setVar $TURNS_PER_WARP 		0
         systemscript
         reqrecording
@@ -338,8 +338,8 @@
 :optmenu
         cutText CURRENTLINE $location 1 7
         IF ($location = "Command") OR ($location = "Citadel") OR ($location = "Compute") OR ($location = "Corpora") OR ($location = "<StarDo") OR ($location = "Planet ") OR ($location = "Engage ") OR ($location = "Option?") OR ($location = "<Tavern")
-        	gosub :quikstats
-        	setVar $cursec $CURRENT_SECTOR
+        	gosub :player~quikstats
+        	setVar $cursec $player~current_sector
         	setVar $align $ALIGNMENT
         ELSE
         	setVar $align $knownalign
@@ -1426,7 +1426,7 @@ return
 :donewithport
         killalltriggers
         getText CURRENTLINE $sec "]:[" "] ("
-        send "'{" $bot_name "} - CAP Trade, sold units at " & $sec & ":*"
+        send "'{" $switchboard~bot_name "} - CAP Trade, sold units at " & $sec & ":*"
         IF ($ore = 1)
 	       send "   Ore : " $oreamount " units for " $oreprice ", (" $credperoreunit "ppu) (mcic: " $fuelMCIC ")*"
 	       write GAMENAME & "_MCIC.txt" $sec & " - Ore - " & $fuelMCIC
@@ -1510,7 +1510,7 @@ return
         setVar $sec $port1
         setVar $other $port2
         setVar $stopper 0
-        gosub :quikstats
+        gosub :player~quikstats
         setVar $maxholds $HOLDS
         setVAr $finholds $ORE_HOLDS
         setVar $oinholds $ORGANIC_HOLDS
@@ -2158,7 +2158,7 @@ return
 :ssm
 	setVar $noexp 0
 	setVar $sec $port1
-	gosub :quikstats
+	gosub :player~quikstats
 	setVar $exp $EXPERIENCE
 	setVar $thold $TOTAL_HOLDS
 
@@ -2191,7 +2191,7 @@ return
 	setVAr $upg_prod 3
 	gosub :upgradePort
 	IF ($upg_amnt = "-1")
-	       send "'{" $bot_name "} - SSM - Could not upgrade port, it's either maxed or I don't have enough money*"
+	       send "'{" $switchboard~bot_name "} - SSM - Could not upgrade port, it's either maxed or I don't have enough money*"
 	       goto :wait
 	END
 	goto :sport
@@ -2325,8 +2325,8 @@ return
 return
 
 #=================================QUIKSTATS================================================
-:quikstats
-	setVar $CURRENT_PROMPT 		"Undefined"
+:player~quikstats
+	setVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt
 	killtrigger prompt1
@@ -2341,9 +2341,9 @@ return
 	pause
 
 	:allPrompts
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
+		getWord CURRENTLINE $player~current_prompt 1
+		stripText $player~current_prompt #145
+		stripText $player~current_prompt #8
 		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
 		pause
 
@@ -2378,13 +2378,13 @@ return
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
 				getWord $stats $TURNS  			($current_word + 1)
 			elseif ($wordy = "Creds")
 				getWord $stats $CREDITS  		($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
+				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
 				getWord $stats $SHIELDS  		($current_word + 1)
 			elseif ($wordy = "Hlds")
@@ -2422,7 +2422,7 @@ return
 			elseif ($wordy = "PsPrb")
 				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
 				getWord $stats $SCAN_TYPE    		($current_word + 1)
 			elseif ($wordy = "Aln")
@@ -2432,7 +2432,7 @@ return
 			elseif ($wordy = "Corp")
 				getWord $stats $CORP   			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word

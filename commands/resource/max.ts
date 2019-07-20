@@ -1,16 +1,7 @@
 
     logging off
     	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
     setVar $BOT~help[1] $BOT~tab&"Upgrades a port product as much as possible.  "
     setVar $BOT~help[2] $BOT~tab&"         "
@@ -29,24 +20,24 @@
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
     setVar $bot~validPrompts "Citadel Command Planet"
     gosub :bot~checkStartingPrompt
-    if ($parm1 <> "f") AND ($parm1 <> "o") AND ($parm1 <> "e")
+    if ($bot~parm1 <> "f") AND ($bot~parm1 <> "o") AND ($bot~parm1 <> "e")
         send "'{" $SWITCHBOARD~bot_name "} - maxport [f / o / e] noexp*"
         halt
     end
 
-    getWordPos " "&$user_command_line&" " $pos " f "
+    getWordPos " "&$bot~user_command_line&" " $pos " f "
     if ($pos > 0)
         setVar $doFuel TRUE
     end
-    getWordPos " "&$user_command_line&" " $pos " o "
+    getWordPos " "&$bot~user_command_line&" " $pos " o "
     if ($pos > 0)
         setVar $doOrg TRUE
     end
-    getWordPos " "&$user_command_line&" " $pos " e "
+    getWordPos " "&$bot~user_command_line&" " $pos " e "
     if ($pos > 0)
         setVar $doEqu TRUE
     end
-    getWordPos " "&$user_command_line&" " $pos " noexp "
+    getWordPos " "&$bot~user_command_line&" " $pos " noexp "
     if ($pos > 0)
         setVar $no_exp TRUE
     else

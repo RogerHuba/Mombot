@@ -17,65 +17,65 @@ setVar  $citadel_furb	FALSE
 
 
 gosub :_START_
-	isNumber $tst $parm1
+	isNumber $tst $bot~parm1
 	if ($tst = 0)
-		if ($parm1 = "ck")
+		if ($bot~parm1 = "ck")
 			setVar $CK_MODE TRUE
 			#						[norm hold]
-        	isNumber $tst $parm2
+        	isNumber $tst $bot~parm2
         	if ($tst = 0)
-				send "'{" $bot_name "} - Syntax Error: Normal Holds Value Is Not A Number*"
+				send "'{" $switchboard~bot_name "} - Syntax Error: Normal Holds Value Is Not A Number*"
         		halt
         	end
-        	if ($parm2 < 1) OR ($parm2 > 255)
-				if ($parm2 <> 0)
-					send "'{" $bot_name "} - Syntax Error: Normal Holds Value Out Of Range*"
+        	if ($bot~parm2 < 1) OR ($bot~parm2 > 255)
+				if ($bot~parm2 <> 0)
+					send "'{" $switchboard~bot_name "} - Syntax Error: Normal Holds Value Out Of Range*"
         			halt
         		end
         	else
-				SetVar $FURB_nHOLDS $parm2
+				SetVar $FURB_nHOLDS $bot~parm2
         	end
         	#						[fake hold]
-        	isNumber $tst $parm3
+        	isNumber $tst $bot~parm3
         	if ($tst = 0)
-				send "'{" $bot_name "} - Syntax Error: Fake-Bust Holds Value Is Not A Number*"
+				send "'{" $switchboard~bot_name "} - Syntax Error: Fake-Bust Holds Value Is Not A Number*"
         		halt
         	end
-        	if ($parm3 < 1) OR ($parm3 > 255)
-				if ($parm2 <> 0)
-					send "'{" $bot_name "} - Syntax Error: Fake-Bust Holds Value Out Of Range*"
+        	if ($bot~parm3 < 1) OR ($bot~parm3 > 255)
+				if ($bot~parm2 <> 0)
+					send "'{" $switchboard~bot_name "} - Syntax Error: Fake-Bust Holds Value Out Of Range*"
         			halt
         		end
         	else
-				SetVar $FURB_fHOLDS $parm3
+				SetVar $FURB_fHOLDS $bot~parm3
         	end
 			#						[norm letter]
-			replaceText $parm4 "0" $FURB_nLETTER
-			if ($parm4 = "a") or ($parm4 = "b") or ($parm4 = "c") or ($parm4 = "d") or ($parm4 = "e") or ($parm4 = "f") or ($parm4 = "g") or ($parm4 = "h") or ($parm4 = "i") or ($parm4 = "j") or ($parm4 = "k") or ($parm4 = "l")  or ($parm4 = "m") or ($parm4 = "n") or ($parm4 = "o") or ($parm4 = "p") or ($parm4 = "r")
-				setVar $FURB_nLETTER $parm4
+			replaceText $bot~parm4 "0" $FURB_nLETTER
+			if ($bot~parm4 = "a") or ($bot~parm4 = "b") or ($bot~parm4 = "c") or ($bot~parm4 = "d") or ($bot~parm4 = "e") or ($bot~parm4 = "f") or ($bot~parm4 = "g") or ($bot~parm4 = "h") or ($bot~parm4 = "i") or ($bot~parm4 = "j") or ($bot~parm4 = "k") or ($bot~parm4 = "l")  or ($bot~parm4 = "m") or ($bot~parm4 = "n") or ($bot~parm4 = "o") or ($bot~parm4 = "p") or ($bot~parm4 = "r")
+				setVar $FURB_nLETTER $bot~parm4
 			else
-				send "'{" $bot_name "} - Syntax Error: Normal Bust Ship-Letter Value Is Not Valid*"
+				send "'{" $switchboard~bot_name "} - Syntax Error: Normal Bust Ship-Letter Value Is Not Valid*"
         		halt
 			end
 			#						[fake letter]
-			replaceText $parm5 "0" $FURB_fLETTER
-			if ($parm5 = "a") or ($parm5 = "b") or ($parm5 = "c") or ($parm5 = "d") or ($parm5 = "e") or ($parm5 = "f") or ($parm5 = "g") or ($parm5 = "h") or ($parm5 = "i") or ($parm5 = "j") or ($parm5 = "k") or ($parm5 = "l")  or ($parm5 = "m") or ($parm5 = "n") or ($parm5 = "o") or ($parm5 = "p") or ($parm5 = "r")
-				setVar $FURB_fLETTER $parm5
+			replaceText $bot~parm5 "0" $FURB_fLETTER
+			if ($bot~parm5 = "a") or ($bot~parm5 = "b") or ($bot~parm5 = "c") or ($bot~parm5 = "d") or ($bot~parm5 = "e") or ($bot~parm5 = "f") or ($bot~parm5 = "g") or ($bot~parm5 = "h") or ($bot~parm5 = "i") or ($bot~parm5 = "j") or ($bot~parm5 = "k") or ($bot~parm5 = "l")  or ($bot~parm5 = "m") or ($bot~parm5 = "n") or ($bot~parm5 = "o") or ($bot~parm5 = "p") or ($bot~parm5 = "r")
+				setVar $FURB_fLETTER $bot~parm5
 			else
-				send "'{" $bot_name "} - Syntax Error: Normal Bust Ship-Letter Value Is Not Valid*"
+				send "'{" $switchboard~bot_name "} - Syntax Error: Normal Bust Ship-Letter Value Is Not Valid*"
         		halt
 			end
 		end
 	else
-		isNumber $tst $parm1
+		isNumber $tst $bot~parm1
 		if ($tst = 0)
-			send "'{" $bot_name "} - Syntax Error: Ship Number Is Not A Number*"
+			send "'{" $switchboard~bot_name "} - Syntax Error: Ship Number Is Not A Number*"
         	halt
 		end
-       	if ($parm1 > 1) OR ($parm1 <= 2000)
-			SetVar $bustship $parm1
+       	if ($bot~parm1 > 1) OR ($bot~parm1 <= 2000)
+			SetVar $bustship $bot~parm1
 		else
-			send "'{" $bot_name "} - Syntax Error: Ship Number Is Out Of Range*"
+			send "'{" $switchboard~bot_name "} - Syntax Error: Ship Number Is Out Of Range*"
        		halt
 		end
 
@@ -90,7 +90,7 @@ gosub :_START_
 				pause
 			:nofind
 				killtrigger shiploc
-				send "'{" $bot_name "} - Can't find ship " & $bustship & "*"
+				send "'{" $switchboard~bot_name "} - Can't find ship " & $bustship & "*"
 				halt
 			:shiploc
 				killtrigger nofind
@@ -98,14 +98,14 @@ gosub :_START_
 				if ($isbustship = $bustship)
 					getWord CURRENTLINE $bustloc 2
 					if ($bustloc = STARDOCK)
-						send "'{" $bot_name "} - Cannot Furb StarDock Sector*"
+						send "'{" $switchboard~bot_name "} - Cannot Furb StarDock Sector*"
 						halt
 					end
-					send "'{" $bot_name "} - Ship " & $bustship & " found, heading in to citadel furb.*"
+					send "'{" $switchboard~bot_name "} - Ship " & $bustship & " found, heading in to citadel furb.*"
 					setVar $PLAYER~warpto $bustloc
 					gosub :player~twarp
 					if ($PLAYER~twarpSuccess = FALSE)
-						send "'{" $bot_name "} - Couldn't TWARP - something is wrong.  Halting.*"
+						send "'{" $switchboard~bot_name "} - Couldn't TWARP - something is wrong.  Halting.*"
 						halt
 					else
 						send "l "&$planet_number&"* c e y "
@@ -131,7 +131,7 @@ gosub :_START_
 					    elseif (CURRENTSECTOR = $MAP~STARDOCK)
 					        send "p ss ys *p"
 					    else
-							send "'{" $bot_name "} - Couldn't BWARP - something is wrong.  Halting.*"
+							send "'{" $switchboard~bot_name "} - Couldn't BWARP - something is wrong.  Halting.*"
 							halt
 					    end
 					    setVar $SWITCHBOARD~message ""
@@ -167,27 +167,27 @@ gosub :_START_
 			
 		else
 
-			isNumber $tst $parm2
+			isNumber $tst $bot~parm2
 			if ($tst = 0)
-				send "'{" $bot_name "} - Syntax Error: Holds Value Is Not A Number*"
+				send "'{" $switchboard~bot_name "} - Syntax Error: Holds Value Is Not A Number*"
 				halt
 			end
-			if ($parm2 < 1) OR ($parm2 > 255)
-				if ($parm2 <> 0)
-					send "'{" $bot_name "} - Syntax Error: Holds Value Out Of Range*"
+			if ($bot~parm2 < 1) OR ($bot~parm2 > 255)
+				if ($bot~parm2 <> 0)
+					send "'{" $switchboard~bot_name "} - Syntax Error: Holds Value Out Of Range*"
 					halt
 				else
 					SetVar $FURB_nHOLDS 0
 				end
 			else
-				SetVar $FURB_nHOLDS $parm2
+				SetVar $FURB_nHOLDS $bot~parm2
 			end
 	
-			replaceText $parm3 "0" $FURB_nLETTER
-			if ($parm3 = "a") or ($parm3 = "b") or ($parm3 = "c") or ($parm3 = "d") or ($parm3 = "e") or ($parm3 = "f") or ($parm3 = "g") or ($parm3 = "h") or ($parm3 = "i") or ($parm3 = "j") or ($parm3 = "k") or ($parm3 = "l")  or ($parm3 = "m") or ($parm3 = "n") or ($parm3 = "o") or ($parm3 = "p") or ($parm3 = "r")
-			setVar $FURB_nLETTER $parm3
+			replaceText $bot~parm3 "0" $FURB_nLETTER
+			if ($bot~parm3 = "a") or ($bot~parm3 = "b") or ($bot~parm3 = "c") or ($bot~parm3 = "d") or ($bot~parm3 = "e") or ($bot~parm3 = "f") or ($bot~parm3 = "g") or ($bot~parm3 = "h") or ($bot~parm3 = "i") or ($bot~parm3 = "j") or ($bot~parm3 = "k") or ($bot~parm3 = "l")  or ($bot~parm3 = "m") or ($bot~parm3 = "n") or ($bot~parm3 = "o") or ($bot~parm3 = "p") or ($bot~parm3 = "r")
+			setVar $FURB_nLETTER $bot~parm3
 			else
-				send "'{" $bot_name "} - Syntax Error: Ship-Letter Value Is Not Valid*"
+				send "'{" $switchboard~bot_name "} - Syntax Error: Ship-Letter Value Is Not Valid*"
 	       		halt
 			end
 			stripText $bustship "."
@@ -201,9 +201,9 @@ gosub :_START_
 		halt
 	end
 
-	send "'*{" $bot_name "} Starting CK Furb mode:*  -Normal Furbs*     Holds Added: "&$FURB_nHOLDS&"  Ship Letter: "&$FURB_nLETTER&"*  -Fake Furbs*     Holds Added: "&$FURB_fHOLDS&"  Ship Letter: "&$FURB_fLETTER&"**"
+	send "'*{" $switchboard~bot_name "} Starting CK Furb mode:*  -Normal Furbs*     Holds Added: "&$FURB_nHOLDS&"  Ship Letter: "&$FURB_nLETTER&"*  -Fake Furbs*     Holds Added: "&$FURB_fHOLDS&"  Ship Letter: "&$FURB_fLETTER&"**"
 	waitfor "Sub-space comm-link terminated"
-	send "'{" $bot_name "}  - Bot is now mimicking CK Furb.  Use CK Furb calls while this mode is on.*"
+	send "'{" $switchboard~bot_name "}  - Bot is now mimicking CK Furb.  Use CK Furb calls while this mode is on.*"
 	waitfor "Message sent on sub-space channel"
 
 :setCKFurbTriggers
@@ -211,21 +211,21 @@ gosub :_START_
     gosub :PLAYER~quikstats
 
     if (($PLAYER~FIGHTERS + $PLAYER~SHIELDS) < 1000)
-		send "'{" $bot_name "} - Have too few Fighters/Shields To Survive 100% Haz*"
+		send "'{" $switchboard~bot_name "} - Have too few Fighters/Shields To Survive 100% Haz*"
 		halt
 	end
 	if ($UNLIMITEDGAME = FALSE) and ($PLAYER~TURNS < 10)
-		send "'{" $bot_name "} - Too Low On Turns To Continue*"
+		send "'{" $switchboard~bot_name "} - Too Low On Turns To Continue*"
 		halt
 	end
 	if ($UNLIMITEDGAME = FALSE)
-		send "'{" $bot_name "} - Ready To Bring A Furb (" &$PLAYER~TURNS & ")*"
+		send "'{" $switchboard~bot_name "} - Ready To Bring A Furb (" &$PLAYER~TURNS & ")*"
 	else
-		send "'{" $bot_name "} - Ready To Bring A Furb*"
+		send "'{" $switchboard~bot_name "} - Ready To Bring A Furb*"
 	end
 	waitfor "Message sent on sub-space channel"
 
-	setVar $_str_ (ANSI_9 & "**{"&ANSI_14&$bot_name&ANSI_9&"} " & ANSI_15 & "---------- Furb v"&$VERSION&" Running ----------*")
+	setVar $_str_ (ANSI_9 & "**{"&ANSI_14&$switchboard~bot_name&ANSI_9&"} " & ANSI_15 & "---------- Furb v"&$VERSION&" Running ----------*")
 	setVar $_str_ ($_str_ & ANSI_15 & "    Normal Furb Runs  "&ANSI_14&":"&ANSI_7&" " & $THE_nRUNS & "*")
 	setVar $_str_ ($_str_ & ANSI_15 & "    Fake Furb Runs    "&ANSI_14&":"&ANSI_7&" " & $THE_fRUNS & "*")
 	if ($UNLIMITEDGAME = FALSE)
@@ -243,7 +243,7 @@ gosub :_START_
 	setVar $CashAmount $FURB_COST
 	gosub :CommaSize
 	setVar $_str_ ($_str_ & ANSI_15 & "    Expenditure       "&ANSI_14&":"&ANSI_7&"$" & $CashAmount & "*")
-	setVar $_str_ ($_str_ & ANSI_9 & "{"&ANSI_14&$bot_name&ANSI_9&"} " & ANSI_15 & "---------------------------------------**")
+	setVar $_str_ ($_str_ & ANSI_9 & "{"&ANSI_14&$switchboard~bot_name&ANSI_9&"} " & ANSI_15 & "---------------------------------------**")
 	Echo $_str_
 	SetTextLineTrigger 1 :ckfurbrequested "Busted in ship"
 	SetTextLineTrigger 2 :ckfakefurbrequested "FAKE Busted in Ship"
@@ -318,7 +318,7 @@ gosub :_START_
 	pause
     :nofindf
 	killtrigger shiploc
-	send "'{" $bot_name "} - Can't find ship " & $bustship & "*"
+	send "'{" $switchboard~bot_name "} - Can't find ship " & $bustship & "*"
 	if ($CK_MODE)
 		goto :setCKFurbTriggers
 	else
@@ -335,14 +335,14 @@ gosub :_START_
 
 		getWord CURRENTLINE $bustloc 2
 		if ($bustloc = STARDOCK)
-			send "'{" $bot_name "} - Cannot Furb StarDock Sector*"
+			send "'{" $switchboard~bot_name "} - Cannot Furb StarDock Sector*"
 			if ($CK_MODE)
 				goto :setCKFurbTriggers
 			else
 				halt
 			end
 		end
-		send "'{" $bot_name "} - Ship " & $bustship & " found, bringing a furb.*"
+		send "'{" $switchboard~bot_name "} - Ship " & $bustship & " found, bringing a furb.*"
 		gosub :buyfurbs
 		goto :towfurb
 	else
@@ -366,7 +366,7 @@ gosub :_START_
 	if ($furbtype = "furb")
 		subtract $i 1
 	end
-	send "'{" $bot_name "} - No fighter down at that ship number, drop a fig.*"
+	send "'{" $switchboard~bot_name "} - No fighter down at that ship number, drop a fig.*"
 	if ($CK_MODE)
 		goto :setCKFurbTriggers
 	else
@@ -379,7 +379,7 @@ gosub :_START_
 	killtrigger adj
 	killtrigger atdock
 	send "* q * "
-	send "'{" $bot_name "} - Why am I furbing adjacent to stardock?*"
+	send "'{" $switchboard~bot_name "} - Why am I furbing adjacent to stardock?*"
 	goto :locked
 	:atdock
 	killtrigger nofig
@@ -391,7 +391,7 @@ gosub :_START_
 	if ($furbtype = "furb")
 		subtract $i 1
 	end
-	send "'{" $bot_name "} - That ship is at stardock, try again*"
+	send "'{" $switchboard~bot_name "} - That ship is at stardock, try again*"
 	if ($CK_MODE)
 		goto :setCKFurbTriggers
 	else
@@ -407,7 +407,7 @@ gosub :_START_
 	if ($furbtype = "furb")
 		subtract $i 1
 	end
-	send "'{" $bot_name "} - *"
+	send "'{" $switchboard~bot_name "} - *"
 	send "'I don't have enough ore, how did this happen?*"
 	send "'You can try to make me furb a closer ship that has an ore selling port.*"
 	send "'If that doesn't work, I just can't help you.*"
@@ -424,7 +424,7 @@ gosub :_START_
 	killtrigger atdock
 	send "Y  * * W"
 	waitfor "You shut off your Tractor Beam."
-	send "'{" $bot_name "} - Furb delivered*"
+	send "'{" $switchboard~bot_name "} - Furb delivered*"
 	waiton "Message sent on sub-space channel"
 	if ($waitsecs > 0)
  		send "tc"
@@ -485,7 +485,7 @@ gosub :_START_
 					goto :checkPlanetsInSector
 				:orenoplanet
 					killAllTriggers
-					send "'{" $bot_name "} - I'd love to get ore off a planet but there isn't one here!*"
+					send "'{" $switchboard~bot_name "} - I'd love to get ore off a planet but there isn't one here!*"
 					goto :checkPlanetsFinishWait
 				:orestartplanetsok
 					killAllTriggers 
@@ -507,7 +507,7 @@ gosub :_START_
 
 			:checkPlanetsFinishWait
 		else
-			send "'{" $bot_name "} - This is not an ore selling port and I don't know the planet number, THAT SUCKS!*"
+			send "'{" $switchboard~bot_name "} - This is not an ore selling port and I don't know the planet number, THAT SUCKS!*"
 		end
 	else
 	
@@ -519,7 +519,7 @@ gosub :_START_
 		setVar $EMPTY_HOLDS ($PLAYER~TOTAL_HOLDS - ($PLAYER~ORE_HOLDS + $PLAYER~ORGANIC_HOLDS + $PLAYER~EQUIPMENT_HOLDS + $PLAYER~COLONIST_HOLDS))
 		echo $EMPTY_HOLDS
 		if ($EMPTY_HOLDS > 0)
-			send "'{" $bot_name "} - Ore at port critically low!*"
+			send "'{" $switchboard~bot_name "} - Ore at port critically low!*"
 			setdelaytrigger pauseforport :pauseforport 4000
 			pause
 			:pauseforport
@@ -542,14 +542,14 @@ gosub :_START_
 	killtrigger locked2
 	killtrigger adj2
 	send "N "
-	send "'{" $bot_name "} - I SEEM TO HAVE LOST MY COMMISSION, SCRIPT HALTED*"
+	send "'{" $switchboard~bot_name "} - I SEEM TO HAVE LOST MY COMMISSION, SCRIPT HALTED*"
 	halt
 	:lowShipOre2
 	killtrigger nofig2
 	killtrigger lowshipore2
 	killtrigger locked2
 	killtrigger adj2
-	send "'{" $bot_name "} - I don't have enough ore. SCRIPT HALTED*"
+	send "'{" $switchboard~bot_name "} - I don't have enough ore. SCRIPT HALTED*"
 	halt
 	:locked2
 	killtrigger nofig2
@@ -589,7 +589,7 @@ gosub :_START_
     setTextTrigger nofurb2 :nofurb "Choose which ship to sell (Q=Quit)"
     pause
     :nofurb
-	send "q q '{" $bot_name "} Furb purchase not possible (maybe not enough cash on hand?)*"
+	send "q q '{" $switchboard~bot_name "} Furb purchase not possible (maybe not enough cash on hand?)*"
 	if ($CK_MODE)
 	   	goto :setCKFurbTriggers
 	else
@@ -610,20 +610,11 @@ gosub :_START_
 	return
 
 :_START_
-	loadVar $bot_name
-	loadVar $user_command_line
+	loadVar $switchboard~bot_name
+	loadVar $bot~user_command_line
 	loadvar $UNLIMITEDGAME
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	setVar $BOT~help[1] $BOT~tab&"FURB - Buys and delivers a Ship to a Corpy to attack  "
 	setVar $BOT~help[2] $BOT~tab&"- furb [ship number] {swap} {bwarp} {extra holds} {ship letter} {topp}"
@@ -644,47 +635,47 @@ gosub :_START_
 	gosub :bot~helpfile
 
 
-	getWordPos $user_command_line $pos "planet:"
+	getWordPos $bot~user_command_line $pos "planet:"
 	setVar $planet_number 0
 	if ($pos > 0)
-		cutText $user_command_line $line $pos 9999
+		cutText $bot~user_command_line $line $pos 9999
 		getWord $line $planet_line 1
 		replaceText $planet_line ":" " "
 		getWord $planet_line $planet_number 2		
-		replaceText $user_command_line "planet:"&$planet_number " "
+		replaceText $bot~user_command_line "planet:"&$planet_number " "
 		isNumber $is_a_number $planet_number
 		if ($is_a_number <> TRUE)
 			setVar $planet_number 0
 		end
 	end
 
-	getWordPos $user_command_line $pos "swap"
+	getWordPos $bot~user_command_line $pos "swap"
 	if ($pos > 0)
 		setVar $citadel_furb TRUE
 		if ($planet_number = "0")
-			send "'{" $bot_name "} - Planet must be defined for swap furbing.*"
+			send "'{" $switchboard~bot_name "} - Planet must be defined for swap furbing.*"
 			halt
 		end
 	end
 	
 	setVar $topplanet FALSE
-	getWordPos $user_command_line $pos "topp"
+	getWordPos $bot~user_command_line $pos "topp"
 	if ($pos > 0)
-		StripText $user_command_line "topp"
+		StripText $bot~user_command_line "topp"
 		setVar $topplanet TRUE
 	end
 
-	getWordPos $user_command_line $pos "bwarp"
+	getWordPos $bot~user_command_line $pos "bwarp"
 	if ($pos > 0)
 
 		setVar $bwarp TRUE
 	end
 
-	getWord $user_command_line $parm1 1 0
-	getWord $user_command_line $parm2 2 0
-	getWord $user_command_line $parm3 3 0
-	getWord $user_command_line $parm4 4 0
-	getWord $user_command_line $parm5 5 0
+	getWord $bot~user_command_line $bot~parm1 1 0
+	getWord $bot~user_command_line $bot~parm2 2 0
+	getWord $bot~user_command_line $bot~parm3 3 0
+	getWord $bot~user_command_line $bot~parm4 4 0
+	getWord $bot~user_command_line $bot~parm5 5 0
 
 	gosub :PLAYER~quikstats
 
@@ -692,27 +683,27 @@ gosub :_START_
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 
 	if ($startingLocation <> "Command") OR ($PLAYER~CURRENT_SECTOR <> stardock)
-		send "'{" $bot_name "} - Furb must be run from Command Prompt at StarDock.*"
+		send "'{" $switchboard~bot_name "} - Furb must be run from Command Prompt at StarDock.*"
 		halt
 	end
 
 	if ($PLAYER~TWARP_TYPE <> 2)
-		send "'{" $bot_name "} - Furbing Ship Must Have Twarp Type-2*"
+		send "'{" $switchboard~bot_name "} - Furbing Ship Must Have Twarp Type-2*"
 		halt
 	end
 
 	#if ($PLAYER~ALIGNMENT < 1000)
-	#	send "'{" $bot_name "} - Must Have a Commission*"
+	#	send "'{" $switchboard~bot_name "} - Must Have a Commission*"
 	#	halt
 	#end
 
 	if ($UNLIMITEDGAME = FALSE) and ($PLAYER~TURNS < 30)
-		send "'{" $bot_name "} - Must Have At Least 30 Turns*"
+		send "'{" $switchboard~bot_name "} - Must Have At Least 30 Turns*"
 		halt
 	end
 
 	if ($PLAYER~CREDITS < 100000)
-		send "'{" $bot_name "} - Must Have At Least 100,000 Cred On Hand*"
+		send "'{" $switchboard~bot_name "} - Must Have At Least 100,000 Cred On Hand*"
 		halt
 	end
 
@@ -726,7 +717,7 @@ gosub :_START_
 	pause
 	:nosoupforme
 	killAllTriggers
-	send " Q  '{" $bot_name "} " & $TagLineB & " - StarDock appears to have been Blown Up!**"
+	send " Q  '{" $switchboard~bot_name "} " & $TagLineB & " - StarDock appears to have been Blown Up!**"
 	waitfor "Message sent on sub-space channel"
 	halt
 	:itsalive
@@ -765,11 +756,11 @@ return
 :debugFFS
 
 echo "*###################"
-echo "* # $parm1 " $parm1
-echo "* # $parm2 " $parm2
-echo "* # $parm3 " $parm3
-echo "* # $parm4 " $parm4
-echo "* # $parm5 " $parm5
+echo "* # $bot~parm1 " $bot~parm1
+echo "* # $bot~parm2 " $bot~parm2
+echo "* # $bot~parm3 " $bot~parm3
+echo "* # $bot~parm4 " $bot~parm4
+echo "* # $bot~parm5 " $bot~parm5
 
 
 echo "***##### FURB DEBUG $FURB_nHOLDS"

@@ -22,21 +22,21 @@
 	gosub :BOT~banner
 	
 		
-	getWord $bot~user_command_line $parm1 1
-	getWord $bot~user_command_line $parm2 2
-	getWord $bot~user_command_line $parm3 3
-	getWord $bot~user_command_line $parm4 4
+	getWord $bot~user_command_line $bot~parm1 1
+	getWord $bot~user_command_line $bot~parm2 2
+	getWord $bot~user_command_line $bot~parm3 3
+	getWord $bot~user_command_line $bot~parm4 4
 
-	if ($parm1 = 0)
+	if ($bot~parm1 = 0)
 		setVar $SWITCHBOARD~message "PlanetTarget should be a number, or make it a fake # if you have no planet scanners..*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	else
-		isNumber $test $parm1
+		isNumber $test $bot~parm1
 		if ($test)
-			setVar $targetPlanet $parm1
-			if ($parm2 <> 0)
-				setVar $invasionBots $parm2
+			setVar $targetPlanet $bot~parm1
+			if ($bot~parm2 <> 0)
+				setVar $invasionBots $bot~parm2
 			else
 				setVar $SWITCHBOARD~message "Need invasion bot callin signature!*"
 				gosub :SWITCHBOARD~switchboard
@@ -48,15 +48,15 @@
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
-		if ($parm3 <> 0)
-			isNumber $test $parm3
+		if ($bot~parm3 <> 0)
+			isNumber $test $bot~parm3
 			if ($test)
-				if ($parm3 < 6)
-					setVar $waves $parm3
-					if ($parm4 <> 0)
-						isNumber $test $parm4
+				if ($bot~parm3 < 6)
+					setVar $waves $bot~parm3
+					if ($bot~parm4 <> 0)
+						isNumber $test $bot~parm4
 						if ($test)
-							setVar $figsperwave $parm4
+							setVar $figsperwave $bot~parm4
 						else
 							setVar $SWITCHBOARD~message "Figs per wave should be a number*"
 							gosub :SWITCHBOARD~switchboard
@@ -174,8 +174,8 @@
 	setVar $alien_ansi #27 & "[1;36m" & #27 & "["
 	setVar $mid_attack_mac "* y  Q Q m "
 	setVar $front_attack_mac "p "
-	gosub :quikstats
-	setVar $startingSector $CURRENT_SECTOR
+	gosub :player~quikstats
+	setVar $startingSector $player~current_sector
 		:getplanetnum
 			send "qDC "
 			waitOn "Planet #"
@@ -236,10 +236,10 @@ echo $w ":" SECTOR.WARPSIN[$dropSector][$w] " " $isFigged " *"
 				send "l  j" & #8 & $planet & "*  *  "
 			end
 			gosub :getSectorLocation
-			if (($CURRENT_SECTOR <> $dropSector))
-				if ($CURRENT_SECTOR = $startingSector)
+			if (($player~current_sector <> $dropSector))
+				if ($player~current_sector = $startingSector)
 					send "'No fig at pwarp location, no attempt made. Restart when ready.*"
-				elseif ($CURRENT_SECTOR = SECTOR.WARPS[$dropSector][1])
+				elseif ($player~current_sector = SECTOR.WARPS[$dropSector][1])
 					send "'Possible SPLATTER on a planet, check for pod.*"
 				else
 					send "'Didn't make it, not sure what happened. Check ship and restart*"
@@ -256,8 +256,8 @@ echo $w ":" SECTOR.WARPSIN[$dropSector][$w] " " $isFigged " *"
 	killalltriggers
 	send "/"
 	waitOn "Sect "
-	getWord CURRENTLINE $CURRENT_SECTOR 2
-	replacetext $CURRENT_sECTOR #179&"Turns" ""
+	getWord CURRENTLINE $player~current_sector 2
+	replacetext $player~current_sector #179&"Turns" ""
 return
 
 :checkShip
@@ -283,8 +283,8 @@ return
 	gosub :getSectorLocation
     	setVar $figstodeploy 1
 	gosub :deployfigs 
-	send "'" & $CURRENT_SECTOR & "=saveme*"
-	send "'pickup " & $CURRENT_SECTOR  & " ::*"
+	send "'" & $player~current_sector & "=saveme*"
+	send "'pickup " & $player~current_sector  & " ::*"
 
 
 :waitforhelp
@@ -323,7 +323,7 @@ return
     if ($figstodeploy = 0)
         setVar $figstodeploy 1
     end
-    if (($CURRENT_SECTOR  < 11) or ($CURRENT_SECTOR  = STARDOCK))
+    if (($player~current_sector  < 11) or ($player~current_sector  = STARDOCK))
         send "'Can't deploy figs in fed*"
         return
     end
@@ -527,7 +527,7 @@ return
 	pause
 	:scanningSectorStart
 		killtrigger sectorStart
-		getWord CURRENTLINE $CURRENT_SECTOR 3
+		getWord CURRENTLINE $player~current_sector 3
 		setVar $sectorData ""
 	
 	:sectorsline_cit_kill
@@ -558,9 +558,9 @@ return
 	setVar $targetString  "q az"
 	setVar $isFound FALSE
 	getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
-	gosub :quikstats
-	if ($FIGHTERS > 100)
-		if ((($CURRENT_SECTOR > 10) AND ($CURRENT_SECTOR <> STARDOCK)) AND ($beaconPos > 0))
+	gosub :player~quikstats
+	if ($player~fighters > 100)
+		if ((($player~current_sector > 10) AND ($player~current_sector <> STARDOCK)) AND ($beaconPos > 0))
 			setVar $targetString $targetString&"* "
 		end
 	else
@@ -575,7 +575,7 @@ return
 		end
 		setVar $c 1
 		while (($c <= $realTraderCount) AND ($isFound = FALSE))
-			if ((($CURRENT_SECTOR <= 10) OR ($CURRENT_SECTOR = STARDOCK)) AND $TRADERS[$c][2] = TRUE)
+			if ((($player~current_sector <= 10) OR ($player~current_sector = STARDOCK)) AND $TRADERS[$c][2] = TRUE)
 				setVar $targetString $targetString&"* "
 			elseif ($TRADERS[$c][1] = $CORP)
 				setVar $targetString $targetString&"* "	
@@ -610,12 +610,12 @@ return
 return
 
 # -=-=-=-=- quikstats -=-=-=-=-=-=-
-:quikstats
+:player~quikstats
 	
-	setVar $CURRENT_SECTOR 0
+	setVar $player~current_sector 0
 	setVar $TURNS 0
 	setVar $CREDITS 0
-	setVar $FIGHTERS 0
+	setVar $player~fighters 0
 	setVar $SHIELDS 0
 	setVar $TOTAL_HOLDS 0
 	setVar $ORE_HOLDS 0
@@ -634,12 +634,12 @@ return
 	setVar $EPROBES 0
 	setVar $MINE_DISRUPTORS 0
 	setVar $PSYCHIC_PROBE "NO"
-	setVar $PLANET_SCANNER "NO"
+	setVar $player~planet_scanner "NO"
 	setVar $SCAN_TYPE "NONE"
 	setVar $ALIGNMENT 0
 	setVar $EXPERIENCE 0
 	setVar $CORP 0
-	setVar $SHIP_NUMBER 0
+	setVar $player~ship_number 0
 	setVar $TURNS_PER_WARP 0
 
 :getstats
@@ -675,13 +675,13 @@ return
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "SECT")
-				getWord $stats $CURRENT_SECTOR   ($current_word + 1)
+				getWord $stats $player~current_sector   ($current_word + 1)
 			elseif ($wordy = "TURNS")
 				getWord $stats $TURNS  ($current_word + 1)
 			elseif ($wordy = "CREDS")
 				getWord $stats $CREDITS  ($current_word + 1)
 			elseif ($wordy = "FIGS")
-				getWord $stats $FIGHTERS   ($current_word + 1)
+				getWord $stats $player~fighters   ($current_word + 1)
 			elseif ($wordy = "SHLDS")
 				getWord $stats $SHIELDS  ($current_word + 1)
 			elseif ($wordy = "HLDS")
@@ -719,7 +719,7 @@ return
 			elseif ($wordy = "PSPRB")
 				getWord $stats $PSYCHIC_PROBE  ($current_word + 1)
 			elseif ($wordy = "PLSCN")
-				getWord $stats $PLANET_SCANNER  ($current_word + 1)
+				getWord $stats $player~planet_scanner  ($current_word + 1)
 			elseif ($wordy = "LRS")
 				getWord $stats $SCAN_TYPE    ($current_word + 1)
 			elseif ($wordy = "ALN")

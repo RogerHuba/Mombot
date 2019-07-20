@@ -33,12 +33,12 @@
      	gosub :switchboard~switchboard
 		halt
 	end
-	setvar $parameter ""
+	setvar $bot~parmameter ""
 	setVar $minimumFuel $bot~parm1
 	isNumber $number $minimumFuel
 	if ($number <> true)
-		setvar $parameter $bot~parm1
-		uppercase $parameter
+		setvar $bot~parmameter $bot~parm1
+		uppercase $bot~parmameter
 		setVar $minimumFuel $bot~parm2
 		isNumber $number $minimumFuel
 		if ($number <> true)
@@ -152,10 +152,10 @@
 		while ($bottom <= $top)
 			# Now, pull out the next sector in the que, and make it our focus
 			setVar $focus $que[$bottom]
-			if ($parameter <> "")
-				getsectorparameter $focus $parameter $isGoodSector
+			if ($bot~parmameter <> "")
+				getsectorparameter $focus $bot~parmameter $isGoodSector
 			end
-			if (($parameter <> "") and ($isGoodSector <> true))
+			if (($bot~parmameter <> "") and ($isGoodSector <> true))
 				goto :notit
 			end
 			if (($docim = FALSE) AND ($skipcim = FALSE))

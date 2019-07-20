@@ -1,15 +1,6 @@
 	logging off
 	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	setVar $FURB_HOLDS ""
 	setVar $FURB_SHIP ""
@@ -19,7 +10,7 @@
 	setVar $MIN_RED_ALIGNMENT "-100"
 
 	setVar $twoship FALSE
-	getWordPos $user_command_line $pos "twoship"
+	getWordPos $bot~user_command_line $pos "twoship"
 	if ($pos > 0)
 		setVar $twoship TRUE
 	end
@@ -89,15 +80,15 @@
 	gosub :SWITCHBOARD~SWITCHBOARD
 
 	setVar $override FALSE
-	getWordPos $user_command_line $pos "override"
+	getWordPos $bot~user_command_line $pos "override"
 	if ($pos > 0)
 		setVar $override TRUE
 	end
-	if ($parm4 = "override")
-		setVar $parm4 "0"
+	if ($bot~parm4 = "override")
+		setVar $bot~parm4 "0"
 	end
 	setVar $planetfuel FALSE
-	getWordPos $user_command_line $pos "planetfuel"
+	getWordPos $bot~user_command_line $pos "planetfuel"
 	if ($pos > 0)
 		setVar $planetfuel TRUE
 		
@@ -112,9 +103,9 @@
 	END
 
 	setVar $custom_furb FALSE
-	getWordPos $user_command_line $pos ":"
+	getWordPos $bot~user_command_line $pos ":"
 	if ($pos > 0)
-		setVar $stuff $user_command_line
+		setVar $stuff $bot~user_command_line
 		getWordPos $stuff $loc ":"
 		cutText $stuff $info ($loc - 1) 99
 		getWord $info $furbinfo 1
@@ -127,9 +118,9 @@
 	end
 
 	
-	isNumber $is_a_number $parm1
-	if (($is_a_number) and ($parm1 <> "0"))
-		setVar $ship1 $parm1
+	isNumber $is_a_number $bot~parm1
+	if (($is_a_number) and ($bot~parm1 <> "0"))
+		setVar $ship1 $bot~parm1
 		setVar $SHIPS[1] $ship1
 	else
 		setVar $SWITCHBOARD~MESSAGE "Ship #1 number invalid.  Shutting down.*"
@@ -137,9 +128,9 @@
 		halt	
 	end
 
-	isNumber $is_a_number $parm2
-	if (($is_a_number) and ($parm2 <> "0"))
-		setVar $ship2 $parm2
+	isNumber $is_a_number $bot~parm2
+	if (($is_a_number) and ($bot~parm2 <> "0"))
+		setVar $ship2 $bot~parm2
 		setVar $SHIPS[2] $ship2
 	else
 		setVar $SWITCHBOARD~MESSAGE "Ship #2 number invalid.  Shutting down.*"
@@ -148,9 +139,9 @@
 	end
 
 	if ($twoship = TRUE)
-		isNumber $is_a_number $parm3
+		isNumber $is_a_number $bot~parm3
 		if ($is_a_number)
-			setVar $planet1 $parm3
+			setVar $planet1 $bot~parm3
 			setVar $SHIPS[1][2] $planet1
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #1 number invalid.  Shutting down.*"
@@ -158,9 +149,9 @@
 			halt	
 		end
 
-		isNumber $is_a_number $parm4
+		isNumber $is_a_number $bot~parm4
 		if ($is_a_number) 
-			setVar $planet2 $parm4
+			setVar $planet2 $bot~parm4
 			setVar $SHIPS[2][2] $planet2
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #2 number invalid.  Shutting down.*"
@@ -168,9 +159,9 @@
 			halt	
 		end
 	else
-		isNumber $is_a_number $parm3
-		if (($is_a_number) and ($parm3 <> "0"))
-			setVar $ship3 $parm3
+		isNumber $is_a_number $bot~parm3
+		if (($is_a_number) and ($bot~parm3 <> "0"))
+			setVar $ship3 $bot~parm3
 			if ($NUMBER_CASHING_SHIPS >= 3)
 				setVar $SHIPS[3] $ship3
 			end
@@ -179,9 +170,9 @@
 			gosub :SWITCHBOARD~SWITCHBOARD	
 			halt	
 		end
-		isNumber $is_a_number $parm4
+		isNumber $is_a_number $bot~parm4
 		if ($is_a_number)
-			setVar $planet1 $parm4
+			setVar $planet1 $bot~parm4
 			setVar $SHIPS[1][2] $planet1
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #1 number invalid.  Shutting down.*"
@@ -189,9 +180,9 @@
 			halt	
 		end
 
-		isNumber $is_a_number $parm5
+		isNumber $is_a_number $bot~parm5
 		if ($is_a_number) 
-			setVar $planet2 $parm5
+			setVar $planet2 $bot~parm5
 			setVar $SHIPS[2][2] $planet2
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #2 number invalid.  Shutting down.*"
@@ -199,9 +190,9 @@
 			halt	
 		end
 
-		isNumber $is_a_number $parm6
+		isNumber $is_a_number $bot~parm6
 		if ($is_a_number)
-			setVar $planet3 $parm6
+			setVar $planet3 $bot~parm6
 			if ($NUMBER_CASHING_SHIPS >= 3)
 				setVar $SHIPS[3][2] $planet3
 			end

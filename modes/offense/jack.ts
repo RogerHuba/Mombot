@@ -1,15 +1,6 @@
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	setVar $BOT~help[1] $BOT~tab&"jack [planet number]  "
 	setVar $BOT~help[2] $BOT~tab&"Sits in a port waiting for a ship to enter.  "
@@ -24,12 +15,12 @@
 
 	gosub :combat~init 
 
-	if ($parm1 <= 0)
+	if ($bot~parm1 <= 0)
 		setVar $SWITCHBOARD~message "Need to define saveme planet number.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	else
-		setVar $saveme_planet $parm1
+		setVar $saveme_planet $bot~parm1
 	end
 
 	gosub :PLAYER~quikstats

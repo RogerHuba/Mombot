@@ -1,16 +1,7 @@
 	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	loadVar $MAP~STARDOCK
+									loadVar $MAP~STARDOCK
 	loadVar $MAP~home_sector
-	setVar $user_command_line $BOT~user_command_line
-	loadvar $ship~cap_file
+		loadvar $ship~cap_file
 	loadvar $planet~planet~planet_file
 
 	setVar $BOT~help[1]  $BOT~tab&"Slingshot - attempts to warp into sector and attack "

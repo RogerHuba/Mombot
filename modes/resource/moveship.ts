@@ -315,8 +315,7 @@
 					setVar $BOT~user_command_line " dep "&($player~credits-$starting_credits)
 				end
 				setVar $BOT~parm1 ($player~credits-$starting_credits)
-				setvar $bot~parm1 $bot~parm1
-				saveVar $BOT~parm1
+								saveVar $BOT~parm1
 				saveVar $bot~parm1
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line

@@ -177,17 +177,17 @@ while ($i <= SECTORS)
 	setvar $skip false
 	
 	while (($j <= $sector_param_count) and ($skip <> true))
-		setvar $parameter $sector_params[$j]
-		lowercase $parameter
-		getwordpos $parameter $pos "port.o"
+		setvar $bot~parmameter $sector_params[$j]
+		lowercase $bot~parmameter
+		getwordpos $bot~parmameter $pos "port.o"
 		if ($pos > 0)
 			setvar $value port.fuel[$i]
 		else
-			getwordpos $parameter $pos "port.o"
+			getwordpos $bot~parmameter $pos "port.o"
 			if ($pos > 0)
 				setvar $value port.org[$i]
 			else
-				getwordpos $parameter $pos "port.e"
+				getwordpos $bot~parmameter $pos "port.e"
 				if ($pos > 0)
 					setvar $value port.equip[$i]
 				else
@@ -655,12 +655,12 @@ halt
 				if ($SWITCHBOARD~self_command <> TRUE)
 				    setVar $SWITCHBOARD~self_command 2
 				end
-				listSectorParameters $i $parms
+				listSectorParameters $i $bot~parms
 				setvar $j 1
 				setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  *"
-				while ($j <= $parms)
-				    getSectorParameter $i $parms[$j] $check
-				    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$parms[$j]&": "&$check&"*"
+				while ($j <= $bot~parms)
+				    getSectorParameter $i $bot~parms[$j] $check
+				    setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$bot~parms[$j]&": "&$check&"*"
 				    add $j 1
 				end
 			    gosub :SWITCHBOARD~switchboard

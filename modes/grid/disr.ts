@@ -16,18 +16,18 @@
 	#						{nscan}		Skips Holo Scan
 	#						{burst}		Only send one Disrupter per sector
 	#
-	#		Credits		:	Mind Dagger's :quikstats Routine (improved version of Singularity's)
+	#		Credits		:	Mind Dagger's :player~quikstats Routine (improved version of Singularity's)
 	#
 	#		NOTE		:	I Modified :quikstat to include the 'Port' Prompt. Also added
 	#                       the Variable $PORT_PROMPT_TYPE to indicate which product-prompt
 	#						user's on --though not used in this script.
 	LoadVar 	$MODE
-	LoadVar 	$BOT_NAME
-	LoadVar 	$parm1
-	LoadVar 	$parm2
-	LoadVar		$parm3
-	setVar		$TagLine				("{" & $bot_name & "} DisR")
-	setVar		$ErrMsg					("'{" & $bot_name & "} - DisR Syntax Error")
+	LoadVar 	$switchboard~bot_name
+	LoadVar 	$bot~parm1
+	LoadVar 	$bot~parm2
+	LoadVar		$bot~parm3
+	setVar		$TagLine				("{" & $switchboard~bot_name & "} DisR")
+	setVar		$ErrMsg					("'{" & $switchboard~bot_name & "} - DisR Syntax Error")
 	setVar 		$Planet					0
 	setVar		$ScanIT					TRUE
 	setVar		$Bursting				FALSE
@@ -36,7 +36,7 @@
    	setArray	$ADJ2HiT				6 1
 	#			ADJ2HiT Break Down - 1st Dimension: ADdj Sector Numbers; 2nd Dimension: Armids Scanned/Remaining
 
-	if ($parm1 = "help")
+	if ($bot~parm1 = "help")
 		send "'*" & $TagLine & " {Sector} {NScan} {Burst}*"
 		send "   *"
 		send "      {Sector}  Disrupt Mines in Adj Sector*"
@@ -64,14 +64,14 @@
     	end
     end
 
-	isNumber $tst $Parm1
+	isNumber $tst $bot~parm1
 	if ($tst = 0)
-		lowerCase $Parm1
-		if ($Parm1 = "nscan")
+		lowerCase $bot~parm1
+		if ($bot~parm1 = "nscan")
 			setVar $ScanIT 		FALSE
-			setVar $Parm1 		0
-		elseif ($Parm1 = "burst")
-			setVar $Parm1 		0
+			setVar $bot~parm1 		0
+		elseif ($bot~parm1 = "burst")
+			setVar $bot~parm1 		0
 			setVar $Bursting 	TRUE
 		else
 			send ($ErrMsg & "*")
@@ -79,10 +79,10 @@
 		end
 	end
 
-	if ((($Parm1 < 11) AND ($Parm1 <> 0)) OR ($Parm1 = STARDOCK))
+	if ((($bot~parm1 < 11) AND ($bot~parm1 <> 0)) OR ($bot~parm1 = STARDOCK))
 		send ($ErrMsg & " - Invalid Target!*")
 		halt
-	elseif (($Parm1 = 0) AND ($ScanIT = 0))
+	elseif (($bot~parm1 = 0) AND ($ScanIT = 0))
 		setVar $idx	1
 		while (SECTOR.WARPS[CURRENTSECTOR][$idx] > 0)
 			setVar $adj SECTOR.WARPS[CURRENTSECTOR][$idx]
@@ -90,36 +90,36 @@
 			setVar $ADJ2HiT[$idx][1] 1
 			add $idx 1
 		end
-	elseif ($Parm1 > 0)
-		setVar $ADJ2HiT[1] 		$Parm1
+	elseif ($bot~parm1 > 0)
+		setVar $ADJ2HiT[1] 		$bot~parm1
 		setVar $ADJ2HiT[1][1] 	1
 		setVar $ScanIT 			FALSE
 	end
 
-	isNumber $tst $Parm2
+	isNumber $tst $bot~parm2
 	if ($tst = 0)
-		LowerCase $Parm2
-		if ($Parm2 = "nscan")
+		LowerCase $bot~parm2
+		if ($bot~parm2 = "nscan")
 			setVar $ScanIT 		FALSE
-		elseif ($Parm2 = "burst")
+		elseif ($bot~parm2 = "burst")
 			setVar $ScanIT 		FALSE
 			setVar $Bursting	TRUE
 		end
 	end
 
-	isNumber $tst $Parm3
+	isNumber $tst $bot~parm3
 	if ($tst = 0)
-		LowerCase $Parm3
-		if ($Parm3 = "nscan")
+		LowerCase $bot~parm3
+		if ($bot~parm3 = "nscan")
 			setVar $ScanIT 		FALSE
-		elseif ($Parm3 = "burst")
+		elseif ($bot~parm3 = "burst")
 			setVar $ScanIT 		FALSE
 			setVar $Bursting	TRUE
 		end
 	end
 
 	:Prompt_Checking
-	gosub	:quikstats
+	gosub	:player~quikstats
 	if (($ScanIT) AND ($SCAN_TYPE <> "Holo"))
 	   send ("'" & $TagLine & " - Ship Does Not Have A Long Range Scanner!*")
 	   halt
@@ -129,36 +129,36 @@
 		halt
 	end
 
-	if ($CURRENT_PROMPT = "Planet")
-		gosub :Planet_Info
+	if ($player~current_prompt = "Planet")
+		gosub :planet~getplanetinfo
 		if ($Planet = 0)
 			send ("'" & $TagLine & " - Unable To Obtain Planet Number!*")
 			halt
 		end
 		send "  Q  "
-	elseif ($CURRENT_PROMPT = "Citadel")
+	elseif ($player~current_prompt = "Citadel")
 		send "  Q  "
-		gosub :Planet_Info
+		gosub :planet~getplanetinfo
 		send "  Q  "
 		if ($Planet = 0)
 			send ("'" & $TagLine & " - Unable To Obtain Planet Number!*")
 			halt
 		end
-	elseif ($CURRENT_PROMPT = "Command")
+	elseif ($player~current_prompt = "Command")
 
-	elseif ($CURRENT_PROMPT = "Computer")
+	elseif ($player~current_prompt = "Computer")
 		send "  Q  "
 		goto :Prompt_Checking
-	elseif ($CURRENT_PROMPT = "StarDock")
+	elseif ($player~current_prompt = "StarDock")
 		send "Q  "
-	elseif ($CURRENT_PROMPT = "Port")
+	elseif ($player~current_prompt = "Port")
 		send " 0*  0*  0*  0*  "
 	else
 		send ("'" & $TagLine & " - At Unkown Prompt!*")
 		halt
 	end
 
-	setVar $Start_Prompt $CURRENT_PROMPT
+	setVar $Start_Prompt $player~current_prompt
 
 	if ($ScanIT)
 		gosub :Do_Scan
@@ -228,7 +228,7 @@
     #
     #		:Do_Scan				Performs simple Holo-Scan. Assumes users at Cmd Prompt.
     #
-	#		:quikstats				Mind Dagger's version of Singularity's quikstat routine
+	#		:player~quikstats				Mind Dagger's version of Singularity's quikstat routine
 	#								Modified by me to Include the Prompt Type:  Port
 	#
 	#		:Planet_Info			Simply aquires Planet Number, if necessary
@@ -251,7 +251,7 @@
 		send (" S   H")
 	else
 		gosub :quikstat
-		send ("'" & $TagLine & " - Unknown Problem Occured, at '"&$CURRENT_PROMPT&"' Prompt!*")
+		send ("'" & $TagLine & " - Unknown Problem Occured, at '"&$player~current_prompt&"' Prompt!*")
 		halt
 	end
 	pause
@@ -259,8 +259,8 @@
 		killAllTriggers
 		send ("'" & $TagLine & " - Unknown Problem Occured, Attempting to reach Command Prompt!*  P D 0* 0* 0* * *** * C  Q  Q  Q  Q  Q  Z  2  2  C  Q  *  Z  *  ***  *  *  ^Q")
 		waitfor ": ENDINTERROG"
-		gosub :quikstats
-		send ("'" & $TagLine & " - Unknown Problem Occured, at '"&$CURRENT_PROMPT&"' Prompt!*")
+		gosub :player~quikstats
+		send ("'" & $TagLine & " - Unknown Problem Occured, at '"&$player~current_prompt&"' Prompt!*")
 		halt
 	:Scan_Complete
 		killAllTriggers
@@ -280,8 +280,8 @@
 		end
 	return
 
-:quikstats
-	setVar $CURRENT_PROMPT 		"Undefined"
+:player~quikstats
+	setVar $player~current_prompt 		"Undefined"
 	killtrigger 		noprompt
 	killtrigger 		prompt1
 	killtrigger 		prompt2
@@ -304,7 +304,7 @@
 		getWord currentline $tempPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
+			setVar $player~current_prompt $tempPrompt
 		end
 		setTextLineTrigger prompt1 :allPrompts "(?="
 		pause
@@ -313,7 +313,7 @@
 		getWord currentline $tempPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
+			setVar $player~current_prompt $tempPrompt
 		end
 		setTextLineTrigger prompt2 :secondaryPrompts "(?)"
 		pause
@@ -323,7 +323,7 @@
 		getWord currentansiline $checkPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			setVar $CURRENT_PROMPT "Terra"
+			setVar $player~current_prompt "Terra"
 		end
 		setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
 		setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
@@ -334,7 +334,7 @@
 		getWord $PORT_PROMPT_TYPE $tempPrompt 1
 		getWordPos $checkPrompt $pos "[35mHow"
 		if ($pos > 0)
-			setVar $CURRENT_PROMPT "Port"
+			setVar $player~current_prompt "Port"
 		end
 		setTextTrigger		prompt5			:portPrompt			"How many holds of"
 		pause
@@ -370,13 +370,13 @@
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
 				getWord $stats $TURNS  				($current_word + 1)
 			elseif ($wordy = "Creds")
 				getWord $stats $CREDITS  			($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   			($current_word + 1)
+				getWord $stats $player~fighters   			($current_word + 1)
 			elseif ($wordy = "Shlds")
 				getWord $stats $SHIELDS  			($current_word + 1)
 			elseif ($wordy = "Hlds")
@@ -414,7 +414,7 @@
 			elseif ($wordy = "PsPrb")
 				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
 				getWord $stats $SCAN_TYPE    		($current_word + 1)
 			elseif ($wordy = "Aln")
@@ -424,7 +424,7 @@
 			elseif ($wordy = "Corp")
 				getWord $stats $CORP   				($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word
@@ -438,19 +438,19 @@
 		killtrigger statlinetrig
 		killtrigger getLine2
 
-		stripText $CURRENT_PROMPT "<"
-		stripText $CURRENT_PROMPT ">"
+		stripText $player~current_prompt "<"
+		stripText $player~current_prompt ">"
 	return
 
 :Global_Grover
-	setVar $CURRENT_PROMPT 		"Undefined"
+	setVar $player~current_prompt 		"Undefined"
 	setVar $PSYCHIC_PROBE 		"NO"
-	setVar $PLANET_SCANNER 		"NO"
+	setVar $player~planet_scanner 		"NO"
 	setVar $SCAN_TYPE 			"NONE"
-	setVar $CURRENT_SECTOR 		0
+	setVar $player~current_sector 		0
 	setVar $TURNS 				0
 	setVar $CREDITS 			0
-	setVar $FIGHTERS 			0
+	setVar $player~fighters 			0
 	setVar $SHIELDS 			0
 	setVar $TOTAL_HOLDS 		0
 	setVar $ORE_HOLDS 			0
@@ -471,7 +471,7 @@
 	setVar $ALIGNMENT 			0
 	setVar $EXPERIENCE			0
 	setVar $CORP 				0
-	setVar $SHIP_NUMBER			0
+	setVar $player~ship_number			0
 	setVar $TURNS_PER_WARP 		0
 	setVar $COMMAND_PROMPT 		"Command"
 	setVar $COMPUTER_PROMPT 	"Computer"

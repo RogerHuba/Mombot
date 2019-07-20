@@ -1,24 +1,24 @@
 	logging off
-	loadVar $bot_name
+	loadVar $switchboard~bot_name
 	loadVar $unlimitedGame
 	loadVar $bot_turn_limit
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
+	loadVar $bot~user_command_line
+	loadVar $bot~parm1
+	loadVar $bot~parm2
+	loadVar $bot~parm3
+	loadVar $bot~parm4
+	loadVar $bot~parm5
+	loadVar $bot~parm6
+	loadVar $bot~parm7
+	loadVar $bot~parm8
 
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	if ($isFigged = "")
-		send "'{" $bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
+		send "'{" $switchboard~bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
 		halt
 	end
 
-  	getWordPos " "&$user_command_line&" " $pos " b "
+  	getWordPos " "&$bot~user_command_line&" " $pos " b "
 	if ($pos > 0)
 		setVar $Bwarp TRUE
 	else
@@ -27,12 +27,12 @@
 
 
 :get_info
-	gosub :quikstats
-	if ($current_prompt <> "Citadel")
-		send "'{" $bot_name "} - Must must start grid check from citadel prompt.*"
+	gosub :player~quikstats
+	if ($player~current_prompt <> "Citadel")
+		send "'{" $switchboard~bot_name "} - Must must start grid check from citadel prompt.*"
 		halt
 	end
-	setVar $homesec $CURRENT_SECTOR
+	setVar $homesec $player~current_sector
 	
 
 
@@ -46,18 +46,18 @@
 
 	killAllTriggers
 	send "qm***tnt1*"
-	gosub :quikstats
-	gosub :getPlanetInfo
+	gosub :player~quikstats
+	gosub :planet~getplanetinfo
 	send "q"
 	gosub :assemble_mac
 
 :select_boomsec
-	gosub :quikstats
+	gosub :player~quikstats
 	IF ($TOTAL_HOLDS > $ORE_HOLDS)
 		goto :no_ore
 	END
 	IF ($TWARP_TYPE = "No")
-		send "'{" $bot_name "} - Must have T-warp to run this script.*"
+		send "'{" $switchboard~bot_name "} - Must have T-warp to run this script.*"
 		HALT
 	END
 
@@ -66,7 +66,7 @@
 	getWord $database $warpto $random
 	IF ($warpto = 0)
 
-		send "'{" $bot_name "} - Entire Grid Checked.*"
+		send "'{" $switchboard~bot_name "} - Entire Grid Checked.*"
 		HALT
 
 	END
@@ -123,7 +123,7 @@
 
 :no_ore
 	killAllTriggers
-	send "'{" $bot_name "} - Planet is out of fuel.  Please refill before running again.*"
+	send "'{" $switchboard~bot_name "} - Planet is out of fuel.  Please refill before running again.*"
 	halt
 
 :twarp_adj
@@ -187,7 +187,7 @@
 	setVar $database ""
 
 :rnd_loop
-	send "'{" $bot_name "} - Calculating unexplored sectors..*"
+	send "'{" $switchboard~bot_name "} - Calculating unexplored sectors..*"
 	setVar $percfigs 0
 	while ($rnd_count < SECTORS)	
 		add $rnd_count 1
@@ -204,7 +204,7 @@
 			echo ANSI_15 "°" ANSI_9 " " $percfigs "%" #27 & "[1A   "
 		end	
 	end	
-	send "'{" $bot_name "} - " $database_count " sectors in current grid need exploring.  Starting now.*"
+	send "'{" $switchboard~bot_name "} - " $database_count " sectors in current grid need exploring.  Starting now.*"
 	
 	return
 
@@ -226,11 +226,11 @@
 	return
 :igd
 	killAllTriggers
-	gosub :quikstats
-	if ($current_prompt = "Citadel")
+	gosub :player~quikstats
+	if ($player~current_prompt = "Citadel")
 		halt
 	end
-	if ($current_prompt = "Computer") or ($current_prompt = "Corporate") or ($current_prompt = "NavPoint")
+	if ($player~current_prompt = "Computer") or ($player~current_prompt = "Corporate") or ($player~current_prompt = "NavPoint")
 		send "q"
 		waitFor "Command [TL"
 	end
@@ -240,9 +240,9 @@
 :callSaveMe
 	killAllTriggers
 	send "q q q * * * * "
-	gosub :quikstats
+	gosub :player~quikstats
     	setVar $figstodeploy 1
-	setVar $savetarget $CURRENT_SECTOR
+	setVar $savetarget $player~current_sector
 	if ($savetarget < 10)
 		setVar $savetarget "0000" & $savetarget
 	elseif ($savetarget < 100)
@@ -255,7 +255,7 @@
 
 	gosub :deployfigs
 	send "'" & $savetarget & "=saveme*"
-	send "'pickup " & $CURRENT_SECTOR  & " ::*"
+	send "'pickup " & $player~current_sector  & " ::*"
 	
 
 :waitforhelp
@@ -267,7 +267,7 @@
 
     :timeout
         killalltriggers
-        send "'{" $bot_name "} - 30 seconds after save call, script halted.*"
+        send "'{" $switchboard~bot_name "} - 30 seconds after save call, script halted.*"
         goto :PauseGridder
 
     :friendlytwarp
@@ -294,7 +294,7 @@
     if ($figstodeploy = 0)
         setVar $figstodeploy 1
     end
-    if (($CURRENT_SECTOR  < 11) or ($CURRENT_SECTOR  = STARDOCK))
+    if (($player~current_sector  < 11) or ($player~current_sector  = STARDOCK))
         send "'Can't deploy figs in fed*"
         return
     end
@@ -305,7 +305,7 @@
 
     :nocontrol
         killalltriggers
-        send "'{" $bot_name "} - We don't control the figs in this sector!*"
+        send "'{" $switchboard~bot_name "} - We don't control the figs in this sector!*"
         return
 
     :abletodeploy
@@ -316,15 +316,15 @@
             setVar $figstodeploy $figsavailable
         end
         if ($figsavailable = 0)
-            send "0* ZC D* '{"&$bot_name&"} - I have no figs to deploy!*"
+            send "0* ZC D* '{"&$switchboard~bot_name&"} - I have no figs to deploy!*"
         else
             send $figstodeploy & "* ZC D* '" & $figstodeploy & " figs deployed*"
         end
 return
 
 # ============================== QUICKSTATS ==============================
-:quikstats
-    	setVar $CURRENT_PROMPT 		"Undefined"
+:player~quikstats
+    	setVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt1
 	killtrigger prompt2
@@ -338,14 +338,14 @@ return
 	pause
 
 	:allPrompts
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
+		getWord CURRENTLINE $player~current_prompt 1
+		stripText $player~current_prompt #145
+		stripText $player~current_prompt #8
 		#getWord currentansiline $checkPrompt 1
 		#getWord currentline $tempPrompt 1
 		#getWordPos $checkPrompt $pos "[35m"
 		#if ($pos > 0)
-		#	setVar $CURRENT_PROMPT $tempPrompt
+		#	setVar $player~current_prompt $tempPrompt
 		#end
 		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
 		pause
@@ -381,13 +381,13 @@ return
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
 				getWord $stats $TURNS  			($current_word + 1)
 			elseif ($wordy = "Creds")
 				getWord $stats $CREDITS  		($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
+				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
 				getWord $stats $SHIELDS  		($current_word + 1)
 			elseif ($wordy = "Hlds")
@@ -425,7 +425,7 @@ return
 			elseif ($wordy = "PsPrb")
 				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
 				getWord $stats $SCAN_TYPE    		($current_word + 1)
 			elseif ($wordy = "Aln")
@@ -435,7 +435,7 @@ return
 			elseif ($wordy = "Corp")
 				getWord $stats $CORP   			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word
@@ -572,7 +572,7 @@ return
 	return
 
 # ==============================  START PLANET INFO SUBROUTINE  =================
-:getPlanetInfo
+:planet~getplanetinfo
 	send "*"
 	setTextLineTrigger planetInfo :planetInfo "Planet #"
 	pause
@@ -584,10 +584,10 @@ return
 		setVar $CITADEL_CREDITS 0
 		getWord CURRENTLINE $PLANET 2
 		stripText $PLANET "#"
-#		send "'{" $bot_name "} - Looking for Planet # " & $PLANET & "*"
+#		send "'{" $switchboard~bot_name "} - Looking for Planet # " & $PLANET & "*"
 #		HALT
-		getWord CURRENTLINE $current_sector 5
-		stripText $current_sector ":"
+		getWord CURRENTLINE $player~current_sector 5
+		stripText $player~current_sector ":"
 		waitOn "2 Build 1   Product    Amount     Amount     Maximum"
 
         :getPlanetStuff

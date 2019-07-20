@@ -67,7 +67,7 @@
 
 	setvar $portname "Mind ()ver Matter"
  	setvar $planetnamedoor "DOOR GUN"
- 	setvar $parameter "FARM"
+ 	setvar $bot~parmameter "FARM"
  	setvar $name_the_planet "Mind ()ver Matter"
  	setVar $j 1
  	setvar $status_message "Initializing"
@@ -302,7 +302,7 @@
 	getWordPos $bot~user_command_line $pos "bubble"
 	if ($pos > 0)
 		setvar $use_bubble true
-		setVar $parameter "BUBBLE"
+		setVar $bot~parmameter "BUBBLE"
 	else
 		setvar $use_bubble false
 	end
@@ -403,14 +403,14 @@
 	if ($pos > 0)
 		setVar $IDX 11
 		while ($IDX <= SECTORS)
-			getsectorparameter $IDX $parameter $test
+			getsectorparameter $IDX $bot~parmameter $test
 			if ($test = TRUE)
 				setVar $bubble_sectors $bubble_sectors&" "&$IDX 
 				add $count 1
 			end
 			add $IDX 1
 		end
-		send "'*"&$count&" "&$parameter&" sectors: "&$bubble_sectors&"**"
+		send "'*"&$count&" "&$bot~parmameter&" sectors: "&$bubble_sectors&"**"
 		halt
 	end
 
@@ -419,8 +419,8 @@
 		isNumber $test $bot~parm2
 		if ($test)
 			if (($bot~parm2 > 10) AND ($bot~parm2 <= SECTORS) AND ($bot~parm2 <> STARDOCK))
-				setSectorParameter $bot~parm2 $parameter TRUE
-		        setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector added as "&$parameter&" Sector.*"
+				setSectorParameter $bot~parm2 $bot~parmameter TRUE
+		        setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector added as "&$bot~parmameter&" Sector.*"
 				gosub :SWITCHBOARD~switchboard
 			end
 		else
@@ -436,8 +436,8 @@
 		isNumber $test $bot~parm2
 		if ($test)
 			if (($bot~parm2 > 10) AND ($bot~parm2 <= SECTORS) AND ($bot~parm2 <> STARDOCK))
-				setSectorParameter $bot~parm2 $parameter FALSE
-		        setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector removed from "&$parameter&" Sector Parameters.*"
+				setSectorParameter $bot~parm2 $bot~parmameter FALSE
+		        setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector removed from "&$bot~parmameter&" Sector Parameters.*"
 				gosub :SWITCHBOARD~switchboard
 			end
 		else
@@ -522,7 +522,7 @@
 			end
 			if ($balance)
 				if ($citadels[$focus] > $game~MAX_PLANETS_PER_SECTOR)
-					getSectorParameter $focus $parameter $BUBBLE
+					getSectorParameter $focus $bot~parmameter $BUBBLE
 				else
 					setvar $bubble false
 				end
@@ -537,7 +537,7 @@
 						setVar $BUBBLE FALSE
 					end
 				else
-					getSectorParameter $focus $parameter $BUBBLE
+					getSectorParameter $focus $bot~parmameter $BUBBLE
 				end
 			end
 
@@ -621,7 +621,7 @@
 							if (($PLANET~PLANET_FUEL >= 5000) and ($PLANET~CITADEL >= 4))
 								setvar $k 11
 								while ($k <= SECTORS)
-									getSectorParameter $k $parameter $isTargettedSector
+									getSectorParameter $k $bot~parmameter $isTargettedSector
 									if (($isTargettedSector = true) and ($citadels[$k] < $game~MAX_PLANETS_PER_SECTOR))
 										killtrigger 1
 										killtrigger 2
@@ -1717,7 +1717,7 @@ return
 			       pause
 
 			:no_room3
-			        setVar $moveColo "NO ROOM - EMPTY FILL PLANET"
+			        setVar $moveColo "NO ROOM - EMPTY FULL PLANET"
 
 			:is_room1
 				killtrigger no_room

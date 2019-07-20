@@ -1,16 +1,7 @@
 	reqRecording
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	 setVar $BOT~help[1] $BOT~tab&"Bwarp Photon"
 	 setVar $BOT~help[2] $BOT~tab&"Uses planet teleport-pad to arrive adjacent a fighter"
@@ -53,7 +44,7 @@
 	setVar $ALIENS			FALSE
 	setVar $AUTO_RETURN		TRUE
 
-	getWordPos " "&$user_command_line&" " $pos " holo "
+	getWordPos " "&$bot~user_command_line&" " $pos " holo "
 
 	if ($pos > 0)
 		setVar $HOLO_SCAN	TRUE
@@ -62,7 +53,7 @@
 		setVar $HOLO_SCAN	FALSE
 	end
 
-	getWordPos " "&$user_command_line&" " $pos " dens "
+	getWordPos " "&$bot~user_command_line&" " $pos " dens "
 	if ($pos > 0)
 		setVar $DEN_SCAN	TRUE
 		setVar $HOLO_SCAN	FALSE
@@ -73,7 +64,7 @@
 	setVar $TURN_LIMIT		$BOT~bot_turn_limit
 	setVar $MINE_REACTION	"None"
 
-	getWordPos " "&$user_command_line&" " $pos " mine "
+	getWordPos " "&$bot~user_command_line&" " $pos " mine "
 	if ($pos > 0)
 		setVar $MINE_REACTION	"Armids/Limps"
 	else
@@ -89,11 +80,11 @@
 	setArray $Sects				SECTORS 5
 	setArray $HoloOutput		1000
 
-	isNumber $tst $parm1
+	isNumber $tst $bot~parm1
 	if ($tst = 0)
 		setVar $SCRUB_SECT 0
 	else
-		setVar $SCRUB_SECT $parm1
+		setVar $SCRUB_SECT $bot~parm1
 	end
 
    	setVar $SWITCHBOARD~message ($TagLine&" v" & $CURENT_VERSION & " - Loading...*")

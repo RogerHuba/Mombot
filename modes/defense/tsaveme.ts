@@ -1,26 +1,26 @@
-loadVar $user_command_line
-loadVar $parm1
-loadVar $parm2
-loadVar $parm3
-loadVar $parm4
-loadVar $parm5
-loadVar $parm6
-loadVar $parm7
-loadVar $parm8
-loadVar $bot_name
+loadVar $bot~user_command_line
+loadVar $bot~parm1
+loadVar $bot~parm2
+loadVar $bot~parm3
+loadVar $bot~parm4
+loadVar $bot~parm5
+loadVar $bot~parm6
+loadVar $bot~parm7
+loadVar $bot~parm8
+loadVar $switchboard~bot_name
 
 
 :start
-	gosub :quikstats
-	setVar $location $CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $location $player~current_prompt
 	if ($location <> "Command") and ($location <> "Citadel")
-       		send "'{" $bot_name "} - T-warp Saveme must be run from the Command or Citadel Prompt*"
+       		send "'{" $switchboard~bot_name "} - T-warp Saveme must be run from the Command or Citadel Prompt*"
         	halt
 	end
 :type
 	if ($location = "Command")
 		setVar $type "TWarp"
-		setVar $sector $CURRENT_SECTOR
+		setVar $sector $player~current_sector
 	elseif ($location = "Citadel")
 		setVar $type "BWarp"
 		send "qd"
@@ -28,11 +28,11 @@ loadVar $bot_name
 		getWord CURRENTLINE $planet 2
 		stripText $planet "#"
 		send " t n l 1* t n l 2* t n l 3* s n l 1* s n l 2* s n l 3* t n t 1* c s* "
-		setVar $sector $CURRENT_SECTOR
+		setVar $sector $player~current_sector
 	end
 
         # Load and reset variable.
-        setVar $tsaveme_scrub $parm1
+        setVar $tsaveme_scrub $bot~parm1
 
         # Specified scrub? 
         isNumber $number $tsaveme_scrub
@@ -42,7 +42,7 @@ loadVar $bot_name
                 SetVar $scrub $tsaveme_scrub
         end
 
-	send "'{" $bot_name "} - " $type " Saveme Active - Awaiting Distress Call. Returns to: " & $scrub & "*"
+	send "'{" $switchboard~bot_name "} - " $type " Saveme Active - Awaiting Distress Call. Returns to: " & $scrub & "*"
 	
 :main
 	setTextLineTrigger trigger :trigger "=saveme"
@@ -209,52 +209,52 @@ loadVar $bot_name
 :no_beam_lock
 	killAllTriggers
 	send "n*"
-	send "'{" $bot_name "} - " $type " Saveme - Can't Get Lock! - Fig and Call Save!*"
+	send "'{" $switchboard~bot_name "} - " $type " Saveme - Can't Get Lock! - Fig and Call Save!*"
 	goto :main
 	
 # -=-=-=-=-=- ending -=-=-=-=-=-=--=
 :go2
         send " w * * z q n z q n "
-	gosub :quikstats
+	gosub :player~quikstats
         if ($type = "BWarp")
               setTextLineTrigger not_at_home :exit_completely "That planet is not in this sector."
               send " l " & $planet & "*"
               waitfor "Landing sequence engaged..."
               send " t n l 1* t n l 2* t n l 3* s n l 1* s n l 2* s n l 3* t n t 1* c s* "
-		if ($CURRENT_SECTOR = $sector)
-			send "'{" $bot_name "} - " $type " Saveme - Arrived at Return Sector. Ready for another save.*"
+		if ($player~current_sector = $sector)
+			send "'{" $switchboard~bot_name "} - " $type " Saveme - Arrived at Return Sector. Ready for another save.*"
 		end
               goto :main
         else
-		if ($tsaveme_scrub = $CURRENT_SECTOR)
-			send "'{" $bot_name "} - " $type " Saveme - Arrived at Scrub Sector.*"
-			send "'{" $bot_name "} - " $type " Saveme - Please Exit/Enter to Remove Limpet.*"
+		if ($tsaveme_scrub = $player~current_sector)
+			send "'{" $switchboard~bot_name "} - " $type " Saveme - Arrived at Scrub Sector.*"
+			send "'{" $switchboard~bot_name "} - " $type " Saveme - Please Exit/Enter to Remove Limpet.*"
 		end
-		send "'{" $bot_name "} - " $type " Saveme - Powering Down...*"
+		send "'{" $switchboard~bot_name "} - " $type " Saveme - Powering Down...*"
 		send "**"
 		halt
         end
 halt
 
 :exit_completely
-send "'{" $bot_name "} - " $type " Saveme - Arrived at Scrub Sector.*"
-send "'{" $bot_name "} - " $type " Saveme - Please Exit/Enter to Remove Limpet.*"
-send "'{" $bot_name "} - Saveme - Powering Down...*"
+send "'{" $switchboard~bot_name "} - " $type " Saveme - Arrived at Scrub Sector.*"
+send "'{" $switchboard~bot_name "} - " $type " Saveme - Please Exit/Enter to Remove Limpet.*"
+send "'{" $switchboard~bot_name "} - Saveme - Powering Down...*"
 send "**"
 halt
 
 
-:quikstats
+:player~quikstats
 
         # ============================ START QUIKSTAT VARIABLES ==========================
-                setVar $CURRENT_PROMPT          "Undefined"
+                setVar $player~current_prompt          "Undefined"
                 setVar $PSYCHIC_PROBE           "No"
-                setVar $PLANET_SCANNER          "No"
+                setVar $player~planet_scanner          "No"
                 setVar $SCAN_TYPE               "None"
-                setVar $CURRENT_SECTOR          0
+                setVar $player~current_sector          0
                 setVar $TURNS                   0
                 setVar $CREDITS                 0
-                setVar $FIGHTERS                0
+                setVar $player~fighters                0
                 setVar $SHIELDS                 0
                 setVar $TOTAL_HOLDS             0
                 setVar $ORE_HOLDS               0
@@ -275,11 +275,11 @@ halt
                 setVar $ALIGNMENT               0
                 setVar $EXPERIENCE              0
                 setVar $CORP                    0
-                setVar $SHIP_NUMBER             0
+                setVar $player~ship_number             0
                 setVar $TURNS_PER_WARP          0
         # ============================ END QUIKSTAT VARIABLES ==========================
 
-     	setVar $CURRENT_PROMPT 		"Undefined"
+     	setVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt1
 	killtrigger prompt2
@@ -293,14 +293,14 @@ halt
 	pause
 
 	:allPrompts
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
+		getWord CURRENTLINE $player~current_prompt 1
+		stripText $player~current_prompt #145
+		stripText $player~current_prompt #8
 		#getWord currentansiline $checkPrompt 1
 		#getWord currentline $tempPrompt 1
 		#getWordPos $checkPrompt $pos "[35m"
 		#if ($pos > 0)
-		#	setVar $CURRENT_PROMPT $tempPrompt
+		#	setVar $player~current_prompt $tempPrompt
 		#end
 		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
 		pause
@@ -336,13 +336,13 @@ halt
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
 				getWord $stats $TURNS  			($current_word + 1)
 			elseif ($wordy = "Creds")
 				getWord $stats $CREDITS  		($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
+				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
 				getWord $stats $SHIELDS  		($current_word + 1)
 			elseif ($wordy = "Hlds")
@@ -380,7 +380,7 @@ halt
 			elseif ($wordy = "PsPrb")
 				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
 				getWord $stats $SCAN_TYPE    		($current_word + 1)
 			elseif ($wordy = "Aln")
@@ -390,7 +390,7 @@ halt
 			elseif ($wordy = "Corp")
 				getWord $stats $CORP   			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word

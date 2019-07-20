@@ -1,16 +1,16 @@
 	logging off
-	loadVar $bot_name
+	loadVar $switchboard~bot_name
 	loadVar $unlimitedGame
 	loadVar $bot_turn_limit
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
+	loadVar $bot~user_command_line
+	loadVar $bot~parm1
+	loadVar $bot~parm2
+	loadVar $bot~parm3
+	loadVar $bot~parm4
+	loadVar $bot~parm5
+	loadVar $bot~parm6
+	loadVar $bot~parm7
+	loadVar $bot~parm8
 	loadVar $stardock
 	loadVar $backdoor
 	loadvar $LIMPET_COST
@@ -24,45 +24,45 @@
 	getSectorParameter SECTORS "MINESEC" $isArmided
 	getSectorParameter SECTORS "LIMPSEC" $isLimped
 	if (($stardock = 0) OR ($stardock = ""))
-		send "'{" $bot_name "} - Stardock is not defined.  Please define stardock variable in the bot.*"
+		send "'{" $switchboard~bot_name "} - Stardock is not defined.  Please define stardock variable in the bot.*"
 		halt
 	end
 	if ($isFigged = "")
-		send "'{" $bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
+		send "'{" $switchboard~bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
 		halt
 	end
 	if ($isArmided = "")
-		send "'{" $bot_name "} - It appears no armid data is available.  Run an armid grid checker that uses the sector parameter MINESEC. (Try armids command)*"
+		send "'{" $switchboard~bot_name "} - It appears no armid data is available.  Run an armid grid checker that uses the sector parameter MINESEC. (Try armids command)*"
 		halt
 	end
 	if ($isLimped = "")
-		send "'{" $bot_name "} - It appears no limpet data is available.  Run a limpet grid checker that uses the sector parameter LIMPSEC. (Try limps command)*"
+		send "'{" $switchboard~bot_name "} - It appears no limpet data is available.  Run a limpet grid checker that uses the sector parameter LIMPSEC. (Try limps command)*"
 		halt
 	end
 
-	gosub :quikstats
-	if ($current_prompt <> "Citadel")
-		send "'{" $bot_name "} - Must must start mine sweeper from citadel prompt.*"
+	gosub :player~quikstats
+	if ($player~current_prompt <> "Citadel")
+		send "'{" $switchboard~bot_name "} - Must must start mine sweeper from citadel prompt.*"
 		halt
 	end
 
 	gosub :getInfo
-	setVar $homesector $CURRENT_SECTOR
+	setVar $homesector $player~current_sector
     	
 	killalltriggers	
 	goSub :checkAvoidedSectors
 	send "q"
-	gosub :getPlanetInfo	
+	gosub :planet~getplanetinfo	
 	send "tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*mnt*c"
 	
 	gosub :checkShip
 	while (TRUE)
-		gosub :quikstats
+		gosub :player~quikstats
 		if (($LIMPETS < $grid_limpets) OR ($ARMIDS < $grid_armids))
 			if ($refurb)
 				gosub :attemptRefurb
 			else
-				send "'{" $bot_name "} -  Need to buy more mines before this script can continue.*"
+				send "'{" $switchboard~bot_name "} -  Need to buy more mines before this script can continue.*"
 				halt
 			end
 		end
@@ -86,7 +86,7 @@
 	getWord CURRENTLINE $figs 5
 	multiply $offodd $figs
 	divide $offodd 12
-	gosub :quikstats
+	gosub :player~quikstats
 return
 
 
@@ -100,7 +100,7 @@ return
 		getWord CURRENTLINE $citadelCash 4
 		stripText $citadelCash ","
 		if ($citadelCash < $cashNeeded)
-			send "'{" & $bot_name & "} - Not enough cash for mine refurbs in treasury or on hand.*"	
+			send "'{" & $switchboard~bot_name & "} - Not enough cash for mine refurbs in treasury or on hand.*"	
 			halt
 		end
 		send "t f "&($cashNeeded-$CREDITS)&"* "
@@ -121,10 +121,10 @@ return
 		setVar $RED_adj 0
 		gosub :FindJumpSector
 		if ($RED_adj <> 0)
-			send ("'{"&$bot_name&"} - Jump Sector Found - Using Sector "&$RED_adj&"**")
+			send ("'{"&$switchboard~bot_name&"} - Jump Sector Found - Using Sector "&$RED_adj&"**")
 		else
 			waitfor "Command [TL="
-			send "'{" & $bot_name & "} - Cannot Find Jump Sector Adjacent Dock**"
+			send "'{" & $switchboard~bot_name & "} - Cannot Find Jump Sector Adjacent Dock**"
 			halt
 		end
 	end
@@ -148,7 +148,7 @@ return
 
 	:noJoy
 		killAllTriggers
-		send "'{" $bot_name "} - Cannot Find Path to StarDock!**"
+		send "'{" $switchboard~bot_name "} - Cannot Find Path to StarDock!**"
 		halt
 	:cont
 		killAllTriggers
@@ -165,37 +165,37 @@ return
 		end
 
 		if ($dist1 <= 0)
-			send "'{" $bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Course to Dock**"
+			send "'{" $switchboard~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Course to Dock**"
 			halt
 		end
 
 		getdistance $dist2 $stardock $START_SECTOR
 		if ($dist2 <= 0)
-			send "'{" $bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Return Course From Dock**"
+			send "'{" $switchboard~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Return Course From Dock**"
 			halt
 		end
 
 		setVar $ore_req (($dist1 + $dist2) * 3)
 
 		if ($ORE_HOLDS < $ore_req)
-			send "'{" $bot_name "} - Not Enough ORE In Holds To Make Round Trip**"
+			send "'{" $switchboard~bot_name "} - Not Enough ORE In Holds To Make Round Trip**"
 			halt
 		end
 
 		if ($TWARP_TYPE = "No")
-			send "'{" $bot_name "} - Must Have Twarp 1 or 2**"
+			send "'{" $switchboard~bot_name "} - Must Have Twarp 1 or 2**"
 			halt
 		end
 
 		if ($unlimitedGame = 0)
 			gosub :TurnsRequired
 			if ($TurnsRequired > $TURNS)
-				send "'{" $bot_name "} - Not Enough Turns. " & ANSI_12 & $TurnsRequired & ANSI_15 & ", Required**"
+				send "'{" $switchboard~bot_name "} - Not Enough Turns. " & ANSI_12 & $TurnsRequired & ANSI_15 & ", Required**"
 				halt
 			elseif ($TurnsRequired <= $TURNS)
 				setVar $tmp ($TURNS - $TurnsRequired)
 				if ($tmp <= $bot_turn_limit)
-					send "'{" $bot_name "} - Proceeding Will Leave Fewer Than " & $bot_turn_limit & " Turns!**"
+					send "'{" $switchboard~bot_name "} - Proceeding Will Leave Fewer Than " & $bot_turn_limit & " Turns!**"
 					halt
 				end
 			end
@@ -207,7 +207,7 @@ return
 	pause
 	:nosoupforme
 		killAllTriggers
-		send "'{" $bot_name "} " & $TagLineB & " - StarDock appears to have been Blown Up!**"
+		send "'{" $switchboard~bot_name "} " & $TagLineB & " - StarDock appears to have been Blown Up!**"
 		halt
 	:itsalive
 		killAllTriggers
@@ -225,18 +225,18 @@ return
 		if ($msg = "")
 			waitfor "You leave the Galactic Bank."
 		else
-			send "'{" $bot_name "} - Unknown Problem Detected. Check TA!**"
+			send "'{" $switchboard~bot_name "} - Unknown Problem Detected. Check TA!**"
 			halt
 		end
-		gosub :quikstats
+		gosub :player~quikstats
 
 		setVar $_Limps "Max"
 		setVar $_Mines "Max"
 		gosub :DoPurchases
 		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet & "* p  s  s * * c *"
-		gosub :quikstats
-		if ($CURRENT_SECTOR = $stardock)
-			send "'{" $bot_name "} - Twarp Error, Should be Hiding on Dock!**"
+		gosub :player~quikstats
+		if ($player~current_sector = $stardock)
+			send "'{" $switchboard~bot_name "} - Twarp Error, Should be Hiding on Dock!**"
 			halt
 		end
 	
@@ -315,10 +315,10 @@ return
 		send "q"
 		waitFor "Command [TL"
 	end	
-	gosub :quikstats
+	gosub :player~quikstats
     	setVar $figstodeploy 1
 	gosub :deployfigs 
-	setVar $savetarget $CURRENT_SECTOR
+	setVar $savetarget $player~current_sector
 	if ($savetarget < 10)
 		setVar $savetarget "0000" & $savetarget
 	elseif ($savetarget < 100)
@@ -330,7 +330,7 @@ return
 	end
 
 	send "'" & $savetarget & "=saveme*"
-	send "'pickup " & $CURRENT_SECTOR  & " ::*"
+	send "'pickup " & $player~current_sector  & " ::*"
 
 
 :waitforhelp
@@ -369,7 +369,7 @@ return
     if ($figstodeploy = 0)
         setVar $figstodeploy 1
     end
-    if (($CURRENT_SECTOR  < 11) or ($CURRENT_SECTOR  = $stardock))
+    if (($player~current_sector  < 11) or ($player~current_sector  = $stardock))
         send "'Can't deploy figs in fed*"
         return
     end
@@ -400,32 +400,32 @@ return
 
 
 :findNextTarget
-	getNearestWarps $nearest $CURRENT_SECTOR
+	getNearestWarps $nearest $player~current_sector
 	setVar $checked ""
 	setVar $i 1
 	while ($i <= $nearest)
 		setVar $focus $nearest[$i]
-		setVar $checked $checked&" "&$CURRENT_SECTOR&" "
+		setVar $checked $checked&" "&$player~current_sector&" "
 
 		getWordPos $avoidedSectors $pos " "&$focus&" "
 		getSectorParameter $focus "FIGSEC" $isFigged
 		getSectorParameter $focus "MINESEC" $isArmided
 		getSectorParameter $focus "LIMPSEC" $isLimped
 		if ((($isLimped <= 0) OR ($isArmided <= 0)) AND ($pos <= 0))
-			getDistance $distanceThere $current_sector $focus
-			getDistance $distanceBack $focus $current_sector
+			getDistance $distanceThere $player~current_sector $focus
+			getDistance $distanceBack $focus $player~current_sector
 			if ($distanceThere < 0)
-				send "^f"&$current_sector&"*"&$focus&"*q"
+				send "^f"&$player~current_sector&"*"&$focus&"*q"
 				waitOn "ENDINTERROG"
-				getDistance $distanceThere $current_sector $focus
+				getDistance $distanceThere $player~current_sector $focus
 			end
 			if ($distanceBack < 0)
-				send "^f"&$focus&"*"&$current_sector&"*q"
+				send "^f"&$focus&"*"&$player~current_sector&"*q"
 				waitOn "ENDINTERROG"
-				getDistance $distanceBack $focus $current_sector
+				getDistance $distanceBack $focus $player~current_sector
 			end
 			if ($distanceThere > 20)
-				send "'{" $bot_name "} - Next fighter is over 20 hops away, stopping mine sweeper.*"
+				send "'{" $switchboard~bot_name "} - Next fighter is over 20 hops away, stopping mine sweeper.*"
 				halt
 			end
 			killAllTriggers
@@ -437,25 +437,25 @@ return
 			pause
 			:pwarpNoFuel1
 				killalltriggers
-				send "'{" $bot_name "} - Not enough fuel on planet "&$planet&". Stopping mine sweeper.*"
+				send "'{" $switchboard~bot_name "} - Not enough fuel on planet "&$planet&". Stopping mine sweeper.*"
 				halt
 			:pwarpYesShip1
 				killAllTriggers
 				setVar $avoidedSectors $avoidedSectors&" "&$focus&" "
-				gosub :quikstats
+				gosub :player~quikstats
 				return 
 			:pwarpNoShip1
 				killAllTriggers	
 		end
 		add $i 1
 	end	
-	send "'{" $bot_name "} - All sectors possible swept. Halting mine sweeper.*"
+	send "'{" $switchboard~bot_name "} - All sectors possible swept. Halting mine sweeper.*"
 	gosub :goHome
 return
 
 # ============================== QUICKSTATS ==============================
-:quikstats
-    	setVar $CURRENT_PROMPT 		"Undefined"
+:player~quikstats
+    	setVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt1
 	killtrigger prompt2
@@ -469,14 +469,14 @@ return
 	pause
 
 	:allPrompts
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
+		getWord CURRENTLINE $player~current_prompt 1
+		stripText $player~current_prompt #145
+		stripText $player~current_prompt #8
 		#getWord currentansiline $checkPrompt 1
 		#getWord currentline $tempPrompt 1
 		#getWordPos $checkPrompt $pos "[35m"
 		#if ($pos > 0)
-		#	setVar $CURRENT_PROMPT $tempPrompt
+		#	setVar $player~current_prompt $tempPrompt
 		#end
 		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
 		pause
@@ -512,13 +512,13 @@ return
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
 				getWord $stats $TURNS  			($current_word + 1)
 			elseif ($wordy = "Creds")
 				getWord $stats $CREDITS  		($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
+				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
 				getWord $stats $SHIELDS  		($current_word + 1)
 			elseif ($wordy = "Hlds")
@@ -556,7 +556,7 @@ return
 			elseif ($wordy = "PsPrb")
 				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
 				getWord $stats $SCAN_TYPE    		($current_word + 1)
 			elseif ($wordy = "Aln")
@@ -566,7 +566,7 @@ return
 			elseif ($wordy = "Corp")
 				getWord $stats $CORP   			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word
@@ -583,22 +583,22 @@ return
 # ============================== END QUICKSTATS SUB==============================
 
 :clearSector
-	setVar $beforeSector $CURRENT_SECTOR
+	setVar $beforeSector $player~current_sector
 	setVar $beforeLimpets $LIMPETS
 	setVar $beforeArmids  $ARMIDS
 	setVar $placedLimpet FALSE
 	setVar $placedArmid FALSE
 	send "q q ** "
 	waitOn "Warps to Sector(s) :"
-	setVar $limpetOwner SECTOR.LIMPETS.OWNER[$CURRENT_SECTOR]
-	setVar $armidOwner SECTOR.MINES.OWNER[$CURRENT_SECTOR]
+	setVar $limpetOwner SECTOR.LIMPETS.OWNER[$player~current_sector]
+	setVar $armidOwner SECTOR.MINES.OWNER[$player~current_sector]
 	gosub :deployEquipment
 	while (($placedLimpet = FALSE) OR ($placedArmid = FALSE))
 		gosub :attemptClearingMines
 	end
 	send "l "&$planet&"* m * * * c "
-	setVar $limpetedSectors[$CURRENT_SECTOR] TRUE
-	setVar $armidSectors[$CURRENT_SECTOR] TRUE
+	setVar $limpetedSectors[$player~current_sector] TRUE
+	setVar $armidSectors[$player~current_sector] TRUE
 
 return
 
@@ -619,8 +619,8 @@ return
 :deployEquipment
 	
 	send "h  1  z " & $grid_limpets & "*  z c  *  h  2  z " & $grid_armids & "*  z c  *   "
-	gosub :quikstats
-	if ($beforeSector <> $CURRENT_SECTOR)
+	gosub :player~quikstats
+	if ($beforeSector <> $player~current_sector)
 		gosub :callSaveMe
 	end
 	if (($beforeLimpets > $LIMPETS) OR ($LIMPETS < 3) OR (($limpetOwner = "belong to your Corp") OR (($limpetOwner = "yours"))))
@@ -696,7 +696,7 @@ return
 			end
 		:twarpDone
 			if ($msg <> "")
-				send "'{" $bot_name "} Twarp Error - " & $msg & "**"
+				send "'{" $switchboard~bot_name "} Twarp Error - " & $msg & "**"
 			end
 	end
 	return
@@ -796,7 +796,7 @@ return
 	        getWord CURRENTLINE $TURNS_PER_WARP 5
 	        pause
 	:getSect
-	        getWord CURRENTLINE $CURRENT_SECTOR 4
+	        getWord CURRENTLINE $player~current_sector 4
 	        pause
 	:getTurns
 	        getWord CURRENTLINE $TURNS 4
@@ -851,8 +851,8 @@ return
 	        end
 	        pause
 	:getFighters
-	        getWord CURRENTLINE $FIGHTERS 3
-	        stripText $FIGHTERS ","
+	        getWord CURRENTLINE $player~fighters 3
+	        stripText $player~fighters ","
 	        pause
 	:getShields
 	        getWord CURRENTLINE $SHIELDS 4
@@ -922,7 +922,7 @@ return
 
 
 # ==============================  START PLANET INFO SUBROUTINE  =================
-:getPlanetInfo
+:planet~getplanetinfo
 	send "*"
 	setTextLineTrigger planetInfo :planetInfo "Planet #"
 	pause
@@ -934,10 +934,10 @@ return
 		setVar $CITADEL_CREDITS 0
 		getWord CURRENTLINE $PLANET 2
 		stripText $PLANET "#"
-#		send "'{" $bot_name "} - Looking for Planet # " & $PLANET & "*"
+#		send "'{" $switchboard~bot_name "} - Looking for Planet # " & $PLANET & "*"
 #		HALT
-		getWord CURRENTLINE $current_sector 5
-		stripText $current_sector ":"
+		getWord CURRENTLINE $player~current_sector 5
+		stripText $player~current_sector ":"
 		waitOn "2 Build 1   Product    Amount     Amount     Maximum"
 
         :getPlanetStuff

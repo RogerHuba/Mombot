@@ -20,20 +20,20 @@
 # These files should be stored in the root of the compression you 
 # received this source in.
 
-	loadVar $bot_name
+	loadVar $switchboard~bot_name
 	loadVar $command
 	loadVar $avoidedSectorsUgrid
 	loadVar $unlimitedGame
 	loadVar $bot_turn_limit
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
+	loadVar $bot~user_command_line
+	loadVar $bot~parm1
+	loadVar $bot~parm2
+	loadVar $bot~parm3
+	loadVar $bot~parm4
+	loadVar $bot~parm5
+	loadVar $bot~parm6
+	loadVar $bot~parm7
+	loadVar $bot~parm8
 	loadVar $stardock
 	loadVar $home_sector
 	loadVar $backdoor
@@ -56,21 +56,21 @@
 		write "scripts\mombot\help\"&$command&".txt" "                     2 - avoids nothing                           " 
 		write "scripts\mombot\help\"&$command&".txt" "   - {seek}        = Seeks resources outside sector for upgrades  " 
 		write "scripts\mombot\help\"&$command&".txt" "                                                                  " 
-		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
+		send "'{" $switchboard~bot_name "} - Writing help file for this command in Help directory.*"
 	end
 
     setTextLineTrigger  prompt      :allPrompts     #145 & #8
     send #145&"/"
     pause
     :allPrompts
-        getWord CURRENTLINE $CURRENT_PROMPT 1
-        stripText $CURRENT_PROMPT #145
-        stripText $CURRENT_PROMPT #8
+        getWord CURRENTLINE $player~current_prompt 1
+        stripText $player~current_prompt #145
+        stripText $player~current_prompt #8
 killalltriggers
 
 # check location
 
-if ($CURRENT_PROMPT <> "Command")
+if ($player~current_prompt <> "Command")
         clientMessage "This script must be run from the command menu"
         halt
 end
@@ -80,22 +80,22 @@ reqRecording
 logging off
 
 
-getWordPos $user_command_line $pos "seek"
+getWordPos $bot~user_command_line $pos "seek"
 if ($pos > 0)
 	setVar $MassUpgrade~Seek 1
 else
 	setVar $MassUpgrade~Seek 0
 end
 
-if (($parm1 = 0) OR ($parm1 = 1) OR ($parm1 = 2))
-	setVar $Move~ScanHolo $parm1
+if (($bot~parm1 = 0) OR ($bot~parm1 = 1) OR ($bot~parm1 = 2))
+	setVar $Move~ScanHolo $bot~parm1
 else
 	setVar $Move~ScanHolo 1
 end
 
 
-if (($parm1 = 0) OR ($parm1 = 1) OR ($parm1 = 2))
-	setVar $Move~Evasion $parm2
+if (($bot~parm1 = 0) OR ($bot~parm1 = 1) OR ($bot~parm1 = 2))
+	setVar $Move~Evasion $bot~parm2
 else
 	setVar $Move~Evasion 0
 end

@@ -1,23 +1,23 @@
-	loadVar $bot_name
-	loadVar $parm1
-	loadVar $user_command_line
-	loadVar $parm2
+	loadVar $switchboard~bot_name
+	loadVar $bot~parm1
+	loadVar $bot~user_command_line
+	loadVar $bot~parm2
 
 # ============================== IG ==============================
 :auto_ig
 	killalltriggers
-	gosub :quikstats~quikstats
-	setVar $startingLocation $quikstats~CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~CURRENT_PROMPT
 	if ($startingLocation <> "Command")
-		send "'{" $bot_name "} - Must start at Citadel, Planet or Command prompt*"
+		send "'{" $switchboard~bot_name "} - Must start at Citadel, Planet or Command prompt*"
 		halt
 	end
 	setVar $ig_mode 0
-	if ($parm1 <> "on") AND ($parm1 <> "off")
-		send "'{" $bot_name "} - Please use - IG [on/off]*"
+	if ($bot~parm1 <> "on") AND ($bot~parm1 <> "off")
+		send "'{" $switchboard~bot_name "} - Please use - IG [on/off]*"
 		halt
 	end
-	send "'{" $bot_name "} - Auto IG reset mode is now ON.*"
+	send "'{" $switchboard~bot_name "} - Auto IG reset mode is now ON.*"
 	setVar $PLANET 0
 	saveVar $PLANET
 	goto :ig_turn_it_on
@@ -48,7 +48,7 @@
 		killtrigger no_ig_cby
 		killtrigger ig_was_on
 		killtrigger do_ig_thing
-		send "'{" $bot_name "} - No IG available on this ship.*"
+		send "'{" $switchboard~bot_name "} - No IG available on this ship.*"
 		halt
 
 	:no_ig_beam
@@ -88,10 +88,10 @@
 		killtrigger do_ig_thing
 		if ($ig_mode = 0)
 			send "Y"
-			send "'{" $bot_name "} - IG on!*"
+			send "'{" $switchboard~bot_name "} - IG on!*"
 		else
 			send "N"
-			send "'{" $bot_name "} - IG was already on.*"
+			send "'{" $switchboard~bot_name "} - IG was already on.*"
 		end
 			goto :ig_triggers
 

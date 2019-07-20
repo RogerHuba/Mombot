@@ -103,7 +103,7 @@
 	gosub :SHIP~getShipStats
 
 	gosub :get_tl_list
-	setvar $parameter "FARM"
+	setvar $bot~parmameter "FARM"
 	if ($restack = true)
 		gosub :restack
 		setvar $switchboard~message "I restacked every planet the best I could.  I would double check though.*"
@@ -142,10 +142,10 @@
 							while ($bottom <= $top)
 								# Now, pull out the next sector in the que, and make it our focus
 								setVar $focus $que[$bottom]
-								if ($parameter <> "")
-									getsectorparameter $focus $parameter $isTargettedSector
+								if ($bot~parmameter <> "")
+									getsectorparameter $focus $bot~parmameter $isTargettedSector
 								end
-								if (($parameter <> "") and ($isTargettedSector <> true))
+								if (($bot~parmameter <> "") and ($isTargettedSector <> true))
 									goto :notit
 								end
 								if (($isTargettedSector = true) and ($citadels[$focus] < $game~MAX_PLANETS_PER_SECTOR))

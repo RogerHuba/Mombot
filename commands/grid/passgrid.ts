@@ -1,4 +1,4 @@
-loadvar $user_command_line
+loadvar $bot~user_command_line
 loadVar $BOT~bot_turn_limit
 loadVar $SWITCHBOARD~bot_name
 	  #=--------                                                                       -------=#
@@ -88,14 +88,14 @@ loadVar $SWITCHBOARD~bot_name
 		setVar $Report_ALPHA	TRUE
 	end
 
-	gosub :quikstats
+	gosub :player~quikstats
 
-	if (($CURRENT_PROMPT <> "Command") AND ($CURRENT_PROMPT <> "Citadel"))
+	if (($player~current_prompt <> "Command") AND ($player~current_prompt <> "Citadel"))
 		send "'" & $TAGLINEb & " Wrong Prompt**"
 		halt
 	end
 
-	if ($CURRENT_PROMPT = "Citadel")
+	if ($player~current_prompt = "Citadel")
 		send "q q * * * "
 	end
 
@@ -103,7 +103,7 @@ loadVar $SWITCHBOARD~bot_name
 		send "'" & $TAGLINEb & " Must At Least Have a Density Scanner**"
 		halt
 	end
-	if ($FIGHTERS < 10)
+	if ($player~fighters < 10)
 		send "'" & $TAGLINEb & " Must At More than 10 Fighters**"
 		halt
 	end
@@ -125,7 +125,7 @@ loadVar $SWITCHBOARD~bot_name
 
 
 
-		getWordPos $user_command_line $pos "skip"
+		getWordPos $bot~user_command_line $pos "skip"
 		if ($pos > 0)
 			setVar $Update_Figs FALSE
 		else
@@ -146,14 +146,14 @@ loadVar $SWITCHBOARD~bot_name
 			setVar $HOLO FALSE
 		end
 
-		getWordPos $user_command_line $pos "track"
+		getWordPos $bot~user_command_line $pos "track"
 		if ($pos > 0)
 			setVar $TRACKER TRUE
 		else
 			setVar $TRACKER FALSE
 		end
 
-		getWordPos $user_command_line $pos "mines"
+		getWordPos $bot~user_command_line $pos "mines"
 		if ($pos > 0)
 			setVar $DROPING_MINES 1
 			setVar $DROP_ARMID 1
@@ -282,7 +282,7 @@ loadVar $SWITCHBOARD~bot_name
 
 	while ($TURNS > $Turn_Limit)
 		:To_The_Top
-		gosub :quikstats
+		gosub :player~quikstats
 		setVar $anon_ptr 1
 		setTextLineTrigger	TurnsGone	:TurnsGone	"Do you want instructions (Y/N) [N]?"
 
@@ -308,17 +308,17 @@ loadVar $SWITCHBOARD~bot_name
 			if ($TRACKER)
 				gosub :Haggel_Checker
 			elseif (($ORE_HOLDS < ($TOTAL_HOLDS - $EQU_MIN)) AND ($TWARP_TYPE <> "No"))
-				if ((PORT.CLASS[$CURRENT_SECTOR] = 3) OR (PORT.CLASS[$CURRENT_SECTOR] = 4) OR (PORT.CLASS[$CURRENT_SECTOR] = 5) OR (PORT.CLASS[$CURRENT_SECTOR] = 7))
+				if ((PORT.CLASS[$player~current_sector] = 3) OR (PORT.CLASS[$player~current_sector] = 4) OR (PORT.CLASS[$player~current_sector] = 5) OR (PORT.CLASS[$player~current_sector] = 7))
 					Echo "***Stupid Attmpt**"
 					send "PT** 0* 0*  "
 				end
 			end
 
 		setVar $i 1
-		setArray $Adj_Targets SECTOR.WARPCOUNT[$CURRENT_SECTOR]
+		setArray $Adj_Targets SECTOR.WARPCOUNT[$player~current_sector]
 
-		while ($i <= SECTOR.WARPCOUNT[$CURRENT_SECTOR])
-        	setVar $adj SECTOR.WARPS[$CURRENT_SECTOR][$i]
+		while ($i <= SECTOR.WARPCOUNT[$player~current_sector])
+        	setVar $adj SECTOR.WARPS[$player~current_sector][$i]
 			setVar $Adj_Targets[$i] 10
 
 			if (SECTOR.NAVHAZ[$adj] <> 0)
@@ -480,7 +480,7 @@ loadVar $SWITCHBOARD~bot_name
 		setVar $Target 10
 		setVar $Target_IDX 0
 
-		while ($idx <= SECTOR.WARPCOUNT[$CURRENT_SECTOR])
+		while ($idx <= SECTOR.WARPCOUNT[$player~current_sector])
 			if (($Adj_Targets[$idx] < $Target) AND ($Target <> 0))
 				setVar $Target $Adj_Targets[$idx]
 				setVar $Target_IDX $idx
@@ -489,7 +489,7 @@ loadVar $SWITCHBOARD~bot_name
 		end
 
 		if ($Target_IDX <> 0)
-			setVar $Target SECTOR.WARPS[$CURRENT_SECTOR][$Target_IDX]
+			setVar $Target SECTOR.WARPS[$player~current_sector][$Target_IDX]
 			if (SECTOR.DENSITY[$Target] >= 100)
 				send " c r"&$Target&"*q"
 				setTextLineTrigger	NoData1	:NoData		"You have never visted sector"
@@ -510,15 +510,15 @@ loadVar $SWITCHBOARD~bot_name
 							setVar $idx 1
 							setVar $Target 10
 							setVar $Target_IDX 0
-							while ($idx <= SECTOR.WARPCOUNT[$CURRENT_SECTOR])
-								if ($Adj_Targets[$idx] < $Target) AND ($Target <> 0) AND (SECTOR.WARPS[$CURRENT_SECTOR][$idx] <> $Ignore)
+							while ($idx <= SECTOR.WARPCOUNT[$player~current_sector])
+								if ($Adj_Targets[$idx] < $Target) AND ($Target <> 0) AND (SECTOR.WARPS[$player~current_sector][$idx] <> $Ignore)
 									setVar $Target $Adj_Targets[$idx]
 									setVar $Target_IDX $idx
 								end
 								add $idx 1
 							end
 							if ($Target_IDX <> 0)
-								setVar $Target SECTOR.WARPS[$CURRENT_SECTOR][$Target_IDX]
+								setVar $Target SECTOR.WARPS[$player~current_sector][$Target_IDX]
 							else
 								goto :No_Target
 							end
@@ -534,11 +534,11 @@ loadVar $SWITCHBOARD~bot_name
         :No_Target
 		if ($TWARP_TYPE <> "No")
 			#Find A Place To Twarp To
-			getNearestWarps $WarpArray $CURRENT_SECTOR
+			getNearestWarps $WarpArray $player~current_sector
 			getRnd $w 5 10
 			while ($w <= $WarpArray)
 				setVar $focus $WarpArray[$w]
-				if ($Focus <> $CURRENT_SECTOR)
+				if ($Focus <> $player~current_sector)
 					getSectorParameter $Focus "FIGSEC" $Flag
 					isNumber $tst $Flag
 					if ($tst = 0)
@@ -578,8 +578,8 @@ loadVar $SWITCHBOARD~bot_name
 	        if ($HOLO)
 				setVar $cx 1
 				setVar $cn 0
-				while (SECTOR.WARPS[$CURRENT_SECTOR][$cx] <> 0)
-					setVar $adj SECTOR.WARPS[$CURRENT_SECTOR][$cx]
+				while (SECTOR.WARPS[$player~current_sector][$cx] <> 0)
+					setVar $adj SECTOR.WARPS[$player~current_sector][$cx]
 					if (SECTOR.EXPLORED[$adj] = "NO") OR (SECTOR.EXPLORED[$adj] = "CALC")
 						add $cn 1
 					end
@@ -602,7 +602,7 @@ loadVar $SWITCHBOARD~bot_name
 					goto :We_Done
 				:Sector__Far
 					killAllTriggers
-					getNearestWarps $WarpArray $CURRENT_SECTOR
+					getNearestWarps $WarpArray $player~current_sector
 					setVar $c 1
 					while ($c <= $WarpArray)
 						setVar $focus $WarpArray[$c]
@@ -627,7 +627,7 @@ loadVar $SWITCHBOARD~bot_name
 											setVar $Flag 0
 											setSectorParameter $COURSE[$j] "FIGSEC" FALSE
 										end
-										if (($Flag = 0) AND ($COURSE[$j] <> $CURRENT_SECTOR))
+										if (($Flag = 0) AND ($COURSE[$j] <> $player~current_sector))
 											goto :Next_SXX_Port
 										end
 										setVar $result $result&"m"&$COURSE[$j]&"* "
@@ -653,13 +653,13 @@ loadVar $SWITCHBOARD~bot_name
 
 									if ($TRACKER)
 										send ($result&"  **  ")
-										gosub :quikstats
+										gosub :player~quikstats
 										gosub :Haggel_Checker
 									else
 										send ($result&"  **    P   T   *   *   *   *   ")
 									end
 
-									gosub :quikstats
+									gosub :player~quikstats
 									if ($TOTAL_HOLDS <> $ORE_HOLDS) AND ($TRACKER = 0)
 										if ($CREDITS < 10000)
 											Echo "**" & $TAGLINEc & " " & " Appear To Be Out of Funds for ORE purchase.**"
@@ -723,7 +723,7 @@ loadVar $SWITCHBOARD~bot_name
 						end
 					end
 					send "Y  *  A Z " & $maxFigAttack & "998877665544332211 n  *  **   " & $DROP_STR
-					gosub :quikstats
+					gosub :player~quikstats
 			goto :To_The_Top
 		else
 			Echo "**" & $TAGLINEc & " " & " Walled In (No Twarp Available)***"
@@ -794,9 +794,9 @@ loadVar $SWITCHBOARD~bot_name
 			send $DROP_STR & "  j  *"
 			waiton "Are you sure you want to jettison all cargo?"
 		end
-		gosub :quikstats
+		gosub :player~quikstats
 
-		if ($CURRENT_PROMPT <> "Command")
+		if ($player~current_prompt <> "Command")
 			Echo "**" & $TAGLINEc & " " & "Wrong Prompt After Sector Hit.***"
 			halt
 		end
@@ -805,10 +805,10 @@ loadVar $SWITCHBOARD~bot_name
 			gosub :Haggel_Checker
 		end
 
-		if ($CURRENT_PROMPT <> "Command")
+		if ($player~current_prompt <> "Command")
 	        send " r *  *  p d 0* 0* 0* * *** * c q q q q q z 2 2 c q * z * *** * * "
-			gosub :quikstats
-			if ($CURRENT_PROMPT = "Command")
+			gosub :player~quikstats
+			if ($player~current_prompt = "Command")
 				load "_ck_callsaveme.cts"
 				halt
 			else
@@ -834,7 +834,7 @@ loadVar $SWITCHBOARD~bot_name
 			send "CR*Q"
 			waitfor "<Computer deactivated>"
 		end
-		if ($FIGHTERS <= 10)
+		if ($player~fighters <= 10)
 			Echo "**" & $TAGLINEc & " " & "Fighter Level is Critically Low (Less Than 10)**"
 			Halt
 		end
@@ -876,8 +876,8 @@ loadVar $SWITCHBOARD~bot_name
 		halt
 
 
-:quikstats
-	SetVar $CURRENT_PROMPT 		"Undefined"
+:player~quikstats
+	SetVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt1
 	killtrigger prompt2
@@ -898,7 +898,7 @@ loadVar $SWITCHBOARD~bot_name
 		getWord currentline $tempPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			SetVar $CURRENT_PROMPT $tempPrompt
+			SetVar $player~current_prompt $tempPrompt
 		end
 		setTextLineTrigger prompt1 :allPrompts "(?="
 		pause
@@ -907,7 +907,7 @@ loadVar $SWITCHBOARD~bot_name
 		getWord currentline $tempPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			SetVar $CURRENT_PROMPT $tempPrompt
+			SetVar $player~current_prompt $tempPrompt
 		end
 		setTextLineTrigger prompt2 :secondaryPrompts "(?)"
 		pause
@@ -917,7 +917,7 @@ loadVar $SWITCHBOARD~bot_name
 		getWord currentansiline $checkPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			SetVar $CURRENT_PROMPT "Terra"
+			SetVar $player~current_prompt "Terra"
 		end
 		setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
 		setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
@@ -951,7 +951,7 @@ loadVar $SWITCHBOARD~bot_name
 		SetVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
 				getWord $stats $TURNS  				($current_word + 1)
 				if ($UNLIM)
@@ -960,7 +960,7 @@ loadVar $SWITCHBOARD~bot_name
 			elseif ($wordy = "Creds")
 				getWord $stats $CREDITS  			($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   			($current_word + 1)
+				getWord $stats $player~fighters   			($current_word + 1)
 			elseif ($wordy = "Shlds")
 				getWord $stats $SHIELDS  			($current_word + 1)
 			elseif ($wordy = "Hlds")
@@ -998,7 +998,7 @@ loadVar $SWITCHBOARD~bot_name
 			elseif ($wordy = "PsPrb")
 				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
 				getWord $stats $SCAN_TYPE    		($current_word + 1)
 			elseif ($wordy = "Aln")
@@ -1008,7 +1008,7 @@ loadVar $SWITCHBOARD~bot_name
 			elseif ($wordy = "Corp")
 				getWord $stats $CORP  	 			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word
@@ -1094,7 +1094,7 @@ loadVar $SWITCHBOARD~bot_name
 :UpdateStatus_window
 	setVar $Window_TXT ""
 
-	setVar $Window_TXT ($Window_TXT & " Sector    : " & $CURRENT_SECTOR & "*")
+	setVar $Window_TXT ($Window_TXT & " Sector    : " & $player~current_sector & "*")
 	if ($UNLIM)
 		setVar $Window_TXT ($Window_TXT & " Turns     : Unlimited*")
 	else
@@ -1110,7 +1110,7 @@ loadVar $SWITCHBOARD~bot_name
 	gosub :CommaSize
 	setVar $Window_TXT ($Window_TXT & " Credits   : $" & $CashAmount & "*")
 
-	setVar $CashAmount $FIGHTERS
+	setVar $CashAmount $player~fighters
 	gosub :CommaSize
 	setVar $Window_TXT ($Window_TXT & " Fighters  : " & $CashAmount & "*")
 
@@ -1235,10 +1235,10 @@ loadVar $SWITCHBOARD~bot_name
 	killAllTriggers
 		setVar $EQU_NEED2BUY ($EQU_MIN - $EQUIPMENT_HOLDS)
 		setVar $ORE_NEED2BUY (($TOTAL_HOLDS - $EQU_MIN) - $ORE_HOLDS)
-		if (PORT.CLASS[$CURRENT_SECTOR] = 1) OR (PORT.CLASS[$CURRENT_SECTOR] = 5) OR (PORT.CLASS[$CURRENT_SECTOR] = 6) OR (PORT.CLASS[$CURRENT_SECTOR] = 7) OR (PORT.CLASS[$CURRENT_SECTOR] = 3) OR (PORT.CLASS[$CURRENT_SECTOR] = 4) OR (PORT.CLASS[$CURRENT_SECTOR] = 2)
+		if (PORT.CLASS[$player~current_sector] = 1) OR (PORT.CLASS[$player~current_sector] = 5) OR (PORT.CLASS[$player~current_sector] = 6) OR (PORT.CLASS[$player~current_sector] = 7) OR (PORT.CLASS[$player~current_sector] = 3) OR (PORT.CLASS[$player~current_sector] = 4) OR (PORT.CLASS[$player~current_sector] = 2)
 			#send "CR*Q"
 			#waiton "<Computer deactivated>"
-			#if (PORT.EQUIP[$CURRENT_SECTOR] >= $EQU_NEED2BUY) AND ($EQU_NEED2BUY <> 0)
+			#if (PORT.EQUIP[$player~current_sector] >= $EQU_NEED2BUY) AND ($EQU_NEED2BUY <> 0)
 			setTextTrigger noPort :noPort "Corp Menu"
 			send "p   t   "
 			Waiton "<Port>"
@@ -1269,8 +1269,8 @@ loadVar $SWITCHBOARD~bot_name
 			send "0*"
 			pause
 			:equp
-			if ($MCIC[$CURRENT_SECTOR] = 0)
-				setVar $MCIC[$CURRENT_SECTOR] TRUE
+			if ($MCIC[$player~current_sector] = 0)
+				setVar $MCIC[$player~current_sector] TRUE
 				if ($EQUIPMENT_HOLDS > $EQU_MIN)
 					send ($EQUIPMENT_HOLDS - $EQU_MIN) & "**"
 				else
@@ -1330,8 +1330,8 @@ loadVar $SWITCHBOARD~bot_name
 	setVar $Holo_ptr 1
 	setVar $Holo_s ""
 	setVar $AvoidFlag ""
-	while (SECTOR.WARPS[$CURRENT_SECTOR][$Holo_i] > 0)
-		setVar $Holo_adj SECTOR.WARPS[$CURRENT_SECTOR][$Holo_i]
+	while (SECTOR.WARPS[$player~current_sector][$Holo_i] > 0)
+		setVar $Holo_adj SECTOR.WARPS[$player~current_sector][$Holo_i]
 		if ((SECTOR.PLANETCOUNT[$Holo_adj] > 0) OR (SECTOR.TRADERCOUNT[$Holo_adj] > 0) OR (SECTOR.SHIPCOUNT[$Holo_adj] > 0))
 	       	setVar $figOwner SECTOR.FIGS.OWNER[$Holo_adj]
 			if ((SECTOR.FIGS.QUANTITY[$Holo_adj] >= 100) AND (($figOwner <> "belong to your Corp") OR ($figOwner <> "yours")))

@@ -1,8 +1,5 @@
-loadVar $bot_name
+loadVar $switchboard~bot_name
 gosub :BOT~loadVars
-setVar $parm1 $BOT~parm1
-setVar $parm2 $BOT~parm2
-setVar $parm3 $BOT~parm3
 
 #HELP FILE
         setVar $BOT~help[1]  $BOT~tab&"   Quick Dead End Finder"
@@ -49,7 +46,7 @@ setVar $location $PLAYER~CURRENT_PROMPT
             setVar $location "Computer"
     end
     else
-    send "'{" $bot_name "} - ZTM must be started from Command, Computer, or Citadel prompt.*"
+    send "'{" $switchboard~bot_name "} - ZTM must be started from Command, Computer, or Citadel prompt.*"
     end
     
 

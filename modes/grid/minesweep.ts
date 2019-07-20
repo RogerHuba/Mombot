@@ -1,29 +1,20 @@
 	reqrecording
 	logging off
 	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	loadVar $MAP~STARDOCK
-	setVar $user_command_line $BOT~user_command_line
-
-	loadVar $bot_name
+									loadVar $MAP~STARDOCK
+	
+	loadVar $switchboard~bot_name
 	loadVar $unlimitedGame
 	loadVar $BOT~bot_turn_limit 
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
+	loadVar $bot~user_command_line
+	loadVar $bot~parm1
+	loadVar $bot~parm2
+	loadVar $bot~parm3
+	loadVar $bot~parm4
+	loadVar $bot~parm5
+	loadVar $bot~parm6
+	loadVar $bot~parm7
+	loadVar $bot~parm8
 	loadVar $MAP~stardock
 	loadVar $backdoor
 	loadvar $GAME~LIMPET_COST
@@ -104,7 +95,7 @@
 		halt
 	end
 
-	setVar $TEMP (" " & $user_command_line & " ")
+	setVar $TEMP (" " & $bot~user_command_line & " ")
 	lowercase $TEMP
 
 	getWordPos $TEMP $pos " furb "
@@ -253,7 +244,7 @@
 
 	gosub :checkShip
 
-	setVar $Temp "{" & $bot_name & "}"
+	setVar $Temp "{" & $switchboard~bot_name & "}"
 	getLength $TEMP $Len
 	setVar $S ""
 	setVar $i 1
@@ -263,7 +254,7 @@
 	end
 	send "'*"
 	waitfor "Type sub-space message"
-	send "{" $bot_name "} - Mind ()ver Matter MineSweeper v"&$VERSION&" Loading*"
+	send "{" $switchboard~bot_name "} - Mind ()ver Matter MineSweeper v"&$VERSION&" Loading*"
 	if ($REFURB)
 		send $S & " - Furbing Mines/Disruptors*"
 	end
@@ -311,9 +302,9 @@
 		setVar $HAZ_Before SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
 		setVar $PLANETS_Before SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
 		if (SECTOR.TRADERCOUNT[$PLAYER~CURRENT_SECTOR] <> 0)
-			send "'{" & $bot_name & "} -  Trader Is In Sector. Halting!*"
+			send "'{" & $switchboard~bot_name & "} -  Trader Is In Sector. Halting!*"
 					waiton "Message sent on sub-space channel"
-			send "'" & $bot_name & " pwarp " & $homesector & "*"
+			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
 					waiton "Message sent on sub-space channel"
 			halt
 		end
@@ -327,25 +318,25 @@
 		setVar $HAZ_After SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
 		setVar $PLANETS_After SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
 		if (SECTOR.TRADERCOUNT[$PLAYER~CURRENT_SECTOR] <> 0)
-			send "'{" & $bot_name & "} -  Trader Is In Sector. Halting!*"
+			send "'{" & $switchboard~bot_name & "} -  Trader Is In Sector. Halting!*"
 					waiton "Message sent on sub-space channel"
-			send "'" & $bot_name & " pwarp " & $homesector & "*"
+			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
 					waiton "Message sent on sub-space channel"
 			halt
 		end
 		if ($HAZ_Before <> $HAZ_After)
-			send "'{" & $bot_name & "} -  NavHAZ Changed. Halting!*"
+			send "'{" & $switchboard~bot_name & "} -  NavHAZ Changed. Halting!*"
 					waiton "Message sent on sub-space channel"
-			send "'" & $bot_name & " holo*"
+			send "'" & $switchboard~bot_name & " holo*"
 					waiton "Sub-space comm-link terminated"
-			send "'" & $bot_name & " pwarp " & $homesector & "*"
+			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
 					waiton "Message sent on sub-space channel"
 			halt
 		end
 		if ($PLANETS_After <> $PLANETS_Before)
-			send "'{" & $bot_name & "} -  New Planet in Sector. Halting!*"
+			send "'{" & $switchboard~bot_name & "} -  New Planet in Sector. Halting!*"
 					waiton "Message sent on sub-space channel"
-			send "'" & $bot_name & " pwarp " & $homesector & "*"
+			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
 					waiton "Message sent on sub-space channel"
 			halt
 		end

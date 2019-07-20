@@ -1,15 +1,6 @@
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	setVar $BOT~help[1]  $BOT~tab&"  Upgrades all ports until money or ports run out "
 	setVar $BOT~help[2]  $BOT~tab&"       "
@@ -23,19 +14,7 @@
 
 
    
-   setVar $bot_name $SWITCHBOARD~bot_name
-
-   
-   
-   
-   
-   
-   
-   
-   
-                    
-
-
+   setVar $switchboard~bot_name $SWITCHBOARD~bot_name
 
 	
 	gosub :PLAYER~quikstats
@@ -59,8 +38,8 @@
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	lowerCase $parm1
-	setVar $port $parm1
+	lowerCase $bot~parm1
+	setVar $port $bot~parm1
 
 
 	setVar $startingSector $PLAYER~CURRENT_SECTOR

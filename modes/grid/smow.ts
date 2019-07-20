@@ -1,8 +1,8 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
+    loadVar $switchboard~bot_name
+    loadVar $bot~user_command_line
+    loadVar $bot~parm1
+    loadVar $bot~parm2
+    loadVar $bot~parm3
     loadvar $self_command
     loadVar $stardock
     loadVar $PLAYER~unlimitedGame        
@@ -26,7 +26,7 @@
     elseif ($SHIP~SHIP_MAX_ATTACK <= 0)
         setVar $SHIP~SHIP_MAX_ATTACK 99991111
     end
-    setVar $PLAYER~destination $parm1
+    setVar $PLAYER~destination $bot~parm1
     isNumber $number $PLAYER~destination
     if ($number <> 1)
         send "'{" $SWITCHBOARD~bot_name "} - Sector entered is not a number, cannot mow!*"
@@ -35,19 +35,19 @@
         send "'{" $SWITCHBOARD~bot_name "} - Sector entered is not valid, cannot mow!*"
         goto :wait_for_command
     end
-    if ($parm2 = "p")
+    if ($bot~parm2 = "p")
         setVar $are_we_docking TRUE
     else
-        if ($parm3 = "p")
+        if ($bot~parm3 = "p")
             setVar $are_we_docking TRUE
         else
             setVar $are_we_docking FALSE
         end
     end
-    setVar $figsToDrop $parm2
+    setVar $figsToDrop $bot~parm2
     isNumber $number $figsToDrop
     if ($number <> 1)
-        if ($parm2 <> "p")
+        if ($bot~parm2 <> "p")
             send "'{" $SWITCHBOARD~bot_name "} - Fighters to drop entered is not a number, cannot mow!*"
             goto :wait_for_command
         end

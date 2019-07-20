@@ -19,7 +19,7 @@
 	setVar $Bought		0
 	setVar $Compare		0
 	setVar $Cycles		0
-	gosub :quikstats
+	gosub :player~quikstats
 
 	if ($ALIGNMENT >= 0)
 	else
@@ -30,7 +30,7 @@
 		echo ("**" & $TagLineB & ANSI_14 & " Sorry, You Need To Be Fed-Safe**")
 		halt
 	end
-	if ($CURRENT_PROMPT <> "<StarDock>")
+	if ($player~current_prompt <> "<StarDock>")
 		echo ("**" & $TagLineB & ANSI_14 & " Start at Stardock Prompt!**")
 		halt
 	end
@@ -66,14 +66,14 @@
 	killTrigger Bought
 	killTrigger Naught
 	if ($Cycles > 500)
-		gosub :quikstats
+		gosub :player~quikstats
 
 		send ("'" & $TagLineA & " Still Running*")
 
 		if ($CREDITS <= 1000)
-			stripText $CURRENT_PROMPT "<"
-			stripText $CURRENT_PROMPT ">"
-			send ("'" & $TagLineA & " Out Of Funds. Stopping At " & $CURRENT_PROMPT & " Prompt.*")
+			stripText $player~current_prompt "<"
+			stripText $player~current_prompt ">"
+			send ("'" & $TagLineA & " Out Of Funds. Stopping At " & $player~current_prompt & " Prompt.*")
 			halt
 		end
 
@@ -133,8 +133,8 @@
 	pause
 	:WaitingABit
 	killAllTriggers
-	gosub :quikstats
-	if ($CURRENT_PROMPT = "Command")
+	gosub :player~quikstats
+	if ($player~current_prompt = "Command")
 		send "  *  "
 		setTextTrigger 		Local		:Local			"Command [TL="
 		setDelayTrigger		TestConn	:TestConn		3000
@@ -210,8 +210,8 @@
 	end
 	return
 
-:quikstats
-	setVar $CURRENT_PROMPT 		"Undefined"
+:player~quikstats
+	setVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt1
 	killtrigger prompt2
@@ -232,7 +232,7 @@
 		getWord currentline $tempPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
+			setVar $player~current_prompt $tempPrompt
 		end
 		setTextLineTrigger prompt1 :allPrompts "(?="
 		pause
@@ -241,7 +241,7 @@
 		getWord currentline $tempPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
+			setVar $player~current_prompt $tempPrompt
 		end
 		setTextLineTrigger prompt2 :secondaryPrompts "(?)"
 		pause
@@ -251,7 +251,7 @@
 		getWord currentansiline $checkPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			setVar $CURRENT_PROMPT "Terra"
+			setVar $player~current_prompt "Terra"
 		end
 		setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
 		setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
@@ -284,13 +284,13 @@
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
 				getWord $stats $TURNS  				($current_word + 1)
 			elseif ($wordy = "Creds")
 				getWord $stats $CREDITS  			($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   			($current_word + 1)
+				getWord $stats $player~fighters   			($current_word + 1)
 			elseif ($wordy = "Shlds")
 				getWord $stats $SHIELDS  			($current_word + 1)
 			elseif ($wordy = "Hlds")
@@ -328,7 +328,7 @@
 			elseif ($wordy = "PsPrb")
 				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
 				getWord $stats $SCAN_TYPE    		($current_word + 1)
 			elseif ($wordy = "Aln")
@@ -338,7 +338,7 @@
 			elseif ($wordy = "Corp")
 				getWord $stats $CORP   				($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word

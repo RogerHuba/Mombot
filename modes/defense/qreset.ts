@@ -1,15 +1,6 @@
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	setVar $BOT~help[1] $BOT~tab&"qreset [planet1] [damage1] ... [planetx] [damagex] "
 	setVar $BOT~help[2] $BOT~tab&"  - Sets sector and atmos cannons for planets listed"
@@ -43,12 +34,12 @@
 	setVar $temp ""
 	while ($temp <> 0)
 		add $j 1
-		getWord $user_command_line $temp $j
+		getWord $bot~user_command_line $temp $j
 		if ($temp <> 0)
 			add $cannonPlanetCount 1
 			setVar $cannonPlanet[$cannonPlanetCount] $temp
 			add $j 1
-			getWord $user_command_line $temp $j
+			getWord $bot~user_command_line $temp $j
 			setVar $cannonAmount[$cannonPlanetCount] $temp
 		end
 	end

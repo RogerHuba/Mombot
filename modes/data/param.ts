@@ -1,8 +1,8 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
+    loadVar $switchboard~bot_name
+    loadVar $bot~user_command_line
+    loadVar $bot~parm1
+    loadVar $bot~parm2
+    loadVar $bot~parm3
     loadvar $self_command
     loadVar $command
     loadVar $stardock
@@ -13,37 +13,37 @@
     loadVar $bot~silent_running
 
 
-isNumber $test $parm1
+isNumber $test $bot~parm1
 setVar $getAllParamsFromSectors FALSE
 if ($test = TRUE)
-    if (($parm1 <= 0) OR ($parm1 > SECTORS))
-        setvar $parm1 CURRENTSECTOR
+    if (($bot~parm1 <= 0) OR ($bot~parm1 > SECTORS))
+        setvar $bot~parm1 CURRENTSECTOR
    end
     if ($SWITCHBOARD~self_command <> TRUE) or ($bot~silent_running <> TRUE)
         setVar $SWITCHBOARD~self_command 2
     end
-    listSectorParameters $parm1 $parms
+    listSectorParameters $bot~parm1 $bot~parms
     setvar $i 1
-    setVar $SWITCHBOARD~message "  *Displaying sector parameters for sector "&$parm1&": *"
+    setVar $SWITCHBOARD~message "  *Displaying sector parameters for sector "&$bot~parm1&": *"
 	
 	# HAMMER - 23/10 - Added this because EP HAGGLE creates so many prams
 	# that the BUST / FAKE Bust params weren't showing
 	# So probably a bug in TWX...
 
-    getSectorParameter $parm1 "BUSTED" $bustthissec
+    getSectorParameter $bot~parm1 "BUSTED" $bustthissec
     if ($bustthissec = TRUE)
 	setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  BUSTED: 1*"
     end
-    getSectorParameter $parm1 "FAKEBUST" $fakebust
+    getSectorParameter $bot~parm1 "FAKEBUST" $fakebust
     if ($fakebust = TRUE)
 	setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  FAKEBUST: 1*"
     end
-    while ($i <= $parms)
-        getSectorParameter $parm1 $parms[$i] $check
-	if ($parms[$i] = "BUSTED")
-	elseif ($parms[$i] = "FAKEBUST")
+    while ($i <= $bot~parms)
+        getSectorParameter $bot~parm1 $bot~parms[$i] $check
+	if ($bot~parms[$i] = "BUSTED")
+	elseif ($bot~parms[$i] = "FAKEBUST")
 	else
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  "&$parms[$i]&": "&$check&"*"
+		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  "&$bot~parms[$i]&": "&$check&"*"
 	end
         add $i 1
     end
@@ -53,11 +53,11 @@ if ($test = TRUE)
 else
     setvar $i 1
     setvar $count 0
-    uppercase $parm1
-    setVar $output "Displaying sectors for "&$parm1&": *"
-    if ($parm1 <> "PSECTOR")
+    uppercase $bot~parm1
+    setVar $output "Displaying sectors for "&$bot~parm1&": *"
+    if ($bot~parm1 <> "PSECTOR")
         while ($i <= SECTORS)
-            getSectorParameter $i $parm1 $check
+            getSectorParameter $i $bot~parm1 $check
             getSectorParameter $i "FIGSEC" $isFigged
             if (($check <> "") AND ($check <> "0"))
                 if ($isFigged = true)

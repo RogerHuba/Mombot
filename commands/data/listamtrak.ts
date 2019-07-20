@@ -14,16 +14,16 @@ gosub :SWITCHBOARD~switchboard
 	setVar $path_database "  "
 	setVar $perc 0
 	setVar $i 1
-	setVar $PARAM "MSLSEC"
+	setVar $bot~parmAM "MSLSEC"
 	while ($i <= SECTORS)
-		getSectorParameter $i $PARAM $isTrue
+		getSectorParameter $i $bot~parmAM $isTrue
 		if ($isTrue = TRUE)
 			setVar $j 1
 			while (SECTOR.WARPS[$i][$j] > 0)
 				setVar $test_sector SECTOR.WARPS[$i][$j]
 				getWordPos $path_database $pos " "&$test_sector&" "
 				if ($pos <= 0)
-					getSectorParameter $test_sector $PARAM $isTrue
+					getSectorParameter $test_sector $bot~parmAM $isTrue
 					if (($isTrue <> TRUE) AND ($test_sector <> $map~stardock) AND ($test_sector > 10) AND ($test_sector <> $map~rylos) AND ($test_sector <> $map~alpha_centauri))
 						setVar $path_database $path_database&$test_sector&"  "
 						setSectorParameter $test_sector "AMTRAK" TRUE

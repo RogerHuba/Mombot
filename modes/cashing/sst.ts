@@ -1,20 +1,15 @@
 
 
 :load_variables
-		loadVar $bot_name
-		loadVar $user_command_line
+		loadVar $switchboard~bot_name
+		loadVar $bot~user_command_line
 	loadvar $PLAYER~unlimitedGame
 	loadvar $bot~subspace
 
 	gosub :BOT~loadVars
 	loadvar $bot~subspace
 
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $user_command_line $BOT~user_command_line
-
+					
 		loadVar $BOT~bot_turn_limit
 		loadVar $GAME~steal_factor
 	
@@ -32,34 +27,34 @@
 	setVar $BOT~script_title "SST and JET"
 	gosub :BOT~banner
 
-	if ($parm1 = "resetlra")
+	if ($bot~parm1 = "resetlra")
 		setSectorParameter 1 "LRA" 1
 		send "'Last rob sector reset*"
 		halt
 	end
 
-		isNumber $test $parm1
+		isNumber $test $bot~parm1
 		IF ($test)
 		ELSE
 			setVar $SWITCHBOARD~message "Ship 1 Must Be a Number.*"
 			gosub :switchboard~switchboard
 			HALT
 		END
-		isNumber $test $parm2
+		isNumber $test $bot~parm2
 		IF ($test)
 		ELSE
 			setVar $SWITCHBOARD~message "Ship 2 Must Be a Number.*"
 			gosub :switchboard~switchboard
 			HALT
 		END
-		setVar $ship_1 $parm1
-		setVar $ship_2 $parm2
+		setVar $ship_1 $bot~parm1
+		setVar $ship_2 $bot~parm2
 		setVar $steal_divisor $GAME~steal_factor
-		IF ($parm3 = "jet")
+		IF ($bot~parm3 = "jet")
 				setVar $jet "y"
 		END
 
-		IF ($parm4 = "jet")
+		IF ($bot~parm4 = "jet")
 				setVar $jet "y"
 		END
 		gosub :player~isEpHaggle
@@ -77,19 +72,19 @@
 
 
 :verifyprompt
-		gosub :quikstats
-		setVar $location $CURRENT_PROMPT
+		gosub :player~quikstats
+		setVar $location $player~current_prompt
 	IF ($location <> "Command")
-			   send "'{" $bot_name "} - Must start at Command Prompt for SST*"
+			   send "'{" $switchboard~bot_name "} - Must start at Command Prompt for SST*"
 			   halt
 		END
 :verifyship
-		IF ($SHIP_NUMBER <> $ship_1)
+		IF ($player~ship_number <> $ship_1)
 			send "x " $ship_1 "* q z n"
 		END
-		gosub :quikstats
-		IF ($SHIP_NUMBER <> $ship_1)
-			send "'{" $bot_name "} - Cannot Xport to Ship 1.  Check Xport Range.  Halting.*"
+		gosub :player~quikstats
+		IF ($player~ship_number <> $ship_1)
+			send "'{" $switchboard~bot_name "} - Cannot Xport to Ship 1.  Check Xport Range.  Halting.*"
 			HALT
 		END
 logging off
@@ -124,7 +119,7 @@ setvar $sec2void 0
 	setVar $init_credits $credits
 	setVar $init_exp $exp
 	setVar $init_turns $turns
-	send "'{" $bot_name "} - Starting SST"
+	send "'{" $switchboard~bot_name "} - Starting SST"
 	
 
 
@@ -132,22 +127,22 @@ setvar $sec2void 0
 		send "+JET"
 	end
 	send " with " & $init_credits & " credits and " & $init_exp & " experience.*"
-	gosub :quikstats
+	gosub :player~quikstats
 
 	getSectorParameter	1 "LRA" $last_rob_attempt
 
-	send "'{" $bot_name "} - last rob attempt: "&$last_rob_attempt&"*"
-	if ($last_rob_attempt = $current_sector)
-		send "'{" $bot_name "} - last rob attempt is this sector! HAlting*"
+	send "'{" $switchboard~bot_name "} - last rob attempt: "&$last_rob_attempt&"*"
+	if ($last_rob_attempt = $player~current_sector)
+		send "'{" $switchboard~bot_name "} - last rob attempt is this sector! HAlting*"
 		gosub :endCNsettings
 		gosub :clearadjacent
 		halt
 	end
 	gosub :voidAdjacent
 
-	getSectorParameter $current_sector "BUSTED" $bustthissec
+	getSectorParameter $player~current_sector "BUSTED" $bustthissec
 	if ($bustthissec = TRUE)
-		send "'{" $bot_name "} - According to my data i've busted here - ending*"
+		send "'{" $switchboard~bot_name "} - According to my data i've busted here - ending*"
 		gosub :clearadjacent
 		gosub :endCNsettings
 		halt
@@ -162,9 +157,9 @@ setvar $sec2void 0
 	gosub :getInfo
 	gosub :voidAdjacent
 	setvar $sec2void 1
-	getSectorParameter $current_sector "BUSTED" $bustthissec
+	getSectorParameter $player~current_sector "BUSTED" $bustthissec
 	if ($bustthissec = TRUE)
-		send "'{" $bot_name "} - According to my data i've busted here - ending*"
+		send "'{" $switchboard~bot_name "} - According to my data i've busted here - ending*"
 		 gosub :endCNsettings
 		 gosub :clearadjacent
 		halt
@@ -185,7 +180,7 @@ setVar $skip_ships "YES"
 	if ($turns > 29)
 		goto :sstLoop
 	else
-		send "'{" $bot_name "} - Low Turns, Halting Script*"
+		send "'{" $switchboard~bot_name "} - Low Turns, Halting Script*"
 		setVar $low_turns "YES"
 		goto :finish
 	end
@@ -204,7 +199,7 @@ setVar $skip_ships "YES"
 	setVar $exp_made $EXPERIENCE
 	subtract $exp_made $init_exp
 	gosub :endCNsettings
-	send "'*{" $bot_name "} -*"
+	send "'*{" $switchboard~bot_name "} -*"
 	IF ($PLAYER~unlimitedGame)
 			send "I made " & $cash_made & " credits and " & $exp_made & " experience.*"
 	ELSE
@@ -317,7 +312,7 @@ setVar $skip_ships "YES"
 		killalltriggers
 		getText CURRENTLINE $port[$current_ship] ", Class " " ("
 		if ($port[$current_ship] <> 2) and ($port[$current_ship] <> 3) and ($port[$current_ship] <> 4) and ($port[$current_ship] <> 8)
-			send "'{" $bot_name "} - This is not an equipment buying port, you can't SST here!*"
+			send "'{" $switchboard~bot_name "} - This is not an equipment buying port, you can't SST here!*"
 		 gosub :endCNsettings
 		 gosub :clearadjacent
 			halt
@@ -371,12 +366,12 @@ setVar $skip_ships "YES"
 					setVar $steal_holds $exp
 					divide $steal_holds $steal_divisor
 					if ($steal_holds < 10)
-						send "'{" $bot_name "} - You need more experience to SST!!!*"
+						send "'{" $switchboard~bot_name "} - You need more experience to SST!!!*"
 			 gosub :endCNsettings
 			 gosub :clearadjacent
 						halt
 					elseif ($holds[$current_ship] < 10)
-						send "'{" $bot_name "} - You need more cargo holds to SST!!!*"
+						send "'{" $switchboard~bot_name "} - You need more cargo holds to SST!!!*"
 			 gosub :endCNsettings
 			gosub :clearadjacent
 						halt
@@ -398,7 +393,7 @@ setVar $skip_ships "YES"
 						if ($credits >= $cash_needed)
 							send "o  3" & $upgrade_amount & "**"
 						else
-							send "'{" $bot_name "} - Not enough credits on hand to upgrade the port.*"
+							send "'{" $switchboard~bot_name "} - Not enough credits on hand to upgrade the port.*"
 			 gosub :endCNsettings
 				gosub :clearadjacent
 							halt
@@ -410,7 +405,7 @@ setVar $skip_ships "YES"
 		end
 	:noport
 		killalltriggers
-		send "'{" $bot_name "} - There is no port, you can't SST here!*"
+		send "'{" $switchboard~bot_name "} - There is no port, you can't SST here!*"
 	 gosub :endCNsettings
 		 gosub :clearadjacent
 		halt
@@ -509,8 +504,8 @@ setVar $skip_ships "YES"
 		pause
 		:epsellwait2
 			killalltriggers
-			send "'{" $bot_name "} - Ep Haggle timed out on equipment Haggle*"
-			send "'{" $bot_name "} - Ep Haggle Disabled and bot will exit at end of cycle.*"
+			send "'{" $switchboard~bot_name "} - Ep Haggle timed out on equipment Haggle*"
+			send "'{" $switchboard~bot_name "} - Ep Haggle Disabled and bot will exit at end of cycle.*"
 			setvar $ephaggle "n"
 			setVar $epHaggleFail 1
 			send "*"
@@ -539,8 +534,8 @@ return
 		pause
 		:epsellwait
 			killalltriggers
-			send "'{" $bot_name "} - Ep Haggle timed out on equipment Haggle*"
-			send "'{" $bot_name "} - Ep Haggle Disabled and bot will exit at end of cycle.*"
+			send "'{" $switchboard~bot_name "} - Ep Haggle timed out on equipment Haggle*"
+			send "'{" $switchboard~bot_name "} - Ep Haggle Disabled and bot will exit at end of cycle.*"
 			setvar $ephaggle "n"
 			setVar $epHaggleFail 1
 			send "*"
@@ -650,7 +645,7 @@ return
 		# send "'Ship " & $current_ship & " multiple decreased to " & $port[$current_ship].multiple & ".*"
 
 		if ($sell_failures[$current_ship] > 5)
-			send "'{" $bot_name "} - I'm having problems selling my equipment to the port. Script Halting*"
+			send "'{" $switchboard~bot_name "} - I'm having problems selling my equipment to the port. Script Halting*"
 		 gosub :endCNsettings
 		 gosub :clearadjacent
 			halt
@@ -678,12 +673,12 @@ return
 						send "0*"
 					end
 				elseif ($port[$current_ship].ore_selling > 0)
-			send "'{" $bot_name "} - This port is selling little ore, I will upgrade a small amount.*"
+			send "'{" $switchboard~bot_name "} - This port is selling little ore, I will upgrade a small amount.*"
 			add $port[$current_ship].ore_selling 500
 			setVar $doOreUpgrade 1
 					send "0*"
 				else
-					send "'{" $bot_name "} - This port is selling 0 ore, I will upgrade a small amount.*"
+					send "'{" $switchboard~bot_name "} - This port is selling 0 ore, I will upgrade a small amount.*"
 			add $port[$current_ship].ore_selling 500
 			setVar $doOreUpgrade 1
 		   
@@ -701,12 +696,12 @@ return
 						send "0*"
 					end
 				elseif ($port[$current_ship].org_selling > 0)
-			send "'{" $bot_name "} - This port is selling little org, I will upgrade a small amount.*"
+			send "'{" $switchboard~bot_name "} - This port is selling little org, I will upgrade a small amount.*"
 			add $port[$current_ship].org_selling 500
 			setVar $doOrgUpgrade 1
 					send "0*"
 				else
-					send "'{" $bot_name "} - This port is selling 0 org, I will upgrade a small amount.*"
+					send "'{" $switchboard~bot_name "} - This port is selling 0 org, I will upgrade a small amount.*"
 			add $port[$current_ship].org_selling 500
 			setVar $doOrgUpgrade 1
 				end
@@ -732,7 +727,7 @@ return
 				if ($port[$current_ship].ore_selling > 0)
 					send "0*"
 				else
-					send "'{" $bot_name "} - This port is selling 0 ore, I will upgrade a small amount.*"
+					send "'{" $switchboard~bot_name "} - This port is selling 0 ore, I will upgrade a small amount.*"
 			setVar $doOreUpgrade 1
 					add $port[$current_ship].ore_selling 10
 				end
@@ -741,7 +736,7 @@ return
 				if ($port[$current_ship].org_selling > 0)
 					send "0*"
 				else
-					send "'{" $bot_name "} - This port is selling 0 org, I will upgrade a small amount.*"
+					send "'{" $switchboard~bot_name "} - This port is selling 0 org, I will upgrade a small amount.*"
 			setVar $doOrgUpgrade 1
 			add $port[$current_ship].org_selling 10
 				end
@@ -763,7 +758,7 @@ return
 		end
 		return
 	else
-		send "'{" $bot_name "} - There is no equ to sell, something is wrong*"
+		send "'{" $switchboard~bot_name "} - There is no equ to sell, something is wrong*"
 	 gosub :endCNsettings
 		 gosub :clearadjacent
 		halt
@@ -788,8 +783,8 @@ return
 		pause
 		:epbuywait
 			killalltriggers
-			send "'{" $bot_name "} - Ep Haggle timed out on product purchase Haggle*"
-			send "'{" $bot_name "} - Ep Haggle Disabled and bot will exit at end of cycle.*"
+			send "'{" $switchboard~bot_name "} - Ep Haggle timed out on product purchase Haggle*"
+			send "'{" $switchboard~bot_name "} - Ep Haggle Disabled and bot will exit at end of cycle.*"
 			setvar $ephaggle "n"
 			setVar $epHaggleFail 1
 			send "*"
@@ -908,18 +903,18 @@ return
 	setVar $steal_holds $exp
 	divide $steal_holds $steal_divisor
 	if ($steal_holds < 10)
-		send "'{" $bot_name "} - You need more experience to SST!!!*"
+		send "'{" $switchboard~bot_name "} - You need more experience to SST!!!*"
 	 gosub :endCNsettings
 	gosub :clearadjacent
 		halt
 	elseif ($holds[$current_ship] < 10)
-		send "'{" $bot_name "} - You need more cargo holds to SST!!!*"
+		send "'{" $switchboard~bot_name "} - You need more cargo holds to SST!!!*"
 	 gosub :endCNsettings
 	gosub :clearadjacent
 		halt
 	end
 	 if (($steal_holds > 300) and ($jet = "y"))
-	send "'{" $bot_name "} - We are at " $steal_holds " holds of experience, stopping JET*"
+	send "'{" $switchboard~bot_name "} - We are at " $steal_holds " holds of experience, stopping JET*"
 	setVar $jet ""
 	 end
 	if ($steal_holds > $emp[$current_ship])
@@ -986,11 +981,11 @@ return
 				goto :finish
 			:fake
 				killAllTriggers
-		gosub :quikstats
-		setSectorParameter $current_sector "FAKEBUST" TRUE
+		gosub :player~quikstats
+		setSectorParameter $player~current_sector "FAKEBUST" TRUE
 				send "  "
 				send "N  N  *  *"
-				send "'{" $bot_name "} - FAKE Busted in Ship " & $current_ship & ", need a super furb*"
+				send "'{" $switchboard~bot_name "} - FAKE Busted in Ship " & $current_ship & ", need a super furb*"
 		gosub :endCNsettings
 		 gosub :clearadjacent
 				halt
@@ -1050,19 +1045,19 @@ return
 		pause
 		:noxportship
 			killalltriggers
-			send "'{" $bot_name "} - That is not an available ship, Script Halting.*"
+			send "'{" $switchboard~bot_name "} - That is not an available ship, Script Halting.*"
 		 gosub :endCNsettings
 		 gosub :clearadjacent
 			halt
 		:noxportrange
 			killalltriggers
-			send "'{" $bot_name "} - Not enough transport range, Script Halting.*"
+			send "'{" $switchboard~bot_name "} - Not enough transport range, Script Halting.*"
 		 gosub :endCNsettings
 		 gosub :clearadjacent
 			halt
 		:noxportpassword
 			killalltriggers
-			send "'{" $bot_name "} - Transport ship requires a password, Script Halting.*"
+			send "'{" $switchboard~bot_name "} - Transport ship requires a password, Script Halting.*"
 		 gosub :endCNsettings
 		 gosub :clearadjacent
 			halt
@@ -1221,17 +1216,17 @@ return
 	end
 	return
 
-:quikstats
+:player~quikstats
 
 		# ============================ START QUIKSTAT VARIABLES ==========================
-				setVar $CURRENT_PROMPT          "Undefined"
+				setVar $player~current_prompt          "Undefined"
 				setVar $PSYCHIC_PROBE           "No"
-				setVar $PLANET_SCANNER          "No"
+				setVar $player~planet_scanner          "No"
 				setVar $SCAN_TYPE               "None"
-				setVar $CURRENT_SECTOR          0
+				setVar $player~current_sector          0
 				setVar $TURNS                   0
 				setVar $CREDITS                 0
-				setVar $FIGHTERS                0
+				setVar $player~fighters                0
 				setVar $SHIELDS                 0
 				setVar $TOTAL_HOLDS             0
 				setVar $ORE_HOLDS               0
@@ -1252,7 +1247,7 @@ return
 				setVar $ALIGNMENT               0
 				setVar $EXPERIENCE              0
 				setVar $CORP                    0
-				setVar $SHIP_NUMBER             0
+				setVar $player~ship_number             0
 				setVar $TURNS_PER_WARP          0
 				setVar $COMMAND_PROMPT          "Command"
 				setVar $COMPUTER_PROMPT         "Computer"
@@ -1265,7 +1260,7 @@ return
 				setVar $TERRA_PROMPT            "Terra"
 		# ============================ END QUIKSTAT VARIABLES ==========================
 
-		setVar $CURRENT_PROMPT 		"Undefined"
+		setVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt1
 	killtrigger prompt2
@@ -1279,14 +1274,14 @@ return
 	pause
 
 	:allPrompts
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
+		getWord CURRENTLINE $player~current_prompt 1
+		stripText $player~current_prompt #145
+		stripText $player~current_prompt #8
 		#getWord currentansiline $checkPrompt 1
 		#getWord currentline $tempPrompt 1
 		#getWordPos $checkPrompt $pos "[35m"
 		#if ($pos > 0)
-		#	setVar $CURRENT_PROMPT $tempPrompt
+		#	setVar $player~current_prompt $tempPrompt
 		#end
 		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
 		pause
@@ -1322,13 +1317,13 @@ return
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
 				getWord $stats $TURNS  			($current_word + 1)
 			elseif ($wordy = "Creds")
 				getWord $stats $CREDITS  		($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
+				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
 				getWord $stats $SHIELDS  		($current_word + 1)
 			elseif ($wordy = "Hlds")
@@ -1366,7 +1361,7 @@ return
 			elseif ($wordy = "PsPrb")
 				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
 				getWord $stats $SCAN_TYPE    		($current_word + 1)
 			elseif ($wordy = "Aln")
@@ -1376,7 +1371,7 @@ return
 			elseif ($wordy = "Corp")
 				getWord $stats $CORP   			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word
@@ -1403,15 +1398,15 @@ return
 
 :voidadjacent
 	send "*"
-	gosub :quikstats
+	gosub :player~quikstats
 	
 	if ($sec1void = 0)
-	setVar $sec1void $current_sector
+	setVar $sec1void $player~current_sector
 	else
-	setVar $sec2void $current_sector
+	setVar $sec2void $player~current_sector
 	end 
-	if (SECTOR.WARPS[$current_sector][1] = 0)
-			send "'{" $bot_name "} - This sector has no warps, maybe you need to scan it first*"
+	if (SECTOR.WARPS[$player~current_sector][1] = 0)
+			send "'{" $switchboard~bot_name "} - This sector has no warps, maybe you need to scan it first*"
 		 gosub :endCNsettings
 		 gosub :clearadjacent
 		halt
@@ -1420,13 +1415,13 @@ return
 		:voids
 		add $voidsect 1
 		if ($voidsect < 7)
-			if (SECTOR.WARPS[$current_sector][$voidsect] <> 0)
-				send "CV" & SECTOR.WARPS[$current_sector][$voidsect] & "*Q"
+			if (SECTOR.WARPS[$player~current_sector][$voidsect] <> 0)
+				send "CV" & SECTOR.WARPS[$player~current_sector][$voidsect] & "*Q"
 			end
 			goto :voids
 		end
 
-		send "'{" $bot_name "} - Avoids set on all adjacent sectors*"
+		send "'{" $switchboard~bot_name "} - Avoids set on all adjacent sectors*"
 		send "/"
 		waitfor " Sect "
 		return
@@ -1447,7 +1442,7 @@ return
 		goto :clearvoids
 	end
 
-	send "'{" $bot_name "} - Avoids cleared on all adjacent sectors*"
+	send "'{" $switchboard~bot_name "} - Avoids cleared on all adjacent sectors*"
 	send "/"
 	waitfor " Sect "
 	
@@ -1462,7 +1457,7 @@ return
 			goto :clearvoids2
 		end
 
-		send "'{" $bot_name "} - Avoids cleared on all adjacent sectors*"
+		send "'{" $switchboard~bot_name "} - Avoids cleared on all adjacent sectors*"
 		send "/"
 		waitfor " Sect "
 

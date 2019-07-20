@@ -1,15 +1,6 @@
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	setVar $BOT~help[1] $BOT~tab&"Scans for targets and autokills in sector."
 	setVar $BOT~help[2] $BOT~tab&"         "
@@ -46,7 +37,7 @@
 	loadvar $ship~ship_fighters_max
 	loadvar $ship~ship_max_attack
 
-	if ($parm1 = "off")
+	if ($bot~parm1 = "off")
 		send "'{" $SWITCHBOARD~bot_name "} - Shutting down dockkill..*"
 		if ($player~current_sector = STARDOCK)
 			send "p ss ys *p"
@@ -62,33 +53,33 @@
 			send "'{" $SWITCHBOARD~bot_name "} - Stardock Killer must be run from the Command or StarDock Prompt*"
 			halt
 		end
-		isNumber $test $parm2
+		isNumber $test $bot~parm2
 		if ($test)
-			if ($parm2 > 0)
+			if ($bot~parm2 > 0)
 				setVar $targetingCorp TRUE
-				setVar $target $parm2
+				setVar $target $bot~parm2
 			end
 		else
-			getWordPos $parm2 $pos #34
+			getWordPos $bot~parm2 $pos #34
 			if ($pos > 0)	
-				setVar $user_command_line $user_command_line&" "
-				getText $user_command_line $PLAYER~target " "&#34 #34&" "
+				&" "
+				getText $bot~user_command_line $PLAYER~target " "&#34 #34&" "
 				if ($PLAYER~target <> "")
 					setVar $PLAYER~targetingPerson TRUE
 					lowercase $PLAYER~target
-					stripText $user_command_line " "&#34&$PLAYER~target&#34&" "
+					stripText $bot~user_command_line " "&#34&$PLAYER~target&#34&" "
 				else
 					setVar $PLAYER~targetingPerson FALSE
 				end
 			end
 		end
-		getWordPos $user_command_line $pos "dt"
+		getWordPos $bot~user_command_line $pos "dt"
 		if ($pos > 0)
 			setVar $PLAYER~doubletap TRUE
 		else
 			setVar $PLAYER~doubletap FALSE
 		end
-		getWordPos $user_command_line $pos "sg"
+		getWordPos $bot~user_command_line $pos "sg"
 		if ($pos > 0)
 			setVar $PLAYER~shotgun TRUE
 		else
@@ -171,13 +162,13 @@
 		pause
 		:WaitingABit
 		killAllTriggers
-		gosub :quikstats
-		if ($CURRENT_PROMPT = "Command")
-			send ("'{" & $bot_name & "} "&$TagLineB&" - Restarting!**")
+		gosub :player~quikstats
+		if ($player~current_prompt = "Command")
+			send ("'{" & $switchboard~bot_name & "} "&$TagLineB&" - Restarting!**")
 		    	waitfor "Message sent on sub-space channel"
 			goto :inac
-		elseif ($CURRENT_PROMPT = "Citadel")
-			send ("'{" & $bot_name & "} "&$TagLineB&" - Restarting!**")
+		elseif ($player~current_prompt = "Citadel")
+			send ("'{" & $switchboard~bot_name & "} "&$TagLineB&" - Restarting!**")
 			waitfor "Message sent on sub-space channel"
 	   		send "qqqq**"
 	   		goto :inac
@@ -191,7 +182,7 @@
 				goto :Disco_Test
 		end
 
-:setConnectionTriggers
+:player~setconnectiontriggers
 	killtrigger discod1
 	killtrigger discod2
 	SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"

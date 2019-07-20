@@ -8,15 +8,15 @@
 	loadVar $avoidedSectorsUgrid
 	loadVar $PLAYER~unlimitedGame
 	loadVar $bot_turn_limit
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
+	loadVar $bot~user_command_line
+	loadVar $bot~parm1
+	loadVar $bot~parm2
+	loadVar $bot~parm3
+	loadVar $bot~parm4
+	loadVar $bot~parm5
+	loadVar $bot~parm6
+	loadVar $bot~parm7
+	loadVar $bot~parm8
 	loadVar $MAP~stardock
 	loadVar $MAP~home_sector
 	loadVar $MAP~backdoor
@@ -45,7 +45,7 @@
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	getSectorParameter SECTORS "MINESEC" $isArmided
 	getSectorParameter SECTORS "LIMPSEC" $isLimped
-	if ($parm1 = "help")
+	if ($bot~parm1 = "help")
 		delete "scripts\mombot\help\"&$command&".txt"
 	end
 	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
@@ -76,69 +76,69 @@
 		write "scripts\mombot\help\"&$command&".txt" "   - [restart]     = Automatically restarts gridding when finished" 
 		send "'{" $SWITCHBOARD~bot_name "} - Writing help file for this command in Help directory.*"
 	end
-	if ($parm1 = "help")
+	if ($bot~parm1 = "help")
 		halt
 	end
-	getWord $user_command_line $parm1 1 "EMPTY"
-	getWord $user_command_line $parm2 2 "EMPTY"
-	getWord $user_command_line $parm3 3 "EMPTY"
-	getWord $user_command_line $parm4 4 "EMPTY"
-	isNumber $test $parm1
+	getWord $bot~user_command_line $bot~parm1 1 "EMPTY"
+	getWord $bot~user_command_line $bot~parm2 2 "EMPTY"
+	getWord $bot~user_command_line $bot~parm3 3 "EMPTY"
+	getWord $bot~user_command_line $bot~parm4 4 "EMPTY"
+	isNumber $test $bot~parm1
 	if ($test)
-		setVar $PLAYER~surroundFigs $parm1
+		setVar $PLAYER~surroundFigs $bot~parm1
 	else
 		setVar $PLAYER~surroundFigs 1
 	end
-	isNumber $test $parm2
+	isNumber $test $bot~parm2
 	if ($test)
-		setVar $PLAYER~surroundMine $parm2
+		setVar $PLAYER~surroundMine $bot~parm2
 	else
 		setVar $PLAYER~surroundMine 3
 	end
-	isNumber $test $parm3
+	isNumber $test $bot~parm3
 	if ($test)
-		setVar $PLAYER~surroundLimp $parm3
+		setVar $PLAYER~surroundLimp $bot~parm3
 	else
 		setVar $PLAYER~surroundLimp 3
 	end
-	isNumber $test $parm4
+	isNumber $test $bot~parm4
 	if ($test)
-		setVar $min_unfigged $parm4
+		setVar $min_unfigged $bot~parm4
 	else
 		setVar $min_unfigged 4
 	end
 	
-	getWordPos $user_command_line $pos "avoid" 
+	getWordPos $bot~user_command_line $pos "avoid" 
 	if ($pos > 0)
 		setVar $grid_avoid TRUE
 	else
 		setVar $grid_avoid FALSE
 	end
-	getWordPos $user_command_line $pos "alarm" 
+	getWordPos $bot~user_command_line $pos "alarm" 
 	if ($pos > 0)
 		setVar $alarm_active TRUE
 	else
 		setVar $alarm_active FALSE
 	end
-	getWordPos $user_command_line $pos "norefurb" 
+	getWordPos $bot~user_command_line $pos "norefurb" 
 	if ($pos > 0)
 		setVar $refurb FALSE
 	else
 		setVar $refurb TRUE
 	end
-	getWordPos $user_command_line $pos "restart" 
+	getWordPos $bot~user_command_line $pos "restart" 
 	if ($pos > 0)
 		setVar $restart TRUE
 	else
 		setVar $restart FALSE
 	end
-	getWordPos $user_command_line $pos "bwarp" 
+	getWordPos $bot~user_command_line $pos "bwarp" 
 	if ($pos > 0)
 		setVar $grid_warp "bwarp"
 	else
 		setVar $grid_warp "twarp"
 	end	
-	getWordPos $user_command_line $pos "shield" 
+	getWordPos $bot~user_command_line $pos "shield" 
 	if ($pos > 0)
 		setVar $PLAYER~surroundAvoidShieldedOnly TRUE
 		setVar $PLAYER~surroundAvoidAllPlanets FALSE
@@ -147,7 +147,7 @@
 		setVar $PLAYER~surroundAvoidShieldedOnly FALSE
 	end
 	
-	getWordPos $user_command_line $pos "clear" 
+	getWordPos $bot~user_command_line $pos "clear" 
 	if ($pos > 0)
 		setVar $avoidedSectorsUgrid ""
 	end
@@ -155,7 +155,7 @@
 			setVar $ultraSafeLimpet FALSE
 			setVar $ultraSafeArmid FALSE
 	
-	getWordPos $user_command_line $pos "passive" 
+	getWordPos $bot~user_command_line $pos "passive" 
 	if ($pos > 0)
                 setvar $PLAYER~surroundOverwrite FALSE
                 setVar $PLAYER~surroundPassive   TRUE

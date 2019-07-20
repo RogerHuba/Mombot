@@ -1,9 +1,9 @@
 systemscript
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
+    loadVar $switchboard~bot_name
+    loadVar $bot~user_command_line
+    loadVar $bot~parm1
+    loadVar $bot~parm2
+    loadVar $bot~parm3
     loadvar $self_command
     loadVar $MAP~stardock
     loadVar $MAP~backdoor
@@ -45,7 +45,7 @@ gosub :update_window
 gosub :player~init 
 
 :start_over
-    setVar $CURRENT_PROMPT      "Undefined"
+    setVar $player~current_prompt      "Undefined"
     killtrigger noprompt
     killtrigger prompt
     killtrigger statlinetrig
@@ -63,12 +63,12 @@ gosub :player~init
 
     pause
     :allPrompts
-        getWord CURRENTLINE $CURRENT_PROMPT 1
+        getWord CURRENTLINE $player~current_prompt 1
         setVar $FULL_CURRENT_PROMPT CURRENTLINE
         stripText $FULL_CURRENT_PROMPT #145
         stripText $FULL_CURRENT_PROMPT #8
-        stripText $CURRENT_PROMPT #145
-        stripText $CURRENT_PROMPT #8
+        stripText $player~current_prompt #145
+        stripText $player~current_prompt #8
         setTextLineTrigger  prompt      :allPrompts     #145 & #8
         pause
     :statStart

@@ -426,11 +426,7 @@ halt
 	gosub :BOT~loadVars
 	loadVar $PLAYER~unlimitedGame  
 
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $user_command_line $BOT~user_command_line
-
+				
 	setVar $BOT~help[1] $BOT~tab&"  XFurb - XPorts to Ship, Swaps and Furbs  "
 	setVar $BOT~help[2] $BOT~tab&"          Start at any Class 0"
 	setVar $BOT~help[3] $BOT~tab&"- xfurb [Furb Ship] {holds} "
@@ -445,15 +441,15 @@ halt
 
 
 	
-	if ($parm1 = 0)
+	if ($bot~parm1 = 0)
 		setVar $SWITCHBOARD~message "Specifiy both Furb and Sit ship.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	isNumber $test $parm1
+	isNumber $test $bot~parm1
         IF ($test)
-		if ($parm1 > 1) OR ($parm1 <= 2000)
-			SetVar $bustship $parm1
+		if ($bot~parm1 > 1) OR ($bot~parm1 <= 2000)
+			SetVar $bustship $bot~parm1
 		else
 			setVar $SWITCHBOARD~message "Furb Ship  Number out of range.*"
 			gosub :SWITCHBOARD~switchboard
@@ -468,12 +464,12 @@ halt
 	
 
 	
-	if ($parm2 = "0")
+	if ($bot~parm2 = "0")
 		setVar $furbholds 22
 	else
-		isNumber $test $parm2
+		isNumber $test $bot~parm2
 		IF ($test)
-			setVar $furbholds $parm2
+			setVar $furbholds $bot~parm2
 			if ($furbholds < 1)
 				setVar $SWITCHBOARD~message "Furb nothing? consider it done.. exiting!*"
 				gosub :SWITCHBOARD~switchboard

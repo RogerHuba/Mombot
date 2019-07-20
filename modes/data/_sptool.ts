@@ -58,24 +58,24 @@ If ($isnum = TRUE)
         SetArray $Extradisplay 0
         SetVar $i 1
         While ($i <= $sectorparms)
-            GetSectorParameter $sector $sectorparms[$i] $parameter
+            GetSectorParameter $sector $sectorparms[$i] $bot~parmameter
             SetVar $j 1
             SetVar $isastandard FALSE
             While ($j <= $options)
                 If ($sectorparms[$i] = $option[$j])
                     SetVar $isastandard TRUE
                     If ($optiontype[$j] = "B")
-                        If ($parameter = TRUE)
+                        If ($bot~parmameter = TRUE)
                             SetVar $optiondisplay[$j] ANSI_15 & "TRUE"
                         Else
                             SetVar $optiondisplay[$j] ANSI_14 & "FALSE"
                         End
                     ElseIf ($optiontype[$j] = "T")
-                        If ($parameter = TRUE)
+                        If ($bot~parmameter = TRUE)
                             SetVar $optiondisplay[$j] ANSI_15 & "TRUE"
                         End
                     ElseIf ($optiontype[$j] = "A") or ($optiontype[$j] = "N")
-                        SetVar $optiondisplay[$j] $parameter
+                        SetVar $optiondisplay[$j] $bot~parmameter
                     End
                 End
                 SetVar $j ($j + 1)
@@ -88,7 +88,7 @@ If ($isnum = TRUE)
                         SetVar $extras ($extras + 1)
                         SetVar $extrakey[$extras] $keys[$x]
                         SetVar $extra[$extras] $sectorparms[$i]
-                        SetVar $extradisplay[$extras] ANSI_15 & $parameter
+                        SetVar $extradisplay[$extras] ANSI_15 & $bot~parmameter
                         SetVar $x 36
                     End
                     SetVar $x ($x + 1)
@@ -351,15 +351,15 @@ Else
     While ($i <= $options)
         If ($choice = $optionkey[$i])
             If ($optiontype[$i] = "B")
-                GetSectorParameter $sector $option[$i] $parameter
-                If ($parameter = TRUE)
+                GetSectorParameter $sector $option[$i] $bot~parmameter
+                If ($bot~parmameter = TRUE)
                     SetSectorParameter $sector $option[$i] FALSE
                 Else
                     SetSectorParameter $sector $option[$i] TRUE
                 End
             ElseIf ($optiontype[$i] = "T")
-                GetSectorParameter $sector $option[$i] $parameter
-                If ($parameter = TRUE)
+                GetSectorParameter $sector $option[$i] $bot~parmameter
+                If ($bot~parmameter = TRUE)
                     SetSectorParameter $sector $option[$i] ""
                 Else
                     SetSectorParameter $sector $option[$i] TRUE

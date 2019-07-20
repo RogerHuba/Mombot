@@ -2,16 +2,7 @@
 	reqRecording
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-	setVar $BOT~command "strip"
+		setVar $BOT~command "strip"
 	loadVar $BOT~bot_turn_limit
 
 	setVar $BOT~help[1]  $BOT~tab&"Strips planets of resources and places them on starting planet.  "
@@ -36,76 +27,76 @@
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	isNumber $test $parm1
-	if (($test = FALSE) AND ($parm1 <> "all"))
+	isNumber $test $bot~parm1
+	if (($test = FALSE) AND ($bot~parm1 <> "all"))
 		setVar $SWITCHBOARD~message "Invalid planet. Please enter a planet number or 'all'.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	getWordPos " "&$user_command_line&" " $pos " f "
+	getWordPos " "&$bot~user_command_line&" " $pos " f "
 	if ($pos > 0)
 		setVar $emptyFuel TRUE
 	else
 		setVar $emptyFuel FALSE
 	end
-	getWordPos " "&$user_command_line&" " $pos " o "
+	getWordPos " "&$bot~user_command_line&" " $pos " o "
 	if ($pos > 0)
 		setVar $emptyOrganics TRUE
 	else
 		setVar $emptyOrganics FALSE
 	end
-	getWordPos " "&$user_command_line&" " $pos " e "
+	getWordPos " "&$bot~user_command_line&" " $pos " e "
 	if ($pos > 0)
 		setVar $emptyEquipment TRUE
 	else
 		setVar $emptyEquipment FALSE
 	end
 	
-	getWordPos " "&$user_command_line&" " $pos " c1 "
+	getWordPos " "&$bot~user_command_line&" " $pos " c1 "
 	if ($pos > 0)
 		setVar $emptyFuelColonists TRUE
 	end
-	getWordPos " "&$user_command_line&" " $pos " c2 "
+	getWordPos " "&$bot~user_command_line&" " $pos " c2 "
 	if ($pos > 0)
 		setVar $emptyOrganicColonists TRUE
 	end
-	getWordPos " "&$user_command_line&" " $pos " c3 "
+	getWordPos " "&$bot~user_command_line&" " $pos " c3 "
 	if ($pos > 0)
 		setVar $emptyEquipmentColonists TRUE
 	end
-	getWordPos " "&$user_command_line&" " $pos " fc "
+	getWordPos " "&$bot~user_command_line&" " $pos " fc "
 	if ($pos > 0)
 		setVar $emptyFuelColonists TRUE
 	end
-	getWordPos " "&$user_command_line&" " $pos " oc "
+	getWordPos " "&$bot~user_command_line&" " $pos " oc "
 	if ($pos > 0)
 		setVar $emptyOrganicColonists TRUE
 	end
-	getWordPos " "&$user_command_line&" " $pos " ec "
+	getWordPos " "&$bot~user_command_line&" " $pos " ec "
 	if ($pos > 0)
 		setVar $emptyEquipmentColonists TRUE
 	end
-	getWordPos " "&$user_command_line&" " $pos " turbo "
+	getWordPos " "&$bot~user_command_line&" " $pos " turbo "
 	if ($pos > 0)
 		setVar $turbo TRUE
 	else
 		setVar $turbo FALSE
 	end
 
-	getWordPos " "&$user_command_line&" " $pos " fig "
+	getWordPos " "&$bot~user_command_line&" " $pos " fig "
 	if ($pos > 0)
 		setVar $emptyFighters TRUE
 	else
 		setVar $emptyFighters FALSE
 	end
 
-	getWordPos " "&$user_command_line&" " $pos " sh"
+	getWordPos " "&$bot~user_command_line&" " $pos " sh"
 	if ($pos > 0)
 		setVar $emptyShields TRUE
 	else
 		setVar $emptyShields FALSE
 	end
-	getWordPos " "&$user_command_line&" " $pos " silent "
+	getWordPos " "&$bot~user_command_line&" " $pos " silent "
 	if ($pos > 0)
 		setVar $SWITCHBOARD~self_command TRUE
 	end
@@ -132,9 +123,9 @@
 
 :startUpMessage
 	setVar $planetToFill $PLANET~PLANET
-	if ($parm1 <> "all")
+	if ($bot~parm1 <> "all")
 		setVar $planetCount 1
-		setVar $planets[1] $parm1
+		setVar $planets[1] $bot~parm1
 	end
 	setVar $SWITCHBOARD~message "Planet Stripper Powering Up!  Filling Planet "&$planetToFill&"*"
 	gosub :SWITCHBOARD~switchboard

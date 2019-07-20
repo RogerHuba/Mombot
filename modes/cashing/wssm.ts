@@ -416,7 +416,7 @@
 return
 
 :callSaveMe
-	send "'"&CURRENTSECTOR&"=saveme*q q q q * '"&$bot_name&" call*"
+	send "'"&CURRENTSECTOR&"=saveme*q q q q * '"&$switchboard~bot_name&" call*"
 halt
 
 :getCourses

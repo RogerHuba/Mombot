@@ -5,16 +5,7 @@
 #		Or we buy the amount of holds we bust with
 		
 	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	setVar $FURB_HOLDS ""
 	setVar $FURB_SHIP ""
@@ -82,38 +73,38 @@
 	gosub :SWITCHBOARD~SWITCHBOARD
 
 	setVar $override FALSE
-	getWordPos $user_command_line $pos "override"
+	getWordPos $bot~user_command_line $pos "override"
 	if ($pos > 0)
 		setVar $override TRUE
 	end
 
 	setVar $planetfuel FALSE
-	getWordPos $user_command_line $pos "planetfuel"
+	getWordPos $bot~user_command_line $pos "planetfuel"
 	if ($pos > 0)
 		setVar $planetfuel TRUE
 	end
 
 	setVar $xfurb FALSE
-	getWordPos $user_command_line $pos "xfurb"
+	getWordPos $bot~user_command_line $pos "xfurb"
 	if ($pos > 0)
 		setVar $xfurb TRUE
 	end
 
 
 	setVar $jet ""
-	getWordPos $user_command_line $pos "jet"
+	getWordPos $bot~user_command_line $pos "jet"
 	if ($pos > 0)
 		setVar $jet " jet"
 	end
 	setVar $ep ""
-	getWordPos $user_command_line $pos "ep"
+	getWordPos $bot~user_command_line $pos "ep"
 	if ($pos > 0)
 		setVar $ep " ep"
 	end
 
-	isNumber $is_a_number $parm1
-	if (($is_a_number) and ($parm1 <> "0"))
-		setVar $ship1 $parm1
+	isNumber $is_a_number $bot~parm1
+	if (($is_a_number) and ($bot~parm1 <> "0"))
+		setVar $ship1 $bot~parm1
 		setVar $SHIPS[1] $ship1
 	else
 		setVar $SWITCHBOARD~MESSAGE "Ship #1 number invalid.  Shutting down.*"
@@ -121,9 +112,9 @@
 		halt	
 	end
 
-	isNumber $is_a_number $parm2
-	if (($is_a_number) and ($parm2 <> "0"))
-		setVar $ship2 $parm2
+	isNumber $is_a_number $bot~parm2
+	if (($is_a_number) and ($bot~parm2 <> "0"))
+		setVar $ship2 $bot~parm2
 		setVar $SHIPS[2] $ship2
 	else
 		setVar $SWITCHBOARD~MESSAGE "Ship #2 number invalid.  Shutting down.*"
@@ -132,9 +123,9 @@
 	end
 
 	
-	isNumber $is_a_number $parm3
-	if (($is_a_number) and ($parm3 <> "0"))
-		setVar $ship3 $parm3
+	isNumber $is_a_number $bot~parm3
+	if (($is_a_number) and ($bot~parm3 <> "0"))
+		setVar $ship3 $bot~parm3
 		if ($NUMBER_CASHING_SHIPS >= 3)
 			setVar $SHIPS[3] $ship3
 		end

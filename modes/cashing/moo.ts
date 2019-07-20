@@ -273,11 +273,11 @@ gosub :switchboard~switchboard
 
 getWordPos $bot~user_command_line $pos "paranoid"
 if ($pos > 0)
-	setVar $paranoid TRUE
+	setVar $bot~parmanoid TRUE
 	setVar $surroundedSectorsOnly 1
 	setvar $switchboard~message "Incoming Sectors require figs and limpets*"
 else
-	setVar $paranoid FALSE
+	setVar $bot~parmanoid FALSE
 	getWordPos $bot~user_command_line $pos "safe"
 	if ($pos > 0)
 		setVar $surroundedSectorsOnly 1
@@ -1539,7 +1539,7 @@ return
 return
 
 :callSaveMe
-	send "'"&CURRENTSECTOR&"=saveme*q q q q * '"&$bot_name&" call*"
+	send "'"&CURRENTSECTOR&"=saveme*q q q q * '"&$switchboard~bot_name&" call*"
 halt
 
 
@@ -1858,7 +1858,7 @@ return
 					end
 					add $i 1
 				end
-				if ($paranoid = TRUE)
+				if ($bot~parmanoid = TRUE)
 					setVar $i 1
 					
 					while ($i <= SECTOR.WARPINCOUNT[$sector])

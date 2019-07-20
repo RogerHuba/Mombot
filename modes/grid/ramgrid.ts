@@ -52,18 +52,18 @@ gosub :BOT~loadVars
 	setVar $minimum_figs 0
 	setVar $saveme 0
 
-	getWord $bot~user_command_line $parm1 1
-	getWord $bot~user_command_line $parm2 2
-	getWord $bot~user_command_line $parm3 3
+	getWord $bot~user_command_line $bot~parm1 1
+	getWord $bot~user_command_line $bot~parm2 2
+	getWord $bot~user_command_line $bot~parm3 3
 
-	isNumber $test $parm1
+	isNumber $test $bot~parm1
 	if ($test)
-		if ($parm1 < 1)
+		if ($bot~parm1 < 1)
 			setVar $SWITCHBOARD~message "Stop Turns must be a number greater than zero!.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		else
-			 setVar $minimum_turns $parm1
+			 setVar $minimum_turns $bot~parm1
 		end
 	else
 		setVar $SWITCHBOARD~message "Stop Turns must be a number greater than zero!.*"
@@ -73,14 +73,14 @@ gosub :BOT~loadVars
 
 
 
-	isNumber $test $parm2
+	isNumber $test $bot~parm2
 	if ($test)
-		if ($parm2 < 50)
+		if ($bot~parm2 < 50)
 			setVar $SWITCHBOARD~message "Stop Fighters must be a number greater than 49!.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		else
-			 setVar $minimum_figs $parm2
+			 setVar $minimum_figs $bot~parm2
 		end
 	else
 		setVar $SWITCHBOARD~message "Stop Fighters must be a number greater than 49!.*"
@@ -89,7 +89,7 @@ gosub :BOT~loadVars
 	end
 	
 
-	if ($parm3 = "saveme")
+	if ($bot~parm3 = "saveme")
 		setVar $saveme 1
 	end
 

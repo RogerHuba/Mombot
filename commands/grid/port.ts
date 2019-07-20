@@ -40,7 +40,7 @@
 		add $i 1
 		getword $line $word $i $nothing
 		if ($word <> $nothing)
-			setvar $bot~user_command_line $bot~user_command_line&$word&" "
+			&$word&" "
 		end
 	end
 

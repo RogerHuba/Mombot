@@ -1,5 +1,5 @@
 #
-#loadVar $user_command_line
+#loadVar $bot~user_command_line
 #loadvar $PLAYER~unlimitedGame
 #loadvar $bot~subspace
 
@@ -25,7 +25,7 @@ gosub :bot~helpfile
 setVar $BOT~script_title "Rob Xport Rob"
 gosub :BOT~banner
 
-if ($parm1 = "resetlra")
+if ($bot~parm1 = "resetlra")
 	setSectorParameter 1 "LRA" 1
 	send "'Last rob sector reset*"
 	halt

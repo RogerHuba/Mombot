@@ -1,15 +1,6 @@
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-	loadVar $PLAYER~unlimitedGame
+										loadVar $PLAYER~unlimitedGame
 
 
 	setVar $BOT~help[1]  $BOT~tab&"              PATP - Pay At The Pump               "
@@ -31,7 +22,7 @@
 
 
   
-   setVar $bot_name $SWITCHBOARD~bot_name
+   setVar $switchboard~bot_name $SWITCHBOARD~bot_name
 
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
@@ -54,8 +45,8 @@
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	lowerCase $parm1
-	setVar $minimumFuel $parm1
+	lowerCase $bot~parm1
+	setVar $minimumFuel $bot~parm1
 	isNumber $number $minimumFuel
 	if ($number <> 1)
 		setVar $SWITCHBOARD~message "Minimum Port Fuel entered is not a number!*"
@@ -67,31 +58,31 @@
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	getWordPos $user_command_line $pos "destroyports"
+	getWordPos $bot~user_command_line $pos "destroyports"
 	if ($pos > 0)
 		setVar $destroyPorts TRUE
 	else
 		setVar $destroyPorts FALSE
 	end
-	getWordPos $user_command_line $pos "upgrade"
+	getWordPos $bot~user_command_line $pos "upgrade"
 	if ($pos > 0)
 		setVar $upgrade TRUE
 	else
 		setVar $upgrade FALSE
 	end
-	getWordPos $user_command_line $pos "half"
+	getWordPos $bot~user_command_line $pos "half"
 	if ($pos > 0)
 		setVar $buyHalf TRUE
 	else
 		setVar $buyHalf FALSE
 	end
-	getWordPos $user_command_line $pos "docim"
+	getWordPos $bot~user_command_line $pos "docim"
 	if ($pos > 0)
 		setVar $docim TRUE
 	else
 		setVar $docim FALSE
 	end
-	getWordPos $user_command_line $pos "bubble"
+	getWordPos $bot~user_command_line $pos "bubble"
 	if ($pos > 0)
 		setVar $bubble TRUE
 	else

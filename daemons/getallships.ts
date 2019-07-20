@@ -1,15 +1,6 @@
 logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-	loadVar $MAP~stardock
+										loadVar $MAP~stardock
 
 
 	setVar $BOT~help[1] $BOT~tab&"Grabs all empty ships and brings them to your sector"
@@ -28,7 +19,7 @@ logging off
 	gosub :BOT~banner
 
 
-	getWordPos $user_command_line $pos "bubble"
+	getWordPos $bot~user_command_line $pos "bubble"
 	if ($pos > 0)
 		setVar $bubble TRUE
 	else

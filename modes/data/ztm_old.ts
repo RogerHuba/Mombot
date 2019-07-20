@@ -1,8 +1,8 @@
-loadVar $bot_name
-loadVar $user_command_line
-loadVar $parm1
-loadVar $parm2
-loadVar $parm3
+loadVar $switchboard~bot_name
+loadVar $bot~user_command_line
+loadVar $bot~parm1
+loadVar $bot~parm2
+loadVar $bot~parm3
 
 # ----- SCRIPT NAME AND VERSION -----
 setVar $scriptname "Cherokee's ZTM"
@@ -29,8 +29,8 @@ reqRecording
 
 
 # --- CHECK LOCATION ---
-gosub :quikstats
-setVar $location $CURRENT_PROMPT
+gosub :player~quikstats
+setVar $location $player~current_prompt
 :checkLocation
     if (($location = "Command") OR ($location = "Citadel") OR ($location = "Computer"))
         if ($location <> "Computer")
@@ -39,7 +39,7 @@ setVar $location $CURRENT_PROMPT
         	setVar $location "Computer"
 	end
     else
-	send "'{" $bot_name "} - ZTM must be started from Command, Computer, or Citadel prompt.*"
+	send "'{" $switchboard~bot_name "} - ZTM must be started from Command, Computer, or Citadel prompt.*"
     end
     
 
@@ -48,8 +48,8 @@ setVar $location $CURRENT_PROMPT
     loadVar $resumepass
     loadVar $resumesector
     if ($resumepass = 7)
-        send "'{" $bot_name "} - You have already ZTM'd this game!*"
-	send "'{" $bot_name "} - Start with a fresh database if you need to ZTM again.*"
+        send "'{" $switchboard~bot_name "} - You have already ZTM'd this game!*"
+	send "'{" $switchboard~bot_name "} - Start with a fresh database if you need to ZTM again.*"
         halt
     elseif ($resumepass = 0)
 	setVar $resumepass 1
@@ -80,7 +80,7 @@ setVar $location $CURRENT_PROMPT
     gosub :getTime
     echo "*----*INIT*----*"
     gosub :loadTWX
-    gosub :quikstats
+    gosub :player~quikstats
 
 :nextpass
     killalltriggers
@@ -88,7 +88,7 @@ setVar $location $CURRENT_PROMPT
         if ($pass <> 0)
             echo "*DONE WITH PASS " & $pass & "*"
             echo $plotsthispass & " plots this pass*"
-            gosub :quikstats
+            gosub :player~quikstats
             gosub :getTime
             setVar $plotsthispass 0
             setDelayTrigger dothenextpass :dothenextpass 300
@@ -144,7 +144,7 @@ setVar $location $CURRENT_PROMPT
                 goto :catchup
             end
         setVar $burstcontrol 0
-        gosub :quikstats
+        gosub :player~quikstats
 	goto :nextpass
     end
     if ($visited[$start])
@@ -187,7 +187,7 @@ setVar $location $CURRENT_PROMPT
         gosub :plotCourse
         gosub :parseCourse
         setVar $burstcontrol 1
-        gosub :quikstats
+        gosub :player~quikstats
     end
     gosub :voidadjacents
     gosub :sendCourse
@@ -474,8 +474,8 @@ return
 
 
 #=================================QUIKSTATS================================================
-:quikstats
-	setVar $CURRENT_PROMPT 		"Undefined"
+:player~quikstats
+	setVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt
 	killtrigger prompt1
@@ -490,9 +490,9 @@ return
 	pause
 
 	:allPrompts
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
+		getWord CURRENTLINE $player~current_prompt 1
+		stripText $player~current_prompt #145
+		stripText $player~current_prompt #8
 		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
 		pause
 
@@ -527,13 +527,13 @@ return
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
 				getWord $stats $TURNS  			($current_word + 1)
 			elseif ($wordy = "Creds")
 				getWord $stats $CREDITS  		($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
+				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
 				getWord $stats $SHIELDS  		($current_word + 1)
 			elseif ($wordy = "Hlds")
@@ -571,7 +571,7 @@ return
 			elseif ($wordy = "PsPrb")
 				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
 				getWord $stats $SCAN_TYPE    		($current_word + 1)
 			elseif ($wordy = "Aln")
@@ -581,7 +581,7 @@ return
 			elseif ($wordy = "Corp")
 				getWord $stats $CORP   			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word

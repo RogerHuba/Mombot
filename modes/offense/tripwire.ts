@@ -1,15 +1,6 @@
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	setVar $BOT~help[1] $BOT~tab&"Self destructs planet if captured.  Attempts to kill pod.  "
 	setVar $BOT~help[2] $BOT~tab&" "
@@ -25,14 +16,14 @@
 
 	gosub :combat~init 
 
-	if ($parm1 = "move")
-		if ($parm2 <= 0 OR $parm2 > SECTORS)
+	if ($bot~parm1 = "move")
+		if ($bot~parm2 <= 0 OR $bot~parm2 > SECTORS)
 			setVar $SWITCHBOARD~message "When move option is used, sector must be a valid number.*"
 			gosub :SWITCHBOARD~switchboard		
 			halt
 		end
 		setVar $move_planet TRUE
-		setVar $move_sector $parm2
+		setVar $move_sector $bot~parm2
 	end
 
 
