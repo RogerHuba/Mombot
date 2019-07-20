@@ -587,5 +587,6 @@
 include "source\bot_includes\player\swathoff\player"
 include "source\bot_includes\player\clearadjacent\player"
 include "source\bot_includes\player\voidadjacent\player"
+include "source\bot_includes\player\getportinfo\player"
 include "source\bot_includes\planet\landingsub\planet"
 
