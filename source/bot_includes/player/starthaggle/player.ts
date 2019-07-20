@@ -112,3 +112,6 @@ return
 		killtrigger offerme
 	killalltriggers
 return
+
+include "source\bot_includes\player\isephaggle\player"
+
