@@ -1,4 +1,4 @@
-:formatPercentageForSpaces
+:formatPercentagesForSpaces
 	if ($inputVariable < 10)
 		setVar $outputVariable "  (" & $inputVariable&"%)"
 	elseif ($inputVariable < 100)
