@@ -108,4 +108,4 @@ return
 
 
 
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\mombot\botIncludes\quikstats"
+include "source\bot_includes\player\quikstats\player"

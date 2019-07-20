@@ -68,7 +68,7 @@ reqRecording
 		send "'{" $bot~bot_name "} - Please use [on/off] {delay} {drop type} {trigger type} {kill} {return}*"
 		halt
 	end
-	&" "
+	setvar $bot~user_command_line $bot~user_command_line&" "
 	isNumber $test $bot~parm2
 	if ($test)
 		setVar $dropDelay $bot~parm2

@@ -122,4 +122,5 @@ loadVar $switchboard~bot_name
 
 # ======================     END PLOCK (PLOCK) SUBROUTINE     ==========================
 include "source\bot_includes\targeting\scanitcitkill\targeting"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\targeting\initializetargeting\targeting"

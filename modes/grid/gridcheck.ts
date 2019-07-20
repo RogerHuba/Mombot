@@ -649,3 +649,5 @@ return
 
 return
 # ==============================  END PLANET INFO SUBROUTINE  =================
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"

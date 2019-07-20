@@ -1368,3 +1368,4 @@ loadVar $SWITCHBOARD~bot_name
 	return
 	
 
+include "source\bot_includes\player\quikstats\player"

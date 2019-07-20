@@ -14,82 +14,82 @@ savevar $bot~minor_version
 goto :BOT~load_bot
 
 :MAIN~module_vars
-    saveVar $bot~command
-    setVar $command $bot~command
-    saveVar $command
-        saveVar $bot~user_command_line
-    saveVar $bot~user_command_line
-    setVar $switchboard~bot_name $bot~bot_name
-    saveVar $switchboard~bot_name
-        saveVar $bot~parm1
-    saveVar $bot~parm1
-        saveVar $bot~parm2
-    saveVar $bot~parm2
-        saveVar $bot~parm3
-    saveVar $bot~parm3
-        saveVar $bot~parm4
-    saveVar $bot~parm4
-        saveVar $bot~parm5
-    saveVar $bot~parm5
-        saveVar $bot~parm6
-    saveVar $bot~parm6
-        saveVar $bot~parm7
-    saveVar $bot~parm7
-        saveVar $bot~parm8
-    saveVar $bot~parm8
-    saveVar $bot~bot_turn_limit
-    saveVar $player~unlimitedGame
+	saveVar $bot~command
+	setVar $command $bot~command
+	saveVar $command
+		saveVar $bot~user_command_line
+	saveVar $bot~user_command_line
+	setVar $switchboard~bot_name $bot~bot_name
+	saveVar $switchboard~bot_name
+		saveVar $bot~parm1
+	saveVar $bot~parm1
+		saveVar $bot~parm2
+	saveVar $bot~parm2
+		saveVar $bot~parm3
+	saveVar $bot~parm3
+		saveVar $bot~parm4
+	saveVar $bot~parm4
+		saveVar $bot~parm5
+	saveVar $bot~parm5
+		saveVar $bot~parm6
+	saveVar $bot~parm6
+		saveVar $bot~parm7
+	saveVar $bot~parm7
+		saveVar $bot~parm8
+	saveVar $bot~parm8
+	saveVar $bot~bot_turn_limit
+	saveVar $player~unlimitedGame
 return
 
 
 
 
 :MAIN~backwards_compatible
-    setVar  $safe_ship $bot~safe_ship
-    saveVar $safe_ship
-    setVar  $safe_planet $bot~safe_planet
-    saveVar $safe_planet
-    setVar $command $bot~command
-    saveVar $command
-        saveVar $bot~user_command_line
-    setVar $switchboard~bot_name $bot~bot_name
-    saveVar $switchboard~bot_name
-    setVar $self_command $bot~self_command
-    saveVar $self_command
-        saveVar $bot~parm1
-        saveVar $bot~parm2
-        saveVar $bot~parm3
-        saveVar $bot~parm4
-        saveVar $bot~parm5
-        saveVar $bot~parm6
-        saveVar $bot~parm7
-        saveVar $bot~parm8
-    setVar $rylos $map~rylos
-    saveVar $rylos
-    setVar $alpha_centauri $map~alpha_centauri
-    saveVar $alpha_centauri
-    setVar $stardock $map~stardock
-    saveVar $stardock
-    setVar $backdoor $map~backdoor
-    saveVar $backdoor
-    setVar $home_sector $map~home_sector
-    saveVar $home_sector
-    setVar $alarm_list $bot~alarm_list
-    saveVar $alarm_list
-    setVar $player~unlimitedGame $player~unlimitedGame
-    saveVar $player~unlimitedGame
-    setVar $bot_turn_limit $bot~bot_turn_limit
-    saveVar $bot_turn_limit
-    setVar $steal_factor $game~steal_factor
-    saveVar $steal_factor
-    setVar $password $bot~password
-    saveVar $password
-    setVar $mode $bot~mode
-    saveVar $mode
-    setVar $subspace $bot~subspace
-    saveVar $subspace
-    setVar $ptradesetting $game~ptradesetting
-    saveVar $ptradesetting
+	setVar  $safe_ship $bot~safe_ship
+	saveVar $safe_ship
+	setVar  $safe_planet $bot~safe_planet
+	saveVar $safe_planet
+	setVar $command $bot~command
+	saveVar $command
+		saveVar $bot~user_command_line
+	setVar $switchboard~bot_name $bot~bot_name
+	saveVar $switchboard~bot_name
+	setVar $self_command $bot~self_command
+	saveVar $self_command
+		saveVar $bot~parm1
+		saveVar $bot~parm2
+		saveVar $bot~parm3
+		saveVar $bot~parm4
+		saveVar $bot~parm5
+		saveVar $bot~parm6
+		saveVar $bot~parm7
+		saveVar $bot~parm8
+	setVar $rylos $map~rylos
+	saveVar $rylos
+	setVar $alpha_centauri $map~alpha_centauri
+	saveVar $alpha_centauri
+	setVar $stardock $map~stardock
+	saveVar $stardock
+	setVar $backdoor $map~backdoor
+	saveVar $backdoor
+	setVar $home_sector $map~home_sector
+	saveVar $home_sector
+	setVar $alarm_list $bot~alarm_list
+	saveVar $alarm_list
+	setVar $player~unlimitedGame $player~unlimitedGame
+	saveVar $player~unlimitedGame
+	setVar $bot_turn_limit $bot~bot_turn_limit
+	saveVar $bot_turn_limit
+	setVar $steal_factor $game~steal_factor
+	saveVar $steal_factor
+	setVar $password $bot~password
+	saveVar $password
+	setVar $mode $bot~mode
+	saveVar $mode
+	setVar $subspace $bot~subspace
+	saveVar $subspace
+	setVar $ptradesetting $game~ptradesetting
+	saveVar $ptradesetting
 
 return
 
@@ -100,7 +100,8 @@ include "source\bot_includes\bot\internal_commands"
 include "source\bot_includes\bot\menus"
 include "source\bot_includes\bot\user_interface"
 include "source\bot_includes\switchboard"
-include "source\module_includes\modules"
+include "source\module_includes\modules\clear\modules"
+include "source\module_includes\modules\xenter\modules"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\player\startcnsettings\player"

@@ -742,3 +742,4 @@ end
 	
 	return
 	# ============================== END QUICKSTATS SUB==============================
+include "source\bot_includes\player\quikstats\player"
