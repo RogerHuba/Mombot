@@ -1,12 +1,0 @@
-Sector 16284
-2310 org for 190433 cr - 0 fails - 82/unit - MCIC -51/-75
-1560 equ for 176061 cr - 0 fails - 112/unit - MCIC -20/-65
-Sector 4887
-2970 org for 242799 cr - 0 fails - 81/unit - MCIC -50/-75
-Sector 2052
-1590 equ for 207681 cr - 0 fails - 130/unit - MCIC -36/-65
-Sector 4539
-2070 org for 190480 cr - 0 fails - 92/unit - MCIC -71/-75
-2950 equ for 343157 cr - 0 fails - 116/unit - MCIC -23/-65
-Sector 18571
-2420 equ for 366163 cr - 0 fails - 151/unit - MCIC -53/-65
