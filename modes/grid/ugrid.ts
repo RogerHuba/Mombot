@@ -9,15 +9,6 @@
 	loadVar $avoidedSectorsUgrid
 	loadVar $player~unlimitedGame
 	loadVar $bot~bot_turn_limit
-	loadVar $bot~user_command_line
-	loadVar $bot~parm1
-	loadVar $bot~parm2
-	loadVar $bot~parm3
-	loadVar $bot~parm4
-	loadVar $bot~parm5
-	loadVar $bot~parm6
-	loadVar $bot~parm7
-	loadVar $bot~parm8
 	loadVar $map~stardock
 	loadVar $map~home_sector
 	loadVar $map~backdoor
@@ -202,38 +193,46 @@
 	
 
 if (($map~stardock = 0) OR ($map~stardock = ""))
-		send "'{" $bot~bot_name "} - Stardock is not defined.  Please define stardock variable in the bot.*"
+		setvar $switchboard~message "Stardock is not defined.  Please define stardock variable in the bot.*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($isFigged = "")
-		send "'{" $bot~bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
+		setvar $switchboard~message "It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($isArmided = "")
-		send "'{" $bot~bot_name "} - It appears no armid data is available.  Run an armid grid checker that uses the sector parameter MINESEC. (Try armids command)*"
+		setvar $switchboard~message "It appears no armid data is available.  Run an armid grid checker that uses the sector parameter MINESEC. (Try armids command)*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($isLimped = "")
-		send "'{" $bot~bot_name "} - It appears no limpet data is available.  Run a limpet grid checker that uses the sector parameter LIMPSEC. (Try limps command)*"
+		setvar $switchboard~message "It appears no limpet data is available.  Run a limpet grid checker that uses the sector parameter LIMPSEC. (Try limps command)*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($player~photons > 0)
-	       send "'Can not run with photons on your ship.*"
+	       setvar $switchboard~message "Can not run with photons on your ship.*"
+		gosub :switchboard~switchboard
                halt
 	end
 
 	gosub :player~quikstats
 	if ($player~current_prompt <> "Citadel")
-		send "'{" $bot~bot_name "} - Must start gridder from citadel prompt.*"
+		setvar $switchboard~message "Must start gridder from citadel prompt.*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($player~photons > 0)
-		send "'{" $bot~bot_name "} - You should not use a ship with photons to grid.*"
+		setvar $switchboard~message "You should not use a ship with photons to grid.*"
+		gosub :switchboard~switchboard
 		halt
 	end
 
 	if ($player~twarp_type = "No")
-		send "'{" $bot~bot_name "} - Must Have Twarp 1 or 2**"
+		setvar $switchboard~message "Must Have Twarp 1 or 2**"
+		gosub :switchboard~switchboard
 		halt
 	end
 
@@ -249,7 +248,8 @@ goSub :checkAvoidedSectors
 	send "q"
 	gosub :planet~getplanetinfo
 	send "tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*mnt*q"
-	send "'{" $bot~bot_name "} - Clearing messages for possible exit/enter later*"
+	setvar $switchboard~message "Clearing messages for possible exit/enter later*"
+	gosub :switchboard~switchboard
 	gosub :xenter
 	gosub :xenter
 	gosub :xenter
@@ -260,7 +260,9 @@ goSub :checkAvoidedSectors
 	setVar $armidBefore $player~armids
 	setVar $armidAfter $armidBefore
 
-	send "'{" $bot~bot_name "} - M()M Unlimited Gridder Powering Up!*"
+	setvar $switchboard~message "M()M Unlimited Gridder Powering Up!*"
+	gosub :switchboard~switchboard
+
 	waitFor "(?="
 	window gridder 300 170 ("M()M Unlimited Gridder - " & GAMENAME) ONTOP
 	setWindowContents gridder "      Starting up!*"
@@ -349,8 +351,9 @@ goSub :checkAvoidedSectors
 	setWindowContents gridder "*      Targets left to hit:"&$databaseCount&"*"
 	
 	if ($player~warpto = 0)
-		send "'{" $bot~bot_name "} - Database Cleared - Recalculating and Restarting...*"
-		waitOn "Message sent on sub-space"
+		setvar $switchboard~message "Database Cleared - Recalculating and Restarting...*"
+		gosub :switchboard~switchboard
+		gosub :player~quikstats
 		goto :restart
 	else
 		getDistance $distance $move[$player~warpto] $player~warpto
@@ -377,9 +380,10 @@ goSub :checkAvoidedSectors
 	end
 
 	if ($photoned = true)
-		send "'{" $bot~bot_name "} - Waiting for photon to wear off..*"		 
-		 setDelayTrigger restart_from_photon :clearit (($game~photon_duration * 60000) + 1000)
-		 pause
+		setvar $switchboard~message "Waiting for photon to wear off..*"
+		gosub :switchboard~switchboard
+		setDelayTrigger restart_from_photon :clearit (($game~photon_duration * 60000) + 1000)
+		pause
 	end
 
 
@@ -808,14 +812,16 @@ goSub :checkAvoidedSectors
 	end
 	send "'{" $bot~bot_name "} - "&$databaseCount&" target sectors found.*"
 	if ($databaseCount <= 0)
-		send "'{" $bot~bot_name "} - Visited every sector possible. Refresh fighters and update warp data to verify..*"
+		setvar $switchboard~message "Visited every sector possible. Refresh fighters and update warp data to verify..*"
+		gosub :switchboard~switchboard
+
 		if ($refurb)
 			gosub :attempt_refurb
 			gosub :player~quikstats
 			send "p "&$map~home_sector&"* y "
 			gosub :player~quikstats
-			send "'{" $bot~bot_name "} - Scrubbed at dock and pwarped home..*"
-
+			setvar $switchboard~message "Scrubbed at dock and pwarped home..*"
+			gosub :switchboard~switchboard
 		end
 		halt
 	end
