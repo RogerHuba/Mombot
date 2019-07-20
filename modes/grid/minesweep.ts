@@ -422,7 +422,7 @@ return
 
 	if (($PLAYER~ALIGNMENT  < 1000) AND ($WeAreAdjDock = FALSE))
 		setVar $RED_adj 0
-		gosub :FindJumpSector
+		gosub :player~findjumpsector
 		if ($RED_adj <> 0)
 			setVar $SWITCHBOARD~message "Jump Sector Found - Using Sector "&$RED_adj&"*"
 			gosub :SWITCHBOARD~switchboard

@@ -905,7 +905,7 @@ return
 						if ($barricade = TRUE)
 							if (($planet~planet_FUEL > 50000) AND ($planet~planet_CITADEL >= 4))
 								send "c  "
-								setVar $warpto $home
+								setVar $player~warpto $home
 								gosub :pwarp
 								send "q  "
 								if ($success = TRUE)
@@ -928,7 +928,7 @@ return
 						if ($barricade = TRUE)
 							gosub :PLAYER~quikstats
 							if (($PLAYER~CURRENT_SECTOR = $home) AND ($PLAYER~CURRENT_PROMPT = "Citadel"))
-								setVar $warpto $farmSector
+								setVar $player~warpto $farmSector
 								gosub :pwarp
 								send "q  "
 							end
@@ -1870,7 +1870,7 @@ return
 return
 
 :pwarp
-    send "p "& $warpto &"  *ys* "
+    send "p "& $player~warpto &"  *ys* "
     settextlinetrigger 1 :warp_its "All Systems Ready, shall we engage?"
     settextlinetrigger 2 :no_warps "You do not have any fighters in Sector"
     setTextLineTrigger 3 :warp_its "You are already in that sector!"

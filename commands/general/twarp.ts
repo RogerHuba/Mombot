@@ -14,7 +14,7 @@
 # ======================     START TWARP SUBROUTINES     =================
 :twarp
 :t
-    setVar $warpto_p ""
+    setVar $player~warpto_p ""
     setvar $player~save true
     gosub :PLAYER~quikstats
     setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
@@ -45,9 +45,9 @@
         gosub :SWITCHBOARD~switchboard
     else
         if ($bot~parm2 = "p")
-            send $warpto_p
-        elseif (($warpto_p <> 0) AND ($warpto_p <> ""))
-            setVar $planet~planet $warpto_p
+            send $player~warpto_p
+        elseif (($player~warpto_p <> 0) AND ($player~warpto_p <> ""))
+            setVar $planet~planet $player~warpto_p
             gosub :PLANET~landingSub
         end
         setVar $bot~target $PLAYER~warpto
@@ -65,16 +65,16 @@
         halt
     else
         if ($bot~parm2 = "p")
-            setVar $warpto_p "p z t *"
+            setVar $player~warpto_p "p z t *"
             if ($bot~parm1 = $MAP~stardock)
-                setVar $warpto_p "p z s h *"
+                setVar $player~warpto_p "p z s h *"
             end
         else
             isNumber $test $bot~parm2
             if ($test = FALSE)
-                setVar $warpto_p ""
+                setVar $player~warpto_p ""
             else
-                setVar $warpto_p $bot~parm2
+                setVar $player~warpto_p $bot~parm2
             end
         end
         setVar $PLAYER~warpto $bot~parm1

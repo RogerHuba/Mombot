@@ -63,8 +63,8 @@
 
 :getSector
 	getRnd $random 1 $database_count
-	getWord $database $warpto $random
-	IF ($warpto = 0)
+	getWord $database $player~warpto $random
+	IF ($player~warpto = 0)
 
 		send "'{" $switchboard~bot_name "} - Entire Grid Checked.*"
 		HALT
@@ -73,11 +73,11 @@
 
 :clearit
 	KillAllTriggers
-	setVar $temp " "&$warpto&" "
+	setVar $temp " "&$player~warpto&" "
 	replaceText $database $temp " "
 	subtract $database_count 1
-	IF (SECTOR.EXPLORED[$warpto] = "YES")
-		setVar $temp " "&$warpto&" "
+	IF (SECTOR.EXPLORED[$player~warpto] = "YES")
+		setVar $temp " "&$player~warpto&" "
 		replaceText $database $temp " "
 		subtract $database_count 1
 		goto :getSector
@@ -101,9 +101,9 @@
 :twarp
 
 	killAllTriggers
-	send "m" $warpto "*"
+	send "m" $player~warpto "*"
 	setTextTrigger there :adj_warp "You are already in that sector!"
-	setTextLineTrigger adj_warp :adj_warp "Sector  : "&$warpto
+	setTextLineTrigger adj_warp :adj_warp "Sector  : "&$player~warpto
 	setTextLineTrigger locking :locking "That Warp Lane is not adjacent"
 	pause
 
@@ -140,8 +140,8 @@
 	killAllTriggers
 	send "n*zn"
 	send "l " & #8 & $planet~planet "*c"
-	setSectorParameter $warpto "FIGSEC" FALSE
-	setVar $temp " "&$warpto&" "
+	setSectorParameter $player~warpto "FIGSEC" FALSE
+	setVar $temp " "&$player~warpto&" "
 	replaceText $database $temp " "
 	subtract $database_count 1
 	goto :select_boomsec
@@ -151,7 +151,7 @@
 :bwarp
 
 	killAllTriggers
-	send "b" $warpto "*"
+	send "b" $player~warpto "*"
 	setTextTrigger go :go5 "TransWarp Locked"
 	setTextTrigger no :no5 "No locating beam found"
 	setTextTrigger outta_ore :no_ore "This planet does not have enough Fuel Ore to transport you."
@@ -161,8 +161,8 @@
 	killAllTriggers
 	send "n"
 	waitfor "Transporter shutting down."
-	setSectorParameter $warpto "FIGSEC" FALSE
-	setVar $temp " "&$warpto&" "
+	setSectorParameter $player~warpto "FIGSEC" FALSE
+	setVar $temp " "&$player~warpto&" "
 	replaceText $database $temp " "
 	subtract $database_count 1
 	goto :select_boomsec

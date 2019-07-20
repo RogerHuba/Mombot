@@ -308,9 +308,9 @@ goSub :checkAvoidedSectors
 	end
 :continueOn
 	getRnd $random 1 $databaseCount
-	getWord $database $warpto $random
+	getWord $database $player~warpto $random
 	gosub :update_box
-	if ($warpto = 0)
+	if ($player~warpto = 0)
 		if ($restart)
 			goto :restart
 		else
@@ -320,7 +320,7 @@ goSub :checkAvoidedSectors
 
 :clearit
 	KillAllTriggers
-	replaceText $database " "&$warpto&" " " "
+	replaceText $database " "&$player~warpto&" " " "
 	subtract $databaseCount 1
 	setVar $furbing FALSE
 	if ($grid_warp = "twarp")
@@ -334,7 +334,7 @@ goSub :checkAvoidedSectors
 
 :hittingsec
 	killalltriggers
-	setVar $PLAYER~CURRENT_SECTOR $warpto
+	setVar $PLAYER~CURRENT_SECTOR $player~warpto
 	gosub :grid~surround
 	send "m      " $homesec "* y   y    *  *  "
 	send $land_mac
@@ -629,7 +629,7 @@ return
 
 	if (($PLAYER~ALIGNMENT < 1000) AND ($WeAreAdjDock = FALSE))
 		setVar $RED_adj 0
-		gosub :FindJumpSector
+		gosub :player~findjumpsector
 		if ($RED_adj <> 0)
 			send ("'{"&$SWITCHBOARD~bot_name&"} - Jump Sector Found - Using Sector "&$RED_adj&"**")
 		else
@@ -724,10 +724,10 @@ return
 		waitfor "(?="
 		setVar $msg ""
 		if (($PLAYER~ALIGNMENT >= 1000) AND ($WeAreAdjDock = FALSE))
-			setVar $warpto $MAP~stardock
+			setVar $player~warpto $MAP~stardock
 			gosub :DoTwarp
 		elseif (($WeAreAdjDock = FALSE) AND ($RED_adj <> 0))
-			setVar $warpto $RED_adj
+			setVar $player~warpto $RED_adj
 			gosub :DoTwarp
 		else
 			send " m " & $MAP~stardock & "*  *  P  S G Y G Q "
@@ -756,10 +756,10 @@ return
 
 :DoTwarp
 	setVar $msg ""
-	if ($warpto > 0)
-		send "q q * * mz" & $warpto "*"
+	if ($player~warpto > 0)
+		send "q q * * mz" & $player~warpto "*"
 		setTextTrigger there        :adj_warp "You are already in that sector!"
-		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $warpto & " "
+		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $player~warpto & " "
 		setTextTrigger locking      :locking "Do you want to engage the TransWarp drive?"
 		setTextTrigger igd          :twarpIgd "An Interdictor Generator in this sector holds you fast!"
 		setTextTrigger noturns      :twarpPhotoned "Your ship was hit by a Photon and has been disabled"
@@ -797,8 +797,8 @@ return
 			killAllTriggers
 			send "n*zn"
 			send "l " & #8 & $planet~planet "*c"
-			setSectorParameter $warpto "FIGSEC" FALSE
-			setVar $temp " "&$warpto&" "
+			setSectorParameter $player~warpto "FIGSEC" FALSE
+			setVar $temp " "&$player~warpto&" "
 			replaceText $database $temp " "
 			subtract $database_count 1
 			goto :select_boomsec
@@ -840,7 +840,7 @@ return
 :bwarp
 
 	killAllTriggers
-	send "b" $warpto "*"
+	send "b" $player~warpto "*"
 	setTextTrigger go :go5 "TransWarp Locked"
 	setTextTrigger no :no5 "No locating beam found"
 	goSub :delayTrigger
@@ -850,7 +850,7 @@ return
 	killAllTriggers
 	send "n "
 	waitfor "Transporter shutting down."
-	setVar $FIGHTER_GRID[$warpto] 0
+	setVar $FIGHTER_GRID[$player~warpto] 0
 	goto :select_boomsec
 
 :go5
