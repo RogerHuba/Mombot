@@ -114,22 +114,22 @@
 	setVar $6scountformatted $outputVariable
 
 	setVar $inputVariable $1percent
-	gosub :player~formatPercentageForSpaces
+	gosub :player~formatPercentagesForSpaces
 	setVar $1percentformatted $outputVariable
 	setVar $inputVariable $2percent
-	gosub :player~formatPercentageForSpaces
+	gosub :player~formatPercentagesForSpaces
 	setVar $2percentformatted $outputVariable
 	setVar $inputVariable $3percent
-	gosub :player~formatPercentageForSpaces
+	gosub :player~formatPercentagesForSpaces
 	setVar $3percentformatted $outputVariable
 	setVar $inputVariable $4percent
-	gosub :player~formatPercentageForSpaces
+	gosub :player~formatPercentagesForSpaces
 	setVar $4percentformatted $outputVariable
 	setVar $inputVariable $5percent
-	gosub :player~formatPercentageForSpaces
+	gosub :player~formatPercentagesForSpaces
 	setVar $5percentformatted $outputVariable
 	setVar $inputVariable $6percent
-	gosub :player~formatPercentageForSpaces
+	gosub :player~formatPercentagesForSpaces
 	setVar $6percentformatted $outputVariable
 
 	setVar $figsGridded TRUE
