@@ -818,10 +818,15 @@ goSub :checkAvoidedSectors
 		if ($refurb)
 			gosub :attempt_refurb
 			gosub :player~quikstats
-			send "p "&$map~home_sector&"* y "
-			gosub :player~quikstats
-			setvar $switchboard~message "Scrubbed at dock and pwarped home..*"
-			gosub :switchboard~switchboard
+			if ($map~home_sector <> "0")
+				send "p "&$map~home_sector&"* y "
+				gosub :player~quikstats
+				setvar $switchboard~message "Scrubbed at dock and pwarped home..*"
+				gosub :switchboard~switchboard
+			else
+				setvar $switchboard~message "Home sector not defined, so still in gridding sector.*"
+				gosub :switchboard~switchboard
+			end
 		end
 		halt
 	end
