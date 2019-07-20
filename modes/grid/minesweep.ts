@@ -1,27 +1,13 @@
 	reqrecording
 	logging off
 	gosub :BOT~loadVars
-									loadVar $MAP~STARDOCK
+	loadVar $MAP~STARDOCK
 	
-	loadVar $switchboard~bot_name
-	loadVar $player~unlimitedGame
-	loadVar $BOT~bot_turn_limit 
-	loadVar $bot~user_command_line
-	loadVar $bot~parm1
-	loadVar $bot~parm2
-	loadVar $bot~parm3
-	loadVar $bot~parm4
-	loadVar $bot~parm5
-	loadVar $bot~parm6
-	loadVar $bot~parm7
-	loadVar $bot~parm8
-	loadVar $MAP~stardock
-	loadVar $backdoor
 	loadvar $GAME~LIMPET_COST
 	loadvar $GAME~ARMID_COST
 	loadVar $GAME~LIMPET_REMOVAL_COST
 	loadvar $game~DISRUPTOR_COST
-	loadvar $password
+	loadvar $bot~password
 	setVar $LIMPET_COST $GAME~LIMPET_COST
 	setVar $LIMPET_REMOVAL_COST $GAME~LIMPET_REMOVAL_COST
 	setVar $ARMID_COST $GAME~ARMID_COST

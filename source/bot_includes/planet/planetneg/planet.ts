@@ -1432,3 +1432,6 @@ pause
 :exitneg
 return
 # ==============================  END PLANET NEGOTIATION ========================
+
+include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\player\swathoff\player"
