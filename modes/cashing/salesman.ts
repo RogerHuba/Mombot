@@ -322,7 +322,7 @@
 						send "l "&$planet~planet&"* t n l 1* t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* q jy "
 							
 						while ($player~turnsSellingProduct > 0)
-							send "l " $planet~planet "*  t  *  * 2*  q P * *"
+							send "l " $planet~planet "*  t  *  * 2*  q P**"
 							gosub :PLAYER~startHaggle
 							send "0 * 0 *  /"
 							if ($PLAYER~ni <> TRUE)
@@ -347,7 +347,7 @@
 						send "l "&$planet~planet&"* t n l 1* t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* q jy "
 							
 						while ($player~turnsSellingProduct > 0)
-							send "l " $planet~planet "*  t  *  * 2*  q P * *"
+							send "l " $planet~planet "*  t  *  * 2*  q P**"
 							gosub :PLAYER~startHaggle
 							send "0 * 0 *  /"
 							if ($PLAYER~ni <> TRUE)
@@ -367,7 +367,7 @@
 						while ($player~turnsSellingProduct > 0)
 							
 							while ($player~turnsSellingProduct > 0)
-								send "l " $planet~planet "*  t  *  * 3*  q P * *"
+								send "l " $planet~planet "*  t  *  * 3*  q P**"
 								gosub :PLAYER~startHaggle
 								send "0 * 0 *  /"
 								if ($PLAYER~ni <> TRUE)
