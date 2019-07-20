@@ -319,7 +319,7 @@
 							send "l "&$planet~planet&"* c "
 							goto :doneMerchant
 						end
-						send "l "&$PLAYER~planet&"* t n l 1* t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* q jy "
+						send "l "&$planet~planet&"* t n l 1* t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* q jy "
 							
 						while ($player~turnsSellingProduct > 0)
 							send "l " $planet~planet "*  t  *  * 2*  q P * *"
@@ -344,7 +344,7 @@
 							send "l "&$planet~planet&"* c "
 							goto :doneMerchant
 						end
-						send "l "&$PLAYER~planet&"* t n l 1* t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* q jy "
+						send "l "&$planet~planet&"* t n l 1* t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* q jy "
 							
 						while ($player~turnsSellingProduct > 0)
 							send "l " $planet~planet "*  t  *  * 2*  q P * *"
