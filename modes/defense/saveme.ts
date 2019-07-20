@@ -74,7 +74,7 @@
 		setVar $targetingPerson FALSE
 		getWordPos $bot~user_command_line $pos #34
 		if ($pos > 0)	
-			&" "
+			setvar $bot~user_command_line $bot~user_command_line&" "
 			getText " "&$bot~user_command_line&" " $target " "&#34 #34&" "
 			if ($target <> "")
 				setVar $targetingPerson TRUE

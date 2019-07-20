@@ -42,7 +42,7 @@
 		else
 			getWordPos $bot~parm2 $pos #34
 			if ($pos > 0)
-				&" "
+				setvar $bot~user_command_line $bot~user_command_line&" "
 				getText $bot~user_command_line $player~target " "&#34 #34&" "
 				if ($player~target <> "")
 					setVar $targetingPerson TRUE

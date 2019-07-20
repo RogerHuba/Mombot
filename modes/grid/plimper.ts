@@ -389,3 +389,4 @@ return
     setVar $MSGS_ON FALSE
     killAllTriggers
     return
+include "source\bot_includes\player\quikstats\player"

@@ -145,7 +145,9 @@ return
 					end
 					setvar $path_count 1 
 					while ($path_count <= $paths)
-						write $script_file "include "&#34&$paths[$path_count]&#34
+						if ($paths[$path_count] <> "0")
+							write $script_file "include "&#34&$paths[$path_count]&#34
+						end
 						add $path_count 1
 					end
 			end

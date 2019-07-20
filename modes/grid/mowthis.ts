@@ -619,5 +619,6 @@ return
 
 
 #-=-=-=-=-includes-=-=-=-=-
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\player\currentprompt\player"

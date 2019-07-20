@@ -1,7 +1,7 @@
-	logging off
+﻿	logging off
 	gosub :BOT~loadVars
 
-	setVar $BOT~help[1]   $BOT~tab&"- "surroundthis [param] {figstodrop} {alarm} {notwarp}   " 
+	setVar $BOT~help[1]   $BOT~tab&" surroundthis [param] {figstodrop} {alarm} {notwarp}   " 
 	setVar $BOT~help[2]   $BOT~tab&"    Mows to surround sectors defined in sector param given. " 
 	setVar $BOT~help[3]   $BOT~tab&"    Does not do so safely.                                  " 
 	setVar $BOT~help[4]   $BOT~tab&"                                                            " 
@@ -423,5 +423,8 @@ return
 	return
 
 #-=-=-=-=-includes-=-=-=-=-
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\player\currentprompt\player"

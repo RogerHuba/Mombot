@@ -910,3 +910,4 @@ return
 	send "'{" $switchboard~bot_name "} - Check to make sure both planets and ships made it back to safe sector.*"
 	halt
 
+include "source\bot_includes\player\quikstats\player"

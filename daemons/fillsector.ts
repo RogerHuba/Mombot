@@ -59,6 +59,7 @@ while (($continue = TRUE))
 		setEventTrigger		moveended		:moveended "SCRIPT STOPPED" "scripts\mombot\modes\resource\movefig.cts"
 		pause
 		:moveended
+
 	end
 	if (($buyLimited = TRUE) AND ($total >= $desired))
 		setVar $continue FALSE
@@ -81,3 +82,4 @@ pause
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\switchboard"

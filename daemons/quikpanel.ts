@@ -2635,3 +2635,4 @@ return
 	END
 	send "qq"
 return
+include "source\bot_includes\player\quikstats\player"

@@ -206,9 +206,9 @@ loadVar $bot~parm8
 		setVar $bot~parm1 $player~warpto
 		goto :evac_start
 	end
-	setVar $pwarp~warpto $player~warpto
-	setVar $pwarp~bot_name $switchboard~bot_name
-	gosub :pwarp~pwarp
+	setVar $player~warpto $player~warpto
+	setVar $player~bot_name $switchboard~bot_name
+	gosub :player~pwarp
 	gosub :player~quikstats
 	if ($player~CURRENT_SECTOR <> $player~warpto)
 		goto :run_pwarp
@@ -382,8 +382,8 @@ return
 	setVar $isValid TRUE
 return
 
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\player\pwarp\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
 
-
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\mombot\botIncludes\quikstats"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\mombot\botIncludes\planetinfo"
-include "C:\Documents and Settings\Owner.CRC-Software\Desktop\TWXProxy204b\scripts\mombot\botIncludes\pwarp"

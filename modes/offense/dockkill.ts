@@ -62,7 +62,7 @@
 		else
 			getWordPos $bot~parm2 $pos #34
 			if ($pos > 0)	
-				&" "
+				setvar $bot~user_command_line $bot~user_command_line&" "
 				getText $bot~user_command_line $PLAYER~target " "&#34 #34&" "
 				if ($PLAYER~target <> "")
 					setVar $PLAYER~targetingPerson TRUE
@@ -200,3 +200,4 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastattack\combat"
 include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\player\setconnectiontriggers\player"

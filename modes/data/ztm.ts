@@ -292,7 +292,7 @@ end
 			setVar $forwardSectors 0
 			setVar $forwardSectorsTo 0
 			send "/"
-			waitfor "³Turns"
+			waitfor "Â³Turns"
 			
 		end
 
@@ -328,7 +328,7 @@ halt
 	send "/"
 	killalltriggers
 	setDelayTrigger     timeout :timeout 		8000
-	setTextLineTrigger  finishedPaths :finishedPaths	"³Shlds"
+	setTextLineTrigger  finishedPaths :finishedPaths	"Â³Shlds"
 	pause
 	
 	:timeout
@@ -349,7 +349,7 @@ halt
 		halt
 	:finishedPaths
 		killalltriggers
-		waitfor "³PlScn"
+		waitfor "Â³PlScn"
 return
 
 :waitForSafeResume
