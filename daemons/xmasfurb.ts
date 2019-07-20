@@ -296,7 +296,7 @@ return
 
 :moveToSector
 	
-		goSub :tWarptoSector
+		gosub :player~twarpSector
 	
 return
 

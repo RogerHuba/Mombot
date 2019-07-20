@@ -357,14 +357,14 @@ return
 	if ($targetCount > 0)
 		getRnd $randomTarget 1 $targetCount
 		setVar $gotoSector $targetSectors[$randomTarget]
-		setVar $warpto $gotoSector
+		setVar $player~warpto $gotoSector
 		gosub :dopwarp
 	end
 	
 return
 
 :dopwarp
-    send "p" $warpTo "*y"
+    send "p" $player~warpto "*y"
     setTextLineTrigger pwarp_lock       :pwarp_lock     "Locating beam pinpointed"
     setTextLineTrigger no_pwarp_lock    :no_pwarp_lock  "Your own fighters must be"
     setTextLineTrigger already      :already    "You are already in that sector!"
@@ -385,7 +385,7 @@ return
         return
     :no_pwarp_lock
         killalltriggers
-        setVar $target $warpto
+        setVar $target $player~warpto
         setSectorParameter $gotoSector "FIGSEC" FALSE
         return
     :no_ore

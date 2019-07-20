@@ -345,19 +345,19 @@ goSub :checkAvoidedSectors
 	end
 :continueOn
 	getRnd $random 1 $databaseCount
-	getWord $database $warpto $random
+	getWord $database $player~warpto $random
 	setWindowContents gridder "*      Targets left to hit:"&$databaseCount&"*"
 	
-	if ($warpto = 0)
+	if ($player~warpto = 0)
 		send "'{" $bot~bot_name "} - Database Cleared - Recalculating and Restarting...*"
 		waitOn "Message sent on sub-space"
 		goto :restart
 	else
-		getDistance $distance $move[$warpto] $warpto
+		getDistance $distance $move[$player~warpto] $player~warpto
 		if ($distance <= 0)
-			send "^f"&$move[$warpto]&"*"&$warpto&"*q"
+			send "^f"&$move[$player~warpto]&"*"&$player~warpto&"*q"
 			waitOn "ENDINTERROG"
-			getDistance $distance $move[$warpto] $warpto
+			getDistance $distance $move[$player~warpto] $player~warpto
 		end
 		
 	end
@@ -365,7 +365,7 @@ goSub :checkAvoidedSectors
 :clearit
 	loadvar $game~PHOTON_DURATION
 	KillAllTriggers
-	replaceText $database " "&$warpto&" " " "
+	replaceText $database " "&$player~warpto&" " " "
 	subtract $databaseCount 1
 	setVar $furbing FALSE
 	if ($grid_warp = "twarp")
@@ -385,7 +385,7 @@ goSub :checkAvoidedSectors
 
 :hittingsec
 	KillAllTriggers
-	setVar $boomsec $move[$warpto]
+	setVar $boomsec $move[$player~warpto]
 	getSectorParameter $boomsec "FIGSEC"  $isFigged
 	getSectorParameter $boomsec "MINESEC" $isArmided
 	getSectorParameter $boomsec "LIMPSEC" $isLimped
@@ -407,9 +407,9 @@ goSub :checkAvoidedSectors
 	send "sdszh*  "
 	waitFor "Relative Density Scan"
 	waitFor "Long Range Scan"
-	waitFor "[" & $warpto & "]"
-	getDistance $distance $warpto $boomsec
-	getDistance $distanceback $boomsec $warpto 
+	waitFor "[" & $player~warpto & "]"
+	getDistance $distance $player~warpto $boomsec
+	getDistance $distanceback $boomsec $player~warpto 
 	setVar $containsShieldedPlanet FALSE
 	setVar $i 1
 	while ($i <= SECTOR.PLANETCOUNT[$boomsec])
@@ -1021,7 +1021,7 @@ return
 
 	if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE))
 		setVar $RED_adj 0
-		gosub :FindJumpSector
+		gosub :player~findjumpsector
 		if ($RED_adj <> 0)
 			send ("'{"&$bot~bot_name&"} - Jump Sector Found - Using Sector "&$RED_adj&"**")
 		else
@@ -1116,10 +1116,10 @@ return
 		waitfor "(?="
 		setVar $msg ""
 		if (($player~alignment >= 1000) AND ($WeAreAdjDock = FALSE))
-			setVar $warpto $map~stardock
+			setVar $player~warpto $map~stardock
 			gosub :DoTwarp
 		elseif (($WeAreAdjDock = FALSE) AND ($RED_adj <> 0))
-			setVar $warpto $RED_adj
+			setVar $player~warpto $RED_adj
 			gosub :DoTwarp
 		else
 			send " m " & $map~stardock & "*  *  P  S G Y G Q "
@@ -1150,10 +1150,10 @@ return
 	setVar $msg ""
 	setvar $paused false
 	setvar $photoned false
-	if ($warpto > 0)
-		send "q t * t 1*  q * * mz" & $warpto "*"
+	if ($player~warpto > 0)
+		send "q t * t 1*  q * * mz" & $player~warpto "*"
 		setTextTrigger there        :adj_warp "You are already in that sector!"
-		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $warpto & " "
+		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $player~warpto & " "
 		setTextTrigger locking      :locking "Do you want to engage the TransWarp drive?"
 		setTextTrigger igd          :twarpIgd "An Interdictor Generator in this sector holds you fast!"
 		setTextTrigger noturns      :twarpPhotoned "Your ship was hit by a Photon and has been disabled"
@@ -1191,8 +1191,8 @@ return
 			killAllTriggers
 			send "n*zn"
 			send "l " & #8 & $planet~planet "*c"
-			setSectorParameter $warpto "FIGSEC" FALSE
-			setVar $temp " "&$warpto&" "
+			setSectorParameter $player~warpto "FIGSEC" FALSE
+			setVar $temp " "&$player~warpto&" "
 			replaceText $database $temp " "
 			subtract $database_count 1
 			goto :select_boomsec
@@ -1243,7 +1243,7 @@ return
 :bwarp
 
 	killAllTriggers
-	send "b" $warpto "*"
+	send "b" $player~warpto "*"
 	setTextTrigger go :go5 "TransWarp Locked"
 	setTextTrigger no :no5 "No locating beam found"
 	goSub :delayTrigger
@@ -1253,7 +1253,7 @@ return
 	killAllTriggers
 	send "n "
 	waitfor "Transporter shutting down."
-	setVar $FIGHTER_GRID[$warpto] 0
+	setVar $FIGHTER_GRID[$player~warpto] 0
 	goto :select_boomsec
 
 :go5

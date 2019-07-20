@@ -140,12 +140,12 @@ goSub :checkAvoidedSectors
 	end
 	if ($player~limpets >= ($maxMines-20))
 		#DUMP THE EXTRA LIMPETS
-		getWord $unload_sectors $warpto 1
-		replaceText $unload_sectors " "&$warpto&" " " "
-		if ($warpto = 0)
+		getWord $unload_sectors $player~warpto 1
+		replaceText $unload_sectors " "&$player~warpto&" " " "
+		if ($player~warpto = 0)
 			getNearestWarps $nearest $homesec
 			setVar $i 1
-			while (($i <= $nearest) AND ($warpto = 0))
+			while (($i <= $nearest) AND ($player~warpto = 0))
 				setVar $focus $nearest[$i]
 				getWordPos $avoidedSectors $pos " "&$focus&" "
 				getSectorParameter $focus "FIGSEC" $isFigged
@@ -157,12 +157,12 @@ goSub :checkAvoidedSectors
 					setVar $isLimped FALSE
 				end
 				if (($isLimped = TRUE) AND ($isFigged = TRUE) AND ($pos <= 0))
-					setVar $warpto $focus
+					setVar $player~warpto $focus
 					setVar $avoidedSectors $avoidedSectors&" "&$focus&" "
 				end
 				add $i 1
 			end
-			if ($warpto = 0)
+			if ($player~warpto = 0)
 				echo ANSI_12 "*No Limpet Dump Sectors Able to be Found.*" ANSI_7
 				halt
 			end
@@ -178,7 +178,7 @@ goSub :checkAvoidedSectors
 		killalltriggers
 		setVar $justCheckingIfAlive FALSE
 		gosub :player~quikstats
-		if (($TWARP = "No") OR ($player~current_sector <> $warpto))
+		if (($TWARP = "No") OR ($player~current_sector <> $player~warpto))
 			goto :callSaveMe
 		end
 		send "h2 z"&$player~limpets&"*zc*"&$return_mac
@@ -196,21 +196,21 @@ goSub :checkAvoidedSectors
 
 :continueOn
 	getRnd $random 1 $databaseCount
-	getWord $database $warpto $random
-	if ($warpto = 0)
+	getWord $database $player~warpto $random
+	if ($player~warpto = 0)
 		send "'{" $switchboard~bot_name "} - Reorganized limpets in all sectors possible.*"
 		halt
 	end
-	getDistance $distance $homesec $warpto
+	getDistance $distance $homesec $player~warpto
 	if ($distance <= 0)
-		send "^f"&$homesec&"*"&$warpto&"*q"
+		send "^f"&$homesec&"*"&$player~warpto&"*q"
 		waitOn "ENDINTERROG"
-		getDistance $distance $homesec $warpto
+		getDistance $distance $homesec $player~warpto
 	end
 
 :clearit
 	KillAllTriggers
-	replaceText $database " "&$warpto&" " " "
+	replaceText $database " "&$player~warpto&" " " "
 	subtract $databaseCount 1
 	if ($distance <= 2)
 		goto :select_boomsec
@@ -228,7 +228,7 @@ goSub :checkAvoidedSectors
 	killalltriggers
 	setVar $justCheckingIfAlive FALSE
 	gosub :player~quikstats
-	if (($TWARP = "No") OR ($player~current_sector <> $warpto))
+	if (($TWARP = "No") OR ($player~current_sector <> $player~warpto))
 		goto :callSaveMe
 	end
 	send $mac&$return_mac
@@ -564,7 +564,7 @@ return
 
 	if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE))
 		setVar $RED_adj 0
-		gosub :FindJumpSector
+		gosub :player~findjumpsector
 		if ($RED_adj <> 0)
 			send ("'{"&$switchboard~bot_name&"} - Jump Sector Found - Using Sector "&$RED_adj&"**")
 		else
@@ -659,10 +659,10 @@ return
 		waitfor "(?="
 		setVar $msg ""
 		if (($player~alignment >= 1000) AND ($WeAreAdjDock = FALSE))
-			setVar $warpto $stardock
+			setVar $player~warpto $stardock
 			gosub :DoTwarp
 		elseif (($WeAreAdjDock = FALSE) AND ($RED_adj <> 0))
-			setVar $warpto $RED_adj
+			setVar $player~warpto $RED_adj
 			gosub :DoTwarp
 		else
 			send " m " & $stardock & "*  *  P  S G Y G Q "
@@ -691,10 +691,10 @@ return
 
 :DoTwarp
 	setVar $msg ""
-	if ($warpto > 0)
-		send "q q mz" & $warpto " * "
+	if ($player~warpto > 0)
+		send "q q mz" & $player~warpto " * "
 		setTextTrigger there        :adj_warp "You are already in that sector!"
-		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $warpto & " "
+		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $player~warpto & " "
 		setTextTrigger locking      :locking "Do you want to engage the TransWarp drive?"
 		setTextTrigger igd          :twarpIgd "An Interdictor Generator in this sector holds you fast!"
 		setTextTrigger noturns      :twarpPhotoned "Your ship was hit by a Photon and has been disabled"
@@ -732,8 +732,8 @@ return
 			killAllTriggers
 			send "n*zn"
 			send "l " & #8 & $planet~planet "*c"
-			setSectorParameter $warpto "FIGSEC" FALSE
-			setVar $temp " "&$warpto&" "
+			setSectorParameter $player~warpto "FIGSEC" FALSE
+			setVar $temp " "&$player~warpto&" "
 			replaceText $database $temp " "
 			subtract $database_count 1
 			goto :select_boomsec
@@ -775,7 +775,7 @@ return
 :bwarp
 
 	killAllTriggers
-	send "b" $warpto "*"
+	send "b" $player~warpto "*"
 	setTextTrigger go :go5 "TransWarp Locked"
 	setTextTrigger no :no5 "No locating beam found"
 	goSub :delayTrigger
@@ -785,7 +785,7 @@ return
 	killAllTriggers
 	send "n "
 	waitfor "Transporter shutting down."
-	setVar $FIGHTER_GRID[$warpto] 0
+	setVar $FIGHTER_GRID[$player~warpto] 0
 	goto :select_boomsec
 
 :go5

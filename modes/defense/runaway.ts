@@ -197,30 +197,30 @@ loadVar $bot~parm8
 
 :run_pwarp
 	if ($firstrun <> 0)
-		setVar $warpTo $firstrun
+		setVar $player~warpto $firstrun
 		setVar $firstrun 0
 	else
 		gosub :getNewRunAwaySector
 	end
 	if ($doEvacuate)
-		setVar $bot~parm1 $warpTo
+		setVar $bot~parm1 $player~warpto
 		goto :evac_start
 	end
-	setVar $pwarp~warpto $warpto
+	setVar $pwarp~warpto $player~warpto
 	setVar $pwarp~bot_name $switchboard~bot_name
 	gosub :pwarp~pwarp
 	gosub :player~quikstats
-	if ($player~CURRENT_SECTOR <> $warpTo)
+	if ($player~CURRENT_SECTOR <> $player~warpto)
 		goto :run_pwarp
 	end
 	setVar $runsec $player~CURRENT_SECTOR
 	goto :getsettings
 
 :getNewRunAwaySector
-	setVar $warpTo 0
-	while ($warpTo <= 0)
+	setVar $player~warpto 0
+	while ($player~warpto <= 0)
 		getRnd $random 1 $run_database_count
-		setVar $warpTo $run_database[$random]
+		setVar $player~warpto $run_database[$random]
 	end
 return
 #============================== END RUNAWAY (RUNAWAY) SUB ==============================
@@ -350,7 +350,7 @@ return
 		if ($mode = "Runaway")
 			send "qqq* "
 			gosub :getNewRunAwaySector
-			setVar $target_sector $warpTo
+			setVar $target_sector $player~warpto
 			goto :evac_move
 		end
 		send "'{" $switchboard~bot_name "} - No Fighter at Target Sector.  Shutting down Evac.*"
