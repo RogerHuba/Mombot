@@ -433,7 +433,7 @@
 
 				if ((PORT.CLASS[$player~CURRENT_SECTOR] = 3) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 4) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 5) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 7))
 					#Echo "***Stupid Attmpt**"
-					send "PT** 0* 0* "
+					send "P T ** 0* 0* "
 					
 				end
 			end
