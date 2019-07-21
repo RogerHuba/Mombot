@@ -32,10 +32,8 @@ if ($bot~parm1 = "d")
 	getText $TEMP $two "of" "messages"
 	stripText $two " "
 	waiton "elp)"
-	send "'"
-	waiton "[<ENTER> for multiple lines]"
-	send ("{" & $bot~bot_name & "} - Deleted "&$one&" of "&$two&" messages*")
-	waiton "Message sent on sub-space channel"
+	setvar $switchboard~message "Deleted "&$one&" of "&$two&" messages*"
+	gosub :switchboard~switchboard
 	:NADDA
 	killalltriggers
 	halt
