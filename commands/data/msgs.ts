@@ -10,6 +10,7 @@ gosub :BOT~loadVars
 gosub :player~quikstats
 if ($player~current_prompt <> "Command") and ($player~current_prompt <> "Citadel")
 	setvar $switchboard~message "MSGS Must be run from Command or Citadel Prompts*"
+	gosub :switchboard~switchboard
 	halt
 end
 if ($bot~parm1 = "d")
@@ -63,3 +64,4 @@ halt
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\switchboard"
