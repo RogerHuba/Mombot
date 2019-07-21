@@ -17,7 +17,7 @@ if ($bot~parm1 = "d")
 	send "c m a * q :y"
 	waiton "Delete messages?"
 	setTextLineTrigger	DELETED	:DELETED	"Deleted"
-	setTextTrigger		NADDA	:NADDA		"elp)"
+	setTextTrigger		NADDA	:NADDA		"Command [TL"
 	pause
 
 	:DELETED
