@@ -176,6 +176,12 @@ return
 		pause
 	:getCharacter
 		getOutText $character
+		if ($character = #13)
+			echo #27&"[255D"&#27&"[255B"&#27&"[K"
+			setVar $BOT~user_command_line $BOT~promptOutput
+			gosub :doAddHistory
+			goto :doneSelfCommandPrompt
+		end
 		if (($character = ">") AND ($BOT~charCount <= 0))
 			:cleargridprompt
 			loadvar $planet~planet
@@ -390,93 +396,89 @@ return
 				echo ANSI_10&#27&"[255D"&#27&"[255B"&#27&"[K"&$gridprompt
 				settexttrigger reEchogridmenu :reEchogridmenu
 				pause
-		end
-		if ($character = #13)
-			echo #27&"[255D"&#27&"[255B"&#27&"[K"
-			setVar $BOT~user_command_line $BOT~promptOutput
-			gosub :doAddHistory
-			goto :doneSelfCommandPrompt
-
 		else
 			getLength $character $characterLength
-			if ($character = #8)
-				if ($BOT~charCount <= 0)
-					setVar $BOT~charCount 0
-					setVar $BOT~charPos 0
-				else
-					if ($BOT~charPos >= $BOT~charCount)
-						setvar $frontMacro $BOT~promptOutput
-						setvar $tailMacro ""
+			if (($characterLength > 1) or ($character = #8))
+				if ($character = #8)
+					if ($BOT~charCount <= 0)
+						setVar $BOT~charCount 0
+						setVar $BOT~charPos 0
 					else
-						cuttext $BOT~promptOutput $tailMacro ($BOT~charPos+1) 9999
-						cuttext $BOT~promptOutput  $frontMacro 1 ($BOT~charPos)
+						if ($BOT~charPos >= $BOT~charCount)
+							setvar $frontMacro $BOT~promptOutput
+							setvar $tailMacro ""
+						else
+							cuttext $BOT~promptOutput $tailMacro ($BOT~charPos+1) 9999
+							cuttext $BOT~promptOutput  $frontMacro 1 ($BOT~charPos)
+						end
+						getlength $frontMacro $frontLength
+						if ($frontLength > 1)
+							cuttext $frontMacro $frontMacro 1 ($frontLength - 1)
+						else
+							setVar $frontMacro ""
+						end
+						setvar $BOT~promptOutput $frontMacro & $tailMacro
+						getlength $BOT~promptOutput $BOT~charCount
+						subtract $BOT~charPos 1
+						if ($BOT~charPos <= 0)
+							setvar $BOT~charPos 0
+						end
+						if (($BOT~charCount-$BOT~charPos) > 0)
+							echo $prompt $BOT~promptOutput #27 "[" ($BOT~charCount-($BOT~charPos)) "D"
+						else
+							echo $prompt $BOT~promptOutput
+						end
 					end
-					getlength $frontMacro $frontLength
-					if ($frontLength > 1)
-						cuttext $frontMacro $frontMacro 1 ($frontLength - 1)
-					else
-						setVar $frontMacro ""
-					end
-					setvar $BOT~promptOutput $frontMacro & $tailMacro
-					getlength $BOT~promptOutput $BOT~charCount
-					subtract $BOT~charPos 1
-					if ($BOT~charPos <= 0)
-						setvar $BOT~charPos 0
-					end
-					if (($BOT~charCount-$BOT~charPos) > 0)
-						echo $prompt $BOT~promptOutput #27 "[" ($BOT~charCount-($BOT~charPos)) "D"
-					else
-						echo $prompt $BOT~promptOutput
-					end
-				end
-			elseif (($character = #27&"[A") OR ($character = #28))
-				if ($BOT~historyCount > 0)
-					if ($BOT~historyIndex <= 0)
-						setVar $BOT~currentPromptText $BOT~promptOutput
-					end
-					add $BOT~historyIndex 1
-					if ($BOT~historyIndex > $BOT~historyMax)
-						setVar $BOT~historyIndex $BOT~historyMax
-					elseif ($BOT~historyIndex > $BOT~historyCount)
-						setVar $BOT~historyIndex $BOT~historyCount
-					end
-					getLength $BOT~history[$BOT~historyIndex] $BOT~charCount
-					setVar $BOT~charPos $BOT~charCount
-					echo $prompt $BOT~history[$BOT~historyIndex]
-					setVar $BOT~promptOutput $BOT~history[$BOT~historyIndex]
-				end
-			elseif (($character = #27&"[B") OR ($character = #29))
-				if ($BOT~historyCount > 0)
-					if ($BOT~historyIndex <= 0)
-						setVar $BOT~currentPromptText $BOT~promptOutput
-					end
-					subtract $BOT~historyIndex 1
-					if ($BOT~historyIndex < 1)
-						setVar $BOT~historyIndex 0
-						getLength $BOT~currentPromptText $BOT~charCount
-						setVar $BOT~charPos $BOT~charCount
-						echo $prompt $BOT~currentPromptText
-						setVar $BOT~promptOutput $BOT~currentPromptText
-					else
+				elseif (($character = #27&"[A") OR ($character = #28))
+					if ($BOT~historyCount > 0)
+						if ($BOT~historyIndex <= 0)
+							setVar $BOT~currentPromptText $BOT~promptOutput
+						end
+						add $BOT~historyIndex 1
+						if ($BOT~historyIndex > $BOT~historyMax)
+							setVar $BOT~historyIndex $BOT~historyMax
+						elseif ($BOT~historyIndex > $BOT~historyCount)
+							setVar $BOT~historyIndex $BOT~historyCount
+						end
 						getLength $BOT~history[$BOT~historyIndex] $BOT~charCount
 						setVar $BOT~charPos $BOT~charCount
 						echo $prompt $BOT~history[$BOT~historyIndex]
 						setVar $BOT~promptOutput $BOT~history[$BOT~historyIndex]
 					end
+				elseif (($character = #27&"[B") OR ($character = #29))
+					if ($BOT~historyCount > 0)
+						if ($BOT~historyIndex <= 0)
+							setVar $BOT~currentPromptText $BOT~promptOutput
+						end
+						subtract $BOT~historyIndex 1
+						if ($BOT~historyIndex < 1)
+							setVar $BOT~historyIndex 0
+							getLength $BOT~currentPromptText $BOT~charCount
+							setVar $BOT~charPos $BOT~charCount
+							echo $prompt $BOT~currentPromptText
+							setVar $BOT~promptOutput $BOT~currentPromptText
+						else
+							getLength $BOT~history[$BOT~historyIndex] $BOT~charCount
+							setVar $BOT~charPos $BOT~charCount
+							echo $prompt $BOT~history[$BOT~historyIndex]
+							setVar $BOT~promptOutput $BOT~history[$BOT~historyIndex]
+						end
+					end
+				elseif (($character = #27&"[D") OR ($character = #31))
+					if ($BOT~charPos > 0)
+						subtract $BOT~charPos 1
+						echo ANSI_10 $character
+					end
+				elseif ($BOT~charCount > 80)
+					#ignore
+				elseif (($character = #27&"[C") OR ($character = #30))
+					if ($BOT~charPos <= $BOT~charCount)
+						add $BOT~charPos 1
+						echo ANSI_10 $character
+					end
+				elseif (($characterLength > 1) OR ($characterLength <= 0))
+					//ignore
 				end
-			elseif (($character = #27&"[D") OR ($character = #31))
-				if ($BOT~charPos > 0)
-					subtract $BOT~charPos 1
-					echo ANSI_10 $character
-				end
-			elseif ($BOT~charCount > 80)
-				#ignore
-			elseif (($character = #27&"[C") OR ($character = #30))
-				if ($BOT~charPos <= $BOT~charCount)
-					add $BOT~charPos 1
-					echo ANSI_10 $character
-				end
-			elseif (($characterLength > 1) OR ($characterLength <= 0))
 			else
 				:treatAsUsual
 					if ($BOT~charPos >= $BOT~charCount)
