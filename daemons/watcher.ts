@@ -455,22 +455,20 @@ pause
 :checkifbotalive
 	#only bring bot back online if connected to game
 	setvar $found false
-	if (connected) 
-		listActiveScripts $scripts
-		setvar $i 1
-		while (($i <= $scripts) and ($found = false))
-			getWordPos "<><><>"&$scripts[$i] $pos "mombot"
-			if ($pos > 0)
-				if ($found = FALSE)
-					setVar $found TRUE
-				end
+	listActiveScripts $scripts
+	setvar $i 1
+	while (($i <= $scripts) and ($found = false))
+		getWordPos "<><><>"&$scripts[$i] $pos "mombot"
+		if ($pos > 0)
+			if ($found = FALSE)
+				setVar $found TRUE
 			end
-			add $i 1
 		end
-		if ($FOUND = FALSE)
-			ECHO "**"&ansi_2&"["&ansi_4&"No mombot is running, automatically booting up mombot."&ansi_2&"]**"
-			load "scripts\mombot\mombot.cts"
-		end
+		add $i 1
+	end
+	if ($FOUND = FALSE)
+		ECHO "**"&ansi_2&"["&ansi_4&"No mombot is running, automatically booting up mombot."&ansi_2&"]**"
+		load "scripts\mombot\mombot.cts"
 	end
 	setdelaytrigger		checkifbotalive       :checkifbotalive 300000
 	pause
