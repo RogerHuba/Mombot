@@ -469,14 +469,19 @@ return
 						subtract $BOT~charPos 1
 						echo ANSI_10 $character
 					end
-				elseif ($BOT~charCount > 80)
-					#ignore
 				elseif (($character = #27&"[C") OR ($character = #30))
 					if ($BOT~charPos <= $BOT~charCount)
 						add $BOT~charPos 1
 						echo ANSI_10 $character
 					end
 				else
+					striptext $character #27&"[A"
+					striptext $character #27&"[B"
+					striptext $character #27&"[C"
+					striptext $character #27&"[D"
+					striptext $character #8
+					striptext $character #13
+					getLength $character $characterLength
 					goto :treatAsUsual
 				end
 			else
@@ -491,7 +496,7 @@ return
 					end
 					setvar $BOT~promptOutput $frontMacro&$tailMacro
 					getlength $BOT~promptOutput $BOT~charCount
-					add $BOT~charPos 1
+					add $BOT~charPos $characterLength
 					if (($BOT~charCount-$BOT~charPos) > 0)
 						echo $prompt $BOT~promptOutput #27 "[" ($BOT~charCount-$BOT~charPos+1) "D"
 					else
