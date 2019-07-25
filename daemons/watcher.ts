@@ -441,7 +441,8 @@ pause
         add $i 1
     end
     if ($FOUND = FALSE)
-        ECHO "No mombot script found to reboot.*"
+        ECHO "No mombot script found to kill, so assuming default of mombot.cts*"
+        setvar $boot_this "mombot.cts"
     end
     setdelaytrigger okaynowemergency :okaynowemergency 3000
     pause
