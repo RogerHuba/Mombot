@@ -2,3 +2,5 @@
 	setVar $SWITCHBOARD~message $script_title&" starting up!*"
 	gosub :SWITCHBOARD~switchboard
 return
+
+include "source\module_includes\switchboard"
