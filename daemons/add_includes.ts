@@ -35,14 +35,12 @@ halt
 		if ($includeExists)
 			add $paths 1
 			setvar $paths[$paths] $prepath&$include
-			echo "*Adding: ["&$paths[$paths]&"]"
 		end
 		setvar $doublecheck $doublecheck&" "&$include&" "
 	end
 	if (($command_pos > 0) and ($command_pos2 <= 0))
 		add $paths 1
 		setvar $paths[$paths] $prepath&$include&"\"&$command&"\"&$include
-		echo "*Adding: ["&$paths[$paths]&"]"
 		setvar $doublecheck2 $doublecheck2&" "&$include&"~"&$command&" "		
 	end
 	#setdelaytrigger delay :done_delay 10
@@ -146,7 +144,7 @@ return
 					setvar $path_count 1 
 					setvar $switchboard_already_included false
 					while ($path_count <= $paths)
-						if ($paths[$path_count] = "\scripts\mombot\source\module_includes\bot\helpfile\bot.ts")
+						if ($paths[$path_count] = "\scripts\mombot\source\module_includes\bot\helpfile\bot")
 							setvar $switchboard_already_included true
 						end
 						add $path_count 1
@@ -154,9 +152,10 @@ return
 					setvar $path_count 1 
 					while ($path_count <= $paths)
 						if ($paths[$path_count] <> "0")
-							if (($paths[$path_count] = "\scripts\mombot\source\bot_includes\switchboard.ts") and (switchboard_already_included = true))
+							if (($paths[$path_count] = "\scripts\mombot\source\bot_includes\switchboard") and (switchboard_already_included = true))
 								//skip switchboard, already included in helpfile include
 							else
+								echo "*Adding: ["&$paths[$path_count]&"]"
 								write $script_file "include "&#34&$paths[$path_count]&#34
 							end
 						end
