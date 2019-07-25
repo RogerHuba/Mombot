@@ -3,4 +3,4 @@
 	gosub :SWITCHBOARD~switchboard
 return
 
-include "source\module_includes\switchboard"
+include "source\bot_includes\switchboard"
