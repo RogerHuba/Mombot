@@ -476,8 +476,8 @@ return
 						add $BOT~charPos 1
 						echo ANSI_10 $character
 					end
-				elseif (($characterLength > 1) OR ($characterLength <= 0))
-					//ignore
+				else
+					goto :treatAsUsual
 				end
 			else
 				:treatAsUsual
