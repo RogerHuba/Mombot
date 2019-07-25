@@ -144,9 +144,21 @@ return
 						add $k 1
 					end
 					setvar $path_count 1 
+					setvar $switchboard_already_included false
+					while ($path_count <= $paths)
+						if ($paths[$path_count] = "\scripts\mombot\source\module_includes\bot\helpfile\bot.ts")
+							setvar $switchboard_already_included true
+						end
+						add $path_count 1
+					end
+					setvar $path_count 1 
 					while ($path_count <= $paths)
 						if ($paths[$path_count] <> "0")
-							write $script_file "include "&#34&$paths[$path_count]&#34
+							if (($paths[$path_count] = "\scripts\mombot\source\bot_includes\switchboard.ts") and (switchboard_already_included = true))
+								//skip switchboard, already included in helpfile include
+							else
+								write $script_file "include "&#34&$paths[$path_count]&#34
+							end
 						end
 						add $path_count 1
 					end

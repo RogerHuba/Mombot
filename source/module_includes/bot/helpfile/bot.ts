@@ -65,4 +65,5 @@
 return
 
 include "source\module_includes\bot\displayhelp\bot"
+include "source\bot_includes\switchboard"
 
