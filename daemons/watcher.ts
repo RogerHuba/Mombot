@@ -457,6 +457,7 @@ pause
 	setvar $found false
 	if (connected) 
 		listActiveScripts $scripts
+		setvar $i 1
 		while (($i <= $scripts) and ($found = false))
 			getWordPos "<><><>"&$scripts[$i] $pos "mombot"
 			if ($pos > 0)
