@@ -134,7 +134,6 @@ return
 				end
 
 				:write_new_script_file
-					echo "*Writing new script: ["&$script_file&"]*"
 					delete $script_file
 					setvar $k 1
 					while ($script[$k] <> "0")
@@ -161,6 +160,7 @@ return
 						end
 						add $path_count 1
 					end
+					echo "*Writing new script: ["&$script_file&"]*"
 			end
 			add $j 1
 		end
