@@ -151,7 +151,7 @@ return
 					setvar $path_count 1 
 					while ($path_count <= $paths)
 						if ($paths[$path_count] <> "0")
-							if (($paths[$path_count] = "source\bot_includes\switchboard") and (switchboard_already_included = true))
+							if (($paths[$path_count] = "source\bot_includes\switchboard") and ($switchboard_already_included = true))
 								//skip switchboard, already included in helpfile include
 							else
 								echo "*Adding: ["&$paths[$path_count]&"]"
