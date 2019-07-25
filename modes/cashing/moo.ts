@@ -61,6 +61,7 @@ gosub :player~quikstats
 setvar $startturns $player~turns
 
 # try and grab fuel at this
+
 setVar $minOre 120
 if ($player~total_holds < $minOre)
 	setVar $minOre $player~total_holds
@@ -482,9 +483,7 @@ gosub :getPortReports
 gosub :filterPortsAndReport
 
 setVar $stat_targets ($sectorsOki - 1)
-if ($mode < 6)
-	waitfor "Engage!!!"
-end
+
 
 if ($player~ALIGNMENT < 1000)
 	setVar $SWITCHBOARD~message "MooXmas - You're just not good enough for this script (alignment).*"
@@ -1959,7 +1958,8 @@ return
 
 	setVar $SWITCHBOARD~message $startmsg
 	gosub :SWITCHBOARD~switchboard
-
+	waitfor "Sub-space radio"
+	waitfor "Command ["
 return
 
 

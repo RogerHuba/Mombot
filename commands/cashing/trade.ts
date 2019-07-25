@@ -41,7 +41,7 @@ gosub :BOT~loadVars
 		end
 	end
 	if ($keepEquip = 0)
-		setVar $keepEquip 5
+		#setVar $keepEquip 5
 	end
 	
 
