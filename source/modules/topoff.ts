@@ -12,11 +12,11 @@
 #============================== START TOPOFF (TOPOFF) ==============================
 :topoff
     gosub :killthetriggers
-    gosub :PLAYER~current_prompt
-    setVar $PROMPT~startingLocation $PLAYER~current_prompt
-    setVar $PROMPT~validPrompts "Citadel Command"
-    gosub :PROMPT~checkStartingPrompt
-    if ($PROMPT~startingLocation = "Citadel")
+    gosub  :player~currentPrompt
+    setVar $bot~startingLocation $PLAYER~current_prompt
+    setVar $bot~validPrompts "Citadel Command"
+    gosub :bot~checkStartingPrompt
+    if ($bot~startingLocation = "Citadel")
         send " q "
         gosub :PLANET~getPlanetInfo
         send " q "
@@ -42,7 +42,7 @@
     end
     setVar $to_drop $parm1
     gosub :do_topoff
-    if ($PROMPT~startingLocation = "Citadel")
+    if ($bot~startingLocation = "Citadel")
         gosub :PLANET~landingSub
     end
     setVar $SWITCHBOARD~message "TopOff complete Left "&$ftrs_to_leave&" fighters.*"

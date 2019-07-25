@@ -7,7 +7,7 @@
 	setVar $BOT~help[5] $BOT~tab&"         "
 	setVar $BOT~help[6] $BOT~tab&"Options: "
 	setVar $BOT~help[7] $BOT~tab&"{off} - Turns off script and sets planet and ship corporate."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Alien Hunter"
 	gosub :BOT~banner
@@ -140,7 +140,7 @@
 :validateFighterHit
 	setTextLineTrigger fig :checkFighter "Deployed Fighters Report Sector"
 	setTextLineTrigger liftsoff :pwarpConfirmed " lifts off from "
-	gosub :BOT~disconnect_triggers
+	gosub :bot~disconnecttriggers
 	pause
 
 

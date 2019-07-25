@@ -1,15 +1,6 @@
 logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-	loadVar $MAP~stardock
+										loadVar $MAP~stardock
 
 
 	setVar $BOT~help[1] $BOT~tab&"Grabs all empty ships and brings them to your sector"
@@ -22,13 +13,13 @@ logging off
 	setVar $BOT~help[8] $BOT~tab&"                        "
 	setVar $BOT~help[9] $BOT~tab&"           Can use either planet or SXX port in        "
 	setVar $BOT~help[10] $BOT~tab&"           starting sector for fuel."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Get All Ships"
 	gosub :BOT~banner
 
 
-	getWordPos $user_command_line $pos "bubble"
+	getWordPos $bot~user_command_line $pos "bubble"
 	if ($pos > 0)
 		setVar $bubble TRUE
 	else
@@ -42,7 +33,7 @@ logging off
 	if (($startingLocation <> "Citadel") AND ($startingSector <> "Planet"))
 		if ($startingLocation = "Command")
 			if ((PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = TRUE) AND (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = FALSE))
-				if ($CREDITS < 50000)
+				if ($player~credits < 50000)
 					setVar $SWITCHBOARD~message "Need at least 50,000 credits to use port as fuel source*"
 					gosub :SWITCHBOARD~switchboard
 				end
@@ -124,7 +115,7 @@ logging off
 	:gotShips
 		killtrigger getline
 		if ($startingLocation <> "Command")
-			send "l "&$PLANET~PLANET&"* c    "
+			send "l "&$planet~planet&"* c    "
 		else
 			if ($fuelInSector)
 				send " p t * * 0 * * 0 * * 0 * * "
@@ -171,9 +162,9 @@ halt
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
+include "source\bot_includes\planet\getplanetinfo\planet"

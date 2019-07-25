@@ -21,7 +21,7 @@
 	setVar $BOT~help[10] $BOT~tab&"    [CLEAR_EMPTY]                                           " 
 	setVar $BOT~help[11] $BOT~tab&"       - Will delete the empty port file                    " 
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "World Rob"
 	gosub :BOT~banner
@@ -366,10 +366,9 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"

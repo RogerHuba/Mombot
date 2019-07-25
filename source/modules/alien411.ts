@@ -25,7 +25,7 @@
 	setVar $BOT~help[2] $BOT~tab&"Will grab any alien sectors in database."
 	setVar $BOT~help[3] $BOT~tab&" "
 	setVar $BOT~help[4] $BOT~tab&"Will add alien sectors as sector parameters."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Lonestar's Alien 411"
 	gosub :BOT~banner

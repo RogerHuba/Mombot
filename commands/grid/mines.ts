@@ -1,7 +1,7 @@
 	gosub :BOT~loadVars
 
 	setVar $BOT~help[1]  $BOT~tab&"mines - place corporate armids and limpets in sector "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 # ============================== MINES (ARMID AND LIMP) SUB ==============================
 :mines
 
@@ -13,21 +13,21 @@
         gosub :SWITCHBOARD~switchboard
         halt
     end
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
     getWord $bot~user_command_line $bot~parm1 1 "NONE"
     if ($bot~parm1 = "NONE")
         setVar $bot~parm1 3
     end
-    setVar $PROMPT~validPrompts "Command Citadel"
-    gosub :PROMPT~checkStartingPrompt
-    if ($PROMPT~startingLocation = "Citadel")
+    setVar $bot~validPrompts "Command Citadel"
+    gosub :bot~checkStartingPrompt
+    if ($bot~startingLocation = "Citadel")
         send "q "
         gosub :PLANET~getPlanetInfo
         send "c "
     end
     setVar $preDeployArmids $PLAYER~ARMIDS
     setvar $preDeployLimpets $PLAYER~LIMPETS
-    if ($PROMPT~startingLocation = "Citadel")
+    if ($bot~startingLocation = "Citadel")
         send "s* "
         setVar $start_mac "q q "
         setVar $end_mac "l "&$planet~planet&"* c "
@@ -89,9 +89,9 @@
 # ============================== END MINES (ARMID AND LIMP) SUB ==============================
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\planet\getplanetinfo\planet"

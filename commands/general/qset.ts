@@ -6,7 +6,7 @@
     setVar $BOT~help[4]  $BOT~tab&"    qset {s} [amount] - sets sector cannon to amount"
     setVar $BOT~help[5]  $BOT~tab&"    qset {a} [amount] - sets atmos cannon to amount"
     setVar $BOT~help[6]  $BOT~tab&"        qset [amount] - sets both cannons to amount"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
     loadvar $game~mbbs
 
@@ -14,10 +14,10 @@
 :q
     getWord $bot~user_command_line $bot~parm1 1
     getWord $bot~user_command_line $bot~parm2 2
-    gosub :PLAYER~current_prompt
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Planet Citadel"
-    gosub :PROMPT~checkStartingPrompt
+    gosub  :player~currentPrompt
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~validPrompts "Planet Citadel"
+    gosub :bot~checkStartingPrompt
     setVar $totalDamage 0
     ## if the first param is not a number, assume they want to set only one cannon ##
     isNumber $number $bot~parm1
@@ -29,14 +29,14 @@
         setvar $cannonDamage $bot~parm1
     end
     gosub :doQsetProtections
-    if ($PROMPT~startingLocation = "Citadel")
+    if ($bot~startingLocation = "Citadel")
         send "q"
     end
     gosub :PLANET~getPlanetInfo
     if ($planet~citadel < 3)
         setvar $switchboard~message "Planet number "&$planet~planet&" does not have a quasar cannon.*"
         gosub :switchboard~switchboard
-        if (($planet~citadel > 0) AND ($PROMPT~startingLocation = "Citadel"))
+        if (($planet~citadel > 0) AND ($bot~startingLocation = "Citadel"))
             send "c "
         end
     else
@@ -50,7 +50,7 @@
             else
                 gosub :set_atmos_cannon
             end
-            if ($PROMPT~startingLocation = "Planet")
+            if ($bot~startingLocation = "Planet")
                 send "q "
             end
         end
@@ -118,10 +118,9 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\currentprompt\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\module_includes\prompt"

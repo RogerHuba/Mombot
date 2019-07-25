@@ -35,7 +35,7 @@
 	#						It's a good idea to update your deployed limp data, as the the Gridder will report
 	#						if, for example, an adjacent possibly has someone cloaked.
 	#
-	#		Notes:          Modified quikstats to change $TURNS to 68536, if $UNLIM ='s TRUE
+	#		Notes:          Modified quikstats to change $player~turns to 68536, if $UNLIM ='s TRUE
 	#                       Had to use two Arrays: $DENS and $ANOM for: Adj Warp Count, and
 	#                       Anomoly readings in adj sectors as TWX is more than a little retarded
 	#                       (SECTOR.ANOMOLY[idx] doesn't work, and SECTOR.WARPCOUNT isn't accurate)
@@ -73,7 +73,7 @@
 	setVar $BOT~help[22]  $BOT~tab&"    Doesn't require ZTM but works better"
 	setVar $BOT~help[23]  $BOT~tab&"    Works best with T-Warp to reroute"
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "LoneStar's Passive Gridder"
 	gosub :BOT~banner
@@ -114,7 +114,7 @@
 	setVar $DROP_TWENTY	0
 	setVar $FILTER_DENSITY 0
 
-	setVar $planetsInSectors SECTORS
+	setVar $planet~planetsInSectors SECTORS
 	
 	
 
@@ -127,7 +127,7 @@
 	setvar $player~save true
 
 	gosub :player~quikstats
-	if ($player~TOTAL_HOLDS <= $EQU_MIN)
+	if ($player~total_holds <= $EQU_MIN)
 		
 	end
 
@@ -334,7 +334,7 @@
 
 
 	else
-		if ($player~EQUIPMENT_HOLDS > 0)
+		if ($player~equipment_holds > 0)
 		    send "   j   y   "
 		end
 	end
@@ -429,11 +429,11 @@
 
 			if ($TRACKER)
 				gosub :Haggel_Checker
-			elseif (($player~ORE_HOLDS < $player~TOTAL_HOLDS) AND ($player~TWARP_TYPE <> "No"))
+			elseif (($player~ore_holds < $player~total_holds) AND ($player~TWARP_TYPE <> "No"))
 
 				if ((PORT.CLASS[$player~CURRENT_SECTOR] = 3) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 4) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 5) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 7))
 					#Echo "***Stupid Attmpt**"
-					send "PT** 0* 0* "
+					send "P T ** 0* 0* "
 					
 				end
 			end
@@ -443,7 +443,7 @@
 					setVar $restock 0
 				end
 
-				if (($player~ORE_HOLDS = $player~TOTAL_HOLDS) AND ($player~TWARP_TYPE <> "No"))
+				if (($player~ore_holds = $player~total_holds) AND ($player~TWARP_TYPE <> "No"))
 				
 					setVar $doRestock 0
 					if (($DROP_ARMID > 0) and ($DROP_LIMP > 0))
@@ -493,8 +493,8 @@
 			setVar $adj SECTOR.WARPS[$player~CURRENT_SECTOR][$i]
 			setVar $currentDensity SECTOR.DENSITY[$adj]
 			if ($FILTER_DENSITY = 1)
-				if ($planetsInSectors[$adj] > 0)
-					subtract $currentDensity (500 * $planetsInSectors[$adj])
+				if ($planet~planetsInSectors[$adj] > 0)
+					subtract $currentDensity (500 * $planet~planetsInSectors[$adj])
 				end
 				if ($allLimps[$adj] > 0)
 					subtract $currentDensity (2 * $allLimps[$adj])
@@ -978,7 +978,7 @@
 									end
 
 									gosub :player~quikstats
-									if ($player~TOTAL_HOLDS <> $player~ORE_HOLDS) AND ($TRACKER = 0)
+									if ($player~total_holds <> $player~ore_holds) AND ($TRACKER = 0)
 										if ($player~CREDITS < 10000)
 											Echo "**" & $TAGLINEc & " " & " Appear To Be Out of Funds for ORE purchase.**"
 										elseif (($UNLIM = FALSE) AND ($player~turns < 1))
@@ -987,7 +987,7 @@
 											Echo "**" & $TAGLINEc & " " & " Not Enough ORE to continue.**"
 										end
 										halt
-									elseif ($TRACKER) AND ($player~ORE_HOLDS < ($player~TOTAL_HOLDS - $EQU_MIN))
+									elseif ($TRACKER) AND ($player~ore_holds < ($player~total_holds - $EQU_MIN))
 										if ($player~CREDITS < 10000)
 											Echo "**" & $TAGLINEc & " " & " Appear To Be Out of Funds for ORE purchase.**"
 										elseif (($UNLIM = FALSE) AND ($player~turns < 1))
@@ -1200,9 +1200,9 @@
 		halt
 	:HelpCame
 		killAllTriggers
-		getText CURRENTLINE $Planet "Planet" "to"
-		stripText $Planet " "
-		send "L Z" & #8 & $Planet & "*  J  C  *  "
+		getText CURRENTLINE $planet~planet "Planet" "to"
+		stripText $planet~planet " "
+		send "L Z" & #8 & $planet~planet & "*  J  C  *  "
 		halt
 
 
@@ -1428,9 +1428,9 @@
 	#		- Buy Equip and no MCIC
 
 		setVar $dotrade 0
-		if (($player~ORE_HOLDS < 75) and (PORT.BUYFUEL[$player~CURRENT_SECTOR] = 0))
+		if (($player~ore_holds < 75) and (PORT.BUYFUEL[$player~CURRENT_SECTOR] = 0))
 			setVar $dotrade 1
-		elseif (($player~EQUIPMENT_HOLDS < $EQU_MIN_BUY) and (PORT.BUYEQUIP[$player~CURRENT_SECTOR] = 0))
+		elseif (($player~equipment_holds < $EQU_MIN_BUY) and (PORT.BUYEQUIP[$player~CURRENT_SECTOR] = 0))
 			setVar $dotrade 1
 		elseif ((PORT.BUYEQUIP[$player~CURRENT_SECTOR] = 1) and ($MCIC[$player~CURRENT_SECTOR] = FALSE))
 			setVar $dotrade 1
@@ -1440,8 +1440,8 @@
 		end
 	# End addition
 
-		setVar $EQU_NEED2BUY ($EQU_MIN - $player~EQUIPMENT_HOLDS)
-		setVar $ORE_NEED2BUY (($player~TOTAL_HOLDS - $EQU_MIN) - $player~ORE_HOLDS)
+		setVar $EQU_NEED2BUY ($EQU_MIN - $player~equipment_holds)
+		setVar $ORE_NEED2BUY (($player~total_holds - $EQU_MIN) - $player~ore_holds)
 		if (PORT.CLASS[$player~CURRENT_SECTOR] = 1) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 5) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 6) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 7) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 3) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 4) OR (PORT.CLASS[$player~CURRENT_SECTOR] = 2)
 			#send "CR*Q"
 			#waiton "<Computer deactivated>"
@@ -1479,9 +1479,9 @@
 			:equp
 			if ($MCIC[$player~CURRENT_SECTOR] = 0)
 				setVar $MCIC[$player~CURRENT_SECTOR] TRUE
-				if ($player~EQUIPMENT_HOLDS > $EQU_MIN)
-					#send ($player~EQUIPMENT_HOLDS - $EQU_MIN) & "**"
-					send ($player~EQUIPMENT_HOLDS - $EQU_MIN) & "*"
+				if ($player~equipment_holds > $EQU_MIN)
+					#send ($player~equipment_holds - $EQU_MIN) & "**"
+					send ($player~equipment_holds - $EQU_MIN) & "*"
 				else
 					add $MCICd 1
 					#send "5**"
@@ -1503,9 +1503,9 @@
 			killAllTriggers
 			return
 			:fuelsell
-			if ($player~ORE_HOLDS > ($player~TOTAL_HOLDS - $EQU_MIN))
-				#send $player~ORE_HOLDS - ($player~TOTAL_HOLDS - $EQU_MIN)& "**"
-				send $player~ORE_HOLDS - ($player~TOTAL_HOLDS - $EQU_MIN)& "*"
+			if ($player~ore_holds > ($player~total_holds - $EQU_MIN))
+				#send $player~ore_holds - ($player~total_holds - $EQU_MIN)& "**"
+				send $player~ore_holds - ($player~total_holds - $EQU_MIN)& "*"
 			else
 				send "0*"
 			end
@@ -1599,7 +1599,7 @@ return
 :getPersonalPlanets
 
 	# Planet list from personal planets - relies on no shields being present
-	setVar $planetsInSectors SECTORS
+	setVar $planet~planetsInSectors SECTORS
 
 	send "cyq"
 	waitfor "<Computer activated>"
@@ -1613,7 +1613,7 @@ return
 	:pread1
 		killAllTriggers
 		getWord CURRENTLINE $sector 1
-		add $planetsInSectors[$sector] 1
+		add $planet~planetsInSectors[$sector] 1
 		goto :pread
 	
 	:preadDone
@@ -1625,10 +1625,8 @@ return
 return
 
 
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-

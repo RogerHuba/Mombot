@@ -2,7 +2,7 @@
 
 	setVar $BOT~help[1]   $BOT~tab&"- dump [type] - Jettisons colos off of planet" 
 	setVar $BOT~help[2]   $BOT~tab&"     [type] = use [f]uel, [o]rg, [e]quip, or [a]ll " 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 # ======================     START COLO DUMP (DUMP) SUBROUTINE    ==========================
@@ -96,16 +96,14 @@
 		killtrigger next_group
 		send "q j y "
 		if ($coloCounting)
-			add $colosDumped $player~TOTAL_HOLDS
+			add $colosDumped $player~total_holds
 		end
 		goto :sub_land
 # ======================     END COLO DUMP (DUMP) SUBROUTINE    ==========================
 
 # includes:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\map"
-include "source\bot_includes\ship"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\module_includes\prompt"
+include "source\bot_includes\planet\getplanetinfo\planet"

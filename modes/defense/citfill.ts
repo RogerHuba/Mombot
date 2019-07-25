@@ -6,7 +6,7 @@
 	setVar $BOT~help[3]   $BOT~tab&"         attacked or deploys fighters."
 	setVar $BOT~help[4]   $BOT~tab&"         "
 	setVar $BOT~help[5]   $BOT~tab&"          citfill [on/off] {number figs to attempt per try} "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
  
@@ -109,8 +109,8 @@
 			gosub :planet~getPlanetInfo
 			send "c "
 
-			send "'{" $bot~bot_name "} - Citadel Ship Re-Filler :: Running on Planet " $planet~PLANET " :: " $planet~PLANET_FIGHTERS " Fighters available on surface.*"
-			send "'{" $bot~bot_name "} - Citadel Ship Re-Filler now active! Script will re-fig an ally in the sector over planet " & $planet~PLANET & ".*"
+			send "'{" $bot~bot_name "} - Citadel Ship Re-Filler :: Running on Planet " $planet~planet " :: " $planet~planet_FIGHTERS " Fighters available on surface.*"
+			send "'{" $bot~bot_name "} - Citadel Ship Re-Filler now active! Script will re-fig an ally in the sector over planet " & $planet~planet & ".*"
 			send "'{" $bot~bot_name "} - Citadel Ship Re-Filler will attempt to refill "&$figsToRefill&" fighters at a time.*"
 			if ($auto = true)
 				send "'{" $bot~bot_name "} - Doing auto refill every five minutes.*"
@@ -178,7 +178,7 @@ killalltriggers
 	end 
 	setVar $reloadNow "f "&$targetString&" * z"&$figsToRefill&"* "
 
-	setvar $refillstring "q t "&$reloadNow&" * l " & $planet~PLANET & "* m * * *  "
+	setvar $refillstring "q t "&$reloadNow&" * l " & $planet~planet & "* m * * *  "
 	send "q "&$refillstring&$refillstring&$refillstring&"c "
 	gosub :player~quikstats
 	goto :settriggers
@@ -190,7 +190,7 @@ killalltriggers
 		setVar $traderData $STARTLINE&$traderData
 		getText $traderData $temp $STARTLINE $ENDLINE 
 		setVar $realTraderCount 0
-		setVar $corpieCount 0
+		setVar $player~corpieCount 0
 		while ($temp <> "")
 			getLength $STARTLINE&$temp&$ENDLINE $length
 			cutText $traderData $traderData ($length+1) 9999 
@@ -233,15 +233,15 @@ killalltriggers
 				setVar $TRADERS[($realTraderCount+1)][1] $tempCorp
 				#echo "*" $traders[($realTraderCount+1)] "   " $traders[($realTraderCount+1)][1] "   " $traders[($realTraderCount+1)][2] "*"
 				add $realTraderCount 1
-				if ($tempCorp = $CORP)
-					add $corpieCount 1
+				if ($tempCorp = $player~corp)
+					add $player~corpieCount 1
 				end
 			end
 			getText $traderData $temp $STARTLINE $ENDLINE 	
 		end
 	else
 		setVar $realTraderCount 0
-		setVar $corpieCount 0
+		setVar $player~corpieCount 0
 	end
 return
 
@@ -387,7 +387,7 @@ return
 return
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"

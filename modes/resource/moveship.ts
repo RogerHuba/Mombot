@@ -12,7 +12,7 @@
 	setVar $BOT~help[9]  $BOT~tab&"                          "
 	setVar $BOT~help[10] $BOT~tab&"           Can use either planet or SXX port in        "
 	setVar $BOT~help[11] $BOT~tab&"           starting sector for fuel."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Ship Mover"
 	gosub :BOT~banner
@@ -142,7 +142,7 @@
 	gosub :SWITCHBOARD~switchboard
 	if ($back = TRUE)
 		if ($startingLocation <> "Command")
-			send "l "&$PLANET~PLANET&"* t * l 1 * t * l 2 * t * l 3 * s * l 1 * s * l 2 * s * l 3 * t * t1*m* * * q "
+			send "l "&$planet~planet&"* t * l 1 * t * l 2 * t * l 3 * s * l 1 * s * l 2 * s * l 3 * t * t1*m* * * q "
 		else
 			if ($fuelInSector)
 				send " p t * * 0 * * 0 * * 0 * * "
@@ -150,7 +150,7 @@
 		end
 		setVar $PLAYER~CURRENT_SECTOR $startSector
 		setVar $PLAYER~WARPTO $moveSector
-		gosub :tactics~twarp
+		gosub :player~twarp
 		if ($PLAYER~twarpSuccess = FALSE)
 			setVar $SWITCHBOARD~message "Can not make it to move sector, shutting down*"
 			gosub :SWITCHBOARD~switchboard
@@ -202,7 +202,7 @@
 		if ($back = TRUE)
 			gosub :PLAYER~quikstats
 			setVar $PLAYER~WARPTO $startSector
-			gosub :tactics~twarp
+			gosub :player~twarp
 			if ($PLAYER~twarpSuccess = FALSE)
 				setVar $SWITCHBOARD~message "Can not make it back home, shutting down*"
 				gosub :SWITCHBOARD~switchboard
@@ -224,7 +224,7 @@
 			if ($theShips[$i] > 0)
 				gosub :PLAYER~quikstats
 				if ($startingLocation <> "Command")
-					send "l "&$PLANET~PLANET&"* t * t1*m* * * q "
+					send "l "&$planet~planet&"* t * t1*m* * * q "
 				else
 					if ($fuelInSector)
 						send " p t * * 0 * * 0 * * 0 * * "
@@ -234,7 +234,7 @@
 					send "w n "&$theShips[$i]&"* "
 					setVar $PLAYER~CURRENT_SECTOR $startSector
 					setVar $PLAYER~WARPTO $moveSector
-					gosub :tactics~twarp
+					gosub :player~twarp
 					if ($PLAYER~twarpSuccess = FALSE)
 						setVar $SWITCHBOARD~message "Can not make it to move sector, shutting down*"
 						gosub :SWITCHBOARD~switchboard
@@ -253,7 +253,7 @@
 					end
 					setVar $PLAYER~CURRENT_SECTOR $moveSector
 					setVar $PLAYER~WARPTO $startSector
-					gosub :tactics~twarp
+					gosub :player~twarp
 					if ($PLAYER~twarpSuccess = FALSE)
 						setVar $SWITCHBOARD~message "Can not make it back home, shutting down*"
 						gosub :SWITCHBOARD~switchboard
@@ -270,7 +270,7 @@
 				else
 					setVar $PLAYER~CURRENT_SECTOR $startSector
 					setVar $PLAYER~WARPTO $moveSector
-					gosub :tactics~twarp
+					gosub :player~twarp
 					if ($PLAYER~twarpSuccess = FALSE)
 						setVar $SWITCHBOARD~message "Can not make it to move sector, shutting down*"
 						gosub :SWITCHBOARD~switchboard
@@ -284,7 +284,7 @@
 					send "w n "&$theShips[$i]&"* "
 					setVar $PLAYER~CURRENT_SECTOR $moveSector
 					setVar $PLAYER~WARPTO $startSector
-					gosub :tactics~twarp
+					gosub :player~twarp
 					if ($PLAYER~twarpSuccess = FALSE)
 						setVar $SWITCHBOARD~message "Can not make it back home, shutting down*"
 						gosub :SWITCHBOARD~switchboard
@@ -315,8 +315,7 @@
 					setVar $BOT~user_command_line " dep "&($player~credits-$starting_credits)
 				end
 				setVar $BOT~parm1 ($player~credits-$starting_credits)
-				setvar $bot~parm1 $bot~parm1
-				saveVar $BOT~parm1
+								saveVar $BOT~parm1
 				saveVar $bot~parm1
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
@@ -336,11 +335,12 @@ halt
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\module_includes\port"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"
+include "source\bot_includes\player\twarp\player"
+include "source\module_includes\port\shipsell\port"

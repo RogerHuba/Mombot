@@ -13,7 +13,7 @@ systemscript
 	setVar $BOT~help[9]  $BOT~tab&"               "
 	setVar $BOT~help[10]  $BOT~tab&"                     example: 5:30:00 PM"
 	setVar $BOT~help[11] $BOT~tab&"     The time is on your machine, not the game server"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	loadVar $bot~bot_name
@@ -119,10 +119,6 @@ halt
 return
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-

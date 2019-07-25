@@ -7,7 +7,7 @@
 		goto :menu1
 	end
 :menu2
-	getInput $corpieName "Name of corpie: "
+	getInput $player~corpieName "Name of corpie: "
 	
 :game_server_prompt
 killalltriggers
@@ -57,7 +57,7 @@ pause
 killalltriggers
 send "tc"
 :try
-#setTextTrigger transfer :transfer "Exchange with "&$corpieName
+#setTextTrigger transfer :transfer "Exchange with "&$player~corpieName
 setTextTrigger failedTransfer :failedTransfer "Your Associate must be in the same sector to conduct transfers!"
 setTextTrigger transfer2 :transferWrong "Exchange with "
 setTextTrigger transfer3 :failedTransfer "<D> Display Corporations"
@@ -70,7 +70,7 @@ pause
 	halt
 :transferWrong
 	killAllTriggers
-	getWordPos CURRENTLINE $pos "Exchange with "&$corpieName
+	getWordPos CURRENTLINE $pos "Exchange with "&$player~corpieName
 	if ($pos > 0)
 		goto :transfer
 	end

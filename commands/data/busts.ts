@@ -2,7 +2,7 @@
 
 	setVar $BOT~help[1] $BOT~tab&"busts -"
 	setVar $BOT~help[2] $BOT~tab&"    displays all busted sectors on subspace"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 setvar $switchboard~message "Scanning BUSTED SectorParameter ...*"
 gosub :switchboard~switchboard
@@ -50,9 +50,6 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"

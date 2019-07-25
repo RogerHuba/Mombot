@@ -37,7 +37,7 @@
 		setVar $BOT~help[32] $BOT~tab&"   - [clear]       = Clears internal list of avoided sectors.     " 
 		setVar $BOT~help[33] $BOT~tab&"   - [ship#:#]     = Multiple xport ship number     " 
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Ultimate Gridder"
 	gosub :BOT~banner

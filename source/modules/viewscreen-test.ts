@@ -2,7 +2,7 @@ systemscript
     gosub :BOT~loadVars
 
     setVar $BOT~help[1] $BOT~tab&"Information screen for self use only.  "
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
     setVar $BOT~script_title "Viewscreen"
     gosub :BOT~banner

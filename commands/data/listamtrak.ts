@@ -3,7 +3,7 @@ gosub :BOT~loadVars
 #HELP FILE
      setVar $BOT~help[1]  $BOT~tab&"listamtrak   "
      setVar $BOT~help[2]  $BOT~tab&"    Creates list of amtrak sectors   "
-     gosub :BOT~help_file
+     gosub :bot~helpfile
 
 setVar $SWITCHBOARD~message "Creating list of AMTRAK sectors..*"
 gosub :SWITCHBOARD~switchboard
@@ -14,16 +14,16 @@ gosub :SWITCHBOARD~switchboard
 	setVar $path_database "  "
 	setVar $perc 0
 	setVar $i 1
-	setVar $PARAM "MSLSEC"
+	setVar $bot~parmAM "MSLSEC"
 	while ($i <= SECTORS)
-		getSectorParameter $i $PARAM $isTrue
+		getSectorParameter $i $bot~parmAM $isTrue
 		if ($isTrue = TRUE)
 			setVar $j 1
 			while (SECTOR.WARPS[$i][$j] > 0)
 				setVar $test_sector SECTOR.WARPS[$i][$j]
 				getWordPos $path_database $pos " "&$test_sector&" "
 				if ($pos <= 0)
-					getSectorParameter $test_sector $PARAM $isTrue
+					getSectorParameter $test_sector $bot~parmAM $isTrue
 					if (($isTrue <> TRUE) AND ($test_sector <> $map~stardock) AND ($test_sector > 10) AND ($test_sector <> $map~rylos) AND ($test_sector <> $map~alpha_centauri))
 						setVar $path_database $path_database&$test_sector&"  "
 						setSectorParameter $test_sector "AMTRAK" TRUE
@@ -46,9 +46,6 @@ halt
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"

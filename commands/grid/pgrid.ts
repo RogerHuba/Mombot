@@ -1,7 +1,7 @@
 	gosub :BOT~loadVars
 
 	setVar $BOT~help[1]  $BOT~tab&"pgrid - planet grid into sector "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 # ======================     START PLANET GRID (PGRID) SUBROUTINE    ==========================
 :pgrid
@@ -13,10 +13,10 @@
     setVar $startingPgridSector $PLAYER~CURRENT_SECTOR
     setVar $startingShip $PLAYER~SHIP_NUMBER
     setVar $bot~validPrompts "Citadel Command"
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Command Citadel"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~validPrompts "Command Citadel"
+    gosub :bot~checkStartingPrompt
 
     if ($startingLocation = "Citadel")
         setVar $inCitadel "Q Q "
@@ -191,7 +191,7 @@
     if ($doDensityScan = TRUE)
         send "s* "
     end
-    if (($SCAN_TYPE <> "None") AND ($doDensityScan = TRUE))
+    if (($player~scan_type <> "None") AND ($doDensityScan = TRUE))
         :density_scanning
 
 		if ($validDesignatedDen = TRUE)
@@ -337,7 +337,7 @@
         add $i 1
         send "l j" & #8 & $planet~planet & "*  *  "
     end
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     if ($PLAYER~current_prompt = "Planet")
         send "m * * * c s* "
     end
@@ -345,10 +345,11 @@ return
 # ======================     END PGRID (PGRID) SUBROUTINE     ==========================
 
 # includes:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\map"
-include "source\bot_includes\ship"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\module_includes\prompt"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\player\currentprompt\player"

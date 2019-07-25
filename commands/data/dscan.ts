@@ -3,7 +3,7 @@ gosub :BOT~loadVars
 
 	setVar $BOT~help[1]  $BOT~tab&"dscan "
 	setVar $BOT~help[2]  $BOT~tab&"  Sends density scan to subspace"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 #=============================== SS SCANNING =============================================
@@ -20,14 +20,14 @@ gosub :BOT~loadVars
         if (($scan_macro = " sh") and (($PLAYER~SCAN_TYPE = "None") OR ($PLAYER~SCAN_TYPE = "Density")))
                 goto :no_scanner_available1
         end
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     setArray $scan_array 1000
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
     if ($scan_macro = "") OR ($scan_macro = 0)
         setVar $scan_macro " sd* "
     end
-    setVar $PROMPT~validPrompts "Citadel Command"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~validPrompts "Citadel Command"
+    gosub :bot~checkStartingPrompt
     if ($PLAYER~startingLocation = "Citadel")
         if ($scan_macro = "d")
             setVar $scan_macro "s"
@@ -157,7 +157,7 @@ gosub :BOT~loadVars
             if ($scan_macro = "d") OR ($scan_macro = "s")
                 send "* "
             else
-                send " l " & $PLANET~PLANET & "* c s* "
+                send " l " & $planet~planet & "* c s* "
             end
         end
         gosub :spitItOut
@@ -196,9 +196,10 @@ return
 #================================ END SS SCANNER =======================================    
 
 # includes:
-include "source\module_includes\bot"
-
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\currentprompt\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\module_includes\prompt"

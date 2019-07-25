@@ -2,9 +2,9 @@
 	killalltriggers
 	setArray $scan_array 1000
 	gosub :PLAYER~quikstats
-	setVar $PROMPT~startingLocation $PLAYER~current_prompt
-	setVar $PROMPT~validPrompts "Citadel Command"
-	gosub :PROMPT~checkStartingPrompt
+	setVar $bot~startingLocation $PLAYER~current_prompt
+	setVar $bot~validPrompts "Citadel Command"
+	gosub :bot~checkStartingPrompt
 	setVar $PLAYER~startingLocation $PLAYER~current_prompt
 	setvar $starting_ship $player~ship_number
 

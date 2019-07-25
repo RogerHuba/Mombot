@@ -8,7 +8,7 @@
 	setVar $BOT~help[5] $BOT~tab&"Options: "
 	setVar $BOT~help[6] $BOT~tab&"{delay in seconds} - seconds to delay before calling bot command again"
 	setVar $BOT~help[7] $BOT~tab&"     {bot command} - bot command to run, parameters and all"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Repeater"
 	gosub :BOT~banner
@@ -35,6 +35,6 @@
 	
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"

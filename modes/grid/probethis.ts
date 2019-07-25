@@ -9,11 +9,11 @@
 	setVar $BOT~help[3] $BOT~tab&"Will ether probe all sectors marked with param selected."
 	setVar $BOT~help[4] $BOT~tab&"Example: BUBBLE, DE, MSLSEC"
 	setVar $BOT~help[5] $BOT~tab&"      {unexplored) - only probes unexplored sectors"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	if ($bot~parm1 <> "0")
-		setVar $PARAM $bot~parm1
-		upperCase $PARAM
+		setVar $bot~parmAM $bot~parm1
+		upperCase $bot~parmAM
 	end
 	gosub :player~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
@@ -49,11 +49,11 @@
 
 	gosub :getTargets
 
-	setvar $switchboard~message "Starting up probe this!  Probing all unexplored sectors with "&$PARAM&" set.*"
+	setvar $switchboard~message "Starting up probe this!  Probing all unexplored sectors with "&$bot~parmAM&" set.*"
 	gosub :switchboard~switchboard
 
 	if ($databasecount <= 0)
-		setvar $switchboard~message "No sector parameters found for "&$PARAM&" set to a value of "&$output&" or already explored.*"
+		setvar $switchboard~message "No sector parameters found for "&$bot~parmAM&" set to a value of "&$output&" or already explored.*"
 		gosub :switchboard~switchboard
 		halt
 	end
@@ -103,7 +103,7 @@
 	while ($i <= SECTORS)
 		getWordPos $path_database $pos " "&$i&" "
 		if ($pos <= 0)
-			getSectorParameter $i $PARAM $isTrue
+			getSectorParameter $i $bot~parmAM $isTrue
 			if (($isTrue = TRUE) and (((SECTOR.EXPLORED[$i] <> "YES") and ($unexplored = true)) or ($unexplored = false)))
 				setVar $randomSectors $randomSectors&" "&$i&"  "
 				add $databasecount 1
@@ -157,7 +157,7 @@ Pause
 	HALT
 
 :sdyes
-	send "ql "&$PLANET~PLANET&"* t * l 1 * t * l 2 * t * l 3 * s * l 1 * s * l 2 * s * l 3 * t * t1*m* * * q "
+	send "ql "&$planet~planet&"* t * l 1 * t * l 2 * t * l 3 * s * l 1 * s * l 2 * s * l 3 * t * t1*m* * * q "
 	WaitFor "Command [TL"
 
 if (($map~backdoor <> 0) and ($player~ALIGNMENT < 1000))
@@ -236,10 +236,8 @@ Return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\planet\getplanetinfo\planet"

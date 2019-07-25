@@ -48,9 +48,9 @@
     setVar $SWITCHBOARD~self_command $self_command
     gosub :PLAYER~quikstats
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Command Citadel"
-    setVar $PROMPT~startingLocation $startingLocation
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~validPrompts "Command Citadel"
+    setVar $bot~startingLocation $startingLocation
+    gosub :bot~checkStartingPrompt
     if ($startingLocation = "Citadel")
         send " Q DC  "
         waitfor "Planet #"

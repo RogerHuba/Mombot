@@ -24,9 +24,9 @@ goto :Starting
 		pause
 	end
 	:continuePlock
-	send "y '{" $bot_name "} - PLOCK Launched*"
+	send "y '{" $switchboard~bot_name "} - PLOCK Launched*"
 	if ($plockKill)
-		gosub :targeting~scanit_cit_kill
+		gosub :targeting~scanitcitkill
 		halt
 	else
 		send "s* "
@@ -34,12 +34,12 @@ goto :Starting
 	end
 :plockFinished
 	send "  s*   "
-	send "'{" $bot_name "} - PLOCK Sector Cleared*"
+	send "'{" $switchboard~bot_name "} - PLOCK Sector Cleared*"
 	halt
 :manual
 	killAllTriggers
 	if ($plockKill)
-		gosub :targeting~scanit_cit_kill
+		gosub :targeting~scanitcitkill
 	else
 		send "s* "
 	end
@@ -47,64 +47,64 @@ goto :Starting
 # includes:
 
 :Starting
-loadVar $user_command_line
-loadVar $parm1
-loadVar $parm2
-loadVar $parm3
-loadVar $parm4
-loadVar $parm5
-loadVar $parm6
-loadVar $parm7
-loadVar $parm8
-loadVar $bot_name
+loadVar $bot~user_command_line
+loadVar $bot~parm1
+loadVar $bot~parm2
+loadVar $bot~parm3
+loadVar $bot~parm4
+loadVar $bot~parm5
+loadVar $bot~parm6
+loadVar $bot~parm7
+loadVar $bot~parm8
+loadVar $switchboard~bot_name
 # ======================     START PRELOCK DROP (PLOCK) SUBROUTINE    ==========================
 :start_plock
-	gosub :quikstats~quikstats
-	setVar $startingLocation $quikstats~CURRENT_PROMPT
+	gosub :player~quikstats
+	setVar $startingLocation $player~CURRENT_PROMPT
 	if ($startingLocation <> "Citadel")
-		send "'{" $bot_name "} - You must run Plocker from Citadel prompt.*"
+		send "'{" $switchboard~bot_name "} - You must run Plocker from Citadel prompt.*"
      		halt
 	end
 	send "Q"
 	gosub :planetinfo~getPlanetInfo
 	send "C "
-	getWordPos $user_command_line $pos "kill"
+	getWordPos $bot~user_command_line $pos "kill"
 	if ($pos > 0)
 		setVar $plockKill TRUE
-		setVar $targeting~PLANET $planetinfo~PLANET
-		gosub :targeting~initialize_targeting
+		setVar $targeting~PLANET $planet~planet
+		gosub :targeting~initializetargeting
 
 	else
 		setVar $plockKill FALSE
 	end
-	setVar $target_sector $parm1
+	setVar $target_sector $bot~parm1
 	isNumber $isnum $target_sector
 	if ($isnum = 1)
 		if (($target_sector > 10) and ($target_sector <= SECTORS) and ($target_sector <> STARDOCK))
 			goto :planetPrelock
 		elseif (($target_sector < 10) or ($target_sector >= SECTORS) or ($target_sector = STARDOCK))
-			send "'{" $bot_name "} - Not a Valid PLOCK Sector*"
+			send "'{" $switchboard~bot_name "} - Not a Valid PLOCK Sector*"
 			halt
 		end
 	elseif ($isnum <> 1)
-		send "'{" $bot_name "} - PLOCK Sector must be a number*"
+		send "'{" $switchboard~bot_name "} - PLOCK Sector must be a number*"
 		halt
 	end
-	isNumber $isnum $parm2
+	isNumber $isnum $bot~parm2
 	if ($isnum)
-		setvar $plock_delay $parm2
+		setvar $plock_delay $bot~parm2
 	else
-		isNumber $isnum $parm3
+		isNumber $isnum $bot~parm3
 		if ($isnum = 1)
-			setvar $plock_delay $parm3
+			setvar $plock_delay $bot~parm3
 		end
 	end
 
 :planetPrelock
 	if ($plockKill)
-		send "'{" $bot_name "} - PLOCK Ready to fire Sector: " $target_sector ", auto kill enabled.*"
+		send "'{" $switchboard~bot_name "} - PLOCK Ready to fire Sector: " $target_sector ", auto kill enabled.*"
 	else
-		send "'{" $bot_name "} - PLOCK Ready to fire Sector: " $target_sector "*"
+		send "'{" $switchboard~bot_name "} - PLOCK Ready to fire Sector: " $target_sector "*"
 	end
 	send "p " $target_sector "*"
 	setTextLineTrigger prelockNo :plockNo "You do not have any fighters in Sector " & $target_sector & "."
@@ -113,7 +113,7 @@ loadVar $bot_name
 	pause
 
 :plockNo
-	send "'{" $bot_name "} - You do not have any fighters in that Sector*"
+	send "'{" $switchboard~bot_name "} - You do not have any fighters in that Sector*"
 	halt
 
 
@@ -121,8 +121,6 @@ loadVar $bot_name
 	goto :settriggers
 
 # ======================     END PLOCK (PLOCK) SUBROUTINE     ==========================
-include "C:\__TWX_\scripts\MomBot\botIncludes\targeting.ts"
-include "C:\__TWX_\scripts\MomBot\botIncludes\quikstats.ts"
-include "C:\__TWX_\scripts\MomBot\botIncludes\shipstats.ts"
-include "C:\__TWX_\scripts\MomBot\botIncludes\planetinfo.ts"
-
+include "source\bot_includes\targeting\scanitcitkill\targeting"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\targeting\initializetargeting\targeting"

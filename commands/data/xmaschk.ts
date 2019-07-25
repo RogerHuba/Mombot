@@ -18,7 +18,7 @@
 	setVar $BOT~help[9]  $BOT~tab&"       "
 	setVar $BOT~help[10]  $BOT~tab&" "
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "XMas Check"
 	gosub :BOT~banner
@@ -234,10 +234,8 @@
 
 halt
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-

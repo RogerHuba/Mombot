@@ -1,24 +1,24 @@
 	logging off
-	loadVar $bot_name
-	loadVar $unlimitedGame
+	loadVar $switchboard~bot_name
+	loadVar $player~unlimitedGame
 	loadVar $bot_turn_limit
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
+	loadVar $bot~user_command_line
+	loadVar $bot~parm1
+	loadVar $bot~parm2
+	loadVar $bot~parm3
+	loadVar $bot~parm4
+	loadVar $bot~parm5
+	loadVar $bot~parm6
+	loadVar $bot~parm7
+	loadVar $bot~parm8
 
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	if ($isFigged = "")
-		send "'{" $bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
+		send "'{" $switchboard~bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
 		halt
 	end
 
-  	getWordPos " "&$user_command_line&" " $pos " b "
+  	getWordPos " "&$bot~user_command_line&" " $pos " b "
 	if ($pos > 0)
 		setVar $Bwarp TRUE
 	else
@@ -27,12 +27,12 @@
 
 
 :get_info
-	gosub :quikstats
-	if ($current_prompt <> "Citadel")
-		send "'{" $bot_name "} - Must must start grid check from citadel prompt.*"
+	gosub :player~quikstats
+	if ($player~current_prompt <> "Citadel")
+		send "'{" $switchboard~bot_name "} - Must must start grid check from citadel prompt.*"
 		halt
 	end
-	setVar $homesec $CURRENT_SECTOR
+	setVar $homesec $player~current_sector
 	
 
 
@@ -46,38 +46,38 @@
 
 	killAllTriggers
 	send "qm***tnt1*"
-	gosub :quikstats
-	gosub :getPlanetInfo
+	gosub :player~quikstats
+	gosub :planet~getplanetinfo
 	send "q"
 	gosub :assemble_mac
 
 :select_boomsec
-	gosub :quikstats
-	IF ($TOTAL_HOLDS > $ORE_HOLDS)
+	gosub :player~quikstats
+	IF ($player~total_holds > $player~ore_holds)
 		goto :no_ore
 	END
-	IF ($TWARP_TYPE = "No")
-		send "'{" $bot_name "} - Must have T-warp to run this script.*"
+	IF ($player~twarp_type = "No")
+		send "'{" $switchboard~bot_name "} - Must have T-warp to run this script.*"
 		HALT
 	END
 
 :getSector
 	getRnd $random 1 $database_count
-	getWord $database $warpto $random
-	IF ($warpto = 0)
+	getWord $database $player~warpto $random
+	IF ($player~warpto = 0)
 
-		send "'{" $bot_name "} - Entire Grid Checked.*"
+		send "'{" $switchboard~bot_name "} - Entire Grid Checked.*"
 		HALT
 
 	END
 
 :clearit
 	KillAllTriggers
-	setVar $temp " "&$warpto&" "
+	setVar $temp " "&$player~warpto&" "
 	replaceText $database $temp " "
 	subtract $database_count 1
-	IF (SECTOR.EXPLORED[$warpto] = "YES")
-		setVar $temp " "&$warpto&" "
+	IF (SECTOR.EXPLORED[$player~warpto] = "YES")
+		setVar $temp " "&$player~warpto&" "
 		replaceText $database $temp " "
 		subtract $database_count 1
 		goto :getSector
@@ -101,9 +101,9 @@
 :twarp
 
 	killAllTriggers
-	send "m" $warpto "*"
+	send "m" $player~warpto "*"
 	setTextTrigger there :adj_warp "You are already in that sector!"
-	setTextLineTrigger adj_warp :adj_warp "Sector  : "&$warpto
+	setTextLineTrigger adj_warp :adj_warp "Sector  : "&$player~warpto
 	setTextLineTrigger locking :locking "That Warp Lane is not adjacent"
 	pause
 
@@ -123,7 +123,7 @@
 
 :no_ore
 	killAllTriggers
-	send "'{" $bot_name "} - Planet is out of fuel.  Please refill before running again.*"
+	send "'{" $switchboard~bot_name "} - Planet is out of fuel.  Please refill before running again.*"
 	halt
 
 :twarp_adj
@@ -139,9 +139,9 @@
 :no_twarp_lock
 	killAllTriggers
 	send "n*zn"
-	send "l " & #8 & $PLANET "*c"
-	setSectorParameter $warpto "FIGSEC" FALSE
-	setVar $temp " "&$warpto&" "
+	send "l " & #8 & $planet~planet "*c"
+	setSectorParameter $player~warpto "FIGSEC" FALSE
+	setVar $temp " "&$player~warpto&" "
 	replaceText $database $temp " "
 	subtract $database_count 1
 	goto :select_boomsec
@@ -151,7 +151,7 @@
 :bwarp
 
 	killAllTriggers
-	send "b" $warpto "*"
+	send "b" $player~warpto "*"
 	setTextTrigger go :go5 "TransWarp Locked"
 	setTextTrigger no :no5 "No locating beam found"
 	setTextTrigger outta_ore :no_ore "This planet does not have enough Fuel Ore to transport you."
@@ -161,8 +161,8 @@
 	killAllTriggers
 	send "n"
 	waitfor "Transporter shutting down."
-	setSectorParameter $warpto "FIGSEC" FALSE
-	setVar $temp " "&$warpto&" "
+	setSectorParameter $player~warpto "FIGSEC" FALSE
+	setVar $temp " "&$player~warpto&" "
 	replaceText $database $temp " "
 	subtract $database_count 1
 	goto :select_boomsec
@@ -187,7 +187,7 @@
 	setVar $database ""
 
 :rnd_loop
-	send "'{" $bot_name "} - Calculating unexplored sectors..*"
+	send "'{" $switchboard~bot_name "} - Calculating unexplored sectors..*"
 	setVar $percfigs 0
 	while ($rnd_count < SECTORS)	
 		add $rnd_count 1
@@ -204,7 +204,7 @@
 			echo ANSI_15 "°" ANSI_9 " " $percfigs "%" #27 & "[1A   "
 		end	
 	end	
-	send "'{" $bot_name "} - " $database_count " sectors in current grid need exploring.  Starting now.*"
+	send "'{" $switchboard~bot_name "} - " $database_count " sectors in current grid need exploring.  Starting now.*"
 	
 	return
 
@@ -212,7 +212,7 @@
 #-=-=-=-=-=- assemble macro -=-=-=-=-=-=-=-=-
 :assemble_mac
 	setVar $mac " *  z n  s z h* "
-	setVar $mac $mac & "m" & $homesec & "*yy*  l " & #8 & $PLANET & "*  z  n  z  n  *  mnt*  tnt1**  cr*  "
+	setVar $mac $mac & "m" & $homesec & "*yy*  l " & #8 & $planet~planet & "*  z  n  z  n  *  mnt*  tnt1**  cr*  "
 	return
 
 # -=-=-=-=-=- return triggers -=-=-=-=-=-=-=-
@@ -226,11 +226,11 @@
 	return
 :igd
 	killAllTriggers
-	gosub :quikstats
-	if ($current_prompt = "Citadel")
+	gosub :player~quikstats
+	if ($player~current_prompt = "Citadel")
 		halt
 	end
-	if ($current_prompt = "Computer") or ($current_prompt = "Corporate") or ($current_prompt = "NavPoint")
+	if ($player~current_prompt = "Computer") or ($player~current_prompt = "Corporate") or ($player~current_prompt = "NavPoint")
 		send "q"
 		waitFor "Command [TL"
 	end
@@ -240,9 +240,9 @@
 :callSaveMe
 	killAllTriggers
 	send "q q q * * * * "
-	gosub :quikstats
+	gosub :player~quikstats
     	setVar $figstodeploy 1
-	setVar $savetarget $CURRENT_SECTOR
+	setVar $savetarget $player~current_sector
 	if ($savetarget < 10)
 		setVar $savetarget "0000" & $savetarget
 	elseif ($savetarget < 100)
@@ -255,7 +255,7 @@
 
 	gosub :deployfigs
 	send "'" & $savetarget & "=saveme*"
-	send "'pickup " & $CURRENT_SECTOR  & " ::*"
+	send "'pickup " & $player~current_sector  & " ::*"
 	
 
 :waitforhelp
@@ -267,7 +267,7 @@
 
     :timeout
         killalltriggers
-        send "'{" $bot_name "} - 30 seconds after save call, script halted.*"
+        send "'{" $switchboard~bot_name "} - 30 seconds after save call, script halted.*"
         goto :PauseGridder
 
     :friendlytwarp
@@ -278,8 +278,8 @@
 
     :friendlyplanet
         killalltriggers
-        getText CURRENTLINE $PLANET_SAVEME "Saveme script activated - Planet " " to "
-        send "L " & #8 & $PLANET_SAVEME & "* C 'I landed on planet " & $PLANET_SAVEME & "*"
+        getText CURRENTLINE $planet~planet_SAVEME "Saveme script activated - Planet " " to "
+        send "L " & #8 & $planet~planet_SAVEME & "* C 'I landed on planet " & $planet~planet_SAVEME & "*"
         goto :PauseGridder
 
     :towlocked
@@ -294,7 +294,7 @@
     if ($figstodeploy = 0)
         setVar $figstodeploy 1
     end
-    if (($CURRENT_SECTOR  < 11) or ($CURRENT_SECTOR  = STARDOCK))
+    if (($player~current_sector  < 11) or ($player~current_sector  = STARDOCK))
         send "'Can't deploy figs in fed*"
         return
     end
@@ -305,7 +305,7 @@
 
     :nocontrol
         killalltriggers
-        send "'{" $bot_name "} - We don't control the figs in this sector!*"
+        send "'{" $switchboard~bot_name "} - We don't control the figs in this sector!*"
         return
 
     :abletodeploy
@@ -316,15 +316,15 @@
             setVar $figstodeploy $figsavailable
         end
         if ($figsavailable = 0)
-            send "0* ZC D* '{"&$bot_name&"} - I have no figs to deploy!*"
+            send "0* ZC D* '{"&$switchboard~bot_name&"} - I have no figs to deploy!*"
         else
             send $figstodeploy & "* ZC D* '" & $figstodeploy & " figs deployed*"
         end
 return
 
 # ============================== QUICKSTATS ==============================
-:quikstats
-    	setVar $CURRENT_PROMPT 		"Undefined"
+:player~quikstats
+    	setVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt1
 	killtrigger prompt2
@@ -338,14 +338,14 @@ return
 	pause
 
 	:allPrompts
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
+		getWord CURRENTLINE $player~current_prompt 1
+		stripText $player~current_prompt #145
+		stripText $player~current_prompt #8
 		#getWord currentansiline $checkPrompt 1
 		#getWord currentline $tempPrompt 1
 		#getWordPos $checkPrompt $pos "[35m"
 		#if ($pos > 0)
-		#	setVar $CURRENT_PROMPT $tempPrompt
+		#	setVar $player~current_prompt $tempPrompt
 		#end
 		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
 		pause
@@ -381,61 +381,61 @@ return
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
+				getWord $stats $player~turns  			($current_word + 1)
 			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
+				getWord $stats $player~credits  		($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
+				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
+				getWord $stats $player~shields  		($current_word + 1)
 			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
+				getWord $stats $player~total_holds   		($current_word + 1)
 			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
+				getWord $stats $player~ore_holds    		($current_word + 1)
 			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
+				getWord $stats $player~organic_holds    	($current_word + 1)
 			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
+				getWord $stats $player~equipment_holds    	($current_word + 1)
 			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
+				getWord $stats $player~colonist_holds    	($current_word + 1)
 			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
+				getWord $stats $player~photons   		($current_word + 1)
 			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
+				getWord $stats $player~armids   		($current_word + 1)
 			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
+				getWord $stats $player~limpets   		($current_word + 1)
 			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
+				getWord $stats $player~genesis  		($current_word + 1)
 			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
+				getWord $stats $player~twarp_type  		($current_word + 1)
 			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
+				getWord $stats $player~cloaks   		($current_word + 1)
 			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
+				getWord $stats $player~beacons 		($current_word + 1)
 			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
+				getWord $stats $player~atomic  		($current_word + 1)
 			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
+				getWord $stats $player~corbo   		($current_word + 1)
 			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
+				getWord $stats $player~eprobes   		($current_word + 1)
 			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
+				getWord $stats $player~mine_disruptors   	($current_word + 1)
 			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
+				getWord $stats $player~psychic_probe  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
+				getWord $stats $player~scan_type    		($current_word + 1)
 			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
+				getWord $stats $player~alignment    		($current_word + 1)
 			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
+				getWord $stats $player~experience    		($current_word + 1)
 			elseif ($wordy = "Corp")
-				getWord $stats $CORP   			($current_word + 1)
+				getWord $stats $player~corp   			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word
@@ -502,7 +502,7 @@ return
 
 
 :landOnPlanetEnterCitadel
-	send "l " & #8 & $PLANET "* c"
+	send "l " & #8 & $planet~planet "* c"
 	waitOn "<Enter Citadel>"
 	return
 :leaveCitadelAndPlanet	
@@ -572,22 +572,22 @@ return
 	return
 
 # ==============================  START PLANET INFO SUBROUTINE  =================
-:getPlanetInfo
+:planet~getplanetinfo
 	send "*"
 	setTextLineTrigger planetInfo :planetInfo "Planet #"
 	pause
 
 	:planetinfo
-		setVar $CITADEL 0
-		setVar $SECTOR_CANNON 0
-		setVar $ATMOSPHERE_CANNON 0
-		setVar $CITADEL_CREDITS 0
-		getWord CURRENTLINE $PLANET 2
-		stripText $PLANET "#"
-#		send "'{" $bot_name "} - Looking for Planet # " & $PLANET & "*"
+		setVar $planet~CITADEL 0
+		setVar $planet~SECTOR_CANNON 0
+		setVar $planet~ATMOSPHERE_CANNON 0
+		setVar $planet~CITADEL_CREDITS 0
+		getWord CURRENTLINE $planet~planet 2
+		stripText $planet~planet "#"
+#		send "'{" $switchboard~bot_name "} - Looking for Planet # " & $planet~planet & "*"
 #		HALT
-		getWord CURRENTLINE $current_sector 5
-		stripText $current_sector ":"
+		getWord CURRENTLINE $player~current_sector 5
+		stripText $player~current_sector ":"
 		waitOn "2 Build 1   Product    Amount     Amount     Maximum"
 
         :getPlanetStuff
@@ -601,47 +601,47 @@ return
 		pause
 
         :fuelstart
-		getWord CURRENTLINE $PLANET_FUEL 6
-		getWord CURRENTLINE $PLANET_FUEL_MAX 8
-		stripText $PLANET_FUEL ","
-		stripText $PLANET_FUEL_MAX ","
+		getWord CURRENTLINE $planet~planet_FUEL 6
+		getWord CURRENTLINE $planet~planet_FUEL_MAX 8
+		stripText $planet~planet_FUEL ","
+		stripText $planet~planet_FUEL_MAX ","
 		pause
 
         :orgstart
-		getWord CURRENTLINE $PLANET_ORGANICS 5
-		getWord CURRENTLINE $PLANET_ORGANICS_MAX 7
-		stripText $PLANET_ORGANICS ","
-		stripText $PLANET_ORGANICS_MAX ","
+		getWord CURRENTLINE $planet~planet_ORGANICS 5
+		getWord CURRENTLINE $planet~planet_ORGANICS_MAX 7
+		stripText $planet~planet_ORGANICS ","
+		stripText $planet~planet_ORGANICS_MAX ","
 		pause
 
         :equipstart
-		getWord CURRENTLINE $PLANET_EQUIPMENT 5
-		getWord CURRENTLINE $PLANET_EQUIPMENT_MAX 7
-		stripText $PLANET_EQUIPMENT ","
-		stripText $PLANET_EQUIPMENT_MAX ","
+		getWord CURRENTLINE $planet~planet_EQUIPMENT 5
+		getWord CURRENTLINE $planet~planet_EQUIPMENT_MAX 7
+		stripText $planet~planet_EQUIPMENT ","
+		stripText $planet~planet_EQUIPMENT_MAX ","
 		pause
 
         :figstart
-		getWord CURRENTLINE $PLANET_FIGHTERS 5
-		getWord CURRENTLINE $PLANET_FIGHTERS_MAX 7
-		stripText $PLANET_FIGHTERS ","
-		stripText $PLANET_FIGHTERS_MAX ","
+		getWord CURRENTLINE $planet~planet_FIGHTERS 5
+		getWord CURRENTLINE $planet~planet_FIGHTERS_MAX 7
+		stripText $planet~planet_FIGHTERS ","
+		stripText $planet~planet_FIGHTERS_MAX ","
 		pause
 
         :citadelstart
-		getWord CURRENTLINE $CITADEL 5
-		getWord CURRENTLINE $CITADEL_CREDITS 9
-		striptext $CITADEL_CREDITS ","
+		getWord CURRENTLINE $planet~CITADEL 5
+		getWord CURRENTLINE $planet~CITADEL_CREDITS 9
+		striptext $planet~CITADEL_CREDITS ","
 		pause
 
 	:cannonstart
-		getWord CURRENTLINE $ATMOSPHERE_CANNON 5
-		getWord CURRENTLINE $SECTOR_CANNON 6
-		stripText $SECTOR_CANNON "SectLvl="
-		striptext $SECTOR_CANNON "%"
-		stripText $ATMOSPHERE_CANNON "AtmosLvl="
-		striptext $ATMOSPHERE_CANNON "%"
-		striptext $ATMOSPHERE_CANNON ","
+		getWord CURRENTLINE $planet~ATMOSPHERE_CANNON 5
+		getWord CURRENTLINE $planet~SECTOR_CANNON 6
+		stripText $planet~SECTOR_CANNON "SectLvl="
+		striptext $planet~SECTOR_CANNON "%"
+		stripText $planet~ATMOSPHERE_CANNON "AtmosLvl="
+		striptext $planet~ATMOSPHERE_CANNON "%"
+		striptext $planet~ATMOSPHERE_CANNON ","
 		pause
 	:planetInfoDone
 		killtrigger citadelstart
@@ -649,3 +649,5 @@ return
 
 return
 # ==============================  END PLANET INFO SUBROUTINE  =================
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"

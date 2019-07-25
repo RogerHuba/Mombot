@@ -16,7 +16,7 @@
 	setVar $BOT~help[13] $BOT~tab&"       >avoids set 45"
 	setVar $BOT~help[14] $BOT~tab&"       >avoids clear 45"
 	setVar $BOT~help[15] $BOT~tab&"       >avoids clear"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	setVar $AVOIDS		" "
@@ -134,6 +134,7 @@
 		halt
 
 
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"

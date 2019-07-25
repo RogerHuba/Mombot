@@ -1,41 +1,20 @@
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	setVar $BOT~help[1]  $BOT~tab&"  Upgrades all ports until money or ports run out "
 	setVar $BOT~help[2]  $BOT~tab&"       "
 	setVar $BOT~help[3]  $BOT~tab&"  upgradethis [port type/sector param] "
 	setVar $BOT~help[4]  $BOT~tab&"       "
 	setVar $BOT~help[5]  $BOT~tab&"        "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Pay At The Pump"
 	gosub :BOT~banner
 
 
    
-   setVar $bot_name $SWITCHBOARD~bot_name
-
-   
-   
-   
-   
-   
-   
-   
-   
-                    
-
-
+   setVar $switchboard~bot_name $SWITCHBOARD~bot_name
 
 	
 	gosub :PLAYER~quikstats
@@ -49,18 +28,18 @@
 	waitOn "Planet command (?"
 	gosub :PLANET~getPlanetInfo
 	send "c"
-	if ($PLANET~CITADEL < 4)
+	if ($planet~CITADEL < 4)
 		setVar $SWITCHBOARD~message "You must run upgradethis from at least a level 4 planet.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	if (($PLANET~citadel_credits + $PLAYER~CREDITS) < 10000000)
+	if (($planet~CITADEL_CREDITS + $PLAYER~CREDITS) < 10000000)
 		setVar $SWITCHBOARD~message "You must have at least 10 million credits in the citadel or on hand for upgradethis.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	lowerCase $parm1
-	setVar $port $parm1
+	lowerCase $bot~parm1
+	setVar $port $bot~parm1
 
 
 	setVar $startingSector $PLAYER~CURRENT_SECTOR
@@ -79,7 +58,7 @@
 		gosub :SWITCHBOARD~switchboard
 	end
 	setVar $isDone FALSE
-	setVar $turnsTooLow FALSE
+	setVar $player~turnsTooLow FALSE
 	:inac
 	killalltriggers
 	while ($isDone <> TRUE)
@@ -148,7 +127,7 @@
 					send "c"
 					setVar $total_creds_needed (1400*8000)
 					if ($total_creds_needed > $PLAYER~CREDITS)
-						setVar $cashonhand $PLANET~citadel_credits
+						setVar $cashonhand $planet~CITADEL_CREDITS
 						add $cashonhand $PLAYER~CREDITS
 						if ($cashonhand > $total_creds_needed)
 						        send "T T " & $PLAYER~CREDITS & "* "
@@ -165,7 +144,7 @@
 					goto :donePATP
 				end
 			end
-			if (($PLAYER~CREDITS + $PLANET~citadel_credits) < 10000000)
+			if (($PLAYER~CREDITS + $planet~CITADEL_CREDITS) < 10000000)
 				setVar $isDone TRUE
 			end
 			:tryAgain
@@ -180,7 +159,7 @@
 	halt
 
 :getFuelCash
-	send "l " $PLANET~planet "*   c t f"&$total_creds_needed&"*qq"
+	send "l " $planet~planet "*   c t f"&$total_creds_needed&"*qq"
 	gosub :PLAYER~quikstats
 return
 
@@ -193,10 +172,9 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\planet\getplanetinfo\planet"

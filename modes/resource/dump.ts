@@ -2,16 +2,7 @@
 	reqRecording
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-	setVar $BOT~command "dump"
+										setVar $BOT~command "dump"
 	loadVar $BOT~bot_turn_limit
 
 	setVar $BOT~help[1]  $BOT~tab&"Dump resources from planet quickly and jettisons them  "
@@ -26,7 +17,7 @@
 	setVar $BOT~help[10] $BOT~tab&"           {ec}   - Strip equipment colonists"
 	setVar $BOT~help[11] $BOT~tab&"          {fig}   - Strip fighters"
 	setVar $BOT~help[12] $BOT~tab&"          {turbo} - Does in a macro burst"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	gosub :PLAYER~quikstats
@@ -41,67 +32,67 @@
 	end
 	if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
 		gosub :PLANET~getPlanetInfo
-		setVar $startingPlanet $PLANET~PLANET
+		setVar $startingPlanet $planet~planet
 		send "q "
 	end
 	
-	isNumber $test $parm1
-	if (($test = FALSE) AND ($parm1 <> "all"))
+	isNumber $test $bot~parm1
+	if (($test = FALSE) AND ($bot~parm1 <> "all"))
 		setVar $SWITCHBOARD~message "Invalid planet. Please enter a planet number or 'all'.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	getWordPos " "&$user_command_line&" " $pos " f "
+	getWordPos " "&$bot~user_command_line&" " $pos " f "
 	if ($pos > 0)
 		setVar $emptyFuel TRUE
 	else
 		setVar $emptyFuel FALSE
 	end
-	getWordPos " "&$user_command_line&" " $pos " o "
+	getWordPos " "&$bot~user_command_line&" " $pos " o "
 	if ($pos > 0)
 		setVar $emptyOrganics TRUE
 	else
 		setVar $emptyOrganics FALSE
 	end
-	getWordPos " "&$user_command_line&" " $pos " e "
+	getWordPos " "&$bot~user_command_line&" " $pos " e "
 	if ($pos > 0)
 		setVar $emptyEquipment TRUE
 	else
 		setVar $emptyEquipment FALSE
 	end
 	
-	getWordPos " "&$user_command_line&" " $pos " c1 "
+	getWordPos " "&$bot~user_command_line&" " $pos " c1 "
 	if ($pos > 0)
 		setVar $emptyFuelColonists TRUE
 	end
-	getWordPos " "&$user_command_line&" " $pos " c2 "
+	getWordPos " "&$bot~user_command_line&" " $pos " c2 "
 	if ($pos > 0)
 		setVar $emptyOrganicColonists TRUE
 	end
-	getWordPos " "&$user_command_line&" " $pos " c3 "
+	getWordPos " "&$bot~user_command_line&" " $pos " c3 "
 	if ($pos > 0)
 		setVar $emptyEquipmentColonists TRUE
 	end
-	getWordPos " "&$user_command_line&" " $pos " fc "
+	getWordPos " "&$bot~user_command_line&" " $pos " fc "
 	if ($pos > 0)
 		setVar $emptyFuelColonists TRUE
 	end
-	getWordPos " "&$user_command_line&" " $pos " oc "
+	getWordPos " "&$bot~user_command_line&" " $pos " oc "
 	if ($pos > 0)
 		setVar $emptyOrganicColonists TRUE
 	end
-	getWordPos " "&$user_command_line&" " $pos " ec "
+	getWordPos " "&$bot~user_command_line&" " $pos " ec "
 	if ($pos > 0)
 		setVar $emptyEquipmentColonists TRUE
 	end
-	getWordPos " "&$user_command_line&" " $pos " turbo "
+	getWordPos " "&$bot~user_command_line&" " $pos " turbo "
 	if ($pos > 0)
 		setVar $turbo TRUE
 	else
 		setVar $turbo FALSE
 	end
 
-	getWordPos " "&$user_command_line&" " $pos " silent "
+	getWordPos " "&$bot~user_command_line&" " $pos " silent "
 	if ($pos > 0)
 		setVar $SWITCHBOARD~self_command TRUE
 	end
@@ -109,7 +100,7 @@
 	send "jy* * "
     gosub :PLAYER~quikstats
 
-    setVar $total_holds $PLAYER~TOTAL_HOLDS
+    setVar $player~total_holds $player~total_holds
 
 	if (SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR] <= 0)
 		setVar $SWITCHBOARD~message "This script must be run with at least one planets in the sector*"
@@ -125,9 +116,9 @@
 	gosub :countPlanets
 
 :startUpMessage
-	if ($parm1 <> "all")
-		setVar $planetCount 1
-		setVar $planets[1] $parm1
+	if ($bot~parm1 <> "all")
+		setVar $planet~planetCount 1
+		setVar $planet~planets[1] $bot~parm1
 	end
 	setVar $SWITCHBOARD~message "Planet Dumper Powering Up!*"
 	gosub :SWITCHBOARD~switchboard
@@ -139,49 +130,49 @@
 	setVar $countEquipment 0
 	setVar $countColonists 0
 
-	while ($i <= $planetCount)
+	while ($i <= $planet~planetCount)
 			gosub :PLAYER~quikstats
-			send "l "&$planets[$i]&"*   "
+			send "l "&$planet~planets[$i]&"*   "
 			gosub :PLANET~getPlanetInfo
 			send " q "
 
 			if ($emptyFuel)
-				setVar $amount_to_strip $PLANET~PLANET_FUEL
+				setVar $amount_to_strip $planet~planet_FUEL
 				setVar $category 1
 				setVar $type "t"
 				gosub :stripCategory
 				add $countFuel $count
 			end
 			if ($emptyOrganics)
-				setVar $amount_to_strip $PLANET~PLANET_ORGANICS
+				setVar $amount_to_strip $planet~planet_ORGANICS
 				setVar $category 2
 				setVar $type "t"
 				gosub :stripCategory
 				add $countOrganics $count
 			end
 			if ($emptyEquipment)
-				setVar $amount_to_strip $PLANET~PLANET_EQUIPMENT
+				setVar $amount_to_strip $planet~planet_EQUIPMENT
 				setVar $category 3
 				setVar $type "t"
 				gosub :stripCategory
 				add $countEquipment $count
 			end
 			if ($emptyFuelColonists)
-				setVar $amount_to_strip $PLANET~PLANET_FUEL_COLONISTS
+				setVar $amount_to_strip $planet~planet_FUEL_COLONISTS
 				setVar $category 1
 				setVar $type "s"
 				gosub :stripCategory
 				add $countColonists $count
 			end
 			if ($emptyOrganicColonists)
-				setVar $amount_to_strip $PLANET~PLANET_ORGANICS_COLONISTS
+				setVar $amount_to_strip $planet~planet_ORGANICS_COLONISTS
 				setVar $category 2
 				setVar $type "s"
 				gosub :stripCategory
 				add $countColonists $count
 			end
 			if ($emptyEquipmentColonists)
-				setVar $amount_to_strip $PLANET~PLANET_EQUIPMENT_COLONISTS
+				setVar $amount_to_strip $planet~planet_EQUIPMENT_COLONISTS
 				setVar $category 3
 				setVar $type "s"
 				gosub :stripCategory
@@ -224,13 +215,13 @@
 		if ($PLAYER~TURNS <= $BOT~bot_turn_limit)
 			goto :lookUpPlanetStats2
 		end
-		if (($PLAYER~total_holds > $amount_to_strip) AND ($amount_to_strip > 0))
+		if (($player~total_holds > $amount_to_strip) AND ($amount_to_strip > 0))
 			setVar $get $amount_to_strip
 		else
 			if ($amount_to_strip <= 0)
 				setVar $get 0
 			else
-				setVar $get $PLAYER~total_holds
+				setVar $get $player~total_holds
 			end
 		end
 		add $count $get
@@ -238,7 +229,7 @@
 		if ($get <= 0)
 			goto :done
 		end
-		setVar $macro "l j"&#8&$planets[$i]&"* j"&$type&"* jt"&$category&$get&"* x q jy"
+		setVar $macro "l j"&#8&$planet~planets[$i]&"* j"&$type&"* jt"&$category&$get&"* x q jy"
 
 		
 
@@ -272,7 +263,7 @@ return
 
 :countPlanets
 
-	setVar $planetCount 0
+	setVar $planet~planetCount 0
 	killalltriggers
 	setTextLineTrigger planetGrabber :planetline "   <"
 	setTextLineTrigger beDone :done "Land on which planet "
@@ -286,8 +277,8 @@ return
 			replacetext $line "<" " "
 			replacetext $line ">" " "
 			striptext $line ","
-			add $planetCount 1
-			getWord $line $planets[$planetCount] 1
+			add $planet~planetCount 1
+			getWord $line $planet~planets[$planet~planetCount] 1
 		end
 		setTextLineTrigger getLine2 :planetline "   <"
 		setTextLineTrigger getEnd :done "Land on which planet "
@@ -367,9 +358,8 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-
-
+include "source\bot_includes\planet\getplanetinfo\planet"

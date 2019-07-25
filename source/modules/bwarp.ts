@@ -16,7 +16,7 @@
 :b
     gosub :killthetriggers
     if ($parm1 <> $PLAYER~CURRENT_SECTOR)
-        gosub :PLAYER~current_prompt
+        gosub  :player~currentPrompt
     else
         gosub :PLAYER~quikstats
     end
@@ -84,7 +84,7 @@ return
 
 :checkStartingPrompt
     if ($PLAYER~CURRENT_PROMPT = "0")
-        gosub :PLAYER~current_prompt
+        gosub  :player~currentPrompt
     end
     getWordPos " "&$validPrompts&" " $pos $PLAYER~CURRENT_PROMPT
     if ($pos <= 0)

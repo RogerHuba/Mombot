@@ -11,7 +11,7 @@
 	setVar $BOT~help[8] $BOT~tab&"   {docim}       Does cim before starting route"
 	setVar $BOT~help[9] $BOT~tab&"   {upgradefuel} Upgrades fuel ports selling fuel"
 	setVar $BOT~help[10] $BOT~tab&"   {nohaggle}    Doesn't haggle when buying product to keep from gaining exp"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Traveling Salesman"
 	gosub :BOT~banner

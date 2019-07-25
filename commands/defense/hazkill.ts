@@ -3,7 +3,7 @@
 	setVar $BOT~help[1] $BOT~tab&"HAZKILL - Remove NavHaz Command"
 	setVar $BOT~help[2] $BOT~tab&"          Scans Current-Sector and launches Genesis Torpedos"
 	setVar $BOT~help[3] $BOT~tab&"          to removes any NavHaz"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 
@@ -83,10 +83,8 @@ halt
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\planet\getplanetinfo\planet"

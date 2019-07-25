@@ -1,21 +1,12 @@
 logging off
 	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 setVar $BOT~help[1] $BOT~tab&"Uses ecolo {all}"
 setVar $BOT~help[2] $BOT~tab&"Uses E-warp to colonize.  For red or non-twarp ships."
 setVar $BOT~help[3] $BOT~tab&"   Options:"
 setVar $BOT~help[4] $BOT~tab&"   Will attempt to fill all planets in sector owned by you."
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "E-Colonizer"
 gosub :BOT~banner
@@ -25,7 +16,7 @@ gosub :BOT~banner
 goto :Start_Up_Routines
 :colo_next
 	setVar $PLAYER~destination 1
-	gosub :tactics~getCourse
+	gosub :player~getCourse
     setVar $j 2
     setVar $result "q * "
     while ($j <= $PLAYER~courseLength)
@@ -41,7 +32,7 @@ goto :Start_Up_Routines
 
     setVar $PLAYER~starting_point 1
 	setVar $PLAYER~destination $PLAYER~CURRENT_SECTOR
-	gosub :tactics~getCourse
+	gosub :player~getCourse
     setVar $j 2
     setVar $result ""
     while ($j <= $PLAYER~courseLength)
@@ -56,14 +47,14 @@ goto :Start_Up_Routines
     setVar $from_mow $result
 
 	setVar $i 1
-	while ($i <= $PLANET~planetCount)
+	while ($i <= $planet~planetCount)
 		setVar $colo_prod 1
 		while ($colo_prod < 4)
-			setVar $PLANET~planet $PLANET~planets[$i]
+			setVar $planet~planet $planet~planets[$i]
 			if ($PLAYER~PLANET_SCANNER = "No")
-				setVar $coloBurst $to_mow&"    l * * "&$from_mow&" l "&$PLANET~planet&"* s * * "&$colo_prod&"*"
+				setVar $coloBurst $to_mow&"    l * * "&$from_mow&" l "&$planet~planet&"* s * * "&$colo_prod&"*"
 			else
-				setVar $coloBurst $to_mow&"    l 1* * * "&$from_mow&" l "&$PLANET~planet&"* s * * "&$colo_prod&"*"
+				setVar $coloBurst $to_mow&"    l 1* * * "&$from_mow&" l "&$planet~planet&"* s * * "&$colo_prod&"*"
 			end
 			send $coloBurst
 			setTextLineTrigger 33 :morespeed "The Colonists disembark"
@@ -74,7 +65,7 @@ goto :Start_Up_Routines
 			:donespeed
 				killtrigger 33
 				killtrigger 34
-				send "'{" $bot_name "} - Terra is empty. Colonizer shutting down.*"
+				send "'{" $switchboard~bot_name "} - Terra is empty. Colonizer shutting down.*"
 				if ($startingLocation = "Citadel")
 					send "c "
 				end
@@ -85,7 +76,7 @@ goto :Start_Up_Routines
 				#CHANGE ITEM TO NEXT
 				add $colo_prod 1
 				if ($colo_prod >= 4)
-					send "'{" $bot_name "} - Planet "&$PLANET~planet&" is full of colonists, no more can be added.*"
+					send "'{" $switchboard~bot_name "} - Planet "&$planet~planet&" is full of colonists, no more can be added.*"
 				end
 			:morespeed
 				killtrigger 33
@@ -98,18 +89,18 @@ goto :Start_Up_Routines
 halt
 
 :Start_Up_Routines
-	loadVar $unlimitedGame
+	loadVar $player~unlimitedGame
 	loadVar $bot_turn_limit
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
-	loadVar $bot_name
+	loadVar $bot~user_command_line
+	loadVar $bot~parm1
+	loadVar $bot~parm2
+	loadVar $bot~parm3
+	loadVar $bot~parm4
+	loadVar $bot~parm5
+	loadVar $bot~parm6
+	loadVar $bot~parm7
+	loadVar $bot~parm8
+	loadVar $switchboard~bot_name
 
 
 # ======================     START COLO  (COLO) SUBROUTINE    ==========================
@@ -117,7 +108,7 @@ halt
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if (($startingLocation <> "Citadel") AND ($startingLocation <> "Planet"))
-		send "'{" $bot_name "} - Colo must be run from Planet or Citadel prompt*"
+		send "'{" $switchboard~bot_name "} - Colo must be run from Planet or Citadel prompt*"
 		halt
 	end
 	if ($startingLocation = "Citadel")
@@ -126,22 +117,23 @@ halt
 	gosub :PLANET~getPlanetInfo
 	send " t n l 1* t n l 2* t n l 3* s n l 1* s n l 2* s n l 3* q c u y q "
 
-	if ($parm1 = "all")
+	if ($bot~parm1 = "all")
 		gosub :PLANET~countPlanets
 	else
-		setVar $PLANET~planets[1] $PLANET~PLANET
-		setVar $PLANET~planetCount 1
+		setVar $planet~planets[1] $planet~planet
+		setVar $planet~planetCount 1
 	end
 	gosub :PLAYER~getInfo
 	gosub :SHIP~getShipStats
 	goto :colo_next
 
 	#INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\getcourse\player"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\countplanets\planet"
+include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\ship\getshipstats\ship"

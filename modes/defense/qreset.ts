@@ -1,22 +1,13 @@
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	setVar $BOT~help[1] $BOT~tab&"qreset [planet1] [damage1] ... [planetx] [damagex] "
 	setVar $BOT~help[2] $BOT~tab&"  - Sets sector and atmos cannons for planets listed"
 	setVar $BOT~help[3] $BOT~tab&"   "
 	setVar $BOT~help[4] $BOT~tab&"qreset [damage]"
 	setVar $BOT~help[5] $BOT~tab&"  - Sets sector and atmos cannon for current planet"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Cannon Resetter"
 	gosub :BOT~banner
@@ -43,12 +34,12 @@
 	setVar $temp ""
 	while ($temp <> 0)
 		add $j 1
-		getWord $user_command_line $temp $j
+		getWord $bot~user_command_line $temp $j
 		if ($temp <> 0)
 			add $cannonPlanetCount 1
 			setVar $cannonPlanet[$cannonPlanetCount] $temp
 			add $j 1
-			getWord $user_command_line $temp $j
+			getWord $bot~user_command_line $temp $j
 			setVar $cannonAmount[$cannonPlanetCount] $temp
 		end
 	end
@@ -62,7 +53,7 @@
 		setVar $onePlanet TRUE
 		setVar $cannon_amount $cannonPlanet[1]
 		setvar $cannon_total $cannonPlanet[1]
-		setVar $planetMemory $PLANET~PLANET
+		setVar $planet~planetMemory $planet~planet
 		if ($startingLocation = "Command")
 			setVar $SWITCHBOARD~message "Must be run from citadel if only one planet.*"
 			gosub :SWITCHBOARD~switchboard
@@ -78,12 +69,12 @@
 		setvar $cannon_total $cannonPlanet[1]
 		send "q "
 		gosub :setTheCannon
-		setvar $planetMemory $planet~planet
+		setvar $planet~planetMemory $planet~planet
 	else
 		setvar $cannon_amount 0
 		setvar $cannon_total 0
 		send "q q * "
-		setVar $planetMemory ""
+		setVar $planet~planetMemory ""
 		setVar $i 1
 		while ($i <= $cannonPlanetCount)
 			add $cannon_total $cannonAmount[$i]
@@ -96,11 +87,11 @@
 		end
 		setVar $i 1
 		while ($i <= $cannonPlanetCount)
-			getWordPos $planetMemory $pos " "&$cannonPlanet[$i]&" "
+			getWordPos $planet~planetMemory $pos " "&$cannonPlanet[$i]&" "
 			if ($pos > 0)
 				
 			else
-				setVar $planetMemory $planetMemory&" "&$cannonPlanet[$i]&" "
+				setVar $planet~planetMemory $planet~planetMemory&" "&$cannonPlanet[$i]&" "
 				send "l "&$cannonPlanet[$i]&"* * "
 				setTextLineTrigger 	wrongPlanet2 		:badPlanet2 	"That planet is not in this sector."
 				setTextLineTrigger 	badPlanet2 		:badPlanet2 	"Invalid registry number, landing aborted."
@@ -129,7 +120,7 @@
 	end
 
 	gosub :PLAYER~quikstats
-	setVar $SWITCHBOARD~message "Quasar Cannon reset mode enabled.  Planet number(s) ["&$planetMemory&"] are set for a total of "&$totalDamage&". *"
+	setVar $SWITCHBOARD~message "Quasar Cannon reset mode enabled.  Planet number(s) ["&$planet~planetMemory&"] are set for a total of "&$totalDamage&". *"
 	gosub :SWITCHBOARD~switchboard
 	setvar $switchboard~message "Atmos cannons attempted to be set to "&$cannon_total&".*"
 	gosub :SWITCHBOARD~switchboard
@@ -144,25 +135,25 @@
 
     ## Set sector cannons ##
 
-            setVar $percentToSet (((3*$cannon_amount)*100)/$PLANET~PLANET_FUEL)
-            if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $cannon_amount)
+            setVar $percentToSet (((3*$cannon_amount)*100)/$planet~planet_FUEL)
+            if (((($planet~planet_FUEL * $percentToSet) / 100)/3) < $cannon_amount)
                 add $percentToSet 1
             end
             if ($percentToSet > 100)
                 setVar $percentToSet 100
             end
-            add $totalDamage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3)
+            add $totalDamage ((($planet~planet_FUEL * $percentToSet) / 100)/3)
             send "c l s "&$percentToSet&"* "
 
     ## Then set atmos cannons ##
             if ($game~mbbs)
-                setVar $percentToSet ((($cannon_total/2)*100)/$PLANET~PLANET_FUEL)
-                if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)*2) < $cannon_total)
+                setVar $percentToSet ((($cannon_total/2)*100)/$planet~planet_FUEL)
+                if (((($planet~planet_FUEL * $percentToSet) / 100)*2) < $cannon_total)
                     add $percentToSet 1
                 end
             else
-                setVar $percentToSet (((2*$cannon_total)*100)/$PLANET~PLANET_FUEL)
-                if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/2) < $cannon_total)
+                setVar $percentToSet (((2*$cannon_total)*100)/$planet~planet_FUEL)
+                if (((($planet~planet_FUEL * $percentToSet) / 100)/2) < $cannon_total)
                     add $percentToSet 1
                 end
             end
@@ -170,9 +161,9 @@
                 setVar $percentToSet 100
             end
             if ($game~mbbs)
-                setvar $totalAtmosDamage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)*2)
+                setvar $totalAtmosDamage ((($planet~planet_FUEL * $percentToSet) / 100)*2)
             else
-                setvar $totalAtmosDamage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)/2)             
+                setvar $totalAtmosDamage ((($planet~planet_FUEL * $percentToSet) / 100)/2)             
             end
             send "l a "&$percentToSet&"* "
 return
@@ -201,11 +192,9 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
-
+include "source\bot_includes\planet\getplanetinfo\planet"

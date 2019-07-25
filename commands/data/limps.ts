@@ -4,7 +4,7 @@
 
 	setVar $BOT~help[1] $BOT~tab&"Refreshes Deployed Limpet List"
 	setVar $BOT~help[2] $BOT~tab&"  - Will show difference since last command was run."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Limpet Report"
 	gosub :BOT~banner
@@ -15,7 +15,7 @@
 # ============================== START REFRESH LIMPETS (LIMPS) ==============================
 :limps
 	
-	gosub :PLAYER~current_prompt
+	gosub  :player~currentPrompt
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation = "Command")
 	        goto :start_limps
@@ -51,7 +51,7 @@
 	end
 
 
-	setVar $limpetsGridded TRUE
+	setVar $player~limpetsGridded TRUE
 	if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
 		gosub :PLANET~landingsub
 	end
@@ -97,7 +97,7 @@ halt
 		pause
 	:corpCountLimps
 		add $count 1
-		add $corpCount 1
+		add $player~corpCount 1
 		getWord CURRENTLINE $sector 1
 		getWord CURRENTLINE $numMines 2
 		while ($i <= $sector)
@@ -168,9 +168,12 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\currentprompt\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-
-
+include "source\bot_includes\player\turnoffansi\player"
+include "source\bot_includes\player\turnonansi\player"
+include "source\bot_includes\planet\landingsub\planet"

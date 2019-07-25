@@ -9,15 +9,6 @@
 	loadVar $avoidedSectorsUgrid
 	loadVar $player~unlimitedGame
 	loadVar $bot~bot_turn_limit
-	loadVar $bot~user_command_line
-	loadVar $bot~parm1
-	loadVar $bot~parm2
-	loadVar $bot~parm3
-	loadVar $bot~parm4
-	loadVar $bot~parm5
-	loadVar $bot~parm6
-	loadVar $bot~parm7
-	loadVar $bot~parm8
 	loadVar $map~stardock
 	loadVar $map~home_sector
 	loadVar $map~backdoor
@@ -77,7 +68,7 @@
 	setVar $BOT~help[32] $BOT~tab&"   - [clear]       = Clears internal list of avoided sectors.      "
 	setVar $BOT~help[33] $BOT~tab&"   - [ship2:#]     = Second xport ship number     "
 	setVar $BOT~help[34] $BOT~tab&"   - [orphan]      = targets only orphan sectors   "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	getWord $bot~user_command_line $bot~parm1 1 "EMPTY"
 	if (($bot~parm1 = "auto") OR ($bot~parm1 = "EMPTY"))
@@ -202,38 +193,46 @@
 	
 
 if (($map~stardock = 0) OR ($map~stardock = ""))
-		send "'{" $bot~bot_name "} - Stardock is not defined.  Please define stardock variable in the bot.*"
+		setvar $switchboard~message "Stardock is not defined.  Please define stardock variable in the bot.*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($isFigged = "")
-		send "'{" $bot~bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
+		setvar $switchboard~message "It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($isArmided = "")
-		send "'{" $bot~bot_name "} - It appears no armid data is available.  Run an armid grid checker that uses the sector parameter MINESEC. (Try armids command)*"
+		setvar $switchboard~message "It appears no armid data is available.  Run an armid grid checker that uses the sector parameter MINESEC. (Try armids command)*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($isLimped = "")
-		send "'{" $bot~bot_name "} - It appears no limpet data is available.  Run a limpet grid checker that uses the sector parameter LIMPSEC. (Try limps command)*"
+		setvar $switchboard~message "It appears no limpet data is available.  Run a limpet grid checker that uses the sector parameter LIMPSEC. (Try limps command)*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($player~photons > 0)
-	       send "'Can not run with photons on your ship.*"
+	       setvar $switchboard~message "Can not run with photons on your ship.*"
+		gosub :switchboard~switchboard
                halt
 	end
 
 	gosub :player~quikstats
 	if ($player~current_prompt <> "Citadel")
-		send "'{" $bot~bot_name "} - Must start gridder from citadel prompt.*"
+		setvar $switchboard~message "Must start gridder from citadel prompt.*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($player~photons > 0)
-		send "'{" $bot~bot_name "} - You should not use a ship with photons to grid.*"
+		setvar $switchboard~message "You should not use a ship with photons to grid.*"
+		gosub :switchboard~switchboard
 		halt
 	end
 
 	if ($player~twarp_type = "No")
-		send "'{" $bot~bot_name "} - Must Have Twarp 1 or 2**"
+		setvar $switchboard~message "Must Have Twarp 1 or 2**"
+		gosub :switchboard~switchboard
 		halt
 	end
 
@@ -249,7 +248,8 @@ goSub :checkAvoidedSectors
 	send "q"
 	gosub :planet~getplanetinfo
 	send "tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*mnt*q"
-	send "'{" $bot~bot_name "} - Clearing messages for possible exit/enter later*"
+	setvar $switchboard~message "Clearing messages for possible exit/enter later*"
+	gosub :switchboard~switchboard
 	gosub :xenter
 	gosub :xenter
 	gosub :xenter
@@ -260,7 +260,9 @@ goSub :checkAvoidedSectors
 	setVar $armidBefore $player~armids
 	setVar $armidAfter $armidBefore
 
-	send "'{" $bot~bot_name "} - M()M Unlimited Gridder Powering Up!*"
+	setvar $switchboard~message "M()M Unlimited Gridder Powering Up!*"
+	gosub :switchboard~switchboard
+
 	waitFor "(?="
 	window gridder 300 170 ("M()M Unlimited Gridder - " & GAMENAME) ONTOP
 	setWindowContents gridder "      Starting up!*"
@@ -345,19 +347,20 @@ goSub :checkAvoidedSectors
 	end
 :continueOn
 	getRnd $random 1 $databaseCount
-	getWord $database $warpto $random
+	getWord $database $player~warpto $random
 	setWindowContents gridder "*      Targets left to hit:"&$databaseCount&"*"
 	
-	if ($warpto = 0)
-		send "'{" $bot~bot_name "} - Database Cleared - Recalculating and Restarting...*"
-		waitOn "Message sent on sub-space"
+	if ($player~warpto = 0)
+		setvar $switchboard~message "Database Cleared - Recalculating and Restarting...*"
+		gosub :switchboard~switchboard
+		gosub :player~quikstats
 		goto :restart
 	else
-		getDistance $distance $move[$warpto] $warpto
+		getDistance $distance $move[$player~warpto] $player~warpto
 		if ($distance <= 0)
-			send "^f"&$move[$warpto]&"*"&$warpto&"*q"
+			send "^f"&$move[$player~warpto]&"*"&$player~warpto&"*q"
 			waitOn "ENDINTERROG"
-			getDistance $distance $move[$warpto] $warpto
+			getDistance $distance $move[$player~warpto] $player~warpto
 		end
 		
 	end
@@ -365,7 +368,7 @@ goSub :checkAvoidedSectors
 :clearit
 	loadvar $game~PHOTON_DURATION
 	KillAllTriggers
-	replaceText $database " "&$warpto&" " " "
+	replaceText $database " "&$player~warpto&" " " "
 	subtract $databaseCount 1
 	setVar $furbing FALSE
 	if ($grid_warp = "twarp")
@@ -377,15 +380,16 @@ goSub :checkAvoidedSectors
 	end
 
 	if ($photoned = true)
-		send "'{" $bot~bot_name "} - Waiting for photon to wear off..*"		 
-		 setDelayTrigger restart_from_photon :clearit (($game~photon_duration * 60000) + 1000)
-		 pause
+		setvar $switchboard~message "Waiting for photon to wear off..*"
+		gosub :switchboard~switchboard
+		setDelayTrigger restart_from_photon :clearit (($game~photon_duration * 60000) + 1000)
+		pause
 	end
 
 
 :hittingsec
 	KillAllTriggers
-	setVar $boomsec $move[$warpto]
+	setVar $boomsec $move[$player~warpto]
 	getSectorParameter $boomsec "FIGSEC"  $isFigged
 	getSectorParameter $boomsec "MINESEC" $isArmided
 	getSectorParameter $boomsec "LIMPSEC" $isLimped
@@ -407,9 +411,9 @@ goSub :checkAvoidedSectors
 	send "sdszh*  "
 	waitFor "Relative Density Scan"
 	waitFor "Long Range Scan"
-	waitFor "[" & $warpto & "]"
-	getDistance $distance $warpto $boomsec
-	getDistance $distanceback $boomsec $warpto 
+	waitFor "[" & $player~warpto & "]"
+	getDistance $distance $player~warpto $boomsec
+	getDistance $distanceback $boomsec $player~warpto 
 	setVar $containsShieldedPlanet FALSE
 	setVar $i 1
 	while ($i <= SECTOR.PLANETCOUNT[$boomsec])
@@ -808,14 +812,21 @@ goSub :checkAvoidedSectors
 	end
 	send "'{" $bot~bot_name "} - "&$databaseCount&" target sectors found.*"
 	if ($databaseCount <= 0)
-		send "'{" $bot~bot_name "} - Visited every sector possible. Refresh fighters and update warp data to verify..*"
+		setvar $switchboard~message "Visited every sector possible. Refresh fighters and update warp data to verify..*"
+		gosub :switchboard~switchboard
+
 		if ($refurb)
 			gosub :attempt_refurb
 			gosub :player~quikstats
-			send "p "&$map~home_sector&"* y "
-			gosub :player~quikstats
-			send "'{" $bot~bot_name "} - Scrubbed at dock and pwarped home..*"
-
+			if ($map~home_sector <> "0")
+				send "p "&$map~home_sector&"* y "
+				gosub :player~quikstats
+				setvar $switchboard~message "Scrubbed at dock and pwarped home..*"
+				gosub :switchboard~switchboard
+			else
+				setvar $switchboard~message "Home sector not defined, so still in gridding sector.*"
+				gosub :switchboard~switchboard
+			end
 		end
 		halt
 	end
@@ -999,9 +1010,9 @@ return
 	if ($cashNeeded > $player~credits)
 		send "D" 
 		waitOn "Citadel treasury contains "
-		getWord CURRENTLINE $citadelCash 4
-		stripText $citadelCash ","
-		if ($citadelCash < $cashNeeded)
+		getWord CURRENTLINE $planet~CITADELCash 4
+		stripText $planet~CITADELCash ","
+		if ($planet~CITADELCash < $cashNeeded)
 			send "'{" & $bot~bot_name & "} - Not enough cash for mine refurbs in treasury or on hand.*"	
 			halt
 		end
@@ -1021,7 +1032,7 @@ return
 
 	if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE))
 		setVar $RED_adj 0
-		gosub :FindJumpSector
+		gosub :player~findjumpsector
 		if ($RED_adj <> 0)
 			send ("'{"&$bot~bot_name&"} - Jump Sector Found - Using Sector "&$RED_adj&"**")
 		else
@@ -1079,7 +1090,7 @@ return
 
 		setVar $ore_req (($dist1 + $dist2) * 3)
 
-		if ($player~ORE_HOLDS < $ore_req)
+		if ($player~ore_holds < $ore_req)
 			send "'{" $bot~bot_name "} - Not Enough ORE In Holds To Make Round Trip**"
 			halt
 		end
@@ -1116,10 +1127,10 @@ return
 		waitfor "(?="
 		setVar $msg ""
 		if (($player~alignment >= 1000) AND ($WeAreAdjDock = FALSE))
-			setVar $warpto $map~stardock
+			setVar $player~warpto $map~stardock
 			gosub :DoTwarp
 		elseif (($WeAreAdjDock = FALSE) AND ($RED_adj <> 0))
-			setVar $warpto $RED_adj
+			setVar $player~warpto $RED_adj
 			gosub :DoTwarp
 		else
 			send " m " & $map~stardock & "*  *  P  S G Y G Q "
@@ -1150,10 +1161,10 @@ return
 	setVar $msg ""
 	setvar $paused false
 	setvar $photoned false
-	if ($warpto > 0)
-		send "q t * t 1*  q * * mz" & $warpto "*"
+	if ($player~warpto > 0)
+		send "q t * t 1*  q * * mz" & $player~warpto "*"
 		setTextTrigger there        :adj_warp "You are already in that sector!"
-		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $warpto & " "
+		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $player~warpto & " "
 		setTextTrigger locking      :locking "Do you want to engage the TransWarp drive?"
 		setTextTrigger igd          :twarpIgd "An Interdictor Generator in this sector holds you fast!"
 		setTextTrigger noturns      :twarpPhotoned "Your ship was hit by a Photon and has been disabled"
@@ -1191,8 +1202,8 @@ return
 			killAllTriggers
 			send "n*zn"
 			send "l " & #8 & $planet~planet "*c"
-			setSectorParameter $warpto "FIGSEC" FALSE
-			setVar $temp " "&$warpto&" "
+			setSectorParameter $player~warpto "FIGSEC" FALSE
+			setVar $temp " "&$player~warpto&" "
 			replaceText $database $temp " "
 			subtract $database_count 1
 			goto :select_boomsec
@@ -1243,7 +1254,7 @@ return
 :bwarp
 
 	killAllTriggers
-	send "b" $warpto "*"
+	send "b" $player~warpto "*"
 	setTextTrigger go :go5 "TransWarp Locked"
 	setTextTrigger no :no5 "No locating beam found"
 	goSub :delayTrigger
@@ -1253,7 +1264,7 @@ return
 	killAllTriggers
 	send "n "
 	waitfor "Transporter shutting down."
-	setVar $FIGHTER_GRID[$warpto] 0
+	setVar $FIGHTER_GRID[$player~warpto] 0
 	goto :select_boomsec
 
 :go5
@@ -1372,11 +1383,10 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\player\findjumpsector\player"

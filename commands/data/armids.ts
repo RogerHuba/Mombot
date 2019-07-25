@@ -4,7 +4,7 @@
 
 	setVar $BOT~help[1] $BOT~tab&"Refreshes Deployed Armid List"
 	setVar $BOT~help[2] $BOT~tab&"  - Will show difference since last command was run."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Armid Report"
 	gosub :BOT~banner
@@ -15,7 +15,7 @@
 # ============================== START REFRESH ARMIDS (ARMIDS) ==============================
 :armids
 	
-	gosub :PLAYER~current_prompt
+	gosub  :player~currentPrompt
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation = "Command")
 		goto :start_armids
@@ -51,7 +51,7 @@
 	end
 
 
-	setVar $limpetsGridded TRUE
+	setVar $player~limpetsGridded TRUE
 	if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
 		gosub :PLANET~landingsub
 	end
@@ -96,7 +96,7 @@ halt
 		pause
 	:corpCountarmids
 		add $count 1
-		add $corpCount 1
+		add $player~corpCount 1
 		getWord CURRENTLINE $sector 1
 		getWord CURRENTLINE $numMines 2
 		while ($i <= $sector)
@@ -147,9 +147,12 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\currentprompt\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
+include "source\bot_includes\player\turnoffansi\player"
+include "source\bot_includes\player\turnonansi\player"
+include "source\bot_includes\planet\landingsub\planet"

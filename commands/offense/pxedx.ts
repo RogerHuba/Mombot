@@ -7,7 +7,7 @@
 	setVar $BOT~help[5] $BOT~tab&"      "
 	setVar $BOT~help[6] $BOT~tab&"       pxed [Sector] [ShipNumber]"
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
     gosub :INVADER~check_invade_macro_params
     setVar $INVADER~speed_invade_macro  $INVADER~xport&$INVADER~enter&"       * "
@@ -17,11 +17,6 @@
 halt
 
 # includes:
-include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\module_includes\prompt"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\invader"
-include "source\module_includes\bot"
-

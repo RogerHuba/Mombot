@@ -16,7 +16,7 @@
 	setVar $BOT~help[13] $BOT~tab&"       >avoids set 45"
 	setVar $BOT~help[14] $BOT~tab&"       >avoids clear 45"
 	setVar $BOT~help[15] $BOT~tab&"       >avoids clear"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	setVar $AVOIDS		" "

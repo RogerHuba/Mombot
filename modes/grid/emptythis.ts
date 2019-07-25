@@ -1,16 +1,16 @@
 	logging off
-	loadVar $bot_name
-	loadVar $unlimitedGame		
+	loadVar $switchboard~bot_name
+	loadVar $player~unlimitedGame		
 	loadVar $bot_turn_limit		
-	loadVar $user_command_line	
-	loadVar $parm1			
-	loadVar $parm2			
-	loadVar $parm3			
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
+	loadVar $bot~user_command_line	
+	loadVar $bot~parm1			
+	loadVar $bot~parm2			
+	loadVar $bot~parm3			
+	loadVar $bot~parm4
+	loadVar $bot~parm5
+	loadVar $bot~parm6
+	loadVar $bot~parm7
+	loadVar $bot~parm8
 	loadVar $stardock
 	loadVar $backdoor
 	loadVar $rylos
@@ -27,21 +27,21 @@
 		write "scripts\mombot\help\"&$command&".txt" "    {false}  - go to the param if it's equal to FALSE (0)   " 
 		write "scripts\mombot\help\"&$command&".txt" "    {alarm}  - activate alarm                               " 
 		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
-		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
+		send "'{" $switchboard~bot_name "} - Writing help file for this command in Help directory.*"
 	end
-	if ($parm1 <> "0")
-		setVar $PARAM $parm1
-		upperCase $PARAM
+	if ($bot~parm1 <> "0")
+		setVar $bot~parmAM $bot~parm1
+		upperCase $bot~parmAM
 	end
-	window mowWindow 350 450 "Mowing to this: ["&$PARAM&"]" ontop 
+	window mowWindow 350 450 "Mowing to this: ["&$bot~parmAM&"]" ontop 
 	setArray $COURSE 80
-	gosub :quikstats
-	if ($CURRENT_PROMPT <> "Citadel")
-		send "'{" $bot_name "} - You must run this script from the Citadel prompt.*"
+	gosub :player~quikstats
+	if ($player~current_prompt <> "Citadel")
+		send "'{" $switchboard~bot_name "} - You must run this script from the Citadel prompt.*"
      		halt
 	end
 
-	getWordPos $user_command_line $pos "alarm" 
+	getWordPos $bot~user_command_line $pos "alarm" 
 	if ($pos > 0)
 		setVar $alarm_active TRUE
 	else
@@ -49,17 +49,17 @@
 	end
 
 	setVar $true TRUE
-	getWordPos $user_command_line $pos "false" 
+	getWordPos $bot~user_command_line $pos "false" 
 	if ($pos > 0)
 		setVar $true FALSE
 	end
-	getWordPos $user_command_line $pos "true" 
+	getWordPos $bot~user_command_line $pos "true" 
 	if ($pos > 0)
 		setVar $true TRUE
 	end
 
-	setVar $location $CURRENT_PROMPT
-	setVar $homeSector $CURRENT_SECTOR
+	setVar $location $player~current_prompt
+	setVar $homeSector $player~current_sector
 	setVar $lastDestination 1
 	send "c;q"
 	waitOn "Max Figs Per Attack:"
@@ -67,8 +67,8 @@
 	:getplanetnum
 		send "qD"
 		waitOn "Planet #"
-		getWord CURRENTLINE $planet 2
-		stripText $planet "#"
+		getWord CURRENTLINE $planet~planet 2
+		stripText $planet~planet "#"
 		send "tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*mnt*qjy"
 	
 	setWindowContents mowWindow "Sectors Figged: "&$count&" out of "&SECTORS&"*"
@@ -82,16 +82,16 @@
 	end
 
 	if ($databasecount <= 0)
-		send "'{" $bot_name "} -  No sector parameters found for "&$PARAM&" set to a value of "&$output&" or already figged.*"
+		send "'{" $switchboard~bot_name "} -  No sector parameters found for "&$bot~parmAM&" set to a value of "&$output&" or already figged.*"
 	end
 
-	send "'{" $bot_name "} -  Starting up empty this!  Emptying all sectors with "&$PARAM&" set to a value of "&$output&".*"
+	send "'{" $switchboard~bot_name "} -  Starting up empty this!  Emptying all sectors with "&$bot~parmAM&" set to a value of "&$output&".*"
 
 	:DOAGAIN
 		getRnd $random 1 $databasecount
 		getWord $randomSectors $destination $random
 		if ($destination = 0)
-			send "'{" $bot_name "} -  Database Cleared - Refresh Figs and Restart.*"
+			send "'{" $switchboard~bot_name "} -  Database Cleared - Refresh Figs and Restart.*"
 			halt		
 		end
 		if ($destination <> $homeSector)
@@ -124,8 +124,8 @@
 						end
 					end
 					setVar $PLAYER~warpto $destination
-		            gosub :tactics~twarp
-		            gosub :PLAYER~current_prompt
+		            gosub :player~twarp
+		            gosub  :player~currentPrompt
 		            if ($PLAYER~twarpSuccess = TRUE)
 		        		send "f 0*"				
 
@@ -134,8 +134,8 @@
 
 
 						#setVar $PLAYER~warpto $homeSector
-			            #gosub :tactics~twarp
-			            #gosub :PLAYER~current_prompt
+			            #gosub :player~twarp
+			            #gosub  :player~currentPrompt
 		            end
 		        	setSectorParameter $destination "FIGSEC" FALSE
 		            gosub :PLAYER~quikstats
@@ -159,7 +159,7 @@
 	setVar $i 11
 	while ($i <= SECTORS)
 		getSectorParameter $i "FIGSEC" $isFigged
-		getSectorParameter $i $PARAM $isTrue
+		getSectorParameter $i $bot~parmAM $isTrue
 		if (($isTrue = $true) AND ($isFigged = TRUE))
 			setVar $randomSectors $randomSectors&$i&"  "
 			add $databasecount 1
@@ -175,8 +175,8 @@
 	end
 return
 
-:quikstats
-	setVar $CURRENT_PROMPT 		"Undefined"
+:player~quikstats
+	setVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt1
 	killtrigger prompt2
@@ -198,7 +198,7 @@ return
 		getWord currentline $tempPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
+			setVar $player~current_prompt $tempPrompt
 		end
 		setTextLineTrigger prompt1 :allPrompts "(?="
 		pause
@@ -207,7 +207,7 @@ return
 		getWord currentline $tempPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			setVar $CURRENT_PROMPT $tempPrompt
+			setVar $player~current_prompt $tempPrompt
 		end
 		setTextLineTrigger prompt2 :secondaryPrompts "(?)"
 		pause
@@ -217,7 +217,7 @@ return
 		getWord currentansiline $checkPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			setVar $CURRENT_PROMPT "Terra"
+			setVar $player~current_prompt "Terra"
 		end
 		setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
 		setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
@@ -254,61 +254,61 @@ return
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
+				getWord $stats $player~turns  			($current_word + 1)
 			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
+				getWord $stats $player~credits  		($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
+				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
+				getWord $stats $player~shields  		($current_word + 1)
 			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
+				getWord $stats $player~total_holds   		($current_word + 1)
 			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
+				getWord $stats $player~ore_holds    		($current_word + 1)
 			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
+				getWord $stats $player~organic_holds    	($current_word + 1)
 			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
+				getWord $stats $player~equipment_holds    	($current_word + 1)
 			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
+				getWord $stats $player~colonist_holds    	($current_word + 1)
 			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
+				getWord $stats $player~photons   		($current_word + 1)
 			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
+				getWord $stats $player~armids   		($current_word + 1)
 			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
+				getWord $stats $player~limpets   		($current_word + 1)
 			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
+				getWord $stats $player~genesis  		($current_word + 1)
 			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
+				getWord $stats $player~twarp_type  		($current_word + 1)
 			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
+				getWord $stats $player~cloaks   		($current_word + 1)
 			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
+				getWord $stats $player~beacons 		($current_word + 1)
 			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
+				getWord $stats $player~atomic  		($current_word + 1)
 			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
+				getWord $stats $player~corbo   		($current_word + 1)
 			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
+				getWord $stats $player~eprobes   		($current_word + 1)
 			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
+				getWord $stats $player~mine_disruptors   	($current_word + 1)
 			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
+				getWord $stats $player~psychic_probe  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
+				getWord $stats $player~scan_type    		($current_word + 1)
 			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
+				getWord $stats $player~alignment    		($current_word + 1)
 			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
+				getWord $stats $player~experience    		($current_word + 1)
 			elseif ($wordy = "Corp")
-				getWord $stats $CORP   			($current_word + 1)
+				getWord $stats $player~corp   			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word
@@ -338,10 +338,10 @@ return
 		send "q"
 		waitFor "Command [TL"
 	end	
-	gosub :quikstats
+	gosub :player~quikstats
     	setVar $figstodeploy 1
 	gosub :deployfigs 
-	setVar $savetarget $CURRENT_SECTOR 
+	setVar $savetarget $player~current_sector 
 	if ($savetarget < 10)
 		setVar $savetarget "0000" & $savetarget
 	elseif ($savetarget < 100)
@@ -353,7 +353,7 @@ return
 	end
 	
 	send "'" & $savetarget & "=saveme*"
-	send "'pickup " & $CURRENT_SECTOR  & " ::*"
+	send "'pickup " & $player~current_sector  & " ::*"
 
 
 :waitforhelp
@@ -376,8 +376,8 @@ return
 
     :friendlyplanet
         killalltriggers
-        getText CURRENTLINE $planet "Saveme script activated - Planet " " to "
-        send "L " & $planet & "* C 'I landed on planet " & $planet & "*"
+        getText CURRENTLINE $planet~planet "Saveme script activated - Planet " " to "
+        send "L " & $planet~planet & "* C 'I landed on planet " & $planet~planet & "*"
         halt
 
     :towlocked
@@ -392,7 +392,7 @@ return
     if ($figstodeploy = 0)
         setVar $figstodeploy 1
     end
-    if (($CURRENT_SECTOR  < 11) or ($CURRENT_SECTOR  = STARDOCK))
+    if (($player~current_sector  < 11) or ($player~current_sector  = STARDOCK))
         send "'Can't deploy figs in fed*"
         return
     end
@@ -421,7 +421,7 @@ return
 return
 
 :landOnPlanetEnterCitadel
-	send "l " $planet "* c"
+	send "l " $planet~planet "* c"
 	waitOn "<Enter Citadel>"
 	return
 :leaveCitadelAndPlanet	
@@ -432,5 +432,6 @@ return
 
 
 #-=-=-=-=-includes-=-=-=-=-
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\player\currentprompt\player"

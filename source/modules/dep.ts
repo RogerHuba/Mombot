@@ -4,7 +4,7 @@
     setVar $BOT~help[1]  $BOT~tab&"dep {cash to deposit} "
     setVar $BOT~help[2]  $BOT~tab&"  Deposits cash into citadel treasury."
 	setVar $BOT~help[3]  $BOT~tab&"        default is max credits possible"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
     setVar $PLAYER_CASH_MAX     999999999
     setVar $PLANET~CITADEL_CASH_MAX    999999999999999
@@ -59,7 +59,7 @@ return
 
 :checkStartingPrompt
     if ($PLAYER~CURRENT_PROMPT = "0")
-        gosub :PLAYER~current_prompt
+        gosub  :player~currentPrompt
     end
     getWordPos " "&$validPrompts&" " $pos $PLAYER~CURRENT_PROMPT
     if ($pos <= 0)

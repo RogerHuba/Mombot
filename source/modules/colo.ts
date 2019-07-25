@@ -18,7 +18,7 @@ setVar $BOT~help[11] $BOT~tab&"   - [t/b]   = [t]warp/[b]warp  (defy"
 setVar $BOT~help[12] $BOT~tab&"   - [c:x]   = [c]amo holds (example: c:3 adds 3 holds extra fuel)"
 
 
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Colonizer"
 gosub :BOT~banner

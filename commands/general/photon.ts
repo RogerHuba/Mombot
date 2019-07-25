@@ -2,7 +2,7 @@
 
 
 	setVar $BOT~help[1] $BOT~tab&"Fires photon into adjacent sector.  "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $target $bot~parm1 
 	isNumber $isNumber $target 
@@ -48,9 +48,7 @@
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
+include "source\bot_includes\player\quikstats\player"

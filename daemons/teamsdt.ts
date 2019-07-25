@@ -1,15 +1,6 @@
 	logging off
 	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	setVar $FURB_HOLDS ""
 	setVar $FURB_SHIP ""
@@ -19,7 +10,7 @@
 	setVar $MIN_RED_ALIGNMENT "-100"
 
 	setVar $twoship FALSE
-	getWordPos $user_command_line $pos "twoship"
+	getWordPos $bot~user_command_line $pos "twoship"
 	if ($pos > 0)
 		setVar $twoship TRUE
 	end
@@ -55,7 +46,7 @@
 	setVar $BOT~help[10] $BOT~tab&"    {planetfuel} - will grab fuel from red planets"
 	setVar $BOT~help[11] $BOT~tab&"       {twoship} - will use two ships to cash"
 	setVar $BOT~help[12] $BOT~tab&"           {X:N} - furb ship letter and holds to buy"
-	setVar $BOT~help[13] $BOT~tab&"            {ep} - use ep Haggle"
+	setVar $BOT~help[13] $BOT~tab&"                 - Uses EP Haggle if running in bot"
 	setVar $BOT~help[14] $BOT~tab&"Usage: "
 	setVar $BOT~help[15] $BOT~tab&"        >teamsdt 3 4 5"
 	setVar $BOT~help[16] $BOT~tab&"        >teamsdt 3 4 5 11 12 13"
@@ -63,7 +54,7 @@
 	setVar $BOT~help[18] $BOT~tab&"Note: "
 	setVar $BOT~help[19] $BOT~tab&"       Planet ids are only necessary when multiple planets exist"
 	setVar $BOT~help[20] $BOT~tab&"       in sector or planet scanners are on ships.   "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 
@@ -89,33 +80,32 @@
 	gosub :SWITCHBOARD~SWITCHBOARD
 
 	setVar $override FALSE
-	getWordPos $user_command_line $pos "override"
+	getWordPos $bot~user_command_line $pos "override"
 	if ($pos > 0)
 		setVar $override TRUE
 	end
-	if ($parm4 = "override")
-		setVar $parm4 "0"
+	if ($bot~parm4 = "override")
+		setVar $bot~parm4 "0"
 	end
-	setVar $planetfuel FALSE
-	getWordPos $user_command_line $pos "planetfuel"
+	setVar $planet~planetfuel FALSE
+	getWordPos $bot~user_command_line $pos "planetfuel"
 	if ($pos > 0)
-		setVar $planetfuel TRUE
+		setVar $planet~planetfuel TRUE
 		
 	end
 	
 	setVar $ephaggle 0
-	getWordPos $bot~user_command_line $pos " ep"
-
-	IF ($pos > 0)
+	gosub :player~isEpHaggle
+	IF ($player~isEpHaggle)
 		setVar $ephaggle 1
 		setVar $SWITCHBOARD~message "Using EP HAGGLE!*"
 		gosub :switchboard~switchboard
 	END
 
 	setVar $custom_furb FALSE
-	getWordPos $user_command_line $pos ":"
+	getWordPos $bot~user_command_line $pos ":"
 	if ($pos > 0)
-		setVar $stuff $user_command_line
+		setVar $stuff $bot~user_command_line
 		getWordPos $stuff $loc ":"
 		cutText $stuff $info ($loc - 1) 99
 		getWord $info $furbinfo 1
@@ -128,9 +118,9 @@
 	end
 
 	
-	isNumber $is_a_number $parm1
-	if (($is_a_number) and ($parm1 <> "0"))
-		setVar $ship1 $parm1
+	isNumber $is_a_number $bot~parm1
+	if (($is_a_number) and ($bot~parm1 <> "0"))
+		setVar $ship1 $bot~parm1
 		setVar $SHIPS[1] $ship1
 	else
 		setVar $SWITCHBOARD~MESSAGE "Ship #1 number invalid.  Shutting down.*"
@@ -138,9 +128,9 @@
 		halt	
 	end
 
-	isNumber $is_a_number $parm2
-	if (($is_a_number) and ($parm2 <> "0"))
-		setVar $ship2 $parm2
+	isNumber $is_a_number $bot~parm2
+	if (($is_a_number) and ($bot~parm2 <> "0"))
+		setVar $ship2 $bot~parm2
 		setVar $SHIPS[2] $ship2
 	else
 		setVar $SWITCHBOARD~MESSAGE "Ship #2 number invalid.  Shutting down.*"
@@ -149,29 +139,29 @@
 	end
 
 	if ($twoship = TRUE)
-		isNumber $is_a_number $parm3
+		isNumber $is_a_number $bot~parm3
 		if ($is_a_number)
-			setVar $planet1 $parm3
-			setVar $SHIPS[1][2] $planet1
+			setVar $planet~planet1 $bot~parm3
+			setVar $SHIPS[1][2] $planet~planet1
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #1 number invalid.  Shutting down.*"
 			gosub :SWITCHBOARD~SWITCHBOARD	
 			halt	
 		end
 
-		isNumber $is_a_number $parm4
+		isNumber $is_a_number $bot~parm4
 		if ($is_a_number) 
-			setVar $planet2 $parm4
-			setVar $SHIPS[2][2] $planet2
+			setVar $planet~planet2 $bot~parm4
+			setVar $SHIPS[2][2] $planet~planet2
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #2 number invalid.  Shutting down.*"
 			gosub :SWITCHBOARD~SWITCHBOARD	
 			halt	
 		end
 	else
-		isNumber $is_a_number $parm3
-		if (($is_a_number) and ($parm3 <> "0"))
-			setVar $ship3 $parm3
+		isNumber $is_a_number $bot~parm3
+		if (($is_a_number) and ($bot~parm3 <> "0"))
+			setVar $ship3 $bot~parm3
 			if ($NUMBER_CASHING_SHIPS >= 3)
 				setVar $SHIPS[3] $ship3
 			end
@@ -180,31 +170,31 @@
 			gosub :SWITCHBOARD~SWITCHBOARD	
 			halt	
 		end
-		isNumber $is_a_number $parm4
+		isNumber $is_a_number $bot~parm4
 		if ($is_a_number)
-			setVar $planet1 $parm4
-			setVar $SHIPS[1][2] $planet1
+			setVar $planet~planet1 $bot~parm4
+			setVar $SHIPS[1][2] $planet~planet1
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #1 number invalid.  Shutting down.*"
 			gosub :SWITCHBOARD~SWITCHBOARD	
 			halt	
 		end
 
-		isNumber $is_a_number $parm5
+		isNumber $is_a_number $bot~parm5
 		if ($is_a_number) 
-			setVar $planet2 $parm5
-			setVar $SHIPS[2][2] $planet2
+			setVar $planet~planet2 $bot~parm5
+			setVar $SHIPS[2][2] $planet~planet2
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #2 number invalid.  Shutting down.*"
 			gosub :SWITCHBOARD~SWITCHBOARD	
 			halt	
 		end
 
-		isNumber $is_a_number $parm6
+		isNumber $is_a_number $bot~parm6
 		if ($is_a_number)
-			setVar $planet3 $parm6
+			setVar $planet~planet3 $bot~parm6
 			if ($NUMBER_CASHING_SHIPS >= 3)
-				setVar $SHIPS[3][2] $planet3
+				setVar $SHIPS[3][2] $planet~planet3
 			end
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #3 number invalid.  Shutting down.*"
@@ -502,7 +492,7 @@
 				setVar $SWITCHBOARD~MESSAGE "Fake Busts don't clear ports. .*"
 				gosub :SWITCHBOARD~SWITCHBOARD
 				
-				if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planetfuel = TRUE))
+				if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
 					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&"  *"
 				else
 					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&"  *"
@@ -575,7 +565,7 @@
 			:setupfurber
 	
 				killalltriggers
-				if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planetfuel = TRUE))
+				if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
 					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&"  *"
 				else
 					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&"  *"
@@ -670,10 +660,9 @@ return
 		killalltriggers
 return
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\isephaggle\player"

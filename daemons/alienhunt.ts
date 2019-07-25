@@ -1,16 +1,7 @@
 	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	loadVar $MAP~STARDOCK
+									loadVar $MAP~STARDOCK
 	loadVar $MAP~home_sector
-	setVar $user_command_line $BOT~user_command_line
-	loadvar $ship~cap_file
+		loadvar $ship~cap_file
 	loadvar $planet~planet_file
 
 	gosub :combat~init 
@@ -31,7 +22,7 @@
 	setVar $BOT~help[13] $BOT~tab&" {return} - Return to starting sector after each hunt."
 	setVar $BOT~help[14] $BOT~tab&"{passive} - Surround passively when hunting."
 	setVar $BOT~help[15] $BOT~tab&"   {home} - Move ships to starting sector instead of stardock."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Alien Hunter"
 	gosub :BOT~banner
@@ -67,7 +58,7 @@
 		halt
 	end
 
-	if ($parm1 = "off")
+	if ($bot~parm1 = "off")
 		send "qoccco*cq"
 		waitOn "<Computer deactivated>"
 		setVar $SWITCHBOARD~message "Alien hunter shutting down.  Making ship and planet corporate again.*"
@@ -82,9 +73,9 @@
 	end
 	getwordpos $bot~user_command_line $pos "corp"
 	if ($pos > 0)
-		setvar $corp true
+		setvar $player~corp true
 	else
-		setvar $corp false
+		setvar $player~corp false
 	end
 
 	getwordpos $bot~user_command_line $pos "refuel"
@@ -146,9 +137,9 @@
 	killalltriggers	
 	send "q"
 	gosub :PLANET~getPlanetInfo	
-	setvar $starting_sector_cannon $planet~sector_cannon
-	setvar $starting_atmos_cannon $planet~atmosphere_cannon
-	setvar $sector_total ((($PLANET~PLANET_FUEL * $starting_sector_cannon) / 100)/3)
+	setvar $starting_sector_cannon $planet~SECTOR_CANNON
+	setvar $starting_atmos_cannon $planet~ATMOSPHERE_CANNON
+	setvar $sector_total ((($planet~planet_FUEL * $starting_sector_cannon) / 100)/3)
 
 	setTextTrigger need_ig :ig_was_off "Your Interdictor generator is now OFF"
 	setTextTrigger skip_ig :skipig "is not equipped with an Interdictor Generator"
@@ -164,9 +155,9 @@
 
 	:skipig
 	killalltriggers
-	send "l"&$PLANET~PLANET&"*"
+	send "l"&$planet~planet&"*"
 	waitOn "Planet command"
-	if ($corp <> true)
+	if ($player~corp <> true)
 		send "op**tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*m***cm0*co*pq"
 	else
 		send "**tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*m***cm0*"
@@ -179,7 +170,7 @@
 	end
 	gosub :PLAYER~quikstats
 	if ($PLAYER~CURRENT_PROMPT = "Citadel")
-		if ($corp <> true)
+		if ($player~corp <> true)
 			setVar $SWITCHBOARD~message "Made ship and planet personal for convenience. Turning off military reaction.*"
 		else
 			setVar $SWITCHBOARD~message "Keeping planet and ship corporate for safety. Might be annoying. Turning off military reaction.*"
@@ -249,8 +240,8 @@
 			send "p"&$homeSector&"*y"
 		end
 		if ($cannon = true)
-			setVar $percentToSet (((3*$sector_total)*100)/$PLANET~PLANET_FUEL)
-			if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $cannonDamage)
+			setVar $percentToSet (((3*$sector_total)*100)/$planet~planet_FUEL)
+			if (((($planet~planet_FUEL * $percentToSet) / 100)/3) < $cannonDamage)
 				add $percentToSet 1
 			end
 			if ($percentToSet > 100)
@@ -281,7 +272,7 @@
 	setTextLineTrigger 	power 	:pwarpConfirmed 	"is powering up weapons systems!"
 	settextlinetrigger  wave    :pwarpConfirmed    " launches a wave of fighters at the "
 	
-	gosub :BOT~disconnect_triggers
+	gosub :bot~disconnecttriggers
 	pause
 
 	:attackSectorMine
@@ -366,14 +357,14 @@ return
 	if ($targetCount > 0)
 		getRnd $randomTarget 1 $targetCount
 		setVar $gotoSector $targetSectors[$randomTarget]
-		setVar $warpto $gotoSector
+		setVar $player~warpto $gotoSector
 		gosub :dopwarp
 	end
 	
 return
 
 :dopwarp
-    send "p" $warpTo "*y"
+    send "p" $player~warpto "*y"
     setTextLineTrigger pwarp_lock       :pwarp_lock     "Locating beam pinpointed"
     setTextLineTrigger no_pwarp_lock    :no_pwarp_lock  "Your own fighters must be"
     setTextLineTrigger already      :already    "You are already in that sector!"
@@ -394,7 +385,7 @@ return
         return
     :no_pwarp_lock
         killalltriggers
-        setVar $target $warpto
+        setVar $target $player~warpto
         setSectorParameter $gotoSector "FIGSEC" FALSE
         return
     :no_ore
@@ -479,9 +470,9 @@ return
 		gosub :PLAYER~quikstats
 		setVar $startingSector $PLAYER~CURRENT_SECTOR
 		if ($PLAYER~SHIELDS < $SHIP~SHIP_SHIELD_MAX)
-			setVar $shields_needed ($SHIP~SHIP_SHIELD_MAX - $PLAYER~SHIELDS)
-			setVar $planet_shields_to_take ($shields_needed/10)
-			send "gf"&$planet_shields_to_take&"*"
+			setVar $player~shields_needed ($SHIP~SHIP_SHIELD_MAX - $PLAYER~SHIELDS)
+			setVar $planet~planet_shields_to_take ($player~shields_needed/10)
+			send "gf"&$planet~planet_shields_to_take&"*"
 		end
 		if ($targetsFound = TRUE)
 
@@ -569,7 +560,7 @@ return
 						send "c"
 						setVar $total_creds_needed (300*7000)
 						if ($total_creds_needed > $PLAYER~CREDITS)
-							setVar $cashonhand $PLANET~citadel_credits
+							setVar $cashonhand $planet~CITADEL_CREDITS
 							add $cashonhand $PLAYER~CREDITS
 							if ($cashonhand > $total_creds_needed)
 							        send "T T " & $PLAYER~CREDITS & "* "
@@ -592,18 +583,18 @@ return
 						gosub :PLAYER~quikstats
 						gosub :PLANET~landOnPlanetEnterCitadel
 					end
-					if (($PLANET~planet_fuel_max-$PLANET~planet_fuel) < $totalPortFuel)
-						setVar $turnsToEmpty (($PLANET~planet_fuel_max-$PLANET~planet_fuel)/$PLAYER~TOTAL_HOLDS)
-						add $totalHolds ($PLANET~planet_fuel_max-$PLANET~planet_fuel)
+					if (($planet~planet_fuel_max-$planet~planet_fuel) < $totalPortFuel)
+						setVar $player~turnsToEmpty (($planet~planet_fuel_max-$planet~planet_fuel)/$player~total_holds)
+						add $totalHolds ($planet~planet_fuel_max-$planet~planet_fuel)
 						setVar $isDone TRUE
 					else
-						setVar $turnsToEmpty ($totalPortFuel/$PLAYER~TOTAL_HOLDS)
+						setVar $player~turnsToEmpty ($totalPortFuel/$player~total_holds)
 						add $totalHolds $totalPortFuel
 					end
 					setVar $PLAYER~buyobject "f"
 					setVar $PLAYER~buytype "s"
-					setVar $PLAYER~buydownRoundsFromParam $turnsToEmpty
-					gosub :tactics~buy
+					setVar $PLAYER~buydownRoundsFromParam $player~turnsToEmpty
+					gosub :player~buy
 					gosub :PLAYER~quikstats
 					send "c r*q "
 					
@@ -611,7 +602,7 @@ return
 						setVar $SWITCHBOARD~message $PLAYER~exit_message&"*"
 						gosub :SWITCHBOARD~switchboard
 					end
-					if (($PLAYER~unlimitedGame = FALSE) AND (($PLAYER~turns-$turnsToEmpty) <= $BOT~bot_turn_limit))
+					if (($PLAYER~unlimitedGame = FALSE) AND (($PLAYER~turns-$player~turnsToEmpty) <= $BOT~bot_turn_limit))
 						setVar $SWITCHBOARD~message "Turns too low to continue.*"
 		        		gosub :SWITCHBOARD~switchboard
 						halt	        
@@ -642,15 +633,21 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
+include "source\module_includes\bot\loadvars\bot"
+include "source\bot_includes\combat\init\combat"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-include "source\bot_includes\combat"
-include "source\bot_includes\grid"
-
-
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipcapstats\ship"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\module_includes\bot\disconnecttriggers\bot"
+include "source\bot_includes\grid\surround\grid"
+include "source\bot_includes\planet\landingsub\planet"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\planet\landonplanetentercitadel\planet"
+include "source\bot_includes\player\buy\player"

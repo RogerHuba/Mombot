@@ -25,7 +25,7 @@ setVar $BOT~help[11]  $BOT~tab&"    [sitship]      number of ship in sector to s
 setVar $BOT~help[12] $BOT~tab&"    "
 setVar $BOT~help[13] $BOT~tab&"    Please be fed safe.. or die :)"
 
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Xmas Furb Script"
 gosub :BOT~banner
@@ -33,7 +33,7 @@ gosub :BOT~banner
 gosub :player~quikstats
 
 
-if ($player~ore_Holds < 70)
+if ($player~ore_holds < 70)
 	setVar $SWITCHBOARD~message "Please load up on fuel ore.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
@@ -118,9 +118,9 @@ halt
 :report
 	goSub :player~quikstats
 	setVar $credsgained ($player~CREDITS - $startCreds)
-	setVar $turnsused ($startTruns - $player~TURNS)
+	setVar $player~turnsused ($startTruns - $player~TURNS)
 
-	setVar $thereport "Turns: " & $turnsused & " Creds Pickedup: " &  $credsgained & "*" 
+	setVar $thereport "Turns: " & $player~turnsused & " Creds Pickedup: " &  $credsgained & "*" 
 	setVar $SWITCHBOARD~message $thereport
 	gosub :SWITCHBOARD~switchboard
 return
@@ -249,7 +249,7 @@ return
 :restock
 
 	send "psht"
-	add $turnsused 1
+	add $player~turnsused 1
 	setTextTrigger shipCheckBuyTorps :shipCheckBuyTorps "How many Genesis Torpedoes do you want"
 	pause
 	:shipCheckBuyTorps
@@ -264,10 +264,10 @@ return
 	pause
 	:shipCheckBuyAtomics
 		killalltriggers
-		getWord CURRENTLINE $AtomicssAvail 9
-		stripText $AtomicssAvail ")"
+		getWord CURRENTLINE $player~atomicssAvail 9
+		stripText $player~atomicssAvail ")"
 		
-		send  "*a" $AtomicssAvail "*"
+		send  "*a" $player~atomicssAvail "*"
 		
 			
 	send "q"
@@ -296,14 +296,14 @@ return
 
 :moveToSector
 	
-		goSub :tWarptoSector
+		gosub :player~twarpSector
 	
 return
 
 :warpToSector
 	
 	send "m" $moveSec "**"
-	add $turnsused 2
+	add $player~turnsused 2
 	waitFor "Warps to Sector"
 return
 
@@ -312,7 +312,7 @@ return
 	:startWarpMove
 
 	send "m" $moveSec "*y"
-	add $turnsused 2
+	add $player~turnsused 2
 	setTextLineTrigger warpEngagedYes :warpEngagedYes "Locating beam pinpointed, TransWarp"
 	setTextLineTrigger warpEngagedNo :warpEngagedNo "You do not have enough Fuel Ore to make the jump."
 	setTextLineTrigger warpEngagedNoLock :warpEngagedNoLock "No locating beam found for sector"
@@ -345,9 +345,9 @@ return
 halt
 
 
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
+include "source\bot_includes\player\twarp\player"

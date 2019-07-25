@@ -1,14 +1,5 @@
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	setVar $BOT~help[1] $BOT~tab&"Pgrids automatically until stopped. pgrid {fighterToDrop} "
 	setVar $BOT~help[2] $BOT~tab&"          "
@@ -17,14 +8,14 @@
 	setVar $BOT~help[5] $BOT~tab&"   Options:"
 	setVar $BOT~help[6] $BOT~tab&"          {fightersToDrop} - how many figs to drop in sector"
 	setVar $BOT~help[6] $BOT~tab&"                    {near} - moves using near fighter"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Gridder"
 	gosub :BOT~banner
 
 
 	if ($bot~parm1 > 0)
-		setVar $fighterDrop $parm1
+		setVar $fighterDrop $bot~parm1
 	else
 		setVar $fighterDrop 1
 	end
@@ -63,8 +54,8 @@
 	:getplanetnum
 		send "qD"
 		waitOn "Planet #"
-		getWord CURRENTLINE $PLANET~planet 2
-		stripText $planet "#"
+		getWord CURRENTLINE $planet~planet 2
+		stripText $planet~planet "#"
 		saveVar $planet~planet
 		send "tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*mnt*c "
 	
@@ -156,7 +147,7 @@
 					killtrigger notEnoughFuel
 					setSectorParameter $nearfig "FIGSEC" TRUE
 
-					send "q q sdsh* l "&$PLANET~PLANET&"* m * * * c  " 
+					send "q q sdsh* l "&$planet~planet&"* m * * * c  " 
 					waitFor "Relative Density Scan"
 					waitFor "Long Range Scan"
 					waitFor "[" & $nearfig & "]"
@@ -286,10 +277,8 @@
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"

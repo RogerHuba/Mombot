@@ -1,7 +1,7 @@
 	gosub :BOT~loadVars
 
 	setVar $BOT~help[1]  $BOT~tab&"climp - place corporate limpets in sector "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 # ============================== START PERSONAL LIMP (LIMP) SUB ==============================
 :climp
@@ -84,9 +84,9 @@
     if (($test = FALSE) OR ($bot~parm1 = 0))
         setVar $bot~parm1 1
     end
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Command Citadel"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~validPrompts "Command Citadel"
+    gosub :bot~checkStartingPrompt
     if ($PLAYER~startingLocation = "Citadel")
         send "q"
         gosub :PLANET~getPlanetInfo
@@ -96,10 +96,9 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\planet\getplanetinfo\planet"

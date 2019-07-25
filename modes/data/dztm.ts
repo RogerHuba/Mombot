@@ -1,8 +1,5 @@
-loadVar $bot_name
+loadVar $switchboard~bot_name
 gosub :BOT~loadVars
-setVar $parm1 $BOT~parm1
-setVar $parm2 $BOT~parm2
-setVar $parm3 $BOT~parm3
 
 #HELP FILE
         setVar $BOT~help[1]  $BOT~tab&"   Quick Dead End Finder"
@@ -17,7 +14,7 @@ setVar $parm3 $BOT~parm3
         setVar $BOT~help[11] $BOT~tab&"   Examples:"
         setVar $BOT~help[12] $BOT~tab&"   >ztm s:400   - Pass 2, sector 400"
         setVar $BOT~help[13] $BOT~tab&"   >ztm one         - Plot to one"
-       gosub :BOT~help_file
+       gosub :bot~helpfile
 
 
 
@@ -49,7 +46,7 @@ setVar $location $PLAYER~CURRENT_PROMPT
             setVar $location "Computer"
     end
     else
-    send "'{" $bot_name "} - ZTM must be started from Command, Computer, or Citadel prompt.*"
+    send "'{" $switchboard~bot_name "} - ZTM must be started from Command, Computer, or Citadel prompt.*"
     end
     
 
@@ -329,10 +326,7 @@ gosub :switchboard~switchboard
 	waitfor "³Turns"
 
 	#INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-

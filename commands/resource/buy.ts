@@ -26,17 +26,8 @@ return
 	if ($buydown_mode = "Speedbuy")
 		gosub :buynohaggle
 	else
-		setvar $isFound false
-		listActiveScripts $scripts
-		setvar $i 1
-		while ($i <= $scripts)
-			getWordPos "<><><>"&$scripts[$i] $pos "<><><>ephaggle"
-			if ($pos > 0)
-				setvar $isFound true
-			end
-			add $i 1
-		end
-		if ($isFound)
+		gosub :player~isEpHaggle
+		if ($player~isEpHaggle)
 			killalltriggers
 			if ($buydown_mode = "Worst Price")
 				#saving ephaggle mode so it can be returned when done with buy#
@@ -349,7 +340,7 @@ return
 		add $total_creds_needed $equip_creds_needed
 		setVar $startingCredits $player~credits
 		if ($total_creds_needed > $player~credits)
-			setVar $cashonhand $planet~citadel_credits
+			setVar $cashonhand $planet~CITADEL_CREDITS
 			add $cashonhand $player~credits
 			if ($cashonhand > $total_creds_needed)
 				send "C"
@@ -498,7 +489,7 @@ return
 	setVar $BOT~help[13] $BOT~tab&"      "
 	setVar $BOT~help[14] $BOT~tab&"  - Originally written by Cherokee.     "
 	setVar $BOT~help[15] $BOT~tab&"  - Now integrated with EP Haggle if it's running "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 	
 
 	loadVar $game~port_max
@@ -1042,10 +1033,12 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\bot_includes\player\isephaggle\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\planet\landingsub\planet"
+include "source\bot_includes\ship\getshipstats\ship"

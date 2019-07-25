@@ -4,19 +4,20 @@ gosub :BOT~loadVars
      setVar $BOT~help[1]  $BOT~tab&"msgs {d}  "
      setVar $BOT~help[2]  $BOT~tab&"   Options: "
      setVar $BOT~help[3]  $BOT~tab&"        d - Deletes messages in inbox "
-     gosub :BOT~help_file
+     gosub :bot~helpfile
 
 
 gosub :player~quikstats
 if ($player~current_prompt <> "Command") and ($player~current_prompt <> "Citadel")
 	setvar $switchboard~message "MSGS Must be run from Command or Citadel Prompts*"
+	gosub :switchboard~switchboard
 	halt
 end
 if ($bot~parm1 = "d")
 	send "c m a * q :y"
 	waiton "Delete messages?"
 	setTextLineTrigger	DELETED	:DELETED	"Deleted"
-	setTextTrigger		NADDA	:NADDA		"elp)"
+	setTextTrigger		NADDA	:NADDA		"Command [TL"
 	pause
 
 	:DELETED
@@ -31,10 +32,8 @@ if ($bot~parm1 = "d")
 	getText $TEMP $two "of" "messages"
 	stripText $two " "
 	waiton "elp)"
-	send "'"
-	waiton "[<ENTER> for multiple lines]"
-	send ("{" & $bot~bot_name & "} - Deleted "&$one&" of "&$two&" messages*")
-	waiton "Message sent on sub-space channel"
+	setvar $switchboard~message "Deleted "&$one&" of "&$two&" messages*"
+	gosub :switchboard~switchboard
 	:NADDA
 	killalltriggers
 	halt
@@ -60,11 +59,7 @@ halt
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
-

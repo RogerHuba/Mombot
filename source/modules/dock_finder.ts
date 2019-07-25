@@ -3,7 +3,7 @@
 
 	setVar $BOT~help[1] $BOT~tab&"Searches for hidden dock. "
 	setVar $BOT~help[2] $BOT~tab&"Assumes 6 warps out with a backdoor."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Dock Finder"
 	gosub :BOT~banner

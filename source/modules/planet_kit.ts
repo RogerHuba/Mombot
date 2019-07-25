@@ -9,11 +9,11 @@
     killalltriggers
     setVar $SWITCHBOARD~bot_name $bot_name
     setVar $SWITCHBOARD~self_command $self_command
-    gosub :PLAYER~current_prompt
-    setVar $PROMPT~validPrompts "Citadel"
+    gosub  :player~currentPrompt
+    setVar $bot~validPrompts "Citadel"
     setVar $startingLocation $PLAYER~current_prompt
-    setVar $PROMPT~startingLocation $startingLocation
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $startingLocation
+    gosub :bot~checkStartingPrompt
 
     loadVar $psimac_corp_limpet_drop_amt
     if ($psimac_corp_limpet_drop_amt < 1)

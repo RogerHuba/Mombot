@@ -6,7 +6,7 @@ logging off
 #HELP FILE
      setVar $BOT~help[1]  $BOT~tab&"cap   "
      setVar $BOT~help[2]  $BOT~tab&"    Captures enemy ships and attempts to not destroy them.   "
-     gosub :BOT~help_file
+     gosub :bot~helpfile
 
 	gosub :combat~init 
 
@@ -58,13 +58,14 @@ logging off
 #================================ END AUTO CAPTURE ===================================
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\ship\getshipcapstats\ship"
+include "source\bot_includes\bot\user_interface"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-include "source\bot_includes\user_interface"
-include "source\bot_includes\combat"
-
+include "source\module_includes\bot\wait_for_command\bot"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastcapture\combat"

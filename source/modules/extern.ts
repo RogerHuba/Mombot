@@ -12,7 +12,7 @@
     loadvar $SWITCHBOARD~self_command 
 
 :extern
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
     if (($startingLocation <> "Citadel") AND ($startingLocation <> "Command"))
         setVar $SWITCHBOARD~message "Wrong prompt for extern check.*"
@@ -85,7 +85,7 @@ return
 
 :checkStartingPrompt
     if ($PLAYER~CURRENT_PROMPT = "0")
-        gosub :PLAYER~current_prompt
+        gosub  :player~currentPrompt
     end
     getWordPos " "&$validPrompts&" " $pos $PLAYER~CURRENT_PROMPT
     if ($pos <= 0)

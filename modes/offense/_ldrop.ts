@@ -6,19 +6,19 @@
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-	setVar $BOT~help[1]   $BOT~tab&"ldrop [delay] {plock/foton} {kill} {direct} {return} {figs:n} {0ffensive}"
-	setVar $BOT~help[2]   $BOT~tab&"      "
-	setVar $BOT~help[3]   $BOT~tab&"    {plock} - plocks sector and triggers directly or after {delay}"
-	setVar $BOT~help[3]   $BOT~tab&"              if {return} is set plock cancels and returns after 5 seconds"
-	setVar $BOT~help[4]   $BOT~tab&"    {foton} - lands 1 sector away and starts density foton"
-	setVar $BOT~help[5]   $BOT~tab&"     {kill} - attempts to kill after drop (direct or plock)"
-	setVar $BOT~help[6]   $BOT~tab&"   {direct} - try to drop directly into the limp sector"
-	setVar $BOT~help[7]   $BOT~tab&"   {return} - after drop, return to starting sector "
-	setVar $BOT~help[8]   $BOT~tab&"              and scan again"
-	setVar $BOT~help[9]   $BOT~tab&"    {delay} - how many milliseconds to wait before drop or plock"
+	setVar $BOT~help[1]    $BOT~tab&"ldrop [delay] {plock/foton} {kill} {direct} {return} {figs:n} {0ffensive}"
+	setVar $BOT~help[2]    $BOT~tab&"      "
+	setVar $BOT~help[3]    $BOT~tab&"    {plock} - plocks sector and triggers directly or after {delay}"
+	setVar $BOT~help[3]    $BOT~tab&"              if {return} is set plock cancels and returns after 5 seconds"
+	setVar $BOT~help[4]    $BOT~tab&"    {foton} - lands 1 sector away and starts density foton"
+	setVar $BOT~help[5]    $BOT~tab&"     {kill} - attempts to kill after drop (direct or plock)"
+	setVar $BOT~help[6]    $BOT~tab&"   {direct} - try to drop directly into the limp sector"
+	setVar $BOT~help[7]    $BOT~tab&"   {return} - after drop, return to starting sector "
+	setVar $BOT~help[8]    $BOT~tab&"              and scan again"
+	setVar $BOT~help[9]    $BOT~tab&"    {delay} - how many milliseconds to wait before drop or plock"
 	setVar $BOT~help[10]   $BOT~tab&"   {figs:n} - drop this many figs to sector on landing"
-	setVar $BOT~help[11]   $BOT~tab&"  {offensive} - make figs offensive, default defense."
-	gosub :BOT~help_file
+	setVar $BOT~help[11]   $BOT~tab&"{offensive} - make figs offensive, default defense."
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Limpet Dropper"
 	gosub :BOT~banner
@@ -47,7 +47,6 @@ if ($pos > 0)
 	else
 		setVar $dropftrsType "d"
 	end
-	
 else
 	setVar $dropftrs FALSE
 end
@@ -140,8 +139,8 @@ setVar $moveFigMacro ""
 			replaceText $maxShipFigs "," ""
 
 
-		if ($PLANET~PLANET_FIGHTERS < $dropFigQuant)
-			setVar $SWITCHBOARD~message "There are only " & $PLANET~PLANET_FIGHTERS & " fighters on the planet.*"
+		if ($planet~planet_FIGHTERS < $dropFigQuant)
+			setVar $SWITCHBOARD~message "There are only " & $planet~planet_FIGHTERS & " fighters on the planet.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
@@ -164,7 +163,7 @@ setVar $moveFigMacro ""
 				setVar $moved $moved + $thisMove
 			end
 
-			setVar $moveFigMacro $moveFigMacro & "q m n t* q fz " & $moved & "* * zc" & $dropftrsType & " * l" & $PLANET~PLANET & " *m* t * c"
+			setVar $moveFigMacro $moveFigMacro & "q m n t* q fz " & $moved & "* * zc" & $dropftrsType & " * l" & $planet~planet & " *m* t * c"
 		end
 
 	end
@@ -173,8 +172,8 @@ setVar $moveFigMacro ""
 
 	send "q"
 	if ($kill)
-		setVar $targeting~PLANET $planet~PLANET
-		gosub :targeting~initialize_targeting
+		setVar $targeting~PLANET $planet~planet
+		gosub :targeting~initializetargeting
 	end
 	
 	setvar $home $player~CURRENT_SECTOR
@@ -262,7 +261,7 @@ setVar $moveFigMacro ""
 					getSectorParameter $checkSector "FIGSEC" $isFigged
 					if ($isFigged)
 						
-						send "l "&$planet~PLANET&"*  c"
+						send "l "&$planet~planet&"*  c"
 						send "p " $checkSector "*y"
 						setTextLineTrigger denMoveNo :denMoveNo "You do not have any fighters in Sector " & $adjsec & "."
 						setTextLineTrigger denMoveYes :denMoveYes "Locating beam pinpointed, TransWarp Locked."
@@ -302,7 +301,7 @@ setVar $moveFigMacro ""
 			goto :ldrop_scan
 		elseif ($plock = TRUE)
 
-			send "l "&$planet~PLANET&"*  c"
+			send "l "&$planet~planet&"*  c"
 			send "p " $adjsec "*"
 			setTextLineTrigger prelockNo :plockNo "You do not have any fighters in Sector " & $adjsec & "."
 			setTextLineTrigger prelockYes :plockYes "Locating beam pinpointed, TransWarp Locked."
@@ -343,10 +342,10 @@ setVar $moveFigMacro ""
 					end
 					:continuePlock
 						killalltriggers
-						send "y '{" $bot_name "} - PLOCK Launched*"
+						send "y '{" $switchboard~bot_name "} - PLOCK Launched*"
 						if ($kill)
-							setVar $targeting~PLANET $planet~PLANET
-							gosub :targeting~initialize_targeting
+							setVar $targeting~PLANET $planet~planet
+							gosub :targeting~initializetargeting
 						else
 							send "s* "
 						end
@@ -363,13 +362,13 @@ setVar $moveFigMacro ""
 				:plockFinished
 					killalltriggers
 					send "  s*   "
-					send "'{" $bot_name "} - PLOCK Sector Cleared*"
+					send "'{" $switchboard~bot_name "} - PLOCK Sector Cleared*"
 					send " q  q   "
 					goto :ldrop_scan
 				:manual
 					killAllTriggers
 					if ($kill)
-						gosub :targeting~scanit_cit_kill
+						gosub :targeting~scanitcitkill
 					else
 						send "s* "
 					end
@@ -381,7 +380,7 @@ setVar $moveFigMacro ""
 		end
 
 	:go_go_go
-		send "l "&$planet~PLANET&"* cp "&$adjsec&"*y"
+		send "l "&$planet~planet&"* cp "&$adjsec&"*y"
 		settextlinetrigger no_fig :ldrop_no_fig "Your own fighters must be in the destination"
 		settextlinetrigger in_sector :ldrop_in_sector "-=-=-=- Planetary TransWarp Drive Engaged! -=-=-=-"
 		pause
@@ -399,7 +398,7 @@ setVar $moveFigMacro ""
 		end
 
 		if ($kill)
-			gosub :targeting~scanit_cit_kill
+			gosub :targeting~scanitcitkill
 		else
 			send "s* "
 		end
@@ -447,13 +446,12 @@ setVar $moveFigMacro ""
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-include "source\bot_includes\targeting"
-include "source\bot_includes\combat"
-
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\targeting\initializetargeting\targeting"
+include "source\bot_includes\targeting\scanitcitkill\targeting"

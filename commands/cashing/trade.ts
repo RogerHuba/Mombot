@@ -15,7 +15,7 @@ gosub :BOT~loadVars
 	setVar $BOT~help[12]  $BOT~tab&"        "
 	setVar $BOT~help[12]  $BOT~tab&"       EP haggle will be used if it is running in the bot. "
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Trade"
 	gosub :BOT~banner
@@ -29,22 +29,6 @@ gosub :BOT~loadVars
 	getWord $bot~user_command_line $bot~parm2 2
 
 	
-
-	setvar $isFound false
-	listActiveScripts $scripts
-	setvar $i 1
-	while ($i <= $scripts)
-		getWordPos "<><><>"&$scripts[$i] $pos "<><><>ephaggle"
-		if ($pos > 0)
-			setvar $isFound true
-		end
-		add $i 1
-	end
-	if ($isFound)
-		setvar $haggle "t"
-	else
-		setvar $haggle "h"
-	end
 
 	if ($bot~parm1 <> "")
 		isNumber $test $bot~parm1
@@ -74,9 +58,9 @@ gosub :BOT~loadVars
 
 	
 	
-	setVar $empty_holds ($PLAYER~TOTAL_HOLDS - ($player~ORE_HOLDS + $player~ORGANIC_HOLDS + $player~EQUIPMENT_HOLDS + $PLAYER~COLONIST_HOLDS))
+	setVar $empty_holds ($player~total_holds - ($player~ore_holds + $player~organic_holds + $player~equipment_holds + $player~colonist_holds))
 
-	if ($PLAYER~COLONIST_HOLDS > 0)
+	if ($player~colonist_holds > 0)
 		setVar $SWITCHBOARD~message "Don't bore the tourists, offload the colonists.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -95,22 +79,22 @@ gosub :BOT~loadVars
 	setVar $buyOrg 0
 	setVar $buyEquip 0
 
-	if (($player~ORE_HOLDS > 0) and (PORT.BUYFUEL[CURRENTSECTOR] = 1))
-		setVar $sellOre $player~ORE_HOLDS
+	if (($player~ore_holds > 0) and (PORT.BUYFUEL[CURRENTSECTOR] = 1))
+		setVar $sellOre $player~ore_holds
 		setVar $virtFreeHolds ($virtFreeHolds + $sellOre)
 	end
 
-	if (($player~ORGANIC_HOLDS > 0) and (PORT.BUYORG[CURRENTSECTOR] = 1))
-		setVar $sellOrg $player~ORGANIC_HOLDS
+	if (($player~organic_holds > 0) and (PORT.BUYORG[CURRENTSECTOR] = 1))
+		setVar $sellOrg $player~organic_holds
 		setVar $virtFreeHolds ($virtFreeHolds + $sellOrg)
 	end
 
-	if (($player~EQUIPMENT_HOLDS > 0) and (PORT.BUYEQUIP[CURRENTSECTOR] = 1))
-		if ($player~EQUIPMENT_HOLDS <= $keepEquip)
+	if (($player~equipment_holds > 0) and (PORT.BUYEQUIP[CURRENTSECTOR] = 1))
+		if ($player~equipment_holds <= $keepEquip)
 			setVar $sellEquip 1
 			setVar $virtFreeHolds ($virtFreeHolds + 1)
 		else
-			setVar $sellEquip ($player~EQUIPMENT_HOLDS - $keepEquip)
+			setVar $sellEquip ($player~equipment_holds - $keepEquip)
 			setVar $virtFreeHolds ($virtFreeHolds + $sellEquip)
 		end
 		
@@ -375,6 +359,9 @@ return
 halt
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\switchboard"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\starthaggle\player"

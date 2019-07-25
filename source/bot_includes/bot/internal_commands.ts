@@ -463,7 +463,7 @@ return
 # ============================== START LOGIN (login) Sub ==============================
 :login
 	gosub :BOT~killthetriggers
-	gosub :PLAYER~current_prompt
+	gosub  :player~currentPrompt
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $BOT~validPrompts "Citadel Command"
 	gosub :BOT~checkStartingPrompt
@@ -481,11 +481,11 @@ goto :BOT~wait_for_command
 # ============================== START STORE SHIP ====================================
 :storeship
 :shipstore
-		gosub :PLAYER~current_prompt
+		gosub  :player~currentPrompt
 		setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 		setVar $BOT~validPrompts "Command Citadel"
 		gosub :BOT~checkStartingPrompt
-		gosub :SHIP~save_the_ship
+		gosub :ship~savetheship
 		goto :BOT~wait_for_command
 # ================================== END STORE SHIP ==============================================
 
@@ -622,7 +622,7 @@ goto :BOT~wait_for_command
 	setVar $startingLocation $PLAYER~current_prompt
 	setVar $BOT~validPrompts "Citadel Command"
 	gosub :BOT~checkStartingPrompt
-	gosub :combat~holo_kill
+	gosub :combat~holokill
 	if ($SWITCHBOARD~message <> "")
 		gosub :SWITCHBOARD~switchboard
 	end
@@ -652,7 +652,7 @@ goto :BOT~wait_for_command
 		setvar $furb true
 	end
 
-	gosub :PLAYER~current_prompt
+	gosub  :player~currentPrompt
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 
 	if ($PLAYER~startingLocation <> "Command")
@@ -759,4 +759,5 @@ goto :BOT~wait_for_command
 :refurb
 	setVar $BOT~user_command_line "refurb "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
 	goto :USER_INTERFACE~runUserCommandLine
+
 

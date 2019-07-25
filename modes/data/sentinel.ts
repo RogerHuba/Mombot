@@ -31,12 +31,8 @@
 	reqRecording
 	logging off
 	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
+				
 	
-	setVar $user_command_line $BOT~user_command_line
-
 	
 	setVar $BOT~help[1] $BOT~tab&" sentinel {cim} {clv} {cycletime}"
 	setVar $BOT~help[2] $BOT~tab&" Sentinel - Originally written by Xide"
@@ -45,7 +41,7 @@
 	setVar $BOT~help[5] $BOT~tab&"    - {clv}    - checks clv for changes - Default off"
 	setVar $BOT~help[6] $BOT~tab&"    - {cycletime}    - How long between cycles; def 30secs"
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Sentinel"
 	gosub :BOT~banner
@@ -64,43 +60,43 @@ setVar $sentinel_Inactivity 0
 setVar $sentinel_CycleTime 30000
 setVar $sentinel_LogFile GAMENAME & "_SENTINAL.txt"
 
-if ($parm1 = "0")
+if ($bot~parm1 = "0")
 	setVar $SWITCHBOARD~message "Must at least select CLV*"
 	gosub :SWITCHBOARD~switchboard
 	halt
 end
-if (($parm1 = "cim") or ($parm2 = "cim") or ($parm3 = "cim"))
+if (($bot~parm1 = "cim") or ($bot~parm2 = "cim") or ($bot~parm3 = "cim"))
 	setVar $sentinel_PerformCIM 1
 end
-if (($parm1 = "clv") or ($parm2 = "clv") or ($parm3 = "clv"))
+if (($bot~parm1 = "clv") or ($bot~parm2 = "clv") or ($bot~parm3 = "clv"))
 	setVar $sentinel_PerformCLV 1
 end
 
 setvar $cycleerror 0
-isNumber $test $parm1
-IF (($test) and ($parm1 <> 0))
-	if ($parm1 > 5)
-		setVar $sentinel_CycleTime (1000 * $parm1)
+isNumber $test $bot~parm1
+IF (($test) and ($bot~parm1 <> 0))
+	if ($bot~parm1 > 5)
+		setVar $sentinel_CycleTime (1000 * $bot~parm1)
 	else
 		setvar $cycleerror 1
 	end
 END
 
-isNumber $test $parm2
-IF (($test) and ($parm2 <> 0))
-	if ($parm2 > 5)
-		setVar $sentinel_CycleTime (1000 * $parm2)
+isNumber $test $bot~parm2
+IF (($test) and ($bot~parm2 <> 0))
+	if ($bot~parm2 > 5)
+		setVar $sentinel_CycleTime (1000 * $bot~parm2)
 	else
 		setvar $cycleerror 1
 	end
 
 END
 
- isNumber $test $parm3
-IF (($test) and ($parm3 <> 0))
+ isNumber $test $bot~parm3
+IF (($test) and ($bot~parm3 <> 0))
 
-	if ($parm3 > 5)
-		setVar $sentinel_CycleTime (1000 * $parm3)
+	if ($bot~parm3 > 5)
+		setVar $sentinel_CycleTime (1000 * $bot~parm3)
 	else
 		setvar $cycleerror 1
 	end
@@ -860,15 +856,15 @@ pause
     return
   end
   
-  cutText $StripRankPlayer $CorpData $Len 1
+  cutText $StripRankPlayer $player~corpData $Len 1
   
-  if ($CorpData = "]")
+  if ($player~corpData = "]")
     subtract $Len 3
-    cutText $StripRankPlayer $CorpData $Len 99
-    getWord $CorpData $CorpData 1
-    StripText $StripRankPlayer " " & $CorpData
-    StripText $CorpData "["
-    StripText $CorpData "]"
+    cutText $StripRankPlayer $player~corpData $Len 99
+    getWord $player~corpData $player~corpData 1
+    StripText $StripRankPlayer " " & $player~corpData
+    StripText $player~corpData "["
+    StripText $player~corpData "]"
   end
   
   return
@@ -1028,6 +1024,7 @@ pause
   return
 
 # includes:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\switchboard"

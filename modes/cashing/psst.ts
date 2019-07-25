@@ -41,16 +41,16 @@
 					setTextLineTrigger pwarpNoFuel1 :pwarpNoFuel1 "You do not have enough Fuel Ore on this planet to make the jump."
 					pause
 					:pwarpNoFuel1
-						send "'{" $bot_name "} Not enough fuel on planet "&$psst_Planet1 &". Halting Script.*"
+						send "'{" $switchboard~bot_name "} Not enough fuel on planet "&$psst_Planet1 &". Halting Script.*"
 						goto :endSST
 					:pwarpYesShip1
 						killAllTriggers
-						gosub :quikstats
+						gosub :player~quikstats
 						setVar $ship1NeedsPort FALSE
 						setVar $ship1Sector $focus
 						gosub :getSSTPortInfo
-						setVar $ship1TotalHolds $TOTAL_HOLDS
-						setVar $ship1Equipment $EQUIPMENT_HOLDS
+						setVar $ship1TotalHolds $player~total_holds
+						setVar $ship1Equipment $player~equipment_holds
 						gosub :displayCredits
 						send "q *q *"
 						if ($p1chk=1)
@@ -61,8 +61,8 @@
 							setvar $p1chk 1
 						end
 						waitOn "Fuel Ore"
-						getWord CURRENTLINE $planet1Fuel[$p1chk] 6
-						stripText $planet1Fuel[$p1chk] ","
+						getWord CURRENTLINE $planet~planet1Fuel[$p1chk] 6
+						stripText $planet~planet1Fuel[$p1chk] ","
 						goto :continueOnShip1   
 					:pwarpNoShip1
 						killAllTriggers	
@@ -103,7 +103,7 @@
 				end
 				if ($distanceThere > $transportRange)
 					setVar $NearFig 0
-					send "'{" $bot_name "} No Ports Within Transport Range*"
+					send "'{" $switchboard~bot_name "} No Ports Within Transport Range*"
 					goto :endSST  
 				elseif ($distanceBack > $transportRange)
 					goto :cantTransport
@@ -115,16 +115,16 @@
 					setTextLineTrigger pwarpNoFuel2 :pwarpNoFuel2 "You do not have enough Fuel Ore on this planet to make the jump."
 					pause
 					:pwarpNoFuel2
-						send "'{" $bot_name "} Not enough fuel on planet "&$psst_Planet2&". Halting Script.*"
+						send "'{" $switchboard~bot_name "} Not enough fuel on planet "&$psst_Planet2&". Halting Script.*"
 						goto :endSST
 					:pwarpYesShip2
 						killAllTriggers
-						gosub :quikstats
+						gosub :player~quikstats
 						setVar $ship2NeedsPort FALSE
 						setVar $ship2Sector $focus
 						gosub :getSSTPortInfo
-						setVar $ship2TotalHolds $TOTAL_HOLDS
-						setVar $ship2Equipment $EQUIPMENT_HOLDS
+						setVar $ship2TotalHolds $player~total_holds
+						setVar $ship2Equipment $player~equipment_holds
 						gosub :displayCredits
 						send "q *q *"
 						if ($p2chk=1)
@@ -135,8 +135,8 @@
 							setvar $p2chk 1
 						end
 						waitOn "Fuel Ore"
-						getWord CURRENTLINE $planet2Fuel[$p2chk] 6
-						stripText $planet2Fuel[$p2chk] ","
+						getWord CURRENTLINE $planet~planet2Fuel[$p2chk] 6
+						stripText $planet~planet2Fuel[$p2chk] ","
 						goto :continueOnShip2   
 					:pwarpNoShip2
 						killAllTriggers
@@ -157,7 +157,7 @@ return
 
 :steal
 	if (($isBusted1 <> TRUE) AND ($isBusted2 <> TRUE))
-		setVar $maxSteal ($EXPERIENCE / $steal_factor - 1)
+		setVar $maxSteal ($player~experience / $steal_factor - 1)
 		setVar $send ""
 			if ($inShip1)
 				if ($ship1Equipment > 0)
@@ -227,7 +227,7 @@ return
 			pause
     
 			:success
-				add $EXPERIENCE $stake
+				add $player~experience $stake
 				if ($inShip1)
 					setVar $ship2Equipment 1
 				else
@@ -281,7 +281,7 @@ return
 
 
 # ============================== QUICKSTATS ==============================
-:quikstats
+:player~quikstats
 	
 
 	killtrigger noprompt
@@ -297,14 +297,14 @@ return
 	pause
 
 	:allPrompts
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
+		getWord CURRENTLINE $player~current_prompt 1
+		stripText $player~current_prompt #145
+		stripText $player~current_prompt #8
 		#getWord currentansiline $checkPrompt 1
 		#getWord currentline $tempPrompt 1
 		#getWordPos $checkPrompt $pos "[35m"
 		#if ($pos > 0)
-		#	setVar $CURRENT_PROMPT $tempPrompt
+		#	setVar $player~current_prompt $tempPrompt
 		#end
 		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
 		pause
@@ -340,61 +340,61 @@ return
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
+				getWord $stats $player~turns  			($current_word + 1)
 			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
+				getWord $stats $player~credits  		($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
+				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
+				getWord $stats $player~shields  		($current_word + 1)
 			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
+				getWord $stats $player~total_holds   		($current_word + 1)
 			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
+				getWord $stats $player~ore_holds    		($current_word + 1)
 			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
+				getWord $stats $player~organic_holds    	($current_word + 1)
 			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
+				getWord $stats $player~equipment_holds    	($current_word + 1)
 			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
+				getWord $stats $player~colonist_holds    	($current_word + 1)
 			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
+				getWord $stats $player~photons   		($current_word + 1)
 			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
+				getWord $stats $player~armids   		($current_word + 1)
 			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
+				getWord $stats $player~limpets   		($current_word + 1)
 			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
+				getWord $stats $player~genesis  		($current_word + 1)
 			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
+				getWord $stats $player~twarp_type  		($current_word + 1)
 			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
+				getWord $stats $player~cloaks   		($current_word + 1)
 			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
+				getWord $stats $player~beacons 		($current_word + 1)
 			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
+				getWord $stats $player~atomic  		($current_word + 1)
 			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
+				getWord $stats $player~corbo   		($current_word + 1)
 			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
+				getWord $stats $player~eprobes   		($current_word + 1)
 			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
+				getWord $stats $player~mine_disruptors   	($current_word + 1)
 			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
+				getWord $stats $player~psychic_probe  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
+				getWord $stats $player~scan_type    		($current_word + 1)
 			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
+				getWord $stats $player~alignment    		($current_word + 1)
 			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
+				getWord $stats $player~experience    		($current_word + 1)
 			elseif ($wordy = "Corp")
-				getWord $stats $CORP   			($current_word + 1)
+				getWord $stats $player~corp   			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word
@@ -417,67 +417,67 @@ return
 	setVar $FIG_FILE "MOM_"&GAMENAME&"_Fighter_Grid.txt"
 	setVar $FIG_COUNT_FILE "MOM_"&GAMENAME&"_Fighter_Grid_Count.cnt"
 	loadVar $steal_factor
-	loadVar $unlimitedGame
+	loadVar $player~unlimitedGame
 	loadVar $bot_turn_limit
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
-	loadVar $bot_name	
+	loadVar $bot~user_command_line
+	loadVar $bot~parm1
+	loadVar $bot~parm2
+	loadVar $bot~parm3
+	loadVar $bot~parm4
+	loadVar $bot~parm5
+	loadVar $bot~parm6
+	loadVar $bot~parm7
+	loadVar $bot~parm8
+	loadVar $switchboard~bot_name	
 	loadVar $rylos
 	loadVar $alpha_centauri
 	loadVar $stardock
 	loadVar $subspace
 	
-	gosub :quikstats
-	setVar $startingLocation $CURRENT_PROMPT
-	isNumber $isParamOneNumber   $parm1 
-	isNumber $isParamTwoNumber   $parm2
-	isNumber $isParamThreeNumber $parm3
+	gosub :player~quikstats
+	setVar $startingLocation $player~current_prompt
+	isNumber $isParamOneNumber   $bot~parm1 
+	isNumber $isParamTwoNumber   $bot~parm2
+	isNumber $isParamThreeNumber $bot~parm3
 
 	if ($startingLocation <> "Command")
-		send "'{" $bot_name "} - Planet SST must be run from command prompt*"
+		send "'{" $switchboard~bot_name "} - Planet SST must be run from command prompt*"
 		halt
 	end
 	setVar $furb FALSE
-	getWordPos $user_command_line $pos "furb:"
+	getWordPos $bot~user_command_line $pos "furb:"
 	if ($pos > 0)
 		setVar $furb TRUE
-		getText " "&$user_command_line&" " $furb_bot "furb:" " "
+		getText " "&$bot~user_command_line&" " $furb_bot "furb:" " "
 	end
 
-	lowerCase $parm1
-	if ($parm1 = "clear_busts")
+	lowerCase $bot~parm1
+	if ($bot~parm1 = "clear_busts")
 		delete $BUST_FILE
 		setVar $i 1
 		while ($i <= SECTORS)
 			setSectorParameter $i "BUSTED" FALSE
 			add $i 1
 		end
-		send "'{" $bot_name "} - Bust file for this bot has been cleared.*"
+		send "'{" $switchboard~bot_name "} - Bust file for this bot has been cleared.*"
 		halt
 	elseif (($isParamOneNumber = TRUE) AND ($isParamTwoNumber = TRUE) AND ($isParamThreeNumber = TRUE))
-		setVar $psst_Ship2 $parm1
-		setVar $psst_Planet1 $parm2
-		setVar $psst_Planet2 $parm3
+		setVar $psst_Ship2 $bot~parm1
+		setVar $psst_Planet1 $bot~parm2
+		setVar $psst_Planet2 $bot~parm3
 	else
-		send "'{" $bot_name "} - Please use psst [ship2#] [planet1#] [planet2#] format.*"
+		send "'{" $switchboard~bot_name "} - Please use psst [ship2#] [planet1#] [planet2#] format.*"
 		halt
 	end
 
 	setVar $portaverage 1
 	send "jy*"
 	setVar $cashDeposited 0
-	goSub :quikstats
-	setvar $startcash $CREDITS
-	setArray $planet1Fuel 3
-	setArray $planet2Fuel 3
-	setVar $psst_Ship1 $SHIP_NUMBER
+	goSub :player~quikstats
+	setvar $startcash $player~credits
+	setArray $planet~planet1Fuel 3
+	setArray $planet~planet2Fuel 3
+	setVar $psst_Ship1 $player~ship_number
 	
 	if ($psst_Ship2 <= 0) OR ($psst_Planet1 <= 0) OR ($psst_Planet2 <= 0) OR ($steal_factor <= 0)
 		send "'This module should be run from the MOM Bot.*"
@@ -485,7 +485,7 @@ return
 		saveVar $mode
 		halt
 	end
-	setVar $startingSector $current_Sector
+	setVar $startingSector $player~current_sector
 	setVar $inShip1 TRUE
 	setvar $p1chk 3
 	setvar $p2chk 3
@@ -494,21 +494,21 @@ return
 	elseif ($ALPHA_CENTAURI > 10)
 		setVar $refurbPort $ALPHA_CENTAURI
 	elseif ($furb)
-		send "'{" $bot_name "} - This bot has no locations of Class 0 ports in its database.  Furbing only option enabled.*"
+		send "'{" $switchboard~bot_name "} - This bot has no locations of Class 0 ports in its database.  Furbing only option enabled.*"
 	else
-		send "'{" $bot_name "} - This bot has no locations of Class 0 ports in its database and furbing not enabled.  Cannot continue with Planet SST.*"
+		send "'{" $switchboard~bot_name "} - This bot has no locations of Class 0 ports in its database and furbing not enabled.  Cannot continue with Planet SST.*"
 		setVar $mode "General"
 		saveVar $mode
 		halt
 	end
 	if (SECTOR.PLANETCOUNT[$startingSector] <= 1)
-		send "'{" $bot_name "} - Planet SST must be run with at least two movable planets in the sector*"
+		send "'{" $switchboard~bot_name "} - Planet SST must be run with at least two movable planets in the sector*"
 		setVar $mode "General"
 		saveVar $mode
 		halt
 	end
 	if (SECTOR.SHIPCOUNT[$startingSector] < 1)
-		send "'{" $bot_name "} - Planet SST must be run with at least one empty ship in the sector*"
+		send "'{" $switchboard~bot_name "} - Planet SST must be run with at least one empty ship in the sector*"
 		setVar $mode "General"
 		saveVar $mode
 		halt
@@ -516,24 +516,24 @@ return
 	gosub :checkSSTPlanets
 	gosub :checkSSTShips
 	if ($foundPlanet1 <> TRUE)
-		send "'{" $bot_name "} - Planet #1 entered for Planet SST was not valid for this sector.*"
+		send "'{" $switchboard~bot_name "} - Planet #1 entered for Planet SST was not valid for this sector.*"
 		setVar $mode "General"
 		saveVar $mode
 		halt
 	end
 	if ($foundPlanet2 <> TRUE)
-		send "'{" $bot_name "} - Planet #2 entered for Planet SST was not valid for this sector.*"
+		send "'{" $switchboard~bot_name "} - Planet #2 entered for Planet SST was not valid for this sector.*"
 		setVar $mode "General"
 		saveVar $mode
 		halt
 	end
 	if ($foundShip2 <> TRUE)
-		send "'{" $bot_name "} - Ship #2 entered for Planet SST was not valid for this sector.*"
+		send "'{" $switchboard~bot_name "} - Ship #2 entered for Planet SST was not valid for this sector.*"
 		setVar $mode "General"
 		saveVar $mode
 		halt
 	end
-	send "'{" $bot_name "} Planet SST Powering Up!*"
+	send "'{" $switchboard~bot_name "} Planet SST Powering Up!*"
 	send "c;q"
 	waitOn "Transport Range:"
 	getWord CURRENTLINE $transportRange1 6
@@ -554,10 +554,10 @@ return
 	else
 		setVar $minRefurb (($maxHolds2*75)/100)
 	end
-	send "'{" $bot_name "} Minimum transport range of these two ships is "&$transportRange&".*"
+	send "'{" $switchboard~bot_name "} Minimum transport range of these two ships is "&$transportRange&".*"
 	
-	setVar $ship1Sector $current_Sector
-	setVar $ship2Sector $current_Sector
+	setVar $ship1Sector $player~current_sector
+	setVar $ship2Sector $player~current_sector
 	setVar $ship1NeedsPort TRUE
 	setVar $ship2NeedsPort TRUE
 	setVar $i 1
@@ -573,7 +573,7 @@ return
 		getSectorParameter $ship1Sector "BUSTED" $isBusted1
 		getSectorParameter $ship2Sector "BUSTED" $isBusted2
 		while ($busted = FALSE)
-			if (($unlimitedGame = FALSE) AND ($TURNS <= $bot_turn_limit))
+			if (($player~unlimitedGame = FALSE) AND ($player~turns <= $bot_turn_limit))
 				goto :endSST
 			end
 			gosub :steal
@@ -581,9 +581,9 @@ return
 		if (($ship1TotalHolds < $minRefurb) OR ($ship2TotalHolds < $minRefurb))
 			gosub :refurb
 		end
-		if (($planet1Fuel[1] < 100000) and ($planet1Fuel[2] < 100000) and ($planet1Fuel[3] < 100000))
+		if (($planet~planet1Fuel[1] < 100000) and ($planet~planet1Fuel[2] < 100000) and ($planet~planet1Fuel[3] < 100000))
 			goto :endSST
-		elseif (($planet2Fuel[1] < 100000) and ($planet2Fuel[2] < 100000) and ($planet2Fuel[3] < 100000))
+		elseif (($planet~planet2Fuel[1] < 100000) and ($planet~planet2Fuel[2] < 100000) and ($planet~planet2Fuel[3] < 100000))
 			goto :endSST
 		end
 	end
@@ -623,7 +623,7 @@ return
 	setVar $foundShip2 FALSE
 	killalltriggers
 	send "wn*"
-	setTextLineTrigger other :shipline " "&$current_Sector&" "
+	setTextLineTrigger other :shipline " "&$player~current_sector&" "
 	setTextLineTrigger noShips :shipDone "You do not own any other ships in this sector!"
 	pause
 	
@@ -634,7 +634,7 @@ return
 		if ($tempID = $psst_Ship2)
 			setVar $foundShip2 TRUE
 		end
-		setTextLineTrigger other :shipline " "&$current_Sector&" "
+		setTextLineTrigger other :shipline " "&$player~current_sector&" "
 		setTextLineTrigger noMore :shipDone "Choose which ship to tow "
 		pause
 	:shipDone
@@ -667,7 +667,7 @@ return
 			stripText $equipPerc "%"
 			setVar $x 10000
 			if ($equipPerc = 0)
- 				setVar $equipAtPort[$focus] ($TOTAL_HOLDS + 50)
+ 				setVar $equipAtPort[$focus] ($player~total_holds + 50)
 			else
 				divide $x $equipPerc
 				multiply $x $equipBuy
@@ -688,7 +688,7 @@ return
 
 :refurb
 	if ($furb)
-		gosub :quikstats
+		gosub :player~quikstats
 		setVar $FURB_SHIP ""
 		setVar $FURB_HOLDS ""
 		if ($inShip1)
@@ -712,20 +712,20 @@ return
 		:done
 		killtrigger furb1
 		killtrigger furb2
-		gosub :quikstats
+		gosub :player~quikstats
 		if ($inShip1)
-			if ($CREDITS > 5000000)
-				send "l "&$psst_Planet1 &"* c t t "&($CREDITS-5000000)&"* p "&$ship1Sector&"*y"
-				add $cashDeposited ($CREDITS-5000000)
-				setVar $CREDITS 5000000
+			if ($player~credits > 5000000)
+				send "l "&$psst_Planet1 &"* c t t "&($player~credits-5000000)&"* p "&$ship1Sector&"*y"
+				add $cashDeposited ($player~credits-5000000)
+				setVar $player~credits 5000000
 			else
 				send "l "&$psst_Planet1 &"* c p "&$ship1Sector&"*y"
 			end
 		else
-			if ($CREDITS > 5000000)
-				send "l "&$psst_Planet2&"* c t t "&($CREDITS-5000000)&"* p "&$ship2Sector&"*y"
-				add $cashDeposited ($CREDITS-5000000)
-				setVar $CREDITS 5000000
+			if ($player~credits > 5000000)
+				send "l "&$psst_Planet2&"* c t t "&($player~credits-5000000)&"* p "&$ship2Sector&"*y"
+				add $cashDeposited ($player~credits-5000000)
+				setVar $player~credits 5000000
 			else
 				send "l "&$psst_Planet2&"* c p "&$ship2Sector&"*y"
 			end
@@ -745,14 +745,14 @@ return
 		pause
 		:pwarpNoRefurb
 			killalltriggers
-			send "'{" $bot_name "} Not enough fuel on planet. Halting Script.*"
+			send "'{" $switchboard~bot_name "} Not enough fuel on planet. Halting Script.*"
 			setVar $mode "General"
 			saveVar $mode
 			halt
 		
 		:pwarpNoRefurbFig
 			killAllTriggers
-			send "'{" $bot_name "} No fighter down at refurb port in sector " &$refurbPort& ".*"
+			send "'{" $switchboard~bot_name "} No fighter down at refurb port in sector " &$refurbPort& ".*"
 			if ($refurbPort = $RYLOS)
 				if ($ALPHA_CENTAURI > 10)
 					setVar $refurbPort $ALPHA_CENTAURI
@@ -765,24 +765,24 @@ return
 			killAllTriggers
 			send "q q p ty"
 			waitOn "You have "
-			getWord CURRENTLINE $CREDITS 3
-			striptext $CREDITS ","
+			getWord CURRENTLINE $player~credits 3
+			striptext $player~credits ","
 			waitOn "A  Cargo holds     :"
 			getWord CURRENTLINE $holdsToBuy 10
 			send "a "&$holdsToBuy&"* y q q q * "
 		if ($inShip1)
-			if ($CREDITS > 5000000)
-				send "l "&$psst_Planet1 &"* c t t "&($CREDITS-5000000)&"* p "&$ship1Sector&"*y"
-				add $cashDeposited ($CREDITS-5000000)
-				setVar $CREDITS 5000000
+			if ($player~credits > 5000000)
+				send "l "&$psst_Planet1 &"* c t t "&($player~credits-5000000)&"* p "&$ship1Sector&"*y"
+				add $cashDeposited ($player~credits-5000000)
+				setVar $player~credits 5000000
 			else
 				send "l "&$psst_Planet1 &"* c p "&$ship1Sector&"*y"
 			end
 		else
-			if ($CREDITS > 5000000)
-				send "l "&$psst_Planet2&"* c t t "&($CREDITS-5000000)&"* p "&$ship2Sector&"*y"
-				add $cashDeposited ($CREDITS-5000000)
-				setVar $CREDITS 5000000
+			if ($player~credits > 5000000)
+				send "l "&$psst_Planet2&"* c t t "&($player~credits-5000000)&"* p "&$ship2Sector&"*y"
+				add $cashDeposited ($player~credits-5000000)
+				setVar $player~credits 5000000
 			else
 				send "l "&$psst_Planet2&"* c p "&$ship2Sector&"*y"
 			end
@@ -794,14 +794,14 @@ return
 		pause
 		:pwarpBackNoRefurbFuel
 			killalltriggers
-			send "'{" $bot_name "} Not enough fuel on planet. Can't make it back home. Resuming bot control.*"
+			send "'{" $switchboard~bot_name "} Not enough fuel on planet. Can't make it back home. Resuming bot control.*"
 			setVar $mode "General"
 			saveVar $mode
 			halt
 		
 		:pwarpBackNoRefurbFig
 			killAllTriggers
-			send "'{" $bot_name "} No fighter down coming back from refurb port, halting.*"
+			send "'{" $switchboard~bot_name "} No fighter down coming back from refurb port, halting.*"
 			goto :endSST
 		
 		:pwarpYesBack
@@ -824,7 +824,7 @@ return
 	setVar $formattedDepositedCredits $spentCredits&$formattedDepositedCredits
 	
 	setVar $formattedOnHandCredits ""
-	setVar $spentCredits $CREDITS
+	setVar $spentCredits $player~credits
 	getLength $spentCredits $length
 	while ($length > 3)
 		cutText $spentCredits $snippet $length-2 9999
@@ -834,13 +834,13 @@ return
 	end
 	setVar $formattedOnHandCredits $spentCredits&$formattedOnHandCredits
 	add $portaverage $cashDeposited
-	add $portaverage $CREDITS
+	add $portaverage $player~credits
 	subtract $portaverage $startcash
 	if ($numberbusted = 0)
 		setvar $numberbusted 1
 	end
 	divide $portaverage $numberbusted
-	setWindowContents cash "    Cash Deposited: "&$formattedDepositedCredits&"*      Cash On Hand: "&$formattedOnHandCredits&"*  Busted xxB Ports: "&$numberbusted&"*     Planet 1 Fuel: "&$planet1Fuel[1]&"*     Planet 2 Fuel: "&$planet2Fuel[1]&"*  Credits per Port: "&$portaverage&"*        Experience: "&$EXPERIENCE&"*"
+	setWindowContents cash "    Cash Deposited: "&$formattedDepositedCredits&"*      Cash On Hand: "&$formattedOnHandCredits&"*  Busted xxB Ports: "&$numberbusted&"*     Planet 1 Fuel: "&$planet~planet1Fuel[1]&"*     Planet 2 Fuel: "&$planet~planet2Fuel[1]&"*  Credits per Port: "&$portaverage&"*        Experience: "&$player~experience&"*"
 
 
 return
@@ -858,17 +858,17 @@ return
 	pause
 	:noneAvailable
 		if ($inShip1)
-			send "'{" $bot_name "} Ship #" $psst_Ship2 " is in use or not owned by you.*"
+			send "'{" $switchboard~bot_name "} Ship #" $psst_Ship2 " is in use or not owned by you.*"
 		else
-			send "'{" $bot_name "} Ship #" $psst_Ship1 " is in use or not owned by you.*"
+			send "'{" $switchboard~bot_name "} Ship #" $psst_Ship1 " is in use or not owned by you.*"
 		end
 		goto :endSST
 		halt
 	:outOfRange
 		if ($inShip1)
-			send "'{" $bot_name "} Ship #" $psst_Ship2 " is out of transporter range.*"
+			send "'{" $switchboard~bot_name "} Ship #" $psst_Ship2 " is out of transporter range.*"
 		else
-			send "'{" $bot_name "} Ship #" $psst_Ship1 " is out of transporter range.*"
+			send "'{" $switchboard~bot_name "} Ship #" $psst_Ship1 " is out of transporter range.*"
 		end
 		goto :endSST
 		halt
@@ -898,15 +898,16 @@ return
 		send "l "&$psst_Planet2&"* c p "&$startingSector&"*y"
 	end
 	
-	if (($planet1Fuel[1] < 100000) and ($planet1Fuel[2] < 100000) and ($planet1Fuel[3] < 100000))
-		send "'{" $bot_name "} - Planet(s) low on fuel, stopping script.  Put total of "&$formattedDepositedCredits&" credits in treasury.*"
-	elseif (($planet2Fuel[1] < 100000) and ($planet2Fuel[2] < 100000) and ($planet2Fuel[3] < 100000))
-		send "'{" $bot_name "} - Planet(s) low on fuel, stopping script.  Put total of "&$formattedDepositedCredits&" credits in treasury.*"
-	elseif (($unlimitedGame = FALSE) AND ($TURNS <= $bot_turn_limit))
-		send "'{" $bot_name "} - Too low turns to continue Planet SST.*"
+	if (($planet~planet1Fuel[1] < 100000) and ($planet~planet1Fuel[2] < 100000) and ($planet~planet1Fuel[3] < 100000))
+		send "'{" $switchboard~bot_name "} - Planet(s) low on fuel, stopping script.  Put total of "&$formattedDepositedCredits&" credits in treasury.*"
+	elseif (($planet~planet2Fuel[1] < 100000) and ($planet~planet2Fuel[2] < 100000) and ($planet~planet2Fuel[3] < 100000))
+		send "'{" $switchboard~bot_name "} - Planet(s) low on fuel, stopping script.  Put total of "&$formattedDepositedCredits&" credits in treasury.*"
+	elseif (($player~unlimitedGame = FALSE) AND ($player~turns <= $bot_turn_limit))
+		send "'{" $switchboard~bot_name "} - Too low turns to continue Planet SST.*"
 	else	
-		send "'{" $bot_name "} - All known xxB ports in the grid are used up.  Put total of "&$formattedDepositedCredits&" credits in treasury.*"
+		send "'{" $switchboard~bot_name "} - All known xxB ports in the grid are used up.  Put total of "&$formattedDepositedCredits&" credits in treasury.*"
 	end
-	send "'{" $bot_name "} - Check to make sure both planets and ships made it back to safe sector.*"
+	send "'{" $switchboard~bot_name "} - Check to make sure both planets and ships made it back to safe sector.*"
 	halt
 
+include "source\bot_includes\player\quikstats\player"

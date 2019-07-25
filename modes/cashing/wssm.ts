@@ -18,7 +18,7 @@
 	setVar $BOT~help[10]  $BOT~tab&"                    where FIGSEC is not true. "
 	setVar $BOT~help[11]  $BOT~tab&"          {share} - reports figged sectors over subspace"
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Wanderer"
 	gosub :BOT~banner
@@ -63,12 +63,12 @@
 	setvar $total_gridded 0
 	setvar $archived ""
 
-	if (($PLAYER~ORE_HOLDS < $PLAYER~TOTAL_HOLDS) AND ($player~ore_holds < 100))
+	if (($player~ore_holds < $player~total_holds) AND ($player~ore_holds < 100))
 		setVar $SWITCHBOARD~message "You need to fill all your holds with fuel. This is going to be a long drive.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	if ($PLAYER~$TWARP_TYPE = "No")
+	if ($PLAYER~$player~twarp_type = "No")
 		setVar $SWITCHBOARD~message "You really should use a twarp capable ship for wandering.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -199,8 +199,8 @@
 						setVar $index $j
 						if ($j = $courseLength)
 							setVar $PLAYER~warpto $closestFiggedSector
-							gosub :tactics~twarp
-							gosub :PLAYER~current_prompt
+							gosub :player~twarp
+							gosub  :player~currentPrompt
 							if ($PLAYER~twarpSuccess = TRUE)
 								setVar $j $index
 								add $total_turns $player~turns_per_warp
@@ -216,8 +216,8 @@
 						end
 						if ($closestFiggedSector > 0)
 							setVar $PLAYER~warpto $closestFiggedSector
-							gosub :tactics~twarp
-							gosub :PLAYER~current_prompt
+							gosub :player~twarp
+							gosub  :player~currentPrompt
 							if ($PLAYER~twarpSuccess = TRUE)
 								setVar $j ($index + 1)
 								add $total_turns $player~turns_per_warp
@@ -306,10 +306,10 @@
 							halt
 						end
 					end
-					if ($PLAYER~$TWARP_TYPE = "No")
+					if ($PLAYER~$player~twarp_type = "No")
 						goto :callSaveMe
 					end
-					if (($PLAYER~TOTAL_HOLDS <> $PLAYER~ORE_HOLDS) AND (($player~ore_holds < 100) OR ($player~unlimited_game = TRUE)) AND ((PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = TRUE) AND (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = FALSE) AND (PORT.CLASS[$PLAYER~CURRENT_SECTOR] > 0) AND (PORT.CLASS[$PLAYER~CURRENT_SECTOR] < 9)))
+					if (($player~total_holds <> $player~ore_holds) AND (($player~ore_holds < 100) OR ($player~unlimited_game = TRUE)) AND ((PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = TRUE) AND (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = FALSE) AND (PORT.CLASS[$PLAYER~CURRENT_SECTOR] > 0) AND (PORT.CLASS[$PLAYER~CURRENT_SECTOR] < 9)))
 						send "pt****   "
 						add $total_turns 1
 						gosub :PLAYER~quikstats
@@ -416,7 +416,7 @@
 return
 
 :callSaveMe
-	send "'"&CURRENTSECTOR&"=saveme*q q q q * '"&$bot_name&" call*"
+	send "'"&CURRENTSECTOR&"=saveme*q q q q * '"&$switchboard~bot_name&" call*"
 halt
 
 :getCourses
@@ -533,11 +533,11 @@ return
 return
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\player\currentprompt\player"

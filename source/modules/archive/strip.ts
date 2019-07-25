@@ -14,7 +14,7 @@
 	setVar $BOT~help[9]  $BOT~tab&"           {oc} - Strip organic colonists"
 	setVar $BOT~help[10] $BOT~tab&"           {ec} - Strip equipment colonists"
 	setVar $BOT~help[11] $BOT~tab&"          {fig} - Strip fighters"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	gosub :PLAYER~quikstats

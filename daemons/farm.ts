@@ -61,13 +61,13 @@
 	setVar $BOT~help[49] $BOT~tab&"               "
 	setVar $BOT~help[50] $BOT~tab&"       {remove} plus [sector number] bubble"
 	setVar $BOT~help[51] $BOT~tab&"               - Removes BUBBLE marked sector"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	
 
 	setvar $portname "Mind ()ver Matter"
- 	setvar $planetnamedoor "DOOR GUN"
- 	setvar $parameter "FARM"
+ 	setvar $planet~planetnamedoor "DOOR GUN"
+ 	setvar $bot~parmameter "FARM"
  	setvar $name_the_planet "Mind ()ver Matter"
  	setVar $j 1
  	setvar $status_message "Initializing"
@@ -302,7 +302,7 @@
 	getWordPos $bot~user_command_line $pos "bubble"
 	if ($pos > 0)
 		setvar $use_bubble true
-		setVar $parameter "BUBBLE"
+		setVar $bot~parmameter "BUBBLE"
 	else
 		setvar $use_bubble false
 	end
@@ -403,14 +403,14 @@
 	if ($pos > 0)
 		setVar $IDX 11
 		while ($IDX <= SECTORS)
-			getsectorparameter $IDX $parameter $test
+			getsectorparameter $IDX $bot~parmameter $test
 			if ($test = TRUE)
 				setVar $bubble_sectors $bubble_sectors&" "&$IDX 
 				add $count 1
 			end
 			add $IDX 1
 		end
-		send "'*"&$count&" "&$parameter&" sectors: "&$bubble_sectors&"**"
+		send "'*"&$count&" "&$bot~parmameter&" sectors: "&$bubble_sectors&"**"
 		halt
 	end
 
@@ -419,8 +419,8 @@
 		isNumber $test $bot~parm2
 		if ($test)
 			if (($bot~parm2 > 10) AND ($bot~parm2 <= SECTORS) AND ($bot~parm2 <> STARDOCK))
-				setSectorParameter $bot~parm2 $parameter TRUE
-		        setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector added as "&$parameter&" Sector.*"
+				setSectorParameter $bot~parm2 $bot~parmameter TRUE
+		        setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector added as "&$bot~parmameter&" Sector.*"
 				gosub :SWITCHBOARD~switchboard
 			end
 		else
@@ -436,8 +436,8 @@
 		isNumber $test $bot~parm2
 		if ($test)
 			if (($bot~parm2 > 10) AND ($bot~parm2 <= SECTORS) AND ($bot~parm2 <> STARDOCK))
-				setSectorParameter $bot~parm2 $parameter FALSE
-		        setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector removed from "&$parameter&" Sector Parameters.*"
+				setSectorParameter $bot~parm2 $bot~parmameter FALSE
+		        setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector removed from "&$bot~parmameter&" Sector Parameters.*"
 				gosub :SWITCHBOARD~switchboard
 			end
 		else
@@ -462,7 +462,7 @@
 
 
 	setVar $i 1
-	setArray $planets 30
+	setArray $planet~planets 30
 	gosub :PLAYER~quikstats
 	setvar $home $PLAYER~CURRENT_SECTOR
 	if ($PLAYER~PLANET_SCANNER = "No")
@@ -483,13 +483,13 @@
 	send "c"
 	gosub :SHIP~getShipStats
 
-	setVar $planetToFill $PLANET~PLANET
-	setVar $planetToFillFuel $PLANET~PLANET_FUEL
-	setVar $planetToFillOrganics $PLANET~PLANET_ORGANICS
-	setVar $planetToFillEquipment $PLANET~PLANET_EQUIPMENT
-	setVar $planetToFillFuelColonists $PLANET~PLANET_FUEL_COLONISTS
-	setVar $planetToFillOrganicsColonists $PLANET~PLANET_ORGANICS_COLONISTS
-	setVar $planetToFillEquipmentColonists $PLANET~PLANET_EQUIPMENT_COLONISTS
+	setVar $planet~planetToFill $planet~planet
+	setVar $planet~planetToFillFuel $planet~planet_FUEL
+	setVar $planet~planetToFillOrganics $planet~planet_ORGANICS
+	setVar $planet~planetToFillEquipment $planet~planet_EQUIPMENT
+	setVar $planet~planetToFillFuelColonists $planet~planet_FUEL_COLONISTS
+	setVar $planet~planetToFillOrganicsColonists $planet~planet_ORGANICS_COLONISTS
+	setVar $planet~planetToFillEquipmentColonists $planet~planet_EQUIPMENT_COLONISTS
 
     Window Farm_Script 330 424 ("M()M Farmer - " & GAMENAME) ONTOP
     gosub :setWindow
@@ -516,13 +516,13 @@
 			loadVar $BOT~botIsDeaf
 			loadVar $BOT~silent_running
 			if ($where_planets = true)
-				if ($citadels[$focus] <= 0)
+				if ($planet~CITADELs[$focus] <= 0)
 					goto :notit
 				end
 			end
 			if ($balance)
-				if ($citadels[$focus] > $game~MAX_PLANETS_PER_SECTOR)
-					getSectorParameter $focus $parameter $BUBBLE
+				if ($planet~CITADELs[$focus] > $game~MAX_PLANETS_PER_SECTOR)
+					getSectorParameter $focus $bot~parmameter $BUBBLE
 				else
 					setvar $bubble false
 				end
@@ -537,7 +537,7 @@
 						setVar $BUBBLE FALSE
 					end
 				else
-					getSectorParameter $focus $parameter $BUBBLE
+					getSectorParameter $focus $bot~parmameter $BUBBLE
 				end
 			end
 
@@ -594,12 +594,12 @@
 
 			send "q"
 			gosub :PLANET~getPlanetInfo
-			setVar $planetToFillFuel $PLANET~PLANET_FUEL
-			setVar $planetToFillOrganics $PLANET~PLANET_ORGANICS
-			setVar $planetToFillEquipment $PLANET~PLANET_EQUIPMENT
-			setVar $planetToFillFuelColonists $PLANET~PLANET_FUEL_COLONISTS
-			setVar $planetToFillOrganicsColonists $PLANET~PLANET_ORGANICS_COLONISTS
-			setVar $planetToFillEquipmentColonists $PLANET~PLANET_EQUIPMENT_COLONISTS
+			setVar $planet~planetToFillFuel $planet~planet_FUEL
+			setVar $planet~planetToFillOrganics $planet~planet_ORGANICS
+			setVar $planet~planetToFillEquipment $planet~planet_EQUIPMENT
+			setVar $planet~planetToFillFuelColonists $planet~planet_FUEL_COLONISTS
+			setVar $planet~planetToFillOrganicsColonists $planet~planet_ORGANICS_COLONISTS
+			setVar $planet~planetToFillEquipmentColonists $planet~planet_EQUIPMENT_COLONISTS
 			
 			send "m*** q* "
 	        if ($build = TRUE)
@@ -610,19 +610,19 @@
 				gosub :check_ports
 			end
 			if ($balance = true)
-				if ($citadels[$farmsector] > $game~MAX_PLANETS_PER_SECTOR)
+				if ($planet~CITADELs[$farmsector] > $game~MAX_PLANETS_PER_SECTOR)
 					setVar $j 1
-					setvar $planets_to_move ($citadels[$farmsector] - $game~MAX_PLANETS_PER_SECTOR)
-					setvar $planets_moved 0 
-					while ($j <= $planetCount)
-						if ($planetToFill <> $planets[$j])
-							send "l " & #8 & $planets[$j] & "* "
+					setvar $planet~planets_to_move ($planet~CITADELs[$farmsector] - $game~MAX_PLANETS_PER_SECTOR)
+					setvar $planet~planets_moved 0 
+					while ($j <= $planet~planetCount)
+						if ($planet~planetToFill <> $planet~planets[$j])
+							send "l " & #8 & $planet~planets[$j] & "* "
 							gosub :PLANET~getPlanetInfo
-							if (($PLANET~PLANET_FUEL >= 5000) and ($PLANET~CITADEL >= 4))
+							if (($planet~planet_FUEL >= 5000) and ($planet~CITADEL >= 4))
 								setvar $k 11
 								while ($k <= SECTORS)
-									getSectorParameter $k $parameter $isTargettedSector
-									if (($isTargettedSector = true) and ($citadels[$k] < $game~MAX_PLANETS_PER_SECTOR))
+									getSectorParameter $k $bot~parmameter $isTargettedSector
+									if (($isTargettedSector = true) and ($planet~CITADELs[$k] < $game~MAX_PLANETS_PER_SECTOR))
 										killtrigger 1
 										killtrigger 2
 										killtrigger 3
@@ -633,20 +633,20 @@
 										pause			
 
 										:warp_it_balance
-											setvar $citadels[$k] ($citadels[$k] + 1)
-											setvar $citadels[$farmsector] ($citadels[$farmsector] - 1)
+											setvar $planet~CITADELs[$k] ($planet~CITADELs[$k] + 1)
+											setvar $planet~CITADELs[$farmsector] ($planet~CITADELs[$farmsector] - 1)
 											setvar $player~startinglocation "Citadel"
 											setVar $PLAYER~warpto $farmsector
 											gosub :player~quikstats
-											gosub :tactics~twarp
-											gosub :PLAYER~current_prompt
+											gosub :player~twarp
+											gosub  :player~currentPrompt
 											if ($PLAYER~twarpSuccess <> TRUE)
 												setvar $switchboard~message "Twarp failed during planet balancing. "&$player~msg&" Halting!*"
 												gosub :switchboard~switchboard
 												halt
 											end
-											add $planets_moved 1
-											if ($planets_moved >= $planets_to_move)
+											add $planet~planets_moved 1
+											if ($planet~planets_moved >= $planet~planets_to_move)
 												goto :done_moving_planets
 											end
 
@@ -693,7 +693,7 @@
 						killtrigger 2
 						killtrigger 3
 						killtrigger 4
-						send " a y "&$SHIP~SHIP_MAX_ATTACK&"*l "&$planetToFill&"* m * * * q "
+						send " a y "&$SHIP~SHIP_MAX_ATTACK&"*l "&$planet~planetToFill&"* m * * * q "
 						setTextTrigger 1 :keepDestroying "Incoming laser barrage from"
 						setTextTrigger 2 :doneDestroying "You destroyed the Star Port!"
 						pause
@@ -720,13 +720,13 @@
                 setVar $SWITCHBOARD~message "Completed All Farming/Building/Port Actions Sector: "&$farmSector&".*"
 				gosub :SWITCHBOARD~switchboard
             end
-            send "qq* l " & #8 & $planetToFill & "* "
+            send "qq* l " & #8 & $planet~planetToFill & "* "
 			gosub :PLANET~getPlanetInfo
 			send "c"
 			:next_farm_sector
             if ($strip = TRUE)
-				if ((($get_org = TRUE) AND ($PLANET~PLANET_ORGANICS > ($PLANET~PLANET_ORGANICS_MAX-1000))) AND (($get_equ = TRUE) AND ($PLANET~PLANET_EQUIPMENT > ($PLANET~PLANET_EQUIPMENT_MAX - 1000))))
-					setVar $planetIsFull TRUE
+				if ((($get_org = TRUE) AND ($planet~planet_ORGANICS > ($planet~planet_ORGANICS_MAX-1000))) AND (($get_equ = TRUE) AND ($planet~planet_EQUIPMENT > ($planet~planet_EQUIPMENT_MAX - 1000))))
+					setVar $planet~planetIsFull TRUE
 					goto :end
 				end
 			end
@@ -736,7 +736,7 @@
 :count_planets
 	send "qq*  |l"
 	waitOn "Registry# and Planet Name"
-	setVar $planetCount 0
+	setVar $planet~planetCount 0
 	killalltriggers
 	setTextLineTrigger planetGrabber :planetline "   <"
 	setTextLineTrigger beDone :done "Land on which planet "
@@ -751,8 +751,8 @@
 			replacetext $line "<" " "
 			replacetext $line ">" " "
 			striptext $line ","
-			add $planetCount 1
-			getWord $line $planets[$planetCount] 1
+			add $planet~planetCount 1
+			getWord $line $planet~planets[$planet~planetCount] 1
 		end
 		setTextLineTrigger getLine2 :planetline "   <"
 		setTextLineTrigger getend :done "Land on which planet "
@@ -763,7 +763,7 @@
 
 :get_tl_list
 	setVar $sectorCount 0
-	setarray $citadels sectors
+	setarray $planet~CITADELs sectors
 	killalltriggers
 	setTextLineTrigger sectorGrabber :sector_planet_line "Class "
 	setTextLineTrigger sectorbeDone :sector_done "======   ============"
@@ -777,8 +777,8 @@
 	:sector_planet_line
 		killalltriggers
 		getWord CURRENTLINE $testsector 1
-		setvar $citadel_count $citadels[$testsector]
-		setvar $citadels[$testsector] ($citadel_count + 1)
+		setvar $planet~CITADEL_count $planet~CITADELs[$testsector]
+		setvar $planet~CITADELs[$testsector] ($planet~CITADEL_count + 1)
 		setVar $tl_planets $tl_planets&" "&$testsector
 		setTextLineTrigger getLine2 :sector_planet_line "Class"
 		setTextLineTrigger getEnd :sector_done "======   ============"
@@ -793,25 +793,25 @@ return
  	setVar $j 1
 	send "qq* "
 	if ((($upgrade) OR ($build)) AND ($noupgrade = FALSE))
-         if ($planetCount > 1)
+         if ($planet~planetCount > 1)
          	gosub :upgrade_planets
     	end
     end
-	while ($j <= $planetCount)
-		if ($planetToFill <> $planets[$j])
-                        send "l " & #8 & $planets[$j] & "* "
+	while ($j <= $planet~planetCount)
+		if ($planet~planetToFill <> $planet~planets[$j])
+                        send "l " & #8 & $planet~planets[$j] & "* "
 						gosub :PLANET~getPlanetInfo
-						setVar $PLANET_FUEL $PLANET~PLANET_FUEL
-						setVar $PLANET_ORGANICS $PLANET~PLANET_ORGANICS
-						setVar $PLANET_EQUIPMENT $PLANET~PLANET_EQUIPMENT
-						setVar $PLANET_FUEL_COLONISTS $PLANET~PLANET_FUEL_COLONISTS
-						setVar $PLANET_ORGANICS_COLONISTS $PLANET~PLANET_ORGANICS_COLONISTS
-						setVar $PLANET_EQUIPMENT_COLONISTS $PLANET~PLANET_EQUIPMENT_COLONISTS
-						setVar $PLANET_CLASS $PLANET~PLANET_CLASS_NAME
-						setVar $PLANET_CITADEL_CREDITS $PLANET~CITADEL_CREDITS
-						setVar $PLANET_CITADEL $PLANET~CITADEL
-						setVar $PLANET_SHIELD_POWER $PLANET~SHIELD_POWER
-						lowercase $PLANET_CLASS
+						setVar $planet~planet_FUEL $planet~planet_FUEL
+						setVar $planet~planet_ORGANICS $planet~planet_ORGANICS
+						setVar $planet~planet_EQUIPMENT $planet~planet_EQUIPMENT
+						setVar $planet~planet_FUEL_COLONISTS $planet~planet_FUEL_COLONISTS
+						setVar $planet~planet_ORGANICS_COLONISTS $planet~planet_ORGANICS_COLONISTS
+						setVar $planet~planet_EQUIPMENT_COLONISTS $planet~planet_EQUIPMENT_COLONISTS
+						setVar $planet~planet_CLASS $planet~planet_CLASS_NAME
+						setVar $planet~planet_CITADEL_CREDITS $planet~CITADEL_CREDITS
+						setVar $planet~planet_CITADEL $planet~CITADEL
+						setVar $planet~planet_SHIELD_POWER $planet~SHIELD_POWER
+						lowercase $planet~planet_CLASS
 
                         if ($armageddon = TRUE)
 							setVar $BOT~user_command_line "s silent"
@@ -830,7 +830,7 @@ return
 							:blow_it_again
 								if ($PLAYER~ATOMIC < 1)
 									gosub :get_dets
-									send "l " & #8 & $planets[$j] & "*"
+									send "l " & #8 & $planet~planets[$j] & "*"
 								end
 								killtrigger 1
 								killtrigger 2
@@ -856,17 +856,17 @@ return
 						end
 						setVar $i 1
 						setVar $foundPlanet FALSE
-						while (($i <= $PLANET~planetcounter) AND ($foundPlanet = FALSE))
-							lowercase $PLANET~planetList[$i]
-							lowercase $PLANET_CLASS
-							getWordPos $PLANET~planetList[$i] $pos $PLANET_CLASS
+						while (($i <= $planet~planetcounter) AND ($foundPlanet = FALSE))
+							lowercase $planet~planetList[$i]
+							lowercase $planet~planet_CLASS
+							getWordPos $planet~planetList[$i] $pos $planet~planet_CLASS
 							if ($pos > 0)
-								setVar $PLANET_FUEL_COLONISTS_MAX $PLANET~planetList[$i][2]
-								setVar $PLANET_ORGANICS_COLONISTS_MAX $PLANET~planetList[$i][4]
-								setVar $PLANET_EQUIPMENT_COLONISTS_MAX $PLANET~planetList[$i][6]
-								setVar $PLANET_FUEL_COLONISTS_MIN $PLANET~planetList[$i][1]
-								setVar $PLANET_ORGANICS_COLONISTS_MIN $PLANET~planetList[$i][3]
-								setVar $PLANET_EQUIPMENT_COLONISTS_MIN $PLANET~planetList[$i][5]
+								setVar $planet~planet_FUEL_COLONISTS_MAX $planet~planetList[$i][2]
+								setVar $planet~planet_ORGANICS_COLONISTS_MAX $planet~planetList[$i][4]
+								setVar $planet~planet_EQUIPMENT_COLONISTS_MAX $planet~planetList[$i][6]
+								setVar $planet~planet_FUEL_COLONISTS_MIN $planet~planetList[$i][1]
+								setVar $planet~planet_ORGANICS_COLONISTS_MIN $planet~planetList[$i][3]
+								setVar $planet~planet_EQUIPMENT_COLONISTS_MIN $planet~planetList[$i][5]
 								setVar $foundPlanet TRUE
 							end
 							if ($foundPlanet = FALSE)
@@ -875,37 +875,37 @@ return
 						end
 						if ($foundPlanet = FALSE)
 							subtract $i 1
-							setVar $SWITCHBOARD~message "[" & $PLANET_CLASS & "] Planet Class Not Recognized Sector: " & $PLAYER~CURRENT_SECTOR & "["&$PLANET~planetList[$i]&"]*"
+							setVar $SWITCHBOARD~message "[" & $planet~planet_CLASS & "] Planet Class Not Recognized Sector: " & $PLAYER~CURRENT_SECTOR & "["&$planet~planetList[$i]&"]*"
 							gosub :switchboard~switchboard
 							goto :doneWithThisPlanet
 						end
                         if ($colonize)
-							if (($PLANET_FUEL_COLONISTS < ($PLANET_FUEL_COLONISTS_MAX-1000)) OR ($PLANET_ORGANICS_COLONISTS < ($PLANET_ORGANICS_COLONISTS_MAX-1000)) OR ($PLANET_EQUIPMENT_COLONISTS < ($PLANET_EQUIPMENT_COLONISTS_MAX-1000)))
+							if (($planet~planet_FUEL_COLONISTS < ($planet~planet_FUEL_COLONISTS_MAX-1000)) OR ($planet~planet_ORGANICS_COLONISTS < ($planet~planet_ORGANICS_COLONISTS_MAX-1000)) OR ($planet~planet_EQUIPMENT_COLONISTS < ($planet~planet_EQUIPMENT_COLONISTS_MAX-1000)))
 								gosub :colonize
 							end
-							send "l " & #8 & $planets[$j] & "* "
+							send "l " & #8 & $planet~planets[$j] & "* "
 							gosub :PLANET~getPlanetInfo
-							setVar $PLANET_FUEL $PLANET~PLANET_FUEL
-							setVar $PLANET_ORGANICS $PLANET~PLANET_ORGANICS
-							setVar $PLANET_EQUIPMENT $PLANET~PLANET_EQUIPMENT
-							setVar $PLANET_FUEL_COLONISTS $PLANET~PLANET_FUEL_COLONISTS
-							setVar $PLANET_ORGANICS_COLONISTS $PLANET~PLANET_ORGANICS_COLONISTS
-							setVar $PLANET_EQUIPMENT_COLONISTS $PLANET~PLANET_EQUIPMENT_COLONISTS
-							setVar $PLANET_CLASS $PLANET~PLANET_CLASS_NAME
-							setVar $PLANET_CITADEL_CREDITS $PLANET~CITADEL_CREDITS
-							setVar $PLANET_CITADEL $PLANET~CITADEL
-							setVar $PLANET_SHIELD_POWER $PLANET~SHIELD_POWER
-							lowercase $PLANET_CLASS
+							setVar $planet~planet_FUEL $planet~planet_FUEL
+							setVar $planet~planet_ORGANICS $planet~planet_ORGANICS
+							setVar $planet~planet_EQUIPMENT $planet~planet_EQUIPMENT
+							setVar $planet~planet_FUEL_COLONISTS $planet~planet_FUEL_COLONISTS
+							setVar $planet~planet_ORGANICS_COLONISTS $planet~planet_ORGANICS_COLONISTS
+							setVar $planet~planet_EQUIPMENT_COLONISTS $planet~planet_EQUIPMENT_COLONISTS
+							setVar $planet~planet_CLASS $planet~planet_CLASS_NAME
+							setVar $planet~planet_CITADEL_CREDITS $planet~CITADEL_CREDITS
+							setVar $planet~planet_CITADEL $planet~CITADEL
+							setVar $planet~planet_SHIELD_POWER $planet~SHIELD_POWER
+							lowercase $planet~planet_CLASS
                         end
                         if ($defense)
-	                        if ($PLANET_CITADEL >= 3)
+	                        if ($planet~planet_CITADEL >= 3)
 								send "cls0*la100*q "                        	
 	                        end
 	                    end
 						if ($barricade = TRUE)
-							if (($PLANET_FUEL > 50000) AND ($PLANET_CITADEL >= 4))
+							if (($planet~planet_FUEL > 50000) AND ($planet~planet_CITADEL >= 4))
 								send "c  "
-								setVar $warpto $home
+								setVar $player~warpto $home
 								gosub :pwarp
 								send "q  "
 								if ($success = TRUE)
@@ -928,106 +928,106 @@ return
 						if ($barricade = TRUE)
 							gosub :PLAYER~quikstats
 							if (($PLAYER~CURRENT_SECTOR = $home) AND ($PLAYER~CURRENT_PROMPT = "Citadel"))
-								setVar $warpto $farmSector
+								setVar $player~warpto $farmSector
 								gosub :pwarp
 								send "q  "
 							end
 						end
 
 						#AUTOMATICALLY ADJUST COLOS
-                        if ($PLANET_FUEL_COLONISTS > $PLANET_FUEL_COLONISTS_MAX)
-                        	setVar $extra_colos ($PLANET_FUEL_COLONISTS-$PLANET_FUEL_COLONISTS_MAX)
-							if ($PLANET_ORGANICS_COLONISTS < $PLANET_ORGANICS_COLONISTS_MAX)
-								setVar $colos_needed ($PLANET_ORGANICS_COLONISTS_MAX-$PLANET_ORGANICS_COLONISTS)
+                        if ($planet~planet_FUEL_COLONISTS > $planet~planet_FUEL_COLONISTS_MAX)
+                        	setVar $extra_colos ($planet~planet_FUEL_COLONISTS-$planet~planet_FUEL_COLONISTS_MAX)
+							if ($planet~planet_ORGANICS_COLONISTS < $planet~planet_ORGANICS_COLONISTS_MAX)
+								setVar $colos_needed ($planet~planet_ORGANICS_COLONISTS_MAX-$planet~planet_ORGANICS_COLONISTS)
 								if ($colos_needed >= $extra_colos)
 									setVar $colos_to_move $extra_colos
 								else
 									setVar $colos_to_move $colos_needed
 								end
 								setVar $extra_colos ($extra_colos - $colos_to_move)
-								setVar $PLANET_ORGANICS_COLONISTS ($PLANET_ORGANICS_COLONISTS+$colos_to_move)
-								setVar $PLANET_FUEL_COLONISTS ($PLANET_FUEL_COLONISTS-$colos_to_move)
+								setVar $planet~planet_ORGANICS_COLONISTS ($planet~planet_ORGANICS_COLONISTS+$colos_to_move)
+								setVar $planet~planet_FUEL_COLONISTS ($planet~planet_FUEL_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*1"&$colos_to_move&"*2"
 									waitOn "The Colonists drop what"
 								end
 							end
-							if ($PLANET_EQUIPMENT_COLONISTS < $PLANET_EQUIPMENT_COLONISTS_MAX)
-								setVar $colos_needed ($PLANET_EQUIPMENT_COLONISTS_MAX-$PLANET_EQUIPMENT_COLONISTS)
+							if ($planet~planet_EQUIPMENT_COLONISTS < $planet~planet_EQUIPMENT_COLONISTS_MAX)
+								setVar $colos_needed ($planet~planet_EQUIPMENT_COLONISTS_MAX-$planet~planet_EQUIPMENT_COLONISTS)
 								if ($colos_needed >= $extra_colos)
 									setVar $colos_to_move $extra_colos
 								else
 									setVar $colos_to_move $colos_needed
 								end
 								setVar $extra_colos ($extra_colos - $colos_to_move)
-								setVar $PLANET_EQUIPMENT_COLONISTS ($PLANET_EQUIPMENT_COLONISTS+$colos_to_move)
-								setVar $PLANET_FUEL_COLONISTS ($PLANET_FUEL_COLONISTS-$colos_to_move)
+								setVar $planet~planet_EQUIPMENT_COLONISTS ($planet~planet_EQUIPMENT_COLONISTS+$colos_to_move)
+								setVar $planet~planet_FUEL_COLONISTS ($planet~planet_FUEL_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*1"&$colos_to_move&"*3"
 									waitOn "The Colonists drop what"
 								end
 							end
                         end
-						if ($PLANET_ORGANICS_COLONISTS > $PLANET_ORGANICS_COLONISTS_MAX)
-							setVar $extra_colos ($PLANET_ORGANICS_COLONISTS-$PLANET_ORGANICS_COLONISTS_MAX)
-							if ($PLANET_FUEL_COLONISTS < $PLANET_FUEL_COLONISTS_MAX)
-								setVar $colos_needed ($PLANET_FUEL_COLONISTS_MAX-$PLANET_FUEL_COLONISTS)
+						if ($planet~planet_ORGANICS_COLONISTS > $planet~planet_ORGANICS_COLONISTS_MAX)
+							setVar $extra_colos ($planet~planet_ORGANICS_COLONISTS-$planet~planet_ORGANICS_COLONISTS_MAX)
+							if ($planet~planet_FUEL_COLONISTS < $planet~planet_FUEL_COLONISTS_MAX)
+								setVar $colos_needed ($planet~planet_FUEL_COLONISTS_MAX-$planet~planet_FUEL_COLONISTS)
 								if ($colos_needed >= $extra_colos)
 									setVar $colos_to_move $extra_colos
 								else
 									setVar $colos_to_move $colos_needed
 								end
 								setVar $extra_colos ($extra_colos - $colos_to_move)
-								setVar $PLANET_FUEL_COLONISTS ($PLANET_FUEL_COLONISTS+$colos_to_move)
-								setVar $PLANET_ORGANICS_COLONISTS ($PLANET_ORGANICS_COLONISTS-$colos_to_move)
+								setVar $planet~planet_FUEL_COLONISTS ($planet~planet_FUEL_COLONISTS+$colos_to_move)
+								setVar $planet~planet_ORGANICS_COLONISTS ($planet~planet_ORGANICS_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*2"&$colos_to_move&"*1"
 									waitOn "The Colonists drop what"
 								end
 							end
-							if ($PLANET_EQUIPMENT_COLONISTS < $PLANET_EQUIPMENT_COLONISTS_MAX)
-								setVar $colos_needed ($PLANET_EQUIPMENT_COLONISTS_MAX-$PLANET_EQUIPMENT_COLONISTS)
+							if ($planet~planet_EQUIPMENT_COLONISTS < $planet~planet_EQUIPMENT_COLONISTS_MAX)
+								setVar $colos_needed ($planet~planet_EQUIPMENT_COLONISTS_MAX-$planet~planet_EQUIPMENT_COLONISTS)
 								if ($colos_needed >= $extra_colos)
 									setVar $colos_to_move $extra_colos
 								else
 									setVar $colos_to_move $colos_needed
 								end
 								setVar $extra_colos ($extra_colos - $colos_to_move)
-								setVar $PLANET_EQUIPMENT_COLONISTS ($PLANET_EQUIPMENT_COLONISTS+$colos_to_move)
-								setVar $PLANET_ORGANICS_COLONISTS ($PLANET_ORGANICS_COLONISTS-$colos_to_move)
+								setVar $planet~planet_EQUIPMENT_COLONISTS ($planet~planet_EQUIPMENT_COLONISTS+$colos_to_move)
+								setVar $planet~planet_ORGANICS_COLONISTS ($planet~planet_ORGANICS_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*2"&$colos_to_move&"*3"
 									waitOn "The Colonists drop what"
 								end
 							end
 						end
-                        if ($PLANET_EQUIPMENT_COLONISTS > $PLANET_EQUIPMENT_COLONISTS_MAX)
-                        	setVar $extra_colos ($PLANET_EQUIPMENT_COLONISTS-$PLANET_EQUIPMENT_COLONISTS_MAX)
-                        	if ($PLANET_ORGANICS_COLONISTS < $PLANET_ORGANICS_COLONISTS_MAX)
-                        		setVar $colos_needed ($PLANET_ORGANICS_COLONISTS_MAX-$PLANET_ORGANICS_COLONISTS)
+                        if ($planet~planet_EQUIPMENT_COLONISTS > $planet~planet_EQUIPMENT_COLONISTS_MAX)
+                        	setVar $extra_colos ($planet~planet_EQUIPMENT_COLONISTS-$planet~planet_EQUIPMENT_COLONISTS_MAX)
+                        	if ($planet~planet_ORGANICS_COLONISTS < $planet~planet_ORGANICS_COLONISTS_MAX)
+                        		setVar $colos_needed ($planet~planet_ORGANICS_COLONISTS_MAX-$planet~planet_ORGANICS_COLONISTS)
                         		if ($colos_needed >= $extra_colos)
                         			setVar $colos_to_move $extra_colos
                         		else
                         			setVar $colos_to_move $colos_needed
                         		end
 								setVar $extra_colos ($extra_colos - $colos_to_move)
-                        		setVar $PLANET_ORGANICS_COLONISTS ($PLANET_ORGANICS_COLONISTS+$colos_to_move)
-                        		setVar $PLANET_EQUIPMENT_COLONISTS ($PLANET_EQUIPMENT_COLONISTS-$colos_to_move)
+                        		setVar $planet~planet_ORGANICS_COLONISTS ($planet~planet_ORGANICS_COLONISTS+$colos_to_move)
+                        		setVar $planet~planet_EQUIPMENT_COLONISTS ($planet~planet_EQUIPMENT_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*3"&$colos_to_move&"*2"
 									waitOn "The Colonists drop what"
 								end
 							end
-                        	if ($PLANET_FUEL_COLONISTS < $PLANET_FUEL_COLONISTS_MAX)
-                        		setVar $colos_needed ($PLANET_FUEL_COLONISTS_MAX-$PLANET_FUEL_COLONISTS)
+                        	if ($planet~planet_FUEL_COLONISTS < $planet~planet_FUEL_COLONISTS_MAX)
+                        		setVar $colos_needed ($planet~planet_FUEL_COLONISTS_MAX-$planet~planet_FUEL_COLONISTS)
                         		if ($colos_needed >= $extra_colos)
                         			setVar $colos_to_move $extra_colos
                         		else
                         			setVar $colos_to_move $colos_needed
                         		end
 								setVar $extra_colos ($extra_colos - $colos_to_move)
-								setVar $PLANET_FUEL_COLONISTS ($PLANET_FUEL_COLONISTS+$colos_to_move)
-                        		setVar $PLANET_EQUIPMENT_COLONISTS ($PLANET_EQUIPMENT_COLONISTS-$colos_to_move)
+								setVar $planet~planet_FUEL_COLONISTS ($planet~planet_FUEL_COLONISTS+$colos_to_move)
+                        		setVar $planet~planet_EQUIPMENT_COLONISTS ($planet~planet_EQUIPMENT_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*3"&$colos_to_move&"*1"
 									waitOn "The Colonists drop what"
@@ -1035,54 +1035,54 @@ return
                         	end
                         end
 
-                        send "qq* l " & #8 & $planets[$j] & "* c "
+                        send "qq* l " & #8 & $planet~planets[$j] & "* c "
 		        		gosub :setWindow
-                        if (($PLANET_CITADEL_CREDITS > 0) and ($cash = true))
-							while ($planet_citadel_credits > 0)
-								if ($PLANET_CITADEL_CREDITS > 999999999) or (($PLANET_CITADEL_CREDITS +  $PLAYER~CREDITS) > 999999999)
+                        if (($planet~planet_CITADEL_CREDITS > 0) and ($cash = true))
+							while ($planet~planet_citadel_credits > 0)
+								if ($planet~planet_CITADEL_CREDITS > 999999999) or (($planet~planet_CITADEL_CREDITS +  $PLAYER~CREDITS) > 999999999)
 									setVar $amount_of_cash_to_transfer (999999999 - $PLAYER~CREDITS)
 								else
-									setVar $amount_of_cash_to_transfer ($PLANET_CITADEL_CREDITS)
+									setVar $amount_of_cash_to_transfer ($planet~planet_CITADEL_CREDITS)
 								end
-								setvar $planet_citadel_credits ($planet_citadel_credits - $amount_of_cash_to_transfer)
-								send "t f " & $amount_of_cash_to_transfer & "* qq* l " & #8 & $planetToFill & "* c t t " & $amount_of_cash_to_transfer & "* qq* l " & #8 & $planets[$j] & "* c "
+								setvar $planet~planet_citadel_credits ($planet~planet_citadel_credits - $amount_of_cash_to_transfer)
+								send "t f " & $amount_of_cash_to_transfer & "* qq* l " & #8 & $planet~planetToFill & "* c t t " & $amount_of_cash_to_transfer & "* qq* l " & #8 & $planet~planets[$j] & "* c "
 							end
 							send "qq* "
                         end
-                        if (($shield) and ($PLANET_CITADEL > 4) and ($PLANET_SHIELD_POWER < 200))
+                        if (($shield) and ($planet~planet_CITADEL > 4) and ($planet~planet_SHIELD_POWER < 200))
                             if ($PLAYER~SHIELDS < 2000)
-                                    send "qq* l " & #8 & $planetToFill & "*"
+                                    send "qq* l " & #8 & $planet~planetToFill & "*"
                                     gosub :PLANET~getPlanetInfo
-                                    if ($PLANET~SHIELD_POWER < 200)
+                                    if ($planet~SHIELD_POWER < 200)
                                           setVar $shield FALSE
                                           send "qq* "
                                     else
                                           send "cgf200*qq* "
                                     end
                             else
-                                   send "qq* l " & #8 & $planets[$j] & "* c gt200*"
+                                   send "qq* l " & #8 & $planet~planets[$j] & "* c gt200*"
                             end
                         end
-                        if (($warp = TRUE) and ($PLANET_CITADEL > 3) and ($PLANET_FUEL > 50000) and (($PLANET_ORGANICS > 50000) or ($PLANET_EQUIPMENT > 50000)))
-							send "qq* l " & #8 & $planets[$j] & "* c "
+                        if (($warp = TRUE) and ($planet~planet_CITADEL > 3) and ($planet~planet_FUEL > 50000) and (($planet~planet_ORGANICS > 50000) or ($planet~planet_EQUIPMENT > 50000)))
+							send "qq* l " & #8 & $planet~planets[$j] & "* c "
 							gosub :merch
 							send "d"
 							waitOn "Citadel treasury contains "
-							getWord CURRENTLINE $citadelCash 4
-							stripText $citadelCash ","
-							if ($citadelCash > 0)
-								if ($citadelCash > 999999999) or (($citadelCash +  $PLAYER~CREDITS) > 999999999)
-									setVar $citadelCash (999999999 - $PLAYER~CREDITS)
+							getWord CURRENTLINE $planet~CITADELCash 4
+							stripText $planet~CITADELCash ","
+							if ($planet~CITADELCash > 0)
+								if ($planet~CITADELCash > 999999999) or (($planet~CITADELCash +  $PLAYER~CREDITS) > 999999999)
+									setVar $planet~CITADELCash (999999999 - $PLAYER~CREDITS)
 								else
-									setVar $citadelCash ($citadelCash + $PLAYER~CREDITS)
+									setVar $planet~CITADELCash ($planet~CITADELCash + $PLAYER~CREDITS)
 								end
-								send "t f " & $citadelCash & "* qq* l " & #8 & $planetToFill & "* c t t " & $citadelCash & "* "
+								send "t f " & $planet~CITADELCash & "* qq* l " & #8 & $planet~planetToFill & "* c t t " & $planet~CITADELCash & "* "
 							end
                         end
                         send "qq* * "
 
 						if ($strip)
-							send "l " & #8 & $planetToFill & "* c "
+							send "l " & #8 & $planet~planetToFill & "* c "
 							setVar $options ""
 							if ($get_fuel)
 								setVar $options $options&" f "
@@ -1100,10 +1100,10 @@ return
 							gosub :setWindow
 							killalltriggers
 							setVar $BOT~command "mover"
-							setVar $BOT~user_command_line "strip "&$planets[$j]&" "&$options&" silent turbo*"
+							setVar $BOT~user_command_line "strip "&$planet~planets[$j]&" "&$options&" silent turbo*"
 							setVar $BOT~parm1 "strip"
 							saveVar $BOT~parm1
-							setVar $BOT~parm2 $planets[$j]
+							setVar $BOT~parm2 $planet~planets[$j]
 							saveVar $BOT~parm2
 							saveVar $BOT~command
 							saveVar $BOT~user_command_line
@@ -1117,49 +1117,49 @@ return
                         if ($colo)
 	                        setVar $cyclebuffer 0
 	                        setVar $cyclebufferlimit 20
-							send "qq* jy* l " & #8 & $planets[$j] & "*  "
+							send "qq* jy* l " & #8 & $planet~planets[$j] & "*  "
 
 							#remove fuel colos
-							setVar $COLOS $PLANET_FUEL_COLONISTS
-							setVar $COLOS_MAX $PLANET_FUEL_COLONISTS_MAX
+							setVar $COLOS $planet~planet_FUEL_COLONISTS
+							setVar $COLOS_MAX $planet~planet_FUEL_COLONISTS_MAX
 							setvar $status_message "Stripping Fuel Colonists"
 							setVar $moveColo "fuel"
 							setVar $type 1
 							gosub :remove_colos
 
 							#add fuel colos
-							setVar $COLOS $PLANET_FUEL_COLONISTS
-							setVar $COLOS_MIN $PLANET_FUEL_COLONISTS_MIN
+							setVar $COLOS $planet~planet_FUEL_COLONISTS
+							setVar $COLOS_MIN $planet~planet_FUEL_COLONISTS_MIN
 							setVar $add_type 1
 							setvar $status_message "Adding Fuel Colonists"
 							gosub :add_colos
 
 							#remove org colos
-							setVar $COLOS $PLANET_ORGANICS_COLONISTS
-							setVar $COLOS_MAX $PLANET_ORGANICS_COLONISTS_MAX
+							setVar $COLOS $planet~planet_ORGANICS_COLONISTS
+							setVar $COLOS_MAX $planet~planet_ORGANICS_COLONISTS_MAX
 							setvar $status_message "Stripping Organics Colonists"
 							setVar $moveColo "org"
 							setVar $type 2
 							gosub :remove_colos
 
 							#add org colos
-							setVar $COLOS $PLANET_ORGANICS_COLONISTS
-							setVar $COLOS_MIN $PLANET_ORGANICS_COLONISTS_MIN
+							setVar $COLOS $planet~planet_ORGANICS_COLONISTS
+							setVar $COLOS_MIN $planet~planet_ORGANICS_COLONISTS_MIN
 							setVar $add_type 2
 							setvar $status_message "Adding Organics Colonists"
 							gosub :add_colos
 
 							#remove equip colos
-							setVar $COLOS $PLANET_EQUIPMENT_COLONISTS
-							setVar $COLOS_MAX $PLANET_EQUIPMENT_COLONISTS_MAX
+							setVar $COLOS $planet~planet_EQUIPMENT_COLONISTS
+							setVar $COLOS_MAX $planet~planet_EQUIPMENT_COLONISTS_MAX
 							setvar $status_message "Stripping Equip Colonists"
 							setVar $moveColo "equip"
 							setVar $type 3
 							gosub :remove_colos
 
 							#add equip colos
-							setVar $COLOS $PLANET_EQUIPMENT_COLONISTS
-							setVar $COLOS_MIN $PLANET_EQUIPMENT_COLONISTS_MIN
+							setVar $COLOS $planet~planet_EQUIPMENT_COLONISTS
+							setVar $COLOS_MIN $planet~planet_EQUIPMENT_COLONISTS_MIN
 							setVar $add_type 3
 							setvar $status_message "Adding Equip Colonists"
 							gosub :add_colos
@@ -1171,7 +1171,7 @@ return
 		end
                 add $j 1
 	end
-	send "qq* l " & #8 & $planetToFill & "*  c"
+	send "qq* l " & #8 & $planet~planetToFill & "*  c"
 RETURN
 
 :upgrade_planets
@@ -1201,21 +1201,21 @@ return
 :buildnext
     killalltriggers
     setVar $doneWithPlanets FALSE
-    setVar $tempPlanetCount ($planetCount)
+    setVar $tempPlanetCount ($planet~planetCount)
     loadVar $GAME~MAX_PLANETS_PER_SECTOR
-    setVar $planetsPerSector2 $GAME~MAX_PLANETS_PER_SECTOR
+    setVar $planet~planetsPerSector2 $GAME~MAX_PLANETS_PER_SECTOR
     subtract $tempPlanetCount 1
-    send "qqzn * l " & #8 & $planetToFill & "*mnt* qq* "
-    subtract $planetsPerSector2 $tempPlanetCount
+    send "qqzn * l " & #8 & $planet~planetToFill & "*mnt* qq* "
+    subtract $planet~planetsPerSector2 $tempPlanetCount
     if (($tempPlanetCount > 0) AND ($one_per_sector = TRUE))
 		setvar $status_message "Already a planet in this sector."
 	    gosub :setWindow
         goto :buildplanetsend
     end
-	if ($planetsPerSector2 <= 0)
+	if ($planet~planetsPerSector2 <= 0)
         goto :buildplanetsend
     end
-	setvar $status_message "Building planets in sector "&$PLAYER~CURRENT_SECTOR&"*    (Needs "&$planetsPerSector2&" planet(s))"
+	setvar $status_message "Building planets in sector "&$PLAYER~CURRENT_SECTOR&"*    (Needs "&$planet~planetsPerSector2&" planet(s))"
     gosub :setWindow
 
 :LetsGoAgain
@@ -1250,43 +1250,43 @@ return
 
 :NoOverload
 	killAllTriggers
-	getWord CURRENTLINE $planet_type 11
-	lowercase $planet_type
-	striptext $planet_type ")"
-	#echo $planet_type&"*"
+	getWord CURRENTLINE $planet~planet_type 11
+	lowercase $planet~planet_type
+	striptext $planet~planet_type ")"
+	#echo $planet~planet_type&"*"
 
 	setVar $i 1
 	setVar $foundPlanet FALSE
 	setVar $isAKeeper FALSE
-	while (($i <= $PLANET~planetcounter) AND ($foundPlanet = FALSE))
-		lowercase $PLANET~planetList[$i]
-		lowercase $planet_type
-		getWordPos $PLANET~planetList[$i] $pos $planet_type
+	while (($i <= $planet~planetcounter) AND ($foundPlanet = FALSE))
+		lowercase $planet~planetList[$i]
+		lowercase $planet~planet_type
+		getWordPos $planet~planetList[$i] $pos $planet~planet_type
 		if ($pos > 0)
-			setVar $isAKeeper $PLANET~planetList[$i][7]
+			setVar $isAKeeper $planet~planetList[$i][7]
 			setVar $foundPlanet TRUE
 		end
 		add $i 1
 	end
 	if ($isAKeeper = TRUE)
-		getRnd $planet_pointer 1 1000
-		setVar $first_part $planet_names[$planet_pointer]
+		getRnd $planet~planet_pointer 1 1000
+		setVar $first_part $planet~planet_names[$planet~planet_pointer]
 		getWord $first_part $first_half 1
-		getRnd $planet_pointer 1 1000
-		setVar $second_part $planet_names[$planet_pointer]
+		getRnd $planet~planet_pointer 1 1000
+		setVar $second_part $planet~planet_names[$planet~planet_pointer]
 		getRnd $flip_a_coin 1 2
 		getWord $second_part $last_half $flip_a_coin
 		if (($last_half = "")  OR ($last_half = "0"))
 			getWord $second_part $last_half 1
 		end
-		setVar $PlanetLabel $first_half&" "&$last_half
-		setVar $name_the_planet $PlanetLabel
+		setVar $planet~planetLabel $first_half&" "&$last_half
+		setVar $name_the_planet $planet~planetLabel
 
     else
 		getRnd $PTag 100000 999999
-		setVar $PlanetLabel "["&$PTag&"]"&"M()M Planet Farm "&"["&$PTag&"]"
+		setVar $planet~planetLabel "["&$PTag&"]"&"M()M Planet Farm "&"["&$PTag&"]"
 	end
-	send $PlanetLabel & "*"
+	send $planet~planetLabel & "*"
 
 #=------------------------ Planet's Been Popped ---------------------------------------
 	setTextTrigger MakingItCorp     :MakingItCorp "Should this be a (C)orporate planet or (P)ersonal planet? "
@@ -1300,7 +1300,7 @@ return
 
 :LetsGo
 	killAllTriggers
-	if ($PlanetLabel <> $name_the_planet)
+	if ($planet~planetLabel <> $name_the_planet)
 		send "|l|"
 		setTextLineTrigger Plisted		:Plisted "-----------------------------------------------"
 		setTextTrigger Landed			:Landed "Planet command (?="
@@ -1308,10 +1308,10 @@ return
 
 		:Plisted
 				killTrigger PListed
-				waitfor "> " & $PlanetLabel
+				waitfor "> " & $planet~planetLabel
 				getText CURRENTLINE $landing "<" ">"
 				striptext $landing " "
-				send $planetToFill & "*"
+				send $planet~planetToFill & "*"
 				pause
 
 
@@ -1351,8 +1351,8 @@ return
 				goto :LetsGoAgain
     else
  		killAllTriggers
-    	subtract $planetsPerSector2 1
-		if (($planetsPerSector2 <= 0) OR ($one_per_sector = TRUE))
+    	subtract $planet~planetsPerSector2 1
+		if (($planet~planetsPerSector2 <= 0) OR ($one_per_sector = TRUE))
     		 goto :buildplanetsend
     	else
 			goto :LetsGoAgain
@@ -1385,25 +1385,25 @@ return
 	if ($PLAYER~TURNS > 0)
 	        setVar $msg $msg & "* Turns: " & $PLAYER~TURNS
 	end
-	setVar $msg $msg & "* Farm Planet: " & $planetToFill
+	setVar $msg $msg & "* Farm Planet: " & $planet~planetToFill
 	setVar $msg $msg & "* ----------------"
-	setVar $msg $msg & "* Fuel: " & $planetToFillFuel
-	setVar $msg $msg & "* Organics: " & $planetToFillOrganics
-	setVar $msg $msg & "* Equipment: " & $planetToFillEquipment
-	setVar $msg $msg & "* Fuel Colonists: " & $planetToFillFuelColonists
-	setVar $msg $msg & "* Organics Colonists: " & $planetToFillOrganicsColonists
-	setVar $msg $msg & "* Equipment Colonists: " & $planetToFillEquipmentColonists
-	setVar $msg $msg & "** Target Planet: " & $planets[$j]
+	setVar $msg $msg & "* Fuel: " & $planet~planetToFillFuel
+	setVar $msg $msg & "* Organics: " & $planet~planetToFillOrganics
+	setVar $msg $msg & "* Equipment: " & $planet~planetToFillEquipment
+	setVar $msg $msg & "* Fuel Colonists: " & $planet~planetToFillFuelColonists
+	setVar $msg $msg & "* Organics Colonists: " & $planet~planetToFillOrganicsColonists
+	setVar $msg $msg & "* Equipment Colonists: " & $planet~planetToFillEquipmentColonists
+	setVar $msg $msg & "** Target Planet: " & $planet~planets[$j]
 	setVar $msg $msg & "* ----------------"
-	setVar $msg $msg & "* Fuel: " & $PLANET_FUEL
-	setVar $msg $msg & "* Organics: " & $PLANET_ORGANICS
-	setVar $msg $msg & "* Equipment: " & $PLANET_EQUIPMENT
-	setVar $msg $msg & "* Fuel Colonists: " & $PLANET_FUEL_COLONISTS
-	setVar $msg $msg & "* Organics Colonists: " & $PLANET_ORGANICS_COLONISTS
-	setVar $msg $msg & "* Equipment Colonists: " & $PLANET_EQUIPMENT_COLONISTS
-	setVar $msg $msg & "* Min / Max Fuel Colo: " & $PLANET_FUEL_COLONISTS_MIN & " / " & $PLANET_FUEL_COLONISTS_MAX
-	setVar $msg $msg & "* Min / Max Organics Colo: " & $PLANET_ORGANICS_COLONISTS_MIN & " / " & $PLANET_ORGANICS_COLONISTS_MAX
-	setVar $msg $msg & "* Min / Max Equipment Colo: " & $PLANET_EQUIPMENT_COLONISTS_MIN & " / " & $PLANET_EQUIPMENT_COLONISTS_MAX
+	setVar $msg $msg & "* Fuel: " & $planet~planet_FUEL
+	setVar $msg $msg & "* Organics: " & $planet~planet_ORGANICS
+	setVar $msg $msg & "* Equipment: " & $planet~planet_EQUIPMENT
+	setVar $msg $msg & "* Fuel Colonists: " & $planet~planet_FUEL_COLONISTS
+	setVar $msg $msg & "* Organics Colonists: " & $planet~planet_ORGANICS_COLONISTS
+	setVar $msg $msg & "* Equipment Colonists: " & $planet~planet_EQUIPMENT_COLONISTS
+	setVar $msg $msg & "* Min / Max Fuel Colo: " & $planet~planet_FUEL_COLONISTS_MIN & " / " & $planet~planet_FUEL_COLONISTS_MAX
+	setVar $msg $msg & "* Min / Max Organics Colo: " & $planet~planet_ORGANICS_COLONISTS_MIN & " / " & $planet~planet_ORGANICS_COLONISTS_MAX
+	setVar $msg $msg & "* Min / Max Equipment Colo: " & $planet~planet_EQUIPMENT_COLONISTS_MIN & " / " & $planet~planet_EQUIPMENT_COLONISTS_MAX
 	setVar $msg $msg & "** Credits: " & $PLAYER~CREDITS
 	setWindowContents Farm_Script $msg & $msg1
 	setVar $window_content $msg 
@@ -1431,7 +1431,7 @@ return
 		killalltriggers
 
 		if ((PORT.CLASS[$PLAYER~CURRENT_SECTOR] <> 3) AND ($destroyports = TRUE))
-			send "l  " & #8 & #8 & $PLANET~PLANET & "*  m n t *  c  "
+			send "l  " & #8 & #8 & $planet~planet & "*  m n t *  c  "
 			waitfor "Citadel command"
 			gosub :PLAYER~quikstats
 			if ($PLAYER~FIGHTERS < $SHIP~SHIP_MAX_ATTACK)
@@ -1470,9 +1470,9 @@ return
 			striptext $buy " "
 			striptext $buy ","
 			if ((PORT.BUYEQUIP[$player~current_sector] = TRUE) AND ($skipequip <> TRUE))
-				send $buy & "* * l "&$PLANET~planet&"* c "
+				send $buy & "* * l "&$planet~planet&"* c "
 			else
-				send "0* * l "&$PLANET~planet&"* c "
+				send "0* * l "&$planet~planet&"* c "
 			end
 			send "s"
 			waitfor "Citadel command (?=h"
@@ -1481,29 +1481,29 @@ return
 
 :build_port
         killalltriggers
-        send "l " & #8 & $planetToFill & "*  m n t *  c "
+        send "l " & #8 & $planet~planetToFill & "*  m n t *  c "
         waitfor "Citadel command (?"
         if ($PLAYER~CREDITS < 50000)
                 send "T F 50000*"
                 gosub :PLAYER~quikstats
                 if ($PLAYER~CREDITS < 50000)
                         setVar $SWITCHBOARD~message "Not Enough Credits to Make Ports*"
-                        send "qq* l " & #8 & $PLANET~PLANET & "*  c  *"
+                        send "qq* l " & #8 & $planet~planet & "*  c  *"
                 end
         end
-        send "q q q z n * o3y" $portname "* l " & #8 & $PLANET~PLANET & "*  c  *"
+        send "q q q z n * o3y" $portname "* l " & #8 & $planet~planet & "*  c  *"
         goto :end_check_ports
 
 :port_blown
         killalltriggers
-        send "qq* l " & #8 & $PLANET~PLANET & "*  c  *"
+        send "qq* l " & #8 & $planet~planet & "*  c  *"
         goto :end_check_ports
 
 :under_construction
         killalltriggers
         setVar $SWITCHBOARD~message "Port at " & $PLAYER~CURRENT_SECTOR & " is Under Construction. " & PORT.BUILDTIME[$PLAYER~CURRENT_SECTOR] & " More Days*"
         gosub :SWITCHBOARD~switchboard
-        send "l " & #8 & $PLANET~PLANET & "*  m n t *  c "
+        send "l " & #8 & $planet~planet & "*  m n t *  c "
         goto :end_check_ports
 
 :end_check_ports
@@ -1517,17 +1517,17 @@ return
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-    send "qq* jy* l " & $planetToFill & "* tnt1*mnt*c"
+    send "qq* jy* l " & $planet~planetToFill & "* tnt1*mnt*c"
     waitFor "Citadel command ("
-    setVar $creditsNeeded (($SHIP~SHIP_GENESIS_MAX*$GAME~GENESIS_COST)+($SHIP~SHIP_GENESIS_MAX*$GAME~ATOMIC_COST))
-    if ($PLAYER~CREDITS < $creditsNeeded)
-    	setVar $withdraw ($creditsNeeded-$PLAYER~CREDITS)
+    setVar $player~creditsNeeded (($SHIP~SHIP_GENESIS_MAX*$GAME~GENESIS_COST)+($SHIP~SHIP_GENESIS_MAX*$GAME~ATOMIC_COST))
+    if ($PLAYER~CREDITS < $player~creditsNeeded)
+    	setVar $withdraw ($player~creditsNeeded-$PLAYER~CREDITS)
 		send "T F "&$withdraw&"*"
 		gosub :PLAYER~quikstats
-		if ($PLAYER~CREDITS < $creditsNeeded)
+		if ($PLAYER~CREDITS < $player~creditsNeeded)
 		        setVar $SWITCHBOARD~message "Not Enough Credits to Make Ports*"
 		        gosub :SWITCHBOARD~switchboard
-		        send "qq* l " & #8 & $PLANET~PLANET & "*  c  *"
+		        send "qq* l " & #8 & $planet~planet & "*  c  *"
 		        goto :end
 		end
     end
@@ -1548,7 +1548,7 @@ return
 	:itsalive
 	killAllTriggers
 	gosub :PLAYER~quikstats
-	if (($PLAYER~ALIGNMENT < 1000) AND ($PLAYER~ORE_HOLDS > 0))
+	if (($PLAYER~ALIGNMENT < 1000) AND ($player~ore_holds > 0))
 		setVar $adj 1
 		while (SECTOR.WARPSIN[STARDOCK][$adj] <> 0)
 			setVar $JUMP SECTOR.WARPSIN[STARDOCK][$adj]
@@ -1608,7 +1608,7 @@ return
 
 	setVar $ORE_REQ (($Dist1 + $Dist2) * 3)
 
-	if (($PLAYER~TWARP_TYPE = "No") OR ($PLAYER~ORE_HOLDS < $ORE_REQ) OR (($PLAYER~ALIGNMENT < 1000) AND ($JUMP = 0)))
+	if (($PLAYER~TWARP_TYPE = "No") OR ($player~ore_holds < $ORE_REQ) OR (($PLAYER~ALIGNMENT < 1000) AND ($JUMP = 0)))
 		if ($JUMP <> 0)
 			send "  N  "
 		end
@@ -1684,16 +1684,16 @@ return
 	while ($COLOS > $COLOS_MAX)
 		killtrigger no_room
 		killtrigger is_room
-		if ($COLOS < $PLAYER~TOTAL_HOLDS)
+		if ($COLOS < $player~total_holds)
 			setVar $holds_to_grab $COLOS
 		else
-			setVar $holds_to_grab $PLAYER~TOTAL_HOLDS
+			setVar $holds_to_grab $player~total_holds
 		end
 		add $cyclebuffer 1
 		if ($cyclebuffer >= $cyclebufferlimit)
 			setVar $cyclebuffer 1
 			gosub :PLAYER~quikstats
-			send "qq* l " & #8 & $planets[$j] & "*  s * t "&$type&$holds_to_grab&"*  q l " & #8 & $planetToFill & "*  s*l1*"
+			send "qq* l " & #8 & $planet~planets[$j] & "*  s * t "&$type&$holds_to_grab&"*  q l " & #8 & $planet~planetToFill & "*  s*l1*"
 			setTextTrigger no_room :no_room1 "on the planet"
 			setTextTrigger is_room :is_room1 "The Colonists disembark to begin their new life."
 			pause
@@ -1717,25 +1717,25 @@ return
 			       pause
 
 			:no_room3
-			        setVar $moveColo "NO ROOM - EMPTY FILL PLANET"
+			        setVar $moveColo "NO ROOM - EMPTY FULL PLANET"
 
 			:is_room1
 				killtrigger no_room
 				killtrigger is_room
 
 		else
-			send "qq* l " & #8 & $planets[$j] & "*  s * t "&$type&$holds_to_grab&"*  q l " & #8 & $planetToFill & "*  s*l1*  s*l2*  s*l3*  "
+			send "qq* l " & #8 & $planet~planets[$j] & "*  s * t "&$type&$holds_to_grab&"*  q l " & #8 & $planet~planetToFill & "*  s*l1*  s*l2*  s*l3*  "
 		end
-		subtract $COLOS $PLAYER~TOTAL_HOLDS
+		subtract $COLOS $player~total_holds
 		if ($moveColo = "fuel")
-			subtract $PLANET_FUEL_COLONISTS $PLAYER~TOTAL_HOLDS
-			add $planetToFillFuelColonists $PLAYER~TOTAL_HOLDS
+			subtract $planet~planet_FUEL_COLONISTS $player~total_holds
+			add $planet~planetToFillFuelColonists $player~total_holds
 		elseif ($moveColo = "org")
-			subtract $PLANET_ORGANICS_COLONISTS $PLAYER~TOTAL_HOLDS
-			add $planetToFillOrganicsColonists $PLAYER~TOTAL_HOLDS
+			subtract $planet~planet_ORGANICS_COLONISTS $player~total_holds
+			add $planet~planetToFillOrganicsColonists $player~total_holds
 		elseif ($moveColo = "equip")
-			subtract $PLANET_EQUIPMENT_COLONISTS $PLAYER~TOTAL_HOLDS
-			add $planetToFillEquipmentColonists $PLAYER~TOTAL_HOLDS
+			subtract $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
+			add $planet~planetToFillEquipmentColonists $player~total_holds
 		end
 		gosub :setWindow
 	end
@@ -1750,23 +1750,23 @@ return
 		killtrigger no_colos
 		setVar $moveColo "fuel"
 		setVar $type 1						   
-		if ($planetToFillFuelColonists >= $PLAYER~TOTAL_HOLDS)
+		if ($planet~planetToFillFuelColonists >= $player~total_holds)
 				setVar $moveColo "fuel"
 				setVar $type 1
-		elseif ($planetToFillOrganicsColonists >= $PLAYER~TOTAL_HOLDS)
+		elseif ($planet~planetToFillOrganicsColonists >= $player~total_holds)
 				setVar $moveColo "org"
 		  		setVar $type 2
-		elseif ($planetToFillOrganicsColonists >= $PLAYER~TOTAL_HOLDS)
+		elseif ($planet~planetToFillOrganicsColonists >= $player~total_holds)
 		      setVar $moveColo "equip"
 		      setVar $type 3
 		else
-		      setvar $PLANET_FUEL_COLONISTS $PLANET_FUEL_COLONISTS_MIN
+		      setvar $planet~planet_FUEL_COLONISTS $planet~planet_FUEL_COLONISTS_MIN
 		end
 		add $cyclebuffer 1
 		if ($cyclebuffer >= $cyclebufferlimit)
 			setVar $cyclebuffer 1
 			gosub :PLAYER~quikstats
-            send "q q* l " & #8 & $planetToFill & "*  snt1*"
+            send "q q* l " & #8 & $planet~planetToFill & "*  snt1*"
 			killtrigger grab_colos
 			killtrigger no_colos
             setTextTrigger grab_colos :grab_colos_fuel "The Colonists file aboard your ship, eager to head out."
@@ -1794,7 +1794,7 @@ return
 			:grab_colos_fuel
 				killtrigger grab_colos
 				killtrigger no_colos
-				send "q q* l " & #8 & $planets[$j] & "*  snl1*"
+				send "q q* l " & #8 & $planet~planets[$j] & "*  snl1*"
 				setTextTrigger no_colos :no_colos_fuel3 "on the planet"
 				setTextTrigger grab_colos :is_room_fuel "The Colonists disembark to begin their new life."
 				pause
@@ -1809,18 +1809,18 @@ return
 				killtrigger grab_colos
 				killtrigger no_colos
 		else
-			send "q q* l " & #8 & $planetToFill & "*  s * t 1* s * t 2* s * t3* q q* l " & #8 & $planets[$j] & "*  s * l "&$add_type&"*  "
+			send "q q* l " & #8 & $planet~planetToFill & "*  s * t 1* s * t 2* s * t3* q q* l " & #8 & $planet~planets[$j] & "*  s * l "&$add_type&"*  "
 		end
-		add $COLOS $PLAYER~TOTAL_HOLDS                                               
+		add $COLOS $player~total_holds                                               
 		if ($moveColo = "fuel")
-			add $PLANET_FUEL_COLONISTS $PLAYER~TOTAL_HOLDS
-			subtract $planetToFillFuelColonists $PLAYER~TOTAL_HOLDS
+			add $planet~planet_FUEL_COLONISTS $player~total_holds
+			subtract $planet~planetToFillFuelColonists $player~total_holds
 		elseif ($moveColo = "org")
-			add $PLANET_ORGANICS_COLONISTS $PLAYER~TOTAL_HOLDS
-			subtract $planetToFillOrganicsColonists $PLAYER~TOTAL_HOLDS
+			add $planet~planet_ORGANICS_COLONISTS $player~total_holds
+			subtract $planet~planetToFillOrganicsColonists $player~total_holds
 		elseif ($moveColo = "equip")
-			add $PLANET_EQUIPMENT_COLONISTS $PLAYER~TOTAL_HOLDS
-			subtract $planetToFillEquipmentColonists $PLAYER~TOTAL_HOLDS
+			add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
+			subtract $planet~planetToFillEquipmentColonists $player~total_holds
 		end
 		gosub :setWindow
 	end
@@ -1832,7 +1832,7 @@ return
     killalltriggers
     setvar $status_message "Colonizing Planet"
     gosub :setWindow
-    send "qq* l " & #8 & $planetToFill & "*m n t * q l " & #8 & $planets[$j] & "* c"
+    send "qq* l " & #8 & $planet~planetToFill & "*m n t * q l " & #8 & $planet~planets[$j] & "* c"
     waitfor "Planet command (?"
 	setVar $BOT~command "colo"
 	setVar $BOT~user_command_line " s 50 silent "
@@ -1870,7 +1870,7 @@ return
 return
 
 :pwarp
-    send "p "& $warpto &"  *ys* "
+    send "p "& $player~warpto &"  *ys* "
     settextlinetrigger 1 :warp_its "All Systems Ready, shall we engage?"
     settextlinetrigger 2 :no_warps "You do not have any fighters in Sector"
     setTextLineTrigger 3 :warp_its "You are already in that sector!"
@@ -1891,1017 +1891,1018 @@ return
 
 
 :make_planet_array
-	setArray $planet_names 1000
-	setVar $planet_names[1] "LoneStar's Circle"
-	setVar $planet_names[2] "Manton Outpost"
-	setVar $planet_names[3] "Triax Annex"
-	setVar $planet_names[4] "New Ovid"
-	setVar $planet_names[5] "Napier Minor"
-	setVar $planet_names[6] "New Barite"
-	setVar $planet_names[7] "Agamotto II"
-	setVar $planet_names[8] "Poincare Thunder"
-	setVar $planet_names[9] "Camelopardus"
-	setVar $planet_names[10] "Ticonderoga Annex"
-	setVar $planet_names[11] "Cana Annex"
-	setVar $planet_names[12] "Rifts II"
-	setVar $planet_names[13] "Arago Annex"
-	setVar $planet_names[14] "Grosseteste Primus"
-	setVar $planet_names[15] "Lablon Minor"
-	setVar $planet_names[16] "Ampilean Minor"
-	setVar $planet_names[17] "Pappus II"
-	setVar $planet_names[18] "Buddha Gaya II"
-	setVar $planet_names[19] "Phlogiston Major"
-	setVar $planet_names[20] "Pilar Dawn"
-	setVar $planet_names[21] "Vergil"
-	setVar $planet_names[22] "Zennor Primus"
-	setVar $planet_names[23] "Vigara Outpost"
-	setVar $planet_names[24] "l'Hopital"
-	setVar $planet_names[25] "Axe-Gonne Annex"
-	setVar $planet_names[26] "New Plaskett"
-	setVar $planet_names[27] "Quadrono Fury"
-	setVar $planet_names[28] "Cuirass Annex"
-	setVar $planet_names[29] "Bendor II"
-	setVar $planet_names[30] "Catuz II"
-	setVar $planet_names[31] "New Barazole"
-	setVar $planet_names[32] "Burgundy Outpost"
-	setVar $planet_names[33] "Tibanna Annex"
-	setVar $planet_names[34] "New Vesta"
-	setVar $planet_names[35] "Aerobe Minor"
-	setVar $planet_names[36] "Cornu Primus"
-	setVar $planet_names[37] "Heguz Outpost"
-	setVar $planet_names[38] "Khrytarrm II"
-	setVar $planet_names[39] "Zodiac"
-	setVar $planet_names[40] "Bevey Primus"
-	setVar $planet_names[41] "Pauli Stars"
-	setVar $planet_names[42] "Axanar Outpost"
-	setVar $planet_names[43] "Veialstroum"
-	setVar $planet_names[44] "Dedendum"
-	setVar $planet_names[45] "Parthenon Outpost"
-	setVar $planet_names[46] "Ahzdar Primus"
-	setVar $planet_names[47] "Tionale Minor"
-	setVar $planet_names[48] "Fomalhaut Minor"
-	setVar $planet_names[49] "Calandra Index"
-	setVar $planet_names[50] "New Drude"
-	setVar $planet_names[51] "Troi Primus"
-	setVar $planet_names[52] "Tourmaline Primus"
-	setVar $planet_names[53] "Adurol"
-	setVar $planet_names[54] "Zaibon Outpost"
-	setVar $planet_names[55] "Cipango Annex"
-	setVar $planet_names[56] "Saxbury Annex"
-	setVar $planet_names[57] "New Oomaru"
-	setVar $planet_names[58] "Weiland Minor"
-	setVar $planet_names[59] "Bertian II"
-	setVar $planet_names[60] "Strahd Outpost"
-	setVar $planet_names[61] "Hallwachs Primus"
-	setVar $planet_names[62] "Fabrina Primus"
-	setVar $planet_names[63] "Ovid"
-	setVar $planet_names[64] "Campell II"
-	setVar $planet_names[65] "Osnabruck Major"
-	setVar $planet_names[66] "Merrimac Minor"
-	setVar $planet_names[67] "Toscanelli Major"
-	setVar $planet_names[68] "Hoover Minor"
-	setVar $planet_names[69] "Pangelinan Outpost"
-	setVar $planet_names[70] "Bethune Minor"
-	setVar $planet_names[71] "Fafnir"
-	setVar $planet_names[72] "Gideon Outpost"
-	setVar $planet_names[73] "Tajarhi Primus"
-	setVar $planet_names[74] "Catoblepas Major"
-	setVar $planet_names[75] "Steel Major"
-	setVar $planet_names[76] "Grey Mist"
-	setVar $planet_names[77] "Boreas Minor"
-	setVar $planet_names[78] "New Entrailia"
-	setVar $planet_names[79] "Saturn Primus"
-	setVar $planet_names[80] "Aerolone Major"
-	setVar $planet_names[81] "Camelot Primus"
-	setVar $planet_names[82] "Copus Outpost"
-	setVar $planet_names[83] "Bedoz Whispers"
-	setVar $planet_names[84] "Czar'ak II"
-	setVar $planet_names[85] "Mastro"
-	setVar $planet_names[86] "Venus Outpost"
-	setVar $planet_names[87] "New Io"
-	setVar $planet_names[88] "Tsox II"
-	setVar $planet_names[89] "Acropolis II"
-	setVar $planet_names[90] "CSM-101 Annex"
-	setVar $planet_names[91] "Apian II"
-	setVar $planet_names[92] "New Brodie"
-	setVar $planet_names[93] "Clone Annex"
-	setVar $planet_names[94] "K'hotan Major"
-	setVar $planet_names[95] "Indusium Primus"
-	setVar $planet_names[96] "Javelle Minor"
-	setVar $planet_names[97] "Gold Major"
-	setVar $planet_names[98] "New Poincare"
-	setVar $planet_names[99] "New Ohm"
-	setVar $planet_names[100] "Jeeves"
-	setVar $planet_names[101] "Ahriman Primus"
-	setVar $planet_names[102] "Bajor II"
-	setVar $planet_names[103] "Pickering Primus"
-	setVar $planet_names[104] "Pagoda Outpost"
-	setVar $planet_names[105] "Midgard"
-	setVar $planet_names[106] "New Lutum"
-	setVar $planet_names[107] "Curie Primus"
-	setVar $planet_names[108] "New Kerogen"
-	setVar $planet_names[109] "Brevico Outpost"
-	setVar $planet_names[110] "Cleisthenes Annex"
-	setVar $planet_names[111] "Banalg Primus"
-	setVar $planet_names[112] "Hiruko Primus"
-	setVar $planet_names[113] "New Canis Staz"
-	setVar $planet_names[114] "Herschel Prime"
-	setVar $planet_names[115] "Feesu Annex"
-	setVar $planet_names[116] "Sluagh Minor"
-	setVar $planet_names[117] "Acacia Primus"
-	setVar $planet_names[118] "Zagreus Minor"
-	setVar $planet_names[119] "Aud Outpost"
-	setVar $planet_names[120] "Leo Annex"
-	setVar $planet_names[121] "Inx Primus"
-	setVar $planet_names[122] "Plugh Major"
-	setVar $planet_names[123] "Keltcher II"
-	setVar $planet_names[124] "El Nath Major"
-	setVar $planet_names[125] "Thalim Outpost"
-	setVar $planet_names[126] "Achilles Annex"
-	setVar $planet_names[127] "New Janvier"
-	setVar $planet_names[128] "New Mare"
-	setVar $planet_names[129] "Osnabruck Minor"
-	setVar $planet_names[130] "New Atropine"
-	setVar $planet_names[131] "Hyksos Outpost"
-	setVar $planet_names[132] "Ionicus Annex"
-	setVar $planet_names[133] "Atwood Annex"
-	setVar $planet_names[134] "Ektron II"
-	setVar $planet_names[135] "New Debarre"
-	setVar $planet_names[136] "New Hubble"
-	setVar $planet_names[137] "Acridine Annex"
-	setVar $planet_names[138] "Atchison Annex"
-	setVar $planet_names[139] "Aeschylus Annex"
-	setVar $planet_names[140] "Triceratops II"
-	setVar $planet_names[141] "Ovid 962 Outpost"
-	setVar $planet_names[142] "Laon Annex"
-	setVar $planet_names[143] "Feesu II"
-	setVar $planet_names[144] "Pysadi Outpost"
-	setVar $planet_names[145] "Bansin II"
-	setVar $planet_names[146] "Grimaldi Outpost"
-	setVar $planet_names[147] "Kashyyyk Annex"
-	setVar $planet_names[148] "New Pickering"
-	setVar $planet_names[149] "Sardaukar"
-	setVar $planet_names[150] "Poritrin Annex"
-	setVar $planet_names[151] "Biela Minor"
-	setVar $planet_names[152] "Autun Minor"
-	setVar $planet_names[153] "Akira Primus"
-	setVar $planet_names[154] "Bohemia III"
-	setVar $planet_names[155] "Caspan Primus"
-	setVar $planet_names[156] "Barite Minor"
-	setVar $planet_names[157] "Loki Outpost"
-	setVar $planet_names[158] "Argos Primus"
-	setVar $planet_names[159] "Drake Annex"
-	setVar $planet_names[160] "Jaspilate Outpost"
-	setVar $planet_names[161] "New Tacaxeb"
-	setVar $planet_names[162] "Brevico Primus"
-	setVar $planet_names[163] "Bolivar Minor"
-	setVar $planet_names[164] "Trennen Major"
-	setVar $planet_names[165] "Bainite Annex"
-	setVar $planet_names[166] "Amber Primus"
-	setVar $planet_names[167] "Remorhaz"
-	setVar $planet_names[168] "Politzer"
-	setVar $planet_names[169] "Thisbe"
-	setVar $planet_names[170] "Ekinus"
-	setVar $planet_names[171] "Agamotto Annex"
-	setVar $planet_names[172] "Ixzotz"
-	setVar $planet_names[173] "Coliar"
-	setVar $planet_names[174] "Dragon Major"
-	setVar $planet_names[175] "Minimi Outpost"
-	setVar $planet_names[176] "Comani II"
-	setVar $planet_names[177] "Saladin Major"
-	setVar $planet_names[178] "New CSM-101"
-	setVar $planet_names[179] "Winston"
-	setVar $planet_names[180] "Putman Outpost"
-	setVar $planet_names[181] "Zarathrustra"
-	setVar $planet_names[182] "Bacchus Outpost"
-	setVar $planet_names[183] "Demantoid Annex"
-	setVar $planet_names[184] "Aarite Outpost"
-	setVar $planet_names[185] "Langres Primus"
-	setVar $planet_names[186] "New Myk"
-	setVar $planet_names[187] "Castalia Minor"
-	setVar $planet_names[188] "Feyd Major"
-	setVar $planet_names[189] "Gauss"
-	setVar $planet_names[190] "Adurol Primus"
-	setVar $planet_names[191] "Pingos Annex"
-	setVar $planet_names[192] "Shih Hwang-ti Major"
-	setVar $planet_names[193] "Homonculous Annex"
-	setVar $planet_names[194] "Calandra Annex"
-	setVar $planet_names[195] "Tartarus Minor"
-	setVar $planet_names[196] "Njord Major"
-	setVar $planet_names[197] "Melusine II"
-	setVar $planet_names[198] "Cepheus"
-	setVar $planet_names[199] "Huggins Primus"
-	setVar $planet_names[200] "Buchanan"
-	setVar $planet_names[201] "Bleigh Outpost"
-	setVar $planet_names[202] "Abohm Annex"
-	setVar $planet_names[203] "Freaque Primus"
-	setVar $planet_names[204] "Bespin Outpost"
-	setVar $planet_names[205] "Shklovsky"
-	setVar $planet_names[206] "Heimdall Minor"
-	setVar $planet_names[207] "New Bentylol"
-	setVar $planet_names[208] "Lebeau"
-	setVar $planet_names[209] "New Siva"
-	setVar $planet_names[210] "Biggs Outpost"
-	setVar $planet_names[211] "Auroran Major"
-	setVar $planet_names[212] "Phoenix"
-	setVar $planet_names[213] "Chaeta Major"
-	setVar $planet_names[214] "Anacel Minor"
-	setVar $planet_names[215] "Zeycude Minor"
-	setVar $planet_names[216] "Akarso Major"
-	setVar $planet_names[217] "Bifrost Primus"
-	setVar $planet_names[218] "Jolotre Outpost"
-	setVar $planet_names[219] "New Tutankhamen"
-	setVar $planet_names[220] "Adams Outpost"
-	setVar $planet_names[221] "Feynman Minor"
-	setVar $planet_names[222] "Grant Primus"
-	setVar $planet_names[223] "Aeon Primus"
-	setVar $planet_names[224] "Sacajawea Minor"
-	setVar $planet_names[225] "Thor Outpost"
-	setVar $planet_names[226] "New Kashyyyk"
-	setVar $planet_names[227] "Underwood Minor"
-	setVar $planet_names[228] "Yukawa Major"
-	setVar $planet_names[229] "Feesu Minor"
-	setVar $planet_names[230] "Accurbron Major"
-	setVar $planet_names[231] "Parthenon Major"
-	setVar $planet_names[232] "Calan Outpost"
-	setVar $planet_names[233] "Tali Annex"
-	setVar $planet_names[234] "Cogri Outpost"
-	setVar $planet_names[235] "Atwood Minor"
-	setVar $planet_names[236] "Aldebaran"
-	setVar $planet_names[237] "New Atreides"
-	setVar $planet_names[238] "Abae Annex"
-	setVar $planet_names[239] "Aurva Primus"
-	setVar $planet_names[240] "Pogson Primus"
-	setVar $planet_names[241] "Degtyarev Major"
-	setVar $planet_names[242] "Wollaston"
-	setVar $planet_names[243] "Eagle Annex"
-	setVar $planet_names[244] "Atacon Annex"
-	setVar $planet_names[245] "Lanth Major"
-	setVar $planet_names[246] "Reber Primus"
-	setVar $planet_names[247] "Aleph Minor"
-	setVar $planet_names[248] "Dollond"
-	setVar $planet_names[249] "H'Catha Minor"
-	setVar $planet_names[250] "New Bacta"
-	setVar $planet_names[251] "Galina Annex"
-	setVar $planet_names[252] "New Nadrin"
-	setVar $planet_names[253] "Ajacs Primus"
-	setVar $planet_names[254] "Holland Annex"
-	setVar $planet_names[255] "New Baraka"
-	setVar $planet_names[256] "Alencika Minor"
-	setVar $planet_names[257] "Wypoc"
-	setVar $planet_names[258] "Mytus Major"
-	setVar $planet_names[259] "Garuda Outpost"
-	setVar $planet_names[260] "Nog Outpost"
-	setVar $planet_names[261] "Arcturus Annex"
-	setVar $planet_names[262] "El Cid II"
-	setVar $planet_names[263] "Autun"
-	setVar $planet_names[264] "Omega Major"
-	setVar $planet_names[265] "Antike Outpost"
-	setVar $planet_names[266] "Triceratops Primus"
-	setVar $planet_names[267] "Caladan II"
-	setVar $planet_names[268] "Gnosis II"
-	setVar $planet_names[269] "Freedom"
-	setVar $planet_names[270] "Solomon Primus"
-	setVar $planet_names[271] "Flamarion Major"
-	setVar $planet_names[272] "Massassi Minor"
-	setVar $planet_names[273] "Baclofin Major"
-	setVar $planet_names[274] "New Berubigen"
-	setVar $planet_names[275] "Hydra"
-	setVar $planet_names[276] "Ylaven Annex"
-	setVar $planet_names[277] "Shcawbe"
-	setVar $planet_names[278] "Dallia Primus"
-	setVar $planet_names[279] "New FerNics"
-	setVar $planet_names[280] "Cyzicus Outpost"
-	setVar $planet_names[281] "Belenus"
-	setVar $planet_names[282] "Kudu Minor"
-	setVar $planet_names[283] "Shadout"
-	setVar $planet_names[284] "Tetanus Major"
-	setVar $planet_names[285] "Mecha Major"
-	setVar $planet_names[286] "Blunderbuss Outpost"
-	setVar $planet_names[287] "Castile"
-	setVar $planet_names[288] "Dollond Annex"
-	setVar $planet_names[289] "Condyole II"
-	setVar $planet_names[290] "Benemid Outpost"
-	setVar $planet_names[291] "New Kether"
-	setVar $planet_names[292] "Scarabaeus"
-	setVar $planet_names[293] "Spector Major"
-	setVar $planet_names[294] "Nambu Annex"
-	setVar $planet_names[295] "Yamoto II"
-	setVar $planet_names[296] "Lockyer Major"
-	setVar $planet_names[297] "New Huggins"
-	setVar $planet_names[298] "Gorram"
-	setVar $planet_names[299] "Minimi Minor"
-	setVar $planet_names[300] "Sorel Major"
-	setVar $planet_names[301] "El Nath Primus"
-	setVar $planet_names[302] "Lumineaux Outpost"
-	setVar $planet_names[303] "Richter Primus"
-	setVar $planet_names[304] "Ilianeou"
-	setVar $planet_names[305] "Xyvitix Annex"
-	setVar $planet_names[306] "Benisone Minor"
-	setVar $planet_names[307] "Fanning"
-	setVar $planet_names[308] "Flamsteed"
-	setVar $planet_names[309] "Shklovsky Primus"
-	setVar $planet_names[310] "Toshi Annex"
-	setVar $planet_names[311] "New Bumex"
-	setVar $planet_names[312] "Noirmoutier"
-	setVar $planet_names[313] "Macross"
-	setVar $planet_names[314] "Du Fay Major"
-	setVar $planet_names[315] "Ross Outpost"
-	setVar $planet_names[316] "Xi Primus"
-	setVar $planet_names[317] "Leyline II"
-	setVar $planet_names[318] "Vergil Minor"
-	setVar $planet_names[319] "Diocletian Outpost"
-	setVar $planet_names[320] "Eisenhower Minor"
-	setVar $planet_names[321] "Cithaeron Annex"
-	setVar $planet_names[322] "Pockels Major"
-	setVar $planet_names[323] "Rangent Major"
-	setVar $planet_names[324] "Pascal Annex"
-	setVar $planet_names[325] "Avitene Primus"
-	setVar $planet_names[326] "Fantasia Primus"
-	setVar $planet_names[327] "Baridium II"
-	setVar $planet_names[328] "Von Zacjh II"
-	setVar $planet_names[329] "Jasmine Annex"
-	setVar $planet_names[330] "Bagasse II"
-	setVar $planet_names[331] "Wern"
-	setVar $planet_names[332] "Tenelphi Primus"
-	setVar $planet_names[333] "Elmarin Major"
-	setVar $planet_names[334] "New Rech"
-	setVar $planet_names[335] "Massassi Major"
-	setVar $planet_names[336] "Tintao"
-	setVar $planet_names[337] "Engadine II"
-	setVar $planet_names[338] "New Ektron"
-	setVar $planet_names[339] "Ochecate"
-	setVar $planet_names[340] "Peleus Minor"
-	setVar $planet_names[341] "Balboa Minor"
-	setVar $planet_names[342] "New Phobos"
-	setVar $planet_names[343] "Elmarin II"
-	setVar $planet_names[344] "Garion Primus"
-	setVar $planet_names[345] "Sharrip Major"
-	setVar $planet_names[346] "Breughel"
-	setVar $planet_names[347] "Eisenhower II"
-	setVar $planet_names[348] "Cusa II"
-	setVar $planet_names[349] "Bralgu Annex"
-	setVar $planet_names[350] "Copernicus II"
-	setVar $planet_names[351] "Putman Annex"
-	setVar $planet_names[352] "Pylus Minor"
-	setVar $planet_names[353] "Alkaid"
-	setVar $planet_names[354] "Proudelxak Primus"
-	setVar $planet_names[355] "Putman II"
-	setVar $planet_names[356] "Ganymede Major"
-	setVar $planet_names[357] "Hotchkiss II"
-	setVar $planet_names[358] "Eikonal Primus"
-	setVar $planet_names[359] "New Nelson"
-	setVar $planet_names[360] "Behemoth Annex"
-	setVar $planet_names[361] "Daleth"
-	setVar $planet_names[362] "Circe Primus"
-	setVar $planet_names[363] "Ueilerm Annex"
-	setVar $planet_names[364] "Winston Primus"
-	setVar $planet_names[365] "Roentgen II"
-	setVar $planet_names[366] "New Bentyl"
-	setVar $planet_names[367] "Bainite Primus"
-	setVar $planet_names[368] "Uranus Minor"
-	setVar $planet_names[369] "Triumviri Outpost"
-	setVar $planet_names[370] "Dearth Minor"
-	setVar $planet_names[371] "Quare Minor"
-	setVar $planet_names[372] "Ariel II"
-	setVar $planet_names[373] "Agamotto"
-	setVar $planet_names[374] "Mithras II"
-	setVar $planet_names[375] "Agena II"
-	setVar $planet_names[376] "Anchorhead Minor"
-	setVar $planet_names[377] "Atarax Major"
-	setVar $planet_names[378] "T'xe"
-	setVar $planet_names[379] "Fedaykin Major"
-	setVar $planet_names[380] "Kai Outpost"
-	setVar $planet_names[381] "Pompey Major"
-	setVar $planet_names[382] "Jarsone Major"
-	setVar $planet_names[383] "Percy 1640 Major"
-	setVar $planet_names[384] "Kraken Outpost"
-	setVar $planet_names[385] "Tiree"
-	setVar $planet_names[386] "New Corbiet"
-	setVar $planet_names[387] "Celepina Minor"
-	setVar $planet_names[388] "Augustus Annex"
-	setVar $planet_names[389] "New H'Catha"
-	setVar $planet_names[390] "New Aldrin"
-	setVar $planet_names[391] "Bacarate II"
-	setVar $planet_names[392] "Drude II"
-	setVar $planet_names[393] "Millennium"
-	setVar $planet_names[394] "Kwisatz"
-	setVar $planet_names[395] "Rebka"
-	setVar $planet_names[396] "Rebka II"
-	setVar $planet_names[397] "Flamsteed Outpost"
-	setVar $planet_names[398] "Garibaldi Minor"
-	setVar $planet_names[399] "Hounstyr Annex"
-	setVar $planet_names[400] "Flinte"
-	setVar $planet_names[401] "Dodonna Major"
-	setVar $planet_names[402] "Ueilerm Minor"
-	setVar $planet_names[403] "Kaula"
-	setVar $planet_names[404] "Orkney Outpost"
-	setVar $planet_names[405] "Appollyon Primus"
-	setVar $planet_names[406] "New Natoko"
-	setVar $planet_names[407] "Heroni Major"
-	setVar $planet_names[408] "Haderach Primus"
-	setVar $planet_names[409] "Dinom Major"
-	setVar $planet_names[410] "Darion Minor"
-	setVar $planet_names[411] "Medusa II"
-	setVar $planet_names[412] "Kaladan Outpost"
-	setVar $planet_names[413] "Kep Salu Annex"
-	setVar $planet_names[414] "New Minos"
-	setVar $planet_names[415] "Jeeves Major"
-	setVar $planet_names[416] "Exodus"
-	setVar $planet_names[417] "Euler Annex"
-	setVar $planet_names[418] "Capricornus II"
-	setVar $planet_names[419] "Milan Primus"
-	setVar $planet_names[420] "Beben Outpost"
-	setVar $planet_names[421] "New Kohlrausch"
-	setVar $planet_names[422] "Brombay"
-	setVar $planet_names[423] "Alvarado Minor"
-	setVar $planet_names[424] "New Franchi"
-	setVar $planet_names[425] "Melior"
-	setVar $planet_names[426] "Atrivis"
-	setVar $planet_names[427] "Lepton II"
-	setVar $planet_names[428] "Dyson Outpost"
-	setVar $planet_names[429] "Feyd Outpost"
-	setVar $planet_names[430] "Wypoc II"
-	setVar $planet_names[431] "Peridot Primus"
-	setVar $planet_names[432] "Yona II"
-	setVar $planet_names[433] "Caduceus Major"
-	setVar $planet_names[434] "Kruhious II"
-	setVar $planet_names[435] "Melior Outpost"
-	setVar $planet_names[436] "Ryloth Major"
-	setVar $planet_names[437] "Becquerel Annex"
-	setVar $planet_names[438] "Intrepid"
-	setVar $planet_names[439] "Gascogne Annex"
-	setVar $planet_names[440] "Free State II"
-	setVar $planet_names[441] "Ozawa Minor"
-	setVar $planet_names[442] "Mewey Primus"
-	setVar $planet_names[443] "Xylene Outpost"
-	setVar $planet_names[444] "Pohl Annex"
-	setVar $planet_names[445] "Absarokite"
-	setVar $planet_names[446] "Phardos Annex"
-	setVar $planet_names[447] "Axolotl Minor"
-	setVar $planet_names[448] "van der Waals Primus"
-	setVar $planet_names[449] "Hydropon"
-	setVar $planet_names[450] "Tesla Minor"
-	setVar $planet_names[451] "Kender Annex"
-	setVar $planet_names[452] "Aphrodite Primus"
-	setVar $planet_names[453] "New Addax"
-	setVar $planet_names[454] "New Castile"
-	setVar $planet_names[455] "Atlas Major"
-	setVar $planet_names[456] "Van de Graaff II"
-	setVar $planet_names[457] "Chrysa II"
-	setVar $planet_names[458] "Dirac Outpost"
-	setVar $planet_names[459] "Aachen Annex"
-	setVar $planet_names[460] "Skinfaxi II"
-	setVar $planet_names[461] "Carthage Primus"
-	setVar $planet_names[462] "Elmarin Outpost"
-	setVar $planet_names[463] "Mikado Primus"
-	setVar $planet_names[464] "Rydberg Minor"
-	setVar $planet_names[465] "Hallwachs Major"
-	setVar $planet_names[466] "Banderlog Major"
-	setVar $planet_names[467] "New Grosseteste"
-	setVar $planet_names[468] "Caliver II"
-	setVar $planet_names[469] "Jokwa Primus"
-	setVar $planet_names[470] "New Auxerre"
-	setVar $planet_names[471] "Demilich"
-	setVar $planet_names[472] "New Karelia"
-	setVar $planet_names[473] "Rueschhoff"
-	setVar $planet_names[474] "Taro Minor"
-	setVar $planet_names[475] "Dianoga Annex"
-	setVar $planet_names[476] "Quevedo Major"
-	setVar $planet_names[477] "New Leviathan"
-	setVar $planet_names[478] "Raydrad Primus"
-	setVar $planet_names[479] "New Daleth"
-	setVar $planet_names[480] "Metztla'Xym"
-	setVar $planet_names[481] "Aix-la-Chapelle Annex"
-	setVar $planet_names[482] "Spume Outpost"
-	setVar $planet_names[483] "Lysander II"
-	setVar $planet_names[484] "Simorg Minor"
-	setVar $planet_names[485] "Van Maanen Outpost"
-	setVar $planet_names[486] "Alexander II"
-	setVar $planet_names[487] "Istar Annex"
-	setVar $planet_names[488] "Crecy Major"
-	setVar $planet_names[489] "Bethune Outpost"
-	setVar $planet_names[490] "Cittert Major"
-	setVar $planet_names[491] "Edinina II"
-	setVar $planet_names[492] "Imbrium"
-	setVar $planet_names[493] "New Tycho"
-	setVar $planet_names[494] "Nordenfelt Annex"
-	setVar $planet_names[495] "Dixon Primus"
-	setVar $planet_names[496] "Biggs Major"
-	setVar $planet_names[497] "Far Station II"
-	setVar $planet_names[498] "Puparkin II"
-	setVar $planet_names[499] "New Duras"
-	setVar $planet_names[500] "Freedom II"
-	setVar $planet_names[501] "Ardonyx Major"
-	setVar $planet_names[502] "Focaline Major"
-	setVar $planet_names[503] "Jacent II"
-	setVar $planet_names[504] "Jimson Primus"
-	setVar $planet_names[505] "Andromeda Primus"
-	setVar $planet_names[506] "Adenine Outpost"
-	setVar $planet_names[507] "Ampere Major"
-	setVar $planet_names[508] "Cordoba Major"
-	setVar $planet_names[509] "Garion Major"
-	setVar $planet_names[510] "Gormenghast Primus"
-	setVar $planet_names[511] "Roxana II"
-	setVar $planet_names[512] "New Duriron"
-	setVar $planet_names[513] "Islip Annex"
-	setVar $planet_names[514] "New Powaza"
-	setVar $planet_names[515] "Thisbe II"
-	setVar $planet_names[516] "Ney Annex"
-	setVar $planet_names[517] "Phlogiston Annex"
-	setVar $planet_names[518] "Ganymede II"
-	setVar $planet_names[519] "Joshi Major"
-	setVar $planet_names[520] "Hajj Annex"
-	setVar $planet_names[521] "Aceta Major"
-	setVar $planet_names[522] "Idris II"
-	setVar $planet_names[523] "New Gelugon"
-	setVar $planet_names[524] "Shai-Hulud II"
-	setVar $planet_names[525] "Towers Major"
-	setVar $planet_names[526] "Tulan Primus"
-	setVar $planet_names[527] "Massassi Primus"
-	setVar $planet_names[528] "Taaug Annex"
-	setVar $planet_names[529] "Baruch Outpost"
-	setVar $planet_names[530] "Castalia"
-	setVar $planet_names[531] "Penkwhar Outpost"
-	setVar $planet_names[532] "Baugi Outpost"
-	setVar $planet_names[533] "Draconis Outpost"
-	setVar $planet_names[534] "Crimson II"
-	setVar $planet_names[535] "Smoug Major"
-	setVar $planet_names[536] "Asmussen Primus"
-	setVar $planet_names[537] "Oort"
-	setVar $planet_names[538] "Rousseau Major"
-	setVar $planet_names[539] "Lahara Outpost"
-	setVar $planet_names[540] "Belemmite Primus"
-	setVar $planet_names[541] "Mainz Outpost"
-	setVar $planet_names[542] "Corbino Outpost"
-	setVar $planet_names[543] "Tanar'ri Major"
-	setVar $planet_names[544] "Conway"
-	setVar $planet_names[545] "Raweh II"
-	setVar $planet_names[546] "New Hefry"
-	setVar $planet_names[547] "Pinus Nigra Annex"
-	setVar $planet_names[548] "Celepina Primus"
-	setVar $planet_names[549] "Zaire Outpost"
-	setVar $planet_names[550] "Medusa Annex"
-	setVar $planet_names[551] "Tyrfing Outpost"
-	setVar $planet_names[552] "Gormenghast Minor"
-	setVar $planet_names[553] "Iliopoulos Annex"
-	setVar $planet_names[554] "New Sacha"
-	setVar $planet_names[555] "Tulan Outpost"
-	setVar $planet_names[556] "Chaucer Primus"
-	setVar $planet_names[557] "Carbonara Major"
-	setVar $planet_names[558] "Zivije Minor"
-	setVar $planet_names[559] "New Grant"
-	setVar $planet_names[560] "Hadron Annex"
-	setVar $planet_names[561] "New Chattur"
-	setVar $planet_names[562] "Simeon Outpost"
-	setVar $planet_names[563] "Moriarity Major"
-	setVar $planet_names[564] "Heisenberg Outpost"
-	setVar $planet_names[565] "Vingolf Major"
-	setVar $planet_names[566] "Mammon Outpost"
-	setVar $planet_names[567] "Ceres Outpost"
-	setVar $planet_names[568] "Mantene"
-	setVar $planet_names[569] "Capon Annex"
-	setVar $planet_names[570] "Pockels Outpost"
-	setVar $planet_names[571] "New Valiant"
-	setVar $planet_names[572] "Buchanan II"
-	setVar $planet_names[573] "Bevey Minor"
-	setVar $planet_names[574] "New DarGer"
-	setVar $planet_names[575] "Tatooine Primus"
-	setVar $planet_names[576] "Rabwhar Primus"
-	setVar $planet_names[577] "Trin Minor"
-	setVar $planet_names[578] "Tyr Annex"
-	setVar $planet_names[579] "Klystron"
-	setVar $planet_names[580] "Zamine"
-	setVar $planet_names[581] "Canis Staz II"
-	setVar $planet_names[582] "Gungnir Minor"
-	setVar $planet_names[583] "Alupent Major"
-	setVar $planet_names[584] "Gideon Minor"
-	setVar $planet_names[585] "Raweh Annex"
-	setVar $planet_names[586] "Kamerlingh Annex"
-	setVar $planet_names[587] "Camazotz Minor"
-	setVar $planet_names[588] "Aeolus II"
-	setVar $planet_names[589] "Grant Annex"
-	setVar $planet_names[590] "Betelgeuse"
-	setVar $planet_names[591] "New Dammar"
-	setVar $planet_names[592] "Ursula"
-	setVar $planet_names[593] "Fermi Minor"
-	setVar $planet_names[594] "New Mewey"
-	setVar $planet_names[595] "Elixabeth Outpost"
-	setVar $planet_names[596] "Glashow II"
-	setVar $planet_names[597] "Inchin"
-	setVar $planet_names[598] "Antike"
-	setVar $planet_names[599] "Iliopoulos Primus"
-	setVar $planet_names[600] "Sigma Annex"
-	setVar $planet_names[601] "Tetanus II"
-	setVar $planet_names[602] "New Laika"
-	setVar $planet_names[603] "Lorentz"
-	setVar $planet_names[604] "Hefry"
-	setVar $planet_names[605] "Smoug Annex"
-	setVar $planet_names[606] "New Rutledge"
-	setVar $planet_names[607] "Knossos"
-	setVar $planet_names[608] "Cyclone II"
-	setVar $planet_names[609] "New Milan"
-	setVar $planet_names[610] "Mammon Major"
-	setVar $planet_names[611] "Indium II"
-	setVar $planet_names[612] "Tleilaxu Annex"
-	setVar $planet_names[613] "Krosec II"
-	setVar $planet_names[614] "New Surplus"
-	setVar $planet_names[615] "Aerolone Primus"
-	setVar $planet_names[616] "Nerewhon Outpost"
-	setVar $planet_names[617] "Trexalon Primus"
-	setVar $planet_names[618] "Spider Primus"
-	setVar $planet_names[619] "Ontalak"
-	setVar $planet_names[620] "Benemid Minor"
-	setVar $planet_names[621] "Belenus Primus"
-	setVar $planet_names[622] "Bismarck"
-	setVar $planet_names[623] "New Carson"
-	setVar $planet_names[624] "Rayl Major"
-	setVar $planet_names[625] "New Fedaykin"
-	setVar $planet_names[626] "Ent II"
-	setVar $planet_names[627] "Cetacean II"
-	setVar $planet_names[628] "Artemis"
-	setVar $planet_names[629] "Shakespeare Major"
-	setVar $planet_names[630] "Pepin Minor"
-	setVar $planet_names[631] "Priedo Annex"
-	setVar $planet_names[632] "Ryloth Annex"
-	setVar $planet_names[633] "Pangelinan Annex"
-	setVar $planet_names[634] "Arels II"
-	setVar $planet_names[635] "Epsilon Major"
-	setVar $planet_names[636] "Bayer Primus"
-	setVar $planet_names[637] "Kruger Outpost"
-	setVar $planet_names[638] "Chandrasekher Outpost"
-	setVar $planet_names[639] "Imbrium Major"
-	setVar $planet_names[640] "New Jolotre"
-	setVar $planet_names[641] "Dearth II"
-	setVar $planet_names[642] "New Hallwachs"
-	setVar $planet_names[643] "Hounstyr II"
-	setVar $planet_names[644] "Niepce Primus"
-	setVar $planet_names[645] "Minddagger's Throne"
-	setVar $planet_names[646] "Carnot Outpost"
-	setVar $planet_names[647] "Diancecht Outpost"
-	setVar $planet_names[648] "Gormenghast Annex"
-	setVar $planet_names[649] "Adansonia Primus"
-	setVar $planet_names[650] "Tolchock Primus"
-	setVar $planet_names[651] "Cordwainer"
-	setVar $planet_names[652] "Rahman Primus"
-	setVar $planet_names[653] "Amicar Outpost"
-	setVar $planet_names[654] "Galahad II"
-	setVar $planet_names[655] "New Khancuhn"
-	setVar $planet_names[656] "Glyth Major"
-	setVar $planet_names[657] "Dolldus Major"
-	setVar $planet_names[658] "Reigar Outpost"
-	setVar $planet_names[659] "Aristophanes"
-	setVar $planet_names[660] "Foelen"
-	setVar $planet_names[661] "Gagarin Annex"
-	setVar $planet_names[662] "Yucca"
-	setVar $planet_names[663] "Earwig"
-	setVar $planet_names[664] "Ithaca Primus"
-	setVar $planet_names[665] "El Cid Annex"
-	setVar $planet_names[666] "Geronimo Outpost"
-	setVar $planet_names[667] "Couatl Minor"
-	setVar $planet_names[668] "New Kahn"
-	setVar $planet_names[669] "New Acetylene"
-	setVar $planet_names[670] "Nebuchadnezzar Annex"
-	setVar $planet_names[671] "Jimson Minor"
-	setVar $planet_names[672] "Iota Outpost"
-	setVar $planet_names[673] "Carse II"
-	setVar $planet_names[674] "Opus Outpost"
-	setVar $planet_names[675] "Smekal"
-	setVar $planet_names[676] "Ypsilon Primus"
-	setVar $planet_names[677] "New Auralgan"
-	setVar $planet_names[678] "Nin'arth Minor"
-	setVar $planet_names[679] "Hohenstaufen II"
-	setVar $planet_names[680] "Hefry Major"
-	setVar $planet_names[681] "Faust Outpost"
-	setVar $planet_names[682] "New Hagal"
-	setVar $planet_names[683] "IronWollobick Annex"
-	setVar $planet_names[684] "Sisko Minor"
-	setVar $planet_names[685] "Piazzi Minor"
-	setVar $planet_names[686] "Mirazh II"
-	setVar $planet_names[687] "Myk Outpost"
-	setVar $planet_names[688] "Bumex Minor"
-	setVar $planet_names[689] "Feyd II"
-	setVar $planet_names[690] "Hadron Major"
-	setVar $planet_names[691] "Cyberdyne Outpost"
-	setVar $planet_names[692] "D'Alembert Primus"
-	setVar $planet_names[693] "Brigantia Annex"
-	setVar $planet_names[694] "Miaplacidas Primus"
-	setVar $planet_names[695] "Schwarzlose Annex"
-	setVar $planet_names[696] "Datolite Annex"
-	setVar $planet_names[697] "Gormenghast Outpost"
-	setVar $planet_names[698] "Ithaca II"
-	setVar $planet_names[699] "Condaria Primus"
-	setVar $planet_names[700] "Draconis"
-	setVar $planet_names[701] "Praxis"
-	setVar $planet_names[702] "Brodie Primus"
-	setVar $planet_names[703] "Katana Outpost"
-	setVar $planet_names[704] "New Zoptica"
-	setVar $planet_names[705] "New Bonta"
-	setVar $planet_names[706] "Deschuner Primus"
-	setVar $planet_names[707] "Hecate II"
-	setVar $planet_names[708] "Siembieda Primus"
-	setVar $planet_names[709] "Edinina Annex"
-	setVar $planet_names[710] "Saxe Outpost"
-	setVar $planet_names[711] "Fractine Annex"
-	setVar $planet_names[712] "Schrodinger Primus"
-	setVar $planet_names[713] "Gautier"
-	setVar $planet_names[714] "Akkad Outpost"
-	setVar $planet_names[715] "Polk Minor"
-	setVar $planet_names[716] "New Brae Taera"
-	setVar $planet_names[717] "DeGleash Outpost"
-	setVar $planet_names[718] "Breon Annex"
-	setVar $planet_names[719] "Adjutant"
-	setVar $planet_names[720] "Bridger"
-	setVar $planet_names[721] "New Dinomn"
-	setVar $planet_names[722] "Sinmora"
-	setVar $planet_names[723] "Wein Major"
-	setVar $planet_names[724] "Skuld Major"
-	setVar $planet_names[725] "Tau Major"
-	setVar $planet_names[726] "Eocene Primus"
-	setVar $planet_names[727] "Russel"
-	setVar $planet_names[728] "Samson"
-	setVar $planet_names[729] "Ponsby Primus"
-	setVar $planet_names[730] "Koenig Minor"
-	setVar $planet_names[731] "Constellate"
-	setVar $planet_names[732] "New Verdun"
-	setVar $planet_names[733] "New Heroni"
-	setVar $planet_names[734] "New Dopp"
-	setVar $planet_names[735] "Adhara Primus"
-	setVar $planet_names[736] "Van Maanen II"
-	setVar $planet_names[737] "Prokhorov II"
-	setVar $planet_names[738] "Fabrina II"
-	setVar $planet_names[739] "Ambartsumian Major"
-	setVar $planet_names[740] "New Toro"
-	setVar $planet_names[741] "New Sirius"
-	setVar $planet_names[742] "Poisson II"
-	setVar $planet_names[743] "New Deris"
-	setVar $planet_names[744] "Nadrin Primus"
-	setVar $planet_names[745] "Riyal Primus"
-	setVar $planet_names[746] "New Hippocrates"
-	setVar $planet_names[747] "Bainite Major"
-	setVar $planet_names[748] "Hertz Annex"
-	setVar $planet_names[749] "Athach"
-	setVar $planet_names[750] "Torment Primus"
-	setVar $planet_names[751] "Bohr Outpost"
-	setVar $planet_names[752] "Copalite Outpost"
-	setVar $planet_names[753] "Vero"
-	setVar $planet_names[754] "Alfa Primus"
-	setVar $planet_names[755] "Wolf II"
-	setVar $planet_names[756] "Banalg"
-	setVar $planet_names[757] "Lepton"
-	setVar $planet_names[758] "Bardeleben II"
-	setVar $planet_names[759] "Boyle Minor"
-	setVar $planet_names[760] "Aston Annex"
-	setVar $planet_names[761] "Proxima Centauri Major"
-	setVar $planet_names[762] "Bielids Primus"
-	setVar $planet_names[763] "Amber Major"
-	setVar $planet_names[764] "Gorgimera II"
-	setVar $planet_names[765] "Mortai Minor"
-	setVar $planet_names[766] "Hecate Primus"
-	setVar $planet_names[767] "Sabine"
-	setVar $planet_names[768] "Kintaro Annex"
-	setVar $planet_names[769] "Knorbes"
-	setVar $planet_names[770] "Sirion Primus"
-	setVar $planet_names[771] "New Priedo"
-	setVar $planet_names[772] "Deris"
-	setVar $planet_names[773] "Sakai II"
-	setVar $planet_names[774] "Jefferson II"
-	setVar $planet_names[775] "Flinte Minor"
-	setVar $planet_names[776] "New Gaillot"
-	setVar $planet_names[777] "New Ozawa"
-	setVar $planet_names[778] "Valkyrie Major"
-	setVar $planet_names[779] "Helios Primus"
-	setVar $planet_names[780] "Castor Annex"
-	setVar $planet_names[781] "Lysander Outpost"
-	setVar $planet_names[782] "Engrange Major"
-	setVar $planet_names[783] "Hektor Outpost"
-	setVar $planet_names[784] "Quasi Primus"
-	setVar $planet_names[785] "Minimi Annex"
-	setVar $planet_names[786] "Cetacean Primus"
-	setVar $planet_names[787] "Mondoloy"
-	setVar $planet_names[788] "Hadozee II"
-	setVar $planet_names[789] "Giedi Staz Primus"
-	setVar $planet_names[790] "Sarnoff Primus"
-	setVar $planet_names[791] "Symbiont Annex"
-	setVar $planet_names[792] "New Atrivis"
-	setVar $planet_names[793] "Adurol Outpost"
-	setVar $planet_names[794] "Agamar Minor"
-	setVar $planet_names[795] "de Tocqueville II"
-	setVar $planet_names[796] "Kentaurus"
-	setVar $planet_names[797] "Nebecula"
-	setVar $planet_names[798] "Mach Primus"
-	setVar $planet_names[799] "New Marconi"
-	setVar $planet_names[800] "Pixie Outpost"
-	setVar $planet_names[801] "Scorpio II"
-	setVar $planet_names[802] "Greyhawk Outpost"
-	setVar $planet_names[803] "New Bernoulli"
-	setVar $planet_names[804] "Myk"
-	setVar $planet_names[805] "New Snell"
-	setVar $planet_names[806] "Buccal II"
-	setVar $planet_names[807] "Surplus Outpost"
-	setVar $planet_names[808] "Agathinon"
-	setVar $planet_names[809] "Esabl Major"
-	setVar $planet_names[810] "l'Hopital Primus"
-	setVar $planet_names[811] "New Farquahar"
-	setVar $planet_names[812] "Calit Annex"
-	setVar $planet_names[813] "Forni-Copus Primus"
-	setVar $planet_names[814] "Dreath Annex"
-	setVar $planet_names[815] "Messier II"
-	setVar $planet_names[816] "New Bethune"
-	setVar $planet_names[817] "Avauld Major"
-	setVar $planet_names[818] "New Brassica"
-	setVar $planet_names[819] "Scheiner Minor"
-	setVar $planet_names[820] "Focaline II"
-	setVar $planet_names[821] "Xructocex Minor"
-	setVar $planet_names[822] "Atozine II"
-	setVar $planet_names[823] "Alupent Annex"
-	setVar $planet_names[824] "Moran II"
-	setVar $planet_names[825] "Bularia II"
-	setVar $planet_names[826] "Natoko Major"
-	setVar $planet_names[827] "Jenghe"
-	setVar $planet_names[828] "Thanber II"
-	setVar $planet_names[829] "Aeacus Major"
-	setVar $planet_names[830] "New Avignon"
-	setVar $planet_names[831] "Annobon Primus"
-	setVar $planet_names[832] "Majorana"
-	setVar $planet_names[833] "Alarm Major"
-	setVar $planet_names[834] "Messier"
-	setVar $planet_names[835] "Steele Minor"
-	setVar $planet_names[836] "Njord II"
-	setVar $planet_names[837] "Diabase Primus"
-	setVar $planet_names[838] "Pagaton Minor"
-	setVar $planet_names[839] "Aston Major"
-	setVar $planet_names[840] "Rashomon Outpost"
-	setVar $planet_names[841] "Yiktor"
-	setVar $planet_names[842] "Azactam II"
-	setVar $planet_names[843] "Anastasya II"
-	setVar $planet_names[844] "Cogri"
-	setVar $planet_names[845] "Macross Minor"
-	setVar $planet_names[846] "Asteres Major"
-	setVar $planet_names[847] "Bernoulli II"
-	setVar $planet_names[848] "New Pagoda"
-	setVar $planet_names[849] "Einherjar Primus"
-	setVar $planet_names[850] "Palpatine"
-	setVar $planet_names[851] "New Ghanima"
-	setVar $planet_names[852] "Poitiers II"
-	setVar $planet_names[853] "Nautiloid II"
-	setVar $planet_names[854] "Zoptica Minor"
-	setVar $planet_names[855] "Wern II"
-	setVar $planet_names[856] "Cascara Annex"
-	setVar $planet_names[857] "Yurst Outpost"
-	setVar $planet_names[858] "Breughel Major"
-	setVar $planet_names[859] "Anchorhead Outpost"
-	setVar $planet_names[860] "Woden Annex"
-	setVar $planet_names[861] "Gaia"
-	setVar $planet_names[862] "New Orwell"
-	setVar $planet_names[863] "Diocletian Primus"
-	setVar $planet_names[864] "New Exedore"
-	setVar $planet_names[865] "Jupura Major"
-	setVar $planet_names[866] "Kerogen"
-	setVar $planet_names[867] "Krono Major"
-	setVar $planet_names[868] "Marmoutier Major"
-	setVar $planet_names[869] "Stokes Annex"
-	setVar $planet_names[870] "New Pluto"
-	setVar $planet_names[871] "Hornet II"
-	setVar $planet_names[872] "Telegraph Major"
-	setVar $planet_names[873] "Bolivar Outpost"
-	setVar $planet_names[874] "Iolcus II"
-	setVar $planet_names[875] "Noegi Major"
-	setVar $planet_names[876] "New Saladin"
-	setVar $planet_names[877] "Cambridge Annex"
-	setVar $planet_names[878] "Gelugon"
-	setVar $planet_names[879] "Lazarus II"
-	setVar $planet_names[880] "Achernar Primus"
-	setVar $planet_names[881] "Langmuir"
-	setVar $planet_names[882] "Buie Annex"
-	setVar $planet_names[883] "Spica"
-	setVar $planet_names[884] "Puparkin Outpost"
-	setVar $planet_names[885] "Maya Major"
-	setVar $planet_names[886] "New Polk"
-	setVar $planet_names[887] "Solon Minor"
-	setVar $planet_names[888] "Flamarion Primus"
-	setVar $planet_names[889] "Jupura Minor"
-	setVar $planet_names[890] "New Lahara"
-	setVar $planet_names[891] "New Hermes"
-	setVar $planet_names[892] "New Krono"
-	setVar $planet_names[893] "Starling Primus"
-	setVar $planet_names[894] "Vanant"
-	setVar $planet_names[895] "New Rebka"
-	setVar $planet_names[896] "Julian Major"
-	setVar $planet_names[897] "Faeroes"
-	setVar $planet_names[898] "Kongo"
-	setVar $planet_names[899] "Lorraine Annex"
-	setVar $planet_names[900] "Gautier Outpost"
-	setVar $planet_names[901] "New Hadar"
-	setVar $planet_names[902] "Nexine II"
-	setVar $planet_names[903] "Lindbergh Annex"
-	setVar $planet_names[904] "Ranger"
-	setVar $planet_names[905] "Strad Primus"
-	setVar $planet_names[906] "Yuro Minor"
-	setVar $planet_names[907] "New Ilium"
-	setVar $planet_names[908] "Peale"
-	setVar $planet_names[909] "Faisal Primus"
-	setVar $planet_names[910] "Skinfaxi Major"
-	setVar $planet_names[911] "Gaea Primus"
-	setVar $planet_names[912] "Ayat Major"
-	setVar $planet_names[913] "Charlemagne Minor"
-	setVar $planet_names[914] "Dixon II"
-	setVar $planet_names[915] "Pequan Annex"
-	setVar $planet_names[916] "Arden Annex"
-	setVar $planet_names[917] "Palitzsch II"
-	setVar $planet_names[918] "Seneca Annex"
-	setVar $planet_names[919] "Bozarth Annex"
-	setVar $planet_names[920] "Bicornn Outpost"
-	setVar $planet_names[921] "Djinn Primus"
-	setVar $planet_names[922] "Nabopolassar II"
-	setVar $planet_names[923] "Adhara Major"
-	setVar $planet_names[924] "New Nagant"
-	setVar $planet_names[925] "Julian"
-	setVar $planet_names[926] "Upatnieks Annex"
-	setVar $planet_names[927] "New Guatama"
-	setVar $planet_names[928] "Isolux Outpost"
-	setVar $planet_names[929] "Archon Annex"
-	setVar $planet_names[930] "Planitia Major"
-	setVar $planet_names[931] "Li Kao Minor"
-	setVar $planet_names[932] "Cogri Minor"
-	setVar $planet_names[933] "New Shcawbe"
-	setVar $planet_names[934] "Kruhious Outpost"
-	setVar $planet_names[935] "Castor Hideout"
-	setVar $planet_names[936] "Clastic Outpost"
-	setVar $planet_names[937] "New Capybara"
-	setVar $planet_names[938] "Durer"
-	setVar $planet_names[939] "New Durendal"
-	setVar $planet_names[940] "Tivid"
-	setVar $planet_names[941] "New Vreibefger"
-	setVar $planet_names[942] "Baugi Major"
-	setVar $planet_names[943] "Lorraine Minor"
-	setVar $planet_names[944] "Chalcedony Major"
-	setVar $planet_names[945] "Rousseau Annex"
-	setVar $planet_names[946] "Palique Outpost"
-	setVar $planet_names[947] "Valence Annex"
-	setVar $planet_names[948] "Ralhe Minor"
-	setVar $planet_names[949] "Kruxas Ruz Annex"
-	setVar $planet_names[950] "Pyris Primus"
-	setVar $planet_names[951] "New Earwig"
-	setVar $planet_names[952] "New Wintjen"
-	setVar $planet_names[953] "Pennington"
-	setVar $planet_names[954] "Koalinth"
-	setVar $planet_names[955] "Antike Annex"
-	setVar $planet_names[956] "Bach Major"
-	setVar $planet_names[957] "Kikusui"
-	setVar $planet_names[958] "Guatama Minor"
-	setVar $planet_names[959] "Gaderffii"
-	setVar $planet_names[960] "Kender"
-	setVar $planet_names[961] "Mithra Minor"
-	setVar $planet_names[962] "Osnabruck Primus"
-	setVar $planet_names[963] "Pedase II"
-	setVar $planet_names[964] "Murchison Primus"
-	setVar $planet_names[965] "Lafaayette Outpost"
-	setVar $planet_names[966] "Dawnworld"
-	setVar $planet_names[967] "Ajacs"
-	setVar $planet_names[968] "Raven Outpost"
-	setVar $planet_names[969] "Bravera II"
-	setVar $planet_names[970] "Edenelt Primus"
-	setVar $planet_names[971] "New Nicholson"
-	setVar $planet_names[972] "Suleiman Outpost"
-	setVar $planet_names[973] "Alva"
-	setVar $planet_names[974] "Amertet Annex"
-	setVar $planet_names[975] "Guellan Minor"
-	setVar $planet_names[976] "Thagar"
-	setVar $planet_names[977] "Kegena"
-	setVar $planet_names[978] "Ari Outpost"
-	setVar $planet_names[979] "Hawk Primus"
-	setVar $planet_names[980] "Abraxas Minor"
-	setVar $planet_names[981] "Columbus"
-	setVar $planet_names[982] "Rutledge Major"
-	setVar $planet_names[983] "Efate Major"
-	setVar $planet_names[984] "Xylem Primus"
-	setVar $planet_names[985] "Anaspaz Major"
-	setVar $planet_names[986] "Garoo Minor"
-	setVar $planet_names[987] "Kruhious Minor"
-	setVar $planet_names[988] "Camelot Major"
-	setVar $planet_names[989] "Singer Minor"
-	setVar $planet_names[990] "Aegospotami Primus"
-	setVar $planet_names[991] "Modelei Annex"
-	setVar $planet_names[992] "Skuld Outpost"
-	setVar $planet_names[993] "Oisin Outpost"
-	setVar $planet_names[994] "Baruch Major"
-	setVar $planet_names[995] "Pyramus II"
-	setVar $planet_names[996] "Thornastor Outpost"
-	setVar $planet_names[997] "Suleiman"
-	setVar $planet_names[998] "Pompey Primus"
-	setVar $planet_names[999] "New Aeschylus"
-	setVar $planet_names[1000] "Bounty's Horizon"
+	setArray $planet~planet_names 1000
+	setVar $planet~planet_names[1] "LoneStar's Circle"
+	setVar $planet~planet_names[2] "Manton Outpost"
+	setVar $planet~planet_names[3] "Triax Annex"
+	setVar $planet~planet_names[4] "New Ovid"
+	setVar $planet~planet_names[5] "Napier Minor"
+	setVar $planet~planet_names[6] "New Barite"
+	setVar $planet~planet_names[7] "Agamotto II"
+	setVar $planet~planet_names[8] "Poincare Thunder"
+	setVar $planet~planet_names[9] "Camelopardus"
+	setVar $planet~planet_names[10] "Ticonderoga Annex"
+	setVar $planet~planet_names[11] "Cana Annex"
+	setVar $planet~planet_names[12] "Rifts II"
+	setVar $planet~planet_names[13] "Arago Annex"
+	setVar $planet~planet_names[14] "Grosseteste Primus"
+	setVar $planet~planet_names[15] "Lablon Minor"
+	setVar $planet~planet_names[16] "Ampilean Minor"
+	setVar $planet~planet_names[17] "Pappus II"
+	setVar $planet~planet_names[18] "Buddha Gaya II"
+	setVar $planet~planet_names[19] "Phlogiston Major"
+	setVar $planet~planet_names[20] "Pilar Dawn"
+	setVar $planet~planet_names[21] "Vergil"
+	setVar $planet~planet_names[22] "Zennor Primus"
+	setVar $planet~planet_names[23] "Vigara Outpost"
+	setVar $planet~planet_names[24] "l'Hopital"
+	setVar $planet~planet_names[25] "Axe-Gonne Annex"
+	setVar $planet~planet_names[26] "New Plaskett"
+	setVar $planet~planet_names[27] "Quadrono Fury"
+	setVar $planet~planet_names[28] "Cuirass Annex"
+	setVar $planet~planet_names[29] "Bendor II"
+	setVar $planet~planet_names[30] "Catuz II"
+	setVar $planet~planet_names[31] "New Barazole"
+	setVar $planet~planet_names[32] "Burgundy Outpost"
+	setVar $planet~planet_names[33] "Tibanna Annex"
+	setVar $planet~planet_names[34] "New Vesta"
+	setVar $planet~planet_names[35] "Aerobe Minor"
+	setVar $planet~planet_names[36] "Cornu Primus"
+	setVar $planet~planet_names[37] "Heguz Outpost"
+	setVar $planet~planet_names[38] "Khrytarrm II"
+	setVar $planet~planet_names[39] "Zodiac"
+	setVar $planet~planet_names[40] "Bevey Primus"
+	setVar $planet~planet_names[41] "Pauli Stars"
+	setVar $planet~planet_names[42] "Axanar Outpost"
+	setVar $planet~planet_names[43] "Veialstroum"
+	setVar $planet~planet_names[44] "Dedendum"
+	setVar $planet~planet_names[45] "Parthenon Outpost"
+	setVar $planet~planet_names[46] "Ahzdar Primus"
+	setVar $planet~planet_names[47] "Tionale Minor"
+	setVar $planet~planet_names[48] "Fomalhaut Minor"
+	setVar $planet~planet_names[49] "Calandra Index"
+	setVar $planet~planet_names[50] "New Drude"
+	setVar $planet~planet_names[51] "Troi Primus"
+	setVar $planet~planet_names[52] "Tourmaline Primus"
+	setVar $planet~planet_names[53] "Adurol"
+	setVar $planet~planet_names[54] "Zaibon Outpost"
+	setVar $planet~planet_names[55] "Cipango Annex"
+	setVar $planet~planet_names[56] "Saxbury Annex"
+	setVar $planet~planet_names[57] "New Oomaru"
+	setVar $planet~planet_names[58] "Weiland Minor"
+	setVar $planet~planet_names[59] "Bertian II"
+	setVar $planet~planet_names[60] "Strahd Outpost"
+	setVar $planet~planet_names[61] "Hallwachs Primus"
+	setVar $planet~planet_names[62] "Fabrina Primus"
+	setVar $planet~planet_names[63] "Ovid"
+	setVar $planet~planet_names[64] "Campell II"
+	setVar $planet~planet_names[65] "Osnabruck Major"
+	setVar $planet~planet_names[66] "Merrimac Minor"
+	setVar $planet~planet_names[67] "Toscanelli Major"
+	setVar $planet~planet_names[68] "Hoover Minor"
+	setVar $planet~planet_names[69] "Pangelinan Outpost"
+	setVar $planet~planet_names[70] "Bethune Minor"
+	setVar $planet~planet_names[71] "Fafnir"
+	setVar $planet~planet_names[72] "Gideon Outpost"
+	setVar $planet~planet_names[73] "Tajarhi Primus"
+	setVar $planet~planet_names[74] "Catoblepas Major"
+	setVar $planet~planet_names[75] "Steel Major"
+	setVar $planet~planet_names[76] "Grey Mist"
+	setVar $planet~planet_names[77] "Boreas Minor"
+	setVar $planet~planet_names[78] "New Entrailia"
+	setVar $planet~planet_names[79] "Saturn Primus"
+	setVar $planet~planet_names[80] "Aerolone Major"
+	setVar $planet~planet_names[81] "Camelot Primus"
+	setVar $planet~planet_names[82] "Copus Outpost"
+	setVar $planet~planet_names[83] "Bedoz Whispers"
+	setVar $planet~planet_names[84] "Czar'ak II"
+	setVar $planet~planet_names[85] "Mastro"
+	setVar $planet~planet_names[86] "Venus Outpost"
+	setVar $planet~planet_names[87] "New Io"
+	setVar $planet~planet_names[88] "Tsox II"
+	setVar $planet~planet_names[89] "Acropolis II"
+	setVar $planet~planet_names[90] "CSM-101 Annex"
+	setVar $planet~planet_names[91] "Apian II"
+	setVar $planet~planet_names[92] "New Brodie"
+	setVar $planet~planet_names[93] "Clone Annex"
+	setVar $planet~planet_names[94] "K'hotan Major"
+	setVar $planet~planet_names[95] "Indusium Primus"
+	setVar $planet~planet_names[96] "Javelle Minor"
+	setVar $planet~planet_names[97] "Gold Major"
+	setVar $planet~planet_names[98] "New Poincare"
+	setVar $planet~planet_names[99] "New Ohm"
+	setVar $planet~planet_names[100] "Jeeves"
+	setVar $planet~planet_names[101] "Ahriman Primus"
+	setVar $planet~planet_names[102] "Bajor II"
+	setVar $planet~planet_names[103] "Pickering Primus"
+	setVar $planet~planet_names[104] "Pagoda Outpost"
+	setVar $planet~planet_names[105] "Midgard"
+	setVar $planet~planet_names[106] "New Lutum"
+	setVar $planet~planet_names[107] "Curie Primus"
+	setVar $planet~planet_names[108] "New Kerogen"
+	setVar $planet~planet_names[109] "Brevico Outpost"
+	setVar $planet~planet_names[110] "Cleisthenes Annex"
+	setVar $planet~planet_names[111] "Banalg Primus"
+	setVar $planet~planet_names[112] "Hiruko Primus"
+	setVar $planet~planet_names[113] "New Canis Staz"
+	setVar $planet~planet_names[114] "Herschel Prime"
+	setVar $planet~planet_names[115] "Feesu Annex"
+	setVar $planet~planet_names[116] "Sluagh Minor"
+	setVar $planet~planet_names[117] "Acacia Primus"
+	setVar $planet~planet_names[118] "Zagreus Minor"
+	setVar $planet~planet_names[119] "Aud Outpost"
+	setVar $planet~planet_names[120] "Leo Annex"
+	setVar $planet~planet_names[121] "Inx Primus"
+	setVar $planet~planet_names[122] "Plugh Major"
+	setVar $planet~planet_names[123] "Keltcher II"
+	setVar $planet~planet_names[124] "El Nath Major"
+	setVar $planet~planet_names[125] "Thalim Outpost"
+	setVar $planet~planet_names[126] "Achilles Annex"
+	setVar $planet~planet_names[127] "New Janvier"
+	setVar $planet~planet_names[128] "New Mare"
+	setVar $planet~planet_names[129] "Osnabruck Minor"
+	setVar $planet~planet_names[130] "New Atropine"
+	setVar $planet~planet_names[131] "Hyksos Outpost"
+	setVar $planet~planet_names[132] "Ionicus Annex"
+	setVar $planet~planet_names[133] "Atwood Annex"
+	setVar $planet~planet_names[134] "Ektron II"
+	setVar $planet~planet_names[135] "New Debarre"
+	setVar $planet~planet_names[136] "New Hubble"
+	setVar $planet~planet_names[137] "Acridine Annex"
+	setVar $planet~planet_names[138] "Atchison Annex"
+	setVar $planet~planet_names[139] "Aeschylus Annex"
+	setVar $planet~planet_names[140] "Triceratops II"
+	setVar $planet~planet_names[141] "Ovid 962 Outpost"
+	setVar $planet~planet_names[142] "Laon Annex"
+	setVar $planet~planet_names[143] "Feesu II"
+	setVar $planet~planet_names[144] "Pysadi Outpost"
+	setVar $planet~planet_names[145] "Bansin II"
+	setVar $planet~planet_names[146] "Grimaldi Outpost"
+	setVar $planet~planet_names[147] "Kashyyyk Annex"
+	setVar $planet~planet_names[148] "New Pickering"
+	setVar $planet~planet_names[149] "Sardaukar"
+	setVar $planet~planet_names[150] "Poritrin Annex"
+	setVar $planet~planet_names[151] "Biela Minor"
+	setVar $planet~planet_names[152] "Autun Minor"
+	setVar $planet~planet_names[153] "Akira Primus"
+	setVar $planet~planet_names[154] "Bohemia III"
+	setVar $planet~planet_names[155] "Caspan Primus"
+	setVar $planet~planet_names[156] "Barite Minor"
+	setVar $planet~planet_names[157] "Loki Outpost"
+	setVar $planet~planet_names[158] "Argos Primus"
+	setVar $planet~planet_names[159] "Drake Annex"
+	setVar $planet~planet_names[160] "Jaspilate Outpost"
+	setVar $planet~planet_names[161] "New Tacaxeb"
+	setVar $planet~planet_names[162] "Brevico Primus"
+	setVar $planet~planet_names[163] "Bolivar Minor"
+	setVar $planet~planet_names[164] "Trennen Major"
+	setVar $planet~planet_names[165] "Bainite Annex"
+	setVar $planet~planet_names[166] "Amber Primus"
+	setVar $planet~planet_names[167] "Remorhaz"
+	setVar $planet~planet_names[168] "Politzer"
+	setVar $planet~planet_names[169] "Thisbe"
+	setVar $planet~planet_names[170] "Ekinus"
+	setVar $planet~planet_names[171] "Agamotto Annex"
+	setVar $planet~planet_names[172] "Ixzotz"
+	setVar $planet~planet_names[173] "Coliar"
+	setVar $planet~planet_names[174] "Dragon Major"
+	setVar $planet~planet_names[175] "Minimi Outpost"
+	setVar $planet~planet_names[176] "Comani II"
+	setVar $planet~planet_names[177] "Saladin Major"
+	setVar $planet~planet_names[178] "New CSM-101"
+	setVar $planet~planet_names[179] "Winston"
+	setVar $planet~planet_names[180] "Putman Outpost"
+	setVar $planet~planet_names[181] "Zarathrustra"
+	setVar $planet~planet_names[182] "Bacchus Outpost"
+	setVar $planet~planet_names[183] "Demantoid Annex"
+	setVar $planet~planet_names[184] "Aarite Outpost"
+	setVar $planet~planet_names[185] "Langres Primus"
+	setVar $planet~planet_names[186] "New Myk"
+	setVar $planet~planet_names[187] "Castalia Minor"
+	setVar $planet~planet_names[188] "Feyd Major"
+	setVar $planet~planet_names[189] "Gauss"
+	setVar $planet~planet_names[190] "Adurol Primus"
+	setVar $planet~planet_names[191] "Pingos Annex"
+	setVar $planet~planet_names[192] "Shih Hwang-ti Major"
+	setVar $planet~planet_names[193] "Homonculous Annex"
+	setVar $planet~planet_names[194] "Calandra Annex"
+	setVar $planet~planet_names[195] "Tartarus Minor"
+	setVar $planet~planet_names[196] "Njord Major"
+	setVar $planet~planet_names[197] "Melusine II"
+	setVar $planet~planet_names[198] "Cepheus"
+	setVar $planet~planet_names[199] "Huggins Primus"
+	setVar $planet~planet_names[200] "Buchanan"
+	setVar $planet~planet_names[201] "Bleigh Outpost"
+	setVar $planet~planet_names[202] "Abohm Annex"
+	setVar $planet~planet_names[203] "Freaque Primus"
+	setVar $planet~planet_names[204] "Bespin Outpost"
+	setVar $planet~planet_names[205] "Shklovsky"
+	setVar $planet~planet_names[206] "Heimdall Minor"
+	setVar $planet~planet_names[207] "New Bentylol"
+	setVar $planet~planet_names[208] "Lebeau"
+	setVar $planet~planet_names[209] "New Siva"
+	setVar $planet~planet_names[210] "Biggs Outpost"
+	setVar $planet~planet_names[211] "Auroran Major"
+	setVar $planet~planet_names[212] "Phoenix"
+	setVar $planet~planet_names[213] "Chaeta Major"
+	setVar $planet~planet_names[214] "Anacel Minor"
+	setVar $planet~planet_names[215] "Zeycude Minor"
+	setVar $planet~planet_names[216] "Akarso Major"
+	setVar $planet~planet_names[217] "Bifrost Primus"
+	setVar $planet~planet_names[218] "Jolotre Outpost"
+	setVar $planet~planet_names[219] "New Tutankhamen"
+	setVar $planet~planet_names[220] "Adams Outpost"
+	setVar $planet~planet_names[221] "Feynman Minor"
+	setVar $planet~planet_names[222] "Grant Primus"
+	setVar $planet~planet_names[223] "Aeon Primus"
+	setVar $planet~planet_names[224] "Sacajawea Minor"
+	setVar $planet~planet_names[225] "Thor Outpost"
+	setVar $planet~planet_names[226] "New Kashyyyk"
+	setVar $planet~planet_names[227] "Underwood Minor"
+	setVar $planet~planet_names[228] "Yukawa Major"
+	setVar $planet~planet_names[229] "Feesu Minor"
+	setVar $planet~planet_names[230] "Accurbron Major"
+	setVar $planet~planet_names[231] "Parthenon Major"
+	setVar $planet~planet_names[232] "Calan Outpost"
+	setVar $planet~planet_names[233] "Tali Annex"
+	setVar $planet~planet_names[234] "Cogri Outpost"
+	setVar $planet~planet_names[235] "Atwood Minor"
+	setVar $planet~planet_names[236] "Aldebaran"
+	setVar $planet~planet_names[237] "New Atreides"
+	setVar $planet~planet_names[238] "Abae Annex"
+	setVar $planet~planet_names[239] "Aurva Primus"
+	setVar $planet~planet_names[240] "Pogson Primus"
+	setVar $planet~planet_names[241] "Degtyarev Major"
+	setVar $planet~planet_names[242] "Wollaston"
+	setVar $planet~planet_names[243] "Eagle Annex"
+	setVar $planet~planet_names[244] "Atacon Annex"
+	setVar $planet~planet_names[245] "Lanth Major"
+	setVar $planet~planet_names[246] "Reber Primus"
+	setVar $planet~planet_names[247] "Aleph Minor"
+	setVar $planet~planet_names[248] "Dollond"
+	setVar $planet~planet_names[249] "H'Catha Minor"
+	setVar $planet~planet_names[250] "New Bacta"
+	setVar $planet~planet_names[251] "Galina Annex"
+	setVar $planet~planet_names[252] "New Nadrin"
+	setVar $planet~planet_names[253] "Ajacs Primus"
+	setVar $planet~planet_names[254] "Holland Annex"
+	setVar $planet~planet_names[255] "New Baraka"
+	setVar $planet~planet_names[256] "Alencika Minor"
+	setVar $planet~planet_names[257] "Wypoc"
+	setVar $planet~planet_names[258] "Mytus Major"
+	setVar $planet~planet_names[259] "Garuda Outpost"
+	setVar $planet~planet_names[260] "Nog Outpost"
+	setVar $planet~planet_names[261] "Arcturus Annex"
+	setVar $planet~planet_names[262] "El Cid II"
+	setVar $planet~planet_names[263] "Autun"
+	setVar $planet~planet_names[264] "Omega Major"
+	setVar $planet~planet_names[265] "Antike Outpost"
+	setVar $planet~planet_names[266] "Triceratops Primus"
+	setVar $planet~planet_names[267] "Caladan II"
+	setVar $planet~planet_names[268] "Gnosis II"
+	setVar $planet~planet_names[269] "Freedom"
+	setVar $planet~planet_names[270] "Solomon Primus"
+	setVar $planet~planet_names[271] "Flamarion Major"
+	setVar $planet~planet_names[272] "Massassi Minor"
+	setVar $planet~planet_names[273] "Baclofin Major"
+	setVar $planet~planet_names[274] "New Berubigen"
+	setVar $planet~planet_names[275] "Hydra"
+	setVar $planet~planet_names[276] "Ylaven Annex"
+	setVar $planet~planet_names[277] "Shcawbe"
+	setVar $planet~planet_names[278] "Dallia Primus"
+	setVar $planet~planet_names[279] "New FerNics"
+	setVar $planet~planet_names[280] "Cyzicus Outpost"
+	setVar $planet~planet_names[281] "Belenus"
+	setVar $planet~planet_names[282] "Kudu Minor"
+	setVar $planet~planet_names[283] "Shadout"
+	setVar $planet~planet_names[284] "Tetanus Major"
+	setVar $planet~planet_names[285] "Mecha Major"
+	setVar $planet~planet_names[286] "Blunderbuss Outpost"
+	setVar $planet~planet_names[287] "Castile"
+	setVar $planet~planet_names[288] "Dollond Annex"
+	setVar $planet~planet_names[289] "Condyole II"
+	setVar $planet~planet_names[290] "Benemid Outpost"
+	setVar $planet~planet_names[291] "New Kether"
+	setVar $planet~planet_names[292] "Scarabaeus"
+	setVar $planet~planet_names[293] "Spector Major"
+	setVar $planet~planet_names[294] "Nambu Annex"
+	setVar $planet~planet_names[295] "Yamoto II"
+	setVar $planet~planet_names[296] "Lockyer Major"
+	setVar $planet~planet_names[297] "New Huggins"
+	setVar $planet~planet_names[298] "Gorram"
+	setVar $planet~planet_names[299] "Minimi Minor"
+	setVar $planet~planet_names[300] "Sorel Major"
+	setVar $planet~planet_names[301] "El Nath Primus"
+	setVar $planet~planet_names[302] "Lumineaux Outpost"
+	setVar $planet~planet_names[303] "Richter Primus"
+	setVar $planet~planet_names[304] "Ilianeou"
+	setVar $planet~planet_names[305] "Xyvitix Annex"
+	setVar $planet~planet_names[306] "Benisone Minor"
+	setVar $planet~planet_names[307] "Fanning"
+	setVar $planet~planet_names[308] "Flamsteed"
+	setVar $planet~planet_names[309] "Shklovsky Primus"
+	setVar $planet~planet_names[310] "Toshi Annex"
+	setVar $planet~planet_names[311] "New Bumex"
+	setVar $planet~planet_names[312] "Noirmoutier"
+	setVar $planet~planet_names[313] "Macross"
+	setVar $planet~planet_names[314] "Du Fay Major"
+	setVar $planet~planet_names[315] "Ross Outpost"
+	setVar $planet~planet_names[316] "Xi Primus"
+	setVar $planet~planet_names[317] "Leyline II"
+	setVar $planet~planet_names[318] "Vergil Minor"
+	setVar $planet~planet_names[319] "Diocletian Outpost"
+	setVar $planet~planet_names[320] "Eisenhower Minor"
+	setVar $planet~planet_names[321] "Cithaeron Annex"
+	setVar $planet~planet_names[322] "Pockels Major"
+	setVar $planet~planet_names[323] "Rangent Major"
+	setVar $planet~planet_names[324] "Pascal Annex"
+	setVar $planet~planet_names[325] "Avitene Primus"
+	setVar $planet~planet_names[326] "Fantasia Primus"
+	setVar $planet~planet_names[327] "Baridium II"
+	setVar $planet~planet_names[328] "Von Zacjh II"
+	setVar $planet~planet_names[329] "Jasmine Annex"
+	setVar $planet~planet_names[330] "Bagasse II"
+	setVar $planet~planet_names[331] "Wern"
+	setVar $planet~planet_names[332] "Tenelphi Primus"
+	setVar $planet~planet_names[333] "Elmarin Major"
+	setVar $planet~planet_names[334] "New Rech"
+	setVar $planet~planet_names[335] "Massassi Major"
+	setVar $planet~planet_names[336] "Tintao"
+	setVar $planet~planet_names[337] "Engadine II"
+	setVar $planet~planet_names[338] "New Ektron"
+	setVar $planet~planet_names[339] "Ochecate"
+	setVar $planet~planet_names[340] "Peleus Minor"
+	setVar $planet~planet_names[341] "Balboa Minor"
+	setVar $planet~planet_names[342] "New Phobos"
+	setVar $planet~planet_names[343] "Elmarin II"
+	setVar $planet~planet_names[344] "Garion Primus"
+	setVar $planet~planet_names[345] "Sharrip Major"
+	setVar $planet~planet_names[346] "Breughel"
+	setVar $planet~planet_names[347] "Eisenhower II"
+	setVar $planet~planet_names[348] "Cusa II"
+	setVar $planet~planet_names[349] "Bralgu Annex"
+	setVar $planet~planet_names[350] "Copernicus II"
+	setVar $planet~planet_names[351] "Putman Annex"
+	setVar $planet~planet_names[352] "Pylus Minor"
+	setVar $planet~planet_names[353] "Alkaid"
+	setVar $planet~planet_names[354] "Proudelxak Primus"
+	setVar $planet~planet_names[355] "Putman II"
+	setVar $planet~planet_names[356] "Ganymede Major"
+	setVar $planet~planet_names[357] "Hotchkiss II"
+	setVar $planet~planet_names[358] "Eikonal Primus"
+	setVar $planet~planet_names[359] "New Nelson"
+	setVar $planet~planet_names[360] "Behemoth Annex"
+	setVar $planet~planet_names[361] "Daleth"
+	setVar $planet~planet_names[362] "Circe Primus"
+	setVar $planet~planet_names[363] "Ueilerm Annex"
+	setVar $planet~planet_names[364] "Winston Primus"
+	setVar $planet~planet_names[365] "Roentgen II"
+	setVar $planet~planet_names[366] "New Bentyl"
+	setVar $planet~planet_names[367] "Bainite Primus"
+	setVar $planet~planet_names[368] "Uranus Minor"
+	setVar $planet~planet_names[369] "Triumviri Outpost"
+	setVar $planet~planet_names[370] "Dearth Minor"
+	setVar $planet~planet_names[371] "Quare Minor"
+	setVar $planet~planet_names[372] "Ariel II"
+	setVar $planet~planet_names[373] "Agamotto"
+	setVar $planet~planet_names[374] "Mithras II"
+	setVar $planet~planet_names[375] "Agena II"
+	setVar $planet~planet_names[376] "Anchorhead Minor"
+	setVar $planet~planet_names[377] "Atarax Major"
+	setVar $planet~planet_names[378] "T'xe"
+	setVar $planet~planet_names[379] "Fedaykin Major"
+	setVar $planet~planet_names[380] "Kai Outpost"
+	setVar $planet~planet_names[381] "Pompey Major"
+	setVar $planet~planet_names[382] "Jarsone Major"
+	setVar $planet~planet_names[383] "Percy 1640 Major"
+	setVar $planet~planet_names[384] "Kraken Outpost"
+	setVar $planet~planet_names[385] "Tiree"
+	setVar $planet~planet_names[386] "New Corbiet"
+	setVar $planet~planet_names[387] "Celepina Minor"
+	setVar $planet~planet_names[388] "Augustus Annex"
+	setVar $planet~planet_names[389] "New H'Catha"
+	setVar $planet~planet_names[390] "New Aldrin"
+	setVar $planet~planet_names[391] "Bacarate II"
+	setVar $planet~planet_names[392] "Drude II"
+	setVar $planet~planet_names[393] "Millennium"
+	setVar $planet~planet_names[394] "Kwisatz"
+	setVar $planet~planet_names[395] "Rebka"
+	setVar $planet~planet_names[396] "Rebka II"
+	setVar $planet~planet_names[397] "Flamsteed Outpost"
+	setVar $planet~planet_names[398] "Garibaldi Minor"
+	setVar $planet~planet_names[399] "Hounstyr Annex"
+	setVar $planet~planet_names[400] "Flinte"
+	setVar $planet~planet_names[401] "Dodonna Major"
+	setVar $planet~planet_names[402] "Ueilerm Minor"
+	setVar $planet~planet_names[403] "Kaula"
+	setVar $planet~planet_names[404] "Orkney Outpost"
+	setVar $planet~planet_names[405] "Appollyon Primus"
+	setVar $planet~planet_names[406] "New Natoko"
+	setVar $planet~planet_names[407] "Heroni Major"
+	setVar $planet~planet_names[408] "Haderach Primus"
+	setVar $planet~planet_names[409] "Dinom Major"
+	setVar $planet~planet_names[410] "Darion Minor"
+	setVar $planet~planet_names[411] "Medusa II"
+	setVar $planet~planet_names[412] "Kaladan Outpost"
+	setVar $planet~planet_names[413] "Kep Salu Annex"
+	setVar $planet~planet_names[414] "New Minos"
+	setVar $planet~planet_names[415] "Jeeves Major"
+	setVar $planet~planet_names[416] "Exodus"
+	setVar $planet~planet_names[417] "Euler Annex"
+	setVar $planet~planet_names[418] "Capricornus II"
+	setVar $planet~planet_names[419] "Milan Primus"
+	setVar $planet~planet_names[420] "Beben Outpost"
+	setVar $planet~planet_names[421] "New Kohlrausch"
+	setVar $planet~planet_names[422] "Brombay"
+	setVar $planet~planet_names[423] "Alvarado Minor"
+	setVar $planet~planet_names[424] "New Franchi"
+	setVar $planet~planet_names[425] "Melior"
+	setVar $planet~planet_names[426] "Atrivis"
+	setVar $planet~planet_names[427] "Lepton II"
+	setVar $planet~planet_names[428] "Dyson Outpost"
+	setVar $planet~planet_names[429] "Feyd Outpost"
+	setVar $planet~planet_names[430] "Wypoc II"
+	setVar $planet~planet_names[431] "Peridot Primus"
+	setVar $planet~planet_names[432] "Yona II"
+	setVar $planet~planet_names[433] "Caduceus Major"
+	setVar $planet~planet_names[434] "Kruhious II"
+	setVar $planet~planet_names[435] "Melior Outpost"
+	setVar $planet~planet_names[436] "Ryloth Major"
+	setVar $planet~planet_names[437] "Becquerel Annex"
+	setVar $planet~planet_names[438] "Intrepid"
+	setVar $planet~planet_names[439] "Gascogne Annex"
+	setVar $planet~planet_names[440] "Free State II"
+	setVar $planet~planet_names[441] "Ozawa Minor"
+	setVar $planet~planet_names[442] "Mewey Primus"
+	setVar $planet~planet_names[443] "Xylene Outpost"
+	setVar $planet~planet_names[444] "Pohl Annex"
+	setVar $planet~planet_names[445] "Absarokite"
+	setVar $planet~planet_names[446] "Phardos Annex"
+	setVar $planet~planet_names[447] "Axolotl Minor"
+	setVar $planet~planet_names[448] "van der Waals Primus"
+	setVar $planet~planet_names[449] "Hydropon"
+	setVar $planet~planet_names[450] "Tesla Minor"
+	setVar $planet~planet_names[451] "Kender Annex"
+	setVar $planet~planet_names[452] "Aphrodite Primus"
+	setVar $planet~planet_names[453] "New Addax"
+	setVar $planet~planet_names[454] "New Castile"
+	setVar $planet~planet_names[455] "Atlas Major"
+	setVar $planet~planet_names[456] "Van de Graaff II"
+	setVar $planet~planet_names[457] "Chrysa II"
+	setVar $planet~planet_names[458] "Dirac Outpost"
+	setVar $planet~planet_names[459] "Aachen Annex"
+	setVar $planet~planet_names[460] "Skinfaxi II"
+	setVar $planet~planet_names[461] "Carthage Primus"
+	setVar $planet~planet_names[462] "Elmarin Outpost"
+	setVar $planet~planet_names[463] "Mikado Primus"
+	setVar $planet~planet_names[464] "Rydberg Minor"
+	setVar $planet~planet_names[465] "Hallwachs Major"
+	setVar $planet~planet_names[466] "Banderlog Major"
+	setVar $planet~planet_names[467] "New Grosseteste"
+	setVar $planet~planet_names[468] "Caliver II"
+	setVar $planet~planet_names[469] "Jokwa Primus"
+	setVar $planet~planet_names[470] "New Auxerre"
+	setVar $planet~planet_names[471] "Demilich"
+	setVar $planet~planet_names[472] "New Karelia"
+	setVar $planet~planet_names[473] "Rueschhoff"
+	setVar $planet~planet_names[474] "Taro Minor"
+	setVar $planet~planet_names[475] "Dianoga Annex"
+	setVar $planet~planet_names[476] "Quevedo Major"
+	setVar $planet~planet_names[477] "New Leviathan"
+	setVar $planet~planet_names[478] "Raydrad Primus"
+	setVar $planet~planet_names[479] "New Daleth"
+	setVar $planet~planet_names[480] "Metztla'Xym"
+	setVar $planet~planet_names[481] "Aix-la-Chapelle Annex"
+	setVar $planet~planet_names[482] "Spume Outpost"
+	setVar $planet~planet_names[483] "Lysander II"
+	setVar $planet~planet_names[484] "Simorg Minor"
+	setVar $planet~planet_names[485] "Van Maanen Outpost"
+	setVar $planet~planet_names[486] "Alexander II"
+	setVar $planet~planet_names[487] "Istar Annex"
+	setVar $planet~planet_names[488] "Crecy Major"
+	setVar $planet~planet_names[489] "Bethune Outpost"
+	setVar $planet~planet_names[490] "Cittert Major"
+	setVar $planet~planet_names[491] "Edinina II"
+	setVar $planet~planet_names[492] "Imbrium"
+	setVar $planet~planet_names[493] "New Tycho"
+	setVar $planet~planet_names[494] "Nordenfelt Annex"
+	setVar $planet~planet_names[495] "Dixon Primus"
+	setVar $planet~planet_names[496] "Biggs Major"
+	setVar $planet~planet_names[497] "Far Station II"
+	setVar $planet~planet_names[498] "Puparkin II"
+	setVar $planet~planet_names[499] "New Duras"
+	setVar $planet~planet_names[500] "Freedom II"
+	setVar $planet~planet_names[501] "Ardonyx Major"
+	setVar $planet~planet_names[502] "Focaline Major"
+	setVar $planet~planet_names[503] "Jacent II"
+	setVar $planet~planet_names[504] "Jimson Primus"
+	setVar $planet~planet_names[505] "Andromeda Primus"
+	setVar $planet~planet_names[506] "Adenine Outpost"
+	setVar $planet~planet_names[507] "Ampere Major"
+	setVar $planet~planet_names[508] "Cordoba Major"
+	setVar $planet~planet_names[509] "Garion Major"
+	setVar $planet~planet_names[510] "Gormenghast Primus"
+	setVar $planet~planet_names[511] "Roxana II"
+	setVar $planet~planet_names[512] "New Duriron"
+	setVar $planet~planet_names[513] "Islip Annex"
+	setVar $planet~planet_names[514] "New Powaza"
+	setVar $planet~planet_names[515] "Thisbe II"
+	setVar $planet~planet_names[516] "Ney Annex"
+	setVar $planet~planet_names[517] "Phlogiston Annex"
+	setVar $planet~planet_names[518] "Ganymede II"
+	setVar $planet~planet_names[519] "Joshi Major"
+	setVar $planet~planet_names[520] "Hajj Annex"
+	setVar $planet~planet_names[521] "Aceta Major"
+	setVar $planet~planet_names[522] "Idris II"
+	setVar $planet~planet_names[523] "New Gelugon"
+	setVar $planet~planet_names[524] "Shai-Hulud II"
+	setVar $planet~planet_names[525] "Towers Major"
+	setVar $planet~planet_names[526] "Tulan Primus"
+	setVar $planet~planet_names[527] "Massassi Primus"
+	setVar $planet~planet_names[528] "Taaug Annex"
+	setVar $planet~planet_names[529] "Baruch Outpost"
+	setVar $planet~planet_names[530] "Castalia"
+	setVar $planet~planet_names[531] "Penkwhar Outpost"
+	setVar $planet~planet_names[532] "Baugi Outpost"
+	setVar $planet~planet_names[533] "Draconis Outpost"
+	setVar $planet~planet_names[534] "Crimson II"
+	setVar $planet~planet_names[535] "Smoug Major"
+	setVar $planet~planet_names[536] "Asmussen Primus"
+	setVar $planet~planet_names[537] "Oort"
+	setVar $planet~planet_names[538] "Rousseau Major"
+	setVar $planet~planet_names[539] "Lahara Outpost"
+	setVar $planet~planet_names[540] "Belemmite Primus"
+	setVar $planet~planet_names[541] "Mainz Outpost"
+	setVar $planet~planet_names[542] "Corbino Outpost"
+	setVar $planet~planet_names[543] "Tanar'ri Major"
+	setVar $planet~planet_names[544] "Conway"
+	setVar $planet~planet_names[545] "Raweh II"
+	setVar $planet~planet_names[546] "New Hefry"
+	setVar $planet~planet_names[547] "Pinus Nigra Annex"
+	setVar $planet~planet_names[548] "Celepina Primus"
+	setVar $planet~planet_names[549] "Zaire Outpost"
+	setVar $planet~planet_names[550] "Medusa Annex"
+	setVar $planet~planet_names[551] "Tyrfing Outpost"
+	setVar $planet~planet_names[552] "Gormenghast Minor"
+	setVar $planet~planet_names[553] "Iliopoulos Annex"
+	setVar $planet~planet_names[554] "New Sacha"
+	setVar $planet~planet_names[555] "Tulan Outpost"
+	setVar $planet~planet_names[556] "Chaucer Primus"
+	setVar $planet~planet_names[557] "Carbonara Major"
+	setVar $planet~planet_names[558] "Zivije Minor"
+	setVar $planet~planet_names[559] "New Grant"
+	setVar $planet~planet_names[560] "Hadron Annex"
+	setVar $planet~planet_names[561] "New Chattur"
+	setVar $planet~planet_names[562] "Simeon Outpost"
+	setVar $planet~planet_names[563] "Moriarity Major"
+	setVar $planet~planet_names[564] "Heisenberg Outpost"
+	setVar $planet~planet_names[565] "Vingolf Major"
+	setVar $planet~planet_names[566] "Mammon Outpost"
+	setVar $planet~planet_names[567] "Ceres Outpost"
+	setVar $planet~planet_names[568] "Mantene"
+	setVar $planet~planet_names[569] "Capon Annex"
+	setVar $planet~planet_names[570] "Pockels Outpost"
+	setVar $planet~planet_names[571] "New Valiant"
+	setVar $planet~planet_names[572] "Buchanan II"
+	setVar $planet~planet_names[573] "Bevey Minor"
+	setVar $planet~planet_names[574] "New DarGer"
+	setVar $planet~planet_names[575] "Tatooine Primus"
+	setVar $planet~planet_names[576] "Rabwhar Primus"
+	setVar $planet~planet_names[577] "Trin Minor"
+	setVar $planet~planet_names[578] "Tyr Annex"
+	setVar $planet~planet_names[579] "Klystron"
+	setVar $planet~planet_names[580] "Zamine"
+	setVar $planet~planet_names[581] "Canis Staz II"
+	setVar $planet~planet_names[582] "Gungnir Minor"
+	setVar $planet~planet_names[583] "Alupent Major"
+	setVar $planet~planet_names[584] "Gideon Minor"
+	setVar $planet~planet_names[585] "Raweh Annex"
+	setVar $planet~planet_names[586] "Kamerlingh Annex"
+	setVar $planet~planet_names[587] "Camazotz Minor"
+	setVar $planet~planet_names[588] "Aeolus II"
+	setVar $planet~planet_names[589] "Grant Annex"
+	setVar $planet~planet_names[590] "Betelgeuse"
+	setVar $planet~planet_names[591] "New Dammar"
+	setVar $planet~planet_names[592] "Ursula"
+	setVar $planet~planet_names[593] "Fermi Minor"
+	setVar $planet~planet_names[594] "New Mewey"
+	setVar $planet~planet_names[595] "Elixabeth Outpost"
+	setVar $planet~planet_names[596] "Glashow II"
+	setVar $planet~planet_names[597] "Inchin"
+	setVar $planet~planet_names[598] "Antike"
+	setVar $planet~planet_names[599] "Iliopoulos Primus"
+	setVar $planet~planet_names[600] "Sigma Annex"
+	setVar $planet~planet_names[601] "Tetanus II"
+	setVar $planet~planet_names[602] "New Laika"
+	setVar $planet~planet_names[603] "Lorentz"
+	setVar $planet~planet_names[604] "Hefry"
+	setVar $planet~planet_names[605] "Smoug Annex"
+	setVar $planet~planet_names[606] "New Rutledge"
+	setVar $planet~planet_names[607] "Knossos"
+	setVar $planet~planet_names[608] "Cyclone II"
+	setVar $planet~planet_names[609] "New Milan"
+	setVar $planet~planet_names[610] "Mammon Major"
+	setVar $planet~planet_names[611] "Indium II"
+	setVar $planet~planet_names[612] "Tleilaxu Annex"
+	setVar $planet~planet_names[613] "Krosec II"
+	setVar $planet~planet_names[614] "New Surplus"
+	setVar $planet~planet_names[615] "Aerolone Primus"
+	setVar $planet~planet_names[616] "Nerewhon Outpost"
+	setVar $planet~planet_names[617] "Trexalon Primus"
+	setVar $planet~planet_names[618] "Spider Primus"
+	setVar $planet~planet_names[619] "Ontalak"
+	setVar $planet~planet_names[620] "Benemid Minor"
+	setVar $planet~planet_names[621] "Belenus Primus"
+	setVar $planet~planet_names[622] "Bismarck"
+	setVar $planet~planet_names[623] "New Carson"
+	setVar $planet~planet_names[624] "Rayl Major"
+	setVar $planet~planet_names[625] "New Fedaykin"
+	setVar $planet~planet_names[626] "Ent II"
+	setVar $planet~planet_names[627] "Cetacean II"
+	setVar $planet~planet_names[628] "Artemis"
+	setVar $planet~planet_names[629] "Shakespeare Major"
+	setVar $planet~planet_names[630] "Pepin Minor"
+	setVar $planet~planet_names[631] "Priedo Annex"
+	setVar $planet~planet_names[632] "Ryloth Annex"
+	setVar $planet~planet_names[633] "Pangelinan Annex"
+	setVar $planet~planet_names[634] "Arels II"
+	setVar $planet~planet_names[635] "Epsilon Major"
+	setVar $planet~planet_names[636] "Bayer Primus"
+	setVar $planet~planet_names[637] "Kruger Outpost"
+	setVar $planet~planet_names[638] "Chandrasekher Outpost"
+	setVar $planet~planet_names[639] "Imbrium Major"
+	setVar $planet~planet_names[640] "New Jolotre"
+	setVar $planet~planet_names[641] "Dearth II"
+	setVar $planet~planet_names[642] "New Hallwachs"
+	setVar $planet~planet_names[643] "Hounstyr II"
+	setVar $planet~planet_names[644] "Niepce Primus"
+	setVar $planet~planet_names[645] "Minddagger's Throne"
+	setVar $planet~planet_names[646] "Carnot Outpost"
+	setVar $planet~planet_names[647] "Diancecht Outpost"
+	setVar $planet~planet_names[648] "Gormenghast Annex"
+	setVar $planet~planet_names[649] "Adansonia Primus"
+	setVar $planet~planet_names[650] "Tolchock Primus"
+	setVar $planet~planet_names[651] "Cordwainer"
+	setVar $planet~planet_names[652] "Rahman Primus"
+	setVar $planet~planet_names[653] "Amicar Outpost"
+	setVar $planet~planet_names[654] "Galahad II"
+	setVar $planet~planet_names[655] "New Khancuhn"
+	setVar $planet~planet_names[656] "Glyth Major"
+	setVar $planet~planet_names[657] "Dolldus Major"
+	setVar $planet~planet_names[658] "Reigar Outpost"
+	setVar $planet~planet_names[659] "Aristophanes"
+	setVar $planet~planet_names[660] "Foelen"
+	setVar $planet~planet_names[661] "Gagarin Annex"
+	setVar $planet~planet_names[662] "Yucca"
+	setVar $planet~planet_names[663] "Earwig"
+	setVar $planet~planet_names[664] "Ithaca Primus"
+	setVar $planet~planet_names[665] "El Cid Annex"
+	setVar $planet~planet_names[666] "Geronimo Outpost"
+	setVar $planet~planet_names[667] "Couatl Minor"
+	setVar $planet~planet_names[668] "New Kahn"
+	setVar $planet~planet_names[669] "New Acetylene"
+	setVar $planet~planet_names[670] "Nebuchadnezzar Annex"
+	setVar $planet~planet_names[671] "Jimson Minor"
+	setVar $planet~planet_names[672] "Iota Outpost"
+	setVar $planet~planet_names[673] "Carse II"
+	setVar $planet~planet_names[674] "Opus Outpost"
+	setVar $planet~planet_names[675] "Smekal"
+	setVar $planet~planet_names[676] "Ypsilon Primus"
+	setVar $planet~planet_names[677] "New Auralgan"
+	setVar $planet~planet_names[678] "Nin'arth Minor"
+	setVar $planet~planet_names[679] "Hohenstaufen II"
+	setVar $planet~planet_names[680] "Hefry Major"
+	setVar $planet~planet_names[681] "Faust Outpost"
+	setVar $planet~planet_names[682] "New Hagal"
+	setVar $planet~planet_names[683] "IronWollobick Annex"
+	setVar $planet~planet_names[684] "Sisko Minor"
+	setVar $planet~planet_names[685] "Piazzi Minor"
+	setVar $planet~planet_names[686] "Mirazh II"
+	setVar $planet~planet_names[687] "Myk Outpost"
+	setVar $planet~planet_names[688] "Bumex Minor"
+	setVar $planet~planet_names[689] "Feyd II"
+	setVar $planet~planet_names[690] "Hadron Major"
+	setVar $planet~planet_names[691] "Cyberdyne Outpost"
+	setVar $planet~planet_names[692] "D'Alembert Primus"
+	setVar $planet~planet_names[693] "Brigantia Annex"
+	setVar $planet~planet_names[694] "Miaplacidas Primus"
+	setVar $planet~planet_names[695] "Schwarzlose Annex"
+	setVar $planet~planet_names[696] "Datolite Annex"
+	setVar $planet~planet_names[697] "Gormenghast Outpost"
+	setVar $planet~planet_names[698] "Ithaca II"
+	setVar $planet~planet_names[699] "Condaria Primus"
+	setVar $planet~planet_names[700] "Draconis"
+	setVar $planet~planet_names[701] "Praxis"
+	setVar $planet~planet_names[702] "Brodie Primus"
+	setVar $planet~planet_names[703] "Katana Outpost"
+	setVar $planet~planet_names[704] "New Zoptica"
+	setVar $planet~planet_names[705] "New Bonta"
+	setVar $planet~planet_names[706] "Deschuner Primus"
+	setVar $planet~planet_names[707] "Hecate II"
+	setVar $planet~planet_names[708] "Siembieda Primus"
+	setVar $planet~planet_names[709] "Edinina Annex"
+	setVar $planet~planet_names[710] "Saxe Outpost"
+	setVar $planet~planet_names[711] "Fractine Annex"
+	setVar $planet~planet_names[712] "Schrodinger Primus"
+	setVar $planet~planet_names[713] "Gautier"
+	setVar $planet~planet_names[714] "Akkad Outpost"
+	setVar $planet~planet_names[715] "Polk Minor"
+	setVar $planet~planet_names[716] "New Brae Taera"
+	setVar $planet~planet_names[717] "DeGleash Outpost"
+	setVar $planet~planet_names[718] "Breon Annex"
+	setVar $planet~planet_names[719] "Adjutant"
+	setVar $planet~planet_names[720] "Bridger"
+	setVar $planet~planet_names[721] "New Dinomn"
+	setVar $planet~planet_names[722] "Sinmora"
+	setVar $planet~planet_names[723] "Wein Major"
+	setVar $planet~planet_names[724] "Skuld Major"
+	setVar $planet~planet_names[725] "Tau Major"
+	setVar $planet~planet_names[726] "Eocene Primus"
+	setVar $planet~planet_names[727] "Russel"
+	setVar $planet~planet_names[728] "Samson"
+	setVar $planet~planet_names[729] "Ponsby Primus"
+	setVar $planet~planet_names[730] "Koenig Minor"
+	setVar $planet~planet_names[731] "Constellate"
+	setVar $planet~planet_names[732] "New Verdun"
+	setVar $planet~planet_names[733] "New Heroni"
+	setVar $planet~planet_names[734] "New Dopp"
+	setVar $planet~planet_names[735] "Adhara Primus"
+	setVar $planet~planet_names[736] "Van Maanen II"
+	setVar $planet~planet_names[737] "Prokhorov II"
+	setVar $planet~planet_names[738] "Fabrina II"
+	setVar $planet~planet_names[739] "Ambartsumian Major"
+	setVar $planet~planet_names[740] "New Toro"
+	setVar $planet~planet_names[741] "New Sirius"
+	setVar $planet~planet_names[742] "Poisson II"
+	setVar $planet~planet_names[743] "New Deris"
+	setVar $planet~planet_names[744] "Nadrin Primus"
+	setVar $planet~planet_names[745] "Riyal Primus"
+	setVar $planet~planet_names[746] "New Hippocrates"
+	setVar $planet~planet_names[747] "Bainite Major"
+	setVar $planet~planet_names[748] "Hertz Annex"
+	setVar $planet~planet_names[749] "Athach"
+	setVar $planet~planet_names[750] "Torment Primus"
+	setVar $planet~planet_names[751] "Bohr Outpost"
+	setVar $planet~planet_names[752] "Copalite Outpost"
+	setVar $planet~planet_names[753] "Vero"
+	setVar $planet~planet_names[754] "Alfa Primus"
+	setVar $planet~planet_names[755] "Wolf II"
+	setVar $planet~planet_names[756] "Banalg"
+	setVar $planet~planet_names[757] "Lepton"
+	setVar $planet~planet_names[758] "Bardeleben II"
+	setVar $planet~planet_names[759] "Boyle Minor"
+	setVar $planet~planet_names[760] "Aston Annex"
+	setVar $planet~planet_names[761] "Proxima Centauri Major"
+	setVar $planet~planet_names[762] "Bielids Primus"
+	setVar $planet~planet_names[763] "Amber Major"
+	setVar $planet~planet_names[764] "Gorgimera II"
+	setVar $planet~planet_names[765] "Mortai Minor"
+	setVar $planet~planet_names[766] "Hecate Primus"
+	setVar $planet~planet_names[767] "Sabine"
+	setVar $planet~planet_names[768] "Kintaro Annex"
+	setVar $planet~planet_names[769] "Knorbes"
+	setVar $planet~planet_names[770] "Sirion Primus"
+	setVar $planet~planet_names[771] "New Priedo"
+	setVar $planet~planet_names[772] "Deris"
+	setVar $planet~planet_names[773] "Sakai II"
+	setVar $planet~planet_names[774] "Jefferson II"
+	setVar $planet~planet_names[775] "Flinte Minor"
+	setVar $planet~planet_names[776] "New Gaillot"
+	setVar $planet~planet_names[777] "New Ozawa"
+	setVar $planet~planet_names[778] "Valkyrie Major"
+	setVar $planet~planet_names[779] "Helios Primus"
+	setVar $planet~planet_names[780] "Castor Annex"
+	setVar $planet~planet_names[781] "Lysander Outpost"
+	setVar $planet~planet_names[782] "Engrange Major"
+	setVar $planet~planet_names[783] "Hektor Outpost"
+	setVar $planet~planet_names[784] "Quasi Primus"
+	setVar $planet~planet_names[785] "Minimi Annex"
+	setVar $planet~planet_names[786] "Cetacean Primus"
+	setVar $planet~planet_names[787] "Mondoloy"
+	setVar $planet~planet_names[788] "Hadozee II"
+	setVar $planet~planet_names[789] "Giedi Staz Primus"
+	setVar $planet~planet_names[790] "Sarnoff Primus"
+	setVar $planet~planet_names[791] "Symbiont Annex"
+	setVar $planet~planet_names[792] "New Atrivis"
+	setVar $planet~planet_names[793] "Adurol Outpost"
+	setVar $planet~planet_names[794] "Agamar Minor"
+	setVar $planet~planet_names[795] "de Tocqueville II"
+	setVar $planet~planet_names[796] "Kentaurus"
+	setVar $planet~planet_names[797] "Nebecula"
+	setVar $planet~planet_names[798] "Mach Primus"
+	setVar $planet~planet_names[799] "New Marconi"
+	setVar $planet~planet_names[800] "Pixie Outpost"
+	setVar $planet~planet_names[801] "Scorpio II"
+	setVar $planet~planet_names[802] "Greyhawk Outpost"
+	setVar $planet~planet_names[803] "New Bernoulli"
+	setVar $planet~planet_names[804] "Myk"
+	setVar $planet~planet_names[805] "New Snell"
+	setVar $planet~planet_names[806] "Buccal II"
+	setVar $planet~planet_names[807] "Surplus Outpost"
+	setVar $planet~planet_names[808] "Agathinon"
+	setVar $planet~planet_names[809] "Esabl Major"
+	setVar $planet~planet_names[810] "l'Hopital Primus"
+	setVar $planet~planet_names[811] "New Farquahar"
+	setVar $planet~planet_names[812] "Calit Annex"
+	setVar $planet~planet_names[813] "Forni-Copus Primus"
+	setVar $planet~planet_names[814] "Dreath Annex"
+	setVar $planet~planet_names[815] "Messier II"
+	setVar $planet~planet_names[816] "New Bethune"
+	setVar $planet~planet_names[817] "Avauld Major"
+	setVar $planet~planet_names[818] "New Brassica"
+	setVar $planet~planet_names[819] "Scheiner Minor"
+	setVar $planet~planet_names[820] "Focaline II"
+	setVar $planet~planet_names[821] "Xructocex Minor"
+	setVar $planet~planet_names[822] "Atozine II"
+	setVar $planet~planet_names[823] "Alupent Annex"
+	setVar $planet~planet_names[824] "Moran II"
+	setVar $planet~planet_names[825] "Bularia II"
+	setVar $planet~planet_names[826] "Natoko Major"
+	setVar $planet~planet_names[827] "Jenghe"
+	setVar $planet~planet_names[828] "Thanber II"
+	setVar $planet~planet_names[829] "Aeacus Major"
+	setVar $planet~planet_names[830] "New Avignon"
+	setVar $planet~planet_names[831] "Annobon Primus"
+	setVar $planet~planet_names[832] "Majorana"
+	setVar $planet~planet_names[833] "Alarm Major"
+	setVar $planet~planet_names[834] "Messier"
+	setVar $planet~planet_names[835] "Steele Minor"
+	setVar $planet~planet_names[836] "Njord II"
+	setVar $planet~planet_names[837] "Diabase Primus"
+	setVar $planet~planet_names[838] "Pagaton Minor"
+	setVar $planet~planet_names[839] "Aston Major"
+	setVar $planet~planet_names[840] "Rashomon Outpost"
+	setVar $planet~planet_names[841] "Yiktor"
+	setVar $planet~planet_names[842] "Azactam II"
+	setVar $planet~planet_names[843] "Anastasya II"
+	setVar $planet~planet_names[844] "Cogri"
+	setVar $planet~planet_names[845] "Macross Minor"
+	setVar $planet~planet_names[846] "Asteres Major"
+	setVar $planet~planet_names[847] "Bernoulli II"
+	setVar $planet~planet_names[848] "New Pagoda"
+	setVar $planet~planet_names[849] "Einherjar Primus"
+	setVar $planet~planet_names[850] "Palpatine"
+	setVar $planet~planet_names[851] "New Ghanima"
+	setVar $planet~planet_names[852] "Poitiers II"
+	setVar $planet~planet_names[853] "Nautiloid II"
+	setVar $planet~planet_names[854] "Zoptica Minor"
+	setVar $planet~planet_names[855] "Wern II"
+	setVar $planet~planet_names[856] "Cascara Annex"
+	setVar $planet~planet_names[857] "Yurst Outpost"
+	setVar $planet~planet_names[858] "Breughel Major"
+	setVar $planet~planet_names[859] "Anchorhead Outpost"
+	setVar $planet~planet_names[860] "Woden Annex"
+	setVar $planet~planet_names[861] "Gaia"
+	setVar $planet~planet_names[862] "New Orwell"
+	setVar $planet~planet_names[863] "Diocletian Primus"
+	setVar $planet~planet_names[864] "New Exedore"
+	setVar $planet~planet_names[865] "Jupura Major"
+	setVar $planet~planet_names[866] "Kerogen"
+	setVar $planet~planet_names[867] "Krono Major"
+	setVar $planet~planet_names[868] "Marmoutier Major"
+	setVar $planet~planet_names[869] "Stokes Annex"
+	setVar $planet~planet_names[870] "New Pluto"
+	setVar $planet~planet_names[871] "Hornet II"
+	setVar $planet~planet_names[872] "Telegraph Major"
+	setVar $planet~planet_names[873] "Bolivar Outpost"
+	setVar $planet~planet_names[874] "Iolcus II"
+	setVar $planet~planet_names[875] "Noegi Major"
+	setVar $planet~planet_names[876] "New Saladin"
+	setVar $planet~planet_names[877] "Cambridge Annex"
+	setVar $planet~planet_names[878] "Gelugon"
+	setVar $planet~planet_names[879] "Lazarus II"
+	setVar $planet~planet_names[880] "Achernar Primus"
+	setVar $planet~planet_names[881] "Langmuir"
+	setVar $planet~planet_names[882] "Buie Annex"
+	setVar $planet~planet_names[883] "Spica"
+	setVar $planet~planet_names[884] "Puparkin Outpost"
+	setVar $planet~planet_names[885] "Maya Major"
+	setVar $planet~planet_names[886] "New Polk"
+	setVar $planet~planet_names[887] "Solon Minor"
+	setVar $planet~planet_names[888] "Flamarion Primus"
+	setVar $planet~planet_names[889] "Jupura Minor"
+	setVar $planet~planet_names[890] "New Lahara"
+	setVar $planet~planet_names[891] "New Hermes"
+	setVar $planet~planet_names[892] "New Krono"
+	setVar $planet~planet_names[893] "Starling Primus"
+	setVar $planet~planet_names[894] "Vanant"
+	setVar $planet~planet_names[895] "New Rebka"
+	setVar $planet~planet_names[896] "Julian Major"
+	setVar $planet~planet_names[897] "Faeroes"
+	setVar $planet~planet_names[898] "Kongo"
+	setVar $planet~planet_names[899] "Lorraine Annex"
+	setVar $planet~planet_names[900] "Gautier Outpost"
+	setVar $planet~planet_names[901] "New Hadar"
+	setVar $planet~planet_names[902] "Nexine II"
+	setVar $planet~planet_names[903] "Lindbergh Annex"
+	setVar $planet~planet_names[904] "Ranger"
+	setVar $planet~planet_names[905] "Strad Primus"
+	setVar $planet~planet_names[906] "Yuro Minor"
+	setVar $planet~planet_names[907] "New Ilium"
+	setVar $planet~planet_names[908] "Peale"
+	setVar $planet~planet_names[909] "Faisal Primus"
+	setVar $planet~planet_names[910] "Skinfaxi Major"
+	setVar $planet~planet_names[911] "Gaea Primus"
+	setVar $planet~planet_names[912] "Ayat Major"
+	setVar $planet~planet_names[913] "Charlemagne Minor"
+	setVar $planet~planet_names[914] "Dixon II"
+	setVar $planet~planet_names[915] "Pequan Annex"
+	setVar $planet~planet_names[916] "Arden Annex"
+	setVar $planet~planet_names[917] "Palitzsch II"
+	setVar $planet~planet_names[918] "Seneca Annex"
+	setVar $planet~planet_names[919] "Bozarth Annex"
+	setVar $planet~planet_names[920] "Bicornn Outpost"
+	setVar $planet~planet_names[921] "Djinn Primus"
+	setVar $planet~planet_names[922] "Nabopolassar II"
+	setVar $planet~planet_names[923] "Adhara Major"
+	setVar $planet~planet_names[924] "New Nagant"
+	setVar $planet~planet_names[925] "Julian"
+	setVar $planet~planet_names[926] "Upatnieks Annex"
+	setVar $planet~planet_names[927] "New Guatama"
+	setVar $planet~planet_names[928] "Isolux Outpost"
+	setVar $planet~planet_names[929] "Archon Annex"
+	setVar $planet~planet_names[930] "Planitia Major"
+	setVar $planet~planet_names[931] "Li Kao Minor"
+	setVar $planet~planet_names[932] "Cogri Minor"
+	setVar $planet~planet_names[933] "New Shcawbe"
+	setVar $planet~planet_names[934] "Kruhious Outpost"
+	setVar $planet~planet_names[935] "Castor Hideout"
+	setVar $planet~planet_names[936] "Clastic Outpost"
+	setVar $planet~planet_names[937] "New Capybara"
+	setVar $planet~planet_names[938] "Durer"
+	setVar $planet~planet_names[939] "New Durendal"
+	setVar $planet~planet_names[940] "Tivid"
+	setVar $planet~planet_names[941] "New Vreibefger"
+	setVar $planet~planet_names[942] "Baugi Major"
+	setVar $planet~planet_names[943] "Lorraine Minor"
+	setVar $planet~planet_names[944] "Chalcedony Major"
+	setVar $planet~planet_names[945] "Rousseau Annex"
+	setVar $planet~planet_names[946] "Palique Outpost"
+	setVar $planet~planet_names[947] "Valence Annex"
+	setVar $planet~planet_names[948] "Ralhe Minor"
+	setVar $planet~planet_names[949] "Kruxas Ruz Annex"
+	setVar $planet~planet_names[950] "Pyris Primus"
+	setVar $planet~planet_names[951] "New Earwig"
+	setVar $planet~planet_names[952] "New Wintjen"
+	setVar $planet~planet_names[953] "Pennington"
+	setVar $planet~planet_names[954] "Koalinth"
+	setVar $planet~planet_names[955] "Antike Annex"
+	setVar $planet~planet_names[956] "Bach Major"
+	setVar $planet~planet_names[957] "Kikusui"
+	setVar $planet~planet_names[958] "Guatama Minor"
+	setVar $planet~planet_names[959] "Gaderffii"
+	setVar $planet~planet_names[960] "Kender"
+	setVar $planet~planet_names[961] "Mithra Minor"
+	setVar $planet~planet_names[962] "Osnabruck Primus"
+	setVar $planet~planet_names[963] "Pedase II"
+	setVar $planet~planet_names[964] "Murchison Primus"
+	setVar $planet~planet_names[965] "Lafaayette Outpost"
+	setVar $planet~planet_names[966] "Dawnworld"
+	setVar $planet~planet_names[967] "Ajacs"
+	setVar $planet~planet_names[968] "Raven Outpost"
+	setVar $planet~planet_names[969] "Bravera II"
+	setVar $planet~planet_names[970] "Edenelt Primus"
+	setVar $planet~planet_names[971] "New Nicholson"
+	setVar $planet~planet_names[972] "Suleiman Outpost"
+	setVar $planet~planet_names[973] "Alva"
+	setVar $planet~planet_names[974] "Amertet Annex"
+	setVar $planet~planet_names[975] "Guellan Minor"
+	setVar $planet~planet_names[976] "Thagar"
+	setVar $planet~planet_names[977] "Kegena"
+	setVar $planet~planet_names[978] "Ari Outpost"
+	setVar $planet~planet_names[979] "Hawk Primus"
+	setVar $planet~planet_names[980] "Abraxas Minor"
+	setVar $planet~planet_names[981] "Columbus"
+	setVar $planet~planet_names[982] "Rutledge Major"
+	setVar $planet~planet_names[983] "Efate Major"
+	setVar $planet~planet_names[984] "Xylem Primus"
+	setVar $planet~planet_names[985] "Anaspaz Major"
+	setVar $planet~planet_names[986] "Garoo Minor"
+	setVar $planet~planet_names[987] "Kruhious Minor"
+	setVar $planet~planet_names[988] "Camelot Major"
+	setVar $planet~planet_names[989] "Singer Minor"
+	setVar $planet~planet_names[990] "Aegospotami Primus"
+	setVar $planet~planet_names[991] "Modelei Annex"
+	setVar $planet~planet_names[992] "Skuld Outpost"
+	setVar $planet~planet_names[993] "Oisin Outpost"
+	setVar $planet~planet_names[994] "Baruch Major"
+	setVar $planet~planet_names[995] "Pyramus II"
+	setVar $planet~planet_names[996] "Thornastor Outpost"
+	setVar $planet~planet_names[997] "Suleiman"
+	setVar $planet~planet_names[998] "Pompey Primus"
+	setVar $planet~planet_names[999] "New Aeschylus"
+	setVar $planet~planet_names[1000] "Bounty's Horizon"
 return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\game"
-
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\loadplanetinfo\planet"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\player\currentprompt\player"

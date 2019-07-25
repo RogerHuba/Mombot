@@ -41,9 +41,9 @@
     setVar $SWITCHBOARD~self_command $self_command
     gosub :PLAYER~quikstats
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Command Citadel"
-    setVar $PROMPT~startingLocation $startingLocation
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~validPrompts "Command Citadel"
+    setVar $bot~startingLocation $startingLocation
+    gosub :bot~checkStartingPrompt
     if ($startingLocation = "Citadel")
         send " Q DC  "
         waitfor "Planet #"
@@ -971,11 +971,7 @@ return
 #============================================= END DOCK SHOPPER MENU  ==================================================
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\module_includes\prompt"
-include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
+include "source\module_includes\bot\loadvars\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\game\gamestats\game"

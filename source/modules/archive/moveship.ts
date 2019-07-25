@@ -11,7 +11,7 @@ logging off
 	setVar $BOT~help[4] $BOT~tab&"                          "
 	setVar $BOT~help[4] $BOT~tab&"           Can use either planet or SXX port in        "
 	setVar $BOT~help[4] $BOT~tab&"           starting sector for fuel."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Ship Mover"
 	gosub :BOT~banner

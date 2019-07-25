@@ -17,7 +17,7 @@
 	setVar $BOT~help[15]  $BOT~tab&"             {e} - upgrade equipment"
 	setVar $BOT~help[16]  $BOT~tab&"         {noexp} - upgrade without experience increase"
 	setVar $BOT~help[16]  $BOT~tab&"                   default: s/b/b upgraded"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	setVar $bot~bot_name $SWITCHBOARD~bot_name
@@ -45,13 +45,13 @@
 	end
 
 	if (($bot~parm1 = "build") OR ($bot~parm1 = "create"))
-		gosub :port~build_port
+		gosub :port~buildport
 		halt
 	elseif (($bot~parm1 = "destroy") or ($bot~parm1 = "kill"))
-		gosub :port~destroy_port
+		gosub :port~destroyport
 		halt
 	elseif (($bot~parm1 = "max") or ($bot~parm1 = "upgrade"))
-		gosub :port~upgrade_port
+		gosub :port~upgradeport
 		halt
 	else
 		setVar $SWITCHBOARD~message "Option used for port helper not recognized.  Try build/create/destroy/kill/upgrade/max options.*"
@@ -62,11 +62,10 @@
 halt
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\module_includes\port"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\module_includes\prompt"
+include "source\module_includes\port\buildport\port"
+include "source\module_includes\port\destroyport\port"
+include "source\module_includes\port\upgradeport\port"

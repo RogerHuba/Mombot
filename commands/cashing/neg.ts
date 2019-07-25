@@ -14,7 +14,7 @@
 	setVar $BOT~help[10] $BOT~tab&"          default is to sell all org and equip"
 	setVar $BOT~help[11] $BOT~tab&"          "
 	setVar $BOT~help[12] $BOT~tab&"           - Originally written by Cherokee"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Negotiate"
 	gosub :BOT~banner
@@ -34,7 +34,7 @@
 	killtrigger 1
 	killtrigger 2
 
-	gosub :player~current_prompt
+	gosub  :player~currentPrompt
 	setVar $startingLocation $player~CURRENT_PROMPT
 	
 	#send "'[" $startingLocation "]*"
@@ -92,10 +92,10 @@
 #==================================   END PLANET NEGOTIATE (NEG) SUB  ========================================
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\currentprompt\player"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\planet\planetneg\planet"

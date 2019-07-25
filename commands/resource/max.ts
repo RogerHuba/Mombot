@@ -1,22 +1,13 @@
 
     logging off
     	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
     setVar $BOT~help[1] $BOT~tab&"Upgrades a port product as much as possible.  "
     setVar $BOT~help[2] $BOT~tab&"         "
     setVar $BOT~help[3] $BOT~tab&"Options: "
     setVar $BOT~help[4] $BOT~tab&"{noexp} - Upgrades port without experience increase."
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 
 
@@ -25,28 +16,28 @@
 :max
     killalltriggers
     gosub :PLAYER~quikstats
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Citadel Command Planet"
-    gosub :PROMPT~checkStartingPrompt
-    if ($parm1 <> "f") AND ($parm1 <> "o") AND ($parm1 <> "e")
+    setVar $bot~validPrompts "Citadel Command Planet"
+    gosub :bot~checkStartingPrompt
+    if ($bot~parm1 <> "f") AND ($bot~parm1 <> "o") AND ($bot~parm1 <> "e")
         send "'{" $SWITCHBOARD~bot_name "} - maxport [f / o / e] noexp*"
         halt
     end
 
-    getWordPos " "&$user_command_line&" " $pos " f "
+    getWordPos " "&$bot~user_command_line&" " $pos " f "
     if ($pos > 0)
         setVar $doFuel TRUE
     end
-    getWordPos " "&$user_command_line&" " $pos " o "
+    getWordPos " "&$bot~user_command_line&" " $pos " o "
     if ($pos > 0)
         setVar $doOrg TRUE
     end
-    getWordPos " "&$user_command_line&" " $pos " e "
+    getWordPos " "&$bot~user_command_line&" " $pos " e "
     if ($pos > 0)
         setVar $doEqu TRUE
     end
-    getWordPos " "&$user_command_line&" " $pos " noexp "
+    getWordPos " "&$bot~user_command_line&" " $pos " noexp "
     if ($pos > 0)
         setVar $no_exp TRUE
     else
@@ -58,7 +49,7 @@
             send "q"
         end
         gosub :PLANET~getPlanetInfo
-        if ($PLANET~CITADEL > 0)
+        if ($planet~CITADEL > 0)
             send "cs* "
             waitOn "<Enter Citadel>"
             waitOn "Warps to Sector(s)"
@@ -97,7 +88,7 @@
                     add $total_creds_needed (1000*$totalEquipUpgradeNeeded)
                 end
                 if ($total_creds_needed > $PLAYER~CREDITS)
-                    setVar $cashonhand $PLANET~CITADEL_CREDITS
+                    setVar $cashonhand $planet~CITADEL_CREDITS
                     add $cashonhand $PLAYER~CREDITS
                     if ($cashonhand > $total_creds_needed)
                             if ($startingLocation = "Planet")
@@ -175,10 +166,9 @@ return
     goto :doneMaxPort
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\module_includes\prompt"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"

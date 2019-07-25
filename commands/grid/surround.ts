@@ -16,7 +16,7 @@
 	setVar $BOT~help[3]   $BOT~tab&"      "
 	setVar $BOT~help[4]   $BOT~tab&"    - Options for surround can be found in the"
 	setVar $BOT~help[5]   $BOT~tab&"      preferences menu in bot"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
     gosub :PLAYER~quikstats
     if (($PLAYER~TURNS <= $BOT~bot_turn_limit) and ($PLAYER~unlimitedGame <> TRUE))
@@ -62,11 +62,10 @@ halt
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\grid"
-
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\grid\surround\grid"
+include "source\bot_includes\planet\landingsub\planet"

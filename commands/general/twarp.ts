@@ -8,13 +8,13 @@
     setVar $BOT~help[6]  $BOT~tab&"    t [sector] {p} - transwarp, then port"
     setVar $BOT~help[7]  $BOT~tab&"    t planet {planet id} - transwarp to last known "
     setVar $BOT~help[8]  $BOT~tab&"                           location of the planet id"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 
 # ======================     START TWARP SUBROUTINES     =================
 :twarp
 :t
-    setVar $warpto_p ""
+    setVar $player~warpto_p ""
     setvar $player~save true
     gosub :PLAYER~quikstats
     setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
@@ -26,11 +26,11 @@
         halt
     end
     gosub :travelProtections
-    gosub :tactics~twarp
+    gosub :player~twarp
     if ($PLAYER~twarpSuccess = FALSE)
         if (($PLAYER~startingLocation = "Citadel") OR ($PLAYER~startingLocation = "Planet"))
             if ($planet~planet <> 0)
-                gosub :PLAYER~current_prompt
+                gosub  :player~currentPrompt
                 if ($PLAYER~CURRENT_PROMPT = "Command")
                     gosub :PLANET~landingSub
                 end
@@ -45,9 +45,9 @@
         gosub :SWITCHBOARD~switchboard
     else
         if ($bot~parm2 = "p")
-            send $warpto_p
-        elseif (($warpto_p <> 0) AND ($warpto_p <> ""))
-            setVar $planet~planet $warpto_p
+            send $player~warpto_p
+        elseif (($player~warpto_p <> 0) AND ($player~warpto_p <> ""))
+            setVar $planet~planet $player~warpto_p
             gosub :PLANET~landingSub
         end
         setVar $bot~target $PLAYER~warpto
@@ -65,16 +65,16 @@
         halt
     else
         if ($bot~parm2 = "p")
-            setVar $warpto_p "p z t *"
+            setVar $player~warpto_p "p z t *"
             if ($bot~parm1 = $MAP~stardock)
-                setVar $warpto_p "p z s h *"
+                setVar $player~warpto_p "p z s h *"
             end
         else
             isNumber $test $bot~parm2
             if ($test = FALSE)
-                setVar $warpto_p ""
+                setVar $player~warpto_p ""
             else
-                setVar $warpto_p $bot~parm2
+                setVar $player~warpto_p $bot~parm2
             end
         end
         setVar $PLAYER~warpto $bot~parm1
@@ -98,11 +98,12 @@ return
 
 
 # includes:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
-include "source\bot_includes\map"
-include "source\bot_includes\ship"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\module_includes\prompt"
+include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\player\currentprompt\player"
+include "source\bot_includes\planet\landingsub\planet"
+include "source\module_includes\bot\addfigtodata\bot"

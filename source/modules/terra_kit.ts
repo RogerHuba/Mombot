@@ -10,13 +10,13 @@
    killalltriggers
     setVar $SWITCHBOARD~bot_name $bot_name
     setVar $SWITCHBOARD~self_command $self_command
-    gosub :PLAYER~current_prompt
-    setVar $PROMPT~validPrompts "Do How"
+    gosub  :player~currentPrompt
+    setVar $bot~validPrompts "Do How"
     setVar $startingLocation $PLAYER~current_prompt
-    setVar $PROMPT~startingLocation $startingLocation
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $startingLocation
+    gosub :bot~checkStartingPrompt
 
-    gosub :PROMPT~checkStartingPrompt
+    gosub :bot~checkStartingPrompt
     :print_the__terra_menu
         gosub :PLAYER~quikstats
         echo "[2J"

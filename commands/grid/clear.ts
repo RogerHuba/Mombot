@@ -3,19 +3,16 @@
 	loadvar $player~surroundmine
 	
 	setVar $BOT~help[1]  $BOT~tab&"clear - clear all enemy armids and limpets from sector "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
     
     setVar $SWITCHBOARD~bot_name $bot~bot_name
     setVar $SWITCHBOARD~self_command $self_command
 
     goto :modules~clear
-
+    goto :bot~wait_for_command
+    
 # includes:
-include "source\module_includes\bot"
-include "source\module_includes\modules"
-include "source\bot_includes\player"
-include "source\bot_includes\map"
-include "source\bot_includes\ship"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\module_includes\prompt"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\modules\clear\modules"
+include "source\module_includes\bot\wait_for_command\bot"

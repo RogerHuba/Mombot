@@ -1,4 +1,4 @@
-loadvar $user_command_line
+loadvar $bot~user_command_line
 loadVar $BOT~bot_turn_limit
 loadVar $SWITCHBOARD~bot_name
 	  #=--------                                                                       -------=#
@@ -27,7 +27,7 @@ loadVar $SWITCHBOARD~bot_name
 	#						It's a good idea to update your deployed limp data, as the the Gridder will report
 	#						if, for example, an adjacent possibly has someone cloaked.
 	#
-	#		Notes:          Modified quikstats to change $TURNS to 68536, if $UNLIM ='s TRUE
+	#		Notes:          Modified quikstats to change $player~turns to 68536, if $UNLIM ='s TRUE
 	#                       Had to use two Arrays: $DENS and $ANOM for: Adj Warp Count, and
 	#                       Anomoly readings in adj sectors as TWX is more than a little retarded
 	#                       (SECTOR.ANOMOLY[idx] doesn't work, and SECTOR.WARPCOUNT isn't accurate)
@@ -88,26 +88,26 @@ loadVar $SWITCHBOARD~bot_name
 		setVar $Report_ALPHA	TRUE
 	end
 
-	gosub :quikstats
+	gosub :player~quikstats
 
-	if (($CURRENT_PROMPT <> "Command") AND ($CURRENT_PROMPT <> "Citadel"))
+	if (($player~current_prompt <> "Command") AND ($player~current_prompt <> "Citadel"))
 		send "'" & $TAGLINEb & " Wrong Prompt**"
 		halt
 	end
 
-	if ($CURRENT_PROMPT = "Citadel")
+	if ($player~current_prompt = "Citadel")
 		send "q q * * * "
 	end
 
-	if ($SCAN_TYPE = "None")
+	if ($player~scan_type = "None")
 		send "'" & $TAGLINEb & " Must At Least Have a Density Scanner**"
 		halt
 	end
-	if ($FIGHTERS < 10)
+	if ($player~fighters < 10)
 		send "'" & $TAGLINEb & " Must At More than 10 Fighters**"
 		halt
 	end
-	if ($CREDITS < 10000)
+	if ($player~credits < 10000)
 		send "'" & $TAGLINEb & " Must At Least Have 10,000 creds**"
 		halt
 	end
@@ -118,14 +118,14 @@ loadVar $SWITCHBOARD~bot_name
 	isNumber $tst $UNLIM
 	if ($tst = 0)
 		setVar $UNLIM TRUE
-		setVar $TURNS 65000
+		setVar $player~turns 65000
 	else
 		setVar $UNLIM FALSE
 	end
 
 
 
-		getWordPos $user_command_line $pos "skip"
+		getWordPos $bot~user_command_line $pos "skip"
 		if ($pos > 0)
 			setVar $Update_Figs FALSE
 		else
@@ -140,20 +140,20 @@ loadVar $SWITCHBOARD~bot_name
 
 		setVar $Update_Port TRUE
 
-		if ($SCAN_TYPE = "Holo")
+		if ($player~scan_type = "Holo")
 			setVar $HOLO TRUE
 		else
 			setVar $HOLO FALSE
 		end
 
-		getWordPos $user_command_line $pos "track"
+		getWordPos $bot~user_command_line $pos "track"
 		if ($pos > 0)
 			setVar $TRACKER TRUE
 		else
 			setVar $TRACKER FALSE
 		end
 
-		getWordPos $user_command_line $pos "mines"
+		getWordPos $bot~user_command_line $pos "mines"
 		if ($pos > 0)
 			setVar $DROPING_MINES 1
 			setVar $DROP_ARMID 1
@@ -280,9 +280,9 @@ loadVar $SWITCHBOARD~bot_name
 		setVar $maxFigAttack 9999
 	end
 
-	while ($TURNS > $Turn_Limit)
+	while ($player~turns > $Turn_Limit)
 		:To_The_Top
-		gosub :quikstats
+		gosub :player~quikstats
 		setVar $anon_ptr 1
 		setTextLineTrigger	TurnsGone	:TurnsGone	"Do you want instructions (Y/N) [N]?"
 
@@ -307,18 +307,18 @@ loadVar $SWITCHBOARD~bot_name
 			killAllTriggers
 			if ($TRACKER)
 				gosub :Haggel_Checker
-			elseif (($ORE_HOLDS < ($TOTAL_HOLDS - $EQU_MIN)) AND ($TWARP_TYPE <> "No"))
-				if ((PORT.CLASS[$CURRENT_SECTOR] = 3) OR (PORT.CLASS[$CURRENT_SECTOR] = 4) OR (PORT.CLASS[$CURRENT_SECTOR] = 5) OR (PORT.CLASS[$CURRENT_SECTOR] = 7))
+			elseif (($player~ore_holds < ($player~total_holds - $EQU_MIN)) AND ($player~twarp_type <> "No"))
+				if ((PORT.CLASS[$player~current_sector] = 3) OR (PORT.CLASS[$player~current_sector] = 4) OR (PORT.CLASS[$player~current_sector] = 5) OR (PORT.CLASS[$player~current_sector] = 7))
 					Echo "***Stupid Attmpt**"
 					send "PT** 0* 0*  "
 				end
 			end
 
 		setVar $i 1
-		setArray $Adj_Targets SECTOR.WARPCOUNT[$CURRENT_SECTOR]
+		setArray $Adj_Targets SECTOR.WARPCOUNT[$player~current_sector]
 
-		while ($i <= SECTOR.WARPCOUNT[$CURRENT_SECTOR])
-        	setVar $adj SECTOR.WARPS[$CURRENT_SECTOR][$i]
+		while ($i <= SECTOR.WARPCOUNT[$player~current_sector])
+        	setVar $adj SECTOR.WARPS[$player~current_sector][$i]
 			setVar $Adj_Targets[$i] 10
 
 			if (SECTOR.NAVHAZ[$adj] <> 0)
@@ -480,7 +480,7 @@ loadVar $SWITCHBOARD~bot_name
 		setVar $Target 10
 		setVar $Target_IDX 0
 
-		while ($idx <= SECTOR.WARPCOUNT[$CURRENT_SECTOR])
+		while ($idx <= SECTOR.WARPCOUNT[$player~current_sector])
 			if (($Adj_Targets[$idx] < $Target) AND ($Target <> 0))
 				setVar $Target $Adj_Targets[$idx]
 				setVar $Target_IDX $idx
@@ -489,7 +489,7 @@ loadVar $SWITCHBOARD~bot_name
 		end
 
 		if ($Target_IDX <> 0)
-			setVar $Target SECTOR.WARPS[$CURRENT_SECTOR][$Target_IDX]
+			setVar $Target SECTOR.WARPS[$player~current_sector][$Target_IDX]
 			if (SECTOR.DENSITY[$Target] >= 100)
 				send " c r"&$Target&"*q"
 				setTextLineTrigger	NoData1	:NoData		"You have never visted sector"
@@ -510,15 +510,15 @@ loadVar $SWITCHBOARD~bot_name
 							setVar $idx 1
 							setVar $Target 10
 							setVar $Target_IDX 0
-							while ($idx <= SECTOR.WARPCOUNT[$CURRENT_SECTOR])
-								if ($Adj_Targets[$idx] < $Target) AND ($Target <> 0) AND (SECTOR.WARPS[$CURRENT_SECTOR][$idx] <> $Ignore)
+							while ($idx <= SECTOR.WARPCOUNT[$player~current_sector])
+								if ($Adj_Targets[$idx] < $Target) AND ($Target <> 0) AND (SECTOR.WARPS[$player~current_sector][$idx] <> $Ignore)
 									setVar $Target $Adj_Targets[$idx]
 									setVar $Target_IDX $idx
 								end
 								add $idx 1
 							end
 							if ($Target_IDX <> 0)
-								setVar $Target SECTOR.WARPS[$CURRENT_SECTOR][$Target_IDX]
+								setVar $Target SECTOR.WARPS[$player~current_sector][$Target_IDX]
 							else
 								goto :No_Target
 							end
@@ -532,13 +532,13 @@ loadVar $SWITCHBOARD~bot_name
         end
 
         :No_Target
-		if ($TWARP_TYPE <> "No")
+		if ($player~twarp_type <> "No")
 			#Find A Place To Twarp To
-			getNearestWarps $WarpArray $CURRENT_SECTOR
+			getNearestWarps $WarpArray $player~current_sector
 			getRnd $w 5 10
 			while ($w <= $WarpArray)
 				setVar $focus $WarpArray[$w]
-				if ($Focus <> $CURRENT_SECTOR)
+				if ($Focus <> $player~current_sector)
 					getSectorParameter $Focus "FIGSEC" $Flag
 					isNumber $tst $Flag
 					if ($tst = 0)
@@ -578,8 +578,8 @@ loadVar $SWITCHBOARD~bot_name
 	        if ($HOLO)
 				setVar $cx 1
 				setVar $cn 0
-				while (SECTOR.WARPS[$CURRENT_SECTOR][$cx] <> 0)
-					setVar $adj SECTOR.WARPS[$CURRENT_SECTOR][$cx]
+				while (SECTOR.WARPS[$player~current_sector][$cx] <> 0)
+					setVar $adj SECTOR.WARPS[$player~current_sector][$cx]
 					if (SECTOR.EXPLORED[$adj] = "NO") OR (SECTOR.EXPLORED[$adj] = "CALC")
 						add $cn 1
 					end
@@ -602,7 +602,7 @@ loadVar $SWITCHBOARD~bot_name
 					goto :We_Done
 				:Sector__Far
 					killAllTriggers
-					getNearestWarps $WarpArray $CURRENT_SECTOR
+					getNearestWarps $WarpArray $player~current_sector
 					setVar $c 1
 					while ($c <= $WarpArray)
 						setVar $focus $WarpArray[$c]
@@ -627,7 +627,7 @@ loadVar $SWITCHBOARD~bot_name
 											setVar $Flag 0
 											setSectorParameter $COURSE[$j] "FIGSEC" FALSE
 										end
-										if (($Flag = 0) AND ($COURSE[$j] <> $CURRENT_SECTOR))
+										if (($Flag = 0) AND ($COURSE[$j] <> $player~current_sector))
 											goto :Next_SXX_Port
 										end
 										setVar $result $result&"m"&$COURSE[$j]&"* "
@@ -653,32 +653,32 @@ loadVar $SWITCHBOARD~bot_name
 
 									if ($TRACKER)
 										send ($result&"  **  ")
-										gosub :quikstats
+										gosub :player~quikstats
 										gosub :Haggel_Checker
 									else
 										send ($result&"  **    P   T   *   *   *   *   ")
 									end
 
-									gosub :quikstats
-									if ($TOTAL_HOLDS <> $ORE_HOLDS) AND ($TRACKER = 0)
-										if ($CREDITS < 10000)
+									gosub :player~quikstats
+									if ($player~total_holds <> $player~ore_holds) AND ($TRACKER = 0)
+										if ($player~credits < 10000)
 											Echo "**" & $TAGLINEc & " " & " Appear To Be Out of Funds for ORE purchase.**"
-										elseif (($UNLIM = FALSE) AND ($TURNS < 1))
+										elseif (($UNLIM = FALSE) AND ($player~turns < 1))
 											Echo "**" & $TAGLINEc & " " & " Appear To Be Out Turns. Photon'd Maybe??**"
 										else
 											Echo "**" & $TAGLINEc & " " & " Not Enough ORE to continue.**"
 										end
 										halt
-									elseif ($TRACKER) AND ($ORE_HOLDS < ($TOTAL_HOLDS - $EQU_MIN))
-										if ($CREDITS < 10000)
+									elseif ($TRACKER) AND ($player~ore_holds < ($player~total_holds - $EQU_MIN))
+										if ($player~credits < 10000)
 											Echo "**" & $TAGLINEc & " " & " Appear To Be Out of Funds for ORE purchase.**"
-										elseif (($UNLIM = FALSE) AND ($TURNS < 1))
+										elseif (($UNLIM = FALSE) AND ($player~turns < 1))
 											Echo "**" & $TAGLINEc & " " & " Appear To Be Out Turns. Photon'd Maybe??**"
 										else
 											Echo "**" & $TAGLINEc & " " & " Not Enough ORE to continue.**"
 										end
 										halt
-									elseif ($CREDITS < 10000)
+									elseif ($player~credits < 10000)
 										Echo "**" & $TAGLINEc & " " & " Too Few Credits to continue.**"
 										halt
 									end
@@ -698,7 +698,7 @@ loadVar $SWITCHBOARD~bot_name
 					if ($DROPING_MINES <> 0)
 						if (SECTOR.WARPINCOUNT[$focus] >= 3)
 							if (($DROPING_MINES = 1) OR ($DROPING_MINES = 3))
-								if ($LIMPETS > $DROP_LIMP)
+								if ($player~limpets > $DROP_LIMP)
 									setVar $DROP_STR ($DROP_STR & "H 2 Z "&$DROP_LIMP&"* C * ")
 								else
 								   if ($DROPING_MINES = 1)
@@ -710,7 +710,7 @@ loadVar $SWITCHBOARD~bot_name
 							end
 
 							if (($DROPING_MINES = 2) OR ($DROPING_MINES = 3))
-								if ($ARMIDS > $DROP_ARMID)
+								if ($player~armids > $DROP_ARMID)
 									setVar $DROP_STR ($DROP_STR & "H 1 Z "&$DROP_ARMID&"* C * ")
 								else
 									if ($DROPING_MINES = 2)
@@ -723,7 +723,7 @@ loadVar $SWITCHBOARD~bot_name
 						end
 					end
 					send "Y  *  A Z " & $maxFigAttack & "998877665544332211 n  *  **   " & $DROP_STR
-					gosub :quikstats
+					gosub :player~quikstats
 			goto :To_The_Top
 		else
 			Echo "**" & $TAGLINEc & " " & " Walled In (No Twarp Available)***"
@@ -765,7 +765,7 @@ loadVar $SWITCHBOARD~bot_name
 		if ($DROPING_MINES <> 0)
 			if (SECTOR.WARPINCOUNT[$Target] >= 3)
 				if (($DROPING_MINES = 1) OR ($DROPING_MINES = 3))
-					if ($LIMPETS > $DROP_LIMP)
+					if ($player~limpets > $DROP_LIMP)
 						setVar $DROP_STR ($DROP_STR & "H 2 Z "&$DROP_LIMP&"* C * ")
 					else
 					   if ($DROPING_MINES = 1)
@@ -777,7 +777,7 @@ loadVar $SWITCHBOARD~bot_name
 				end
 
 				if (($DROPING_MINES = 2) OR ($DROPING_MINES = 3))
-					if ($ARMIDS > $DROP_ARMID)
+					if ($player~armids > $DROP_ARMID)
 						setVar $DROP_STR ($DROP_STR & "H 1 Z "&$DROP_ARMID&"* C * ")
 					else
 						if ($DROPING_MINES = 2)
@@ -794,9 +794,9 @@ loadVar $SWITCHBOARD~bot_name
 			send $DROP_STR & "  j  *"
 			waiton "Are you sure you want to jettison all cargo?"
 		end
-		gosub :quikstats
+		gosub :player~quikstats
 
-		if ($CURRENT_PROMPT <> "Command")
+		if ($player~current_prompt <> "Command")
 			Echo "**" & $TAGLINEc & " " & "Wrong Prompt After Sector Hit.***"
 			halt
 		end
@@ -805,10 +805,10 @@ loadVar $SWITCHBOARD~bot_name
 			gosub :Haggel_Checker
 		end
 
-		if ($CURRENT_PROMPT <> "Command")
+		if ($player~current_prompt <> "Command")
 	        send " r *  *  p d 0* 0* 0* * *** * c q q q q q z 2 2 c q * z * *** * * "
-			gosub :quikstats
-			if ($CURRENT_PROMPT = "Command")
+			gosub :player~quikstats
+			if ($player~current_prompt = "Command")
 				load "_ck_callsaveme.cts"
 				halt
 			else
@@ -834,14 +834,14 @@ loadVar $SWITCHBOARD~bot_name
 			send "CR*Q"
 			waitfor "<Computer deactivated>"
 		end
-		if ($FIGHTERS <= 10)
+		if ($player~fighters <= 10)
 			Echo "**" & $TAGLINEc & " " & "Fighter Level is Critically Low (Less Than 10)**"
 			Halt
 		end
 	end
 
 	if ($UNLIM = 0)
-		if ($TURNS <= $Turn_Limit)
+		if ($player~turns <= $Turn_Limit)
 			send "'["&$TagLineB&"] Turn Limit Reached, Halting*"
 		end
 	else
@@ -870,14 +870,14 @@ loadVar $SWITCHBOARD~bot_name
 		halt
 	:HelpCame
 		killAllTriggers
-		getText CURRENTLINE $Planet "Planet" "to"
-		stripText $Planet " "
-		send "L Z" & #8 & $Planet & "*  J  C  *  "
+		getText CURRENTLINE $planet~planet "Planet" "to"
+		stripText $planet~planet " "
+		send "L Z" & #8 & $planet~planet & "*  J  C  *  "
 		halt
 
 
-:quikstats
-	SetVar $CURRENT_PROMPT 		"Undefined"
+:player~quikstats
+	SetVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt1
 	killtrigger prompt2
@@ -898,7 +898,7 @@ loadVar $SWITCHBOARD~bot_name
 		getWord currentline $tempPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			SetVar $CURRENT_PROMPT $tempPrompt
+			SetVar $player~current_prompt $tempPrompt
 		end
 		setTextLineTrigger prompt1 :allPrompts "(?="
 		pause
@@ -907,7 +907,7 @@ loadVar $SWITCHBOARD~bot_name
 		getWord currentline $tempPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			SetVar $CURRENT_PROMPT $tempPrompt
+			SetVar $player~current_prompt $tempPrompt
 		end
 		setTextLineTrigger prompt2 :secondaryPrompts "(?)"
 		pause
@@ -917,7 +917,7 @@ loadVar $SWITCHBOARD~bot_name
 		getWord currentansiline $checkPrompt 1
 		getWordPos $checkPrompt $pos "[35m"
 		if ($pos > 0)
-			SetVar $CURRENT_PROMPT "Terra"
+			SetVar $player~current_prompt "Terra"
 		end
 		setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
 		setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
@@ -951,64 +951,64 @@ loadVar $SWITCHBOARD~bot_name
 		SetVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  				($current_word + 1)
+				getWord $stats $player~turns  				($current_word + 1)
 				if ($UNLIM)
-					SetVar $TURNS 68536
+					SetVar $player~turns 68536
 				end
 			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  			($current_word + 1)
+				getWord $stats $player~credits  			($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   			($current_word + 1)
+				getWord $stats $player~fighters   			($current_word + 1)
 			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  			($current_word + 1)
+				getWord $stats $player~shields  			($current_word + 1)
 			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
+				getWord $stats $player~total_holds   		($current_word + 1)
 			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
+				getWord $stats $player~ore_holds    		($current_word + 1)
 			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
+				getWord $stats $player~organic_holds    	($current_word + 1)
 			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
+				getWord $stats $player~equipment_holds    	($current_word + 1)
 			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
+				getWord $stats $player~colonist_holds    	($current_word + 1)
 			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   			($current_word + 1)
+				getWord $stats $player~photons   			($current_word + 1)
 			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   			($current_word + 1)
+				getWord $stats $player~armids   			($current_word + 1)
 			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   			($current_word + 1)
+				getWord $stats $player~limpets   			($current_word + 1)
 			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS 	 		($current_word + 1)
+				getWord $stats $player~genesis 	 		($current_word + 1)
 			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
+				getWord $stats $player~twarp_type  		($current_word + 1)
 			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   			($current_word + 1)
+				getWord $stats $player~cloaks   			($current_word + 1)
 			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 			($current_word + 1)
+				getWord $stats $player~beacons 			($current_word + 1)
 			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  			($current_word + 1)
+				getWord $stats $player~atomic  			($current_word + 1)
 			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   			($current_word + 1)
+				getWord $stats $player~corbo   			($current_word + 1)
 			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES 	  		($current_word + 1)
+				getWord $stats $player~eprobes 	  		($current_word + 1)
 			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
+				getWord $stats $player~mine_disruptors   	($current_word + 1)
 			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
+				getWord $stats $player~psychic_probe  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
+				getWord $stats $player~scan_type    		($current_word + 1)
 			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
+				getWord $stats $player~alignment    		($current_word + 1)
 			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
+				getWord $stats $player~experience    		($current_word + 1)
 			elseif ($wordy = "Corp")
-				getWord $stats $CORP  	 			($current_word + 1)
+				getWord $stats $player~corp  	 			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word
@@ -1094,11 +1094,11 @@ loadVar $SWITCHBOARD~bot_name
 :UpdateStatus_window
 	setVar $Window_TXT ""
 
-	setVar $Window_TXT ($Window_TXT & " Sector    : " & $CURRENT_SECTOR & "*")
+	setVar $Window_TXT ($Window_TXT & " Sector    : " & $player~current_sector & "*")
 	if ($UNLIM)
 		setVar $Window_TXT ($Window_TXT & " Turns     : Unlimited*")
 	else
-		setVar $CashAmount $TURNS
+		setVar $CashAmount $player~turns
 		gosub :CommaSize
 		setVar $Window_TXT ($Window_TXT & " Turns     : " & $CashAmount)
 		setVar $CashAmount $Turn_Limit
@@ -1106,11 +1106,11 @@ loadVar $SWITCHBOARD~bot_name
 		setVar $Window_TXT ($Window_TXT & " (Turn Limit " & $CashAmount & ")*")
 	end
 
-	setVar $CashAmount $CREDITS
+	setVar $CashAmount $player~credits
 	gosub :CommaSize
 	setVar $Window_TXT ($Window_TXT & " Credits   : $" & $CashAmount & "*")
 
-	setVar $CashAmount $FIGHTERS
+	setVar $CashAmount $player~fighters
 	gosub :CommaSize
 	setVar $Window_TXT ($Window_TXT & " Fighters  : " & $CashAmount & "*")
 
@@ -1233,12 +1233,12 @@ loadVar $SWITCHBOARD~bot_name
 
 :Haggel_Checker
 	killAllTriggers
-		setVar $EQU_NEED2BUY ($EQU_MIN - $EQUIPMENT_HOLDS)
-		setVar $ORE_NEED2BUY (($TOTAL_HOLDS - $EQU_MIN) - $ORE_HOLDS)
-		if (PORT.CLASS[$CURRENT_SECTOR] = 1) OR (PORT.CLASS[$CURRENT_SECTOR] = 5) OR (PORT.CLASS[$CURRENT_SECTOR] = 6) OR (PORT.CLASS[$CURRENT_SECTOR] = 7) OR (PORT.CLASS[$CURRENT_SECTOR] = 3) OR (PORT.CLASS[$CURRENT_SECTOR] = 4) OR (PORT.CLASS[$CURRENT_SECTOR] = 2)
+		setVar $EQU_NEED2BUY ($EQU_MIN - $player~equipment_holds)
+		setVar $ORE_NEED2BUY (($player~total_holds - $EQU_MIN) - $player~ore_holds)
+		if (PORT.CLASS[$player~current_sector] = 1) OR (PORT.CLASS[$player~current_sector] = 5) OR (PORT.CLASS[$player~current_sector] = 6) OR (PORT.CLASS[$player~current_sector] = 7) OR (PORT.CLASS[$player~current_sector] = 3) OR (PORT.CLASS[$player~current_sector] = 4) OR (PORT.CLASS[$player~current_sector] = 2)
 			#send "CR*Q"
 			#waiton "<Computer deactivated>"
-			#if (PORT.EQUIP[$CURRENT_SECTOR] >= $EQU_NEED2BUY) AND ($EQU_NEED2BUY <> 0)
+			#if (PORT.EQUIP[$player~current_sector] >= $EQU_NEED2BUY) AND ($EQU_NEED2BUY <> 0)
 			setTextTrigger noPort :noPort "Corp Menu"
 			send "p   t   "
 			Waiton "<Port>"
@@ -1269,10 +1269,10 @@ loadVar $SWITCHBOARD~bot_name
 			send "0*"
 			pause
 			:equp
-			if ($MCIC[$CURRENT_SECTOR] = 0)
-				setVar $MCIC[$CURRENT_SECTOR] TRUE
-				if ($EQUIPMENT_HOLDS > $EQU_MIN)
-					send ($EQUIPMENT_HOLDS - $EQU_MIN) & "**"
+			if ($MCIC[$player~current_sector] = 0)
+				setVar $MCIC[$player~current_sector] TRUE
+				if ($player~equipment_holds > $EQU_MIN)
+					send ($player~equipment_holds - $EQU_MIN) & "**"
 				else
 					add $MCICd 1
 					send "5**"
@@ -1292,8 +1292,8 @@ loadVar $SWITCHBOARD~bot_name
 			killAllTriggers
 			return
 			:fuelsell
-			if ($ORE_HOLDS > ($TOTAL_HOLDS - $EQU_MIN))
-				send $ORE_HOLDS - ($TOTAL_HOLDS - $EQU_MIN)& "**"
+			if ($player~ore_holds > ($player~total_holds - $EQU_MIN))
+				send $player~ore_holds - ($player~total_holds - $EQU_MIN)& "**"
 			else
 				send "0*"
 			end
@@ -1330,8 +1330,8 @@ loadVar $SWITCHBOARD~bot_name
 	setVar $Holo_ptr 1
 	setVar $Holo_s ""
 	setVar $AvoidFlag ""
-	while (SECTOR.WARPS[$CURRENT_SECTOR][$Holo_i] > 0)
-		setVar $Holo_adj SECTOR.WARPS[$CURRENT_SECTOR][$Holo_i]
+	while (SECTOR.WARPS[$player~current_sector][$Holo_i] > 0)
+		setVar $Holo_adj SECTOR.WARPS[$player~current_sector][$Holo_i]
 		if ((SECTOR.PLANETCOUNT[$Holo_adj] > 0) OR (SECTOR.TRADERCOUNT[$Holo_adj] > 0) OR (SECTOR.SHIPCOUNT[$Holo_adj] > 0))
 	       	setVar $figOwner SECTOR.FIGS.OWNER[$Holo_adj]
 			if ((SECTOR.FIGS.QUANTITY[$Holo_adj] >= 100) AND (($figOwner <> "belong to your Corp") OR ($figOwner <> "yours")))
@@ -1368,3 +1368,4 @@ loadVar $SWITCHBOARD~bot_name
 	return
 	
 
+include "source\bot_includes\player\quikstats\player"

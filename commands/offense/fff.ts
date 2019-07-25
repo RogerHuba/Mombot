@@ -43,7 +43,7 @@ setVar $Hit_Sector_pre 2
 
 	if (($solution[$Hit_Sector] <> 0))
 		if ($FIGS[$solution[$Hit_Sector]] <> 0)
-			setVar $warpto $solution[$Hit_Sector]
+			setVar $player~warpto $solution[$Hit_Sector]
 			goto :gotit
 		end
 			
@@ -51,7 +51,7 @@ setVar $Hit_Sector_pre 2
 	
 	if (($solution2[$Hit_Sector] <> 0))
 		if ($FIGS[$solution2[$Hit_Sector]] <> 0)
-			setVar $warpto $solution2[$Hit_Sector]
+			setVar $player~warpto $solution2[$Hit_Sector]
 			goto :gotit
 		end
 	end
@@ -61,11 +61,11 @@ setVar $Hit_Sector_pre 2
 
 
 :gotit
-	echo "*# TARGET: " $Hit_Sector " Landing: " $warpto
+	echo "*# TARGET: " $Hit_Sector " Landing: " $player~warpto
 	# SHIP ATTACK STRING
-	#send "c" $warpto "* y * * c p y " $Hit_Sector " * * qsd"
+	#send "c" $player~warpto "* y * * c p y " $Hit_Sector " * * qsd"
 	# PLANET ATTACK STRING
-	send "p" $warpto "* y * * c p y " $Hit_Sector " * * qq q sdl" $planet~planetNum "* c "
+	send "p" $player~warpto "* y * * c p y " $Hit_Sector " * * qq q sdl" $planet~planetNum "* c "
 
 	
 	setTextLineTrigger	fired	:fired          "Photon Missile launched into sec"
@@ -328,7 +328,7 @@ return
 	setVar $BOT~help[10]  $BOT~tab&"       "
 	setVar $BOT~help[11]  $BOT~tab&"       To Restart Normal Mode SubSpace: FFF STOP"
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Fn Fast Foton"
 	gosub :BOT~banner
@@ -394,9 +394,8 @@ return
 	setVar $momname "" 
 return
 
-include "source\module_includes\bot"
-include "source\bot_includes\player"
 include "source\bot_includes\switchboard"
-
-
-					
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"

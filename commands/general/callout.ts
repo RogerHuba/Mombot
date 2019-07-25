@@ -3,7 +3,7 @@
 	loadVar $BOT~bot_team_name
 
 	setVar $BOT~help[1] $BOT~tab&"Reports team name and current sector."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	gosub :PLAYER~quikstats
@@ -17,7 +17,7 @@
 halt
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-

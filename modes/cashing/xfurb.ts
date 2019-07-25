@@ -128,7 +128,7 @@ gosub :_START_
 	setVar $gotore 0
 	setVar $trybwarp 0
 
-	setVar $planetnumok 0
+	setVar $planet~planetnumok 0
 	send "lq* "
 
 	:checkPlanetsInSector
@@ -154,7 +154,7 @@ gosub :_START_
 			goto :checkPlanetsInSector
 		:orestartplannum 
 			killalltriggers
-			setVar $planetnumok 1
+			setVar $planet~planetnumok 1
 			goto :checkPlanetsInSector
 		:orenoplanet
 		:cannotland
@@ -165,7 +165,7 @@ gosub :_START_
 			
 		:orestartplanetsok
 			killAllTriggers 
-			if ($planetnumok = 1)
+			if ($planet~planetnumok = 1)
 			
 				getWord CURRENTLINE $cPlanetNum 2
 				stripText $cPlanetNum ">"
@@ -186,8 +186,8 @@ gosub :_START_
 
 	:getplanetdetails
 		waitfor "Fuel Ore"
-		getWord CURRENTLINE $planetfuel 6
-		stripText $planetfuel ","
+		getWord CURRENTLINE $planet~planetfuel 6
+		stripText $planet~planetfuel ","
 		setTextLineTrigger tRange :tRange "TransPort power ="
 		setTextTrigger tplanet :tplanet "Planet command"
 		pause
@@ -201,7 +201,7 @@ gosub :_START_
 			setVar $trybwarp 0
 		:tdone
 		
-		if ($planetfuel > 100)
+		if ($planet~planetfuel > 100)
 			send "t n t 1 *  "
 			setVar $gotore 1
 		end
@@ -426,11 +426,7 @@ halt
 	gosub :BOT~loadVars
 	loadVar $PLAYER~unlimitedGame  
 
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $user_command_line $BOT~user_command_line
-
+				
 	setVar $BOT~help[1] $BOT~tab&"  XFurb - XPorts to Ship, Swaps and Furbs  "
 	setVar $BOT~help[2] $BOT~tab&"          Start at any Class 0"
 	setVar $BOT~help[3] $BOT~tab&"- xfurb [Furb Ship] {holds} "
@@ -441,19 +437,19 @@ halt
 	setVar $BOT~help[8] $BOT~tab&"  holds and twarps back. Requires TWarp/Ore Source "
 	setVar $BOT~help[9] $BOT~tab&"  will check top planet for fuel and a teleport option first."
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	
-	if ($parm1 = 0)
+	if ($bot~parm1 = 0)
 		setVar $SWITCHBOARD~message "Specifiy both Furb and Sit ship.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	isNumber $test $parm1
+	isNumber $test $bot~parm1
         IF ($test)
-		if ($parm1 > 1) OR ($parm1 <= 2000)
-			SetVar $bustship $parm1
+		if ($bot~parm1 > 1) OR ($bot~parm1 <= 2000)
+			SetVar $bustship $bot~parm1
 		else
 			setVar $SWITCHBOARD~message "Furb Ship  Number out of range.*"
 			gosub :SWITCHBOARD~switchboard
@@ -468,12 +464,12 @@ halt
 	
 
 	
-	if ($parm2 = "0")
+	if ($bot~parm2 = "0")
 		setVar $furbholds 22
 	else
-		isNumber $test $parm2
+		isNumber $test $bot~parm2
 		IF ($test)
-			setVar $furbholds $parm2
+			setVar $furbholds $bot~parm2
 			if ($furbholds < 1)
 				setVar $SWITCHBOARD~message "Furb nothing? consider it done.. exiting!*"
 				gosub :SWITCHBOARD~switchboard
@@ -589,10 +585,7 @@ halt
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"

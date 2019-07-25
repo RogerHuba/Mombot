@@ -6,7 +6,7 @@
     setVar $BOT~help[2] $BOT~tab&"         "
     setVar $BOT~help[3] $BOT~tab&"Options: "
     setVar $BOT~help[4] $BOT~tab&"{noexp} - Upgrades port without experience increase."
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 
 
@@ -15,10 +15,10 @@
 :max
     killalltriggers
     gosub :PLAYER~quikstats
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Citadel Command Planet"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~validPrompts "Citadel Command Planet"
+    gosub :bot~checkStartingPrompt
     if ($parm1 <> "f") AND ($parm1 <> "o") AND ($parm1 <> "e")
         send "'{" $SWITCHBOARD~bot_name "} - maxport [f / o / e] noexp*"
         halt

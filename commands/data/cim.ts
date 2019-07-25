@@ -18,7 +18,7 @@
 	setVar $BOT~help[8]  $BOT~tab&"                                            "
 	setVar $BOT~help[9]  $BOT~tab&"    {warps}         - Perform warp data instead of "
 	setVar $BOT~help[10] $BOT~tab&"                      port CIM"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "CIM"
 	gosub :BOT~banner
@@ -239,10 +239,8 @@
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-

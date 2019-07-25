@@ -5,7 +5,7 @@
 		
 	setVar $BOT~help[1] $BOT~tab&"clearbusts"
 	setVar $BOT~help[2] $BOT~tab&"  - Will clear all busts in database."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Bust Clearer"
 	gosub :BOT~banner
@@ -25,10 +25,7 @@
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-

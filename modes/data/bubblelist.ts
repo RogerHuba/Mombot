@@ -1,45 +1,45 @@
 	reqRecording
 	logging off
-	loadVar $bot_name
-	loadVar $unlimitedGame
+	loadVar $switchboard~bot_name
+	loadVar $player~unlimitedGame
 	loadVar $ptradesetting
 	loadVar $bot_turn_limit
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
+	loadVar $bot~user_command_line
+	loadVar $bot~parm1
+	loadVar $bot~parm2
+	loadVar $bot~parm3
+	loadVar $bot~parm4
+	loadVar $bot~parm5
+	loadVar $bot~parm6
+	loadVar $bot~parm7
+	loadVar $bot~parm8
 	loadVar $command
 
 	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
 		write "scripts\mombot\help\"&$command&".txt" " - "&$command&" {door} - List sectors for bubble." 
-		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
+		send "'{" $switchboard~bot_name "} - Writing help file for this command in Help directory.*"
 	end
 	setVar $BUBBLE_LIST "_"&GAMENAME&"_Bubble.list"
 
 	gosub :current_prompt
-	if (($CURRENT_PROMPT <> "Command") AND ($CURRENT_PROMPT <> "Citadel"))
-		send "'{"&$bot_name&"} - Must be run from Command or Citadel prompt.*"
+	if (($player~current_prompt <> "Command") AND ($player~current_prompt <> "Citadel"))
+		send "'{"&$switchboard~bot_name&"} - Must be run from Command or Citadel prompt.*"
 		halt		
 	end
 	setVar $validParm FALSE
-	isNumber $test $parm1
+	isNumber $test $bot~parm1
 	if ($test = true)
-		if (($parm1 <= SECTORS) AND ($parm1 > 0))
+		if (($bot~parm1 <= SECTORS) AND ($bot~parm1 > 0))
 			setVar $validParm TRUE
 		end
 	end
 	if ($validParm = FALSE)
-		send "'{"&$bot_name&"} - Invalid door sector entered.*"
+		send "'{"&$switchboard~bot_name&"} - Invalid door sector entered.*"
 		halt
 	end
 	DELETE $BUBBLE_LIST
-	setVar $DOOR $parm1
+	setVar $DOOR $bot~parm1
 	setSectorParameter $DOOR "DOOR" TRUE
 	setSectorParameter $DOOR "BUBBLE" TRUE
 	setVar $bubble_sectors " "
@@ -107,12 +107,12 @@ halt
         return
     :allPromptsCatch
         killtrigger prompt_delay
-        getWord CURRENTLINE $CURRENT_PROMPT 1
-        if ($CURRENT_PROMPT = 0)
-            getWord CURRENTANSILINE $CURRENT_PROMPT 1
+        getWord CURRENTLINE $player~current_prompt 1
+        if ($player~current_prompt = 0)
+            getWord CURRENTANSILINE $player~current_prompt 1
         end
-        stripText $CURRENT_PROMPT #145
-        stripText $CURRENT_PROMPT #8
-        setVar $startingLocation $CURRENT_PROMPT
+        stripText $player~current_prompt #145
+        stripText $player~current_prompt #8
+        setVar $startingLocation $player~current_prompt
 return
 

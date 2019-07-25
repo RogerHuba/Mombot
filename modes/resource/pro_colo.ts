@@ -42,9 +42,9 @@ pause
   if ($prompt = "Planet")
      send "*"
      waitfor "Planet #"
-     getword currentline $planetNumber 2
-     stripText $planetNumber "#"
-     setVar $planetList $planetNumber
+     getword currentline $planet~planetNumber 2
+     stripText $planet~planetNumber "#"
+     setVar $planet~planetList $planet~planetNumber
      send "tnl1*tnl2*tnl3*snl1*qjy"
   else
      # get planets to fill
@@ -55,9 +55,9 @@ pause
      pause
      :1
        killtrigger 2
-       getword currentline $planetNumber 2
-       stripText $planetNumber "#"
-       setVar $planetList $planetNumber
+       getword currentline $planet~planetNumber 2
+       stripText $planet~planetNumber "#"
+       setVar $planet~planetList $planet~planetNumber
        send "*tnl1*tnl2*tnl3*snl1*qjy"
        goto :startUp
      :2
@@ -65,16 +65,16 @@ pause
      send "q*  "
      waitfor "Command"
      echo  $yellow "** Enter planet numbers to fill "
-     getConsoleInput $planetList
-     replaceText $planetList "," " "
-     getword $planetList $planetNumber 1
+     getConsoleInput $planet~planetList
+     replaceText $planet~planetList "," " "
+     getword $planet~planetList $planet~planetNumber 1
      :donePlanetScan
-     send "l" $planetNumber "*tnl1*tnl2*tnl3*snl1*qjy"
+     send "l" $planet~planetNumber "*tnl1*tnl2*tnl3*snl1*qjy"
   end
   send "f 1* c d"
 :startup
 setVar $mySector $ship_curSector
-setVar $landStr "l  " & #8 & $planetNumber & "*"
+setVar $landStr "l  " & #8 & $planet~planetNumber & "*"
 gosub :portClass
 send "'Comms off for " $version " menu setup*"
 send "|"
@@ -87,7 +87,7 @@ pause
 killalltriggers
 
 
-setVar $inString "Colonizing planet #(s): " & $planetList
+setVar $inString "Colonizing planet #(s): " & $planet~planetList
 setVar $centerLen 22
 gosub :padL
 
@@ -354,7 +354,7 @@ elseif ($menuChoice = "9") and ($eWarpEwarp = FALSE)
        echo "**Enter planet number or enter for same planet"
        getConsoleinput $orePlanet
        if ($orePlanet = "s") or ($orePlanet = "")
-          setVar $orePlanet $planetNumber
+          setVar $orePlanet $planet~planetNumber
           setVar $samePlanet TRUE
        else
           setVar $orePlanet $orePlanet
@@ -467,7 +467,7 @@ goto :menu
      gosub :routeCalc
      setVar $distJump $hops
      if ($bwarp) or ($bWarpeWarp)
-        setVar $planetFuelBurn ($distJump * 10)
+        setVar $planet~planetFuelBurn ($distJump * 10)
      end
      setVar $st $jumpPoint
      setVar $end "1"
@@ -479,7 +479,7 @@ goto :menu
      gosub :routeCalc
      setVar $distJump $hops
      if ($bwarp) or ($bWarpeWarp)
-        setVar $planetFuelBurn ($distJump * 10)
+        setVar $planet~planetFuelBurn ($distJump * 10)
      end
      setVar $routeToTerra $moveIt
   end
@@ -499,7 +499,7 @@ goto :menu
  end
 
 :getPlanetPortStatus
-  send "'Promethius - EZ-Colonizer for planet #" $planetNumber "*"
+  send "'Promethius - EZ-Colonizer for planet #" $planet~planetNumber "*"
   if ($oreSource = "s") and ($ewarpeWarp = FALSE) and ($bWarpeWarp = FALSE)
      send "p  t"
      setTextLineTrigger availPortFuel :availPortFuel "Fuel Ore   Selling"
@@ -598,31 +598,31 @@ goto :menu
   end
   if ($prompt = "Command")
      setVar $numPlanets 1
-     getword $planetList $chk $numPlanets
+     getword $planet~planetList $chk $numPlanets
      while ($chk <> 0)
          add $numPlanets 1
-         getword $planetList $chk $numPlanets
+         getword $planet~planetList $chk $numPlanets
      end
      subtract $numPlanets 1
      setVar $totalColsRequired ($oreCols + $orgCols + $equCols)
      multiply $totalColsRequired $numPlanets
      setVar $totalOreRequired ($totalColsRequired / $shipLoad)
-     multiply $totalOreRequired ($oretoGet + $planetFuelBurn)
-     getword $planetList $planetNumber 1
+     multiply $totalOreRequired ($oretoGet + $planet~planetFuelBurn)
+     getword $planet~planetList $planet~planetNumber 1
   else
      setVar $numPlanets 1
      setVar $totalColsRequired ($oreCols + $orgCols + $equCols)
      setVar $totalOreRequired ($totalColsRequired / $shipLoad)
-     multiply $totalOreRequired ($oretoGet + $planetFuelBurn)
+     multiply $totalOreRequired ($oretoGet + $planet~planetFuelBurn)
   end
-  add $totalOreRequired ($oretoGet + $planetFuelBurn)
+  add $totalOreRequired ($oretoGet + $planet~planetFuelBurn)
 
 #-----------------------------
 setVar $totalColsDelivered 0
 setVar $totalFuel 0
-setVar $planetPointer 1
+setVar $planet~planetPointer 1
 setVar $attackCounter 0
-setVar $finalPlanet $planetNumber
+setVar $finalPlanet $planet~planetNumber
 gosub :setUpGoHome
 gettime $stTimeHH "h"
 gettime $stTimeMM "n"
@@ -652,7 +652,7 @@ end
 # eWarp Colonizers
 
 :redBlueEwarpEwarp
-  while ($totalColsDelivered <= $totalColsRequired) or ($planetColsDelivered <= $colsPerPlanet)
+  while ($totalColsDelivered <= $totalColsRequired) or ($planet~planetColsDelivered <= $colsPerPlanet)
      send $moveToJump & $routeToTerra & $terraLanding
      if ($watchCols)
         gosub :colWatching
@@ -663,7 +663,7 @@ end
   goto :colonizerDone
 
 :redBlueEwarpTwarp
-  while ($totalColsDelivered <= $totalColsRequired) or ($planetColsDelivered <= $colsPerPlanet)
+  while ($totalColsDelivered <= $totalColsRequired) or ($planet~planetColsDelivered <= $colsPerPlanet)
      send $moveToJump $routeToTerra & $terraLanding
      if ($watchCols)
         gosub :colWatching
@@ -681,7 +681,7 @@ end
 # Red Colonizers
 
 :redTwarp
-  while ($totalColsDelivered <= $totalColsRequired) or ($planetColsDelivered <= $colsPerPlanet)
+  while ($totalColsDelivered <= $totalColsRequired) or ($planet~planetColsDelivered <= $colsPerPlanet)
      send $moveToJump
      gosub :twarpOut
      send $redRoute & $terraLanding
@@ -700,7 +700,7 @@ end
   goto :colonizerDone
 
 :redbWarpeWarp
-  while ($totalColsDelivered <= $totalColsRequired) or ($planetColsDelivered <= $colsPerPlanet)
+  while ($totalColsDelivered <= $totalColsRequired) or ($planet~planetColsDelivered <= $colsPerPlanet)
      send $moveToJump
      gosub :bwarpOut
      send $redRoute & $terraLanding
@@ -714,7 +714,7 @@ end
 
 
 :redbWarp
-  while ($totalColsDelivered <= $totalColsRequired) or ($planetColsDelivered <= $colsPerPlanet)
+  while ($totalColsDelivered <= $totalColsRequired) or ($planet~planetColsDelivered <= $colsPerPlanet)
      send $moveToJump
      gosub :bwarpOut
      send $redRoute & $terraLanding
@@ -734,7 +734,7 @@ end
 # Blue Colonizers
 
 :blueTwarp
-  while ($totalColsDelivered <= $totalColsRequired) or ($planetColsDelivered <= $colsPerPlanet)
+  while ($totalColsDelivered <= $totalColsRequired) or ($planet~planetColsDelivered <= $colsPerPlanet)
      if ($bttw = FALSE)
         send $moveToJump & $terraLanding
         if ($watchCols)
@@ -754,7 +754,7 @@ end
 
 :blueBWarp
 
-  while ($totalColsDelivered <= $totalColsRequired) or ($planetColsDelivered <= $colsPerPlanet)
+  while ($totalColsDelivered <= $totalColsRequired) or ($planet~planetColsDelivered <= $colsPerPlanet)
      if ($bttw = FALSE)
          send $moveToJump & $terraLanding
          if ($watchCols)
@@ -774,7 +774,7 @@ end
   goto :colonizerDone
 
 :blueBwarpEwarp
- while ($totalColsDelivered <= $totalColsRequired) or ($planetColsDelivered <= $colsPerPlanet)
+ while ($totalColsDelivered <= $totalColsRequired) or ($planet~planetColsDelivered <= $colsPerPlanet)
      send $moveToJump & $terraLanding & $routeFromTerra & $goHomeStr
 #     send $goHomeStr
      gosub :calculations
@@ -803,9 +803,9 @@ halt
 :calculations
    add $ColsDelivered[$dropCols] $shipLoad
    add $totalColsDelivered $shipLoad
-   add $planetColsDelivered $shipLoad
-   add $totalOre ($oreToGet + $planetFuelBurn)
-   subtract $fuelAvail ($oreToGet + $planetFuelBurn)
+   add $planet~planetColsDelivered $shipLoad
+   add $totalOre ($oreToGet + $planet~planetFuelBurn)
+   subtract $fuelAvail ($oreToGet + $planet~planetFuelBurn)
 
   if ($ColsDelivered[1] >= $orecols) and ($ColsDelivered[2] = 0) and ($orgCols > 0)
       setVar $dropCols 2
@@ -822,10 +822,10 @@ halt
         halt
      end
   end
-  if ($planetColsDelivered >= $colsPerPlanet)
-     add $planetPointer 1
-     getword $planetList $planetNumber $planetPointer
-     if ($planetNumber = 0)
+  if ($planet~planetColsDelivered >= $colsPerPlanet)
+     add $planet~planetPointer 1
+     getword $planet~planetList $planet~planetNumber $planet~planetPointer
+     if ($planet~planetNumber = 0)
          goto :colonizerDone
      else
         if ($oreCols > 0)
@@ -836,7 +836,7 @@ halt
            setVar $dropCols 3
         end
         gosub :setUpGoHome
-        setVar $planetColsDelivered 0
+        setVar $planet~planetColsDelivered 0
         setVar $colsDelivered[1] 0
         setVar $colsDelivered[2] 0
         setVar $colsDelivered[3] 0
@@ -861,7 +861,7 @@ halt
         if ($myFigs < $ship_figs) or ($myShields < $ship_shlds)
            echo $red "**!!!! " $cyan "ATTACK DETECTED" $red " !!!!**"
            if (currentsector = $mySector)
-               send "l " & #8 & $planetNumber & "*"
+               send "l " & #8 & $planet~planetNumber & "*"
             else
                send "pt"
             end
@@ -888,7 +888,7 @@ return
   if (currentSector = 1)
      send "* pt"
   elseif (currentsector = $mySector)
-     send "l " $planetNumber "* "
+     send "l " $planet~planetNumber "* "
   end
   halt
 
@@ -977,7 +977,7 @@ return
 return
 
 :setUpGoHome
-  setVar $landStr "l " & #8 & $planetNumber & "*  "
+  setVar $landStr "l " & #8 & $planet~planetNumber & "*  "
   if ($twoShip) and ($bwarp = FALSE)
       setVar $twoShipStrHome "x  " & $2ndShip & "*  * " & $landStr & "snl" & $dropCols & "*qx  " & $1stShip & "*  *"
       setVar $goHomeStr "w" & $landStr & "snl" & $dropCols & "*"
@@ -989,7 +989,7 @@ return
      if ($oreSource = "s")
          setVar $goHomeStr $goHomeStr & "qpt" & $oretoGet & "*" & $buy & $twoShipStrHome
      else
-        if ($planetNumber <> $orePlanet)
+        if ($planet~planetNumber <> $orePlanet)
            setVar $goHomeStr $goHomeStr & "ql " & #8 & $orePlanet & "*  "
         end
         if ($bwarp)
@@ -1059,8 +1059,8 @@ return
   :windowUpdate
   setVar $msg "* Colonizing Mode: " & $mode & "*"
   gosub :data_Window
-  setVar $msg $msg & "* Colonizing Planets: " & $planetList & "*"
-  setVar $msg $msg & "* Planet Number:      " & $planetNumber & "*"
+  setVar $msg $msg & "* Colonizing Planets: " & $planet~planetList & "*"
+  setVar $msg $msg & "* Planet Number:      " & $planet~planetNumber & "*"
   setVar $msg $msg & "* Fuel Colonists:     " & $colsDelivered[1] & " of " & $oreCols & " target*"
   setVar $msg $msg & "* Org Colonists:      " & $colsDelivered[2] & " of " & $orgCols & " target*"
   setVar $msg $msg & "* Equ Colonists:      " & $colsDelivered[3] & " of " & $equCols & " target*"

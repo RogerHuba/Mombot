@@ -41,7 +41,7 @@ setVar $BOT~help[9]  $BOT~tab&"            - predicted sector "
 setVar $BOT~help[10]  $BOT~tab&"   {pdrop}  - attempt planet drop on predicted sector"
 
 
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Fig Hit Analysis"
 gosub :BOT~banner
@@ -144,13 +144,13 @@ while ($loop = 1)
 		killAllTriggers
 # check for spoof
 # check for corp  - i.e. we won't maek this up in future
-		setVar $corp 1
+		setVar $player~corp 1
 
 		getWord CURRENTLINE $sec 5
 		striptext $sec ":"
 		isNumber $test $sec
 		if ($test = 1)
-			setVar $PREV_TARGET_FOUND[$corp] 0
+			setVar $PREV_TARGET_FOUND[$player~corp] 0
 			//setVar $figList[$sec] 0
 			if ($lastfighit <> $sec)
 				if ($lastfighit <> 0)
@@ -167,15 +167,15 @@ while ($loop = 1)
 					goSub :recordHit
 	
 					# if record hit was within an accepible time - then judge success of last array
-					setVar $PREV_TARGET_FOUND[$corp] 0
-					setVar $PREV_TARGET_I[$corp] 0
+					setVar $PREV_TARGET_FOUND[$player~corp] 0
+					setVar $PREV_TARGET_I[$player~corp] 0
 					if ($recordhitOk = 1)
 	
 						setVar $g 1
 						while ($g <= $foundcount)
 							if ($foundSecs[$g][1] = $sec)
-								setVar $PREV_TARGET_FOUND[$corp] 1
-								setVar $PREV_TARGET_I[$corp] $g
+								setVar $PREV_TARGET_FOUND[$player~corp] 1
+								setVar $PREV_TARGET_I[$player~corp] $g
 								setVar $prevTargetReporti  $g
 								setVar $g 99999
 								
@@ -183,9 +183,9 @@ while ($loop = 1)
 							add $g 1
 						end
 						if ($PREV_TARGET_FOUND = 1)
-							add $PREV_TARGET_COUNT[$corp] 1
-							add $PREV_TARGET_TOTAL[$corp] $PREV_TARGET_I[$corp]
-							setVar $PREV_TARGET_AVG_I[$corp] ($PREV_TARGET_TOTAL[$corp]/$PREV_TARGET_COUNT[$corp])
+							add $PREV_TARGET_COUNT[$player~corp] 1
+							add $PREV_TARGET_TOTAL[$player~corp] $PREV_TARGET_I[$player~corp]
+							setVar $PREV_TARGET_AVG_I[$player~corp] ($PREV_TARGET_TOTAL[$player~corp]/$PREV_TARGET_COUNT[$player~corp])
 						end
 					end
 					
@@ -240,10 +240,10 @@ end
 				
 			end
 			
-			if ($distAvg[$corp] = 0)
+			if ($distAvg[$player~corp] = 0)
 				setVar $mindist 1
 			else
-				setVar $mindist $distAvg[$corp]
+				setVar $mindist $distAvg[$player~corp]
 			end
 			
 			if ($dist >= $mindist)
@@ -307,31 +307,31 @@ echo "# SECONDS" $seconds " -min:" $minTime " max: " $maxTime "*"
 		# GOOD HIT FOR NOW- We'll recheck this if we hit the min 5 hits for avg
 		setVar $recordhitOk 1
 		setPrecision 0	
-		add $timingHitsNumber[$corp] 1
-		if ($timingHitsNumber[$corp] >= $minReqForAvgLock)
+		add $timingHitsNumber[$player~corp] 1
+		if ($timingHitsNumber[$player~corp] >= $minReqForAvgLock)
 			setVar $avgsLocked 1
 		end
 		setPrecision 0
-		add $timingHitsTotal[$corp] $durationTicks
-		setVar $timingHits[$corp][$timingHitsNumber[$corp]] $durationTicks
-		setVar $timingAvgHits[$corp] ($timingHitsTotal[$corp]/$timingHitsNumber[$corp])
-echo "# ind:" $timingHitsNumber[$corp] " Hits"  $timingHitsNumber[$corp] "  TOTAL"   $timingHitsTotal[$corp] "  AVG: " $timingAvgHits[$corp] " Thisv:" $timingHits[$corp][$timingHitsNumber[$corp]] "**"
-echo "CHK: " $timingHits[$corp][1] "*"
+		add $timingHitsTotal[$player~corp] $durationTicks
+		setVar $timingHits[$player~corp][$timingHitsNumber[$player~corp]] $durationTicks
+		setVar $timingAvgHits[$player~corp] ($timingHitsTotal[$player~corp]/$timingHitsNumber[$player~corp])
+echo "# ind:" $timingHitsNumber[$player~corp] " Hits"  $timingHitsNumber[$player~corp] "  TOTAL"   $timingHitsTotal[$player~corp] "  AVG: " $timingAvgHits[$player~corp] " Thisv:" $timingHits[$player~corp][$timingHitsNumber[$player~corp]] "**"
+echo "CHK: " $timingHits[$player~corp][1] "*"
 
-		add $distHitsTotal[$corp] $dist2
-		setVar $distHits[$corp][$timingHitsNumber[$corp]] $dist2
-		setVar $distAvg[$corp] ($distHitsTotal[$corp]/$timingHitsNumber[$corp])
+		add $distHitsTotal[$player~corp] $dist2
+		setVar $distHits[$player~corp][$timingHitsNumber[$player~corp]] $dist2
+		setVar $distAvg[$player~corp] ($distHitsTotal[$player~corp]/$timingHitsNumber[$player~corp])
 
-echo "# DIST"  $timingHitsNumber[$corp] "  TOTAL"   $distHitsTotal[$corp] "  AVG: " $distAvg[$corp] "**"
+echo "# DIST"  $timingHitsNumber[$player~corp] "  TOTAL"   $distHitsTotal[$player~corp] "  AVG: " $distAvg[$player~corp] "**"
 
 
-		if ($timingHitsNumber[$corp] > 5)
+		if ($timingHitsNumber[$player~corp] > 5)
 			# Lets check average for outliers
 			# RESET THIS AND CHECK AGAIN BELOW
 			setVar $recordhitOk 0
 
-			setVar $timingHitMin ($timingAvgHits[$corp] - ($timingAvgHits[$corp]/2))
-			setVar $timingHitMax ($timingAvgHits[$corp] + ($timingAvgHits[$corp]/2))
+			setVar $timingHitMin ($timingAvgHits[$player~corp] - ($timingAvgHits[$player~corp]/2))
+			setVar $timingHitMax ($timingAvgHits[$player~corp] + ($timingAvgHits[$player~corp]/2))
 	echo "# REDOING AVERAGES " $timingHitMin " to " $timingHitMax "*"
 
 			setVar $tempHits 0
@@ -340,17 +340,17 @@ echo "# DIST"  $timingHitsNumber[$corp] "  TOTAL"   $distHitsTotal[$corp] "  AVG
 			setVar $tempDist 0
 			setVar $tempDistTotal 0
 			setVar $h 1
-			while ($h <= $timingHitsNumber[$corp])
+			while ($h <= $timingHitsNumber[$player~corp])
 
-	echo " Check Hit: " $timingHits[$corp][$h] " d;" $distHits[$corp][$h]  " h:" $h 
-				if (($timingHits[$corp][$h] >= $timingHitMin) and ($timingHits[$corp][$h] <= $timingHitMax))
+	echo " Check Hit: " $timingHits[$player~corp][$h] " d;" $distHits[$player~corp][$h]  " h:" $h 
+				if (($timingHits[$player~corp][$h] >= $timingHitMin) and ($timingHits[$player~corp][$h] <= $timingHitMax))
 		echo " KEEP"
 					add $tempHitsi 1
-					setVar $tempHits[$tempHitsi] $timingHits[$corp][$h]
-					add $tempTotal $timingHits[$corp][$h]
-					setVar $tempDist[$tempHitsi] $distHits[$corp][$h]
-					add $tempDistTotal $distHits[$corp][$h]
-					if ($h = $timingHitsNumber[$corp])
+					setVar $tempHits[$tempHitsi] $timingHits[$player~corp][$h]
+					add $tempTotal $timingHits[$player~corp][$h]
+					setVar $tempDist[$tempHitsi] $distHits[$player~corp][$h]
+					add $tempDistTotal $distHits[$player~corp][$h]
+					if ($h = $timingHitsNumber[$player~corp])
 						setVar $recordhitOk 1
 					end
 				else
@@ -360,34 +360,34 @@ echo "# DIST"  $timingHitsNumber[$corp] "  TOTAL"   $distHitsTotal[$corp] "  AVG
 				add $h 1
 				
 			end
-			if ($tempTotal <> $timingHitsTotal[$corp])
+			if ($tempTotal <> $timingHitsTotal[$player~corp])
 
 				setVar $h 1
-				while ($h <= $timingHitsNumber[$corp])
-					setVar $timingHits[$corp][$h] 0
-					setVar $distHits[$corp][$h] 0
+				while ($h <= $timingHitsNumber[$player~corp])
+					setVar $timingHits[$player~corp][$h] 0
+					setVar $distHits[$player~corp][$h] 0
 					add $h 1
 				end
 				
-				setVar $timingHitsNumber[$corp] $tempHitsi
-				setVar $timingHitsTotal[$corp] 0
-				setVar $distHitsTotal[$corp] 0
+				setVar $timingHitsNumber[$player~corp] $tempHitsi
+				setVar $timingHitsTotal[$player~corp] 0
+				setVar $distHitsTotal[$player~corp] 0
 				setVar $h 1
 				while ($h <= $tempHitsi)
-					setVar $timingHits[$corp][$h] $tempHits[$h]
-					add $timingHitsTotal[$corp] $tempHits[$h]
-					setVar $distHits[$corp][$h] $tempDist[$h]
-					add $distHitsTotal[$corp] $tempDist[$h]
+					setVar $timingHits[$player~corp][$h] $tempHits[$h]
+					add $timingHitsTotal[$player~corp] $tempHits[$h]
+					setVar $distHits[$player~corp][$h] $tempDist[$h]
+					add $distHitsTotal[$player~corp] $tempDist[$h]
 					add $h 1
 
 				end
 
-				setVar $timingAvgHits[$corp] ($timingHitsTotal[$corp]/$timingHitsNumber[$corp])
-				setVar $distAvg[$corp] ($distHitsTotal[$corp]/$timingHitsNumber[$corp])
+				setVar $timingAvgHits[$player~corp] ($timingHitsTotal[$player~corp]/$timingHitsNumber[$player~corp])
+				setVar $distAvg[$player~corp] ($distHitsTotal[$player~corp]/$timingHitsNumber[$player~corp])
 echo "# RECALULATED AVERAGE*"
 echo "# NEW DATA*"
-echo "# Hits"  $timingHitsNumber[$corp] "  TOTAL"   $timingHitsTotal[$corp] "  AVG: " $timingAvgHits[$corp] "**"
-echo "# DIST"  $timingHitsNumber[$corp] "  TOTAL"   $distHitsTotal[$corp] "  AVG: " $distAvg[$corp] "**"
+echo "# Hits"  $timingHitsNumber[$player~corp] "  TOTAL"   $timingHitsTotal[$player~corp] "  AVG: " $timingAvgHits[$player~corp] "**"
+echo "# DIST"  $timingHitsNumber[$player~corp] "  TOTAL"   $distHitsTotal[$player~corp] "  AVG: " $distAvg[$player~corp] "**"
 			end
 		end
 
@@ -397,15 +397,15 @@ return
 
 :sendReport
 	setPrecision 1
-	setVar $avgSec ($timingAvgHits[$corp] / 2100000000)
+	setVar $avgSec ($timingAvgHits[$player~corp] / 2100000000)
 	setPrecision 0
 
-	if ($PREV_TARGET_FOUND[$corp] = 1)
+	if ($PREV_TARGET_FOUND[$player~corp] = 1)
 		setVar $prevtargetinfo "Sector found in previous list at : " & $prevTargetReporti & "*"
 	else
 		setVar $prevtargetinfo ""
 	end
-	setVar $out $prevtargetinfo & "FH: " & $sec & " D:" & $dist2 & " T:" & $seconds & " Avg Time:" & $avgSec & " Avg Dist: " & $distAvg[$corp]
+	setVar $out $prevtargetinfo & "FH: " & $sec & " D:" & $dist2 & " T:" & $seconds & " Avg Time:" & $avgSec & " Avg Dist: " & $distAvg[$player~corp]
 	
 	goSub :addClosestSix
 	
@@ -436,12 +436,7 @@ return
 	setVar $out $out & "*"
 return
 
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
-
-

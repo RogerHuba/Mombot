@@ -1,15 +1,6 @@
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-	loadVar $PLAYER~unlimitedGame
+										loadVar $PLAYER~unlimitedGame
 
 
 	setVar $BOT~help[1]  $BOT~tab&"              PATP - Pay At The Pump               "
@@ -24,14 +15,14 @@
 	setVar $BOT~help[10] $BOT~tab&"    [destroyports]   destroys every port it drains if you "
 	setVar $BOT~help[11] $BOT~tab&"    [bubble]         only visits bubble sectors  "
 	setVar $BOT~help[12] $BOT~tab&"                     have enough fighters"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Pay At The Pump"
 	gosub :BOT~banner
 
 
   
-   setVar $bot_name $SWITCHBOARD~bot_name
+   setVar $switchboard~bot_name $SWITCHBOARD~bot_name
 
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
@@ -44,18 +35,18 @@
 	waitOn "Planet command (?"
 	gosub :PLANET~getPlanetInfo
 	send "c"
-	if ($PLANET~CITADEL < 4)
+	if ($planet~CITADEL < 4)
 		setVar $SWITCHBOARD~message "You must run Pay At The Pump from at least a level 4 planet.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	if (($PLANET~citadel_credits + $PLAYER~CREDITS) < 5000000)
+	if (($planet~CITADEL_CREDITS + $PLAYER~CREDITS) < 5000000)
 		setVar $SWITCHBOARD~message "You must have at least 5 million credits in the citadel or on hand for patp.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	lowerCase $parm1
-	setVar $minimumFuel $parm1
+	lowerCase $bot~parm1
+	setVar $minimumFuel $bot~parm1
 	isNumber $number $minimumFuel
 	if ($number <> 1)
 		setVar $SWITCHBOARD~message "Minimum Port Fuel entered is not a number!*"
@@ -67,31 +58,31 @@
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	getWordPos $user_command_line $pos "destroyports"
+	getWordPos $bot~user_command_line $pos "destroyports"
 	if ($pos > 0)
 		setVar $destroyPorts TRUE
 	else
 		setVar $destroyPorts FALSE
 	end
-	getWordPos $user_command_line $pos "upgrade"
+	getWordPos $bot~user_command_line $pos "upgrade"
 	if ($pos > 0)
 		setVar $upgrade TRUE
 	else
 		setVar $upgrade FALSE
 	end
-	getWordPos $user_command_line $pos "half"
+	getWordPos $bot~user_command_line $pos "half"
 	if ($pos > 0)
 		setVar $buyHalf TRUE
 	else
 		setVar $buyHalf FALSE
 	end
-	getWordPos $user_command_line $pos "docim"
+	getWordPos $bot~user_command_line $pos "docim"
 	if ($pos > 0)
 		setVar $docim TRUE
 	else
 		setVar $docim FALSE
 	end
-	getWordPos $user_command_line $pos "bubble"
+	getWordPos $bot~user_command_line $pos "bubble"
 	if ($pos > 0)
 		setVar $bubble TRUE
 	else
@@ -102,7 +93,7 @@
 	waitOn "Planet command (?"
 	gosub :PLANET~getPlanetInfo
 	
-	send "qjy l "&$PLANET~planet&"* c"
+	send "qjy l "&$planet~planet&"* c"
 	send "c;q"
 	waitFor "Figs Per Attack:"
 	getWord CURRENTLINE $SHIP~maxFigAttack 5
@@ -129,7 +120,7 @@
 		gosub :SWITCHBOARD~switchboard
 	end
 	setVar $isDone FALSE
-	setVar $turnsTooLow FALSE
+	setVar $player~turnsTooLow FALSE
 	:inac
 	killalltriggers
 	while ($isDone <> TRUE)
@@ -214,7 +205,7 @@
 					send "c"
 					setVar $total_creds_needed (300*7000)
 					if ($total_creds_needed > $PLAYER~CREDITS)
-						setVar $cashonhand $PLANET~citadel_credits
+						setVar $cashonhand $planet~CITADEL_CREDITS
 						add $cashonhand $PLAYER~CREDITS
 						if ($cashonhand > $total_creds_needed)
 						        send "T T " & $PLAYER~CREDITS & "* "
@@ -240,18 +231,18 @@
 				if ($buyHalf)
 					divide $totalPortFuel 2
 				end
-				if (($PLANET~planet_fuel_max-$PLANET~planet_fuel) < $totalPortFuel)
-					setVar $turnsToEmpty (($PLANET~planet_fuel_max-$PLANET~planet_fuel)/$PLAYER~TOTAL_HOLDS)
-					add $totalHolds ($PLANET~planet_fuel_max-$PLANET~planet_fuel)
+				if (($planet~planet_fuel_max-$planet~planet_fuel) < $totalPortFuel)
+					setVar $player~turnsToEmpty (($planet~planet_fuel_max-$planet~planet_fuel)/$player~total_holds)
+					add $totalHolds ($planet~planet_fuel_max-$planet~planet_fuel)
 					setVar $isDone TRUE
 				else
-					setVar $turnsToEmpty ($totalPortFuel/$PLAYER~TOTAL_HOLDS)
+					setVar $player~turnsToEmpty ($totalPortFuel/$player~total_holds)
 					add $totalHolds $totalPortFuel
 				end
 				setVar $PLAYER~buyobject "f"
 				setVar $PLAYER~buytype "s"
-				setVar $PLAYER~buydownRoundsFromParam $turnsToEmpty
-				gosub :tactics~buy
+				setVar $PLAYER~buydownRoundsFromParam $player~turnsToEmpty
+				gosub :player~buy
 				gosub :PLAYER~quikstats
 				send "c r*q "
 				
@@ -260,8 +251,8 @@
 					gosub :SWITCHBOARD~switchboard
 					goto :donePATP
 				end
-				if (($PLAYER~unlimitedGame = FALSE) AND (($PLAYER~turns-$turnsToEmpty) <= $BOT~bot_turn_limit))
-					setVar $turnsTooLow TRUE
+				if (($PLAYER~unlimitedGame = FALSE) AND (($PLAYER~turns-$player~turnsToEmpty) <= $BOT~bot_turn_limit))
+					setVar $player~turnsTooLow TRUE
 					goto :donePATP
 				end
 
@@ -289,7 +280,7 @@
 						pause
 						:continueDestroy
 						killalltriggers
-						send " a y "&$SHIP~maxFigAttack&"*l "&$PLANET~planet&"* m * * * q "
+						send " a y "&$SHIP~maxFigAttack&"*l "&$planet~planet&"* m * * * q "
 						setTextTrigger notDestroyed :keepDestroying "Incoming laser barrage from"
 						setTextTrigger DestoryedPort :doneDestroying "You destroyed the Star Port!"
 						pause
@@ -304,7 +295,7 @@
 					gosub :landOnPlanetEnterCitadel
 				end
 			end
-			if (($PLAYER~CREDITS + $PLANET~citadel_credits) < 1000000)
+			if (($PLAYER~CREDITS + $planet~CITADEL_CREDITS) < 1000000)
 				setVar $isDone TRUE
 			end
 			:tryAgain
@@ -335,20 +326,20 @@
 	setVar $formattedHolds $totalHolds&$formattedHolds
 	
 	send "'*{" $SWITCHBOARD~bot_name "} Pay At The Pump - Completion Report {" $SWITCHBOARD~bot_name "}*  "&$formattedHolds&" total holds of fuel ore purchased.*  Credits spent: "&$formattedSpentCredits&" credits*"	
-	if (($PLAYER~credits+$PLANET~citadel_credits) < 1000000)
+	if (($PLAYER~credits+$planet~CITADEL_CREDITS) < 1000000)
 		send "  Credits are below 1,000,000.*"
 	end
-	if ($turnsTooLow)
+	if ($player~turnsTooLow)
 		send "  Low on turns! (Turns: "&$PLAYER~TURNS&")*"			
 	end
-	if ($PLANET~PLANET_fuel >= ($PLANET~PLANET_fuel_max-2000))
-		send "  Planet "&$PLANET~PLANET&" is full.*"
+	if ($planet~planet_fuel >= ($planet~planet_fuel_max-2000))
+		send "  Planet "&$planet~planet&" is full.*"
 	end
 	send  "{" $SWITCHBOARD~bot_name "} Pay At The Pump - Completion Report {" $SWITCHBOARD~bot_name "}**"
 	halt
 
 :getFuelCash
-	send "l " $PLANET~planet "*   c t f"&$total_creds_needed&"*qq"
+	send "l " $planet~planet "*   c t f"&$total_creds_needed&"*qq"
 	gosub :PLAYER~quikstats
 return
 
@@ -361,11 +352,11 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landonplanetentercitadel\planet"
+include "source\bot_includes\player\buy\player"

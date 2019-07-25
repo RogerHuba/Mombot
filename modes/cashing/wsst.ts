@@ -7,7 +7,7 @@
 	loadVar $MAP~STARDOCK 
 	loadvar $bot~folder
 	loadvar $game~MAX_PLANETS_PER_SECTOR
-	loadvar $planet~planet~planet_file
+	loadvar $planet~planet_file
 	loadVar $BOT~botIsDeaf
 	loadVar $BOT~silent_running
 	loadvar $game~steal_factor
@@ -28,7 +28,7 @@
 	setVar $BOT~help[12]  $BOT~tab&"     {quiet}        - Will not braodcast BUSTED msg's on SubSpace  "
 	setVar $BOT~help[13]  $BOT~tab&"     {x100}         - Will Drop 100 Fighters per sector "
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setvar $player~save true
 
@@ -1271,10 +1271,9 @@ goto :GoGo
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\planet\getplanetinfo\planet"

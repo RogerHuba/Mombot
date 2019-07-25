@@ -18,7 +18,7 @@
 	setVar $BOT~help[10]   $BOT~tab&"         abort saveme - cancel saveme call"
 	setVar $BOT~help[11]   $BOT~tab&"         "
 	setVar $BOT~help[12]   $BOT~tab&"               - Originally written by Cherokee"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 	setVar $PLAYER~save TRUE
@@ -74,7 +74,7 @@
 		setVar $targetingPerson FALSE
 		getWordPos $bot~user_command_line $pos #34
 		if ($pos > 0)	
-			setVar $bot~user_command_line $bot~user_command_line&" "
+			setvar $bot~user_command_line $bot~user_command_line&" "
 			getText " "&$bot~user_command_line&" " $target " "&#34 #34&" "
 			if ($target <> "")
 				setVar $targetingPerson TRUE
@@ -87,19 +87,19 @@
 		end
 		if ($returnHome)
 			if ($targetingPerson)
-				setvar $switchboard~message "Saveme - Running from planet " & $planet~PLANET & " for "&$target&", " & $savemeDelay & " second return home delay.*"
+				setvar $switchboard~message "Saveme - Running from planet " & $planet~planet & " for "&$target&", " & $savemeDelay & " second return home delay.*"
 				gosub :switchboard~switchboard
 			else
-				setvar $switchboard~message "Saveme - Running from planet " & $planet~PLANET & ", " & $savemeDelay & " second return home delay.*"
+				setvar $switchboard~message "Saveme - Running from planet " & $planet~planet & ", " & $savemeDelay & " second return home delay.*"
 				gosub :switchboard~switchboard
 			end
 
 		else
 			if ($targetingPerson)
-				setvar $switchboard~message "Saveme - Running from planet " & $planet~PLANET & " for "&$target&".*"
+				setvar $switchboard~message "Saveme - Running from planet " & $planet~planet & " for "&$target&".*"
 				gosub :switchboard~switchboard
 			else
-				setvar $switchboard~message "Saveme - Running from planet " & $planet~PLANET & ".*"
+				setvar $switchboard~message "Saveme - Running from planet " & $planet~planet & ".*"
 				gosub :switchboard~switchboard
 			end
 		end
@@ -159,7 +159,7 @@
 		:there
                 	killtrigger abort
 	                killtrigger nofig
-			send "'Saveme script activated - Planet " & $planet~PLANET & " to " & $target_sector & " on attempt " & $j & ".*"
+			send "'Saveme script activated - Planet " & $planet~planet & " to " & $target_sector & " on attempt " & $j & ".*"
         	        send "IS*"
 			if ($returnHome)
 				setDelayTrigger savemereturn :returnsaveme ($savemeDelay*1000)
@@ -257,7 +257,7 @@ pause
 	killalltriggers
 	gosub :authenticateannounce
 	if ($auth_result)
-		setvar $switchboard~message "*Save Me - Running from planet " & $planet~PLANET & "*---Command List---*" & $bot~bot_name & " Deploy Mines*" & $bot~bot_name & " Personal Limp*----End of List---** "
+		setvar $switchboard~message "*Save Me - Running from planet " & $planet~planet & "*---Command List---*" & $bot~bot_name & " Deploy Mines*" & $bot~bot_name & " Personal Limp*----End of List---** "
 		gosub :switchboard~message
 	end
 	waitOn "----End of List---"
@@ -290,7 +290,7 @@ return
 		goto :settriggers
 	end
 	if ($startingLocation = "Citadel")
-		send "q q z* h2z" $bot~parm1 "* z " $limp " z * * *l " $planet~PLANET "* c"
+		send "q q z* h2z" $bot~parm1 "* z " $limp " z * * *l " $planet~planet "* c"
 		setTextLineTrigger toomanypl :toomany_limp "!  You are limited to "
 		setTextLineTrigger plclear :plclear_limp "Done. You have "
 		setTextLineTrigger enemypl :noperdown_limp "These mines are not under your control."
@@ -348,7 +348,7 @@ return
 		setvar $switchboard~message  $bot~parm1&" Corporate Limpets Deployed!*"
 		gosub :switchboard~switchboard
 	end
-	setSectorParameter $CURRENT_SECTOR "LIMPSEC" TRUE
+	setSectorParameter $player~current_sector "LIMPSEC" TRUE
 	goto :settriggers
 
 
@@ -453,7 +453,7 @@ return
 		elseif (($bot~parm1 > $player~LIMPETS) AND (($limpetOwner <> "belong to your Corp") AND ($limpetOwner <> "yours")))
 			setVar $bot~parm1 $player~LIMPETS
 		end
-		send "q q z n h 2 z " $bot~parm1 "*  z" $limp " * * h 1 z " $bot~parm1 "*  z " $armid " * * * l " $planet~PLANET "* c "
+		send "q q z n h 2 z " $bot~parm1 "*  z" $limp " * * h 1 z " $bot~parm1 "*  z " $armid " * * * l " $planet~planet "* c "
 	end
 	if ($startingLocation = "Command")
 		send "** "
@@ -475,7 +475,7 @@ return
 		gosub :switchboard~switchboard
 	end
 	if ($predeployArmids < $player~ARMIDS)
-		setvar $switchboard~message  ($ARMIDS-$predeployArmids)&" Armid mines picked up from sector!*"
+		setvar $switchboard~message  ($player~armids-$predeployArmids)&" Armid mines picked up from sector!*"
 		gosub :switchboard~switchboard
 	elseif (($predeployArmids = $player~ARMIDS) AND (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours")))
 		setvar $switchboard~message "Enemy armid(s) present in sector, cannot deploy!*"
@@ -494,9 +494,8 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
+include "source\bot_includes\planet\getplanetinfo\planet"

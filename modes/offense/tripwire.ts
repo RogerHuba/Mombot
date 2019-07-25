@@ -1,15 +1,6 @@
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	setVar $BOT~help[1] $BOT~tab&"Self destructs planet if captured.  Attempts to kill pod.  "
 	setVar $BOT~help[2] $BOT~tab&" "
@@ -18,21 +9,21 @@
 	setVar $BOT~help[5] $BOT~tab&"Options:"
 	setVar $BOT~help[6] $BOT~tab&"       move [sector]"
 	setVar $BOT~help[7] $BOT~tab&"       	Instead of self destructing, planet is moved to sector."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Tripwire"
 	gosub :BOT~banner
 
 	gosub :combat~init 
 
-	if ($parm1 = "move")
-		if ($parm2 <= 0 OR $parm2 > SECTORS)
+	if ($bot~parm1 = "move")
+		if ($bot~parm2 <= 0 OR $bot~parm2 > SECTORS)
 			setVar $SWITCHBOARD~message "When move option is used, sector must be a valid number.*"
 			gosub :SWITCHBOARD~switchboard		
 			halt
 		end
 		setVar $move_planet TRUE
-		setVar $move_sector $parm2
+		setVar $move_sector $bot~parm2
 	end
 
 
@@ -98,33 +89,33 @@
 	
 	killalltriggers
 
-	setVar $SWITCHBOARD~message "Trip wire set on planet "&$PLANET~PLANET_NAME&".*"
+	setVar $SWITCHBOARD~message "Trip wire set on planet "&$planet~planet_NAME&".*"
 	if ($move_planet = TRUE)
-		setVar $SWITCHBOARD~message "Trip wire set on planet "&$PLANET~PLANET_NAME&" to move to sector "&$move_sector&".*"
+		setVar $SWITCHBOARD~message "Trip wire set on planet "&$planet~planet_NAME&" to move to sector "&$move_sector&".*"
 	end
 	
 	gosub :SWITCHBOARD~switchboard
 	
 	if ($move_planet = TRUE) 
-		setTextLineTrigger time_to_move :check_for_move " of your fighters on planet "&$PLANET~PLANET_NAME
-		setTextLineTrigger time_to_move_2 :check_for_move_2 " of your Planetary Shields on planet "&$PLANET~PLANET_NAME
-		setTextLineTrigger time_to_move_3 :check_for_move_3 "Quasar Cannon on "&$PLANET~PLANET_NAME&" blasted"
+		setTextLineTrigger time_to_move :check_for_move " of your fighters on planet "&$planet~planet_NAME
+		setTextLineTrigger time_to_move_2 :check_for_move_2 " of your Planetary Shields on planet "&$planet~planet_NAME
+		setTextLineTrigger time_to_move_3 :check_for_move_3 "Quasar Cannon on "&$planet~planet_NAME&" blasted"
 		pause
 		
 		:check_for_move
-		getWordPos CURRENTANSILINE $pos "[0;32m of your fighters on planet [1;33m"&$PLANET~PLANET_NAME
+		getWordPos CURRENTANSILINE $pos "[0;32m of your fighters on planet [1;33m"&$planet~planet_NAME
 
 		if ($pos <= 0)
-			setTextLineTrigger time_to_move :check_for_move " of your fighters on planet "&$PLANET~PLANET_NAME
+			setTextLineTrigger time_to_move :check_for_move " of your fighters on planet "&$planet~planet_NAME
 			pause
 		end
 		goto :move
 		
 		:check_for_move_2
-		getWordPos CURRENTANSILINE $pos "[0;32m of your Planetary Shields on planet [1;33m"&$PLANET~PLANET_NAME
+		getWordPos CURRENTANSILINE $pos "[0;32m of your Planetary Shields on planet [1;33m"&$planet~planet_NAME
 		
 		if ($pos <= 0)
-			setTextLineTrigger time_to_move_2 :check_for_move_2 " of your Planetary Shields on planet "&$PLANET~PLANET_NAME
+			setTextLineTrigger time_to_move_2 :check_for_move_2 " of your Planetary Shields on planet "&$planet~planet_NAME
 			pause
 		end
 		goto :move
@@ -133,7 +124,7 @@
 		getWordPos CURRENTANSILINE $pos "[0;32m points (atmos)"
 		
 		if ($pos <= 0)
-			setTextLineTrigger time_to_move_3 :check_for_move_3 "Quasar Cannon on "&$PLANET~PLANET_NAME&" blasted"
+			setTextLineTrigger time_to_move_3 :check_for_move_3 "Quasar Cannon on "&$planet~planet_NAME&" blasted"
 			pause
 		end
 		goto :move
@@ -145,22 +136,22 @@
 			killtrigger time_to_move_2
 			killtrigger time_to_move_3
 			
-			send "p"&$move_sector&"*y ny q q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $PLANET~PLANET "*  m  *** "
-			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $PLANET~PLANET "*  m  *** "
-			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $PLANET~PLANET "*  m  *** "
-			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $PLANET~PLANET "*  m  *** "
-			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $PLANET~PLANET "*  m  *** "
-			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $PLANET~PLANET "*  m  *** "
-			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $PLANET~PLANET "*  m  *** "
-			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $PLANET~PLANET "*  m  *** "
-			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $PLANET~PLANET "*  m  *** "
-			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $PLANET~PLANET "*  m  *** "
-			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $PLANET~PLANET "*  m  *** "
-			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $PLANET~PLANET "*  m  *** "
+			send "p"&$move_sector&"*y ny q q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
+			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
+			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
+			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
+			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
+			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
+			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
+			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
+			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
+			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
+			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
+			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
 			send "c s* @"
 			waitOn "Average Interval Lag:"
 			
-			setVar $SWITCHBOARD~message "Trip wire tripped (moved to sector "&$move_sector&") on planet "&$PLANET~PLANET_NAME&".  Kill mode commencing.*"
+			setVar $SWITCHBOARD~message "Trip wire tripped (moved to sector "&$move_sector&") on planet "&$planet~planet_NAME&".  Kill mode commencing.*"
 			gosub :SWITCHBOARD~switchboard
 
 			setVar $PLAYER~doubletap TRUE
@@ -201,35 +192,35 @@
 		end
 
 		
-		setTextLineTrigger time_to_blow :check " invaded and captured "&$PLANET~PLANET_NAME
-		setTextLineTrigger time_to_blow_2 :check_for_blow " of your fighters on planet "&$PLANET~PLANET_NAME
-		setTextLineTrigger time_to_blow_3 :check_for_blow_2 " of your Planetary Shields on planet "&$PLANET~PLANET_NAME
-		setTextLineTrigger time_to_blow_4 :check_for_blow_3 "Quasar Cannon on "&$PLANET~PLANET_NAME&" blasted"
+		setTextLineTrigger time_to_blow :check " invaded and captured "&$planet~planet_NAME
+		setTextLineTrigger time_to_blow_2 :check_for_blow " of your fighters on planet "&$planet~planet_NAME
+		setTextLineTrigger time_to_blow_3 :check_for_blow_2 " of your Planetary Shields on planet "&$planet~planet_NAME
+		setTextLineTrigger time_to_blow_4 :check_for_blow_3 "Quasar Cannon on "&$planet~planet_NAME&" blasted"
 		pause
 
 		:check
-		getWordPos CURRENTANSILINE $pos "[0;32m invaded and captured [1;33m"&$PLANET~PLANET_NAME
+		getWordPos CURRENTANSILINE $pos "[0;32m invaded and captured [1;33m"&$planet~planet_NAME
 
 		if ($pos <= 0)
-			setTextLineTrigger time_to_blow :check " invaded and captured "&$PLANET~PLANET_NAME
+			setTextLineTrigger time_to_blow :check " invaded and captured "&$planet~planet_NAME
 			pause
 		end
 		goto :kaboom
 	
 		:check_for_blow
-		getWordPos CURRENTANSILINE $pos "[0;32m of your fighters on planet [1;33m"&$PLANET~PLANET_NAME
+		getWordPos CURRENTANSILINE $pos "[0;32m of your fighters on planet [1;33m"&$planet~planet_NAME
 
 		if ($pos <= 0)
-			setTextLineTrigger time_to_blow_2 :check_for_blow_2 " of your fighters on planet "&$PLANET~PLANET_NAME
+			setTextLineTrigger time_to_blow_2 :check_for_blow_2 " of your fighters on planet "&$planet~planet_NAME
 			pause
 		end
 		goto :kaboom
 		
 		:check_for_blow_2
-		getWordPos CURRENTANSILINE $pos "[0;32m of your Planetary Shields on planet [1;33m"&$PLANET~PLANET_NAME
+		getWordPos CURRENTANSILINE $pos "[0;32m of your Planetary Shields on planet [1;33m"&$planet~planet_NAME
 		
 		if ($pos <= 0)
-			setTextLineTrigger time_to_blow_3 :check_for_blow_3 " of your Planetary Shields on planet "&$PLANET~PLANET_NAME
+			setTextLineTrigger time_to_blow_3 :check_for_blow_3 " of your Planetary Shields on planet "&$planet~planet_NAME
 			pause
 		end
 		goto :kaboom
@@ -238,7 +229,7 @@
 		getWordPos CURRENTANSILINE $pos "[0;32m points (atmos)"
 		
 		if ($pos <= 0)
-			setTextLineTrigger time_to_blow_4 :check_for_blow_4 "Quasar Cannon on "&$PLANET~PLANET_NAME&" blasted"
+			setTextLineTrigger time_to_blow_4 :check_for_blow_4 "Quasar Cannon on "&$planet~planet_NAME&" blasted"
 			pause
 		end
 		goto :kaboom
@@ -261,12 +252,15 @@
 halt		
 	
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-include "source\bot_includes\combat"
-
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\fastattack\combat"

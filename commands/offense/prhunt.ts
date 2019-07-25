@@ -47,7 +47,7 @@ setVar $sectors SECTORS
 gosub :combat~init 
 
 loadVar $player~surroundFigs
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "PRHunt - Port Report Hunter Starting"
 gosub :BOT~banner
@@ -196,10 +196,10 @@ else
 		if ($startingLocation = "Command")
 			setVar $attackMethod "t"
 			setVar $minOre 120
-			if ($player~TOTAL_HOLDS < $minOre)
-				setVar $minOre $player~TOTAL_HOLDS
+			if ($player~total_holds < $minOre)
+				setVar $minOre $player~total_holds
 			end
-			if ($player~ORE_HOLDS < $minOre)
+			if ($player~ore_holds < $minOre)
 				setVar $SWITCHBOARD~message "We need ore!*"
 				gosub :SWITCHBOARD~switchboard
 				halt
@@ -220,7 +220,7 @@ else
 			
 			if ($fotonKill = 1)
 				setVar $targeting~PLANET $planet~planet
-				gosub :targeting~initialize_targeting
+				gosub :targeting~initializetargeting
 				send "qmnt*c"
 			end
 			
@@ -652,9 +652,9 @@ halt
 					gosub :grid~surround
 					send "l" $currentPlanet "*c"
 					waitfor "<Enter Citadel>"
-					gosub :targeting~scanit_cit_kill
+					gosub :targeting~scanitcitkill
 				else
-					gosub :targeting~scanit_cit_kill
+					gosub :targeting~scanitcitkill
 				end
 				
 				send "p" $homeSector "*y"
@@ -1302,14 +1302,15 @@ return
 return
 
 
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\combat"
+include "source\module_includes\bot\loadvars\bot"
+include "source\bot_includes\combat\init\combat"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\ship\loadshipinfo\ship"
+include "source\bot_includes\ship\getshipcapstats\ship"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-include "source\bot_includes\targeting"
-include "source\bot_includes\grid"
-
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\targeting\initializetargeting\targeting"
+include "source\bot_includes\grid\surround\grid"
+include "source\bot_includes\targeting\scanitcitkill\targeting"

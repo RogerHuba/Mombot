@@ -6,7 +6,7 @@
 	setVar $BOT~help[4]  $BOT~tab&"- {"&#34&"player name"&#34&"}   = Player to target, name must be"
 	setVar $BOT~help[5]  $BOT~tab&"                                  surrounded by double quotes"
 	setVar $BOT~help[6]  $BOT~tab&"- {corp#}           = Corporation number to target"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Citadel Capper"
 	gosub :BOT~banner
@@ -42,7 +42,7 @@
 		else
 			getWordPos $bot~parm2 $pos #34
 			if ($pos > 0)
-				setVar $bot~user_command_line $bot~user_command_line&" "
+				setvar $bot~user_command_line $bot~user_command_line&" "
 				getText $bot~user_command_line $player~target " "&#34 #34&" "
 				if ($player~target <> "")
 					setVar $targetingPerson TRUE
@@ -144,7 +144,7 @@
 	gosub :sector~getSectorData
 	goSub :combat~fastCapture
 	if ($player~isFound)
-		send "l "&$PLANET~PLANET&"* m * * * c "
+		send "l "&$planet~planet&"* m * * * c "
 		gosub :player~quikstats
 		goto :checkForCappingVictimsFromCitadel
 	end
@@ -154,12 +154,15 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-include "source\bot_includes\combat"
-
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\ship\loadshipinfo\ship"
+include "source\bot_includes\ship\getshipcapstats\ship"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastcapture\combat"

@@ -8,7 +8,7 @@
 	setVar $BOT~help[5]   $BOT~tab&"      "
 	setVar $BOT~help[6]   $BOT~tab&"    - From Citadel prompt grabs fighters from planet"
 	setVar $BOT~help[7]   $BOT~tab&"    - From Command prompt grabs fighters from the sector "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Adjacent Fig Clear"
 	gosub :BOT~banner
@@ -120,7 +120,7 @@
 		else
 			if ($startingLocation = "Citadel")
 				send "l j" & #8 & $planet~planet & "*  *  "
-				gosub :player~current_prompt
+				gosub  :player~currentPrompt
 				if ($player~current_prompt = "Planet")
 					send "m* * *"
 				else
@@ -147,9 +147,11 @@
 # ======================     END ADJACENT FIGHTER CLEAR (FIGCLEAR) SUBROUTINES     ==========================
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\player\currentprompt\player"

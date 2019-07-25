@@ -6,7 +6,7 @@
 	setVar $BOT~help[4] $BOT~tab&"      "
 	setVar $BOT~help[5] $BOT~tab&"      pel [Sector] [PlanetNumber]"
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
     gosub :INVADER~check_invade_macro_params
@@ -16,11 +16,6 @@
 halt
 
 # includes:
-include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\module_includes\prompt"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\invader"
-include "source\module_includes\bot"
-

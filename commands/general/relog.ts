@@ -6,7 +6,7 @@
 	setvar $bot~command "relog"	
 	setVar $BOT~help[1] $BOT~tab&"relog"
 	setVar $BOT~help[2] $BOT~tab&"  - attempt to log the bot back into the game"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
     :relog_attempt
@@ -62,13 +62,13 @@
             if ($PLAYER~CURRENT_PROMPT = "Planet")
                 send "*"
                 gosub :PLANET~getPlanetInfo
-                if ($PLANET~CITADEL > 0)
+                if ($planet~CITADEL > 0)
                     send "c "
-                    setvar $switchboard~message "In citadel, planet "&$PLANET~PLANET&".*"
+                    setvar $switchboard~message "In citadel, planet "&$planet~planet&".*"
                     gosub :switchboard~switchboard
                     halt
                 else
-                    setvar $switchboard~message "On planet "&$PLANET~PLANET&".*"
+                    setvar $switchboard~message "On planet "&$planet~planet&".*"
                     gosub :switchboard~switchboard
                     halt
                 end
@@ -77,8 +77,8 @@
 				setvar $switchboard~message $relog_message
 				gosub :switchboard~switchboard
 			end
-            loadVar $PLANET~PLANET
-            if (($PLANET~PLANET <> 0) AND ($PLAYER~CURRENT_SECTOR <> 1) AND ($PLAYER~CURRENT_SECTOR <> $MAP~stardock))
+            loadVar $planet~planet
+            if (($planet~planet <> 0) AND ($PLAYER~CURRENT_SECTOR <> 1) AND ($PLAYER~CURRENT_SECTOR <> $MAP~stardock))
                 gosub :planet~landingsub
             end
     halt
@@ -152,9 +152,9 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"

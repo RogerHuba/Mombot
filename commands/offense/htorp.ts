@@ -3,7 +3,7 @@
 		
 	setVar $BOT~help[1] $BOT~tab&"htorp "
 	setVar $BOT~help[2] $BOT~tab&"  - Holoscans and then photons if enemy in adjacent sector."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 #===============================START HTORP (HTORP) =================================
@@ -46,7 +46,7 @@
 		setVar $adj_sec SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i]
 		if (SECTOR.TRADERCOUNT[$ADJ_SEC] > 0)
 			setVar $targetInSector FALSE
-			setVar $corpMemberInSector FALSE
+			setVar $player~corpMemberInSector FALSE
 			setVar $j 1
 			while (SECTOR.TRADERS[$ADJ_SEC][$j] <> 0)
 				setVar $tempTarget SECTOR.TRADERS[$ADJ_SEC][$j]
@@ -58,12 +58,12 @@
 						setVar $targetInSector TRUE
 					end
 					if ($targetCorp = $PLAYER~CORP)
-						setVar $corpMemberInSector TRUE
+						setVar $player~corpMemberInSector TRUE
 					end
 				end
 				add $j 1
 			end
-			if (($targetInSector = TRUE) AND ($corpMemberInSector = FALSE))
+			if (($targetInSector = TRUE) AND ($player~corpMemberInSector = FALSE))
 				send "c p y " $ADJ_SEC "* *q"
 				setvar $switchboard~message "Photon fired into sector " & $ADJ_SEC & "!*"
 				gosub :switchboard~switchboard
@@ -88,11 +88,8 @@ halt
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-
+include "source\bot_includes\planet\getplanetinfo\planet"

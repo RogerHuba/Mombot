@@ -6,7 +6,7 @@
 	setVar $BOT~help[4] $BOT~tab&"          [drop] - Will drop your current corp"
 	setVar $BOT~help[5] $BOT~tab&"          [join] plus [corp #] plus [password] - Will attempt to join corp"
 	setVar $BOT~help[6] $BOT~tab&"          [ss] plus [subspace #] - will change subspace"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Corp"
 	gosub :BOT~banner

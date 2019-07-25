@@ -13,7 +13,7 @@
 	
 	setVar $BOT~help[1] $BOT~tab&"help - displays help files for commands "
 	setVar $BOT~help[2] $BOT~tab&"	   "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
         if ($BOT~parm1 <> 0)
@@ -31,7 +31,7 @@
             fileExists $doesExist "scripts\mombot\help\"&$BOT~parm1&".txt"
             if ($doesExist)
                 readToArray "scripts\mombot\help\"&$BOT~parm1&".txt" $bot~help
-                gosub :bot~display_help
+                gosub :bot~displayhelp
 
             else
                 setVar $SWITCHBOARD~message "No help file available for "&$BOT~parm1&".*"
@@ -273,11 +273,9 @@ return
 
 
 # includes:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\displayhelp\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\bot\menus"
-

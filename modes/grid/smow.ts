@@ -1,8 +1,8 @@
-    loadVar $bot_name
-    loadVar $user_command_line
-    loadVar $parm1
-    loadVar $parm2
-    loadVar $parm3
+    loadVar $switchboard~bot_name
+    loadVar $bot~user_command_line
+    loadVar $bot~parm1
+    loadVar $bot~parm2
+    loadVar $bot~parm3
     loadvar $self_command
     loadVar $stardock
     loadVar $PLAYER~unlimitedGame        
@@ -18,15 +18,15 @@
         send "'{" $SWITCHBOARD~bot_name "} - Safe Mow can only be run when you have a long range scanner.*"
             goto :wait_for_command
     end
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
+    gosub :bot~checkStartingPrompt
     if ($PLAYER~startingLocation = "Command")
         gosub :SHIP~getShipStats
     elseif ($SHIP~SHIP_MAX_ATTACK <= 0)
         setVar $SHIP~SHIP_MAX_ATTACK 99991111
     end
-    setVar $PLAYER~destination $parm1
+    setVar $PLAYER~destination $bot~parm1
     isNumber $number $PLAYER~destination
     if ($number <> 1)
         send "'{" $SWITCHBOARD~bot_name "} - Sector entered is not a number, cannot mow!*"
@@ -35,19 +35,19 @@
         send "'{" $SWITCHBOARD~bot_name "} - Sector entered is not valid, cannot mow!*"
         goto :wait_for_command
     end
-    if ($parm2 = "p")
+    if ($bot~parm2 = "p")
         setVar $are_we_docking TRUE
     else
-        if ($parm3 = "p")
+        if ($bot~parm3 = "p")
             setVar $are_we_docking TRUE
         else
             setVar $are_we_docking FALSE
         end
     end
-    setVar $figsToDrop $parm2
+    setVar $figsToDrop $bot~parm2
     isNumber $number $figsToDrop
     if ($number <> 1)
-        if ($parm2 <> "p")
+        if ($bot~parm2 <> "p")
             send "'{" $SWITCHBOARD~bot_name "} - Fighters to drop entered is not a number, cannot mow!*"
             goto :wait_for_command
         end
@@ -59,7 +59,7 @@
     if ($SHIP~SHIP_MAX_ATTACK > $PLAYER~FIGHTERS)
         setVar $SHIP~SHIP_MAX_ATTACK 9999
     end
-    gosub :tactics~getCourse
+    gosub :player~getCourse
     if ($PLAYER~courseLength <= 0)
         halt
     end
@@ -92,11 +92,11 @@
                     end    
                     setVar $minesSafe ((SECTOR.MINES.QUANTITY[$nextSafeSector] <= 0) OR (((SECTOR.MINES.OWNER[$nextSafeSector] = "yours") OR (SECTOR.MINES.OWNER[$nextSafeSector] = "belong to your Corp"))))
                     setVar $figsSafe  ((SECTOR.FIGS.QUANTITY[$nextSafeSector] <= 0) OR (((SECTOR.FIGS.OWNER[$nextSafeSector] = "yours") OR (SECTOR.FIGS.OWNER[$nextSafeSector] = "belong to your Corp"))))
-                    setVar $planetSafe ((SECTOR.PLANETCOUNT[$nextSafeSector] <= 0) OR (($nextSafeSector = $MAP~stardock) OR ($nextSafeSector <= 10)))
+                    setVar $planet~planetSafe ((SECTOR.PLANETCOUNT[$nextSafeSector] <= 0) OR (($nextSafeSector = $MAP~stardock) OR ($nextSafeSector <= 10)))
                     setVar $navHazSafe (SECTOR.NAVHAZ[$nextSafeSector] <= 0)
-                    setVar $limpetsSafe (SECTOR.ANOMALY[$nextSafeSector] = FALSE) OR ((((SECTOR.LIMPETS.OWNER[$nextSafeSector] = "yours") OR (SECTOR.LIMPETS.OWNER[$nextSafeSector] = "belong to your Corp"))))
+                    setVar $player~limpetsSafe (SECTOR.ANOMALY[$nextSafeSector] = FALSE) OR ((((SECTOR.LIMPETS.OWNER[$nextSafeSector] = "yours") OR (SECTOR.LIMPETS.OWNER[$nextSafeSector] = "belong to your Corp"))))
                 end
-                if ($densitySafe OR ($limpetsSafe AND $figsSafe AND $minesSafe AND $navHazSafe AND $planetSafe))
+                if ($densitySafe OR ($player~limpetsSafe AND $figsSafe AND $minesSafe AND $navHazSafe AND $planet~planetSafe))
                         send "m "&$PLAYER~mowCourse[$j]&"* "
                 else
                         send "'{" $SWITCHBOARD~bot_name "} - Cannot safely move into sector "&$nextSafeSector&"*"
@@ -134,8 +134,8 @@ halt
 return
 
 # includes:
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\module_includes\prompt"
+include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\player\getcourse\player"
+include "source\bot_includes\player\addfigtodata\player"

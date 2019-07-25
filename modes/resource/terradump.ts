@@ -1,19 +1,10 @@
 logging off
 	gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 setVar $BOT~help[1] $BOT~tab&"terradump"
 setVar $BOT~help[2] $BOT~tab&"Start in non-fed sector.  Will pull colos off terra and jettison."
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Terra Dump"
 gosub :BOT~banner
@@ -23,7 +14,7 @@ gosub :BOT~banner
 goto :Start_Up_Routines
 :colo_next
 	setVar $PLAYER~destination 1
-	gosub :tactics~getCourse
+	gosub :player~getCourse
     setVar $j 2
     setVar $result ""
     while ($j <= $PLAYER~courseLength)
@@ -39,7 +30,7 @@ goto :Start_Up_Routines
 
     setVar $PLAYER~starting_point 1
 	setVar $PLAYER~destination $PLAYER~CURRENT_SECTOR
-	gosub :tactics~getCourse
+	gosub :player~getCourse
     setVar $j 2
     setVar $result ""
     while ($j <= $PLAYER~courseLength)
@@ -66,7 +57,7 @@ goto :Start_Up_Routines
 
 			:donespeed
 				killtrigger 33
-				send "'{" $bot_name "} - Terra is empty. Colonizer shutting down.*"
+				send "'{" $switchboard~bot_name "} - Terra is empty. Colonizer shutting down.*"
 				halt
 			:morespeed
 				killtrigger 33
@@ -76,18 +67,18 @@ goto :Start_Up_Routines
 halt
 
 :Start_Up_Routines
-	loadVar $unlimitedGame
+	loadVar $player~unlimitedGame
 	loadVar $bot_turn_limit
-	loadVar $user_command_line
-	loadVar $parm1
-	loadVar $parm2
-	loadVar $parm3
-	loadVar $parm4
-	loadVar $parm5
-	loadVar $parm6
-	loadVar $parm7
-	loadVar $parm8
-	loadVar $bot_name
+	loadVar $bot~user_command_line
+	loadVar $bot~parm1
+	loadVar $bot~parm2
+	loadVar $bot~parm3
+	loadVar $bot~parm4
+	loadVar $bot~parm5
+	loadVar $bot~parm6
+	loadVar $bot~parm7
+	loadVar $bot~parm8
+	loadVar $switchboard~bot_name
 
 
 # ======================     START COLO  (COLO) SUBROUTINE    ==========================
@@ -95,7 +86,7 @@ halt
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation <> "Command")
-		send "'{" $bot_name "} - Colo must be run from Command prompt*"
+		send "'{" $switchboard~bot_name "} - Colo must be run from Command prompt*"
 		halt
 	end
 	send " jy*  "
@@ -105,11 +96,10 @@ halt
 	goto :colo_next
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\getcourse\player"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\ship\getshipstats\ship"

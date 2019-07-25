@@ -9,7 +9,7 @@
     setVar $BOT~help[6]  $BOT~tab&"    b - backdoor"
     setVar $BOT~help[7]  $BOT~tab&"    x - safe ship"
     setVar $BOT~help[8]  $BOT~tab&"   tl - turn limit"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 	getWord $BOT~user_command_line $BOT~parm1 1
 	setVar $SWITCHBOARD~message ""
@@ -47,7 +47,6 @@
 	halt
 
 # includes:
-include "source\module_includes\bot"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\map"
-include "source\module_includes\prompt"

@@ -3,14 +3,14 @@
 		
 	setVar $BOT~help[1] $BOT~tab&"Refreshes Deployed Fighter List"
 	setVar $BOT~help[2] $BOT~tab&"  - Will show difference since last command was run."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Fighter Report"
 	gosub :BOT~banner
 
 #================================ REFRESH FIGHTERS ===============================================
 :figs
-	gosub :player~current_prompt
+	gosub  :player~currentPrompt
 	setVar $startingLocation $player~current_prompt
 	if ($startingLocation = "Command")
 	        goto :start_figs
@@ -31,6 +31,7 @@
 :start_figs
 	gosub :player~turnoffansi
 	setvar $switchboard~message "Loading current fighter locations. . .*"
+	gosub :switchboard~switchboard
 	getSectorParameter 2 "FIG_COUNTR" $previousCount
 	getSectorParameter 2 "FUEL_COUNT" $previousFuelCount
 	getSectorParameter 2 "ORG_COUNT" $previousOrgCount
@@ -113,22 +114,22 @@
 	setVar $6scountformatted $outputVariable
 
 	setVar $inputVariable $1percent
-	gosub :player~formatPercentageForSpaces
+	gosub :player~formatPercentagesForSpaces
 	setVar $1percentformatted $outputVariable
 	setVar $inputVariable $2percent
-	gosub :player~formatPercentageForSpaces
+	gosub :player~formatPercentagesForSpaces
 	setVar $2percentformatted $outputVariable
 	setVar $inputVariable $3percent
-	gosub :player~formatPercentageForSpaces
+	gosub :player~formatPercentagesForSpaces
 	setVar $3percentformatted $outputVariable
 	setVar $inputVariable $4percent
-	gosub :player~formatPercentageForSpaces
+	gosub :player~formatPercentagesForSpaces
 	setVar $4percentformatted $outputVariable
 	setVar $inputVariable $5percent
-	gosub :player~formatPercentageForSpaces
+	gosub :player~formatPercentagesForSpaces
 	setVar $5percentformatted $outputVariable
 	setVar $inputVariable $6percent
-	gosub :player~formatPercentageForSpaces
+	gosub :player~formatPercentagesForSpaces
 	setVar $6percentformatted $outputVariable
 
 	setVar $figsGridded TRUE
@@ -189,7 +190,7 @@ halt
 
 	:corpCount
 		add $count 1
-		add $corpCount 1
+		add $player~corpCount 1
 		getWord CURRENTLINE $sector 1
 		getWord CURRENTLINE $type 4
 		if ($type = "Toll")
@@ -309,8 +310,14 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\currentprompt\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\player\turnoffansi\player"
+include "source\bot_includes\player\turnonansi\player"
+include "source\bot_includes\player\formatnumberforspaces\player"
+include "source\bot_includes\player\formatpercentagesforspaces\player"
+include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-

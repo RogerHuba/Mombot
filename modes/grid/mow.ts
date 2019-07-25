@@ -12,16 +12,16 @@
     setVar $BOT~help[6] $BOT~tab&"{saveme} - call saveme to be picked up at destination."
     setVar $BOT~help[7] $BOT~tab&"  {back} - twarp back to start sector after mow"
     setVar $BOT~help[8] $BOT~tab&"{hoover} - attempts to pull fighters from sectors     "
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 
 	gosub :combat~init 
 
     gosub :PLAYER~quikstats
     setVar $homeSector $PLAYER~CURRENT_SECTOR
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
+    gosub :bot~checkStartingPrompt
 
         setVar $PLAYER~destination $bot~parm1
         isNumber $number $PLAYER~destination
@@ -53,7 +53,7 @@
             setVar $SWITCHBOARD~message "Mow did not make it back to starting sector!*"
             gosub :SWITCHBOARD~switchboard
         else
-            if (($twarp_back = TRUE) and ($PLAYER~CURRENT_SECTOR = $homeSector) and ($PROMPT~startingLocation = "Citadel"))
+            if (($twarp_back = TRUE) and ($PLAYER~CURRENT_SECTOR = $homeSector) and ($bot~startingLocation = "Citadel"))
                 gosub :PLANET~landingSub
             end
             setVar $SWITCHBOARD~message "Mow completed.*"
@@ -65,13 +65,13 @@
 
 :mow
         
-        if ($PROMPT~startingLocation = "Citadel")
+        if ($bot~startingLocation = "Citadel")
             send "q"
             gosub :PLANET~getPlanetInfo
             send "t*t1* c "
         end
 
-        if ($PROMPT~startingLocation = "Command")
+        if ($bot~startingLocation = "Command")
             gosub :SHIP~getShipStats
             setVar $mow_SHIP_MAX_ATTACK $SHIP~SHIP_MAX_ATTACK
         elseif ($SHIP~SHIP_MAX_ATTACK <= 0)
@@ -100,7 +100,7 @@
         getWordPos " "&$bot~user_command_line&" " $pos "back"
         if ($pos > 0)
             setVar $twarp_back TRUE
-            if ($PLAYER~ORE_HOLDS <= 10)
+            if ($player~ore_holds <= 10)
                 send "'{" $SWITCHBOARD~bot_name "} - Need more fuel ore on your ship if you want to twarp back!*"
                 halt
             end
@@ -141,7 +141,7 @@
         if ($PLAYER~CURRENT_SECTOR <> CURRENTSECTOR)
             setVar $PLAYER~CURRENT_SECTOR 0
         end
-        gosub :tactics~getCourse
+        gosub :player~getCourse
         if ($PLAYER~courseLength <= 0)
             halt
         end
@@ -184,18 +184,18 @@
                 setVar $docking_instructions " p z s g y g q h *"
             end
             setVar $result $result & $docking_instructions
-        elseif (($mow_saveme = TRUE) AND ($PROMPT~startingLocation = "Citadel"))
+        elseif (($mow_saveme = TRUE) AND ($bot~startingLocation = "Citadel"))
             setVar $i 0
             while ($i < 8)
                 add $i 1
-                #setVar $result $result&"l j" & #8 & $PLANET~PLANET & "*  *  "
-                setVar $result $result&"l j" & #8 & $PLANET~PLANET & "*  *  j  c  *  *  "
+                #setVar $result $result&"l j" & #8 & $planet~planet & "*  *  "
+                setVar $result $result&"l j" & #8 & $planet~planet & "*  *  j  c  *  *  "
             end
         end
         send $result
         gosub :PLAYER~quikstats
         if (($PLAYER~CURRENT_PROMPT = "Command") AND ($mow_kill = TRUE))
-            setVar $PROMPT~startingLocation "Command"
+            setVar $bot~startingLocation "Command"
             goSub :SECTOR~getSectorData
             goSub :combat~fastAttack
         elseif ($PLAYER~CURRENT_PROMPT = "Planet")
@@ -203,7 +203,7 @@
             if ($mow_kill = FALSE)
                 send "s* "
             else
-                setVar $PROMPT~startingLocation "Citadel"
+                setVar $bot~startingLocation "Citadel"
                 gosub :scanit_cit_kill
             end
         elseif ($are_we_docking = FALSE)
@@ -222,14 +222,16 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\module_includes\prompt"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-include "source\bot_includes\combat"
-
+include "source\bot_includes\planet\landingsub\planet"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\player\getcourse\player"
+include "source\bot_includes\player\addfigtodata\player"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastattack\combat"

@@ -21,7 +21,7 @@
 	setVar $BOT~help[14] $BOT~tab&"     {ec} - equipment colonists"
 	setVar $BOT~help[15] $BOT~tab&"    {fig} - fighters (strip only)"
 	setVar $BOT~help[16] $BOT~tab&"  {turbo} - Does all in a macro burst"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	if ($BOT~parm1 = "strip")
 		gosub :strip~strip
@@ -34,11 +34,8 @@
 	halt
 
 #INCLUDES:
-include "source\module_includes\bot"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\strip"
 include "source\module_includes\dump"
-include "source\bot_includes\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-
-

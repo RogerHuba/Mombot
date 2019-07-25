@@ -39,7 +39,7 @@ loadvar $bot~$MCIC_FILE
 	setVar $BOT~help[16]  $BOT~tab&"    {ephag}       Default is NEG but set to use EP Haggle"
 	setVar $BOT~help[17] $BOT~tab&"    "
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Moo XMas PL - Lets bring on the festivities!"
 	gosub :BOT~banner
@@ -75,7 +75,7 @@ loadvar $bot~$MCIC_FILE
 		halt
 	end
 
-	if ($player~ORE_HOLDS < 100)
+	if ($player~ore_holds < 100)
 		setVar $SWITCHBOARD~message "MooXmas - We need ore in our holds.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -181,12 +181,12 @@ setWindowContents moo $stuff
 	#logging off
 	#reqRecording
 
-	loadVar $bot_name
-	loadVar $unlimitedGame		
+	loadVar $switchboard~bot_name
+	loadVar $player~unlimitedGame		
 	loadVar $bot_turn_limit		
-	loadVar $user_command_line	
-	loadVar $parm1			
-	loadVar $parm2			
+	loadVar $bot~user_command_line	
+	loadVar $bot~parm1			
+	loadVar $bot~parm2			
 	loadVar $dropOffensive			
 	loadVar $dropToll			
 	loadVar $surroundFigs			
@@ -205,12 +205,12 @@ setWindowContents moo $stuff
 	setVar $setVarPlanetType4 "Red Rider"
 	setVar $setVarPlanetType5 "Jack Frost"
 
-	setVar $planetToBang 0
-	setVar $planetsInSector 0
-	setVar $planets 0
-	setVar $planeti 1
-	setVar $planetsInSectorReq 99
-	setVar $planetsCreated 0
+	setVar $planet~planetToBang 0
+	setVar $planet~planetsInSector 0
+	setVar $planet~planets 0
+	setVar $planet~planeti 1
+	setVar $planet~planetsInSectorReq 99
+	setVar $planet~planetsCreated 0
 	
 	setVar $tradingMinFuel 40
 
@@ -339,7 +339,7 @@ setWindowContents moo $stuff
 	setVar $readi 1
 	setVar $lastSector 0
 	
-	setVar $planetsFound 0
+	setVar $planet~planetsFound 0
 	setVar $tempSectors 0
 	setVar $tempPlanets 0
 	setVar $tempOre 0
@@ -358,9 +358,9 @@ setWindowContents moo $stuff
 		getWord CURRENTLINE $sector 1
 		getWord CURRENTLINE $lastP 2
 		stripText $lastP "#"
-		cutText CURRENTLINE $planetName 50 16 
-		getWord $planetName $p1 1
-		getWord $planetName $p2 2
+		cutText CURRENTLINE $planet~planetName 50 16 
+		getWord $planet~planetName $p1 1
+		getWord $planet~planetName $p2 2
 		setVar $p $p1 & " " & $p2
 
 		if ($p = $setVarPlanetType1)
@@ -376,7 +376,7 @@ setWindowContents moo $stuff
 		else
 			setVar $targetP 0
 		end
-		add  $planetsFound 1
+		add  $planet~planetsFound 1
 
 		goto :pread
 	:pread2
@@ -480,7 +480,7 @@ setWindowContents moo $stuff
 		setVar $ftrOk 0
 		
 		setVar $sector $sectors[$loopi]
-		setVar $planet $startPlanets[$loopi]
+		setVar $planet~planet $startPlanets[$loopi]
 		if (PORT.BUYFUEL[$sector] = 1)
 			if (PORT.FUEL[$sector] > $minTrade) and (PORT.FUEL[$sector] < $maxTrade)
 				if (PORT.PERCENTFUEL[$sector] > $minTradePer)
@@ -497,7 +497,7 @@ setWindowContents moo $stuff
 		if (($ftrOk = 1) and ($portOk = 1) and ($startEquip[$loopi] > $minTrade))
 			setVar $sectorsOk[$sectorsOki] $sector
 			
-			setVar $sectorsPlanetsOki[$sectorsOki] $planet
+			setVar $sectorsPlanetsOki[$sectorsOki] $planet~planet
 			setVar $sectorsPlanetsOke[$sectorsOki] $startEquip[$loopi]
 			
 			add $sectorsOki 1
@@ -564,9 +564,9 @@ setWindowContents moo $stuff
 setVar $loopi 1
     while ($loopi < $sectorsOki)
 	gosub :player~quikstats
-	setvar $turnsNow $player~turns
+	setvar $player~turnsNow $player~turns
 
-	if ($turnsNow < $halt_turns)
+	if ($player~turnsNow < $halt_turns)
 		setvar $switchboard~message "Turn Limit Reached*"
 		gosub :switchboard~switchboard
 		gosub :subreport
@@ -620,13 +620,13 @@ halt
 	
 		gosub :reGetPlanetList
 	
-		setVar $planetsToBlow 0
+		setVar $planet~planetsToBlow 0
 		setVar $figsRequired 0
 		setVar $i 1
 
-		while ($i < $planetsInSector)
-			add $planetsToBlow 1
-			add $figsRequired (100 * $planetsToBlow)
+		while ($i < $planet~planetsInSector)
+			add $planet~planetsToBlow 1
+			add $figsRequired (100 * $planet~planetsToBlow)
 			add $i 1
 		end
 
@@ -644,8 +644,8 @@ halt
 		end
 
 		setVar $i 1
-		while ($i <= $planetsInSector)
-			setVar $shipBlastPlanet $planets[$i]
+		while ($i <= $planet~planetsInSector)
+			setVar $shipBlastPlanet $planet~planets[$i]
 			gosub :blastPlanet
 			add $i 1
 		end
@@ -741,9 +741,9 @@ return
 	setVar $restockMakePlanet 0
 	if ($useGuard = true)
 		
-		setVar $planetFound 0
+		setVar $planet~planetFound 0
 		goSub :checkCorpPlanet
-		if ($planetFound = 0)
+		if ($planet~planetFound = 0)
 			setVar $restockMakePlanet 1
 		else
 			setVar $restockMakePlanet 0
@@ -754,9 +754,9 @@ return
 
 	setVar $doDockCashDump FALSE
 	if ($PLAYER~CREDITS > 1100000)
-		setVar $corpNotAtDock TRUE
+		setVar $player~corpNotAtDock TRUE
 		gosub :checkCorpAtDock
-		if ($corpNotAtDock = FALSE)
+		if ($player~corpNotAtDock = FALSE)
 			setVar $doDockCashDump TRUE
 		end
 
@@ -773,14 +773,14 @@ return
 		pause
 		:shipCheckBuyAtomics
 			killalltriggers
-			getWord CURRENTLINE $AtomicssAvail 9
-			stripText $AtomicssAvail ")"
-			if ($AtomicssAvail = 0)
+			getWord CURRENTLINE $player~atomicssAvail 9
+			stripText $player~atomicssAvail ")"
+			if ($player~atomicssAvail = 0)
 				echo "*### we have a problem, no Atomics purchasable waiting for next"
 				#waitfor "next@"
 				send "*"
 			else
-				send  "*a" $AtomicssAvail "*"
+				send  "*a" $player~atomicssAvail "*"
 			end
 			
 		if ($setGridMines > 0)
@@ -819,14 +819,14 @@ return
 			killalltriggers
 			getWord CURRENTLINE $shieldPrice 5
 			getWord CURRENTLINE $canBuy 9
-			setVar $shieldsToBuy $player~credits
-			subtract $shieldsToBuy 250000
-			divide $shieldsToBuy $shieldPrice
+			setVar $player~shieldsToBuy $player~credits
+			subtract $player~shieldsToBuy 250000
+			divide $player~shieldsToBuy $shieldPrice
 			
-			if ($shieldsToBuy > $canBuy)
-				setVar $shieldsToBuy $canBuy
+			if ($player~shieldsToBuy > $canBuy)
+				setVar $player~shieldsToBuy $canBuy
 			end
-			send "c" $shieldsToBuy "*"
+			send "c" $player~shieldsToBuy "*"
 			
 	if ($doDockCashDump = TRUE)
 		goSUb :player~quikstats
@@ -886,7 +886,7 @@ return
 				striptext $sector " "
 				echo "#" $sector "#*"
 				if ($sector = $stardock)
-					setVar $corpNotAtDock FALSE
+					setVar $player~corpNotAtDock FALSE
 				end
 			end
 			goto :CorpAtDockLookAgain
@@ -914,7 +914,7 @@ return
 			killAllTriggers
 			getWord CURRENTLINE $checkPlanet 1
 			if ($checkPlanet = $stardock)
-				setVar $planetFound 1
+				setVar $planet~planetFound 1
 				return
 			end
 			goto :checkCorpPlanetsList
@@ -928,9 +928,9 @@ return
 :reGetPlanetList
 
 
-	setVar $planetsInSector 0
-	setVar $planets 0
-	setVar $planeti 1
+	setVar $planet~planetsInSector 0
+	setVar $planet~planets 0
+	setVar $planet~planeti 1
 	send "lq*"
 	setVar $startLogging 0
 	:reCheckPlanetsT
@@ -960,9 +960,9 @@ return
 				stripText $cPlanetNum ">"
 				stripText $cPlanetNum "<"
 			end
-			add $planetsInSector 1
-			setVar $planets[$planeti] $cPlanetNum
-			add $planeti 1
+			add $planet~planetsInSector 1
+			setVar $planet~planets[$planet~planeti] $cPlanetNum
+			add $planet~planeti 1
 		end
 		goto :reCheckPlanetsT
 
@@ -1117,7 +1117,7 @@ return
 	saveVar $_ck_pnego_current_sector 
 
 if ($unlimited = 1)
-	setVar $TURNS 999
+	setVar $player~turns 999
 end
 	setvar $_ck_pnego_turns $player~TURNS
 	saveVar $_ck_pnego_turns 
@@ -1147,7 +1147,7 @@ end
 		setVar $newPlanetMade 0
 		goSub :reCheckPlanets
 		if ($newPlanetMade = 0)
-			setVar $tradePlanet $planets[$planetsInSectorReq]
+			setVar $tradePlanet $planet~planets[$planet~planetsInSectorReq]
 		else
 			setVar $tradePlanet $newPlanetMade
 		end
@@ -1155,7 +1155,7 @@ end
 	:tradePlanetLand2
 		killAllTriggers
 	Waitfor "-------  ---------  ---------  ---------  ---------  ---------  ---------"
-	if ($player~ORE_HOLDS < $minOre)
+	if ($player~ore_holds < $minOre)
 		send "tnt1*"
 		waitfor "free cargo holds."
 		send "d"
@@ -1235,8 +1235,8 @@ echo "*################*##############"
 			
 		gosub :player~quikstats
 		stripText $player~credits ","
-		setVar $creditsNow $player~credits
-		if ($creditsNow = $precredits)
+		setVar $player~creditsNow $player~credits
+		if ($player~creditsNow = $precredits)
 			echo "*################*##############"
 			echo "*#### NEG FAILED, SELLING AT COST!"
 			echo "*###############################"
@@ -1247,10 +1247,10 @@ echo "*################*##############"
 			waitfor "Land on which planet"
 			gosub :player~quikstats
 			stripText $player~credits ","
-			setVar $creditsNow $player~credits
+			setVar $player~creditsNow $player~credits
 		end
-		subtract $creditsNow $_ck_pnego_credits
-		add $stat_dollarsgross $creditsNow
+		subtract $player~creditsNow $_ck_pnego_credits
+		add $stat_dollarsgross $player~creditsNow
 		
 		send "q"
 
@@ -1264,12 +1264,12 @@ return
 	
 	
 	if ($unlimited = 1)
-		setVar $TURNS 999
+		setVar $player~turns 999
 	end
 
 
 	
-	if ($player~ORE_HOLDS < $minOre)
+	if ($player~ore_holds < $minOre)
 		send "l" $tradePlanet "*"
 		send "tnt1*"
 		waitfor "free cargo holds."
@@ -1294,7 +1294,7 @@ return
 	pause
 	:epsellwait2
 		killalltriggers
-		send "'{" $bot_name "} - Ep Haggle timed out on Haggle*"
+		send "'{" $switchboard~bot_name "} - Ep Haggle timed out on Haggle*"
 		
 		send "*"
 	
@@ -1304,8 +1304,8 @@ return
 		
 	gosub :player~quikstats
 	stripText $player~credits ","
-	setVar $creditsNow $player~credits
-	if ($creditsNow = $precredits)
+	setVar $player~creditsNow $player~credits
+	if ($player~creditsNow = $precredits)
 		echo "*################*##############"
 		echo "*#### NEG FAILED, SELLING AT COST!"
 		echo "*###############################"
@@ -1316,19 +1316,18 @@ return
 		waitfor "Your offer "
 		gosub :player~quikstats
 		stripText $player~credits ","
-		setVar $creditsNow $player~credits
+		setVar $player~creditsNow $player~credits
 	end
-	subtract $creditsNow $_ck_pnego_credits
-	add $stat_dollarsgross $creditsNow
+	subtract $player~creditsNow $_ck_pnego_credits
+	add $stat_dollarsgross $player~creditsNow
 	
 	
 
 return
 
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\planet\planetneg\planet"

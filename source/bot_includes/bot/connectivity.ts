@@ -5,7 +5,7 @@
 		add $alive_count 1
 	if ($alive_count >= ($BOT~echoInterval * 2))
 		setVar $alive_count 0
-		gosub :PLAYER~current_prompt
+		gosub  :player~currentPrompt
 		getSectorParameter 2 "FIG_COUNT" $BOT~figCount
 		echo ANSI_14 "*-= Time: " ANSI_15 TIME ANSI_14 " Fig Grid: " ANSI_15 $BOT~figCount ANSI_14 " =-*" ANSI_7
 		echo CURRENTANSILINE
@@ -34,6 +34,7 @@
 	end
 	setvar $last_prompt_seen CURRENTLINE
 	send #27
+	killtrigger keepalive
 	setDelayTrigger     keepalive               :keepalive           30000
 	pause
 #=================================== END KEEP ALIVE ==========================================

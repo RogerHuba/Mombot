@@ -19,7 +19,7 @@
 	setVar $BOT~help[11] $BOT~tab&"     {buyfuel}   Buys all the fuel in fuel selling ports "
 	setVar $BOT~help[12] $BOT~tab&"                 on route  "
 	setVar $BOT~help[13] $BOT~tab&"        {half}   sell half of port (neg only for now) "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Merchant"
 	gosub :BOT~banner
@@ -33,12 +33,12 @@
      	gosub :switchboard~switchboard
 		halt
 	end
-	setvar $parameter ""
+	setvar $bot~parmameter ""
 	setVar $minimumFuel $bot~parm1
 	isNumber $number $minimumFuel
 	if ($number <> true)
-		setvar $parameter $bot~parm1
-		uppercase $parameter
+		setvar $bot~parmameter $bot~parm1
+		uppercase $bot~parmameter
 		setVar $minimumFuel $bot~parm2
 		isNumber $number $minimumFuel
 		if ($number <> true)
@@ -53,9 +53,9 @@
 	
 	getWordPos $bot~user_command_line $pos "hold"
 	if ($pos > 0)
-		setVar $planetNegotiate FALSE
+		setVar $planet~planetNegotiate FALSE
 	else
-		setVar $planetNegotiate TRUE
+		setVar $planet~planetNegotiate TRUE
 	end
 	getWordPos $bot~user_command_line $pos "half"
 	if ($pos > 0)
@@ -152,10 +152,10 @@
 		while ($bottom <= $top)
 			# Now, pull out the next sector in the que, and make it our focus
 			setVar $focus $que[$bottom]
-			if ($parameter <> "")
-				getsectorparameter $focus $parameter $isGoodSector
+			if ($bot~parmameter <> "")
+				getsectorparameter $focus $bot~parmameter $isGoodSector
 			end
-			if (($parameter <> "") and ($isGoodSector <> true))
+			if (($bot~parmameter <> "") and ($isGoodSector <> true))
 				goto :notit
 			end
 			if (($docim = FALSE) AND ($skipcim = FALSE))
@@ -212,7 +212,7 @@
 				if (PORT.EXISTS[$NearFig] <> true)
 					goto :tryAgain2
 				end
-				if ($planetNegotiate = TRUE)
+				if ($planet~planetNegotiate = TRUE)
 					killAllTriggers
 					setVar $planet~_ck_pnego_fueltosell "-1"
 					if ($sellingOrg)
@@ -255,8 +255,8 @@
 					if (($buyFuel = TRUE) AND (PORT.BUYFUEL[$NearFig] = FALSE))
 						setVar $PLAYER~buyobject "f"
 						setVar $PLAYER~buytype "s"
-						setVar $PLAYER~buydownRoundsFromParam $turnsToEmpty
-						gosub :tactics~buy
+						setVar $PLAYER~buydownRoundsFromParam $player~turnsToEmpty
+						gosub :player~buy
 						gosub :PLAYER~quikstats
 					end
 				else
@@ -277,17 +277,17 @@
 					
 					waitOn "<Computer deactivated>"
 					if (($planet~planet_fuel_max-$planet~planet_fuel) < $totalPortFuel)
-						setVar $turnsToEmptyFuel ((($planet~planet_fuel_max-$planet~planet_fuel)/$player~total_holds-1)
+						setVar $player~turnsToEmptyFuel ((($planet~planet_fuel_max-$planet~planet_fuel)/$player~total_holds-1)
 					else
-						setVar $turnsToEmptyFuel (($totalPortFuel/$player~total_holds)-1)
+						setVar $player~turnsToEmptyFuel (($totalPortFuel/$player~total_holds)-1)
 					end
 					if ((PORT.BUYORG[$NearFig] = TRUE) AND ($sellingOrg))
 						if ($planet~planet_organics < $totalPortOrganics)
-							setVar $turnsSellingProduct (($planet~planet_organics/$player~total_holds)-1)
+							setVar $player~turnsSellingProduct (($planet~planet_organics/$player~total_holds)-1)
 						else
-							setVar $turnsSellingProduct (($totalPortOrganics/$player~total_holds))
+							setVar $player~turnsSellingProduct (($totalPortOrganics/$player~total_holds))
 						end
-						if (($player~unlimitedGame = FALSE) AND (($player~TURNS - $turnsSellingProduct) <= $bot~bot_turn_limit))
+						if (($player~unlimitedGame = FALSE) AND (($player~TURNS - $player~turnsSellingProduct) <= $bot~bot_turn_limit))
 							setvar $switchboard~message "Turns too low to continue.*"
 							gosub :switchboard~switchboard
 							send "l "&$planet~planet&"* c "
@@ -296,62 +296,62 @@
 						if ((PORT.BUYFUEL[$NearFig] = FALSE) AND ($buyFuel = TRUE))
 							send "l "&$planet~planet&"* t n l 1* t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* q jy "
 							gosub :player~quikstats
-							while (($turnsSellingProduct > 0) AND ($turnsToEmptyFuel > 1))
+							while (($player~turnsSellingProduct > 0) AND ($player~turnsToEmptyFuel > 1))
 									send "l " $planet~planet "*   t  *  l 1* t  *  * 2*  q P * *"
 									gosub :player~starthaggle
 									send "*"
 									gosub :player~starthaggle
 									send " 0 *  /"
 									if ($ni <> TRUE)
-										subtract $turnsSellingProduct 1
+										subtract $player~turnsSellingProduct 1
 									end
-									subtract $turnsToEmptyFuel 1
-									add $totalOrganicHolds $player~TOTAL_HOLDS
+									subtract $player~turnsToEmptyFuel 1
+									add $totalOrganicHolds $player~total_holds
 									waitOn "쿟urns"
 							end
 						end
 						send "l "&$planet~planet&"* t n l 1* t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* q jy "
 						gosub :player~quikstats	
-						while ($turnsSellingProduct > 0)
+						while ($player~turnsSellingProduct > 0)
 							send "l " $planet~planet "*  t  *  * 2*  q P * *"
 							gosub :player~starthaggle
 							send "0 * 0 *  /"
 							waitOn "쿟urns"
 							if ($ni <> TRUE)
-								subtract $turnsSellingProduct 1
+								subtract $player~turnsSellingProduct 1
 							end
 							add $totalOrganicHolds $player~total_holds
 						end
 					end
 					if ((PORT.BUYEQUIP[$NearFig] = TRUE) AND ($sellingEquip))
 						if ($planet~planet_equipment < $totalPortEquipment)
-							setVar $turnsSellingProduct (($planet~planet_equipment/$player~total_holds)-1)
+							setVar $player~turnsSellingProduct (($planet~planet_equipment/$player~total_holds)-1)
 						else
-							setVar $turnsSellingProduct (($totalPortEquipment/$player~total_holds))
+							setVar $player~turnsSellingProduct (($totalPortEquipment/$player~total_holds))
 						end
 						if ((PORT.BUYFUEL[$NearFig] = FALSE) AND ($buyFuel = TRUE))
 							send "l "&$planet~planet&"* t n l 1* t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* q jy "
-							while (($turnsSellingProduct > 0) AND ($turnsToEmptyFuel > 1))
+							while (($player~turnsSellingProduct > 0) AND ($player~turnsToEmptyFuel > 1))
 								send "l " $planet~planet "*   t  *  l 1* t  *  * 3*  q P * *"
 								gosub :player~starthaggle
 								send "*"
 								gosub :player~starthaggle
 								send " 0 *  /"
 								if ($ni <> TRUE)
-									subtract $turnsSellingProduct 1
+									subtract $player~turnsSellingProduct 1
 								end
-								subtract $turnsToEmptyFuel 1
+								subtract $player~turnsToEmptyFuel 1
 								add $totalEquipmentHolds $player~total_holds
 								waitOn "쿟urns"
 							end
 						end
 						send "l "&$planet~planet&"* t n l 1* t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* q jy "
-						while ($turnsSellingProduct > 0)
+						while ($player~turnsSellingProduct > 0)
 							send "l " $planet~planet "*  t  *  * 3*  q P * *"
 							gosub :player~starthaggle
 							send "0 * 0 *  /"
 							if ($ni <> TRUE)
-								subtract $turnsSellingProduct 1
+								subtract $player~turnsSellingProduct 1
 							end
 							add $totalEquipmentHolds $player~total_holds
 							waitOn "쿟urns"
@@ -361,7 +361,7 @@
 					
 				send "#"
 				waitOn "                            Who's Playing"
-				if ($planetNegotiate <> TRUE)
+				if ($planet~planetNegotiate <> TRUE)
 					gosub :planet~landOnPlanetEnterCitadel
 				end
 				send "cr*q"
@@ -380,12 +380,13 @@
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
-include "source\bot_includes\game"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\planetneg\planet"
+include "source\bot_includes\player\buy\player"
+include "source\bot_includes\player\starthaggle\player"
+include "source\bot_includes\planet\landonplanetentercitadel\planet"

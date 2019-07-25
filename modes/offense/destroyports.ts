@@ -1,29 +1,20 @@
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-	loadVar $BOT~bot_turn_limit
+										loadVar $BOT~bot_turn_limit
 	loadVar $PLAYER~unlimitedGame
 
 
 	setVar $BOT~help[1]  $BOT~tab&"              destroyports               "
 	setVar $BOT~help[2]  $BOT~tab&"  Destroys all ports not marked as BUBBLE sector"
 	setVar $BOT~help[3]  $BOT~tab&"       "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Port Destroyer"
 	gosub :BOT~banner
 
 
    
-	setVar $bot_name $SWITCHBOARD~bot_name
+	setVar $switchboard~bot_name $SWITCHBOARD~bot_name
 	
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
@@ -36,7 +27,7 @@
 	waitOn "Planet command (?"
 	gosub :PLANET~getPlanetInfo
 	send "c"
-	if ($PLANET~CITADEL < 4)
+	if ($planet~CITADEL < 4)
 		setVar $SWITCHBOARD~message "You must run Port Destroyer from at least a level 4 planet.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -47,7 +38,7 @@
 	waitOn "Planet command (?"
 	gosub :PLANET~getPlanetInfo
 	
-	send "qjy l "&$PLANET~planet&"* c"
+	send "qjy l "&$planet~planet&"* c"
 	send "c;q"
 	waitFor "Figs Per Attack:"
 	getWord CURRENTLINE $SHIP~maxFigAttack 5
@@ -59,7 +50,7 @@
 	setArray $checked SECTORS
 
 	setVar $isDone FALSE
-	setVar $turnsTooLow FALSE
+	setVar $player~turnsTooLow FALSE
 	:inac
 	killalltriggers
 	while ($isDone <> TRUE)
@@ -143,7 +134,7 @@
 						killtrigger 2
 						killtrigger 3
 						killtrigger 4
-						send " a y "&$SHIP~maxFigAttack&"** l "&$PLANET~planet&"* m * * * q "
+						send " a y "&$SHIP~maxFigAttack&"** l "&$planet~planet&"* m * * * q "
 						setTextTrigger 1 :keepDestroying "Incoming laser barrage from"
 						setTextTrigger 2 :doneDestroying "You destroyed the Star Port!"
 						pause
@@ -159,13 +150,13 @@
 							killtrigger 3
 							killtrigger 4
 					else
-						send "l "&$PLANET~planet&"* m** * c "
+						send "l "&$planet~planet&"* m** * c "
 						goto :donePATP
 					end
 					if ($SWITCHBOARD~message <> "")
-						send "l "&$PLANET~planet&"* m** * c s*    "
+						send "l "&$planet~planet&"* m** * c s*    "
 					else
-						send "l "&$PLANET~planet&"*  c  s*    "
+						send "l "&$planet~planet&"*  c  s*    "
 					end
 				end
 			:tryAgain
@@ -186,10 +177,9 @@
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
+include "source\bot_includes\planet\getplanetinfo\planet"

@@ -54,7 +54,7 @@ gosub :BOT~loadVars
 
 	setVar $BOT~help[13]  $BOT~tab&"      "
 	setVar $BOT~help[14]  $BOT~tab&"      Author: Lonestar"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	loadvar $game~PHOTON_COST
 
@@ -72,7 +72,7 @@ end
 # ============================== END NEWS MODULE (news) ==============================
 	setVar $News_Version "v2.0"
 	
-	setVar $UNDER_CONSTRUCTION	"    *    Feature Currently Not Implemented*     *"
+	setVar $planet~UNDER_CONSTRUCTION	"    *    Feature Currently Not Implemented*     *"
 	setVar $NEWS_HEADER			"-------------=[Lonestar's M()M Dailies News Reader " & $News_Version & "]=-------------*"
 	setVar $Universal_File_Err	"    *    Problem Reading Data File*    *    "
 	setVar $Unexpected_EOF		"** '{" & $bot~bot_name & "} - Unexpected End Of Array. Halting.*"
@@ -128,7 +128,7 @@ end
 		gosub :ANNOUNCED
 		send $annonResults & "      *"
 		gosub :CORPORATE
-		send $CorpResults & "       *"
+		send $player~corpResults & "       *"
 		gosub :FED
 		send $FedResults & "        *"
 	elseif ($News_Param1 = "foton")
@@ -144,15 +144,15 @@ end
 		gosub :PLANETS_POPPED
 		send $PoppedResults  & "    *"
 	elseif ($News_Param1 = "obits")
-		send $UNDER_CONSTRUCTION
+		send $planet~UNDER_CONSTRUCTION
 	elseif ($News_Param1 = "pods")
 		gosub :PODINGSS
 		send $PodResults & "        *"
 	elseif ($News_Param1 = "corp")
 		gosub :CORPORATE
-		send $CorpResults & "       *"
+		send $player~corpResults & "       *"
 	elseif ($News_Param1 = "invasions")
-		send $UNDER_CONSTRUCTION
+		send $planet~UNDER_CONSTRUCTION
 	elseif ($News_Param1 = "overload")
 		gosub :OVERLOAD
 		send $UMass_Results  & "    *"
@@ -600,11 +600,11 @@ end
 
 :CORPORATE
 	setVar $idx 1
-	setVar $CorpResults ""
-	setVar $Corps_NEW 0
-	setVar $CorpArraySize 50
-	setVar $CorpMemberSize 10
-	setArray $Corporations $CorpArraySize $CorpMemberSize
+	setVar $player~corpResults ""
+	setVar $player~corps_NEW 0
+	setVar $player~corpArraySize 50
+	setVar $player~corpMemberSize 10
+	setArray $player~corporations $player~corpArraySize $player~corpMemberSize
 	setVar $FiredSize 200
 	setArray $Fired $FiredSize
 	setVar $FiredCNT 0
@@ -618,15 +618,15 @@ end
 			else
             	getWordPos $currentline $pos "name of [1;33m"
 				if ($pos <> 0)
-					add $Corps_NEW 1
+					add $player~corps_NEW 1
 					setVar $i 1
 					gosub :TIME_DECODE
-					while ($i <= $CorpArraySize)
-						if ($Corporations[$i] = 0)
+					while ($i <= $player~corpArraySize)
+						if ($player~corporations[$i] = 0)
 							getText $currentline $Trader "[1;36m" "[0;32m created"
-							getText $currentline $CorpName "of [1;33m" "[0;32m."
-							setVar $Corporations[$i] $CorpName
-							setVar $Corporations[$i][1] $timeCode & " " & $Trader & " Created Corp"
+							getText $currentline $player~corpName "of [1;33m" "[0;32m."
+							setVar $player~corporations[$i] $player~corpName
+							setVar $player~corporations[$i][1] $timeCode & " " & $Trader & " Created Corp"
 							goto :Next_CorpItem
 						end
 						add $i 1
@@ -636,23 +636,23 @@ end
 
 				getWordPos $currentline $pos "[0;32m joined up with"
 				if ($pos <> 0)
-					getText $currentline $CorpName "with [1;33m" "[0;32m."
+					getText $currentline $player~corpName "with [1;33m" "[0;32m."
 					getText $currentline $Trader "[1;36m" "[0;32m joined"
 					gosub :TIME_DECODE
 					setVar $i 1
-					while ($i <= $CorpArraySize)
-						if ($CorpName = $Corporations[$i])
+					while ($i <= $player~corpArraySize)
+						if ($player~corpName = $player~corporations[$i])
 							setVar $ii 1
-							while ($ii <= $CorpMemberSize)
-								if ($Corporations[$i][$ii] = 0)
-                                	setVar $Corporations[$i][$ii] $timeCode & " " & $Trader & " joined corp"
+							while ($ii <= $player~corpMemberSize)
+								if ($player~corporations[$i][$ii] = 0)
+                                	setVar $player~corporations[$i][$ii] $timeCode & " " & $Trader & " joined corp"
 									goto :Next_CorpItem
 								end
                             	add $ii 1
 							end
-						elseif ($Corporations[$i] = 0)
-							setVar $Corporations[$i] $CorpName
-							setVar $Corporations[$i][1] $timeCode & " " & $Trader & " joined corp"
+						elseif ($player~corporations[$i] = 0)
+							setVar $player~corporations[$i] $player~corpName
+							setVar $player~corporations[$i][1] $timeCode & " " & $Trader & " joined corp"
 							goto :Next_CorpItem
 						end
 						add $i 1
@@ -662,23 +662,23 @@ end
 
 				getWordPos $currentline $pos "[0;32m tried to"
 				if ($pos <> 0)
-                	getText $currentline $CorpName "Corp: [1;33m" "[0;32m!"
+                	getText $currentline $player~corpName "Corp: [1;33m" "[0;32m!"
                 	setVar $i 1
 					gosub :TIME_DECODE
 					getText $currentline $Trader "[1;36m" "[0;32m tried"
-					while ($i <= $CorpArraySize)
-						if ($CorpName = $Corporations[$i])
+					while ($i <= $player~corpArraySize)
+						if ($player~corpName = $player~corporations[$i])
     						setVar $ii 1
-							while ($ii <= $CorpMemberSize)
-								if ($Corporations[$i][$ii] = 0)
-                                	setVar $Corporations[$i][$ii] $timeCode & " " & $Trader & " Attempted a B&E"
+							while ($ii <= $player~corpMemberSize)
+								if ($player~corporations[$i][$ii] = 0)
+                                	setVar $player~corporations[$i][$ii] $timeCode & " " & $Trader & " Attempted a B&E"
 			                        goto :Next_CorpItem
                             	end
                             	add $ii 1
                             end
-                        elseif ($Corporations[$i] = 0)
-							setVar $Corporations[$i] $CorpName
-                           	setVar $Corporations[$i][1] $timeCode & " " & $Trader & " Attempted a B&E"
+                        elseif ($player~corporations[$i] = 0)
+							setVar $player~corporations[$i] $player~corpName
+                           	setVar $player~corporations[$i][1] $timeCode & " " & $Trader & " Attempted a B&E"
 	                        goto :Next_CorpItem
 						end
 						add $i 1
@@ -688,23 +688,23 @@ end
 
 				getWordPos $currentline $pos "[0;32m disbanded Corp"
 				if ($pos <> 0)
-                	getText $currentline $CorpName "Corp [1;33m" "[0;32m."
+                	getText $currentline $player~corpName "Corp [1;33m" "[0;32m."
 					getText $currentline $Trader "[1;36m" "[0;32m disbanded"
                 	setVar $i 1
 					gosub :TIME_DECODE
-					while ($i <= $CorpArraySize)
-						if ($CorpName = $Corporations[$i])
+					while ($i <= $player~corpArraySize)
+						if ($player~corpName = $player~corporations[$i])
     						setVar $ii 1
-							while ($ii <= $CorpMemberSize)
-								if ($Corporations[$i][$ii] = 0)
-                                	setVar $Corporations[$i][$ii] $timeCode & " " & $Trader & " Disbanded Corp"
+							while ($ii <= $player~corpMemberSize)
+								if ($player~corporations[$i][$ii] = 0)
+                                	setVar $player~corporations[$i][$ii] $timeCode & " " & $Trader & " Disbanded Corp"
 			                        goto :Next_CorpItem
                             	end
                             	add $ii 1
                             end
-                        elseif ($Corporations[$i] = 0)
-							setVar $Corporations[$i] $CorpName
-                           	setVar $Corporations[$i][1] $timeCode & " " & $Trader & " Disbanded Corp"
+                        elseif ($player~corporations[$i] = 0)
+							setVar $player~corporations[$i] $player~corpName
+                           	setVar $player~corporations[$i][1] $timeCode & " " & $Trader & " Disbanded Corp"
                         	goto :Next_CorpItem
 						end
 						add $i 1
@@ -714,23 +714,23 @@ end
 
 				getWordPos $currentline $pos "[0;32m deserted"
 				if ($pos <> 0)
-					getText $currentline $CorpName "Corp [1;33m" "[0;32m."
+					getText $currentline $player~corpName "Corp [1;33m" "[0;32m."
     				getText $currentline $Trader "[1;36m" "[0;32m deserted"
 					gosub :TIME_DECODE
 					setVar $i 1
-					while ($i <=  $CorpArraySize)
-						if ($CorpName = $Corporations[$i])
+					while ($i <=  $player~corpArraySize)
+						if ($player~corpName = $player~corporations[$i])
 							setVar $ii 1
-							while ($ii <= $CorpMemberSize)
-                                if ($Corporations[$i][$ii] = 0)
-    								setVar $Corporations[$i][$ii] $timeCode & " " & $Trader & " Deserted Corp"
+							while ($ii <= $player~corpMemberSize)
+                                if ($player~corporations[$i][$ii] = 0)
+    								setVar $player~corporations[$i][$ii] $timeCode & " " & $Trader & " Deserted Corp"
 									goto :Next_CorpItem
 								end
 								add $ii 1
 							end
-						elseif ($Corporations[$i] = 0)
-							setVar $Corporations[$i] $CorpName
-							setVar $Corporations[$i][1] $timeCode & " " & $Trader & " Deserted Corp"
+						elseif ($player~corporations[$i] = 0)
+							setVar $player~corporations[$i] $player~corpName
+							setVar $player~corporations[$i][1] $timeCode & " " & $Trader & " Deserted Corp"
                         	goto :Next_CorpItem
 						end
                     	add $i 1
@@ -757,18 +757,18 @@ end
             add $idx 1
 		end
 
-        setVar $CorpResults "Corporate Happenings:*            *"
+        setVar $player~corpResults "Corporate Happenings:*            *"
 
-       	if ($Corporations[1] <> 0)
+       	if ($player~corporations[1] <> 0)
 			setVar $i 1
-			while ($i <= $CorpArraySize)
-				if ($Corporations[$i] <> 0)
-					setVar $currentCorp $Corporations[$i]
-					setVar $CorpResults $CorpResults & "        " & $currentCorp & "*"
+			while ($i <= $player~corpArraySize)
+				if ($player~corporations[$i] <> 0)
+					setVar $currentCorp $player~corporations[$i]
+					setVar $player~corpResults $player~corpResults & "        " & $currentCorp & "*"
 					setVar $ii 1
-					while ($ii <= $CorpMemberSize)
-						if ($Corporations[$i][$ii] <> 0)
-							setVar $CorpResults $CorpResults & "           " & $Corporations[$i][$ii] & "*"
+					while ($ii <= $player~corpMemberSize)
+						if ($player~corporations[$i][$ii] <> 0)
+							setVar $player~corpResults $player~corpResults & "           " & $player~corporations[$i][$ii] & "*"
 						end
 						add $ii 1
 					end
@@ -780,16 +780,16 @@ end
 				setVar $i 1
 				while ($i <= $FiredSize)
 					if ($Fired[$i] <> 0)
-						setVar $CorpResults $CorpResults & "           " & $Fired[$i] & "*"
+						setVar $player~corpResults $player~corpResults & "           " & $Fired[$i] & "*"
 					end
 					add $i 1
 				end
 			end
 		else
-	        setVar $CorpResults "Corporate Happenings:           None*"
+	        setVar $player~corpResults "Corporate Happenings:           None*"
 			end
 	else
-		setVar $CorpResults $Universal_File_Err
+		setVar $player~corpResults $Universal_File_Err
 	end
 	return
 
@@ -1596,10 +1596,7 @@ end
 	return
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"

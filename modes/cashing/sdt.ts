@@ -2,7 +2,7 @@ reqRecording
     
 :load_variables
 
-	loadVar $bot_name
+	loadVar $switchboard~bot_name
         loadVar $BOT~user_command_line
 	loadvar $PLAYER~unlimitedGame
 	loadvar $bot~subspace
@@ -14,20 +14,15 @@ reqRecording
 	loadVar $BOT~bot_turn_limit
 	loadVar $game~ptradesetting
 
-	setVar $BOT~parm1 $BOT~parm1
-	setVar $BOT~parm2 $BOT~parm2
-	setVar $BOT~parm3 $BOT~parm3
-	setVar $BOT~parm4 $BOT~parm4
-	setVar $BOT~user_command_line $BOT~user_command_line
-      
-	setVar $BOT~help[1] $BOT~tab&" sdt {resetlra} [ship1] [ship2] [planet1] [planet2]        *{resetlra} {ep}*"
+					      
+	setVar $BOT~help[1] $BOT~tab&" sdt {resetlra} [ship1] [ship2] [planet1] [planet2] {resetlra}*"
 	setVar $BOT~help[2] $BOT~tab&"  - Do NOT need to start in Ship 1 or Ship 2."
 	setVar $BOT~help[3] $BOT~tab&"  - First Steal will be from Ship 1."
 	setVar $BOT~help[4] $BOT~tab&"  - Checks last rob and busts from Sec Params"
 	setVar $BOT~help[5] $BOT~tab&"  - {resetlra} will reset last rob sector and exit"
-	setVar $BOT~help[6] $BOT~tab&"  - {ep} Use EP Haggle*"
+	setVar $BOT~help[6] $BOT~tab&"  - Will use EP Haggle if running in bot"
 	setVar $BOT~help[7] $BOT~tab&"  - Created by Cherokee"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "SDT - Steal Dump Transport"
 	gosub :BOT~banner
@@ -52,49 +47,49 @@ reqRecording
     setVar $beamFurbing "n"
     setVar $ship_1 $BOT~parm1
     setVar $ship_2 $BOT~parm2
-    setVar $planet[$ship_1] $BOT~parm3
-    setVar $planet[$ship_2] $BOT~parm4
+    setVar $planet~planet[$ship_1] $BOT~parm3
+    setVar $planet~planet[$ship_2] $BOT~parm4
     
     isNumber $test $BOT~parm1
     IF ($test)
     ELSE
-       send "'{" $bot_name "} - Ship 1 Must Be a Number.*"
+       send "'{" $switchboard~bot_name "} - Ship 1 Must Be a Number.*"
        HALT
     END
     isNumber $test $BOT~parm2
     IF ($test)
     ELSE
-       send "'{" $bot_name "} - Ship 2 Must Be a Number.*"
+       send "'{" $switchboard~bot_name "} - Ship 2 Must Be a Number.*"
        HALT
     END
     isNumber $test $BOT~parm3
     IF ($test)
     ELSE
-       send "'{" $bot_name "} - Planet 1 Must Be a Number.*"
+       send "'{" $switchboard~bot_name "} - Planet 1 Must Be a Number.*"
        HALT
     END
     isNumber $test $BOT~parm4
     IF ($test)
     ELSE
-       send "'{" $bot_name "} - Planet 2 Must Be a Number.*"
+       send "'{" $switchboard~bot_name "} - Planet 2 Must Be a Number.*"
        HALT
     END
 
-	setVar $epHaggleFail 0
-	setVar $ephaggle "n"
-	getWordPos $bot~user_command_line $pos " ep"
-
-	IF ($pos > 0)
+	gosub :player~isEpHaggle
+	if ($player~isEphaggle)
 		setVar $ephaggle "y"
 		setVar $SWITCHBOARD~message "Using EP HAGGLE!*"
 		gosub :switchboard~switchboard
+	else
+		setVar $epHaggleFail 0
+		setVar $ephaggle "n"
 	END
 
 
 # ----- make sure we are at a good prompt -----
 :verifyprompt
-        gosub :quikstats
-        setVar $location $CURRENT_PROMPT
+        gosub :player~quikstats
+        setVar $location $player~current_prompt
         if ($location <> "Command")
                setVar $exit_message "Must start at Command Prompt for SDT"
                goto :exit
@@ -104,7 +99,7 @@ logging off
 gosub :startCNsettings
 
     getSectorParameter 1 "LRA" $last_rob_attempt
-    send "'{" $bot_name "} - last rob attempt: "&$last_rob_attempt&"*"
+    send "'{" $switchboard~bot_name "} - last rob attempt: "&$last_rob_attempt&"*"
     send "czq"
     waitOn "-----------------------------------------------------------------------------"
     settextlinetrigger     shipnumber     :getshipnumber "Corp"
@@ -134,12 +129,12 @@ killalltriggers
 
 
 :verifyship   
-    gosub :quikstats
-    IF ($SHIP_NUMBER <> $ship_1)
+    gosub :player~quikstats
+    IF ($player~ship_number <> $ship_1)
            send "x " $ship_1 "* q z n"
     END
-    gosub :quikstats
-    IF ($SHIP_NUMBER <> $ship_1)
+    gosub :player~quikstats
+    IF ($player~ship_number <> $ship_1)
            setVar $exit_message "Cannot Xport to Ship 1.  Check Xport Range.  Halting.*"
            goto :exit
     END
@@ -160,24 +155,24 @@ setVar $debugdelay 0
         setVar $total_revenue[$current_ship] 0
         setVar $equ_sold[$current_ship] 0
         gosub :getInfo
-        setVar $sector[$current_ship] $current_sector
+        setVar $sector[$current_ship] $player~current_sector
 	
 	# CHECK BUSTED SECTOR
-	getSectorParameter $current_sector "BUSTED" $bustthissec
+	getSectorParameter $player~current_sector "BUSTED" $bustthissec
 	if ($bustthissec = TRUE)
-		send "'{" $bot_name "} - According to my data i've busted here - ending*"
+		send "'{" $switchboard~bot_name "} - According to my data i've busted here - ending*"
 		gosub :clearadjacent
 		 gosub :endCNsettings
 		halt
 	end
 	
         setVar $holds[$current_ship] $holds
-        setVar $init_credits $credits
+        setVar $init_credits $player~credits
         setVar $init_exp $exp
-        setVar $init_turns $turns
-        setVar $turns_used 0
-        send "'{" $bot_name "} - running ships " & $ship_1 & " / " & $ship_2 "*"
-        send "'{" $bot_name "} - Starting with Credits: " & $init_credits & " Exp: " & $init_exp & " Turns: " & $init_turns & ".*"
+        setVar $init_turns $player~turns
+        setVar $player~turns_used 0
+        send "'{" $switchboard~bot_name "} - running ships " & $ship_1 & " / " & $ship_2 "*"
+        send "'{" $switchboard~bot_name "} - Starting with Credits: " & $init_credits & " Exp: " & $init_exp & " Turns: " & $init_turns & ".*"
         send "*"
         waitFor "(?=Help)?"
         gosub :voidAdjacent
@@ -192,10 +187,10 @@ setVar $debugdelay 0
         setVar $total_revenue[$current_ship] 0
         setVar $equ_sold[$current_ship] 0
         gosub :getInfo
-        setVar $sector[$current_ship] $current_sector
-	getSectorParameter $current_sector "BUSTED" $bustthissec
+        setVar $sector[$current_ship] $player~current_sector
+	getSectorParameter $player~current_sector "BUSTED" $bustthissec
 	if ($bustthissec = TRUE)
-		send "'{" $bot_name "} - According to my data i've busted here - ending*"
+		send "'{" $switchboard~bot_name "} - According to my data i've busted here - ending*"
 		gosub :clearadjacent
 		 gosub :endCNsettings
 		halt
@@ -216,13 +211,13 @@ setVar $debugdelay 0
 :sdtLoop
         gosub :checkUpgrade
         gosub :stealdump
-        setVar $turns $init_turns
-        subtract $turns $turns_used
-        if ($turns > 10)
+        setVar $player~turns $init_turns
+        subtract $player~turns $player~turns_used
+        if ($player~turns > 10)
                gosub :xport
                goto :sdtLoop
         else
-               send "'{" $bot_name "} - Low Turns, Halting Script*"
+               send "'{" $switchboard~bot_name "} - Low Turns, Halting Script*"
                setVar $low_turns "YES"
                goto :finish
         end
@@ -231,15 +226,15 @@ setVar $debugdelay 0
 :finish
         gosub :clearadjacent
         if ($current_ship = $ship_1)
-               setVar $current_sector $sector[$ship_2]
+               setVar $player~current_sector $sector[$ship_2]
         else
-               setVar $current_sector $sector[$ship_1]
+               setVar $player~current_sector $sector[$ship_1]
         end
-               if (($ship[$current_ship].voids = "set") and ($current_sector <> 0))
+               if (($ship[$current_ship].voids = "set") and ($player~current_sector <> 0))
                          gosub :clearadjacent
                end
         gosub :endCNsettings
-        setVar $cash_made $credits
+        setVar $cash_made $player~credits
         subtract $cash_made $init_credits
         setVar $exp_made $exp
         subtract $exp_made $init_exp
@@ -255,30 +250,30 @@ setVar $debugdelay 0
         else
                setVar $credsPerUnit[$ship_2] 0
         end
-        if ($turns_used <> 0)
+        if ($player~turns_used <> 0)
                setVar $credsPerTurn $cash_made
-               divide $credsPerTurn $turns_used
+               divide $credsPerTurn $player~turns_used
         else
                setVar $credsPerTurn 0
         end
         if ($low_turns <> "YES")
         end
-        send "'*{" $bot_name "} - *"
+        send "'*{" $switchboard~bot_name "} - *"
         send "   - Ship " & $ship_1 & " - " & $total_revenue[$ship_1] & " cr - " & $equ_sold[$ship_1] & " units (" & $credsPerUnit[$ship_1] & "/unit) - MCIC " & $MCIC[$ship_1] & "*"
         send "   - Ship " & $ship_2 & " - " & $total_revenue[$ship_2] & " cr - " & $equ_sold[$ship_2] & " units (" & $credsPerUnit[$ship_2] & "/unit) - MCIC " & $MCIC[$ship_2] & "*"
-        send "   - Net " & $cash_made & " credits in " & $turns_used & " turns (" & $credsPerTurn & "/turn).*"
+        send "   - Net " & $cash_made & " credits in " & $player~turns_used & " turns (" & $credsPerTurn & "/turn).*"
         send " *"
     if ($low_turns <> "YES")
         if ($beamFurbing = "n")
-            send "Busted in ship " & $current_ship & ", FURB please, I still have " & $turns & " turns to run.*"
+            send "Busted in ship " & $current_ship & ", FURB please, I still have " & $player~turns & " turns to run.*"
             send "*"
         else
-            send "Furb Ship " & $current_ship & " I still have " & $turns & " turns to run.*"
+            send "Furb Ship " & $current_ship & " I still have " & $player~turns & " turns to run.*"
             send "*"
             gosub :xport
         end
     else
-        send "NO Bust, stopping because I'm down to " & $turns & " turns.*"
+        send "NO Bust, stopping because I'm down to " & $player~turns & " turns.*"
         send "*"
     end
     goto :exit
@@ -300,8 +295,8 @@ setVar $debugdelay 0
         goto :exit
     :planetnum
         killalltriggers
-        if ($planet[$current_ship] <> 0)
-            send $planet[$current_ship] & "*"
+        if ($planet~planet[$current_ship] <> 0)
+            send $planet~planet[$current_ship] & "*"
         end
         setTextLineTrigger wrongplanet :wrongplanet "That planet is not in this sector."
         setTextLineTrigger wrongplanet2 :wrongplanet "Invalid registry number, landing aborted."
@@ -319,9 +314,9 @@ setVar $debugdelay 0
         send "SNL1*TNL1*TNL2*TNL3*"
         waitfor "How many holds of Equipment do you want to leave"
         waitfor "Planet command"
-        gosub :getPlanetInfo
-        setvar $planet[$current_ship] $planet
-        setVar $planet[$current_ship].equ $planetequip
+        gosub :planet~getplanetinfo
+        setvar $planet~planet[$current_ship] $planet~planet
+        setVar $planet~planet[$current_ship].equ $planet~planetequip
         send "QJY"
         waitfor "Are you sure you want to jettison"
         return
@@ -387,7 +382,7 @@ setVar $debugdelay 0
     end
 
     :calcSectorEqu
-    setVar $sector_equ[$current_ship] $planet[$current_ship].equ
+    setVar $sector_equ[$current_ship] $planet~planet[$current_ship].equ
     add $sector_equ[$current_ship] $port[$current_ship].equ_on_port
     setVar $sector_equ_needed[$current_ship] $steal_holds
     multiply $sector_equ_needed[$current_ship] $maxcycles
@@ -406,18 +401,18 @@ setVar $debugdelay 0
             add $upgrade_amount 5
             setVar $cash_needed $upgrade_amount
             multiply $cash_needed 900
-            if ($credits >= $cash_needed)
+            if ($player~credits >= $cash_needed)
                 send "o  3" & $upgrade_amount & "*  *"
                 multiply $upgrade_amount 10
                 add $port[$current_ship].equ_on_port $upgrade_amount
                 if ($ckSDTquiet = "OFF")
-                    send "'{" $bot_name "} - Ship " & $current_ship & " - port upgraded " & $upgrade_amount & " units.*"
+                    send "'{" $switchboard~bot_name "} - Ship " & $current_ship & " - port upgraded " & $upgrade_amount & " units.*"
                 end
                 setVar $upgrade_amount 0
-                subtract $credits $cash_needed
+                subtract $player~credits $cash_needed
             else
-                if ($planet[$current_ship].equ >= $steal_holds)
-                    send "'{" $bot_name "} - Not enough credits to upgrade, selling early.*"
+                if ($planet~planet[$current_ship].equ >= $steal_holds)
+                    send "'{" $switchboard~bot_name "} - Not enough credits to upgrade, selling early.*"
                     gosub :sell
                 else
                     gosub :endCNsettings
@@ -432,10 +427,10 @@ setVar $debugdelay 0
 # ----- SUB :sell
 # ----- USED WITHIN MAIN PROGRAM LOOP
 :sell
-    if ($planet[$current_ship].equ > 0)
+    if ($planet~planet[$current_ship].equ > 0)
 
-        add $turns_used 1
-        send "PN" & $planet[$current_ship] & "*"
+        add $player~turns_used 1
+        send "PN" & $planet~planet[$current_ship] & "*"
 	if ($ephaggle = "y")
 
 		waitfor "Registry# and Planet Name"
@@ -475,8 +470,8 @@ setVar $debugdelay 0
 				pause
 				:epsellwait2
 					killalltriggers
-					send "'{" $bot_name "} - Ep Haggle timed out on equipment Haggle*"
-					send "'{" $bot_name "} - Ep Haggle Disabled and bot will exit at end of cycle.*"
+					send "'{" $switchboard~bot_name "} - Ep Haggle timed out on equipment Haggle*"
+					send "'{" $switchboard~bot_name "} - Ep Haggle Disabled and bot will exit at end of cycle.*"
 					setvar $ephaggle "n"
 					setVar $epHaggleFail 1
 					send "*"
@@ -486,7 +481,7 @@ setVar $debugdelay 0
 					striptext $postCredits ","
 					setVar $diff ($postCredits - $preCredits)
 					setVar $perunit ($diff/$portbuying)
-					send "'{" $bot_name "} - Ship " & $current_ship & " - " & $portbuying & " EQU haggled for " & $diff & " credits (" & $perunit & " per unit).*"
+					send "'{" $switchboard~bot_name "} - Ship " & $current_ship & " - " & $portbuying & " EQU haggled for " & $diff & " credits (" & $perunit & " per unit).*"
 
 				killalltriggers
 		gosub :checkEPHaggle
@@ -500,8 +495,8 @@ setVar $debugdelay 0
             pause
 
             :equpct
-                getWord CURRENTLINE $current_sector.equpercent 4
-                striptext $current_sector.equpercent "%"
+                getWord CURRENTLINE $player~current_sector.equpercent 4
+                striptext $player~current_sector.equpercent "%"
 
         :sellproduct
             setTextTrigger sellfuel :sellfuel "How many units of Fuel Ore"
@@ -566,7 +561,7 @@ setVar $debugdelay 0
             setVar $basevalue 906281000
             setVar $basepercent 10989
             setVar $basepercentinverse 89010
-            setVar $percentfrombase $current_sector.equpercent
+            setVar $percentfrombase $player~current_sector.equpercent
 
         if ($percentfrombase >= 15)
             # multiply by 100,000 for precision
@@ -869,10 +864,10 @@ setVar $debugdelay 0
         goto :sellofferloop
     :sellyouhave
         killalltriggers
-        setVar $oldcredits $credits
-        getWord CURRENTLINE $credits 3
-        stripText $credits ","
-        if ($oldcredits = $credits)
+        setVar $oldcredits $player~credits
+        getWord CURRENTLINE $player~credits 3
+        stripText $player~credits ","
+        if ($oldcredits = $player~credits)
             setVar $currenthaggle "failed"
             goto :sellhagglefailed
         else
@@ -885,24 +880,24 @@ setVar $debugdelay 0
         # echo "*haggle failed - " & $sell_failures & "**"
         # send "' Failed Haggle (" & $perunitinitoffer & " init offer).*"
         if ($sell_failures >= $maxbadsells)
-            send "'{" $bot_name "} - I'm having problems selling my equipment to the port (" & $perunitinitoffer & "). Script Halting*"
+            send "'{" $switchboard~bot_name "} - I'm having problems selling my equipment to the port (" & $perunitinitoffer & "). Script Halting*"
             goto :finish
         end
         goto :sell
     :sellhagglesucceeded
         # echo "*haggle succeeded*"
         setVar $MCIC[$current_ship] $MCIC
-        subtract $planet[$current_ship].equ $portbuying
+        subtract $planet~planet[$current_ship].equ $portbuying
         add $port[$current_ship].equ_on_port $portbuying
         add $equ_sold[$current_ship] $portbuying
         add $total_revenue[$current_ship] $counter
         setVar $perunit $counter
         divide $perunit $portbuying
         if ($ckSDTquiet = "OFF")
-            send "'{" $bot_name "} - Ship " & $current_ship & " - " & $portbuying & " EQU haggled for " & $counter & " credits (" & $perunit & " per unit).*"
+            send "'{" $switchboard~bot_name "} - Ship " & $current_ship & " - " & $portbuying & " EQU haggled for " & $counter & " credits (" & $perunit & " per unit).*"
         end
     else
-        send "'{" $bot_name "} - There is no equ to sell at this port*"
+        send "'{" $switchboard~bot_name "} - There is no equ to sell at this port*"
     end
     
     
@@ -912,7 +907,7 @@ setVar $debugdelay 0
 # ----- SUB :stealdump
 # ----- USED WITHIN MAIN PROGRAM LOOP
 :stealdump
-    add $turns_used 1
+    add $player~turns_used 1
     send "PR*SZ3"
     send $steal_holds & "*"
     waitfor "furtively about"
@@ -938,7 +933,7 @@ setVar $debugdelay 0
                 send "'<"&$bot~subspace&">[Busted:"&$sector[$current_ship]&"]<"&$bot~subspace&">*"
                 #gosub :sell
                 gosub :getInfo
-                gosub :quikstats
+                gosub :player~quikstats
                 goto :finish
             :fake
                 killAllTriggers
@@ -955,9 +950,9 @@ setVar $debugdelay 0
                 SaveVar $ckLRA    
                 getWord CURRENTLINE $exp_bonus 4
                 add $exp $exp_bonus
-                setVar $sendString "L " & $planet[$current_ship] & "*  TNL3*Q"
+                setVar $sendString "L " & $planet~planet[$current_ship] & "*  TNL3*Q"
                 send $sendString
-                add $planet[$current_ship].equ $steal_holds
+                add $planet~planet[$current_ship].equ $steal_holds
                 subtract $port[$current_ship].equ_on_port $steal_holds
                 if ($debugdelay <> 0)
                     setdelaytrigger testing :testing $debugdelay
@@ -976,7 +971,7 @@ setVar $debugdelay 0
     else
         setVar $current_ship $ship_1
     end
-    add $turns_used 1
+    add $player~turns_used 1
     if ($skip_ships = "YES")
         setVar $xportString "X  " & $current_ship & "*  Q"
         send $xportString
@@ -1012,7 +1007,7 @@ setVar $debugdelay 0
 
 :exit
     if ($exit_message <> 0)
-        send "'{" $bot_name "} - " & $exit_message & "*"
+        send "'{" $switchboard~bot_name "} - " & $exit_message & "*"
     end
     halt
 
@@ -1168,10 +1163,10 @@ setVar $debugdelay 0
     
 # ----- SUB :getInfo
 :getInfo
-    setVar $photons 0
-    setVar $scan_type "None"
-    setVar $twarp_type 0
-    setVar $corpstring "[0]"
+    setVar $player~photons 0
+    setVar $player~scan_type "None"
+    setVar $player~twarp_type 0
+    setVar $player~corpstring "[0]"
     send "I"
     waitfor "<Info>"
     :waitForInfo
@@ -1251,9 +1246,9 @@ setVar $debugdelay 0
         goto :waitForInfo
     :getCorp
         killAllTriggers
-        getWord CURRENTLINE $corp 3
-        stripText $corp ","
-        setVar $corpstring "[" & $corp & "]"
+        getWord CURRENTLINE $player~corp 3
+        stripText $player~corp ","
+        setVar $player~corpstring "[" & $player~corp & "]"
         goto :waitForInfo
     :getShipType
         killAllTriggers
@@ -1267,13 +1262,13 @@ setVar $debugdelay 0
         goto :waitForInfo
     :getSect
         killAllTriggers
-        getWord CURRENTLINE $current_sector 4
+        getWord CURRENTLINE $player~current_sector 4
         goto :waitForInfo
     :getTurns
         killAllTriggers
-        getWord CURRENTLINE $turns 4
-        if ($turns = "Unlimited")
-            setVar $turns 65000
+        getWord CURRENTLINE $player~turns 4
+        if ($player~turns = "Unlimited")
+            setVar $player~turns 65000
         end
         goto :waitForInfo
     :getHolds
@@ -1328,50 +1323,50 @@ setVar $debugdelay 0
         goto :waitForInfo
     :getShields
         killAllTriggers
-        getWord CURRENTLINE $shields 4
-        stripText $shields ","
+        getWord CURRENTLINE $player~shields 4
+        stripText $player~shields ","
         goto :waitForInfo
     :getPhotons
         killAllTriggers
-        getWord CURRENTLINE $photons 3
+        getWord CURRENTLINE $player~photons 3
         goto :waitForInfo
     :getScanType
         killAllTriggers
-        getWord CURRENTLINE $scan_type 4
+        getWord CURRENTLINE $player~scan_type 4
         goto :waitForInfo
     :getTwarpType1
         killAllTriggers
         getWord CURRENTLINE $twarp_1_range 4
-        setVar $twarp_type 1
+        setVar $player~twarp_type 1
         goto :waitForInfo
     :getTwarpType2
         killAllTriggers
         getWord CURRENTLINE $twarp_2_range 4
-        setVar $twarp_type 2
+        setVar $player~twarp_type 2
         goto :waitForInfo
     :getCredits
         killAllTriggers
-        getWord CURRENTLINE $credits 3
-        stripText $credits ","
+        getWord CURRENTLINE $player~credits 3
+        stripText $player~credits ","
         goto :waitForInfo
     :getInfoDone
         killalltriggers
         return
 
-# ----- SUB :getPlanetInfo -----
-:getPlanetInfo
+# ----- SUB :planet~getplanetinfo -----
+:planet~getplanetinfo
     send "*"
     setTextLineTrigger planetInfo :planetInfo "Planet #"
     pause
 
     :planetinfo
         killalltriggers
-        setVar $citadel 0
-        setVar $citadelcredits 0
-        getWord CURRENTLINE $planet 2
-        stripText $planet "#"
-        getWord CURRENTLINE $current_sector 5
-        stripText $current_sector ":"
+        setVar $planet~CITADEL 0
+        setVar $planet~CITADELcredits 0
+        getWord CURRENTLINE $planet~planet 2
+        stripText $planet~planet "#"
+        getWord CURRENTLINE $player~current_sector 5
+        stripText $player~current_sector ":"
         waitfor "2 Build 1   Product    Amount     Amount     Maximum"
 
         :getPlanetStuff
@@ -1385,41 +1380,41 @@ setVar $debugdelay 0
 
         :fuelstart
             killalltriggers
-            getWord CURRENTLINE $planetfuel 6
-            getWord CURRENTLINE $planetfuelmax 8
-            stripText $planetfuel ","
-            stripText $planetfuelmax ","
+            getWord CURRENTLINE $planet~planetfuel 6
+            getWord CURRENTLINE $planet~planetfuelmax 8
+            stripText $planet~planetfuel ","
+            stripText $planet~planetfuelmax ","
             goto :getPlanetStuff
 
         :orgstart
             killalltriggers
-            getWord CURRENTLINE $planetorg 5
-            getWord CURRENTLINE $planetorgmax 7
-            stripText $planetorg ","
-            stripText $planetorgmax ","
+            getWord CURRENTLINE $planet~planetorg 5
+            getWord CURRENTLINE $planet~planetorgmax 7
+            stripText $planet~planetorg ","
+            stripText $planet~planetorgmax ","
             goto :getPlanetStuff
 
         :equipstart
             killalltriggers
-            getWord CURRENTLINE $planetequip 5
-            getWord CURRENTLINE $planetequipmax 7
-            stripText $planetequip ","
-            stripText $planetequipmax ","
+            getWord CURRENTLINE $planet~planetequip 5
+            getWord CURRENTLINE $planet~planetequipmax 7
+            stripText $planet~planetequip ","
+            stripText $planet~planetequipmax ","
             goto :getPlanetStuff
 
         :figstart
             killalltriggers
-            getWord CURRENTLINE $planetfig 5
-            getWord CURRENTLINE $planetfigmax 7
-            stripText $planetfig ","
-            stripText $planetfigmax ","
+            getWord CURRENTLINE $planet~planetfig 5
+            getWord CURRENTLINE $planet~planetfigmax 7
+            stripText $planet~planetfig ","
+            stripText $planet~planetfigmax ","
             goto :getPlanetStuff
 
         :citadelstart
             killalltriggers
-            getWord CURRENTLINE $citadel 5
-            getWord CURRENTLINE $citadelcredits 9
-            striptext $citadelcredits ","
+            getWord CURRENTLINE $planet~CITADEL 5
+            getWord CURRENTLINE $planet~CITADELcredits 9
+            striptext $planet~CITADELcredits ","
 
     :planetInfoDone
         return
@@ -1444,23 +1439,23 @@ setVar $debugdelay 0
     
 :voidadjacent
     send "*"
-    gosub :quikstats
+    gosub :player~quikstats
     
-    if (SECTOR.WARPS[$current_sector][1] = 0)
-            send "'{" $bot_name "} - This sector has no warps, maybe you need to scan it first*"
+    if (SECTOR.WARPS[$player~current_sector][1] = 0)
+            send "'{" $switchboard~bot_name "} - This sector has no warps, maybe you need to scan it first*"
         halt
     else
         setVar $voidsect 0
         :voids
         add $voidsect 1
         if ($voidsect < 7)
-            if (SECTOR.WARPS[$current_sector][$voidsect] <> 0)
-                send "CV" & SECTOR.WARPS[$current_sector][$voidsect] & "*Q"
+            if (SECTOR.WARPS[$player~current_sector][$voidsect] <> 0)
+                send "CV" & SECTOR.WARPS[$player~current_sector][$voidsect] & "*Q"
             end
             goto :voids
         end
 
-        send "'{" $bot_name "} - Avoids set on all adjacent sectors*"
+        send "'{" $switchboard~bot_name "} - Avoids set on all adjacent sectors*"
         send "/"
         waitfor " Sect "
         return
@@ -1468,75 +1463,75 @@ setVar $debugdelay 0
 
 
 :clearadjacent
-    echo "*[["&$current_sector&"]]*"
-    if ($current_sector <= 0)
-       gosub :quikstats
+    echo "*[["&$player~current_sector&"]]*"
+    if ($player~current_sector <= 0)
+       gosub :player~quikstats
     end
-    if (SECTOR.WARPS[$current_sector][1] = 0)
-        send "'{" $bot_name "} - This sector has no warps, maybe you need to scan it first*"
+    if (SECTOR.WARPS[$player~current_sector][1] = 0)
+        send "'{" $switchboard~bot_name "} - This sector has no warps, maybe you need to scan it first*"
         halt
     else
         setVar $voidsect 0
         :clearvoids
         add $voidsect 1
         if ($voidsect < 7)
-            if (SECTOR.WARPS[$current_sector][$voidsect] <> 0)
-                send "CV0*YN" & SECTOR.WARPS[$current_sector][$voidsect] & "*Q"
+            if (SECTOR.WARPS[$player~current_sector][$voidsect] <> 0)
+                send "CV0*YN" & SECTOR.WARPS[$player~current_sector][$voidsect] & "*Q"
             end
             goto :clearvoids
         end
 
-        send "'{" $bot_name "} - Avoids cleared on all adjacent sectors*"
+        send "'{" $switchboard~bot_name "} - Avoids cleared on all adjacent sectors*"
         send "/"
         waitfor " Sect "
         return
     end
 
-:quikstats
+:player~quikstats
 
         # ============================ START QUIKSTAT VARIABLES ==========================
-                setVar $CURRENT_PROMPT          "Undefined"
-                setVar $PSYCHIC_PROBE           "No"
-                setVar $PLANET_SCANNER          "No"
-                setVar $SCAN_TYPE               "None"
-                setVar $CURRENT_SECTOR          0
-                setVar $TURNS                   0
-                setVar $CREDITS                 0
-                setVar $FIGHTERS                0
-                setVar $SHIELDS                 0
-                setVar $TOTAL_HOLDS             0
-                setVar $ORE_HOLDS               0
-                setVar $ORGANIC_HOLDS           0
-                setVar $EQUIPMENT_HOLDS         0
-                setVar $COLONIST_HOLDS          0
-                setVar $PHOTONS                 0
-                setVar $ARMIDS                  0
-                setVar $LIMPETS                 0
-                setVar $GENESIS                 0
-                setVar $TWARP_TYPE              0
-                setVar $CLOAKS                  0
-                setVar $BEACONS                 0
-                setVar $ATOMIC                  0
-                setVar $CORBO                   0
-                setVar $EPROBES                 0
-                setVar $MINE_DISRUPTORS         0
-                setVar $ALIGNMENT               0
-                setVar $EXPERIENCE              0
-                setVar $CORP                    0
-                setVar $SHIP_NUMBER             0
-                setVar $TURNS_PER_WARP          0
+                setVar $player~current_prompt          "Undefined"
+                setVar $player~psychic_probe           "No"
+                setVar $player~planet_scanner          "No"
+                setVar $player~scan_type               "None"
+                setVar $player~current_sector          0
+                setVar $player~turns                   0
+                setVar $player~credits                 0
+                setVar $player~fighters                0
+                setVar $player~shields                 0
+                setVar $player~total_holds             0
+                setVar $player~ore_holds               0
+                setVar $player~organic_holds           0
+                setVar $player~equipment_holds         0
+                setVar $player~colonist_holds          0
+                setVar $player~photons                 0
+                setVar $player~armids                  0
+                setVar $player~limpets                 0
+                setVar $player~genesis                 0
+                setVar $player~twarp_type              0
+                setVar $player~cloaks                  0
+                setVar $player~beacons                 0
+                setVar $player~atomic                  0
+                setVar $player~corbo                   0
+                setVar $player~eprobes                 0
+                setVar $player~mine_disruptors         0
+                setVar $player~alignment               0
+                setVar $player~experience              0
+                setVar $player~corp                    0
+                setVar $player~ship_number             0
+                setVar $player~turns_PER_WARP          0
                 setVar $COMMAND_PROMPT          "Command"
                 setVar $COMPUTER_PROMPT         "Computer"
-                setVar $CITADEL_PROMPT          "Citadel"
-                setVar $PLANET_PROMPT           "Planet"
-                setVar $CORPORATE_PROMPT        "Corporate"
+                setVar $planet~CITADEL_PROMPT          "Citadel"
+                setVar $planet~planet_PROMPT           "Planet"
+                setVar $player~corpORATE_PROMPT        "Corporate"
                 setVar $STARDOCK_PROMPT         "<Stardock>"
                 setVar $HARDWARE_PROMPT         "<Hardware"
                 setVar $SHIPYARD_PROMPT         "<Shipyard>"
                 setVar $TERRA_PROMPT            "Terra"
         # ============================ END QUIKSTAT VARIABLES ==========================
 
-     	setVar $CURRENT_PROMPT 		"Undefined"
+     	setVar $player~current_prompt 		"Undefined"
 	killtrigger noprompt
 	killtrigger prompt1
 	killtrigger prompt2
@@ -1550,14 +1545,14 @@ setVar $debugdelay 0
 	pause
 
 	:allPrompts
-		getWord CURRENTLINE $CURRENT_PROMPT 1
-		stripText $CURRENT_PROMPT #145
-		stripText $CURRENT_PROMPT #8
+		getWord CURRENTLINE $player~current_prompt 1
+		stripText $player~current_prompt #145
+		stripText $player~current_prompt #8
 		#getWord currentansiline $checkPrompt 1
 		#getWord currentline $tempPrompt 1
 		#getWordPos $checkPrompt $pos "[35m"
 		#if ($pos > 0)
-		#	setVar $CURRENT_PROMPT $tempPrompt
+		#	setVar $player~current_prompt $tempPrompt
 		#end
 		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
 		pause
@@ -1593,64 +1588,64 @@ setVar $debugdelay 0
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
-				getWord $stats $CURRENT_SECTOR   	($current_word + 1)
+				getWord $stats $player~current_sector   	($current_word + 1)
 			elseif ($wordy = "Turns")
-				getWord $stats $TURNS  			($current_word + 1)
+				getWord $stats $player~turns  			($current_word + 1)
                 if ($PLAYER~unlimitedGame)
-                    setVar $TURNS 65000
+                    setVar $player~turns 65000
                 end
 			elseif ($wordy = "Creds")
-				getWord $stats $CREDITS  		($current_word + 1)
+				getWord $stats $player~credits  		($current_word + 1)
 			elseif ($wordy = "Figs")
-				getWord $stats $FIGHTERS   		($current_word + 1)
+				getWord $stats $player~fighters   		($current_word + 1)
 			elseif ($wordy = "Shlds")
-				getWord $stats $SHIELDS  		($current_word + 1)
+				getWord $stats $player~shields  		($current_word + 1)
 			elseif ($wordy = "Hlds")
-				getWord $stats $TOTAL_HOLDS   		($current_word + 1)
+				getWord $stats $player~total_holds   		($current_word + 1)
 			elseif ($wordy = "Ore")
-				getWord $stats $ORE_HOLDS    		($current_word + 1)
+				getWord $stats $player~ore_holds    		($current_word + 1)
 			elseif ($wordy = "Org")
-				getWord $stats $ORGANIC_HOLDS    	($current_word + 1)
+				getWord $stats $player~organic_holds    	($current_word + 1)
 			elseif ($wordy = "Equ")
-				getWord $stats $EQUIPMENT_HOLDS    	($current_word + 1)
+				getWord $stats $player~equipment_holds    	($current_word + 1)
 			elseif ($wordy = "Col")
-				getWord $stats $COLONIST_HOLDS    	($current_word + 1)
+				getWord $stats $player~colonist_holds    	($current_word + 1)
 			elseif ($wordy = "Phot")
-				getWord $stats $PHOTONS   		($current_word + 1)
+				getWord $stats $player~photons   		($current_word + 1)
 			elseif ($wordy = "Armd")
-				getWord $stats $ARMIDS   		($current_word + 1)
+				getWord $stats $player~armids   		($current_word + 1)
 			elseif ($wordy = "Lmpt")
-				getWord $stats $LIMPETS   		($current_word + 1)
+				getWord $stats $player~limpets   		($current_word + 1)
 			elseif ($wordy = "GTorp")
-				getWord $stats $GENESIS  		($current_word + 1)
+				getWord $stats $player~genesis  		($current_word + 1)
 			elseif ($wordy = "TWarp")
-				getWord $stats $TWARP_TYPE  		($current_word + 1)
+				getWord $stats $player~twarp_type  		($current_word + 1)
 			elseif ($wordy = "Clks")
-				getWord $stats $CLOAKS   		($current_word + 1)
+				getWord $stats $player~cloaks   		($current_word + 1)
 			elseif ($wordy = "Beacns")
-				getWord $stats $BEACONS 		($current_word + 1)
+				getWord $stats $player~beacons 		($current_word + 1)
 			elseif ($wordy = "AtmDt")
-				getWord $stats $ATOMIC  		($current_word + 1)
+				getWord $stats $player~atomic  		($current_word + 1)
 			elseif ($wordy = "Corbo")
-				getWord $stats $CORBO   		($current_word + 1)
+				getWord $stats $player~corbo   		($current_word + 1)
 			elseif ($wordy = "EPrb")
-				getWord $stats $EPROBES   		($current_word + 1)
+				getWord $stats $player~eprobes   		($current_word + 1)
 			elseif ($wordy = "MDis")
-				getWord $stats $MINE_DISRUPTORS   	($current_word + 1)
+				getWord $stats $player~mine_disruptors   	($current_word + 1)
 			elseif ($wordy = "PsPrb")
-				getWord $stats $PSYCHIC_PROBE  		($current_word + 1)
+				getWord $stats $player~psychic_probe  		($current_word + 1)
 			elseif ($wordy = "PlScn")
-				getWord $stats $PLANET_SCANNER  	($current_word + 1)
+				getWord $stats $player~planet_scanner  	($current_word + 1)
 			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    		($current_word + 1)
+				getWord $stats $player~scan_type    		($current_word + 1)
 			elseif ($wordy = "Aln")
-				getWord $stats $ALIGNMENT    		($current_word + 1)
+				getWord $stats $player~alignment    		($current_word + 1)
 			elseif ($wordy = "Exp")
-				getWord $stats $EXPERIENCE    		($current_word + 1)
+				getWord $stats $player~experience    		($current_word + 1)
 			elseif ($wordy = "Corp")
-				getWord $stats $CORP   			($current_word + 1)
+				getWord $stats $player~corp   			($current_word + 1)
 			elseif ($wordy = "Ship")
-				getWord $stats $SHIP_NUMBER   		($current_word + 1)
+				getWord $stats $player~ship_number   		($current_word + 1)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word
@@ -1678,10 +1673,10 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
+include "source\bot_includes\player\isephaggle\player"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"

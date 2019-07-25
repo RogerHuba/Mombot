@@ -29,7 +29,7 @@
 	setVar $BOT~help[21] $BOT~tab&"       >avoids_man store trucesectors"
 	setVar $BOT~help[22] $BOT~tab&"       >avoids_man clear trucesectors"
 	setVar $BOT~help[23] $BOT~tab&"       >avoids_man store alienspace FERRENGI"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $name_array 0
 	setVar $name_arrayCount 0
@@ -364,6 +364,7 @@ return
 	setSectorParameter 1 "AVOIDS_MAN" ""
 return
 
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"

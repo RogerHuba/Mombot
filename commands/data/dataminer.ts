@@ -12,7 +12,7 @@
 	setVar $BOT~help[9]  $BOT~tab&" [traffic] - Create traffic analysis file"
 	setVar $BOT~help[10]  $BOT~tab&"     [ss] - Displays data over SS (NOT IMPLEMENTED)"
 
-        gosub :BOT~help_file
+        gosub :bot~helpfile
         setVar $BOT~script_title "Dataminer"
         gosub :BOT~banner
 	getWordPos $bot~user_command_line $pos "setparm"
@@ -444,10 +444,8 @@ end
 return
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-

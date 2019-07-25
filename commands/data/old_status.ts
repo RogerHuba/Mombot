@@ -7,9 +7,9 @@
     setVar $BOT~help[5] $BOT~tab&"  - Team Name: What team name your bot respondeds to, if any"
     setVar $BOT~help[6] $BOT~tab&"  - Bot mode:  What mode your bot is currently running"
     setVar $BOT~help[7] $BOT~tab&"        "
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
-    loadvar $PLANET~PLANET
+    loadvar $planet~planet
     loadvar $bot~mode
     loadvar $BOT~bot_team_name
 
@@ -52,16 +52,16 @@
     send "     - IG          = " $igstat "*"
     send "     - Ship        = " $player~SHIP_NUMBER "*"
     if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
-        if ($PLANET = "0")
+        if ($planet~planet = "0")
             send "     - Planet      = None*"
         else
-            send "     - Planet      = " $PLANET "*"
+            send "     - Planet      = " $planet~planet "*"
         end
     else
-        if ($planet~PLANET = "0")
+        if ($planet~planet = "0")
             send "     - Last Planet = None*"
         else
-            send "     - Last Planet = " $PLANET "*"
+            send "     - Last Planet = " $planet~planet "*"
         end
     end
     if ($bot~bot_team_name = $bot~bot_name)
@@ -105,6 +105,7 @@ return
 return
 
 # includes:
-include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
-include "source\module_includes\bot"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\getinfo\player"

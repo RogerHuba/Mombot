@@ -28,7 +28,7 @@ setVar $BOT~help[10] $BOT~tab&"    "
 setVar $BOT~help[15] $BOT~tab&"    Requires ZTM to be safe."
 setVar $BOT~help[15] $BOT~tab&"    Run: MSL, Armids, Limps and Figs first!"
 
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Xmas Prep - Lets have a safe holiday!"
 gosub :BOT~banner
@@ -103,7 +103,7 @@ if ($player~FIGHTERS < 301)
 	halt
 end
 
-if ($player~ORE_HOLDS < 100)
+if ($player~ore_holds < 100)
 	setVar $SWITCHBOARD~message "MooXmas - We need ore in our holds.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
@@ -185,9 +185,9 @@ setVar $i 1
 while ($i <= $pathi)
 	
 	goSub :player~quikstats
-	setVar $planetsInSector 0
-	setVar $planets 0
-	setVar $planeti 1
+	setVar $planet~planetsInSector 0
+	setVar $planet~planets 0
+	setVar $planet~planeti 1
 	setVar $gotoSector $pathSectors[$i]
 	
 	# Is this a port upgrade sector?
@@ -215,7 +215,7 @@ while ($i <= $pathi)
 		halt
 	end
 	setVar $player~warpto $gotoSector
-	gosub :tactics~twarp
+	gosub :player~twarp
 
 	goSub :player~quikstats
 	
@@ -261,16 +261,16 @@ while ($i <= $pathi)
 			killalltriggers
 
 	
-	if ($player~ORE_HOLDS < 140)
+	if ($player~ore_holds < 140)
 		
 		gosub :GetPlanetList
-		if ($planetsInSector > 0)
+		if ($planet~planetsInSector > 0)
 		
-			send "l" $planets[$planetsInSector] "* t n t 1 * q *"
+			send "l" $planet~planets[$planet~planetsInSector] "* t n t 1 * q *"
 			waitfor "eparing ship to land o"
 			waitfor "Command ["
 			goSub :player~quikstats
-			if ($player~ORE_HOLDS < 140)
+			if ($player~ore_holds < 140)
 				if (PORT.EXISTS[CURRENTSECTOR] = 1)
 					if (PORT.BUYFUEL[CURRENTSECTOR] = 0)
 						send "pt**"
@@ -298,9 +298,9 @@ halt
 :GetPlanetList
 
 
-	setVar $planetsInSector 0
-	setVar $planets 0
-	setVar $planeti 1
+	setVar $planet~planetsInSector 0
+	setVar $planet~planets 0
+	setVar $planet~planeti 1
 	send "lq*"
 	setVar $startLogging 0
 	:reCheckPlanetsT
@@ -330,9 +330,9 @@ halt
 				stripText $cPlanetNum ">"
 				stripText $cPlanetNum "<"
 			end
-			add $planetsInSector 1
-			setVar $planets[$planeti] $cPlanetNum
-			add $planeti 1
+			add $planet~planetsInSector 1
+			setVar $planet~planets[$planet~planeti] $cPlanetNum
+			add $planet~planeti 1
 		end
 		goto :reCheckPlanetsT
 
@@ -341,11 +341,9 @@ halt
 
 return
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\twarp\player"

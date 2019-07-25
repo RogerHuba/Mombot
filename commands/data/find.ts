@@ -18,7 +18,7 @@ setVar $BOT~help[9]  $BOT~tab&"                [ufde] un-figged dead end"
 setVar $BOT~help[10] $BOT~tab&"     - {sector}    sector number that you need finder data on,  "
 setVar $BOT~help[11] $BOT~tab&"                   default is current sector"
 setVar $BOT~help[12] $BOT~tab&"     - [port type] port type (s)ell , (b)uy, or (x) either"
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 
 
@@ -26,9 +26,6 @@ gosub :search~find
 halt
 
 # includes:
-include "source\module_includes\bot"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\search"
-include "source\bot_includes\player"
-include "source\bot_includes\map"
-include "source\bot_includes\switchboard"
-include "source\module_includes\prompt"

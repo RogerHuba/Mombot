@@ -20,7 +20,7 @@
 	setVar $BOT~help[5]  $BOT~tab&"      Options: "
 	setVar $BOT~help[6]  $BOT~tab&"         {planet#} - will not move listed planets"
 	setVar $BOT~help[7]  $BOT~tab&"         {restack} - restacks last unstacked planets"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	
 
@@ -28,7 +28,7 @@
 
 
 
-	setArray $planets 10000
+	setArray $planet~planets 10000
 	gosub :PLAYER~quikstats
 	setvar $home $PLAYER~CURRENT_SECTOR
 	setvar $startinglocation $player~current_prompt
@@ -103,7 +103,7 @@
 	gosub :SHIP~getShipStats
 
 	gosub :get_tl_list
-	setvar $parameter "FARM"
+	setvar $bot~parmameter "FARM"
 	if ($restack = true)
 		gosub :restack
 		setvar $switchboard~message "I restacked every planet the best I could.  I would double check though.*"
@@ -121,17 +121,17 @@
 	end
 :unstack
 			gosub :count_planets
-			if ($citadels[$player~current_sector] > $game~MAX_PLANETS_PER_SECTOR)
+			if ($planet~CITADELs[$player~current_sector] > $game~MAX_PLANETS_PER_SECTOR)
 				setVar $j 1
-				setvar $planets_to_move ($citadels[$player~current_sector] - $game~MAX_PLANETS_PER_SECTOR)
-				setvar $planets_moved 0 
+				setvar $planet~planets_to_move ($planet~CITADELs[$player~current_sector] - $game~MAX_PLANETS_PER_SECTOR)
+				setvar $planet~planets_moved 0 
 
-				while ($j <= $planetCount)
-					getwordpos $skip $pos " "&$planets[$j]&" "
+				while ($j <= $planet~planetCount)
+					getwordpos $skip $pos " "&$planet~planets[$j]&" "
 					if ($pos <= 0)
-						send "l " & #8 & $planets[$j] & "* "
+						send "l " & #8 & $planet~planets[$j] & "* "
 						gosub :PLANET~getPlanetInfo
-						if (($PLANET~PLANET_FUEL >= 5000) and ($PLANET~CITADEL >= 4))
+						if (($planet~planet_FUEL >= 5000) and ($planet~CITADEL >= 4))
 
 							setVar $bottom 1
 							setVar $top 1
@@ -142,13 +142,13 @@
 							while ($bottom <= $top)
 								# Now, pull out the next sector in the que, and make it our focus
 								setVar $focus $que[$bottom]
-								if ($parameter <> "")
-									getsectorparameter $focus $parameter $isTargettedSector
+								if ($bot~parmameter <> "")
+									getsectorparameter $focus $bot~parmameter $isTargettedSector
 								end
-								if (($parameter <> "") and ($isTargettedSector <> true))
+								if (($bot~parmameter <> "") and ($isTargettedSector <> true))
 									goto :notit
 								end
-								if (($isTargettedSector = true) and ($citadels[$focus] < $game~MAX_PLANETS_PER_SECTOR))
+								if (($isTargettedSector = true) and ($planet~CITADELs[$focus] < $game~MAX_PLANETS_PER_SECTOR))
 									killtrigger 1
 									killtrigger 2
 									killtrigger 3
@@ -159,24 +159,24 @@
 									pause			
 
 									:warp_it_balance
-										setvar $citadels[$focus] ($citadels[$focus] + 1)
-										setvar $citadels[$player~current_sector] ($citadels[$player~current_sector] - 1)
+										setvar $planet~CITADELs[$focus] ($planet~CITADELs[$focus] + 1)
+										setvar $planet~CITADELs[$player~current_sector] ($planet~CITADELs[$player~current_sector] - 1)
 										setvar $player~startinglocation "Citadel"
 										setVar $PLAYER~warpto $player~current_sector
 										gosub :player~quikstats
-										gosub :tactics~twarp
-										gosub :PLAYER~current_prompt
+										gosub :player~twarp
+										gosub  :player~currentPrompt
 										if ($PLAYER~twarpSuccess <> TRUE)
 											setvar $switchboard~message "Twarp failed during planet balancing. "&$player~msg&" Halting!*"
 											gosub :switchboard~switchboard
 											halt
 										end
-										setvar $restack_id $restack_id&" "&$planets[$j]&" "
+										setvar $restack_id $restack_id&" "&$planet~planets[$j]&" "
 										setvar $restack_location $restack_location&" "&$focus&" "
 										savevar $restack_id
 										savevar $restack_location
-										add $planets_moved 1
-										if ($planets_moved >= $planets_to_move)
+										add $planet~planets_moved 1
+										if ($planet~planets_moved >= $planet~planets_to_move)
 											goto :done_moving_planets
 										end
 
@@ -224,7 +224,7 @@ halt
 :count_planets
 	send "qq*  |l"
 	waitOn "Registry# and Planet Name"
-	setVar $planetCount 0
+	setVar $planet~planetCount 0
 	killalltriggers
 	setTextLineTrigger planetGrabber :planetline "   <"
 	setTextLineTrigger beDone :done "Land on which planet "
@@ -239,8 +239,8 @@ halt
 			replacetext $line "<" " "
 			replacetext $line ">" " "
 			striptext $line ","
-			add $planetCount 1
-			getWord $line $planets[$planetCount] 1
+			add $planet~planetCount 1
+			getWord $line $planet~planets[$planet~planetCount] 1
 		end
 		setTextLineTrigger getLine2 :planetline "   <"
 		setTextLineTrigger getend :done "Land on which planet "
@@ -251,7 +251,7 @@ halt
 
 :get_tl_list
 	setVar $sectorCount 0
-	setarray $citadels sectors
+	setarray $planet~CITADELs sectors
 	killalltriggers
 	setTextLineTrigger sectorGrabber :sector_planet_line "Class "
 	setTextLineTrigger sectorbeDone :sector_done "======   ============"
@@ -269,8 +269,8 @@ halt
 	:sector_planet_line
 		killalltriggers
 		getWord CURRENTLINE $testsector 1
-		setvar $citadel_count $citadels[$testsector]
-		setvar $citadels[$testsector] ($citadel_count + 1)
+		setvar $planet~CITADEL_count $planet~CITADELs[$testsector]
+		setvar $planet~CITADELs[$testsector] ($planet~CITADEL_count + 1)
 		setVar $tl_planets $tl_planets&" "&$testsector
 		setTextLineTrigger getLine2 :sector_planet_line "Class"
 		setTextLineTrigger getEnd :sector_done "======   ============"
@@ -297,8 +297,8 @@ return
 		setvar $player~startinglocation "Citadel"
 		setVar $PLAYER~warpto $id[$i]
 		gosub :player~quikstats
-		gosub :tactics~twarp
-		gosub :PLAYER~current_prompt
+		gosub :player~twarp
+		gosub  :player~currentPrompt
 		if ($PLAYER~twarpSuccess <> TRUE)
 			setvar $switchboard~message "Twarp failed during planet balancing. "&$player~msg&" Halting!*"
 			gosub :switchboard~switchboard
@@ -313,8 +313,8 @@ return
 			setvar $player~startingLocation "Command"
 			setVar $PLAYER~warpto $starting_sector
 			gosub :player~quikstats
-			gosub :tactics~twarp
-			gosub :PLAYER~current_prompt
+			gosub :player~twarp
+			gosub  :player~currentPrompt
 			if ($PLAYER~twarpSuccess <> TRUE)
 				setvar $switchboard~message "Twarp failed during planet balancing. "&$player~msg&" Halting!*"
 				gosub :switchboard~switchboard
@@ -327,7 +327,7 @@ return
 		end
 		send "q "
 		gosub :PLANET~getPlanetInfo
-		if (($PLANET~PLANET_FUEL >= 5000) and ($PLANET~CITADEL >= 4))
+		if (($planet~planet_FUEL >= 5000) and ($planet~CITADEL >= 4))
 			killtrigger 1
 			killtrigger 2
 			killtrigger 3
@@ -355,11 +355,13 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\planet\loadplanetinfo\planet"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\planet\landingsub\planet"
+include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\player\currentprompt\player"

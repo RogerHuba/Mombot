@@ -3,7 +3,7 @@
 
 	setVar $BOT~help[1] $BOT~tab&"Refreshes Deployed Armid List"
 	setVar $BOT~help[2] $BOT~tab&"  - Will show difference since last command was run."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Armid Report"
 	gosub :BOT~banner
@@ -14,7 +14,7 @@
 # ============================== START REFRESH ARMIDS (ARMIDS) ==============================
 :armids
 	
-	gosub :PLAYER~current_prompt
+	gosub  :player~currentPrompt
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation = "Command")
 	    goto :start_armids

@@ -1,16 +1,7 @@
 	reqRecording
 	logging off
 		gosub :BOT~loadVars
-	setVar $parm1 $BOT~parm1
-	setVar $parm2 $BOT~parm2
-	setVar $parm3 $BOT~parm3
-	setVar $parm4 $BOT~parm4
-	setVar $parm5 $BOT~parm5
-	setVar $parm6 $BOT~parm6
-	setVar $parm7 $BOT~parm7
-	setVar $parm8 $BOT~parm8
-	setVar $user_command_line $BOT~user_command_line
-
+									
 
 	 setVar $BOT~help[1] $BOT~tab&"Bwarp Photon"
 	 setVar $BOT~help[2] $BOT~tab&"Uses planet teleport-pad to arrive adjacent a fighter"
@@ -30,7 +21,7 @@
 	setVar $BOT~help[16] $BOT~tab&"     >boton "
 
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $TagLine				"LoneStar's BWARP PHOTON"
 	setVar $TagLineB			"[LSBOTON]"
@@ -41,19 +32,19 @@
 	setVar $idx 				11
 	setVar $Start_Sector		0
 
-	setVar $PLANET~PLANET		0
-	setVar $Planet_Level		0
-	setVar $PLANET~PLANET_FUEL			0
-	setVar $PLANET~PLANET_FUEL_Min		100
-	setVar $Planet_FIG			0
-	setVar $PLANET~Planet_TPad			0
-	setVar $ORE_TOLERANCE		$PLANET~PLANET_FUEL_Min
+	setVar $planet~planet		0
+	setVar $planet~planet_Level		0
+	setVar $planet~planet_FUEL			0
+	setVar $planet~planet_FUEL_Min		100
+	setVar $planet~planet_FIG			0
+	setVar $planet~planet_TPad			0
+	setVar $ORE_TOLERANCE		$planet~planet_FUEL_Min
 
 	setVar $FIREPHOTON		TRUE
 	setVar $ALIENS			FALSE
 	setVar $AUTO_RETURN		TRUE
 
-	getWordPos " "&$user_command_line&" " $pos " holo "
+	getWordPos " "&$bot~user_command_line&" " $pos " holo "
 
 	if ($pos > 0)
 		setVar $HOLO_SCAN	TRUE
@@ -62,7 +53,7 @@
 		setVar $HOLO_SCAN	FALSE
 	end
 
-	getWordPos " "&$user_command_line&" " $pos " dens "
+	getWordPos " "&$bot~user_command_line&" " $pos " dens "
 	if ($pos > 0)
 		setVar $DEN_SCAN	TRUE
 		setVar $HOLO_SCAN	FALSE
@@ -73,7 +64,7 @@
 	setVar $TURN_LIMIT		$BOT~bot_turn_limit
 	setVar $MINE_REACTION	"None"
 
-	getWordPos " "&$user_command_line&" " $pos " mine "
+	getWordPos " "&$bot~user_command_line&" " $pos " mine "
 	if ($pos > 0)
 		setVar $MINE_REACTION	"Armids/Limps"
 	else
@@ -82,18 +73,18 @@
 
 	setVar $UNLIM				$PLAYER~unlimitedGame
 	setVar $CREDIT_LIMIT		50000
-	setVar $CREDITS_ON_HAND		10000
-	setVar $CREDITS_WITHDRAW	200000
+	setVar $player~credits_ON_HAND		10000
+	setVar $player~credits_WITHDRAW	200000
 
 	setArray $Figs				SECTORS
 	setArray $Sects				SECTORS 5
 	setArray $HoloOutput		1000
 
-	isNumber $tst $parm1
+	isNumber $tst $bot~parm1
 	if ($tst = 0)
 		setVar $SCRUB_SECT 0
 	else
-		setVar $SCRUB_SECT $parm1
+		setVar $SCRUB_SECT $bot~parm1
 	end
 
    	setVar $SWITCHBOARD~message ($TagLine&" v" & $CURENT_VERSION & " - Loading...*")
@@ -107,7 +98,7 @@
 	setVar $Suffix	""
 	if ($AUTO_RETURN)
 		if ($SCRUB_SECT = 0)
-			setVar $Suffix (" M " & $Start_Sector & "*  Y  Y  *  L Z" & #8 & $PLANET~PLANET & "*  *  J  C  *  ")
+			setVar $Suffix (" M " & $Start_Sector & "*  Y  Y  *  L Z" & #8 & $planet~planet & "*  *  J  C  *  ")
 		else
 			setVar $Suffix (" M " & $SCRUB_SECT & "*  Y  Y  *  J  *  ")
 		end
@@ -117,7 +108,7 @@
 	gosub :MSGS_ON
 	gosub :PLAYER~quikstats
 
-	if ($PLAYER~ORE_HOLDS < $PLAYER~TOTAL_HOLDS)
+	if ($player~ore_holds < $player~total_holds)
 		setVar $SWITCHBOARD~message "Ship Holds Are Not Full of ORE.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -143,10 +134,10 @@
 	end
 	:Disp_Banner
 	if ($FIREPHOTON)
-		setVar $SWITCHBOARD~message ($TagLineC&" Running From Planet #"&$PLANET~PLANET&", with "&$PLAYER~PHOTONS&" Photons.*")
+		setVar $SWITCHBOARD~message ($TagLineC&" Running From Planet #"&$planet~planet&", with "&$PLAYER~PHOTONS&" Photons.*")
 		gosub :SWITCHBOARD~switchboard
 	else
-		setVar $SWITCHBOARD~message ($TagLineC&" Running From Planet #"&$PLANET~PLANET&", Not Firing A Photon.*")
+		setVar $SWITCHBOARD~message ($TagLineC&" Running From Planet #"&$planet~planet&", Not Firing A Photon.*")
 		gosub :SWITCHBOARD~switchboard
 	end
 	:inac
@@ -203,7 +194,7 @@
 		killAllTriggers
 		gosub :PLAYER~quikstats
 		if ($PLAYER~CURRENT_PROMPT = "Command")
-			send " L Z" & #8 & $PLANET~PLANET & "*  *  J  C  *  "
+			send " L Z" & #8 & $planet~planet & "*  *  J  C  *  "
 			setTextLineTrigger	NotLanded	:NotLanded		"Are you sure you want to jettison all cargo?"
 			setTextLineTrigger	Landed		:Landed			"<Enter Citadel>"
 			setDelayTrigger		TestConn	:TestConn		3000
@@ -422,7 +413,7 @@
 								gosub :CALL_SAVE_ME
 							else
 								gosub :SPIT_IT_OUT
-								setVar $SWITCHBOARD~message ($TagLineB&" Planet #"&$PLANET~PLANET&" Not In Sector, Halting!!*")
+								setVar $SWITCHBOARD~message ($TagLineB&" Planet #"&$planet~planet&" Not In Sector, Halting!!*")
 								gosub :SWITCHBOARD~switchboard
 								halt
 							end
@@ -450,8 +441,8 @@
 				send " Q "
 				gosub :PLANET~getPlanetInfo
 				send "T N L 2* T N L 3* T N T 1* C "
-				if ($PLANET~PLANET_FUEL < $ORE_TOLERANCE)
-					SetVar $CashAmount $PLANET~PLANET_FUEL
+				if ($planet~planet_FUEL < $ORE_TOLERANCE)
+					SetVar $CashAmount $planet~planet_FUEL
 					gosub :CommaSize
 					setVar $SWITCHBOARD~message ($TagLineB&" Planet ORE at " & $CashAmount & ", Stopping*")
 					gosub :SWITCHBOARD~switchboard
@@ -479,8 +470,8 @@
 						gosub :SWITCHBOARD~switchboard
 						halt
 					end
-					if ($PLAYER~CREDITS > $CREDITS_ON_HAND)
-						send (" TT"&($PLAYER~CREDITS - $CREDITS_ON_HAND)&"*")
+					if ($PLAYER~CREDITS > $player~credits_ON_HAND)
+						send (" TT"&($PLAYER~CREDITS - $player~credits_ON_HAND)&"*")
 						gosub :SWITCHBOARD~switchboard
 					end
 				end
@@ -493,7 +484,7 @@
 					end
 				end
 
-				if ($PLAYER~ORE_HOLDS < $PLAYER~TOTAL_HOLDS)
+				if ($player~ore_holds < $player~total_holds)
 					setVar $SWITCHBOARD~message ($TagLineB&" Ship Holds Not Full Of ORE - Halting!*")
 		gosub :SWITCHBOARD~switchboard
 					halt
@@ -513,7 +504,7 @@ halt
 					gosub :CALL_SAVE_ME
 					halt
 				else
-					send " L Z" & #8 & $PLANET~PLANET & "*  *  J  C  *  ^ Q "
+					send " L Z" & #8 & $planet~planet & "*  *  J  C  *  ^ Q "
 					waitfor ": ENDINTERROG"
 					gosub :PLAYER~quikstats
 					if ($PLAYER~CURRENT_PROMPT <> "Citadel")
@@ -536,8 +527,8 @@ halt
 				end
 
 				
-				if ($PLANET~PLANET_FUEL < $ORE_TOLERANCE)
-					SetVar $CashAmount $PLANET~PLANET_FUEL
+				if ($planet~planet_FUEL < $ORE_TOLERANCE)
+					SetVar $CashAmount $planet~planet_FUEL
 					gosub :CommaSize
 					setVar $SWITCHBOARD~message ($TagLineB&" Planet ORE at " & $CashAmount & ", Stopping*")
 		gosub :SWITCHBOARD~switchboard
@@ -586,8 +577,8 @@ halt
 		halt
     :friendlyplanet
         killalltriggers
-        getText CURRENTLINE $planet "Saveme script activated - Planet " " to "
-        send "L " & $planet & "* C 'I landed on planet " & $planet & "* * "
+        getText CURRENTLINE $planet~planet "Saveme script activated - Planet " " to "
+        send "L " & $planet~planet & "* C 'I landed on planet " & $planet~planet & "* * "
 		halt
 	return
 
@@ -615,26 +606,26 @@ halt
 	setVar $Start_Sector $PLAYER~CURRENT_SECTOR
 
 
-	if ($PLAYER~CREDITS > $CREDITS_ON_HAND)
-		send ("TT"&($PLAYER~CREDITS - $CREDITS_ON_HAND)&"*")
+	if ($PLAYER~CREDITS > $player~credits_ON_HAND)
+		send ("TT"&($PLAYER~CREDITS - $player~credits_ON_HAND)&"*")
 		gosub :SWITCHBOARD~switchboard
 	end
 	send "q "
 	gosub :PLANET~getPlanetInfo
 	send "c "
-   	if ($PLANET~Planet_TPad = 0)
+   	if ($planet~planet_TPad = 0)
 		setVar $SWITCHBOARD~message ($TagLineB&" Planet Does Not Appear To Have Transport Pad*")
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 
-	if ($PLANET~PLANET	= 0)
+	if ($planet~planet	= 0)
 		setVar $SWITCHBOARD~message ($TagLineB&" Unable To Obtain Planet Number.*")
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 
-	if ($PLANET~PLANET_FUEL	< $PLANET~PLANET_FUEL_Min)
+	if ($planet~planet_FUEL	< $planet~planet_FUEL_Min)
 		setVar $SWITCHBOARD~message ($TagLineB&" Planet Has Too Little Fuel ORE*")
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -947,13 +938,13 @@ halt
 		killAllTriggers
 
 	getDistance $Dist $PLAYER~CURRENT_SECTOR STARDOCK
-	if ($PLANET~Planet_TPad < $Dist)
+	if ($planet~planet_TPad < $Dist)
 		setVar $SWITCHBOARD~message ($TagLineB&" Unable To Furb - StarDock Is Out Of Range Of T-Pad!*")
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 	getDistance $Dist STARDOCK $PLAYER~CURRENT_SECTOR
-	if ($Dist > ($PLAYER~ORE_HOLDS / 3))
+	if ($Dist > ($player~ore_holds / 3))
 		setVar $SWITCHBOARD~message ($TagLineB&" Unable To Furb - Not Enough Gas For Return Trip!*")
 		gosub :SWITCHBOARD~switchboard
 	   halt
@@ -1014,7 +1005,7 @@ halt
 			halt
 		:Buy_Fotonstwarp_lock
         	killAllTriggers
-        	send (" Y *  *  L Z"&#8&$PLANET~PLANET&"*  * JC*")
+        	send (" Y *  *  L Z"&#8&$planet~planet&"*  * JC*")
 		gosub :SWITCHBOARD~switchboard
 			setTextLineTrigger	Buy_Fotons_NotLanded1	:Buy_Fotons_NotLanded1		"Are you sure you want to jettison all cargo?"
 			SetDelayTrigger		Buy_Fotons_NotLAnded2	:Buy_Fotons_NotLanded2		4000
@@ -1022,7 +1013,7 @@ halt
 			pause
 			:Buy_Fotons_NotLanded1
 				killAllTriggers
-				setVar $SWITCHBOARD~message ($TagLineB&" Not Landed. Planet "&$PLANET~PLANET&", Not Found!*")
+				setVar $SWITCHBOARD~message ($TagLineB&" Not Landed. Planet "&$planet~planet&", Not Found!*")
 		gosub :SWITCHBOARD~switchboard
 				halt
 			:Buy_Fotons_NotLanded2
@@ -1051,14 +1042,15 @@ halt
 		getText CURRENTLINE $Loot "contains" "credits."
 		stripText $Loot ","
 		stripText $Loot " "
-		if ($Loot > $CREDITS_WITHDRAW)
-			setVar $Loot $CREDITS_WITHDRAW
+		if ($Loot > $player~credits_WITHDRAW)
+			setVar $Loot $player~credits_WITHDRAW
 		end
 		send ("TF"&$Loot&"*")
 	return
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"

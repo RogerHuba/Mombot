@@ -3,10 +3,10 @@ gosub :BOT~loadVars
 #HELP FILE
      setVar $BOT~help[1]  $BOT~tab&"extern   "
      setVar $BOT~help[2]  $BOT~tab&"    Says how much time until midnight game time.   "
-     gosub :BOT~help_file
+     gosub :bot~helpfile
 
 :extern
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
     if (($startingLocation <> "Citadel") AND ($startingLocation <> "Command"))
         setVar $SWITCHBOARD~message "Wrong prompt for extern check.*"
@@ -60,9 +60,7 @@ return
 
 
 # includes:
-include "source\bot_includes\player"
-include "source\bot_includes\ship"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\module_includes\prompt"
-include "source\module_includes\bot"

@@ -13,7 +13,7 @@
 	setVar $BOT~help[10] $BOT~tab&"    [destroyports]   destroys every port it drains if you "
 	setVar $BOT~help[11] $BOT~tab&"    [bubble]         only visits bubble sectors  "
 	setVar $BOT~help[12] $BOT~tab&"                     have enough fighters"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Pay At The Pump"
 	gosub :BOT~banner

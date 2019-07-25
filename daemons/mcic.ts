@@ -178,8 +178,8 @@ send #145
 goto :start
 
 :getExp
-getWord CURRENTLINE $experience 5
-stripText $experience ","
+getWord CURRENTLINE $player~experience 5
+stripText $player~experience ","
 setTextTrigger getExp :getExp "Rank and Exp   :"
 pause
 
@@ -215,10 +215,10 @@ stripText $offer ","
 stripText $offer "]"
 stripText $offer "["
 stripText $offer "?"
-if ($experience > 1000)
+if ($player~experience > 1000)
 	setVar $expadjust 1000
 else
-	setVar $expadjust $experience
+	setVar $expadjust $player~experience
 end
 multiply $expadjust 110
 divide $expadjust 10

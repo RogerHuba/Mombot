@@ -4,7 +4,7 @@
     setVar $BOT~help[2]  $BOT~tab&"               "
     setVar $BOT~help[3]  $BOT~tab&"    nmac {number of times} {macro}  "
     setVar $BOT~help[4]  $BOT~tab&"        "
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 
 
@@ -62,7 +62,7 @@
     getWordPos $cbyCheck $posc "c"
     getWordPos $cbyCheck $posb "b"
     getWordPos $cbyCheck $posy "y"
-    gosub :PLAYER~current_prompt
+    gosub  :player~currentPrompt
     if (($PLAYER~CURRENT_PROMPT = "Computer") AND ($posb > 0) AND ($posy > 0))
         setvar $switchboard~message "Self Destruct Protection Activated*"
         gosub :switchboard~switchboard
@@ -118,9 +118,7 @@ return
 
 
 # includes:
-include "source\bot_includes\player"
-include "source\bot_includes\ship"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\module_includes\prompt"
-include "source\module_includes\bot"
+include "source\bot_includes\player\currentprompt\player"

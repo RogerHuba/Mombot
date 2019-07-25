@@ -21,7 +21,7 @@
 	setVar $BOT~help[15] $BOT~tab&"       {holo}   - does holo command after firing"
 	setVar $BOT~help[16] $BOT~tab&"  "
 	setVar $BOT~help[17] $BOT~tab&"       Authors: Mind Dagger and The Bounty Hunter "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Fast Foton"
 	gosub :BOT~banner
@@ -161,7 +161,7 @@ end
 			
 		end
 		if (($player~experience < 1000) and ($player~alignment >= 0))
-			if ($fedSpacePhotons <> TRUE)
+			if ($player~fedspacePhotons <> TRUE)
 				send "'{" $bot~bot_name "} - Fed safe people can't shoot photons from fed..*"
 				setVar $mode "General"
 				halt
@@ -1176,7 +1176,7 @@ return
 	end
 	if ($PLAYER~CURRENT_SECTOR = STARDOCK)
 		if (($player~experience < 1000) and ($player~alignment >= 0))
-			if ($fedSpacePhotons <> TRUE)
+			if ($player~fedspacePhotons <> TRUE)
 				send "'{" $bot~bot_name "} - Fed safe people can't shoot photons from fed..*"
 				setVar $mode "General"
 				halt
@@ -1266,12 +1266,12 @@ halt
 return
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\player\turnoffansi\player"
+include "source\bot_includes\player\turnonansi\player"
+include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-
-

@@ -12,7 +12,7 @@ loadvar $map~backdoor
 	setVar $BOT~help[7] $BOT~tab&"          [f] - fuel"
 	setVar $BOT~help[8] $BOT~tab&"          [o] - organics"
 	setVar $BOT~help[9] $BOT~tab&"          [e] - equipment"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Product Pimp"
 	gosub :BOT~banner
@@ -517,17 +517,17 @@ return
 				if (CONNECTED = FALSE)
 					goto :Disco_Test
 				else
-					send ("'{" &$bot_name& "} - " & $TagLineB & " Problem Detected Unable to Land!*")
+					send ("'{" &$switchboard~bot_name& "} - " & $TagLineB & " Problem Detected Unable to Land!*")
 					halt
 				end
 			:NotLanded
 				killAllTriggers
-				send ("'{" &$bot_name& "} - Boton Unable To Land, Check my TA.*")
-				send ("'{" & $bot_name & "} "&$TagLineB&" - Unable To Land After Reconnect,Check My TA!**")
+				send ("'{" &$switchboard~bot_name& "} - Boton Unable To Land, Check my TA.*")
+				send ("'{" & $switchboard~bot_name & "} "&$TagLineB&" - Unable To Land After Reconnect,Check My TA!**")
 				halt
 			:Landed
 				killAllTriggers
-				send ("'{" & $bot_name & "} "&$TagLineB&" - Restarting!**")
+				send ("'{" & $switchboard~bot_name & "} "&$TagLineB&" - Restarting!**")
 		    	waitfor "Message sent on sub-space channel"
 				goto :inac
 		elseif ($player~current_prompt = "Planet")
@@ -538,7 +538,7 @@ return
 			
 			
 		elseif ($player~current_prompt = "Citadel")
-			send ("'{" & $bot_name & "} "&$TagLineB&" - Restarting!**")
+			send ("'{" & $switchboard~bot_name & "} "&$TagLineB&" - Restarting!**")
 			waitfor "Message sent on sub-space channel"
 	   		goto :inac
 	   	else
@@ -552,10 +552,9 @@ return
 		end
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-
+include "source\bot_includes\planet\getplanetinfo\planet"

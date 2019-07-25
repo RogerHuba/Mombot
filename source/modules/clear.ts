@@ -15,9 +15,9 @@
 
     gosub :PLAYER~QUIKSTATS
     setVar $startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Command Citadel"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~validPrompts "Command Citadel"
+    gosub :bot~checkStartingPrompt
 
     if ($startingLocation = "Citadel")
         send "q"

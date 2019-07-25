@@ -3,7 +3,7 @@
 
 	setVar $BOT~help[1] $BOT~tab&"Searches for hidden dock. "
 	setVar $BOT~help[2] $BOT~tab&"Assumes 6 warps out with a backdoor."
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Dock Finder"
 	gosub :BOT~banner
@@ -36,9 +36,7 @@
 	halt
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"

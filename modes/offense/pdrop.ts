@@ -21,7 +21,7 @@ reqRecording
 	setVar $BOT~help[9]   $BOT~tab&"     - [return]    = will return planet home after 10 seconds"
 	setVar $BOT~help[10]  $BOT~tab&"     - [kill]      = checks for enemy, and kills if possible"
 	setVar $BOT~help[11]  $BOT~tab&"     - [fastkill]  = does kill mac without checking"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Dropper"
 	gosub :BOT~banner
@@ -68,7 +68,7 @@ reqRecording
 		send "'{" $bot~bot_name "} - Please use [on/off] {delay} {drop type} {trigger type} {kill} {return}*"
 		halt
 	end
-	setVar $bot~user_command_line $bot~user_command_line&" "
+	setvar $bot~user_command_line $bot~user_command_line&" "
 	isNumber $test $bot~parm2
 	if ($test)
 		setVar $dropDelay $bot~parm2
@@ -318,7 +318,7 @@ reqRecording
 			if ($dropDescription = "Direct")
 				setvar $send "p "&$dropSector&"* y "
 				if ($fastkill = true)
-					setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** c  "
+					setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
 				end
 				send $send
 
@@ -449,7 +449,7 @@ return
 		killAllTriggers
 		setvar $send "p "&$gotoSector&"*y"
 		if ($fastkill = true)
-			setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~PLANET&"*  m  *** c  "
+			setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
 		end
 		send $send
 		setTextLineTrigger pwarpNo :pwarpNo "You do not have any fighters in Sector "
@@ -628,8 +628,8 @@ return
         setVar $thisCorpie 0
         :corpieSubLoop
             add $thisCorpie 1
-            if ($thisCorpie <= $corpies)
-                if (($subSender = $corpie[$thisCorpie]))
+            if ($thisCorpie <= $player~corpies)
+                if (($subSender = $player~corpie[$thisCorpie]))
                     setVar $auth_result "true"
                     goto :authDone
                 end
@@ -703,7 +703,7 @@ return
 
 # ----- SUB :getCorpies
 :getCorpies
-    setVar $corpies 0
+    setVar $player~corpies 0
     send "XAQ"
     waitfor " Corp Member Name                   Sector  Fighters Shields Mines  Credits"
     waitfor "------------------------------------------------------------------------------"
@@ -716,10 +716,10 @@ return
         if (CURRENTLINE = "P indicates Trader is on a planet in that sector")
             goto :getCorpieNameDone
         end
-        add $corpies 1
-        setVar $corpieLine CURRENTLINE
-        setVar $corpieLine $corpieLine & "          "
-        cutText $corpieLine $corpie[$corpies] 1 6
+        add $player~corpies 1
+        setVar $player~corpieLine CURRENTLINE
+        setVar $player~corpieLine $player~corpieLine & "          "
+        cutText $player~corpieLine $player~corpie[$player~corpies] 1 6
         goto :waitForCorpieName
     :getCorpieNameDone
         killalltriggers
@@ -806,12 +806,11 @@ return
 return
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-include "source\bot_includes\combat"
-
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\fastcapture\combat"

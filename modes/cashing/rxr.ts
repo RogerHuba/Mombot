@@ -1,5 +1,5 @@
 #
-#loadVar $user_command_line
+#loadVar $bot~user_command_line
 #loadvar $PLAYER~unlimitedGame
 #loadvar $bot~subspace
 
@@ -20,12 +20,12 @@ setVar $BOT~help[6] $BOT~tab&"  Does not mega rob."
 setVar $BOT~help[7] $BOT~tab&"  "
 setVar $BOT~help[8] $BOT~tab&"  - {resetlra} will reset last rob sector and exit"
 
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "Rob Xport Rob"
 gosub :BOT~banner
 
-if ($parm1 = "resetlra")
+if ($bot~parm1 = "resetlra")
 	setSectorParameter 1 "LRA" 1
 	send "'Last rob sector reset*"
 	halt
@@ -55,14 +55,14 @@ getSectorParameter	1 "LRA" $last_rob_attempt
 :StartupChecks
 
 	gosub :PLAYER~quikstats
-	setVar $PROMPT~validPrompts "Command"
-	setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+	setVar $bot~validPrompts "Command"
+	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
 
 	if (($PLAYER~TURNS = 0) and ($PLAYER~unlimitedGame = FALSE))
 		send "'{" $SWITCHBOARD~bot_name "} - I have no turns*"
 		halt
 	end
-	gosub :PROMPT~checkStartingPrompt
+	gosub :bot~checkStartingPrompt
 	cutText $PLAYER~ALIGNMENT $neg_ck 1 1
 	stripText $PLAYER~ALIGNMENT "-"
 	if ((($PLAYER~ALIGNMENT < 100) and ($neg_ck = "-")) OR ($neg_ck <> "-"))
@@ -425,11 +425,9 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\module_includes\prompt"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-

@@ -16,27 +16,27 @@
 	setVar $BOT~help[8]  $BOT~tab&"Invasion bot(s) land on the target planets "
 	setVar $BOT~help[9]  $BOT~tab&"to moth ."
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Mass Sling Shot"
 	gosub :BOT~banner
 	
 		
-	getWord $bot~user_command_line $parm1 1
-	getWord $bot~user_command_line $parm2 2
-	getWord $bot~user_command_line $parm3 3
-	getWord $bot~user_command_line $parm4 4
+	getWord $bot~user_command_line $bot~parm1 1
+	getWord $bot~user_command_line $bot~parm2 2
+	getWord $bot~user_command_line $bot~parm3 3
+	getWord $bot~user_command_line $bot~parm4 4
 
-	if ($parm1 = 0)
+	if ($bot~parm1 = 0)
 		setVar $SWITCHBOARD~message "PlanetTarget should be a number, or make it a fake # if you have no planet scanners..*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	else
-		isNumber $test $parm1
+		isNumber $test $bot~parm1
 		if ($test)
-			setVar $targetPlanet $parm1
-			if ($parm2 <> 0)
-				setVar $invasionBots $parm2
+			setVar $targetPlanet $bot~parm1
+			if ($bot~parm2 <> 0)
+				setVar $invasionBots $bot~parm2
 			else
 				setVar $SWITCHBOARD~message "Need invasion bot callin signature!*"
 				gosub :SWITCHBOARD~switchboard
@@ -48,15 +48,15 @@
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
-		if ($parm3 <> 0)
-			isNumber $test $parm3
+		if ($bot~parm3 <> 0)
+			isNumber $test $bot~parm3
 			if ($test)
-				if ($parm3 < 6)
-					setVar $waves $parm3
-					if ($parm4 <> 0)
-						isNumber $test $parm4
+				if ($bot~parm3 < 6)
+					setVar $waves $bot~parm3
+					if ($bot~parm4 <> 0)
+						isNumber $test $bot~parm4
 						if ($test)
-							setVar $figsperwave $parm4
+							setVar $figsperwave $bot~parm4
 						else
 							setVar $SWITCHBOARD~message "Figs per wave should be a number*"
 							gosub :SWITCHBOARD~switchboard
@@ -88,7 +88,7 @@
 	
 
 	setVar $startingLocation $player~CURRENT_PROMPT
-	setVar $PROMPT~validPrompts "Citadel"
+	setVar $bot~validPrompts "Citadel"
 	if ($startingLocation <> "Citadel")
 		setVar $SWITCHBOARD~message "Start from the Citadel Prompt.*"
 		gosub :SWITCHBOARD~switchboard
@@ -174,13 +174,13 @@
 	setVar $alien_ansi #27 & "[1;36m" & #27 & "["
 	setVar $mid_attack_mac "* y  Q Q m "
 	setVar $front_attack_mac "p "
-	gosub :quikstats
-	setVar $startingSector $CURRENT_SECTOR
+	gosub :player~quikstats
+	setVar $startingSector $player~current_sector
 		:getplanetnum
 			send "qDC "
 			waitOn "Planet #"
-			getWord CURRENTLINE $planet 2
-			stripText $planet "#"
+			getWord CURRENTLINE $planet~planet 2
+			stripText $planet~planet "#"
 			gosub :checkShip
 			setVar $enter_attack_mac "*   n n z * a z " & $maxFigAttack & "* z a z " & $maxFigAttack & "*     z  *"
 			setVar $deploy_fig_mac "  f  z  1*  z  c *  d  * "
@@ -233,13 +233,13 @@ echo $w ":" SECTOR.WARPSIN[$dropSector][$w] " " $isFigged " *"
 			setVar $i 0
 			while ($i < 10)
 				add $i 1
-				send "l  j" & #8 & $planet & "*  *  "
+				send "l  j" & #8 & $planet~planet & "*  *  "
 			end
 			gosub :getSectorLocation
-			if (($CURRENT_SECTOR <> $dropSector))
-				if ($CURRENT_SECTOR = $startingSector)
+			if (($player~current_sector <> $dropSector))
+				if ($player~current_sector = $startingSector)
 					send "'No fig at pwarp location, no attempt made. Restart when ready.*"
-				elseif ($CURRENT_SECTOR = SECTOR.WARPS[$dropSector][1])
+				elseif ($player~current_sector = SECTOR.WARPS[$dropSector][1])
 					send "'Possible SPLATTER on a planet, check for pod.*"
 				else
 					send "'Didn't make it, not sure what happened. Check ship and restart*"
@@ -256,8 +256,8 @@ echo $w ":" SECTOR.WARPSIN[$dropSector][$w] " " $isFigged " *"
 	killalltriggers
 	send "/"
 	waitOn "Sect "
-	getWord CURRENTLINE $CURRENT_SECTOR 2
-	replacetext $CURRENT_sECTOR #179&"Turns" ""
+	getWord CURRENTLINE $player~current_sector 2
+	replacetext $player~current_sector #179&"Turns" ""
 return
 
 :checkShip
@@ -283,8 +283,8 @@ return
 	gosub :getSectorLocation
     	setVar $figstodeploy 1
 	gosub :deployfigs 
-	send "'" & $CURRENT_SECTOR & "=saveme*"
-	send "'pickup " & $CURRENT_SECTOR  & " ::*"
+	send "'" & $player~current_sector & "=saveme*"
+	send "'pickup " & $player~current_sector  & " ::*"
 
 
 :waitforhelp
@@ -307,8 +307,8 @@ return
 
     :friendlyplanet
         killalltriggers
-        getText CURRENTLINE $planet "Saveme script activated - Planet " " to "
-        send "L " & $planet & "* C 'I landed on planet " & $planet & "*"
+        getText CURRENTLINE $planet~planet "Saveme script activated - Planet " " to "
+        send "L " & $planet~planet & "* C 'I landed on planet " & $planet~planet & "*"
         halt
 
     :towlocked
@@ -323,7 +323,7 @@ return
     if ($figstodeploy = 0)
         setVar $figstodeploy 1
     end
-    if (($CURRENT_SECTOR  < 11) or ($CURRENT_SECTOR  = STARDOCK))
+    if (($player~current_sector  < 11) or ($player~current_sector  = STARDOCK))
         send "'Can't deploy figs in fed*"
         return
     end
@@ -353,7 +353,7 @@ return
 
 :checkForVictimsFromCitadel
 	gosub :getSectorData
-	if ($corpieCount < $realTraderCount)
+	if ($player~corpieCount < $realTraderCount)
 		goSub :fastCitadelAttack
 		goto :checkForVictimsFromCitadel
 	end
@@ -367,7 +367,7 @@ return
 		setVar $traderData $STARTLINE&$traderData
 		getText $traderData $temp $STARTLINE $ENDLINE 
 		setVar $realTraderCount 0
-		setVar $corpieCount 0
+		setVar $player~corpieCount 0
 		while ($temp <> "")
 			getLength $STARTLINE&$temp&$ENDLINE $length
 			cutText $traderData $traderData ($length+1) 9999 
@@ -408,8 +408,8 @@ return
 				setVar $TRADERS[($realTraderCount+1)] $temp
 				setVar $TRADERS[($realTraderCount+1)][1] $tempCorp
 				add $realTraderCount 1
-				if ($tempCorp = $CORP)
-					add $corpieCount 1
+				if ($tempCorp = $player~corp)
+					add $player~corpieCount 1
 				end
 			end
 			getText $traderData $temp $STARTLINE $ENDLINE 	
@@ -527,7 +527,7 @@ return
 	pause
 	:scanningSectorStart
 		killtrigger sectorStart
-		getWord CURRENTLINE $CURRENT_SECTOR 3
+		getWord CURRENTLINE $player~current_sector 3
 		setVar $sectorData ""
 	
 	:sectorsline_cit_kill
@@ -553,14 +553,14 @@ return
 
 
 :fastCitadelAttack
-	setVar $refurbString "l "&$planet&"* m*** "
+	setVar $refurbString "l "&$planet~planet&"* m*** "
 	setVar $attackString ""
 	setVar $targetString  "q az"
 	setVar $isFound FALSE
 	getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
-	gosub :quikstats
-	if ($FIGHTERS > 100)
-		if ((($CURRENT_SECTOR > 10) AND ($CURRENT_SECTOR <> STARDOCK)) AND ($beaconPos > 0))
+	gosub :player~quikstats
+	if ($player~fighters > 100)
+		if ((($player~current_sector > 10) AND ($player~current_sector <> STARDOCK)) AND ($beaconPos > 0))
 			setVar $targetString $targetString&"* "
 		end
 	else
@@ -575,9 +575,9 @@ return
 		end
 		setVar $c 1
 		while (($c <= $realTraderCount) AND ($isFound = FALSE))
-			if ((($CURRENT_SECTOR <= 10) OR ($CURRENT_SECTOR = STARDOCK)) AND $TRADERS[$c][2] = TRUE)
+			if ((($player~current_sector <= 10) OR ($player~current_sector = STARDOCK)) AND $TRADERS[$c][2] = TRUE)
 				setVar $targetString $targetString&"* "
-			elseif ($TRADERS[$c][1] = $CORP)
+			elseif ($TRADERS[$c][1] = $player~corp)
 				setVar $targetString $targetString&"* "	
 			elseif (($targetingCorp = TRUE) AND ($TRADERS[$c][1] <> $target))
 				setVar $targetString $targetString&"* "
@@ -610,37 +610,37 @@ return
 return
 
 # -=-=-=-=- quikstats -=-=-=-=-=-=-
-:quikstats
+:player~quikstats
 	
-	setVar $CURRENT_SECTOR 0
-	setVar $TURNS 0
-	setVar $CREDITS 0
-	setVar $FIGHTERS 0
-	setVar $SHIELDS 0
-	setVar $TOTAL_HOLDS 0
-	setVar $ORE_HOLDS 0
-	setVar $ORGANIC_HOLDS 0
-	setVar $EQUIPMENT_HOLDS 0
-	setVar $COLONIST_HOLDS 0
-	setVar $PHOTONS 0
-	setVar $ARMIDS 0
-	setVar $LIMPETS 0
-	setVar $GENESIS 0
-	setVar $TWARP_TYPE 0
-	setVar $CLOAKS 0
-	setVar $BEACONS 0
-	setVar $ATOMIC 0
-	setVar $CORBO 0
-	setVar $EPROBES 0
-	setVar $MINE_DISRUPTORS 0
-	setVar $PSYCHIC_PROBE "NO"
-	setVar $PLANET_SCANNER "NO"
-	setVar $SCAN_TYPE "NONE"
-	setVar $ALIGNMENT 0
-	setVar $EXPERIENCE 0
-	setVar $CORP 0
-	setVar $SHIP_NUMBER 0
-	setVar $TURNS_PER_WARP 0
+	setVar $player~current_sector 0
+	setVar $player~turns 0
+	setVar $player~credits 0
+	setVar $player~fighters 0
+	setVar $player~shields 0
+	setVar $player~total_holds 0
+	setVar $player~ore_holds 0
+	setVar $player~organic_holds 0
+	setVar $player~equipment_holds 0
+	setVar $player~colonist_holds 0
+	setVar $player~photons 0
+	setVar $player~armids 0
+	setVar $player~limpets 0
+	setVar $player~genesis 0
+	setVar $player~twarp_type 0
+	setVar $player~cloaks 0
+	setVar $player~beacons 0
+	setVar $player~atomic 0
+	setVar $player~corbo 0
+	setVar $player~eprobes 0
+	setVar $player~mine_disruptors 0
+	setVar $player~psychic_probe "NO"
+	setVar $player~planet_scanner "NO"
+	setVar $player~scan_type "NONE"
+	setVar $player~alignment 0
+	setVar $player~experience 0
+	setVar $player~corp 0
+	setVar $player~ship_number 0
+	setVar $player~turns_PER_WARP 0
 
 :getstats
 	killAllTriggers
@@ -675,59 +675,59 @@ return
 		setVar $current_word 0
 		while ($wordy <> "@@@")
 			if ($wordy = "SECT")
-				getWord $stats $CURRENT_SECTOR   ($current_word + 1)
+				getWord $stats $player~current_sector   ($current_word + 1)
 			elseif ($wordy = "TURNS")
-				getWord $stats $TURNS  ($current_word + 1)
+				getWord $stats $player~turns  ($current_word + 1)
 			elseif ($wordy = "CREDS")
-				getWord $stats $CREDITS  ($current_word + 1)
+				getWord $stats $player~credits  ($current_word + 1)
 			elseif ($wordy = "FIGS")
-				getWord $stats $FIGHTERS   ($current_word + 1)
+				getWord $stats $player~fighters   ($current_word + 1)
 			elseif ($wordy = "SHLDS")
-				getWord $stats $SHIELDS  ($current_word + 1)
+				getWord $stats $player~shields  ($current_word + 1)
 			elseif ($wordy = "HLDS")
-				getWord $stats $TOTAL_HOLDS   ($current_word + 1)
+				getWord $stats $player~total_holds   ($current_word + 1)
 			elseif ($wordy = "ORE")
-				getWord $stats $ORE_HOLDS    ($current_word + 1)
+				getWord $stats $player~ore_holds    ($current_word + 1)
 			elseif ($wordy = "ORG")
-				getWord $stats $ORGANIC_HOLDS    ($current_word + 1)
+				getWord $stats $player~organic_holds    ($current_word + 1)
 			elseif ($wordy = "EQU")
-				getWord $stats $EQUIPMENT_HOLDS    ($current_word + 1)
+				getWord $stats $player~equipment_holds    ($current_word + 1)
 			elseif ($wordy = "COL")
-				getWord $stats $COLONIST_HOLDS    ($current_word + 1)
+				getWord $stats $player~colonist_holds    ($current_word + 1)
 			elseif ($wordy = "PHOT")
-				getWord $stats $PHOTONS   ($current_word + 1)
+				getWord $stats $player~photons   ($current_word + 1)
 			elseif ($wordy = "ARMD")
-				getWord $stats $ARMIDS   ($current_word + 1)
+				getWord $stats $player~armids   ($current_word + 1)
 			elseif ($wordy = "LMPT")
-				getWord $stats $LIMPETS   ($current_word + 1)
+				getWord $stats $player~limpets   ($current_word + 1)
 			elseif ($wordy = "GTORP")
-				getWord $stats $GENESIS  ($current_word + 1)
+				getWord $stats $player~genesis  ($current_word + 1)
 			elseif ($wordy = "TWARP")
-				getWord $stats $TWARP_TYPE  ($current_word + 1)
+				getWord $stats $player~twarp_type  ($current_word + 1)
 			elseif ($wordy = "CLKS")
-				getWord $stats $CLOAKS   ($current_word + 1)
+				getWord $stats $player~cloaks   ($current_word + 1)
 			elseif ($wordy = "BEACNS")
-				getWord $stats $BEACONS ($current_word + 1)
+				getWord $stats $player~beacons ($current_word + 1)
 			elseif ($wordy = "ATMDT")
-				getWord $stats $ATOMIC  ($current_word + 1)
+				getWord $stats $player~atomic  ($current_word + 1)
 			elseif ($wordy = "CORBO")
-				getWord $stats $CORBO   ($current_word + 1)
+				getWord $stats $player~corbo   ($current_word + 1)
 			elseif ($wordy = "EPRB")
-				getWord $stats $EPROBES   ($current_word + 1)
+				getWord $stats $player~eprobes   ($current_word + 1)
 			elseif ($wordy = "MDIS")
-				getWord $stats $MINE_DISRUPTORS   ($current_word + 1)
+				getWord $stats $player~mine_disruptors   ($current_word + 1)
 			elseif ($wordy = "PSPRB")
-				getWord $stats $PSYCHIC_PROBE  ($current_word + 1)
+				getWord $stats $player~psychic_probe  ($current_word + 1)
 			elseif ($wordy = "PLSCN")
-				getWord $stats $PLANET_SCANNER  ($current_word + 1)
+				getWord $stats $player~planet_scanner  ($current_word + 1)
 			elseif ($wordy = "LRS")
-				getWord $stats $SCAN_TYPE    ($current_word + 1)
+				getWord $stats $player~scan_type    ($current_word + 1)
 			elseif ($wordy = "ALN")
-				getWord $stats $ALIGNMENT    ($current_word + 1)
+				getWord $stats $player~alignment    ($current_word + 1)
 			elseif ($wordy = "EXP")
-				getWord $stats $EXPERIENCE    ($current_word + 1)
+				getWord $stats $player~experience    ($current_word + 1)
 			elseif ($wordy = "CORP")
-				getWord $stats $CORP   ($current_word + 1)
+				getWord $stats $player~corp   ($current_word + 1)
 			elseif ($wordy = "SHIP")
 				getWord $stats $SHIP   ($current_word + 1)
 			end
@@ -738,11 +738,8 @@ return
 
 
 
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-include "source\module_includes\prompt"
+include "source\bot_includes\player\quikstats\player"

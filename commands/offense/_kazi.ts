@@ -12,7 +12,7 @@
 	setVar $BOT~help[10]  $BOT~tab&"    [zdy]                         " 
 	setVar $BOT~help[11]  $BOT~tab&"       - Option to blow planet as soon as you land.   " 
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 	
 # ======================     START KAMIKAZE (KAZI) SUBROUTINE    ==========================
 :kamikaze
@@ -232,10 +232,9 @@ return
 # ======================     END KAMIKAZE (KAZI) SUBROUTINE    ==========================
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-

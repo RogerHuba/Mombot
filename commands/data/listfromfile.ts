@@ -12,7 +12,7 @@
 	setVar $BOT~help[4]   $BOT~tab&"                     "
 	setVar $BOT~help[5]   $BOT~tab&"             file - path to target file"
 	
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "File List Reader"
 	gosub :BOT~banner
@@ -68,8 +68,7 @@
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-

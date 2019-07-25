@@ -8,7 +8,7 @@ logging off
 	setvar $bot~command "kill"
 	setVar $BOT~help[1]  $BOT~tab&"kill   "
 	setVar $BOT~help[2]  $BOT~tab&"    Kills any enemy players.   "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 #============================== START AUTO CAPTURE =======================================
@@ -28,7 +28,7 @@ logging off
 			setvar $furb true
 		end
 
-		gosub :PLAYER~current_prompt
+		gosub  :player~currentPrompt
 		setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 		if ($PLAYER~startingLocation <> "Command")
 			if ($PLAYER~startingLocation = "Citadel")
@@ -83,12 +83,11 @@ logging off
 #================================ END AUTO CAPTURE ===================================
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\bot_includes\combat\init\combat"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-include "source\bot_includes\combat"
-
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastattack\combat"

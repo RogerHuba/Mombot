@@ -3,15 +3,15 @@
     setvar $bot~command "refurb"
     setVar $BOT~help[1]  $BOT~tab&"refurb - Auto buys fighters and shields "
     setVar $BOT~help[2]  $BOT~tab&"    {seek} - attempts to find class 9 or 0 port"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 :scrub
 	setVar $message ""
-	gosub :PLAYER~current_prompt
+	gosub  :player~currentPrompt
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 	if (($startingLocation <> "Command") AND ($startingLocation <> "Citadel"))
-		gosub :PLAYER~current_prompt
+		gosub  :player~currentPrompt
 		setVar $BOT~validPrompts "Citadel Command"
 		gosub :BOT~checkStartingPrompt
 	end
@@ -34,8 +34,8 @@
 			gosub :PLAYER~quikstats
 			setVar $back $PLAYER~CURRENT_SECTOR
 			setVar $PLAYER~warpto $MAP~stardock
-			gosub :tactics~twarp
-			gosub :PLAYER~current_prompt
+			gosub :player~twarp
+			gosub  :player~currentPrompt
 			if ($PLAYER~twarpSuccess = TRUE)
 				send "p ss ys *p"
 			else
@@ -73,7 +73,7 @@
 		if ($BOT~parm1 = "seek")
 			gosub :PLAYER~quikstats
 			setVar $PLAYER~warpto $back
-			gosub :tactics~twarp
+			gosub :player~twarp
 			if ($PLAYER~twarpSuccess <> TRUE)
 				setVar $SWITCHBOARD~message $PLAYER~msg&"*"
 				gosub :SWITCHBOARD~switchboard
@@ -95,11 +95,12 @@ halt
 
 
 # includes:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\tactics"
-include "source\bot_includes\map"
-include "source\bot_includes\ship"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\currentprompt\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\module_includes\prompt"
+include "source\bot_includes\planet\landingsub\planet"

@@ -6,7 +6,7 @@
     setVar $BOT~help[4]  $BOT~tab&"    p [sector] - normal planet warp"
     setVar $BOT~help[5]  $BOT~tab&"    p planet {planet id} - planet warp to last known "
     setVar $BOT~help[6]  $BOT~tab&"                           location of the planet id"
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 # ======================     START PWARP SUBROUTINES     =================
 :pwarp
@@ -14,7 +14,7 @@
     killalltriggers
     setvar $player~save true
     if ($bot~parm1 <> $PLAYER~CURRENT_SECTOR)
-        gosub :PLAYER~current_prompt
+        gosub  :player~currentPrompt
     else
         gosub :PLAYER~quikstats
     end
@@ -123,10 +123,11 @@ return
 
 
 # includes:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\map"
-include "source\bot_includes\ship"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\currentprompt\player"
+include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\module_includes\prompt"
+include "source\module_includes\bot\removefigfromdata\bot"
+include "source\module_includes\bot\addfigtodata\bot"

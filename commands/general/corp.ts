@@ -10,7 +10,7 @@
 	setVar $BOT~help[5]  $BOT~tab&"      password    - The corp password                              "
 	setVar $BOT~help[6]  $BOT~tab&"*NOTE: If corp and password were previously used via bot           "
 	setVar $BOT~help[7]  $BOT~tab&"       the corp number and password will be saved                  "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 # ============================== Corp Join/Drop (CORP) ==============================
@@ -120,10 +120,7 @@
 
 
 # includes:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\map"
-include "source\bot_includes\ship"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\module_includes\prompt"

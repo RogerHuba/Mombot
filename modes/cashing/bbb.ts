@@ -16,7 +16,7 @@ gosub :BOT~loadVars
 	setVar $BOT~help[12] $BOT~tab&"    {org_holds}   Number of organics to buy each loop; default 6"
 	setVar $BOT~help[13] $BOT~tab&"    {equip_holds} Number of equip to buy each loop; default 3"
 	setVar $BOT~help[14] $BOT~tab&"    {jet}         No planet? no worries, we will just litter.. :("
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Buy Buy Buy"
 	gosub :BOT~banner
@@ -177,13 +177,7 @@ while ($y < $trips)
 	end
 
 	send $oreholds "*"
-	if ($internalHaggle = TRUE)
-		gosub :PLAYER~startHaggle
-	else
-		waitfor "How many holds of Fuel Ore do you"
-		waitfor "You have"
-	end
-	gosub :weareselling
+	gosub :PLAYER~startHaggle
 	if ($quant < $org_holds)
 		setvar $switchboard~message "Low on available organics, Halting...*"
 		gosub :switchboard~switchboard
@@ -193,13 +187,7 @@ while ($y < $trips)
 	end
 
 	send $org_holds "*"
-	if ($internalHaggle = TRUE)
-		gosub :PLAYER~startHaggle
-	else
-		waitfor "How many holds of Organics do you want"
-		waitfor "You have"
-	end
-	gosub :weareselling
+	gosub :PLAYER~startHaggle
 	if ($quant < $equip_holds)
 		setvar $switchboard~message "Low on available equipment, Halting...*"
 		gosub :switchboard~switchboard
@@ -208,13 +196,7 @@ while ($y < $trips)
 		halt
 	end
 	send $equip_holds "*"
-	if ($internalHaggle = TRUE)
-		gosub :PLAYER~startHaggle
-	else
-		waitfor "How many holds of Equipment do you wa"
-		waitfor "You have"
-	end
-
+	gosub :PLAYER~startHaggle
 	gosub :player~quikstats
 
 
@@ -294,6 +276,11 @@ return
 halt
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
+include "source\bot_includes\player\voidadjacent\player"
+include "source\bot_includes\player\clearadjacent\player"
+include "source\bot_includes\player\starthaggle\player"

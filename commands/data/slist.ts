@@ -4,7 +4,7 @@
 	setVar $BOT~help[1]  $BOT~tab&"Ship list"
 	setVar $BOT~help[2]  $BOT~tab&"  Displays ship list on subspace"
 	setVar $BOT~help[3]  $BOT~tab&"    {fed} - display on fed space"
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 
 #=============================== SS SCANNING =============================================
@@ -21,14 +21,14 @@
 		if (($scan_macro = " sh") and (($PLAYER~SCAN_TYPE = "None") OR ($PLAYER~SCAN_TYPE = "Density")))
 				goto :no_scanner_available1
 		end
-	gosub :PLAYER~current_prompt
+	gosub  :player~currentPrompt
 	setArray $scan_array 1000
-	setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
+	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
 	if ($scan_macro = "") OR ($scan_macro = 0)
 		setVar $scan_macro " sd* "
 	end
-	setVar $PROMPT~validPrompts "Citadel Command"
-	gosub :PROMPT~checkStartingPrompt
+	setVar $bot~validPrompts "Citadel Command"
+	gosub :bot~checkStartingPrompt
 	if ($PLAYER~startingLocation = "Citadel")
 		if ($scan_macro = "d")
 			setVar $scan_macro "s"
@@ -192,7 +192,7 @@
 			setVar $LandOn $bot~parm1
 			setVar $planet~planet $bot~parm1
 			gosub :PLANET~landingSub
-			gosub :PLAYER~current_prompt
+			gosub  :player~currentPrompt
 			if ($PLAYER~current_prompt = "Citadel")
 				send "q "
 				waitOn "Planet command ("
@@ -283,10 +283,11 @@ return
 #================================ END SS SCANNER =======================================    
 
 # includes:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\map"
-include "source\bot_includes\ship"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\currentprompt\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\module_includes\prompt"

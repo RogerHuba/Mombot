@@ -90,9 +90,9 @@
     if (($test = FALSE) OR ($parm1 = 0))
         setVar $parm1 1
     end
-    setVar $PROMPT~startingLocation $PLAYER~CURRENT_PROMPT
-    setVar $PROMPT~validPrompts "Command Citadel"
-    gosub :PROMPT~checkStartingPrompt
+    setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+    setVar $bot~validPrompts "Command Citadel"
+    gosub :bot~checkStartingPrompt
     if ($PLAYER~startingLocation = "Citadel")
         send "q"
         gosub :PLANET~getPlanetInfo

@@ -5,7 +5,7 @@ setVar $BOT~help[1] $BOT~tab&"Uses ecolo {all}"
 setVar $BOT~help[2] $BOT~tab&"Uses E-warp to colonize.  For red or non-twarp ships."
 setVar $BOT~help[3] $BOT~tab&"   Options:"
 setVar $BOT~help[4] $BOT~tab&"   Will attempt to fill all planets in sector owned by you."
-gosub :BOT~help_file
+gosub :bot~helpfile
 
 setVar $BOT~script_title "E-Colonizer"
 gosub :BOT~banner

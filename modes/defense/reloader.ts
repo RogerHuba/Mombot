@@ -13,7 +13,7 @@
 	setVar $BOT~help[10] $BOT~tab&"           [topoff]   Uses fighters in sector first "
 	setVar $BOT~help[11] $BOT~tab&"              [fig]   Place fighter if sector figs attacked "
 	setVar $BOT~help[11] $BOT~tab&"           [noland]   Do not land - should be running citfill "
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Reloader"
 	gosub :BOT~banner
@@ -217,7 +217,7 @@ goto :_START_
 	gosub :ship~getshipstats
 
 	if ($planet~planet_fighters > 0)
-		setvar $switchboard~message "Reloader "&$VERSION&" Active - Using Planet "&$planet~planet&" with "&$planet~PLANET_FIGHTERS&" fighters.*"
+		setvar $switchboard~message "Reloader "&$VERSION&" Active - Using Planet "&$planet~planet&" with "&$planet~planet_FIGHTERS&" fighters.*"
 	else
 		setvar $switchboard~message "Reloader "&$VERSION&" Active - Using Planet "&$planet~planet&".*"
 	end
@@ -339,11 +339,11 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-
+include "source\bot_includes\planet\landingsub\planet"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipstats\ship"

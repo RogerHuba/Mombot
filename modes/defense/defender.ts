@@ -34,7 +34,7 @@
 	setVar $BOT~help[7] $BOT~tab&"    extern - stops defender 5 minutes before extern "
 	setVar $BOT~help[8] $BOT~tab&"             as defined by local system time "
 
-	gosub :BOT~help_file
+	gosub :bot~helpfile
 
 	setvar $script_ver "Grid Defender"
 	setVar $BOT~script_title $script_ver
@@ -441,16 +441,14 @@ return
 
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\module_includes\defender\killing"
-include "source\module_includes\defender\photon"
-include "source\module_includes\defender\navigate"
-include "source\module_includes\defender\restock"
-include "source\bot_includes\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
-include "source\bot_includes\sector"
-include "source\bot_includes\combat"
-
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipcapstats\ship"
+include "source\bot_includes\ship\loadshipinfo\ship"
+include "source\bot_includes\ship\getshipstats\ship"

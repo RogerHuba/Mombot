@@ -142,7 +142,7 @@ goto :buildFigArray
     killalltriggers
     getword currentline $limpetAmount 2
     add $limpetTotal $limpetAmount
-    add $limpetSectors 1
+    add $player~limpetsectors 1
     goto :chkLimpets
 
 
@@ -177,7 +177,7 @@ if ($minesDeployed = "Yes")
    send " ------------------ *"
    send " Mines Deployed  *"
    send " ------------------*"
-   send "  Limpet mines in " $limpetSectors " sectors totaling " $limpetTotal " mines.*"
+   send "  Limpet mines in " $player~limpetsectors " sectors totaling " $limpetTotal " mines.*"
    send "  Aramid mines in " $aramidSectors " sectors totaling " $aramidTotal " mines.*"
 end
 send " *"
@@ -342,18 +342,18 @@ end
      send " Corp fighters: " $totalCorpFigs " (" (($totalCorpFigs*100)/$gameFighters) "%)" $padL "Game fighters:  " $gameFighters "*"
      send " Corp planets: "
      setVar $i 1
-     setVar $corpPlanets 0
-     setVar $corpCits 0
+     setVar $player~corpPlanets 0
+     setVar $player~corpCits 0
      while ($i <= 7)
-           add $corpPlanets $cits[$i]
+           add $player~corpPlanets $cits[$i]
            add $i 1
      end
      setVar $i 2
      while ($i <= 7)
-           add $corpCits $cits[$i]
+           add $player~corpCits $cits[$i]
            add $i 1
      end
-     send $corpPlanets " (" $corpCits ") Citadels    Game planets: " $gamePlanets " (" $gameCitadels ") Citadels*"
+     send $player~corpPlanets " (" $player~corpCits ") Citadels    Game planets: " $gamePlanets " (" $gameCitadels ") Citadels*"
 
   send " *"
   send "<--------------------------- Promethius ---------------------------->*"
@@ -602,7 +602,7 @@ setVar $winDisp $winDisp & "  " & $numFig & " Total Fighters Deployed*"
 if ($minesDeployed = "Yes")
    setVar $winDisp $winDisp &  " *"
    setVar $winDisp $winDisp &  " ------------------------ *" & " Mines Deployed  *" &  " ------------------------*"
-   setVar $winDisp $winDisp &  "  Limpet mines in " & $limpetSectors & " sectors totaling " & $limpetTotal & " mines.*"
+   setVar $winDisp $winDisp &  "  Limpet mines in " & $player~limpetsectors & " sectors totaling " & $limpetTotal & " mines.*"
    setVar $winDisp $winDisp &  "  Aramid mines in " & $aramidSectors & " sectors totaling " & $aramidTotal & " mines.*"
 end
 setVar $winDisp $winDisp &  "*" &  " ------------------------ *"
@@ -723,9 +723,5 @@ end
 halt
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\bot_includes\ship"
-include "source\bot_includes\map"
+include "source\module_includes\bot\loadvars\bot"
+include "source\bot_includes\player\quikstats\player"

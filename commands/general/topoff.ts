@@ -1,16 +1,16 @@
     gosub :BOT~loadVars
 
     setVar $BOT~help[1]  $BOT~tab&"topoff - fill up ship with fighters from sector "
-    gosub :BOT~help_file
+    gosub :bot~helpfile
 
 #============================== START TOPOFF (TOPOFF) ==============================
 :topoff
     killalltriggers
-    gosub :PLAYER~current_prompt
-    setVar $PROMPT~startingLocation $PLAYER~current_prompt
-    setVar $PROMPT~validPrompts "Citadel Command"
-    gosub :PROMPT~checkStartingPrompt
-    if ($PROMPT~startingLocation = "Citadel")
+    gosub  :player~currentPrompt
+    setVar $bot~startingLocation $PLAYER~current_prompt
+    setVar $bot~validPrompts "Citadel Command"
+    gosub :bot~checkStartingPrompt
+    if ($bot~startingLocation = "Citadel")
         send " q "
         gosub :PLANET~getPlanetInfo
         send " q "
@@ -36,7 +36,7 @@
     end
     setVar $to_drop $bot~parm1
     gosub :do_topoff
-    if ($PROMPT~startingLocation = "Citadel")
+    if ($bot~startingLocation = "Citadel")
         gosub :PLANET~landingSub
     end
     setVar $SWITCHBOARD~message "TopOff complete Left "&$ftrs_to_leave&" fighters.*"
@@ -68,10 +68,10 @@ return
 
 
 # includes:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\map"
-include "source\bot_includes\ship"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\currentprompt\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\switchboard"
-include "source\bot_includes\planet"
-include "source\module_includes\prompt"
