@@ -398,7 +398,7 @@ if ($pos > 0)
     :listokaynow
     listActiveScripts $scripts
     while ($i <= $scripts)
-        getWordPos "<><><>"&$scripts[$i] $pos "<><><>__mom_bot"
+        getWordPos "<><><>"&$scripts[$i] $pos "<><><>mombot"
         if ($pos > 0)
             if ($rebooted = FALSE)
 			    setdelaytrigger waitforreboot :okaynow 3000
@@ -430,7 +430,7 @@ pause
     :listokaynowemergency
     listActiveScripts $scripts
     while ($i <= $scripts)
-        getWordPos "<><><>"&$scripts[$i] $pos "<><><>__mom_bot"
+        getWordPos "<><><>"&$scripts[$i] $pos "mombot"
         if ($pos > 0)
             stop $scripts[$i]
             if ($found = FALSE)

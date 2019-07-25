@@ -232,11 +232,9 @@ return
 		echo $scripts[$a] "*"
 		cuttext $scripts[$a] $ss 1 3
 
-		getWordPos $scripts[$a] $mombos "mom_bot"
+		getWordPos $scripts[$a] $mombos "mombot"
 		if ($mombos > 0)
-			cuttext $scripts[$a] $ss 3 40
-			setVar $momname "__"&$ss
-			echo "found: " $momname "*"
+			echo "found: " $scripts[$a] "*"
 		end
 		if ($ss <> $thisScriptName)
 			stop $scripts[$a]

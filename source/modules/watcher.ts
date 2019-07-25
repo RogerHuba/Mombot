@@ -362,7 +362,7 @@ if ($pos > 0)
     setVar $rebooted FALSE
     echo "Mombot rebooting..**"
     while ($i <= $scripts)
-        getWordPos "<><><>"&$scripts[$i] $pos "<><><>__mom_bot"
+        getWordPos "<><><>"&$scripts[$i] $pos "<><><>mombot"
         if ($pos > 0)
             if ($rebooted = FALSE)
                 load "scripts\mombot\"&$scripts[$i]

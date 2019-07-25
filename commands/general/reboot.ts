@@ -14,7 +14,7 @@
     :listokaynow
     listActiveScripts $scripts
     while ($i <= $scripts)
-        getWordPos "<><><>"&$scripts[$i] $pos "<><><>__mom_bot"
+        getWordPos "<><><>"&$scripts[$i] $pos "<><><>mombot"
         if ($pos > 0)
             stop $scripts[$i]
             if ($found = FALSE)

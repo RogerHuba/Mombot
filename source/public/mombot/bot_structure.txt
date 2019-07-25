@@ -1,5 +1,5 @@
 twx\scripts
-	__mom_bot3_23 - Main Bot file to start script
+	mombot - Main Bot file to start script
 twx\scripts\mombot\Commands\Cashing
 	mega - Completes a megarob on a port
 	rob - Completes a standard rob on a port

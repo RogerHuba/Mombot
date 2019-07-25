@@ -59,7 +59,7 @@
 	while ($i <= $scripts)
 		lowerCase $scripts[$i]
 		getWordPos "<><><>"&$scripts[$i] $pos "<><><>"&$BOT~parm1
-		getWordPos "<><><>"&$scripts[$i] $pos2 "<><><>__mom_bot"
+		getWordPos "<><><>"&$scripts[$i] $pos2 "<><><>mombot"
 		if (($pos > 0) and ($pos2 <= 0))
 			stop $scripts[$i]
 			setVar $found TRUE
