@@ -274,6 +274,10 @@ return
 return
 :load_bot
 #####=============================================== BOT STARTUP FUNCTIONS ============================================#####
+	# reset do not resuscitate when bot starts #
+
+	setvar $do_not_resuscitate false
+	savevar $do_not_resuscitate
 
 	gosub :MENUS~doSplashScreen
 	fileExists $exists1 "scripts/mombot/hotkeys.cfg"

@@ -19,33 +19,33 @@ setSectorParameter 8 "MSLSEC" TRUE
 setSectorParameter 9 "MSLSEC" TRUE
 setSectorParameter 10 "MSLSEC" TRUE
 if ($MAP~stardock > 0)
-		setSectorParameter $MAP~stardock "MSLSEC" TRUE
+	setSectorParameter $MAP~stardock "MSLSEC" TRUE
 end
 
 
 
-	setTextLineTrigger  federase        :fedEraseFig        "The Federation We destroyed your Corp's "
-	setTextLineTrigger  fighterserase       :eraseFig       " of your fighters in sector "
-	setTextLineTrigger  warpfigerase        :eraseWarpFig       "You do not have any fighters in Sector "
-	setTextLineTrigger  pgridadd    :pgridadd   "Successfully P-gridded into sector "
-	setTextLineTrigger  pgridremove    :pgridremove   "Unsuccessful P-grid into sector "
-	setTextLineTrigger  clearbusts      :erasebusts     $bot~subspace&">[Busted:"
-	setTextLineTrigger  addfigs      :addFigs     $bot~subspace&">[Figged:"
-	setTextLineTrigger  planetmoved      :updatePlanetMovement     " moved to sector "
-	setTextLineTrigger      fightersadd     :addFig         "Should they be (D)efensive, (O)ffensive or Charge a (T)oll ?"
-	setTextLineTrigger  getPlanetNumber :setPlanetNumber    "Planet #"
-	setTextTrigger  sectordata      :checkSectorData    "(?=Help)? :"
-	setTextLineTrigger  getshipstats    :setShipOffensiveOdds   "Offensive Odds: "
-	setTextLineTrigger  getshipmaxfighters  :setShipMaxFigAttack    " TransWarp Drive:   "
-	setTextLineTrigger  captureLevelPlanet  :captureLevelPlanet " Level "
-	setTextLineTrigger  captureNoLevelPlanet  :captureNoLevelPlanet " No Citadel"
-	setTextLineTrigger  emergency_reboot      :emergency_reboot $bot~bot_name&" "&$bot~subspace&"<EMERGENCY REBOOT>"&$bot~bot_password
-	setTextLineTrigger  shipdestroyed         :shipdestroyed "You will have to start over from scratch!"
-	setTextLineTrigger  getPlanetNumberRaw    :setPlanetNumberRaw "Land on which planet <Q to abort> ? "
-	setTextLineTrigger  getShipNumberRaw       :setShipNumberRaw "Choose which ship to beam to (Q=Quit) "
-	setdelaytrigger		checkifbotalive       :checkifbotalive 300000
-	#setTextLineTrigger  mcicneg :mcicneg    "/unit - MCIC "
-	pause
+setTextLineTrigger  federase        :fedEraseFig        "The Federation We destroyed your Corp's "
+setTextLineTrigger  fighterserase       :eraseFig       " of your fighters in sector "
+setTextLineTrigger  warpfigerase        :eraseWarpFig       "You do not have any fighters in Sector "
+setTextLineTrigger  pgridadd    :pgridadd   "Successfully P-gridded into sector "
+setTextLineTrigger  pgridremove    :pgridremove   "Unsuccessful P-grid into sector "
+setTextLineTrigger  clearbusts      :erasebusts     $bot~subspace&">[Busted:"
+setTextLineTrigger  addfigs      :addFigs     $bot~subspace&">[Figged:"
+setTextLineTrigger  planetmoved      :updatePlanetMovement     " moved to sector "
+setTextLineTrigger      fightersadd     :addFig         "Should they be (D)efensive, (O)ffensive or Charge a (T)oll ?"
+setTextLineTrigger  getPlanetNumber :setPlanetNumber    "Planet #"
+setTextTrigger  sectordata      :checkSectorData    "(?=Help)? :"
+setTextLineTrigger  getshipstats    :setShipOffensiveOdds   "Offensive Odds: "
+setTextLineTrigger  getshipmaxfighters  :setShipMaxFigAttack    " TransWarp Drive:   "
+setTextLineTrigger  captureLevelPlanet  :captureLevelPlanet " Level "
+setTextLineTrigger  captureNoLevelPlanet  :captureNoLevelPlanet " No Citadel"
+setTextLineTrigger  emergency_reboot      :emergency_reboot $bot~bot_name&" "&$bot~subspace&"<EMERGENCY REBOOT>"&$bot~bot_password
+setTextLineTrigger  shipdestroyed         :shipdestroyed "You will have to start over from scratch!"
+setTextLineTrigger  getPlanetNumberRaw    :setPlanetNumberRaw "Land on which planet <Q to abort> ? "
+setTextLineTrigger  getShipNumberRaw       :setShipNumberRaw "Choose which ship to beam to (Q=Quit) "
+setdelaytrigger		checkifbotalive       :checkifbotalive 300000
+#setTextLineTrigger  mcicneg :mcicneg    "/unit - MCIC "
+pause
 
 :mcicneg
 	cutText CURRENTLINE&"   " $spoof 1 1
@@ -453,17 +453,21 @@ pause
 	pause
 
 :checkifbotalive
-	#only bring bot back online if connected to game
-	setvar $found false
-	listActiveScripts $scripts
-	setvar $i 1
-	while (($i <= $scripts) and ($found = false))
-		getWordPos "<><><>"&$scripts[$i] $pos "mombot"
-		if ($pos > 0)
-			if ($found = FALSE)
-				setVar $found TRUE
+	loadvar $do_not_resuscitate
+	if ($do_not_resuscitate <> true)
+		setvar $found false
+		listActiveScripts $scripts
+		setvar $i 1
+		while (($i <= $scripts) and ($found = false))
+			getWordPos "<><><>"&$scripts[$i] $pos "mombot"
+			if ($pos > 0)
+				if ($found = FALSE)
+					setVar $found TRUE
+				end
 			end
+			add $i 1
 		end
+<<<<<<< HEAD
 		add $i 1
 	end
 	if ($FOUND = FALSE)
@@ -472,3 +476,12 @@ pause
 	end
 	setdelaytrigger		checkifbotalive       :checkifbotalive 300000
 	pause
+=======
+		if ($FOUND = FALSE)
+			ECHO "**"&ansi_2&"["&ansi_4&"No mombot is running, automatically booting up mombot."&ansi_2&"]**"
+			load "scripts\mombot\mombot.cts"
+		end
+		setdelaytrigger		checkifbotalive       :checkifbotalive 300000
+		pause
+	end
+>>>>>>> 5406dee4a20029e896c8b0c4d3b162540a19f089

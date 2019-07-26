@@ -237,6 +237,8 @@ return
 			echo "found: " $scripts[$a] "*"
 		end
 		if ($ss <> $thisScriptName)
+			setvar $do_not_resuscitate true
+			savevar $do_not_resuscitate
 			stop $scripts[$a]
 		end
 		add $a 1
@@ -244,6 +246,8 @@ return
 return
 
 :startbot
+	setvar $do_not_resuscitate false
+	savevar $do_not_resuscitate
 	load "scripts\mombot\" & $momname
 	halt
 return

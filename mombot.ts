@@ -17,25 +17,25 @@ goto :BOT~load_bot
 	saveVar $bot~command
 	setVar $command $bot~command
 	saveVar $command
-		saveVar $bot~user_command_line
+	saveVar $bot~user_command_line
 	saveVar $bot~user_command_line
 	setVar $switchboard~bot_name $bot~bot_name
 	saveVar $switchboard~bot_name
-		saveVar $bot~parm1
 	saveVar $bot~parm1
-		saveVar $bot~parm2
+	saveVar $bot~parm1
 	saveVar $bot~parm2
-		saveVar $bot~parm3
+	saveVar $bot~parm2
 	saveVar $bot~parm3
-		saveVar $bot~parm4
+	saveVar $bot~parm3
 	saveVar $bot~parm4
-		saveVar $bot~parm5
+	saveVar $bot~parm4
 	saveVar $bot~parm5
-		saveVar $bot~parm6
+	saveVar $bot~parm5
 	saveVar $bot~parm6
-		saveVar $bot~parm7
+	saveVar $bot~parm6
 	saveVar $bot~parm7
-		saveVar $bot~parm8
+	saveVar $bot~parm7
+	saveVar $bot~parm8
 	saveVar $bot~parm8
 	saveVar $bot~bot_turn_limit
 	saveVar $player~unlimitedGame
