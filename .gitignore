@@ -106,13 +106,14 @@ source/*.cts
 source/*includes/*/*.cts
 source/*includes/*.cts
 public/mombot/source/*includes/*.cts
-games/*/*.cfg
+games/*/*.*
 games/*/*.comms
 source/modules/*.cts
 source/modules/archive/*.cts
 source/snippets/*.cts
 help/*
 Help/*
+*.cfg
 
 # dotenv environment variables file
 .env
