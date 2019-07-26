@@ -176,6 +176,7 @@ return
 		pause
 	:getCharacter
 		getOutText $character
+		setvar $found_enter_key false
 		if ($character = #13)
 			gosub :do_enter_key
 			goto :doneSelfCommandPrompt
@@ -474,7 +475,6 @@ return
 					end
 				else
 					getwordpos $character $pos #13
-					setvar $found_enter_key false
 					if ($pos > 0)
 						setvar $found_enter_key true
 					end
