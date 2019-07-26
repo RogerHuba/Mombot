@@ -811,7 +811,7 @@ return
 			setVar $i 10
 			goto :runHotScript
 		elseif ($charCode = "63")
-			goto :HELP~echo_help
+			goto :HELP~echohelp
 		elseif (($charCode >= 49) AND ($charCode <= 57))
 			setVar $i ($charCode-48)
 			goto :runHotScript
