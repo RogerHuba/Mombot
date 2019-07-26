@@ -580,7 +580,7 @@ return
 	gosub :echoHotkeys
 	echo "*"
 	echo ANSI_12&"           "&#27&"[35m["&#27&"[32m<"&#27&"[35m]"&ANSI_15&"Game Stats                    Ship Info"&#27&"[35m["&#27&"[32m>"&#27&"[35m]*"&ANSI_7&"**"
-	setVar $options "1234567890ABCDEFGHIJKLMNOPRSTUVWX	 "
+	setVar $options "1234567890ABCDEFGHIJKLMNOPRSTUVWXYZ"&#9
 	getConsoleInput $chosen_option SINGLEKEY
 	upperCase $chosen_option
 	getWordPos $options $pos $chosen_option
@@ -602,6 +602,10 @@ return
 			upperCase $temp
 			getCharCode $temp $upper
 			setVar $key $BOT~custom_keys[$pos]
+			upperCase $key
+			getCharCode $key $old_upper
+			lowerCase $key
+			getCharCode $key $old_lower
 			if (((($BOT~hotkeys[$upper] = "0") OR ($BOT~hotkeys[$upper] = "")) AND (($BOT~hotkeys[$lower] = "0") OR ($BOT~hotkeys[$lower] = ""))) AND (($lower < 48) OR ($lower > 57)) AND ($temp <> "?"))
 				setVar $BOT~hotkeys[$old_upper] ""
 				setVar $BOT~hotkeys[$old_lower] ""
