@@ -1037,7 +1037,7 @@ return
 			elseif ($BOT~custom_keys[$i] = #32)
 				setVar $qss[$i] "TAB-Spacebar"
 			else
-				setVar $qss[$i] "XXTAB-"&$BOT~custom_keys[$i]
+				setVar $qss[$i] "TAB-"&$BOT~custom_keys[$i]
 			end
 		else
 			setVar $qss[$i] "Undefined"

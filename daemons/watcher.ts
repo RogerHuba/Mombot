@@ -467,16 +467,6 @@ pause
 			end
 			add $i 1
 		end
-<<<<<<< HEAD
-		add $i 1
-	end
-	if ($FOUND = FALSE)
-		ECHO "**"&ansi_2&"["&ansi_4&"No mombot is running, automatically booting up mombot."&ansi_2&"]**"
-		load "scripts\mombot\mombot.cts"
-	end
-	setdelaytrigger		checkifbotalive       :checkifbotalive 300000
-	pause
-=======
 		if ($FOUND = FALSE)
 			ECHO "**"&ansi_2&"["&ansi_4&"No mombot is running, automatically booting up mombot."&ansi_2&"]**"
 			load "scripts\mombot\mombot.cts"
@@ -484,4 +474,3 @@ pause
 		setdelaytrigger		checkifbotalive       :checkifbotalive 60000
 		pause
 	end
->>>>>>> 5406dee4a20029e896c8b0c4d3b162540a19f089
