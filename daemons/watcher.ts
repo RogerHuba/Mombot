@@ -43,7 +43,7 @@ setTextLineTrigger  emergency_reboot      :emergency_reboot $bot~bot_name&" "&$b
 setTextLineTrigger  shipdestroyed         :shipdestroyed "You will have to start over from scratch!"
 setTextLineTrigger  getPlanetNumberRaw    :setPlanetNumberRaw "Land on which planet <Q to abort> ? "
 setTextLineTrigger  getShipNumberRaw       :setShipNumberRaw "Choose which ship to beam to (Q=Quit) "
-setdelaytrigger		checkifbotalive       :checkifbotalive 300000
+setdelaytrigger		checkifbotalive       :checkifbotalive 60000
 #setTextLineTrigger  mcicneg :mcicneg    "/unit - MCIC "
 pause
 
@@ -481,7 +481,7 @@ pause
 			ECHO "**"&ansi_2&"["&ansi_4&"No mombot is running, automatically booting up mombot."&ansi_2&"]**"
 			load "scripts\mombot\mombot.cts"
 		end
-		setdelaytrigger		checkifbotalive       :checkifbotalive 300000
+		setdelaytrigger		checkifbotalive       :checkifbotalive 60000
 		pause
 	end
 >>>>>>> 5406dee4a20029e896c8b0c4d3b162540a19f089
