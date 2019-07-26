@@ -1028,7 +1028,7 @@ return
 	setVar $i 1
 	while ($i <= 33)
 		if (($BOT~custom_keys[$i] <> "0") AND ($BOT~custom_keys[$i] <> ""))
-			if (($BOT~custom_keys[$i] = #9) or ($BOT~custom_keys[$i] = "	")
+			if (($BOT~custom_keys[$i] = #9) or ($BOT~custom_keys[$i] = "	"))
 				setVar $qss[$i] "TAB-TAB"
 			elseif ($BOT~custom_keys[$i] = #13)
 				setVar $qss[$i] "TAB-Enter"
