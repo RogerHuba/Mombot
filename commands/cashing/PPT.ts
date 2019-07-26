@@ -32,7 +32,7 @@ gosub :BOT~loadVars
 	setVar $BOT~help[15] $BOT~tab&"    ore:x          Keep this amoutn of ore post trade."
 	setVar $BOT~help[16] $BOT~tab&"    twarp          Indicate we are PPTing between isolated ports."
 	
-	gosub :BOT~help_file
+	gosub :BOT~helpfile
 
 	setVar $BOT~script_title "Paired Port Trade"
 	gosub :BOT~banner
