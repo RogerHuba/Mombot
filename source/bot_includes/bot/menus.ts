@@ -602,10 +602,6 @@ return
 			upperCase $temp
 			getCharCode $temp $upper
 			setVar $key $BOT~custom_keys[$pos]
-			upperCase $key
-			getCharCode $key $old_upper
-			lowerCase $key
-			getCharCode $key $old_lower
 			if (((($BOT~hotkeys[$upper] = "0") OR ($BOT~hotkeys[$upper] = "")) AND (($BOT~hotkeys[$lower] = "0") OR ($BOT~hotkeys[$lower] = ""))) AND (($lower < 48) OR ($lower > 57)) AND ($temp <> "?"))
 				setVar $BOT~hotkeys[$old_upper] ""
 				setVar $BOT~hotkeys[$old_lower] ""
