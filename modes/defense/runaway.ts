@@ -383,7 +383,4 @@ return
 return
 
 include "source\bot_includes\player\quikstats\player"
-include "source\bot_includes\switchboard"
 include "source\bot_includes\player\pwarp\player"
-include "source\bot_includes\planet\getplanetinfo\planet"
-
