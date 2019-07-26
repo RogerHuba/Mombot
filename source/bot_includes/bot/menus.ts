@@ -616,6 +616,7 @@ return
 				upperCase $key
 				getCharCode $key $old_upper
 			else
+				echo "[["&$key&"]]"
 				getCharCode $key $old_lower
 				getCharCode $key $old_upper
 			end
