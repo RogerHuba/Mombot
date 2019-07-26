@@ -177,9 +177,7 @@ return
 	:getCharacter
 		getOutText $character
 		if ($character = #13)
-			echo #27&"[255D"&#27&"[255B"&#27&"[K"
-			setVar $BOT~user_command_line $BOT~promptOutput
-			gosub :doAddHistory
+			gosub :do_enter_key
 			goto :doneSelfCommandPrompt
 		end
 		if (($character = ">") AND ($BOT~charCount <= 0))
@@ -475,6 +473,11 @@ return
 						echo ANSI_10 $character
 					end
 				else
+					getwordpos $character $pos #13
+					setvar $found_enter_key false
+					if ($pos > 0)
+						setvar $found_enter_key true
+					end
 					striptext $character #27&"[A"
 					striptext $character #27&"[B"
 					striptext $character #27&"[C"
@@ -502,6 +505,11 @@ return
 					else
 						echo $prompt $BOT~promptOutput
 					end
+					if ($found_enter_key)
+						gosub :do_enter_key
+						goto :doneSelfCommandPrompt
+
+					end
 			end
 		end
 		setTextOutTrigger text :getCharacter
@@ -517,6 +525,12 @@ return
 	:doneSelfCommandPrompt
 	killtrigger text
 	killtrigger reecho
+return
+
+:do_enter_key
+	echo #27&"[255D"&#27&"[255B"&#27&"[K"
+	setVar $BOT~user_command_line $BOT~promptOutput
+	gosub :doAddHistory
 return
 # ======================     END SELF COMMAND PROMPT SUBROUTINE    ==========================
 
