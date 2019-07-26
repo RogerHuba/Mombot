@@ -206,6 +206,10 @@ goto :BOT~wait_for_command
 	setVar $BOT~user_command_line "dock_shopper"
 	goto :USER_INTERFACE~runUserCommandLine
 
+:help
+	setVar $BOT~user_command_line "help "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
+	goto :USER_INTERFACE~runUserCommandLine
+
 
 :x
 :xport
