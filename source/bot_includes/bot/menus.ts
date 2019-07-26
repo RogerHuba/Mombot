@@ -609,7 +609,6 @@ return
 				getCharCode $temp $upper
 			end
 			setVar $key $BOT~custom_keys[$pos]
-			getCharCode $key $current_character_code
 			if ($current_character_code > 10)
 				lowerCase $key
 				getCharCode $key $old_lower
