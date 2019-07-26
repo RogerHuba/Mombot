@@ -580,7 +580,7 @@ return
 	gosub :echoHotkeys
 	echo "*"
 	echo ANSI_12&"           "&#27&"[35m["&#27&"[32m<"&#27&"[35m]"&ANSI_15&"Game Stats                    Ship Info"&#27&"[35m["&#27&"[32m>"&#27&"[35m]*"&ANSI_7&"**"
-	setVar $options "1234567890ABCDEFGHIJKLMNOPRSTUVWXYZ"&#9
+	setVar $options "1234567890ABCDEFGHIJKLMNOPRSTUVWX"
 	getConsoleInput $chosen_option SINGLEKEY
 	upperCase $chosen_option
 	getWordPos $options $pos $chosen_option
@@ -597,15 +597,29 @@ return
 			gosub :BOT~killthetriggers
 			echo "*What should this hotkey be set to?*"
 			getConsoleInput $temp SINGLEKEY
-			lowerCase $temp
-			getCharCode $temp $lower
-			upperCase $temp
-			getCharCode $temp $upper
+			getCharCode $temp $current_character_code
+			if ($current_character_code > 10)
+				lowerCase $temp
+				getCharCode $temp $lower
+
+				upperCase $temp
+				getCharCode $temp $upper
+			else
+				getCharCode $temp $lower
+				getCharCode $temp $upper
+			end
 			setVar $key $BOT~custom_keys[$pos]
-			upperCase $key
-			getCharCode $key $old_upper
-			lowerCase $key
-			getCharCode $key $old_lower
+			getCharCode $key $current_character_code
+			if ($current_character_code > 10)
+				lowerCase $key
+				getCharCode $key $old_lower
+
+				upperCase $key
+				getCharCode $key $old_upper
+			else
+				getCharCode $key $old_lower
+				getCharCode $key $old_upper
+			end
 			if (((($BOT~hotkeys[$upper] = "0") OR ($BOT~hotkeys[$upper] = "")) AND (($BOT~hotkeys[$lower] = "0") OR ($BOT~hotkeys[$lower] = ""))) AND (($lower < 48) OR ($lower > 57)) AND ($temp <> "?"))
 				setVar $BOT~hotkeys[$old_upper] ""
 				setVar $BOT~hotkeys[$old_lower] ""
