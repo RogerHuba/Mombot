@@ -64,7 +64,7 @@ xcopy "..\..\source\bot_includes\player" "source\bot_includes\player" /E
 xcopy "..\..\source\bot_includes\planet" "source\bot_includes\planet" /E
 xcopy "..\..\source\bot_includes\map" "source\bot_includes\map" /E
 xcopy "..\..\source\bot_includes\ship" "source\bot_includes\ship" /E
-xcopy "..\..\source\bot_includes\bot" "source\bot_includes\game" /E
+xcopy "..\..\source\bot_includes\game" "source\bot_includes\game" /E
 xcopy "..\..\source\module_includes\bot" "source\module_includes\bot" /E
 timeout 20
 
