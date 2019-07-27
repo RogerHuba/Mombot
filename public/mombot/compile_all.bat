@@ -1,1 +1,2 @@
-for /r %%n in (*.ts) do twxc.exe "%%n"
+for /r %%n in (*mombot.ts) do twxc.exe "%%n"
+timeout 10
