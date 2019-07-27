@@ -60,9 +60,10 @@ copy "..\..\source\bot_includes\bot\help.ts" "source\bot_includes\bot\help.ts"
 copy "..\..\source\bot_includes\bot\listener.ts" "source\bot_includes\bot\listener.ts"
 copy "..\..\source\bot_includes\bot\menus.ts" "source\bot_includes\bot\menus.ts"
 copy "..\..\source\bot_includes\bot\user_interface.ts" "source\bot_includes\bot\user_interface.ts"
-copy "..\..\source\bot_includes\player" "source\bot_includes\player"
-copy "..\..\source\bot_includes\planet" "source\bot_includes\planet"
-copy "..\..\source\bot_includes\map" "source\bot_includes\map"
-copy "..\..\source\bot_includes\ship" "source\bot_includes\ship"
-copy "..\..\source\module_includes\bot" "source\module_includes\bot"
+xcopy "..\..\source\bot_includes\player" "source\bot_includes\player" /E
+xcopy "..\..\source\bot_includes\planet" "source\bot_includes\planet" /E
+xcopy "..\..\source\bot_includes\map" "source\bot_includes\map" /E
+xcopy "..\..\source\bot_includes\ship" "source\bot_includes\ship" /E
+xcopy "..\..\source\module_includes\bot" "source\module_includes\bot" /E
+timeout 20
 
