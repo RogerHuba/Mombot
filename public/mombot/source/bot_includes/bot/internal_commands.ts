@@ -135,6 +135,9 @@ goto :BOT~wait_for_command
 	gosub :msgs_on
 	goto :BOT~wait_for_command
 # ================================= END GENERAL MODE RESET ==========================================
+:help
+	setVar $BOT~user_command_line "help "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
+	goto :USER_INTERFACE~runUserCommandLine
 
 :callin
 	setVar $new_bot_team_name $BOT~parm1
