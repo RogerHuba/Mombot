@@ -4,7 +4,7 @@ reqRecording
 # Authors           : Mind Dagger / The Bounty Hunter / Lonestar
 # Contributions/QA              : Misbehavin / DaCreeper / The Butcher
 # Description           : Allows Corpies to use you while AFK and a Self Helper
-# Credits           : Oz, Zentock, SupG, Dynarri, Cherokee, Alexio, Xide, Phx, Rincrast, Voltron, Traitor, Parrothead, PSI,
+# Credits           : Oz, Zentock, SupG, Dynarri, Cherokee, Alexio, Xide, Phx, Rincrast, Voltron, Traitor, Parrothead, PSI, Elder Prophet
 
 setVar $bot~major_version   "3"
 setVar $bot~minor_version   "5beta"
@@ -106,7 +106,7 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\player\startcnsettings\player"
 include "source\bot_includes\player\getinfo\player"
-include "source\bot_includes\player\init\player"
+include "source\bot_includes\targeting\initializetargeting\targeting"
 include "source\bot_includes\player\moveintosector\player"
 include "source\bot_includes\ship\getshipcapstats\ship"
 include "source\bot_includes\ship\getshipstats\ship"

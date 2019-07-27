@@ -67,5 +67,5 @@
 	setVar $ranks[46] 	"36mAdmiral"
 	setVar $ENDLINE 	"_ENDLINE_"
 	setVar $STARTLINE 	"_STARTLINE_"
-	gosub :ship~getShipStats
+	setVar $lastTarget  ""
 return

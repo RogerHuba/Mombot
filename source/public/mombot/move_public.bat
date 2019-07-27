@@ -60,4 +60,9 @@ xcopy "..\mombot\source\bot_includes\bot\help.ts" "source\bot_includes\bot\help.
 xcopy "..\mombot\source\bot_includes\bot\listener.ts" "source\bot_includes\bot\listener.ts"
 xcopy "..\mombot\source\bot_includes\bot\menus.ts" "source\bot_includes\bot\menus.ts"
 xcopy "..\mombot\source\bot_includes\bot\user_interface.ts" "source\bot_includes\bot\user_interface.ts"
+xcopy "..\mombot\source\bot_includes\player" "source\bot_includes\player"
+xcopy "..\mombot\source\bot_includes\planet" "source\bot_includes\planet"
+xcopy "..\mombot\source\bot_includes\map" "source\bot_includes\map"
+xcopy "..\mombot\source\bot_includes\ship" "source\bot_includes\ship"
+xcopy "..\mombot\source\module_includes\bot" "source\module_includes\bot"
 
