@@ -32,6 +32,7 @@ copy "..\..\commands\resource\_dock_shopper.cts" "commands\resource\_dock_shoppe
 copy "..\..\commands\cashing\mega.cts" "commands\cashing\mega.cts"
 copy "..\..\commands\cashing\tricon.ts" "commands\cashing\tricon.cts"
 copy "..\..\commands\general\tow.cts" "commands\general\tow.cts"
+copy "..\..\commands\general\help.cts" "commands\general\help.cts"
 copy "..\..\commands\cashing\neg.cts" "commands\cashing\neg.cts"
 copy "..\..\commands\cashing\rob.cts" "commands\cashing\rob.cts"
 copy "..\..\commands\cashing\ppt.cts" "commands\cashing\ppt.cts"
