@@ -465,7 +465,6 @@ return
 	setVar $PLAYER~PLANET_SCANNER      "No"
 	setVar $PLAYER~SCAN_TYPE       "None"
 # ============================ END QUIKSTAT VARIABLES ==========================
-	gosub :targeting~initializetargeting
 # =============================== BOT STARTUP =================================
 :getInitial_Settings
 	setvar $connectivity~relogging false

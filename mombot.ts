@@ -11,6 +11,7 @@ setVar $bot~minor_version   "5beta"
 savevar $bot~major_version
 savevar $bot~minor_version
 
+gosub :targeting~initializetargeting
 goto :BOT~load_bot
 
 :MAIN~module_vars
