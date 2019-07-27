@@ -1,4 +1,4 @@
-gosub :player~init 
+gosub :targeting~initializetargeting 
 
 window COMS 250 400 "Who's Playing?" ONTOP
 setwindowcontents COMS "Starting up..*"

@@ -42,7 +42,7 @@ systemscript
 window COMS 280 650 "Stats" ONTOP
 gosub :update_window
 
-gosub :player~init 
+gosub :targeting~initializetargeting 
 
 :start_over
     setVar $player~current_prompt      "Undefined"

@@ -12,8 +12,12 @@
 		setVar $emptyShipCount  0
 		setVar $containsBeacon  FALSE
 		setArray $TRADERS 	200
+		setArray $TRADERS   50
+		setArray $FAKETRADERS   50
+		setArray $EMPTYSHIPS   100
+		setVar $ranksLength     46
+
 	#The ranks[] array is used for stripping ranks to get the name of the trader (for targeting purposes)
-		setVar $ranksLength 	47
 	setArray $ranks 	$ranksLength
 	setVar $ranks[1] 	"36mCivilian"
 	setVar $ranks[2] 	"36mPrivate 1st Class"
