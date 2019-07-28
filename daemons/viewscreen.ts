@@ -740,6 +740,7 @@ return
     end
 
     setVar $output $output&ANSI_15&"-----------------------------------------------------------------------------------------------------------------------------*"
+    loadvar $bot~subspace
     setVar $output $output&ANSI_12&" "&#27&"[35m["&#27&"[32m'"&#27&"[35m]"&ANSI_15&"Subspace ("&$BOT~subspace&")      "&#27&"[35m["&#27&"[32m`"&#27&"[35m]"&ANSI_15&"Fedspace      "&#27&"[35mPage ["&#27&"[32mU"&#27&"[35m]p Chat History   Page "&#27&"[35m["&#27&"[32mD"&#27&"[35m]own Chat History  "
 
     if ($battle_screen = true)
