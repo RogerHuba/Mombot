@@ -3,7 +3,7 @@ gosub :BOT~loadVars
 
 setvar $filter ""
 if (($bot~parm1 <> "") and ($bot~parm1 <> "0"))
-	setvar $filter "*"&$bot~parm1&"*"
+	setvar $filter $bot~parm1
 else
 	setvar $filter "*"
 end
