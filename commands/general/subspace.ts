@@ -25,7 +25,18 @@ else
 	savevar $bot~subspace
 	setVar $SWITCHBOARD~message "Subpace channel changing... *"
 	gosub :SWITCHBOARD~switchboard	
-	send "cn4"&$BOT~subspace&"* q q "
+	send "cn4"
+	settextlinetrigger 1 :bad "You cannot change the sub-space radio channel for another"
+	settextlinetrigger 2 :good "Enter a number from 0 to "
+	pause
+
+	:bad
+		setVar $SWITCHBOARD~message "Too soon to change the subspace channel.  Try again later.*"
+		gosub :SWITCHBOARD~switchboard	
+		send "q q "
+		halt
+	:good
+		send &$BOT~subspace&"* q q "
 end
 
 halt
