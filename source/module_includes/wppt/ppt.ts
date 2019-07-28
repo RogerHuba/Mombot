@@ -117,6 +117,17 @@
   divide $BuyAmountA $X
   divide $BuyAmountB $X
   
+if ($nohaggle <> true)
+	gosub :player~isEpHaggle
+	if ($player~isEphaggle)
+		setVar $Haggle~HaggleFactor 7
+	else
+		setVar $Haggle~HaggleFactor 0
+	end
+else
+	setVar $Haggle~HaggleFactor 0
+end
+
   if ($Haggle~HaggleFactor = 0)
     setVar $clock 4
   else
@@ -146,16 +157,6 @@
   
   :PortA
   
-	if ($nohaggle <> true)
-		gosub :player~isEpHaggle
-		if ($player~isEphaggle)
-			setVar $Haggle~HaggleFactor 7
-		else
-			setVar $Haggle~HaggleFactor 0
-		end
-	else
-		setVar $Haggle~HaggleFactor 0
-	end
 	send "pt"
 
   if ($Haggle~HaggleFactor = 0)
