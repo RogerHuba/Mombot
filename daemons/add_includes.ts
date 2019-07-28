@@ -6,6 +6,7 @@ if (($bot~parm1 <> "") and ($bot~parm1 <> "0"))
 	setvar $filter "*"&$bot~parm1&"*"
 else
 	setvar $filter "*"
+end
 :add_includes
 
 	setvar $directories "cashing data defense general grid offense resource"
@@ -60,7 +61,7 @@ return
 
 		setVar $j 1
 		while ($j <= $scriptList)
-			if (($scriptList[$j] <> "add_includes.ts") and (($filter <> "") or ($filter&".ts" = $scriptList[$j])))
+			if ($scriptList[$j] <> "add_includes.ts") 
 				setarray $script 5000
 				setarray $paths 1000
 				setvar $paths 0 
