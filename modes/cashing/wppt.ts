@@ -94,17 +94,23 @@ end
 reqRecording
 logging off
 
-
 getWordPos $user_command_line $pos "nohaggle"
 if ($pos > 0)
-  setVar $Haggle~HaggleFactor 1
+	setVar $Haggle~HaggleFactor 0
+	setvar $nohaggle true
 else
-  setVar $Haggle~HaggleFactor 7
+	setvar $nohaggle false
+	setVar $Haggle~HaggleFactor 7
+	gosub :player~isEpHaggle
+	if ($player~isEphaggle)
+	  setVar $Haggle~HaggleFactor 7
+	else
+	  setVar $Haggle~HaggleFactor 0
+	end
 end
 
+
   
-
-
   setVar $Move~Attack 2
   setVar $Move~PortPriority 1
   setVar $Move~ExtraSend "f 1 " & #42 & " c d "
@@ -139,4 +145,6 @@ halt
   
 
 # includes:
-include "include\worldTrade"
+include "source\module_includes\wppt\worldTrade"
+include "source\bot_includes\player\isephaggle\player"
+

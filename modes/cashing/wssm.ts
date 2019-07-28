@@ -20,7 +20,7 @@
 	
 	gosub :bot~helpfile
 
-	setVar $BOT~script_title "Wanderer"
+	setVar $BOT~script_title "WSSM"
 	gosub :BOT~banner
 
 	setVar $PLAYER~save TRUE
