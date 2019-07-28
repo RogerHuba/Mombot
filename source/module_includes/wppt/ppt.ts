@@ -117,15 +117,15 @@
   divide $BuyAmountA $X
   divide $BuyAmountB $X
   
-if ($nohaggle <> true)
+if ($nohaggle = true)
+	setVar $Haggle~HaggleFactor 0
+else
 	gosub :player~isEpHaggle
 	if ($player~isEphaggle)
 		setVar $Haggle~HaggleFactor 7
 	else
 		setVar $Haggle~HaggleFactor 0
 	end
-else
-	setVar $Haggle~HaggleFactor 0
 end
 
   if ($Haggle~HaggleFactor = 0)
@@ -159,7 +159,7 @@ end
   
 	send "pt"
 
-  if ($Haggle~HaggleFactor = 0)
+  if (($Haggle~HaggleFactor = 0) OR ($nohaggle = true))
     # burst sell/buy
     if ($OnHand <> "None")
       send "**"
@@ -242,7 +242,7 @@ end
   if ($FirstRun = 1)
     setVar $FirstRun 0
     
-    if ($Haggle~HaggleFactor = 0) // burst haggle, abort on all keys
+    if (($Haggle~HaggleFactor = 0) or ($nohaggle = true)) // burst haggle, abort on all keys
       setVar $DisplayOFF 1
       send "cn 9 qq"
     end
@@ -262,7 +262,7 @@ end
       # update window
       # setWindowContents worldTrade "Op: Fell through One-way*Cash: " & $credits
   
-      if ($Haggle~HaggleFactor = 0) and ($DisplayOFF)
+      if (($Haggle~HaggleFactor = 0) or ($haggleoff = true)) and ($DisplayOFF)
         send "cn 9 qq"
       end
 
@@ -278,7 +278,7 @@ end
   
   :PortB
   send "pt"
-  if ($Haggle~HaggleFactor = 0)
+  if (($Haggle~HaggleFactor = 0) or ($haggleoff = true))
     # burst sell/buy
     if ($OnHand <> "None")
       send "**"
@@ -343,7 +343,7 @@ end
   subtract $SellAmountB 1
   
   if ($SellAmountB <= "-1") or ($BuyAmountA <= "-1")
-    if ($Haggle~HaggleFactor = 0) and ($DisplayOFF)
+    if (($Haggle~HaggleFactor = 0) or ($haggleoff = true)) and ($DisplayOFF)
       send "cn 9 qq"
     end
 
@@ -363,71 +363,3 @@ end
   goto :PortA
 
 
-# SUB:       Menu
-# Purpose:   Creates subroutine setup submenu
-# Passed:    $Menu - Name of parent menu
-
-:Menu
-  addMenu $Menu "PPT" "PPT Settings" "P" "" "PPT" FALSE
-  addMenu "PPT" "DropFigs" "Drop figs under ports" "F" :Menu_DropFigs "" FALSE
-  addMenu "PPT" "PercTrade" "Trade to % of max" "T" :Menu_PercTrade "" FALSE
-  addMenu "PPT" "Haggle" "Haggling" "H" :Menu_Haggle "" FALSE
-  
-  setMenuHelp "Dropfigs" "If this option is enabled, the script will drop a toll fighter under every port it trades at."
-  setMenuHelp "PercTrade" "This option adjusts how far the script will trade a port down before it determines it to no longer be profitable."
-  setMenuHelp "Haggle" "If this option is enabled, the script will haggle every trade for best price."
-  
-  gosub :sub_SetMenu
-  return
-  
-  :Menu_DropFigs
-  if ($DropFigs)
-    setVar $DropFigs 0
-  else
-    setVar $DropFigs 1
-  end
-  saveVar $DropFigs
-  gosub :sub_SetMenu
-  openMenu "PPT"
-  
-  :Menu_PercTrade
-  getInput $value "Enter % of max to trade to"  
-  isNumber $test $value
-  if ($test = 0)
-    echo ANSI_15 "**Value must be a number*"
-    goto :Menu_PercTrade
-  end
-  if ($value > 100)
-    echo ANSI_15 "**Bad percentage*"
-    goto :Menu_PercTrade
-  end
-  setVar $PercTrade $value
-  saveVar $PercTrade
-  gosub :sub_SetMenu
-  openMenu "PPT"
-  
-  :Menu_Haggle
-  if ($Haggle~HaggleFactor = 0)
-    setVar $Haggle~HaggleFactor 7
-  else
-    setVar $Haggle~HaggleFactor 0
-  end
-  saveVar $Haggle~HaggleFactor
-  gosub :sub_SetMenu
-  openMenu "PPT"
-  
-  :sub_SetMenu
-  if ($DropFigs)
-    setMenuValue "DropFigs" "ON"
-  else
-    setMenuValue "DropFigs" "OFF"
-  end
-  
-  if ($Haggle~HaggleFactor > 0)
-    setMenuValue "Haggle" "ON"
-  else
-    setMenuValue "Haggle" "OFF"
-  end
-  
-  setMenuValue "PercTrade" $PercTrade
-  return  
