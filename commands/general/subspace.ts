@@ -21,6 +21,11 @@ if ($isvalid <> true)
 	setVar $SWITCHBOARD~message "Subpace channel entered was not a number.*"
 	gosub :SWITCHBOARD~switchboard	
 else
+	if ($bot~subspace > 60000)
+		setVar $SWITCHBOARD~message "Subspace channel can not be greater than 60000. *"
+		gosub :SWITCHBOARD~switchboard	
+		halt
+	end
 	setvar $bot~subspace $bot~parm1
 	savevar $bot~subspace
 	setVar $SWITCHBOARD~message "Subpace channel changing... *"
