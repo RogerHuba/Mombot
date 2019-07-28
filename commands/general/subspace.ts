@@ -36,7 +36,7 @@ else
 	pause
 
 	:bad
-		setVar $SWITCHBOARD~message "Too soon to change the subspace channel.  Try again later.*"
+		setVar $SWITCHBOARD~message currentline&"*"
 		gosub :SWITCHBOARD~switchboard	
 		send "q q "
 		halt
