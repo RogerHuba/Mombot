@@ -192,4 +192,5 @@ return
 return
 
 include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 
