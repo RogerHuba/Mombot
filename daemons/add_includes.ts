@@ -38,6 +38,7 @@ halt
 	setvar $command_pos 0
 	setvar $command_pos2 0
 	if ($command <> "")
+		echo "*["&$include&"~"&$command&"]*"
 		getwordpos $lowercase_script_line $command_pos ":"&$include&"~"&$command
 		getwordpos $doublecheck2 $command_pos2 " "&$include&"~"&$command&" "
 	end
