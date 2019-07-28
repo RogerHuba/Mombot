@@ -28,6 +28,8 @@ end
 	getFileList $scriptList $folder&$filter&".ts"
 	gosub :reconfigure_scripts
 
+	echo "*[ Add include processing complete. ]*"
+
 halt
 
 :check_for_include
