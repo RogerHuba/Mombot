@@ -122,7 +122,6 @@
 				end
 				add $i 1
 			end
-			setVar $SWITCHBOARD~message ""
 			gosub :bufferList
 		end
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |----------------------------------|*"
@@ -140,57 +139,59 @@ halt
 	getWord $currentList $test $i "[<><>NONE<><>]"
 	setVar $paddingDashes "                                "
 	while ($test <> "[<><>NONE<><>]")
-		setVar $tempCommand $test
-		setVar $tempCommandHidden FALSE
-		setVar $nextHidden FALSE
-		setVar $next2Hidden FALSE
-		getWord $currentList $next ($i+1)
-		getWord $currentList $next2 ($i+2)
-		getWordPos $tempCommand $pos "[<><>HIDDEN<><>]"
-		if ($pos > 0)
-			stripText $tempCommand "[<><>HIDDEN<><>]"
-			setVar $tempCommandHidden TRUE
-			setVar $tempCommand2 ANSI_14&$tempCommand&ANSI_15
-		else
-			setVar $tempCommand2 $tempCommand
-		end
-		if ($next <> 0)
-			getWordPos $next $pos "[<><>HIDDEN<><>]"
-			stripText $next "[<><>HIDDEN<><>]"
+		if ($test <> "0")
+			setVar $tempCommand $test
+			setVar $tempCommandHidden FALSE
+			setVar $nextHidden FALSE
+			setVar $next2Hidden FALSE
+			getWord $currentList $next ($i+1)
+			getWord $currentList $next2 ($i+2)
+			getWordPos $tempCommand $pos "[<><>HIDDEN<><>]"
 			if ($pos > 0)
-				setVar $nextHidden TRUE
-				setVar $tempCommand2 $tempCommand2&"   "&ANSI_14&$next&ANSI_15
+				stripText $tempCommand "[<><>HIDDEN<><>]"
+				setVar $tempCommandHidden TRUE
+				setVar $tempCommand2 ANSI_14&$tempCommand&ANSI_15
 			else
-				setVar $tempCommand2 $tempCommand2&"   "&$next
+				setVar $tempCommand2 $tempCommand
 			end
-			setVar $tempCommand $tempCommand&"   "&$next
-			add $i 1
-		end
-		if ($next2 <> 0)
-			getWordPos $next2 $pos "[<><>HIDDEN<><>]"
-			stripText $next2 "[<><>HIDDEN<><>]"
-			if ($pos > 0)
-				setVar $next2Hidden TRUE
-				setVar $tempCommand2 $tempCommand2&"   "&ANSI_14&$next2&ANSI_15
+			if ($next <> 0)
+				getWordPos $next $pos "[<><>HIDDEN<><>]"
+				stripText $next "[<><>HIDDEN<><>]"
+				if ($pos > 0)
+					setVar $nextHidden TRUE
+					setVar $tempCommand2 $tempCommand2&"   "&ANSI_14&$next&ANSI_15
+				else
+					setVar $tempCommand2 $tempCommand2&"   "&$next
+				end
+				setVar $tempCommand $tempCommand&"   "&$next
+				add $i 1
+			end
+			if ($next2 <> 0)
+				getWordPos $next2 $pos "[<><>HIDDEN<><>]"
+				stripText $next2 "[<><>HIDDEN<><>]"
+				if ($pos > 0)
+					setVar $next2Hidden TRUE
+					setVar $tempCommand2 $tempCommand2&"   "&ANSI_14&$next2&ANSI_15
+				else
+					setVar $tempCommand2 $tempCommand2&"   "&$next2
+				end
+				setVar $tempCommand $tempCommand&"   "&$next2
+				add $i 1
+			end
+			getLength $tempCommand $comLength
+			upperCase $tempCommand
+			setVar $sideLength (($maxStringLength-$comLength)/2)
+			cutText $paddingDashes $leftPad 1 $sideLength
+			cutText $paddingDashes $rightPad 1 (($maxStringLength-$comLength)-$sideLength)
+			if ($SWITCHBOARD~self_command = TRUE)
+				setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |"&$leftPad&$tempCommand2&$rightPad&"|*"
 			else
-				setVar $tempCommand2 $tempCommand2&"   "&$next2
+				setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |"&$leftPad&$tempCommand&$rightPad&"|*"  
 			end
-			setVar $tempCommand $tempCommand&"   "&$next2
+			add $commandCount 1
 			add $i 1
+			getWord $currentList $test $i "[<><>NONE<><>]"
 		end
-		getLength $tempCommand $comLength
-		upperCase $tempCommand
-		setVar $sideLength (($maxStringLength-$comLength)/2)
-		cutText $paddingDashes $leftPad 1 $sideLength
-		cutText $paddingDashes $rightPad 1 (($maxStringLength-$comLength)-$sideLength)
-		if ($SWITCHBOARD~self_command = TRUE)
-			setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |"&$leftPad&$tempCommand2&$rightPad&"|*"
-		else
-			setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |"&$leftPad&$tempCommand&$rightPad&"|*"  
-		end
-		add $commandCount 1
-		add $i 1
-		getWord $currentList $test $i "[<><>NONE<><>]"
 	end
 return
 :echo_help
