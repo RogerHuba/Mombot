@@ -52,6 +52,7 @@
 :command_list
     setVar $SWITCHBOARD~helpList TRUE
     setVar $helpList TRUE
+    setVar $SWITCHBOARD~message "  --------------Mind ()ver Matter Bot Help Categories------------*"
     if ($BOT~parm1 = 0)
         gosub :PLAYER~quikstats
         setVar $SWITCHBOARD~message "  --------------Mind ()ver Matter Bot Help Categories------------*"
