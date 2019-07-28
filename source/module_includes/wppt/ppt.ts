@@ -117,7 +117,7 @@
   divide $BuyAmountA $X
   divide $BuyAmountB $X
   
-if ($nohaggle = true)
+if ($bot~nohaggle = true)
 	setVar $Haggle~HaggleFactor 0
 else
 	gosub :player~isEpHaggle
@@ -128,7 +128,7 @@ else
 	end
 end
 
-  if (($Haggle~HaggleFactor = 0) or ($nohaggle = true))
+  if (($Haggle~HaggleFactor = 0) or ($bot~nohaggle = true))
     setVar $clock 4
   else
     setVar $clock 0
@@ -158,7 +158,7 @@ end
   :PortA
   
 
-  if (($Haggle~HaggleFactor = 0) OR ($nohaggle = true))
+  if (($Haggle~HaggleFactor = 0) OR ($bot~nohaggle = true))
 	send "p t "
     # burst sell/buy
     if ($OnHand <> "None")
@@ -204,7 +204,7 @@ end
       subtract $clock 1
     end
   else
-	send "'in haggle*pt"
+	send "pt"
     # haggle sell/buy
     
     if ($SellAmountA <= 0) or ($BuyAmountB <= 0)
@@ -224,7 +224,7 @@ end
   
   if ($SellAmountA <= "-1") or ($BuyAmountB <= "-1")
     setVar $Sector $SectorA
-    if (($Haggle~HaggleFactor = 0) or ($nohaggle = true)) and ($DisplayOFF)
+    if (($Haggle~HaggleFactor = 0) or ($bot~nohaggle = true)) and ($DisplayOFF)
       send "cn 9 qq"
     end
 
@@ -243,7 +243,7 @@ end
   if ($FirstRun = 1)
     setVar $FirstRun 0
     
-    if (($Haggle~HaggleFactor = 0) or ($nohaggle = true)) // burst haggle, abort on all keys
+    if (($Haggle~HaggleFactor = 0) or ($bot~nohaggle = true)) // burst haggle, abort on all keys
       setVar $DisplayOFF 1
       send "cn 9 qq"
     end
@@ -263,7 +263,7 @@ end
       # update window
       # setWindowContents worldTrade "Op: Fell through One-way*Cash: " & $credits
   
-      if (($Haggle~HaggleFactor = 0) or ($nohaggle = true)) and ($DisplayOFF)
+      if (($Haggle~HaggleFactor = 0) or ($bot~nohaggle = true)) and ($DisplayOFF)
         send "cn 9 qq"
       end
 
@@ -278,7 +278,7 @@ end
   end
   
   :PortB
-  if (($Haggle~HaggleFactor = 0) or ($nohaggle = true))
+  if (($Haggle~HaggleFactor = 0) or ($bot~nohaggle = true))
 	send "p t "
     # burst sell/buy
     if ($OnHand <> "None")
@@ -345,7 +345,7 @@ end
   subtract $SellAmountB 1
   
   if ($SellAmountB <= "-1") or ($BuyAmountA <= "-1")
-    if (($Haggle~HaggleFactor = 0) or ($nohaggle = true)) and ($DisplayOFF)
+    if (($Haggle~HaggleFactor = 0) or ($bot~nohaggle = true)) and ($DisplayOFF)
       send "cn 9 qq"
     end
 
