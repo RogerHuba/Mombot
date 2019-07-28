@@ -437,4 +437,4 @@ goto :start_over
 
 return
 # includes:
-include "source\bot_includes\player\init\player"
+include "source\bot_includes\targeting\initializetargeting\targeting"
