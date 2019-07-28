@@ -1,3 +1,11 @@
+gosub :BOT~loadVars
+
+
+if (($bot~parm1 <> "") and ($bot~parm1 <> "0"))
+	setvar $filter "*"&$bot~parm1
+else
+	setvar $filter "*"
+end
 :add_includes
 
 	setvar $directories "cashing data defense general grid offense resource"
@@ -5,18 +13,18 @@
 	getword $directories $directory $i "JUNK"
 	while ($directory <> "JUNK")
 		setvar $folder "scripts\mombot\commands\"&$directory&"\"
-		getFileList $scriptList $folder&"*.ts"
+		getFileList $scriptList $folder&$filter&".ts"
 		gosub :reconfigure_scripts
 
 		setvar $folder "scripts\mombot\modes\"&$directory&"\"
-		getFileList $scriptList $folder&"*.ts"
+		getFileList $scriptList $folder&$filter&".ts"
 		gosub :reconfigure_scripts
 
 		add $i 1
 		getword $directories $directory $i "JUNK"
 	end
 	setvar $folder "scripts\mombot\daemons\"
-	getFileList $scriptList $folder&"*.ts"
+	getFileList $scriptList $folder&$filter&".ts"
 	gosub :reconfigure_scripts
 
 halt
@@ -70,7 +78,7 @@ return
 					if ($includepos > 0)
 						setvar $bot_includes " combat game grid map planet player sector ship switchboard tactics targeting validation "
 						setvar $bot_bot_includes " connectivity help internal_commands listener menus user_interface "
-						setvar $module_includes " bot citadel dump invader modules port prompt search strip "
+						setvar $module_includes " bot citadel dump invader modules port prompt search strip wppt "
 
 						setvar $l 1
 						getword $module_includes $include $l "JUNK"
