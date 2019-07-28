@@ -145,7 +145,7 @@
 :getParameters
 	setVar $i 1
 	while ($i <= 8)
-		getWord ($BOT~user_command_line & " ") $BOT~parms[$i] $i 0
+		getWord ($BOT~user_command_line & " ") $BOT~parms[$i] $i ""
 		add $i 1
 	end
 return
