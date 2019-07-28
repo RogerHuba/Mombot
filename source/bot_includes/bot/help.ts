@@ -6,7 +6,7 @@
 		gosub :PLAYER~quikstats
 		setVar $SWITCHBOARD~message "  --------------Mind ()ver Matter Bot Help Categories------------*"
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"                          Version: "&$BOT~major_version&"_"&$BOT~minor_version&"*"
-				setVar $SWITCHBOARD~message $SWITCHBOARD~message&" *"
+		setVar $SWITCHBOARD~message $SWITCHBOARD~message&" *"
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"                [OFFENSE]|[DEFENSE]|[DATA]|[CASHING]*"
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"                     [RESOURCE]|[GRID]|[GENERAL]*"
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&" *"
@@ -24,6 +24,7 @@
 		cutText $paddingDashes $rightPad 1 (($maxStringLength-$comLength)-$sideLength)
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |"&$leftPad&"-="&$BOT~parm1&"=-"&$rightPad&"|*"
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |----------------------------------|*"
+			setVar $currentList ""
 			setVar $i 1
 			upperCase $currentList
 			while ($i <= $commandList)
