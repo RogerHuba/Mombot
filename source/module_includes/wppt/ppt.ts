@@ -76,7 +76,10 @@
   pause
   :GotProductA
   
-  waitOn "Commerce report for"  
+  setTextLineTrigger 1 :fighterdownportb "I have no information about a port in that sector."
+  setTextLineTrigger 2 :keepgoingportb   "Commerce report for"  
+  pause
+  :keepgoingportb
   setTextLineTrigger GetSellProductB :GetSellProductB $ProdB
   setTextLineTrigger GetBuyProductB :GetBuyProductB $ProdA
   setTextTrigger GotProductB :GotProductB "Computer command"
@@ -91,6 +94,11 @@
   stripText $line "Ore"
   getWord $line $BuyAmountB 3
   pause
+
+  :fighterdownportb
+  setvar $sellamountb 0 
+  setvar $buyamountb 0
+
   :GotProductB
   
   # calculate how many cycles to run
