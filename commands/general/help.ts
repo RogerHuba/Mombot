@@ -189,9 +189,9 @@ halt
 				setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |"&$leftPad&$tempCommand&$rightPad&"|*"  
 			end
 			add $commandCount 1
-			add $i 1
-			getWord $currentList $test $i "[<><>NONE<><>]"
 		end
+		add $i 1
+		getWord $currentList $test $i "[<><>NONE<><>]"
 	end
 return
 :echo_help
