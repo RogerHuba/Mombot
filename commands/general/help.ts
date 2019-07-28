@@ -122,6 +122,7 @@
 				end
 				add $i 1
 			end
+			setVar $SWITCHBOARD~message ""
 			gosub :bufferList
 		end
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |----------------------------------|*"
