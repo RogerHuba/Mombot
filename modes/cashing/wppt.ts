@@ -98,6 +98,7 @@ getWordPos $user_command_line $pos "nohaggle"
 if ($pos > 0)
 	setVar $Haggle~HaggleFactor 0
 	setvar $nohaggle true
+	send "'haggle shut off*"
 else
 	setvar $nohaggle false
 	setVar $Haggle~HaggleFactor 7

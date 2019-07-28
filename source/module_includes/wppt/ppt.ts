@@ -145,7 +145,7 @@ end
   if ($SectorA <> STARDOCK) and ($SectorA > 10)
     # drop a fig if we have to
     if ($DropFigs = 1)
-      send "f1*ct"
+      send "f1*cd"
     end
     
     send "jy"
