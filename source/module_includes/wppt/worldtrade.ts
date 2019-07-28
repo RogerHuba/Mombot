@@ -75,7 +75,7 @@
       gosub :PPT~PPT
       
       if ($PPT~Aborted = "0")
-        if ($Haggle~HaggleFactor = 0)
+        if (($Haggle~HaggleFactor = 0) or ($nohaggle = true))
           gosub :PlayerInfo~InfoQuick
           setVar $Credits $PlayerInfo~Credits
         else

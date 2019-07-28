@@ -128,7 +128,7 @@ else
 	end
 end
 
-  if ($Haggle~HaggleFactor = 0)
+  if (($Haggle~HaggleFactor = 0) or ($nohaggle = true))
     setVar $clock 4
   else
     setVar $clock 0
@@ -223,7 +223,7 @@ end
   
   if ($SellAmountA <= "-1") or ($BuyAmountB <= "-1")
     setVar $Sector $SectorA
-    if ($Haggle~HaggleFactor = 0) and ($DisplayOFF)
+    if (($Haggle~HaggleFactor = 0) or ($nohaggle = true)) and ($DisplayOFF)
       send "cn 9 qq"
     end
 
@@ -262,7 +262,7 @@ end
       # update window
       # setWindowContents worldTrade "Op: Fell through One-way*Cash: " & $credits
   
-      if (($Haggle~HaggleFactor = 0) or ($haggleoff = true)) and ($DisplayOFF)
+      if (($Haggle~HaggleFactor = 0) or ($nohaggle = true)) and ($DisplayOFF)
         send "cn 9 qq"
       end
 
@@ -278,7 +278,7 @@ end
   
   :PortB
   send "pt"
-  if (($Haggle~HaggleFactor = 0) or ($haggleoff = true))
+  if (($Haggle~HaggleFactor = 0) or ($nohaggle = true))
     # burst sell/buy
     if ($OnHand <> "None")
       send "**"
@@ -343,7 +343,7 @@ end
   subtract $SellAmountB 1
   
   if ($SellAmountB <= "-1") or ($BuyAmountA <= "-1")
-    if (($Haggle~HaggleFactor = 0) or ($haggleoff = true)) and ($DisplayOFF)
+    if (($Haggle~HaggleFactor = 0) or ($nohaggle = true)) and ($DisplayOFF)
       send "cn 9 qq"
     end
 
