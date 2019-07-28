@@ -1,0 +1,37 @@
+    gosub :BOT~loadVars
+
+
+    setVar $BOT~help[1]  $BOT~tab&"subspace [channel] "
+    setVar $BOT~help[2]  $BOT~tab&"  Changes subspace channel "
+	gosub :bot~helpfile
+
+    
+
+:subspace
+
+gosub :player~quikstats
+if (($PLAYER~CURRENT_PROMPT <> "Command") and ($PLAYER~CURRENT_PROMPT <> "Citadel"))
+	setVar $SWITCHBOARD~message "Must run from Command or Citadel Prompt*"
+	gosub :SWITCHBOARD~switchboard
+	halt
+end
+isNumber $isvalid $bot~parm1
+
+if ($isvalid <> true)
+	setVar $SWITCHBOARD~message "Subpace channel entered was not a number.*"
+	gosub :SWITCHBOARD~switchboard	
+else
+	setvar $bot~subspace $bot~parm1
+	savevar $bot~subspace
+	setVar $SWITCHBOARD~message "Subpace channel changing... *"
+	gosub :SWITCHBOARD~switchboard	
+	send "cn4"&$BOT~subspace&"* q q "
+end
+
+halt
+
+
+# includes:
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
