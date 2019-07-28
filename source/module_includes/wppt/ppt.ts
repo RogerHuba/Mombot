@@ -204,7 +204,7 @@ end
       subtract $clock 1
     end
   else
-	send "pt"
+	send "'in haggle*pt"
     # haggle sell/buy
     
     if ($SellAmountA <= 0) or ($BuyAmountB <= 0)
