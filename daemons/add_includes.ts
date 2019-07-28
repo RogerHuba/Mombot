@@ -3,8 +3,9 @@ gosub :BOT~loadVars
 
 setvar $filter ""
 if (($bot~parm1 <> "") and ($bot~parm1 <> "0"))
-	setvar $filter $bot~parm1
-end
+	setvar $filter "*"&$bot~parm1&"*"
+else
+	setvar $filter "*"
 :add_includes
 
 	setvar $directories "cashing data defense general grid offense resource"
@@ -12,18 +13,18 @@ end
 	getword $directories $directory $i "JUNK"
 	while ($directory <> "JUNK")
 		setvar $folder "scripts\mombot\commands\"&$directory&"\"
-		getFileList $scriptList $folder&"*.ts"
+		getFileList $scriptList $folder&$filter&".ts"
 		gosub :reconfigure_scripts
 
 		setvar $folder "scripts\mombot\modes\"&$directory&"\"
-		getFileList $scriptList $folder&"*.ts"
+		getFileList $scriptList $folder&$filter&".ts"
 		gosub :reconfigure_scripts
 
 		add $i 1
 		getword $directories $directory $i "JUNK"
 	end
 	setvar $folder "scripts\mombot\daemons\"
-	getFileList $scriptList $folder&"*.ts"
+	getFileList $scriptList $folder&$filter&".ts"
 	gosub :reconfigure_scripts
 
 halt
@@ -175,3 +176,6 @@ return
 
 
 return
+
+include "source\module_includes\bot\loadvars\bot"
+
