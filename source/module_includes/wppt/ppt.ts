@@ -166,31 +166,31 @@ end
     end
     if ($SellAmountA <= 0) or ($BuyAmountB <= 0)
       if (PORT.CLASS[$SectorA] < 8)
-        send "0*"
+        send "0* "
       end
       if (PORT.CLASS[$SectorA] > 3)
-        send "0*"
+        send "0* "
       end
     else
       if (PORT.BUYFUEL[$SectorA] = 0)
         if ($ProdA = "Fuel")
-          send "**"
+          send "* * "
         else
-          send "0*"
+          send "0* "
         end
       end
       if (PORT.BUYORG[$SectorA] = 0)
         if ($ProdA = "Organics")
-          send "**"
+          send "* * "
         else
-          send "0*"
+          send "0* "
         end
       end
       if (PORT.BUYEQUIP[$SectorA] = 0)
         if ($ProdA = "Equipment")
-          send "**"
+          send "* * "
         else
-          send "0*"
+          send "0* "
         end
       end
       
