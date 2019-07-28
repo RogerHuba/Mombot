@@ -1,10 +1,9 @@
 gosub :BOT~loadVars
 
 
+setvar $filter ""
 if (($bot~parm1 <> "") and ($bot~parm1 <> "0"))
-	setvar $filter "*"&$bot~parm1
-else
-	setvar $filter "*"
+	setvar $filter $bot~parm1
 end
 :add_includes
 
@@ -13,18 +12,18 @@ end
 	getword $directories $directory $i "JUNK"
 	while ($directory <> "JUNK")
 		setvar $folder "scripts\mombot\commands\"&$directory&"\"
-		getFileList $scriptList $folder&$filter&".ts"
+		getFileList $scriptList $folder&"*.ts"
 		gosub :reconfigure_scripts
 
 		setvar $folder "scripts\mombot\modes\"&$directory&"\"
-		getFileList $scriptList $folder&$filter&".ts"
+		getFileList $scriptList $folder&"*.ts"
 		gosub :reconfigure_scripts
 
 		add $i 1
 		getword $directories $directory $i "JUNK"
 	end
 	setvar $folder "scripts\mombot\daemons\"
-	getFileList $scriptList $folder&$filter&".ts"
+	getFileList $scriptList $folder&"*.ts"
 	gosub :reconfigure_scripts
 
 halt
@@ -60,7 +59,7 @@ return
 
 		setVar $j 1
 		while ($j <= $scriptList)
-			if ($scriptList[$j] <> "add_includes.ts")
+			if (($scriptList[$j] <> "add_includes.ts") and (($filter <> "") or ($filter&".ts" = $scriptList[$j])))
 				setarray $script 5000
 				setarray $paths 1000
 				setvar $paths 0 
