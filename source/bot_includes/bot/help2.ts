@@ -1,6 +1,7 @@
 #####==============================================  BOT HELP SECTION =================================================#####
 :command_list
 	setVar $SWITCHBOARD~helpList TRUE
+	setVar $SWITCHBOARD~message ""
 	setVar $helpList TRUE
 	if ($BOT~parm1 = 0)
 		gosub :PLAYER~quikstats
