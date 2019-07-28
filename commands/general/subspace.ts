@@ -41,7 +41,7 @@ else
 		send "q q "
 		halt
 	:good
-		send &$BOT~subspace&"* q q "
+		send $BOT~subspace&"* q q "
 end
 
 halt
