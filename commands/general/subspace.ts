@@ -1,11 +1,11 @@
-    gosub :BOT~loadVars
+	gosub :BOT~loadVars
 
 
-    setVar $BOT~help[1]  $BOT~tab&"subspace [channel] "
-    setVar $BOT~help[2]  $BOT~tab&"  Changes subspace channel "
+	setVar $BOT~help[1]  $BOT~tab&"subspace [channel] "
+	setVar $BOT~help[2]  $BOT~tab&"  Changes subspace channel "
 	gosub :bot~helpfile
 
-    
+	
 
 :subspace
 

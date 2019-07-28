@@ -1,6 +1,16 @@
 gosub :BOT~loadVars
 
 
+setVar $BOT~help[1]  $BOT~tab&"add_includes {filter} "
+setVar $BOT~help[2]  $BOT~tab&"  Modifies scripts to use only the necessary include files "
+setVar $BOT~help[3]  $BOT~tab&"             "
+setVar $BOT~help[4]  $BOT~tab&"        {filter} - if you only want a subset of the scripts  "
+setVar $BOT~help[5]  $BOT~tab&"                   to be included, you can use a command name"
+setVar $BOT~help[6]  $BOT~tab&"                   or with wildcards like:"
+setVar $BOT~help[7]  $BOT~tab&"                       >add_includes "&#42&"mow"&#42&" "
+gosub :bot~helpfile
+
+
 setvar $filter ""
 if (($bot~parm1 <> "") and ($bot~parm1 <> "0"))
 	setvar $filter $bot~parm1
