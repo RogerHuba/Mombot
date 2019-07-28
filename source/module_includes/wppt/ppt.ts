@@ -157,9 +157,9 @@ end
   
   :PortA
   
-	send "pt"
 
   if (($Haggle~HaggleFactor = 0) OR ($nohaggle = true))
+	send "p t "
     # burst sell/buy
     if ($OnHand <> "None")
       send "**"
@@ -204,6 +204,7 @@ end
       subtract $clock 1
     end
   else
+	send "pt"
     # haggle sell/buy
     
     if ($SellAmountA <= 0) or ($BuyAmountB <= 0)
@@ -277,40 +278,40 @@ end
   end
   
   :PortB
-  send "pt"
   if (($Haggle~HaggleFactor = 0) or ($nohaggle = true))
+	send "p t "
     # burst sell/buy
     if ($OnHand <> "None")
-      send "**"
+      send "* * "
     end
     if ($SellAmountB <= 0) or ($BuyAmountA <= 0)
       if (PORT.CLASS[$SectorB] < 8)
-        send "0*"
+        send "0* "
       end
       if (PORT.CLASS[$SectorB] > 3)
-        send "0*"
+        send "0* "
       end
     else
       if (PORT.BUYFUEL[$SectorB] = 0)
         if ($ProdB = "Fuel")
-          send "**"
+          send "* * "
         else
-          send "0*"
+          send "0 * "
         end
       end
       if (PORT.BUYORG[$SectorB] = 0)
         if ($ProdB = "Organics")
-          send "**"
+          send "* * "
         else
-          send "0*"
+          send "0 * "
         end
       end
       if (PORT.BUYEQUIP[$SectorB] = 0)
         if ($ProdB = "Equipment")
-          send "**"
+          send "* * "
         else
-          send "0*"
-        end
+          send "0 * "
+        end 
       end
       
       setVar $OnHand $ProdB
@@ -324,6 +325,7 @@ end
       subtract $clock 1
     end
   else
+	send "pt"
     # Haggle sell/buy
   
     if ($SellAmountB <= 0) or ($BuyAmountA <= 0)
