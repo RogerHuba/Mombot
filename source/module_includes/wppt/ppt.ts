@@ -420,9 +420,3 @@
   
   setMenuValue "PercTrade" $PercTrade
   return  
-
-
-# includes:
-
-include "include\haggle"
-include "include\playerInfo"
