@@ -20,57 +20,38 @@
 # These files should be stored in the root of the compression you 
 # received this source in.
 
-  loadVar $bot_name
-  loadVar $command
-  loadVar $avoidedSectorsUgrid
-  loadVar $unlimitedGame
-  loadVar $bot_turn_limit
-  loadVar $user_command_line
-  loadVar $parm1
-  loadVar $parm2
-  loadVar $parm3
-  loadVar $parm4
-  loadVar $parm5
-  loadVar $parm6
-  loadVar $parm7
-  loadVar $parm8
-  loadVar $stardock
-  loadVar $home_sector
-  loadVar $backdoor
-  loadvar $LIMPET_COST
-  loadvar $ARMID_COST
-  loadVar $LIMPET_REMOVAL_COST
-  loadvar $password
+gosub :BOT~loadVars
 
-  fileExists $doesHelpFileExist "scripts\MOMBot\Help\"&$command&".txt"
-  if ($doesHelpFileExist <> TRUE)
-    write "scripts\MOMBot\Help\"&$command&".txt" "- wppt {holoscan} {evade}" 
-    write "scripts\MOMBot\Help\"&$command&".txt" "  World PPT - Originally written by Xide                          " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                                                                  " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "   - {holoscan}    = 0 - doesn't holoscan                         " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                     1 - holoscans on odd densities               "
-    write "scripts\MOMBot\Help\"&$command&".txt" "                     2 - always holoscans (default)               " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                                                                  " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "   - {evade}       = 0 - normal (default)                         " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                     1 - paranoid                                 " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                     2 - avoids nothing                           " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                                                                  " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "   - {nohaggle}    = doesn't haggle                               " 
-    write "scripts\MOMBot\Help\"&$command&".txt" "                                                                  " 
-    send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
-  end
+setVar $BOT~help[1]   $BOT~tab&"- wppt {holoscan} {evade}" 
+setVar $BOT~help[2]   $BOT~tab&"  World PPT - Originally written by Xide                          " 
+setVar $BOT~help[3]   $BOT~tab&"                                                                  " 
+setVar $BOT~help[4]   $BOT~tab&"   - {holoscan}    = 0 - doesn't holoscan                         " 
+setVar $BOT~help[5]   $BOT~tab&"                     1 - holoscans on odd densities               "
+setVar $BOT~help[6]   $BOT~tab&"                     2 - always holoscans (default)               " 
+setVar $BOT~help[7]   $BOT~tab&"                                                                  " 
+setVar $BOT~help[8]   $BOT~tab&"   - {evade}       = 0 - normal (default)                         " 
+setVar $BOT~help[9]   $BOT~tab&"                     1 - paranoid                                 " 
+setVar $BOT~help[10]  $BOT~tab&"                     2 - avoids nothing                           " 
+setVar $BOT~help[11]  $BOT~tab&"                                                                  " 
+setVar $BOT~help[12]  $BOT~tab&"   - {nohaggle}    = doesn't haggle                               " 
 
-if (($parm1 = 0) OR ($parm1 = 1) OR ($parm1 = 2))
-  setVar $Move~ScanHolo $parm1
-  setVar $PortCheck~ScanHolo $parm1
+gosub :BOT~helpfile
+
+setVar $BOT~script_title "World PPT"
+gosub :BOT~banner
+
+
+if (($bot~parm1 = 0) OR ($bot~parm1 = 1) OR ($bot~parm1 = 2))
+  setVar $Move~ScanHolo $bot~parm1
+  setVar $PortCheck~ScanHolo $bot~parm1
 else
   setVar $Move~ScanHolo 1
   setVar $PortCheck~ScanHolo 1
 end
 
 
-if (($parm1 = 0) OR ($parm1 = 1) OR ($parm1 = 2))
-  setVar $Move~Evasion $parm2
+if (($bot~parm1 = 0) OR ($bot~parm1 = 1) OR ($bot~parm1 = 2))
+  setVar $Move~Evasion $bot~parm2
 else
   setVar $Move~Evasion 0
 end
@@ -94,11 +75,10 @@ end
 reqRecording
 logging off
 
-getWordPos $user_command_line $pos "nohaggle"
+getWordPos $bot~user_command_line $pos "nohaggle"
 if ($pos > 0)
 	setVar $Haggle~HaggleFactor 0
 	setvar $nohaggle true
-	send "'haggle shut off*"
 else
 	setvar $nohaggle false
 	setVar $Haggle~HaggleFactor 7
@@ -148,4 +128,7 @@ halt
 # includes:
 include "source\module_includes\wppt\worldTrade"
 include "source\bot_includes\player\isephaggle\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\module_includes\bot\helpfile\bot"
 
