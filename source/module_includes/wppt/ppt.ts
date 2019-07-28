@@ -76,6 +76,8 @@
   pause
   :GotProductA
   
+  killtrigger 1
+  killtrigger 2
   setTextLineTrigger 1 :fighterdownportb "I have no information about a port in that sector."
   setTextLineTrigger 2 :keepgoingportb   "Commerce report for"  
   pause
