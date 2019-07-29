@@ -279,20 +279,24 @@ return
 	setvar $do_not_resuscitate false
 	savevar $do_not_resuscitate
 
+	setvar $hotkeys_file         "scripts/mombot/hotkeys.cfg"
+	setvar $custom_keys_file     "scripts/mombot/custom_keys.cfg"
+	setvar $custom_commands_file "scripts/mombot/custom_commands.cfg"
+
 	gosub :MENUS~doSplashScreen
-	fileExists $exists1 "scripts/mombot/hotkeys.cfg"
-	fileExists $exists2 "scripts/mombot/custom_keys.cfg"
-	fileExists $exists3 "scripts/mombot/custom_commands.cfg"
+	fileExists $exists1 $hotkeys_file
+	fileExists $exists2 $custom_keys_file
+	fileExists $exists3 $custom_commands_file
 	if ($exists1 AND $exists2 AND $exists3)
-		readToArray "scripts/mombot/hotkeys.cfg" $hotkeys
-		readToArray "scripts/mombot/custom_keys.cfg" $custom_keys
-		readToArray "scripts/mombot/custom_commands.cfg" $custom_commands
+		readToArray $hotkeys_file $hotkeys
+		readToArray $custom_keys_file $custom_keys
+		readToArray $custom_commands_file $custom_commands
 	end
 
 	if (($exists1 = FALSE) OR ($exists2 = FALSE) OR ($exists3 = FALSE) OR ($hotkeys <> "255") OR ($custom_keys <> "33") OR ($custom_commands <> "33"))
-		delete "scripts/mombot/hotkeys.cfg"
-		delete "scripts/mombot/custom_keys.cfg"
-		delete "scripts/mombot/custom_commands.cfg"
+		delete $hotkeys_file
+		delete $custom_keys_file
+		delete $custom_commands_file
 		setArray $hotkeys 255
 		setArray $custom_keys 33
 		setArray $custom_commands 33
@@ -328,6 +332,11 @@ return
 		setVar $hotkeys[113] 8
 		setVar $hotkeys[81] 8
 		setVar $hotkeys[9] 10
+		setvar $i 1
+		while ($i <= 255)
+			write $hotkeys_file $hotkeys[$i]
+			add $i 1
+		end
 		setVar $custom_keys[1] "K"
 		setVar $custom_keys[2] "C"
 		setVar $custom_keys[3] "R"
@@ -345,6 +354,12 @@ return
 		setVar $custom_keys[15] "Z"
 		setVar $custom_keys[16] "~"
 		setVar $custom_keys[17] "B"
+		setvar $i 1
+		while ($i <= 33)
+			write $custom_keys_file $custom_keys[$i]
+			add $i 1
+		end
+
 		setVar $custom_commands[1] ":INTERNAL_COMMANDS~autokill"
 		setVar $custom_commands[2] ":INTERNAL_COMMANDS~autocap"
 		setVar $custom_commands[3] ":INTERNAL_COMMANDS~autorefurb"
@@ -362,6 +377,11 @@ return
 		setVar $custom_commands[15] ":INTERNAL_COMMANDS~clear"
 		setVar $custom_commands[16] ":MENUS~preferencesMenu"
 		setVar $custom_commands[17] ":INTERNAL_COMMANDS~dock_shopper"
+		setvar $i 1
+		while ($i <= 33)
+			write $custom_commands_file $custom_commands[$i]
+			add $i 1
+		end
 	end
 	setVar $PLAYER~startingLocation ""
 	setArray $INTERNALCOMMANDLISTS 7

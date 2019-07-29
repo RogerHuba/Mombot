@@ -326,7 +326,7 @@ halt
 		
 :waitForComplete
 	killalltriggers
-	setDelayTrigger     timeout :timeout 		8000
+	setDelayTrigger     timeout :timeout 		90000
 	setTextLineTrigger  finishedPaths :finishedPaths	"Average Interval Lag"
 	send "@"
 	pause
@@ -349,7 +349,7 @@ halt
 		halt
 	:finishedPaths
 		killtrigger timeout
-		#waitfor "Â³PlScn"
+		#waitfor "³PlScn"
 return
 
 :waitForSafeResume

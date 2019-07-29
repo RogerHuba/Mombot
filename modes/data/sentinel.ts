@@ -60,7 +60,7 @@ setVar $sentinel_Inactivity 0
 setVar $sentinel_CycleTime 30000
 setVar $sentinel_LogFile GAMENAME & "_SENTINAL.txt"
 
-if ($bot~parm1 = "0")
+if ($bot~parm1 = "")
 	setVar $SWITCHBOARD~message "Must at least select CLV*"
 	gosub :SWITCHBOARD~switchboard
 	halt

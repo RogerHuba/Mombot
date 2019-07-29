@@ -69,7 +69,7 @@
 			gosub :SWITCHBOARD~switchboard
 			halt	
 		end
-		if (($bot~parm2 = "0") or ($bot~parm2 = ""))
+		if ($bot~parm2 = "")
 			setVar $SWITCHBOARD~message "Please specifiy void group name*"
 			gosub :SWITCHBOARD~switchboard
 			halt
@@ -87,7 +87,7 @@
 		halt
 	end
 
-	if (($bot~parm3 <> "") and ($bot~parm3 <> "0"))
+	if ($bot~parm3 <> "")
 		if ($bot~parm1 = "store")
 			setVar $avoidsAdded 0
 			

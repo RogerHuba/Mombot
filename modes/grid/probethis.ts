@@ -11,7 +11,7 @@
 	setVar $BOT~help[5] $BOT~tab&"      {unexplored) - only probes unexplored sectors"
 	gosub :bot~helpfile
 
-	if ($bot~parm1 <> "0")
+	if ($bot~parm1 <> "")
 		setVar $bot~parmAM $bot~parm1
 		upperCase $bot~parmAM
 	end

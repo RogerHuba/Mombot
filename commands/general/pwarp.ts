@@ -22,7 +22,7 @@
     setVar $bot~validPrompts "Citadel"
     gosub :bot~checkstartingprompt
     isNumber $test $bot~parm1
-    if (($test = FALSE) OR ($bot~parm1 = "0"))
+    if (($test = FALSE) OR ($bot~parm1 = ""))
         setVar $SWITCHBOARD~message "Sector must be entered as a number between 11-"&SECTORS&"*"
         gosub :SWITCHBOARD~switchboard
         halt

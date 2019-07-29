@@ -185,9 +185,9 @@
 
 	isNumber $test $bot~parm1   
 	setVar $startingLocation $PLAYER~current_prompt 
-	if ((($PLAYER~current_prompt = "Citadel") OR ($PLAYER~current_prompt = "Planet")) OR (($PLAYER~current_prompt = "Command") AND (($bot~parm1 <> "0") AND ($test = TRUE))))
+	if ((($PLAYER~current_prompt = "Citadel") OR ($PLAYER~current_prompt = "Planet")) OR (($PLAYER~current_prompt = "Command") AND (($bot~parm1 <> "") AND ($test = TRUE))))
 		
-		if (($bot~parm1 <> "0") AND ($test = TRUE))
+		if (($bot~parm1 <> "") AND ($test = TRUE))
 			send "  q  q *"
 			setVar $LandOn $bot~parm1
 			setVar $planet~planet $bot~parm1

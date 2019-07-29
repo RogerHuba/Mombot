@@ -12,7 +12,7 @@ gosub :bot~helpfile
 
 
 setvar $filter ""
-if (($bot~parm1 <> "") and ($bot~parm1 <> "0"))
+if (($bot~parm1 <> "") and ($bot~parm1 <> ""))
 	setvar $filter $bot~parm1
 else
 	setvar $filter "*"
