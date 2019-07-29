@@ -1,9 +1,9 @@
 	gosub :BOT~loadVars
 	loadVar $bot~safe_ship
 
-	setVar $BOT~help[1] $BOT~tab&"xport [ship number] [password] "
-	setVar $BOT~help[2] $BOT~tab&"  - Attempts to xport into another ship"
-	gosub :bot~helpfile
+	if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
+		goto :wait_for_command
+	end
 
    #============================== XPORT (XPORT) ==============================
 :x
@@ -14,7 +14,7 @@
 	if (($PLAYER~unlimitedGame = FALSE) AND ($PLAYER~TURNS = 0))
 		setvar $switchboard~message "I don't have any turns left!*"
 		gosub :switchboard~switchboard
-		halt
+		goto :wait_for_command
 	end
 	setVar $bot~validPrompts "Citadel Command Planet"
 	gosub :bot~checkStartingPrompt
@@ -24,7 +24,7 @@
 	if ($result < 1)
 		setvar $switchboard~message "xport [ship number] [password]*"
 		gosub :switchboard~switchboard
-		halt
+		goto :wait_for_command
 	end
 	if (($bot~parm1 < 1) AND ($safeship_result >= 1))
 		if ($bot~safe_ship > 0)
@@ -32,7 +32,7 @@
 		else
 			setvar $switchboard~message "Safeship parameter not defined correctly.*"
 			gosub :switchboard~switchboard
-			halt
+			goto :wait_for_command
 		end
 	end
 	if ($PLAYER~startingLocation = "Citadel")
@@ -98,9 +98,14 @@
 	end
 	echo "**"
 	gosub :SWITCHBOARD~switchboard
-	halt
+	goto :wait_for_command
 #============================== END XPORT (XPORT) SUB ==============================
 
+:wait_for_command
+	setVar $BOT~help[1] $BOT~tab&"xport [ship number] [password] "
+	setVar $BOT~help[2] $BOT~tab&"  - Attempts to xport into another ship"
+	gosub :bot~helpfile
+halt
 
 # includes:
 include "source\module_includes\bot\loadvars\bot"

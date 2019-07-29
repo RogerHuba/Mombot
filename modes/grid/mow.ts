@@ -4,18 +4,10 @@
     loadvar $ship~ship_max_attack
     loadvar $planet~planet
 
-    setVar $BOT~help[1] $BOT~tab&"mow [destination] {figs} {kill} {cap} {saveme} {p} {back}"
-    setVar $BOT~help[2] $BOT~tab&" Options: "
-    setVar $BOT~help[3] $BOT~tab&"     {p} - port ship immediately upon arrival."
-    setVar $BOT~help[4] $BOT~tab&"  {kill} - attempt to kill immediately upon arrival."
-    setVar $BOT~help[5] $BOT~tab&"   {cap} - attempt to capture immediately upon arrival."
-    setVar $BOT~help[6] $BOT~tab&"{saveme} - call saveme to be picked up at destination."
-    setVar $BOT~help[7] $BOT~tab&"  {back} - twarp back to start sector after mow"
-    setVar $BOT~help[8] $BOT~tab&"{hoover} - attempts to pull fighters from sectors     "
-    gosub :bot~helpfile
 
-
-	gosub :combat~init 
+	if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
+		goto :wait_for_command
+	end
 
     gosub :PLAYER~quikstats
     setVar $homeSector $PLAYER~CURRENT_SECTOR
@@ -81,6 +73,7 @@
         end
         getWordPos " "&$bot~user_command_line&" " $pos "kill"
         if ($pos > 0)
+        	gosub :combat~init 
             setVar $mow_kill TRUE
         else
             setVar $mow_kill FALSE
@@ -214,6 +207,18 @@ return
 
 
 :wait_for_command
+
+	# write the help file at the end for speed purposes #
+	setVar $BOT~help[1] $BOT~tab&"mow [destination] {figs} {kill} {cap} {saveme} {p} {back}"
+	setVar $BOT~help[2] $BOT~tab&" Options: "
+	setVar $BOT~help[3] $BOT~tab&"     {p} - port ship immediately upon arrival."
+	setVar $BOT~help[4] $BOT~tab&"  {kill} - attempt to kill immediately upon arrival."
+	setVar $BOT~help[5] $BOT~tab&"   {cap} - attempt to capture immediately upon arrival."
+	setVar $BOT~help[6] $BOT~tab&"{saveme} - call saveme to be picked up at destination."
+	setVar $BOT~help[7] $BOT~tab&"  {back} - twarp back to start sector after mow"
+	setVar $BOT~help[8] $BOT~tab&"{hoover} - attempts to pull fighters from sectors     "
+	gosub :bot~helpfile
+
 halt
 
 :killthetriggers

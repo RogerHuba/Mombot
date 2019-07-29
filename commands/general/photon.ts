@@ -1,31 +1,31 @@
 	gosub :BOT~loadVars
 
-
-	setVar $BOT~help[1] $BOT~tab&"Fires photon into adjacent sector.  "
-	gosub :bot~helpfile
+	if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
+		goto :wait_for_command
+	end
 
 	setVar $target $bot~parm1 
 	isNumber $isNumber $target 
 	if ($isNumber <> TRUE)
-		setVar $SWITCHBOARD~message "Sector entered is not a number.  Halting.*"
+		setVar $SWITCHBOARD~message "Sector entered is not a number.  goto :wait_for_commanding.*"
 		gosub :SWITCHBOARD~switchboard
-		halt
+		goto :wait_for_command
 	end
 	if (($target <= 0) OR ($target > SECTORS))
-		setVar $SWITCHBOARD~message "Sector is out of bounds.  Halting.*"
+		setVar $SWITCHBOARD~message "Sector is out of bounds.  goto :wait_for_commanding.*"
 		gosub :SWITCHBOARD~switchboard
-		halt
+		goto :wait_for_command
 	end
 	gosub :PLAYER~quikstats
 	if ($PLAYER~PHOTONS <= 0)
-		setVar $SWITCHBOARD~message "You don't have any photons!  Halting.*"
+		setVar $SWITCHBOARD~message "You don't have any photons!  goto :wait_for_commanding.*"
 		gosub :SWITCHBOARD~switchboard
-		halt		
+		goto :wait_for_command		
 	end
 	if (($PLAYER~CURRENT_PROMPT <> "Citadel") AND ($PLAYER~CURRENT_PROMPT <> "Command"))
-		setVar $SWITCHBOARD~message "Photon must be run from command or citadel prompt.  Halting.*"
+		setVar $SWITCHBOARD~message "Photon must be run from command or citadel prompt.  goto :wait_for_commanding.*"
 		gosub :SWITCHBOARD~switchboard
-		halt		
+		goto :wait_for_command		
 	end
 :shoot1
 	send "c  p  y  " $target "**  q*"
@@ -39,13 +39,18 @@
 	killtrigger shot
 	setVar $SWITCHBOARD~message "Photon not fired.  Is the sector adjacent?*"
 	gosub :SWITCHBOARD~switchboard
-	halt
+	goto :wait_for_command
 
 :shot1
 	setVar $SWITCHBOARD~message "Photon fired -> Sector "&$target&"*"
 	gosub :SWITCHBOARD~switchboard
-	halt
+	goto :wait_for_command
 
+
+:wait_for_command
+	setVar $BOT~help[1] $BOT~tab&"Fires photon into adjacent sector.  "
+	gosub :bot~helpfile
+halt
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
