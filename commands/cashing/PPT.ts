@@ -32,7 +32,7 @@ gosub :BOT~loadVars
 	setVar $BOT~help[15] $BOT~tab&"    ore:x          Keep this amoutn of ore post trade."
 	setVar $BOT~help[16] $BOT~tab&"    twarp          Indicate we are PPTing between isolated ports."
 	
-	gosub :BOT~helpfile
+	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Paired Port Trade"
 	gosub :BOT~banner
@@ -327,14 +327,6 @@ gosub :BOT~loadVars
 		end
 	end
 
-	echo "$buyfuel1: " $buyfuel1 "*"
-	echo "$buyfuel2: " $buyfuel2 "*"
-	echo "$tradingType:" $tradingType "*"
-	echo "$finishore:" $finishore "*"
-	
-        echo "$haggle: " $haggle "*"
-        echo "$haggle: " $haggle "*"
-	
 	
 	# gosub :voidadjacent
 	
@@ -1103,10 +1095,6 @@ return
 halt
 
 #INCLUDES:
-include "source\module_includes\bot\loadvars\bot"
-include "source\module_includes\bot\helpfile\bot"
-include "source\module_includes\bot\banner\bot"
-include "source\bot_includes\player\moveintosector\player"
-include "source\bot_includes\player\quikstats\player"
-include "source\bot_includes\player\twarp\player"
-include "source\bot_includes\player\starthaggle\player"
+include "source\module_includes\bot"
+include "source\bot_includes\player"
+include "source\bot_includes\switchboard"
