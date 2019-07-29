@@ -581,11 +581,11 @@ return
 		if ($doesExist <> true)
 			setvar $bot~command $bot~parm1
 			setvar $bot~parm1 "help"
-			setvar $bot~user_command_line $bot~command&" "&$bot~parm1
+			setvar $bot~user_command_line $bot~parm1
 			echo "*doesn't exist*"
+			echo "**[["&$bot~user_command_line&"]]**"
+			halt
 		end
-		echo "**[["&$bot~user_command_line&"]]**"
-		halt
 	end
 		echo "**[[["&$bot~command&"]]]**"
 		echo "**[[["&$bot~user_command_line&"]]]**"
