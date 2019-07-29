@@ -453,7 +453,7 @@
 		setVar $SWITCHBOARD~message "What's the point?*"
 		gosub :SWITCHBOARD~switchboard
 		halt
-    elseif ($bot~parm1 = "0")
+    elseif ($bot~parm1 = "")
 		setVar $SWITCHBOARD~message "What's the point?*"
 		gosub :SWITCHBOARD~switchboard
 		halt

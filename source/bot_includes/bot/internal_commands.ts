@@ -164,7 +164,7 @@ goto :BOT~wait_for_command
 	getInput $BOT~parm1 "Twarp To:"
 	getWord $BOT~parm1 $BOT~parm1 1
 	stripText $BOT~parm1 " "
-	if (($BOT~parm1 = "0") OR ($BOT~parm1 = ""))
+	if ($bot~parm1 = "")
 		goto :BOT~wait_for_command
 	end
 	setVar $BOT~user_command_line "twarp "&$BOT~parm1&" "
@@ -176,7 +176,7 @@ goto :BOT~wait_for_command
 	getInput $BOT~parm1 "Mow To:"
 	getWord $BOT~parm1 $BOT~parm1 1
 	stripText $BOT~parm1 " "
-	if (($BOT~parm1 = "0") OR ($BOT~parm1 = ""))
+	if ($bot~parm1 = "")
 		goto :BOT~wait_for_command
 	end
 	setVar $BOT~user_command_line "mow "&$BOT~parm1&" 1"

@@ -20,7 +20,7 @@ if (($player~current_sector <> STARDOCK) and ($player~current_sector <> $map~sta
 end
 setVar $INITCREDITS $player~credits
 setVar $prompt $player~current_prompt
-IF (($bot~parm1 = "") or ($bot~parm1 = "0"))
+if ($bot~parm1 = "")
 		setVar $towin "YES"
 END
 IF ($player~current_prompt = "<Tavern>")

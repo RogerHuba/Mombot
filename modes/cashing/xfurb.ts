@@ -464,7 +464,7 @@ halt
 	
 
 	
-	if ($bot~parm2 = "0")
+	if ($bot~parm2 = "")
 		setVar $furbholds 22
 	else
 		isNumber $test $bot~parm2

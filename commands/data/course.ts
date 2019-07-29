@@ -10,13 +10,13 @@
     killalltriggers
     gosub :PLAYER~quikstats
     isNumber $test $bot~parm1
-    if (($bot~parm1 = "0") OR ($bot~parm1 = "") OR ($test = FALSE))
+    if (($bot~parm1 = "") OR ($test = FALSE))
         setVar $SWITCHBOARD~message "Sectors entered not valid.*"
         gosub :SWITCHBOARD~switchboard
         halt
     end
     isNumber $test $bot~parm2
-    if (($test = FALSE) OR ($bot~parm2 = "0"))
+    if (($test = FALSE) OR ($bot~parm2 = ""))
         setVar $destination $bot~parm1
         setVar $start $PLAYER~CURRENT_SECTOR
     else
