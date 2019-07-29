@@ -584,6 +584,7 @@ return
 			setvar $bot~user_command_line $bot~command&" "&$bot~parm1
 		end
 	end
+	echo "**[["&$bot~user_command_line&"]]**"
 
 	if ($BOT~command = "build") or ($BOT~command = "create")
 		setVar $BOT~command $bot~parms[1]
