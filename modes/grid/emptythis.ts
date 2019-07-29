@@ -29,7 +29,7 @@
 		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
 		send "'{" $switchboard~bot_name "} - Writing help file for this command in Help directory.*"
 	end
-	if ($bot~parm1 <> "0")
+	if ($bot~parm1 <> "")
 		setVar $bot~parmAM $bot~parm1
 		upperCase $bot~parmAM
 	end

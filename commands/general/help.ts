@@ -16,7 +16,7 @@
 	gosub :bot~helpfile
 
 
-		if ($BOT~parm1 <> 0)
+		if ($BOT~parm1 <> "")
 			lowerCase $BOT~parm1
 			setVar $i 1
 			while ($i <= 7)

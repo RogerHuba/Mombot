@@ -449,7 +449,7 @@
 
 	gosub :BOT~banner
 
-    if (($get_figs = FALSE) and ($strip = FALSE) and ($warp = FALSE) and ($port = FALSE) and ($upgrade = FALSE) and ($colo = FALSE) and ($cash = FALSE) and ($shield = FALSE) and ($build = FALSE) and ($colonize = FALSE) and ($colo = FALSE) and ($bot~parm1 <> "0") and ($defense = FALSE) and ($balance = FALSE) and ($barricade = FALSE) and ($armageddon = FALSE))
+    if (($get_figs = FALSE) and ($strip = FALSE) and ($warp = FALSE) and ($port = FALSE) and ($upgrade = FALSE) and ($colo = FALSE) and ($cash = FALSE) and ($shield = FALSE) and ($build = FALSE) and ($colonize = FALSE) and ($colo = FALSE) and ($bot~parm1 <> "") and ($defense = FALSE) and ($balance = FALSE) and ($barricade = FALSE) and ($armageddon = FALSE))
 		setVar $SWITCHBOARD~message "What's the point?*"
 		gosub :SWITCHBOARD~switchboard
 		halt

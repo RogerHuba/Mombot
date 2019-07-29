@@ -119,7 +119,7 @@
 
 	
 	isNumber $is_a_number $bot~parm1
-	if (($is_a_number) and ($bot~parm1 <> "0"))
+	if (($is_a_number) and ($bot~parm1 <> ""))
 		setVar $ship1 $bot~parm1
 		setVar $SHIPS[1] $ship1
 	else
@@ -129,7 +129,7 @@
 	end
 
 	isNumber $is_a_number $bot~parm2
-	if (($is_a_number) and ($bot~parm2 <> "0"))
+	if (($is_a_number) and ($bot~parm2 <> ""))
 		setVar $ship2 $bot~parm2
 		setVar $SHIPS[2] $ship2
 	else
@@ -160,7 +160,7 @@
 		end
 	else
 		isNumber $is_a_number $bot~parm3
-		if (($is_a_number) and ($bot~parm3 <> "0"))
+		if (($is_a_number) and ($bot~parm3 <> ""))
 			setVar $ship3 $bot~parm3
 			if ($NUMBER_CASHING_SHIPS >= 3)
 				setVar $SHIPS[3] $ship3

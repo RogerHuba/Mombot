@@ -87,7 +87,7 @@
 		halt
 	end
 
-	if (($bot~parm3 <> "") and ($bot~parm3 <> "0"))
+	if (($bot~parm3 <> "") and ($bot~parm3 <> ""))
 		if ($bot~parm1 = "store")
 			setVar $avoidsAdded 0
 			

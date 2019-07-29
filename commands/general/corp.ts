@@ -28,10 +28,10 @@
 					 halt
 			   end
 		end
-		if (($bot~parm2 <> "") and ($bot~parm2 <> "0"))
+		if (($bot~parm2 <> "") and ($bot~parm2 <> ""))
 			   setVar $player~corpnumber $bot~parm2
 		end
-		if (($bot~parm3 <> "") and ($bot~parm3 <> "0"))
+		if (($bot~parm3 <> "") and ($bot~parm3 <> ""))
 				setVar $bot~corppassword $bot~parm3
 		end
 		if ($bot~parm1 = "drop")
