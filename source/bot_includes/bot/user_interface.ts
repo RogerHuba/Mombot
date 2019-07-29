@@ -577,7 +577,9 @@ return
 		setVar $BOT~command "help"
 	end
 	if ($bot~command = "help")
-		goto :internal_commands~help
+		setvar $bot~command $bot~parm1
+		setvar $bot~parm1 "help"
+		setvar $bot~user_command_line $bot~command&" "&$bot~parm1
 	end
 
 	if ($BOT~command = "build") or ($BOT~command = "create")
