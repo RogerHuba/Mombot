@@ -240,6 +240,8 @@ return
 	end
 	halt
 :ss_help
+	loadvar $bot~major_version
+	loadvar $bot~minor_version
 	setVar $helpString "'*"
 	setVar $helpString $helpString&"  -----------------Mind ()ver Matter Bot Help Categories--------------*"
 	setVar $helpString $helpString&"                              Version: "&$BOT~major_version&"."&$BOT~minor_version&"*"
