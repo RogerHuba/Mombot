@@ -207,14 +207,8 @@ goto :BOT~wait_for_command
 	goto :USER_INTERFACE~runUserCommandLine
 
 :help
-	fileExists $doesExist "scripts\mombot\help\"&$BOT~parm1&".txt"
-	if ($doesExist <> true)
-		setVar $BOT~user_command_line $bot~parm1&" help"
-	else
-		setVar $BOT~user_command_line "help "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
-	end
+	setVar $BOT~user_command_line "help "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
 	goto :USER_INTERFACE~runUserCommandLine
-
 
 :x
 :xport
