@@ -582,10 +582,11 @@ return
 			setvar $bot~command $bot~parm1
 			setvar $bot~parm1 "help"
 			setvar $bot~user_command_line $bot~command&" "&$bot~parm1
+			echo "*doesn't exist*"
 		end
+		echo "**[["&$bot~user_command_line&"]]**"
+		halt
 	end
-	echo "**[["&$bot~user_command_line&"]]**"
-	halt
 	if ($BOT~command = "build") or ($BOT~command = "create")
 		setVar $BOT~command $bot~parms[1]
 		setvar $bot~parms[1] "create"
