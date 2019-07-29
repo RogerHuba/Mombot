@@ -29,7 +29,7 @@
 		halt
 	end
 
-	if ($player~twarp_type = "No")
+	if (($player~twarp_type = "No") and ($player~current_sector <> STARDOCK))
 		send "'{" $BOT~bot_name "} " & $TagLineB & " - Must have at least Twarp Type 1!**"
 		halt
 	end
@@ -403,144 +403,150 @@
 		end
 	end
 
-	if ($player~total_holds <> $player~ore_holds)
+	if (($player~total_holds <> $player~ore_holds) and ($player~current_sector <> STARDOCK))
 		send "'{" $BOT~bot_name "} " & $TagLineB & " - Please Restart with Full Ore in Holds!!**"
 		halt
 	end
 
 :start
-	setVar $figcnt SECTOR.FIGS.QUANTITY[$START_SECTOR]
-	setVar $figowner SECTOR.FIGS.OWNER[$START_SECTOR]
-	if (($figcnt = 0) OR (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
-		send "'{" $BOT~bot_name "} " & $TagLineB & " - Fig Required In Current Sector**"
-		halt
-	end
-
-	    #=--------                                                                       -------=#
-	     #=------------------------------       Main Event       ------------------------------=#
-	    #=--------                                                                       -------=#
-		setVar $RUN_ONCE TRUE
-
-		if (($_Atomics = "") AND ($_Beacons = "") AND ($_Corbo = "") AND ($_Cloak = "") AND ($_Probe = "") AND ($_PScan = "") AND ($_Limps = "") AND ($_Mines = "") AND ($_Photon = "") AND ($_LRScan = "") AND ($_Disrupt = "") AND ($_GenTorp = "") AND ($_T2Twarp = "") AND ($_Holds = "") AND ($_Figs = "") AND ($_Shields = "") AND ($_Trickster = "") AND ($NumberOfShip < 1))
-			send "'{" $BOT~bot_name "} " & $TagLineB & " - Nothing To Do**"
+	setVar $locationDock 0
+	if ($player~current_sector <> STARDOCK)
+		setVar $figcnt SECTOR.FIGS.QUANTITY[$START_SECTOR]
+		setVar $figowner SECTOR.FIGS.OWNER[$START_SECTOR]
+		if (($figcnt = 0) OR (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
+			send "'{" $BOT~bot_name "} " & $TagLineB & " - Fig Required In Current Sector**"
 			halt
 		end
+	else
+		setVar $locationDock 1
+	end
+	#=--------                                                                       -------=#
+	#=------------------------------       Main Event       ------------------------------=#
+	#=--------                                                                       -------=#
+	setVar $RUN_ONCE TRUE
+
+	if (($_Atomics = "") AND ($_Beacons = "") AND ($_Corbo = "") AND ($_Cloak = "") AND ($_Probe = "") AND ($_PScan = "") AND ($_Limps = "") AND ($_Mines = "") AND ($_Photon = "") AND ($_LRScan = "") AND ($_Disrupt = "") AND ($_GenTorp = "") AND ($_T2Twarp = "") AND ($_Holds = "") AND ($_Figs = "") AND ($_Shields = "") AND ($_Trickster = "") AND ($NumberOfShip < 1))
+		send "'{" $BOT~bot_name "} " & $TagLineB & " - Nothing To Do**"
+		halt
+	end
 
 	#=-------------------This is where we loop too if buying more than one ship
 	:HERE_WE_GO_AGAIN
 		setVar $CurrentShip $player~ship_number
 		add $Runs2Dock 1
 
-		if (($_Tow > 0) AND ($_Trickster = ""))
-			setVar $Pass ""
-			gosub :GetPassWord
+	if (($_Tow > 0) AND ($_Trickster = ""))
+		setVar $Pass ""
+		gosub :GetPassWord
         	gosub :LockTow
         else
         	setVar $_Tow 0
         	send " W N * "
-		end
+	end
 
 		if ($RUN_ONCE)
-			# check adj's for Dock.. if present, then we don't need a jump sector.
-			setVar $i 1
-			setVar $WeAreAdjDock FALSE
-			while ($i <= SECTOR.WARPCOUNT[$START_SECTOR])
-				setVar $adj_start SECTOR.WARPS[$START_SECTOR][$i]
-				if ($adj_start = STARDOCK)
-					setVar $WeAreAdjDock TRUE
+			if ($locationDock = 0)
+				# check adj's for Dock.. if present, then we don't need a jump sector.
+				setVar $i 1
+				setVar $WeAreAdjDock FALSE
+				while ($i <= SECTOR.WARPCOUNT[$START_SECTOR])
+					setVar $adj_start SECTOR.WARPS[$START_SECTOR][$i]
+					if ($adj_start = STARDOCK)
+						setVar $WeAreAdjDock TRUE
+					end
+					add $i 1
 				end
-				add $i 1
-			end
 
-			if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE))
-				setVar $RED_adj 0
-				gosub :player~findjumpsector
-				if ($RED_adj <> 0)
-					send ("'{"&$BOT~bot_name&"} "&$TagLineB&" - Jump Sector Found"&" - Using Sector "&$RED_adj&"**")
-				else
-					waitfor "Command [TL="
-					send "'{" & $BOT~bot_name & "} " & $TagLineB & " - Cannot Find Jump Sector Adjacent Dock**"
-					halt
+				if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE))
+					setVar $RED_adj 0
+					gosub :player~findjumpsector
+					if ($RED_adj <> 0)
+						send ("'{"&$BOT~bot_name&"} "&$TagLineB&" - Jump Sector Found"&" - Using Sector "&$RED_adj&"**")
+					else
+						waitfor "Command [TL="
+						send "'{" & $BOT~bot_name & "} " & $TagLineB & " - Cannot Find Jump Sector Adjacent Dock**"
+						halt
+					end
 				end
-			end
 
-			if ($player~alignment >= 1000)
-				if ($WeAreAdjDock)
-					send "^F" & STARDOCK & "*" & $START_SECTOR & "*Q/ "
+				if ($player~alignment >= 1000)
+					if ($WeAreAdjDock)
+						send "^F" & STARDOCK & "*" & $START_SECTOR & "*Q/ "
+					else
+						send "^F" & $START_SECTOR & "*" & STARDOCK & "*F" & STARDOCK & "*" & $START_SECTOR & "*Q/ "
+					end
 				else
-					send "^F" & $START_SECTOR & "*" & STARDOCK & "*F" & STARDOCK & "*" & $START_SECTOR & "*Q/ "
+					if ($WeAreAdjDock)
+						send "^F" & STARDOCK & "*" & $START_SECTOR & "*Q/ "
+					else
+						send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & STARDOCK & "*" & $START_SECTOR & "*Q/ "
+					end
 				end
-			else
-				if ($WeAreAdjDock)
-					send "^F" & STARDOCK & "*" & $START_SECTOR & "*Q/ "
-				else
-					send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & STARDOCK & "*" & $START_SECTOR & "*Q/ "
-				end
-			end
-			setTextLineTrigger noJoy :noJoy "*** Error - No route within"
-			setTextTrigger cont :cont "(?="
-			pause
-
-			:noJoy
-				killAllTriggers
-				send "'{" $BOT~bot_name "} " & $TagLineB & " - Cannot Find Path to StarDock!**"
-				halt
-	       	:cont
-				killAllTriggers
-				setDelayTrigger Latency_Delay		:Latency_Delay 500
+				setTextLineTrigger noJoy :noJoy "*** Error - No route within"
+				setTextTrigger cont :cont "(?="
 				pause
 
-				:Latency_Delay
-
-	       		Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
-				if (($player~alignment >= 1000) OR ($WeAreAdjDock))
-					getdistance $dist1 $START_SECTOR STARDOCK
-				else
-					getdistance $dist1 $START_SECTOR $RED_adj
-				end
-
-				if ($dist1 <= 0)
-					send "'{" $BOT~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Course to Dock**"
+				:noJoy
+					killAllTriggers
+					send "'{" $BOT~bot_name "} " & $TagLineB & " - Cannot Find Path to StarDock!**"
 					halt
-				end
+				:cont
+					killAllTriggers
+					setDelayTrigger Latency_Delay		:Latency_Delay 500
+					pause
 
-				getdistance $dist2 STARDOCK $START_SECTOR
-				if ($dist2 <= 0)
-					send "'{" $BOT~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Return Course From Dock**"
-					halt
-				end
+					:Latency_Delay
 
-				setVar $ore_req (($dist1 + $dist2) * 3)
+				Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
+					if (($player~alignment >= 1000) OR ($WeAreAdjDock))
+						getdistance $dist1 $START_SECTOR STARDOCK
+					else
+						getdistance $dist1 $START_SECTOR $RED_adj
+					end
 
-				if ($_Tow > 0)
-					setVar $ore_req ($ore_req * 2)
-				elseif ($_Trickster <> "")
-					setVar $ore_req ($dist1 * 3)
-					setVar $ore_req $ore_req + ($dist2 * 6)
-				end
-
-				if ($player~ore_holds < $ore_req)
-					send "'{" $BOT~bot_name "} " & $TagLineB & " - Not Enough ORE In Holds To Make Round Trip**"
-					halt
-				end
-
-				if ($player~twarp_type = "No")
-					send "'{" $BOT~bot_name "} " & $TagLineB & " - Must Have Twarp 1 or 2**"
-					halt
-				end
-
-				if ($UNLIM = 0)
-					gosub :TurnsRequired
-					if ($player~turnsRequired > $player~turns)
-						send "'{" $BOT~bot_name "} " & $TagLineB & " - Not Enough Turns. " & ANSI_12 & $player~turnsRequired & ANSI_15 & ", Required**"
+					if ($dist1 <= 0)
+						send "'{" $BOT~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Course to Dock**"
 						halt
-					elseif ($player~turnsRequired <= $player~turns)
-						setVar $tmp ($player~turns - $player~turnsRequired)
-						if ($tmp <= $BOT~BOT_TURN_LIMIT)
-							send "'{" $BOT~bot_name "} " & $TagLineB & " - Proceeding Will Leave Fewer Than " & $BOT~BOT_TURN_LIMIT & " Turns!**"
+					end
+
+					getdistance $dist2 STARDOCK $START_SECTOR
+					if ($dist2 <= 0)
+						send "'{" $BOT~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Return Course From Dock**"
+						halt
+					end
+
+					setVar $ore_req (($dist1 + $dist2) * 3)
+
+					if ($_Tow > 0)
+						setVar $ore_req ($ore_req * 2)
+					elseif ($_Trickster <> "")
+						setVar $ore_req ($dist1 * 3)
+						setVar $ore_req $ore_req + ($dist2 * 6)
+					end
+
+					if ($player~ore_holds < $ore_req)
+						send "'{" $BOT~bot_name "} " & $TagLineB & " - Not Enough ORE In Holds To Make Round Trip**"
+						halt
+					end
+
+					if ($player~twarp_type = "No")
+						send "'{" $BOT~bot_name "} " & $TagLineB & " - Must Have Twarp 1 or 2**"
+						halt
+					end
+
+					if ($UNLIM = 0)
+						gosub :TurnsRequired
+						if ($player~turnsRequired > $player~turns)
+							send "'{" $BOT~bot_name "} " & $TagLineB & " - Not Enough Turns. " & ANSI_12 & $player~turnsRequired & ANSI_15 & ", Required**"
 							halt
-	    				end
-	                end
+						elseif ($player~turnsRequired <= $player~turns)
+							setVar $tmp ($player~turns - $player~turnsRequired)
+							if ($tmp <= $BOT~BOT_TURN_LIMIT)
+								send "'{" $BOT~bot_name "} " & $TagLineB & " - Proceeding Will Leave Fewer Than " & $BOT~BOT_TURN_LIMIT & " Turns!**"
+								halt
+							end
+						end
+					end
 				end
 			end
 
@@ -556,7 +562,9 @@
 				killAllTriggers
 				waitfor "(?="
 				setVar $msg ""
-				if (($player~alignment >= 1000) AND ($WeAreAdjDock = FALSE))
+				if ($locationDock = 1)
+					send "P  S G Y G Q "
+				elseif (($player~alignment >= 1000) AND ($WeAreAdjDock = FALSE))
 					setVar $TwarpTo STARDOCK
 					gosub :DoTwarp
 				elseif (($WeAreAdjDock = FALSE) AND ($RED_adj <> 0))
@@ -572,15 +580,15 @@
 					halt
 				end
 
-	    gosub :player~quikstats
+		gosub :player~quikstats
 
-        if (($Start_Creds <= 100) AND ($Start_Exp < $EXPERIECE) AND ($Start_Holds <> $player~total_holds))
-        	send "'{" $BOT~bot_name "} " & $TagLineB & " - Appear To Have Been Podded!**"
-        	halt
+		if (($Start_Creds <= 100) AND ($Start_Exp < $EXPERIECE) AND ($Start_Holds <> $player~total_holds))
+        		send "'{" $BOT~bot_name "} " & $TagLineB & " - Appear To Have Been Podded!**"
+        		halt
 		end
 
 		if ($_Tow > 0)
-            if ($player~current_prompt = "<StarDock>")
+			if ($player~current_prompt = "<StarDock>")
 				gosub :DoShipTowedCheck
 				setVar $shipnum $_Tow
 				gosub :DoXport
@@ -589,7 +597,7 @@
 				halt
 			end
 		elseif ($_Trickster <> "")
-            if ($player~current_prompt = "<StarDock>")
+			if ($player~current_prompt = "<StarDock>")
 				gosub :BUYSHIP
 				if ($NewShipNumber > 0)
 					setVar $_Tow $NewShipNumber
@@ -603,7 +611,7 @@
 				send "'{" $BOT~bot_name "} " & $TagLineB & " - Not at Expected StarDock Prompt!**"
 				halt
 			end
-        end
+		end
 
 		gosub :DoPurchases
 
@@ -624,8 +632,11 @@
         end
 
 		:GO_HOME_EMPTY_HANDED
-
-		if ($_Tow > 0)
+		
+		if ($locationDock = 1)
+			send "Q Q Q Q Z N "
+		
+		elseif ($_Tow > 0)
 			if ($location = "Citadel")
 				send "q q q  z  n  w  n  *  w  n" & $_Tow & "*  n  n  *  m " & $START_SECTOR & " *  y  y  y  *  d  w  n * L Z" & #8 & $planet~planet & "* p  s s * * c *"
 			else
@@ -642,7 +653,7 @@
 		gosub :player~quikstats
 
 		waitfor "(?="
-		if ($player~current_sector = STARDOCK)
+		if (($player~current_sector = STARDOCK) and ($locationDock = 0))
 			send "'{" $BOT~bot_name "} " & $TagLineB & " - Twarp Error, Should be Hiding on Dock!**"
 			halt
 		end
@@ -675,7 +686,7 @@
 									setVar $Turn_Req $Turn_Diff
 								end
 							end
-				    	end
+				    		end
 
 						setVar $ActualCost ($Starting_CREDITS - $player~credits)
 						setVar $BottomLine ($ActualCost * $NumberOfShip)
@@ -708,10 +719,10 @@
 					if ($NumberOfShip = 0)
 						goto :WE_DONE
 					else
-		        		goto :HERE_WE_GO_AGAIN
-		        	end
-		        end
-		    end
+		        			goto :HERE_WE_GO_AGAIN
+		        		end
+				end
+			end
 		end
 
         :WE_DONE
@@ -1423,7 +1434,7 @@
 
 	#=----------------------------------------------------------------------------------------------------------------
 :BuyShip
-	cuttext $_Trickster $SelectedShip 1 ($pos - 1)
+	cuttext $_Trickster $SelectedShip 1 1
 	stripText $SelectedShip " "
 	stripText $SelectedShip "^"
 

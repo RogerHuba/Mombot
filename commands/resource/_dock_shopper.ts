@@ -356,8 +356,8 @@
             killalltriggers
             setTextLineTrigger  NeedtoLogin     :NeedtoLogin    "Send a corporate memo to login."
             setTextLineTrigger  BotsBusy        :BotsBusy       "- Time Left   = "
-            setTextLineTrigger  BotsNotBusy     :BotsNotBusy    "Bot Mode  : "
-            setTextLineTrigger  BotsNotBusy3    :BotsNotBusy    "Mode        = General"
+            setTextLineTrigger  BotsNotBusy     :BotsNotBusy    "Bot Mode :"
+            setTextLineTrigger  BotsNotBusy3    :BotsNotBusy    "Bot Mode :General"
             setDelayTrigger     BotNotThere     :BotNotThere    4000
             send ("'" & $LSD_BOTTING & " Status*")
             pause
