@@ -18,25 +18,25 @@ goto :BOT~load_bot
 	setVar $command $bot~command
 	saveVar $command
 	saveVar $bot~user_command_line
-	saveVar $bot~user_command_line
+	saveVar $user_command_line
 	setVar $switchboard~bot_name $bot~bot_name
 	saveVar $switchboard~bot_name
 	saveVar $bot~parm1
-	saveVar $bot~parm1
+	saveVar $parm1
 	saveVar $bot~parm2
-	saveVar $bot~parm2
+	saveVar $parm2
 	saveVar $bot~parm3
-	saveVar $bot~parm3
+	saveVar $parm3
 	saveVar $bot~parm4
-	saveVar $bot~parm4
+	saveVar $parm4
 	saveVar $bot~parm5
-	saveVar $bot~parm5
+	saveVar $parm5
 	saveVar $bot~parm6
-	saveVar $bot~parm6
+	saveVar $parm6
 	saveVar $bot~parm7
-	saveVar $bot~parm7
+	saveVar $parm7
 	saveVar $bot~parm8
-	saveVar $bot~parm8
+	saveVar $parm8
 	saveVar $bot~bot_turn_limit
 	saveVar $player~unlimitedGame
 return
@@ -51,19 +51,28 @@ return
 	saveVar $safe_planet
 	setVar $command $bot~command
 	saveVar $command
-		saveVar $bot~user_command_line
-	setVar $switchboard~bot_name $bot~bot_name
-	saveVar $switchboard~bot_name
+	setvar $user_command_line $bot~user_command_line
+	saveVar $user_command_line
+	setVar $bot_name $bot~bot_name
+	saveVar $bot_name
 	setVar $self_command $bot~self_command
 	saveVar $self_command
-		saveVar $bot~parm1
-		saveVar $bot~parm2
-		saveVar $bot~parm3
-		saveVar $bot~parm4
-		saveVar $bot~parm5
-		saveVar $bot~parm6
-		saveVar $bot~parm7
-		saveVar $bot~parm8
+	setvar $parm1 $bot~parm1
+	setvar $parm2 $bot~parm2
+	setvar $parm3 $bot~parm3
+	setvar $parm4 $bot~parm4
+	setvar $parm5 $bot~parm5
+	setvar $parm6 $bot~parm6
+	setvar $parm7 $bot~parm7
+	setvar $parm8 $bot~parm8
+	saveVar $parm1
+	saveVar $parm2
+	saveVar $parm3
+	saveVar $parm4
+	saveVar $parm5
+	saveVar $parm6
+	saveVar $parm7
+	saveVar $parm8
 	setVar $rylos $map~rylos
 	saveVar $rylos
 	setVar $alpha_centauri $map~alpha_centauri
@@ -76,8 +85,8 @@ return
 	saveVar $home_sector
 	setVar $alarm_list $bot~alarm_list
 	saveVar $alarm_list
-	setVar $player~unlimitedGame $player~unlimitedGame
-	saveVar $player~unlimitedGame
+	setVar $unlimitedGame $player~unlimitedGame
+	saveVar $unlimitedGame
 	setVar $bot_turn_limit $bot~bot_turn_limit
 	saveVar $bot_turn_limit
 	setVar $steal_factor $game~steal_factor
@@ -92,6 +101,7 @@ return
 	saveVar $ptradesetting
 
 return
+
 
 #INCLUDES:
 include "source\bot_includes\bot"
