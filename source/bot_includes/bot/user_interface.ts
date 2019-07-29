@@ -576,7 +576,7 @@ return
 	if ($BOT~command = "?")
 		setVar $BOT~command "help"
 	end
-	if (($bot~command = "help") and ($bot~parm1 <> ""))
+	if (($bot~command = "help") and ($bot~parm1 <> "") and ($bot~parm1 <> "0"))
 		fileExists $doesExist "scripts\mombot\help\"&$BOT~parm1&".txt"
 		if ($doesExist <> true)
 			setvar $bot~command $bot~parm1
@@ -584,8 +584,7 @@ return
 			setvar $bot~user_command_line $bot~command&" "&$bot~parm1
 		end
 	end
-	echo "**[["&$bot~user_command_line&"]]**"
-
+	
 	if ($BOT~command = "build") or ($BOT~command = "create")
 		setVar $BOT~command $bot~parms[1]
 		setvar $bot~parms[1] "create"
