@@ -13,12 +13,12 @@ gosub :player~quikstats
 if ((STARDOCK = "") and (STARDOCK = 0) and ($map~stardock = "0"))
 	setvar $switchboard~message "Tri-Conn - StarDock's Not In TWX DBase!*"
 	gosub :switchboard~switchboard
-	goto :bot~endofscript
+	halt
 end
 if (($player~current_sector <> STARDOCK) and ($player~current_sector <> $map~stardock))
 	setvar $switchboard~message "Tri-Conn Must Be Started at StarDock!*"
 	gosub :switchboard~switchboard
-	goto :bot~endofscript
+	halt
 end
 setVar $INITCREDITS $player~credits
 setVar $prompt $player~current_prompt
@@ -37,7 +37,7 @@ ELSEIF ($player~current_prompt = "Command")
 ELSE
 		setvar $switchboard~message "Unknown Prompt.*"
 		gosub :switchboard~switchboard
-		goto :bot~endofscript
+		halt
 END
 
 :start
@@ -107,7 +107,7 @@ END
 				send "q"
 		else
 		END
-		goto :bot~endofscript
+		halt
 		
 
 #INCLUDES:
