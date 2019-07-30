@@ -572,12 +572,10 @@ return
 	elseif ($checkForChat = "`")
 		goto :INTERNAL_COMMANDS~fed
 	end
+	saveVar $SWITCHBOARD~self_command
 	if ($BOT~command = "?")
 		setVar $BOT~command "help"
 	end
-
-	saveVar $SWITCHBOARD~self_command
-
 	if ($BOT~command = "build") or ($BOT~command = "create")
 		setVar $BOT~command $bot~parms[1]
 		setvar $bot~parms[1] "create"

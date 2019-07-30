@@ -4,7 +4,9 @@
 	setVar $BOT~help[2] $BOT~tab&"  - Must be started at stardock"
 	gosub :bot~helpfile
 
-setVar $games $bot~parm1
+if ($bot~parm1 <> "")
+	setVar $games $bot~parm1
+end
 setVar $gamestoplay $games
 setVar $games_played 0
 gosub :player~quikstats
@@ -35,7 +37,7 @@ ELSEIF ($player~current_prompt = "Command")
 ELSE
 		setvar $switchboard~message "Unknown Prompt.*"
 		gosub :switchboard~switchboard
-		HALT
+		halt
 END
 
 :start
@@ -105,7 +107,7 @@ END
 				send "q"
 		else
 		END
-		HALT
+		halt
 		
 
 #INCLUDES:
