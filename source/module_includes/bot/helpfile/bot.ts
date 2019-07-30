@@ -1,10 +1,9 @@
 :helpfile
+setvar $only_help false
+if (($parm1 = "help") or ($parm1 = "?"))
+	setvar $only_help true
 	setVar $help_file "scripts\mombot\help\"&$command&".txt"
 	fileExists $doesHelpFileExist $help_file
-	setvar $only_help false
-	if (($parm1 = "help") or ($parm1 = "?"))
-		setvar $only_help true
-	end
 	if ($doesHelpFileExist)
 		setVar $i 1 
 		read $help_file $help_line ($i+4)
@@ -62,6 +61,7 @@
 			gosub :displayhelp
 			halt
 		end
+end
 return
 
 include "source\module_includes\bot\displayhelp\bot"
