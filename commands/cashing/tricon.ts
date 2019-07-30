@@ -4,19 +4,21 @@
 	setVar $BOT~help[2] $BOT~tab&"  - Must be started at stardock"
 	gosub :bot~helpfile
 
-setVar $games $bot~parm1
+if ($bot~parm1 <> "")
+	setVar $games $bot~parm1
+end
 setVar $gamestoplay $games
 setVar $games_played 0
 gosub :player~quikstats
 if ((STARDOCK = "") and (STARDOCK = 0) and ($map~stardock = "0"))
 	setvar $switchboard~message "Tri-Conn - StarDock's Not In TWX DBase!*"
 	gosub :switchboard~switchboard
-	halt
+	goto :bot~endofscript
 end
 if (($player~current_sector <> STARDOCK) and ($player~current_sector <> $map~stardock))
 	setvar $switchboard~message "Tri-Conn Must Be Started at StarDock!*"
 	gosub :switchboard~switchboard
-	halt
+	goto :bot~endofscript
 end
 setVar $INITCREDITS $player~credits
 setVar $prompt $player~current_prompt
@@ -35,7 +37,7 @@ ELSEIF ($player~current_prompt = "Command")
 ELSE
 		setvar $switchboard~message "Unknown Prompt.*"
 		gosub :switchboard~switchboard
-		HALT
+		goto :bot~endofscript
 END
 
 :start
@@ -105,7 +107,7 @@ END
 				send "q"
 		else
 		END
-		HALT
+		goto :bot~endofscript
 		
 
 #INCLUDES:
