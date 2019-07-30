@@ -556,11 +556,12 @@ gosub :_START_
 	killtrigger lowshipore2
 	killtrigger locked2
 	killtrigger adj2
-	if ($FIGS = 0)
+	# Removing as this is wasting a turn!
+	#if ($FIGS = 0)
 		send "Y "
-	else
-		send "Y P S G Y G Q S P B " & (100 - $FIGS) & "* Q Q Q "
-	end
+	#else
+	#	send "Y P S G Y G Q S P B " & (100 - $FIGS) & "* Q Q Q "
+	#end
 	if ($CK_MODE)
 		goto :setCKFurbTriggers
 	else
@@ -580,6 +581,10 @@ gosub :_START_
 :buyfurbs
 	setVar $Temp $PLAYER~CREDITS
     send "P S G Y G Q S B N Y " & $shipletter & "Y qrP " & $shipName &"* * * "
+    if ($PLAYER~FIGHTERS < 1001)
+	setVar $ftobuy (1001 - $PLAYER~FIGHTERS)
+		send "P B " $ftobuy "* q  "
+    end
 	waitfor "[Pause]"
 :listfurbs
     send "S"

@@ -10,9 +10,9 @@
 	if ($BOT~bot_team_name = FALSE)
 		setVar $BOT~bot_team_name "None"
 	end
-	setVar $SWITCHBOARD~SELF_COMMAND FALSE
-    setVar $SWITCHBOARD~MESSAGE "Team: " & $BOT~bot_team_name & " Sec: "&$PLAYER~CURRENT_SECTOR&" Exp: "&$PLAYER~EXPERIENCE&" Aln: "&$PLAYER~ALIGNMENT&" Creds: "&$PLAYER~CREDITS&" Ship: "&$PLAYER~SHIP_NUMBER&" Turns: "&$PLAYER~TURNS&"*"
-    gosub :SWITCHBOARD~SWITCHBOARD
+	
+        send "'" & "Team: " & $BOT~bot_team_name & " Sec: "&$PLAYER~CURRENT_SECTOR&" Exp: "&$PLAYER~EXPERIENCE&" Aln: "&$PLAYER~ALIGNMENT&" Creds: "&$PLAYER~CREDITS&" Ship: "&$PLAYER~SHIP_NUMBER&" Turns: "&$PLAYER~TURNS&"*"
+ 
 
 halt
 

@@ -141,8 +141,7 @@
 	if ($twoship = TRUE)
 		isNumber $is_a_number $bot~parm3
 		if ($is_a_number)
-			setVar $planet~planet1 $bot~parm3
-			setVar $SHIPS[1][2] $planet~planet1
+			setVar $SHIPS[1][2] $bot~parm3
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #1 number invalid.  Shutting down.*"
 			gosub :SWITCHBOARD~SWITCHBOARD	
@@ -151,8 +150,7 @@
 
 		isNumber $is_a_number $bot~parm4
 		if ($is_a_number) 
-			setVar $planet~planet2 $bot~parm4
-			setVar $SHIPS[2][2] $planet~planet2
+			setVar $SHIPS[2][2] $bot~parm4
 		else
 			setVar $SWITCHBOARD~MESSAGE "Planet #2 number invalid.  Shutting down.*"
 			gosub :SWITCHBOARD~SWITCHBOARD	
@@ -170,36 +168,41 @@
 			gosub :SWITCHBOARD~SWITCHBOARD	
 			halt	
 		end
+
 		isNumber $is_a_number $bot~parm4
+
 		if ($is_a_number)
-			setVar $planet~planet1 $bot~parm4
-			setVar $SHIPS[1][2] $planet~planet1
+			setVar $SHIPS[1][2] $bot~parm4
 		else
-			setVar $SWITCHBOARD~MESSAGE "Planet #1 number invalid.  Shutting down.*"
-			gosub :SWITCHBOARD~SWITCHBOARD	
-			halt	
+			#setVar $SWITCHBOARD~MESSAGE "Planet #1 number invalid.  Shutting down.*"
+			#gosub :SWITCHBOARD~SWITCHBOARD	
+			#halt	
+			setVar $SHIPS[1][2] ""
 		end
 
 		isNumber $is_a_number $bot~parm5
 		if ($is_a_number) 
-			setVar $planet~planet2 $bot~parm5
-			setVar $SHIPS[2][2] $planet~planet2
+			setVar $SHIPS[2][2] $bot~parm5
 		else
-			setVar $SWITCHBOARD~MESSAGE "Planet #2 number invalid.  Shutting down.*"
-			gosub :SWITCHBOARD~SWITCHBOARD	
-			halt	
+			#setVar $SWITCHBOARD~MESSAGE "Planet #2 number invalid.  Shutting down.*"
+			#gosub :SWITCHBOARD~SWITCHBOARD	
+			#halt	
+			setVar $SHIPS[2][2] ""
 		end
 
 		isNumber $is_a_number $bot~parm6
 		if ($is_a_number)
-			setVar $planet~planet3 $bot~parm6
 			if ($NUMBER_CASHING_SHIPS >= 3)
-				setVar $SHIPS[3][2] $planet~planet3
+				setVar $SHIPS[3][2] $bot~parm6
 			end
 		else
-			setVar $SWITCHBOARD~MESSAGE "Planet #3 number invalid.  Shutting down.*"
-			gosub :SWITCHBOARD~SWITCHBOARD	
-			halt	
+			if ($NUMBER_CASHING_SHIPS >= 3)
+				#setVar $SWITCHBOARD~MESSAGE "Planet #3 number invalid.  Shutting down.*"
+				#gosub :SWITCHBOARD~SWITCHBOARD	
+				#halt	
+				setVar $SHIPS[3][2] ""
+			end
+			
 		end
 	end
 
@@ -210,8 +213,8 @@
 
 	while (($i <= $MAX_RED_BOTS) AND ($roll_call_done = FALSE))
 		send "'red"&$i&" callout*"
-		setDelayTrigger delay :donered 2000
-		setTextLineTrigger red :foundred "} - Team: red"&$i&" " 
+		setDelayTrigger delay :donered 3000
+		setTextLineTrigger red :foundred "Team: red"&$i&" " 
 		pause
 
 		:toomanyred	
@@ -265,8 +268,25 @@
 	setVar $SWITCHBOARD~MESSAGE "Found "&$red_count&" red bots.*"
 	gosub :SWITCHBOARD~SWITCHBOARD
 
+	setVar $shipsinuse 0
+	setVar $i 1
+	while ($i <= $red_count)
 
-
+		setVar $j 1
+		while ($j <= $NUMBER_CASHING_SHIPS)
+			if ($RED_CURRENT_SHIP[$i] = $SHIPS[$j])
+				setVar $SWITCHBOARD~MESSAGE "Red "&$i&" please hop out of ship "&$SHIPS[$j]&" and into your sit ship.*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+				setVar $shipsinuse 1
+				
+			end
+			add $j 1
+		end
+		add $i 1
+	end
+	if ($shipsinuse = 1)
+		halt
+	end
 
 	setVar $i 1
 	setVar $roll_call_done FALSE
@@ -274,8 +294,8 @@
 
 	while (($i <= $MAX_BLUE_BOTS) AND ($roll_call_done = FALSE))
 		send "'blue"&$i&" callout*"
-		setDelayTrigger delay :doneblue 2000
-		setTextLineTrigger blue :foundblue "} - Team: blue"&$i&" " 
+		setDelayTrigger delay :doneblue 3000
+		setTextLineTrigger blue :foundblue "Team: blue"&$i&" " 
 		pause
 
 		:toomanyblue
@@ -308,6 +328,7 @@
 			end
 			setVar $BLUES[$i] $blue_sector
 			add $blue_count 1
+			send "'blue"&$i&" stop ephaggle*"
 			setTextLineTrigger blue :toomanyblue "} - Team: blue"&$i&" " 
 			pause
 		:doneblue
@@ -420,12 +441,14 @@
 					end
 				add $j 1
 			end
+			
+			send "'red"&$i&" ephaggle planet*"
+			waitfor "EP Perfect Haggle loaded"
 			add $i 1
 		end
 		if ($SWITCHBOARD~SELF_COMMAND = FALSE)
 			setVar $SWITCHBOARD~SELF_COMMAND 2
 		end
-
 
 		setVar $keep_going TRUE
 		setArray $orders 2 3

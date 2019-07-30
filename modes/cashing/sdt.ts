@@ -470,12 +470,12 @@ setVar $debugdelay 0
 				pause
 				:epsellwait2
 					killalltriggers
-					send "'{" $switchboard~bot_name "} - Ep Haggle timed out on equipment Haggle*"
+					send "'{" $switchboard~bot_name "} - Waiting for trade has timed out.*"
 					send "'{" $switchboard~bot_name "} - Ep Haggle Disabled and bot will exit at end of cycle.*"
 					setvar $ephaggle "n"
 					setVar $epHaggleFail 1
 					send "*"
-				
+					halt
 				:sellempty2
 					getWord CURRENTLINE $postCredits 3
 					striptext $postCredits ","
