@@ -2,20 +2,19 @@
 gosub :BOT~loadVars
 
 
-	setVar $BOT~help[1]  $BOT~tab&"       Buys minimum Ore/Org/Equip and dumps to planet          "
-	setVar $BOT~help[2]  $BOT~tab&"           to gain experience from a SSS Port.      "
+	setVar $BOT~help[1]  $BOT~tab&"       Buys minimum Ore/Org/Equip and dumps to planet "
+	setVar $BOT~help[2]  $BOT~tab&"       of jets to gain experience from a SSS Port.  "
 	setVar $BOT~help[3]  $BOT~tab&"       "
-	setVar $BOT~help[4]  $BOT~tab&" bbb [expstop] {ore_holds} {org_holds} {equip_holds} {hagoff} {jet}"
+	setVar $BOT~help[4]  $BOT~tab&" bbb [expstop] {upport}"
 	setVar $BOT~help[5]  $BOT~tab&"       "
 	setVar $BOT~help[6]  $BOT~tab&" Options:"
 	setVar $BOT~help[7]  $BOT~tab&"    [expstop]     STOP when you get to this exp."
-	setVar $BOT~help[8]  $BOT~tab&"	                 Script also stops at 5k cash and 50 turns."
-	setVar $BOT~help[9]  $BOT~tab&"    {hagoff}      Indicates you are using an external haggle script e.g. EP "
-	setVar $BOT~help[10] $BOT~tab&"                   - Defaults to on"
-	setVar $BOT~help[11] $BOT~tab&"    {ore_holds}   Number of ore to buy each loop; default 12"
-	setVar $BOT~help[12] $BOT~tab&"    {org_holds}   Number of organics to buy each loop; default 6"
-	setVar $BOT~help[13] $BOT~tab&"    {equip_holds} Number of equip to buy each loop; default 3"
-	setVar $BOT~help[14] $BOT~tab&"    {jet}         No planet? no worries, we will just litter.. :("
+	setVar $BOT~help[8]  $BOT~tab&"	   {upport}      When port empties upgrades the minimum "
+	setVar $BOT~help[9]  $BOT~tab&"                  to continue  "
+	setVar $BOT~help[9]  $BOT~tab&"     "
+	setVar $BOT~help[9]  $BOT~tab&"    Script uses internal Haggle which should be EPs. "
+	setVar $BOT~help[10] $BOT~tab&"    Start from planet to dump to planet. Start in sector"
+	setVar $BOT~help[10] $BOT~tab&"    and it will jettison."
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Buy Buy Buy"
@@ -23,7 +22,6 @@ gosub :BOT~loadVars
 
 
 
-	setVar $internalHaggle 0
 	setVar $useplanet TRUE
 
 
@@ -32,39 +30,15 @@ gosub :BOT~loadVars
 	setvar $startexp $player~experience
 	setvar $startturns $player~turns
 
-
-	getWordPos $bot~user_command_line $pos "jet"
-	if ($pos > 0)
-		setVar $useplanet FALSE
-	else
-		setVar $useplanet TRUE
-	end
-
-
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
-	if (($startingLocation <> "Planet") and ($startingLocation <> "Command"))
-		setVar $SWITCHBOARD~message "Buy Buy Buy must be started from Planet or Command prompts.*"
+	if ($startingLocation = "Command")
+		setVar $useplanet FALSE
+	elseif ($startingLocation = "Planet")  
+		setVar $useplanet TRUE
+	else
+		setVar $SWITCHBOARD~message "Start at command or planet prompt.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
-
-	else
-
-		if (($startingLocation = "Command") and ($useplanet = true))
-			setVar $SWITCHBOARD~message "Buy Buy Buy must be started from Planet prompt in this mode.*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end
-
-		if (($startingLocation = "Planet") and ($useplanet = false))
-			send "q"
-		end
-	end
-
-	getWordPos $bot~user_command_line $pos "hagoff"
-	if ($pos > 0)
-		setVar $internalHaggle FALSE
-	else
-		setVar $internalHaggle TRUE
 	end
 
 	
@@ -84,51 +58,21 @@ gosub :BOT~loadVars
 		halt
 	end
 
-
-	setVar $ore $bot~parm2
-	isNumber $number $ore
-
-	if (($number <> 1) or ($bot~parm2 = 0))
-		setVar $oreholds 12
-	else
-		setVar $oreholds $ore
-	end
-
-	if ($oreholds <= 0)
-		setvar $switchboard~message "Ore Holds must be greater than 0.*"
-		gosub :switchboard~switchboard
-		halt
-	end
-
-	setVar $org $bot~parm3
-	isNumber $number $org
-	if (($number <> 1) or ($bot~parm3 = 0))
-		setVar $org_holds 6
-	else
-		setVar $org_holds $org
-	end
-
-	if ($org_holds <= 0)
-		setvar $switchboard~message "Org Holds must be greater than 0.*"
-		gosub :switchboard~switchboard
-		halt
-	end
-
-	setVar $equip $bot~parm4
-	isNumber $number $equip
-	if (($number <> 1) or ($bot~parm4 = 0))
-		setVar $equip_holds 3
-	else
-		setVar $equip_holds $equip
-	end
-
-	if ($equip_holds <= 0)
-		setvar $switchboard~message "Equip Holds must be greater than 0.*"
-		gosub :switchboard~switchboard
-		halt
-	end
-
+	setVar $oreholds 12
+	setVar $org_holds 6
+	setVar $equip_holds 3
+	setVar $rebuy 0
 	
+	getWordPos $bot~user_command_line $pos "upport"
+	if ($pos > 0)
+		setVar $rebuy 1
+		setvar $switchboard~message "Upgrading port if it runs low on any product.*"
+		gosub :switchboard~switchboard
+		
+	else
+		setVar $rebuy 0
+	end
+
 	if ($useplanet = TRUE)
 		send "snl1*snl2*snl3*tnl1*tnl2*tnl3*"
 	else
@@ -138,22 +82,16 @@ gosub :BOT~loadVars
 	
 
 
-setVar $totalholds ($oreholds + $org_holds + $equip_holds)
-setVar $shipholds $player~total_holds
-setVar $looptimes ($shipholds/$totalholds)
-
-gosub :PLAYER~voidAdjacent
-
-
-
 if ($useplanet = TRUE)
-	send "l"
 	send "d"
 	waitfor "Planet #"
 	getword CURRENTLINE $pnum 2
 	stripText $pnum "#"
 	send "q"
 end
+
+gosub :PLAYER~voidAdjacent
+
 
 setVar $i 1
 
@@ -164,52 +102,66 @@ setVar $notifyi1st 1
 while ($y < $trips)
 	
 
+	setVar $cred1 $player~credits
+
 	send "p t"
-	
+	waitfor "Items     Status  Trading"
+	:portwaitagain
+	setTextLineTrigger ore1 :ore1 "Fuel Ore"
+	setTextLineTrigger org1 :org1 "Organics"
+	setTextLineTrigger equ1 :equ1 "Equipment"
+	pause
+	:ore1
+		killalltriggers
+		getWord CURRENTLINE $oreLeft 4
+		goto :portwaitagain
+	:org1
+		killalltriggers
+		getWord CURRENTLINE $orgLeft 3
+		goto :portwaitagain
+	:equ1
+		killalltriggers
+		getWord CURRENTLINE $equipLeft 3
+		
+	if ($oreLeft < (2 * $oreholds))
+		setVar $restockOre 1
+	end
+	if ($orgLeft < (2 * $org_holds))
+		setVar $restockOrg 1
+	end
+	if ($equipLeft < (2 * $equip_holds))
+		setVar $restockEqu 1
+	end
+
 	setVar $quant 0
 	gosub :weareselling
-	if ($quant < $oreholds)
-		setvar $switchboard~message "Low on available fuel ore, Halting...*"
-		gosub :switchboard~switchboard
-		send "0*0*0*"
-		gosub :PLAYER~clearadjacent
-		halt
-	end
-
+	
 	send $oreholds "*"
 	gosub :PLAYER~startHaggle
-	if ($quant < $org_holds)
-		setvar $switchboard~message "Low on available organics, Halting...*"
-		gosub :switchboard~switchboard
-		send "0*0*"
-		gosub :PLAYER~clearadjacent
-		halt
-	end
-
+	
+	setVar $cred2 $PLAYER~nCredits
 	send $org_holds "*"
 	gosub :PLAYER~startHaggle
-	if ($quant < $equip_holds)
-		setvar $switchboard~message "Low on available equipment, Halting...*"
-		gosub :switchboard~switchboard
-		send "0*"
-		gosub :PLAYER~clearadjacent
-		halt
-	end
+
+	setVar $cred3 $PLAYER~nCredits
 	send $equip_holds "*"
 	gosub :PLAYER~startHaggle
+
+	setVar $cred4 $PLAYER~nCredits
+	goSub :checkSizing
 	gosub :player~quikstats
+	
 
+	setVar $totalholds ($oreholds + $org_holds + $equip_holds)
+	setVar $empty_holds ($PLAYER~TOTAL_HOLDS - ($player~ORE_HOLDS + $player~ORGANIC_HOLDS + $player~EQUIPMENT_HOLDS + $PLAYER~COLONIST_HOLDS))
+	
+	if ($empty_holds < $totalholds)
 
-	add $i 1
-	if ($i > $looptimes)
-		setVar $i 1
 		if ($useplanet = TRUE)
 			send "l" $pnum "*tnl1*tnl2*tnl3*q"
 		else
 			send "j  y  *  "
 		end 
-		
-		add $y 1
 	end
 	
 	
@@ -244,12 +196,135 @@ while ($y < $trips)
 		gosub :PLAYER~clearadjacent
 		halt
 	end
+
+	if ($rebuy = 0)
+		if ($restockOre = 1)
+			setvar $switchboard~message "Low on available fuel ore, Halting...*"
+			gosub :switchboard~switchboard
+			gosub :PLAYER~clearadjacent
+			halt
+		end
+
+		if ($restockOrg = 1)
+			setvar $switchboard~message "Low on available Organics, Halting...*"
+			gosub :switchboard~switchboard
+			gosub :PLAYER~clearadjacent
+			halt
+		end
+
+		if ($restockEqu = 1)
+			setvar $switchboard~message "Low on available Equipment, Halting...*"
+			gosub :switchboard~switchboard
+			gosub :PLAYER~clearadjacent
+			halt
+		end
+	else
+		if ($restockOre = 1)
+			setVar $a ((($oreholds * 2)/10) + 1)
+			send "o   1" $a "*  q  "
+			setVar $restockOre 0
+		end
+		if ($restockOrg = 1)
+			setVar $a ((($oreholds * 2)/10) + 1)
+			send "o   2" $a "*  q  "
+			setVar $restockOrg 0
+		end
+		if ($restockEqu = 1)
+			setVar $a ((($oreholds * 2)/10) + 1)
+			send "o   3" $a "*  q  "
+			setVar $restockEqu 0
+		end
+	end
+
 end
 
 
 
 
 halt
+
+:checkSizing
+	# maths just has to be rough
+
+	setVar $oreCost (0 - ($cred2 - $cred1))
+	setVar $orgCost (0 - ($cred3 - $cred2))
+	setVar $equCost (0 - ($cred4 - $cred3))
+	
+	if (($oreCost = 0) or ($orgCost = 0) or ($equCost = 0))
+		return
+	end
+	setVar $oreunit ($oreCost/$oreholds)
+	setVar $orgunit ($orgCost/$org_holds)
+	setVar $equunit ($equCost/$equip_holds)
+	
+
+	if ($oreCost < 100)
+		setVar $min_ore $oreholds
+		setVar $unitprice $oreunit
+		setVar $currentcost $oreCost
+		goSub :getAdd
+		add $oreholds $unitsToAdd
+	else
+		setvar $test ($oreCost - $oreunit)
+		if ($test > 100)
+			#if (($oreholds - 1) > $min_ore)
+				subtract $oreholds 1
+			#end
+		end
+	end
+	
+
+
+	if ($orgCost < 100)
+		setVar $min_org $org_holds
+		
+		setVar $unitprice $orgunit
+		setVar $currentcost $orgCost
+		goSub :getAdd
+		add $org_holds $unitsToAdd
+	else
+		setvar $test ($orgCost - $orgunit)
+		if ($test > 100)
+			#if (($org_holds - 1) > $min_org)
+				subtract $org_holds 1
+			#end
+		end
+	end
+
+	if ($equCost < 100)
+		setVar $min_equip $equip_holds
+		setVar $unitprice $equunit
+		setVar $currentcost $equCost
+		goSub :getAdd
+		add $equip_holds $unitsToAdd
+	else
+		
+		setvar $test ($equCost - $equunit)
+		if ($test > 100)
+			#if (($equip_holds - 1) > $min_equip)
+				subtract $equip_holds 1
+			#end
+		end
+	end
+
+return
+
+:getAdd
+	setVar $v 1
+	setVar $go 1
+	while ($go = 1)
+		setVar $newcost ($currentcost + ($v * $unitprice))
+		if ($newcost > 100)
+			setVar $go 0
+			setVar $unitsToAdd $v
+		else
+			add $v 1
+		end
+
+	end
+
+return
+
 
 :weareselling
 	waitfor "We are selling up to"
@@ -283,3 +358,4 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\voidadjacent\player"
 include "source\bot_includes\player\clearadjacent\player"
 include "source\bot_includes\player\starthaggle\player"
+include "source\bot_includes\player\setconnectiontriggers\player"

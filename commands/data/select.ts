@@ -589,30 +589,32 @@ setVar $d ""
 setVar $y 1
 while ($y <= $sectorResultsi)
 	
-	getSectorParameter $sortedResults[$y] "FIGSEC" $isFigged
-	setSectorParameter $sortedResults[$y] $mark TRUE
-	if (($dist = 1) or ($doroute = 1))
-		SetVar $d "(" & $sortedDistance[$y] &")"
+	if ($sortedResults[$y] > 0)
+		getSectorParameter $sortedResults[$y] "FIGSEC" $isFigged
+		setSectorParameter $sortedResults[$y] $mark TRUE
+		if (($dist = 1) or ($doroute = 1))
+			SetVar $d "(" & $sortedDistance[$y] &")"
+		end
+		if ($portpair = true)
+			getSectorParameter $pairedports[$sortedResults[$y]] "FIGSEC" $isFigged2
+			if ($isFigged2 = true)
+				setvar $pair "["&$pairedports[$sortedResults[$y]]&"]"
+			else
+				setvar $pair $pairedports[$sortedResults[$y]]
+			end
+			if ($isFigged = true)
+				setvar $results $results&"["& $sortedResults[$y] &"]<->"&$pair& $d & " "
+			else
+				setvar $results $results& $sortedResults[$y]&"<->"&$pair& $d & " "
+			end
+		else	
+			if ($isFigged = true)
+				setvar $results $results&"["& $sortedResults[$y] &"]" & $d & " "
+			else
+				setvar $results $results& $sortedResults[$y] & $d & " "
+			end
+		end	
 	end
-	if ($portpair = true)
-		getSectorParameter $pairedports[$sortedResults[$y]] "FIGSEC" $isFigged2
-		if ($isFigged2 = true)
-			setvar $pair "["&$pairedports[$sortedResults[$y]]&"]"
-		else
-			setvar $pair $pairedports[$sortedResults[$y]]
-		end
-		if ($isFigged = true)
-			setvar $results $results&"["& $sortedResults[$y] &"]<->"&$pair& $d & " "
-		else
-			setvar $results $results& $sortedResults[$y]&"<->"&$pair& $d & " "
-		end
-	else	
-		if ($isFigged = true)
-			setvar $results $results&"["& $sortedResults[$y] &"]" & $d & " "
-		else
-			setvar $results $results& $sortedResults[$y] & $d & " "
-		end
-	end	
 	add $y 1
 end
 
