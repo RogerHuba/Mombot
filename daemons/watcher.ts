@@ -453,8 +453,13 @@ pause
 	pause
 
 :checkifbotalive
-	loadvar $do_not_resuscitate
-	if ($do_not_resuscitate <> true)
+	loadvar $bot~do_not_resuscitate
+	loadVar $map~stardock
+	loadvar $bot~subspace
+	loadvar $bot~bot_password
+	loadvar $bot~bot_name
+
+	if ($bot~do_not_resuscitate <> true)
 		setvar $found false
 		listActiveScripts $scripts
 		setvar $i 1
