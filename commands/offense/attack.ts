@@ -31,7 +31,7 @@ logging off
         end
         setVar $SWITCHBOARD~message "Wrong prompt for auto capture.*"
         gosub :SWITCHBOARD~switchboard
-        goto :BOT~wait_for_command
+        halt
     end
     getWordPos $BOT~user_command_line $pos "alien"
     if ($pos > 0)
@@ -53,7 +53,7 @@ logging off
     setVar $thisTarget ""
     goSub :SECTOR~getSectorData
     goSub :combat~fastCapture
-    goto :BOT~wait_for_command
+    halt
 
 #================================ END AUTO CAPTURE ===================================
 
@@ -64,7 +64,6 @@ include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\ship\getshipcapstats\ship"
 include "source\bot_includes\bot\user_interface"
-include "source\module_includes\bot\wait_for_command\bot"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcapture\combat"
