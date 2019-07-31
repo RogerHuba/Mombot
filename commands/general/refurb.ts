@@ -1,9 +1,7 @@
-    gosub :BOT~loadVars
-
-    setvar $bot~command "refurb"
-    setVar $BOT~help[1]  $BOT~tab&"refurb - Auto buys fighters and shields "
-    setVar $BOT~help[2]  $BOT~tab&"    {seek} - attempts to find class 9 or 0 port"
-    gosub :bot~helpfile
+gosub :BOT~loadVars
+if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
+	goto :wait_for_command
+end
 
 :scrub
 	setVar $message ""
@@ -41,12 +39,12 @@
 			else
 				setVar $SWITCHBOARD~message $PLAYER~msg&"*"
 				gosub :SWITCHBOARD~switchboard
-				halt
+				goto :wait_for_command
 			end
 		else
 			setVar $SWITCHBOARD~message "No known class 0 or 9 port here to refurb at. Try the seek option.*" 
 			gosub :SWITCHBOARD~switchboard
-			halt
+			goto :wait_for_command
 		end
 	end
 	setVar $message "No limpet on my ship.*"
@@ -77,7 +75,7 @@
 			if ($PLAYER~twarpSuccess <> TRUE)
 				setVar $SWITCHBOARD~message $PLAYER~msg&"*"
 				gosub :SWITCHBOARD~switchboard
-				halt
+				goto :wait_for_command
 			end
 		 end		
 		if ($startingLocation = "Citadel")
@@ -88,10 +86,13 @@
 			setVar $SWITCHBOARD~message $message
 			gosub :SWITCHBOARD~switchboard
 		end
+
+:wait_for_command
+	setvar $bot~command "refurb"
+	setVar $BOT~help[1]  $BOT~tab&"refurb - Auto buys fighters and shields "
+	setVar $BOT~help[2]  $BOT~tab&"    {seek} - attempts to find class 9 or 0 port"
+	gosub :bot~helpfile
 halt
-
-
-
 
 
 # includes:

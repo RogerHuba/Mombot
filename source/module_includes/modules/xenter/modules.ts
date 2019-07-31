@@ -70,8 +70,7 @@
 		setVar $SWITCHBOARD~message "Exit Enter.*"
 	end
 	gosub :SWITCHBOARD~switchboard
-	goto :BOT~wait_for_command
-
+	halt
 
 	:pickgame
 		killtrigger 2
@@ -79,4 +78,4 @@
 		waiton "[Pause]"
 		send " * "
 		goto :enter_choice
-goto :BOT~wait_for_command
+halt

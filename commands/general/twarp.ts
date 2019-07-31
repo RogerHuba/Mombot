@@ -1,10 +1,8 @@
-	gosub :BOT~loadVars
+gosub :BOT~loadVars
 
-
-	if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
-		goto :wait_for_command
-	end
-
+if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
+	goto :wait_for_command
+end
 
 # ======================     START TWARP SUBROUTINES     =================
 :twarp
@@ -99,7 +97,7 @@ return
 	setVar $BOT~help[8]  $BOT~tab&"                           location of the planet id"
 	gosub :bot~helpfile
 
-	halt
+halt
 
 
 
