@@ -197,7 +197,7 @@
                 send "s* "
             else
                 setVar $bot~startingLocation "Citadel"
-                gosub :scanit_cit_kill
+                gosub :targeting~scanitcitkill
             end
         elseif ($are_we_docking = FALSE)
             send "*"
@@ -230,6 +230,7 @@ return
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\targeting\scanitcitkill\targeting"
 include "source\bot_includes\player\quikstats\player"
 include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\planet\landingsub\planet"
