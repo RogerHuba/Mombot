@@ -13,8 +13,8 @@
     goto :_mine
 :_mine
     gosub :mineProtections
-    if ($parm1 > $PLAYER~ARMIDS)
-        setVar $parm1 $PLAYER~ARMIDS
+    if ($bot~parm1 > $PLAYER~ARMIDS)
+        setVar $bot~parm1 $PLAYER~ARMIDS
     end
 :_cmine
     killalltriggers
@@ -24,9 +24,9 @@
         halt
     end
     if ($PLAYER~startingLocation = "Citadel")
-        send "q q z n h1 z " $parm1 "*  z" $armid " z n n  *l " $PLANET~PLANET "* c"
+        send "q q z n h1 z " $bot~parm1 "*  z" $armid " z n n  *l " $PLANET~PLANET "* c"
     else
-        send "z n h1 z " $parm1 "*  z" $armid " z n"
+        send "z n h1 z " $bot~parm1 "*  z" $armid " z n"
     end
     setTextLineTrigger toomanypl :toomany_mine "!  You are limited to "
     setTextLineTrigger plclear :plclear_mine "Done. You have "
@@ -48,11 +48,11 @@
     setTextLineTrigger noperdown :noperdown_mine "Citadel treasury contains"
     pause
 :cordown_mine
-        setVar $SWITCHBOARD~message $parm1&" Corporate Mines Deployed!*"
+        setVar $SWITCHBOARD~message $bot~parm1&" Corporate Mines Deployed!*"
         gosub :SWITCHBOARD~switchboard
     goto :done_armid
 :perdown_mine
-        setVar $SWITCHBOARD~message $parm1&" Personal Mines Deployed!*"
+        setVar $SWITCHBOARD~message $bot~parm1&" Personal Mines Deployed!*"
         gosub :SWITCHBOARD~switchboard
     goto :done_armid
 :noperdown_mine
@@ -76,15 +76,15 @@
     killalltriggers
     gosub :PLAYER~quikstats
     if (($PLAYER~CURRENT_SECTOR < 10) OR ($PLAYER~CURRENT_SECTOR = $MAP~stardock))
-        setVar $SWITCHBOARD~message $parm1&" Cannot deploy in FedSpace!*"
+        setVar $SWITCHBOARD~message $bot~parm1&" Cannot deploy in FedSpace!*"
         gosub :SWITCHBOARD~switchboard
         send "'{" $SWITCHBOARD~bot_name "} - Cannot deploy in FedSpace!*"
         halt
     end
     setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
-    isNumber $test $parm1
-    if (($test = FALSE) OR ($parm1 = 0))
-        setVar $parm1 1
+    isNumber $test $bot~parm1
+    if (($test = FALSE) OR ($bot~parm1 = 0))
+        setVar $bot~parm1 1
     end
     setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
     setVar $bot~validPrompts "Command Citadel"
