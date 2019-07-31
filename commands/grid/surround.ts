@@ -18,8 +18,8 @@
 	setVar $BOT~help[5]   $BOT~tab&"      preferences menu in bot"
 	gosub :bot~helpfile
 
-    gosub :PLAYER~quikstats
-    if (($PLAYER~TURNS <= $BOT~bot_turn_limit) and ($PLAYER~unlimitedGame <> TRUE))
+	gosub :PLAYER~quikstats
+	if (($PLAYER~TURNS <= $BOT~bot_turn_limit) and ($PLAYER~unlimitedGame <> TRUE))
 			setVar $SWITCHBOARD~message "Turns Exceed Bot Turn Limit.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
@@ -34,30 +34,30 @@
 			halt
 		end
 	end
-    setVar $startingLocation $PLAYER~CURRENT_PROMPT
-    if ($startingLocation = "Command")
-    elseif ($startingLocation = "Citadel")
-        send "q "
-        gosub :PLANET~getPlanetInfo
-        send "q "
-    elseif ($startingLocation = "Planet")
-        gosub :PLANET~getPlanetInfo
-        send "q "
-    else
-        echo "*Wrong prompt for surround command.*"
-        halt
-    end
+	setVar $startingLocation $PLAYER~CURRENT_PROMPT
+	if ($startingLocation = "Command")
+	elseif ($startingLocation = "Citadel")
+		send "q "
+		gosub :PLANET~getPlanetInfo
+		send "q "
+	elseif ($startingLocation = "Planet")
+		gosub :PLANET~getPlanetInfo
+		send "q "
+	else
+		echo "*Wrong prompt for surround command.*"
+		halt
+	end
 
-    gosub :grid~surround
+	gosub :grid~surround
 
-        if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
-            gosub :PLANET~landingSub
-        else
-        	gosub :player~quikstats
-        end
-        setvar $switchboard~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
-        gosub :switchboard~switchboard
-        echo "*" & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
+		if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
+			gosub :PLANET~landingSub
+		else
+			gosub :player~quikstats
+		end
+		setvar $switchboard~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
+		gosub :switchboard~switchboard
+		echo "*" & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
 halt
 
 

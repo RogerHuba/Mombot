@@ -1,4 +1,4 @@
-        gosub :BOT~loadVars
+		gosub :BOT~loadVars
 	loadVar $bot~silent_running
 
 	setVar $BOT~help[1]  $BOT~tab&"Dataminer - Grabs Game Information.  "
@@ -12,97 +12,97 @@
 	setVar $BOT~help[9]  $BOT~tab&" [traffic] - Create traffic analysis file"
 	setVar $BOT~help[10]  $BOT~tab&"     [ss] - Displays data over SS (NOT IMPLEMENTED)"
 
-        gosub :bot~helpfile
-        setVar $BOT~script_title "Dataminer"
-        gosub :BOT~banner
+		gosub :bot~helpfile
+		setVar $BOT~script_title "Dataminer"
+		gosub :BOT~banner
 	getWordPos $bot~user_command_line $pos "setparm"
 	if ($pos > 0)
-             setvar $setparm TRUE
-        end
-        gosub :PLAYER~quikstats
+			 setvar $setparm TRUE
+		end
+		gosub :PLAYER~quikstats
 
-        setvar $path "dataminer\" & GAMENAME & "-"
-        getWordPos $bot~user_command_line $pos "map"
-    	if ($pos > 0)
-             delete $path & deadend.txt
-	     delete $path & missingdeadends.txt
-             delete $path & 2way.txt
-	     delete $path & missing2way.txt
-             delete $path & 3way.txt
-	     delete $path & missing3way.txt
-             delete $path & 4way.txt
-	     delete $path & missing4way.txt
-             delete $path & 5way.txt
-	     delete $path & missing5way.txt
-             delete $path & 6way.txt
-	     delete $path & missing6way.txt
-             delete $path & 7way.txt
-	     delete $path & missing7way.txt
-             gosub :makedeadend
+		setvar $path "dataminer\" & GAMENAME & "-"
+		getWordPos $bot~user_command_line $pos "map"
+		if ($pos > 0)
+			 delete $path & deadend.txt
+		 delete $path & missingdeadends.txt
+			 delete $path & 2way.txt
+		 delete $path & missing2way.txt
+			 delete $path & 3way.txt
+		 delete $path & missing3way.txt
+			 delete $path & 4way.txt
+		 delete $path & missing4way.txt
+			 delete $path & 5way.txt
+		 delete $path & missing5way.txt
+			 delete $path & 6way.txt
+		 delete $path & missing6way.txt
+			 delete $path & 7way.txt
+		 delete $path & missing7way.txt
+			 gosub :makedeadend
 
-        end
-        getWordPos $bot~user_command_line $pos "port"
+		end
+		getWordPos $bot~user_command_line $pos "port"
 	if ($pos > 0)
-	     delete $path & sellers.txt
-	     delete $path & buyers.txt
-             delete $path & fuel.txt
-             gosub :tunnelfind
-             gosub :makeMissingTunnels
-        end
-        getWordPos $bot~user_command_line $pos "tunnel"
+		 delete $path & sellers.txt
+		 delete $path & buyers.txt
+			 delete $path & fuel.txt
+			 gosub :tunnelfind
+			 gosub :makeMissingTunnels
+		end
+		getWordPos $bot~user_command_line $pos "tunnel"
 	if ($pos > 0)
-	     delete $path & tunnel.txt
-	     delete $path & tunnel_list.txt
-             delete $path & missingtunnel.txt
-             gosub :tunnelfind
-             gosub :makeMissingTunnels
-        end
+		 delete $path & tunnel.txt
+		 delete $path & tunnel_list.txt
+			 delete $path & missingtunnel.txt
+			 gosub :tunnelfind
+			 gosub :makeMissingTunnels
+		end
 	getWordPos $bot~user_command_line $pos "blister"
 	if ($pos > 0)
-	     delete $path & blister.txt
-             gosub :blisterfind
-        end
- 	getWordPos $bot~user_command_line $pos "traffic"
+		 delete $path & blister.txt
+			 gosub :blisterfind
+		end
+	getWordPos $bot~user_command_line $pos "traffic"
 	if ($pos > 0)
-             delete $path & traffic.txt
-             gosub :trafficfind
-        end
-        if ($subspace = TRUE)
-             setVar $SWITCHBOARD~message "Dataminer finished.*"
-             gosub :SWITCHBOARD~switchboard
-        else
-             setVar $SWITCHBOARD~message "Dataminer finished, files written.*"
-             gosub :SWITCHBOARD~switchboard
-        end
+			 delete $path & traffic.txt
+			 gosub :trafficfind
+		end
+		if ($subspace = TRUE)
+			 setVar $SWITCHBOARD~message "Dataminer finished.*"
+			 gosub :SWITCHBOARD~switchboard
+		else
+			 setVar $SWITCHBOARD~message "Dataminer finished, files written.*"
+			 gosub :SWITCHBOARD~switchboard
+		end
 HALT
 
 :makedeadend
 setArray $deadEnds SECTORS
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 1)
-          setvar $deadEnds[$count] 1
+	 if (SECTOR.WARPINCOUNT[$count] = 1)
+		  setvar $deadEnds[$count] 1
 	  add $deadEnds 1
 	  if (SECTOR.WARPCOUNT[$count] >= 1)
-	       write $path & deadend.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
-                    setSectorParameter $count "DEADEND" TRUE
-          else
-	       write $path & deadend.txt $count
+		   write $path & deadend.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
+					setSectorParameter $count "DEADEND" TRUE
+		  else
+		   write $path & deadend.txt $count
 	  end
-     else
-          setSectorParameter $count "DEADEND" ""
-     end
-     add $count 1
+	 else
+		  setSectorParameter $count "DEADEND" ""
+	 end
+	 add $count 1
 end
 
 :makemissingdeadends
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 1)
-          if ($figsec[$count] = 0)
-               write $path & missingdeadends.txt $count
-          end
-     end
+	 if (SECTOR.WARPINCOUNT[$count] = 1)
+		  if ($figsec[$count] = 0)
+			   write $path & missingdeadends.txt $count
+		  end
+	 end
 	add $count 1
 end
 
@@ -110,29 +110,29 @@ end
 setArray $2way SECTORS
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 2)
-          setvar $2way[$count] 1
+	 if (SECTOR.WARPINCOUNT[$count] = 2)
+		  setvar $2way[$count] 1
 	  add $2way 1
 	  if (SECTOR.WARPCOUNT[$count] >= 1)
-	       write $path & 2way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
-                    setSectorParameter $count "2WAY" TRUE
-          else
-	       write $path & 2way.txt $count
+		   write $path & 2way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
+					setSectorParameter $count "2WAY" TRUE
+		  else
+		   write $path & 2way.txt $count
 	  end
-     else
-          setSectorParameter $count "2WAY" ""
-     end
-     add $count 1
+	 else
+		  setSectorParameter $count "2WAY" ""
+	 end
+	 add $count 1
 end
 
 :makemissing2way
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 2)
-          if ($figsec[$count] = 0)
-               write $path & missing2way.txt $count
-          end
-     end
+	 if (SECTOR.WARPINCOUNT[$count] = 2)
+		  if ($figsec[$count] = 0)
+			   write $path & missing2way.txt $count
+		  end
+	 end
 	add $count 1
 end
 
@@ -140,30 +140,30 @@ end
 setArray $3way SECTORS
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 3)
-          setvar $3way[$count] 1
+	 if (SECTOR.WARPINCOUNT[$count] = 3)
+		  setvar $3way[$count] 1
 	  add $3way 1
 	  if (SECTOR.WARPCOUNT[$count] >= 1)
-	       write $path & 3way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
-                    setSectorParameter $count "3WAY" TRUE
-          else
-	       write $path & 3way.txt $count
+		   write $path & 3way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
+					setSectorParameter $count "3WAY" TRUE
+		  else
+		   write $path & 3way.txt $count
 	  end
-     
-     else
-          setSectorParameter $count "3WAY" ""
-     end
-     add $count 1
+	 
+	 else
+		  setSectorParameter $count "3WAY" ""
+	 end
+	 add $count 1
 end
 
 :makemissing3way
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 3)
-          if ($figsec[$count] = 0)
-               write $path & missing3way.txt $count
-          end
-     end
+	 if (SECTOR.WARPINCOUNT[$count] = 3)
+		  if ($figsec[$count] = 0)
+			   write $path & missing3way.txt $count
+		  end
+	 end
 	add $count 1
 end
 
@@ -171,29 +171,29 @@ end
 setArray $4way SECTORS
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 4)
-          setvar $4way[$count] 1
+	 if (SECTOR.WARPINCOUNT[$count] = 4)
+		  setvar $4way[$count] 1
 	  add $4way 1
 	  if (SECTOR.WARPCOUNT[$count] >= 1)
-	       write $path & 4way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
-                    setSectorParameter $count "4WAY" TRUE
-          else
-	       write $path & 4way.txt $count
+		   write $path & 4way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
+					setSectorParameter $count "4WAY" TRUE
+		  else
+		   write $path & 4way.txt $count
 	  end
-      else
-                    setSectorParameter $count "4WAY" ""
-      end
-     add $count 1
+	  else
+					setSectorParameter $count "4WAY" ""
+	  end
+	 add $count 1
 end
 
 :makemissing4way
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 4)
-          if ($figsec[$count] = 0)
-               write $path & missing4way.txt $count
-          end
-     end
+	 if (SECTOR.WARPINCOUNT[$count] = 4)
+		  if ($figsec[$count] = 0)
+			   write $path & missing4way.txt $count
+		  end
+	 end
 	add $count 1
 end
 
@@ -201,29 +201,29 @@ end
 setArray $5way SECTORS
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 5)
-          setvar $5way[$count] 1
+	 if (SECTOR.WARPINCOUNT[$count] = 5)
+		  setvar $5way[$count] 1
 	  add $5way 1
 	  if (SECTOR.WARPCOUNT[$count] >= 1)
-	       write $path & 5way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
-                    setSectorParameter $count "5WAY" TRUE
-          else
-	       write $path & 5way.txt $count
+		   write $path & 5way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
+					setSectorParameter $count "5WAY" TRUE
+		  else
+		   write $path & 5way.txt $count
 	  end
-     else
-          setSectorParameter $count "5WAY" ""
-     end
-     add $count 1
+	 else
+		  setSectorParameter $count "5WAY" ""
+	 end
+	 add $count 1
 end
 
 :makemissing5way
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 5)
-          if ($figsec[$count] = 0)
-               write $path & missing5way.txt $count
-          end
-     end
+	 if (SECTOR.WARPINCOUNT[$count] = 5)
+		  if ($figsec[$count] = 0)
+			   write $path & missing5way.txt $count
+		  end
+	 end
 	add $count 1
 end
 
@@ -231,29 +231,29 @@ end
 setArray $6way SECTORS
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 6)
-          setvar $6way[$count] 1
+	 if (SECTOR.WARPINCOUNT[$count] = 6)
+		  setvar $6way[$count] 1
 	  add $6way 1
 	  if (SECTOR.WARPCOUNT[$count] >= 1)
-	       write $path & 6way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
-                    setSectorParameter $count "6WAY" TRUE
-          else
-	       write $path & 6way.txt $count
+		   write $path & 6way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
+					setSectorParameter $count "6WAY" TRUE
+		  else
+		   write $path & 6way.txt $count
 	  end
-     else
-          setSectorParameter $count "6WAY" ""
-     end
-     add $count 1
+	 else
+		  setSectorParameter $count "6WAY" ""
+	 end
+	 add $count 1
 end
 
 :makemissing6way
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 6)
-          if ($figsec[$count] = 0)
-               write $path & missing6way.txt $count
-          end
-     end
+	 if (SECTOR.WARPINCOUNT[$count] = 6)
+		  if ($figsec[$count] = 0)
+			   write $path & missing6way.txt $count
+		  end
+	 end
 	add $count 1
 end
 
@@ -261,29 +261,29 @@ end
 setArray $7way SECTORS
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 7)
-          setvar $7way[$count] 1
+	 if (SECTOR.WARPINCOUNT[$count] = 7)
+		  setvar $7way[$count] 1
 	  add $6way 1
 	  if (SECTOR.WARPCOUNT[$count] >= 1)
-	       write $path & 7way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
-                    setSectorParameter $count "7WAY" TRUE
-          else
-	       write $path & 7way.txt $count
+		   write $path & 7way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
+					setSectorParameter $count "7WAY" TRUE
+		  else
+		   write $path & 7way.txt $count
 	  end
-     else
-          setSectorParameter $count "7WAY" ""
-     end
-     add $count 1
+	 else
+		  setSectorParameter $count "7WAY" ""
+	 end
+	 add $count 1
 end
 
 :makemissing7way
 setvar $count 1
 while ($count <= SECTORS)
-     if (SECTOR.WARPINCOUNT[$count] = 7)
-          if ($figsec[$count] = 0)
-               write $path & missing7way.txt $count
-          end
-     end
+	 if (SECTOR.WARPINCOUNT[$count] = 7)
+		  if ($figsec[$count] = 0)
+			   write $path & missing7way.txt $count
+		  end
+	 end
 	add $count 1
 end
 return

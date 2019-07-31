@@ -1,13 +1,13 @@
-    gosub :BOT~loadVars
+	gosub :BOT~loadVars
 
-    setVar $BOT~help[1] $BOT~tab&"overload  {under}"
-    setVar $BOT~help[2] $BOT~tab&"        "
-    setVar $BOT~help[3] $BOT~tab&"  Tells you when you have sectors overloaded "
-    setVar $BOT~help[4] $BOT~tab&"  with planets        "
-    setVar $BOT~help[5] $BOT~tab&"    "
-    setVar $BOT~help[6] $BOT~tab&"     under - tells you which sectors "
-    setvar $bot~help[7] $bot~tab&"             have less than max planets"
-    gosub :bot~helpfile
+	setVar $BOT~help[1] $BOT~tab&"overload  {under}"
+	setVar $BOT~help[2] $BOT~tab&"        "
+	setVar $BOT~help[3] $BOT~tab&"  Tells you when you have sectors overloaded "
+	setVar $BOT~help[4] $BOT~tab&"  with planets        "
+	setVar $BOT~help[5] $BOT~tab&"    "
+	setVar $BOT~help[6] $BOT~tab&"     under - tells you which sectors "
+	setvar $bot~help[7] $bot~tab&"             have less than max planets"
+	gosub :bot~helpfile
 
 		
 # =============================== START OVERLOAD =====================================
@@ -63,71 +63,71 @@
 	waitOn "Corporate Planet Scan"
 
 :getCorpPlanetList
-        setTextLineTrigger getCorpPlanet :getCorpPlanet "Class"
-        setTextLineTrigger corpPlanetsDone :corpPlanetsDone "======   ============  ==== ==== ==== ===== ===== ===== ========== =========="
-        setTextLineTrigger corpPlanetsDone2 :corpPlanetsDone "No Planets claimed"
-        pause
+		setTextLineTrigger getCorpPlanet :getCorpPlanet "Class"
+		setTextLineTrigger corpPlanetsDone :corpPlanetsDone "======   ============  ==== ==== ==== ===== ===== ===== ========== =========="
+		setTextLineTrigger corpPlanetsDone2 :corpPlanetsDone "No Planets claimed"
+		pause
 
 :getCorpPlanet
 	gosub :getthisplanet
-        setTextLineTrigger getCorpPlanet :getCorpPlanet "Class"
+		setTextLineTrigger getCorpPlanet :getCorpPlanet "Class"
 	pause
 :corpPlanetsDone
-        killtrigger getCorpPlanet
+		killtrigger getCorpPlanet
 	killtrigger corpPlanetsDone
 	killtrigger corpPlanetsDone2
 	waitOn "Personal Planet Scan"
 
 :getPersPlanetList
-        setTextLineTrigger getPersPlanet :getPersPlanet "Class"
-        setTextLineTrigger persPlanetsDone :persPlanetsDone "======   ============  ==== ==== ==== ===== ===== ===== ========== =========="
-        setTextLineTrigger persPlanetsDone2 :persPlanetsDone "No Planets claimed"
-        pause
+		setTextLineTrigger getPersPlanet :getPersPlanet "Class"
+		setTextLineTrigger persPlanetsDone :persPlanetsDone "======   ============  ==== ==== ==== ===== ===== ===== ========== =========="
+		setTextLineTrigger persPlanetsDone2 :persPlanetsDone "No Planets claimed"
+		pause
 
 :getPersPlanet
-        gosub :getthisplanet
-        setTextLineTrigger getPersPlanet :getPersPlanet "Class"
-        pause
+		gosub :getthisplanet
+		setTextLineTrigger getPersPlanet :getPersPlanet "Class"
+		pause
 
 :persPlanetsDone
-        killtrigger getPersPlanet
-        killtrigger persPlanetsDone
-        killtrigger persPlanetsDone2
+		killtrigger getPersPlanet
+		killtrigger persPlanetsDone
+		killtrigger persPlanetsDone2
 
 :calculate
-        setVar $overloads 0
-        :compareOuterLoop
-            if ($sector_list_length > 0)
-                getWord $sector_list $currentDataSector 1
-                setVar $planet~planets_this_sector 1
-                setVar $compare_index 1
-                :compareInnerLoop
-                    if ($compare_index < $sector_list_length)
-                        add $compare_index 1
-                        getWord $sector_list $compare_sector $compare_index
-                        if ($currentDataSector = $compare_sector)
-                            add $planet~planets_this_sector 1
-                        end
-                        goto :compareInnerLoop
-                    else
-                        if ($planet~planets_this_sector > $pps)
+		setVar $overloads 0
+		:compareOuterLoop
+			if ($sector_list_length > 0)
+				getWord $sector_list $currentDataSector 1
+				setVar $planet~planets_this_sector 1
+				setVar $compare_index 1
+				:compareInnerLoop
+					if ($compare_index < $sector_list_length)
+						add $compare_index 1
+						getWord $sector_list $compare_sector $compare_index
+						if ($currentDataSector = $compare_sector)
+							add $planet~planets_this_sector 1
+						end
+						goto :compareInnerLoop
+					else
+						if ($planet~planets_this_sector > $pps)
 							setvar $switchboard~message "OVERLOAD: " & $planet~planets_this_sector & " planets found in sector " & $currentDataSector & "*"
 							gosub :switchboard~switchboard
-                            add $overloads 1
-                        elseif ((($planet~planets_this_sector > 1) OR ($pps <= 1)) AND ($planet~planets_this_sector < $pps) AND ($showUnderload = TRUE))
+							add $overloads 1
+						elseif ((($planet~planets_this_sector > 1) OR ($pps <= 1)) AND ($planet~planets_this_sector < $pps) AND ($showUnderload = TRUE))
 							setvar $switchboard~message  ""&$planet~planets_this_sector & " planets found in sector " & $currentDataSector & ". Sector needs " &($pps-$planet~planets_this_sector)&" planets to be full.*"
 							gosub :switchboard~switchboard
-                        end
-                        setVar $replace_sector $currentDataSector & " "
-                        replaceText $sector_list $replace_sector ""
-                        subtract $sector_list_length $planet~planets_this_sector
-                        goto :compareOuterLoop
-                    end
-            else
-                setvar $switchboard~message ""&$overloads & " Overloads Found*"
-                gosub :switchboard~switchboard
-                halt
-            end
+						end
+						setVar $replace_sector $currentDataSector & " "
+						replaceText $sector_list $replace_sector ""
+						subtract $sector_list_length $planet~planets_this_sector
+						goto :compareOuterLoop
+					end
+			else
+				setvar $switchboard~message ""&$overloads & " Overloads Found*"
+				gosub :switchboard~switchboard
+				halt
+			end
 
 
 :getthisplanet

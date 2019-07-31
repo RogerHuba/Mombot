@@ -12,15 +12,15 @@
 
 # ============================== CLEAR BUSTS ==================================
 :clearbusts
-    #delete $BOT~BUST_FILE
-    setVar $i 11
-    while ($i <= SECTORS)   
-    	setSectorParameter $i "BUSTED" ""
-    	add $i 1
-    end
-    setVar $SWITCHBOARD~message "Bust file for this bot has been cleared.*"
-    gosub :SWITCHBOARD~switchboard
-    halt
+	#delete $BOT~BUST_FILE
+	setVar $i 11
+	while ($i <= SECTORS)   
+		setSectorParameter $i "BUSTED" ""
+		add $i 1
+	end
+	setVar $SWITCHBOARD~message "Bust file for this bot has been cleared.*"
+	gosub :SWITCHBOARD~switchboard
+	halt
 # ============================== END CLEAR BUSTS ==============================
 
 

@@ -25,9 +25,9 @@
 	gosub :player~quikstats
 	setVar $startingLocation $player~current_prompt
 	if (($startingLocation <> "Citadel") AND ($startingLocation <> "Command"))
-	        setvar $switchboard~message "Must start at Citadel or Command Prompt.*"
+			setvar $switchboard~message "Must start at Citadel or Command Prompt.*"
 			gosub :switchboard~switchboard
-	        halt
+			halt
 	end
 	setVar $pgridSector $bot~parm1
 	isNumber $test $pgridSector

@@ -1,6 +1,6 @@
 logging off
-     gosub :BOT~loadVars
-     loadvar $SHIP~cap_file
+	 gosub :BOT~loadVars
+	 loadvar $SHIP~cap_file
 	loadvar $player~onlyAliens
 	loadvar $player~cappingAliens
 	loadvar $player~empty_ships_only
@@ -8,9 +8,9 @@ logging off
 
 
 #HELP FILE
-     setVar $BOT~help[1]  $BOT~tab&"cap   "
-     setVar $BOT~help[2]  $BOT~tab&"    Captures enemy ships and attempts to not destroy them.   "
-     gosub :bot~helpfile
+	 setVar $BOT~help[1]  $BOT~tab&"cap   "
+	 setVar $BOT~help[2]  $BOT~tab&"    Captures enemy ships and attempts to not destroy them.   "
+	 gosub :bot~helpfile
 
 	gosub :combat~init 
 
@@ -26,10 +26,10 @@ logging off
 #============================== START AUTO CAPTURE =======================================
 :autoCap
 :cap
-    gosub :PLAYER~quikstats
-    setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
-    if ($PLAYER~startingLocation <> "Command")
-        if ($PLAYER~startingLocation = "Citadel")
+	gosub :PLAYER~quikstats
+	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
+	if ($PLAYER~startingLocation <> "Command")
+		if ($PLAYER~startingLocation = "Citadel")
 			loadvar $bot~mode
 			if ($bot~mode <> "Citcap")
 				setVar $BOT~command "citcap"
@@ -49,32 +49,32 @@ logging off
 				gosub :SWITCHBOARD~switchboard
 			end
 			halt
-        end
-        setVar $SWITCHBOARD~message "Wrong prompt for auto capture.*"
-        gosub :SWITCHBOARD~switchboard
-        halt
-    end
-    getWordPos $BOT~user_command_line $pos "alien"
-    if ($pos > 0)
-        setVar $PLAYER~onlyAliens TRUE
-    else
-        setVar $PLAYER~onlyAliens FALSE
-    end
-    fileExists $SHIP~cap_file_chk $SHIP~cap_file
-    if ($SHIP~cap_file_chk <> TRUE)
-        gosub :SHIP~getShipCapStats
-    end
-    loadVar $SHIP~SHIP_MAX_ATTACK
-    loadVar $SHIP~SHIP_FIGHTERS_MAX
-    loadVar $SHIP~SHIP_OFFENSIVE_ODDS
-    if ($SHIP~SHIP_OFFENSIVE_ODDS <= 0)
-        gosub :SHIP~getShipStats
-    end
-    setVar $lastTarget ""
-    setVar $thisTarget ""
-    goSub :SECTOR~getSectorData
-    goSub :combat~fastCapture
-    halt
+		end
+		setVar $SWITCHBOARD~message "Wrong prompt for auto capture.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	getWordPos $BOT~user_command_line $pos "alien"
+	if ($pos > 0)
+		setVar $PLAYER~onlyAliens TRUE
+	else
+		setVar $PLAYER~onlyAliens FALSE
+	end
+	fileExists $SHIP~cap_file_chk $SHIP~cap_file
+	if ($SHIP~cap_file_chk <> TRUE)
+		gosub :SHIP~getShipCapStats
+	end
+	loadVar $SHIP~SHIP_MAX_ATTACK
+	loadVar $SHIP~SHIP_FIGHTERS_MAX
+	loadVar $SHIP~SHIP_OFFENSIVE_ODDS
+	if ($SHIP~SHIP_OFFENSIVE_ODDS <= 0)
+		gosub :SHIP~getShipStats
+	end
+	setVar $lastTarget ""
+	setVar $thisTarget ""
+	goSub :SECTOR~getSectorData
+	goSub :combat~fastCapture
+	halt
 
 #================================ END AUTO CAPTURE ===================================
 
