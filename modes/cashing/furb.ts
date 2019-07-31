@@ -426,6 +426,39 @@ gosub :_START_
 	waitfor "You shut off your Tractor Beam."
 	send "'{" $switchboard~bot_name "} - Furb delivered*"
 	waiton "Message sent on sub-space channel"
+	setTextLineTrigger firstship :firstship "Ships   : "
+	send "d"
+	pause
+
+	:firstship
+		killtrigger firstship
+		getText CURRENTLINE $name "Ships   : " " [Owned by]"
+		if ($name = $shipName)
+			setVar $foundn 1
+			goto :doneships
+		end
+		setVar $shiplisti 1
+
+	:moreships
+		setTextLineTrigger nextShip :nextShip "ftrs,"
+		setTextLineTrigger doneships :doneships "Warps to Sector(s) :"
+		pause
+		:nextShip
+			add $shiplisti 1
+			killtrigger nextShip
+			killtrigger doneships
+			getText CURRENTLINE $name "          " " [Owned by]"
+			if ($name = $shipName)
+				setVar $foundn $shiplisti
+				goto :doneships
+			end
+			
+			goto :moreships
+		
+		:doneships
+			killtrigger nextShip
+			killtrigger doneships
+	echo "#" $foundn "#"
 	if ($waitsecs > 0)
  		send "tc"
 		setTextTrigger		THERE		:THERE		"Exchange with"
@@ -559,6 +592,18 @@ gosub :_START_
 	# Removing as this is wasting a turn!
 	#if ($FIGS = 0)
 		send "Y "
+		if ($doBlow = 1)
+			subtract $foundn 1
+			setVar $mac "mac a"
+			setVar $maci 1
+			while ($maci <= $foundn)
+				setVar $mac $mac &"n"
+				add $maci 1
+			end
+			
+			setVar $mac $mac &"y99*"
+			send "'" $blowBot " " $mac "*"
+		end 
 	#else
 	#	send "Y P S G Y G Q S P B " & (100 - $FIGS) & "* Q Q Q "
 	#end
@@ -652,6 +697,18 @@ gosub :_START_
 		if ($is_a_number <> TRUE)
 			setVar $planet~planet_number 0
 		end
+	end
+	
+	getWordPos $bot~user_command_line $pos "blow:"
+	setVar $blowbot ""
+	setVar $doBlow 0
+	if ($pos > 0)
+		cutText $bot~user_command_line $line $pos 9999
+		getWord $line $blowline 1
+		replaceText $blowline ":" " "
+		getWord $blowline $blowbot 2		
+		replaceText $bot~user_command_line "blow:"&$blowbot " "
+		setVar $doBlow 1
 	end
 
 	getWordPos $bot~user_command_line $pos "swap"

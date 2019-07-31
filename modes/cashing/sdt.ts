@@ -907,6 +907,7 @@ setVar $debugdelay 0
 # ----- SUB :stealdump
 # ----- USED WITHIN MAIN PROGRAM LOOP
 :stealdump
+	:stealagain 
     add $player~turns_used 1
     send "PR*SZ3"
     send $steal_holds & "*"
@@ -920,9 +921,16 @@ setVar $debugdelay 0
         getWord CURRENTLINE $port[$current_ship].equ_on_port 4
         :dothedeed
             setTextLineTrigger bust :bust "For getting caught"
+	    setTextLineTrigger noprod :noprod "There aren't that many holds of Equipment at this port!"
             setTextLineTrigger good :good "and you receive"
             pause
             pause
+	    :noprod
+		killalltriggers
+		send "'Not enough equipment at port, upgrading and resuming*"
+		send "o31*q"
+		goto :stealagain
+		
             :bust
 
                 killalltriggers

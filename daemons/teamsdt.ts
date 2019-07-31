@@ -2,8 +2,8 @@
 	gosub :BOT~loadVars
 									
 
-	setVar $FURB_HOLDS ""
-	setVar $FURB_SHIP ""
+	setVar $FURB_HOLDS "33"
+	setVar $FURB_SHIP "h"
 
 	setVar $MAX_RED_BOTS 5
 	setVar $MIN_RED_EXP 1500
@@ -589,9 +589,9 @@
 	
 				killalltriggers
 				if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
-					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&"  *"
+					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&" blow:red"&$red_id&"  *"
 				else
-					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&"  *"
+					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" blow:red"&$red_id&"  *"
 				end
 				
 				settexttrigger nofig :nofig "No fighter down at that ship number, drop a fig."
@@ -601,7 +601,7 @@
 			:furb1
 	
 				killalltriggers
-				setdelaytrigger furb2 :furb2 5000
+				setdelaytrigger xport :xport 5000
 				settexttrigger noOre :noore "Ore at port critically low!"
 				pause
 				:noore
@@ -616,10 +616,7 @@
 					setdelaytrigger furb2 :furb2 3000
 					pause
 
-			:furb2
-				send "'red"&$red_id&" mac ay9^m *"
-				setdelaytrigger wait :xport 5000
-				pause
+
 
 			:xport
 				send "'red"&$red_id&" x "&$xport_ship&"*"
