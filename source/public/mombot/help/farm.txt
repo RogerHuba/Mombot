@@ -1,0 +1,31 @@
+                     
+   
+                  <<<< farm >>>>
+   
+     Farms sectors marked with BUBBLE parameters.  
+            
+     Farm Options: 
+              [fig] - will strip fighters off planets
+                [f] - will strip fuel off planets
+                [o] - will strip organics off planets
+                [e] - will strip equipment off planets
+             [cash] - will grab cash off planets
+          [reverse] - travels farm sectors in reverse
+             [warp] - will warp planets to sell product
+           [shield] - will ensure 200 Shields on shielded planets
+             [colo] - will colonize planets with avaliable fuel
+             [coln] - will balance colonists on planets
+          [upgrade] - will upgrade all planets 
+             [port] - will create and upgrade ports
+            [build] - will create and upgrade planets and port
+     [destroyports] - will destroy all non-class 3 ports during build
+        [oneplanet] - only pops planet where none exist during build
+          [nostrip] - won't attempt to strip during build
+        [noupgrade] - won't attempt to upgrade during build
+              [off] - turns off farming script
+            
+     Data Options:
+       {set} or {setdoor) plus [sector number]
+                    - Marks sector as a Bubble Sector / Door
+       {remove} plus [sector number]
+                    - Removes marked sector

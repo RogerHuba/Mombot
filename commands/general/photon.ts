@@ -1,8 +1,8 @@
-	gosub :BOT~loadVars
+gosub :BOT~loadVars
 
-	if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
-		goto :wait_for_command
-	end
+if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
+	goto :wait_for_command
+end
 
 	setVar $target $bot~parm1 
 	isNumber $isNumber $target 

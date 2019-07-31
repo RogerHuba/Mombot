@@ -1,0 +1,11 @@
+                     
+   
+                <<<< tripwire >>>>
+   
+     Self destructs planet if captured.  Attempts to kill pod.  
+      
+     Requires citadel, atomic detonator, and unique planet name.
+     
+     Options:
+            move [sector]
+            	Instead of self destructing, planet is moved to sector.
