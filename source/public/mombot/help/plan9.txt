@@ -1,0 +1,11 @@
+                     
+   
+                 <<<< plan9 >>>>
+   
+     Planet Busting for cash.. a lot of cash!  
+       
+     Should make sure of a few things:
+                           1 Mill in Citadel
+          lots of fighters and shields.. jic
+     Options: 
+     {menu} - Forces menu - only useful for self botting.
