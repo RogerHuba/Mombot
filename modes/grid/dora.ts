@@ -480,9 +480,10 @@ halt
 	
 	setVar $i 1
 	while ($i <= $deni)
-
+		# only get warps of target ports
+		setVar $cl PORT.CLASS[$nSector[$i]]
 		# only get paths of singles when no ppt'ing
-		if (($pptTradingOption <> "none") or ($gridPriority = "ports"))
+		if (($pptTradingOption <> "none") or (($gridPriority = "ports") and (($cl = 4) or ($cl = 5) or ((($cl = 2) or ($cl = 1)) and ($nWarps[$i] > 2)))))
 			if ((($nWarps[$i] = 1) and ($nNew[$i] = 1)) or (($nDensity[$i] = 100) and ($nNew[$i] = 1)))
 				send "cf" $nSector[$i] "*" $PLAYER~CURRENT_SECTOR "*q"
 				waitfor "omputer deactivated"
@@ -522,9 +523,11 @@ return
 			setVar $hasFig 0
 		end
 		goSub :checkDanger
+#echo "$danger:" $danger " $explored[$dSector]:" $explored[$dSector] " $class:" $class " $hasFig:" $hasFig "*"
 		if (($danger = 0) and ($explored[$dSector] = 0))
 
 			if ((($class = 4) or ($class = 5)) and ($hasFig = 0))
+#echo "Found NumSells*"
 				add $numSells 1
 				setVar $sells[$numSells] $dSector
 			end
@@ -1696,6 +1699,7 @@ return
 			stripText $scanSector "("
 			getLength $scanSector $len2
 			
+			stripText $$secDensity ","
 
 			add $deni 1
 			if ($len2 < $len)
