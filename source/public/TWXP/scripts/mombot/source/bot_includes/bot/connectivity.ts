@@ -73,10 +73,19 @@
 			pause
 		:continueRelog3
 			gosub :killrelogtriggers
-			setTextTrigger loginsuccessful :continueRelog4 "Trade Wars 2002"
-			setTextTrigger loginsuccessful2 :continueRelog4 "Copyright (C) EIS"
+			# formly "Trade Wars 2002"
+			# formly "Copyright (C) EIS"
+			setTextTrigger loginsuccessful :continueRelog4v1 "Trade Wars 2002 Game Server v1"
+			setTextTrigger loginsuccessful2 :continueRelog4v2 "TWGS v2"
 			send $BOT~username & "*"
 			pause
+		
+		:continueRelog4v1
+			setVar $twgsVersion "1"
+			goto :continueRelog4
+		:continueRelog4v2
+			setVar $twgsVersion "2"
+			goto :continueRelog4
 
 		:continueRelog4
 			gosub :killrelogtriggers
@@ -91,35 +100,120 @@
 			pause
 		:continueRelog5
 			gosub :killrelogtriggers
-			setTextTrigger firstpause :firstpause "[Pause]"
-			setTextTrigger enter :done_do_relog "Enter your choice"
-			setTextTrigger notopen :game_not_open "This game will open"
-			send $BOT~letter
-			pause
+
+			if ($newgame)
+				if  ($twgsVersion = "1")
+					setTextTrigger		firstpause	:firstpause "[Pause]"
+					setTextTrigger		enter		:done_do_relog	"Would you like to start a new character in this game?"
+					setTextTrigger		v1enter		:v1enter "Enter your choice"
+					setTextLineTrigger      notopen		:game_not_open	"but this is a closed game."
+					send $BOT~letter&" * "
+					pause
+				else
+					setTextTrigger firstpause :firstpause "[Pause]"
+					setTextTrigger enter :done_do_relog "Enter your choice"
+					setTextTrigger notopen :game_not_open "This game will open"
+					send $BOT~letter
+					pause
+
+				end
+
+			else
+				setTextTrigger firstpause :firstpause "[Pause]"
+				setTextTrigger enter :done_do_relog "Enter your choice"
+				setTextTrigger notopen :game_not_open "This game will open"
+				send $BOT~letter
+				pause
+
+			end
+			
 		:firstpause
 			send "*"
 			setTextTrigger firstpause :firstpause "[Pause]"
 			pause
+		:v1enter
+			killtrigger firstpause
+			send "* T ***"
+			pause
 		:done_do_relog
 			killalltriggers
+			if ((($newgame) and ($twgsVersion = "2")) or ($newgame = FALSE))
+				send "T***"
+			end
 			return
 		:game_not_open			
 			killalltriggers
 			if (CONNECTED <> TRUE)
 				goto :thedelay
 			end
-			setDelayTrigger		2	:new_game_delay2 5000
-			setTextTrigger		3	:tryAgainNewGameDay1	"Enter your choice:"
-			setTextLineTrigger      4       :tryAgainEnterGame	"This game will open"
-			send $BOT~letter&" * "
-			pause
+
+			if ($newgame)
+				if  ($twgsVersion = "1")
+					# occasionally fails to keep sending commands - going to see if this solves
+					add $newGameCounter 1
+					if ($newGameCounter > 20)
+						killalltriggers
+						disconnect
+						setDelayTrigger waitAMoment :waitAMoment 5000
+						pause
+						:waitAMoment
+							killalltriggers
+							goto :thedelay
+					end
+		
+					setTextTrigger		v1Pause	:v1Pause "[Pause]"
+					setTextTrigger		v1Enter2 :v1Enter2 "Enter your choice"
+					setDelayTrigger		2	:new_game_delay2 1000
+					setTextTrigger		3	:tryAgainNewGameDay1	"Would you like to start a new character in this game?"
+					setTextLineTrigger      4       :tryAgainEnterGame	"but this is a closed game."
+					send $BOT~letter&" * "
+					pause
+
+
+				else
+		
+					setDelayTrigger		2	:new_game_delay2 5000
+					setTextTrigger		3	:tryAgainNewGameDay1	"Enter your choice:"
+					setTextLineTrigger      4       :tryAgainEnterGame	"This game will open"
+					send $BOT~letter&" * "
+					pause
+
+				end
+
+			else
+	
+				setDelayTrigger		2	:new_game_delay2 5000
+				setTextTrigger		3	:tryAgainNewGameDay1	"Enter your choice:"
+				setTextLineTrigger      4       :tryAgainEnterGame	"This game will open"
+				send $BOT~letter&" * "
+				pause
+
+			end
+			
 			:new_game_delay2
 				goto :game_not_open
 			:tryAgainEnterGame
 				goto :game_not_open
 			:tryAgainNewGameDay1
-				killalltriggers
+
+			if ((($newgame) and ($twgsVersion = "2")) or ($newgame = FALSE))
 	
+				send "T ***"
+			end
+			killalltriggers
+			return
+		:v1Pause
+			send "*"
+			setVar  $newGameCounter 0
+			setTextTrigger v1Pause :v1Pause "[Pause]"
+			
+			pause
+		:v1Enter2
+			killtrigger v1Pause
+			killtrigger firstpause
+			setVar  $newGameCounter 0
+			send "T ***"
+			pause
 return
 
 :killrelogtriggers
@@ -136,11 +230,14 @@ return
 	killtrigger firstpause
 	killtrigger enter
 	killtrigger notopen
+	killtrigger v1enter
+	killtrigger v1enter2
+	killtrigger v1Pause
 	setDelayTrigger thedelay2 :thedelay 5000
 return
 
 :enter_new_game 
-
+	setVar $twgsVersion ""
 	:try_again
 	gosub :do_relog
 	:GameClosed
@@ -152,13 +249,34 @@ return
 	settexttrigger      6 :wrong_name	"Sorry, you cannot use the name "
 	setTextTrigger      7 :back_in_game	"Command [TL"
 
+
 	if ($newgame)
-		send "T***Y"&$BOT~password&"*"&$BOT~password&"**N"&$BOT~username&"*Y"&$BOT~startShipName&"*Y"
+		send "Y"&$BOT~password&"*"&$BOT~password&"*"
+		setTextTrigger 8 :whosplay	"Who's Playing"
+		setTextTrigger 9 :newname	"Use (N)ew Name or (B)BS Name"
+		setTextTrigger 10 :noalias	"Choose a name carefully as you will have it for a while!"
 	else
-		send "T***"&$BOT~password&"***"&$BOT~startShipName&"*Y "
+		send $BOT~password&"***"&$BOT~startShipName&"*Y "
 	end
 	pause
-
+	:whosplay
+		killtrigger 8
+		killtrigger 9
+		killtrigger 10
+		send "*N"&$BOT~username&"*Y"&$BOT~startShipName&"*Y * "
+		pause
+	:newname
+		killtrigger 8
+		killtrigger 9
+		killtrigger 10
+		send "N"&$BOT~username&"*Y"&$BOT~startShipName&"*Y"
+		pause
+	:noalias
+		killtrigger 8
+		killtrigger 9
+		killtrigger 10
+		send $BOT~startShipName&"*Y"
+		pause
 	:wrong_name
 		killalltriggers
 		echo "[[  {"&$SWITCHBOARD~bot_name&"} - Character name not allowed!  Start over and pick a new name!  ]]*"
@@ -209,8 +327,8 @@ return
 			:noCorpThatName
 				gosub :BOT~killthetriggers
 				echo "[[ Waiting 5 seconds to check for corp again, press [Spacebar] to cancel. ]]*"
-				setDelayTrigger		1 :checkForCorp		5000
-				setTextOutTrigger 	2 :alreadyCorped 	#32
+				setDelayTrigger		3 :checkForCorp		5000
+				setTextOutTrigger 	4 :alreadyCorped 	#32
 				pause
 			:thereIsMyCorp
 				gosub :BOT~killthetriggers
