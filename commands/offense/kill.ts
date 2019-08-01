@@ -78,6 +78,7 @@ logging off
 		setvar $in_kill_routine false
 		savevar $in_kill_routine
 	end
+	gosub :player~quikstats
 	halt
 
 #================================ END AUTO CAPTURE ===================================
@@ -90,3 +91,4 @@ include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\player\quikstats\player"
