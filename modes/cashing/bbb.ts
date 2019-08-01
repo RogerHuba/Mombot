@@ -113,23 +113,27 @@ while ($y < $trips)
 	pause
 	:ore1
 		killalltriggers
-		getWord CURRENTLINE $oreLeft 4
+		getWord CURRENTLINE $oreLeft 5
 		goto :portwaitagain
 	:org1
 		killalltriggers
-		getWord CURRENTLINE $orgLeft 3
+		getWord CURRENTLINE $orgLeft 4
 		goto :portwaitagain
 	:equ1
 		killalltriggers
-		getWord CURRENTLINE $equipLeft 3
+		getWord CURRENTLINE $equipLeft 4
 		
-	if ($oreLeft < (2 * $oreholds))
+	striptext $oreLeft "%"
+	striptext $orgLeft "%"
+	striptext $equipLeft "%"
+
+	if ($oreLeft <= 2)
 		setVar $restockOre 1
 	end
-	if ($orgLeft < (2 * $org_holds))
+	if ($orgLeft <= 2)
 		setVar $restockOrg 1
 	end
-	if ($equipLeft < (2 * $equip_holds))
+	if ($equipLeft <= 2)
 		setVar $restockEqu 1
 	end
 
@@ -220,19 +224,38 @@ while ($y < $trips)
 		end
 	else
 		if ($restockOre = 1)
-			setVar $a ((($oreholds * 2)/10) + 1)
-			send "o   1" $a "*  q  "
 			setVar $restockOre 0
+			getsectorparameter $PLAYER~current_sector "FUELL" $LOWPRODUCTIVITY
+			getsectorparameter $PLAYER~current_sector "FUELH" $HIGHPRODUCTIVITY
+			setVar $a ($HIGHPRODUCTIVITY/100)
+			send "o   1" $a "*  q  "
+			add $LOWPRODUCTIVITY $a
+			add $HIGHPRODUCTIVITY $a
+			setsectorparameter $PLAYER~current_sector "FUELL" $LOWPRODUCTIVITY
+			setsectorparameter $PLAYER~current_sector "FUELH" $HIGHPRODUCTIVITY
+			
 		end
 		if ($restockOrg = 1)
-			setVar $a ((($oreholds * 2)/10) + 1)
-			send "o   2" $a "*  q  "
 			setVar $restockOrg 0
+			getsectorparameter $PLAYER~current_sector "ORGANICSL" $LOWPRODUCTIVITY
+			getsectorparameter $PLAYER~current_sector "ORGANICSH" $HIGHPRODUCTIVITY
+			setVar $a ($HIGHPRODUCTIVITY/100)
+			send "o   2" $a "*  q  "
+			add $LOWPRODUCTIVITY $a
+			add $HIGHPRODUCTIVITY $a
+			setsectorparameter $PLAYER~current_sector "ORGANICSL" $LOWPRODUCTIVITY
+			setsectorparameter $PLAYER~current_sector "ORGANICSH" $HIGHPRODUCTIVITY
 		end
 		if ($restockEqu = 1)
-			setVar $a ((($oreholds * 2)/10) + 1)
-			send "o   3" $a "*  q  "
 			setVar $restockEqu 0
+			getsectorparameter $PLAYER~current_sector "EQUIPMENTL" $LOWPRODUCTIVITY
+			getsectorparameter $PLAYER~current_sector "EQUIPMENTH" $HIGHPRODUCTIVITY
+			setVar $a ($HIGHPRODUCTIVITY/100)
+			send "o   3" $a "*  q  "
+			add $LOWPRODUCTIVITY $a
+			add $HIGHPRODUCTIVITY $a
+			setsectorparameter $PLAYER~current_sector "EQUIPMENTL" $LOWPRODUCTIVITY
+			setsectorparameter $PLAYER~current_sector "EQUIPMENTH" $HIGHPRODUCTIVITY
 		end
 	end
 
