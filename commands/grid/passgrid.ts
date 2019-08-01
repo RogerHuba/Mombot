@@ -2,8 +2,8 @@ loadvar $bot~user_command_line
 loadVar $BOT~bot_turn_limit
 loadVar $SWITCHBOARD~bot_name
 	  #=--------                                                                       -------=#
-     #=---------------------      LoneStar's Passive Gridder      -------------------------=#
-    #=--------                                                                       -------=#
+	 #=---------------------      LoneStar's Passive Gridder      -------------------------=#
+	#=--------                                                                       -------=#
 	#		Incep Date	:	Circa August 2007
 	#		Author		:	LoneStar
 	#		TWX			:	For TWX 2.04 Final
@@ -174,7 +174,7 @@ loadVar $SWITCHBOARD~bot_name
 
 
 :Lets_Get_It_On
-    getTime $Stamp "t d/m/yy"
+	getTime $Stamp "t d/m/yy"
 
 	stop $FILENAME
 	stop $FILENAME
@@ -197,8 +197,8 @@ loadVar $SWITCHBOARD~bot_name
 					add $Results 1
 					add $MCICd 1
 				end
-            	add $i 1
-            	read $Track_File $tst $i
+				add $i 1
+				read $Track_File $tst $i
 			end
 			echo "; " & $Results & " Ports allready Processed!**"
 		end
@@ -215,7 +215,7 @@ loadVar $SWITCHBOARD~bot_name
 		killAllTriggers
 		Echo "**" & $TAGLINEc & " EQUIP Haggle Tracker LOADED!!**"
 	else
-	    send "   j   y   "
+		send "   j   y   "
 	end
 
 	write $LOG_FName "-------------------------{ " & $Stamp & " }-------------------------"
@@ -266,12 +266,12 @@ loadVar $SWITCHBOARD~bot_name
 		end
 	end
 
-   	window status 500 245 (" " & $TAGLINE & " v" & $Version)
-   	echo "**"
+	window status 500 245 (" " & $TAGLINE & " v" & $Version)
+	echo "**"
 	echo ($TAGLINEc & " " & ANSI_8&"<"&ANSI_15&"Gridded Sectors: "&ANSI_14&$DEP_FIGS&ANSI_8&">*")
 	echo ($TAGLINEc & " " & ANSI_8&"<"&ANSI_15&"Limp'd Sector  : "&ANSI_14&$DEP_LIMP&ANSI_8&">**")
 
-    send " C ;UYQ "
+	send " C ;UYQ "
 	waitfor "Max Figs Per Attack:"
 	getWord CurrentLine $maxFigAttack 5
 	stripText $maxFigAttack ","
@@ -289,12 +289,12 @@ loadVar $SWITCHBOARD~bot_name
 		send "SZND*"
 		waiton "Relative Density Scan"
 		killAllTriggers
-	  	setTextLineTrigger	1	:getWarp "Sector "
-	  	setTextTrigger		2	:gotWarpInfo "Command [TL="
+		setTextLineTrigger	1	:getWarp "Sector "
+		setTextTrigger		2	:gotWarpInfo "Command [TL="
 		pause
 		:getWarp
-		  	getWord CURRENTLINE $anm 13
-		  	getText CURRENTLINE $temp "Warps :" "NavHaz :"
+			getWord CURRENTLINE $anm 13
+			getText CURRENTLINE $temp "Warps :" "NavHaz :"
 			stripText $temp " "
 			stripText $temp ","
 
@@ -318,7 +318,7 @@ loadVar $SWITCHBOARD~bot_name
 		setArray $Adj_Targets SECTOR.WARPCOUNT[$player~current_sector]
 
 		while ($i <= SECTOR.WARPCOUNT[$player~current_sector])
-        	setVar $adj SECTOR.WARPS[$player~current_sector][$i]
+			setVar $adj SECTOR.WARPS[$player~current_sector][$i]
 			setVar $Adj_Targets[$i] 10
 
 			if (SECTOR.NAVHAZ[$adj] <> 0)
@@ -385,64 +385,64 @@ loadVar $SWITCHBOARD~bot_name
 			end
 
 			if (($ANOM[$i] = "Yes") AND ($Limps[$adj] = 0))
-            	goto :Next_ADJ_Please
+				goto :Next_ADJ_Please
 			end
 
-            if ((SECTOR.DENSITY[$adj] = 0) OR (SECTOR.DENSITY[$adj] = 100))
-            	if (SECTOR.NAVHAZ[$adj] = 0)
+			if ((SECTOR.DENSITY[$adj] = 0) OR (SECTOR.DENSITY[$adj] = 100))
+				if (SECTOR.NAVHAZ[$adj] = 0)
 					if (SECTOR.EXPLORED[$adj] <> "YES")
 						if ($DENS[$i] > 1)
 							setVar $Adj_Targets[$i] 1
 							goto :Next_ADJ_Please
 						end
-	                end
-	            end
+					end
+				end
 			end
 
-            if ((SECTOR.DENSITY[$adj] = 0) OR (SECTOR.DENSITY[$adj] = 100))
-            	if (SECTOR.NAVHAZ[$adj] = 0)
+			if ((SECTOR.DENSITY[$adj] = 0) OR (SECTOR.DENSITY[$adj] = 100))
+				if (SECTOR.NAVHAZ[$adj] = 0)
 					if (SECTOR.EXPLORED[$adj] = "YES")
 						if ($DENS[$i] > 1)
 							setVar $Adj_Targets[$i] 2
 							goto :Next_ADJ_Please
 						end
-	                end
-	            end
+					end
+				end
 			end
-            if ((SECTOR.DENSITY[$adj] = 0) OR (SECTOR.DENSITY[$adj] = 100))
-            	if (SECTOR.NAVHAZ[$adj] = 0)
+			if ((SECTOR.DENSITY[$adj] = 0) OR (SECTOR.DENSITY[$adj] = 100))
+				if (SECTOR.NAVHAZ[$adj] = 0)
 					if (SECTOR.EXPLORED[$adj] <> "YES")
 						if ($DENS[$i] >= 1)
 							setVar $Adj_Targets[$i] 3
 							goto :Next_ADJ_Please
 						end
-	                end
-	            end
+					end
+				end
 			end
-            if ((SECTOR.DENSITY[$adj] = 0) OR (SECTOR.DENSITY[$adj] = 100))
-            	if (SECTOR.NAVHAZ[$adj] = 0)
+			if ((SECTOR.DENSITY[$adj] = 0) OR (SECTOR.DENSITY[$adj] = 100))
+				if (SECTOR.NAVHAZ[$adj] = 0)
 					if (SECTOR.EXPLORED[$adj] = "YES")
 						if ($DENS[$i] >= 1)
 							setVar $Adj_Targets[$i] 4
 							goto :Next_ADJ_Please
 						end
-	                end
-	            end
+					end
+				end
 			end
-            if ((SECTOR.DENSITY[$adj] = 105) OR (SECTOR.DENSITY[$adj] = 5))
-            	if (SECTOR.NAVHAZ[$adj] = 0)
+			if ((SECTOR.DENSITY[$adj] = 105) OR (SECTOR.DENSITY[$adj] = 5))
+				if (SECTOR.NAVHAZ[$adj] = 0)
 					if (SECTOR.EXPLORED[$adj] <> "YES")
 						if ($Flag <> 0)
 							if ($DENS[$i] > 1)
 								setVar $Adj_Targets[$i] 5
 								goto :Next_ADJ_Please
 							end
-		                end
-	                end
-	            end
+						end
+					end
+				end
 			end
 
-            if ((SECTOR.DENSITY[$adj] = 105) OR (SECTOR.DENSITY[$adj] = 5))
+			if ((SECTOR.DENSITY[$adj] = 105) OR (SECTOR.DENSITY[$adj] = 5))
 				#if (SECTOR.EXPLORED[$adj] <> "YES")
 				if (SECTOR.WARPCOUNT[$adj] >= 5)
 					if (SECTOR.NAVHAZ[$adj] = 0)
@@ -453,11 +453,11 @@ loadVar $SWITCHBOARD~bot_name
 									goto :Next_ADJ_Please
 								end
 							end
-		                end
-		            end
-                end
+						end
+					end
+				end
 			end
-            if ((SECTOR.DENSITY[$adj] = 105) OR (SECTOR.DENSITY[$adj] = 5))
+			if ((SECTOR.DENSITY[$adj] = 105) OR (SECTOR.DENSITY[$adj] = 5))
 				#if (SECTOR.EXPLORED[$adj] <> "YES")
 				if (SECTOR.WARPCOUNT[$adj] > 1)
 					if (SECTOR.NAVHAZ[$adj] = 0)
@@ -468,12 +468,12 @@ loadVar $SWITCHBOARD~bot_name
 									goto :Next_ADJ_Please
 								end
 							end
-		                end
-		            end
-                end
+						end
+					end
+				end
 			end
 			:Next_ADJ_Please
-        	add $i 1
+			add $i 1
 		end
 
 		setVar $idx 1
@@ -528,10 +528,10 @@ loadVar $SWITCHBOARD~bot_name
 				:YaData
 				killAllTriggers
 			end
-        	goto :Next_Target
-        end
+			goto :Next_Target
+		end
 
-        :No_Target
+		:No_Target
 		if ($player~twarp_type <> "No")
 			#Find A Place To Twarp To
 			getNearestWarps $WarpArray $player~current_sector
@@ -560,12 +560,12 @@ loadVar $SWITCHBOARD~bot_name
 									setVar $CHKD[$w_adj] 1
 									goto :We_Got_Game
 								end
-		                    	add $w_i 1
+								add $w_i 1
 							end
 						end
 					end
 				end
-	        	add $w 1
+				add $w 1
 			end
 
 			:We_Done
@@ -573,9 +573,9 @@ loadVar $SWITCHBOARD~bot_name
 			Echo "**" & $TAGLINEc & " " & " No Target To Find. Try updating CIM***"
 			halt
 
-	        :We_Got_Game
-	        Echo "***Focus " & $FOCUS & "**"
-	        if ($HOLO)
+			:We_Got_Game
+			Echo "***Focus " & $FOCUS & "**"
+			if ($HOLO)
 				setVar $cx 1
 				setVar $cn 0
 				while (SECTOR.WARPS[$player~current_sector][$cx] <> 0)
@@ -589,7 +589,7 @@ loadVar $SWITCHBOARD~bot_name
 					gosub :Do_Holo
 					gosub :Display_Holo
 				end
-	        end
+			end
 
 				setTextLineTrigger		Sector__Good	:Sector__Good	"Locating beam pinpointed, TransWarp"
 				setTextLineTrigger		Sector__Here	:Sector__Good	"NavPoint Settings (?=Help)"
@@ -613,7 +613,7 @@ loadVar $SWITCHBOARD~bot_name
 								setVar $flag 0
 								setSectorParameter $focus "FIGSEC" FALSE
 							end
-                        	if ($flag = 1)
+							if ($flag = 1)
 								setVar $destination $focus
 								gosub :getCourse
 								if ($courseLength <> 0)
@@ -687,7 +687,7 @@ loadVar $SWITCHBOARD~bot_name
 							end
 						end
 						:Next_SXX_Port
-                    	add $c 1
+						add $c 1
 					end
 					goto :We_Done
 				:Sector__Good
@@ -702,9 +702,9 @@ loadVar $SWITCHBOARD~bot_name
 									setVar $DROP_STR ($DROP_STR & "H 2 Z "&$DROP_LIMP&"* C * ")
 								else
 								   if ($DROPING_MINES = 1)
-								   	setVar $DROPING_MINES 0
+									setVar $DROPING_MINES 0
 								   else
-								   	setVar $DROPING_MINES 2
+									setVar $DROPING_MINES 2
 								   end
 								end
 							end
@@ -769,9 +769,9 @@ loadVar $SWITCHBOARD~bot_name
 						setVar $DROP_STR ($DROP_STR & "H 2 Z "&$DROP_LIMP&"* C * ")
 					else
 					   if ($DROPING_MINES = 1)
-					   	setVar $DROPING_MINES 0
+						setVar $DROPING_MINES 0
 					   else
-					   	setVar $DROPING_MINES 2
+						setVar $DROPING_MINES 2
 					   end
 					end
 				end
@@ -806,7 +806,7 @@ loadVar $SWITCHBOARD~bot_name
 		end
 
 		if ($player~current_prompt <> "Command")
-	        send " r *  *  p d 0* 0* 0* * *** * c q q q q q z 2 2 c q * z * *** * * "
+			send " r *  *  p d 0* 0* 0* * *** * c q q q q q z 2 2 c q * z * *** * * "
 			gosub :player~quikstats
 			if ($player~current_prompt = "Command")
 				load "_ck_callsaveme.cts"
@@ -827,7 +827,7 @@ loadVar $SWITCHBOARD~bot_name
 		if (($Report_ALPHA) AND (ALPHACENTAURI > 1))
 			send "'["&$TagLineB&"] Class 0 ALPHACENTAURI Spotted In Sector: " & ALPHACENTAURI &"*"
 			waitfor "Message sent on sub-space channel"
-            setVar $Report_ALPHA	FALSE
+			setVar $Report_ALPHA	FALSE
 		end
 
 		if (($Update_Port) AND (PORT.EXISTS[$Target]))
@@ -1029,7 +1029,7 @@ loadVar $SWITCHBOARD~bot_name
 	SetVar $idx 1
 	while ($idx <= SECTORS)
 		setSectorParameter $idx "FIGSEC"	FALSE
-    	add $idx 1
+		add $idx 1
 	end
 	killAllTriggers
 	waitfor "==========================================================="
@@ -1137,7 +1137,7 @@ loadVar $SWITCHBOARD~bot_name
 		if ($LOG_ENTRIES[$ii] <> "")
 			setVar $Window_TXT ($Window_TXT & " " & $LOG_ENTRIES[$ii] & "*")
 		end
-    	add $ii 1
+		add $ii 1
 	end
 	setWindowContents status ("*" & $Window_TXT)
 	return
@@ -1146,7 +1146,7 @@ loadVar $SWITCHBOARD~bot_name
 	if ($CashAmount < 1000)
 		#do nothing
 	elseif ($CashAmount < 1000000)
-    	getLength $CashAmount $len
+		getLength $CashAmount $len
 		setVar $len ($len - 3)
 		cutText $CashAmount $tmp 1 $len
 		cutText $CashAMount $tmp1 ($len + 1) 999
@@ -1259,12 +1259,12 @@ loadVar $SWITCHBOARD~bot_name
 				killAllTriggers
 				return
 			:noFuel
-        		if ($ORE_NEED2BUY >= 1)
-        			send $ORE_NEED2BUY & "**"
-        		else
-        			send "0*"
-        		end
-        		pause
+				if ($ORE_NEED2BUY >= 1)
+					send $ORE_NEED2BUY & "**"
+				else
+					send "0*"
+				end
+				pause
 			:noOrg
 			send "0*"
 			pause
@@ -1305,13 +1305,13 @@ loadVar $SWITCHBOARD~bot_name
 	return
 :Do_Holo
 	setArray $HoloOutput 2000
-    setVar $Line_Pointer 1
-                	send "SzH*  "
+	setVar $Line_Pointer 1
+					send "SzH*  "
 	setTextLineTrigger	TurnsGone		:TurnsGone		"Do you want instructions (Y/N) [N]?"
 	setTextLineTrigger	DoneScan		:DoneScan		"Warps to Sector(s) :"
 
 	waiton "Long Range Scan"
-    :reset_trigger
+	:reset_trigger
 	setTextLineTrigger holo_line :holo_line
 	pause
 	:holo_line
@@ -1333,16 +1333,16 @@ loadVar $SWITCHBOARD~bot_name
 	while (SECTOR.WARPS[$player~current_sector][$Holo_i] > 0)
 		setVar $Holo_adj SECTOR.WARPS[$player~current_sector][$Holo_i]
 		if ((SECTOR.PLANETCOUNT[$Holo_adj] > 0) OR (SECTOR.TRADERCOUNT[$Holo_adj] > 0) OR (SECTOR.SHIPCOUNT[$Holo_adj] > 0))
-	       	setVar $figOwner SECTOR.FIGS.OWNER[$Holo_adj]
+			setVar $figOwner SECTOR.FIGS.OWNER[$Holo_adj]
 			if ((SECTOR.FIGS.QUANTITY[$Holo_adj] >= 100) AND (($figOwner <> "belong to your Corp") OR ($figOwner <> "yours")))
 				while ($Holo_ptr <= $Line_Pointer)
-	            	getWordPos $HoloOutput[$Holo_ptr] $Holo_pos ("Sector  : " & $Holo_adj)
-	            	setVar $AvoidFlag ($AvoidFlag & " " & $Holo_adj)
+					getWordPos $HoloOutput[$Holo_ptr] $Holo_pos ("Sector  : " & $Holo_adj)
+					setVar $AvoidFlag ($AvoidFlag & " " & $Holo_adj)
 					if ($Holo_pos <> 0)
 						setvar $Holo_s ($Holo_s & $HoloOutput[$Holo_ptr] & "*")
 						:Lets_Go_Again
-	                   	add $Holo_ptr 1
-	                   	getWordPos $HoloOutput[$Holo_ptr] $pos "Warps to Sector(s) :"
+						add $Holo_ptr 1
+						getWordPos $HoloOutput[$Holo_ptr] $pos "Warps to Sector(s) :"
 						if (($HoloOutput[$Holo_ptr] <> "") AND ($pos = 0))
 							setvar $Holo_s ($Holo_s & $HoloOutput[$Holo_ptr] & "*")
 						else
@@ -1351,12 +1351,12 @@ loadVar $SWITCHBOARD~bot_name
 						end
 						goto :Lets_Go_Again
 					end
-	            	add $Holo_ptr 1
+					add $Holo_ptr 1
 				end
 			end
 		end
 		:Done_Scan
-    	add $Holo_i 1
+		add $Holo_i 1
 	end
 
 	SetVar	$HOLO_TARGETS	"LSHRED_" & GAMENAME & ".log"

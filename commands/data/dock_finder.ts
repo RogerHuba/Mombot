@@ -22,9 +22,9 @@
 		if ($warps_out = 6)
 			if ($warps_in >= 7)
 				if (PORT.EXISTS[$sector] = FALSE)
-                                        if (SECTOR.EXPLORED[$sector] <> "YES")
-					       setVar $possible $possible&" "&$sector			
-                                        end				
+										if (SECTOR.EXPLORED[$sector] <> "YES")
+						   setVar $possible $possible&" "&$sector			
+										end				
 				end
 			end
 		end

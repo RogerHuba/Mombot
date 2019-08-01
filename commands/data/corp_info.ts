@@ -33,10 +33,10 @@ setVar $output "SubSpace"
 setVar $totalBaseFighters 0
 
 
-        setVar $shipTypes "All"
-        setVar $minesDeployed "Yes"
-        setVar $baseDetails "Yes"
-        setVar $output "SubSpace"
+		setVar $shipTypes "All"
+		setVar $minesDeployed "Yes"
+		setVar $baseDetails "Yes"
+		setVar $output "SubSpace"
 
 
 
@@ -69,9 +69,9 @@ waitfor "==="
 :buildFigArray
   setTextTrigger Corpfig :addtoList "Corp"
   if ($minesDeployed = "No")
-     setTextTrigger ListDone :chkShips "Command"
+	 setTextTrigger ListDone :chkShips "Command"
   else
-     setTextTrigger ListComplete :mineAssets "Command"
+	 setTextTrigger ListComplete :mineAssets "Command"
   end
 pause
 
@@ -83,24 +83,24 @@ pause
  setvar $fighter[$mycount] $figSector
  getwordpos $num $pos "T"
  if ($pos > 1)
-    striptext $num "T"
-    multiply $num 1000
+	striptext $num "T"
+	multiply $num 1000
  end
  getwordpos $num $pos "M"
  if ($pos > 1)
-    striptext $num "M"
-    multiply $num 1000000
+	striptext $num "M"
+	multiply $num 1000000
  end
  getwordpos $num $pos "B"
  if ($pos > 1)
-     stripText $num "B"
-     multiply $num 1000000000
+	 stripText $num "B"
+	 multiply $num 1000000000
  end
  if ($num = 0)
-     add $numFig 1
+	 add $numFig 1
  else
-     add $numFig $num
-     setVar $num 0
+	 add $numFig $num
+	 setVar $num 0
  end
 goto :buildFigArray
 
@@ -111,39 +111,39 @@ goto :buildFigArray
   waitfor "====="
 
   :chkAramids
-    setTextTrigger CorpAramid :addAramidtoList "Corp"
-    setTextTrigger noAramids :noAramidsFound "No mines deployed"
-    setTextTrigger AramidDone :limpetAssets "Total"
-    pause
+	setTextTrigger CorpAramid :addAramidtoList "Corp"
+	setTextTrigger noAramids :noAramidsFound "No mines deployed"
+	setTextTrigger AramidDone :limpetAssets "Total"
+	pause
 
   :addAramidtoList
-    killalltriggers
-    getword currentline $aramidAmount 2
-    add $aramidTotal $aramidAmount
-    add $aramidSectors 1
-    goto :chkAramids
+	killalltriggers
+	getword currentline $aramidAmount 2
+	add $aramidTotal $aramidAmount
+	add $aramidSectors 1
+	goto :chkAramids
 
   :noAramidsFound
-    # No aramids are deployed
+	# No aramids are deployed
 
   :limpetAssets
-    killalltriggers
-    setVar $limpetTotal 0
-    send "k2"
-    waitfor "====="
+	killalltriggers
+	setVar $limpetTotal 0
+	send "k2"
+	waitfor "====="
 
   :chklimpets
-    setTextTrigger CorpLimpet :addLimpettoList "Corp"
-    setTextTrigger noLimpets :noLimpetsFound "No Limpet mines deployed"
-    setTextTrigger LimpetDone :chkShips "Total"
-    pause
+	setTextTrigger CorpLimpet :addLimpettoList "Corp"
+	setTextTrigger noLimpets :noLimpetsFound "No Limpet mines deployed"
+	setTextTrigger LimpetDone :chkShips "Total"
+	pause
 
   :addLimpettoList
-    killalltriggers
-    getword currentline $limpetAmount 2
-    add $limpetTotal $limpetAmount
-    add $player~limpetsectors 1
-    goto :chkLimpets
+	killalltriggers
+	getword currentline $limpetAmount 2
+	add $limpetTotal $limpetAmount
+	add $player~limpetsectors 1
+	goto :chkLimpets
 
 
 
@@ -198,162 +198,162 @@ end
   setVar $plntCnt 0
   setVar $i 11
   while ($i < SECTORS)
-       if ($planet~planets[$i] > 0)
-          add $plntCnt 1
-          add $plCnt 1
-          setVar $padit 6
-          if ($baseID = "Base")
-             SetVar $inStr $plCnt
-             gosub :padLeft
-             send "  " $padL $plCnt "        " $planet~planets[$i]
-          else
-             setVar $instr $i
-             gosub :padLeft
-             send "  " $padL $i "        " $planet~planets[$i]
-          end
-          if ($planet~planets[$i] > $maxPlanets)
-             send "    OVERLOADED"
-          else
-             send "    Checked Ok"
-          end
-          if ($baseDetails = "Yes")
-              getlength $baseDetail[$i] $strLen
-              while ($strLen < 10)
-                   setVar $baseDetail[$i] $baseDetail[$i] & " "
-                   add $strLen 1
-              end
-              add  $totalBaseFighters $baseFigs[$i]
-              setVar $baseFig $baseFigs[$i]
-              if ($basefig > 999999999)
-                 divide $basefig 1000000000
-                 setVar $basefig $basefig & "B"
-              elseif ($basefig > 999999)
-                 divide $basefig 1000000
-                 setVar $basefig $basefig & "M"
-              elseif ($basefig > 999)
-                 divide $basefig 1000
-                 setVar $basefig $basefig & "K"
-              end
-              setvar $instr $basefig
-              setVar $padit 8
-              gosub :padLeft
-              setVar $basefig $padL & $baseFig
+	   if ($planet~planets[$i] > 0)
+		  add $plntCnt 1
+		  add $plCnt 1
+		  setVar $padit 6
+		  if ($baseID = "Base")
+			 SetVar $inStr $plCnt
+			 gosub :padLeft
+			 send "  " $padL $plCnt "        " $planet~planets[$i]
+		  else
+			 setVar $instr $i
+			 gosub :padLeft
+			 send "  " $padL $i "        " $planet~planets[$i]
+		  end
+		  if ($planet~planets[$i] > $maxPlanets)
+			 send "    OVERLOADED"
+		  else
+			 send "    Checked Ok"
+		  end
+		  if ($baseDetails = "Yes")
+			  getlength $baseDetail[$i] $strLen
+			  while ($strLen < 10)
+				   setVar $baseDetail[$i] $baseDetail[$i] & " "
+				   add $strLen 1
+			  end
+			  add  $totalBaseFighters $baseFigs[$i]
+			  setVar $baseFig $baseFigs[$i]
+			  if ($basefig > 999999999)
+				 divide $basefig 1000000000
+				 setVar $basefig $basefig & "B"
+			  elseif ($basefig > 999999)
+				 divide $basefig 1000000
+				 setVar $basefig $basefig & "M"
+			  elseif ($basefig > 999)
+				 divide $basefig 1000
+				 setVar $basefig $basefig & "K"
+			  end
+			  setvar $instr $basefig
+			  setVar $padit 8
+			  gosub :padLeft
+			  setVar $basefig $padL & $baseFig
 
-              setVar $citCash $baseCash[$i]
-              if ($baseCash[$i] > 999999999)
-                 divide $citCash 1000000000
-                 setVar $citCash $citCash & "B"
-              elseif ($baseCash[$i] > 999999)
-                 divide $citCash 1000000
-                 setVar $citCash $citCash & "M"
-              elseif ($baseCash[$i] > 999)
-                 divide $citCash 1000
-                 setVar $citCash $citCash & "K"
-              end
-              setvar $instr $citCash
-              setVar $padit 9
-              gosub :padLeft
-               send "    " $baseDetail[$i] $basefig $padL $citCash
-              send "*"
-              setVar $plntCnt 0
-          end
-       end
-       if ($plntCnt = 2)
-           send "*"
-           setVar $plntCnt 0
-       end
-       add $i 1
+			  setVar $citCash $baseCash[$i]
+			  if ($baseCash[$i] > 999999999)
+				 divide $citCash 1000000000
+				 setVar $citCash $citCash & "B"
+			  elseif ($baseCash[$i] > 999999)
+				 divide $citCash 1000000
+				 setVar $citCash $citCash & "M"
+			  elseif ($baseCash[$i] > 999)
+				 divide $citCash 1000
+				 setVar $citCash $citCash & "K"
+			  end
+			  setvar $instr $citCash
+			  setVar $padit 9
+			  gosub :padLeft
+			   send "    " $baseDetail[$i] $basefig $padL $citCash
+			  send "*"
+			  setVar $plntCnt 0
+		  end
+	   end
+	   if ($plntCnt = 2)
+		   send "*"
+		   setVar $plntCnt 0
+	   end
+	   add $i 1
   end
   if ($plCnt = 0)
-     send "               No Planets Found for your Corp*"
+	 send "               No Planets Found for your Corp*"
   else
-     send " *"
-     send " *"
-     send " ------------------ *"
-     send " Citadel Status*"
-     send " ------------------ *"
-     send "   Lvl 0   Lvl 1   Lvl 2   Lvl 3   Lvl 4   Lvl 5   Lvl 6*"
-     send "     " $cits[1]
-     send "       " $cits[2]
-     send "       " $cits[3]
-     send "       " $cits[4]
-     send "       " $cits[5]
-     send "       " $cits[6]
-     send "       " $cits[7] "*"
-     send " *"
-     send " ------------------ *"
-     send " Planet Assets*"
-     send " ------------------ *"
-     send "                Ore  Org  Equ   Ore   Org   Equ   Fighters*"
-     send "Population     -=Productions=-  -=-=-=-=-On Hands-=-=-=-=-    Credits*"
-     send $bott "*"
-     send " *"
-     send " ------------------ *"
-     send " Available Ships*"
-     send " ------------------ *"
-     send "   Cnt   Type                      Total Figs*"
-     setVar $i 1
-     setVar $totalShip 0
-     if ($shipCnt[1] > 0)
-        while ($i <= 20)
-           if ($shipCnt[$i] > 0)
-              send "    " $shipCnt[$i] " -- " $shipTypes[$i] " -- " $shipFigs[$i] "*"
-           end
-           add $totalShip $shipFigs[$i]
-           add $i 1
-        end
-        send "                      All Ships -- " $totalShip "*"
-     else
-        send "   No corporate ships are available*"
-     end
+	 send " *"
+	 send " *"
+	 send " ------------------ *"
+	 send " Citadel Status*"
+	 send " ------------------ *"
+	 send "   Lvl 0   Lvl 1   Lvl 2   Lvl 3   Lvl 4   Lvl 5   Lvl 6*"
+	 send "     " $cits[1]
+	 send "       " $cits[2]
+	 send "       " $cits[3]
+	 send "       " $cits[4]
+	 send "       " $cits[5]
+	 send "       " $cits[6]
+	 send "       " $cits[7] "*"
+	 send " *"
+	 send " ------------------ *"
+	 send " Planet Assets*"
+	 send " ------------------ *"
+	 send "                Ore  Org  Equ   Ore   Org   Equ   Fighters*"
+	 send "Population     -=Productions=-  -=-=-=-=-On Hands-=-=-=-=-    Credits*"
+	 send $bott "*"
+	 send " *"
+	 send " ------------------ *"
+	 send " Available Ships*"
+	 send " ------------------ *"
+	 send "   Cnt   Type                      Total Figs*"
+	 setVar $i 1
+	 setVar $totalShip 0
+	 if ($shipCnt[1] > 0)
+		while ($i <= 20)
+		   if ($shipCnt[$i] > 0)
+			  send "    " $shipCnt[$i] " -- " $shipTypes[$i] " -- " $shipFigs[$i] "*"
+		   end
+		   add $totalShip $shipFigs[$i]
+		   add $i 1
+		end
+		send "                      All Ships -- " $totalShip "*"
+	 else
+		send "   No corporate ships are available*"
+	 end
   end
-     send " *"
-     send " -------------------- *"
-     send " Corp Assets vs Game *"
-     send " -------------------- *"
-     stripText $numFig ","
-     add $totalShip $numFig
-     setVar $totalCorpFigs $totalShip
-     if ($totalBaseFighters = 0)
-         getword $bott $fig 8
-        getwordpos $fig $tpos "T"
-        getwordpos $fig $mpos "M"
-        getwordpos $fig $bpos "B"
-        if ($tpos > 0)
-           stripText $fig "T"
-           multiply $fig 1000
-        elseif ($mpos > 0)
-          stripText $fig "M"
-          multiply $fig 1000000
-        elseif ($bpos > 0)
-          stripText $fig "B"
-          multiply $fig 1000000000
-       end
-       add $totalCorpFigs $fig
-     else
-       add $totalCorpFigs $totalBaseFighters
-     end
-     if ($totalCorpFigs > $gameFighters)
-        send "   !! Fighters on unmanned ships do not count for game totals !!*"
-     end
-     setVar $instr $totalCorpFigs
-     setVar $padit 16
-     gosub :padLeft
-     send " Corp fighters: " $totalCorpFigs " (" (($totalCorpFigs*100)/$gameFighters) "%)" $padL "Game fighters:  " $gameFighters "*"
-     send " Corp planets: "
-     setVar $i 1
-     setVar $player~corpPlanets 0
-     setVar $player~corpCits 0
-     while ($i <= 7)
-           add $player~corpPlanets $cits[$i]
-           add $i 1
-     end
-     setVar $i 2
-     while ($i <= 7)
-           add $player~corpCits $cits[$i]
-           add $i 1
-     end
-     send $player~corpPlanets " (" $player~corpCits ") Citadels    Game planets: " $gamePlanets " (" $gameCitadels ") Citadels*"
+	 send " *"
+	 send " -------------------- *"
+	 send " Corp Assets vs Game *"
+	 send " -------------------- *"
+	 stripText $numFig ","
+	 add $totalShip $numFig
+	 setVar $totalCorpFigs $totalShip
+	 if ($totalBaseFighters = 0)
+		 getword $bott $fig 8
+		getwordpos $fig $tpos "T"
+		getwordpos $fig $mpos "M"
+		getwordpos $fig $bpos "B"
+		if ($tpos > 0)
+		   stripText $fig "T"
+		   multiply $fig 1000
+		elseif ($mpos > 0)
+		  stripText $fig "M"
+		  multiply $fig 1000000
+		elseif ($bpos > 0)
+		  stripText $fig "B"
+		  multiply $fig 1000000000
+	   end
+	   add $totalCorpFigs $fig
+	 else
+	   add $totalCorpFigs $totalBaseFighters
+	 end
+	 if ($totalCorpFigs > $gameFighters)
+		send "   !! Fighters on unmanned ships do not count for game totals !!*"
+	 end
+	 setVar $instr $totalCorpFigs
+	 setVar $padit 16
+	 gosub :padLeft
+	 send " Corp fighters: " $totalCorpFigs " (" (($totalCorpFigs*100)/$gameFighters) "%)" $padL "Game fighters:  " $gameFighters "*"
+	 send " Corp planets: "
+	 setVar $i 1
+	 setVar $player~corpPlanets 0
+	 setVar $player~corpCits 0
+	 while ($i <= 7)
+		   add $player~corpPlanets $cits[$i]
+		   add $i 1
+	 end
+	 setVar $i 2
+	 while ($i <= 7)
+		   add $player~corpCits $cits[$i]
+		   add $i 1
+	 end
+	 send $player~corpPlanets " (" $player~corpCits ") Citadels    Game planets: " $gamePlanets " (" $gameCitadels ") Citadels*"
 
   send " *"
   send "<--------------------------- Promethius ---------------------------->*"
@@ -369,9 +369,9 @@ halt
   setArray $shipCnt 20
   setArray $shipFigs 20
   if ($shipTypes = "All")
-     send "cz"
+	 send "cz"
   else
-     send "x "
+	 send "x "
   end
   waitfor "----"
 :getShips
@@ -379,10 +379,10 @@ halt
 #  setTextLineTrigger ship :corpShip "Corp "
   setTextLineTrigger ship :corpShip ""
   if ($shipTypes = "All")
-     setTextTrigger allShips :chkPlanets "Computer command [TL"
+	 setTextTrigger allShips :chkPlanets "Computer command [TL"
   else
-     setTextTrigger endShip :chkPlanets "details"
-     setTextTrigger noShips :noShips "You do not own"
+	 setTextTrigger endShip :chkPlanets "details"
+	 setTextTrigger noShips :noShips "You do not own"
   end
   pause
 
@@ -395,7 +395,7 @@ halt
 
   getlength CURRENTLINE $len
   if ($len < 57)
-      goto :getShips
+	  goto :getShips
   end
   setVar $cutPoint $len-56
   cuttext CURRENTLINE $type 56 $cutPoint
@@ -404,20 +404,20 @@ halt
   striptext $sFigs " "
   getwordpos $sFigs $pos "T"
   if ($pos > 0)
-     striptext $sFigs "T"
-     multiply $sFigs 1000
+	 striptext $sFigs "T"
+	 multiply $sFigs 1000
   end
   setVar $i 1
   while ($i <= 20)
-    if ($shipTypes[$i] = 0)
-       setVar $shipTypes[$i] $type
-    end
-    if ($shipTypes[$i] = $type)
-       add $shipCnt[$i] 1
-       add $shipFigs[$i] $sFigs
-       add $i 21
-    end
-    add $i 1
+	if ($shipTypes[$i] = 0)
+	   setVar $shipTypes[$i] $type
+	end
+	if ($shipTypes[$i] = $type)
+	   add $shipCnt[$i] 1
+	   add $shipFigs[$i] $sFigs
+	   add $i 21
+	end
+	add $i 1
   end
   goto :getShips
 
@@ -457,16 +457,16 @@ waitfor "========="
  getword CURRENTLINE $plSector 1
  add $planet~planets[$plSector] 1
  if ($planet~planets[$plSector] = 1)
-    setVar $baseDetail[$plSector] ""
+	setVar $baseDetail[$plSector] ""
  end
  cuttext CURRENTLINE $cit 77 1
  if ($cit = "l")
-     add $cits[1] 1
-     setVar $planet~planetCits "0"
+	 add $cits[1] 1
+	 setVar $planet~planetCits "0"
  else
-     setVar $planet~planetCits $cit
-     add $cit 1
-     add $cits[$cit] 1
+	 setVar $planet~planetCits $cit
+	 add $cit 1
+	 add $cits[$cit] 1
  end
  setVar $baseDetail[$plSector] $baseDetail[$plSector] & " " & $planet~planetCits
  setTextLineTrigger getCash :cash ")"
@@ -477,22 +477,22 @@ waitfor "========="
  stripText $cash ","
  if ($cash = "---")
  else
-     getwordpos $cash $pos "T"
-     if ($pos > 0)
-         stripText $cash "T"
-         multiply $cash 1000
-     end
-     getwordpos $cash $pos "M"
-     if ($pos > 0)
-         stripText $cash "M"
-         multiply $cash 1000000
-     end
-     getwordpos $cash $pos "B"
-     if ($pos > 0)
-        stripText $cash "B"
-        multiply $cash 1000000000
-     end
-     add $baseCash[$plSector] $cash
+	 getwordpos $cash $pos "T"
+	 if ($pos > 0)
+		 stripText $cash "T"
+		 multiply $cash 1000
+	 end
+	 getwordpos $cash $pos "M"
+	 if ($pos > 0)
+		 stripText $cash "M"
+		 multiply $cash 1000000
+	 end
+	 getwordpos $cash $pos "B"
+	 if ($pos > 0)
+		stripText $cash "B"
+		multiply $cash 1000000000
+	 end
+	 add $baseCash[$plSector] $cash
  end
  gosub :planetFigs
 goto :buildPlanetList
@@ -500,27 +500,27 @@ goto :buildPlanetList
 :myFormat
 getLength $tmpStr $tLen
 If ($tlen < 4)
-    return
+	return
 end
 setVar $inStr $tmpStr
 setVar $i 1
 add $tlen 1
 if ($tLen > 3)
-    setVar $tmpStr ""
-    while ($i < $tlen)
-       cuttext $inStr $tmpStr1 ($tlen - $i) 1
-       setVar $tmpStr ($tmpStr1 & $tmpStr)
-       if ($i = 3)
-          setVar $tmpStr ("," & $tmpStr)
-       end
-       if ($i = 6) and ($tlen > 7)
-          setVar $tmpStr ("," & $tmpStr)
-       end
-       if ($i = 9) and ($tlen > 10)
-           setVar $tmpStr ("," & $tmpStr)
-       end
-       add $i 1
-    end
+	setVar $tmpStr ""
+	while ($i < $tlen)
+	   cuttext $inStr $tmpStr1 ($tlen - $i) 1
+	   setVar $tmpStr ($tmpStr1 & $tmpStr)
+	   if ($i = 3)
+		  setVar $tmpStr ("," & $tmpStr)
+	   end
+	   if ($i = 6) and ($tlen > 7)
+		  setVar $tmpStr ("," & $tmpStr)
+	   end
+	   if ($i = 9) and ($tlen > 10)
+		   setVar $tmpStr ("," & $tmpStr)
+	   end
+	   add $i 1
+	end
 
 end
 return
@@ -535,8 +535,8 @@ while ($tlen < 5)
 end
 getlength $numFig[$i] $tlen
 while ($tlen < 5)
-    setVar $padR $padR & " "
-     add $tlen 1
+	setVar $padR $padR & " "
+	 add $tlen 1
 end
 return
 
@@ -544,16 +544,16 @@ return
   setVar $padL ""
   getlength $inStr $tlen
   while ($tlen <= $padit)
-         setVar $padL ($padL & " ")
-         add $tlen 1
+		 setVar $padL ($padL & " ")
+		 add $tlen 1
   end
 return
 
 :colorBar
    setVar $i 1
    while ($i <= $cBarLen)
-         echo ansi_12 "-" ansi_15 "=" ansi_11 "-"
-         add $i 1
+		 echo ansi_12 "-" ansi_15 "=" ansi_11 "-"
+		 add $i 1
    end
 return
 
@@ -563,18 +563,18 @@ striptext $num " "
 striptext $num ","
 getwordpos $num $pos "T"
  if ($pos > 1)
-    striptext $num "T"
-    multiply $num 1000
+	striptext $num "T"
+	multiply $num 1000
  end
  getwordpos $num $pos "M"
  if ($pos > 1)
-    striptext $num "M"
-    multiply $num 1000000
+	striptext $num "M"
+	multiply $num 1000000
  end
  getwordpos $num $pos "B"
  if ($pos > 1)
-     stripText $num "B"
-     multiply $num 1000000000
+	 stripText $num "B"
+	 multiply $num 1000000000
  end
  add $baseFigs[$plSector] $num
 return
@@ -621,100 +621,100 @@ end
   setVar $plntCnt 0
   setVar $i 11
   while ($i < SECTORS)
-       if ($planet~planets[$i] > 0)
-          add $plntCnt 1
-          add $plCnt 1
-          setVar $padit 10
-          if ($baseID = "Base")
-             SetVar $inStr $plCnt
-             gosub :padLeft
-             setVar $winDisp $winDisp & "  " & $padL & $plCnt & "        " & $planet~planets[$i]
-          else
-             setVar $instr $i
-             gosub :padLeft
-             setVar $winDisp $winDisp &  "  " & $padL & $i & "        " & $planet~planets[$i]
-          end
-          if ($planet~planets[$i] > $maxPlanets)
-             setVar $winDisp $winDisp &  "              OVERLOADED"
-          else
-             setVar $winDisp $winDisp &  "              Checked Ok"
-          end
-          if ($baseDetails = "Yes")
-              getlength $baseDetail[$i] $strLen
-              while ($strLen < 10)
-                   setVar $baseDetail[$i] $baseDetail[$i] & " "
-                   add $strLen 1
-              end
-              setVar $baseFig $baseFigs[$i]
-              if ($basefig > 999999999)
-                 divide $basefig 1000000000
-                 setVar $basefig $basefig & "B"
-              elseif ($basefig > 999999)
-                 divide $basefig 1000000
-                 setVar $basefig $basefig & "M"
-              elseif ($basefig > 999)
-                 divide $basefig 1000
-                 setVar $basefig $basefig & "K"
-              end
-              setvar $instr $basefig
-              setVar $padit 8
-              gosub :padLeft
-              setVar $basefig $padL & $baseFig
+	   if ($planet~planets[$i] > 0)
+		  add $plntCnt 1
+		  add $plCnt 1
+		  setVar $padit 10
+		  if ($baseID = "Base")
+			 SetVar $inStr $plCnt
+			 gosub :padLeft
+			 setVar $winDisp $winDisp & "  " & $padL & $plCnt & "        " & $planet~planets[$i]
+		  else
+			 setVar $instr $i
+			 gosub :padLeft
+			 setVar $winDisp $winDisp &  "  " & $padL & $i & "        " & $planet~planets[$i]
+		  end
+		  if ($planet~planets[$i] > $maxPlanets)
+			 setVar $winDisp $winDisp &  "              OVERLOADED"
+		  else
+			 setVar $winDisp $winDisp &  "              Checked Ok"
+		  end
+		  if ($baseDetails = "Yes")
+			  getlength $baseDetail[$i] $strLen
+			  while ($strLen < 10)
+				   setVar $baseDetail[$i] $baseDetail[$i] & " "
+				   add $strLen 1
+			  end
+			  setVar $baseFig $baseFigs[$i]
+			  if ($basefig > 999999999)
+				 divide $basefig 1000000000
+				 setVar $basefig $basefig & "B"
+			  elseif ($basefig > 999999)
+				 divide $basefig 1000000
+				 setVar $basefig $basefig & "M"
+			  elseif ($basefig > 999)
+				 divide $basefig 1000
+				 setVar $basefig $basefig & "K"
+			  end
+			  setvar $instr $basefig
+			  setVar $padit 8
+			  gosub :padLeft
+			  setVar $basefig $padL & $baseFig
 
-              setVar $citCash $baseCash[$i]
-              if ($baseCash[$i] > 999999999)
-                 divide $citCash 1000000000
-                 setVar $citCash $citCash & "B"
-              elseif ($baseCash[$i] > 999999)
-                 divide $citCash 1000000
-                 setVar $citCash $citCash & "M"
-              elseif ($baseCash[$i] > 999)
-                 divide $citCash 1000
-                 setVar $citCash $citCash & "K"
-              end
-              setvar $instr $citCash
-              setVar $padit 9
-              gosub :padLeft
+			  setVar $citCash $baseCash[$i]
+			  if ($baseCash[$i] > 999999999)
+				 divide $citCash 1000000000
+				 setVar $citCash $citCash & "B"
+			  elseif ($baseCash[$i] > 999999)
+				 divide $citCash 1000000
+				 setVar $citCash $citCash & "M"
+			  elseif ($baseCash[$i] > 999)
+				 divide $citCash 1000
+				 setVar $citCash $citCash & "K"
+			  end
+			  setvar $instr $citCash
+			  setVar $padit 9
+			  gosub :padLeft
 
-              setVar $winDisp $winDisp &  "    " & $baseDetail[$i] & $basefig & $padL & $citCash
-              setVar $winDisp $winDisp &  "*"
-              setVar $plntCnt 0
-          end
-       end
-       if ($plntCnt = 2)
-           setVar $winDisp $winDisp & "*"
-           setVar $plntCnt 0
-       end
-       add $i 1
+			  setVar $winDisp $winDisp &  "    " & $baseDetail[$i] & $basefig & $padL & $citCash
+			  setVar $winDisp $winDisp &  "*"
+			  setVar $plntCnt 0
+		  end
+	   end
+	   if ($plntCnt = 2)
+		   setVar $winDisp $winDisp & "*"
+		   setVar $plntCnt 0
+	   end
+	   add $i 1
   end
   if ($plCnt = 0)
-     setVar $winDisp $winDisp & "               No Planets Found for your Corp*"
+	 setVar $winDisp $winDisp & "               No Planets Found for your Corp*"
   else
-     setVar $winDisp $winDisp & "*" & " ------------------------ *" & " Citadel Status*" & " ------------------------ *"
-     setVar $winDisp $winDisp & "   Lvl 0   Lvl 1   Lvl 2   Lvl 3   Lvl 4   Lvl 5   Lvl 6*"
-     setVar $winDisp $winDisp & "      " & $cits[1] & "         " & $cits[2] &  "         " & $cits[3]
-     setVar $winDisp $winDisp & "         " & $cits[4] & "         " & $cits[5] & "         " & $cits[6]
-     setVar $winDisp $winDisp & "         " & $cits[7] & "*"
-     setVar $winDisp $winDisp & " *" & " ------------------------ *" & " Planet Assets*" & " ------------------------ *"
-     setVar $winDisp $winDisp & "                Ore  Org  Equ   Ore   Org   Equ   Fighters*"
-     setVar $winDisp $winDisp & "Population     -=Productions=-  -=-=-=-=-On Hands-=-=-=-=-    Credits*"
-     setVar $winDisp $winDisp & $bott & "*"
-     setVar $winDisp $winDisp & " *" & " ------------------------ *" & " Available Ships*" & " ------------------------ *"
-     setVar $winDisp $winDisp &  "   Cnt   Type                      Total Figs*"
-     setVar $i 1
-     setVar $totalShip 0
-     if ($shipCnt[1] > 0)
-        while ($i <= 20)
-           if ($shipCnt[$i] > 0)
-              setVar $winDisp $winDisp &  "    " & $shipCnt[$i]& " -- " & $shipTypes[$i] & " -- " & $shipFigs[$i] & "*"
-           end
-           add $totalShip $shipFigs[$i]
-           add $i 1
-        end
-        setVar $winDisp $winDisp &  "                         All Ships -- " & $totalShip & "*"
-     else
-        setVar $winDisp $winDisp &  "   No corporate ships are available*"
-     end
+	 setVar $winDisp $winDisp & "*" & " ------------------------ *" & " Citadel Status*" & " ------------------------ *"
+	 setVar $winDisp $winDisp & "   Lvl 0   Lvl 1   Lvl 2   Lvl 3   Lvl 4   Lvl 5   Lvl 6*"
+	 setVar $winDisp $winDisp & "      " & $cits[1] & "         " & $cits[2] &  "         " & $cits[3]
+	 setVar $winDisp $winDisp & "         " & $cits[4] & "         " & $cits[5] & "         " & $cits[6]
+	 setVar $winDisp $winDisp & "         " & $cits[7] & "*"
+	 setVar $winDisp $winDisp & " *" & " ------------------------ *" & " Planet Assets*" & " ------------------------ *"
+	 setVar $winDisp $winDisp & "                Ore  Org  Equ   Ore   Org   Equ   Fighters*"
+	 setVar $winDisp $winDisp & "Population     -=Productions=-  -=-=-=-=-On Hands-=-=-=-=-    Credits*"
+	 setVar $winDisp $winDisp & $bott & "*"
+	 setVar $winDisp $winDisp & " *" & " ------------------------ *" & " Available Ships*" & " ------------------------ *"
+	 setVar $winDisp $winDisp &  "   Cnt   Type                      Total Figs*"
+	 setVar $i 1
+	 setVar $totalShip 0
+	 if ($shipCnt[1] > 0)
+		while ($i <= 20)
+		   if ($shipCnt[$i] > 0)
+			  setVar $winDisp $winDisp &  "    " & $shipCnt[$i]& " -- " & $shipTypes[$i] & " -- " & $shipFigs[$i] & "*"
+		   end
+		   add $totalShip $shipFigs[$i]
+		   add $i 1
+		end
+		setVar $winDisp $winDisp &  "                         All Ships -- " & $totalShip & "*"
+	 else
+		setVar $winDisp $winDisp &  "   No corporate ships are available*"
+	 end
   end
   setVar $winDisp $winDisp & "*"
   setWindowContents ProAssets $winDisp

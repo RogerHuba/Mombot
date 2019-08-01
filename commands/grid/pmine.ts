@@ -1,12 +1,16 @@
 	gosub :BOT~loadVars
 
-	setVar $BOT~help[1]  $BOT~tab&"cmine - place corporate armids in sector"
+	setVar $BOT~help[1]  $BOT~tab&"pmine - place personal armids in sector"
 	gosub :bot~helpfile
 
 # ============================== MINES  ==============================
+:pmine
+		setvar $armid "p"
+		goto :_mine
 :cmine
 :mine
 	setvar $armid "c"
+	goto :_mine
 :_mine
 	gosub :mineProtections
 	if ($bot~parm1 > $PLAYER~ARMIDS)
@@ -20,7 +24,7 @@
 		halt
 	end
 	if ($PLAYER~startingLocation = "Citadel")
-		send "q q z n h1 z " $bot~parm1 "*  z" $armid " z n n  *l " $planet~planet "* c"
+		send "q q z n h1 z " $bot~parm1 "*  z" $armid " z n n  *l " $PLANET~PLANET "* c"
 	else
 		send "z n h1 z " $bot~parm1 "*  z" $armid " z n"
 	end
@@ -74,7 +78,6 @@
 	if (($PLAYER~CURRENT_SECTOR < 10) OR ($PLAYER~CURRENT_SECTOR = $MAP~stardock))
 		setVar $SWITCHBOARD~message $bot~parm1&" Cannot deploy in FedSpace!*"
 		gosub :SWITCHBOARD~switchboard
-		setvar $switchboard~message "Cannot deploy in FedSpace!*"
 		halt
 	end
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT

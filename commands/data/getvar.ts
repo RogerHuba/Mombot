@@ -1,15 +1,15 @@
-    gosub :BOT~loadVars
+	gosub :BOT~loadVars
 
 
-    setVar $BOT~help[1]  $BOT~tab&"getvar"
-    setVar $BOT~help[2]  $BOT~tab&"  Displays bot variables"
-    setVar $BOT~help[3]  $BOT~tab&"    s - stardock"
-    setVar $BOT~help[4]  $BOT~tab&"    r - rylos"
-    setVar $BOT~help[5]  $BOT~tab&"    a - alpha centauri"
-    setVar $BOT~help[6]  $BOT~tab&"    b - backdoor"
-    setVar $BOT~help[7]  $BOT~tab&"    x - safe ship"
-    setVar $BOT~help[8]  $BOT~tab&"   tl - turn limit"
-    gosub :bot~helpfile
+	setVar $BOT~help[1]  $BOT~tab&"getvar"
+	setVar $BOT~help[2]  $BOT~tab&"  Displays bot variables"
+	setVar $BOT~help[3]  $BOT~tab&"    s - stardock"
+	setVar $BOT~help[4]  $BOT~tab&"    r - rylos"
+	setVar $BOT~help[5]  $BOT~tab&"    a - alpha centauri"
+	setVar $BOT~help[6]  $BOT~tab&"    b - backdoor"
+	setVar $BOT~help[7]  $BOT~tab&"    x - safe ship"
+	setVar $BOT~help[8]  $BOT~tab&"   tl - turn limit"
+	gosub :bot~helpfile
 
 	getWord $BOT~user_command_line $BOT~parm1 1
 	setVar $SWITCHBOARD~message ""
