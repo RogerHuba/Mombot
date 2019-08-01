@@ -1081,13 +1081,13 @@ return
 	setVar $BOT~password PASSWORD
 	setVar $BOT~username LOGINNAME
 	setVar $BOT~letter GAME
-	if ($BOT~letter = "")
+	if (($BOT~letter = "") or ($bot~letter = "0"))
 		getInput $BOT~letter "Please Enter your Game Letter"
 	end
-	if ($BOT~username = "")
+	if (($BOT~username = "") or ($bot~username = "0"))
 		getInput $BOT~username "Please Enter your Login Name"
 	end
-	if ($BOT~password = "")
+	if (($BOT~password = "") or ($bot~password = "0"))
 		getInput $BOT~password "Please Enter your Game password"
 	end
 	saveVar $BOT~letter
@@ -1127,6 +1127,7 @@ return
 	end
 	loadVar $BOT~username
 	loadVar $BOT~letter
+	loadVar $BOT~password
 	if ($BOT~password = 0)
 		setVar $BOT~password PASSWORD
 	end
