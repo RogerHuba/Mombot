@@ -407,6 +407,7 @@
 				setTextLineTrigger  GameClosed3 :GameClosedSD       " day(s) to get back in."
 				setTextTrigger      Phew        :back_to_game     	"Command [TL"
 				setDelayTrigger     delay_close :GameClosedSettings 5000
+				loadvar $bot~password
 				send "T***"&$BOT~password&"***"
 				pause
 			:GameClosedSettings
@@ -422,6 +423,7 @@
 				setTextLineTrigger at_game_menu :tryAgainSettings "T - Play Trade Wars 2002"
 				pause
 			:WhistleWhileYouWorkSettings
+				loadvar $bot~letter
 				send $BOT~letter&"*"
 				goto :GameClosedSettings
 
