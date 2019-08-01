@@ -325,6 +325,8 @@ goto :BOT~wait_for_command
 	disconnect
 	setVar $timer 0
 	if ($quittingWithNoTimer)
+		setvar $bot~do_not_resuscitate true
+		savevar $bot~do_not_resuscitate
 		halt
 	end
 	setTextOutTrigger logearly :endLogoffGame #32
