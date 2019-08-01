@@ -163,7 +163,7 @@
 		
 					setTextTrigger		v1Pause	:v1Pause "[Pause]"
 					setTextTrigger		v1Enter2 :v1Enter2 "Enter your choice"
-					setDelayTrigger		2	:new_game_delay2 1000
+					setDelayTrigger		2	:new_game_delay2 3000
 					setTextTrigger		3	:tryAgainNewGameDay1	"Would you like to start a new character in this game?"
 					setTextLineTrigger      4       :tryAgainEnterGame	"but this is a closed game."
 					send $BOT~letter&" * "
