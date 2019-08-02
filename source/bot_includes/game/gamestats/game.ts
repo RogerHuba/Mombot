@@ -402,9 +402,9 @@
 
 			:tryAgainSettings
 				killalltriggers
-				setTextLineTrigger  GameClosed1 :GameClosedSD       "I'm sorry, but this is a closed game."
-				setTextLineTrigger  GameClosed2 :GameClosedSD       "www.tradewars.com                                   Epic Interactive Strategy"
-				setTextLineTrigger  GameClosed3 :GameClosedSD       " day(s) to get back in."
+				setTextLineTrigger  GameClosed1 :connectivity~GameClosed       "I'm sorry, but this is a closed game."
+				setTextLineTrigger  GameClosed2 :connectivity~GameClosed       "www.tradewars.com                                   Epic Interactive Strategy"
+				setTextLineTrigger  GameClosed3 :connectivity~GameClosed       " day(s) to get back in."
 				setTextTrigger      Phew        :back_to_game     	"Command [TL"
 				setDelayTrigger     delay_close :GameClosedSettings 5000
 				loadvar $bot~password
