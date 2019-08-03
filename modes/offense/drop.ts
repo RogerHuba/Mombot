@@ -296,8 +296,14 @@ reqRecording
 		
 		:goHome
 			killAllTriggers
-			send "p " $homeSector "*y"
-		
+			if ($isPlanetDrop)
+				send "p " $homeSector "*y"
+			else
+				killalltriggers
+				setVar $PLAYER~WARPTO $homeSector
+				gosub :PLAYER~twarp
+			end		
+			goto :startTargeting
 		:manualPwarp
 				killAllTriggers
 				if ($attackOnSight)
