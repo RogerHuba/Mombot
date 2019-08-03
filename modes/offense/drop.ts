@@ -192,7 +192,11 @@ reqRecording
 		setVar $message $message&"*       Drop Delay: "&$dropDelay&" ms"
 	end
 	if ($attackOnSight)
-		setVar $message $message&"*        Auto Kill: Enabled With "&$planet~planetFighters&" Fighters"
+		if ($isPlanetDrop)
+			setVar $message $message&"*        Auto Kill: Enabled With "&$planet~planetFighters&" Fighters"
+		else
+			setVar $message $message&"*        Auto Kill: Enabled With "&$player~fighters&" Fighters"
+		end
 	end
 	if ($fastkill)
 		setVar $message $message&"*        Fast Kill: Will attempt kill macro at every pdrop attempt"
@@ -612,7 +616,7 @@ return
 		gosub :combat~fastCapture
 		goto :scanit_again
 	end
-	goto :halt
+	goto :startTargeting
 
 
 :checkForVictims
