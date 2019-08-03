@@ -3,7 +3,7 @@ reqRecording
 # Author: Mind Dagger
 
 	gosub :BOT~loadVars
-	setVar $BOT~command "pdrop"
+	setVar $BOT~command "drop"
 	loadVar $BOT~bot_turn_limit
 	loadVar $MAP~stardock
 	loadvar $bot~subspace
