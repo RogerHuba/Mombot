@@ -277,6 +277,7 @@ reqRecording
 	gosub :switchboard~switchboard
 
 	:startTargeting
+		gosub :player~quikstats
 		if ($isPlanetDrop <> true)
 				if ($player~twarp_type = "No")
 					setvar $switchboard~message "No twarp available.  Possible pod?*"
@@ -294,7 +295,6 @@ reqRecording
 					halt
 				end
 		end
-		gosub :player~quikstats
 		killAllTriggers
 		if (($returnHome = TRUE) AND ($isManual <> TRUE) AND ($player~current_sector <> $homeSector))
 			setVar $timeInMilli (($returnHomeDelay * 1000)+100)			
