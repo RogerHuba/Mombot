@@ -472,6 +472,26 @@ reqRecording
 				if ($attackOnSight)
 					goSub :checkForVictims
 				end
+			elseif ($dropDescription = "Direct, then Adjacent")			
+				if ($planetDrop)
+					send "p " $dropSector "* y "
+				else
+					setVar $PLAYER~WARPTO $dropSector
+					gosub :PLAYER~twarp
+					if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+						goto :pwarpNo				
+					else
+						if ($fastkill = true)
+							send "a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n * * "
+						end
+					end
+				end
+				gosub :findAdjacent
+				goSub :attemptDrop
+				goSub :getSectorLocation
+				if ($attackOnSight)
+					goSub :checkForVictims
+				end
 			elseif ($dropDescription = "Surround")
 				gosub :attemptSurroundDrop
 				gosub :getSectorLocation
