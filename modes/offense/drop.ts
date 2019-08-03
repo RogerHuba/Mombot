@@ -225,9 +225,9 @@ reqRecording
 	setvar $switchboard~message $message
 	gosub :switchboard~switchboard
 
-	gosub :player~quikstats
-	setVar $homeSector $player~current_sector
 	:startTargeting
+		gosub :player~quikstats
+		setVar $homeSector $player~current_sector
 		killAllTriggers
 		if (($returnHome = TRUE) AND ($isManual <> TRUE) AND ($player~current_sector <> $homeSector))
 			setVar $timeInMilli (($returnHomeDelay * 1000)+100)			
