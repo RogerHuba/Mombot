@@ -63,7 +63,7 @@ reqRecording
 	if ($startingLocation = "Citadel")
 		setVar $script_ver "Mind Over Matter Planet Dropper"
 		setvar $isPlanetDrop true
-	elseif ($startLocation = "Command")
+	elseif ($startingLocation = "Command")
 		setVar $script_ver "Mind Over Matter Ship Dropper"
 	else
 		setvar $switchboard~message "This script must be run from the Citadel or Command Prompt*"
