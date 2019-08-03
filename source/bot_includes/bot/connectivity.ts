@@ -163,7 +163,7 @@
 		
 					setTextTrigger		v1Pause	:v1Pause "[Pause]"
 					setTextTrigger		v1Enter2 :v1Enter2 "Enter your choice"
-					setDelayTrigger		2	:new_game_delay2 3000
+					setDelayTrigger		2	:new_game_delay2 2000
 					setTextTrigger		3	:tryAgainNewGameDay1	"Would you like to start a new character in this game?"
 					setTextLineTrigger      4       :tryAgainEnterGame	"but this is a closed game."
 					send $BOT~letter&" * "
@@ -275,7 +275,7 @@ return
 		killtrigger 8
 		killtrigger 9
 		killtrigger 10
-		send $BOT~startShipName&"*Y"
+		send $BOT~startShipName&"*Y * "
 		pause
 	:wrong_name
 		killalltriggers
@@ -314,7 +314,7 @@ return
 			pause
 			:continueCorpCreation
 				gosub :BOT~killthetriggers
-				send $BOT~corpName&"*Y"&$BOT~corpPassword&"*Y*CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q"
+				send $BOT~corpName&"*Y"&$BOT~corpPassword&"*Y*CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q c o* c q "
 
 		elseif (($BOT~isCEO = FALSE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
 			:checkForCorp
@@ -326,8 +326,8 @@ return
 				pause
 			:noCorpThatName
 				gosub :BOT~killthetriggers
-				echo "[[ Waiting 5 seconds to check for corp again, press [Spacebar] to cancel. ]]*"
-				setDelayTrigger		3 :checkForCorp		5000
+				echo "[[ Waiting 3 seconds to check for corp again, press [Spacebar] to cancel. ]]*"
+				setDelayTrigger		3 :checkForCorp		3000
 				setTextOutTrigger 	4 :alreadyCorped 	#32
 				pause
 			:thereIsMyCorp
@@ -335,11 +335,11 @@ return
 				getWord CURRENTLINE $corpNumber 1
 			:continueCorpCreation
 				gosub :BOT~killthetriggers
-				send "J"&$corpNumber&"*"&$BOT~corpPassword&"* * *CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q"
+				send "J"&$corpNumber&"*"&$BOT~corpPassword&"* * *CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q c o* c q "
 		else
 			:alreadyCorped
 				gosub :BOT~killthetriggers
-				send "* * *CN24"&$BOT~subspace&"*Q Q Q ZN* ^Q"
+				send "* * *CN24"&$BOT~subspace&"*Q Q Q ZN* ^Q c o* c q q ^M "
 		end
 		setTextLineTrigger      AllDone     :AllDone ": ENDINTERROG"
 		pause
@@ -347,8 +347,17 @@ return
 			gosub :BOT~killthetriggers
 
 	end
+
+	# Don't think is needed now I've moved command_to_issue to below
 	if ($menus~mowDestination = "")
 		gosub :moving
+	end
+
+	if (($menus~command_to_issue <> "") and ($menus~command_to_issue <> "0"))
+		setVar $BOT~user_command_line $menus~command_to_issue
+		setVar $menus~command_to_issue ""
+		saveVar $menus~command_to_issue
+		goto :USER_INTERFACE~runUserCommandLine
 	end
 
 return
@@ -401,11 +410,6 @@ return
 				end
 			end
 		end
-		if (($menus~command_to_issue <> "") and ($menus~command_to_issue <> "0"))
-			setVar $BOT~user_command_line $menus~command_to_issue
-			goto :USER_INTERFACE~runUserCommandLine
-		end
-
 
 return
 

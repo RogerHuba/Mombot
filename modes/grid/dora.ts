@@ -148,6 +148,32 @@ setVar $gridPriority "ports"
 setVar $testMcicSell 0
 setVar $testMcicBuy 0
 
+getWordPos $bot~user_command_line $pos "mcicsell"
+if ($pos > 0)
+	setVar $testMcicSell 1
+	setVar $testMcicBuy 0
+	setVar $msg $msg&"Testing MCIC XXS Ports only*"
+	striptext $bot~user_command_line "mcicsell"
+
+end
+
+getWordPos $bot~user_command_line $pos "mcicbuy"
+if ($pos > 0)
+	setVar $testMcicBuy 1
+	setVar $testMcicSell 0
+	setVar $msg $msg&"Testing MCIC XXB Ports only*"
+	striptext $bot~user_command_line "mcicbuy"
+end
+
+getWordPos $bot~user_command_line $pos "mcicboth"
+if ($pos > 0)
+	setVar $testMcicBuy 1
+	setVar $testMcicSell 1
+	setVar $msg $msg&"Testing MCIC XXS and XXB Ports*"
+	striptext $bot~user_command_line "mcicboth"
+end
+
+
 getWordPos $bot~user_command_line $pos "all"
 if ($pos > 0)
 	setVar $pptTradingOption "all"
@@ -185,28 +211,7 @@ else
 	end
 end
 
-getWordPos $bot~user_command_line $pos "mcicsell"
-if ($pos > 0)
-	setVar $testMcicSell 1
-	setVar $testMcicBuy 0
-	setVar $msg $msg&"Testing MCIC XXS Ports only*"
 
-end
-
-getWordPos $bot~user_command_line $pos "mcicbuy"
-if ($pos > 0)
-	setVar $testMcicBuy 1
-	setVar $testMcicSell 0
-	setVar $msg $msg&"Testing MCIC XXB Ports only*"
-end
-
-getWordPos $bot~user_command_line $pos "mcicboth"
-if ($pos > 0)
-	setVar $testMcicBuy 1
-	setVar $testMcicSell 1
-	setVar $msg $msg&"Testing MCIC XXS and XXB Ports*"
-
-end
 setvar $switchboard~message $msg
 	gosub :switchboard~switchboard
 
@@ -809,7 +814,7 @@ return
 	#  "org" all Org-Equ
 	#  "buys" org - equip not selling ore
 	#  "none"  skip this step
-	
+	echo "$pptTradingOption: " $pptTradingOption "*"
 	setVar $trades 0
 	setVar $tradesi 0
 	setVar $tradestype 0

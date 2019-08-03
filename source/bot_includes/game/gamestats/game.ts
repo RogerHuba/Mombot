@@ -419,15 +419,18 @@
 					:relogended
 					goto :tryAgainSettings
 			    end
-				setDelayTrigger  WhistleWhileYouWorkSettings  :WhistleWhileYouWorkSettings 300
+				setDelayTrigger  WhistleWhileYouWorkSettings  :WhistleWhileYouWorkSettings 1500
 				setTextLineTrigger at_game_menu :tryAgainSettings "T - Play Trade Wars 2002"
 				pause
 			:WhistleWhileYouWorkSettings
 				loadvar $bot~letter
 				send $BOT~letter&"*"
+				setTextTrigger refreshpause :refreshpause "[Pause]"
 				goto :GameClosedSettings
 
-
+			:refreshpause
+				send "*"
+				pause
 			:back_to_game  
 			killalltriggers
 			if ($fedSpacePhotons = "")
