@@ -342,6 +342,7 @@ reqRecording
 					end
 					send $send
 				else
+					killalltriggers
 					setVar $PLAYER~WARPTO $dropSector
 					gosub :PLAYER~twarp
 					if ($PLAYER~twarpSuccess = FALSE)
@@ -482,6 +483,7 @@ return
 			setTextLineTrigger pwarpAlreadyThere :pwarpFinished "You are already in that sector!"
 			pause
 		else
+			killalltriggers
 			setVar $PLAYER~WARPTO $gotoSector
 			gosub :PLAYER~twarp
 			if ($PLAYER~twarpSuccess = FALSE)
