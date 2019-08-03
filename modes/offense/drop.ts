@@ -306,7 +306,7 @@ reqRecording
 				killalltriggers
 				setVar $PLAYER~WARPTO $homeSector
 				gosub :PLAYER~twarp
-				if ($player~twarpSuccess <> true)
+				if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
 					setvar $switchboard~message "Could not make it back home with twarp. - ["&$player~msg&"]*"
 					gosub :switchboard~switchboard
 					halt
@@ -361,7 +361,7 @@ reqRecording
 					killalltriggers
 					setVar $PLAYER~WARPTO $dropSector
 					gosub :PLAYER~twarp
-					if ($player~twarpSuccess <> true)
+					if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
 						setvar $switchboard~message "Could not make it to attack sector - ["&$player~msg&"]*"
 						gosub :switchboard~switchboard
 						halt
@@ -507,7 +507,7 @@ return
 			killalltriggers
 			setVar $PLAYER~WARPTO $gotoSector
 			gosub :PLAYER~twarp
-			if ($PLAYER~twarpSuccess = FALSE)
+			if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
 				goto :pwarpNo				
 			end
 			if ($fastkill = true)
