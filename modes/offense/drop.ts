@@ -610,7 +610,11 @@ return
 	killAllTriggers
 	gosub :sector~getSectorData
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-		goSub :combat~fastCitadelAttack
+		if ($isPlanetDrop)
+			goSub :combat~fastCitadelAttack
+		else
+			gosub :combat~fastAttack
+		end
 		goto :scanit_again
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
 		gosub :combat~fastCapture

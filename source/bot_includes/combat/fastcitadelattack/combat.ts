@@ -15,7 +15,7 @@
 		gosub :player~quikstats
 		if ($player~fighters <= 0)
 			send "'{" $SWITCHBOARD~bot_name "} - Out of fighters, shutting down "&$BOT~command&".*"
-			return
+			halt
 		end
 	end
 	if (($SECTOR~emptyShipCount + $SECTOR~fakeTraderCount + $SECTOR~realTraderCount) > 0)
