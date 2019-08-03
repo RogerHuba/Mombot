@@ -509,6 +509,32 @@
 			settextlinetrigger fake :fake "FAKE"
 			settextlinetrigger run :waitforredbust "Busted in ship"
 			pause
+			:wrong
+				killalltriggers
+				setVar $SWITCHBOARD~MESSAGE "Ships got messed up somehow.  Better check it out!  Halting.*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+				halt
+			:noexp
+				killalltriggers
+				setVar $SWITCHBOARD~MESSAGE "One of the cashers lost too much experience.  Halting.*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+				halt
+			:nowar
+				killalltriggers
+				setVar $SWITCHBOARD~MESSAGE "One of the cashers has no knowledge of the sector they are in.  That's very odd. Halting.*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+				halt
+			:auto
+				killalltriggers
+				setVar $SWITCHBOARD~MESSAGE "One of the cashers has SWATH haggle on. Halting.*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+				halt
+			:lowturns
+				killalltriggers
+				setVar $SWITCHBOARD~MESSAGE "One of the cashers has run out of usable turns. Halting.*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+				halt
+
 			:fake
 				killalltriggers
 				setVar $SWITCHBOARD~MESSAGE "Red Fake Busted.*"
