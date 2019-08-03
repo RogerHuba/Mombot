@@ -66,7 +66,7 @@ reqRecording
 	elseif ($startLocation = "Command")
 		setVar $script_ver "Mind Over Matter Ship Dropper"
 	else
-		setvar $switchboard~message "This script must be run from the Citadel Prompt*"
+		setvar $switchboard~message "This script must be run from the Citadel or Command Prompt*"
 		gosub :switchboard~switchboard
 		setVar $bot~mode "General"
 		savevar $bot~mode
