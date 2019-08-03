@@ -30,7 +30,7 @@ reqRecording
 	setVar $BOT~help[18]  $BOT~tab&"     - Order of operations are:"
 	setVar $BOT~help[19]  $BOT~tab&"             delay, drop, fastkill, kill,"
 	setVar $BOT~help[20]  $BOT~tab&"             holotorp, holokill, return"
-	All of these options can be run at the same time - order of operations is:  delay,drop, fastkill macro, attempt kill in sector, holotorp, holokill, return
+	
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Dropper"
