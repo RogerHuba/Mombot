@@ -165,17 +165,13 @@ reqRecording
 	setVar $dropSector 0 
 	setVar $ENDLINE "_ENDLINE_"
 	setVar $STARTLINE "_STARTLINE_"
-	send "c;q"
-	waitFor "Figs Per Attack:"
-	getWord CURRENTLINE $maxFigAttack 5
+	gosub :SHIP~getShipStats
 
 	
 	
 
 	if ($isPlanetDrop)
 		gosub :planetStats
-	else
-		gosub :SHIP~getShipStats
 	end
 
 	setVar $message "Planet Dropper Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*        Drop Type: "&$dropDescription&" On "&$triggerDescription
