@@ -97,3 +97,5 @@
 		setVar $SWITCHBOARD~self_command TRUE
 		setVar $SWITCHBOARD~message "No Enemies found adjacent!*"
 return
+
+include "source\bot_includes\player\currentprompt\player"
