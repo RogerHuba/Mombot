@@ -49,7 +49,11 @@
 	elseif ($startingLocation = "Planet")
 		send "t*t1* q q * c u y q mz" $warpto "*"
 	else
-		send "q q q n n 0 * c u y q mz" $warpto "*"
+		if ($fasttwarp)
+			send "mz" $warpto "*"		
+		else
+			send "q q q n n 0 * c u y q mz" $warpto "*"
+		end
 	end
 	setTextTrigger      there      :adj_warp       "You are already in that sector!"
 	setTextLineTrigger  adj_warp   :adj_warp       "Sector  : "&$warpto&" "
@@ -77,7 +81,7 @@
 		goto :twarpDone
 	:twarp_adj
 		gosub :killtwarptriggers
-		send "z* "
+		send "za  9999* * r * "
 		setVar $msg "That sector is next door, just plain warping."
 		setVar $twarpSuccess TRUE
 		goto :twarpDone
@@ -127,3 +131,5 @@ return
 	killtrigger no_fuel
 return
 # ======================    END INTERNAL TWARP SUBROUTINE     ==========================
+
+include "source\bot_includes\player\findjumpsector\player"
