@@ -21,6 +21,8 @@ reqRecording
 	setVar $BOT~help[9]   $BOT~tab&"     - [return]    = will return planet home after 10 seconds"
 	setVar $BOT~help[10]  $BOT~tab&"     - [kill]      = checks for enemy, and kills if possible"
 	setVar $BOT~help[11]  $BOT~tab&"     - [fastkill]  = does kill mac without checking"
+	setVar $BOT~help[12]  $BOT~tab&"     - [holotorp]  = does holotorp command after drop"
+	setVar $BOT~help[13]  $BOT~tab&"     - [holokill]  = does holokill after drop"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Dropper"
@@ -154,11 +156,37 @@ reqRecording
 	end
 	setVar $randomAttack TRUE
 
-	getWordPos $bot~user_command_line $pos "fastkill"
+	getWordPos " "&$bot~user_command_line&" " $pos " fastkill "
 	if ($pos > 0)
 		setVar $fastkill TRUE
 	else
 		setVar $fastkill FALSE
+	end
+	getWordPos " "&$bot~user_command_line&" " $pos " holokill "
+	getWordPos " "&$bot~user_command_line&" " $pos2 " hkill "
+	if (($pos > 0) or ($pos2 > 0))
+		setVar $holokill TRUE
+	else
+		setVar $holokill FALSE
+	end
+	getWordPos " "&$bot~user_command_line&" " $pos " holotorp "
+	getWordPos " "&$bot~user_command_line&" " $pos2 " htorp "
+	if (($pos > 0) or ($pos2 > 0))
+		setVar $holotorp TRUE
+		if ($player~photons <= 0)
+			setvar $switchboard~message "You can't run holotorp option without photons on your ship.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	else
+		setVar $holotorp FALSE
+	end
+	if (($attackOnSight = true) or ($fastkill = true) or ($holokill = true))
+		if ($player~fighters < 100)
+			setvar $switchboard~message "Fighters are waayyy too low for kill option.  You should refill first.*"
+			gosub :switchboard~switchboard
+			halt			
+		end
 	end
 	setVar $randomAttack TRUE
 
@@ -686,6 +714,32 @@ return
 	elseif (($sector~emptyShipCount > $sector~myShipCount))
 		gosub :combat~fastCapture
 		goto :scanit_again
+	end
+	if ($holotorp)
+		setVar $BOT~command "htorp"
+		setVar $BOT~user_command_line " htorp "
+		setVar $BOT~parm1 ""
+		saveVar $BOT~parm1
+		saveVar $BOT~command
+		saveVar $BOT~user_command_line
+		load "scripts\mombot\commands\offense\htorp.cts"
+		setEventTrigger		htorpdone		:htorpdone "SCRIPT STOPPED" "scripts\mombot\commands\offense\htorp.cts"
+		pause
+		:htorpdone
+	end
+	if ($holokill)
+		setvar $before_holo_kill_sector $player~current_sector
+		gosub :combat~holokill
+		if ($player~current_sector <> $before_holo_kill_sector)
+			setVar $PLAYER~WARPTO $before_holo_kill_sector
+			gosub :PLAYER~twarp
+			if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+				setvar $switchboard~message "Could not make it back to starting sector before holokill. - ["&$player~msg&"]*"
+				gosub :switchboard~switchboard
+				halt
+			end
+		end
+
 	end
 return	
 
