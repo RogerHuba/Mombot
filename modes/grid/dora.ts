@@ -177,22 +177,22 @@ end
 getWordPos $bot~user_command_line $pos "all"
 if ($pos > 0)
 	setVar $pptTradingOption "all"
-	setVar $msg "Trading All Pairs*"
+	setVar $msg $msg&"Trading All Pairs*"
 else
 	getWordPos $bot~user_command_line $pos "org"
 	if ($pos > 0)
 		setVar $pptTradingOption "org"
-		setVar $msg "Trading Organic - Equipment Ports*"
+		setVar $msg $msg&"Trading Organic - Equipment Ports*"
 	else
 		getWordPos $bot~user_command_line $pos "buys"
 		if ($pos > 0)
 			setVar $pptTradingOption "buys"
-			setVar $msg "Trading Org - Equip at BXXs only"
+			setVar $msg $msg&"Trading Org - Equip at BXXs only"
 		else
 			getWordPos $bot~user_command_line $pos "none"
 			if ($pos > 0)
 				setVar $pptTradingOption "none"
-				setVar $msg "We are not trading at ports*"
+				setVar $msg $msg&"We are not trading at ports*"
 				setVar $singleTrades 0
 			end
 		end
@@ -387,7 +387,7 @@ while ($iSaySo)
 	goSub :densityScan
 
 	# check Trades
-	if (($pptTradingOption <> "none") and (PORT.EXISTS[$PLAYER~CURRENT_SECTOR]) and ($skipNextTrade = 0))
+	if ((($pptTradingOption <> "none") or ($testMcicSell = 1) or ($testMcicBuy = 1)) and (PORT.EXISTS[$PLAYER~CURRENT_SECTOR]) and ($skipNextTrade = 0))
 		if ($freshSectorsNewPorts > 0)
 			goSub :holoScan
 			setVar $doneHolo 1
@@ -814,7 +814,7 @@ return
 	#  "org" all Org-Equ
 	#  "buys" org - equip not selling ore
 	#  "none"  skip this step
-	echo "$pptTradingOption: " $pptTradingOption "*"
+#	echo "$pptTradingOption: " $pptTradingOption "*"
 	setVar $trades 0
 	setVar $tradesi 0
 	setVar $tradestype 0
@@ -939,7 +939,6 @@ return
 		
 	
 	end
-		
 	if (($tradesi = 0) and (PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = 1))
 # Can we be more selective here?
 # maybe XXBs and those with a decent trade for cash?
@@ -1082,7 +1081,7 @@ return
 	if ($doneMCIC = "")
 		setVar $doneMCIC 0
 	end
-
+#echo "$singleTrades: " $singleTrades " $doneMCIC:" $doneMCIC " $testMcicBuy:" $testMcicBuy "PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] : " PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR]  " $player~EQUIPMENT_HOLDS: " $player~EQUIPMENT_HOLDS "*"
 	# if we haven't done MCIC, and it buys equip, and we are testing eqip, and we have at least one hold
 	# TEST BUY PORT
 	if (($doneMCIC = 0) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 1) and ($testMcicBuy = 1) and ($player~EQUIPMENT_HOLDS > 0))
