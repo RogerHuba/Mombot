@@ -7270,6 +7270,7 @@ setvar $PcPcccPPP1 "blue"
 			else
 				send "'red"&$EIOOWOWOWPPPPPSPPWOW[1]&" sdt "&$EIOOWOWOWPPPPPSPPWOW[1][1]&" "&$EIOOWOWOWPPPPPSPPWOW[2][1]&" "&$EIOOWOWOWPPPPPSPPWOW[1][2]&" "&$EIOOWOWOWPPPPPSPPWOW[2][2]&" ep*"
 			end
+			:YJSAKJNCNMMNSAKASLKLKSDL
 			settextlinetrigger 1 :WOIWQUOIQWUEOIQWUEOIQWUEOIWQUEOIQWUOIQWEU "That is not an available ship, Script Halting."
 			settextlinetrigger 2 :UUUUSDUDUDUSHAUHSIASHDI "last rob attempt is this sector!"
 			settextlinetrigger 3 :SDMCMDKMDKCMCKKMKDM "You need more experience to SDT!!!"

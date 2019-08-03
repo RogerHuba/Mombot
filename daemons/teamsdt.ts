@@ -499,6 +499,7 @@
 			else
 				send "'red"&$orders[1]&" sdt "&$orders[1][1]&" "&$orders[2][1]&" "&$orders[1][2]&" "&$orders[2][2]&" ep*"
 			end
+			:repeatorders
 			settextlinetrigger badship :wrong "That is not an available ship, Script Halting."
 			settextlinetrigger lraship :lraship "last rob attempt is this sector!"
 			settextlinetrigger noexp :noexp "You need more experience to SDT!!!"
