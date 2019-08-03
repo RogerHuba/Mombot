@@ -207,6 +207,8 @@ reqRecording
 	setVar $randomAttack TRUE
 
 	gosub :player~quikstats
+	setVar $homeSector $player~current_sector
+
 	if ($player~corporation > 0)
 		gosub :getCorpies
 	end
@@ -293,7 +295,6 @@ reqRecording
 				end
 		end
 		gosub :player~quikstats
-		setVar $homeSector $player~current_sector
 		killAllTriggers
 		if (($returnHome = TRUE) AND ($isManual <> TRUE) AND ($player~current_sector <> $homeSector))
 			setVar $timeInMilli (($returnHomeDelay * 1000)+100)			
@@ -440,7 +441,9 @@ reqRecording
 						goSub :checkForVictims
 					end	
 				else
-					setSectorParameter $dropSector "FIGSEC" FALSE
+					if ($planetDrop)
+						setSectorParameter $dropSector "FIGSEC" FALSE
+					end
 				end
 			elseif ($dropDescription = "Adjacent")			
 				gosub :findAdjacent
