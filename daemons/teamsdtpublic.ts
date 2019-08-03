@@ -7280,6 +7280,31 @@ setvar $PcPcccPPP1 "blue"
 			settextlinetrigger 7 :ASDIEOIEWIOEWOUAKJSAKJ "FAKE"
 			settextlinetrigger 8 :CCCDDJDJJDJKKSKSKSK "Busted in ship"
 			pause
+			:WOIWQUOIQWUEOIQWUEOIQWUEOIWQUEOIQWUOIQWEU
+				killalltriggers
+				setVar $SWITCHBOARD~MESSAGE "Ships got messed up somehow.  Better check it out!  Halting.*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+				halt
+			:SDMCMDKMDKCMCKKMKDM
+				killalltriggers
+				setVar $SWITCHBOARD~MESSAGE "One of the cashers lost too much experience.  Halting.*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+				halt
+			:XXXKXKLKKSLKSKL
+				killalltriggers
+				setVar $SWITCHBOARD~MESSAGE "One of the cashers has no knowledge of the sector they are in.  That's very odd. Halting.*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+				halt
+			:EPPPASPSPPSPDPSDP
+				killalltriggers
+				setVar $SWITCHBOARD~MESSAGE "One of the cashers has SWATH haggle on. Halting.*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+				halt
+			:ASDLAKSDLAKSJDLKJ
+				killalltriggers
+				setVar $SWITCHBOARD~MESSAGE "One of the cashers has run out of usable turns. Halting.*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+				halt
 			:ASDIEOIEWIOEWOUAKJSAKJ
 				killalltriggers
 				setVar $SWITCHBOARD~MESSAGE "Red Fake Busted.*"
