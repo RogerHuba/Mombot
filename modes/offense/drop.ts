@@ -30,7 +30,7 @@ reqRecording
 	setVar $BOT~help[18]  $BOT~tab&"     - Order of operations are:"
 	setVar $BOT~help[19]  $BOT~tab&"             delay, drop, fastkill, kill,"
 	setVar $BOT~help[20]  $BOT~tab&"             holotorp, holokill, return"
-	
+
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Dropper"
@@ -189,6 +189,14 @@ reqRecording
 	else
 		setVar $holotorp FALSE
 	end
+
+	if (($holokill = true) or ($holotorp = true))
+		if (($PLAYER~SCAN_TYPE = "None") OR ($PLAYER~SCAN_TYPE = "Density"))
+			setvar $switchboard~message "You need holoscanner to run the options you've chosen.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
 	if (($attackOnSight = true) or ($fastkill = true) or ($holokill = true))
 		if ($player~fighters < 100)
 			setvar $switchboard~message "Fighters are waayyy too low for kill option.  You should refill first.*"
@@ -310,9 +318,6 @@ reqRecording
 		setTextTrigger pause4 :pausing "Transfer To or From the Treasury (T/F)"
 		setTextTrigger pause5 :pausing "Qcannon Control Type :"
 		setTextTrigger pause6 :pausing "Beam to what sector? (U=Upgrade"
-		setTextOutTrigger redoSettings :doSettings "%" 
-		#setTextLineTrigger scriptcheck :answer "script?"
-		#setTextLineTrigger scriptcheck2 :answer "Script?"
 		setVar $isManual FALSE
 		if ($attackOnSight)
 			setTextLineTrigger warps :scan "warps into the sector."
@@ -984,3 +989,4 @@ include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\combat\holokill\combat"
