@@ -4729,10 +4729,10 @@ setvar $PcPcccPPP1 "blue"
 	if ($bot~parm4 = "override")
 		setVar $bot~parm4 "0"
 	end
-	setVar $planet~planetfuel FALSE
+	setVar $SJJSJKKAKJSAKAKKKAKSKKS FALSE
 	getWordPos $bot~user_command_line $OPOPOPOPOPOP "planetfuel"
 	if ($OPOPOPOPOPOP > 0)
-		setVar $planet~planetfuel 1
+		setVar $SJJSJKKAKJSAKAKKKAKSKKS 1
 		
 	end
 	
@@ -7434,7 +7434,7 @@ setvar $PcPcccPPP1 "blue"
 				setVar $SWITCHBOARD~MESSAGE "Fake Busts don't clear ports. .*"
 				gosub :SWITCHBOARD~SWITCHBOARD
 				
-				if (($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "") AND ($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "0") AND ($planet~planetfuel = $ASPPAOSLKASL))
+				if (($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "") AND ($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "0") AND ($SJJSJKKAKJSAKAKKKAKSKKS = $ASPPAOSLKASL))
 					send "'blue1 furb "&$BBHSDBHBHBHBHBHBKSKSKKS&" "&$SADJIOWOS&" "&$ASLKSLLSS&" planet:"&$LLLASKSKKSLASKDASDLKIUEUEINCNN&"  *"
 				else
 					send "'blue1 furb "&$BBHSDBHBHBHBHBHBKSKSKKS&" "&$SADJIOWOS&" "&$ASLKSLLSS&"  *"
@@ -7507,7 +7507,7 @@ setvar $PcPcccPPP1 "blue"
 			:UUIAIAIOOAAPPPSPPSPSPSPP
 	
 				killalltriggers
-				if (($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "") AND ($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "0") AND ($planet~planetfuel = $ASPPAOSLKASL))
+				if (($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "") AND ($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "0") AND ($SJJSJKKAKJSAKAKKKAKSKKS = $ASPPAOSLKASL))
 					send "'blue1 furb "&$BBHSDBHBHBHBHBHBKSKSKKS&" "&$SADJIOWOS&" "&$ASLKSLLSS&" planet:"&$LLLASKSKKSLASKDASDLKIUEUEINCNN&" blow:red"&$ZZZZSSSDZDMMM&"  *"
 				else
 					send "'blue1 furb "&$BBHSDBHBHBHBHBHBKSKSKKS&" "&$SADJIOWOS&" "&$ASLKSLLSS&" blow:red"&$ZZZZSSSDZDMMM&"  *"
