@@ -10,7 +10,7 @@ reqRecording
 	loadvar $switchboard~self_command
 	loadvar $ship~ship_max_attack
 
-	setVar $BOT~help[1]   $BOT~tab&"pdrop [on/off]{delay}{drop type}{trigger}{return}{kill} "
+	setVar $BOT~help[1]   $BOT~tab&"drop [on/off]{delay}{drop type}{trigger}{return}{kill} "
 	setVar $BOT~help[2]   $BOT~tab&"       "
 	setVar $BOT~help[3]   $BOT~tab&"     - [delay]     = delay before dropping in milliseconds      "
 	setVar $BOT~help[4]   $BOT~tab&"     - [drop type] = [d]irect, [a]djacent, [s]urround, "
