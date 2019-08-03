@@ -306,6 +306,11 @@ reqRecording
 				killalltriggers
 				setVar $PLAYER~WARPTO $homeSector
 				gosub :PLAYER~twarp
+				if ($player~twarpSuccess <> true)
+					setvar $switchboard~message "Could not make it back home with twarp. - ["&$player~msg&"]*"
+					gosub :switchboard~switchboard
+					halt
+				end
 			end		
 			goto :startTargeting
 		:manualPwarp
@@ -356,6 +361,11 @@ reqRecording
 					killalltriggers
 					setVar $PLAYER~WARPTO $dropSector
 					gosub :PLAYER~twarp
+					if ($player~twarpSuccess <> true)
+						setvar $switchboard~message "Could not make it to attack sector - ["&$player~msg&"]*"
+						gosub :switchboard~switchboard
+						halt
+					end
 					if ($fastkill = true)
 						send "a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n * * "
 					end
