@@ -25,6 +25,12 @@ reqRecording
 	setVar $BOT~help[13]  $BOT~tab&"     - [fastkill]  = does kill mac without checking"
 	setVar $BOT~help[14]  $BOT~tab&"     - [holotorp]  = does holotorp command after drop"
 	setVar $BOT~help[15]  $BOT~tab&"     - [holokill]  = does holokill after drop"
+	setVar $BOT~help[16]  $BOT~tab&"         "
+	setVar $BOT~help[17]  $BOT~tab&"     All of these options can be run at the same time."
+	setVar $BOT~help[18]  $BOT~tab&"     - Order of operations are:"
+	setVar $BOT~help[19]  $BOT~tab&"             delay, drop, fastkill, kill,"
+	setVar $BOT~help[20]  $BOT~tab&"             holotorp, holokill, return"
+	All of these options can be run at the same time - order of operations is:  delay,drop, fastkill macro, attempt kill in sector, holotorp, holokill, return
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Dropper"
