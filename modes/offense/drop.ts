@@ -345,7 +345,7 @@ reqRecording
 					setVar $PLAYER~WARPTO $dropSector
 					gosub :PLAYER~twarp
 					if ($PLAYER~twarpSuccess = FALSE)
-										
+						echo "*["&$player~msg&"]*"
 					end
 				end
 				goSub :getSectorLocation
