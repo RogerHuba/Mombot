@@ -131,3 +131,5 @@ return
 	killtrigger no_fuel
 return
 # ======================    END INTERNAL TWARP SUBROUTINE     ==========================
+
+include "source\bot_includes\player\findjumpsector\player"
