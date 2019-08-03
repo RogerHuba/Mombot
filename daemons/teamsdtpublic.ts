@@ -1,4 +1,6 @@
 logging off
+setvar $ASDASDADS 0
+setvar $ASPPAOSLKASL 1
 setvar $PPPPP1 "wholesome"
 setvar $PPPPP2 "xxxxwholesomexxxx"
 setvar $PPPPP3 "dgksklallal"
@@ -33,8 +35,17 @@ setvar $PPPPP11 "2019"
 setvar $PPPPP7 "organics"
 setvar $PPPPP8 "fuel ore"
 setvar $PPPPP9 "alignment"
-CutText $EEEEPPPPHHHEEELLLEE $PPEOPOPOPOPOPSSSSS 1 ($UUUSSSUUUSS - 1)
+CutText $EEEEPPPPHHHEEELLLEE $PPEOPOPOPOPOPSSSSS 1 ($UUUSSSUUUSS - $ASPPAOSLKASL)
 setvar $PPPPP1 "wholesome"
+setvar $PPPPP2 "33"
+setvar $PPPPP3 "222"
+setvar $PPPPP4 "111"
+setvar $PPPPP5 "876"
+setvar $PPPPP6 "44"
+setvar $PPPPP7 "333"
+setvar $PPPPP8 "3444"
+setvar $PPPPP9 "alignment"
+setvar $PPPPP1 "999"
 setvar $PPPPP2 "xxxxwholesomexxxx"
 setvar $PPPPP3 "dgksklallal"
 setvar $PPPPP4 "wiwiooosl"
@@ -43,16 +54,7 @@ setvar $PPPPP6 "equipment"
 setvar $PPPPP7 "organics"
 setvar $PPPPP8 "fuel ore"
 setvar $PPPPP9 "alignment"
-setvar $PPPPP1 "wholesome"
-setvar $PPPPP2 "xxxxwholesomexxxx"
-setvar $PPPPP3 "dgksklallal"
-setvar $PPPPP4 "wiwiooosl"
-setvar $PPPPP5 "xxxoooxxx"
-setvar $PPPPP6 "equipment"
-setvar $PPPPP7 "organics"
-setvar $PPPPP8 "fuel ore"
-setvar $PPPPP9 "alignment"
-CutText $EEEEPPPPHHHEEELLLEE $EEEEPPPPHHHEEELLLEE ($UUUSSSUUUSS +1) 999
+CutText $EEEEPPPPHHHEEELLLEE $EEEEPPPPHHHEEELLLEE ($UUUSSSUUUSS +$ASPPAOSLKASL) $PPPPP1
 setvar $PPPPP1 "wholesome"
 setvar $PPPPP2 "xxxxwholesomexxxx"
 setvar $PPPPP3 "dgksklallal"
@@ -72,7 +74,7 @@ setvar $PPPPP6 "equipment"
 setvar $PPPPP7 "organics"
 setvar $PPPPP8 "fuel ore"
 setvar $PPPPP9 "alignment"
-CutText $EEEEPPPPHHHEEELLLEE $RRYPOTYPE 1 ($UUUSSSUUUSS - 1)
+CutText $EEEEPPPPHHHEEELLLEE $RRYPOTYPE $ASPPAOSLKASL ($UUUSSSUUUSS - $ASPPAOSLKASL)
 setvar $PPPPP1 "wholesome"
 setvar $PPPPP2 "xxxxwholesomexxxx"
 setvar $PPPPP3 "dgksklallal"
@@ -82,7 +84,7 @@ setvar $PPPPP6 "equipment"
 setvar $PPPPP7 "organics"
 setvar $PPPPP8 "fuel ore"
 setvar $PPPPP9 "alignment"
-CutText $EEEEPPPPHHHEEELLLEE $EUIJSKDJMMCNSDJLASKJALSKDJALSKDJ ($UUUSSSUUUSS +1) 999
+CutText $EEEEPPPPHHHEEELLLEE $EUIJSKDJMMCNSDJLASKJALSKDJALSKDJ ($UUUSSSUUUSS +$ASPPAOSLKASL) 999
 setvar $PPPPP1 "wholesome"
 setvar $PPPPP2 "xxxxwholesomexxxx"
 setvar $PPPPPR "8"
@@ -2395,7 +2397,7 @@ setvar $PcPcccPPP1 "blue"
 		setVar $ASLKJAIJOIJ 1
 	end
 
-	if ($ASLKJAIJOIJ = 1)
+	if ($ASLKJAIJOIJ = $ASPPAOSLKASL)
 		setVar $SKALLSKKAOEWW 2
 	else
 		setVar $SKALLSKKAOEWW 3
@@ -4778,7 +4780,7 @@ setvar $PcPcccPPP1 "blue"
 		halt	
 	end
 
-	if ($ASLKJAIJOIJ = 1)
+	if ($ASLKJAIJOIJ = $ASPPAOSLKASL)
 		isNumber $EOOOASKSKKKSKKKSLALALLALLLL $bot~parm3
 		if ($EOOOASKSKKKSKKKSLALALLALLLL)
 			setVar $CSJKSASAS[1][2] $bot~parm3
@@ -4864,7 +4866,7 @@ setvar $PcPcccPPP1 "blue"
 			getWord $DMMCODOIDOSOI $LKSAKLEIIWW 14
 
 			getWordPos $SKSKLALKSIOEOEO $OPOPOPOPOPOP "-"
-			if (($OPOPOPOPOPOP <= 0) OR ($SADIEIPPOFPLASLLALA < $SLXOSPEP))
+			if (($OPOPOPOPOPOP <= $ASDASDADS) OR ($SADIEIPPOFPLASLLALA < $SLXOSPEP))
 				setVar $SWITCHBOARD~MESSAGE "red"&$BUYONEVALUES&" does not have experience and alignment needed for stealing.  Stopping script.*"
 				gosub :SWITCHBOARD~SWITCHBOARD
 				halt
@@ -4884,13 +4886,13 @@ setvar $PcPcccPPP1 "blue"
 			pause
 		:ASDIOIJOIEJELKMASLDKMASLKDM
 			killtrigger 1
-			if ($SAOEOPPWEL[$BUYONEVALUES] = 0)
+			if ($SAOEOPPWEL[$BUYONEVALUES] = $ASDASDADS)
 				setVar $ASDIOIJSLDKMLKALLS 1
 			end
 			add $BUYONEVALUES 1
 	end
 
-	if ($ASIJOISDJOIJASDOIJASDSADSAASD <= 1)
+	if ($ASIJOISDJOIJASDOIJASDSADSAASD <= $ASPPAOSLKASL)
 		setVar $SWITCHBOARD~MESSAGE "Found "&$ASIJOISDJOIJASDOIJASDSADSAASD&" red. Not enough reds to run Team SDT.  Make sure red bots callin as red1, red2, etc.*"
 		gosub :SWITCHBOARD~SWITCHBOARD
 		halt
@@ -4915,7 +4917,7 @@ setvar $PcPcccPPP1 "blue"
 		end
 		add $BUYONEVALUES 1
 	end
-	if ($POWOPWOLSK = 1)
+	if ($POWOPWOLSK = $ASPPAOSLKASL)
 		halt
 	end
 
@@ -4964,7 +4966,7 @@ setvar $PcPcccPPP1 "blue"
 			pause
 		:PPASIURURIRIUIEASDKKLL
 			killtrigger 1
-			if ($BLUES[$BUYONEVALUES] = 0)
+			if ($BLUES[$BUYONEVALUES] = $ASDASDADS)
 				setVar $ASDIOIJSLDKMLKALLS 1
 			end
 			add $BUYONEVALUES 1
@@ -7321,10 +7323,10 @@ setvar $PcPcccPPP1 "blue"
 					
 				:WQEASDKLLKSADLKJASDASD
 					killalltriggers
-					if ($EIOOWELKSAKLLKASLKDSA = 1)
+					if ($EIOOWELKSAKLLKASLKDSA = $ASPPAOSLKASL)
 						setVar $SAOEOPPWEL[$BUYONEVALUES][$BUYTWOVALUES] "B"
 					else
-						if ($SADOOWQIOLASKLSALK = 1)
+						if ($SADOOWQIOLASKLSALK = $ASPPAOSLKASL)
 							setVar $SAOEOPPWEL[$BUYONEVALUES][$BUYTWOVALUES] "F"					
 						else
 							setVar $SAOEOPPWEL[$BUYONEVALUES][$BUYTWOVALUES] FALSE					
@@ -7343,7 +7345,7 @@ setvar $PcPcccPPP1 "blue"
 
 		setVar $PPASSPPPDDDDSSSSS 1
 		setArray $EIOOWOWOWPPPPPSPPWOW 2 3
-		while ($PPASSPPPDDDDSSSSS = 1)
+		while ($PPASSPPPDDDDSSSSS = $ASPPAOSLKASL)
 			setVar $SWITCHBOARD~MESSAGE "Bust matrix so far:*"
 			setVar $BUYONEVALUES 1
 			while ($BUYONEVALUES <= $ASIJOISDJOIJASDOIJASDSADSAASD)
@@ -7385,7 +7387,7 @@ setvar $PcPcccPPP1 "blue"
 				setVar $EIOOWOWOWPPPPPSPPWOW[1][2] ""
 				setVar $EIOOWOWOWPPPPPSPPWOW[2][2] ""
 			end
-			if ($SSSSPPPEPEPPPPOOON = 0)
+			if ($SSSSPPPEPEPPPPOOON = $ASDASDADS)
 				send "'red"&$EIOOWOWOWPPPPPSPPWOW[1]&" sdt "&$EIOOWOWOWPPPPPSPPWOW[1][1]&" "&$EIOOWOWOWPPPPPSPPWOW[2][1]&" "&$EIOOWOWOWPPPPPSPPWOW[1][2]&" "&$EIOOWOWOWPPPPPSPPWOW[2][2]&"*"
 			else
 				send "'red"&$EIOOWOWOWPPPPPSPPWOW[1]&" sdt "&$EIOOWOWOWPPPPPSPPWOW[1][1]&" "&$EIOOWOWOWPPPPPSPPWOW[2][1]&" "&$EIOOWOWOWPPPPPSPPWOW[1][2]&" "&$EIOOWOWOWPPPPPSPPWOW[2][2]&" ep*"
@@ -7432,7 +7434,7 @@ setvar $PcPcccPPP1 "blue"
 				setVar $SWITCHBOARD~MESSAGE "Fake Busts don't clear ports. .*"
 				gosub :SWITCHBOARD~SWITCHBOARD
 				
-				if (($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "") AND ($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "0") AND ($planet~planetfuel = 1))
+				if (($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "") AND ($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "0") AND ($planet~planetfuel = $ASPPAOSLKASL))
 					send "'blue1 furb "&$BBHSDBHBHBHBHBHBKSKSKKS&" "&$SADJIOWOS&" "&$ASLKSLLSS&" planet:"&$LLLASKSKKSLASKDASDLKIUEUEINCNN&"  *"
 				else
 					send "'blue1 furb "&$BBHSDBHBHBHBHBHBKSKSKKS&" "&$SADJIOWOS&" "&$ASLKSLLSS&"  *"
@@ -7443,7 +7445,7 @@ setvar $PcPcccPPP1 "blue"
 				halt
 			:UUUUSDUDUDUSHAUHSIASHDI
 				killalltriggers
-				if ($EIOOWOWOWPPPPPSPPWOWrepeat = 1)
+				if ($EIOOWOWOWPPPPPSPPWOWrepeat = $ASPPAOSLKASL)
 					setVar $SWITCHBOARD~MESSAGE "Orders repeated twice, fail fail fail.*"
 					gosub :SWITCHBOARD~SWITCHBOARD
 					halt
@@ -7505,7 +7507,7 @@ setvar $PcPcccPPP1 "blue"
 			:UUIAIAIOOAAPPPSPPSPSPSPP
 	
 				killalltriggers
-				if (($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "") AND ($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "0") AND ($planet~planetfuel = 1))
+				if (($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "") AND ($LLLASKSKKSLASKDASDLKIUEUEINCNN <> "0") AND ($planet~planetfuel = $ASPPAOSLKASL))
 					send "'blue1 furb "&$BBHSDBHBHBHBHBHBKSKSKKS&" "&$SADJIOWOS&" "&$ASLKSLLSS&" planet:"&$LLLASKSKKSLASKDASDLKIUEUEINCNN&" blow:red"&$ZZZZSSSDZDMMM&"  *"
 				else
 					send "'blue1 furb "&$BBHSDBHBHBHBHBHBKSKSKKS&" "&$SADJIOWOS&" "&$ASLKSLLSS&" blow:red"&$ZZZZSSSDZDMMM&"  *"
@@ -7561,7 +7563,7 @@ halt
 		setVar $YYYYYYYYYDDDDSSSSS 0
 		while (($BUYTWOVALUES <= $SKALLSKKAOEWW) AND ($YYYYYYYYYDDDDSSSSS < 2))
 			getWordPos $PPPPPPZZZZZSSSSS $OPOPOPOPOPOP " "&$CSJKSASAS[$BUYTWOVALUES]&" "
-			if (($SAOEOPPWEL[$BUYONEVALUES][$BUYTWOVALUES] = FALSE) AND ($OPOPOPOPOPOP <= 0))
+			if (($SAOEOPPWEL[$BUYONEVALUES][$BUYTWOVALUES] = FALSE) AND ($OPOPOPOPOPOP <= $ASDASDADS))
 				add $YYYYYYYYYDDDDSSSSS 1
 				setVar $ZZZUUUYYYSSKKKK[$YYYYYYYYYDDDDSSSSS] $BUYONEVALUES
 				setVar $ZZZUUUYYYSSKKKK[$YYYYYYYYYDDDDSSSSS][1] $CSJKSASAS[$BUYTWOVALUES]
