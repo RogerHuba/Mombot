@@ -30,6 +30,7 @@ reqRecording
 	gosub :combat~init 
 
 	getSectorParameter SECTORS "FIGSEC" $isFigged
+	setvar $player~fasttwarp true
 
 
 	setVar $START_FIG_HIT "Deployed Fighters Report Sector "
@@ -345,8 +346,8 @@ reqRecording
 					killalltriggers
 					setVar $PLAYER~WARPTO $dropSector
 					gosub :PLAYER~twarp
-					if ($PLAYER~twarpSuccess = FALSE)
-						echo "*["&$player~msg&"]*"
+					if ($fastkill = true)
+						send "a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n * * "
 					end
 				end
 				goSub :getSectorLocation
@@ -489,6 +490,10 @@ return
 			if ($PLAYER~twarpSuccess = FALSE)
 				goto :pwarpNo				
 			end
+			if ($fastkill = true)
+				send "a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n * * "
+			end
+			goto :pwarpYes
 		end
 	:pwarpNo
 		killAllTriggers

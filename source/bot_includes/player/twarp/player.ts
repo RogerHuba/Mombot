@@ -49,7 +49,11 @@
 	elseif ($startingLocation = "Planet")
 		send "t*t1* q q * c u y q mz" $warpto "*"
 	else
-		send "q q q n n 0 * c u y q mz" $warpto "*"
+		if ($fasttwarp)
+			send "mz" $warpto "*"		
+		else
+			send "q q q n n 0 * c u y q mz" $warpto "*"
+		end
 	end
 	setTextTrigger      there      :adj_warp       "You are already in that sector!"
 	setTextLineTrigger  adj_warp   :adj_warp       "Sector  : "&$warpto&" "
