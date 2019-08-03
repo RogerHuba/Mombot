@@ -269,8 +269,13 @@ reqRecording
 	
 		:pausing
 			killAllTriggers
-			echo ANSI_6 "*[" ANSI_14 $script_ver " paused. To restart, re-enter Citadel Prompt" ANSI_6 "]*" ANSI_7
-			setTextTrigger restart :restarting "Citadel command ("
+			if ($isPlanetDrop)
+				echo ANSI_6 "*[" ANSI_14 $script_ver " paused. To restart, re-enter Citadel Prompt" ANSI_6 "]*" ANSI_7
+				setTextTrigger restart :restarting "Citadel command ("
+			else
+				echo ANSI_6 "*[" ANSI_14 $script_ver " paused. To restart, re-enter Command Prompt" ANSI_6 "]*" ANSI_7
+				setTextTrigger restart :restarting "Command [TL="
+			end
 			pause
 			:restarting
 				killAllTriggers
