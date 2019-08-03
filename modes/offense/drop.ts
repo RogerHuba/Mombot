@@ -66,6 +66,11 @@ reqRecording
 		setvar $isPlanetDrop true
 	elseif ($startingLocation = "Command")
 		setVar $script_ver "Mind Over Matter Ship Dropper"
+		if ($player~twarp_type = "No")
+			setvar $switchboard~message "No twarp available.  Ship dropper is no good without transwarp drive.*"
+			gosub :switchboard~switchboard
+			halt
+		end
 	else
 		setvar $switchboard~message "This script must be run from the Citadel or Command Prompt*"
 		gosub :switchboard~switchboard
@@ -226,6 +231,23 @@ reqRecording
 	gosub :switchboard~switchboard
 
 	:startTargeting
+		if ($isPlanetDrop <> true)
+				if ($player~twarp_type = "No")
+					setvar $switchboard~message "No twarp available.  Possible pod?*"
+					gosub :switchboard~switchboard
+					halt
+				end
+				if ($player~fighters <= 0)
+					setvar $switchboard~message "No more fighters available.  Fill up before running.*"
+					gosub :switchboard~switchboard
+					halt
+				end
+				if ($player~ore_holds <= 10)
+					setvar $switchboard~message "Fuel too low.  Fill back up before running again.*"
+					gosub :switchboard~switchboard
+					halt
+				end
+		end
 		gosub :player~quikstats
 		setVar $homeSector $player~current_sector
 		killAllTriggers
@@ -311,6 +333,7 @@ reqRecording
 					gosub :switchboard~switchboard
 					halt
 				end
+				gosub :player~quikstats
 			end		
 			goto :startTargeting
 		:manualPwarp
@@ -388,7 +411,19 @@ reqRecording
 			elseif ($dropDescription = "Adjacent, then Direct")			
 				gosub :findAdjacent
 				goSub :attemptDrop
-				send "p " $dropSector "* y "
+				if ($planetDrop)
+					send "p " $dropSector "* y "
+				else
+					setVar $PLAYER~WARPTO $dropSector
+					gosub :PLAYER~twarp
+					if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+						goto :pwarpNo				
+					else
+						if ($fastkill = true)
+							send "a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n * * "
+						end
+					end
+				end
 				goSub :getSectorLocation
 				if ($attackOnSight)
 					goSub :checkForVictims
@@ -635,6 +670,9 @@ return
 
 :checkForVictims
 	gosub :player~quikstats
+	if ($player~fighters <= 0)
+		goto :goHome
+	end
 	:scanit_again
 	setvar $player~startingLocation $player~current_prompt
 	gosub :sector~getSectorData

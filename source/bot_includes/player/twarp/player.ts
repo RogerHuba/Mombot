@@ -81,7 +81,7 @@
 		goto :twarpDone
 	:twarp_adj
 		gosub :killtwarptriggers
-		send "z* "
+		send "za  9999* *  "
 		setVar $msg "That sector is next door, just plain warping."
 		setVar $twarpSuccess TRUE
 		goto :twarpDone
