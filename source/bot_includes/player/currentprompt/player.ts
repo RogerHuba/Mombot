@@ -27,3 +27,5 @@ return
 :verifyDelay
 	killalltriggers
 	disconnect
+
+include "source\bot_includes\player\currentprompt\player"
