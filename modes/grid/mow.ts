@@ -31,7 +31,22 @@
             setVar $SWITCHBOARD~message "You are already in that sector!*"
             gosub :SWITCHBOARD~switchboard
             halt
-        end    
+        end   
+	 getWordPos " "&$bot~user_command_line&" " $pos "backdoor"
+	 if ($pos > 0)
+		striptext $bot~user_command_line "backdoor"
+		setVar $backdoorMow 1
+        	gosub :findbackdoor 
+         end
+
+	 getWordPos " "&$bot~user_command_line&" " $pos1 "i1"
+	 getWordPos " "&$bot~user_command_line&" " $pos2 "i2"
+	 getWordPos " "&$bot~user_command_line&" " $pos3 "i3"
+	 if (($pos1 > 0) or ($pos2 > 0) or ($pos3 > 0))
+		
+		setVar $indirectMow 1
+        	gosub :voidIndirect 
+         end
     gosub :mow
     if (($PLAYER~CURRENT_PROMPT = "<StarDock>") OR ($PLAYER~CURRENT_PROMPT = "<Hardware"))
         setVar $SWITCHBOARD~message "Safely on Stardock*"
@@ -48,6 +63,9 @@
             if (($twarp_back = TRUE) and ($PLAYER~CURRENT_SECTOR = $homeSector) and ($bot~startingLocation = "Citadel"))
                 gosub :PLANET~landingSub
             end
+	    if (($backdoorMow = 1) or ($indirectMow = 1))
+		send "cv0*yyq"
+	    end
             setVar $SWITCHBOARD~message "Mow completed.*"
             gosub :SWITCHBOARD~switchboard
         end
@@ -223,6 +241,168 @@ halt
 
 :killthetriggers
     killalltriggers
+return
+
+:voidIndirect
+	if ($bot~startingLocation = "Computer")
+		send "q"
+	elseif (($bot~startingLocation <> "Citadel") and ($bot~startingLocation <> "Command"))
+		setVar $SWITCHBOARD~message "Indirect mow should be run from command or citadel prompts.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	setVar $adjacent 0
+	setVar $i 1
+	while ($i <= SECTOR.WARPCOUNT[$PLAYER~CURRENT_SECTOR])
+		if (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] = $PLAYER~destination)
+			setVar $SWITCHBOARD~message "Can not indirect mow to an adjacent sector.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		add $i 1
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos "i1"
+	if ($pos > 0)
+		setVar $voids 1
+	end
+	getWordPos " "&$bot~user_command_line&" " $pos "i2"
+	if ($pos > 0)
+		setVar $voids 2
+	end
+	getWordPos " "&$bot~user_command_line&" " $pos "i3"
+	if ($pos > 0)
+		setVar $voids 3
+	end
+
+	setVar $i 1
+
+	while ($i <= $voids)
+		goSub :voidlast
+		add $i 1
+	end
+
+return
+
+:voidlast
+	
+	send "cf" $PLAYER~CURRENT_SECTOR "*" $PLAYER~destination "*q"
+	setVar $course ""
+	setTextLineTrigger voidl :voidl "The shortest path" 
+	setTextLineTrigger noindirect :noindirect "Error - No route within 45 warps from sect"
+	pause
+	:noindirect
+		killalltriggers
+		send "yq"
+		setVar $SWITCHBOARD~message "Ran out of indirect void options; halting.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	:voidl
+		killalltriggers
+		:keepadding
+		setTextLineTrigger addCourse :addCourse ">"
+		setTextTrigger endCourse :endCourse "Computer command [" 
+		pause
+		:addCourse
+			killalltriggers
+			setVar $course $course & " " & CURRENTLINE
+			goto :keepadding
+		:endCourse
+			killalltriggers
+			setVar $prevwarp ""
+			setVar $y 1
+			setVar $go 1
+			while ($go = 1)
+				
+				getWord $course $warp $y
+				if ($warp <> ">")
+					stripText $warp "("
+					stripText $warp ")"
+					if ($warp = $PLAYER~destination)
+						setVar $go 0
+						send "cv" $prevwarp "*q"
+					end
+					
+					setVar $prevwarp $warp
+				end
+				add $y 1
+				if ($y > 50)
+					setVar $go 0
+				end
+			end
+
+
+
+return
+
+:findbackdoor 
+	if ($bot~startingLocation = "Computer")
+		send "q"
+	elseif (($bot~startingLocation <> "Citadel") and ($bot~startingLocation <> "Command"))
+		setVar $SWITCHBOARD~message "Can only backdoor mow from Command/Citadel prompt.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	setVar $adjacent 0
+	setVar $i 1
+	while ($i <= SECTOR.WARPCOUNT[$PLAYER~CURRENT_SECTOR])
+		if (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] = $PLAYER~destination)
+			setVar $SWITCHBOARD~message "Can not backdoor mow to an adjacent sector.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		add $i 1
+	end
+	setVar $go 1
+	while ($go = 1)
+		goSub :getWarpAndAvoid
+	
+		if ($voidfound = 0)
+			setVar $go 0
+		end
+	end
+	
+	send "cf" $PLAYER~CURRENT_SECTOR "*" $PLAYER~destination "*q"
+	
+	setTextLineTrigger void3 :void3 "The shortest path" 
+	setTextLineTrigger nobackdoor :nobackdoor "Error - No route within 45 warps from sect"
+	pause
+	:nobackdoor
+		killalltriggers
+		send "yq"
+		setVar $SWITCHBOARD~message "That sector has no backdoor! Aborting mow..*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	:void3
+		killalltriggers
+		waitfor "Computer command ["
+		return
+return
+
+
+:getWarpAndAvoid
+	setVar $voidfound 0
+	send "cf" $PLAYER~destination "*" $PLAYER~CURRENT_SECTOR "*q"
+	setTextLineTrigger void1 :void1 "The shortest path" 
+	setTextLineTrigger nopath :nopath "Error - No route within 45 warps from sect"
+	pause
+	:nopath
+		killAllTriggers
+		send "nq"
+		return
+	:void1
+		killAllTriggers
+		setTextLineTrigger void2 :void2 ">" 
+		pause
+		:void2 
+		killAllTriggers
+
+		getWord CURRENTLINE $warp1 3
+		stripText $warp1 "("
+		stripText $warp1 ")"
+		send "cv" $warp1 "*q"
+		setVar $voidfound 1
+
 return
 
 
