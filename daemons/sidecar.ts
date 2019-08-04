@@ -84,8 +84,24 @@
 	if (($pos > 0) and ($pos2 > 0))
 		getText CURRENTANSILINE $user_name "[K[1;36m" " [0;32mlocks a tractor beam on your ship."
 		setvar $switchboard~message "Sidecar attached to "&$user_name&"'s ship.*"
-		gosub :switchboard~switchboard	
-		goto :sidecar_functions	
+		gosub :switchboard~switchboard
+
+		#check to see if they are a corpie#
+		settextlinetrigger online :mycorpie $user_name&" ["&$player~corp&"]"
+		settextlinetrigger lag :nocorpie "Average Interval Lag:"
+		send "#@"
+		pause
+
+		:nocorpie
+			killtrigger online
+			setvar $switchboard~message $user_name&" is not in my corporation. Authentication denied. Shutting down sidecar.*"
+			gosub :switchboard~switchboard
+			halt
+		:mycorpie
+			killtrigger lag
+			setvar $switchboard~message $user_name&" is in my corporation.  Authentication approved.*"
+			gosub :switchboard~switchboard
+			goto :sidecar_functions	
 	else
 		setvar $switchboard~message "Spoof attempt to make sidecar think it is towed.*"
 		gosub :switchboard~switchboard
