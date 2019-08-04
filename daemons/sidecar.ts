@@ -9,8 +9,7 @@
 	setVar $BOT~help[5]  $BOT~tab&"    {off} - Turns off script"
 	setVar $BOT~help[6]  $BOT~tab&" {refill} - Refills towing ship fighters when attacked"
 	setVar $BOT~help[7]  $BOT~tab&"   {kill} - Kills automatically"
-	setVar $BOT~help[8]  $BOT~tab&"    {cap} - Captures ships automatically"
-	setVar $BOT~help[9]  $BOT~tab&"     {ig} - IG reset"
+	setVar $BOT~help[8]  $BOT~tab&"     {ig} - IG reset"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Sidecar"
@@ -68,6 +67,8 @@
 
 	:skipig
 	killalltriggers
+	setvar $ig false
+
 	# making ship corporate #
 	send "co*cqq* "
 
@@ -119,30 +120,52 @@
 
 
 :sidecar_functions
+	killalltriggers
 	setTextlinetrigger notow :validate_no_tow "You are no longer locked in tow."
 	if ($kill)
 		#kill triggers
-		#	setTextLineTrigger liftsoff :pwarpConfirmed " lifts off from "
-		#	setTextLineTrigger 	warps 	:pwarpConfirmed 	"warps into the sector."
-		#	setTextLineTrigger 	power 	:pwarpConfirmed 	"is powering up weapons systems!"
-		#	settextlinetrigger  wave    :pwarpConfirmed    " launches a wave of fighters at the "
-	end
-	if ($cap)
-		#cap triggers
-		#	setTextLineTrigger liftsoff :pwarpConfirmed " lifts off from "
-		#	setTextLineTrigger 	warps 	:pwarpConfirmed 	"warps into the sector."
-		#	setTextLineTrigger 	power 	:pwarpConfirmed 	"is powering up weapons systems!"
-		#	settextlinetrigger  wave    :pwarpConfirmed    " launches a wave of fighters at the "
+		setTextLineTrigger liftsoff :checkForVictims " lifts off from "
+		setTextLineTrigger 	warps 	:checkForVictims 	"warps into the sector."
+		setTextLineTrigger 	power 	:checkForVictims 	"is powering up weapons systems!"
+		settextlinetrigger  wave    :checkForVictims    " launches a wave of fighters at the "
 	end
 	if ($ig)
 		#ig triggers
+		setTextLineTrigger turnIGon :ig_turn_it_on " damaging your ship."
 	end
 	if ($refill)
 		#refill triggers
+		setTextLineTrigger 1 :reloadFigMe "launches a wave of fighters at "&$user_name
+		setTextLineTrigger 2 :reloadFigMe $user_name&" deploys some fighters"
 	end
 	pause
 
+:reloadFigMe
+	killtrigger 1
+	killtrigger 2
+	settextlinetrigger 1 :thatsmyguy "Exchange with "&$user_name&" (Y/N) [N]?" 
+	settextlinetrigger 2 :notmyguy "Average Interval Lag:"
+	send "tf"
+	setvar $transfer "tf"
+	send "@"
+	pause
 
+	:thatsmyguy
+		killtrigger 2
+		setvar $transfer $transfer&"y*99999* q "
+		send "y*9999* q "
+		goto :dotransfer
+	:notmyguy
+		setvar $transfer $transfer&"*"
+		send "*@"
+		settextlinetrigger 2 :notmyguy "Average Interval Lag:"
+		pause
+
+	:dotransfer
+		send $transfer
+		send $transfer
+		send $transfer
+goto :sidecar_functions
 
 :validate_no_tow
 	getwordpos currentansiline $pos "[32mYou are no longer locked in tow."
@@ -156,7 +179,88 @@
 	end
 goto :wait_for_tow
 
+
+:checkForVictims
+	gosub :player~quikstats
+	:scanit_again
+	if ($player~fighters > 0)
+		setvar $player~startingLocation $player~current_prompt
+		gosub :sector~getSectorData
+		if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+			if ($isPlanetDrop)
+				goSub :combat~fastCitadelAttack
+			else
+				gosub :combat~fastAttack
+			end
+			goto :scanit_again
+		elseif (($sector~emptyShipCount > $sector~myShipCount))
+			gosub :combat~fastCapture
+			goto :scanit_again
+		end
+	end
 	
+
+	:ig_turn_it_on
+		getWord CURRENTLINE $test 1
+		if ($test = "F") or ($test = "R") or ($test = "P")
+			setTextLineTrigger turnIGon :ig_turn_it_on " damaging your ship."
+			pause
+		end
+		setVar $ig_mode 0
+		setDelayTrigger ig_timeout :photon_ig_damage_trigger 3000
+		setTextTrigger no_ig_trigger :no_ig_available "is not equipped with an Interdictor Generator!"
+		setTextTrigger no_ig_beam :no_ig_beam "Beam to what sector? (U=Upgrade Q=Quit)"
+		setTextTrigger no_ig_cby :no_ig_cby "ARE YOU SURE CAPTAIN? (Y/N)"
+		setTextTrigger need_ig :ig_was_off "Your Interdictor generator is now OFF"
+		setTextTrigger ig_fine :ig_was_on "Your Interdictor generator is now ON"
+		setTextTrigger do_ig :do_ig_thing "Do you wish to change it? (Y/N)"
+		send "b"
+		pause
+
+	:no_ig_available
+		gosub :killigtriggers
+		send "'{" $switchboard~bot_name "} - No IG available on this ship.*"
+		halt
+
+	:no_ig_beam
+		gosub :killigtriggers
+		send " Q "
+		halt
+
+	:no_ig_cby
+		gosub :killigtriggers
+		send " N "
+		halt
+
+	:ig_was_on
+		setVar $ig_mode 1
+		pause
+
+	:ig_was_off
+		setVar $ig_mode 0
+		pause
+
+	:do_ig_thing
+		gosub :killigtriggers
+		if ($ig_mode = 0)
+			send "Y"
+			send "'{" $switchboard~bot_name "} - IG on!*"
+		else
+			send "N"
+			send "'{" $switchboard~bot_name "} - IG was already on.*"
+		end
+		goto :sidecar_functions
+
+:killigtriggers
+	killtrigger ig_timeout
+	killtrigger no_ig_trigger
+	killtrigger no_ig_beam
+	killtrigger no_ig_cby
+	killtrigger ig_was_on
+	killtrigger ig_was_off
+	killtrigger do_ig_thing
+return
+
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"

@@ -97,7 +97,7 @@
 
 
 :ig_triggers
-       	setTextLineTrigger turnIGon :ig_turn_it_on " damaging your ship."
+	setTextLineTrigger turnIGon :ig_turn_it_on " damaging your ship."
 	setVar $planet~planet 0
 	saveVar $planet~planet
 	pause
