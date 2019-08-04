@@ -87,7 +87,7 @@
 		gosub :switchboard~switchboard	
 		goto :sidecar_functions	
 	else
-		setvar $switchboard~message "Spoof attempt to make sidecar think it is towed."
+		setvar $switchboard~message "Spoof attempt to make sidecar think it is towed.*"
 		gosub :switchboard~switchboard
 		goto :wait_for_tow
 	end
@@ -121,7 +121,7 @@
 
 
 :validate_no_tow
-	getwordpos currentansiline $pos "[1A[32mYou are no longer locked in tow."
+	getwordpos currentansiline $pos "[32mYou are no longer locked in tow."
 	if ($pos > 0)
 		setvar $switchboard~message "Sidecar no longer attached to "&$user_name&"'s ship.*"
 		gosub :switchboard~switchboard		
