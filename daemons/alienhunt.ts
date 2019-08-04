@@ -73,9 +73,9 @@
 	end
 	getwordpos $bot~user_command_line $pos "corp"
 	if ($pos > 0)
-		setvar $player~corp true
+		setvar $corp true
 	else
-		setvar $player~corp false
+		setvar $corp false
 	end
 
 	getwordpos $bot~user_command_line $pos "refuel"
@@ -157,7 +157,7 @@
 	killalltriggers
 	send "l"&$planet~planet&"*"
 	waitOn "Planet command"
-	if ($player~corp <> true)
+	if ($corp <> true)
 		send "op**tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*m***cm0*co*pq"
 	else
 		send "**tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*m***cm0*"
@@ -170,7 +170,7 @@
 	end
 	gosub :PLAYER~quikstats
 	if ($PLAYER~CURRENT_PROMPT = "Citadel")
-		if ($player~corp <> true)
+		if ($corp <> true)
 			setVar $SWITCHBOARD~message "Made ship and planet personal for convenience. Turning off military reaction.*"
 		else
 			setVar $SWITCHBOARD~message "Keeping planet and ship corporate for safety. Might be annoying. Turning off military reaction.*"
