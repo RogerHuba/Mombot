@@ -35,20 +35,26 @@
 	getwordpos $bot~user_command_line $pos "refill"
 	if ($pos > 0)
 		setvar $refill true
+		setVar $SWITCHBOARD~message "Refill mode on.*"
+		gosub :SWITCHBOARD~switchboard
 	else
 		setvar $refill false
 	end
 
-	getwordpos $bot~user_command_line $pos "cap"
+	getwordpos $bot~user_command_line $pos "kill"
 	if ($pos > 0)
-		setvar $cap true
+		setvar $kill true
+		setVar $SWITCHBOARD~message "Kill mode on.*"
+		gosub :SWITCHBOARD~switchboard
 	else
-		setvar $cap false
+		setvar $kill false
 	end
 
 	getwordpos $bot~user_command_line $pos "ig"
 	if ($pos > 0)
 		setvar $ig true
+		setVar $SWITCHBOARD~message "IG reset mode on.*"
+		gosub :SWITCHBOARD~switchboard
 	else
 		setvar $ig false
 	end
