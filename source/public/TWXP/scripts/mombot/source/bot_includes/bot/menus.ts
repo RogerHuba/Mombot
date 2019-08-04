@@ -1104,7 +1104,7 @@ return
 
 # ========================= START PREGAME MENU ========================================
 :preGameMenuLoad
-	gosub :BOT~killthetriggers
+	killalltriggers
 	loadVar $BOT~password
 	loadVar $SWITCHBOARD~bot_name
 	setVar $BOT~bot_name $SWITCHBOARD~bot_name
@@ -1261,13 +1261,13 @@ return
 	echo "*"
 	:getStartGameInput
 		getConsoleInput $chosen_option SINGLEKEY
-		gosub :BOT~killthetriggers
+		killalltriggers
 		upperCase $chosen_option
 	:process_start_command
 		if ($chosen_option = "?")
 			 goto :pregameMenu
 		elseif ($chosen_option = "B")
-				gosub :BOT~killthetriggers
+			killalltriggers
 			getInput $new_bot_name ANSI_13&"What is the 'in game' name of the bot? (one word, no spaces)"&ANSI_7
 			stripText $new_bot_name "^"
 			stripText $new_bot_name " "
@@ -1279,16 +1279,16 @@ return
 			setVar $SWITCHBOARD~bot_name $new_bot_name
 			saveVar $SWITCHBOARD~bot_name
 		elseif ($chosen_option = "P")
-			gosub :BOT~killthetriggers
+			killalltriggers
 			getInput $BOT~password "Please Enter your Game Password"
 		elseif ($chosen_option = "G")
-			gosub :BOT~killthetriggers
+			killalltriggers
 			getInput $BOT~letter "Please Enter your Game Letter"
 		elseif ($chosen_option = "L")
-			gosub :BOT~killthetriggers
+			killalltriggers
 			getInput $BOT~username "Please Enter your Login Name"
 		elseif ($chosen_option = "S")
-			gosub :BOT~killthetriggers
+			killalltriggers
 			getInput $BOT~startShipName "What ship name would you like?"
 		elseif ($chosen_option = "1")
 			if ($BOT~newGameDay1)
@@ -1403,7 +1403,7 @@ return
 			halt
 		elseif ($chosen_option = "Z")
 			:getMowSector
-			gosub :BOT~killthetriggers
+			killalltriggers
 			if ($mowToOther)
 				getInput $temp "What mow destination do you want to use?"
 				isNumber $test $temp
