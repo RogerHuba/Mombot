@@ -99,8 +99,16 @@
 			halt
 		:mycorpie
 			killtrigger lag
-			setvar $switchboard~message $user_name&" is in my corporation.  Authentication approved.*"
-			gosub :switchboard~switchboard
+			setvar $line currentline&"|ENDEND|"
+			getwordpos $line $pos $user_name&" ["&$player~corp&"]"&"|ENDEND|"
+			if ($pos > 0)
+				setvar $switchboard~message $user_name&" is in my corporation.  Authentication approved.*"
+				gosub :switchboard~switchboard
+			else
+				setvar $switchboard~message "Spoof attempt to make sidecar think it is a corpie, but it is not!.*"
+				gosub :switchboard~switchboard
+				halt
+			end
 			goto :sidecar_functions	
 	else
 		setvar $switchboard~message "Spoof attempt to make sidecar think it is towed.*"
