@@ -159,7 +159,6 @@
 
 	:thatsmyguy
 		killtrigger 2
-		You have 33502 fighters, and Sultan Bey has 1398.
 		setvar $transfer $transfer&"y*9999* q "
 		settextlinetrigger 0 :howmany ", and "&$user_name&" has "
 		settextlinetrigger 1 :toomany $user_name&" can only carry "
