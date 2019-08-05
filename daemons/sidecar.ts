@@ -127,6 +127,7 @@
 
 :sidecar_functions
 	killalltriggers
+	gosub :player~quikstats
 	setTextlinetrigger notow :validate_no_tow "You are no longer locked in tow."
 	if ($kill)
 		#kill triggers
@@ -158,8 +159,27 @@
 
 	:thatsmyguy
 		killtrigger 2
-		setvar $transfer $transfer&"y*99999* q "
-		send "y*9999* q "
+		You have 33502 fighters, and Sultan Bey has 1398.
+		setvar $transfer $transfer&"y*9999* q "
+		send "y*9999* q \"
+		settextlinetrigger 0 :howmany ", and "&$user_name&" has "
+		settextlinetrigger 1 :toomany $user_name&" can only carry "
+		settextlinetrigger 2 :fine "Corporate command [TL="
+		pause
+		:howmany
+			getword currentline $mycount 3
+			getText CURRENTLINE $current_fighters "You have "&$mycount&" fighters, and "&user_name&" has " "."
+			pause
+		:toomany
+			killtrigger 2
+			getText CURRENTLINE $max_fighters $user_name&" can only carry " "fighters."
+			setvar $transfer_fighters ($max_fighters-$current_fighters)
+			if ($player~fighters < $transfer_fighters)
+				setvar $transfer_fighters $player~fighters
+			end
+			replacetext $transfer "9999" $transfer_fighters
+		:fine
+			killtrigger 1
 		goto :dotransfer
 	:notmyguy
 		setvar $transfer $transfer&"*"
