@@ -167,7 +167,6 @@
 		pause
 		:howmany
 			getword currentline $mycount 3
-			You have 33499 fighters, and Cruncher has 158.
 			setvar $line currentline
 			replacetext $line "You have "&$mycount&" fighters, and "&user_name&" has " ""
 			replacetext $line "." ""
