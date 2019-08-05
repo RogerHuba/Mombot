@@ -89,14 +89,6 @@ return
 		setTextLineTrigger  own_command_all         :USER_INTERFACE~check_routing_all     "all"
 		setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "You have a corporate memo from "
 	end
-	if (($mode = "General") and ($autoattack = true) and ($in_kill_routine <> true)) 
-		setTextLineTrigger 	1 	:INTERNAL_COMMANDS~autokill 	"warps into the sector."
-		setTextLineTrigger 	2 	:INTERNAL_COMMANDS~autokill 	"lifts off from"
-		setTextLineTrigger 	3 	:INTERNAL_COMMANDS~autokill 	"is powering up weapons systems!"
-		setTextLineTrigger 	4 	:INTERNAL_COMMANDS~autokill 	"enters the game."
-		setTextLineTrigger 	5 	:INTERNAL_COMMANDS~autokill 	"blasts off from the "
-		setTextLineTrigger 	6 	:INTERNAL_COMMANDS~autokill 	"Scanners detect a wormhole opening in this sector!"
-	end
 	setEventTrigger     relog                   :CONNECTIVITY~keepalive           "CONNECTION LOST"
 	setTextTrigger      online_watch            :CONNECTIVITY~online_watch             "Your session will be terminated in "
 	setDelayTrigger     keepalive               :CONNECTIVITY~keepalive                30000
@@ -387,12 +379,12 @@ return
 	setArray $INTERNALCOMMANDLISTS 7
 	setVar $internalCommandLists[1]  " stopall stop listall reset emq bot relog tow refresh login logoff unlock lift with dep callin about cn extern twarp bwarp pwarp relog help "
 	setVar $internalCommandLists[2]  " " 
-	setVar $internalCommandLists[3]  " hkill kill htorp "
-	setVar $internalCommandLists[4]  " refurb scrub "
-	setVar $internalCommandLists[5]  " surround exit mow "
+	setVar $internalCommandLists[3]  " "
+	setVar $internalCommandLists[4]  " "
+	setVar $internalCommandLists[5]  "  "
 	setVar $internalCommandLists[6]  " "
-	setVar $internalCommandLists[7]  " find pscan sector storeship setvar getvar "
-	setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow l m t b p port x shipstore w d finder xenter status pinfo holotorp"
+	setVar $internalCommandLists[7]  " storeship setvar getvar "
+	setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx l m t b p port x shipstore w d "
 	setVar $internalCommandList     $internalCommandLists[1]&$internalCommandLists[2]&$internalCommandLists[3]&$internalCommandLists[4]&$internalCommandLists[5]&$internalCommandLists[6]&$internalCommandLists[7]
 	setArray $TYPES 7
 	setVar $TYPES[1] "General"
