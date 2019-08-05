@@ -81,7 +81,7 @@
 	send "f"
 	waiton " fighters available."
 	getword currentline $myfighters 3
-	replacetext $myfighters ","
+	replacetext $myfighters "," ""
 	send $myfighters&"*cd"
 	setVar $SWITCHBOARD~message "Dropping fighters to allow tow.*"
 	gosub :SWITCHBOARD~switchboard
