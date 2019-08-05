@@ -167,6 +167,9 @@
 		pause
 		:howmany
 			getword currentline $mycount 3
+			echo "*[["&$mycount&"]]*"
+			
+			You have 33500 fighters, and Cruncher has 191.
 			getText CURRENTLINE $current_fighters "You have "&$mycount&" fighters, and "&user_name&" has " "."
 			echo "*[["&$current_fighters&"]]*"
 			pause
