@@ -85,7 +85,6 @@ copy "..\..\..\..\..\startups\chat.cts" "startups\chat.cts"
 copy "..\..\..\..\..\startups\viewscreen.cts" "startups\viewscreen.cts"
 copy "..\..\..\..\..\source\bot_includes\bot\connectivity.ts" "source\bot_includes\bot\connectivity.ts"
 copy "..\..\..\..\..\source\bot_includes\bot\listener.ts" "source\bot_includes\bot\listener.ts"
-copy "..\..\..\..\..\source\bot_includes\bot\menus.ts" "source\bot_includes\bot\menus.ts"
 copy "..\..\..\..\..\source\bot_includes\bot\user_interface.ts" "source\bot_includes\bot\user_interface.ts"
 xcopy "..\..\..\..\..\source\bot_includes\player" "source\bot_includes\player" /E
 xcopy "..\..\..\..\..\source\bot_includes\planet" "source\bot_includes\planet" /E

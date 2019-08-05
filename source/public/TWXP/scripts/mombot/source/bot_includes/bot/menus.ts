@@ -18,7 +18,7 @@
 	setVar $h[7]  "Limps to drop:        "
 	setVar $h[8]  "Armids to drop:       "
 	setVar $h[9]  "Avoid Planets?        "
-	setVar $h[10] "Auto Attack?          "
+	setVar $h[10] "                      "
 	setVar $h[11] "Max Attack:      "
 	setVar $h[12] "Offensive Odds:  "
 	setVar $h[13] "Stardock         (S)  "
@@ -58,11 +58,6 @@
 		setVar $qss[9] "All"
 	else
 		setVar $qss[9] "None"
-	end
-	if ($bot~autoattack)
-		setVar $qss[10] "Yes"
-	else
-		setVar $qss[10] "No"
 	end
 	setVar $qss[11] $SHIP~SHIP_MAX_ATTACK
 	setVar $qss[12] $SHIP~SHIP_OFFENSIVE_ODDS
@@ -262,12 +257,6 @@
 				setVar $PLAYER~surroundAvoidShieldedOnly TRUE
 				setVar $PLAYER~surroundAvoidAllPlanets FALSE
 				setVar $PLAYER~surroundDontAvoid FALSE
-			end
-		elseif ($chosen_option = "7")
-			if ($BOT~autoattack)
-				setvar $BOT~autoattack FALSE
-			else
-				setVar $BOT~autoattack TRUE
 			end
 		elseif ($chosen_option = "2")
 			if ($PLAYER~defenderCapping)
