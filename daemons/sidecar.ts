@@ -127,7 +127,6 @@
 
 :sidecar_functions
 	killalltriggers
-	gosub :player~quikstats
 	setTextlinetrigger notow :validate_no_tow "You are no longer locked in tow."
 	if ($kill)
 		#kill triggers
@@ -159,6 +158,7 @@
 
 	:thatsmyguy
 		killtrigger 2
+		gosub :player~quikstats
 		setvar $transfer $transfer&"y*9999* q "
 		settextlinetrigger 0 :howmany ", and "&$user_name&" has "
 		settextlinetrigger 1 :toomany $user_name&" can only carry "
@@ -189,8 +189,6 @@
 		pause
 
 	:dotransfer
-		send $transfer
-		send $transfer
 		send $transfer
 goto :sidecar_functions
 
