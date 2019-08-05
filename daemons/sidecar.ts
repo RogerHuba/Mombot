@@ -116,6 +116,16 @@
 				gosub :switchboard~switchboard
 				halt
 			end
+			setVar $BOT~command "topoff"
+			setVar $BOT~user_command_line " topoff "
+			setVar $BOT~parm1 ""
+			saveVar $BOT~parm1
+			saveVar $BOT~command
+			saveVar $BOT~user_command_line
+			load "scripts\mombot\commands\general\topoff.cts"
+			setEventTrigger		topoffdone		:topoffdone "SCRIPT STOPPED" "scripts\mombot\commands\general\topoff.cts"
+			pause
+			:topoffdone
 			goto :sidecar_functions	
 	else
 		setvar $switchboard~message "Spoof attempt to make sidecar think it is towed.*"
@@ -127,6 +137,7 @@
 
 :sidecar_functions
 	killalltriggers
+	gosub :player~quikstats
 	setTextlinetrigger notow :validate_no_tow "You are no longer locked in tow."
 	if ($kill)
 		#kill triggers
@@ -158,7 +169,6 @@
 
 	:thatsmyguy
 		killtrigger 2
-		gosub :player~quikstats
 		setvar $transfer $transfer&"y*9999* q "
 		settextlinetrigger 0 :howmany ", and "&$user_name&" has "
 		settextlinetrigger 1 :toomany $user_name&" can only carry "
