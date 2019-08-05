@@ -1167,7 +1167,7 @@ return
 	setVar $h[11] "Delay (Minutes): "
 	setVar $h[12] "After login:     "
 	setVar $h[13] "Bot command to perform:"
-	setVar $h[14] "                 "
+	setVar $h[14] "Mow Option       "
 	setVar $h[15] "                 "
 	setVar $h[16] "                 "
 	setVar $h[17] "                 "
@@ -1223,7 +1223,18 @@ return
 	else
 		setVar $qss[13] $command_to_issue
 	end
-	setVar $qss[14] ""
+	loadvar $start_mow_option
+	if (($start_mow_option = "") or ($start_mow_option = "0"))
+		setVar $qss[14] "Direct"
+	elseif ($start_mow_option = "backdoor")
+		setVar $qss[14] "Via Backdoor"
+	elseif ($start_mow_option = "i1")
+		setVar $qss[14] "Indirect Mow 1"
+	elseif ($start_mow_option = "i2")
+		setVar $qss[14] "Indirect Mow 2"
+	elseif ($start_mow_option = "i3")
+		setVar $qss[14] "Indirect Mow 3"
+	end
 	setVar $qss[15] ""
 	setVar $qss[16] ""
 	setVar $qss[17] ""
@@ -1257,6 +1268,9 @@ return
 	end
 	echo ANSI_10&#27&"[35m<"&#27&"[32m6"&#27&"[35m> "&ANSI_7&$qss_var[11]&"*"
 	echo ANSI_10&#27&"[35m<"&#27&"[32m7"&#27&"[35m> "&ANSI_7&$qss_var[12]&"*"
+	if (($BOT~mowToDock = true) or ($mowToAlpha = true) or ($mowToRylos = true) or ($mowToOther = true))
+		echo ANSI_10&#27&"[35m<"&#27&"[32mM"&#27&"[35m> "&ANSI_7&$qss_var[14]&"*"	
+	end
 	echo ANSI_10&#27&"[35m<"&#27&"[32m8"&#27&"[35m> "&ANSI_7&$qss_var[13]&"*"
 	echo "*"
 	:getStartGameInput
@@ -1393,6 +1407,25 @@ return
 			savevar $bot~mowToDock  
 			savevar $landOnTerra
 			savevar $do_nothing
+		elseif ($chosen_option = "M")
+
+			if ($start_mow_option = "i3")
+				setVar $qss[14] "Direct"
+				setVar $start_mow_option ""
+			elseif (($start_mow_option = "") or ($start_mow_option = "0"))
+				setVar $qss[14] "Via Backdoor"
+				setVar $start_mow_option "backdoor"
+			elseif ($start_mow_option = "backdoor")
+				setVar $qss[14] "Indirect Mow 1"
+				setVar $start_mow_option "i1"
+			elseif ($start_mow_option = "i1")
+				setVar $qss[14] "Indirect Mow 2"
+				setVar $start_mow_option "i2"
+			elseif ($start_mow_option = "i2")
+				setVar $qss[14] "Indirect Mow 3"
+				setVar $start_mow_option "i3"
+			end 
+			savevar $start_mow_option 
 		elseif ($chosen_option = "8")
 			getInput $temp "Enter a command line for the bot to run after entering game (No bot name needed)"
 			setVar $command_to_issue $temp
