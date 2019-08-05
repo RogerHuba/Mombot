@@ -140,7 +140,7 @@
 				# get max fighters on towing ship #
 				gosub :player~quikstats
 				:find_tow_again
-					settextlinetrigger 1 :found_tower "Exchange with "&$user_name&" (Y/N) [N]?" 
+					settexttrigger 1 :found_tower "Exchange with "&$user_name&" (Y/N) [N]?" 
 					setdelaytrigger 2 :not_tower 500
 					send "tf"
 					pause
@@ -151,6 +151,7 @@
 					pause
 
 				:found_tower
+					killtrigger 2 
 					settextlinetrigger 1 :capturemaxfigs $user_name&" can only carry "
 					settextlinetrigger 2 :refillerror "Corporate command [TL="
 					send "y*"&$player~fighters&"* q "
