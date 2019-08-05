@@ -168,10 +168,12 @@
 		:howmany
 			getword currentline $mycount 3
 			getText CURRENTLINE $current_fighters "You have "&$mycount&" fighters, and "&user_name&" has " "."
+			echo "*[["&$current_fighters&"]]*"
 			pause
 		:toomany
-			killtrigger 2
-			getText CURRENTLINE $max_fighters $user_name&" can only carry " "fighters."
+			killtrigger 2 
+			getText CURRENTLINE $max_fighters $user_name&" can only carry " " fighters."
+			echo "*[["&$max_fighters&"]]*"
 			setvar $transfer_fighters ($max_fighters-$current_fighters)
 			if ($player~fighters < $transfer_fighters)
 				setvar $transfer_fighters $player~fighters
