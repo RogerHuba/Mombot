@@ -135,6 +135,32 @@
 			setEventTrigger		topoffdone		:topoffdone "SCRIPT STOPPED" "scripts\mombot\commands\general\topoff.cts"
 			pause
 			:topoffdone
+
+			if ($refill)
+				# get max fighters on towing ship #
+				gosub :player~quikstats
+				:find_tow_again
+					settextlinetrigger 1 :found_tower "Exchange with "&$user_name&" (Y/N) [N]?" 
+					setdelaytrigger 2 :not_tower 500
+					send "tf"
+					pause
+
+				:not_tower
+					send "*"
+					setdelaytrigger 2 :not_tower 500
+					pause
+
+				:found_tower
+					settextlinetrigger 1 :capturemaxfigs $user_name&" can only carry "
+					settextlinetrigger 2 :refillerror "Corporate command [TL="
+					send "y*"&$player~fighters&"* q "
+					pause
+
+				:capturemaxfigs			
+					killtrigger 2 
+					getText CURRENTLINE $tower_max_fighters $user_name&" can only carry " " fighters."
+
+			end
 			goto :sidecar_functions	
 	else
 		setvar $switchboard~message "Spoof attempt to make sidecar think it is towed.*"
@@ -171,44 +197,30 @@
 	killtrigger 2
 	settextlinetrigger 1 :thatsmyguy "Exchange with "&$user_name&" (Y/N) [N]?" 
 	settextlinetrigger 2 :notmyguy "Average Interval Lag:"
-	send "tf"
-	setvar $transfer "tf"
-	send "@"
+	send "tf@"
 	pause
 
 	:thatsmyguy
 		killtrigger 2
-		setvar $transfer $transfer&"y*9999* q "
 		settextlinetrigger 0 :howmany ", and "&$user_name&" has "
-		settextlinetrigger 1 :toomany $user_name&" can only carry "
-		settextlinetrigger 2 :fine "Corporate command [TL="
-		send "y*9999* q "
+		send "y*"
 		pause
 		:howmany
 			getword currentline $mycount 3
 			getText CURRENTLINE $current_fighters "You have "&$mycount&" fighters, and "&$user_name&" has " "."
-			echo "*[["&$current_fighters&"]]*"
-			pause
-		:toomany
-			killtrigger 2 
-			getText CURRENTLINE $max_fighters $user_name&" can only carry " " fighters."
-			echo "*[["&$max_fighters&"]]*"
-			setvar $transfer_fighters ($max_fighters-$current_fighters)
+			setvar $transfer_fighters ($tower_max_fighters-$current_fighters)
 			if ($player~fighters < $transfer_fighters)
 				setvar $transfer_fighters $player~fighters
 			end
 			replacetext $transfer "9999" $transfer_fighters
-		:fine
-			killtrigger 1
-		goto :dotransfer
+			send $transfer_fighters&"* q "
+			goto :sidecar_functions
 	:notmyguy
-		setvar $transfer $transfer&"*"
 		send "*@"
 		settextlinetrigger 2 :notmyguy "Average Interval Lag:"
 		pause
 
 	:dotransfer
-		send $transfer
 goto :sidecar_functions
 
 :validate_no_tow
