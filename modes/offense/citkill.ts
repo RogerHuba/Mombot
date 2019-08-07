@@ -156,7 +156,7 @@
 	setTextLineTrigger 	secgun 	:scanit_cit_kill 	"Quasar Cannon on"
 	setTextLineTrigger 	ig		:scanit_cit_kill 	"Shipboard Computers The Interdictor Generator on"
 	setTextLineTrigger 	power 	:scanit_cit_kill 	"is powering up weapons systems!"
-	settextlinetrigger  wave    :scanit_cit_kill    " launches a wave of fighters at the "
+	settextlinetrigger  wave    :scanit_cit_kill    " launches a wave of fighters at  "
 	settextlinetrigger  planet  :scanit_cit_kill	" launches a Genesis Torpedo into the sector!"
 	settextlinetrigger  atomic  :scanit_cit_kill    " appears from the planetary rubble."
 	setTextLineTrigger 	exits 	:scanit_cit_kill 	"exits the game."

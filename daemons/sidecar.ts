@@ -179,11 +179,18 @@
 	setTextlinetrigger notow :validate_no_tow "You are no longer locked in tow."
 	if ($kill)
 		#kill triggers
-		setTextLineTrigger liftsoff :checkForVictims " lifts off from "
+		setTextLineTrigger liftsoff :checkForVictims    " lifts off from "
 		setTextLineTrigger 	warps 	:checkForVictims 	"warps into the sector."
 		setTextLineTrigger 	power 	:checkForVictims 	"is powering up weapons systems!"
 		settextlinetrigger  wave    :checkForVictims    " launches a wave of fighters at "
-		settextlinetrigger  moved   :checkforvictims " I towed you from sector "
+		settextlinetrigger  moved   :checkforvictims    " I towed you from sector "
+		setTextLineTrigger 	deffig 	:checkforvictims 	"Deployed Fighters Report Sector "&$player~CURRENT_SECTOR
+		setTextLineTrigger 	secgun 	:checkforvictims 	"Quasar Cannon on"
+		setTextLineTrigger 	ig		:checkforvictims 	"Shipboard Computers The Interdictor Generator on"
+		settextlinetrigger  planet  :checkforvictims	" launches a Genesis Torpedo into the sector!"
+		settextlinetrigger  atomic  :checkforvictims    " appears from the planetary rubble."
+		setTextLineTrigger 	exits 	:checkforvictims 	"exits the game."
+		setTextLineTrigger 	enters 	:checkforvictims 	"enters the game."
 	end
 	if ($ig)
 		#ig triggers
