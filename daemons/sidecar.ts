@@ -176,30 +176,22 @@
 :sidecar_functions
 	killalltriggers
 	gosub :player~quikstats
+	if ($notow)
+		setvar $switchboard~message "Sidecar no longer attached to "&$user_name&"'s ship.*"
+		gosub :switchboard~switchboard		
+	end
 	setTextlinetrigger notow :validate_no_tow "You are no longer locked in tow."
 	if ($kill)
 		#kill triggers
-		setTextLineTrigger liftsoff :checkForVictims    " lifts off from "
-		setTextLineTrigger 	warps 	:checkForVictims 	"warps into the sector."
-		setTextLineTrigger 	power 	:checkForVictims 	"is powering up weapons systems!"
-		settextlinetrigger  wave    :checkForVictims    " launches a wave of fighters at "
-		settextlinetrigger  moved   :checkforvictims    " I towed you from sector "
-		setTextLineTrigger 	deffig 	:checkforvictims 	"Deployed Fighters Report Sector "&$player~CURRENT_SECTOR
-		setTextLineTrigger 	secgun 	:checkforvictims 	"Quasar Cannon on"
-		setTextLineTrigger 	ig		:checkforvictims 	"Shipboard Computers The Interdictor Generator on"
-		settextlinetrigger  planet  :checkforvictims	" launches a Genesis Torpedo into the sector!"
-		settextlinetrigger  atomic  :checkforvictims    " appears from the planetary rubble."
-		setTextLineTrigger 	exits 	:checkforvictims 	"exits the game."
-		setTextLineTrigger 	enters 	:checkforvictims 	"enters the game."
+		gosub :setkilltriggers
 	end
 	if ($ig)
 		#ig triggers
-		setTextLineTrigger turnIGon :ig_turn_it_on " damaging your ship."
+		gosub :setigtriggers
 	end
 	if ($refill)
 		#refill triggers
-		setTextLineTrigger 1 :reloadFigMe "launches a wave of fighters at "&$user_name
-		setTextLineTrigger 2 :reloadFigMe $user_name&" deploys some fighters"
+		gosub :setrefilltriggers
 	end
 	pause
 
@@ -225,7 +217,8 @@
 			end
 			replacetext $transfer "9999" $transfer_fighters
 			send $transfer_fighters&"* q "
-			goto :sidecar_functions
+			gosub :setrefilltriggers
+			pause
 	:notmyguy
 		send "*@"
 		settextlinetrigger 2 :notmyguy "Average Interval Lag:"
@@ -239,12 +232,13 @@ goto :sidecar_functions
 	if ($pos > 0)
 		setvar $switchboard~message "Sidecar no longer attached to "&$user_name&"'s ship.*"
 		gosub :switchboard~switchboard		
+		goto :wait_for_tow
 	else
+		set $notow false
 		setvar $switchboard~message "Spoof attempt to make sidecar think it isn't towed anymore."
 		gosub :switchboard~switchboard
-		goto :wait_for_tow
+		goto :sidecar_functions
 	end
-goto :wait_for_tow
 
 
 :checkForVictims
@@ -254,14 +248,17 @@ goto :wait_for_tow
 		setvar $player~startingLocation $player~current_prompt
 		gosub :sector~getSectorData
 		if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+			setvar $istowed false
 			gosub :combat~fastAttack
 			goto :scanit_again
 		elseif (($sector~emptyShipCount > $sector~myShipCount))
+			setvar $istowed false
 			gosub :combat~fastCapture
 			goto :scanit_again
 		end
 	end
-	goto :sidecar_functions
+	gosub :setkilltriggers
+	pause
 
 	:ig_turn_it_on
 		getWord CURRENTLINE $test 1
@@ -312,7 +309,8 @@ goto :wait_for_tow
 			send "N"
 			send "'{" $switchboard~bot_name "} - IG was already on.*"
 		end
-		goto :sidecar_functions
+		gosub :setigtriggers
+		pause
 
 :killigtriggers
 	killtrigger ig_timeout
@@ -324,7 +322,44 @@ goto :wait_for_tow
 	killtrigger do_ig_thing
 return
 
+:setkilltriggers
+	killtrigger liftsoff
+	killtrigger warps
+	killtrigger power
+	killtrigger wave
+	killtrigger moved
+	killtrigger deffig
+	killtrigger secgun
+	killtrigger ig
+	killtrigger planet
+	killtrigger atomic
+	killtrigger exits
+	killtrigger enters
+	setTextLineTrigger liftsoff :checkForVictims    " lifts off from "
+	setTextLineTrigger 	warps 	:checkForVictims 	"warps into the sector."
+	setTextLineTrigger 	power 	:checkForVictims 	"is powering up weapons systems!"
+	settextlinetrigger  wave    :checkForVictims    " launches a wave of fighters at "
+	settextlinetrigger  moved   :checkforvictims    " I towed you from sector "
+	setTextLineTrigger 	deffig 	:checkforvictims 	"Deployed Fighters Report Sector "&$player~CURRENT_SECTOR
+	setTextLineTrigger 	secgun 	:checkforvictims 	"Quasar Cannon on"
+	setTextLineTrigger 	ig		:checkforvictims 	"Shipboard Computers The Interdictor Generator on"
+	settextlinetrigger  planet  :checkforvictims	" launches a Genesis Torpedo into the sector!"
+	settextlinetrigger  atomic  :checkforvictims    " appears from the planetary rubble."
+	setTextLineTrigger 	exits 	:checkforvictims 	"exits the game."
+	setTextLineTrigger 	enters 	:checkforvictims 	"enters the game."
+return
 
+:setigtriggers
+	killtrigger turnIGon
+	setTextLineTrigger turnIGon :ig_turn_it_on " damaging your ship."
+return
+
+:setrefilltriggers
+	kill reload1
+	kill reload2
+	setTextLineTrigger reload1 :reloadFigMe "launches a wave of fighters at "&$user_name
+	setTextLineTrigger reload2 :reloadFigMe $user_name&" deploys some fighters"
+return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\combat\init\combat"
