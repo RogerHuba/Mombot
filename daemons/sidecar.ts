@@ -59,6 +59,8 @@
 		setvar $ig false
 	end
 
+	gosub :ship~getshipstats
+
 	setTextTrigger need_ig :ig_was_off "Your Interdictor generator is now OFF"
 	setTextTrigger skip_ig :skipig "is not equipped with an Interdictor Generator!"
 	send "b"
@@ -323,6 +325,7 @@ include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastattack\combat"
