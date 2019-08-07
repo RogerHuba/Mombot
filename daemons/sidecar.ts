@@ -180,7 +180,8 @@
 		setTextLineTrigger liftsoff :checkForVictims " lifts off from "
 		setTextLineTrigger 	warps 	:checkForVictims 	"warps into the sector."
 		setTextLineTrigger 	power 	:checkForVictims 	"is powering up weapons systems!"
-		settextlinetrigger  wave    :checkForVictims    " launches a wave of fighters at the "
+		settextlinetrigger  wave    :checkForVictims    " launches a wave of fighters at "
+		settextlinetrigger  moved   :checkforvictims " I towed you from sector "
 	end
 	if ($ig)
 		#ig triggers
@@ -244,18 +245,14 @@ goto :wait_for_tow
 		setvar $player~startingLocation $player~current_prompt
 		gosub :sector~getSectorData
 		if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-			if ($isPlanetDrop)
-				goSub :combat~fastCitadelAttack
-			else
-				gosub :combat~fastAttack
-			end
+			gosub :combat~fastAttack
 			goto :scanit_again
 		elseif (($sector~emptyShipCount > $sector~myShipCount))
 			gosub :combat~fastCapture
 			goto :scanit_again
 		end
 	end
-	
+	goto :sidecar_functions
 
 	:ig_turn_it_on
 		getWord CURRENTLINE $test 1
