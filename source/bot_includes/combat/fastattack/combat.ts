@@ -2,6 +2,11 @@
 	setVar $targetString  "a"
 	setVar $player~isFound FALSE
 	setVar $targetShotgun "a z z y z"&$SHIP~SHIP_MAX_ATTACK&"* * a z z * y z"&$SHIP~SHIP_MAX_ATTACK&"* * a z z * * y z"&$SHIP~SHIP_MAX_ATTACK&"* * "
+
+	if ($SHIP~SHIP_MAX_ATTACK <= 0)
+		gosub :ship~getshipstats
+	end
+
 	:checkingFigs
 		if ($player~fighters <= 0)
 			gosub :player~quikstats

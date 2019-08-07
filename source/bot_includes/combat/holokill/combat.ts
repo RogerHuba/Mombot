@@ -1,6 +1,10 @@
 :holokill
 :holo_kill
 :holo_kill_kill_check
+	if ($SHIP~SHIP_MAX_ATTACK <= 0)
+		gosub :ship~getshipstats
+	end
+
 		setTextLineTrigger noscan1 :holo_kill_noscanner "Handle which mine type, 1 Armid or 2 Limpet"
 		setTextLineTrigger noscan2 :holo_kill_noscanner "You don't have a long range scanner."
 		setTextLineTrigger scanned :holo_kill_scandone  "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
@@ -65,7 +69,7 @@
 		if ($player~cit = true)
 			send " qmnt*qqz* "
 		end
-		send " m z " & $test_sector & " *  *  z  a  99999  *  z  a  99999  *  R  *  f  z  1  *  z  c  d  *   "
+		send " m z " & $test_sector & " *  *  z  a  "&$SHIP~SHIP_MAX_ATTACK&"*  z  a  "&$SHIP~SHIP_MAX_ATTACK&"*  R  *  f  z  1  *  z  c  d  *   "
 		setVar $kill_idx 1
 		if ($player~surround_before_hkill = TRUE)
 			gosub :player~quikstats

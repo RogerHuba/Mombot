@@ -6,6 +6,10 @@
 
 	loadvar $ship~SHIP_MAX_ATTACK
 
+	if ($SHIP~SHIP_MAX_ATTACK <= 0)
+		gosub :ship~getshipstats
+	end
+
 	setVar $refurbString "l "&$PLANET~PLANET&"* m * * * q "
 	:checkingFigs
 		if ($player~fighters <= 0)

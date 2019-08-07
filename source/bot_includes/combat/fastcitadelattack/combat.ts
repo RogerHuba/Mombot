@@ -1,4 +1,7 @@
 :fastCitadelAttack
+	if ($SHIP~SHIP_MAX_ATTACK <= 0)
+		gosub :ship~getshipstats
+	end
 	setVar $refurbString "l "&$PLANET~PLANET&"* m * * * "
 	setVar $attackString ""
 	setVar $targetString  "a z "
