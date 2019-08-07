@@ -384,8 +384,17 @@ return
 			end
 			setvar $BOT~user_command_line "mow "&$menus~mowDestination&" "
 			setVar $BOT~parm1 $menus~mowDestination
+			if ($menus~start_mow_option <> "")
+				setvar $BOT~user_command_line $BOT~user_command_line & $menus~start_mow_option & " "
+				setVar $BOT~parm2 $menus~start_mow_option
+			end
 			savevar $bot~user_command_line
 			savevar $bot~parm1
+			if ($menus~start_mow_option <> "")
+				savevar $bot~parm2
+			end
+			setVar $menus~start_mow_option ""
+			saveVar $menus~start_mow_option
 			load "scripts\mombot\modes\grid\mow.cts"
 			setEventTrigger		1		:mowended	"SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
 			pause
