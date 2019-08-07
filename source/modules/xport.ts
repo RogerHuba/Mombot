@@ -56,7 +56,7 @@
 	setTextLineTrigger cannot_xport     :cannot_xport           "Access denied!"
 	setTextTrigger     xport_passw      :xport_password         "Enter the password for"
 	setTextLineTrigger xport_good       :xport_good             "Security code accepted, engaging transporter control."
-	if ($bot~parm2 = "0")
+	if ($bot~parm2 = "")
 		send "x   " & $bot~parm1 & "*    "
 	else
 		send "x  " & $bot~parm1 & "*"

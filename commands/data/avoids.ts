@@ -28,7 +28,7 @@
 		if ($bot~parm1 = "clear")
 			isNumber $tst $bot~parm2
 			if ($tst)
-				if ($bot~parm2 = 0)
+				if ($bot~parm2 = "")
 					send "cv0*yyq"
 					setVar $SWITCHBOARD~message "All Avoids Cleared*"
 					gosub :SWITCHBOARD~switchboard
