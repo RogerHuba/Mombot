@@ -1,17 +1,16 @@
 
 
 :load_variables
-		loadVar $switchboard~bot_name
-		loadVar $bot~user_command_line
+	loadVar $switchboard~bot_name
+	loadVar $bot~user_command_line
 	loadvar $PLAYER~unlimitedGame
 	loadvar $bot~subspace
 
 	gosub :BOT~loadVars
 	loadvar $bot~subspace
-
-					
-		loadVar $BOT~bot_turn_limit
-		loadVar $GAME~steal_factor
+			
+	loadVar $BOT~bot_turn_limit
+	loadVar $GAME~steal_factor
 	
 	setVar $BOT~help[1] $BOT~tab&" sst {resetlra} [ship1] [ship2] {jet} {resetlra}"
 	setVar $BOT~help[2] $BOT~tab&"  - Do NOT need to start in Ship 1 or Ship 2."
@@ -33,51 +32,80 @@
 		halt
 	end
 
-		isNumber $test $bot~parm1
-		IF ($test)
-		ELSE
-			setVar $SWITCHBOARD~message "Ship 1 Must Be a Number.*"
-			gosub :switchboard~switchboard
-			HALT
-		END
-		isNumber $test $bot~parm2
-		IF ($test)
-		ELSE
-			setVar $SWITCHBOARD~message "Ship 2 Must Be a Number.*"
-			gosub :switchboard~switchboard
-			HALT
-		END
-		setVar $ship_1 $bot~parm1
-		setVar $ship_2 $bot~parm2
-		setVar $steal_divisor $GAME~steal_factor
-		IF ($bot~parm3 = "jet")
-				setVar $jet "y"
-		END
+	isNumber $test $bot~parm1
+	IF ($test)
+	ELSE
+		setVar $SWITCHBOARD~message "Ship 1 Must Be a Number.*"
+		gosub :switchboard~switchboard
+		HALT
+	END
+	isNumber $test $bot~parm2
+	IF ($test)
+	ELSE
+		setVar $SWITCHBOARD~message "Ship 2 Must Be a Number.*"
+		gosub :switchboard~switchboard
+		HALT
+	END
+	setVar $ship_1 $bot~parm1
+	setVar $ship_2 $bot~parm2
+	setVar $steal_divisor $GAME~steal_factor
+	IF ($bot~parm3 = "jet")
+			setVar $jet "y"
+	END
 
-		IF ($bot~parm4 = "jet")
-				setVar $jet "y"
-		END
-		gosub :player~isEpHaggle
-		if ($player~isEphaggle)
-			setVar $ephaggle "y"
-			setVar $SWITCHBOARD~message "Using EP HAGGLE!*"
-			gosub :switchboard~switchboard
-		else
-			setVar $epHaggleFail 0
-			setVar $ephaggle "n"
-		END
+	IF ($bot~parm4 = "jet")
+			setVar $jet "y"
+	END
+	gosub :player~isEpHaggle
+	if ($player~isEphaggle)
+		setVar $ephaggle "y"
+		setVar $SWITCHBOARD~message "Using EP HAGGLE!*"
+		gosub :switchboard~switchboard
+	else
+		setVar $epHaggleFail 0
+		setVar $ephaggle "n"
+	END
 
+
+getSectorParameter	1 "LRA" $last_rob_attempt
 	
 # ----- make sure we are at a good prompt -----
 
 
 :verifyprompt
 		gosub :player~quikstats
+		
 		setVar $location $player~current_prompt
-	IF ($location <> "Command")
+		IF ($location <> "Command")
 			   send "'{" $switchboard~bot_name "} - Must start at Command Prompt for SST*"
 			   halt
 		END
+
+	send "czq"
+	waitOn "-----------------------------------------------------------------------------"
+	settextlinetrigger     shipnumber     :getshipnumber "Corp"
+	settextlinetrigger     doneships      :doneships "Computer command ["
+	pause
+
+	:getshipnumber
+	getword CURRENTLINE $shiptest 1
+	getword CURRENTLINE $shiplocation 2
+	isNumber $is_a_number $shiplocation
+	if ($is_a_number)
+	    if ($ship_1 = $shiptest)
+		if ($shiplocation = $last_rob_attempt)
+		    setVar $temp $ship_1
+		    setVar $ship_1 $ship_2
+		    setVar $ship_2 $temp 
+		    goto :doneships
+		end
+	     end
+	end
+	settextlinetrigger     shipnumber     :getshipnumber "Corp"
+	pause
+ :doneships
+killalltriggers
+
 :verifyship
 		IF ($player~ship_number <> $ship_1)
 			send "x " $ship_1 "* q z n"
@@ -129,7 +157,7 @@ setvar $sec2void 0
 	send " with " & $init_credits & " credits and " & $init_exp & " experience.*"
 	gosub :player~quikstats
 
-	getSectorParameter	1 "LRA" $last_rob_attempt
+	
 
 	send "'{" $switchboard~bot_name "} - last rob attempt: "&$last_rob_attempt&"*"
 	if ($last_rob_attempt = $player~current_sector)
@@ -210,9 +238,11 @@ setVar $skip_ships "YES"
 	END
 	send "Ship " & $ship_1 & "'s equip multiple was " & $port[$ship_1].multiple & ".*"
 	send "Ship " & $ship_2 & "'s equip multiple was " & $port[$ship_2].multiple & ".*"
+	gosub :player~quikstats
 	if ($low_turns <> "YES")
 		#send "Busted in ship " & $current_ship & ".**"
 	send "Busted in ship " & $current_ship & ", FURB please, I still have " & $player~turns & " turns to run.**"
+
 	end
 	halt
 
@@ -1434,12 +1464,14 @@ return
 
 	setVar $voidsect 0
 	:clearvoids
-	add $voidsect 1
-	if ($voidsect < 7)
-		if (SECTOR.WARPS[$sec1void][$voidsect] <> 0)
-		send "CV0*YN" & SECTOR.WARPS[$sec1void][$voidsect] & "*Q"
+	if ($sec1void > 0)
+		add $voidsect 1
+		if ($voidsect < 7)
+			if (SECTOR.WARPS[$sec1void][$voidsect] <> 0)
+			send "CV0*YN" & SECTOR.WARPS[$sec1void][$voidsect] & "*Q"
+			end
+			goto :clearvoids
 		end
-		goto :clearvoids
 	end
 
 	send "'{" $switchboard~bot_name "} - Avoids cleared on all adjacent sectors*"
@@ -1451,8 +1483,8 @@ return
 		:clearvoids2
 		add $voidsect 1
 		if ($voidsect < 7)
-			if (SECTOR.WARPS[$sec1void][$voidsect] <> 0)
-			send "CV0*YN" & SECTOR.WARPS[$sec1void][$voidsect] & "*Q"
+			if (SECTOR.WARPS[$sec2void][$voidsect] <> 0)
+			send "CV0*YN" & SECTOR.WARPS[$sec2void][$voidsect] & "*Q"
 			end
 			goto :clearvoids2
 		end

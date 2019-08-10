@@ -7,8 +7,8 @@
 	gosub :BOT~loadVars
 									
 
-	setVar $FURB_HOLDS ""
-	setVar $FURB_SHIP ""
+	setVar $FURB_HOLDS "33"
+	setVar $FURB_SHIP "h"
 
 	setVar $MAX_RED_BOTS 5
 	setVar $MIN_RED_EXP 1500
@@ -145,7 +145,7 @@
 	while (($i <= $MAX_RED_BOTS) AND ($roll_call_done = FALSE))
 		send "'red"&$i&" callout*"
 		setDelayTrigger delay :donered 2000
-		setTextLineTrigger red :foundred "} - Team: red"&$i&" " 
+		setTextLineTrigger red :foundred "Team: red"&$i&" " 
 		pause
 
 		:toomanyred	
@@ -209,7 +209,7 @@
 	while (($i <= $MAX_BLUE_BOTS) AND ($roll_call_done = FALSE))
 		send "'blue"&$i&" callout*"
 		setDelayTrigger delay :doneblue 3000
-		setTextLineTrigger blue :foundblue "} - Team: blue"&$i&" " 
+		setTextLineTrigger blue :foundblue "Team: blue"&$i&" " 
 		pause
 
 		:toomanyblue
@@ -246,6 +246,7 @@
 			end
 			setVar $BLUES[$i] $blue_sector
 			add $blue_count 1
+			send "'blue"&$i&" stop ephaggle*"
 			setTextLineTrigger blue :toomanyblue "} - Team: blue"&$i&" " 
 			pause
 		:doneblue
@@ -484,7 +485,6 @@
 				setVar $i 1
 				while ($i <= $red_count)
 					if $bust_ship = $orders[1][1]
-						#setvar $xport_ship $orders[2][1]
 						setvar $xport_ship $ORIGINAL_SHIP[$orders[1]]
 						setvar $bust_planet $orders[1][2]
 						setVar $j $orders[1][3]
@@ -556,9 +556,9 @@
 
 
 					if ($planet~planetfuel)
-						send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" topp *"
+						send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" topp blow:red"&$red_id&"  *"
 					else
-						send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&"  *"
+						send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" blow:red"&$red_id&"  *"
 					end
 						:furbtryagain
 						settexttrigger nofig :nofig "No fighter down at that ship number, drop a fig."
@@ -570,15 +570,15 @@
 						goto :furbtryagain
 					:furb1
 						killalltriggers
-						setdelaytrigger furb2 :furb2 4000
+						setdelaytrigger xport2 :xport2 5000
 						pause
 
-					:furb2
-						send "'red"&$red_id&" mac ay9^m *"
-						setdelaytrigger wait :xport 5000
-						pause
+					#:furb2
+					#	send "'red"&$red_id&" mac ay9^m *"
+					#	setdelaytrigger wait :xport2 5000
+					#	pause
 
-					:xport
+					:xport2
 						send "'red"&$red_id&" x "&$xport_ship&"*"
 						settexttrigger xport :done  "- Xport complete."
 						pause
@@ -600,14 +600,11 @@ halt
 		setVar $red_taken_ships $red_taken_ships&" "&$RED_CURRENT_SHIP[$i]&" "
 		add $i 1
 	end
-
-
 	setVar $i 1
 	while ($i <= $red_count)
 		setVar $j 1
 		setVar $found_ports 0
 		while (($j <= $NUMBER_CASHING_SHIPS) AND ($found_ports < 2))
-
 			getWordPos $red_taken_ships $pos " "&$SHIPS[$j]&" "
 			if (($REDS[$i][$j] = FALSE) AND ($pos <= 0))
 				add $found_ports 1
@@ -618,10 +615,7 @@ halt
 			end
 			add $j 1
 		end
-
-
 		if ($found_ports >= 2)
-
 			if ($RED_TURNS[$i] > $found_thief_turns)
 				setVar $found_thief TRUE
 				setVar $found_thief_turns $RED_TURNS[$i]
