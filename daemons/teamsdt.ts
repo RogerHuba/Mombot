@@ -574,7 +574,8 @@
 				setVar $i 1
 				while ($i <= $red_count)
 					if $bust_ship = $orders[1][1]
-						setvar $xport_ship $orders[2][1]
+						#setvar $xport_ship $orders[2][1]
+						setvar $xport_ship $ORIGINAL_SHIP[$orders[1]]
 						setvar $bust_planet $orders[1][2]
 						setVar $j $orders[1][3]
 						if ($REDS[$i] = $REDS[$orders[1]])
@@ -586,7 +587,8 @@
 							setVar $REDS[$i][$j] FALSE
 						end
 					else
-						setvar $xport_ship $orders[1][1]
+						#setvar $xport_ship $orders[1][1]
+						setvar $xport_ship $ORIGINAL_SHIP[$orders[1]]
 						setvar $bust_planet $orders[2][2]
 						setVar $j $orders[2][3]
 						if ($REDS[$i] = $REDS[$orders[1]])
@@ -642,7 +644,9 @@
 					send "'blue1 mac pt^m^m^m^m*"
 					setdelaytrigger furb2 :furb2 3000
 					pause
-
+				:furb2
+					killalltriggers
+					
 
 
 			:xport
