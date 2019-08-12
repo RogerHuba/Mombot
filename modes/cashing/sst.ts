@@ -49,6 +49,8 @@
 	setVar $ship_1 $bot~parm1
 	setVar $ship_2 $bot~parm2
 	setVar $steal_divisor $GAME~steal_factor
+
+	
 	IF ($bot~parm3 = "jet")
 			setVar $jet "y"
 	END
@@ -65,7 +67,12 @@
 		setVar $epHaggleFail 0
 		setVar $ephaggle "n"
 	END
+	
+	if ($steal_divisor = 0)
+		setVar $steal_divisor 21
+		send "'No Steal divisor, assuming 21. Bot needs to refresh perhaps?*"
 
+	end
 
 getSectorParameter	1 "LRA" $last_rob_attempt
 	
