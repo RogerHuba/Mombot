@@ -408,7 +408,7 @@
 				setTextTrigger      Phew        :back_to_game     	"Command [TL"
 				setDelayTrigger     delay_close :GameClosedSettings 5000
 				loadvar $bot~password
-				send "T***"&$BOT~password&"***"
+				send "T***"&$BOT~password&"*    *    *    "
 				pause
 			:GameClosedSettings
 				killalltriggers
@@ -438,7 +438,7 @@
 				setVar $fedSpacePhotons FALSE
 				saveVar $fedSpacePhotons
 			end
-			send "**  zaz*z*za9999*z*"
+			send "  *  *  zaz*z*za9999*z*"
 			#if ($PLAYER~CURRENT_SECTOR > 11) and ($PLAYER~CURRENT_SECTOR <> $MAP~STARDOCK)
 			#    send "f1*cd"
 			#end
