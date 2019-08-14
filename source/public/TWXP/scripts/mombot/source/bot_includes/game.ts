@@ -1,5 +1,6 @@
 # ============================== GAME STATS ==============================
 :gamestats
+	send ":y"
     if ($PLAYER~startingLocation = "Citadel")
         send "qqzn"
     end
@@ -412,7 +413,7 @@
 		setVar $fedSpacePhotons FALSE
 		saveVar $fedSpacePhotons
             end
-            send "**  zaz*z*za9999*z*"
+            send "   *   *  zaz*z*za9999*z*"
             #if ($PLAYER~CURRENT_SECTOR > 11) and ($PLAYER~CURRENT_SECTOR <> $MAP~STARDOCK)
             #    send "f1*cd"
             #end
