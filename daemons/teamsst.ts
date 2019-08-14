@@ -208,7 +208,7 @@
 
 	while (($i <= $MAX_BLUE_BOTS) AND ($roll_call_done = FALSE))
 		send "'blue"&$i&" callout*"
-		setDelayTrigger delay :doneblue 3000
+		setDelayTrigger delay :doneblue 4000
 		setTextLineTrigger blue :foundblue "Team: blue"&$i&" " 
 		pause
 
@@ -246,9 +246,21 @@
 			end
 			setVar $BLUES[$i] $blue_sector
 			add $blue_count 1
+			
 			send "'blue"&$i&" stop ephaggle*"
+			setDelayTrigger stopep :stopep 1000 
+			pause
+			:stopep
+				killtrigger stopep
+			
+			send "'blue"&$i&" login*"
+			setDelayTrigger login :login 1000 
+			pause
+			:login
+				killtrigger login
 			setTextLineTrigger blue :toomanyblue "} - Team: blue"&$i&" " 
 			pause
+			
 		:doneblue
 			killtrigger blue
 			if ($BLUES[$i] = 0)
@@ -584,7 +596,13 @@
 						pause
 
 					:done
-						killalltriggers
+					killalltriggers
+					send "'Quick Nap before resuming!*"
+					setdelaytrigger naptime :naptime 3000
+					pause
+					:naptime
+					killalltriggers
+					send "'Wakey Wakey!*"
 				end
 				:xfurbdone
 
