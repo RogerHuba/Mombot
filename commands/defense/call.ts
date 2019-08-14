@@ -46,8 +46,7 @@
 
     :towlocked
         killalltriggers
-        setVar $figstodeploy 1
-        gosub :deployfigs
+     
         send "'Tow locked, get us out of here!*"
         halt
 
