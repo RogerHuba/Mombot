@@ -429,7 +429,7 @@
 				goto :GameClosedSettings
 
 			:refreshpause
-				send "*"
+				send "*  "
 				pause
 			:back_to_game  
 			killalltriggers
