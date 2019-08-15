@@ -45,7 +45,32 @@ setTextLineTrigger  getPlanetNumberRaw    :setPlanetNumberRaw "Land on which pla
 setTextLineTrigger  getShipNumberRaw       :setShipNumberRaw "Choose which ship to beam to (Q=Quit) "
 setdelaytrigger		checkifbotalive       :checkifbotalive 60000
 #setTextLineTrigger  mcicneg :mcicneg    "/unit - MCIC "
+settextlinetrigger lracheck :lracheck "For stealing from this port, your alignment"
+settextlinetrigger lracheck2 :lracheck "For robbing this port, your alignment"
+settextlinetrigger busted :busted "For getting caught your alignment went down by"
+settextlinetrigger fakebusted :fakebusted "(You realize the guards saw you last time!)"
 pause
+
+:busted
+	loadvar $player~current_sector
+	setSectorParameter $player~current_sector "BUSTED" true
+	settextlinetrigger busted :busted "For getting caught your alignment went down by"
+	pause
+
+:fakebusted
+	loadvar $player~current_sector
+	setSectorParameter $player~current_sector "FAKEBUST" true
+	settextlinetrigger fakebusted :fakebusted "(You realize the guards saw you last time!)"
+	pause
+
+:lracheck
+	killtrigger lracheck
+	killtrigger lracheck2
+	loadvar $player~current_sector
+	setSectorParameter 1 "LRA" $player~current_sector
+	settextlinetrigger lracheck :lracheck "For stealing from this port, your alignment"
+	settextlinetrigger lracheck2 :lracheck "For robbing this port, your alignment"
+	pause		
 
 :mcicneg
 	cutText CURRENTLINE&"   " $spoof 1 1

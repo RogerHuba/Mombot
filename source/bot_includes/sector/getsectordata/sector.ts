@@ -27,10 +27,10 @@
 	:gotSectorData
 		getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 		if ($beaconPos > 0)
-		   setVar $containsBeacon TRUE
-				else
-					setVar $containsBeacon FALSE
-				end
+			setVar $containsBeacon TRUE
+		else
+			setVar $containsBeacon FALSE
+		end
 		setvar $player~current_sector currentsector
 		goSub :getTraders
 		goSub :getEmptyShips
