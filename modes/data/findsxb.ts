@@ -23,6 +23,15 @@ setVar $BOT~script_title "Finds triple SXB ports for Team SST/SDT"
 gosub :BOT~banner
 
 
+gosub :player~quikstats
+setVar $location $player~current_prompt
+if ($location <> "Command")
+	setVar $SWITCHBOARD~message "Start from Command Prompt.*"
+	gosub :switchboard~switchboard
+	HALT
+end
+
+
 setVar $MCICREQ1 50
 setVar $MCICREQ2 50
 setVar $MAXDIST 7
@@ -92,6 +101,8 @@ subtract $mciccut2 $MCICREQ2
 #echo $mciccut2 "*"
 setVar $targets 0
 setVar $targetsi 0
+setVar $SWITCHBOARD~message "This will take a couple of minutes...*"
+gosub :switchboard~switchboard
 
 setVar $i 11
 
@@ -112,7 +123,14 @@ while ($i <= SECTORS)
 	add $i 1
 end
 
-
+if ($targetsi > 0)
+	setVar $SWITCHBOARD~message "Potenial First Ports Found.. confirming distances*"
+	gosub :switchboard~switchboard
+else
+	setVar $SWITCHBOARD~message "No Targets Found! exiting..*"
+	gosub :switchboard~switchboard
+	halt
+end
 setVar $i 1
 
 while ($i <= $targetsi)
@@ -131,6 +149,8 @@ while ($i <= $targetsi)
 	add $i 1
 end
 
+setVar $SWITCHBOARD~message "Finding secondary ports..*"
+gosub :switchboard~switchboard
 setVar $i 1
 
 while ($i <= $targetsi)
@@ -153,8 +173,8 @@ while ($i <= $targetsi)
 
 			if (($dist1 > 0) and ($dist2 > 0))
 				if (($dist1 <= $MAXDIST) and ($dist2 <=$MAXDIST))
-					#echo $search " txxo " $maybe ": " $focus "*"
-					#echo $focus " txxo " $cans ": " $search "*"
+					#echo $search " txxo " $dist1 ": " $focus "*"
+					#echo $focus " txxo " $dist2 ": " $search "*"
 					getSectorParameter $focus "EQUIPMENT+" $mc
 					if ($mc <> "")
 						if ($mc < $mciccut2)
@@ -162,7 +182,8 @@ while ($i <= $targetsi)
 							setVar $cans[$cani] $focus
 							setVar $cansMc[$cani] $mc 
 							#echo "CAndidate: " $search " (" $dist1 ")(" $mc_orig ") <> " $focus " (" $dist2 ")(" $mc ")*"
-							
+							setVar $SWITCHBOARD~message "Secondary found.. searching for more*"
+							gosub :switchboard~switchboard
 						else
 							add $maybei 1
 							setVar $maybe[$maybei] $focus
@@ -182,6 +203,8 @@ while ($i <= $targetsi)
 	end
 	
 	if ($cani > 0)
+		setVar $SWITCHBOARD~message "Candidate Found.. Checking for Tertiary port*"
+		gosub :switchboard~switchboard
 		setVar $port3 0
 		setVar $port3MC 0
 		setVar $y 1
@@ -197,6 +220,7 @@ while ($i <= $targetsi)
 				getDistance $dist1 $cans[$y] $maybe[$x]
 				getDistance $dist2 $maybe[$x] $cans[$y]
 
+		#echo $dist1 " " $dist2 " *"
 
 				if (($dist1 <= $MAXDIST) and ($dist2 <=$MAXDIST))
 					#echo $cans[$y] " to " $maybe[$x] ": " $dist1 "*"
@@ -220,7 +244,14 @@ while ($i <= $targetsi)
 				add $x 1
 			end
 		#echo "Best Candidates are " $search " "  $cans[$y] " " $port3 "*"
-		gosub :sendDistance3
+		if ($port3 <> 0)
+			setVar $SWITCHBOARD~message "Tertiary found.. checking for more"
+			gosub :switchboard~switchboard
+			gosub :sendDistance3
+		else
+			setVar $SWITCHBOARD~message "Tertiary no good.. continuing*"
+			gosub :switchboard~switchboard
+		end
 			add $y 1
 		end
 	end
@@ -367,3 +398,4 @@ return
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
