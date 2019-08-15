@@ -78,9 +78,19 @@ gosub :BOT~loadVars
 	else
 		send "J    y    *"
 	end
-
+	setvar $switchboard~message "Checking EPHaggle...*"
+		gosub :switchboard~switchboard
 	
-
+	stop "scripts\mombot\daemons\ephaggle.cts"
+	setDelayTrigger del1 :del1 500
+	pause
+	:del1
+		killtrigger del1
+	load "scripts\mombot\daemons\ephaggle.cts"
+	setDelayTrigger del2 :del2 2000
+	pause
+	:del2
+		killtrigger del2
 
 if ($useplanet = TRUE)
 	send "d"

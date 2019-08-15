@@ -132,12 +132,13 @@ if ($bot~parm1 = "trade")
 
 	if ($bot~parm3 <> "")
 		setVar $trademode "file" 
-		fileExists $exists $bot~parm3
+		setVar $fread $BOT~FOLDER & "/" & $bot~parm3
+		fileExists $exists $fread
 		if ($exists)
 			setArray $pairlist SECTORS
 			setVar $i 1
 			setVar $pairi 1
-			read $bot~parm3 $pair $i
+			read $fread $pair $i
 			while ($pair <> EOF)
 				
 				if ($pair <> "")
@@ -145,7 +146,7 @@ if ($bot~parm1 = "trade")
 					add $pairi 1
 				end
 				add $i 1
-				read $bot~parm3 $pair $i
+				read $fread $pair $i
 			end
 			setVar $totalPairs ($pairi - 1)
 		end
@@ -178,10 +179,11 @@ else
 	
 
 	goSub :getPairs
-	delete $bot~parm2
+	setVar $fwrite $BOT~FOLDER & "/" & $bot~parm2
+	delete $fwrite
 	setVar $i 1
 	while ($i <= $portPairsi)
-		write $bot~parm2 $portPairs[$i][1] & " " & $portPairs[$i][2] & " " & $portPairs[$i][3] & " " & $portPairs[$i][4] & "*"
+		write $fwrite $portPairs[$i][1] & " " & $portPairs[$i][2] & " " & $portPairs[$i][3] & " " & $portPairs[$i][4] & "*"
 		add $i 1
 	end
 
@@ -199,6 +201,21 @@ setVar $loopi 1
 while ($loopi <= $portPairsi)
 	setVar $sec $portPairs[$loopi][1]
 	setVar $pairsec $portPairs[$loopi][2]
+	setVar $skip FALSE
+	if (PORT.EXISTS[$sec] = 1)
+		if (PORT.PERCENTEQUIP[$sec] < 85)
+			setVar $skip TRUE
+		end
+	end
+	if (PORT.EXISTS[$pairsec] = 1)
+		if (PORT.PERCENTEQUIP[$pairsec] < 85)
+			setVar $skip TRUE
+		end
+	end
+	if ($skip = TRUE)
+		goto :nextLoop
+	end
+
 	if ($PLAYER~Turns < $halt_turns)
 		stop "scripts\mombot\commands\cashing\ppt.cts"
 		setVar $SWITCHBOARD~message "Turns are low, halting!*"
