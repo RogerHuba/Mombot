@@ -87,7 +87,7 @@ halt
 
 	send "*"
 	gosub :player~quikstats
-	if ((PORT.BUYFUEL[$start] = false) and ((PORT.CLASS[$start] <> 0) and (PORT.CLASS[$start] <> 9)))
+	if ((PORT.BUYFUEL[$starting] = false) and ((PORT.CLASS[$starting] <> 0) and (PORT.CLASS[$starting] <> 9)))
 		send "p  t  * * *"
 	end
 
