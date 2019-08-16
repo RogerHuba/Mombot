@@ -112,7 +112,7 @@ halt
 	:nomore
 		killtrigger foundcolt
 
-		if ($colts <= $coltcount)
+		if ($colts < $coltcount)
 			setVar $SWITCHBOARD~message "Not enough colts in the sector for "&$coltcount&" sectors.  Buy more colts or choose fewer sectors.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
