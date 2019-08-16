@@ -29,8 +29,8 @@ setTextLineTrigger  fighterserase       :eraseFig       " of your fighters in se
 setTextLineTrigger  warpfigerase        :eraseWarpFig       "You do not have any fighters in Sector "
 setTextLineTrigger  pgridadd    :pgridadd   "Successfully P-gridded into sector "
 setTextLineTrigger  pgridremove    :pgridremove   "Unsuccessful P-grid into sector "
-setTextLineTrigger  clearbusts      :erasebusts     $bot~subspace&">[Busted:"
-setTextLineTrigger  addfigs      :addFigs     $bot~subspace&">[Figged:"
+setTextLineTrigger  clearbusts      :erasebusts     ">[Busted:"
+setTextLineTrigger  addfigs      :addFigs     ">[Figged:"
 setTextLineTrigger  planetmoved      :updatePlanetMovement     " moved to sector "
 setTextLineTrigger      fightersadd     :addFig         "Should they be (D)efensive, (O)ffensive or Charge a (T)oll ?"
 setTextLineTrigger  getPlanetNumber :setPlanetNumber    "Planet #"
@@ -39,7 +39,7 @@ setTextLineTrigger  getshipstats    :setShipOffensiveOdds   "Offensive Odds: "
 setTextLineTrigger  getshipmaxfighters  :setShipMaxFigAttack    " TransWarp Drive:   "
 setTextLineTrigger  captureLevelPlanet  :captureLevelPlanet " Level "
 setTextLineTrigger  captureNoLevelPlanet  :captureNoLevelPlanet " No Citadel"
-setTextLineTrigger  emergency_reboot      :emergency_reboot $bot~bot_name&" "&$bot~subspace&"<EMERGENCY REBOOT>"&$bot~bot_password
+setTextLineTrigger  emergency_reboot      :emergency_reboot "<EMERGENCY REBOOT>"&$bot~bot_password
 setTextLineTrigger  shipdestroyed         :shipdestroyed "You will have to start over from scratch!"
 setTextLineTrigger  getPlanetNumberRaw    :setPlanetNumberRaw "Land on which planet <Q to abort> ? "
 setTextLineTrigger  getShipNumberRaw       :setShipNumberRaw "Choose which ship to beam to (Q=Quit) "
@@ -49,7 +49,14 @@ settextlinetrigger lracheck :lracheck "For stealing from this port, your alignme
 settextlinetrigger lracheck2 :lracheck "For robbing this port, your alignment"
 settextlinetrigger busted :busted "For getting caught your alignment went down by"
 settextlinetrigger fakebusted :fakebusted "(You realize the guards saw you last time!)"
+settextlinetrigger manualsubspace :manualsubspace "Ok, you will send and receive sub-space messages on channel "
 pause
+
+:manualsubspace
+	getText CURRENTLINE&"  [XX][XX][XX]" $bot~subspace "Ok, you will send and receive sub-space messages on channel " " now.  [XX][XX][XX]"
+	savevar $bot~subspace
+	settextlinetrigger manualsubspace :manualsubspace "Ok, you will send and receive sub-space messages on channel "
+	pause
 
 :busted
 	loadvar $player~current_sector
@@ -175,12 +182,19 @@ pause
 	pause
 
 :erasebusts
+	loadvar $bot~subspace
 	cutText CURRENTLINE&"   " $spoof 1 1
+	getwordpos currentline $pos "<"&$bot~subspace&">["
+	getwordpos currentline $pos2 "]<"&$bot~subspace&">"
+	if (($pos <= 0) or ($pos2 <= 0))
+		setvar $spoof true
+	end
 	if ($spoof <> "R")
-		setTextLineTrigger  clearbusts      :erasebusts     $bot~subspace&">[Busted:"
+		setTextLineTrigger  clearbusts      :erasebusts     ">[Busted:"
 		pause
 	end
 	getText CURRENTLINE&" [XX][XX][XX]" $temp ">[Busted:" "]<"
+
 	if ($temp <> "")
 		isNumber $test $temp
 		if ($test)
@@ -190,13 +204,19 @@ pause
 			end
 		end
 	end
-	setTextLineTrigger  clearbusts      :erasebusts     $bot~subspace&">[Busted:"
+	setTextLineTrigger  clearbusts      :erasebusts     ">[Busted:"
 	pause
 
 :addFigs
+	loadvar $bot~subspace
 	cutText CURRENTLINE&"   " $spoof 1 1
+	getwordpos currentline $pos "<"&$bot~subspace&">["
+	getwordpos currentline $pos2 "]<"&$bot~subspace&">"
+	if (($pos <= 0) or ($pos2 <= 0))
+		setvar $spoof true
+	end
 	if ($spoof <> "R")
-		setTextLineTrigger  addfigs      :addFigs     $bot~subspace&">[Figged:"
+		setTextLineTrigger  addfigs      :addFigs     ">[Figged:"
 	
 		pause
 	end
@@ -217,7 +237,7 @@ pause
 				goto :check_figs_again
 			end
 	end
-	setTextLineTrigger  addfigs      :addFigs     $bot~subspace&">[Figged:"
+	setTextLineTrigger  addfigs      :addFigs     ">[Figged:"
 	pause
 
 :updatePlanetMovement
@@ -447,7 +467,14 @@ setTextLineTrigger  shipdestroyed         :shipdestroyed "You will have to start
 pause
 
 :emergency_reboot
-
+	loadvar $bot~subspace
+	loadvar $bot~bot_name
+	loadvar $bot~bot_password
+	getwordpos currentline $pos $bot~bot_name&" "&$bot~subspace&"<EMERGENCY REBOOT>"&$bot~bot_password
+	if ($pos <= 0)
+		setTextLineTrigger  emergency_reboot      :emergency_reboot "<EMERGENCY REBOOT>"&$bot~bot_password
+		pause
+	end
 	setVar $i 1
 	setVar $found FALSE
 	setVar $rebooted FALSE
@@ -474,7 +501,7 @@ pause
 	pause
 	:okaynowemergency
 	load "scripts\mombot\"&$boot_this
-	setTextLineTrigger  emergency_reboot      :emergency_reboot $bot~bot_name&" "&$bot~subspace&"<EMERGENCY REBOOT>"&$bot~bot_password
+	setTextLineTrigger  emergency_reboot      :emergency_reboot "<EMERGENCY REBOOT>"&$bot~bot_password
 	pause
 
 :checkifbotalive
