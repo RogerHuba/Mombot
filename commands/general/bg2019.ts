@@ -10,6 +10,7 @@ setVar $BOT~help[6]  $BOT~tab&"    buydora   - buys Orion "
 setVar $BOT~help[7]  $BOT~tab&"    buycolt   - buys Colt "
 setVar $BOT~help[8]  $BOT~tab&"    movecolt  - moves Colts to sectors  "
 setVar $BOT~help[9]  $BOT~tab&"                  >movecolt 95 16822 87 "
+setVar $BOT~help[10] $BOT~tab&"    grabcolo  - fills any Colt in sector with colos "
 
 gosub :bot~helpfile
 
@@ -39,21 +40,85 @@ if ($bot~parm1 = "buydora")
 end
 
 
-if ($bot~parm1 = "buycolt")
+if (($bot~parm1 = "buycolt") or ($bot~parm1 = "buycolts"))
 	gosub :buycolt
 	halt
 end
 
-if ($bot~parm1 = "movecolt")
+if (($bot~parm1 = "movecolt") or ($bot~parm1 = "movecolts"))
 	gosub :movecolt
 	halt
 end
 
+if (($bot~parm1 = "grabcolo") or ($bot~parm1 = "grabcolos"))
+	gosub :grabcolos
+	halt
+end
 
 setVar $SWITCHBOARD~message "I'll do a lot.. but not that.*"
 gosub :switchboard~switchboard
 halt
 halt
+
+:grabcolos
+	setarray $colts 10
+	setvar $colts 0
+	gosub :player~quikstats
+	setVar $origship $player~SHIP_NUMBER
+	setVar $location $player~current_prompt
+	setVar $starting $player~current_sector
+	if ($location <> "Command")
+		setVar $SWITCHBOARD~message "Start from Command Prompt.*"
+		gosub :switchboard~switchboard
+		HALT
+	end
+	send "w** "
+	settextlinetrigger foundcolt :foundcolt "  0  Colonial Transport"
+	settextlinetrigger nomore :nomore "Choose which ship to tow (Q=Quit)"
+	pause
+	:foundcolt
+		getword currentline $shipnumber 1
+		add $colts 1
+		setvar $colts[$colts] $shipnumber
+		settextlinetrigger foundcolt :foundcolt "  0  Colonial Transport"
+		pause
+	:nomore
+		killtrigger foundcolt
+
+	send "*"
+	gosub :player~quikstats
+	if ((PORT.BUYFUEL[$start] = false) and ((PORT.CLASS[$start] <> 0) and (PORT.CLASS[$start] <> 9)))
+		send "p  t  * * *"
+	end
+
+	setvar $i 1
+	while ($i <= $colts)
+		send "w * "&$colts[$i]&"* "
+		setVar $player~warpto 1
+		gosub :player~twarp
+		if ($player~twarpSuccess = FALSE)
+			setVar $SWITCHBOARD~message "Can't make it to Terra.  Halting.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		gosub :player~quikstats
+		send "x "&$colts[$i]&"*  l **  x "&$origship&"*  w * "&$colts[$i]&"* "
+		if ($player~twarpSuccess = true)
+			setVar $player~warpto $starting
+			gosub :player~twarp
+			if ($player~twarpSuccess = FALSE)
+				setVar $SWITCHBOARD~message "Can't get back!  Halting*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
+			gosub :player~quikstats
+			send "w "
+		end
+		add $i 1
+	end
+
+
+return
 
 :movecolt
 	setarray $colts 10 1
@@ -64,6 +129,11 @@ halt
 	setVar $starting $player~current_sector
 	if ($location <> "Command")
 		setVar $SWITCHBOARD~message "Start from Command Prompt.*"
+		gosub :switchboard~switchboard
+		HALT
+	end
+	if ($bot~parm2 = "")
+		setVar $SWITCHBOARD~message "No sectors selected.  You need to choose a sector to move to.*"
 		gosub :switchboard~switchboard
 		HALT
 	end
@@ -131,12 +201,12 @@ halt
 				gosub :switchboard~switchboard
 				send "*"
 				gosub :player~quikstats
-				if (PORT.BUYFUEL[$colts[$i][1]] = false)
+				if ((PORT.BUYFUEL[$colts[$i][1]] = false) and ((PORT.CLASS[$colts[$i][1]] <> 0) and (PORT.CLASS[$colts[$i][1]] <> 9)))
 					send "p  t  * * *"
 				end
 			end
-			gosub :player~quikstats
 			send "w "
+			gosub :player~quikstats
 			if ($player~twarpSuccess = true)
 				setVar $player~warpto $starting
 				gosub :player~twarp
