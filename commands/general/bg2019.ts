@@ -8,6 +8,8 @@ setVar $BOT~help[4]  $BOT~tab&"    stripcash - strips cash from corp mates (11k+
 setVar $BOT~help[5]  $BOT~tab&"    buycorp   - buys Corp Flag "
 setVar $BOT~help[6]  $BOT~tab&"    buydora   - buys Orion "
 setVar $BOT~help[7]  $BOT~tab&"    buycolt   - buys Colt "
+setVar $BOT~help[8]  $BOT~tab&"    movecolt  - moves Colts to sectors  "
+setVar $BOT~help[9]  $BOT~tab&"                  >movecolt 95 16822 87 "
 
 gosub :bot~helpfile
 
@@ -109,6 +111,12 @@ halt
 		pause
 	:nomore
 		killtrigger foundcolt
+
+		if ($colts <= $coltcount)
+			setVar $SWITCHBOARD~message "Not enough colts in the sector for "&$coltcount&" sectors.  Buy more colts or choose fewer sectors.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
 	
 		setvar $i 1
 		while ($i <= $coltcount)
