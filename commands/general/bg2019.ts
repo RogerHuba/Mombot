@@ -80,6 +80,7 @@ halt
 	send "w** "
 	settextlinetrigger foundcolt :foundcolt "  0  Colonial Transport"
 	settextlinetrigger nomore :nomore "Choose which ship to tow (Q=Quit)"
+	settextlinetrigger nomore2 :nomore "You do not own any other ships in this sector!"
 	pause
 	:foundcolt
 		getword currentline $shipnumber 1
@@ -89,6 +90,8 @@ halt
 		pause
 	:nomore
 		killtrigger foundcolt
+		killtrigger nomore
+		killtrigger nomore2
 
 	if ($colts <= 0)
 		setVar $SWITCHBOARD~message "No Colts found in this sector.*"
@@ -182,6 +185,7 @@ return
 	send "w** "
 	settextlinetrigger foundcolt :foundcolt "  0  Colonial Transport"
 	settextlinetrigger nomore :nomore "Choose which ship to tow (Q=Quit)"
+	settextlinetrigger nomore2 :nomore "You do not own any other ships in this sector!"
 	pause
 	:foundcolt
 		getword currentline $shipnumber 1
@@ -191,6 +195,8 @@ return
 		pause
 	:nomore
 		killtrigger foundcolt
+		killtrigger nomore
+		killtrigger nomore2
 
 		if ($colts <= 0)
 			setVar $SWITCHBOARD~message "No Colts found in this sector.*"
