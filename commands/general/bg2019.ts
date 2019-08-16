@@ -121,6 +121,11 @@ halt
 			else
 				setVar $SWITCHBOARD~message "Colt moved to sector "&$colts[$i][1]&".*"
 				gosub :switchboard~switchboard
+				send "*"
+				gosub :player~quikstats
+				if (PORT.BUYFUEL[$colts[$i][1]] = false)
+					send "p  t  * * *"
+				end
 			end
 			gosub :player~quikstats
 			send "w "
