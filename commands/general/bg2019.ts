@@ -42,11 +42,105 @@ if ($bot~parm1 = "buycolt")
 	halt
 end
 
+if ($bot~parm1 = "movecolt")
+	gosub :movecolt
+	halt
+end
+
 
 setVar $SWITCHBOARD~message "I'll do a lot.. but not that.*"
 gosub :switchboard~switchboard
 halt
 halt
+
+:movecolt
+	setarray $colts 10 1
+	setvar $colts 0
+	gosub :player~quikstats
+	setVar $origship $player~SHIP_NUMBER
+	setVar $location $player~current_prompt
+	setVar $starting $player~current_sector
+	if ($location <> "Command")
+		setVar $SWITCHBOARD~message "Start from Command Prompt.*"
+		gosub :switchboard~switchboard
+		HALT
+	end
+	setvar $coltcount 0
+	if ($bot~parm2 <> "")
+		isnumber $isanumber $bot~parm2
+		if ($isanumber <> true)
+			setVar $SWITCHBOARD~message "Sector param is invalid.*"
+			gosub :switchboard~switchboard
+			HALT
+		end
+		add $coltcount 1
+		setvar $colts[$coltcount][1] $bot~parm2
+	end
+	if ($bot~parm3 <> "")
+		isnumber $isanumber $bot~parm3
+		if ($isanumber <> true)
+			setVar $SWITCHBOARD~message "Sector param is invalid.*"
+			gosub :switchboard~switchboard
+			HALT
+		end
+		add $coltcount 1
+		setvar $colts[$coltcount][1] $bot~parm3
+	end
+	if ($bot~parm4 <> "")
+		isnumber $isanumber $bot~parm4
+		if ($isanumber <> true)
+			setVar $SWITCHBOARD~message "Sector param is invalid.*"
+			gosub :switchboard~switchboard
+			HALT
+		end
+		add $coltcount 1
+		setvar $colts[$coltcount][1] $bot~parm4
+
+	end
+	send "w** "
+	settextlinetrigger foundcolt :foundcolt "  0  Colonial Transport"
+	settextlinetrigger nomore :nomore "Choose which ship to tow (Q=Quit)"
+	pause
+	:foundcolt
+		getword currentline $shipnumber 1
+		add $colts 1
+		setvar $colts[$colts] $shipnumber
+		settextlinetrigger foundcolt :foundcolt "  0  Colonial Transport"
+		pause
+	:nomore
+		killtrigger foundcolt
+	
+		setvar $i 1
+		while ($i <= $coltcount)
+			send "w * "&$colts[$i]&"* "
+			setVar $player~warpto $colts[$i][1]
+			gosub :player~twarp
+			if ($player~twarpSuccess = FALSE)
+				setVar $SWITCHBOARD~message "Sector missing fig, moving onto next.*"
+				gosub :SWITCHBOARD~switchboard
+			else
+				setVar $SWITCHBOARD~message "Colt moved to sector "&$colts[$i][1]&".*"
+				gosub :switchboard~switchboard
+			end
+			gosub :player~quikstats
+			send "w "
+			if ($player~twarpSuccess = true)
+				setVar $player~warpto $starting
+				gosub :player~twarp
+				if ($player~twarpSuccess = FALSE)
+					setVar $SWITCHBOARD~message "Can't get back!  Halting*"
+					gosub :SWITCHBOARD~switchboard
+					halt
+				end
+				gosub :player~quikstats
+			end
+			add $i 1
+		end
+
+		halt
+return
+
+
 
 :buycolt
 	gosub :player~quikstats
@@ -181,7 +275,7 @@ return
 	:flagnotok
 		killalltriggers
 		send "q q "
-		setVar $SWITCHBOARD~message "Your not the CEO!.*"
+		setVar $SWITCHBOARD~message "You're not the CEO!.*"
 		gosub :switchboard~switchboard
 		halt
 	:flagok

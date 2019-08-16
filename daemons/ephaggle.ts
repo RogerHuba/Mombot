@@ -36,7 +36,6 @@ setvar $game~ptradesetting 100
 setvar $bot~bluehaggle false
 setvar $SWATHBIDCAP "On"
 setvar $HAGGLESTAT "Active"
-setvar $SUPPRESSMENU "Off"
 
 
 #addmenu "" "haggle" "Haggle Options" "." "" "Haggle" FALSE
@@ -48,7 +47,6 @@ setvar $SUPPRESSMENU "Off"
 #addmenu "haggle" "Blue Haggle" "Blue Haggle" 5 :SETBLUEHAGGLE "" FALSE
 #addmenu "haggle" "Swath Offer Capture" "Swath Offer Capture" 6 :SETSWATHBIDCAP "" FALSE
 #addmenu "haggle" "Haggle Toggle" "Haggle Toggle" 7 :HAGGLESTAT "" FALSE
-#addmenu "haggle" "Suppress Menu" "Suppress Menu on Load" 8 :SUPPRESSMENU "" FALSE
 #addmenu "haggle" "QueryPort" "Query DB for Current Port Info" 9 :QUERYPORT "" FALSE
 #addmenu "haggle" "Import Parms" "Import Sector Parms From file" "i" :IMPORTPARMSFROMFILE "" FALSE
 #addmenu "haggle" "Write Parms" "Write Sector Parms to file" "w" :WRITEPARMS2FILE "" FALSE
