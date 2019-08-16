@@ -93,7 +93,7 @@ halt
 
 	setvar $i 1
 	while ($i <= $colts)
-		send "w * "&$colts[$i]&"* "
+		send "x  "&$colts[$i]&"*  j y x  "&$origship&"*  w * "&$colts[$i]&"* "
 		setVar $player~warpto 1
 		gosub :player~twarp
 		if ($player~twarpSuccess = FALSE)
@@ -102,7 +102,7 @@ halt
 			halt
 		end
 		gosub :player~quikstats
-		send "x "&$colts[$i]&"*  l **  x "&$origship&"*  w * "&$colts[$i]&"* "
+		send "x  "&$colts[$i]&"*  l**  x  "&$origship&"*  w * "&$colts[$i]&"* "
 		if ($player~twarpSuccess = true)
 			setVar $player~warpto $starting
 			gosub :player~twarp
