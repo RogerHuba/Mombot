@@ -67,6 +67,11 @@ halt
 	setVar $origship $player~SHIP_NUMBER
 	setVar $location $player~current_prompt
 	setVar $starting $player~current_sector
+	if (($starting = $map~stardock) or ($starting <= 10))
+		setVar $SWITCHBOARD~message "Can't start this from Fed Space.*"
+		gosub :switchboard~switchboard
+		HALT
+	end
 	if ($location <> "Command")
 		setVar $SWITCHBOARD~message "Start from Command Prompt.*"
 		gosub :switchboard~switchboard
