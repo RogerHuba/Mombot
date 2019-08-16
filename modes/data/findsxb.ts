@@ -245,7 +245,7 @@ while ($i <= $targetsi)
 			end
 		#echo "Best Candidates are " $search " "  $cans[$y] " " $port3 "*"
 		if ($port3 <> 0)
-			setVar $SWITCHBOARD~message "Tertiary found.. checking for more"
+			setVar $SWITCHBOARD~message "Tertiary found.. checking for more*"
 			gosub :switchboard~switchboard
 			gosub :sendDistance3
 		else
