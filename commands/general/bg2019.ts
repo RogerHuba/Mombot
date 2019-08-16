@@ -90,6 +90,11 @@ halt
 	:nomore
 		killtrigger foundcolt
 
+	if ($colts <= 0)
+		setVar $SWITCHBOARD~message "No Colts found in this sector.*"
+		gosub :switchboard~switchboard
+		HALT
+	end
 
 	setvar $i 1
 	while ($i <= $colts)
@@ -187,6 +192,11 @@ return
 	:nomore
 		killtrigger foundcolt
 
+		if ($colts <= 0)
+			setVar $SWITCHBOARD~message "No Colts found in this sector.*"
+			gosub :switchboard~switchboard
+			HALT
+		end
 		if ($colts < $coltcount)
 			setVar $SWITCHBOARD~message "Not enough colts in the sector for "&$coltcount&" sectors.  Buy more colts or choose fewer sectors.*"
 			gosub :SWITCHBOARD~switchboard
