@@ -85,14 +85,14 @@ halt
 	:nomore
 		killtrigger foundcolt
 
-	send "*"
-	gosub :player~quikstats
-	if ((PORT.BUYFUEL[$starting] = false) and ((PORT.CLASS[$starting] <> 0) and (PORT.CLASS[$starting] <> 9)))
-		send "p  t  * * *"
-	end
 
 	setvar $i 1
 	while ($i <= $colts)
+		send "*"
+		gosub :player~quikstats
+		if ((PORT.BUYFUEL[$starting] = false) and ((PORT.CLASS[$starting] <> 0) and (PORT.CLASS[$starting] <> 9)))
+			send "p  t  * * *"
+		end
 		send "x  "&$colts[$i]&"*  *  j y x  "&$origship&"*  *  w * "&$colts[$i]&"* "
 		setVar $player~warpto 1
 		gosub :player~twarp
