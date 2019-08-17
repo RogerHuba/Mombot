@@ -104,6 +104,7 @@ return
 :replacevariable
 	setvar $b 1
 	replacetext $word "$" ""
+	setvar $isfound false
 	while (($variable_array[$b][1] <> "0") and ($isfound = false))
 		if ($variable_array[$b][1] = $word)
 			replacetext $script_line "$"&$word "$"&$variable_array[$b]
@@ -121,6 +122,7 @@ return
 :replacelabel
 	setvar $b 1
 	replacetext $word ":" ""
+	setvar $isfound false
 	while (($label_array[$b][1] <> "0") and ($isfound = false))
 		if ($label_array[$b][1] = $word)
 			replacetext $script_line ":"&$word ":"&$label_array[$b]
