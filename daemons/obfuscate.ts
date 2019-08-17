@@ -77,10 +77,10 @@ halt
 						if ($isinclude <> false)
 							# ignore include labels and variables #
 						else
-							if ($isvariable <> false)
+							if ($isvariable > 0)
 								gosub :replacevariable
 							end
-							if (($isgosub <> false) and ($isstring = false))
+							if (($isgosub = 1) and ($isstring <= 0))
 								gosub :replacelabel
 							end
 						end
