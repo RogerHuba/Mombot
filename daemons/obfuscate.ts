@@ -62,7 +62,13 @@ halt
 				read $script_file $script_line $k
 				while ($script_line <> EOF)
 					setvar $m 1
-					getword $script_line $word $m "<<ENDOFLINE>>"
+					setvar $temp $script_line
+					replacetext $temp "&" " & "
+					replacetext $temp "[" " [ "
+					replacetext $temp "]" " ] "
+					replacetext $temp "(" " ( "
+					replacetext $temp ")" " ) "
+					getword $temp $word $m "<<ENDOFLINE>>"
 					while ($word <> "<<ENDOFLINE>>")
 						getwordpos $word $isvariable "$"
 						getwordpos $word $isgosub ":"
@@ -79,7 +85,7 @@ halt
 							end
 						end
 						add $m 1
-						getword $script_line $word $m "<<ENDOFLINE>>"
+						getword $temp $word $m "<<ENDOFLINE>>"
 					end
 					setvar $script[$k] $script_line
 					add $k 1
