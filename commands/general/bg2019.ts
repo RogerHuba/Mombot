@@ -183,17 +183,17 @@ return
 
 	end
 	send "w** "
-	settextlinetrigger foundcolt :foundcolt "  0  Colonial Transport"
-	settextlinetrigger nomore :nomore "Choose which ship to tow (Q=Quit)"
-	settextlinetrigger nomore2 :nomore "You do not own any other ships in this sector!"
+	settextlinetrigger foundcolt :foundcoltmove "  0  Colonial Transport"
+	settextlinetrigger nomore :nomoremove "Choose which ship to tow (Q=Quit)"
+	settextlinetrigger nomore2 :nomoremove "You do not own any other ships in this sector!"
 	pause
-	:foundcolt
+	:foundcoltmove
 		getword currentline $shipnumber 1
 		add $colts 1
 		setvar $colts[$colts] $shipnumber
 		settextlinetrigger foundcolt :foundcolt "  0  Colonial Transport"
 		pause
-	:nomore
+	:nomoremove
 		killtrigger foundcolt
 		killtrigger nomore
 		killtrigger nomore2
