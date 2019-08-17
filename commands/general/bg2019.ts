@@ -11,6 +11,7 @@ setVar $BOT~help[7]  $BOT~tab&"    buycolt   - buys Colt "
 setVar $BOT~help[8]  $BOT~tab&"    movecolt  - moves Colts to sectors  "
 setVar $BOT~help[9]  $BOT~tab&"                  >movecolt 95 16822 87 "
 setVar $BOT~help[10] $BOT~tab&"    grabcolo  - fills any Colt in sector with colos "
+setVar $BOT~help[10] $BOT~tab&"    docim     - downloads port/warp data "
 
 gosub :bot~helpfile
 
@@ -39,6 +40,10 @@ if ($bot~parm1 = "buydora")
 	halt
 end
 
+if ($bot~parm1 = "docim")
+	gosub :docim
+	halt
+end
 
 if (($bot~parm1 = "buycolt") or ($bot~parm1 = "buycolts"))
 	gosub :buycolt
@@ -244,7 +249,19 @@ return
 		halt
 return
 
+:docim
 
+	setVar $SWITCHBOARD~message "Entering the matrix...*"
+	gosub :switchboard~switchboard
+	send "^i?"
+	waitfor "<U> Unexplored Sectors"
+	send "r?"
+	waitfor "<U> Unexplored Sectors"
+	send "q"
+	setVar $SWITCHBOARD~message "Cim downlaod complete..*"
+	gosub :switchboard~switchboard
+
+return
 
 :buycolt
 	gosub :player~quikstats
@@ -359,7 +376,46 @@ return
 	send "tfyf450*fnyf450** * * "
 	setVar $SWITCHBOARD~message "Should be in Orion.*"
 	gosub :switchboard~switchboard
-	HALT
+
+	setVar $sec 1001
+	:pathagain
+	send "cf*" $sec "*q"
+	
+	setTextLineTrigger shortest :shortest "The shortest path"
+	pause
+	:shortest
+		killalltriggers
+		getword CURRENTLINE $hops 4
+		STRIPTEXT $hops "("
+		if ($hops < 8)
+			add $sec 1
+			waitfor "<Computer deactivated>"
+			goto :pathagain
+		else
+			
+			setTextLineTrigger thepath :thepath " > "
+			pause
+			:thepath
+				killalltriggers
+				getword CURRENTLINE $whereto 11
+				STRIPTEXT $whereto ")"
+				STRIPTEXT $whereto "("
+				setVar $BOT~command "mow"
+				setVar $BOT~user_command_line " mow "& $whereto 
+				setVar $BOT~parm1 $whereto
+				saveVar $BOT~parm1
+				saveVar $BOT~command
+				saveVar $BOT~user_command_line
+				load "scripts\mombot\modes\grid\mow.cts"
+				setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+				pause
+				:mowended
+					send "'" $SWITCHBOARD~BOT_NAME " dora 2000 none ports*"
+					halt
+
+		end
+
+	halt
 
 return
 

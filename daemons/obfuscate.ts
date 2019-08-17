@@ -113,13 +113,14 @@ return
 				end
 
 				:write_new_script_file
-					delete $script_file
+					setvar $new_script $script_file
+					replacetext $new_script ".ts" "_obfuscated.ts"
 					setvar $k 1
 					while ($script[$k] <> "0")
-						write $script_file $script[$k]
+						write $new_script $script[$k]
 						add $k 1
 					end
-					echo "*Writing new script: ["&$script_file&"]*"
+					echo "*Writing new script: ["&$new_script&"]*"
 			end
 			add $j 1
 		end
@@ -141,6 +142,22 @@ return
 		setvar $variable_array[$b][1] $word
 	end
 
+return
+
+:replacelabel
+	setvar $b 1
+	replacetext $word ":" ""
+	while (($label_array[$b][1] <> "0") and ($isfound = false))
+		if ($label_array[$b][1] = $word)
+			replacetext $script_line ":"&$word ":"&$label_array[$b]
+			setvar $isfound true
+		end
+		add $b 1
+	end
+	if ($isfound <> true)
+		replacetext $script_line "$"&$word "$"&$label_array[$b]
+		setvar $label_array[$b][1] $word
+	end
 return
 
 :getvariables
