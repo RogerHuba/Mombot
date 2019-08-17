@@ -111,6 +111,8 @@ return
 :replacevariable
 	setvar $b 1
 	replacetext $word "$" ""
+	replacetext $word "(" ""
+	replacetext $word ")" ""
 	if ($isarray = true)
 		setvar $word $word&"<<END>>"
 		getText $word $remove "[" "<<END>>"
