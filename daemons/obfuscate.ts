@@ -68,15 +68,70 @@ halt
 					replacetext $temp "]" " ] "
 					replacetext $temp "(" " ( "
 					replacetext $temp ")" " ) "
+					replacetext $temp "killtrigger " "killtrigger"
+					replacetext $temp "killtrigger " "killtrigger"
+					replacetext $temp "killtrigger " "killtrigger"
+					replacetext $temp "killtrigger " "killtrigger"
+					replacetext $temp "killtrigger " "killtrigger"
+					replacetext $temp "killtrigger " "killtrigger"
+					replacetext $temp "killtrigger " "killtrigger"
+					replacetext $temp "killtrigger " "killtrigger"
+					replacetext $temp "killtrigger " "killtrigger"
+					replacetext $temp "killtrigger " "killtrigger"
+					replacetext $temp "killtrigger " "killtrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settexttrigger " "settexttrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "settextlinetrigger " "settextlinetrigger"
 					getword $temp $word $m "<<ENDOFLINE>>"
 					while ($word <> "<<ENDOFLINE>>")
 						getwordpos $word $isvariable "$"
 						getwordpos $word $isgosub ":"
 						getwordpos $word $isstring ":"&#42
 						getwordpos $word $isinclude "~"
+						getwordpos $word $isinclude "~"
+						getwordpos $word $istrigger "killtrigger"
+						getwordpos $word $istrigger2 "settextlinetrigger"
+						getwordpos $word $istrigger3 "settexttrigger"
 						if ($isinclude <> false)
 							# ignore include labels and variables #
 						else
+							if (($istrigger > 0) or ($istrigger2 > 0) or ($istrigger3 > 0))
+								gosub :replacetrigger
+							end
 							if ($isvariable > 0)
 								gosub :replacevariable
 							end
@@ -149,6 +204,25 @@ return
 	end
 return
 
+:replacetrigger
+	setvar $b 1
+	replacetext $word "settextlinetrigger" ""
+	replacetext $word "settexttrigger" ""
+	replacetext $word "killtrigger" ""
+	setvar $isfound false
+	while (($trigger_array[$b][1] <> "0") and ($isfound = false))
+		if ($trigger_array[$b][1] = $word)
+			replacetext $script_line " "&$word " "&$trigger_array[$b]
+			setvar $isfound true
+		end
+		add $b 1
+	end
+	if ($isfound <> true)
+		replacetext $script_line " "&$word " "&$trigger_array[$b]
+		setvar $trigger_array[$b][1] $word
+	end
+return
+
 :getvariables
 	setarray $variable_array 200 1
 	setvar $variables "adskljl idasoiudsa lkjsad lkjassdalkhsdh udsaasfewfgtthryhi auaoeieoiofksa dasjhsakjsda  hadksjds jgrerllkhasd kjsahd euiqwye qwu iweqiu klkal qwoiwqoei wmmmdksl xndanknjads ajsdjnkajnsd asduhui dakasjkjka ajsdjka sjdkjansdh whueqiehl mksdmkalkmasd alsdkdsajhuh kjdasijoias  jaoadslds jokdlskjli aseioweuowud joiaaslslsdj osadlkjlkji jdsadsaljfoi papsadlkjesp pppwpowooopp ssldasjlkjassdasuuus usuuddsasdsuus iiasuiu wwqhdhj xczcxz mnmmmmkl asddnnn wqeiuwqiue lslashdh jpqpwppw tsjkkk rtucat dddog sspencil traderxx xxportxx xxstarbasexx oolandingoo pasparting dsuoas hjsdakjh papapap yayayaya rsrsrsrs udududud ehehjjsjhd wmwmwmll sydujash mklckmlkm kdjsahkjhsd uwheiuhqwejn sdjhkjdsah lkoiieowow ksdjjklasjadslk dsauiiwqi ppppspspspks jsahwywuw wpwpwpwp wweeewww sjajkskjsk dshdssssuehiuh askdjkjasdhkjahsdk pvp ion mom rend sjkkk ppsawwiow njaskskkal tsrashjaosij mclsdkmcsdl sadhiuhsa kalsalk hdyuqwywq slmcmccl wiwo dasjoi qwuhfifweh jhdcs dajslkj euwhfguvygie wuqdhoci jasljcbveweid uwpajcalksdjk adsbvhjs bcakjscnjv nshjdbva sgvajbcskj dancvbgsjd abskjdndl nfweuidie wyfhike dlasljasc bhbsjdvaj hsndcanvh fjsbdajvsd bkjnxoweh dfieuyhvi wejdacln asduihue wrieuwrds uhfiuasdk jnvnlkmgiore tuhiuweh dndsklfgioe hqiweygdsjn mvkbtgfansjkb avstfqcwd ytegfisdkna svmdgktmtn iuesbdua svdfuibgn sjdkn vsdhbfs kjvnasdreteret"
@@ -175,6 +249,21 @@ return
 	end
 
 return
+
+:gettriggers
+	setarray $trigger_array 200 1
+	setvar $triggers "ncnc dcdjknncn nseuie yewiiwuwqowopw eoqpwelklksa klasdncb gufuweyghi quojoiwsm dlkadsasddsanc dmopqwefi ugruvyh rbnlekde oiuriyewjc ndndvdtveh jnoudiewyt dvbjcnjme dcjcnbg svdfwvytqudbid nfmewopijoeuf hveiybcnlck mpissooso ososiodo isdodsodjd eefhbhcd bhdchnsjnswwhb gtertyeu iueiuewiueid cnsjnkdsj nkhbgvtresw qezwaewwa wwawaewedfg cgvhbjknkh gfdtryuiop pppfpg fpfgpfgpf kdsoldfkjl kjvnsmdmm kdkmkmcdjnhb dchbdjhbbdcd bhjbdjhdbsj hdsbjdhbcjd hsbjhbneiu hruyrgtffr dersrwrse dfytuyhh bvgfcdxf zxgfguyg utfrty fytugiu hkhbvtce ertryftjg vjkbnbkju buvjhvjh vghvghjcf ghfgdxg fhcjhgv jgyft rdtrdy tfgjhb hbkjbkj bkjbhbhbk bkjbkjbkj bkjbbvgtt xerwzewaer tyfugbkoe poepwrure porweiepi worpoire whjkdsk hdfshkjfs dkjhfdsk jhkjhds akjbka bjhcsjdghv chfsgcyv uyegwuyqt eiqueow iquoiwqj jksnalndl kasdjlask jlajssadkbhu gwvuqwyte yguqywqe wiuwqey iudhjbkc hbdkcjsn xmklmalxk msediuedi uewhiuewu yigswioiojswkl sksalkjdlajks ldhaigywuy fugrjjoie ojdiojwu ihsuygqft wyfwdtrsrtd wrwdrtsr swywqu gwusyggw qiuhednroio fjoig joierough iyefieuybd eiwndo wnrhvbcjh bnkdjn wehuigh wreiyhdqo wijoajn dwshugsv yrwfsguyid uheiufg iruhfoi rtjgoeirgj oirwfe hdisag utdfetufg firwufhed oiejdoiwj ofuhwify gieyfg iewfgie wfuhoe iwfowefij oewijou hieygue wqfdutu yiqedhi uwehdoqdh oqidhwoijq woqiheiu gquwyeg iqegwiugei yfgiwheoe ihfouwe hfiuegue ofhou hwfeo"
+
+	setvar $a 1
+	getword $triggers $word $a "<<DONE>>"
+	while ($word <> "<<DONE>>")
+		setvar $trigger_array[$a] $word
+		add $a 1
+		getword $triggers $word $a "<<DONE>>"
+	end
+
+return
+
 
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
