@@ -80,7 +80,8 @@ halt
 							if ($isvariable > 0)
 								gosub :replacevariable
 							end
-							if (($isgosub = 1) and ($isstring <= 0))
+							getlength $word $length
+							if (($isgosub = 1) and ($isstring <= 0) and ($length > 2))
 								gosub :replacelabel
 							end
 						end
