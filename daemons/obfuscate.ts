@@ -41,37 +41,10 @@ end
 	getFileList $scriptList $folder&$filter&".ts"
 	gosub :reconfigure_scripts
 
-	echo "*[ Add include processing complete. ]*"
+	echo "*[ Obfuscation processing complete. ]*"
 
 halt
 
-:check_for_include
-	getwordpos $lowercase_script_line $pos  ":"&$include&"~"
-	getwordpos $doublecheck $pos2 " "&$include&" "
-	setvar $command_pos 0
-	setvar $command_pos2 0
-	if ($command <> "")
-		#echo "*["&$include&"~"&$command&"]*"
-		getwordpos $lowercase_script_line $command_pos ":"&$include&"~"&$command
-		getwordpos $doublecheck2 $command_pos2 " "&$include&"~"&$command&" "
-	end
-	if (($pos > 0) and ($pos2 <= 0))
-		fileExists $includeExists "scripts\mombot\"&$prepath&$include&".ts"
-		if ($includeExists)
-			add $paths 1
-			setvar $paths[$paths] $prepath&$include
-		end
-		setvar $doublecheck $doublecheck&" "&$include&" "
-	end
-	if (($command_pos > 0) and ($command_pos2 <= 0))
-		add $paths 1
-		setvar $paths[$paths] $prepath&$include&"\"&$command&"\"&$include
-		setvar $doublecheck2 $doublecheck2&" "&$include&"~"&$command&" "		
-	end
-	#setdelaytrigger delay :done_delay 10
-	#pause
-	:done_delay
-return
 
 :reconfigure_scripts
 
@@ -104,10 +77,10 @@ return
 								gosub :replacelabel
 							end
 						end
-						setvar $script[$m] $script_line
 						add $m 1
 						getword $script_line $word $m "<<ENDOFLINE>>"
 					end
+					setvar $script[$k] $script_line
 					add $k 1
 					read $script_file $script_line $k
 				end
@@ -115,6 +88,7 @@ return
 				:write_new_script_file
 					setvar $new_script $script_file
 					replacetext $new_script ".ts" "_obfuscated.ts"
+					delete $new_script
 					setvar $k 1
 					while ($script[$k] <> "0")
 						write $new_script $script[$k]
