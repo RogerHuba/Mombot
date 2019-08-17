@@ -66,14 +66,21 @@ halt
 					while ($word <> "<<ENDOFLINE>>")
 						getwordpos $word $isvariable "$"
 						getwordpos $word $isgosub ":"
+						getwordpos $word $isstring ":"&#42
 						getwordpos $word $isinclude "~"
 						if ($isinclude <> false)
 							# ignore include labels and variables #
 						else
 							if ($isvariable <> false)
+								getwordpos $word $pos "["
+								getwordpos $word $pos2 "]"
+								setvar $isarray false
+								if (($pos > 0) and ($pos2 > $pos))
+									setvar $isarray true
+								end
 								gosub :replacevariable
 							end
-							if ($isgosub <> false)
+							if (($isgosub <> false) and ($isstring = false))
 								gosub :replacelabel
 							end
 						end
@@ -104,6 +111,11 @@ return
 :replacevariable
 	setvar $b 1
 	replacetext $word "$" ""
+	if ($isarray = true)
+		setvar $word $word&"<<END>>"
+		getText $word $remove "[" "<<END>>"
+		replacetext $word $remove ""
+	end
 	setvar $isfound false
 	while (($variable_array[$b][1] <> "0") and ($isfound = false))
 		if ($variable_array[$b][1] = $word)
