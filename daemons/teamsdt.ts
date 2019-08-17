@@ -518,7 +518,27 @@
 			settextlinetrigger lowturns :lowturns "NO Bust, stopping because I'm down to"
 			settextlinetrigger fake :fake "FAKE"
 			settextlinetrigger run :waitforredbust "Busted in ship"
+			settextlinetrigger emergencystop :emergencystop "STOP"
 			pause
+			:emergencystop
+				killalltriggers
+				cutText CURRENTLINE&"   " $spoof 1 1
+				if (($spoof = "R") or ($spoof = "'"))
+					
+					send "'red"&$orders[1]&" STOPALL*"
+					waitfor " All non-system scripts and modules killed, and"
+					
+					send "'red"&$orders[1]&" x "& $ORIGINAL_SHIP[$orders[1]] &"*"
+					settexttrigger emergency :emergency  "- Xport complete."
+					pause
+					:emergency
+					killalltriggers
+						setVar $SWITCHBOARD~MESSAGE "Emergency Stop - Do something useful?*"
+						gosub :SWITCHBOARD~SWITCHBOARD
+						halt
+				else
+					goto :repeatorders
+				end
 			:wrong
 				killalltriggers
 				setVar $SWITCHBOARD~MESSAGE "Ships got messed up somehow.  Better check it out!  Halting.*"
@@ -652,7 +672,7 @@
 					:pdelay
 					killtrigger pdelay
 					send "'blue1 mac pt^m^m^m^m*"
-					setdelaytrigger furb2 :furb2 3000
+					setdelaytrigger furb2 :furb2 8000
 					pause
 				:furb2
 					killalltriggers

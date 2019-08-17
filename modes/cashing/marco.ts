@@ -82,6 +82,7 @@ setVar $ports[7] SSS
 setVar $ports[8] BBB
 
 
+gosub :player~isEpHaggle
 
 
 if (($bot~parm1 <> "trade") and ($bot~parm1 <> "report"))
@@ -670,4 +671,5 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\switchboard"
 include "source\bot_includes\player\moveintosector\player"
 include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\player\isephaggle\player"
 include "source\module_includes\bot\helpfile\bot"
