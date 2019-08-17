@@ -1717,7 +1717,7 @@ return
 				setVar $nNew[$deni] 0
 			end
 			
-			
+			STRIPTEXT $secDensity ","			
 			setVar $nDensity[$deni] $secDensity
 			setVar $nSector[$deni] $scanSector
 			setVar $nWarps[$deni] $secWarps
