@@ -20,8 +20,7 @@
 			 setvar $setparm TRUE
 		end
 		gosub :PLAYER~quikstats
-
-		setvar $path "dataminer\" & GAMENAME & "-"
+		setvar $path "scripts/mombot/games/" & GAMENAME & "-"
 		getWordPos $bot~user_command_line $pos "map"
 		if ($pos > 0)
 			 delete $path & deadend.txt
