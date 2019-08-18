@@ -136,7 +136,7 @@ killalltriggers
 :verifyship   
     gosub :player~quikstats
     IF ($player~ship_number <> $ship_1)
-           send "x " $ship_1 "* q z n"
+           send "x  " $ship_1 "*  q z *   "
     END
     gosub :player~quikstats
     IF ($player~ship_number <> $ship_1)
