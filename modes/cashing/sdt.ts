@@ -77,7 +77,7 @@ reqRecording
 
     if ($GAME~steal_factor = 0)
 	setVar $GAME~steal_factor 21
-	send "No Steal factor!! assuming 21, you need to ensure bot has refreshed!*"
+	send "'{" $switchboard~bot_name "}No Steal factor!! assuming 21, you need to ensure bot has refreshed!*"
     end
 
 	gosub :player~isEpHaggle
