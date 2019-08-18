@@ -115,7 +115,7 @@ halt
 					replacetext $temp "settextlinetrigger " "settextlinetrigger"
 					replacetext $temp "settextlinetrigger " "settextlinetrigger"
 					replacetext $temp "settextlinetrigger " "settextlinetrigger"
-					replacetext $temp "settextlinetrigger " "settextlinetrigger"
+					replacetext $temp "setTextLineTrigger " "settextlinetrigger"
 					getword $temp $word $m "<<ENDOFLINE>>"
 					while ($word <> "<<ENDOFLINE>>")
 						getwordpos $word $isvariable "$"
