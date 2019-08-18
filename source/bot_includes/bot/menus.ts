@@ -173,7 +173,7 @@
 	echo ANSI_10&"  "&ANSI_7&$qss_var[12]&ANSI_10&"  "&#27&"[35m<"&#27&"[32mR"&#27&"[35m> "&ANSI_7&$qss_var[14]&"*"
 	echo ANSI_10&"  "&ANSI_7&$qss_var[11]&ANSI_10&"  "&ANSI_10&""&#27&"[35m<"&#27&"[32mA"&#27&"[35m> "&ANSI_7&$qss_var[15]&"*"
 	echo ANSI_10&"  "&ANSI_7&$qss_var[17]&ANSI_10&"  "&#27&"[35m<"&#27&"[32mH"&#27&"[35m> "&ANSI_7&$qss_var[16]&"*"
-	echo ANSI_10&"  "&ANSI_7&$qss_var[2]&ANSI_10&"  "&#27&"[35m<"&#27&"[32mX"&#27&"[35m> "&ANSI_7&$qss_var[22]&"*"
+	echo ANSI_10&"  "&ANSI_7&$qss_var[10]&ANSI_10&"  "&#27&"[35m<"&#27&"[32mX"&#27&"[35m> "&ANSI_7&$qss_var[22]&"*"
 	echo ANSI_10&"  "&ANSI_7&$qss_var[2]&ANSI_10&"  "&#27&"[35m<"&#27&"[32mL"&#27&"[35m> "&ANSI_7&$qss_var[31]&"*"
 	echo "*"
 	echo ANSI_12&"           "&#27&"[35m["&#27&"[32m<"&#27&"[35m]"&ANSI_15&"Trader List                    Game Stats"&#27&"[35m["&#27&"[32m>"&#27&"[35m]*"&ANSI_7&"**"
