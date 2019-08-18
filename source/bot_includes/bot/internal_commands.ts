@@ -665,6 +665,7 @@ goto :BOT~wait_for_command
 			loadvar $bot~mode
 			if ($bot~mode <> "Citkill")
 				setVar $bot~user_command_line "citkill on override"
+				setvar $bot~autoattack false
 				goto :USER_INTERFACE~runUserCommandLine
 			else
 				setVar $bot~user_command_line "citkill off"
@@ -673,6 +674,11 @@ goto :BOT~wait_for_command
 		end
 		setVar $SWITCHBOARD~message "Wrong prompt for auto kill.*" 
 		gosub :SWITCHBOARD~switchboard
+		if ($bot~autoattack)
+			setvar $bot~autoattack false
+			setVar $SWITCHBOARD~message "Since in wrong prompt, shutting down autokill option in bot.  Restart in options.*" 
+			gosub :SWITCHBOARD~switchboard
+		end
 		goto :BOT~wait_for_command
 	end
 	loadVar $SHIP~SHIP_MAX_ATTACK
