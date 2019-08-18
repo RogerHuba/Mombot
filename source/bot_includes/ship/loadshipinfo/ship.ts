@@ -34,3 +34,26 @@
 		setVar $shipStats TRUE
 	end
 return
+
+:process_ship_line
+		getWord $shipInf $SHIELDS 1
+		getLength $SHIELDS $shieldlen
+		getWord $shipInf $defodd 2
+		getLength $defodd $defoddlen
+		getWord $shipinf $off_odds 3
+		getLength $off_odds $filler1len
+		getWord $shipinf $ship_cost 4
+		getLength $ship_cost $filler2len
+		getWord $shipinf $max_holds 5
+		getLength $max_holds $filler3len
+		getWord $shipinf $max_fighters 6
+		getLength $max_fighters $filler4len
+		getWord $shipinf $init_holds 7
+		getLength $init_holds $filler5len
+		getWord $shipinf $tpw 8
+		getLength $tpw $filler6len
+		getWord $shipinf $isDefender 9
+		getLength $isDefender $filler7len
+		setVar $startlen ($shieldlen + $defoddlen + $filler1len + $filler2len + $filler3len + $filler4len + $filler5len + $filler6len + $filler7len + 10)
+		cutText $shipinf $ShipName $startlen 999
+return
