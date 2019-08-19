@@ -93,6 +93,7 @@ gosub :SWITCHBOARD~switchboard
 
 setvar $count 1
 while ($count <= SECTORS)
+	getSectorParameter $count FIGSEC $isfigged
 	setvar $i 1
 	while ($i <= $warps)
 		setvar $file $path&$warps[$i]&".txt"
@@ -106,7 +107,7 @@ while ($count <= SECTORS)
 			else
 				write $file $count
 			end
-			if ($figsec[$count] = 0)
+			if ($isfigged = false)
 				write $missing_file $count
 			end
 		else
@@ -204,8 +205,9 @@ return
 :makeMissingTunnels
 setvar $count 1
 while ($count <= SECTORS)
+	getSectorParameter $count FIGSEC $isfigged
 	if ($tunnelSec[$count] = 1)
-		if ($figSec[$count] = 0) AND ($visiblePorts[$count] = 0)
+		if ($isfigged = false) AND ($visiblePorts[$count] = 0)
 			write $path & missingtunnel.txt $count
 		end
 	end
