@@ -23,20 +23,20 @@
 		setvar $path "scripts/mombot/games/" & GAMENAME & "/"
 		getWordPos $bot~user_command_line $pos "map"
 		if ($pos > 0)
-			delete $path & deadend.txt
-			delete $path & missingdeadends.txt
-			delete $path & 2way.txt
-			delete $path & missing2way.txt
-			delete $path & 3way.txt
-			delete $path & missing3way.txt
-			delete $path & 4way.txt
-			delete $path & missing4way.txt
-			delete $path & 5way.txt
-			delete $path & missing5way.txt
-			delete $path & 6way.txt
-			delete $path & missing6way.txt
-			delete $path & 7way.txt
-			delete $path & missing7way.txt
+			delete $path & "deadend.txt"
+			delete $path & "missingdeadends.txt"
+			delete $path & "2way.txt"
+			delete $path & "missing2way.txt"
+			delete $path & "3way.txt"
+			delete $path & "missing3way.txt"
+			delete $path & "4way.txt"
+			delete $path & "missing4way.txt"
+			delete $path & "5way.txt"
+			delete $path & "missing5way.txt"
+			delete $path & "6way.txt"
+			delete $path & "missing6way.txt"
+			delete $path & "7way.txt"
+			delete $path & :missing7way.txt"
 			echo "*[[Mapping the universe]]*"
 			gosub :mapitall
 			goto :donedataminer
