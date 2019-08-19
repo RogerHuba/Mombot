@@ -188,7 +188,7 @@ while ($count <= SECTORS)
 			write $path & "missing7way.txt" $count
 		end
 	end
-	add $count 1	add $count 1
+	add $count 1	
 end
 return
 
