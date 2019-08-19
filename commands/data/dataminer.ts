@@ -23,24 +23,51 @@
 		setvar $path "scripts/mombot/games/" & GAMENAME & "-"
 		getWordPos $bot~user_command_line $pos "map"
 		if ($pos > 0)
-			 delete $path & deadend.txt
-		 delete $path & missingdeadends.txt
-			 delete $path & 2way.txt
-		 delete $path & missing2way.txt
-			 delete $path & 3way.txt
-		 delete $path & missing3way.txt
-			 delete $path & 4way.txt
-		 delete $path & missing4way.txt
-			 delete $path & 5way.txt
-		 delete $path & missing5way.txt
-			 delete $path & 6way.txt
-		 delete $path & missing6way.txt
-			 delete $path & 7way.txt
-		 delete $path & missing7way.txt
-			 gosub :makedeadend
-
+			delete $path & deadend.txt
+			delete $path & missingdeadends.txt
+			delete $path & 2way.txt
+			delete $path & missing2way.txt
+			delete $path & 3way.txt
+			delete $path & missing3way.txt
+			delete $path & 4way.txt
+			delete $path & missing4way.txt
+			delete $path & 5way.txt
+			delete $path & missing5way.txt
+			delete $path & 6way.txt
+			delete $path & missing6way.txt
+			delete $path & 7way.txt
+			delete $path & missing7way.txt
+			echo "*[[Making deadends]]*"
+			gosub :makedeadend
+			echo "*[[Making missing Deadends]]*"
+			gosub :makemissingdeadends
+			echo "*[[Making 2 way]]*"
+			gosub :make2way
+			echo "*[[Making missing 2 way]]*"
+			gosub :makemissing2way
+			echo "*[[Making 3 way]]*"
+			gosub :make3way
+			echo "*[[Making missing 3 way]]*"
+			gosub :makemissing3way
+			echo "*[[Making 4 way]]*"
+			gosub :make4way
+			echo "*[[Making missing 4 way]]*"
+			gosub :makemissing4way
+			echo "*[[Making 5 way]]*"
+			gosub :make5way
+			echo "*[[Making missing 5 way]]*"
+			gosub :makemissing5way
+			echo "*[[Making 6 way]]*"
+			gosub :make6way
+			echo "*[[Making missing 6 way]]*"
+			gosub :makemissing6way
+			echo "*[[Making 7 way]]*"
+			gosub :make7way
+			echo "*[[Making missing 7 way]]*"
+			gosub :makemissing7way
+			goto :donedataminer
 		end
-		getWordPos $bot~user_command_line $pos "port"
+	getWordPos $bot~user_command_line $pos "port"
 	if ($pos > 0)
 		 delete $path & sellers.txt
 		 delete $path & buyers.txt
@@ -48,7 +75,7 @@
 			 gosub :tunnelfind
 			 gosub :makeMissingTunnels
 		end
-		getWordPos $bot~user_command_line $pos "tunnel"
+	getWordPos $bot~user_command_line $pos "tunnel"
 	if ($pos > 0)
 		 delete $path & tunnel.txt
 		 delete $path & tunnel_list.txt
@@ -63,16 +90,17 @@
 		end
 	getWordPos $bot~user_command_line $pos "traffic"
 	if ($pos > 0)
-			 delete $path & traffic.txt
-			 gosub :trafficfind
-		end
-		if ($subspace = TRUE)
-			 setVar $SWITCHBOARD~message "Dataminer finished.*"
-			 gosub :SWITCHBOARD~switchboard
-		else
-			 setVar $SWITCHBOARD~message "Dataminer finished, files written.*"
-			 gosub :SWITCHBOARD~switchboard
-		end
+		delete $path & traffic.txt
+		gosub :trafficfind
+	end
+	:donedataminer
+	if ($subspace = TRUE)
+		 setVar $SWITCHBOARD~message "Dataminer finished.*"
+		 gosub :SWITCHBOARD~switchboard
+	else
+		 setVar $SWITCHBOARD~message "Dataminer finished, files written.*"
+		 gosub :SWITCHBOARD~switchboard
+	end
 HALT
 
 :makedeadend
@@ -93,6 +121,7 @@ while ($count <= SECTORS)
 	 end
 	 add $count 1
 end
+return
 
 :makemissingdeadends
 setvar $count 1
@@ -104,6 +133,7 @@ while ($count <= SECTORS)
 	 end
 	add $count 1
 end
+return
 
 :make2way
 setArray $2way SECTORS
@@ -123,7 +153,7 @@ while ($count <= SECTORS)
 	 end
 	 add $count 1
 end
-
+return
 :makemissing2way
 setvar $count 1
 while ($count <= SECTORS)
@@ -134,6 +164,7 @@ while ($count <= SECTORS)
 	 end
 	add $count 1
 end
+return
 
 :make3way
 setArray $3way SECTORS
@@ -155,6 +186,8 @@ while ($count <= SECTORS)
 	 add $count 1
 end
 
+return
+
 :makemissing3way
 setvar $count 1
 while ($count <= SECTORS)
@@ -165,6 +198,7 @@ while ($count <= SECTORS)
 	 end
 	add $count 1
 end
+return
 
 :make4way
 setArray $4way SECTORS
@@ -184,6 +218,7 @@ while ($count <= SECTORS)
 	  end
 	 add $count 1
 end
+return
 
 :makemissing4way
 setvar $count 1
@@ -195,6 +230,7 @@ while ($count <= SECTORS)
 	 end
 	add $count 1
 end
+return
 
 :make5way
 setArray $5way SECTORS
@@ -214,6 +250,7 @@ while ($count <= SECTORS)
 	 end
 	 add $count 1
 end
+return
 
 :makemissing5way
 setvar $count 1
@@ -225,6 +262,7 @@ while ($count <= SECTORS)
 	 end
 	add $count 1
 end
+return
 
 :make6way
 setArray $6way SECTORS
@@ -244,6 +282,7 @@ while ($count <= SECTORS)
 	 end
 	 add $count 1
 end
+return
 
 :makemissing6way
 setvar $count 1
@@ -255,6 +294,7 @@ while ($count <= SECTORS)
 	 end
 	add $count 1
 end
+return
 
 :make7way
 setArray $7way SECTORS
@@ -274,6 +314,7 @@ while ($count <= SECTORS)
 	 end
 	 add $count 1
 end
+return
 
 :makemissing7way
 setvar $count 1
@@ -286,6 +327,7 @@ while ($count <= SECTORS)
 	add $count 1
 end
 return
+
 :tunnelfind
 setVar $twoWarpSectors 0
 setArray $twoWarps 0
@@ -309,9 +351,9 @@ while ($i <= $twoWarpSectors)
 	setVar $queue[1][1] SECTOR.WARPS[$2Warp][1]
 	setVar $queue[2][1] SECTOR.WARPS[$2Warp][2]
 	setVar $a 1
+	setVar $b 1
 	setVar $top 1
 	while ($a < 3)
-		setVar $b 1
 		while ($queue[$a][$b] <> 0) and ($checked[$queue[$a][$b]] = 0)
 			setVar $focus $queue[$a][$b]
 			setVar $checked[$focus] 1
