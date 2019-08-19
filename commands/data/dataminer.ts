@@ -123,6 +123,8 @@ while ($count <= SECTORS)
 		setdelaytrigger stopdelay :keepgoing 100
 		pause
 		:keepgoing
+			send #27
+
 	end
 end
 return
