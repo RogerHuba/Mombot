@@ -79,15 +79,15 @@ HALT
 setArray $deadEnds SECTORS
 setvar $count 1
 while ($count <= SECTORS)
-	 if (SECTOR.WARPINCOUNT[$count] = 1)
-		  setvar $deadEnds[$count] 1
-	  add $deadEnds 1
-	  if (SECTOR.WARPCOUNT[$count] >= 1)
-		   write $path & deadend.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
-					setSectorParameter $count "DEADEND" TRUE
-		  else
-		   write $path & deadend.txt $count
-	  end
+	if (SECTOR.WARPINCOUNT[$count] = 1)
+		setvar $deadEnds[$count] 1
+		add $deadEnds 1
+		if (SECTOR.WARPCOUNT[$count] >= 1)
+			write $path & deadend.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
+			setSectorParameter $count "DEADEND" TRUE
+		else
+			write $path & deadend.txt $count
+		end
 	 else
 		  setSectorParameter $count "DEADEND" ""
 	 end
@@ -110,14 +110,14 @@ setArray $2way SECTORS
 setvar $count 1
 while ($count <= SECTORS)
 	 if (SECTOR.WARPINCOUNT[$count] = 2)
-		  setvar $2way[$count] 1
-	  add $2way 1
-	  if (SECTOR.WARPCOUNT[$count] >= 1)
-		   write $path & 2way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
-					setSectorParameter $count "2WAY" TRUE
-		  else
-		   write $path & 2way.txt $count
-	  end
+		setvar $2way[$count] 1
+		add $2way 1
+		if (SECTOR.WARPCOUNT[$count] >= 1)
+			write $path & 2way.txt $count & " Has " & SECTOR.WARPCOUNT[$count] & " ways out."
+			setSectorParameter $count "2WAY" TRUE
+		else
+			write $path & 2way.txt $count
+		end
 	 else
 		  setSectorParameter $count "2WAY" ""
 	 end
@@ -309,9 +309,9 @@ while ($i <= $twoWarpSectors)
 	setVar $queue[1][1] SECTOR.WARPS[$2Warp][1]
 	setVar $queue[2][1] SECTOR.WARPS[$2Warp][2]
 	setVar $a 1
-	setVar $b 1
 	setVar $top 1
 	while ($a < 3)
+		setVar $b 1
 		while ($queue[$a][$b] <> 0) and ($checked[$queue[$a][$b]] = 0)
 			setVar $focus $queue[$a][$b]
 			setVar $checked[$focus] 1
@@ -388,7 +388,7 @@ while ($currsec <= SECTORS)
 			end
 		end	
 	end
-add $currsec 1
+	add $currsec 1
 end
 return
 
