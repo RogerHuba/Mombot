@@ -87,6 +87,10 @@ setvar $warps[4] "4way"
 setvar $warps[5] "5way"
 setvar $warps[6] "6way"
 setvar $warps[7] "7way"
+
+setVar $SWITCHBOARD~message "Dataminer mapper starting.  This could take a while.*"
+gosub :SWITCHBOARD~switchboard
+
 setvar $count 1
 while ($count <= SECTORS)
 	setvar $i 1
@@ -94,7 +98,6 @@ while ($count <= SECTORS)
 		setvar $file $path&$warps[$i]&".txt"
 		setvar $missing_file $path&"missing"&$warps[$i]&".txt"
 		setvar $label $warps[$i]
-		echo "*[[ Updating "&$label&" sectors.. ]]*"
 		uppercase $label
 		if (SECTOR.WARPINCOUNT[$count] = $i)
 			if (SECTOR.WARPCOUNT[$count] >= 1)
@@ -112,6 +115,13 @@ while ($count <= SECTORS)
 		add $i 1
 	end
 	add $count 1	
+	setVar $percTest (($count * 100) / SECTORS)
+	if ($percTest > $perc)
+		setVar $perc (($count * 100) / SECTORS)
+		echo "*"
+		echo #27 "["&($perc / 2)&"C"
+		echo ANSI_14 "°" ANSI_15 " " $perc "%" #27 & "[1A   "
+	end
 end
 return
 
