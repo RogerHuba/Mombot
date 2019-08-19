@@ -88,8 +88,6 @@ setvar $warps[5] "5way"
 setvar $warps[6] "6way"
 setvar $warps[7] "7way"
 
-setVar $SWITCHBOARD~message "Dataminer mapper starting.  This could take a while.*"
-gosub :SWITCHBOARD~switchboard
 
 setvar $count 1
 while ($count <= SECTORS)
@@ -122,6 +120,9 @@ while ($count <= SECTORS)
 		echo "*"
 		echo #27 "["&($perc / 2)&"C"
 		echo ANSI_14 "°" ANSI_15 " " $perc "%" #27 & "[1A   "
+		setdelaytrigger stopdelay :keepgoing 100
+		pause
+		:keepgoing
 	end
 end
 return
