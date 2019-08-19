@@ -36,7 +36,7 @@
 			delete $path & "6way.txt"
 			delete $path & "missing6way.txt"
 			delete $path & "7way.txt"
-			delete $path & :missing7way.txt"
+			delete $path & "missing7way.txt"
 			echo "*[[Mapping the universe]]*"
 			gosub :mapitall
 			goto :donedataminer
