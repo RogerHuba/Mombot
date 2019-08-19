@@ -99,9 +99,9 @@ while ($count <= SECTORS)
 		setvar $label $warps[$i]
 		uppercase $label
 		if (SECTOR.WARPINCOUNT[$count] = $i)
+			setSectorParameter $count $label TRUE
 			if (SECTOR.WARPCOUNT[$count] >= 1)
 				write $file $count&" has "&SECTOR.WARPCOUNT[$count]&" ways out."
-				setSectorParameter $count $label TRUE
 			else
 				write $file $count
 			end
