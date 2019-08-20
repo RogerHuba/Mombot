@@ -224,9 +224,11 @@ reqRecording
 
 	if ($isPlanetDrop)
 		gosub :planetStats
+		setVar $message "Planet Dropper Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*        Drop Type: "&$dropDescription&" On "&$triggerDescription
+	else
+		setVar $message "Ship Dropper Currently Running On Ship "&$player~ship_number&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*        Drop Type: "&$dropDescription&" On "&$triggerDescription
 	end
 
-	setVar $message "Planet Dropper Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*        Drop Type: "&$dropDescription&" On "&$triggerDescription
 	if ($targetingPerson)
 		setVar $message $message&"*        Targeting: (Player) "&$target
 	else
