@@ -11,7 +11,7 @@ setVar $planet~citadel_CASH_MAX    999999999999999
 :dep
 :d
 	gosub :bankProtections
-	if ($bot~parm1 <= 0)
+	if ($bot~parm1 = "")
 		setVar $cashToTransfer $PLAYER~CREDITS
 	else
 		setVar $cashToTransfer $bot~parm1

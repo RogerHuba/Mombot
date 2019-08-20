@@ -16,7 +16,7 @@ setVar $planet~citadel_CASH_MAX    999999999999999
 		gosub :SWITCHBOARD~switchboard
 		goto :wait_for_command
 	end
-	if ($bot~parm1 <= 0)
+	if ($bot~parm1 = "")
 		setVar $cashToTransfer $PLAYER_CASH_MAX
 	else
 		setVar $cashToTransfer $bot~parm1
