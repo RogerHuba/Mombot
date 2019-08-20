@@ -27,7 +27,7 @@
 	if ($PLAYER~CURRENT_PROMPT = "Command") OR ($PLAYER~CURRENT_PROMPT = "Citadel")
 		if ($bot~parm1 = "clear")
 			isNumber $tst $bot~parm2
-			if ($tst)
+			if (($tst) or ($tst = ""))
 				if ($bot~parm2 = "")
 					send "cv0*yyq"
 					setVar $SWITCHBOARD~message "All Avoids Cleared*"
