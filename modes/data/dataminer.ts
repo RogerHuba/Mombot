@@ -91,7 +91,7 @@ setvar $warps[7] "7way"
 
 setvar $count 1
 while ($count <= SECTORS)
-	getSectorParameter $count FIGSEC $isfigged
+	getSectorParameter $count "FIGSEC" $isfigged
 	setvar $i 1
 	while ($i <= $warps)
 		setvar $file $path&$warps[$i]&".txt"
