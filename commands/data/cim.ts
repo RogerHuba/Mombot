@@ -39,6 +39,8 @@
 		else
 			setVar $upgradeLimit 10000
 		end
+	else
+		setVar $upgradeLimit 10000
 	end
 	setvar $switchboard~message "Stand By - CIMMING . . .*"
 	gosub :switchboard~switchboard
