@@ -286,7 +286,7 @@ reqRecording
 					gosub :switchboard~switchboard
 					halt
 				end
-				if ($player~ore_holds <= $player~total_holds)
+				if ($player~ore_holds < $player~total_holds)
 					setvar $switchboard~message "WARNING: You have "&$player~ore_holds&" out of "&$player~total_holds&" holds of fuel.  Make sure that's enough!*"
 					gosub :switchboard~switchboard
 				end
