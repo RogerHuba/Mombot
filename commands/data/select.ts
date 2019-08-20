@@ -8,7 +8,7 @@
 	loadvar $switchboard~self_command
 
 	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored | sector "
-	setVar $BOT~help[2]   $BOT~tab&"       | ports} {BBB | XXB | SSX etc} {mark:PARAM} {dist | route}"
+	setVar $BOT~help[2]   $BOT~tab&" | ports} {BBB | XXB | SSX etc} {mark:PARAM} {dist | route} {warps:n}"
 	setVar $BOT~help[3]   $BOT~tab&"     "
 	setVar $BOT~help[4]   $BOT~tab&"     Searches TWX database for known info."
 	setVar $BOT~help[5]   $BOT~tab&"      "
@@ -23,6 +23,7 @@
 	setVar $BOT~help[14]   $BOT~tab&"    {dist}  - All results include distance from current. "
 	setVar $BOT~help[15]   $BOT~tab&"    {route} - Plots a basic shortest path (slow). "
 	setVar $BOT~help[16]   $BOT~tab&"      {ppt} - Finds port pair trading ports  "
+	setVar $BOT~help[17]   $BOT~tab&"   {warps:n} - Restrict matches to nwarps  "
 	# ham select ports ore-mcic<-70
 	gosub :bot~helpfile
 
@@ -40,6 +41,7 @@ setVar $portClassOk 8
 setVar $portClassWanted 0
 #final filter of search results 0 - none, 1 - secure (figs surrounded) 2- PAranoid (Figs + Limps)
 setVar $securityLevel 0
+setVar $warps 0
 
 setvar $i 1
 
@@ -50,6 +52,36 @@ if ($pos > 0)
 	stripText $bot~user_command_line " dist"
 
 end
+
+getWordPos $bot~user_command_line $pos "warps:"
+if ($pos > 0)
+	
+	getText $bot~user_command_line $warps "warps:" " "
+
+	if ($warps = "")
+		setVar $bot~user_command_line $bot~user_command_line & " "
+		getText $bot~user_command_line $warps "warps:" " "
+	end
+	isNumber $test $warps
+	
+	if ($test)
+		if (($warps > 6) or ($warps < 1))
+			setVar $SWITCHBOARD~message "Warps should be a number 1-6.*"
+			gosub :switchboard~switchboard
+			halt
+		else
+			stripText $bot~user_command_line " warps:" & $warps & " "
+			stripText $bot~user_command_line " warps:" & $warps 
+			
+		end
+	else
+		setVar $SWITCHBOARD~message "Warps should be a number 1-6.*"
+		gosub :switchboard~switchboard
+		halt
+	end
+
+end
+
 
 getWordPos " "&$bot~user_command_line&" " $pos " ppt "
 if ($pos > 0)
@@ -175,65 +207,67 @@ setvar $i 1
 while ($i <= SECTORS)    
 	setvar $j 1
 	setvar $skip false
-	
-	while (($j <= $sector_param_count) and ($skip <> true))
-		setvar $bot~parmameter $sector_params[$j]
-		lowercase $bot~parmameter
-		getwordpos $bot~parmameter $pos "port.o"
-		if ($pos > 0)
-			setvar $value port.fuel[$i]
-		else
+	if ((($warps > 0) and (SECTOR.WARPCOUNT[$i] = $warps)) or ($warps = 0))
+		while (($j <= $sector_param_count) and ($skip <> true))
+			setvar $bot~parmameter $sector_params[$j]
+			lowercase $bot~parmameter
 			getwordpos $bot~parmameter $pos "port.o"
 			if ($pos > 0)
-				setvar $value port.org[$i]
+				setvar $value port.fuel[$i]
 			else
-				getwordpos $bot~parmameter $pos "port.e"
+				getwordpos $bot~parmameter $pos "port.o"
 				if ($pos > 0)
-					setvar $value port.equip[$i]
+					setvar $value port.org[$i]
 				else
-					//If it's not one of these specific variables, assume sector param
-					getSectorParameter $i $sector_params[$j] $value
+					getwordpos $bot~parmameter $pos "port.e"
+					if ($pos > 0)
+						setvar $value port.equip[$i]
+					else
+						//If it's not one of these specific variables, assume sector param
+						getSectorParameter $i $sector_params[$j] $value
+					end
 				end
 			end
-		end
-		
-		if ($sector_params[$j][2] = "=")
 			
-			if ($value = $sector_params[$j][1])
-				//possible candidate
-			else
-				if (($value = "") and ($sector_params[$j][1] = 0))
+			if ($sector_params[$j][2] = "=")
+				
+				if ($value = $sector_params[$j][1])
 					//possible candidate
+				else
+					if (($value = "") and ($sector_params[$j][1] = 0))
+						//possible candidate
+					else
+						setvar $skip true
+					end
+				end
+			else
+				
+				if ($value <> "")
+					if ($sector_params[$j][2] = ">")
+						
+						if ($value > $sector_params[$j][1])
+							//possible candidate
+						else
+							setvar $skip true
+						end
+					elseif ($sector_params[$j][2] = "<")
+						
+						if ($value < $sector_params[$j][1])
+							//possible candidate
+						else
+							setvar $skip true
+						end
+					end
 				else
 					setvar $skip true
 				end
 			end
-		else
 			
-			if ($value <> "")
-				if ($sector_params[$j][2] = ">")
-					
-					if ($value > $sector_params[$j][1])
-						//possible candidate
-					else
-						setvar $skip true
-					end
-				elseif ($sector_params[$j][2] = "<")
-					
-					if ($value < $sector_params[$j][1])
-						//possible candidate
-					else
-						setvar $skip true
-					end
-				end
-			else
-				setvar $skip true
-			end
+			add $j 1
 		end
-		
-		add $j 1
+	else
+		setVar $skip true
 	end
-	
 	if ($skip <> true)
 		if (($bot~parm1 = "planet") or ($bot~parm1 = "planets"))
 			if (SECTOR.PLANETCOUNT[$i] <= 0)

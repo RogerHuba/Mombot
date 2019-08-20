@@ -77,7 +77,7 @@ reqRecording
 
     if ($GAME~steal_factor = 0)
 	setVar $GAME~steal_factor 21
-	send "No Steal factor!! assuming 21, you need to ensure bot has refreshed!*"
+	send "'{" $switchboard~bot_name "}No Steal factor!! assuming 21, you need to ensure bot has refreshed!*"
     end
 
 	gosub :player~isEpHaggle
@@ -136,7 +136,7 @@ killalltriggers
 :verifyship   
     gosub :player~quikstats
     IF ($player~ship_number <> $ship_1)
-           send "x " $ship_1 "* q z n"
+           send "x  " $ship_1 "*  q z *   "
     END
     gosub :player~quikstats
     IF ($player~ship_number <> $ship_1)
