@@ -210,7 +210,7 @@ gosub :_START_
 	killalltriggers
     gosub :PLAYER~quikstats
 
-    if (($PLAYER~FIGHTERS + $PLAYER~SHIELDS) < 1000)
+    if (($PLAYER~FIGHTERS + $PLAYER~SHIELDS) < 1001)
 		send "'{" $switchboard~bot_name "} - Have too few Fighters/Shields To Survive 100% Haz*"
 		halt
 	end
@@ -626,8 +626,8 @@ gosub :_START_
 :buyfurbs
 	setVar $Temp $PLAYER~CREDITS
     send "P S G Y G Q S B N Y " & $shipletter & "Y qrP " & $shipName &"* * * "
-    if ($PLAYER~FIGHTERS < 1001)
-	setVar $ftobuy (1001 - $PLAYER~FIGHTERS)
+    if ($PLAYER~FIGHTERS <= 1001)
+	setVar $ftobuy (1002 - $PLAYER~FIGHTERS)
 		send "P B " $ftobuy "* q  "
     end
 	waitfor "[Pause]"
