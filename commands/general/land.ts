@@ -10,11 +10,14 @@
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $bot~validPrompts "Command Citadel Planet"
 	gosub :bot~checkstartingprompt
-	isNumber $number $bot~parm1
 	loadVar $planet~planet
 	if ($planet~planet <> "0")
 		setvar $last_planet_landed $planet~planet
 	end
+	if ($bot~parm1 = "")
+		setvar $bot~parm1 $last_planet_landed
+	end
+	isNumber $number $bot~parm1
 	if ($number = TRUE)
 		if (($bot~parm1 = 0) AND ($planet~planet = 0))
 			setvar $switchboard~message "Incorrect Planet number*"

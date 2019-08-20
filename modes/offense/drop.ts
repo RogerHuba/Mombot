@@ -309,6 +309,8 @@ reqRecording
 		if (($triggerDescription = "Fighters and Mines") OR ($triggerDescription = "Fighters"))
 			setTextTrigger fig :attackSectorFighter "Deployed Fighters "
 		end
+		#setTextLineTrigger save :saveCall "=saveme"
+
 		setTextLineTrigger warn :keepAlive "INACTIVITY WARNING:"
 		setTextTrigger pause :pausing "Planet command (?="
 		setTextTrigger pause2 :pausing "Computer command ["
