@@ -254,6 +254,12 @@ reqRecording
 	if ($fastkill)
 		setVar $message $message&"*        Fast Kill: Will attempt kill macro at every pdrop attempt"
 	end
+	if ($holotorp)
+		setVar $message $message&"*        Holotorp: Will attempt photoning any adjacent enemies"
+	end
+	if ($holokill)
+		setVar $message $message&"*        Holokill: Will attempt to kill any adjacent enemies"
+	end
 	if ($returnHome)
 		setVar $message $message&"*      Return Home: Enabled With "&$returnHomeDelay&" Second Delay"
 	end
