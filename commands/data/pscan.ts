@@ -21,7 +21,7 @@
 	setVar $planet~planet 0
 
 	if ($player~current_prompt = "Citadel")
-		if ($bot~parm1 <> 0)
+		if ($bot~parm1 <> "")
 			#get current planet number
 			send "Q"
 			gosub :planet~getplanetinfo
@@ -62,7 +62,7 @@
 			halt
 		end
 	elseif ($player~current_prompt = "Planet")
-		if ($bot~parm1 <> 0)
+		if ($bot~parm1 <> "")
 			#get currnet planet number
 			gosub :planet~getplanetinfo
 			send "  Q  "
@@ -100,7 +100,7 @@
 			halt
 		end
 	elseif ($player~current_prompt = "Command")
-		if ($bot~parm1 = 0)
+		if ($bot~parm1 = "")
 			setvar $switchboard~message "If Starting From Sector Please Specify Planet Number.*"
 			gosub :switchboard~switchboard
 			halt
