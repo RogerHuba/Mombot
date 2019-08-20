@@ -11,7 +11,7 @@ setVar $BOT~help[7]  $BOT~tab&"    buycolt   - buys Colt "
 setVar $BOT~help[8]  $BOT~tab&"    movecolt  - moves Colts to sectors  "
 setVar $BOT~help[9]  $BOT~tab&"                  >movecolt 95 16822 87 "
 setVar $BOT~help[10] $BOT~tab&"    grabcolo  - fills any Colt in sector with colos "
-setVar $BOT~help[10] $BOT~tab&"    docim     - downloads port/warp data "
+setVar $BOT~help[11] $BOT~tab&"    docim     - downloads port/warp data "
 
 gosub :bot~helpfile
 
