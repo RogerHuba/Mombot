@@ -2,6 +2,7 @@
 :getInfo
 	setvar $NOFLIP  true
 	setVar $PHOTONS 0
+	setVar $towed ""
 	setVar $SCAN_TYPE "None"
 	setVar $TWARP_TYPE 0
 	setVar $CORPstring "[0]"
@@ -18,6 +19,7 @@
 		setTextLineTrigger getTPW                   :getTPW "Turns to Warp  :"
 		setTextLineTrigger getSect                  :getSect "Current Sector :"
 		setTextLineTrigger getTurns                 :getTurns "Turns left"
+		settextlinetrigger gettow					:gettow "Tractor Beam   : ON, towing "
 		setTextLineTrigger getHolds                 :getHolds "Total Holds"
 		setTextLineTrigger getFighters              :getFighters "Fighters       :"
 		setTextLineTrigger getShields               :getShields "Shield points  :"
@@ -46,6 +48,10 @@
 			add $i 1
 		end
 		pause
+	:gettow
+			setvar $line currentline&"<<|END|>>"
+			gettext $line $towed "Tractor Beam   : ON, towing " "<<|END|>>"
+			pause
 	:getExpAndAlign
 			getWord CURRENTLINE $EXPERIENCE 5
 			getWord CURRENTLINE $ALIGNMENT 7

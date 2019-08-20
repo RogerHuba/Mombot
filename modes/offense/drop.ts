@@ -232,6 +232,9 @@ reqRecording
 	else
 		setVar $message $message&"*        Targeting: Everyone"
 	end
+	if (($isPlanetDrop <> true) and ($player~towed <> ""))
+		setVar $message $message&"*           Towing: "&$player~tow
+	end
 	if ($prelockActive)
 		if ($prelockReleaseTime > 0)
 			setVar $message $message&"*         Pre-Lock: Enabled With "&$prelockReleaseTime&" Second Release"
@@ -253,13 +256,13 @@ reqRecording
 		setVar $message $message&"*        Fast Kill: Will attempt kill macro at every pdrop attempt"
 	end
 	if ($holotorp)
-		setVar $message $message&"*        Holotorp: Will attempt photoning any adjacent enemies"
+		setVar $message $message&"*         Holotorp: Will attempt photoning any adjacent enemies"
 	end
 	if ($holokill)
-		setVar $message $message&"*        Holokill: Will attempt to kill any adjacent enemies"
+		setVar $message $message&"*         Holokill: Will attempt to kill any adjacent enemies"
 	end
 	if ($returnHome)
-		setVar $message $message&"*        Return Home: Enabled With "&$returnHomeDelay&" Second Delay"
+		setVar $message $message&"*      Return Home: Enabled With "&$returnHomeDelay&" Second Delay"
 	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	setvar $switchboard~message $message
