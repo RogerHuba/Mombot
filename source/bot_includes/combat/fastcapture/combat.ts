@@ -302,6 +302,9 @@
 						add $i 1
 					end
 					send $burst
+					setdelaytrigger littleslower :donelittleslower 100
+					pause
+					:donelittleslower
 					gosub :player~quikstats
 				end
 		:keepcapping
