@@ -6,6 +6,7 @@
 	killtrigger statlinetrig
 	killtrigger getLine2
 	setvar $fedspace false
+	setvar $towed ""
 	loadvar $unlimitedGame
 	setTextLineTrigger  prompt      :allPrompts     #145 & #8
 	setTextLineTrigger  statlinetrig    :statStart      #179

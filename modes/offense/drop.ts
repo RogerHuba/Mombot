@@ -69,6 +69,7 @@ reqRecording
 	end
 	
 	gosub :player~quikstats
+	gosub :player~getinfo
 	setVar $startingLocation $player~current_prompt
 	setvar $isPlanetDrop false
 	if ($startingLocation = "Citadel")
@@ -233,7 +234,7 @@ reqRecording
 		setVar $message $message&"*        Targeting: Everyone"
 	end
 	if (($isPlanetDrop <> true) and ($player~towed <> ""))
-		setVar $message $message&"*           Towing: "&$player~tow
+		setVar $message $message&"*           Towing: "&$player~towed
 	end
 	if ($prelockActive)
 		if ($prelockReleaseTime > 0)
