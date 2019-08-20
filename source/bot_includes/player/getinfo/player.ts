@@ -141,7 +141,8 @@
 					killtrigger getExpAndAlign     
 				killtrigger getCorp         
 				killtrigger getShipType       
-				killtrigger getTPW           
+				killtrigger getTPW   
+				killtrigger gettow        
 				killtrigger getSect          
 				killtrigger getTurns                 
 				killtrigger getHolds                 
