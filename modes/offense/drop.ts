@@ -162,7 +162,6 @@ reqRecording
 	else
 		setVar $attackOnSight FALSE
 	end
-	setVar $randomAttack TRUE
 
 	getWordPos " "&$bot~user_command_line&" " $pos " fastkill "
 	if ($pos > 0)
@@ -204,7 +203,6 @@ reqRecording
 			halt			
 		end
 	end
-	setVar $randomAttack TRUE
 
 	gosub :player~quikstats
 	setVar $homeSector $player~current_sector
@@ -261,24 +259,7 @@ reqRecording
 		setVar $message $message&"*        Holokill: Will attempt to kill any adjacent enemies"
 	end
 	if ($returnHome)
-		setVar $message $message&"*      Return Home: Enabled With "&$returnHomeDelay&" Second Delay"
-	end
-	if ($randomAttack)
-		setVar $message $message&"*   Attack Pattern: Random"
-	elseif ($firstAttack)
-		setVar $message $message&"*   Attack Pattern: First Available Target"
-	elseif ($secondAttack)
-		setVar $message $message&"*   Attack Pattern: Second Available Target"
-	elseif ($thirdAttack)
-		setVar $message $message&"*   Attack Pattern: Third Available Target"
-	elseif ($fourthAttack)
-		setVar $message $message&"*   Attack Pattern: Fourth Available Target"
-	elseif ($fifthAttack)
-		setVar $message $message&"*   Attack Pattern: Fifth Available Target"
-	elseif ($sixthAttack)
-		setVar $message $message&"*   Attack Pattern: Sixth Available Target"
-	else
-		setVar $message $message&"*   Attack Pattern: Last Available Target"
+		setVar $message $message&"*        Return Home: Enabled With "&$returnHomeDelay&" Second Delay"
 	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	setvar $switchboard~message $message
