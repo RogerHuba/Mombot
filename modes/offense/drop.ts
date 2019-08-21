@@ -473,8 +473,10 @@ reqRecording
 				end
 			elseif ($dropDescription = "Direct, then Adjacent")			
 				if ($planetDrop)
+					setvar $gotosector $dropsector
 					send "p " $dropSector "* y "
 				else
+					setvar $gotosector $dropsector
 					setVar $PLAYER~WARPTO $dropSector
 					gosub :PLAYER~twarp
 					if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
