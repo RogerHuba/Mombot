@@ -194,6 +194,8 @@
 		setvar $macro "q "
 		if (($planet~PLANET_FUEL_COLONISTS > 0) or ($planet~PLANET_ORGANICS_COLONISTS > 0) or ($planet~PLANET_EQUIPMENT_COLONISTS > 0))
 			setvar $macro "q z a y 99999* z a y 99999* "
+			setVar $SWITCHBOARD~message "There are colonists on the planet.  Will attempt to kill them, but you can make the macro faster buy killing now, and running tripwire again.*"
+			gosub :SWITCHBOARD~switchboard
 		end
 		setvar $macro $macro&"z a y 99999* z d y j a y j 99999* j a y j 99999* j a y j 99999* j a y j 99999* j a y j 99999**  "
 		setTextLineTrigger time_to_blow :check " invaded and captured "&$planet~planet_NAME
