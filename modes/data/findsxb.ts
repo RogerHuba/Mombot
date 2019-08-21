@@ -4,7 +4,7 @@ gosub :BOT~loadVars
 setVar $BOT~help[1]  $BOT~tab&"       Attempts to find a triple SXB combo for team thievery"
 setVar $BOT~help[2]  $BOT~tab&"        "
 setVar $BOT~help[3]  $BOT~tab&"       findsxb [dist] [mcic1] {mcic2}"
-setVar $BOT~help[4]  $BOT~tab&"           "
+setVar $BOT~help[4]  $BOT~tab&"           {noplots} {twoports}"
 setVar $BOT~help[5]  $BOT~tab&" Options:"
 setVar $BOT~help[6]  $BOT~tab&"    [dist]     XPort range of evil ship"
 setVar $BOT~help[7]  $BOT~tab&"    [mcic1]    MCIC of first port "
@@ -16,6 +16,9 @@ setVar $BOT~help[12] $BOT~tab&"    can do. "
 setVar $BOT~help[13] $BOT~tab&"    Designed for no ztm."
 setVar $BOT~help[14] $BOT~tab&"    Does plot some courses to confirm."
 setVar $BOT~help[15] $BOT~tab&"    Large dist's will be SLOW."
+setVar $BOT~help[16] $BOT~tab&"    "
+setVar $BOT~help[17] $BOT~tab&"    {noplots} - when you have ztm"
+setVar $BOT~help[18] $BOT~tab&"    {twoports} - when you only need 2"
 
 gosub :bot~helpfile
 
@@ -32,9 +35,29 @@ if ($location <> "Command")
 end
 
 
+setVar $noplots 0
+setVar $twoports 0
 setVar $MCICREQ1 50
 setVar $MCICREQ2 50
 setVar $MAXDIST 7
+	
+	getWordPos $bot~user_command_line $pos "twoports"
+	if ($pos > 0)
+		setVar $twoports 1
+		stripText $bot~user_command_line " twoports "
+		stripText $bot~user_command_line " twoports"
+
+	end
+
+	getWordPos $bot~user_command_line $pos "noplots"
+	if ($pos > 0)
+		setVar $noplots 1
+		stripText $bot~user_command_line " noplots "
+		stripText $bot~user_command_line " noplots"
+
+	end
+	
+
 
 	isNumber $test $bot~parm1
 	IF ($test)
@@ -108,6 +131,8 @@ setVar $i 11
 
 clearallavoids
 
+# Find sectors with the right port and the right MCIC
+
 while ($i <= SECTORS)
 	
 	if ((PORT.CLASS[$i] = 3) or (PORT.CLASS[$i] = 4))
@@ -133,20 +158,23 @@ else
 end
 setVar $i 1
 
-while ($i <= $targetsi)
-	setVar $search $targets[$i]
-	getNearestWarps $nearArray $search
-	#class 3 4
-	setVar $y 2
-	while ($y <= $nearArray)
-		setVar $focus $nearArray[$y]
-		if ((PORT.CLASS[$focus] = 3) or (PORT.CLASS[$focus] = 4))
-			goSub :sendDistance 
+# Plot courses to ensure we have ZTM
+if ($noplots = 0)
+	while ($i <= $targetsi)
+		setVar $search $targets[$i]
+		getNearestWarps $nearArray $search
+		#class 3 4
+		setVar $y 2
+		while ($y <= $nearArray)
+			setVar $focus $nearArray[$y]
+			if ((PORT.CLASS[$focus] = 3) or (PORT.CLASS[$focus] = 4))
+				goSub :sendDistance 
+			end
+			add $y 1
 		end
-		add $y 1
-	end
 
-	add $i 1
+		add $i 1
+	end
 end
 
 setVar $SWITCHBOARD~message "Finding secondary ports..*"
@@ -163,6 +191,7 @@ while ($i <= $targetsi)
 	setVar $maybei 0
 
 	#class 3 4
+	# Lets find ports in range as the second port -
 	setVar $y 2
 	while ($y <= $nearArray)
 		
@@ -181,7 +210,7 @@ while ($i <= $targetsi)
 							add $cani 1
 							setVar $cans[$cani] $focus
 							setVar $cansMc[$cani] $mc 
-							#echo "CAndidate: " $search " (" $dist1 ")(" $mc_orig ") <> " $focus " (" $dist2 ")(" $mc ")*"
+echo "CAndidate: " $search " (" $dist1 ")(" $mc_orig ") <> " $focus " (" $dist2 ")(" $mc ")*"
 							setVar $SWITCHBOARD~message "Secondary found.. searching for more*"
 							gosub :switchboard~switchboard
 						else
@@ -201,58 +230,84 @@ while ($i <= $targetsi)
 
 		add $y 1
 	end
-	
-	if ($cani > 0)
-		setVar $SWITCHBOARD~message "Candidate Found.. Checking for Tertiary port*"
-		gosub :switchboard~switchboard
-		setVar $port3 0
-		setVar $port3MC 0
-		setVar $y 1
-		while ($y <= $cani)
+	if ($twoports = 0)
 
-	#echo "TEsting: " $search " with " $cans[$y] " *"
-			# Lop thru can's and then loopthrough maybe's to see if thye are in range
+		if ($cani > 0)
+			setVar $SWITCHBOARD~message "Candidate Found.. Checking for Tertiary port*"
+			gosub :switchboard~switchboard
 			setVar $port3 0
 			setVar $port3MC 0
-			setVar $x 1
-			while ($x <= $maybei)
+			setVar $y 1
+			while ($y <= $cani)
 
-				getDistance $dist1 $cans[$y] $maybe[$x]
-				getDistance $dist2 $maybe[$x] $cans[$y]
+		#echo "TEsting: " $search " with " $cans[$y] " *"
+				# Lop thru can's and then loopthrough maybe's to see if thye are in range
+				setVar $port3 0
+				setVar $port3MC 0
+				setVar $x 1
+				while ($x <= $maybei)
 
-		#echo $dist1 " " $dist2 " *"
+					getDistance $dist1 $cans[$y] $maybe[$x]
+					getDistance $dist2 $maybe[$x] $cans[$y]
 
-				if (($dist1 <= $MAXDIST) and ($dist2 <=$MAXDIST))
-					#echo $cans[$y] " to " $maybe[$x] ": " $dist1 "*"
-					#echo $maybe[$x] " to " $cans[$y] ": " $dist2 "*"
-					getSectorParameter $maybe[$x] "EQUIPMENT+" $mc
-					if ($mc = "")
-						setVar $mc 0
-					end
-					if ($port3 = 0)
-						setVar $port3 $maybe[$x]
-						setVar $port3MC $mc
-					else
-						if ($mc > $port3MC)
+			#echo $dist1 " " $dist2 " *"
+
+					if (($dist1 <= $MAXDIST) and ($dist2 <=$MAXDIST))
+						#echo $cans[$y] " to " $maybe[$x] ": " $dist1 "*"
+						#echo $maybe[$x] " to " $cans[$y] ": " $dist2 "*"
+						getSectorParameter $maybe[$x] "EQUIPMENT+" $mc
+						if ($mc = "")
+							setVar $mc 0
+						end
+						if ($port3 = 0)
 							setVar $port3 $maybe[$x]
 							setVar $port3MC $mc
 						else
-	#echo "Rejected maybe: " $maybe[$x] ":" $mc "*"
+							if ($mc > $port3MC)
+								setVar $port3 $maybe[$x]
+								setVar $port3MC $mc
+							else
+		#echo "Rejected maybe: " $maybe[$x] ":" $mc "*"
+							end
 						end
 					end
+					add $x 1
 				end
-				add $x 1
+			#echo "Best Candidates are " $search " "  $cans[$y] " " $port3 "*"
+			if ($port3 <> 0)
+				setVar $SWITCHBOARD~message "Tertiary found.. checking for more*"
+				gosub :switchboard~switchboard
+				gosub :sendDistance3
+			else
+				setVar $SWITCHBOARD~message "Tertiary no good.. continuing*"
+				gosub :switchboard~switchboard
 			end
-		#echo "Best Candidates are " $search " "  $cans[$y] " " $port3 "*"
-		if ($port3 <> 0)
-			setVar $SWITCHBOARD~message "Tertiary found.. checking for more*"
-			gosub :switchboard~switchboard
-			gosub :sendDistance3
-		else
-			setVar $SWITCHBOARD~message "Tertiary no good.. continuing*"
-			gosub :switchboard~switchboard
+				add $y 1
+			end
 		end
-			add $y 1
+	else
+		if ($cani > 0)
+			setVar $SWITCHBOARD~message "Candidates Found..two port option.. picking best*"
+			gosub :switchboard~switchboard
+			setVar $bestmc 0
+			setVar $bestPort 0
+			setVar $y 1
+			while ($y <= $cani)	
+				if ($cansMc[$y] < $bestmc)
+					setVar $bestmc $cansMc[$y]
+					setVar $bestPort $cans[$y]
+				end
+				add $y 1
+			end
+
+			add $resulti 1
+			setVar $results[$resulti][1] $search
+			setVar $results[$resulti][2] $bestPort
+			setVar $results[$resulti][3] "skip"
+			setVar $results[$resulti][4] $mc_orig
+			setVar $results[$resulti][5] $bestmc
+			setVar $results[$resulti][6] "skip"
+
 		end
 	end
 	add $i 1
@@ -291,48 +346,82 @@ return
 :sendDistance3
 	setVar $distError FALSE
 
-	send "cf" $search "*" $cans[$y] "*"
-	waitfor "The shortest path ("
-	getWord CURRENTLINE $dist 4 
-	stripText $dist "("
+	if ($noplots = 0)
+		send "cf" $search "*" $cans[$y] "*"
+		waitfor "The shortest path ("
+		getWord CURRENTLINE $dist 4 
+		stripText $dist "("
+	else
+		getDistance $dist1 $search $cans[$y]
+	end
+
 	if ($dist > $MAXDIST)
 		setVar $distError TRUE
 	end
-	send "f" $cans[$y] "*" $search "*"
-	waitfor "The shortest path ("
-	getWord CURRENTLINE $dist 4 
-	stripText $dist "("
+	if ($noplots = 0)
+		send "f" $cans[$y] "*" $search "*"
+		waitfor "The shortest path ("
+		getWord CURRENTLINE $dist 4 
+		stripText $dist "("
+	else
+		getDistance $dist1 $cans[$y] $search
+	end
+
 	if ($dist > $MAXDIST)
 		setVar $distError TRUE
 	end
-	send "f" $port3 "*" $cans[$y] "*"
-	waitfor "The shortest path ("
-	getWord CURRENTLINE $dist 4 
-	stripText $dist "("
+	if ($noplots = 0)
+		send "f" $port3 "*" $cans[$y] "*"
+		waitfor "The shortest path ("
+		getWord CURRENTLINE $dist 4 
+		stripText $dist "("
+	else
+		getDistance $dist1 $port3 $cans[$y]
+	end
+
 	if ($dist > $MAXDIST)
 		setVar $distError TRUE
 	end
-	send "f" $cans[$y] "*" $port3 "*"
-	waitfor "The shortest path ("
-	getWord CURRENTLINE $dist 4 
-	stripText $dist "("
+	
+	if ($noplots = 0)
+		send "f" $cans[$y] "*" $port3 "*"
+		waitfor "The shortest path ("
+		getWord CURRENTLINE $dist 4 
+		stripText $dist "("
+	else
+		getDistance $dist1 $cans[$y] $port3
+	end
+
 	if ($dist > $MAXDIST)
 		setVar $distError TRUE
 	end
-	send "f" $port3 "*" $search "*"
-	waitfor "The shortest path ("
-	getWord CURRENTLINE $dist 4 
-	stripText $dist "("
+
+	if ($noplots = 0)
+		send "f" $port3 "*" $search "*"
+		waitfor "The shortest path ("
+		getWord CURRENTLINE $dist 4 
+		stripText $dist "("
+	else
+		getDistance $dist1 $port3 $$search
+	end
+
 	if ($dist > $MAXDIST)
 		setVar $distError TRUE
 	end
-	send "f" $search "*" $port3 "*"
-	waitfor "The shortest path ("
-	getWord CURRENTLINE $dist 4 
-	stripText $dist "("
+
+	if ($noplots = 0)
+		send "f" $search "*" $port3 "*"
+		waitfor "The shortest path ("
+		getWord CURRENTLINE $dist 4 
+		stripText $dist "("
+	else
+		getDistance $dist1 $search $port3
+	end
+
 	if ($dist > $MAXDIST)
 		setVar $distError TRUE
 	end
+
 	send "q"
 	waitfor "Computer deactivated>"
 
@@ -373,18 +462,22 @@ return
 
 :sendDistance
 	
-	send "cf" $search "*" $focus "*"
-	send "f" $focus "*" $search "*"
-	send "q"
+	if ($noplots = 0)
+		send "cf" $search "*" $focus "*"
+		send "f" $focus "*" $search "*"
+		send "q"
 
-	waitfor "The shortest path ("
-	getWord CURRENTLINE $dist1 4 
-	waitfor "The shortest path ("
-	getWord CURRENTLINE $dist2 4 
-	waitfor "Computer deactivated>"
-	stripText $dist1 "("
-	stripText $dist2 "("
-	
+		waitfor "The shortest path ("
+		getWord CURRENTLINE $dist1 4 
+		waitfor "The shortest path ("
+		getWord CURRENTLINE $dist2 4 
+		waitfor "Computer deactivated>"
+		stripText $dist1 "("
+		stripText $dist2 "("
+	else
+		getDistance $dist1 $search $focus
+		getDistance $dist2 $focus $search
+	end
 echo "DIST:" $dist1 " " $dist2 " **"
 	
 	if (($dist1 > $MAXDIST) and ($dist2 > $MAXDIST))
