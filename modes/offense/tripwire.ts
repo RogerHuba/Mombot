@@ -196,7 +196,6 @@
 			setvar $macro "q z a y 99999* z a y 99999* "
 		end
 		setvar $macro $macro&"z a y 99999* z d y j a y j 99999* j a y j 99999* j a y j 99999* j a y j 99999* j a y j 99999**  "
-		echo "*[["&$macro&"]]*"
 		setTextLineTrigger time_to_blow :check " invaded and captured "&$planet~planet_NAME
 		setTextLineTrigger time_to_blow_2 :check_for_blow " of your fighters on planet "&$planet~planet_NAME
 		setTextLineTrigger time_to_blow_3 :check_for_blow_2 " of your Planetary Shields on planet "&$planet~planet_NAME
