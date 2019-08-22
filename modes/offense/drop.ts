@@ -348,7 +348,6 @@ reqRecording
 			:restarting
 				killAllTriggers
 				echo ANSI_6 "*[" ANSI_14 $script_ver " restarted" ANSI_6 "]*" ANSI_7
-				goSub :getSectorLocation
 				goto :startTargeting
 	
 		:answer
