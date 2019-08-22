@@ -373,7 +373,6 @@ reqRecording
 					gosub :switchboard~switchboard
 					halt
 				end
-				gosub :player~quikstats
 			end		
 			goto :startTargeting
 		:manualPwarp
@@ -382,7 +381,6 @@ reqRecording
 					goSub :checkForVictims
 				end
 				setVar $isManual TRUE
-				goSub :getSectorLocation
 				goto :startTargeting
 		:manualTwarp
 				killAllTriggers
@@ -390,7 +388,6 @@ reqRecording
 					goSub :checkForVictims
 				end
 				setVar $isManual TRUE
-				goSub :getSectorLocation
 				goto :startTargeting
 		:attackSectorMine
 			gosub :validateMineHit
@@ -433,7 +430,7 @@ reqRecording
 						send "a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n * * "
 					end
 				end
-				goSub :getSectorLocation
+				gosub :player~quikstats
 				if ($player~current_sector = $dropSector)
 					if ($attackOnSight)
 						goSub :checkForVictims
@@ -446,10 +443,10 @@ reqRecording
 			elseif ($dropDescription = "Adjacent")			
 				gosub :findAdjacent
 				goSub :attemptDrop
-				goSub :getSectorLocation
 				if ($attackOnSight)
 					goSub :checkForVictims
 				end
+				gosub :player~quikstats
 			elseif ($dropDescription = "Adjacent, then Direct")			
 				gosub :findAdjacent
 				goSub :attemptDrop
@@ -466,10 +463,10 @@ reqRecording
 						end
 					end
 				end
-				goSub :getSectorLocation
 				if ($attackOnSight)
 					goSub :checkForVictims
 				end
+				gosub :player~quikstats
 			elseif ($dropDescription = "Direct, then Adjacent")			
 				if ($planetDrop)
 					setvar $gotosector $dropsector
@@ -488,16 +485,16 @@ reqRecording
 				end
 				gosub :findAdjacent
 				goSub :attemptDrop
-				goSub :getSectorLocation
 				if ($attackOnSight)
 					goSub :checkForVictims
 				end
+				gosub :player~quikstats
 			elseif ($dropDescription = "Surround")
 				gosub :attemptSurroundDrop
-				gosub :getSectorLocation
 				if ($attackOnSight)
 					goSub :checkForVictims
 				end
+				gosub :player~quikstats
 			else
 				if ($dropSector <> $player~current_sector)
 					send "p " $dropSector "*y"
@@ -630,7 +627,7 @@ return
 	:pwarpYes
 		killAllTriggers
 	:pwarpFinished		
-		goSub :getSectorLocation
+		goSub :player~quikstats
 
 return
 
@@ -797,18 +794,6 @@ return
 	SetVar $isManual FALSE
 	gosub :getstats
 return
-
-:getSectorLocation
-	send "/"
-	waitOn "Sect "
-	getWord CURRENTLINE $temp 2
-	stripText $temp "Turns"
-	stripText $temp " "
-	replacetext $temp #179 ""
-	setVar $player~current_sector $temp
-return
-
-
 
 :authenticate
     killalltriggers
