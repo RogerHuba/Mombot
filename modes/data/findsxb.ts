@@ -352,7 +352,7 @@ return
 		getWord CURRENTLINE $dist 4 
 		stripText $dist "("
 	else
-		getDistance $dist1 $search $cans[$y]
+		getDistance $dist $search $cans[$y]
 	end
 
 	if ($dist > $MAXDIST)
@@ -364,7 +364,7 @@ return
 		getWord CURRENTLINE $dist 4 
 		stripText $dist "("
 	else
-		getDistance $dist1 $cans[$y] $search
+		getDistance $dist $cans[$y] $search
 	end
 
 	if ($dist > $MAXDIST)
@@ -376,7 +376,7 @@ return
 		getWord CURRENTLINE $dist 4 
 		stripText $dist "("
 	else
-		getDistance $dist1 $port3 $cans[$y]
+		getDistance $dist $port3 $cans[$y]
 	end
 
 	if ($dist > $MAXDIST)
@@ -389,7 +389,7 @@ return
 		getWord CURRENTLINE $dist 4 
 		stripText $dist "("
 	else
-		getDistance $dist1 $cans[$y] $port3
+		getDistance $dist $cans[$y] $port3
 	end
 
 	if ($dist > $MAXDIST)
@@ -402,7 +402,7 @@ return
 		getWord CURRENTLINE $dist 4 
 		stripText $dist "("
 	else
-		getDistance $dist1 $port3 $$search
+		getDistance $dist $port3 $search
 	end
 
 	if ($dist > $MAXDIST)
@@ -415,15 +415,16 @@ return
 		getWord CURRENTLINE $dist 4 
 		stripText $dist "("
 	else
-		getDistance $dist1 $search $port3
+		getDistance $dist $search $port3
 	end
 
 	if ($dist > $MAXDIST)
 		setVar $distError TRUE
 	end
-
-	send "q"
-	waitfor "Computer deactivated>"
+	if ($noplots = 0)
+		send "q"
+		waitfor "Computer deactivated>"
+	end
 
 	if ($distError = FALSE)
 		
@@ -436,24 +437,35 @@ return
 		setVar $results[$resulti][4] $mc_orig
 		setVar $results[$resulti][5] $cansMc[$y]
 		setVar $results[$resulti][6] $port3MC
+		
+		if ($noplots = 0)
+			send "cf" STARDOCK "*" $results[$resulti][1] "*"
+			waitfor "The shortest path ("
+			getWord CURRENTLINE $dist 4 
+			stripText $dist "("
+			setVar $results[$resulti][7] $dist
 
-		send "cf" STARDOCK "*" $results[$resulti][1] "*"
-		waitfor "The shortest path ("
-		getWord CURRENTLINE $dist 4 
-		stripText $dist "("
-		setVar $results[$resulti][7] $dist
+			send "f" STARDOCK "*" $results[$resulti][2] "*"
+			waitfor "The shortest path ("
+			getWord CURRENTLINE $dist 4 
+			stripText $dist "("
+			setVar $results[$resulti][8] $dist
 
-		send "f" STARDOCK "*" $results[$resulti][2] "*"
-		waitfor "The shortest path ("
-		getWord CURRENTLINE $dist 4 
-		stripText $dist "("
-		setVar $results[$resulti][8] $dist
+			send "f" STARDOCK "*" $results[$resulti][3] "*q"
+			waitfor "The shortest path ("
+			getWord CURRENTLINE $dist 4 
+			stripText $dist "("
+			setVar $results[$resulti][9] $dist
+		else
+			
+			getDistance $dist STARDOCK $results[$resulti][1] 
+			setVar $results[$resulti][7] $dist
+			getDistance $dist STARDOCK $results[$resulti][2] 
+			setVar $results[$resulti][8] $dist
+			getDistance $dist STARDOCK $results[$resulti][3] 
+			setVar $results[$resulti][9] $dist
 
-		send "f" STARDOCK "*" $results[$resulti][3] "*q"
-		waitfor "The shortest path ("
-		getWord CURRENTLINE $dist 4 
-		stripText $dist "("
-		setVar $results[$resulti][9] $dist
+		end
 
 
 	end
