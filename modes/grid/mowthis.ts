@@ -23,8 +23,9 @@
 	setArray $COURSE 80
 	gosub :player~quikstats
 	if ($player~current_prompt <> "Citadel")
-		send "'{" $switchboard~bot_name "} - You must run this script from the Citadel prompt.*"
-			halt
+		setvar $switchboard~message "You must run this script from the Citadel prompt.*"
+		gosub :switchboard~switchboard
+		halt
 	end
 
 	setVar $figsToDrop 1
@@ -46,6 +47,13 @@
 		setVar $no_twarp TRUE
 	else
 		setVar $no_twarp FALSE
+	end
+
+	if ($no_twarp <> true)
+		if (($player~TWARP_TYPE <> "1") and ($player~TWARP_TYPE <> "2"))
+			setvar $switchboard~message "You don't have the no twarp option on, but you don't have a twarp drive.  Halting in case you're in the wrong ship.*"
+			gosub :switchboard~switchboard
+		end
 	end
 
 	setVar $true TRUE
@@ -87,10 +95,12 @@
 	end
 
 	if ($databasecount <= 0)
-		send "'{" $switchboard~bot_name "} -  No sector parameters found for "&$parameter&" set to a value of "&$output&" or already figged.*"
+		setvar $switchboard~message "No sector parameters found for "&$parameter&" set to a value of "&$output&" or already figged.*"
+		gosub :switchboard~switchboard
 	end
 
-	send "'{" $switchboard~bot_name "} -  Starting up mow this!  Mowing all sectors with "&$parameter&" set to a value of "&$output&".*"
+	setvar $switchboard~message "Starting up mow this!  Mowing all sectors with "&$parameter&" set to a value of "&$output&".*"
+	gosub :switchboard~switchboard
 
 	:DOAGAIN
 	setVar $isDone FALSE
@@ -118,19 +128,14 @@
 			setVar $focus $que[$bottom]
 			getSectorParameter $focus $parameter $isTarget
 			getSectorParameter $focus "FIGSEC" $isFigged
-			if (($isTarget = true) and ($isFigged <> true))
+
+			if (((($true = true) and ($isTarget = true)) or (($true = false) and ($isTarget <> true))) and (($isFigged <> true) or ($allSectors = true)))
 				# fig found 0 hops
 				setVar $NearFig $focus
 				setVar $checkedPorts[$NearFig] TRUE
 				goto :mowtotarget
 			else
-				if ($allSectors = true)
-					setVar $NearFig $focus
-					setVar $checkedPorts[$NearFig] TRUE
-					goto :mowtotarget					
-				else
-					setVar $nearfig 0
-				end
+				setVar $nearfig 0
 			end
 			# That wasn't it, so let's add all the adjacents to the que for future testing.
 			setVar $a 1
@@ -181,7 +186,8 @@
 								while ($i <= $alarm)
 									getWordPos $who_is_online $pos " "&$alarm[$i]&" "
 									if ($pos > 0)
-										send "'Alarm triggered by "&$alarm[$i]&", contingency plan engaged.*"
+										setvar $switchboard~message "Alarm triggered by "&$alarm[$i]&", contingency plan engaged.*"
+										gosub :switchboard~switchboard
 										:shutdown
 										halt
 									end
