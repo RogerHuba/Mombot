@@ -235,7 +235,7 @@ goto :sidecar_functions
 		gosub :switchboard~switchboard		
 		goto :wait_for_tow
 	else
-		set $notow false
+		setvar $notow false
 		setvar $switchboard~message "Spoof attempt to make sidecar think it isn't towed anymore."
 		gosub :switchboard~switchboard
 		goto :sidecar_functions
