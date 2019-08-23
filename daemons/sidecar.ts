@@ -123,9 +123,9 @@
 				setvar $switchboard~message $user_name&" is in my corporation.  Authentication approved.*"
 				gosub :switchboard~switchboard
 			else
-				setvar $switchboard~message "Spoof attempt to make sidecar think it is a corpie, but it is not!.*"
-				gosub :switchboard~switchboard
-				halt
+#				setvar $switchboard~message "Spoof attempt to make sidecar think it is a corpie, but it is not!.*"
+#				gosub :switchboard~switchboard
+#				halt
 			end
 			setVar $BOT~command "topoff"
 			setVar $BOT~user_command_line " topoff "
