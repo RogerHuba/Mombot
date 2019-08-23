@@ -1,7 +1,7 @@
 	gosub :BOT~loadVars
 									
 
-	setVar $BOT~help[1]  $BOT~tab&"- "&$command&" [param] {figstodrop} {true/false} {alarm}    " 
+	setVar $BOT~help[1]  $BOT~tab&"- mowthis [param] {figstodrop} {true/false} {alarm}    " 
 	setVar $BOT~help[2]  $BOT~tab&"    Mows to unfigged sectors defined in sector param given. " 
 	setVar $BOT~help[3]  $BOT~tab&"    Does not do so safely.                                  " 
 	setVar $BOT~help[4]  $BOT~tab&"                                                            " 
