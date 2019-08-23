@@ -97,6 +97,7 @@
 
 
 	:validate_tow
+	goto :sidecar_functions	
 	getwordpos currentansiline $pos  "[K[1;36m"
 	getwordpos currentansiline $pos2 " [0;32mlocks a tractor beam on your ship."
 	if (($pos > 0) and ($pos2 > 0))
