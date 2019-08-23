@@ -97,11 +97,10 @@
 
 
 	:validate_tow
-	goto :sidecar_functions	
-	getwordpos currentansiline $pos  "[K[1;36m"
-	getwordpos currentansiline $pos2 " [0;32mlocks a tractor beam on your ship."
+	getwordpos currentansiline $pos  "[1;36m"
+	getwordpos currentansiline $pos " [0;32mlocks a tractor beam on your ship."
 	if (($pos > 0) and ($pos2 > 0))
-		getText CURRENTANSILINE $user_name "[K[1;36m" " [0;32mlocks a tractor beam on your ship."
+		getText CURRENTANSILINE $user_name "[1;36m" " [0;32mlocks a tractor beam on your ship."
 		setvar $switchboard~message "Sidecar attached to "&$user_name&"'s ship.*"
 		gosub :switchboard~switchboard
 
@@ -124,9 +123,9 @@
 				setvar $switchboard~message $user_name&" is in my corporation.  Authentication approved.*"
 				gosub :switchboard~switchboard
 			else
-#				setvar $switchboard~message "Spoof attempt to make sidecar think it is a corpie, but it is not!.*"
-#				gosub :switchboard~switchboard
-#				halt
+				setvar $switchboard~message "Spoof attempt to make sidecar think it is a corpie, but it is not!.*"
+				gosub :switchboard~switchboard
+				halt
 			end
 			setVar $BOT~command "topoff"
 			setVar $BOT~user_command_line " topoff "
