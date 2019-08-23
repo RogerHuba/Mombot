@@ -356,8 +356,8 @@ return
 return
 
 :setrefilltriggers
-	kill reload1
-	kill reload2
+	killtrigger reload1
+	killtrigger reload2
 	setTextLineTrigger reload1 :reloadFigMe "launches a wave of fighters at "&$user_name
 	setTextLineTrigger reload2 :reloadFigMe $user_name&" deploys some fighters"
 return
