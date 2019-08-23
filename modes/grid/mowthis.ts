@@ -1,47 +1,30 @@
-	logging off
-	loadVar $switchboard~bot_name
-	loadVar $player~unlimitedGame		
-	loadVar $bot_turn_limit		
-	loadVar $bot~user_command_line	
-	loadVar $bot~parm1			
-	loadVar $bot~parm2			
-	loadVar $bot~parm3			
-	loadVar $bot~parm4
-	loadVar $bot~parm5
-	loadVar $bot~parm6
-	loadVar $bot~parm7
-	loadVar $bot~parm8
-	loadVar $stardock
-	loadVar $backdoor
-	loadVar $rylos
-	loadVar $alpha_centauri
-	loadVar $command
-	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
-	if ($doesHelpFileExist <> TRUE)
-		write "scripts\mombot\help\"&$command&".txt" "- "&$command&" [param] {figstodrop} {true/false} {alarm}    " 
-		write "scripts\mombot\help\"&$command&".txt" "    Mows to unfigged sectors defined in sector param given. " 
-		write "scripts\mombot\help\"&$command&".txt" "    Does not do so safely.                                  " 
-		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
-		write "scripts\mombot\help\"&$command&".txt" "    [param]  - sector parameter to move to                   " 
-		write "scripts\mombot\help\"&$command&".txt" "    {figstodrop}  - fighters to drop (default is 1)          " 
-		write "scripts\mombot\help\"&$command&".txt" "    {true}   - go to the param if it's equal to TRUE (1)     " 
-		write "scripts\mombot\help\"&$command&".txt" "    {false}  - go to the param if it's equal to FALSE (0)   " 
-		write "scripts\mombot\help\"&$command&".txt" "    {alarm}  - activate alarm                               " 
-		write "scripts\mombot\help\"&$command&".txt" "    {notwarp}  - don't attempt twarp                        " 
-		write "scripts\mombot\help\"&$command&".txt" "    {all}  - visits all sectors whether fig is down or not  " 
-		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
-		send "'{" $switchboard~bot_name "} - Writing help file for this command in Help directory.*"
-	end
+	gosub :BOT~loadVars
+									
+
+	setVar $BOT~help[1]  $BOT~tab&"- "&$command&" [param] {figstodrop} {true/false} {alarm}    " 
+	setVar $BOT~help[2]  $BOT~tab&"    Mows to unfigged sectors defined in sector param given. " 
+	setVar $BOT~help[3]  $BOT~tab&"    Does not do so safely.                                  " 
+	setVar $BOT~help[4]  $BOT~tab&"                                                            " 
+	setVar $BOT~help[5]  $BOT~tab&"    [param]  - sector parameter to move to                   " 
+	setVar $BOT~help[6]  $BOT~tab&"    {figstodrop}  - fighters to drop (default is 1)          " 
+	setVar $BOT~help[7]  $BOT~tab&"    {true}   - go to the param if it's equal to TRUE (1)     " 
+	setVar $BOT~help[8]  $BOT~tab&"    {false}  - go to the param if it's equal to FALSE (0)   " 
+	setVar $BOT~help[9]  $BOT~tab&"    {alarm}  - activate alarm                               " 
+	setVar $BOT~help[10] $BOT~tab&"    {notwarp}  - don't attempt twarp                        " 
+	setVar $BOT~help[11] $BOT~tab&"    {all}  - visits all sectors whether fig is down or not  " 
+	setVar $BOT~help[12] $BOT~tab&"                                                            " 
+	gosub :bot~helpfile
+
 	if ($bot~parm1 <> "")
-		setVar $bot~parmAM $bot~parm1
-		upperCase $bot~parmAM
+		setVar $parameter $bot~parm1
+		upperCase $parameter
 	end
-	window mowWindow 350 450 "Mowing to this: ["&$bot~parmAM&"]" ontop 
+	window mowWindow 350 450 "Mowing to this: ["&$parameter&"]" ontop 
 	setArray $COURSE 80
 	gosub :player~quikstats
 	if ($player~current_prompt <> "Citadel")
 		send "'{" $switchboard~bot_name "} - You must run this script from the Citadel prompt.*"
-     		halt
+			halt
 	end
 
 	setVar $figsToDrop 1
@@ -104,62 +87,115 @@
 	end
 
 	if ($databasecount <= 0)
-		send "'{" $switchboard~bot_name "} -  No sector parameters found for "&$bot~parmAM&" set to a value of "&$output&" or already figged.*"
+		send "'{" $switchboard~bot_name "} -  No sector parameters found for "&$parameter&" set to a value of "&$output&" or already figged.*"
 	end
 
-	send "'{" $switchboard~bot_name "} -  Starting up mow this!  Mowing all sectors with "&$bot~parmAM&" set to a value of "&$output&".*"
+	send "'{" $switchboard~bot_name "} -  Starting up mow this!  Mowing all sectors with "&$parameter&" set to a value of "&$output&".*"
 
 	:DOAGAIN
-		getRnd $random 1 $databasecount
-		getWord $randomSectors $destination $random
-		if ($destination = 0)
-			send "'{" $switchboard~bot_name "} -  Database Cleared - Refresh Figs and Restart.*"
-			halt		
+	setVar $isDone FALSE
+	setVar $player~turnsTooLow FALSE
+	:inac
+	killalltriggers
+	while ($isDone <> TRUE)
+		loadVar $BOT~botIsDeaf
+		loadVar $BOT~silent_running
+		:inac
+		if (($PLAYER~unlimitedGame = FALSE) AND ($PLAYER~TURNS <= $BOT~bot_turn_limit))
+			setVar $SWITCHBOARD~message "Turns too low to continue.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
 		end
-		if ($destination <> $homeSector)
-			gosub :getCourses
-			if ($valid)
-					setVar $temp " "&$destination&" "
-					replaceText $randomSectors $temp " "
-					subtract $databasecount 1
-						send "#qm***t n t 1* q"
-					loadVar $alarm_list
-					if (($alarm_active) AND ($alarm_list <> ""))
-						loadVar $who_is_online
-						lowercase $alarm_list
-						lowercase $who_is_online
-						getWordPos $alarm_list $pos ","
-						if ($pos > 0)
-							splitText $alarm_list $alarm ","
-						else
-							setArray $alarm 1
-							setVar $alarm[1] $alarm_list
-							setVar $alarm 1
-						end
-						setVar $i 1
-						while ($i <= $alarm)
-							getWordPos $who_is_online $pos " "&$alarm[$i]&" "
-							if ($pos > 0)
-								send "'Alarm triggered by "&$alarm[$i]&", contingency plan engaged.*"
-								:shutdown
-								halt
-							end
-							add $i 1
-						end
-					end
-					
-					gosub :mow
-					setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "&$destination&"*Target Status: Attempting To Mow*"&$databasecount&" sectors left in database*"
-					setWindowContents mowWindow $windowData
-					setVar $lastDestination $destination
-	
-	
+		setVar $bottom 1
+		setVar $top 1
+		setArray $checked SECTORS
+		setVar $que[1] $PLAYER~CURRENT_SECTOR
+		setVar $checked[$PLAYER~CURRENT_SECTOR] 1
+		:tryAgain2
+		while ($bottom <= $top)
+			echo ANSI_2&"*[[ "&ANSI_4&"Finding new "&$parameter&" sector to mow to.."&ANSI_2&"]]*"
+			# Now, pull out the next sector in the que, and make it our focus
+			setVar $focus $que[$bottom]
+			getSectorParameter $focus $parameter $isTarget
+			getSectorParameter $focus "FIGSEC" $isFigged
+			if (($isTarget = true) and ($isFigged <> true))
+				# fig found 0 hops
+				setVar $NearFig $focus
+				setVar $checkedPorts[$NearFig] TRUE
+				goto :mowtotarget
 			else
-				setVar $temp " "&$destination&" "
-				replaceText $randomSectors $temp " "
-				subtract $databasecount 1	
+				if ($allSectors = true)
+					setVar $NearFig $focus
+					setVar $checkedPorts[$NearFig] TRUE
+					goto :mowtotarget					
+				else
+					setVar $nearfig 0
+				end
 			end
-		end
+			# That wasn't it, so let's add all the adjacents to the que for future testing.
+			setVar $a 1
+			while (SECTOR.WARPS[$focus][$a] > 0)
+				setVar $adjacent SECTOR.WARPS[$focus][$a]
+				# But only add them if they haven't been added previously
+				if ($checked[$adjacent] = 0)
+					# Okay, this one hasn't been checked, so tag it and que it.
+					setVar $checked[$adjacent] 1
+					add $top 1
+					setVar $que[$top] $adjacent
+				end
+				add $a 1
+			end
+			# The adjacents of $focus were all queued, now on to the next one.
+			add $bottom 1
+		end	
+		setVar $SWITCHBOARD~message "Can't find a route to any other ports.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+
+		:mowtotarget
+			if ($NearFig > 0)
+				setvar $destination $nearfig
+			end
+
+			if ($destination <> $homeSector)
+					gosub :getCourse
+					if ($valid)
+							setVar $temp " "&$destination&" "
+							replaceText $randomSectors $temp " "
+							subtract $databasecount 1
+							send "#qm***t n t 1* q"
+							loadVar $alarm_list
+							if (($alarm_active) AND ($alarm_list <> ""))
+								loadVar $who_is_online
+								lowercase $alarm_list
+								lowercase $who_is_online
+								getWordPos $alarm_list $pos ","
+								if ($pos > 0)
+									splitText $alarm_list $alarm ","
+								else
+									setArray $alarm 1
+									setVar $alarm[1] $alarm_list
+									setVar $alarm 1
+								end
+								setVar $i 1
+								while ($i <= $alarm)
+									getWordPos $who_is_online $pos " "&$alarm[$i]&" "
+									if ($pos > 0)
+										send "'Alarm triggered by "&$alarm[$i]&", contingency plan engaged.*"
+										:shutdown
+										halt
+									end
+									add $i 1
+								end
+							end
+							gosub :mow
+							setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "&$destination&"*"
+							setWindowContents mowWindow $windowData
+							setVar $lastDestination $destination			
+					end
+			end
+	end
+
 	goto :DOAGAIN
 # ======================     START MOW SUBROUTINES     ==========================
 :mow
@@ -170,47 +206,56 @@
 		setVar $maxFigAttack2 9999
 	end
 
-setVar $result ""		
+	setVar $result ""		
 
-if ($no_twarp = FALSE)
-	setVar $j 4
-	setVar $closestFiggedSector 0	
-	while ($j <= $courseLength)
-		getSectorParameter $COURSE[$j] "FIGSEC" $isFigged
-		if ($isFigged = TRUE)
-			setVar $closestFiggedSector $COURSE[$j]
-			setVar $index $j
-			if ($j = $courseLength)
-				setVar $PLAYER~warpto $closestFiggedSector
-	            gosub :player~twarp
-	            gosub  :player~currentPrompt
-	            if ($PLAYER~twarpSuccess = TRUE)
-	            	setVar $j $index
-	            else
-	            	setVar $j 3
-	            end
-	            goto :mowfromhere
-	        end
-		else
-			if ($closestFiggedSector > 0)
-				setVar $PLAYER~warpto $closestFiggedSector
-	            gosub :player~twarp
-	            gosub  :player~currentPrompt
-	            if ($PLAYER~twarpSuccess = TRUE)
-	            	setVar $j ($index + 1)
-	            else
-	            	setVar $j 3
-	            end
-	            goto :mowfromhere
+	if ($no_twarp = FALSE)
+		setVar $j 4
+		setVar $closestFiggedSector 0	
+		while ($j <= $courseLength)
+			getSectorParameter $COURSE[$j] "FIGSEC" $isFigged
+			if ($isFigged = TRUE)
+				setVar $closestFiggedSector $COURSE[$j]
+				setVar $index $j
+				if ($j = $courseLength)
+					setVar $PLAYER~warpto $closestFiggedSector
+					gosub :player~twarp
+					gosub  :player~currentPrompt
+					if ($PLAYER~twarpSuccess = TRUE)
+						setVar $j $index
+					else
+						setVar $j 3
+					end
+					goto :mowfromhere
+				end
+			else
+				if ($closestFiggedSector > 0)
+					setVar $PLAYER~warpto $closestFiggedSector
+					gosub :player~twarp
+					gosub  :player~currentPrompt
+					if ($PLAYER~twarpSuccess = TRUE)
+						setVar $j ($index + 1)
+					else
+						setVar $j 3
+					end
+					goto :mowfromhere
+				end
 			end
+			add $j 1	
 		end
-		add $j 1	
 	end
-end
 
 	setVar $j 3
 	:mowfromhere
 	while ($j <= $courseLength)
+		setvar $sector $COURSE[$j]
+		if ((PORT.EXISTS[$sector] = TRUE) AND (PORT.CLASS[$sector] > 0) AND (((PORT.FUEL[$sector] > 0) AND (PORT.BUYFUEL[$sector] = FALSE))))
+			setvar $fuelsector $sector
+		end
+		add $j 1	
+	end
+
+	while ($j <= $courseLength)
+
 		setVar $result $result&"m  "&$COURSE[$j]&"* "
 		if (($COURSE[$j] > 10) AND ($COURSE[$j] <> $STARDOCK))
 			setVar $result $result&"za"&$maxFigAttack2&"* z * "	
@@ -224,9 +269,13 @@ end
 				setSectorParameter $COURSE[$j] "FIGSEC" FALSE
 			end
 		end
+		setvar $result $result&"zr* "
+		if ($course[$j] = $fuelsector)
+			setvar $result $result&" p   t   *   *  "
+		end
 		add $j 1	
 	end
-	send $result&"zr* "
+	send $result
 	gosub :player~quikstats
 	if ($player~current_sector <> $destination)
 		setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "&$destination&"*Target Status: DANGER - Call Save Me Activated!"
@@ -234,18 +283,11 @@ end
 		gosub :callSaveMe
 		
 	else
-		send "mz "&$homeSector&"*y  y    *    "
 		gosub :player~quikstats
-		if ($player~current_sector <> $homeSector)
-			gosub :callSaveMe
-		end
-		setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "&$destination&"*Target Status: Returned Home Safely*"&$databasecount&" sectors left in database*"
-		setWindowContents mowWindow $windowData
-		gosub :landOnPlanetEnterCitadel
 	end
-	return
+return
 
-:getCourses
+:getCourse
 	killalltriggers
 	setArray $COURSE 80
 	setVar $sectors ""
@@ -299,14 +341,14 @@ end
 		add $index 1
 		getWord $sectors $COURSE[$index] $index
 		if ($COURSE[$index] <> ":::")
+			setvar $checkedPorts[$COURSE[$index]] true
 			setVar $valid TRUE
 		end
 	end
 	if ($valid)
-		setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "&$destination&"*Target Status: Attempting To Mow*"&$databasecount&" sectors left in database*"
+		setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "&$destination&"*"
 	else
-		setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "&$destination&"*Target Status: Path Already Figged*"&$databasecount&" sectors left in database*"
-
+		setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "&$destination&"*"
 	end
 	setWindowContents mowWindow $windowData
 						
@@ -321,6 +363,41 @@ end
 	setVar $path_database "  "
 	setVar $perc 0
 	setVar $i 11
+
+		setVar $bottom 1
+		setVar $top 1
+		setArray $checked SECTORS
+		setArray $gridded SECTORS
+		setVar $que[1] $PLAYER~CURRENT_SECTOR
+		setVar $checked[$PLAYER~CURRENT_SECTOR] 1
+		:tryAgain2
+		while ($bottom <= $top)
+			# Now, pull out the next sector in the que, and make it our focus
+			setVar $focus $que[$bottom]
+			getsectorparameter $focus $parameter $isTarget
+
+			setVar $nearfig 0
+
+			# That wasn't it, so let's add all the adjacents to the que for future testing.
+			setVar $a 1
+			while (SECTOR.WARPS[$focus][$a] > 0)
+				setVar $adjacent SECTOR.WARPS[$focus][$a]
+				# But only add them if they haven't been added previously
+				if ($checked[$adjacent] = 0)
+					# Okay, this one hasn't been checked, so tag it and que it.
+					setVar $checked[$adjacent] 1
+					add $top 1
+					setVar $que[$top] $adjacent
+				end
+				add $a 1
+			end
+			# The adjacents of $focus were all queued, now on to the next one.
+			add $bottom 1
+		end	
+		setVar $SWITCHBOARD~message "Can't find a route to any other ports.*"
+		gosub :SWITCHBOARD~switchboard
+
+
 	while ($i <= SECTORS)
 		getWordPos $path_database $pos " "&$i&" "
 		if ($pos <= 0)
@@ -329,7 +406,7 @@ end
 			else
 				getSectorParameter $i "FIGSEC" $isFigged
 			end
-			getSectorParameter $i $bot~parmAM $isTrue
+			getSectorParameter $i $parameter $isTrue
 			if (($i <> $stardock) AND ($isTrue = $true) AND ($isFigged <> TRUE))
 				setVar $randomSectors $randomSectors&$i&"  "
 				add $databasecount 1
@@ -526,7 +603,7 @@ return
 		waitFor "Command [TL"
 	end	
 	gosub :player~quikstats
-    	setVar $figstodeploy 1
+		setVar $figstodeploy 1
 	gosub :deployfigs 
 	setVar $savetarget $player~current_sector 
 	if ($savetarget < 10)
@@ -544,67 +621,67 @@ return
 
 
 :waitforhelp
-    setTextLineTrigger friendlytwarp :friendlytwarp "appears in a brilliant flash of warp energies!"
-    setTextLineTrigger friendlyplanet :friendlyplanet "Saveme script activated - Planet "
-    setTextLineTrigger towlocked :towlocked "locks a tractor beam on your ship."
-    setDelayTrigger timeout :timeout 30000
-    pause
+	setTextLineTrigger friendlytwarp :friendlytwarp "appears in a brilliant flash of warp energies!"
+	setTextLineTrigger friendlyplanet :friendlyplanet "Saveme script activated - Planet "
+	setTextLineTrigger towlocked :towlocked "locks a tractor beam on your ship."
+	setDelayTrigger timeout :timeout 30000
+	pause
 
-    :timeout
-        killalltriggers
-        send "'30 seconds after save call, script halted.*"
-        halt
+	:timeout
+		killalltriggers
+		send "'30 seconds after save call, script halted.*"
+		halt
 
-    :friendlytwarp
-        killalltriggers
-        setVar $figstodeploy "ALL"
-        gosub :deployfigs
-        goto :waitforhelp
+	:friendlytwarp
+		killalltriggers
+		setVar $figstodeploy "ALL"
+		gosub :deployfigs
+		goto :waitforhelp
 
-    :friendlyplanet
-        killalltriggers
-        getText CURRENTLINE $planet~planet "Saveme script activated - Planet " " to "
-        send "L " & $planet~planet & "* C 'I landed on planet " & $planet~planet & "*"
-        halt
+	:friendlyplanet
+		killalltriggers
+		getText CURRENTLINE $planet~planet "Saveme script activated - Planet " " to "
+		send "L " & $planet~planet & "* C 'I landed on planet " & $planet~planet & "*"
+		halt
 
-    :towlocked
-        killalltriggers
-        setVar $figstodeploy 1
-        gosub :deployfigs
-        send "'Tow locked, get us out of here!*"
-        halt
+	:towlocked
+		killalltriggers
+		setVar $figstodeploy 1
+		gosub :deployfigs
+		send "'Tow locked, get us out of here!*"
+		halt
 
 
 :deployfigs
-    if ($figstodeploy = 0)
-        setVar $figstodeploy 1
-    end
-    if (($player~current_sector  < 11) or ($player~current_sector  = STARDOCK))
-        send "'Can't deploy figs in fed*"
-        return
-    end
-    send "F"
-    setTextLineTrigger nocontrol :nocontrol "These fighters are not under your control."
-    setTextLineTrigger abletodeploy :abletodeploy "fighters available."
-    pause
+	if ($figstodeploy = 0)
+		setVar $figstodeploy 1
+	end
+	if (($player~current_sector  < 11) or ($player~current_sector  = STARDOCK))
+		send "'Can't deploy figs in fed*"
+		return
+	end
+	send "F"
+	setTextLineTrigger nocontrol :nocontrol "These fighters are not under your control."
+	setTextLineTrigger abletodeploy :abletodeploy "fighters available."
+	pause
 
-    :nocontrol
-        killalltriggers
-        send "'We don't control the figs in this sector!*"
-        halt
+	:nocontrol
+		killalltriggers
+		send "'We don't control the figs in this sector!*"
+		halt
 
-    :abletodeploy
-        killalltriggers
-        getWord CURRENTLINE $figsavailable 3
-        striptext $figsavailable ","
-        if ($figstodeploy = "ALL")
-            setVar $figstodeploy $figsavailable
-        end
-        if ($figsavailable = 0)
-            send "0* ZC D* 'I have no figs to deploy!*"
-        else
-            send $figstodeploy & "* ZC D* '" & $figstodeploy & " figs deployed*"
-        end
+	:abletodeploy
+		killalltriggers
+		getWord CURRENTLINE $figsavailable 3
+		striptext $figsavailable ","
+		if ($figstodeploy = "ALL")
+			setVar $figstodeploy $figsavailable
+		end
+		if ($figsavailable = 0)
+			send "0* ZC D* 'I have no figs to deploy!*"
+		else
+			send $figstodeploy & "* ZC D* '" & $figstodeploy & " figs deployed*"
+		end
 return
 
 :landOnPlanetEnterCitadel
