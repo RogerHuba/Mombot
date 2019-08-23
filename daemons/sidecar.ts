@@ -66,6 +66,9 @@
 	send "b"
 	waitOn "Do you wish to change it? (Y/N)"
 	send "*"
+	setVar $SWITCHBOARD~message "Ship IG is already on.*"
+	gosub :SWITCHBOARD~switchboard
+
 	goto :skipig
 
 	:ig_was_off
@@ -80,10 +83,18 @@
 	# making ship corporate #
 	send "co*cqq* "
 
+	send "*"
+
 	send "f"
 	waiton " fighters available."
 	getword currentline $myfighters 3
 	replacetext $myfighters "," ""
+	if (($myfighters > 50000) and (SECTOR.PLANETCOUNT[$player~current_sector] = 0))
+		send "0*cd"
+		setVar $SWITCHBOARD~message "I have too many fighters to drop without a planet in the sector.  Halting sidecar.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
 	send $myfighters&"*cd"
 	setVar $SWITCHBOARD~message "Dropping fighters to allow tow.*"
 	gosub :SWITCHBOARD~switchboard
