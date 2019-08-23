@@ -100,8 +100,7 @@
 	:validate_tow
 	setvar $line currentansiline
 	getwordpos $line $pos  "[K[1;36m"
-	getwordpos $line $pos " [0;32mlocks a tractor beam on your ship."
-	echo "*["&$line&"]*"
+	getwordpos $line $pos2 " [0;32mlocks a tractor beam on your ship."
 	if (($pos > 0) and ($pos2 > 0))
 		getText $line $user_name "[K[1;36m" " [0;32mlocks a tractor beam on your ship."
 		setvar $switchboard~message "Sidecar attached to "&$user_name&"'s ship.*"
