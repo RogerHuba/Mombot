@@ -90,7 +90,7 @@
 	getword currentline $myfighters 3
 	replacetext $myfighters "," ""
 	if (($myfighters > 50000) and (SECTOR.PLANETCOUNT[$player~current_sector] = 0))
-		send "0*cd"
+		send "0*"
 		setVar $SWITCHBOARD~message "I have too many fighters to drop without a planet in the sector.  Halting sidecar.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
