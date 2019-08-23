@@ -601,7 +601,7 @@ gosub :_START_
 				add $maci 1
 			end
 			
-			setVar $mac $mac &"y99*"
+			setVar $mac $mac &"y99^M"
 			send "'" $blowBot " " $mac "*"
 		end 
 	#else
