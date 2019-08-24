@@ -256,3 +256,4 @@ setvar $planet 500
 return
 
 include "source\bot_includes\map\formatsectorowner\map"
+include "source\bot_includes\map\commas\map"
