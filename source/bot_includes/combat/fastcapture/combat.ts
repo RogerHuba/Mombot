@@ -288,6 +288,18 @@
 				elseif ($cap_points > $max_figs)
 					setVar $cap_points $max_figs
 				end
+				if (($ship_fighters > 50000) and ($cap_points = 1))
+					setvar $cap_points 1000
+				end
+				if (($ship_fighters > 5000) and ($cap_points = 1))
+					setvar $cap_points 100
+				end
+				if (($ship_fighters > 1000) and ($cap_points = 1))
+					setvar $cap_points 50
+				end
+				if (($ship_fighters > 20) and ($cap_points = 1))
+					setvar $cap_points 5
+				end
 				setVar $sendAttack "z"&$cap_points&"*  "
 				if ($player~startingLocation = "Citadel")
 					setvar $sendAttack $sendAttack&$refurbString
