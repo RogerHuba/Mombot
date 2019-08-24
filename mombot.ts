@@ -16,30 +16,21 @@ goto :BOT~load_bot
 
 :MAIN~module_vars
 	saveVar $bot~command
-	setVar $command $bot~command
-	saveVar $command
 	saveVar $bot~user_command_line
-	saveVar $user_command_line
 	setVar $switchboard~bot_name $bot~bot_name
 	saveVar $switchboard~bot_name
+	savevar $bot~name
 	saveVar $bot~parm1
-	saveVar $parm1
 	saveVar $bot~parm2
-	saveVar $parm2
 	saveVar $bot~parm3
-	saveVar $parm3
 	saveVar $bot~parm4
-	saveVar $parm4
 	saveVar $bot~parm5
-	saveVar $parm5
 	saveVar $bot~parm6
-	saveVar $parm6
 	saveVar $bot~parm7
-	saveVar $parm7
 	saveVar $bot~parm8
-	saveVar $parm8
 	saveVar $bot~bot_turn_limit
 	saveVar $player~unlimitedGame
+	gosub :MAIN~backwards_compatible
 return
 
 
