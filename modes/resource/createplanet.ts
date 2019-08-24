@@ -156,8 +156,8 @@
     	setVar $MSG ($MSG & "  Furb Runs       : " & $FURB_RUNS & "*")
     	setVar $MSG ($MSG & "  Planets Popped  : " & $POPPED & "*")
     	setVar $MSG ($MSG & "  Planets Made    : " & $MADE & " of " & $NUMBER & "*")
-    	if ($planet~planet_BUFFER_POPPED <> 0)
-		setVar $MSG ($MSG & "  Buffer Planets  : " & $planet~planet_BUFFER_POPPED & " (Max "&$CUSTOM_BUFFER_MAX&")*")
+    	if ($PLANET_BUFFER_POPPED <> 0)
+		setVar $MSG ($MSG & "  Buffer Planets  : " & $PLANET_BUFFER_POPPED & " (Max "&$CUSTOM_BUFFER_MAX&")*")
     	end
 		if (($HARVEST_TOO <> 0) AND (($HARVEST_EQU) OR ($HARVEST_ORG) OR ($HARVEST_ORE)))
 	    setVar $MSG ($MSG & "      -/-Product Harvested-\-" & "*")
@@ -173,9 +173,9 @@
 
 	   	setWindowContents Report $MSG & "*"
 
-		if (($planet~planet_BUFFER_CNT = $planet~planet_BUFFER) AND ($planet~planet_BUFFER <> 0) AND ($planet~planet_BUFFER_POPPED < $CUSTOM_BUFFER_MAX))
-			setVar $planet~planet_BUFFER_CNT 0
-			add $planet~planet_BUFFER_POPPED 1
+		if (($PLANET_BUFFER_CNT = $PLANET_BUFFER) AND ($PLANET_BUFFER <> 0) AND ($PLANET_BUFFER_POPPED < $CUSTOM_BUFFER_MAX))
+			setVar $PLANET_BUFFER_CNT 0
+			add $PLANET_BUFFER_POPPED 1
 			send "  **  "
 			waiton "Warps to Sector(s) :"
 			waiton "Command [TL"
@@ -195,7 +195,7 @@
 
 			if ($POP~PLANET_MADE)
 				add $MADE 1
-				if (($planet~planet_BUFFER_POPPED <> 0) AND ($STATS~ATOMIC <> 0))
+				if (($PLANET_BUFFER_POPPED <> 0) AND ($STATS~ATOMIC <> 0))
 					setVar $BUFFER_NUMBER 0
 					send "L"
 					waitfor "-----------------------------------"
@@ -222,8 +222,8 @@
 						end
 				end
 
-			elseif ($planet~planet_BUFFER <> 0)
-				add $planet~planet_BUFFER_CNT 1
+			elseif ($PLANET_BUFFER <> 0)
+				add $PLANET_BUFFER_CNT 1
 			end
 		end
 		add $POPPED 1
@@ -243,8 +243,8 @@
     Echo ANSI_15 & #9 & "  Furb Runs       "&ANSI_14&": " & ANSI_6 & $FURB_RUNS & "*"
     Echo ANSI_15 & #9 & "  Planets Popped  "&ANSI_14&": " & ANSI_6 & $POPPED & "*"
     Echo ANSI_15 & #9 & "  Planets Made    "&ANSI_14&": " & ANSI_6 & $MADE & "*"
-	if ($planet~planet_BUFFER_POPPED <> 0)
-		Echo ANSI_15 & #9 & "  Buffer Planets  "&ANSI_14&": " & ANSI_6 & $planet~planet_BUFFER_POPPED & "*"
+	if ($PLANET_BUFFER_POPPED <> 0)
+		Echo ANSI_15 & #9 & "  Buffer Planets  "&ANSI_14&": " & ANSI_6 & $PLANET_BUFFER_POPPED & "*"
    	end
 	if (($HARVEST_TOO <> 0) AND (($HARVEST_EQU) OR ($HARVEST_ORG) OR ($HARVEST_ORE)))
 	    Echo ANSI_15 & #9 & "      -/-Product Harvested-\-" & "*"
@@ -261,7 +261,7 @@ include "C:\__TWX_\scripts\LoneStar\PlanetCreation\LIB.ts"
 include "C:\__TWX_\scripts\LoneStar\PlanetCreation\CATALOG.ts"
 
 :_MENU_
-	setVar $planet~planet_BUFFER_CNT 	5
+	setVar $PLANET_BUFFER_CNT 	5
 	setVar $POP_BUFFER			"LoneStars Plan-IT Buffer!"
 	setVar $POP~CUSTOM_NAME		""
 	setVar $GENERIC 2
@@ -275,9 +275,9 @@ include "C:\__TWX_\scripts\LoneStar\PlanetCreation\CATALOG.ts"
 		setVar $POP~MAKECORP	TRUE
 	end
 	if ($STATS~CURRENT_PROMPT = "Citadel")
-		setVar $HARVEST_TOO		$planet~planet
+		setVar $HARVEST_TOO		$PLANET~PLANET
 		setVar $FUEL_SOURCE		"Planet"
-		setVar $FUEL_PLANET		$planet~planet
+		setVar $FUEL_PLANET		$PLANET~PLANET
 	else
 		setVar $HARVEST_TOO		0
 	end
@@ -286,7 +286,7 @@ include "C:\__TWX_\scripts\LoneStar\PlanetCreation\CATALOG.ts"
 	setVar $HARVEST_EQU		TRUE
 
 	setVar $GENERIC 2
-	setVar $planet~planet_BUFFER 5
+	setVar $PLANET_BUFFER 5
 	setVar $furb TRUE
 	setVar $CUSTOM_BUFFER_MAX 5
 	setVar $POP~CUSTOM_NAME	"!!RND!!"
@@ -358,11 +358,11 @@ include "C:\__TWX_\scripts\LoneStar\PlanetCreation\CATALOG.ts"
 
     :getJustTheNumber
         send "  "
-        getWord CURRENTLINE $planet~planet 2
-        stripText $planet~planet "#"
+        getWord CURRENTLINE $PLANET~PLANET 2
+        stripText $PLANET~PLANET "#"
         getWord CURRENTLINE $PLAYER~CURRENT_SECTOR 5
         stripText $PLAYER~CURRENT_SECTOR ":"
-        saveVar $planet~planet
+        saveVar $PLANET~PLANET
         saveVar $PLAYER~CURRENT_SECTOR
 
 return
