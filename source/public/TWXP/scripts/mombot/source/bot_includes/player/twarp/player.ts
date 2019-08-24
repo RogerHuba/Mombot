@@ -14,6 +14,13 @@
 		setVar $msg "No T-warp drive on this ship!"
 		goto :twarpDone
 	end
+	loadvar $ship~SHIP_MAX_ATTACK
+	if ($ship~SHIP_MAX_ATTACK = 0)
+		setvar $ship~SHIP_MAX_ATTACK 9999
+	end
+	if (($fighters > 0) and ($fighters < $ship~ship_max_attack))
+		setvar $ship~ship_max_attack $fighters
+	end
 	# check adj's for Dock.. if present, then we don't need a jump sector.
 	setVar $WeAreAdjDock FALSE
 	if (($warpto = $MAP~stardock) OR ($warpto <= 10))
@@ -81,7 +88,7 @@
 		goto :twarpDone
 	:twarp_adj
 		gosub :killtwarptriggers
-		send "za  9999* * r * "
+		send "za  "&$ship~SHIP_MAX_ATTACK&"* * r * "
 		setVar $msg "That sector is next door, just plain warping."
 		setVar $twarpSuccess TRUE
 		goto :twarpDone
@@ -114,7 +121,7 @@
 		setVar $twarpSuccess TRUE
 	:twarpDone
 	if (($twarpSuccess = TRUE) AND (($original = $MAP~stardock) OR ($original <= 10)))
-		send "* m "&$original&"*  za9999* * "
+		send "* m "&$original&"*  za"&$ship~SHIP_MAX_ATTACK&"* * "
 	end
 return
 
