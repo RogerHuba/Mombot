@@ -51,5 +51,6 @@
 		if ($pos > 0)
 			getText CURRENTANSILINE $SHIP_MAX_ATTACK "[0m[32m Max Figs Per Attack[1;33m:[36m" "[0;32mTransWarp"
 			striptext $SHIP_MAX_ATTACK " "
-		end	
+		end
+		savevar $ship_max_attack
 return

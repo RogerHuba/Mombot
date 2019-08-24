@@ -66,6 +66,9 @@
 	send "b"
 	waitOn "Do you wish to change it? (Y/N)"
 	send "*"
+	setVar $SWITCHBOARD~message "Ship IG is already on.*"
+	gosub :SWITCHBOARD~switchboard
+
 	goto :skipig
 
 	:ig_was_off
@@ -80,10 +83,18 @@
 	# making ship corporate #
 	send "co*cqq* "
 
+	send "*"
+
 	send "f"
 	waiton " fighters available."
 	getword currentline $myfighters 3
 	replacetext $myfighters "," ""
+	if (($myfighters > 50000) and (SECTOR.PLANETCOUNT[$player~current_sector] = 0))
+		send "0*"
+		setVar $SWITCHBOARD~message "I have too many fighters to drop without a planet in the sector.  Halting sidecar.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
 	send $myfighters&"*cd"
 	setVar $SWITCHBOARD~message "Dropping fighters to allow tow.*"
 	gosub :SWITCHBOARD~switchboard
@@ -96,11 +107,13 @@
 	pause
 
 
+
 	:validate_tow
-	getwordpos currentansiline $pos  "[K[1;36m"
-	getwordpos currentansiline $pos2 " [0;32mlocks a tractor beam on your ship."
+	setvar $line currentansiline
+	getwordpos $line $pos  "[K[1;36m"
+	getwordpos $line $pos2 " [0;32mlocks a tractor beam on your ship."
 	if (($pos > 0) and ($pos2 > 0))
-		getText CURRENTANSILINE $user_name "[K[1;36m" " [0;32mlocks a tractor beam on your ship."
+		getText $line $user_name "[K[1;36m" " [0;32mlocks a tractor beam on your ship."
 		setvar $switchboard~message "Sidecar attached to "&$user_name&"'s ship.*"
 		gosub :switchboard~switchboard
 
@@ -234,7 +247,7 @@ goto :sidecar_functions
 		gosub :switchboard~switchboard		
 		goto :wait_for_tow
 	else
-		set $notow false
+		setvar $notow false
 		setvar $switchboard~message "Spoof attempt to make sidecar think it isn't towed anymore."
 		gosub :switchboard~switchboard
 		goto :sidecar_functions
@@ -355,8 +368,8 @@ return
 return
 
 :setrefilltriggers
-	kill reload1
-	kill reload2
+	killtrigger reload1
+	killtrigger reload2
 	setTextLineTrigger reload1 :reloadFigMe "launches a wave of fighters at "&$user_name
 	setTextLineTrigger reload2 :reloadFigMe $user_name&" deploys some fighters"
 return
