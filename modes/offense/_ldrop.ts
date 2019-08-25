@@ -12,7 +12,7 @@
 	setVar $BOT~help[3]    $BOT~tab&"              if {return} is set plock cancels and returns after 5 seconds"
 	setVar $BOT~help[4]    $BOT~tab&"    {foton} - lands 1 sector away and starts density foton"
 	setVar $BOT~help[5]    $BOT~tab&"     {kill} - attempts to kill after drop (direct or plock)"
-	setVar $BOT~help[6]    $BOT~tab&"   {direct} - try to drop directly into the limp sector"
+	setVar $BOT~help[6]    $BOT~tab&"   {direct} - try to drop directly into the sector"
 	setVar $BOT~help[7]    $BOT~tab&"   {return} - after drop, return to starting sector "
 	setVar $BOT~help[8]    $BOT~tab&"              and scan again"
 	setVar $BOT~help[9]    $BOT~tab&"    {delay} - how many milliseconds to wait before drop or plock"
