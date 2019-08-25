@@ -44,14 +44,14 @@
 
 	:corp_limp
 		getword CURRENTLINE $limpet_sector 1
-		getwordpos $corp_history $pos " "&$limpet_sector&" "
 		setVar $SWITCHBOARD~message $switchboard~message&"Corporate limpet: "&$limpet_sector&"*"
 		settextlinetrigger 1  :ldrop_corp_limp "Corporate"
 		pause
 	
 	:pers_limp
-		getwordpos $pers_history $pos " "&$limpet_sector&" "
+		getword CURRENTLINE $limpet_sector 1
 		setVar $SWITCHBOARD~message $switchboard~message&"Personal limpet: "&$limpet_sector&"*"
+		settextlinetrigger 2 :pers_limp "Personal "
 		pause
 
 	:no_limp
