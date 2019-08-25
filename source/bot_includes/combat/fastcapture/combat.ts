@@ -282,7 +282,9 @@
 				if ($unmanned = true)
 					divide $cap_points 2
 				end
-				#setVar $cap_points (($cap_points * 78) / 100)
+				if ($cap_points > 1000)
+					setVar $cap_points (($cap_points * 80) / 100)
+				end
 				if ($cap_points <= 0)
 					setVar $cap_points 1
 				elseif ($cap_points > $max_figs)
