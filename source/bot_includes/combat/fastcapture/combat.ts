@@ -196,8 +196,9 @@
 					echo "*["&$cap_ship_info&"]*"
 					#echo "*["&$SHIP~shipList[$type_count]&"]*"
 					getWordPos $cap_ship_info $is_ship $SHIP~shipList[$type_count]
-					getWordPos $cap_ship_info $unman "'s unmanned"
-					if ($unman > 0)
+					getWordPos $cap_ship_info $unman "'s unmanned "
+					getwordpos $cap_ship_info $unman2 "s' unmanned "
+					if (($unman > 0) or ($unman2 > 0))
 						setVar $unmanned true
 						echo "*[unmanned]*"
 					else
@@ -216,7 +217,6 @@
 				gosub :SWITCHBOARD~switchboard
 				setvar $shieldpoints 16000
 				setVar $defodds 5
-				goto :cap_it
 			:send_attack
 				killtrigger foundcaptarget
 				killtrigger noctarget
