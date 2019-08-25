@@ -304,6 +304,7 @@
 				if ($player~startingLocation = "Citadel")
 					setvar $sendAttack $sendAttack&$refurbString
 				end
+				echo "*["&$sendAttack&"]*"
 				send $sendAttack
 				if ($cap_points = 1)
 					setvar $i 1
