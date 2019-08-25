@@ -13,7 +13,7 @@
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 
 
-gosub :player~quikstats
+	setarray $limpets 100
 
 	gosub :player~quikstats
 	setVar $startingLocation $player~CURRENT_PROMPT
@@ -27,11 +27,13 @@ gosub :player~quikstats
 	killtrigger 2
 	killtrigger 3
 	killtrigger 4
-	if ($switchboard~message <> "")
+	if (($switchboard~message <> "") and ($last_message <> $switchboard~message))
 		# report on limpet locations here #
+		setvar $last_message $switchboard~message
 		gosub :switchboard~switchboard
 	end
 	setVar $SWITCHBOARD~message ""
+	setvar $i 0
 	send "k2"
 	waitfor "Activated  Limpet  Scan"
 	settextlinetrigger 1 :corp_limp "Corporate"
@@ -42,19 +44,19 @@ gosub :player~quikstats
 
 	:corp_limp
 		getword CURRENTLINE $limpet_sector 1
+		getwordpos $corp_history $pos " "&$limpet_sector&" "
 		setVar $SWITCHBOARD~message $switchboard~message&"Corporate limpet: "&$limpet_sector&"*"
 		settextlinetrigger 1  :ldrop_corp_limp "Corporate"
 		pause
 	
 	:pers_limp
-		getword CURRENTLINE $limpet_sector 1
-		setVar $SWITCHBOARD~message $switchboard~message&"Corporate limpet: "&$limpet_sector&"*"
-		settextlinetrigger 2 :ldrop_pers_limp "Personal"
+		getwordpos $pers_history $pos " "&$limpet_sector&" "
+		setVar $SWITCHBOARD~message $switchboard~message&"Personal limpet: "&$limpet_sector&"*"
 		pause
 
 	:no_limp
 		killalltriggers
-		setVar $SWITCHBOARD~message $switchboard~message&"No limpets active, try again later.*"
+		setVar $SWITCHBOARD~message $switchboard~message&"No limpets active, shutting down.*"
 		gosub :switchboard~switchboard
 		halt
 
