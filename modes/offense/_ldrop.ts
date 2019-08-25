@@ -61,6 +61,24 @@ else
 	setVar $plock FALSE
 end
 
+getWordPos $bot~user_command_line $pos "holokill"
+if ($pos > 0)
+	setVar $holokill TRUE
+	setVar $SWITCHBOARD~message "Holokill mode enabled!*"
+	gosub :SWITCHBOARD~switchboard
+else
+	setVar $holokill FALSE
+end
+
+getWordPos $bot~user_command_line $pos "holotorp"
+if ($pos > 0)
+	setVar $SWITCHBOARD~message "Holotorp mode enabled!*"
+	gosub :SWITCHBOARD~switchboard
+	setVar $holotorp TRUE
+else
+	setVar $holotorp FALSE
+end
+
 getWordPos $bot~user_command_line $pos "foton"
 if ($pos > 0)
 	setVar $foton TRUE
@@ -438,6 +456,7 @@ setVar $moveFigMacro ""
 		else
 			send "s* "
 		end
+		gosub :holooptions
 		if ($return)
 			if ($dropftrs)
 				setVar $BOT~command "movefig"
@@ -496,6 +515,11 @@ setVar $moveFigMacro ""
 		gosub :combat~fastCapture
 		goto :scanit_again
 	end
+	gosub :holooptions
+return	
+
+
+:holooptions
 	if ($holotorp)
 		setVar $BOT~command "htorp"
 		setVar $BOT~user_command_line " htorp "
@@ -522,8 +546,7 @@ setVar $moveFigMacro ""
 		end
 
 	end
-return	
-
+return
 # ======================     END LIMP DROPPER (LDROP) SUBROUTINE    ==========================
 
 
@@ -532,6 +555,7 @@ include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\combat\holokill\combat"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\targeting\initializetargeting\targeting"
