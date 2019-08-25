@@ -193,16 +193,16 @@
 				setVar $is_ship 0
 				while ($type_count < $SHIP~shipcounter)
 					add $type_count 1
-					echo "*["&$cap_ship_info&"]*"
+					#echo "*["&$cap_ship_info&"]*"
 					#echo "*["&$SHIP~shipList[$type_count]&"]*"
 					getWordPos $cap_ship_info $is_ship $SHIP~shipList[$type_count]
 					getWordPos $cap_ship_info $unman "'s unmanned "
 					getwordpos $cap_ship_info $unman2 "s' unmanned "
 					if (($unman > 0) or ($unman2 > 0))
 						setVar $unmanned true
-						echo "*[unmanned]*"
+						#echo "*[unmanned]*"
 					else
-						echo "*[manned]*"
+						#echo "*[manned]*"
 						setVar $unmanned false
 					end
 					if (($is_ship > 0) AND ($SHIP~shipList[$type_count] <> "0"))
@@ -264,10 +264,10 @@
 				if ($ship_fighters = "")
 					setVar $ship_fighters 1
 				end
-				echo "*["&$defodds&"]*"
+				#echo "*["&$defodds&"]*"
 				
 				setVar $cap_points (($shieldPoints + $ship_fighters) * $defodds)
-				echo "*Cap Points: ["&$cap_points&"]*"
+				#echo "*Cap Points: ["&$cap_points&"]*"
 				if ((($player~defenderCapping = TRUE) AND ($unmanned <> true)) AND ($targetIsAlien = TRUE))
 					if ($stillShields = TRUE)
 						if ($ship_fighters > 1000)
@@ -279,7 +279,7 @@
 						setVar $cap_points 1
 					end
 				else
-					echo "*["&$own_odds&"]*"
+					#echo "*["&$own_odds&"]*"
 					setVar $cap_points ($cap_points / $own_odds)
 				end
 				if ($unmanned = true)
@@ -306,7 +306,7 @@
 				if ($player~startingLocation = "Citadel")
 					setvar $sendAttack $sendAttack&$refurbString
 				end
-				echo "*["&$sendAttack&"]*"
+				#echo "*["&$sendAttack&"]*"
 				send $sendAttack
 				if ($cap_points = 1)
 					setvar $i 1
