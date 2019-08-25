@@ -22,12 +22,18 @@
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
+	setvar $first true
 	:re_scan
 	killtrigger 1
 	killtrigger 2
 	killtrigger 3
 	killtrigger 4
 	if (($switchboard~message <> "") and ($last_message <> $switchboard~message))
+		if ($first = false)
+			setvar $switchboard~message "Change in limpet location(s): *"&$switchboard~message
+		else
+			setvar $first false
+		end
 		# report on limpet locations here #
 		setvar $last_message $switchboard~message
 		gosub :switchboard~switchboard
