@@ -193,13 +193,15 @@
 				setVar $is_ship 0
 				while ($type_count < $SHIP~shipcounter)
 					add $type_count 1
-					#echo "*["&$cap_ship_info&"]*"
+					echo "*["&$cap_ship_info&"]*"
 					#echo "*["&$SHIP~shipList[$type_count]&"]*"
 					getWordPos $cap_ship_info $is_ship $SHIP~shipList[$type_count]
 					getWordPos $cap_ship_info $unman "'s unmanned"
 					if ($unman > 0)
 						setVar $unmanned true
+						echo "*[unmanned]*"
 					else
+						echo "*[manned]*"
 						setVar $unmanned false
 					end
 					if (($is_ship > 0) AND ($SHIP~shipList[$type_count] <> "0"))
@@ -208,13 +210,13 @@
 						goto :send_attack
 					end
 				end
-				setVar $player~shields 16000
-				setVar $defodds 5
-				goto :send_attack
-				setVar $SWITCHBOARD~message "Unknown ship type, cannot calculate attack, you must do it manually.*" 
+
+				#  if you don't know the ship, just guess weakest with most shield.  Probably blow it up, but better than doing nothing #
+				setVar $SWITCHBOARD~message "Unknown ship type, cannot calculate attack.  I'm going to guess.*" 
 				gosub :SWITCHBOARD~switchboard
-				send "* "
-				return
+				setvar $shieldpoints 16000
+				setVar $defodds 5
+				goto :cap_it
 			:send_attack
 				killtrigger foundcaptarget
 				killtrigger noctarget
@@ -281,7 +283,7 @@
 					setVar $cap_points ($cap_points / $own_odds)
 				end
 				if ($unmanned = true)
-					divide $cap_points 2
+					setvar $cap_points ($cap_points/2)
 				end
 				if ($cap_points > 1000)
 					setVar $cap_points (($cap_points * 80) / 100)
