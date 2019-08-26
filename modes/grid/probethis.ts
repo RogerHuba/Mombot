@@ -4,11 +4,13 @@
 	loadVar $MAP~STARDOCK
 	loadVar $MAP~BACKDOOR
 
-	setVar $BOT~help[1] $BOT~tab&"probethis {param}  "
+	setVar $BOT~help[1] $BOT~tab&"probethis {param} {restock} {void} "
 	setVar $BOT~help[2] $BOT~tab&"     "
 	setVar $BOT~help[3] $BOT~tab&"Will ether probe all sectors marked with param selected."
 	setVar $BOT~help[4] $BOT~tab&"Example: BUBBLE, DE, MSLSEC"
-	setVar $BOT~help[5] $BOT~tab&"      {unexplored) - only probes unexplored sectors"
+	setVar $BOT~help[5] $BOT~tab&"     {unexplored) - only probes unexplored sectors"
+	setVar $BOT~help[6]  $BOT~tab&"    {restock}  - Will attempt to restock probes"
+	setVar $BOT~help[7]  $BOT~tab&"    {void}  - Will void sectors where probe destroyed"
 	gosub :bot~helpfile
 
 	if ($bot~parm1 <> "")
@@ -26,6 +28,20 @@
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
+	end
+
+       	getWordPos $bot~user_command_line $pos "restock"
+	if ($pos > 0)
+		setVar $restock_active TRUE
+	else
+		setVar $restock_active FALSE
+	end
+
+	getWordPos $bot~user_command_line $pos "void"
+	if ($pos > 0)
+		setVar $void_active TRUE
+	else
+		setVar $void_active FALSE
 	end
 
 	if ($startingLocation = "Citadel")
@@ -240,3 +256,5 @@ include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\player\currentprompt\player"
