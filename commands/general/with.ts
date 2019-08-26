@@ -48,7 +48,7 @@ goto :wait_for_command
 		setVar $bot~parm1 ""
 	end
 	isNumber $test $bot~parm1 
-	if ($test = FALSE)
+	if (($test = FALSE) and ($bot~parm1 <> ""))
 		setVar $SWITCHBOARD~message "Cash entered is not a number, try again.*" 
 		gosub :SWITCHBOARD~switchboard
 		goto :wait_for_command  

@@ -6,21 +6,22 @@
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-	setVar $BOT~help[1]    $BOT~tab&"ldrop [delay] {plock/foton} {kill} {direct} {return} {figs:n} {0ffensive}"
+	setVar $BOT~help[1]    $BOT~tab&"[delay] {plock/foton} {kill} {direct} {return} {figs:n} {0ffensive}"
 	setVar $BOT~help[2]    $BOT~tab&"      "
 	setVar $BOT~help[3]    $BOT~tab&"    {plock} - plocks sector and triggers directly or after {delay}"
 	setVar $BOT~help[3]    $BOT~tab&"              if {return} is set plock cancels and returns after 5 seconds"
 	setVar $BOT~help[4]    $BOT~tab&"    {foton} - lands 1 sector away and starts density foton"
 	setVar $BOT~help[5]    $BOT~tab&"     {kill} - attempts to kill after drop (direct or plock)"
-	setVar $BOT~help[6]    $BOT~tab&"   {direct} - try to drop directly into the limp sector"
+	setVar $BOT~help[6]    $BOT~tab&"   {direct} - try to drop directly into the sector"
 	setVar $BOT~help[7]    $BOT~tab&"   {return} - after drop, return to starting sector "
 	setVar $BOT~help[8]    $BOT~tab&"              and scan again"
 	setVar $BOT~help[9]    $BOT~tab&"    {delay} - how many milliseconds to wait before drop or plock"
 	setVar $BOT~help[10]   $BOT~tab&"   {figs:n} - drop this many figs to sector on landing"
 	setVar $BOT~help[11]   $BOT~tab&"{offensive} - make figs offensive, default defense."
+	setVar $BOT~help[12]   $BOT~tab&"              Will ship drop if started in command prompt."
 	gosub :bot~helpfile
 
-	setVar $BOT~script_title "Limpet Dropper"
+	setVar $BOT~script_title "Predictive Dropper"
 	gosub :BOT~banner
 
 	setVar $PLAYER~save TRUE
@@ -58,6 +59,24 @@ if ($pos > 0)
 	gosub :SWITCHBOARD~switchboard
 else
 	setVar $plock FALSE
+end
+
+getWordPos $bot~user_command_line $pos "holokill"
+if ($pos > 0)
+	setVar $holokill TRUE
+	setVar $SWITCHBOARD~message "Holokill mode enabled!*"
+	gosub :SWITCHBOARD~switchboard
+else
+	setVar $holokill FALSE
+end
+
+getWordPos $bot~user_command_line $pos "holotorp"
+if ($pos > 0)
+	setVar $SWITCHBOARD~message "Holotorp mode enabled!*"
+	gosub :SWITCHBOARD~switchboard
+	setVar $holotorp TRUE
+else
+	setVar $holotorp FALSE
 end
 
 getWordPos $bot~user_command_line $pos "foton"
@@ -118,59 +137,62 @@ setVar $moveFigMacro ""
 :ldrop_start
 	gosub :player~quikstats
 	setVar $startingLocation $player~CURRENT_PROMPT
-	if ($startingLocation <> "Citadel")
-		setVar $SWITCHBOARD~message "Must start from Citadel.*"
+	if (($startingLocation <> "Citadel") and ($startingLocation <> "Command"))
+		setVar $SWITCHBOARD~message "Must start from Citadel or Command prompts.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	send "q"
-	gosub :planet~getPlanetInfo
-	
-	
-	if ($dropftrs)
-		send "c"
-		send "c;q"
-		setTextLineTrigger shipMaxFtrs :shipMaxFtrs "Max Fighters:"
-		pause
-		:shipMaxFtrs
-			killtrigger shipMaxFtrs
-			getText CURRENTLINE $maxShipFigs "Max Fighters:" "Offensive Odds:"
-			replaceText $maxShipFigs " " ""
-			replaceText $maxShipFigs "," ""
+	if ($startingLocation = "Citadel")
+		setvar $planetdrop true
+	end
+	if ($planetdrop = true)
+		send "q"
+		gosub :planet~getPlanetInfo
+		
+		
+		if ($dropftrs)
+			send "c"
+			send "c;q"
+			setTextLineTrigger shipMaxFtrs :shipMaxFtrs "Max Fighters:"
+			pause
+			:shipMaxFtrs
+				killtrigger shipMaxFtrs
+				getText CURRENTLINE $maxShipFigs "Max Fighters:" "Offensive Odds:"
+				replaceText $maxShipFigs " " ""
+				replaceText $maxShipFigs "," ""
 
 
-		if ($planet~planet_FIGHTERS < $dropFigQuant)
-			setVar $SWITCHBOARD~message "There are only " & $planet~planet_FIGHTERS & " fighters on the planet.*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end
-
-		setVar $SWITCHBOARD~message "Dropping " & $dropFigQuant & " on landing; Cannons not changed.*"
-		gosub :SWITCHBOARD~switchboard
-
-		setVar $moveFigMacro ""
-		setVar $moved 0
-
-		while ($moved < $dropFigQuant)
-			
-			setVar $toMove ($dropFigQuant - $moved)
-
-			if ($toMove >= $maxShipFigs)
-				setVar $thisMove $maxShipFigs
-				setVar $moved ($moved + $thisMove)
-			else
-				setVar $thisMove $toMove
-				setVar $moved $moved + $thisMove
+			if ($planet~planet_FIGHTERS < $dropFigQuant)
+				setVar $SWITCHBOARD~message "There are only " & $planet~planet_FIGHTERS & " fighters on the planet.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
 			end
 
-			setVar $moveFigMacro $moveFigMacro & "q m n t* q fz " & $moved & "* * zc" & $dropftrsType & " * l" & $planet~planet & " *m* t * c"
+			setVar $SWITCHBOARD~message "Dropping " & $dropFigQuant & " on landing; Cannons not changed.*"
+			gosub :SWITCHBOARD~switchboard
+
+			setVar $moveFigMacro ""
+			setVar $moved 0
+
+			while ($moved < $dropFigQuant)
+				
+				setVar $toMove ($dropFigQuant - $moved)
+
+				if ($toMove >= $maxShipFigs)
+					setVar $thisMove $maxShipFigs
+					setVar $moved ($moved + $thisMove)
+				else
+					setVar $thisMove $toMove
+					setVar $moved $moved + $thisMove
+				end
+
+				setVar $moveFigMacro $moveFigMacro & "q m n t* q fz " & $moved & "* * zc" & $dropftrsType & " * l" & $planet~planet & " *m* t * c"
+			end
+
 		end
 
+		send "q"
 	end
-	
-
-
-	send "q"
 	if ($kill)
 		setVar $targeting~PLANET $planet~planet
 		gosub :targeting~initializetargeting
@@ -184,7 +206,11 @@ setVar $moveFigMacro ""
 
 	:ldrop_scan
 		killalltriggers
-		send "q q q * k2"
+		if ($planetdrop = true)
+			send "q q q * k2"
+		else
+			send "k2"
+		end
 		waitfor "Activated  Limpet  Scan"
 		settextlinetrigger corp_limp  :ldrop_corp_limp "Corporate"
 		settextlinetrigger pers_limp :ldrop_pers_limp "Personal "
@@ -249,7 +275,8 @@ setVar $moveFigMacro ""
 			pause
 		end
 	:plockFotonCheck
-		if ($foton = TRUE)
+		# need to add photon mode for ships, but don't have the time right now #
+		if (($foton = TRUE) and ($planetdrop = true))
 			# see if this sector has an adjancet sector we can shoot from
 			# We are targeting the ADjacent Sector they are entering
 
@@ -299,7 +326,7 @@ setVar $moveFigMacro ""
 				add $s 1
 			end
 			goto :ldrop_scan
-		elseif ($plock = TRUE)
+		elseif (($plock = TRUE) and ($planetdrop = true))
 
 			send "l "&$planet~planet&"*  c"
 			send "p " $adjsec "*"
@@ -380,10 +407,37 @@ setVar $moveFigMacro ""
 		end
 
 	:go_go_go
+	if ($planetdrop = true)
 		send "l "&$planet~planet&"* cp "&$adjsec&"*y"
 		settextlinetrigger no_fig :ldrop_no_fig "Your own fighters must be in the destination"
 		settextlinetrigger in_sector :ldrop_in_sector "-=-=-=- Planetary TransWarp Drive Engaged! -=-=-=-"
 		pause
+	else
+		setVar $PLAYER~WARPTO $adjsec
+		gosub :PLAYER~twarp
+		if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+			setvar $switchboard~message "No Adjacent fig in drop sector."
+			gosub :switchboard~switchboard
+			goto :ldrop_scan
+		end
+		if ($kill)
+			gosub :checkforvictims
+		end
+		if ($return)
+			killalltriggers
+			setVar $PLAYER~WARPTO $home
+			gosub :PLAYER~twarp
+			if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+				setvar $switchboard~message "Could not make it back home with twarp. - ["&$player~msg&"]*"
+				gosub :switchboard~switchboard
+				halt
+			end
+			goto :ldrop_scan
+		end
+		halt
+
+	end
+
 
 	:ldrop_no_fig
 		killtrigger in_sector
@@ -402,6 +456,7 @@ setVar $moveFigMacro ""
 		else
 			send "s* "
 		end
+		gosub :holooptions
 		if ($return)
 			if ($dropftrs)
 				setVar $BOT~command "movefig"
@@ -442,6 +497,56 @@ setVar $moveFigMacro ""
 		goto :ldrop_re_scan
 		
 	return
+
+
+:checkForVictims
+	gosub :player~quikstats
+	:scanit_again
+	setvar $player~startingLocation $player~current_prompt
+	gosub :sector~getSectorData
+	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+		if ($isPlanetDrop)
+			goSub :combat~fastCitadelAttack
+		else
+			gosub :combat~fastAttack
+		end
+		goto :scanit_again
+	elseif (($sector~emptyShipCount > $sector~myShipCount))
+		gosub :combat~fastCapture
+		goto :scanit_again
+	end
+	gosub :holooptions
+return	
+
+
+:holooptions
+	if ($holotorp)
+		setVar $BOT~command "htorp"
+		setVar $BOT~user_command_line " htorp "
+		setVar $BOT~parm1 ""
+		saveVar $BOT~parm1
+		saveVar $BOT~command
+		saveVar $BOT~user_command_line
+		load "scripts\mombot\commands\offense\htorp.cts"
+		setEventTrigger		htorpdone		:htorpdone "SCRIPT STOPPED" "scripts\mombot\commands\offense\htorp.cts"
+		pause
+		:htorpdone
+	end
+	if ($holokill)
+		setvar $before_holo_kill_sector $player~current_sector
+		gosub :combat~holokill
+		if ($player~current_sector <> $before_holo_kill_sector)
+			setVar $PLAYER~WARPTO $before_holo_kill_sector
+			gosub :PLAYER~twarp
+			if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+				setvar $switchboard~message "Could not make it back to starting sector before holokill. - ["&$player~msg&"]*"
+				gosub :switchboard~switchboard
+				halt
+			end
+		end
+
+	end
+return
 # ======================     END LIMP DROPPER (LDROP) SUBROUTINE    ==========================
 
 
@@ -454,3 +559,9 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\targeting\initializetargeting\targeting"
 include "source\bot_includes\targeting\scanitcitkill\targeting"
+include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\combat\holokill\combat"

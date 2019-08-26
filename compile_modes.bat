@@ -1,4 +1,4 @@
-for /r %%n in (*mowthis.ts) do call :checkit "%%n" 
+for /r %%n in (*_ldrop.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
@@ -6,3 +6,5 @@ echo %1 | find /n "modes\" >NUL 2>NUL
 if not errorlevel 1 twxc.exe "%1"
 
 :end
+
+timeout 20
