@@ -144,4 +144,38 @@
 return
 #============================== END MAX PORT SUB ==============================
 
+:doMaxPort
+    send "o z" $product "z0* "
+    setTextLineTrigger noRealPortHere :wrongPortType "Do you want to initiate construction on this port?"
+    setTextLineTrigger construction :wrongPortType "Do you want instructions (Y/N)"
+    waitOn ", 0 to quit)"
+    killalltriggers
+    getWord CURRENTLINE $upgradeAmount 9
+    stripText $upgradeAmount "("
+    send "o "
+    if ($no_exp)
+        while ($upgradeAmount > 0)
+            if ($upgradeAmount > 3)
+                send $product " " $noExpAmount "* "
+                subtract $upgradeAmount $noExpAmount
+            else
+                send $product " " $upgradeAmount "* "
+                subtract $upgradeAmount $upgradeAmount
+            end
+        end
+        send "* * "
+    else
+        send $product " " $upgradeAmount "* * "
+    end
+    send "CR*Q"
+    waitOn "<Computer deactivated>" 
+    :doneMaxPort
+    killalltriggers
+return
+
+
+:wrongPortType
+    setVar $wrong TRUE
+    goto :doneMaxPort
+
 include "source\module_includes\bot\checkstartingprompt\bot"
