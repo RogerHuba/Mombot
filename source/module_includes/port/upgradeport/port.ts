@@ -143,3 +143,5 @@
 	gosub :switchboard~switchboard
 return
 #============================== END MAX PORT SUB ==============================
+
+include "source\module_includes\bot\checkstartingprompt\bot"
