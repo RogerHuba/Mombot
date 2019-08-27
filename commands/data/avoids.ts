@@ -27,7 +27,7 @@
 	if ($PLAYER~CURRENT_PROMPT = "Command") OR ($PLAYER~CURRENT_PROMPT = "Citadel")
 		if ($bot~parm1 = "clear")
 			isNumber $tst $bot~parm2
-			if (($tst) or ($tst = ""))
+			if (($tst) or ($bot~parm2 = ""))
 				if ($bot~parm2 = "")
 					send "cv0*yyq"
 					clearAllAvoids
