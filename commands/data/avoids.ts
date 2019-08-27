@@ -30,10 +30,12 @@
 			if (($tst) or ($tst = ""))
 				if ($bot~parm2 = "")
 					send "cv0*yyq"
+					clearAllAvoids
 					setVar $SWITCHBOARD~message "All Avoids Cleared*"
 					gosub :SWITCHBOARD~switchboard
 					halt
 				else
+					clearAvoid $bot~parm2
 					send "cv0*yn" & $bot~parm2 & "*q"
 					setTextLineTrigger	Cleared		:Cleared	"has been cleared and will be used in future plots."
 					setTextLineTrigger	NoClear		:NoClear	"Invalid sector number"

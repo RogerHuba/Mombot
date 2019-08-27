@@ -23,7 +23,8 @@
 
 	GetLength $MinLength $Mlen
 	GetLength $bot~user_command_line $PrmLength
-
+	clearAllAvoids
+	
 	if ($player~credits < 10000)
 		send "'{" $BOT~bot_name "} " & $TagLineB & " - Must have more than 10,000 Creds on hand!**"
 		halt

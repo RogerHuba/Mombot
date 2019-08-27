@@ -8,6 +8,7 @@
 # =============================== START COURSE DISPLAY ===============================
 :course
 	killalltriggers
+	clearAllAvoids
 	gosub :PLAYER~quikstats
 	isNumber $test $bot~parm1
 	if (($bot~parm1 = "") OR ($test = FALSE))
