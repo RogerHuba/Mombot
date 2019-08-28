@@ -96,3 +96,5 @@
 		end
 		return
 halt
+
+include "source\bot_includes\player\quikstats\player"
