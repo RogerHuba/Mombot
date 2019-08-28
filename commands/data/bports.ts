@@ -59,7 +59,7 @@ end
 
 setVar $maxClasses 1
 getWordPos $bot~user_command_line $pos "all"
-if ($pos)
+if ($pos > 0)
 	setVar $allports 1
 else
 	# don't ask, to tired and sick to redo below 
@@ -88,7 +88,7 @@ else
 		setVar $bot~parm9 0
 	end
 
-	if (($bot~parm2 > 0) and ($bot~parm1 < 9))
+	if (($bot~parm2 > 0) and ($bot~parm2 < 9))
 		setVar $lookfor[1] $bot~parm2
 		setVar $lookmsg "Looking for port Class: " & $lookfor[1]
 		if (($bot~parm3 > 0) and ($bot~parm3 < 9))
@@ -168,13 +168,13 @@ setVar $results $results & $lookmsg & ".*"
 setVar $found 0
 setVar $i 1
 while ($i <= SECTORS)
-	
+	setSectorParameter $i "TARGETS" 0
 	if (PORT.EXISTS[$i] = TRUE)
 		getSectorParameter $i "FIGSEC" $hasFig
 		getSectorParameter $i "PORTDEST" $portGone
 		if (($hasFig <> 1) and ($portGone <> 1))
 			goSub :checkPort
-			if (($checksOut = 1) or ($allports = 1))
+			if ((($checksOut = 1) or ($allports = 1)) and (PORT.CLASS[$i] <> 0))
 			
 				#echo $i " " PORT.UPDATED[$i] "*"
 				goSub :checkTime
@@ -183,6 +183,7 @@ while ($i <= SECTORS)
 					#echo $i " " PORT.UPDATED[$i] "*"
 					write "port_targets2.txt" $i & " " & $ports[PORT.CLASS[$i]] 
 					setvar $results $results& $i & " [" & $ports[PORT.CLASS[$i]]  & "] "
+					setSectorParameter $i "TARGETS" 1
 					add $found 1
 				end
 			end
