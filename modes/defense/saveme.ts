@@ -11,13 +11,15 @@
 	setVar $BOT~help[3]    $BOT~tab&"      {delay} - number of seconds to wait before "
 	setVar $BOT~help[4]    $BOT~tab&"                moving planet back to starting sector"         
 	setVar $BOT~help[5]    $BOT~tab&"{target name} - saveme for only one player "
-	setVar $BOT~help[6]    $BOT~tab&"                              "
-	setVar $BOT~help[7]    $BOT~tab&"    While running saveme, you can say: "
-	setVar $BOT~help[8]    $BOT~tab&"         bot_name personal limp - drop personal limp "
-	setVar $BOT~help[9]    $BOT~tab&"         bot_name deploy mines - drop corporate mines"
-	setVar $BOT~help[10]   $BOT~tab&"         abort saveme - cancel saveme call"
-	setVar $BOT~help[11]   $BOT~tab&"         "
-	setVar $BOT~help[12]   $BOT~tab&"               - Originally written by Cherokee"
+	setVar $BOT~help[6]    $BOT~tab&"{defender}    - Let's corp mates ride shields"
+	setVar $BOT~help[7]    $BOT~tab&"{kill}          and lift. Kill option to attack."
+	setVar $BOT~help[8]    $BOT~tab&"                              "
+	setVar $BOT~help[9]    $BOT~tab&"    While running saveme, you can say: "
+	setVar $BOT~help[10]    $BOT~tab&"         bot_name personal limp - drop personal limp "
+	setVar $BOT~help[11]    $BOT~tab&"         bot_name deploy mines - drop corporate mines"
+	setVar $BOT~help[12]   $BOT~tab&"         abort saveme - cancel saveme call"
+	setVar $BOT~help[13]   $BOT~tab&"         "
+	setVar $BOT~help[14]   $BOT~tab&"               - Originally written by Cherokee"
 	gosub :bot~helpfile
 
 
@@ -26,6 +28,12 @@
 
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 
+# Defender Vars
+setVar $defender 0
+setVar $defender_kill 0
+setVar $defenders 0
+setVar $cannonAtmos 0
+setVar $millevel 0
 
 		
 # ============================== START ACTIVATE SAVEME (SAVEME) ==============================
@@ -84,6 +92,20 @@
 			else
 				setVar $targetingPerson FALSE
 			end
+		end
+		getWordPos $bot~user_command_line $pos " defender"
+		if ($pos > 0)	
+			setVar $defmsg "Running with Defender*"
+			setVar $defender 1
+			getWordPos $bot~user_command_line $pos " kill"
+			if ($pos > 0)
+				setVar $defender_kill 1
+				setVar $defmsg "Running with Defender and Kill.*"
+				setvar $switchboard~message $defmsg 
+				gosub :switchboard~switchboard
+			end
+			goSub :checkDefenders
+			goSub :setdefender
 		end
 		if ($returnHome)
 			if ($targetingPerson)
@@ -161,6 +183,9 @@
 	                killtrigger nofig
 			send "'Saveme script activated - Planet " & $planet~planet & " to " & $target_sector & " on attempt " & $j & ".*"
         	        send "IS*"
+			if ($defender = 1)
+				gosub :liftDefenders
+			end
 			if ($returnHome)
 				setDelayTrigger savemereturn :returnsaveme ($savemeDelay*1000)
 				pause
@@ -272,6 +297,114 @@ pause
 	setVar $auth_result TRUE
     end
 return
+
+# ============================== DEFENDER ROUTINES ==============================
+
+:liftDefenders
+	# can't wait for this one, we just hope for the best!
+
+	send "'defender mac r ^M ^M *"
+	
+	
+	if ($defender_kill = 1)
+		setDelayTrigger killwait :killwait 400
+		pause
+		:killwait
+		send "'defender kill*"
+		
+	end
+	setTextLineTrigger wrongprompt :wrongprompt "Wrong prompt for auto kill"
+	setTextLineTrigger resetsaveme :resetsaveme "resetsaveme"
+	pause
+	:wrongprompt
+		killtrigger wrongprompt
+		send "'defender kill*" 
+		pause
+	:resetsaveme
+
+		goSub :setdefender
+return
+
+:checkDefenders
+
+	setVar $defenders 0
+	send "'defender callout*"
+	
+	
+	setDelayTrigger defwait :defwait 3000
+	:defmore
+	setTextLineTrigger deffound :deffound "Team: defender"
+	pause
+	:deffound
+		killtrigger deffound
+		add $defenders 1
+		goto :defmore
+	:defwait
+		killalltriggers
+
+	if ($defenders = 0)
+		setvar $switchboard~message "We need at least one defender in this mode*"
+		gosub :switchboard~switchboard
+		halt
+	else
+		setvar $switchboard~message "We have defenders.*"
+		gosub :switchboard~switchboard
+		
+	end
+		
+return
+:setdefender
+	
+	goSub :disArmPlanet
+
+	send "'defender mac l" & $planet~planet & "^M^M*"
+	
+	setVar $defresp 0
+
+	setDelayTrigger defwaitland :defwaitland 3000
+	:deflandmore
+	setTextLineTrigger deflanded :deflanded " - Macro Complete"
+	pause
+	:deflanded
+		killtrigger deflanded
+		add $defresp 1
+		goto :deflandmore
+	:defwaitland
+		killalltriggers
+
+	if ($defenders <> $defresp)
+		setvar $switchboard~message "We didn't get all defenders landing, aborting!*"
+		gosub :switchboard~switchboard
+		halt
+	end
+	
+	goSub :armPlanet
+return
+
+:disArmPlanet
+	
+	setVar $cannonAtmos $planet~ATMOSPHERE_CANNON
+	setVar $millevel $planet~MILITARYREACTION
+	setvar $switchboard~message "Disarming planet from Atmos Cannon: "& $cannonAtmos &" and MR:" & $millevel & "*"
+	gosub :switchboard~switchboard
+	
+	send "la0*m0*qopc"
+	waitfor "<Enter Citadel>"
+	
+return
+
+:armPlanet
+	
+	setvar $switchboard~message "Arming planet to Atmos Cannon: "& $cannonAtmos &" and MR:" & $millevel & "*"
+	gosub :switchboard~switchboard
+	
+	send "la" $cannonAtmos "*m" $millevel "*qocc"
+	waitfor "<Enter Citadel>"
+	
+return
+
+# ============================== END DEFENDER ROUTINES ==============================
+
 # ============================== END ACTIVATE SAVEME ON CORPIE CALL SUB ==============================
 
 # ============================== START PERSONAL LIMP (LIMP) SUB ==============================
