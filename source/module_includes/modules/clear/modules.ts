@@ -98,3 +98,4 @@
 halt
 
 include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
