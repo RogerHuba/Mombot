@@ -7,7 +7,7 @@ reqRecording
 # Credits           : Oz, Zentock, SupG, Dynarri, Cherokee, Alexio, Xide, Phx, Rincrast, Voltron, Traitor, Parrothead, PSI, Elder Prophet
 
 setVar $bot~major_version   "3"
-setVar $bot~minor_version   "53p"
+setVar $bot~minor_version   "54p"
 savevar $bot~major_version
 savevar $bot~minor_version
 

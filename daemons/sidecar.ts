@@ -110,9 +110,9 @@
 
 	:validate_tow
 	setvar $line currentansiline
-	getwordpos $line $pos  "[K[1;36m"
+	getwordpos $line $pos  "[1;36m"
 	getwordpos $line $pos2 " [0;32mlocks a tractor beam on your ship."
-	if (($pos > 0) and ($pos2 > 0))
+#	if ($pos > 0)
 		getText $line $user_name "[K[1;36m" " [0;32mlocks a tractor beam on your ship."
 		setvar $switchboard~message "Sidecar attached to "&$user_name&"'s ship.*"
 		gosub :switchboard~switchboard
@@ -125,9 +125,15 @@
 
 		:nocorpie
 			killtrigger online
-			setvar $switchboard~message $user_name&" is not in my corporation. Authentication denied. Shutting down sidecar.*"
+			setvar $switchboard~message $user_name&" is not in my corporation.*"
 			gosub :switchboard~switchboard
-			halt
+			setvar $kill true
+			if ($refill)
+				setvar $refill false
+				setvar $switchboard~message "Turning off refill option because this isn't a corpmate.  Turning on kill instead.*"
+				gosub :switchboard~switchboard
+			end
+			goto :pickupfighters
 		:mycorpie
 			killtrigger lag
 			setvar $line currentline&"|ENDEND|"
@@ -140,6 +146,8 @@
 				gosub :switchboard~switchboard
 				halt
 			end
+
+		:pickupfighters
 			setVar $BOT~command "topoff"
 			setVar $BOT~user_command_line " topoff "
 			setVar $BOT~parm1 ""
@@ -178,11 +186,11 @@
 
 			end
 			goto :sidecar_functions	
-	else
-		setvar $switchboard~message "Spoof attempt to make sidecar think it is towed.*"
-		gosub :switchboard~switchboard
-		goto :wait_for_tow
-	end
+#	else
+#		setvar $switchboard~message "Spoof attempt to make sidecar think it is towed.*"
+#		gosub :switchboard~switchboard
+#		goto :wait_for_tow
+#	end
 	halt
 
 
