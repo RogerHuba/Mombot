@@ -298,8 +298,10 @@ return
 	:startDock2
 		gosub :killthetriggers
 
-	setTextLineTrigger 1 :bdComplete1 "] {"&$nextbot&"} - Buy down exiting --- Normal Exit"
-	setTextLineTrigger 2 :bdcash1 "] {"&$nextbot&"} - Buy down exiting --- Not enough cash onhand"
+
+	setTextLineTrigger 1 :bdComplete1 "] {"&$nextbot&"} - Buy down exiting --- Nothing to buy"
+	setTextLineTrigger 2 :bdComplete1 "] {"&$nextbot&"} - Buy down exiting --- Normal Exit"
+	setTextLineTrigger 3 :bdcash1 "] {"&$nextbot&"} - Buy down exiting --- Not enough cash onhand"
 
 	pause
 	:bdcash1
@@ -319,11 +321,11 @@ return
 	setvar $nextbot $BOTS[$current_trader][3]
 	send "'" & $nextbot & " buy f s *"
 
-	setTextLineTrigger 1 :startDock1 " docks at"
-	setTextLineTrigger 2 :startDock2 "Commerce report for"
-	setDelayTrigger    3 :startDockDelay 5000
+	setTextLineTrigger 1 :startDock3 " docks at"
+	setTextLineTrigger 2 :startDock4 "Commerce report for"
+	setDelayTrigger    3 :startDockDelay2 5000
 	pause
-	:startDockDelay
+	:startDockDelay2
 		gosub :killthetriggers
 		send "'" $nextBot " stopall*"
 		waitfor " non-system scripts and modules killed, and mode"
@@ -333,20 +335,21 @@ return
 		send "'" $nextBot " cn*"
 		waitfor "] {"&$nextbot&"} - CN Settings are reset for this bo"
 		send "'" & $nextbot & " buy f s *"
-	:startDock1
-	:startDock2
+	:startDock3
+	:startDock4
 		gosub :killthetriggers
 
-	setTextLineTrigger 1 :bdComplete1 "] {"&$nextbot&"} - Buy down exiting --- Normal Exit"
-	setTextLineTrigger 2 :bdcash1 "] {"&$nextbot&"} - Buy down exiting --- Not enough cash onhand"
+	setTextLineTrigger 1 :Complete1 "] {"&$nextbot&"} - Buy down exiting --- Nothing to buy"
+	setTextLineTrigger 1 :Complete1 "] {"&$nextbot&"} - Buy down exiting --- Normal Exit"
+	setTextLineTrigger 2 :cash1 "] {"&$nextbot&"} - Buy down exiting --- Not enough cash onhand"
 
 	pause
-	:bdcash1
+	:cash1
 		gosub :killthetriggers
 		send "'" $nextBot " w 4000000*"
 		waitfor "] {"&$nextbot&"} - 4,000,000 credits taken from citadel."
 		goto :bdagain1
-	:bdComplete1
+	:Complete1
 		gosub :killthetriggers
 		send "cr*q"
 		waitfor "Commerce report for"
