@@ -66,7 +66,7 @@
 	setvar $backup_robber 0
 	while (($i <= $MAX_BOTS) AND ($roll_call_done = FALSE))
 		send "'mega"&$i&" callout*"
-		setDelayTrigger    1 :donered 3000
+		setDelayTrigger    3 :donered 3000
 		setTextLineTrigger 2 :foundred "Team: mega"&$i&" " 
 		pause
 
