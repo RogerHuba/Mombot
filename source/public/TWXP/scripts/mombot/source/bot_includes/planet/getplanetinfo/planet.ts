@@ -153,8 +153,11 @@
 		pause
 
 	:cannonstart
+		getWord CURRENTLINE $MILITARYREACTION 2
 		getWord CURRENTLINE $ATMOSPHERE_CANNON 5
 		getWord CURRENTLINE $SECTOR_CANNON 6
+		stripText $MILITARYREACTION "reaction="
+		striptext $MILITARYREACTION "%"
 		stripText $SECTOR_CANNON "SectLvl="
 		striptext $SECTOR_CANNON "%"
 		stripText $ATMOSPHERE_CANNON "AtmosLvl="
