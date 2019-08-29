@@ -108,7 +108,7 @@
 			setVar $BOTS[$i][1] $turns
 			setVar $CURRENT_SHIP[$i] $ship
 			setVar $ORIGINAL_SHIP[$i] $ship
-
+			killtrigger 1
 			setTextLineTrigger 1 :toomanyred "} - Team: mega"&$i&" " 
 			pause
 		:donered
