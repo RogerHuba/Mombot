@@ -362,7 +362,12 @@ return
 :selloffproduct
 	:startSell
 	send "'"&$BOTS[$current_trader][3]&" neg o e*"
-	waitfor "] {"&$BOTS[$current_trader][3]&"} - Done with port"
+	setTextLineTrigger 1 :good "] {"&$BOTS[$current_trader][3]&"} - Done with port"
+	setTextLineTrigger 2 :bad  "] {"&$BOTS[$current_trader][3]&"} - Nothing to sell"
+	pause
+
+	:good
+	killtrigger 2
 	send "cr*q"
 	waitfor "Commerce report for"
 	waitfor "Equipment"
@@ -372,6 +377,8 @@ return
 		gosub :SWITCHBOARD~SWITCHBOARD
 		goto :startSell
 	end
+	:bad
+	killtrigger 1
 return
 
 :findbestcandidates
