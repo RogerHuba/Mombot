@@ -91,6 +91,7 @@
 				halt
 			end			
 			getWordPos $align $pos "-"
+			setVar $BOTS[$i] $i
 			if ($pos > 0)
 				add $red_count 1
 				#mark as potential robber#
@@ -104,7 +105,6 @@
 			else
 				add $blue_count 1
 			end
-			setVar $BOTS[$i] $i
 			setVar $BOTS[$i][1] $turns
 			setVar $CURRENT_SHIP[$i] $ship
 			setVar $ORIGINAL_SHIP[$i] $ship
@@ -216,7 +216,7 @@ return
 	setvar $do_backup_robber false
 	:megaagain
 	setvar $evilbot $BOTS[$current_robber][3]
-	send "'" $evilBot " mega*"
+	send "'"&$evilBot&" mega*"
 	
 	setTextLineTrigger 1 :mrBusted "[Busted"
 	setTextLineTrigger 2 :mrBusted2 "Fake Busted"
