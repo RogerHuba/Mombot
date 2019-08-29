@@ -445,7 +445,7 @@ return
 return
 
 :pwarptoport
-	gosub ::killthetriggers
+	gosub :killthetriggers
 	send "p"&$NearFig&"*ys** "
 	setTextLineTrigger 1 :emptyPort "-=-=-=- Planetary TransWarp Drive Engaged! -=-=-=-"
 	setTextLineTrigger 2 :emptyPort "You are already in that sector!"
