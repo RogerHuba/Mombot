@@ -389,7 +389,7 @@ return
 	setVar $internalCommandLists[2]  " " 
 	setVar $internalCommandLists[3]  " hkill kill htorp "
 	setVar $internalCommandLists[4]  " refurb scrub "
-	setVar $internalCommandLists[5]  " surround exit mow "
+	setVar $internalCommandLists[5]  " surround exit xenter mow "
 	setVar $internalCommandLists[6]  " "
 	setVar $internalCommandLists[7]  " find pscan sector storeship setvar getvar "
 	setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow l m t b p port x shipstore w d finder xenter status pinfo holotorp"

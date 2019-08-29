@@ -70,12 +70,18 @@
 		setVar $SWITCHBOARD~message "Exit Enter.*"
 	end
 	gosub :SWITCHBOARD~switchboard
-	halt
 
+	goto :bot~wait_for_command
 	:pickgame
 		killtrigger 2
 		send $BOT~letter&"  *  "
 		waiton "[Pause]"
 		send " * "
 		goto :enter_choice
-halt
+goto :bot~wait_for_command
+
+include "source\bot_includes\player\quikstats\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"
+
