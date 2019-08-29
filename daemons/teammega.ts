@@ -196,7 +196,7 @@ halt
 :checkin
 	killtrigger 1
 	send "'mega"&$check&" callout*"
-	setTextLineTrigger 1 :foundtrader "Team: mega"&$i&" " 
+	setTextLineTrigger 1 :foundtrader "Team: mega"&$check&" " 
 	pause
 
 	:foundtrader
