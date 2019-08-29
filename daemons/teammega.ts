@@ -153,6 +153,8 @@
 	setArray $checked SECTORS
 	setvar $minimumProduct 10000
 
+	setArray $checked SECTORS
+
 while (true) 
 	gosub :player~quikstats
 	gosub :grabplanetstats
@@ -401,7 +403,6 @@ return
 		setVar $bottom 1
 		setVar $top 1
 		setvar $nearfig 0
-		setArray $checked SECTORS
 		setVar $que[1] $PLAYER~CURRENT_SECTOR
 		setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 		:tryAgain2
