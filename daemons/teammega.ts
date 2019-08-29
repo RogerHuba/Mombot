@@ -161,35 +161,36 @@ while (true)
 	gosub :grabplanetstats
 	gosub :findports
 	gosub :pwarptoport
-	if ($isGoodBuyer = true)
-		gosub :findbestcandidates
-		gosub :selloffproduct
-		setvar $check $current_trader
-		gosub :checkin
-	end
-	if ($isGoodSeller = true)
-		gosub :findbestcandidates
-		gosub :startbuydownequip
-		setvar $check $current_trader
-		gosub :checkin
-
-		gosub :findbestcandidates
-		gosub :startbuydownfuel
-		setvar $check $current_trader
-		gosub :checkin
-
-		gosub :findbestcandidates
-		gosub :domega
-		if (($do_backup_robber = true) and ($backup_robber <> "0"))
-			setvar $save_current_robber $current_robber
-			setvar $current_robber $backup_robber
-			gosub :domega
-			setvar $current_robber $save_current_robber
+	if ($go_to_next_port = false)
+		if ($isGoodBuyer = true)
+			gosub :findbestcandidates
+			gosub :selloffproduct
+			setvar $check $current_trader
+			gosub :checkin
 		end
-		setvar $check $current_robber
-		gosub :checkin
-	end
+		if ($isGoodSeller = true)
+			gosub :findbestcandidates
+			gosub :startbuydownequip
+			setvar $check $current_trader
+			gosub :checkin
 
+			gosub :findbestcandidates
+			gosub :startbuydownfuel
+			setvar $check $current_trader
+			gosub :checkin
+
+			gosub :findbestcandidates
+			gosub :domega
+			if (($do_backup_robber = true) and ($backup_robber <> "0"))
+				setvar $save_current_robber $current_robber
+				setvar $current_robber $backup_robber
+				gosub :domega
+				setvar $current_robber $save_current_robber
+			end
+			setvar $check $current_robber
+			gosub :checkin
+		end
+	end
 end
 
 
@@ -425,12 +426,31 @@ return
 			# Check to see if planet has equipment to sell, or if planet is too full to go to next seller.  #
 			# Hopefully it will pick the closest, best option based on this. #
 
-			if ((($isGoodBuyer = true) and ($planet~PLANET_EQUIPMENT > $minimumProduct)) OR (($isGoodSeller = true) and (($planet~PLANET_EQUIPMENT_MAX - $planet~PLANET_EQUIPMENT) > $game~port_max)) and ($checkedPorts[$focus] <> TRUE))
-				# fig found 0 hops
-				setVar $NearFig $focus
-				setVar $checkedPorts[$NearFig] TRUE
-				setVar $totalPortFuel PORT.FUEL[$focus]
-				return
+			if ($checkedPorts[$focus] <> TRUE)
+				if (SECTOR.EXPLORED[$focus] = "YES")
+					send "cr"&$focus&"*q"
+					gosub :PLAYER~quikstats
+
+					if ((((PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0) AND (PORT.EQUIP[$focus] >= $minimumProduct))) and ((($isGoodBuyer = true) and ($planet~PLANET_EQUIPMENT > $minimumProduct)) OR (($isGoodSeller = true) and (($planet~PLANET_EQUIPMENT_MAX - $planet~PLANET_EQUIPMENT) > $game~port_max))))
+						# fig found 0 hops
+						setVar $NearFig $focus
+						setVar $checkedPorts[$NearFig] TRUE
+						setVar $totalPortFuel PORT.FUEL[$focus]
+						return
+					else
+						setVar $nearfig 0
+					end
+				else
+					if ((($isGoodBuyer = true) and ($planet~PLANET_EQUIPMENT > $minimumProduct)) OR (($isGoodSeller = true) and (($planet~PLANET_EQUIPMENT_MAX - $planet~PLANET_EQUIPMENT) > $game~port_max)))
+						# fig found 0 hops
+						setVar $NearFig $focus
+						setVar $checkedPorts[$NearFig] TRUE
+						setVar $totalPortFuel PORT.FUEL[$focus]
+						return
+					else
+						setVar $nearfig 0
+					end
+				end
 			else
 				setVar $nearfig 0
 			end
@@ -466,11 +486,20 @@ if ($nearfig > 0)
 	pause			
 	:emptyPort
 		gosub :killthetriggers
+		send "cr"&$NearFig&"*q"
+		gosub :PLAYER~quikstats
 		setSectorParameter $NearFig "FIGSEC" TRUE
+		if ((PORT.EXISTS[$NearFig] = TRUE) AND (PORT.CLASS[$NearFig] > 0) AND (SECTOR.EXPLORED[$NearFig] = "YES") AND (PORT.EQUIP[$NearFig] >= $minimumProduct))
+			setvar $go_to_next_port false
+		else
+			setvar $go_to_next_port true
+		end
+			
 		return
 	:noFigAtLocation
 		gosub :killthetriggers
 		setSectorParameter $NearFig "FIGSEC" FALSE
+		setvar $go_to_next_port true
 		return
 	:doneNoFuel
 		gosub :killthetriggers
