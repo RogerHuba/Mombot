@@ -21,6 +21,7 @@ reqRecording
 	setVar $BOT~help[9]   $BOT~tab&"     - [return]    = will return planet home after 10 seconds"
 	setVar $BOT~help[10]  $BOT~tab&"     - [kill]      = checks for enemy, and kills if possible"
 	setVar $BOT~help[11]  $BOT~tab&"     - [fastkill]  = does kill mac without checking"
+	setVar $BOT~help[12]  $BOT~tab&"     - [defender]  = sets and lifts IG capable defender"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Dropper"
@@ -145,6 +146,14 @@ reqRecording
 	else
 		setVar $fastkill FALSE
 	end
+
+	getWordPos $bot~user_command_line $pos "defender"
+	if ($pos > 0)
+		setVar $defender TRUE
+	else
+		setVar $defender FALSE
+	end
+
 	setVar $randomAttack TRUE
 
 	gosub :player~quikstats
@@ -196,6 +205,10 @@ reqRecording
 	if ($returnHome)
 		setVar $message $message&"*      Return Home: Enabled With "&$returnHomeDelay&" Second Delay"
 	end
+	
+	if ($defender = 1)
+		setVar $message $message&"*         Defender: Will set and reset IG enabled Corp Mate"
+	end
 	if ($randomAttack)
 		setVar $message $message&"*   Attack Pattern: Random"
 	elseif ($firstAttack)
@@ -215,6 +228,11 @@ reqRecording
 	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	send $message
+	if ($defender = 1)
+		goSub :checkDefenders
+		goSub :setdefender
+	end
+
 	gosub :player~quikstats
 	setVar $homeSector $player~current_sector
 	:startTargeting
@@ -321,7 +339,10 @@ reqRecording
 					setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
 				end
 				send $send
-
+				if ($defender = 1)
+					killAllTriggers
+					goSub :liftDefenders
+				end
 				if ($attackOnSight)
 
 					goSub :checkForVictims
@@ -330,12 +351,26 @@ reqRecording
 				if ($player~current_sector <> $dropSector)
 					setSectorParameter $dropSector "FIGSEC" FALSE
 				end
+				if ($defender = 1)
+					send "'Defender Initiated! send reset command to re-enable PDROP*"
+					waitfor "resetpdrop"
+					goSub :setdefender
+				end
 			elseif ($dropDescription = "Adjacent")			
 				gosub :findAdjacent
 				goSub :attemptDrop
+				if ($defender = 1)
+					killAllTriggers
+					goSub :liftDefenders
+				end
 				goSub :getSectorLocation
 				if ($attackOnSight)
 					goSub :checkForVictims
+				end
+				if ($defender = 1)
+					send "'Defender Initiated! send reset command to re-enable PDROP*"
+					waitfor "resetpdrop"
+					goSub :setdefender
 				end
 			elseif ($dropDescription = "Adjacent, then Direct")			
 				gosub :findAdjacent
@@ -346,10 +381,20 @@ reqRecording
 					goSub :checkForVictims
 				end
 			elseif ($dropDescription = "Surround")
+				setVar $gotoSector 0
 				gosub :attemptSurroundDrop
+				if ($gotoSector > 0) and ($defender = 1)
+					killAllTriggers
+					goSub :liftDefenders
+				end
 				gosub :getSectorLocation
 				if ($attackOnSight)
 					goSub :checkForVictims
+				end
+				if ($defender = 1) and ($gotoSector > 0)
+					send "'Defender Initiated! send reset command to re-enable PDROP*"
+					waitfor "resetpdrop"
+					goSub :setdefender
 				end
 			else
 				if ($dropSector <> $player~current_sector)
@@ -513,15 +558,11 @@ return
 
 
 :planetStats
-	send "q "
 	gosub :player~quikstats
-	send "*"
-	waitOn "Planet #"
-	getWord CURRENTLINE $planet~planet 2
-	waitOn "Fighters"
-	getWord CURRENTLINE $planet~planetFighters 5
-	stripText $planet~planet "#"
-	send "c"
+	send "q"
+	gosub :planet~getPlanetInfo
+	setVar $planet~planetFighters $planet~PLANET_FIGHTERS
+	send "c "
 return
 
 :warning
@@ -805,6 +846,138 @@ return
 
 return
 
+
+# ============================== DEFENDER ROUTINES ==============================
+
+:liftDefenders
+	# can't wait for this one, we just hope for the best!
+
+	send "'defender mac r ^M ^M ^M f 0^M *"
+	
+	
+	if ($defender_kill = 1)
+		setDelayTrigger killwait :killwait 400
+		pause
+		:killwait
+		send "'defender kill*"
+		
+	end
+	setTextLineTrigger wrongprompt :wrongprompt "Wrong prompt for auto kill"
+	setDelayTrigger promtpw :promtpw 500
+	pause
+	:wrongprompt
+		killtrigger wrongprompt
+		send "'defender kill*" 
+		pause
+	:promtpw
+
+return
+
+:checkDefenders
+
+	setVar $defenders 0
+	send "'defender callout*"
+	
+	
+	setDelayTrigger defwait :defwait 3000
+	:defmore
+	setTextLineTrigger deffound :deffound "Team: defender"
+	pause
+	:deffound
+		killtrigger deffound
+		add $defenders 1
+		goto :defmore
+	:defwait
+		killalltriggers
+
+	if ($defenders = 0)
+		setvar $switchboard~message "We need at least one defender in this mode*"
+		gosub :switchboard~switchboard
+		halt
+	else
+		send "'defender ig on*"
+		waitfor "Auto IG reset"
+		setTextLineTrigger igone :igone "IG on!"
+		setTextLineTrigger igtwo :igtwo "IG was already on"
+		pause
+		:igone
+		:igtwo
+			killalltriggers
+		
+		send "s"
+		setVar $secFigs 0
+		waitfor "Sector  :"
+		setTextLineTrigger scanfigs :scanfigs "Fighters:"
+		setTextLineTrigger nofigs :nofigs "Warps to Sector(s) :"
+		pause
+			:scanfigs
+			killalltriggers
+			getWord CURRENTLINE $secfigs 2
+			stripText $secfigs ","
+			:nofigs
+			add $secFigs 500
+			send "'defender mac f" $secFigs "^Mcd*"
+			waitfor "Macro Complete"
+	
+		setvar $switchboard~message "We have defenders.*"
+		gosub :switchboard~switchboard
+		
+	end
+		
+return
+:setdefender
+	
+	goSub :disArmPlanet
+
+	send "'defender mac l" & $planet~planet & "^M^M*"
+	
+	setVar $defresp 0
+
+	setDelayTrigger defwaitland :defwaitland 3000
+	:deflandmore
+	setTextLineTrigger deflanded :deflanded " - Macro Complete"
+	pause
+	:deflanded
+		killtrigger deflanded
+		add $defresp 1
+		goto :deflandmore
+	:defwaitland
+		killalltriggers
+
+	if ($defenders <> $defresp)
+		setvar $switchboard~message "We didn't get all defenders landing, aborting!*"
+		gosub :switchboard~switchboard
+		halt
+	end
+	
+	goSub :armPlanet
+return
+
+:disArmPlanet
+	
+	setVar $cannonAtmos $planet~ATMOSPHERE_CANNON
+	setVar $millevel $planet~MILITARYREACTION
+	setvar $switchboard~message "Disarming planet from Atmos Cannon: "& $cannonAtmos &" and MR:" & $millevel & "*"
+	gosub :switchboard~switchboard
+	
+	send "la0*m0*qopc"
+	waitfor "hould this be a (C)orporate or (P)ersonal planet"
+	
+return
+
+:armPlanet
+	
+	setvar $switchboard~message "Arming planet to Atmos Cannon: "& $cannonAtmos &" and MR:" & $millevel & "*"
+	gosub :switchboard~switchboard
+	
+	send "la" $cannonAtmos "*m" $millevel "*qocc"
+	waitfor "<Enter Citadel>"
+	
+return
+
+# ============================== END DEFENDER ROUTINES ==============================
+
+
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
@@ -814,3 +987,4 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\planet\getplanetinfo\planet"
