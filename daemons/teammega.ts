@@ -428,15 +428,18 @@ return
 
 			if ($checkedPorts[$focus] <> TRUE)
 				if (SECTOR.EXPLORED[$focus] = "YES")
-					send "cr"&$focus&"*q"
-					gosub :PLAYER~quikstats
-
-					if ((((PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0) AND (PORT.EQUIP[$focus] >= $minimumProduct))) and ((($isGoodBuyer = true) and ($planet~PLANET_EQUIPMENT > $minimumProduct)) OR (($isGoodSeller = true) and (($planet~PLANET_EQUIPMENT_MAX - $planet~PLANET_EQUIPMENT) > $game~port_max))))
-						# fig found 0 hops
-						setVar $NearFig $focus
-						setVar $checkedPorts[$NearFig] TRUE
-						setVar $totalPortFuel PORT.FUEL[$focus]
-						return
+					if ((((PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0))) and ((($isGoodBuyer = true) and ($planet~PLANET_EQUIPMENT > $minimumProduct)) OR (($isGoodSeller = true) and (($planet~PLANET_EQUIPMENT_MAX - $planet~PLANET_EQUIPMENT) > $game~port_max))))
+						send "cr"&$focus&"*q"
+						gosub :PLAYER~quikstats
+						if (PORT.EQUIP[$focus] >= $minimumProduct)
+							# fig found 0 hops
+							setVar $NearFig $focus
+							setVar $checkedPorts[$NearFig] TRUE
+							setVar $totalPortFuel PORT.FUEL[$focus]
+							return
+						else
+							setVar $nearfig 0
+						end
 					else
 						setVar $nearfig 0
 					end
