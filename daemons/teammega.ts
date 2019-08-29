@@ -158,13 +158,13 @@ while (true)
 	gosub :grabplanetstats
 	gosub :findports
 	gosub :pwarptoport
-	if ($isGoodBuyer)
+	if ($isGoodBuyer = true)
 		gosub :findbestcandidates
 		gosub :selloffproduct
 		setvar $check $current_trader
 		gosub :checkin
 	end
-	if ($isGoodSeller)
+	if ($isGoodSeller = true)
 		gosub :findbestcandidates
 		gosub :startbuydownequip
 		setvar $check $current_trader
