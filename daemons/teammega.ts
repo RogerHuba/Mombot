@@ -340,8 +340,8 @@ return
 		gosub :killthetriggers
 
 	setTextLineTrigger 1 :Complete1 "] {"&$nextbot&"} - Buy down exiting --- Nothing to buy"
-	setTextLineTrigger 1 :Complete1 "] {"&$nextbot&"} - Buy down exiting --- Normal Exit"
-	setTextLineTrigger 2 :cash1 "] {"&$nextbot&"} - Buy down exiting --- Not enough cash onhand"
+	setTextLineTrigger 2 :Complete1 "] {"&$nextbot&"} - Buy down exiting --- Normal Exit"
+	setTextLineTrigger 3 :cash1 "] {"&$nextbot&"} - Buy down exiting --- Not enough cash onhand"
 
 	pause
 	:cash1
