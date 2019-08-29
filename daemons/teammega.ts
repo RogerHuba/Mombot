@@ -119,7 +119,7 @@
 				send "'mega"&$i&"*"
 				waiton "} - You are logged into this bot. "
 				# bot name #
-				gettext currentline $BOTS[$i][3] "] ["&$player~current_sector&"] {" "} - You are logged into this bot." 
+				gettext currentline $BOTS[$i][3] "{" "} - You are logged into this bot." 
 				setVar $SWITCHBOARD~MESSAGE "Bot name captured as: "&$BOTS[$i][3]&"*"
 				gosub :SWITCHBOARD~SWITCHBOARD
 			end
