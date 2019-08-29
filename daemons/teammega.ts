@@ -252,7 +252,6 @@ return
 				gosub :killthetriggers 
 				return
 		:mrsecond
-			add $moreRobsi 1
 			setvar $do_backup_robber true
 			gosub :killthetriggers 
 			return
@@ -448,6 +447,7 @@ return
 return
 
 :pwarptoport
+if ($nearfig > 0)
 	gosub :killthetriggers
 	send "p"&$NearFig&"*ys** "
 	setTextLineTrigger 1 :emptyPort "-=-=-=- Planetary TransWarp Drive Engaged! -=-=-=-"
@@ -468,7 +468,11 @@ return
 		setVar $SWITCHBOARD~message "Your planet doesn't have enough fuel to jump to the next closest port.  Halting.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
-
+else
+	setVar $SWITCHBOARD~message "Couldn't find a way to another port.  Weird.*"
+	gosub :SWITCHBOARD~switchboard
+	halt
+end
 
 :killthetriggers
 	killtrigger 1
