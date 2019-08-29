@@ -229,22 +229,7 @@ return
 	setTextLineTrigger 5 :mrsecond "credits left for a second mega"
 	pause
 		:mrshort 
-			gosub :killthetriggers
-			if ($once = 1)
-				goto :oncegogo
-			end
-			setvar $once 1
-			gosub :waitFor200e
-			
-			send "'" $nextBot " mac cr**q"
-			waitfor "Macro Complete"
-
-			send "'" $nextBot " buy e w*"
-			waitfor "Buy down exiting"
-			goto :megaagain
-			:oncegogo
-			echo "*# We are short... waiting for GO GO GO"
-			gosub :waitForGo
+			return
 		:mrrobbed
 		:mrBusted
 		:mrBusted2
