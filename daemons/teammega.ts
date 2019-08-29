@@ -154,6 +154,7 @@
 	setvar $minimumProduct 10000
 
 	setArray $checked SECTORS
+	setArray $checkedPorts SECTORS
 
 while (true) 
 	gosub :player~quikstats
@@ -417,7 +418,7 @@ return
 			# Check to see if planet has equipment to sell, or if planet is too full to go to next seller.  #
 			# Hopefully it will pick the closest, best option based on this. #
 
-			if ((($isGoodBuyer = true) and ($planet~PLANET_EQUIPMENT > $minimumProduct)) OR (($isGoodSeller = true) and (($planet~PLANET_EQUIPMENT_MAX - $planet~PLANET_EQUIPMENT) > $game~port_max)))
+			if ((($isGoodBuyer = true) and ($planet~PLANET_EQUIPMENT > $minimumProduct)) OR (($isGoodSeller = true) and (($planet~PLANET_EQUIPMENT_MAX - $planet~PLANET_EQUIPMENT) > $game~port_max)) and ($checkedPorts[$focus] <> TRUE))
 				# fig found 0 hops
 				setVar $NearFig $focus
 				setVar $checkedPorts[$NearFig] TRUE
