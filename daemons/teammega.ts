@@ -119,7 +119,7 @@
 				send "'mega"&$i&"*"
 				waiton "} - You are logged into this bot. "
 				# bot name #
-				gettext $BOTS[$i][3] currentline "] ["&$player~current_sector&"] {" "} - You are logged into this bot." 
+				gettext currentline $BOTS[$i][3] "] ["&$player~current_sector&"] {" "} - You are logged into this bot." 
 			end
 			add $i 1
 	end
