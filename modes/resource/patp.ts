@@ -29,7 +29,7 @@
 	if ($startingLocation <> "Citadel")
 		setVar $SWITCHBOARD~message "You must run Pay At The Pump command from a Citadel prompt.*"
 		gosub :SWITCHBOARD~switchboard
-     	halt
+		halt
 	end
 	send "q"
 	waitOn "Planet command (?"
@@ -208,10 +208,10 @@
 						setVar $cashonhand $planet~CITADEL_CREDITS
 						add $cashonhand $PLAYER~CREDITS
 						if ($cashonhand > $total_creds_needed)
-						        send "T T " & $PLAYER~CREDITS & "* "
-				        		send "T F " & $total_creds_needed & "* "
-				        		setVar $PLAYER~CREDITS $total_creds_needed
-		    				end
+								send "T T " & $PLAYER~CREDITS & "* "
+								send "T F " & $total_creds_needed & "* "
+								setVar $PLAYER~CREDITS $total_creds_needed
+							end
 					end
 					send "q q *O 1"
 					waitOn ", 0 to quit)"
