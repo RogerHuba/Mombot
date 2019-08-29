@@ -5,14 +5,16 @@ gosub :BOT~loadVars
 	
 setVar $BOT~help[1]  $BOT~tab&"   Beam Data to Corp Mate"
 setVar $BOT~help[2]  $BOT~tab&"   "
-setVar $BOT~help[2]  $BOT~tab&"   beam [file/param] [filename.txt/param] [botname] {override}"
-setVar $BOT~help[3]  $BOT~tab&"   File should be in mombot game directory"
-setVar $BOT~help[4]  $BOT~tab&"   "
-setVar $BOT~help[5]  $BOT~tab&"   {override} - copy over their existing file "
+setVar $BOT~help[3]  $BOT~tab&"   beam [file/param] [filename.txt/param] [botname] "
+setVar $BOT~help[4]  $BOT~tab&"                                 {override} {delete}"
+setVar $BOT~help[5]  $BOT~tab&"   File should be in mombot game directory"
 setVar $BOT~help[6]  $BOT~tab&"   "
-setVar $BOT~help[7]  $BOT~tab&"   >beam file ports.txt ham"
-setVar $BOT~help[7]  $BOT~tab&"   "
-setVar $BOT~help[7]  $BOT~tab&"   >beam param targets ham"
+setVar $BOT~help[7]  $BOT~tab&"   {override} - copy over their existing file "
+setVar $BOT~help[8]  $BOT~tab&"   {delete}   - delete their existing params "
+setVar $BOT~help[9]  $BOT~tab&"   "
+setVar $BOT~help[10]  $BOT~tab&"   >beam file ports.txt ham"
+setVar $BOT~help[11]  $BOT~tab&"   "
+setVar $BOT~help[12]  $BOT~tab&"   >beam param targets ham"
 
 gosub :bot~helpfile
 
@@ -42,6 +44,9 @@ if ($bot~parm1 = "receive")
 	end
 elseif ($bot~parm1 = "setparam")
 	setVar $paramname $bot~parm2
+	if ($bot~parm3 = "delete")
+		setVar $scrubparams 1
+	end
 	uppercase $paramname
 	if (($paramname <> "0") and ($paramname <> ""))
 
@@ -108,7 +113,9 @@ elseif ($bot~parm1 = "param")
 		end
 		
 	end
-	
+	if ($bot~parm4 = "delete")
+		setVar $scrubparams 1
+	end
 	goto :doParamBeam
 end
 
@@ -143,9 +150,11 @@ return
 
 :doParamBeam
 
-	
-	send "'" $recbot " beam setparam " $paramname " *"
-
+	if ($scrubparams = 1)
+		send "'" $recbot " beam setparam " $paramname " delete*"
+	else
+		send "'" $recbot " beam setparam " $paramname " *"
+	end
 	setTextLineTrigger beamready1 :beamready1 "BEAMPARAM"
 	setDelayTrigger timeoutbeam1 :timeoutbeam1 8000
 	pause
@@ -309,13 +318,14 @@ return
 		killalltriggers
 		setVar $SWITCHBOARD~message "Processing Params...*"
 		gosub :SWITCHBOARD~switchboard
-
-		setVar $i 1
-		while ($i <= SECTORS)
-			setSectorParameter $i $paramname ""
-			add $i 1
+		
+		if ($scrubparams = 1)
+			setVar $i 1
+			while ($i <= SECTORS)
+				setSectorParameter $i $paramname ""
+				add $i 1
+			end
 		end
-
 		setVar $i 1
 		while ($i <= $parami)
 			setVar $w $paramStore[$i]
