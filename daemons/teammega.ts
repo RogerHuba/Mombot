@@ -375,9 +375,9 @@ return
 	setvar $current_trader 0 
 	while ($i <= $MAX_BOTS)
 		# pick the bot with highest turn who is not the designated robber #
-		if (($BOT[$i][1] > $highest_turns) and ($current_robber <> $BOT[$i]))
-			setvar $current_trader $BOT[$i] 
-			setvar $highest_turns $BOT[$i][1]
+		if (($BOTS[$i][1] > $highest_turns) and ($current_robber <> $BOTS[$i]))
+			setvar $current_trader $BOTS[$i] 
+			setvar $highest_turns $BOTS[$i][1]
 		end
 		add $i 1
 	end
