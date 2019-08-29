@@ -120,11 +120,13 @@
 				waiton "} - You are logged into this bot. "
 				# bot name #
 				gettext currentline $BOTS[$i][3] "] ["&$player~current_sector&"] {" "} - You are logged into this bot." 
+				setVar $SWITCHBOARD~MESSAGE "Bot name captured as: "&$BOTS[$i][3]&"*"
+				gosub :SWITCHBOARD~SWITCHBOARD
 			end
 			add $i 1
 	end
 
-	if ($red_count <= 1)
+	if ($red_count < 1)
 		setVar $SWITCHBOARD~MESSAGE "Found "&$red_count&" reds. Need at least one red.  Make sure all bots callin as mega1, mega2, etc.*"
 		gosub :SWITCHBOARD~SWITCHBOARD
 		halt
