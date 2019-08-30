@@ -33,7 +33,6 @@
 	else
 		setvar $line $bot~user_command_line
 		setvar $line "[BEGINNING]"&$line
-		striptext $line "[BEGINNING]"&" port  "
 		striptext $line "[BEGINNING]"&" port "
 		setvar $port_name $line
 	end

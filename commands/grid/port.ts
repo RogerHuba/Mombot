@@ -46,7 +46,7 @@
 			halt
 		end
 		if ($word <> $nothing)
-			setvar $bot~user_command_line $bot~user_command_line&" "&$word&" "
+			setvar $bot~user_command_line $bot~user_command_line&" "&$word
 		end
 		add $i 1
 	end
