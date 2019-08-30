@@ -87,9 +87,9 @@
 				if ($portFuelPercent <= 0)
 					setVar $portFuelPercent 1
 				end
-				setVar $totalFuelUpgradeNeeded  (($port_max - (($portFuel*100)/$portFuelPercent))/10)+1
-				setVar $totalOrgUpgradeNeeded   (($port_max - (($portOrg*100)/$portOrgPercent))/10)+1
-				setVar $totalEquipUpgradeNeeded (($port_max - (($portEquip*100)/$portEquipPercent))/10)+1
+				setVar $totalFuelUpgradeNeeded  (($game~port_max - (($portFuel*100)/$portFuelPercent))/10)+1
+				setVar $totalOrgUpgradeNeeded   (($game~port_max - (($portOrg*100)/$portOrgPercent))/10)+1
+				setVar $totalEquipUpgradeNeeded (($game~port_max - (($portEquip*100)/$portEquipPercent))/10)+1
 				setVar $total_creds_needed 0
 				if ($doFuel = true)
 					add $total_creds_needed (300*$totalFuelUpgradeNeeded)
@@ -104,15 +104,12 @@
 					setVar $cashonhand $PLANET~CITADEL_CREDITS
 					add $cashonhand $PLAYER~CREDITS
 					if ($cashonhand > $total_creds_needed)
-							if ($startingLocation = "Planet")
-							send "C"
-							end
 						send "T T " & $PLAYER~CREDITS & "* "
-							send "T F " & $total_creds_needed & "* "
-							setVar $PLAYER~CREDITS $total_creds_needed
-							setvar $switchboard~message "Withdrew funds from the Treasury to complete the port max*"
-							gosub :switchboard~switchboard
-						end
+						send "T F " & $total_creds_needed & "* "
+						setVar $PLAYER~CREDITS $total_creds_needed
+						setvar $switchboard~message "Withdrew funds from the Treasury to complete the port max*"
+						gosub :switchboard~switchboard
+					end
 				end
 			end
 			send "q q"

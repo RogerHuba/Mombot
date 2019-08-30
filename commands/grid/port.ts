@@ -1,5 +1,6 @@
 	gosub :BOT~loadVars
-
+	loadvar $game~port_max
+	
 	setVar $BOT~help[1]   $BOT~tab&"  port {build/create} {destroy/kill} {upgrade/max}                "
 	setVar $BOT~help[2]   $BOT~tab&"  Options:"
 	setVar $BOT~help[3]   $BOT~tab&"     port build {port name} "
