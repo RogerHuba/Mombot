@@ -150,11 +150,7 @@
 
 	setArray $checkedPorts SECTORS
 	setArray $que SECTORS
-	setArray $checked SECTORS
 	setvar $minimumProduct 10000
-
-	setArray $checked SECTORS
-	setArray $checkedPorts SECTORS
 
 while (true) 
 	gosub :player~quikstats
@@ -398,7 +394,9 @@ return
 		setVar $top 1
 		setvar $nearfig 0
 		setVar $que[1] $PLAYER~CURRENT_SECTOR
+		setArray $checked SECTORS
 		setVar $checked[$PLAYER~CURRENT_SECTOR] 1
+
 		:tryAgain2
 		while ($bottom <= $top)
 			# Now, pull out the next sector in the que, and make it our focus
@@ -413,7 +411,7 @@ return
 
 			if ($checkedPorts[$focus] <> TRUE)
 				if (SECTOR.EXPLORED[$focus] = "YES")
-					if ((((PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0))) and ((($isGoodBuyer = true) and ($planet~PLANET_EQUIPMENT > $minimumProduct)) OR (($isGoodSeller = true) and (($planet~PLANET_EQUIPMENT_MAX - $planet~PLANET_EQUIPMENT) > $game~port_max))))
+					if ((((PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0))) and ((($isGoodBuyer = true) and ($planet~PLANET_EQUIPMENT > $minimumProduct)) OR (($isGoodSeller = true) and (($planet~PLANET_EQUIPMENT_MAX - $planet~PLANET_EQUIPMENT) >= $game~port_max))))
 						send "cr"&$focus&"*q"
 						gosub :PLAYER~quikstats
 						if (PORT.EQUIP[$focus] >= $minimumProduct)
