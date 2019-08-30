@@ -675,6 +675,9 @@ return
 :fighter_start
 	setVar $buys FALSE
 	setVar $canBuy 0
+	if ($bot~parm2 = "")
+		setvar $bot~parm2 0
+	end
 	setVar $amountToBuy $bot~parm2
 	setVar $buyAll FALSE
 	setVar $totalFigsPurchased 0
