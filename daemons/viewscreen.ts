@@ -139,7 +139,7 @@ killtrigger talk4
 killtrigger talk5
 killtrigger talk6
 killtrigger talk7
-killtrigger delay
+killtrigger silentdelay
 killtrigger figHit
 killtrigger offFigHit
 killtrigger limpet
@@ -154,7 +154,7 @@ settextlinetrigger lookForSelfF :lookForCom "`"
 settextlinetrigger lookForSelfMul :lookForCom "S: "
 settextlinetrigger figHit :figHitProcess "of your fighters in sector"
 settextlinetrigger offFigHit :figHitProcess "Your fighters in sector"
-setdelaytrigger    delay :checksilent 900000
+setdelaytrigger    silentdelay :checksilent 900000
 #setTextLineTrigger enter :enterProcess "Deployed Fighters Report Sector "
 #settextlinetrigger limpet :limpetProcess "Limpet mine in "
 
@@ -773,7 +773,7 @@ return
 	if ($BOT~botIsDeaf = TRUE)
 		gosub :MENUS~donePrefer
 	end
-setdelaytrigger    delay :checksilent 900000
+setdelaytrigger    silentdelay :checksilent 900000
 pause
 
 #INCLUDES:
