@@ -20,6 +20,11 @@
 		gosub :switchboard~switchboard
 		halt
 	end
+	if (SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR] <= 0)
+		setvar $switchboard~message "Need a planet in sector to build a port!*"
+		gosub :switchboard~switchboard
+		halt
+	end
 
 	setvar $line "[BEGINNING]"&$bot~user_command_line
 	striptext $line "[BEGINNING]port" 
