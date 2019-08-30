@@ -17,8 +17,11 @@
 	end
 
 		setvar $line $bot~user_command_line
+		echo "*[["&$line&"]]*"
 		setvar $line "[BEGINNING]"&$line
+		echo "*[["&$line&"]]*"
 		striptext $line "[BEGINNING]"&" port "
+		echo "*[["&$line&"]]*"
 		setvar $port_name $line
 		echo "*[["&$port_name&"]]*"
 	if (PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = TRUE)
