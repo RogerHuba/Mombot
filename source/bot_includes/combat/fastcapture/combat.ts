@@ -55,7 +55,7 @@
 			
 		end
 	end
-	if (($player~isFound = FALSE) AND ($SECTOR~emptyShipCount > 0))
+	if (($player~isFound = FALSE) AND (($SECTOR~emptyShipCount > 0) and ($player~fedspace <> true))
 		if ($player~fedspace <> true)
 			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 			if ($beaconPos > 0)
