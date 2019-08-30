@@ -87,6 +87,10 @@
 				end
 				setVar $totalFuelUpgradeNeeded  (($game~port_max - (($portFuel*100)/$portFuelPercent))/10)+1
 				setVar $totalOrgUpgradeNeeded   (($game~port_max - (($portOrg*100)/$portOrgPercent))/10)+1
+				echo "*totalorgupgradeneeded:["&$totalOrgUpgradeNeeded&"]*"
+				echo "*portOrg:["&$portOrg&"]*"
+				echo "*portOrgPercent:["&$portOrgPercent&"]*"
+				echo "*port_max:["&$game~port_max&"]*"
 				setVar $totalEquipUpgradeNeeded (($game~port_max - (($portEquip*100)/$portEquipPercent))/10)+1
 				setVar $total_creds_needed 0
 				if ($doFuel = true)
@@ -98,6 +102,8 @@
 				if ($doEqu = true)
 					add $total_creds_needed (1000*$totalEquipUpgradeNeeded)
 				end
+				echo "*total_creds_needed:["&$total_creds_needed&"]*"
+				
 				if ($total_creds_needed > $PLAYER~CREDITS)
 					setVar $cashonhand $PLANET~CITADEL_CREDITS
 					add $cashonhand $PLAYER~CREDITS
