@@ -424,7 +424,7 @@ reqRecording
 					if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
 						setvar $switchboard~message "Could not make it to attack sector - ["&$player~msg&"]*"
 						gosub :switchboard~switchboard
-						halt
+						goto :starttargeting
 					end
 					if ($fastkill = true)
 						send "a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n * * "
