@@ -33,6 +33,7 @@
 	
 	setvar $i 1
 	setvar $line $bot~user_command_line
+	setvar $bot~user_command_line ""
 	setvar $nothing "<>!<>junk<>!<>!"
 	getword $line $word 1 $nothing
 
@@ -40,12 +41,10 @@
 		add $i 1
 		getword $line $word $i $nothing
 		if ($word <> $nothing)
-			setvar $bot~user_command_line $bot~user_command_line&$word&" "
+			setvar $bot~user_command_line $bot~user_command_line&" "&$word&" "
 		end
 	end
 
-	echo "*["&$bot~user_command_line&"]*"
-	pause
 	if (($bot~parm1 = "build") OR ($bot~parm1 = "create"))
 		gosub :port~buildport
 		halt
