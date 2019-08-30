@@ -179,3 +179,4 @@ return
     goto :doneMaxPort
 
 include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\planet\getplanetinfo\planet"
