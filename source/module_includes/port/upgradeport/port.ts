@@ -41,15 +41,9 @@
 
 
 	if (($doFuel <> TRUE) and ($doOrg <> TRUE) and ($doEqu <> TRUE))
-		if (PORT.BUYFUEL[$player~current_sector] = FALSE)
-			setvar $dofuel true
-		end
-		if (PORT.BUYORG[$player~current_sector] = TRUE)
-			setvar $doorg true
-		end
-		if (PORT.BUYEQUIP[$player~current_sector] = TRUE)
-			setvar $doequ true
-		end
+		setvar $switchboard~message "Must choose f, o, or e to upgrade.*"
+		gosub :switchboard~switchboard
+		halt
 	end
 
 	setVar $total_creds_needed 0

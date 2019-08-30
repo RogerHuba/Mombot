@@ -1,6 +1,6 @@
 	gosub :BOT~loadVars
 	loadvar $game~port_max
-	
+
 	setVar $BOT~help[1]   $BOT~tab&"  port {build/create} {destroy/kill} {upgrade/max}                "
 	setVar $BOT~help[2]   $BOT~tab&"  Options:"
 	setVar $BOT~help[3]   $BOT~tab&"     port build {port name} "
@@ -40,6 +40,11 @@
 
 	while ($word <> $nothing)
 		getword $line $word $i $nothing
+		if (($word = "?") or ($word = "help"))
+			setvar $bot~parm1 "?"
+			gosub :bot~helpfile
+			halt
+		end
 		if ($word <> $nothing)
 			setvar $bot~user_command_line $bot~user_command_line&" "&$word&" "
 		end
