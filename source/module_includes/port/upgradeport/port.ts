@@ -8,8 +8,6 @@
 	setVar $bot~validPrompts "Citadel Command"
 	gosub :bot~checkStartingPrompt
 
-	send "'"&$bot~user_command_line&"*"
-
 	getWordPos " "&$bot~user_command_line&" " $pos " f "
 	if ($pos > 0)
 		setVar $doFuel TRUE
