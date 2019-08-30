@@ -45,7 +45,7 @@
 	end
 	send "q q q z n * o"
 	settextlinetrigger 3 :blownup "Rad levels are way too high to build here!"
-	settextlinetrigger 4 :portready "What Class of port do you want to build?"
+	settexttrigger 4 :portready "What Class of port do you want to build?"
 	pause
 
 	:blownup
