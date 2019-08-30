@@ -43,6 +43,7 @@
 		if ($word <> $nothing)
 			setvar $bot~user_command_line $bot~user_command_line&" "&$word&" "
 		end
+		add $i 1
 	end
 
 	if (($bot~parm1 = "build") OR ($bot~parm1 = "create"))
