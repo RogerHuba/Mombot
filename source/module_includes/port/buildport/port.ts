@@ -16,6 +16,11 @@
 		gosub :PLAYER~quikstats
 	end
 
+		setvar $line $bot~user_command_line
+		setvar $line "[BEGINNING]"&$line
+		striptext $line "[BEGINNING]"&" port "
+		setvar $port_name $line
+		echo "*[["&$port_name&"]]*"
 	if (PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = TRUE)
 		setvar $switchboard~message "Already a port in sector!*"
 		gosub :switchboard~switchboard
