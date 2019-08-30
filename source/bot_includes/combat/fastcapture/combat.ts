@@ -55,7 +55,7 @@
 			
 		end
 	end
-	if (($player~isFound = FALSE) AND (($SECTOR~emptyShipCount > 0) and ($player~fedspace <> true))
+	if (($player~isFound = FALSE) AND ($SECTOR~emptyShipCount > 0))
 		if ($player~fedspace <> true)
 			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 			if ($beaconPos > 0)
@@ -64,7 +64,7 @@
 		end
 		setVar $c 1
 		setVar $player~isFound FALSE
-		while (($c <= $SECTOR~emptyShipCount) AND ($player~isFound = FALSE))
+		while (($c <= $SECTOR~emptyShipCount) AND (($player~isFound = FALSE) or ($player~fedspace <> true)))
 			if (($player~emptyships[$c] = $player~CORP) OR ($player~emptyships[$c] = $player~TRADER_NAME))
 				setVar $targetString $targetString&"* " 
 			else
