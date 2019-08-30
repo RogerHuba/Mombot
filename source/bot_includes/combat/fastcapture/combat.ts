@@ -10,6 +10,10 @@
 		gosub :ship~getshipstats
 	end
 
+	if ((currentsector = stardock) or (currentsector <= 10))
+		setvar $player~fedspace true
+	end
+
 	setVar $refurbString "l "&$PLANET~PLANET&"* m * * * q "
 	:checkingFigs
 		if ($player~fighters <= 0)

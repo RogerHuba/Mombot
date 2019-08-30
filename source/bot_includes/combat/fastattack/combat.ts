@@ -7,6 +7,9 @@
 		gosub :ship~getshipstats
 	end
 
+	if ((currentsector = stardock) or (currentsector <= 10))
+		setvar $player~fedspace true
+	end
 	:checkingFigs
 		if ($player~fighters <= 0)
 			gosub :player~quikstats
