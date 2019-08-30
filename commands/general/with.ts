@@ -11,15 +11,15 @@ setVar $planet~citadel_CASH_MAX    999999999999999
 :with
 :w
 	gosub :bankProtections
-	if ($bot~parm1 > $PLAYER_CASH_MAX)
-		setVar $SWITCHBOARD~message "Can't withdraw more than 1 bil at a time*"
-		gosub :SWITCHBOARD~switchboard
-		goto :wait_for_command
-	end
 	if ($bot~parm1 = "")
 		setVar $cashToTransfer $PLAYER_CASH_MAX
 	else
 		setVar $cashToTransfer $bot~parm1
+	end
+	if ($cashToTransfer > $PLAYER_CASH_MAX)
+		setVar $SWITCHBOARD~message "Can't withdraw more than 1 bil at a time*"
+		gosub :SWITCHBOARD~switchboard
+		goto :wait_for_command
 	end
 	send "D" 
 	waitOn "Citadel treasury contains "
