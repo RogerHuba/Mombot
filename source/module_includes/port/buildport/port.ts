@@ -40,13 +40,25 @@
 			gosub :switchboard~switchboard
 			halt
 	end
-	send "q q q z n * o3y" $port_name "*"
-	killtrigger 1
-	killtrigger 2
-	setvar $fail false
-	settextlinetrigger 1 :too_many "Sorry... All of the StarPort Licenses have been granted."
-	settextlinetrigger 2 :build_success "For building this Starport, you receive"
+	send "q q q z n * o"
+	settextlinetrigger 3 :blownup "Rad levels are way too high to build here!"
+	settextlinetrigger 4 :portready "What Class of port do you want to build?"
 	pause
+
+	:blownup
+		killtrigger 4
+		setvar $switchboard~message "Port is already destroyed here!*"
+		gosub :switchboard~switchboard
+		setvar $fail true
+	:portready
+		killtrigger 3
+		send "3y" $port_name "*"
+		killtrigger 1
+		killtrigger 2
+		setvar $fail false
+		settextlinetrigger 1 :too_many "Sorry... All of the StarPort Licenses have been granted."
+		settextlinetrigger 2 :build_success "For building this Starport, you receive"
+		pause
 	:too_many
 		setvar $switchboard~message "Too many ports in the universe!*"
 		gosub :switchboard~switchboard
