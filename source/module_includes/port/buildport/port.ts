@@ -22,9 +22,9 @@
 	end
 
 	setvar $line "[BEGINNING]"&$bot~user_command_line
-	striptext $line "[BEGINNING]port" ""
-	striptext $line "[BEGINNING] port" ""
-	striptext $line "[BEGINNING]  port" ""
+	striptext $line "[BEGINNING]port" 
+	striptext $line "[BEGINNING] port" 
+	striptext $line "[BEGINNING]  port" 
 	if (($line = "") OR ($line = "0"))
 		setvar $port_name "Mind ()ver Matter"
 	else
