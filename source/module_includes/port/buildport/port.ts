@@ -15,7 +15,7 @@
 		send "m*** cs* "
 		gosub :PLAYER~quikstats
 	end
-	echo "*[["&$bot~user_command_line = ""&"]]*"
+	echo "*[["&$bot~user_command_line&"]]*"
 
 	if (PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = TRUE)
 		setvar $switchboard~message "Already a port in sector!*"
