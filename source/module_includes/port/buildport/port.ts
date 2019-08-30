@@ -26,11 +26,9 @@
 		halt
 	end
 
-	setvar $line "[BEGINNING]"&$bot~user_command_line
-	striptext $line "[BEGINNING]port" 
-	striptext $line "[BEGINNING] port" 
-	striptext $line "[BEGINNING]  port" 
-	if (($line = "") OR ($line = "0"))
+	echo "*[["&$bot~user_command_line = ""&"]]*"
+
+	if (($bot~user_command_line = "") OR ($bot~user_command_line = "0"))
 		setvar $port_name "Mind ()ver Matter"
 	else
 		setvar $port_name $bot~user_command_line
