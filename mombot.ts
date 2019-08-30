@@ -11,7 +11,7 @@ setVar $bot~minor_version   "5beta"
 savevar $bot~major_version
 savevar $bot~minor_version
 
-gosub :targeting~initializetargeting
+gosub :combat~init
 goto :BOT~load_bot
 
 :MAIN~module_vars
@@ -107,7 +107,6 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\player\startcnsettings\player"
 include "source\bot_includes\player\getinfo\player"
-include "source\bot_includes\targeting\initializetargeting\targeting"
 include "source\bot_includes\player\moveintosector\player"
 include "source\bot_includes\ship\getshipcapstats\ship"
 include "source\bot_includes\ship\getshipstats\ship"
@@ -116,6 +115,7 @@ include "source\bot_includes\ship\loadshipinfo\ship"
 include "source\bot_includes\combat\fastattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\combat\holokill\combat"
+include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\planet\loadplanetinfo\planet"
 include "source\bot_includes\planet\landonplanetentercitadel\planet"
 include "source\bot_includes\planet\getplanetinfo\planet"
