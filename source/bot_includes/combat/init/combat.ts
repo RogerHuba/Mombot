@@ -10,7 +10,7 @@
 		setArray $player~TRADERS 	200
 		setArray $player~FAKETRADERS  100
 		setArray $player~EMPTYSHIPS   100
-		setVar $ranksLength     46
+		setVar $player~ranksLength     46
 	setArray $player~ranks     $player~rankslength
 	setVar $player~ranks[1]    "36mCivilian"
 	setVar $player~ranks[2]    "36mPrivate 1st Class"
