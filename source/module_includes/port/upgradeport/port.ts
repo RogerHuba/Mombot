@@ -89,11 +89,13 @@
 				setVar $totalOrgUpgradeNeeded   (($port_max - (($portOrg*100)/$portOrgPercent))/10)+1
 				setVar $totalEquipUpgradeNeeded (($port_max - (($portEquip*100)/$portEquipPercent))/10)+1
 				setVar $total_creds_needed 0
-				if ($doFuel = "f")
+				if ($doFuel = true)
 					add $total_creds_needed (300*$totalFuelUpgradeNeeded)
-				elseif ($doOrg = "o")
+				end
+				if ($doOrg = true)
 					add $total_creds_needed (500*$totalOrgUpgradeNeeded)
-				else
+				end
+				if ($doEqu)
 					add $total_creds_needed (1000*$totalEquipUpgradeNeeded)
 				end
 				if ($total_creds_needed > $PLAYER~CREDITS)
@@ -153,7 +155,7 @@ return
     getWord CURRENTLINE $upgradeAmount 9
     stripText $upgradeAmount "("
     send "o "
-    if ($no_exp)
+    if ($no_exp = true)
         while ($upgradeAmount > 0)
             if ($upgradeAmount > 3)
                 send $product " " $noExpAmount "* "
