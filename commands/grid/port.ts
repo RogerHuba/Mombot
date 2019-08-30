@@ -44,6 +44,8 @@
 		end
 	end
 
+	echo "*["&$bot~user_command_line&"]*"
+	pause
 	if (($bot~parm1 = "build") OR ($bot~parm1 = "create"))
 		gosub :port~buildport
 		halt
