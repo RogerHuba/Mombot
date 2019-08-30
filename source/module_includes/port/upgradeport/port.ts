@@ -95,7 +95,7 @@
 				if ($doOrg = true)
 					add $total_creds_needed (500*$totalOrgUpgradeNeeded)
 				end
-				if ($doEqu)
+				if ($doEqu = true)
 					add $total_creds_needed (1000*$totalEquipUpgradeNeeded)
 				end
 				if ($total_creds_needed > $PLAYER~CREDITS)
@@ -119,17 +119,17 @@
 		end
 	end
 	setVar $wrong FALSE
-	if ($doFuel)
+	if ($doFuel = true)
 		setVar $product 1
 		setVar $noExpAmount 9
 		gosub :doMaxPort
 	end
-	if ($doOrg)
+	if ($doOrg = true)
 		setVar $product 2
 		setVar $noExpAmount 4
 		gosub :doMaxPort
 	end
-	if ($doEqu)
+	if ($doEqu = true)
 		setVar $product 3
 		setVar $noExpAmount 3
 		gosub :doMaxPort
@@ -137,7 +137,7 @@
 	if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
 		gosub :PLANET~landingSub
 	end
-	if ($wrong)
+	if ($wrong = true)
 		setvar $switchboard~message "No valid port here.*"
 		gosub :switchboard~switchboard
 	end
