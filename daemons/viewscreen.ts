@@ -145,6 +145,7 @@ killtrigger offFigHit
 killtrigger limpet
 killtrigger lookForSelfMul
 killtrigger enter
+killtrigger delay
 settextlinetrigger lookForP :lookForCom "P "
 settextlinetrigger lookForR :lookForCom "R "
 settextlinetrigger lookForF :lookForCom "F "
@@ -153,6 +154,7 @@ settextlinetrigger lookForSelfF :lookForCom "`"
 settextlinetrigger lookForSelfMul :lookForCom "S: "
 settextlinetrigger figHit :figHitProcess "of your fighters in sector"
 settextlinetrigger offFigHit :figHitProcess "Your fighters in sector"
+setdelaytrigger    delay :checksilent 900000
 #setTextLineTrigger enter :enterProcess "Deployed Fighters Report Sector "
 #settextlinetrigger limpet :limpetProcess "Limpet mine in "
 
@@ -754,6 +756,25 @@ return
         setVar $old_output $output
     end
 return
+
+:checksilent
+	:msgs_on_again
+	setTextTrigger onMSGS_ON  :onMSGS_ON "Displaying all messages."
+	setTextTrigger onMSGS_OFF :onMSGS_OFF "Silencing all messages."
+	send "|"
+	pause
+	:onMSGS_OFF
+	killtrigger onMSGS_ON
+	SETVAR $was_silent FALSE
+	goto :msgs_on_again
+	:onMSGS_ON
+	killtrigger onMSGS_OFF
+	loadvar $BOT~botIsDeaf
+	if ($BOT~botIsDeaf = TRUE)
+		gosub :MENUS~donePrefer
+	end
+setdelaytrigger    delay :checksilent 900000
+pause
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
