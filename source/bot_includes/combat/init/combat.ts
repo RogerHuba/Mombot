@@ -2,9 +2,9 @@
 
 :init
 # ============================ START SECTOR DATA VARIABLES ==========================
-	setArray $player~traders   50
-	setArray $player~faketraders   50
-	setArray $player~emptyships   100
+	setArray $player~traders   200
+	setArray $player~faketraders   200
+	setArray $player~emptyships   200
 	setVar $player~rankslength     46
 	setArray $player~ranks     $player~rankslength
 	setVar $player~ranks[1]    "36mCivilian"
