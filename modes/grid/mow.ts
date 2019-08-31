@@ -175,7 +175,7 @@
 						setVar $result $result&"f * "
 					else
 						if ($personal = true)
-							setVar $result $result&"f "&$figsToDrop&" * c p "
+							setVar $result $result&"f "&$figsToDrop&" * p d "
 						else
 							setVar $result $result&"f "&$figsToDrop&" * c d "
 						end
