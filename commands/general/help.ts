@@ -184,9 +184,9 @@ halt
 			cutText $paddingDashes $leftPad 1 $sideLength
 			cutText $paddingDashes $rightPad 1 (($maxStringLength-$comLength)-$sideLength)
 			if ($SWITCHBOARD~self_command = TRUE)
-				setVar $SWITCHBOARD~message $SWITCHBOARD~message&" ║"&$leftPad&$tempCommand2&$rightPad&"║*"
+				setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |"&$leftPad&$tempCommand2&$rightPad&"|*"
 			else
-				setVar $SWITCHBOARD~message $SWITCHBOARD~message&" ║"&$leftPad&$tempCommand&$rightPad&"║*"  
+				setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |"&$leftPad&$tempCommand&$rightPad&"|*"  
 			end
 			add $commandCount 1
 		end
@@ -213,7 +213,8 @@ return
 		readToArray "scripts/mombot/custom_commands.cfg" $bot~custom_commands
 		gosub :MENUS~echoHotKeys
 	end
-	echo ANSI_10 "╔══════════════════════════════ "&ANSI_14&"Daemons"&ANSI_10&" ════════════════════════════════╗*"
+	
+	echo ansi_13 "  ----------------------------- "&ANSI_14&"Daemons"&ANSI_13&" ------------------------------*"
 	getFileList $daemonList "scripts\mombot\daemons\*.cts"
 	if ($daemonList > 0)
 		setVar $paddingDashes "                                 "
@@ -230,7 +231,8 @@ return
 		setVar $SWITCHBOARD~message ""
 		gosub :bufferList
 		echo $SWITCHBOARD~message
-        echo ansi_10 "╚═════════════════════════ "&ANSI_14&" Hints/Tips "&ANSI_10&" ═══════════════════════════════╝*"
+
+		echo ansi_13 "  ------------------------"&ANSI_14&" Hints/Tips "&ANSI_13&"----------------------------------*"
 		gosub :get_hint_tips
 		
 		echo ansi_15 "  *  "&$hint_tip&"*  *"
