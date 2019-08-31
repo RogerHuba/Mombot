@@ -352,9 +352,15 @@ reqRecording
 					setSectorParameter $dropSector "FIGSEC" FALSE
 				end
 				if ($defender = 1)
-					send "'Defender Initiated! send reset command to re-enable PDROP*"
-					waitfor "resetpdrop"
-					goSub :setdefender
+					if ($player~current_sector <> $dropSector)
+						send "'Did not land, resetting*"
+						goSub :resetdefender
+
+					else
+						send "'Defender Initiated! send reset command to re-enable PDROP*"
+						waitfor "resetpdrop"
+						goSub :setdefender
+					end
 				end
 			elseif ($dropDescription = "Adjacent")			
 				gosub :findAdjacent
@@ -925,12 +931,19 @@ return
 	end
 		
 return
+:resetdefender
+	setDelayTrigger quickpause :quickpause 500
+	pause
+	:quickpause
+	killtrigger quickpause
+	goSub :setdefender
+
+return
+
 :setdefender
 	
 	goSub :disArmPlanet
-
 	send "'defender mac l" & $planet~planet & "^M^M*"
-	
 	setVar $defresp 0
 
 	setDelayTrigger defwaitland :defwaitland 3000
@@ -943,8 +956,7 @@ return
 		goto :deflandmore
 	:defwaitland
 		killalltriggers
-
-	if ($defenders <> $defresp)
+	if ($defresp < $defenders)
 		setvar $switchboard~message "We didn't get all defenders landing, aborting!*"
 		gosub :switchboard~switchboard
 		halt
