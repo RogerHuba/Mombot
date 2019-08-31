@@ -12,10 +12,14 @@
 
 
 	setVar $BOT~help[1] $BOT~tab&"Buydown and mega with multiple bots"
+	setVar $BOT~help[2] $BOT~tab&""
+	setVar $BOT~help[3] $BOT~tab&"teammega {minproduct}"
+	setVar $BOT~help[4] $BOT~tab&""
+	setVar $BOT~help[5] $BOT~tab&"minproduct - default: 30000"
 	gosub :bot~helpfile
 
 
-
+	
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation <> "Citadel")
@@ -26,6 +30,18 @@
 
 	setVar $BOT~script_title "Team Mega"
 	gosub :BOT~banner
+
+	
+	isNumber $test $bot~parm1
+	if ($test)
+		if ($test > 0)
+			setvar $minimumProduct $bot~parm1
+		else
+			setvar $minimumProduct 30000
+		end
+	else
+		setvar $minimumProduct 30000
+	end
 
 	send "'"&$SWITCHBOARD~BOT_NAME&" login*"
 	waitOn "Corporate command "
@@ -150,7 +166,7 @@
 
 	setArray $checkedPorts SECTORS
 	setArray $que SECTORS
-	setvar $minimumProduct 10000
+	
 
 while (true) 
 	gosub :player~quikstats
@@ -171,7 +187,9 @@ while (true)
 			gosub :checkin
 
 			gosub :findbestcandidates
-			gosub :startbuydownfuel
+			if (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 0)
+				gosub :startbuydownfuel
+			end
 			setvar $check $current_trader
 			gosub :checkin
 
