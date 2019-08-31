@@ -239,7 +239,7 @@ return
 	setTextLineTrigger 1 :mrBusted "[Busted"
 	setTextLineTrigger 2 :mrBusted2 "Fake Busted"
 	setTextLineTrigger 3 :mrshort "Port is short"
-	setTextLineTrigger 4 :mrrobbed "credits robbed"
+	setTextLineTrigger 4 :mrrobbed "] {"&$evilbot&"} - Success! - "
 	setTextLineTrigger 5 :mrsecond "credits left for a second mega"
 	pause
 		:mrshort 
