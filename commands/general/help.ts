@@ -213,7 +213,7 @@ return
 		readToArray "scripts/mombot/custom_commands.cfg" $bot~custom_commands
 		gosub :MENUS~echoHotKeys
 	end
-	echo ANSI_10 "╔══════════════════════════════ &ANSI_14&"Daemons"&ANSI_10& ════════════════════════════════╗"
+	echo ANSI_10 "╔══════════════════════════════ "&ANSI_14&"Daemons"&ANSI_10&" ════════════════════════════════╗*"
 	getFileList $daemonList "scripts\mombot\daemons\*.cts"
 	if ($daemonList > 0)
 		setVar $paddingDashes "                                 "
