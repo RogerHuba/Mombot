@@ -237,14 +237,16 @@ return
 :wait_for_command
 
 	# write the help file at the end for speed purposes #
-	setVar $BOT~help[1] $BOT~tab&"mow [destination] {figs} {kill} {cap} {saveme} {p} {back}"
-	setVar $BOT~help[2] $BOT~tab&" Options: "
-	setVar $BOT~help[3] $BOT~tab&"     {p} - port ship immediately upon arrival."
-	setVar $BOT~help[4] $BOT~tab&"  {kill} - attempt to kill immediately upon arrival."
-	setVar $BOT~help[5] $BOT~tab&"   {cap} - attempt to capture immediately upon arrival."
-	setVar $BOT~help[6] $BOT~tab&"{saveme} - call saveme to be picked up at destination."
-	setVar $BOT~help[7] $BOT~tab&"  {back} - twarp back to start sector after mow"
-	setVar $BOT~help[8] $BOT~tab&"{hoover} - attempts to pull fighters from sectors     "
+	setVar $BOT~help[1]  $BOT~tab&"mow [destination] {figs} {kill} {cap} {saveme} {p} {back}"
+	setVar $BOT~help[2]  $BOT~tab&"                  {personal} "
+	setVar $BOT~help[3]  $BOT~tab&" Options: "
+	setVar $BOT~help[4]  $BOT~tab&"       {p} - port ship immediately upon arrival."
+	setVar $BOT~help[5]  $BOT~tab&"    {kill} - attempt to kill immediately upon arrival."
+	setVar $BOT~help[6]  $BOT~tab&"     {cap} - attempt to capture immediately upon arrival."
+	setVar $BOT~help[7]  $BOT~tab&"  {saveme} - call saveme to be picked up at destination."
+	setVar $BOT~help[8]  $BOT~tab&"    {back} - twarp back to start sector after mow"
+	setVar $BOT~help[9]  $BOT~tab&"  {hoover} - attempts to pull fighters from sectors     "
+	setVar $BOT~help[10] $BOT~tab&"{personal} - drops personal fighters instead of ocrp     "
 	gosub :bot~helpfile
 
 halt
