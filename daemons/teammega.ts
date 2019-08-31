@@ -252,6 +252,7 @@ return
 			setDelayTrigger    2 :mrdelayover 2000
 			pause
 			:mrdelayover
+				setvar $do_backup_robber true
 				gosub :killthetriggers 
 				return
 		:mrsecond
