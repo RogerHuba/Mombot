@@ -179,6 +179,13 @@ while (true)
 			gosub :selloffproduct
 			setvar $check $current_trader
 			gosub :checkin
+
+			if (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 0)
+				gosub :findbestcandidates
+				gosub :startbuydownfuel
+				setvar $check $current_trader
+				gosub :checkin
+			end
 		end
 		if ($isGoodSeller = true)
 			gosub :findbestcandidates
