@@ -142,7 +142,6 @@ while ($word <> "@@@###@@@")
 		goto :nextWord
 	end
 
-	echo "*["&$word&"]*"
 	getWordPos $word $pos "beam:"
 	if ($pos > 0)
 		replaceText $word "beam:" ""
