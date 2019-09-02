@@ -1084,9 +1084,11 @@ return
 		if ($FAST)
 			send "q  q  q  z   n  *   "
 			setVar $BOT~command "xenter"
-			setVar $BOT~user_command_line " xenter 3"
+			setVar $BOT~user_command_line " xenter 3 silent "
 			setVar $BOT~parm1 "3"
 			saveVar $BOT~parm1
+			setVar $BOT~parm2 "silent"
+			saveVar $BOT~parm2
 			saveVar $BOT~command
 			saveVar $BOT~user_command_line
 			load "scripts\mombot\commands\grid\xenter.cts"
@@ -1113,9 +1115,11 @@ return
 			waiton "Citadel command"
 		else
 			setVar $BOT~command "xenter"
-			setVar $BOT~user_command_line " xenter"
+			setVar $BOT~user_command_line " xenter silent"
 			setVar $BOT~parm1 ""
 			saveVar $BOT~parm1
+			setVar $BOT~parm2 "silent"
+			saveVar $BOT~parm2
 			saveVar $BOT~command
 			saveVar $BOT~user_command_line
 			load "scripts\mombot\commands\grid\xenter.cts"
