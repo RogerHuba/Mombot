@@ -7,8 +7,8 @@
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored | sector "
-	setVar $BOT~help[2]   $BOT~tab&" | ports} {BBB | XXB | SSX etc} {mark:PARAM} {dist | route} {warps:n} {beam:botname}"
+	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored | sector | ports}"
+	setVar $BOT~help[2]   $BOT~tab&"       {BBB | XXB | SSX etc} {mark:PARAM} {dist | route} {warps:n} {beam:botname}"
 	setVar $BOT~help[3]   $BOT~tab&"     "
 	setVar $BOT~help[4]   $BOT~tab&"     Searches TWX database for known info."
 	setVar $BOT~help[5]   $BOT~tab&"      "
@@ -20,11 +20,11 @@
 	setVar $BOT~help[11]   $BOT~tab&"     Example: >select traders bubble=false equ-mcic<-60 "
 	setVar $BOT~help[12]   $BOT~tab&"              >select planet like "&#34&"<<<< (a)"&#34
 	setVar $BOT~help[13]   $BOT~tab&"            "
-	setVar $BOT~help[14]   $BOT~tab&"    {dist}   - All results include distance from current. "
-	setVar $BOT~help[15]   $BOT~tab&"    {route}  - Plots a basic shortest path (slow). "
-	setVar $BOT~help[16]   $BOT~tab&"      {ppt}  - Finds port pair trading ports  "
-	setVar $BOT~help[17]   $BOT~tab&"   {warps:n} - Restrict matches to nwarps  "
-	setVar $BOT~help[18]   $BOT~tab&"   {beam:botname}  - Beam to bot name  "
+	setVar $BOT~help[14]   $BOT~tab&"           {dist} - All results include distance from current. "
+	setVar $BOT~help[15]   $BOT~tab&"          {route} - Plots a basic shortest path (slow). "
+	setVar $BOT~help[16]   $BOT~tab&"            {ppt} - Finds port pair trading ports  "
+	setVar $BOT~help[17]   $BOT~tab&"        {warps:n} - Restrict matches to nwarps  "
+	setVar $BOT~help[18]   $BOT~tab&"   {beam:botname} - Beam to bot name  "
 	# ham select ports ore-mcic<-70
 	gosub :bot~helpfile
 
