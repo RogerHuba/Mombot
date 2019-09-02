@@ -120,7 +120,8 @@ if ($pos > 0)
 else
 	setVar $like ""
 end
-
+setvar $beam ""
+	
 
 while ($word <> "@@@###@@@")
 	getWord $bot~user_command_line $word $i "@@@###@@@"
@@ -141,7 +142,6 @@ while ($word <> "@@@###@@@")
 		goto :nextWord
 	end
 
-	setvar $beam ""
 	echo "*["&$word&"]*"
 	getWordPos $word $pos "beam:"
 	if ($pos > 0)
