@@ -140,55 +140,62 @@ while ($word <> "@@@###@@@")
 		goto :nextWord
 	end
 
-	getWordPos $word $pos "mark:"
+	setvar $beam ""
+	getWordPos $word $pos "beam:"
 	if ($pos > 0)
-		replaceText $word "mark:" ""
-		setVar $mark $word
-		uppercase $mark
+		replaceText $word "beam:" ""
+		setVar $beam $word
 	else
-		
-		getWordPos $word $pos "="
+		getWordPos $word $pos "mark:"
 		if ($pos > 0)
-			add $sector_param_count 1
-			replaceText $word "=" " "
-			getWord $word $sector_params[$sector_param_count] 1
-			upperCase $sector_params[$sector_param_count]
-			getWord $word $sector_params[$sector_param_count][1] 2
-			if ($sector_params[$sector_param_count][1] = "true")
-				setvar $sector_params[$sector_param_count][1] 1
-			end
-			if ($sector_params[$sector_param_count][1] = "false")
-				setvar $sector_params[$sector_param_count][1] 0
-			end
-			setvar $sector_params[$sector_param_count][2] "="
+			replaceText $word "mark:" ""
+			setVar $mark $word
+			uppercase $mark
 		else
-		
-			setVar $selectchar ""
-
-			getWordPos $word $pos ">"
+			
+			getWordPos $word $pos "="
 			if ($pos > 0)
-				setVar $selectchar ">"
-				replaceText $word ">" " "
-			else
-				getWordPos $word $pos "<"
-				if ($pos > 0)
-					setVar $selectchar "<"
-					replaceText $word "<" " "
-				else
-					getWordPos $word $pos "!"
-					if ($pos > 0)
-						setVar $selectchar "!"
-						replaceText $word "!" " "
-					end
-				end
-			end
-
-			if ($selectchar <> "")
 				add $sector_param_count 1
+				replaceText $word "=" " "
 				getWord $word $sector_params[$sector_param_count] 1
 				upperCase $sector_params[$sector_param_count]
 				getWord $word $sector_params[$sector_param_count][1] 2
-				setvar $sector_params[$sector_param_count][2] $selectchar
+				if ($sector_params[$sector_param_count][1] = "true")
+					setvar $sector_params[$sector_param_count][1] 1
+				end
+				if ($sector_params[$sector_param_count][1] = "false")
+					setvar $sector_params[$sector_param_count][1] 0
+				end
+				setvar $sector_params[$sector_param_count][2] "="
+			else
+			
+				setVar $selectchar ""
+
+				getWordPos $word $pos ">"
+				if ($pos > 0)
+					setVar $selectchar ">"
+					replaceText $word ">" " "
+				else
+					getWordPos $word $pos "<"
+					if ($pos > 0)
+						setVar $selectchar "<"
+						replaceText $word "<" " "
+					else
+						getWordPos $word $pos "!"
+						if ($pos > 0)
+							setVar $selectchar "!"
+							replaceText $word "!" " "
+						end
+					end
+				end
+
+				if ($selectchar <> "")
+					add $sector_param_count 1
+					getWord $word $sector_params[$sector_param_count] 1
+					upperCase $sector_params[$sector_param_count]
+					getWord $word $sector_params[$sector_param_count][1] 2
+					setvar $sector_params[$sector_param_count][2] $selectchar
+				end
 			end
 		end
 	end
@@ -668,7 +675,24 @@ else
 	end
 end
 gosub :SWITCHBOARD~switchboard
-
+if ($beam <> "")
+		setVar $BOT~command "beam"
+		setVar $BOT~user_command_line " beam param "&$mark&" "&$beam&" delete "
+		setVar $BOT~parm1 "param"
+		saveVar $BOT~parm1
+		setVar $BOT~parm2 $mark
+		saveVar $BOT~parm2
+		setVar $BOT~parm3 $beam
+		saveVar $BOT~parm3
+		setVar $BOT~parm4 "delete"
+		saveVar $BOT~parm5
+		saveVar $BOT~command
+		saveVar $BOT~user_command_line
+		load "scripts\mombot\modes\data\beam.cts"
+		setEventTrigger		beamdone		:beamdone "SCRIPT STOPPED" "scripts\mombot\modes\data\beam.cts"
+		pause
+		:beamdone
+end
 halt
 
 
