@@ -5,6 +5,7 @@
 	setVar $stillShields FALSE
 
 	loadvar $ship~SHIP_MAX_ATTACK
+	loadvar $SHIP~SHIP_OFFENSIVE_ODDS
 
 	if ($SHIP~SHIP_MAX_ATTACK <= 0)
 		gosub :ship~getshipstats

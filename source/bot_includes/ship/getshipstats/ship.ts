@@ -34,6 +34,7 @@
 		gettext CURRENTANSILINE $SHIP_FIGHTERS_MAX "Max Fighters[1;33m:[36m" "[0;32m Offensive Odds"
 		stripText $SHIP_FIGHTERS_MAX ","
 		stripText $SHIP_FIGHTERS_MAX " "
+		savevar $SHIP~SHIP_OFFENSIVE_ODDS
 	end
 	pause
 	:shipmaxmines
