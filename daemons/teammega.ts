@@ -179,6 +179,13 @@ while (true)
 			gosub :selloffproduct
 			setvar $check $current_trader
 			gosub :checkin
+
+			if (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 0)
+				gosub :findbestcandidates
+				gosub :startbuydownfuel
+				setvar $check $current_trader
+				gosub :checkin
+			end
 		end
 		if ($isGoodSeller = true)
 			gosub :findbestcandidates
@@ -245,8 +252,6 @@ return
 		:mrshort 
 			return
 		:mrrobbed
-		:mrBusted
-		:mrBusted2
 			gosub :killthetriggers
 			setTextLineTrigger 1 :mrsecond "credits left for a second mega"
 			setDelayTrigger    2 :mrdelayover 2000
@@ -255,6 +260,11 @@ return
 				gosub :killthetriggers 
 				return
 		:mrsecond
+			setvar $do_backup_robber true
+			gosub :killthetriggers 
+			return
+		:mrBusted
+		:mrBusted2
 			setvar $do_backup_robber true
 			gosub :killthetriggers 
 			return

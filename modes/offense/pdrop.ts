@@ -22,6 +22,7 @@ reqRecording
 	setVar $BOT~help[10]  $BOT~tab&"     - [kill]      = checks for enemy, and kills if possible"
 	setVar $BOT~help[11]  $BOT~tab&"     - [fastkill]  = does kill mac without checking"
 	setVar $BOT~help[12]  $BOT~tab&"     - [defender]  = sets and lifts IG capable defender"
+	setVar $BOT~help[13]  $BOT~tab&"     - [perfect]   = Only drops on adjacent when it as single option"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Dropper"
@@ -153,6 +154,13 @@ reqRecording
 	else
 		setVar $defender FALSE
 	end
+	
+	getWordPos $bot~user_command_line $pos "perfect"
+	if ($pos > 0)
+		setVar $perfect TRUE
+	else
+		setVar $perfect FALSE
+	end
 
 	setVar $randomAttack TRUE
 
@@ -209,6 +217,10 @@ reqRecording
 	if ($defender = 1)
 		setVar $message $message&"*         Defender: Will set and reset IG enabled Corp Mate"
 	end
+	if ($perfect = 1)
+		setVar $message $message&"*          Perfect: Will only drop adjacent on perfect firing solution."
+	end
+	
 	if ($randomAttack)
 		setVar $message $message&"*   Attack Pattern: Random"
 	elseif ($firstAttack)
@@ -358,7 +370,7 @@ reqRecording
 
 					else
 						send "'Defender Initiated! send reset command to re-enable PDROP*"
-						waitfor "resetpdrop"
+						goSub :waitforrestart
 						goSub :setdefender
 					end
 				end
@@ -375,7 +387,7 @@ reqRecording
 				end
 				if ($defender = 1)
 					send "'Defender Initiated! send reset command to re-enable PDROP*"
-					waitfor "resetpdrop"
+					goSub :waitforrestart
 					goSub :setdefender
 				end
 			elseif ($dropDescription = "Adjacent, then Direct")			
@@ -399,7 +411,7 @@ reqRecording
 				end
 				if ($defender = 1) and ($gotoSector > 0)
 					send "'Defender Initiated! send reset command to re-enable PDROP*"
-					waitfor "resetpdrop"
+					goSub :waitforrestart
 					goSub :setdefender
 				end
 			else
@@ -831,6 +843,10 @@ return
         if (($triggerDescription = "Unfigged Mines") AND ($isFigged = TRUE))
                 return
         else
+		if (($perfect =TRUE) and (SECTOR.WARPCOUNT[$dropSector] <> 2))
+			echo "*Not a perfect firing solution"
+			return
+		end
                 setVar $i 1
                 setVar $checkSector SECTOR.WARPS[$dropSector][$i]
                 setArray $targetSectors 6
@@ -854,6 +870,15 @@ return
 
 
 # ============================== DEFENDER ROUTINES ==============================
+:waitforrestart
+	setTextOutTrigger restart :restart "-"
+	setTextTrigger restart2 :restart2 "resetpdrop"
+	pause
+	:restart
+	:restart2
+	killtrigger restart
+	killtrigger restart2
+return
 
 :liftDefenders
 	# can't wait for this one, we just hope for the best!

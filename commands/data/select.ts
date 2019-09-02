@@ -7,23 +7,25 @@
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored | sector "
-	setVar $BOT~help[2]   $BOT~tab&" | ports} {BBB | XXB | SSX etc} {mark:PARAM} {dist | route} {warps:n}"
-	setVar $BOT~help[3]   $BOT~tab&"     "
-	setVar $BOT~help[4]   $BOT~tab&"     Searches TWX database for known info."
-	setVar $BOT~help[5]   $BOT~tab&"      "
-	setVar $BOT~help[6]   $BOT~tab&"     {mark:PARAM}  marks sectors PARAM=1 defult QUERY=1 "
-	setVar $BOT~help[7]   $BOT~tab&"                   selectors = > < like"
-	setVar $BOT~help[8]   $BOT~tab&"     {BBB | SSX}   match PORTS query to this pattern"
-	setVar $BOT~help[9]   $BOT~tab&"                   X is wildcard."
-	setVar $BOT~help[10]   $BOT~tab&"    {secure | paranoid}  "
-	setVar $BOT~help[11]   $BOT~tab&"     Example: >select traders bubble=false equ-mcic<-60 "
-	setVar $BOT~help[12]   $BOT~tab&"              >select planet like "&#34&"<<<< (a)"&#34
-	setVar $BOT~help[13]   $BOT~tab&"            "
-	setVar $BOT~help[14]   $BOT~tab&"    {dist}  - All results include distance from current. "
-	setVar $BOT~help[15]   $BOT~tab&"    {route} - Plots a basic shortest path (slow). "
-	setVar $BOT~help[16]   $BOT~tab&"      {ppt} - Finds port pair trading ports  "
-	setVar $BOT~help[17]   $BOT~tab&"   {warps:n} - Restrict matches to nwarps  "
+	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored | sector | ports}"
+	setVar $BOT~help[2]   $BOT~tab&"       {BBB | XXB | SSX etc} {mark:PARAM} {dist | route} "
+	setVar $BOT~help[3]   $BOT~tab&"       {warps:n} {beam:botname}"
+	setVar $BOT~help[4]   $BOT~tab&"       "
+	setVar $BOT~help[5]   $BOT~tab&"     Searches TWX database for known info."
+	setVar $BOT~help[6]   $BOT~tab&"      "
+	setVar $BOT~help[7]   $BOT~tab&"     {mark:PARAM}  marks sectors PARAM=1 defult QUERY=1 "
+	setVar $BOT~help[8]   $BOT~tab&"                   selectors = > < like"
+	setVar $BOT~help[9]   $BOT~tab&"     {BBB | SSX}   match PORTS query to this pattern"
+	setVar $BOT~help[10]   $BOT~tab&"                   X is wildcard."
+	setVar $BOT~help[11]   $BOT~tab&"    {secure | paranoid}  "
+	setVar $BOT~help[12]   $BOT~tab&"     Example: >select traders bubble=false equ-mcic<-60 "
+	setVar $BOT~help[13]   $BOT~tab&"              >select planet like "&#34&"<<<< (a)"&#34
+	setVar $BOT~help[14]   $BOT~tab&"            "
+	setVar $BOT~help[15]   $BOT~tab&"           {dist} - All results include distance from current. "
+	setVar $BOT~help[16]   $BOT~tab&"          {route} - Plots a basic shortest path (slow). "
+	setVar $BOT~help[17]   $BOT~tab&"            {ppt} - Finds port pair trading ports  "
+	setVar $BOT~help[18]   $BOT~tab&"        {warps:n} - Restrict matches to nwarps  "
+	setVar $BOT~help[19]   $BOT~tab&"   {beam:botname} - Beam to bot name  "
 	# ham select ports ore-mcic<-70
 	gosub :bot~helpfile
 
@@ -119,7 +121,8 @@ if ($pos > 0)
 else
 	setVar $like ""
 end
-
+setvar $beam ""
+	
 
 while ($word <> "@@@###@@@")
 	getWord $bot~user_command_line $word $i "@@@###@@@"
@@ -140,55 +143,61 @@ while ($word <> "@@@###@@@")
 		goto :nextWord
 	end
 
-	getWordPos $word $pos "mark:"
+	getWordPos $word $pos "beam:"
 	if ($pos > 0)
-		replaceText $word "mark:" ""
-		setVar $mark $word
-		uppercase $mark
+		replaceText $word "beam:" ""
+		setVar $beam $word
 	else
-		
-		getWordPos $word $pos "="
+		getWordPos $word $pos "mark:"
 		if ($pos > 0)
-			add $sector_param_count 1
-			replaceText $word "=" " "
-			getWord $word $sector_params[$sector_param_count] 1
-			upperCase $sector_params[$sector_param_count]
-			getWord $word $sector_params[$sector_param_count][1] 2
-			if ($sector_params[$sector_param_count][1] = "true")
-				setvar $sector_params[$sector_param_count][1] 1
-			end
-			if ($sector_params[$sector_param_count][1] = "false")
-				setvar $sector_params[$sector_param_count][1] 0
-			end
-			setvar $sector_params[$sector_param_count][2] "="
+			replaceText $word "mark:" ""
+			setVar $mark $word
+			uppercase $mark
 		else
-		
-			setVar $selectchar ""
-
-			getWordPos $word $pos ">"
+			
+			getWordPos $word $pos "="
 			if ($pos > 0)
-				setVar $selectchar ">"
-				replaceText $word ">" " "
-			else
-				getWordPos $word $pos "<"
-				if ($pos > 0)
-					setVar $selectchar "<"
-					replaceText $word "<" " "
-				else
-					getWordPos $word $pos "!"
-					if ($pos > 0)
-						setVar $selectchar "!"
-						replaceText $word "!" " "
-					end
-				end
-			end
-
-			if ($selectchar <> "")
 				add $sector_param_count 1
+				replaceText $word "=" " "
 				getWord $word $sector_params[$sector_param_count] 1
 				upperCase $sector_params[$sector_param_count]
 				getWord $word $sector_params[$sector_param_count][1] 2
-				setvar $sector_params[$sector_param_count][2] $selectchar
+				if ($sector_params[$sector_param_count][1] = "true")
+					setvar $sector_params[$sector_param_count][1] 1
+				end
+				if ($sector_params[$sector_param_count][1] = "false")
+					setvar $sector_params[$sector_param_count][1] 0
+				end
+				setvar $sector_params[$sector_param_count][2] "="
+			else
+			
+				setVar $selectchar ""
+
+				getWordPos $word $pos ">"
+				if ($pos > 0)
+					setVar $selectchar ">"
+					replaceText $word ">" " "
+				else
+					getWordPos $word $pos "<"
+					if ($pos > 0)
+						setVar $selectchar "<"
+						replaceText $word "<" " "
+					else
+						getWordPos $word $pos "!"
+						if ($pos > 0)
+							setVar $selectchar "!"
+							replaceText $word "!" " "
+						end
+					end
+				end
+
+				if ($selectchar <> "")
+					add $sector_param_count 1
+					getWord $word $sector_params[$sector_param_count] 1
+					upperCase $sector_params[$sector_param_count]
+					getWord $word $sector_params[$sector_param_count][1] 2
+					setvar $sector_params[$sector_param_count][2] $selectchar
+				end
 			end
 		end
 	end
@@ -668,7 +677,25 @@ else
 	end
 end
 gosub :SWITCHBOARD~switchboard
-
+if ($beam <> "")
+		setVar $SWITCHBOARD~message "Autobeaming to "&$beam&".*"
+		setVar $BOT~command "beam"
+		setVar $BOT~user_command_line " beam param "&$mark&" "&$beam&" delete "
+		setVar $BOT~parm1 "param"
+		saveVar $BOT~parm1
+		setVar $BOT~parm2 $mark
+		saveVar $BOT~parm2
+		setVar $BOT~parm3 $beam
+		saveVar $BOT~parm3
+		setVar $BOT~parm4 "delete"
+		saveVar $BOT~parm5
+		saveVar $BOT~command
+		saveVar $BOT~user_command_line
+		load "scripts\mombot\modes\data\beam.cts"
+		setEventTrigger		beamdone		:beamdone "SCRIPT STOPPED" "scripts\mombot\modes\data\beam.cts"
+		pause
+		:beamdone
+end
 halt
 
 

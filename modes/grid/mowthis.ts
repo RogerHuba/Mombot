@@ -27,7 +27,7 @@
 		gosub :switchboard~switchboard
 		halt
 	end
-
+	setVar $halffighters ($player~fighters/2)
 	setVar $figsToDrop 1
 	isNumber $test $bot~parm2
 	if ($test = true)
@@ -55,7 +55,25 @@
 			gosub :switchboard~switchboard
 		end
 	end
+	# TO DO
 
+	getWordPos $bot~user_command_line $pos "density" 
+	if ($pos > 0)
+		setVar $do_density TRUE
+	else
+		setVar $do_density FALSE
+	end
+	getWordPos $bot~user_command_line $pos "killport" 
+	if ($pos > 0)
+		setVar $killport TRUE
+
+	else
+		setVar $killport FALSE
+	end
+
+
+
+	# 
 	setVar $true TRUE
 	getWordPos $bot~user_command_line $pos "false" 
 	if ($pos > 0)
@@ -82,7 +100,7 @@
 		waitOn "Planet #"
 		getWord CURRENTLINE $planet~planet 2
 		stripText $planet~planet "#"
-		send "tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*mnt*qjy"
+		send "tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*mnt*tnt1*q"
 	
 	setWindowContents mowWindow "Sectors Figged: "&$count&" out of "&SECTORS&"*"
 	gosub :landOnPlanetEnterCitadel
@@ -93,12 +111,14 @@
 	else
 		setVar $output "FALSE"
 	end
-
+		
 	if ($databasecount <= 0)
 		setvar $switchboard~message "No sector parameters found for "&$parameter&" set to a value of "&$output&" or already figged.*"
 		gosub :switchboard~switchboard
 	end
 
+# JUST TILL WE ADD planet vs pure twarp mow
+send "qq"
 	setvar $switchboard~message "Starting up mow this!  Mowing all sectors with "&$parameter&" set to a value of "&$output&".*"
 	gosub :switchboard~switchboard
 
@@ -123,7 +143,7 @@
 		setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 		:tryAgain2
 		while ($bottom <= $top)
-			echo ANSI_2&"*[[ "&ANSI_4&"Finding new "&$parameter&" sector to mow to.."&ANSI_2&"]]*"
+			#echo ANSI_2&"*[[ "&ANSI_4&"Finding new "&$parameter&" sector to mow to.."&ANSI_2&"]]*"
 			# Now, pull out the next sector in the que, and make it our focus
 			setVar $focus $que[$bottom]
 			getSectorParameter $focus $parameter $isTarget
@@ -158,6 +178,7 @@
 		halt
 
 		:mowtotarget
+	
 			if ($NearFig > 0)
 				setvar $destination $nearfig
 			end
@@ -168,7 +189,8 @@
 							setVar $temp " "&$destination&" "
 							replaceText $randomSectors $temp " "
 							subtract $databasecount 1
-							send "#qm***t n t 1* q"
+
+							#send "qm***t n t 1* q"
 							loadVar $alarm_list
 							if (($alarm_active) AND ($alarm_list <> ""))
 								loadVar $who_is_online
@@ -212,14 +234,18 @@
 		setVar $maxFigAttack2 9999
 	end
 
+	
+
 	setVar $result ""		
 
 	if ($no_twarp = FALSE)
 		setVar $j 4
 		setVar $closestFiggedSector 0	
 		while ($j <= $courseLength)
+
 			getSectorParameter $COURSE[$j] "FIGSEC" $isFigged
-			if ($isFigged = TRUE)
+	
+			if ($isFigged = 1)
 				setVar $closestFiggedSector $COURSE[$j]
 				setVar $index $j
 				if ($j = $courseLength)
@@ -252,14 +278,14 @@
 
 	setVar $j 3
 	:mowfromhere
-	while ($j <= $courseLength)
-		setvar $sector $COURSE[$j]
+	setVar $tempj $j
+	while ($tempj <= $courseLength)
+		setvar $sector $COURSE[$tempj]
 		if ((PORT.EXISTS[$sector] = TRUE) AND (PORT.CLASS[$sector] > 0) AND (((PORT.FUEL[$sector] > 0) AND (PORT.BUYFUEL[$sector] = FALSE))))
 			setvar $fuelsector $sector
 		end
-		add $j 1	
+		add $tempj 1	
 	end
-
 	while ($j <= $courseLength)
 
 		setVar $result $result&"m  "&$COURSE[$j]&"* "
@@ -279,8 +305,12 @@
 		if ($course[$j] = $fuelsector)
 			setvar $result $result&" p   t   *   *  "
 		end
+		if ($do_density = TRUE)
+			setvar $result $result&"s d"
+		end 
 		add $j 1	
 	end
+
 	send $result
 	gosub :player~quikstats
 	if ($player~current_sector <> $destination)
@@ -290,6 +320,37 @@
 		
 	else
 		gosub :player~quikstats
+		
+		if ($killport = TRUE)
+			send "d"
+			waitfor "Warps to Sector(s) :"
+			if ($player~current_sector <> $homesector)
+				setVar $BOT~command "port"
+				setVar $BOT~user_command_line " kill" 
+				setVar $BOT~parm1 "kill"
+				saveVar $BOT~parm1
+
+				saveVar $BOT~command
+				saveVar $BOT~user_command_line
+				load "scripts\mombot\commands\grid\port.cts"
+				setEventTrigger        killended        :killended "SCRIPT STOPPED" "scripts\mombot\commands\grid\port.cts"
+				setdelaytrigger	killwait :killwait 5000
+				pause
+				:killwait
+					
+					stop "scripts\mombot\commands\grid\port.cts"
+					
+				:killended
+					killalltriggers
+					
+				gosub :player~quikstats
+				if ($player~fighters < $halffighters)
+					setvar $switchboard~message "FIghters Low to kill ports.. stopping*"
+					gosub :switchboard~switchboard
+					halt
+				end
+			end
+		end
 	end
 return
 
