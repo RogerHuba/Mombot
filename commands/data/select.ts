@@ -676,6 +676,7 @@ else
 end
 gosub :SWITCHBOARD~switchboard
 if ($beam <> "")
+		setVar $SWITCHBOARD~message "Autobeaming to "&$beam&".*"
 		setVar $BOT~command "beam"
 		setVar $BOT~user_command_line " beam param "&$mark&" "&$beam&" delete "
 		setVar $BOT~parm1 "param"
