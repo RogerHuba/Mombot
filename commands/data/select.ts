@@ -676,6 +676,7 @@ else
 	end
 end
 gosub :SWITCHBOARD~switchboard
+pause
 if ($beam <> "")
 		setVar $SWITCHBOARD~message "Autobeaming to "&$beam&".*"
 		setVar $BOT~command "beam"
