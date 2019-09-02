@@ -1,4 +1,4 @@
-for /r %%n in (*_ldrop.ts) do call :checkit "%%n" 
+for /r %%n in (*.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
