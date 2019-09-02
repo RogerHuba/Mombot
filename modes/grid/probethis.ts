@@ -7,8 +7,8 @@
 	setVar $BOT~help[1] $BOT~tab&"probethis {param} {restock} {void} "
 	setVar $BOT~help[2] $BOT~tab&"     "
 	setVar $BOT~help[3] $BOT~tab&"Will ether probe all sectors marked with param selected."
-	setVar $BOT~help[4] $BOT~tab&"Example: BUBBLE, DE, MSLSEC"
-	setVar $BOT~help[5] $BOT~tab&"     {unexplored) - only probes unexplored sectors"
+	setVar $BOT~help[4] $BOT~tab&"Example: DEADEND, 6WAY"
+	setVar $BOT~help[5]  $BOT~tab&"    {report}  - Will report destroyed ports and traders/planets"
 	setVar $BOT~help[6]  $BOT~tab&"    {restock}  - Will attempt to restock probes"
 	setVar $BOT~help[7]  $BOT~tab&"    {void}  - Will void sectors where probe destroyed"
 	gosub :bot~helpfile
@@ -43,6 +43,13 @@
 	else
 		setVar $void_active FALSE
 	end
+	
+	getWordPos $bot~user_command_line $pos "report"
+	if ($pos > 0)
+		setVar $report_active TRUE
+	else
+		setVar $report_active FALSE
+	end
 
 	if ($startingLocation = "Citadel")
 		send "s* q "
@@ -74,9 +81,6 @@
 		halt
 	end
 
-
-
-
 	:do_again
 		gosub :player~quikstats
 		if ($player~eprobes <= 0)
@@ -96,15 +100,39 @@
 		else
 			send "e"&$destination&"*"
 			settextlinetrigger 1 :next "Probe Self Destructs"
-			settextlinetrigger 2 :next "Probe Destroyed!"
+			settextlinetrigger 2 :destroyed "Probe Destroyed!"
 			settextlinetrigger 3 :next "You are already in that sector!"
+			settextlinetrigger 4 :get_info "Probe entering sector :"
 			pause
 		end
 
-		:next
+                :get_info
+#			killtrigger 1
+#			killtrigger 2
+			killtrigger 3
+			killtrigger 4
+			getWord CURRENTLINE $Last_Entering_Sector 5
+# 		        setVar $record_text[$count1] CURRENTLINE
+#  		        getWordPos $record_text[$count1] $traders "Traders :"
+# 		        getWordPos $record_text[$count1] $ships "Ships   :"
+#    		        getWordPos $record_text[$count1] $planets "Planets :"
+#    		        getWordPos $record_text[$count1] $class0 "Class 0 (Special)"
+#    		        getWordPos $record_text[$count1] $feds "Federals:"
+#    		        getWordPos $record_text[$count1] $sector_Rpt_Test "Sector  :"
+                        pause
+
+                :destroyed
 			killtrigger 1
 			killtrigger 2
 			killtrigger 3
+			killtrigger 4
+			if
+
+ 		:next
+			killtrigger 1
+			killtrigger 2
+			killtrigger 3
+			killtrigger 4
 			setVar $temp " "&$destination&" "
 			replaceText $randomSectors $temp " "
 			subtract $databasecount 1	
