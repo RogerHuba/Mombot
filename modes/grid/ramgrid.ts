@@ -96,8 +96,9 @@ gosub :BOT~loadVars
 	if (STARDOCK = 0)
 		send "V"
 		waitFor "The StarDock is located in sector "
-		getWord CURRENTLINE $stardock 7
-		stripText $stardock "."
+		getWord CURRENTLINE $map~stardock 7
+		stripText $map~stardock "."
+		savevar $map~stardock
 		waitFor "Command [TL="
 	end
 

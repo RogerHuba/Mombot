@@ -1014,7 +1014,7 @@ return
 
 :xenter
 	
-	send "r y n * t* * *" $password "*    *    *    m * * *  c       q    q  *     *       za9999*   z*   l j" & #8 & $planet~planet & "* c   "
+	send "r y n * t* * *" PASSWORD "*    *    *    m * * *  c       q    q  *     *       za9999*   z*   l j" & #8 & $planet~planet & "* c   "
 	
 
 	return
@@ -1082,12 +1082,21 @@ return
 
 	else
 		if ($FAST)
-			setVar $i 0
-			while ($i <= 3)
-				gosub :xenter
-				add $i 1
-			end
 			send "q  q  q  z   n  *   "
+			setVar $BOT~command "xenter"
+			setVar $BOT~user_command_line " xenter 3 silent "
+			setVar $BOT~parm1 "3"
+			saveVar $BOT~parm1
+			setVar $BOT~parm2 "silent"
+			saveVar $BOT~parm2
+			saveVar $BOT~command
+			saveVar $BOT~user_command_line
+			load "scripts\mombot\commands\grid\xenter.cts"
+			setEventTrigger		xenterdone		:xenterdone "SCRIPT STOPPED" "scripts\mombot\commands\grid\xenter.cts"
+			pause
+			:xenterdone
+
+
 			if ($grid_armids = 0)
 				setVar $_ARMIDS_ " "
 			else
@@ -1105,13 +1114,23 @@ return
 			gosub :PLAYER~quikstats
 			waiton "Citadel command"
 		else
-			send "r y y "
-			waiton "==-- Trade Wars 2002 --=="
-			waiton "Enter your choice:"
+			setVar $BOT~command "xenter"
+			setVar $BOT~user_command_line " xenter silent"
+			setVar $BOT~parm1 ""
+			saveVar $BOT~parm1
+			setVar $BOT~parm2 "silent"
+			saveVar $BOT~parm2
+			saveVar $BOT~command
+			saveVar $BOT~user_command_line
+			load "scripts\mombot\commands\grid\xenter.cts"
+			setEventTrigger		xenterdone2		:xenterdone2 "SCRIPT STOPPED" "scripts\mombot\commands\grid\xenter.cts"
+			pause
+			:xenterdone2
+
 			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
 			setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
 			
-			send "t*   *    *" & PASSWORD & "*    *    *   q  *  *  h 1 z "&$grid_armids&"* z c * h 2 z "&$grid_limpets&"* z c * l "&$planet~planet&"*  c  "
+			send "q  q  *  *  h 1 z "&$grid_armids&"* z c * h 2 z "&$grid_limpets&"* z c * l "&$planet~planet&"*  c  "
 			waiton "Citadel command"
 		end
 	end
@@ -1365,6 +1384,7 @@ include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\combat\init\combat"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
+include "source\module_includes\modules\xenter\modules"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\planet\getplanetinfo\planet"

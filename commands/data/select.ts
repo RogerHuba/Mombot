@@ -220,7 +220,7 @@ while ($i <= SECTORS)
 		while (($j <= $sector_param_count) and ($skip <> true))
 			setvar $bot~parmameter $sector_params[$j]
 			lowercase $bot~parmameter
-			getwordpos $bot~parmameter $pos "port.o"
+			getwordpos $bot~parmameter $pos "port.f"
 			if ($pos > 0)
 				setvar $value port.fuel[$i]
 			else
