@@ -182,3 +182,4 @@ return
 
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\module_includes\bot\checkstartingprompt\bot"
