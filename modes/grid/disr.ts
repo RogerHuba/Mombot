@@ -65,7 +65,7 @@
     end
 
 	isNumber $tst $bot~parm1
-	if ($tst = 0)
+	if (($tst = 0) and ($bot~parm1 <> ""))
 		lowerCase $bot~parm1
 		if ($bot~parm1 = "nscan")
 			setVar $ScanIT 		FALSE
@@ -97,7 +97,7 @@
 	end
 
 	isNumber $tst $bot~parm2
-	if ($tst = 0)
+	if (($tst = 0) and ($bot~parm2 <> ""))
 		LowerCase $bot~parm2
 		if ($bot~parm2 = "nscan")
 			setVar $ScanIT 		FALSE
@@ -108,7 +108,7 @@
 	end
 
 	isNumber $tst $bot~parm3
-	if ($tst = 0)
+	if (($tst = 0) and ($bot~parm3 <> ""))
 		LowerCase $bot~parm3
 		if ($bot~parm3 = "nscan")
 			setVar $ScanIT 		FALSE
