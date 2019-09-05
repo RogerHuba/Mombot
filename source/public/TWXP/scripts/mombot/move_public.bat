@@ -46,7 +46,6 @@ copy "..\..\..\..\..\commands\general\subspace.cts" "commands\general\subspace.c
 copy "..\..\..\..\..\commands\general\with.cts" "commands\general\with.cts"
 copy "..\..\..\..\..\commands\general\mac.cts" "commands\general\mac.cts"
 copy "..\..\..\..\..\commands\general\dep.cts" "commands\general\dep.cts"
-copy "..\..\..\..\..\commands\general\bg2019.cts" "commands\general\bg2019.cts"
 copy "..\..\..\..\..\commands\general\tow.cts" "commands\general\tow.cts"
 copy "..\..\..\..\..\commands\general\bwarp.cts" "commands\general\bwarp.cts"
 copy "..\..\..\..\..\commands\general\corp.cts" "commands\general\corp.cts"
