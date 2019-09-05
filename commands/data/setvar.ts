@@ -98,8 +98,9 @@
 		setVar $SWITCHBOARD~message "Unknown variable name entered.*"
 	end
 	if (($switchboard~message <> "0") and ($switchboard~message <> ""))
-		gosub :SWITCHBOARD~switchboard
 	end
+	setVar $SWITCHBOARD~message "You must enter a valid value.*"
+	gosub :SWITCHBOARD~switchboard
 halt
 
 # includes:
