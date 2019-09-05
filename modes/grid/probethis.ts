@@ -4,14 +4,32 @@
 	loadVar $MAP~STARDOCK
 	loadVar $MAP~BACKDOOR
 
-	setVar $BOT~help[1] $BOT~tab&"probethis {param} {restock} {void} "
-	setVar $BOT~help[2] $BOT~tab&"     "
-	setVar $BOT~help[3] $BOT~tab&"Will ether probe all sectors marked with param selected."
-	setVar $BOT~help[4] $BOT~tab&"Example: BUBBLE, DE, MSLSEC"
-	setVar $BOT~help[5] $BOT~tab&"     {unexplored) - only probes unexplored sectors"
-	setVar $BOT~help[6]  $BOT~tab&"    {restock}  - Will attempt to restock probes"
-	setVar $BOT~help[7]  $BOT~tab&"    {void}  - Will void sectors where probe destroyed"
-	gosub :bot~helpfile
+	if ($bot~param1 = "help")
+		setVar $BOT~help[1]  $BOT~tab&"probethis [param] {void} {restock} "
+		setVar $BOT~help[2]  $BOT~tab&"     "
+		setVar $BOT~help[3]  $BOT~tab&"Will ether probe all sectors marked with param selected."
+		setVar $BOT~help[4]  $BOT~tab&" 	   {param examples:}
+		setVar $BOT~help[5]  $BOT~tab&"     	- all"
+		setVar $BOT~help[6]  $BOT~tab&"     	- unexplored "
+		setVar $BOT~help[7]  $BOT~tab&"     	- msl"
+		setVar $BOT~help[8]  $BOT~tab&"     	- bubble"
+		setVar $BOT~help[9]  $BOT~tab&"     	- uppedport (custom from query command)"
+		setVar $BOT~help[10] $BOT~tab&"     {void}  - Will void sectors where probe destroyed"
+		setVar $BOT~help[11] $BOT~tab&"     {restock}  - Will attempt to restock probes even if not at stardock"
+		setVar $BOT~help[12] $BOT~tab&"     {destroy}  - Will broadcast destroyed sector probes on ss"
+		setVar $BOT~help[13] $BOT~tab&"     {ss}  - Will broadcast traders, ships, and planets on ss"
+		setVar $BOT~help[14] $BOT~tab&"     {trader}  - Will broadcast traders on ss"
+		setVar $BOT~help[15] $BOT~tab&"     {ships}  - Will broadcast empty ships on ss"
+		setVar $BOT~help[16] $BOT~tab&"     {planets}  - Will broadcast planets on ss"
+		setVar $BOT~help[17] $BOT~tab&"     {aliens}  - Will broadcast aliens and alien space on ss"
+		setVar $BOT~help[18] $BOT~tab&" "
+		setVar $BOT~help[19] $BOT~tab&"     Example: probethis uppedports restock void ss"
+		gosub :bot~helpfile
+		setVar $SWITCHBOARD~message "Help file written / rewritten*"
+		gosub :SWITCHBOARD~switchboard
+		HALT
+	end
+
 
 	if ($bot~parm1 <> "")
 		setVar $bot~parmAM $bot~parm1
@@ -38,6 +56,27 @@
 	end
 
 	getWordPos $bot~user_command_line $pos "void"
+	if ($pos > 0)
+		setVar $void_active TRUE
+	else
+		setVar $void_active FALSE
+	end
+	
+	getWordPos $bot~user_command_line $pos "report"
+	if ($pos > 0)
+		setVar $report_active TRUE
+	else
+		setVar $report_active FALSE
+	end
+
+	getWordPos $bot~user_command_line $pos "ss"
+	if ($pos > 0)
+		setVar $void_active TRUE
+	else
+		setVar $void_active FALSE
+	end
+
+		getWordPos $bot~user_command_line $pos "destroy"
 	if ($pos > 0)
 		setVar $void_active TRUE
 	else
@@ -74,9 +113,6 @@
 		halt
 	end
 
-
-
-
 	:do_again
 		gosub :player~quikstats
 		if ($player~eprobes <= 0)
@@ -96,15 +132,39 @@
 		else
 			send "e"&$destination&"*"
 			settextlinetrigger 1 :next "Probe Self Destructs"
-			settextlinetrigger 2 :next "Probe Destroyed!"
+			settextlinetrigger 2 :destroyed "Probe Destroyed!"
 			settextlinetrigger 3 :next "You are already in that sector!"
+			settextlinetrigger 4 :get_info "Probe entering sector :"
 			pause
 		end
 
-		:next
+                :get_info
+#			killtrigger 1
+#			killtrigger 2
+			killtrigger 3
+			killtrigger 4
+			getWord CURRENTLINE $Last_Entering_Sector 5
+# 		        setVar $record_text[$count1] CURRENTLINE
+#  		        getWordPos $record_text[$count1] $traders "Traders :"
+# 		        getWordPos $record_text[$count1] $ships "Ships   :"
+#    		        getWordPos $record_text[$count1] $planets "Planets :"
+#    		        getWordPos $record_text[$count1] $class0 "Class 0 (Special)"
+#    		        getWordPos $record_text[$count1] $feds "Federals:"
+#    		        getWordPos $record_text[$count1] $sector_Rpt_Test "Sector  :"
+                        pause
+
+                :destroyed
 			killtrigger 1
 			killtrigger 2
 			killtrigger 3
+			killtrigger 4
+			if
+
+ 		:next
+			killtrigger 1
+			killtrigger 2
+			killtrigger 3
+			killtrigger 4
 			setVar $temp " "&$destination&" "
 			replaceText $randomSectors $temp " "
 			subtract $databasecount 1	
@@ -144,7 +204,7 @@
 			setVar $perc (($i * 100) / SECTORS)
 			echo "*"
 			echo #27 "["&($perc / 2)&"C"
-			echo ANSI_14 "°" ANSI_15 " " $perc "%" #27 & "[1A   "
+			echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
 		end
 		add $i 1
 	end

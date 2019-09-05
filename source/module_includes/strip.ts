@@ -399,3 +399,5 @@ return
 	end
 	gosub :SWITCHBOARD~switchboard
 return
+
+include "source\bot_includes\player\quikstats\player"
