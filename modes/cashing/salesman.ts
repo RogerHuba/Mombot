@@ -254,6 +254,7 @@
 					waitOn "Planet command (?"
 					gosub :PLANET~getPlanetInfo
 					send "c"
+					gosub :PLAYER~quikstats
 
 					setVar $total_creds_needed ((300*100) + (500*100) + (700*100) + 500000)
 
