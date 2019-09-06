@@ -44,6 +44,7 @@
 	:gotStats
 		setVar $stats $stats & " @@@"
 		setVar $current_word 0
+		replacetext $stats #179 " "
 		while ($wordy <> "@@@")
 			if ($wordy = "Sect")
 				getWord $stats $CURRENT_SECTOR      ($current_word + 1)
