@@ -184,9 +184,9 @@ halt
 			cutText $paddingDashes $leftPad 1 $sideLength
 			cutText $paddingDashes $rightPad 1 (($maxStringLength-$comLength)-$sideLength)
 			if ($SWITCHBOARD~self_command = TRUE)
-				setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |"&$leftPad&$tempCommand2&$rightPad&"|*"
+				setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  "&$leftPad&$tempCommand2&$rightPad&" *"
 			else
-				setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |"&$leftPad&$tempCommand&$rightPad&"|*"  
+				setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  "&$leftPad&$tempCommand&$rightPad&" *"  
 			end
 			add $commandCount 1
 		end
