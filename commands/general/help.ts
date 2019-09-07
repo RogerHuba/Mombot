@@ -97,12 +97,12 @@
 				end
 				add $i 1
 			end
-			setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  *             -=Commands=-            *"
+			setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  *             -="&ansi_13&"Commands"&ansi_15&"=-            *"
 			setVar $commandCount 0
 			setVar $bufferCount 0
 			gosub :bufferList
 		if ($modelist > 0)
-			setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  *              -=Modes=-              *"
+			setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  *              -="&ansi_13&"Modes"&ansi_15&"=-              *"
 			setVar $currentList " "
 			setVar $i 1
 			while ($i <= $modelist)
