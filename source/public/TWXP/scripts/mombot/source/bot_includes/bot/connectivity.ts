@@ -339,7 +339,7 @@ return
 		else
 			:alreadyCorped
 				gosub :BOT~killthetriggers
-				send "* * *CN24"&$BOT~subspace&"*Q Q Q ZN* ^Q c o* c q q ^M "
+				send "* * *CN24"&$BOT~subspace&"*Q Q Q ZN* ^Q c o* c q q * "
 		end
 		setTextLineTrigger      AllDone     :AllDone ": ENDINTERROG"
 		pause
