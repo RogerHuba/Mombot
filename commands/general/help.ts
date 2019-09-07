@@ -232,7 +232,7 @@ return
 		gosub :bufferList
 		echo $SWITCHBOARD~message
 
-		echo ansi_13 "  ------------------------"&ANSI_14&" Hints/Tips "&ANSI_13&"----------------------------------*"
+		echo ansi_13 "  ------------------------"&ANSI_14&" Hints/Tips "&ANSI_13&"--------------------------------  *"
 		gosub :get_hint_tips
 		
 		echo ansi_15 "  *  "&$hint_tip&"*  *"
