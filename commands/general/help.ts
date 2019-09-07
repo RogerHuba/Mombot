@@ -74,7 +74,7 @@
 		cutText $paddingDashes $leftPad 1 $sideLength
 		cutText $paddingDashes $rightPad 1 (($maxStringLength-$comLength)-$sideLength)
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |"&$leftPad&"-="&$BOT~parm1&"=-"&$rightPad&"|*"
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |----------------------------------|*"
+		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  ---------------------------------- *"
 			upperCase $currentList
 			setVar $i 1
 			while ($i <= $commandList)
@@ -124,7 +124,7 @@
 			end
 			gosub :bufferList
 		end
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |----------------------------------|*"
+		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  ---------------------------------- *"
 	end
 	#if ($SWITCHBOARD~self_command <> TRUE)
 	if (($SWITCHBOARD~self_command = true) or ($BOT~silent_running = TRUE))
