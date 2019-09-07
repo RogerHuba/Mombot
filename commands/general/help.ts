@@ -68,12 +68,12 @@
 		setVar $maxStringLength 34
 		setVar $paddingDashes "                                 "
 		upperCase $BOT~parm1
-		setVar $SWITCHBOARD~message "  *  *  --Mind ()ver Matter Bot Commands--*"
+		setVar $SWITCHBOARD~message "  *  *                                   *"
 		getLength "-="&$BOT~parm1&"=-" $comLength
 		setVar $sideLength (($maxStringLength-$comLength)/2)
 		cutText $paddingDashes $leftPad 1 $sideLength
 		cutText $paddingDashes $rightPad 1 (($maxStringLength-$comLength)-$sideLength)
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&" |"&$leftPad&"-="&$BOT~parm1&"=-"&$rightPad&"|*"
+		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  "&$leftPad&"-="&$BOT~parm1&"=-"&$rightPad&" *"
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  ---------------------------------- *"
 			upperCase $currentList
 			setVar $i 1
