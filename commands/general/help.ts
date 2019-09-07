@@ -74,7 +74,7 @@
 		cutText $paddingDashes $leftPad 1 $sideLength
 		cutText $paddingDashes $rightPad 1 (($maxStringLength-$comLength)-$sideLength)
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  "&$leftPad&"-="&ansi_11&$BOT~parm1&ansi_15&"=-"&$rightPad&" *"
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  ---------------------------------- *"
+		setVar $SWITCHBOARD~message $SWITCHBOARD~message&ansi_3&"  ---------------------------------- *"&ansi_15
 			upperCase $currentList
 			setVar $i 1
 			while ($i <= $commandList)
