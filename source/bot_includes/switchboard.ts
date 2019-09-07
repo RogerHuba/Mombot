@@ -114,6 +114,8 @@
 		#echo "*[command line: "&$bot~user_command_line&"self command:"&$self_command&"    silent running:"&$bot~silent_running&"   command:"&$bot~command&"] isSilent:["&$isSilent&"]*"
 		if (((($isSilent > 0) or ($bot~silent_running = true) and ($self_command = true))) or (($self_command = true) and (($bot~command = "help") or ($bot~only_help = true))) and ($isBroadcast <= 0))
 			if ($BOT~botIsDeaf <> TRUE)
+				replacetext $new_message "|" "[32mÈ"
+				replacetext $new_message "-" "Í"
 				Echo "*" & $MSG_Header_Echo & $new_message
 				send #145
 			else
