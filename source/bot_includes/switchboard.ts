@@ -64,7 +64,24 @@
 			#echo "*[self command:"&$self_command&"]*"
 			if (($bot~command <> "help") and ($bot~only_help <> true))
 				if (($self_command > 1) or (($self_command = 1) and (($bot~silent_running <> true) and ($isSilent <= 0))))
-					gosub :stripansi
+					striptext $message ANSI_1
+					striptext $message ANSI_2
+					striptext $message ANSI_3
+					striptext $message ANSI_4
+					striptext $message ANSI_5
+					striptext $message ANSI_6
+					striptext $message ANSI_7
+					striptext $message ANSI_8
+					striptext $message ANSI_9
+					striptext $message ANSI_10
+					striptext $message ANSI_11
+					striptext $message ANSI_12
+					striptext $message ANSI_13
+					striptext $message ANSI_14
+					striptext $message ANSI_15
+
+					echo "*HEREHEREHERE*"
+					PAUSE
 					if ($helpList <> TRUE)
 						#striptext $message "    "
 					end
@@ -108,10 +125,8 @@
 				saveVar $window_content
 			end
 		elseif ($multiple_lines = false)
-			gosub :stripansi
 			send $MSG_Header_SS_1 & $new_message
 		else
-			gosub :stripansi
 			send $MSG_Header_SS_2 & $new_message & "*"
 		end
 		setVar $message ""
@@ -166,20 +181,3 @@ return
 	setvar $new_message $message
 return
 
-:stripansi
-	striptext $message ANSI_1
-	striptext $message ANSI_2
-	striptext $message ANSI_3
-	striptext $message ANSI_4
-	striptext $message ANSI_5
-	striptext $message ANSI_6
-	striptext $message ANSI_7
-	striptext $message ANSI_8
-	striptext $message ANSI_9
-	striptext $message ANSI_10
-	striptext $message ANSI_11
-	striptext $message ANSI_12
-	striptext $message ANSI_13
-	striptext $message ANSI_14
-	striptext $message ANSI_15
-return
