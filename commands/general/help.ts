@@ -124,7 +124,7 @@
 			end
 			gosub :bufferList
 		end
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&ansi_7&"  -"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"- *"&ansi_15
+		setVar $SWITCHBOARD~message $SWITCHBOARD~message&ansi_7&"  *  -"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"- *"&ansi_15
 	end
 	if (($SWITCHBOARD~self_command = true) or ($BOT~silent_running = TRUE))
 
