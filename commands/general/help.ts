@@ -73,7 +73,7 @@
 		setVar $sideLength (($maxStringLength-$comLength)/2)
 		cutText $paddingDashes $leftPad 1 $sideLength
 		cutText $paddingDashes $rightPad 1 (($maxStringLength-$comLength)-$sideLength)
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  "&$leftPad&ansi_3&"-="&ansi_11&$BOT~parm1&ansi_3&"=-"&ansi_15&$rightPad&" *"
+		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  "&$leftPad&ansi_7&"-="&ansi_8&$BOT~parm1&ansi_7&"=-"&ansi_15&$rightPad&" *"
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&ansi_7&"  -"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"-"&ansi_7&"-"&ansi_8&"- *"&ansi_15
 			upperCase $currentList
 			setVar $i 1
