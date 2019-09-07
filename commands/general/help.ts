@@ -126,7 +126,6 @@
 		end
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  *  ---------------------------------- *"
 	end
-	#if ($SWITCHBOARD~self_command <> TRUE)
 	if (($SWITCHBOARD~self_command = true) or ($BOT~silent_running = TRUE))
 
 	else
