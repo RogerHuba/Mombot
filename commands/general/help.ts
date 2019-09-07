@@ -151,7 +151,7 @@ halt
 				setVar $tempCommandHidden TRUE
 				setVar $tempCommand2 ANSI_14&$tempCommand&ANSI_15
 			else
-				setVar $tempCommand2 $tempCommand
+				setVar $tempCommand2 ansi_6&$tempCommand&ansi_15
 			end
 			if ($next <> 0)
 				getWordPos $next $pos "[<><>HIDDEN<><>]"
@@ -162,7 +162,7 @@ halt
 				else
 					setVar $tempCommand2 $tempCommand2&"   "&$next
 				end
-				setVar $tempCommand $tempCommand&"   "&$next
+				setVar $tempCommand $tempCommand&"   "&ansi_6&$next&ansi_15
 				add $i 1
 			end
 			if ($next2 <> 0)
@@ -172,7 +172,7 @@ halt
 					setVar $next2Hidden TRUE
 					setVar $tempCommand2 $tempCommand2&"   "&ANSI_14&$next2&ANSI_15
 				else
-					setVar $tempCommand2 $tempCommand2&"   "&$next2
+					setVar $tempCommand2 $tempCommand2&"   "&ansi_6&$next2&ansi_15
 				end
 				setVar $tempCommand $tempCommand&"   "&$next2
 				add $i 1
