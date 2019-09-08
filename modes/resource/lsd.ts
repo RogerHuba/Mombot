@@ -460,6 +460,7 @@
 
 				if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE))
 					setVar $RED_adj 0
+					setvar $player~target stardock
 					gosub :player~findjumpsector
 					if ($RED_adj <> 0)
 						send ("'{"&$BOT~bot_name&"} "&$TagLineB&" - Jump Sector Found"&" - Using Sector "&$RED_adj&"**")
