@@ -1,17 +1,8 @@
-    loadVar $switchboard~bot_name
-    loadVar $bot~user_command_line
-    loadVar $bot~parm1
-    loadVar $bot~parm2
-    loadVar $bot~parm3
-    loadvar $self_command
-    loadVar $command
-    loadVar $stardock
-    loadVar $MAP~stardock
-    loadVar $PLAYER~unlimitedGame        
-    loadvar $SWITCHBOARD~bot_name 
-    loadvar $SWITCHBOARD~self_command 
-    loadVar $bot~silent_running
-
+gosub :BOT~loadVars
+	
+if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
+	goto :wait_for_command
+end
 
 isNumber $test $bot~parm1
 setVar $getAllParamsFromSectors FALSE
@@ -32,11 +23,11 @@ if ($test = TRUE)
 
     getSectorParameter $bot~parm1 "BUSTED" $bustthissec
     if ($bustthissec = TRUE)
-	setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  BUSTED: 1*"
+		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  BUSTED: 1*"
     end
     getSectorParameter $bot~parm1 "FAKEBUST" $fakebust
     if ($fakebust = TRUE)
-	setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  FAKEBUST: 1*"
+		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  FAKEBUST: 1*"
     end
     while ($i <= $bot~parms)
         getSectorParameter $bot~parm1 $bot~parms[$i] $check
@@ -92,35 +83,22 @@ end
 
 
 :wait_for_command
+	setVar $BOT~help[1]  $BOT~tab&"   PARAM - Displays sector parameters saved in game."
+	setVar $BOT~help[2]  $BOT~tab&"   "
+	setVar $BOT~help[3]  $BOT~tab&"   - param [sector]  "
+	setVar $BOT~help[4]  $BOT~tab&"        Displays all bot sector parameters "
+	setVar $BOT~help[5]  $BOT~tab&"          (FIGSEC, MINESEC, LIMPSEC, MSLSEC, BUSTED, PSECTOR)"
+	setVar $BOT~help[6]  $BOT~tab&"   "
+	setVar $BOT~help[7]  $BOT~tab&"   - param [param]"
+	setVar $BOT~help[8]  $BOT~tab&"        Displays all sectors where that param is non-zero/non-blank"
+	setVar $BOT~help[9]  $BOT~tab&"   "
+	gosub :bot~helpfile
 halt
 
 :killthetriggers
     killalltriggers
 return
 
-:removeFigFromData
-    getSectorParameter $target "FIGSEC" $check
-    if ($check = TRUE)
-        getSectorParameter 2 "FIG_COUNT" $figCount
-        setSectorParameter 2 "FIG_COUNT" ($figCount-1)
-    end
-    setSectorParameter $target "FIGSEC" FALSE
-return
-:addFigToData
-    setSectorParameter $target "FIGSEC" TRUE
-return
-
-:checkStartingPrompt
-    if ($PLAYER~CURRENT_PROMPT = "0")
-        gosub  :player~currentPrompt
-    end
-    getWordPos " "&$validPrompts&" " $pos $PLAYER~CURRENT_PROMPT
-    if ($pos <= 0)
-        setVar $SWITCHBOARD~message "Invalid starting prompt: ["&$PLAYER~CURRENT_PROMPT&"]. Valid prompt(s) for this command: ["&$validPrompts&"]*"
-        gosub :SWITCHBOARD~switchboard
-        goto :wait_for_command
-    end
-return
 
 # includes:
 include "source\bot_includes\switchboard"
