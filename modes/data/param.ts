@@ -4,11 +4,11 @@ if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
 	goto :wait_for_command
 end
 
-isNumber $test $bot~parm1
 setVar $getAllParamsFromSectors FALSE
 if ($bot~parm1 = "")
 	setvar $bot~parm1 currentsector
 end
+isNumber $test $bot~parm1
 if ($test = TRUE)
     if (($bot~parm1 <= 0) OR ($bot~parm1 > SECTORS))
         setvar $bot~parm1 CURRENTSECTOR
