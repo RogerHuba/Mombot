@@ -86,7 +86,6 @@ return
 
 
 :wait_for_command
-
 	setVar $BOT~help[1]  $BOT~tab&"twarp - transwarps to sector as quickly "
 	setVar $BOT~help[2]  $BOT~tab&"        and safely as possible.   "
 	setVar $BOT~help[3]  $BOT~tab&"Options: "
@@ -96,7 +95,6 @@ return
 	setVar $BOT~help[7]  $BOT~tab&"    t planet {planet id} - transwarp to last known "
 	setVar $BOT~help[8]  $BOT~tab&"                           location of the planet id"
 	gosub :bot~helpfile
-
 halt
 
 
