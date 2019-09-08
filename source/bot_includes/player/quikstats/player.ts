@@ -17,7 +17,7 @@
 	:allPrompts
 		setvar $ansiline currentansiline
 		setvar $self_destruct_prompt false
-		getwordpos $ansiline $pos "[5;31;47mÛ[37;41mÛ[0m[5;31;47mÛ[37;41mÛ[0m[5;31;47mÛ"
+		getwordpos $ansiline $pos "ARE YOU SURE CAPTAIN? (Y/N) [N]"
 		if ($pos > 0)
 			setvar $self_destruct_prompt true
 		end
