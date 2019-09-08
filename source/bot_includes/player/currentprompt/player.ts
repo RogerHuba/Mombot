@@ -13,6 +13,12 @@
 		killtrigger prompt_delay
 		return
 	:allPromptsCatch
+		setvar $ansiline currentansiline
+		setvar $self_destruct_prompt false
+		getwordpos $ansiline $pos "[5;31;47mÛ[37;41mÛ[0m[5;31;47mÛ[37;41mÛ[0m[5;31;47mÛ"
+		if ($pos > 0)
+			setvar $self_destruct_prompt true
+		end
 		killtrigger prompt_delay
 		getWord CURRENTLINE $CURRENT_PROMPT 1
 		if ($CURRENT_PROMPT = 0)

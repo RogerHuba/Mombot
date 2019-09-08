@@ -34,11 +34,11 @@ if ($test = TRUE)
     end
     while ($i <= $bot~parms)
         getSectorParameter $bot~parm1 $bot~parms[$i] $check
-	if ($bot~parms[$i] = "BUSTED")
-	elseif ($bot~parms[$i] = "FAKEBUST")
-	else
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  "&$bot~parms[$i]&": "&$check&"*"
-	end
+		if ($bot~parms[$i] = "BUSTED")
+		elseif ($bot~parms[$i] = "FAKEBUST")
+		else
+			setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  "&$bot~parms[$i]&": "&$check&"*"
+		end
         add $i 1
     end
     gosub :SWITCHBOARD~switchboard

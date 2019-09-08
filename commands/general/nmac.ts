@@ -63,7 +63,7 @@ end
 		gosub :switchboard~switchboard
 		goto :wait_for_command
 	end
-	if (($PLAYER~CURRENT_PROMPT = "����������") AND ($posy > 0))
+	if (($PLAYER~self_destruct_prompt = true) AND ($posy > 0))
 		setvar $switchboard~message "Self Destruct Protection Activated*"
 		gosub :switchboard~switchboard
 		goto :wait_for_command
@@ -110,7 +110,7 @@ return
 :wait_for_command
 	setVar $BOT~help[1]  $BOT~tab&"   nmac - multiple macro          "
 	setVar $BOT~help[2]  $BOT~tab&"               "
-	setVar $BOT~help[3]  $BOT~tab&"    nmac {number of times} {macro}  "
+	setVar $BOT~help[3]  $BOT~tab&"    nmac {number of times} {macro to send}  "
 	setVar $BOT~help[4]  $BOT~tab&"        "
 	gosub :bot~helpfile
 halt
