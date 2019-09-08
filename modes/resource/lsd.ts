@@ -1435,7 +1435,7 @@
 
 	#=----------------------------------------------------------------------------------------------------------------
 :BuyShip
-	cuttext $_Trickster $SelectedShip 1 1
+	#cuttext $_Trickster $SelectedShip 1 1
 	stripText $SelectedShip " "
 	stripText $SelectedShip "^"
 
