@@ -13,6 +13,12 @@
 		killtrigger prompt_delay
 		return
 	:allPromptsCatch
+		setvar $ansiline currentansiline
+		setvar $self_destruct_prompt false
+		getwordpos $ansiline $pos "ARE YOU SURE CAPTAIN? (Y/N) [N]"
+		if ($pos > 0)
+			setvar $self_destruct_prompt true
+		end
 		killtrigger prompt_delay
 		getWord CURRENTLINE $CURRENT_PROMPT 1
 		if ($CURRENT_PROMPT = 0)
