@@ -15,6 +15,13 @@
 	send #145&"/"
 	pause
 	:allPrompts
+		setvar $ansiline currentansiline
+		setvar $self_destruct_prompt false
+		getwordpos $ansiline $pos "[5;31;47mÛ[37;41mÛ[0m[5;31;47mÛ[37;41mÛ[0m[5;31;47mÛ"
+		if ($pos > 0)
+			setvar $self_destruct_prompt true
+		end
+
 		getWord CURRENTLINE $CURRENT_PROMPT 1
 		setVar $FULL_CURRENT_PROMPT CURRENTLINE
 		stripText $FULL_CURRENT_PROMPT #145
