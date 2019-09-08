@@ -62,8 +62,6 @@ end
 		gosub :switchboard~switchboard
 		goto :wait_for_command
 	end
-	echo "*["&$player~self_destruct_prompt&"]*"
-	halt
 	if (($PLAYER~self_destruct_prompt = true) AND ($posy > 0))
 		setvar $switchboard~message "Self Destruct Protection Activated*"
 		gosub :switchboard~switchboard
