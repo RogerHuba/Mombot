@@ -16,6 +16,11 @@
 
 setVar $name $bot~parm1
 upperCase $name
+if ($name = "")
+	setvar $switchboard~message "The name of the parameter to set must be defined.*"
+	gosub :switchboard~switchboard
+	halt
+end
 
 setVar $value $bot~parm2
 uppercase $value
