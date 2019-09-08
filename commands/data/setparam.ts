@@ -27,7 +27,7 @@ if ($value = "FALSE")
 end
 
 
-IF ($bot~parm3 > 0)
+IF ($bot~parm3 <> "")
      setVar $hub $bot~parm3
 ELSE
      setVar $hub CURRENTSECTOR
