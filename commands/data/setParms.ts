@@ -38,3 +38,5 @@ setvar $switchboard~message "Parameter "&$name&" has been set to "&$value&" in s
 gosub :switchboard~switchboard
 
 halt
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
