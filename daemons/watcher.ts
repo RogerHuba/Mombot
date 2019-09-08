@@ -61,6 +61,7 @@ pause
 :busted
 	loadvar $player~current_sector
 	setSectorParameter $player~current_sector "BUSTED" true
+	setSectorParameter 1 "LRA" $player~current_sector
 	settextlinetrigger busted :busted "For getting caught your alignment went down by"
 	pause
 
