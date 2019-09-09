@@ -149,7 +149,6 @@
 			setVar $temp " "&$Last_Entering_Sector&" "
 			getwordpos $randomSectors $pos $temp 
 			if ($pos > 0)
-				#echo "*Removing sector: ["&$Last_Entering_Sector&"]*"
 				#if eprobe sees a sector we were going to eprobe later, remove it as seen#
 				replaceText $randomSectors $temp " "
 				subtract $databasecount 1	
@@ -176,8 +175,11 @@
 			killtrigger 3
 			killtrigger 4
 			setVar $temp " "&$destination&" "
-			replaceText $randomSectors $temp " "
-			subtract $databasecount 1	
+			getwordpos $randomSectors $pos $temp 
+			if ($pos > 0)
+				replaceText $randomSectors $temp " "
+				subtract $databasecount 1	
+			end
 			setvar $window_content "*      Targets left to probe:"&$databaseCount&"*"
 			savevar $window_content
 			setWindowContents gridder $window_content
