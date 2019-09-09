@@ -175,6 +175,10 @@
 			setVar $temp " "&$destination&" "
 			replaceText $randomSectors $temp " "
 			subtract $databasecount 1	
+			setvar $window_content "*      Targets left to probe:"&$databaseCount&"*"
+			savevar $window_content
+			setWindowContents gridder $window_content
+
 	goto :do_again
 
 :getTargets
