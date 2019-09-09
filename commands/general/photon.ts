@@ -7,18 +7,18 @@ end
 	setVar $target $bot~parm1 
 	isNumber $isNumber $target 
 	if ($isNumber <> TRUE)
-		setVar $SWITCHBOARD~message "Sector entered is not a number.  goto :wait_for_commanding.*"
+		setVar $SWITCHBOARD~message "Sector entered is not a number.  Halting.*"
 		gosub :SWITCHBOARD~switchboard
 		goto :wait_for_command
 	end
 	if (($target <= 0) OR ($target > SECTORS))
-		setVar $SWITCHBOARD~message "Sector is out of bounds.  goto :wait_for_commanding.*"
+		setVar $SWITCHBOARD~message "Sector is out of bounds.  Halting.*"
 		gosub :SWITCHBOARD~switchboard
 		goto :wait_for_command
 	end
 	gosub :PLAYER~quikstats
 	if ($PLAYER~PHOTONS <= 0)
-		setVar $SWITCHBOARD~message "You don't have any photons!  goto :wait_for_commanding.*"
+		setVar $SWITCHBOARD~message "You don't have any photons! Halting.*"
 		gosub :SWITCHBOARD~switchboard
 		goto :wait_for_command		
 	end
@@ -31,7 +31,7 @@ end
 	send "c  p  y  " $target "**  q*"
 	killtrigger shot
 	killtrigger missed
-	setTextTrigger shot :shot1 "Photon Missile launched into sector "&$target
+	setTextTrigger shot :shot1 "Photon Missile launched into sector "&$target&"*"
 	setTextTrigger missed :missed1 "<Computer deactivated>"
 	pause
 
