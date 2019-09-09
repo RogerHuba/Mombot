@@ -112,6 +112,7 @@
 		gosub :switchboard~switchboard
 		halt
 	end
+	window gridder 350 450 "Mowing to probe this: ["&$bot~parmAM&"]" ontop 
 
 	:do_again
 		gosub :player~quikstats
