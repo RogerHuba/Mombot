@@ -143,8 +143,8 @@
                 :get_info
 #			killtrigger 1
 #			killtrigger 2
-			killtrigger 3
-			killtrigger 4
+#			killtrigger 3
+#			killtrigger 4
 			getWord CURRENTLINE $Last_Entering_Sector 5
 			setVar $temp " "&$Last_Entering_Sector&" "
 			getwordpos $randomSectors $pos $temp 
@@ -161,7 +161,8 @@
 #    		        getWordPos $record_text[$count1] $class0 "Class 0 (Special)"
 #    		        getWordPos $record_text[$count1] $feds "Federals:"
 #    		        getWordPos $record_text[$count1] $sector_Rpt_Test "Sector  :"
-                       pause
+				settextlinetrigger 4 :get_info "Probe entering sector :"
+				pause
 
                 :destroyed
 			killtrigger 1
