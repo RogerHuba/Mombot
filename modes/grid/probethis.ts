@@ -8,7 +8,7 @@
 		setVar $BOT~help[1]  $BOT~tab&"probethis [param] {void} {restock} "
 		setVar $BOT~help[2]  $BOT~tab&"     "
 		setVar $BOT~help[3]  $BOT~tab&"Will ether probe all sectors marked with param selected."
-		setVar $BOT~help[4]  $BOT~tab&" 	   {param examples:}
+		setVar $BOT~help[4]  $BOT~tab&" 	   {param examples:}"
 		setVar $BOT~help[5]  $BOT~tab&"     	- all"
 		setVar $BOT~help[6]  $BOT~tab&"     	- unexplored "
 		setVar $BOT~help[7]  $BOT~tab&"     	- msl"
