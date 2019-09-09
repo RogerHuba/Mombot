@@ -147,10 +147,9 @@
 			killtrigger 4
 			getWord CURRENTLINE $Last_Entering_Sector 5
 			setVar $temp " "&$Last_Entering_Sector&" "
-			echo "*Checking sector: ["&$Last_Entering_Sector&"]*"
 			getwordpos $randomSectors $pos $temp 
 			if ($pos > 0)
-				echo "*Removing sector: ["&$Last_Entering_Sector&"]*"
+				#echo "*Removing sector: ["&$Last_Entering_Sector&"]*"
 				#if eprobe sees a sector we were going to eprobe later, remove it as seen#
 				replaceText $randomSectors $temp " "
 				subtract $databasecount 1	
@@ -162,7 +161,7 @@
 #    		        getWordPos $record_text[$count1] $class0 "Class 0 (Special)"
 #    		        getWordPos $record_text[$count1] $feds "Federals:"
 #    		        getWordPos $record_text[$count1] $sector_Rpt_Test "Sector  :"
-#                        pause
+                       pause
 
                 :destroyed
 			killtrigger 1
