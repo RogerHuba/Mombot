@@ -151,14 +151,13 @@
 #    		        getWordPos $record_text[$count1] $class0 "Class 0 (Special)"
 #    		        getWordPos $record_text[$count1] $feds "Federals:"
 #    		        getWordPos $record_text[$count1] $sector_Rpt_Test "Sector  :"
-                        pause
+#                        pause
 
                 :destroyed
 			killtrigger 1
 			killtrigger 2
 			killtrigger 3
 			killtrigger 4
-			if
 
  		:next
 			killtrigger 1
