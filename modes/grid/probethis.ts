@@ -149,6 +149,7 @@
 			setVar $temp " "&$Last_Entering_Sector&" "
 			getwordpos $randomSectors $pos $temp 
 			if ($pos > 0)
+				echo "*Removing sector: ["&$Last_Entering_Sector&"]*"
 				#if eprobe sees a sector we were going to eprobe later, remove it as seen#
 				replaceText $randomSectors $temp " "
 				subtract $databasecount 1	
