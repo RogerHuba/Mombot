@@ -187,6 +187,7 @@ gosub :BOT~loadVars
 
 :Build_Array
 #     gosub :player~quikstats
+
      setArray $target_sector 10
      setArray $result_distance 10
      setArray $macro 10
@@ -199,7 +200,7 @@ gosub :BOT~loadVars
      setVar $focus_sector $player~CURRENT_SECTOR
      setVar $previous_sector $player~CURRENT_SECTOR
      setVar $projected_Turns  $player~TURNS
-     if ($unlim = TRUE)
+     if ($player~unlimitedGame = TRUE)
           setVar $projected_Turns 65520
      end
      while ($count1 <= 10) AND ($projected_Turns > $minimum_turns)
