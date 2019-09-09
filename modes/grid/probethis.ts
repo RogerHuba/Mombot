@@ -124,7 +124,8 @@
 				halt
 			end
 		end
-		getWord $randomSectors $destination 1
+		getRnd $random 1 $databaseCount
+		getWord $randomSectors $destination $random
 		if ($destination = 0)
 			setVar $switchboard~message "All sectors probed.*"
 			gosub :switchboard~switchboard
