@@ -144,6 +144,13 @@
 			killtrigger 3
 			killtrigger 4
 			getWord CURRENTLINE $Last_Entering_Sector 5
+			setVar $temp " "&$Last_Entering_Sector&" "
+			getwordpos $randomSectors $pos $temp 
+			if ($pos > 0)
+				#if eprobe sees a sector we were going to eprobe later, remove it as seen#
+				replaceText $randomSectors $temp " "
+				subtract $databasecount 1	
+			end
 # 		        setVar $record_text[$count1] CURRENTLINE
 #  		        getWordPos $record_text[$count1] $traders "Traders :"
 # 		        getWordPos $record_text[$count1] $ships "Ships   :"
