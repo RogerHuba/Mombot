@@ -23,7 +23,7 @@ end
 		goto :wait_for_command		
 	end
 	if (($PLAYER~CURRENT_PROMPT <> "Citadel") AND ($PLAYER~CURRENT_PROMPT <> "Command"))
-		setVar $SWITCHBOARD~message "Photon must be run from command or citadel prompt.  goto :wait_for_commanding.*"
+		setVar $SWITCHBOARD~message "Photon must be run from command or citadel prompt.  Halting.*"
 		gosub :SWITCHBOARD~switchboard
 		goto :wait_for_command		
 	end

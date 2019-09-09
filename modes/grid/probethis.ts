@@ -185,17 +185,18 @@
 				add $databasecount 1
 				getCourse $path $player~current_sector $i 
 				if ($path = "-1")
-					send "/"
-					waitOn #179
-					echo ANSI_14 "Updating database...*" ANSI_7
-					send "^f"&$player~current_sector&"*"&$i&"**q"
-					waitOn "ENDINTERROG"
-					getCourse $path $player~current_sector $i 
-				end
-				setVar $j 2
-				while ($j <= $path)
-					setVar $path_database $path_database&" "&$path[$j]&" "
-					add $j 1
+					#send "/"
+					#waitOn #179
+					#echo ANSI_14 "Updating database...*" ANSI_7
+					#send "^f"&$player~current_sector&"*"&$i&"**q"
+					#waitOn "ENDINTERROG"
+					#getCourse $path $player~current_sector $i 
+				else
+					setVar $j 2
+					while ($j <= $path)
+						setVar $path_database $path_database&" "&$path[$j]&" "
+						add $j 1
+					end
 				end
 			end
 		end
