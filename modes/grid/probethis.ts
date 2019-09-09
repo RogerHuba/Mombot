@@ -147,6 +147,7 @@
 			killtrigger 4
 			getWord CURRENTLINE $Last_Entering_Sector 5
 			setVar $temp " "&$Last_Entering_Sector&" "
+			echo "*Checking sector: ["&$Last_Entering_Sector&"]*"
 			getwordpos $randomSectors $pos $temp 
 			if ($pos > 0)
 				echo "*Removing sector: ["&$Last_Entering_Sector&"]*"
