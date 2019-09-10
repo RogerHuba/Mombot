@@ -208,7 +208,7 @@ return
 				send "'{" $switchboard~bot_name "} - Done Planet Stripping sector " $sector[$i] ".*"
 			end
 			send "q"
-			gosub :getPlanetInfo
+			gosub :planet~getPlanetInfo
 			send "c"
 			add $i 1
 			if (($planet~planetorg > ($planet~planetorgmax-1000)) AND ($planet~planetequip > ($planet~planetequipmax - 1000)))
@@ -399,4 +399,5 @@ halt
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\player\setconnectiontriggers\player"
