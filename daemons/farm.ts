@@ -795,7 +795,9 @@ return
 	send "qq* "
 	if ((($upgrade) OR ($build)) AND ($noupgrade = FALSE))
          if ($planet~planetCount > 1)
+         	send "l " & #8 & $planet~planetToFill & "* c " 
          	gosub :upgrade_planets
+			send "qq* "
     	end
     end
 	while ($j <= $planet~planetCount)
