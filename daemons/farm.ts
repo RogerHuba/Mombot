@@ -1324,6 +1324,8 @@ return
 				setVar $BOT~user_command_line "strip "&$landing&" f o e turbo silent"
 				setVar $BOT~parm1 "strip"
 				saveVar $BOT~parm1
+				setVar $BOT~parm2 $landing
+				saveVar $BOT~parm2
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
 				load "scripts\mombot\modes\resource\mover.cts"
