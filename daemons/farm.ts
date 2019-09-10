@@ -1319,7 +1319,7 @@ return
 
 		:Landed
 		killAllTriggers
-		if ($nostrip = FALSE}
+		if ($nostrip = FALSE)
 			# add in code to strip the plant if there is product
 				setVar $BOT~command "mover"
 				setVar $BOT~user_command_line "strip "&$landing&" f o e turbo silent"
