@@ -401,3 +401,4 @@ return
 return
 
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
