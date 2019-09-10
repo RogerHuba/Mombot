@@ -1290,17 +1290,18 @@ return
 	send $planet~planetLabel & "*"
 
 #=------------------------ Planet's Been Popped ---------------------------------------
+	killtrigger makingitcorp
+	killtrigger letsgo
 	setTextTrigger MakingItCorp     :MakingItCorp "Should this be a (C)orporate planet or (P)ersonal planet? "
 	setTextTrigger LetsGo		:LetsGo       "Command [TL="
 	pause
 
 :MakingItCorp
-	killTrigger MakingItCorp
 	send "c"
 	pause
 
 :LetsGo
-	killAllTriggers
+	killtrigger makingitcorp
 	if ($planet~planetLabel <> $name_the_planet)
 		send "|l|"
 		setTextLineTrigger Plisted		:Plisted "-----------------------------------------------"
@@ -1308,7 +1309,6 @@ return
 		pause
 
 		:Plisted
-				killTrigger PListed
 				waitfor "> " & $planet~planetLabel
 				getText CURRENTLINE $landing "<" ">"
 				striptext $landing " "
@@ -1318,7 +1318,7 @@ return
 
 
 		:Landed
-		killAllTriggers
+		killtrigger plisted
 		if ($nostrip = FALSE)
 			# add in code to strip the plant if there is product
 				setVar $BOT~command "mover"
@@ -1335,23 +1335,23 @@ return
 				:stripendedbuild
 		end
 				:blow_planet_dud
+				killAllTriggers
 				send "qq*l"&$landing&"*"
 				waitOn "Planet command (?="
-		        killAllTriggers
-				send "  z  d  y  "
+		        send "  z  d  y  "
 				setTextLineTrigger NoDets	:NoDets "You do not have any Atomic Detonators!"
 				setTextTrigger KaBoom		:KaBoom "Command [TL="
 				pause
 
 		:NoDets
-				killTrigger NoDets
+				killTrigger kaboom
 				setVar $SWITCHBOARD~message "Out Of Atomic Dets*"
 		        gosub :SWITCHBOARD~switchboard
 		        gosub :get_dets
 		        goto :blow_planet_dud
 
 		:KaBoom
-				killAllTriggers
+				killtrigger nodets
 				goto :LetsGoAgain
     else
  		killAllTriggers
