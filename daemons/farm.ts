@@ -602,6 +602,7 @@
 			setVar $planet~planetToFillEquipmentColonists $planet~planet_EQUIPMENT_COLONISTS
 			
 			send "m*** q* "
+			gosub :count_planets
 	        if ($build = TRUE)
 	    		gosub :buildplanets
 	        end
