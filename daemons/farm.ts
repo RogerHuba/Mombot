@@ -1334,7 +1334,7 @@ return
 				pause
 				:stripendedbuild
 		end
-
+				:blow_planet_dud
 				send "qq*l"&$landing&"*"
 				waitOn "Planet command (?="
 		        killAllTriggers
@@ -1348,6 +1348,7 @@ return
 				setVar $SWITCHBOARD~message "Out Of Atomic Dets*"
 		        gosub :SWITCHBOARD~switchboard
 		        gosub :get_dets
+		        goto :blow_planet_dud
 
 		:KaBoom
 				killAllTriggers
