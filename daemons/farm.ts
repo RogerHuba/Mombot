@@ -1206,7 +1206,7 @@ return
     setVar $planet~planetsPerSector2 $GAME~MAX_PLANETS_PER_SECTOR
     subtract $tempPlanetCount 1
     send "qqzn * l " & #8 & $planet~planetToFill & "*mnt* qq* "
-    subtract $planet~planetsPerSector2 $tempPlanetCount
+    setvar $planet~planetsPerSector2 ($planet~planetsPerSector2 - $tempPlanetCount)
     if (($tempPlanetCount > 0) AND ($one_per_sector = TRUE))
 		setvar $status_message "Already a planet in this sector."
 	    gosub :setWindow
