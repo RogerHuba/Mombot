@@ -40,11 +40,14 @@ setVar $totalBaseFighters 0
 
 
 
-gosub :player~quikstats
-if ($player~current_prompt <> "Command")
-  send "'Please run this from the Command Prompt.*"
-  halt
+setVar $bot~validPrompts "Citadel Planet Command"
+gosub :bot~checkStartingPrompt
+if (($PLAYER~startingLocation = "Citadel") or ($PLAYER~startingLocation = "Planet"))
+	send " q "
+	gosub :PLANET~getPlanetInfo
+	send " q "
 end
+
 
 # get game stats from V screen
 send "v"
@@ -359,6 +362,11 @@ end
   send "<--------------------------- Promethius ---------------------------->*"
   send "*"
   waitfor "comm-link terminated"
+
+	if (($player~startinglocation = "Citadel") or ($player~startinglocation = "Planet"))
+		gosub :planet~landingsub
+	end
+
 halt
 
 :noLimpetsFound
@@ -725,3 +733,8 @@ halt
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\currentprompt\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"
+

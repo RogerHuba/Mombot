@@ -179,94 +179,6 @@
 	:handle_mines
 		send "*"
 		goto :end_of_lines
-:pscan
-	setArray $scan_array 30
-	gosub :PLAYER~quikstats
-
-	isNumber $test $bot~parm1   
-	setVar $startingLocation $PLAYER~current_prompt 
-	if ((($PLAYER~current_prompt = "Citadel") OR ($PLAYER~current_prompt = "Planet")) OR (($PLAYER~current_prompt = "Command") AND (($bot~parm1 <> "") AND ($test = TRUE))))
-		
-		if (($bot~parm1 <> "") AND ($test = TRUE))
-			send "  q  q *"
-			setVar $LandOn $bot~parm1
-			setVar $planet~planet $bot~parm1
-			gosub :PLANET~landingSub
-			gosub  :player~currentPrompt
-			if ($PLAYER~current_prompt = "Citadel")
-				send "q "
-				waitOn "Planet command ("
-			elseif ($PLAYER~current_prompt <> "Planet")
-				setvar $switchboard~message "PScan - Problem with landing on the planet you provided.*"
-				halt
-			end
-			gosub :start_pscan
-		else
-			if ($startingLocation = "Citadel")
-				send "q "
-			end
-			gosub :start_pscan
-		end
-	elseif ($Location = "Command")
-			setvar $switchboard~message "PScan - If Starting From Sector Please Specify Planet Number.*"
-			halt
-	else
-		setvar $switchboard~message "PScan - Please Start from Command, Citadel, or Planet Prompt*"
-	end
-	if ($gotScan)
-		gosub :SpitItOut
-	end
-	halt
-:start_pscan
-	setVar $idx 0
-	send "D"
-	:continuepscan
-		waitOn "Planet #"
-		setTextTrigger done :pscan_done "Planet command"
-		setTextLineTrigger line_trig :parse_pscan_line
-		pause
-	:parse_pscan_line
-		killTrigger line_trig
-		setVar $s CURRENTLINE
-		if (($s = "") OR ($s = 0))
-			setVar $s "          "
-		end
-		getWordPos $s $pos "Fuel Ore"
-		gosub :doPscanText
-		getWordPos $s $pos "Organics"
-		gosub :doPscanText
-		getWordPos $s $pos "Equipment"
-		gosub :doPscanText
-		getWordPos $s $pos "Fighters "
-		gosub :doPscanText
-		replacetext $s "  Item    Colonists  Colonists    Daily     Planet      Ship      Planet" "Item  Colonists Colonists    Daily     Planet    Planet"
-		replaceText $s "           (1000s)   2 Build 1   Product    Amount     Amount     Maximum"  "       (1000s)  2 Build 1   Product    Amount    Maximum"
-		replaceText $s " -------  ---------  ---------  ---------  ---------  ---------  ---------" "---  ---------  ---------  ---------  ---------  ---------"
-		replaceText $s "Fuel Ore" "Ore"
-		replaceText $s "Organics" "Org"
-		replaceText $s "Equipment" "Equ "
-		replaceText $s "Fighters " "Figs"
-		replaceText $s "Military reaction" "Mil-React"
-		add $idx 1
-		setVar $scan_array[$idx] $s
-		setTextLineTrigger line_trig :parse_pscan_line
-		pause
-	:is_pscan_done
-		if ($idx < 5)
-			killtrigger line_trig
-			goto :continuepscan
-		end
-	:pscan_done
-		killalltriggers
-		setVar $gotScan TRUE
-return
-:doPscanText
-	if ($pos <> 0)
-		CutText $s $s_temp1 1 53
-		CutText $s $s_temp2 65 75
-		setVar $s ($s_temp1 & $s_temp2)
-	end
-return
 :SpitItOut
 	setvar $switchboard~message ""
 	setvar $i 1
@@ -288,4 +200,3 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\currentprompt\player"
 include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\planet\getplanetinfo\planet"
-include "source\bot_includes\planet\landingsub\planet"
