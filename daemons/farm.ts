@@ -462,7 +462,7 @@
 
 
 	setVar $i 1
-	setArray $planet~planets 3000
+	setArray $planet~planets 30
 	gosub :PLAYER~quikstats
 	setvar $home $PLAYER~CURRENT_SECTOR
 	if ($PLAYER~PLANET_SCANNER = "No")
@@ -500,18 +500,14 @@
 :start
 	killalltriggers
 
-setVar $bottom 1
-setVar $top 1
-setArray $checked SECTORS
-setVar $que[1] $PLAYER~CURRENT_SECTOR
-setVar $checked[$PLAYER~CURRENT_SECTOR] 1
-
 :inac
 :tryAgain
 		setVar $PLAYER~save TRUE
 		gosub :player~quikstats
-
-		:tryAgain2
+		setVar $bottom 1
+		setVar $top 1
+		setVar $que[1] $player~current_sector
+		setVar $checked[$player~current_sector] 1
 		while ($bottom <= $top)
 			# Now, pull out the next sector in the que, and make it our focus
 			setVar $focus $que[$bottom]
@@ -524,7 +520,6 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 					goto :notit
 				end
 			end
-
 			if ($balance)
 				if ($planet~CITADELs[$focus] > $game~MAX_PLANETS_PER_SECTOR)
 					getSectorParameter $focus $bot~parmameter $BUBBLE
@@ -547,7 +542,7 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 			end
 
 
-			if (($BUBBLE = TRUE))
+			if (($BUBBLE = TRUE) and ($focus <> $player~current_sector))
 				setvar $farmsector $focus
 			    goto :move_the_planet
 			else
@@ -578,7 +573,6 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 		halt
 
 		:move_the_planet
-			setVar $checked[$focus] 1
 			send "p "& $focus &"  *ys* "
 			settextlinetrigger warp_it :warp_it "All Systems Ready, shall we engage?"
 			settextlinetrigger no_warp :no_warp "You do not have any fighters in Sector"
@@ -786,7 +780,6 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 		getWord CURRENTLINE $testsector 1
 		setvar $planet~CITADEL_count $planet~CITADELs[$testsector]
 		setvar $planet~CITADELs[$testsector] ($planet~CITADEL_count + 1)
-				
 		setVar $tl_planets $tl_planets&" "&$testsector
 		setTextLineTrigger getLine2 :sector_planet_line "Class"
 		setTextLineTrigger getEnd :sector_done "======   ============"
