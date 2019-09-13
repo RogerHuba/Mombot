@@ -282,7 +282,7 @@ end
 	 setvar $switchboard~message $switchboard~message&"       "&$cits[4]
 	 setvar $switchboard~message $switchboard~message&"       "&$cits[5]
 	 setvar $switchboard~message $switchboard~message&"       "&$cits[6]
-	 setvar $switchboard~message $switchboard~message&"       "&$cits[7] "*"
+	 setvar $switchboard~message $switchboard~message&"       "&$cits[7]&"*"
 	 setvar $switchboard~message $switchboard~message&" *"
 	 setvar $switchboard~message $switchboard~message&" ------------------ *"
 	 setvar $switchboard~message $switchboard~message&" Planet Assets*"
