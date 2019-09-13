@@ -1752,7 +1752,7 @@ return
 :add_colos
 
     setVar $cyclebuffer 0
-	while (($COLOS < $COLOS_MIN) and (($planet~planetToFillFuelColonists >= $player~total_holds) or ($planet~planetToFillOrganicsColonists >= $player~total_holds) or ($planet~planetToFillOrganicsColonists >= $player~total_holds)))
+	while (($COLOS < $COLOS_MIN) and (($planet~planetToFillFuelColonists >= $player~total_holds) or ($planet~planetToFillOrganicsColonists >= $player~total_holds) or ($planet~planetToFillEquipmentColonists >= $player~total_holds)))
 		killtrigger grab_colos
 		killtrigger no_colos
 		add $cyclebuffer 1
