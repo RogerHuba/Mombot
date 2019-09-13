@@ -336,7 +336,7 @@ end
 	   add $totalCorpFigs $totalBaseFighters
 	 end
 	 if ($totalCorpFigs > $gameFighters)
-		setvar $switchboard~message $switchboard~message&" !! Fighters on unmanned ships do not count for game totals !!*"
+		setvar $switchboard~message $switchboard~message&" ! Fighters on unmanned ships do not count for game totals !*"
 	 end
 	 setVar $instr $totalCorpFigs
 	 setVar $padit 16
