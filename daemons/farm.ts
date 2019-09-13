@@ -1094,10 +1094,17 @@ return
 							setEventTrigger		stripended		:stripended "SCRIPT STOPPED" "scripts\mombot\modes\resource\mover.cts"
 							pause
 							:stripended
-							send "q q * "
+							send "q "
+							gosub :planet~getplanetinfo
+							gosub :fillplanetstats
+							send "q * "
 						end
                         :try_colo
                         if ($colo)
+							send "qq* jy* l " & #8 & $planet~planetToFill & "*  "
+							gosub :planet~getplanetinfo
+							gosub :fillplanetstats
+
 	                        setVar $cyclebuffer 0
 	                        setVar $cyclebufferlimit 20
 							send "qq* jy* l " & #8 & $planet~planets[$j] & "*  "
@@ -1731,7 +1738,7 @@ return
 :add_colos
 
     setVar $cyclebuffer 0
-	while ($COLOS < $COLOS_MIN)
+	while (($COLOS < $COLOS_MIN) and (($planet~planetToFillFuelColonists >= $player~total_holds) or ($planet~planetToFillOrganicsColonists >= $player~total_holds) or ($planet~planetToFillOrganicsColonists >= $player~total_holds)))
 		killtrigger grab_colos
 		killtrigger no_colos
 		setVar $moveColo "fuel"
