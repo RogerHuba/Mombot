@@ -520,6 +520,7 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 			loadVar $BOT~botIsDeaf
 			loadVar $BOT~silent_running
 			if ($where_planets = true)
+				send "'"&$focus&" - "&$planet~CITADELs[$focus]&"*"
 				if ($planet~CITADELs[$focus] <= 0)
 					goto :notit
 				end
@@ -792,7 +793,6 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 	send "@"
 	waitOn "Average Interval Lag:"
 
-	pause
 return
 
 :stripallplanets
