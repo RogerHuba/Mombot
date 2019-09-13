@@ -180,7 +180,7 @@ if ($minesDeployed = "Yes")
    setvar $switchboard~message $switchboard~message&" ------------------ *"
    setvar $switchboard~message $switchboard~message&" Mines Deployed  *"
    setvar $switchboard~message $switchboard~message&" ------------------*"
-   setvar $switchboard~message $switchboard~message&"  Limpet mines in "&$player~limpetsectors&" sectors totaling " $limpetTotal " mines.*"
+   setvar $switchboard~message $switchboard~message&"  Limpet mines in "&$player~limpetsectors&" sectors totaling "&$limpetTotal&" mines.*"
    setvar $switchboard~message $switchboard~message&"  Aramid mines in "&$aramidSectors&" sectors totaling "&$aramidTotal&" mines.*"
 end
 setvar $switchboard~message $switchboard~message&" *"
