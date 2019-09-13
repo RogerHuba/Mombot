@@ -289,7 +289,7 @@ end
 	 setvar $switchboard~message $switchboard~message&" ------------------ *"
 	 setvar $switchboard~message $switchboard~message&"                Ore  Org  Equ   Ore   Org   Equ   Fighters*"
 	 setvar $switchboard~message $switchboard~message&"Population     -=Productions=-  -=-=-=-=-On Hands-=-=-=-=-    Credits*"
-	 setvar $switchboard~message $switchboard~message&$bott "*"
+	 setvar $switchboard~message $switchboard~message&$bott&"*"
 	 setvar $switchboard~message $switchboard~message&" *"
 	 setvar $switchboard~message $switchboard~message&" ------------------ *"
 	 setvar $switchboard~message $switchboard~message&" Available Ships*"
