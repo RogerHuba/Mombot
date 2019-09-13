@@ -203,15 +203,15 @@ end
 	   if ($planet~planets[$i] > 0)
 		  add $plntCnt 1
 		  add $plCnt 1
-		  setVar $padit 2
+		  setVar $padit 6
 		  if ($baseID = "Base")
 			 SetVar $inStr $plCnt
 			 gosub :padLeft
-			 setvar $switchboard~message $switchboard~message&"  "&$padL&$plCnt&"        "&$planet~planets[$i]
+			 setvar $switchboard~message $switchboard~message&"  "&$padL&$plCnt&"    "&$planet~planets[$i]
 		  else
 			 setVar $instr $i
 			 gosub :padLeft
-			 setvar $switchboard~message $switchboard~message&"  "&$padL&$i&"        "&$planet~planets[$i]
+			 setvar $switchboard~message $switchboard~message&"  "&$padL&$i&"    "&$planet~planets[$i]
 		  end
 		  if ($planet~planets[$i] > $maxPlanets)
 			 setvar $switchboard~message $switchboard~message&"    OVERLOADED"
