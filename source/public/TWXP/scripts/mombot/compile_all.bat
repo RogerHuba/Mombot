@@ -6,8 +6,6 @@ timeout 20
 goto end
 
 :checkit
-echo %1 | find /n "daemons\" >NUL 2>NUL
-if not errorlevel 1 twxc.exe "%1"
+echo %1 | find /n "\source\" >NUL 2>NUL
+if errorlevel 1 twxc.exe "%1"
 :end
-
-timeout 20
