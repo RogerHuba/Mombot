@@ -1121,7 +1121,8 @@ return
 							#add fuel colos
 							setVar $COLOS $planet~planet_FUEL_COLONISTS
 							setVar $COLOS_MIN $planet~planet_FUEL_COLONISTS_MIN
-							setVar $add_type 1
+							setVar $type 1
+							setVar $moveColo "fuel"
 							setvar $status_message "Adding Fuel Colonists"
 							gosub :add_colos
 
@@ -1136,7 +1137,8 @@ return
 							#add org colos
 							setVar $COLOS $planet~planet_ORGANICS_COLONISTS
 							setVar $COLOS_MIN $planet~planet_ORGANICS_COLONISTS_MIN
-							setVar $add_type 2
+							setVar $type 2
+							setVar $moveColo "org"
 							setvar $status_message "Adding Organics Colonists"
 							gosub :add_colos
 
@@ -1151,7 +1153,8 @@ return
 							#add equip colos
 							setVar $COLOS $planet~planet_EQUIPMENT_COLONISTS
 							setVar $COLOS_MIN $planet~planet_EQUIPMENT_COLONISTS_MIN
-							setVar $add_type 3
+							setVar $type 3
+							setVar $moveColo "equip"
 							setvar $status_message "Adding Equip Colonists"
 							gosub :add_colos
 						end
@@ -1742,20 +1745,6 @@ return
 	while (($COLOS < $COLOS_MIN) and (($planet~planetToFillFuelColonists >= $player~total_holds) or ($planet~planetToFillOrganicsColonists >= $player~total_holds) or ($planet~planetToFillOrganicsColonists >= $player~total_holds)))
 		killtrigger grab_colos
 		killtrigger no_colos
-		setVar $moveColo "fuel"
-		setVar $type 1						   
-		if ($planet~planetToFillFuelColonists >= $player~total_holds)
-				setVar $moveColo "fuel"
-				setVar $type 1
-		elseif ($planet~planetToFillOrganicsColonists >= $player~total_holds)
-				setVar $moveColo "org"
-		  		setVar $type 2
-		elseif ($planet~planetToFillOrganicsColonists >= $player~total_holds)
-		      setVar $moveColo "equip"
-		      setVar $type 3
-		else
-		      setvar $planet~planet_FUEL_COLONISTS $planet~planet_FUEL_COLONISTS_MIN
-		end
 		add $cyclebuffer 1
 		if ($cyclebuffer >= $cyclebufferlimit)
 			setVar $cyclebuffer 1
@@ -1788,7 +1777,7 @@ return
 			:grab_colos_fuel
 				killtrigger grab_colos
 				killtrigger no_colos
-				send "q q* l " & #8 & $planet~planets[$j] & "*  snl1*"
+				send "q q* l " & #8 & $planet~planets[$j] & "*  snl"&$type&"*"
 				setTextTrigger no_colos :no_colos_fuel3 "on the planet"
 				setTextTrigger grab_colos :is_room_fuel "The Colonists disembark to begin their new life."
 				pause
@@ -1803,7 +1792,7 @@ return
 				killtrigger grab_colos
 				killtrigger no_colos
 		else
-			send "q q* l " & #8 & $planet~planetToFill & "*  s * t 1* s * t 2* s * t3* q q* l " & #8 & $planet~planets[$j] & "*  s * l "&$add_type&"*  "
+			send "q q* l " & #8 & $planet~planetToFill & "*  s * t 1* s * t 2* s * t3* q q* l " & #8 & $planet~planets[$j] & "*  s * l "&$type&"*  "
 		end
 		add $COLOS $player~total_holds                                               
 		if ($moveColo = "fuel")
