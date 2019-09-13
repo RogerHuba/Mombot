@@ -546,7 +546,7 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 			end
 
 
-			if (($BUBBLE = TRUE) and ($focus <> $player~current_sector))
+			if (($BUBBLE = TRUE))
 				setvar $farmsector $focus
 			    goto :move_the_planet
 			else
@@ -784,7 +784,6 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 		getWord CURRENTLINE $testsector 1
 		setvar $planet~CITADEL_count $planet~CITADELs[$testsector]
 		setvar $planet~CITADELs[$testsector] ($planet~CITADEL_count + 1)
-		send "'"&$testsector&" - "&$planet~CITADELs[$testsector]&"*"
 				
 		setVar $tl_planets $tl_planets&" "&$testsector
 		setTextLineTrigger getLine2 :sector_planet_line "Class"
