@@ -362,7 +362,7 @@ end
   send "<--------------------------- Promethius ---------------------------->*"
   send "*"
   waitfor "comm-link terminated"
-
+  	killalltriggers
 	if (($player~startinglocation = "Citadel") or ($player~startinglocation = "Planet"))
 		gosub :planet~landingsub
 	end
