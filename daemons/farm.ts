@@ -481,6 +481,7 @@
     send "q"
 	gosub :PLANET~getPlanetInfo
 	send "c"
+	setvar $planet~planetToFill $planet~planet
 	gosub :SHIP~getShipStats
 	gosub :fillplanetstats
 
