@@ -520,7 +520,6 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 			loadVar $BOT~botIsDeaf
 			loadVar $BOT~silent_running
 			if ($where_planets = true)
-				send "'"&$focus&" - "&$planet~CITADELs[$focus]&"*"
 				if ($planet~CITADELs[$focus] <= 0)
 					goto :notit
 				end
@@ -785,6 +784,8 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 		getWord CURRENTLINE $testsector 1
 		setvar $planet~CITADEL_count $planet~CITADELs[$testsector]
 		setvar $planet~CITADELs[$testsector] ($planet~CITADEL_count + 1)
+		send "'"&$testsector&" - "&$planet~CITADELs[$testsector]&"*"
+				
 		setVar $tl_planets $tl_planets&" "&$testsector
 		setTextLineTrigger getLine2 :sector_planet_line "Class"
 		setTextLineTrigger getEnd :sector_done "======   ============"
