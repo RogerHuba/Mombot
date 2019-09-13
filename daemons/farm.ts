@@ -482,14 +482,7 @@
 	gosub :PLANET~getPlanetInfo
 	send "c"
 	gosub :SHIP~getShipStats
-
-	setVar $planet~planetToFill $planet~planet
-	setVar $planet~planetToFillFuel $planet~planet_FUEL
-	setVar $planet~planetToFillOrganics $planet~planet_ORGANICS
-	setVar $planet~planetToFillEquipment $planet~planet_EQUIPMENT
-	setVar $planet~planetToFillFuelColonists $planet~planet_FUEL_COLONISTS
-	setVar $planet~planetToFillOrganicsColonists $planet~planet_ORGANICS_COLONISTS
-	setVar $planet~planetToFillEquipmentColonists $planet~planet_EQUIPMENT_COLONISTS
+	gosub :fillplanetstats
 
     Window Farm_Script 330 424 ("M()M Farmer - " & GAMENAME) ONTOP
     gosub :setWindow
@@ -594,13 +587,8 @@
 
 			send "q"
 			gosub :PLANET~getPlanetInfo
-			setVar $planet~planetToFillFuel $planet~planet_FUEL
-			setVar $planet~planetToFillOrganics $planet~planet_ORGANICS
-			setVar $planet~planetToFillEquipment $planet~planet_EQUIPMENT
-			setVar $planet~planetToFillFuelColonists $planet~planet_FUEL_COLONISTS
-			setVar $planet~planetToFillOrganicsColonists $planet~planet_ORGANICS_COLONISTS
-			setVar $planet~planetToFillEquipmentColonists $planet~planet_EQUIPMENT_COLONISTS
-			
+			gosub :fillplanetstats
+
 			send "m*** q* "
 			gosub :count_planets
 	        if ($build = TRUE)
@@ -723,6 +711,7 @@
             end
             send "qq* l " & #8 & $planet~planetToFill & "* "
 			gosub :PLANET~getPlanetInfo
+			gosub :fillplanetstats
 			send "c"
 			:next_farm_sector
             if ($strip = TRUE)
@@ -888,16 +877,6 @@ return
 							end
 							send "l " & #8 & $planet~planets[$j] & "* "
 							gosub :PLANET~getPlanetInfo
-							setVar $planet~planet_FUEL $planet~planet_FUEL
-							setVar $planet~planet_ORGANICS $planet~planet_ORGANICS
-							setVar $planet~planet_EQUIPMENT $planet~planet_EQUIPMENT
-							setVar $planet~planet_FUEL_COLONISTS $planet~planet_FUEL_COLONISTS
-							setVar $planet~planet_ORGANICS_COLONISTS $planet~planet_ORGANICS_COLONISTS
-							setVar $planet~planet_EQUIPMENT_COLONISTS $planet~planet_EQUIPMENT_COLONISTS
-							setVar $planet~planet_CLASS $planet~planet_CLASS_NAME
-							setVar $planet~planet_CITADEL_CREDITS $planet~CITADEL_CREDITS
-							setVar $planet~planet_CITADEL $planet~CITADEL
-							setVar $planet~planet_SHIELD_POWER $planet~SHIELD_POWER
 							lowercase $planet~planet_CLASS
                         end
                         if ($defense)
@@ -1056,6 +1035,7 @@ return
                             if ($PLAYER~SHIELDS < 2000)
                                     send "qq* l " & #8 & $planet~planetToFill & "*"
                                     gosub :PLANET~getPlanetInfo
+                                    gosub :fillplanetstats
                                     if ($planet~SHIELD_POWER < 200)
                                           setVar $shield FALSE
                                           send "qq* "
@@ -2900,6 +2880,14 @@ return
 	setVar $planet~planet_names[1000] "Bounty's Horizon"
 return
 
+:fillplanetstats
+	setVar $planet~planetToFillFuel $planet~planet_FUEL
+	setVar $planet~planetToFillOrganics $planet~planet_ORGANICS
+	setVar $planet~planetToFillEquipment $planet~planet_EQUIPMENT
+	setVar $planet~planetToFillFuelColonists $planet~planet_FUEL_COLONISTS
+	setVar $planet~planetToFillOrganicsColonists $planet~planet_ORGANICS_COLONISTS
+	setVar $planet~planetToFillEquipmentColonists $planet~planet_EQUIPMENT_COLONISTS
+return
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
