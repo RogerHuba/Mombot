@@ -43,9 +43,9 @@ setVar $totalBaseFighters 0
 setVar $bot~validPrompts "Citadel Planet Command"
 gosub :bot~checkStartingPrompt
 if (($PLAYER~startingLocation = "Citadel") or ($PLAYER~startingLocation = "Planet"))
-	send " q "
+	setvar $switchboard~message $switchboard~message&" q "
 	gosub :PLANET~getPlanetInfo
-	send " q "
+	setvar $switchboard~message $switchboard~message&" q "
 end
 
 
@@ -168,34 +168,34 @@ setVar $tmpStr $numFig
 gosub :myformat
 setVar $numFig $tmpStr
 send "'*"
-send "<--------------------- Corporate Assets Report --------------------->*"
-send " *"
-send " ------------------ *"
-send " Deployed Fighters *"
-send " ------------------*"
-send "  " $mycount " of " $mySectors " Sectors - " $tmp "% Coverage*"
-send "  " $numFig " Total Fighters Deployed*"
+setvar $switchboard~message "<--------------------- Corporate Assets Report --------------------->*"
+setvar $switchboard~message $switchboard~message&" *"
+setvar $switchboard~message $switchboard~message&" ------------------ *"
+setvar $switchboard~message $switchboard~message&" Deployed Fighters *"
+setvar $switchboard~message $switchboard~message&" ------------------*"
+setvar $switchboard~message $switchboard~message&"  "&$mycount&" of "&$mySectors&" Sectors - "&$tmp&"% Coverage*"
+setvar $switchboard~message $switchboard~message&"  "&$numFig&" Total Fighters Deployed*"
 if ($minesDeployed = "Yes")
-   send " *"
-   send " ------------------ *"
-   send " Mines Deployed  *"
-   send " ------------------*"
-   send "  Limpet mines in " $player~limpetsectors " sectors totaling " $limpetTotal " mines.*"
-   send "  Aramid mines in " $aramidSectors " sectors totaling " $aramidTotal " mines.*"
+   setvar $switchboard~message $switchboard~message&" *"
+   setvar $switchboard~message $switchboard~message&" ------------------ *"
+   setvar $switchboard~message $switchboard~message&" Mines Deployed  *"
+   setvar $switchboard~message $switchboard~message&" ------------------*"
+   setvar $switchboard~message $switchboard~message&"  Limpet mines in "&$player~limpetsectors&" sectors totaling " $limpetTotal " mines.*"
+   setvar $switchboard~message $switchboard~message&"  Aramid mines in "&$aramidSectors&" sectors totaling "&$aramidTotal&" mines.*"
 end
-send " *"
-send " ------------------ *"
+setvar $switchboard~message $switchboard~message&" *"
+setvar $switchboard~message $switchboard~message&" ------------------ *"
 if ($baseDetails = "Yes")
-   send " Detail"
+   setvar $switchboard~message $switchboard~message&" Detail"
 end
-send " Base Status  *"
-send " ------------------*"
+setvar $switchboard~message $switchboard~message&" Base Status  *"
+setvar $switchboard~message $switchboard~message&" ------------------*"
 
 
 if ($baseDetails = "Yes")
-   send "     Base     Planets   Status     Cit Levels      Figs     Credits*"
+   setvar $switchboard~message $switchboard~message&"     Base     Planets   Status     Cit Levels      Figs     Credits*"
 else
-   send "     Base     Planets   Status       Base     Planets   Status*"
+   setvar $switchboard~message $switchboard~message&"     Base     Planets   Status       Base     Planets   Status*"
 end
   setVar $plCnt 0
   setVar $plntCnt 0
@@ -208,16 +208,16 @@ end
 		  if ($baseID = "Base")
 			 SetVar $inStr $plCnt
 			 gosub :padLeft
-			 send "  " $padL $plCnt "        " $planet~planets[$i]
+			 setvar $switchboard~message $switchboard~message&"  " $padL $plCnt "        " $planet~planets[$i]
 		  else
 			 setVar $instr $i
 			 gosub :padLeft
-			 send "  " $padL $i "        " $planet~planets[$i]
+			 setvar $switchboard~message $switchboard~message&"  " $padL $i "        " $planet~planets[$i]
 		  end
 		  if ($planet~planets[$i] > $maxPlanets)
-			 send "    OVERLOADED"
+			 setvar $switchboard~message $switchboard~message&"    OVERLOADED"
 		  else
-			 send "    Checked Ok"
+			 setvar $switchboard~message $switchboard~message&"    Checked Ok"
 		  end
 		  if ($baseDetails = "Yes")
 			  getlength $baseDetail[$i] $strLen
@@ -256,7 +256,7 @@ end
 			  setvar $instr $citCash
 			  setVar $padit 9
 			  gosub :padLeft
-			   send "    " $baseDetail[$i] $basefig $padL $citCash
+			   setvar $switchboard~message $switchboard~message&"    "&$baseDetail[$i]&$basefig&$padL&$citCash
 			  send "*"
 			  setVar $plntCnt 0
 		  end
@@ -268,52 +268,52 @@ end
 	   add $i 1
   end
   if ($plCnt = 0)
-	 send "               No Planets Found for your Corp*"
+	 setvar $switchboard~message $switchboard~message&"               No Planets Found for your Corp*"
   else
-	 send " *"
-	 send " *"
-	 send " ------------------ *"
-	 send " Citadel Status*"
-	 send " ------------------ *"
-	 send "   Lvl 0   Lvl 1   Lvl 2   Lvl 3   Lvl 4   Lvl 5   Lvl 6*"
-	 send "     " $cits[1]
-	 send "       " $cits[2]
-	 send "       " $cits[3]
-	 send "       " $cits[4]
-	 send "       " $cits[5]
-	 send "       " $cits[6]
-	 send "       " $cits[7] "*"
-	 send " *"
-	 send " ------------------ *"
-	 send " Planet Assets*"
-	 send " ------------------ *"
-	 send "                Ore  Org  Equ   Ore   Org   Equ   Fighters*"
-	 send "Population     -=Productions=-  -=-=-=-=-On Hands-=-=-=-=-    Credits*"
-	 send $bott "*"
-	 send " *"
-	 send " ------------------ *"
-	 send " Available Ships*"
-	 send " ------------------ *"
-	 send "   Cnt   Type                      Total Figs*"
+	 setvar $switchboard~message $switchboard~message&" *"
+	 setvar $switchboard~message $switchboard~message&" *"
+	 setvar $switchboard~message $switchboard~message&" ------------------ *"
+	 setvar $switchboard~message $switchboard~message&" Citadel Status*"
+	 setvar $switchboard~message $switchboard~message&" ------------------ *"
+	 setvar $switchboard~message $switchboard~message&"   Lvl 0   Lvl 1   Lvl 2   Lvl 3   Lvl 4   Lvl 5   Lvl 6*"
+	 setvar $switchboard~message $switchboard~message&"     " $cits[1]
+	 setvar $switchboard~message $switchboard~message&"       " $cits[2]
+	 setvar $switchboard~message $switchboard~message&"       " $cits[3]
+	 setvar $switchboard~message $switchboard~message&"       " $cits[4]
+	 setvar $switchboard~message $switchboard~message&"       " $cits[5]
+	 setvar $switchboard~message $switchboard~message&"       " $cits[6]
+	 setvar $switchboard~message $switchboard~message&"       " $cits[7] "*"
+	 setvar $switchboard~message $switchboard~message&" *"
+	 setvar $switchboard~message $switchboard~message&" ------------------ *"
+	 setvar $switchboard~message $switchboard~message&" Planet Assets*"
+	 setvar $switchboard~message $switchboard~message&" ------------------ *"
+	 setvar $switchboard~message $switchboard~message&"                Ore  Org  Equ   Ore   Org   Equ   Fighters*"
+	 setvar $switchboard~message $switchboard~message&"Population     -=Productions=-  -=-=-=-=-On Hands-=-=-=-=-    Credits*"
+	 setvar $switchboard~message $switchboard~message&$bott "*"
+	 setvar $switchboard~message $switchboard~message&" *"
+	 setvar $switchboard~message $switchboard~message&" ------------------ *"
+	 setvar $switchboard~message $switchboard~message&" Available Ships*"
+	 setvar $switchboard~message $switchboard~message&" ------------------ *"
+	 setvar $switchboard~message $switchboard~message&"   Cnt   Type                      Total Figs*"
 	 setVar $i 1
 	 setVar $totalShip 0
 	 if ($shipCnt[1] > 0)
 		while ($i <= 20)
 		   if ($shipCnt[$i] > 0)
-			  send "    " $shipCnt[$i] " -- " $shipTypes[$i] " -- " $shipFigs[$i] "*"
+			  setvar $switchboard~message $switchboard~message&"    "&$shipCnt[$i]&" -- "&$shipTypes[$i]&" -- "&$shipFigs[$i]&"*"
 		   end
 		   add $totalShip $shipFigs[$i]
 		   add $i 1
 		end
-		send "                      All Ships -- " $totalShip "*"
+		setvar $switchboard~message $switchboard~message&"                      All Ships -- "&$totalShip&"*"
 	 else
-		send "   No corporate ships are available*"
+		setvar $switchboard~message $switchboard~message&"   No corporate ships are available*"
 	 end
   end
-	 send " *"
-	 send " -------------------- *"
-	 send " Corp Assets vs Game *"
-	 send " -------------------- *"
+	 setvar $switchboard~message $switchboard~message&" *"
+	 setvar $switchboard~message $switchboard~message&" -------------------- *"
+	 setvar $switchboard~message $switchboard~message&" Corp Assets vs Game *"
+	 setvar $switchboard~message $switchboard~message&" -------------------- *"
 	 stripText $numFig ","
 	 add $totalShip $numFig
 	 setVar $totalCorpFigs $totalShip
@@ -337,13 +337,13 @@ end
 	   add $totalCorpFigs $totalBaseFighters
 	 end
 	 if ($totalCorpFigs > $gameFighters)
-		send "   !! Fighters on unmanned ships do not count for game totals !!*"
+		setvar $switchboard~message $switchboard~message&"   !! Fighters on unmanned ships do not count for game totals !!*"
 	 end
 	 setVar $instr $totalCorpFigs
 	 setVar $padit 16
 	 gosub :padLeft
-	 send " Corp fighters: " $totalCorpFigs " (" (($totalCorpFigs*100)/$gameFighters) "%)" $padL "Game fighters:  " $gameFighters "*"
-	 send " Corp planets: "
+	 setvar $switchboard~message $switchboard~message&" Corp fighters: "&$totalCorpFigs&" (" (($totalCorpFigs*100)/$gameFighters) "%)"&$padL&"Game fighters:  "&$gameFighters&"*"
+	 setvar $switchboard~message $switchboard~message&" Corp planets: "
 	 setVar $i 1
 	 setVar $player~corpPlanets 0
 	 setVar $player~corpCits 0
@@ -356,12 +356,13 @@ end
 		   add $player~corpCits $cits[$i]
 		   add $i 1
 	 end
-	 send $player~corpPlanets " (" $player~corpCits ") Citadels    Game planets: " $gamePlanets " (" $gameCitadels ") Citadels*"
+	 setvar $switchboard~message $switchboard~message&$player~corpPlanets&" ("&$player~corpCits&") Citadels    Game planets: "&$gamePlanets&" ("&$gameCitadels&") Citadels*"
 
-  send " *"
-  send "<--------------------------- Promethius ---------------------------->*"
-  send "*"
-  waitfor "comm-link terminated"
+  setvar $switchboard~message $switchboard~message&" *"
+  setvar $switchboard~message $switchboard~message&"<--------------------------- Promethius ---------------------------->*"
+  setvar $switchboard~message $switchboard~message&"*"
+  gosub :switchboard~switchboard
+
   	killalltriggers
 	if (($player~startinglocation = "Citadel") or ($player~startinglocation = "Planet"))
 		gosub :planet~landingsub
