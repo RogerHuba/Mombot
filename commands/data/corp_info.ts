@@ -732,6 +732,7 @@ halt
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
+include "source\bot_includes\player\switchboard"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\currentprompt\player"
 include "source\module_includes\bot\checkstartingprompt\bot"
