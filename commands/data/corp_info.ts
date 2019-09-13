@@ -342,7 +342,7 @@ end
 	 setVar $instr $totalCorpFigs
 	 setVar $padit 16
 	 gosub :padLeft
-	 setvar $switchboard~message $switchboard~message&" Corp fighters: "&$totalCorpFigs&" (" (($totalCorpFigs*100)/$gameFighters) "%)"&$padL&"Game fighters:  "&$gameFighters&"*"
+	 setvar $switchboard~message $switchboard~message&" Corp fighters: "&$totalCorpFigs&" ("&(($totalCorpFigs*100)/$gameFighters)&"%)"&$padL&"Game fighters:  "&$gameFighters&"*"
 	 setvar $switchboard~message $switchboard~message&" Corp planets: "
 	 setVar $i 1
 	 setVar $player~corpPlanets 0
