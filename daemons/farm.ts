@@ -522,8 +522,11 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 			if ($where_planets = true)
 				if ($planet~CITADELs[$focus] <= 0)
 					goto :notit
+				else
+					echo "*[FOUND SECTOR IN "&$focus&"]*"
 				end
 			end
+
 			if ($balance)
 				if ($planet~CITADELs[$focus] > $game~MAX_PLANETS_PER_SECTOR)
 					getSectorParameter $focus $bot~parmameter $BUBBLE
