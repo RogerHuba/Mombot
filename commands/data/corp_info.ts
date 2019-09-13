@@ -255,14 +255,14 @@ end
 			  setvar $instr $citCash
 			  setVar $padit 9
 			  gosub :padLeft
-			   setvar $switchboard~message $switchboard~message&"    "&$baseDetail[$i]&$basefig&$padL&$citCash
-			  send "*"
+				setvar $switchboard~message $switchboard~message&"    "&$baseDetail[$i]&$basefig&$padL&$citCash
+				setvar $switchboard~message $switchboard~message&"*"
 			  setVar $plntCnt 0
 		  end
 	   end
 	   if ($plntCnt = 2)
-		   send "*"
-		   setVar $plntCnt 0
+			setvar $switchboard~message $switchboard~message&"*"
+			setVar $plntCnt 0
 	   end
 	   add $i 1
   end
