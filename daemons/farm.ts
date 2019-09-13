@@ -1797,13 +1797,19 @@ return
 		add $COLOS $player~total_holds                                               
 		if ($moveColo = "fuel")
 			add $planet~planet_FUEL_COLONISTS $player~total_holds
-			subtract $planet~planetToFillFuelColonists $player~total_holds
+			if ($planet~planetToFillFuelColonists - $player~total_holds > 0)
+				subtract $planet~planetToFillFuelColonists $player~total_holds
+			end
 		elseif ($moveColo = "org")
 			add $planet~planet_ORGANICS_COLONISTS $player~total_holds
-			subtract $planet~planetToFillOrganicsColonists $player~total_holds
+			if ($planet~planetToFillFuelColonists - $player~total_holds > 0)
+				subtract $planet~planetToFillOrganicsColonists $player~total_holds
+			end
 		elseif ($moveColo = "equip")
 			add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
-			subtract $planet~planetToFillEquipmentColonists $player~total_holds
+			if ($planet~planetToFillFuelColonists - $player~total_holds > 0)
+				subtract $planet~planetToFillEquipmentColonists $player~total_holds
+			end
 		end
 		gosub :setWindow
 	end
