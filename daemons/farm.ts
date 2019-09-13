@@ -1698,19 +1698,23 @@ return
 			:no_room1
 			       killtrigger no_room
 			       killtrigger is_room
+			       killtrigger nocolos
 			       setVar $moveColo "org"
 			       send "snl2*"
 			       setTextTrigger no_room :no_room2 "on the planet"
 			       setTextTrigger is_room :is_room1 "The Colonists disembark to begin their new life."
+			       settexttrigger nocolos :no_room3 "How many groups of Colonists do you want to leave ([0] on board)"
 			       pause
 
 			:no_room2
 			       killtrigger no_room
 			       killtrigger is_room
+			       killtrigger nocolos
 			       setVar $moveColo "equip"
 			       send "snl3*"
 			       setTextTrigger no_room :no_room3 "on the planet"
 			       setTextTrigger is_room :is_room1 "The Colonists disembark to begin their new life."
+			       settexttrigger nocolos :no_room3 "How many groups of Colonists do you want to leave ([0] on board)"
 			       pause
 
 			:no_room3
