@@ -208,11 +208,11 @@ end
 		  if ($baseID = "Base")
 			 SetVar $inStr $plCnt
 			 gosub :padLeft
-			 setvar $switchboard~message $switchboard~message&"  " $padL $plCnt "        " $planet~planets[$i]
+			 setvar $switchboard~message $switchboard~message&"  "&$padL&$plCnt&"        "&$planet~planets[$i]
 		  else
 			 setVar $instr $i
 			 gosub :padLeft
-			 setvar $switchboard~message $switchboard~message&"  " $padL $i "        " $planet~planets[$i]
+			 setvar $switchboard~message $switchboard~message&"  "&$padL&$i&"        "&$planet~planets[$i]
 		  end
 		  if ($planet~planets[$i] > $maxPlanets)
 			 setvar $switchboard~message $switchboard~message&"    OVERLOADED"
