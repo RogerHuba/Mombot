@@ -203,7 +203,7 @@ end
 	   if ($planet~planets[$i] > 0)
 		  add $plntCnt 1
 		  add $plCnt 1
-		  setVar $padit 2
+		  setVar $padit 6
 		  if ($baseID = "Base")
 			 SetVar $inStr $plCnt
 			 gosub :padLeft
