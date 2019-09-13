@@ -534,6 +534,7 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 				if ($amtrak)
 					getSectorParameter $focus "AMTRAK" $BUBBLE
 				elseif ($allplanets)
+					send "'"&$tl_planets&"*"
 					getWordPos $tl_planets $pos " "&$focus&" "
 					if ($pos > 0)
 						setVar $BUBBLE TRUE
