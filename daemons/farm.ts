@@ -522,8 +522,6 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 			if ($where_planets = true)
 				if ($planet~CITADELs[$focus] <= 0)
 					goto :notit
-				else
-					echo "*[FOUND SECTOR IN "&$focus&"]*"
 				end
 			end
 
@@ -580,6 +578,7 @@ setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 		halt
 
 		:move_the_planet
+			setVar $checked[$focus] 1
 			send "p "& $focus &"  *ys* "
 			settextlinetrigger warp_it :warp_it "All Systems Ready, shall we engage?"
 			settextlinetrigger no_warp :no_warp "You do not have any fighters in Sector"
