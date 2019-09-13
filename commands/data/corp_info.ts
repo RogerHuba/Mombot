@@ -43,9 +43,9 @@ setVar $totalBaseFighters 0
 setVar $bot~validPrompts "Citadel Planet Command"
 gosub :bot~checkStartingPrompt
 if (($PLAYER~startingLocation = "Citadel") or ($PLAYER~startingLocation = "Planet"))
-	setvar $switchboard~message $switchboard~message&" q "
+	send " q "
 	gosub :PLANET~getPlanetInfo
-	setvar $switchboard~message $switchboard~message&" q "
+	send " q "
 end
 
 
@@ -167,7 +167,6 @@ setVar $mySectors $tmpStr
 setVar $tmpStr $numFig
 gosub :myformat
 setVar $numFig $tmpStr
-send "'*"
 setvar $switchboard~message "<--------------------- Corporate Assets Report --------------------->*"
 setvar $switchboard~message $switchboard~message&" *"
 setvar $switchboard~message $switchboard~message&" ------------------ *"
