@@ -276,13 +276,13 @@ end
 	 setvar $switchboard~message $switchboard~message&" Citadel Status*"
 	 setvar $switchboard~message $switchboard~message&" ------------------ *"
 	 setvar $switchboard~message $switchboard~message&"   Lvl 0   Lvl 1   Lvl 2   Lvl 3   Lvl 4   Lvl 5   Lvl 6*"
-	 setvar $switchboard~message $switchboard~message&"     " $cits[1]
-	 setvar $switchboard~message $switchboard~message&"       " $cits[2]
-	 setvar $switchboard~message $switchboard~message&"       " $cits[3]
-	 setvar $switchboard~message $switchboard~message&"       " $cits[4]
-	 setvar $switchboard~message $switchboard~message&"       " $cits[5]
-	 setvar $switchboard~message $switchboard~message&"       " $cits[6]
-	 setvar $switchboard~message $switchboard~message&"       " $cits[7] "*"
+	 setvar $switchboard~message $switchboard~message&"     "&$cits[1]
+	 setvar $switchboard~message $switchboard~message&"       "&$cits[2]
+	 setvar $switchboard~message $switchboard~message&"       "&$cits[3]
+	 setvar $switchboard~message $switchboard~message&"       "&$cits[4]
+	 setvar $switchboard~message $switchboard~message&"       "&$cits[5]
+	 setvar $switchboard~message $switchboard~message&"       "&$cits[6]
+	 setvar $switchboard~message $switchboard~message&"       "&$cits[7] "*"
 	 setvar $switchboard~message $switchboard~message&" *"
 	 setvar $switchboard~message $switchboard~message&" ------------------ *"
 	 setvar $switchboard~message $switchboard~message&" Planet Assets*"
