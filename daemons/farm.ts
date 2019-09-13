@@ -1109,6 +1109,7 @@ return
 	                        setVar $cyclebuffer 0
 	                        setVar $cyclebufferlimit 20
 							send "qq* jy* l " & #8 & $planet~planets[$j] & "*  "
+							gosub :planet~getplanetinfo
 
 							#remove fuel colos
 							setVar $COLOS $planet~planet_FUEL_COLONISTS
@@ -1806,18 +1807,18 @@ return
 		end
 		add $COLOS $player~total_holds                                               
 		if ($moveColo = "fuel")
-			add $planet~planet_FUEL_COLONISTS $player~total_holds
 			if ($planet~planetToFillFuelColonists - $player~total_holds > 0)
+				add $planet~planet_FUEL_COLONISTS $player~total_holds
 				subtract $planet~planetToFillFuelColonists $player~total_holds
 			end
 		elseif ($moveColo = "org")
-			add $planet~planet_ORGANICS_COLONISTS $player~total_holds
 			if ($planet~planetToFillFuelColonists - $player~total_holds > 0)
+				add $planet~planet_ORGANICS_COLONISTS $player~total_holds
 				subtract $planet~planetToFillOrganicsColonists $player~total_holds
 			end
 		elseif ($moveColo = "equip")
-			add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
 			if ($planet~planetToFillFuelColonists - $player~total_holds > 0)
+				add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
 				subtract $planet~planetToFillEquipmentColonists $player~total_holds
 			end
 		end
