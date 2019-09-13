@@ -192,9 +192,9 @@ setvar $switchboard~message $switchboard~message&" ------------------*"
 
 
 if ($baseDetails = "Yes")
-   setvar $switchboard~message $switchboard~message&"     Base     Planets   Status     Cit Levels      Figs     $*"
+   setvar $switchboard~message $switchboard~message&" Base     Planets   Status     Cit Levels      Figs     Credits*"
 else
-   setvar $switchboard~message $switchboard~message&"     Base     Planets   Status       Base     Planets   Status*"
+   setvar $switchboard~message $switchboard~message&" Base     Planets   Status       Base     Planets   Status*"
 end
   setVar $plCnt 0
   setVar $plntCnt 0
@@ -203,7 +203,7 @@ end
 	   if ($planet~planets[$i] > 0)
 		  add $plntCnt 1
 		  add $plCnt 1
-		  setVar $padit 6
+		  setVar $padit 2
 		  if ($baseID = "Base")
 			 SetVar $inStr $plCnt
 			 gosub :padLeft
@@ -253,7 +253,7 @@ end
 				 setVar $citCash $citCash & "K"
 			  end
 			  setvar $instr $citCash
-			  setVar $padit 6
+			  setVar $padit 9
 			  gosub :padLeft
 				setvar $switchboard~message $switchboard~message&"    "&$baseDetail[$i]&$basefig&$padL&$citCash
 				setvar $switchboard~message $switchboard~message&"*"
