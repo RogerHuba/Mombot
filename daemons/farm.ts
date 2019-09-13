@@ -1729,14 +1729,20 @@ return
 		end
 		subtract $COLOS $player~total_holds
 		if ($moveColo = "fuel")
-			subtract $planet~planet_FUEL_COLONISTS $player~total_holds
-			add $planet~planetToFillFuelColonists $player~total_holds
+			if (($planet~planet_fuel_colonists - $player~total_holds) > 0)
+				subtract $planet~planet_FUEL_COLONISTS $player~total_holds
+				add $planet~planetToFillFuelColonists $player~total_holds
+			end
 		elseif ($moveColo = "org")
-			subtract $planet~planet_ORGANICS_COLONISTS $player~total_holds
-			add $planet~planetToFillOrganicsColonists $player~total_holds
+			if (($planet~planet_organics_colonists - $player~total_holds) > 0)
+				subtract $planet~planet_ORGANICS_COLONISTS $player~total_holds
+				add $planet~planetToFillOrganicsColonists $player~total_holds
+			end
 		elseif ($moveColo = "equip")
-			subtract $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
-			add $planet~planetToFillEquipmentColonists $player~total_holds
+			if (($planet~planet_equipment_colonists - $player~total_holds) > 0)
+				subtract $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
+				add $planet~planetToFillEquipmentColonists $player~total_holds
+			end
 		end
 		gosub :setWindow
 	end
@@ -2894,6 +2900,9 @@ return
 	setVar $planet~planetToFillFuelColonists $planet~planet_FUEL_COLONISTS
 	setVar $planet~planetToFillOrganicsColonists $planet~planet_ORGANICS_COLONISTS
 	setVar $planet~planetToFillEquipmentColonists $planet~planet_EQUIPMENT_COLONISTS
+	setvar $planet~planetToFillFuelMax $planet~planet_FUEL_COLONISTS_MAX
+	setvar $planet~planetToFillOrgMax $planet~planet_ORGANICS_COLONISTS_MAX
+	setvar $planet~planetToFillEquipMax $planet~planet_EQUIPMENT_COLONISTS_MAX
 return
 
 #INCLUDES:
