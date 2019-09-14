@@ -735,7 +735,7 @@ return
 		Echo #27 & "[2J"
 		Echo "**"
 		echo ANSI_11&"            Planet Type Information  (Max Colos Per Product Type)         **"
-		echo ANSI_15 "    Type                     Min Fuel  Max Fuel  Min Org  Max Org  Min Equ  Max Equ   Keeper? *"
+		echo ANSI_15 "    Type                       Min Fuel  Max Fuel  Min Org  Max Org  Min Equ  Max Equ  Keeper? *"
 		echo "   " #27 "[1m" ANSI_4 #196 #196 #196 #196 #196 #196  #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196  #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 "*"
 		while (($i <= $PLANET~planetcounter) AND ($menuCount < 10))
 			cutText $PLANET~planetList[$i]&"                                    " $temp 8 28
