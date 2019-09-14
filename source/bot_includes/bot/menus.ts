@@ -762,7 +762,7 @@ return
 		echo "*"
 		echo ANSI_12&"           "&#27&"[35m["&#27&"[32m<"&#27&"[35m]"&ANSI_15&"Hot Keys                 Planet List"&#27&"[35m["&#27&"[32m>"&#27&"[35m]*"&ANSI_7&"**"
 
-		echo "  " & ANSI_5 & "Update Planet Info (0-9)? "
+		echo "  " & ANSI_5 & "Update Planet Info (0-9)?   Toggle (k)eeper planet"
 		getConsoleInput $selection SINGLEKEY
 		setVar $options "1234567890"
 		upperCase $selection
@@ -775,6 +775,21 @@ return
 			gosub :rewrite_planet_file
 			goto :PREFERENCESMENUPAGE5
 		elseif ($selection = "?")
+			gosub :rewrite_planet_file
+			goto :PreferencesMenuPagePlanet
+		elseif ($selection = "K")
+			echo "  " & ANSI_5 & "Toggle keeper status for planet (0-9)?"
+			getConsoleInput $planet SINGLEKEY
+			setVar $options "1234567890"
+			upperCase $planet
+			getWordPos $options $pos $planet
+			if ($pos > 0)
+				if ($PLANET~planetList[($planet+$thisPage)][7] = true)
+					setVar $PLANET~planetList[($planet+$thisPage)][7] false		
+				else
+					setVar $PLANET~planetList[($planet+$thisPage)][7] true		
+				end
+			end
 			gosub :rewrite_planet_file
 			goto :PreferencesMenuPagePlanet
 		elseif (($pagesExist) AND ($selection = "+"))
