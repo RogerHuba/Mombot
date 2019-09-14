@@ -799,7 +799,7 @@ return
 				gosub :rewrite_planet_file
 				goto :PreferencesMenuPagePlanet
 			end
-			goto :NextPlanetInfoPage
+			goto :PREFERENCESMENUPAGE5
 		elseif (($pagesExist) AND ($selection = "+"))
 			if ($i >= $PLANET~planetcounter)
 				setVar $i 1
@@ -809,42 +809,42 @@ return
 			getInput $temp "What are the min fuel colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
 			isNumber $test $temp
 			if ($test = FALSE)
-				goto :NextPlanetInfoPage
+				goto :PREFERENCESMENUPAGE5
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][1] $temp
 
 			getInput $temp "What are the max fuel colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
 			isNumber $test $temp
 			if ($test = FALSE)
-				goto :NextPlanetInfoPage
+				goto :PREFERENCESMENUPAGE5
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][2] $temp
 
 			getInput $temp "What are the min organics colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
 			isNumber $test $temp
 			if ($test = FALSE)
-				goto :NextPlanetInfoPage
+				goto :PREFERENCESMENUPAGE5
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][3] $temp
 
 			getInput $temp "What are the max organics colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
 			isNumber $test $temp
 			if ($test = FALSE)
-				goto :NextPlanetInfoPage
+				goto :PREFERENCESMENUPAGE5
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][4] $temp
 
 			getInput $temp "What are the min equipment colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
 			isNumber $test $temp
 			if ($test = FALSE)
-				goto :NextPlanetInfoPage
+				goto :PREFERENCESMENUPAGE5
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][5] $temp
 
 			getInput $temp "What are the max equipment colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
 			isNumber $test $temp
 			if ($test = FALSE)
-				goto :NextPlanetInfoPage
+				goto :PREFERENCESMENUPAGE5
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][6] $temp
 
@@ -859,7 +859,7 @@ return
 			setVar $i $thisPage
 			setVar $planetsChanged TRUE
 			gosub :rewrite_planet_file
-			goto :NextPlanetInfoPage
+			goto :PREFERENCESMENUPAGE5
 		else
 			gosub :rewrite_planet_file
 			gosub :donePrefer
