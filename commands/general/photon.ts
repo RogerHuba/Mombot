@@ -18,7 +18,7 @@ end
 		goto :wait_for_command
 	end
 	gosub :PLAYER~quikstats
-	setVar $BOT~validPrompts "Citadel Command Computer"
+	setVar $BOT~validPrompts "Citadel Command"
 	gosub :BOT~checkStartingPrompt
 	if ($PLAYER~PHOTONS <= 0)
 		setVar $SWITCHBOARD~message "You don't have any photons! Halting.*"
@@ -27,14 +27,10 @@ end
 	end
 
 :shoot1
-	if ($player~current_prompt = "Computer")
-		send "p  y  " $target "**  q*"
-	else
-		send "c  p  y  " $target "**  q*"
-	end
+	send "c  p  y  " $target "**  q*"
 	killtrigger shot
 	killtrigger missed
-	setTextLineTrigger shot :shot1 "Photon Missile launched into sector "&$target
+	setTextTrigger shot :shot1 "Photon Missile launched into sector "&$target&"*"
 	setTextTrigger missed :missed1 "<Computer deactivated>"
 	pause
 
