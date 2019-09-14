@@ -5,17 +5,13 @@
 	setTextTrigger IGBwarp  :bwarpPhotoned "Your ship was hit by a Photon and has been disabled"
 	pause
 	:noBwarp
-		killtrigger yesBwarp
-		killtrigger IGBwarp
-		killtrigger noBwarp
+		gosub :killbwarptriggers
 		send "*"
 		setVar $SWITCHBOARD~message "No Bwarp installed on this planet*"
 		gosub :SWITCHBOARD~switchboard
 		return
 	:yesBwarp
-		killtrigger yesBwarp
-		killtrigger IGBwarp
-		killtrigger noBwarp
+		gosub :killbwarptriggers
 		send $warpto&"*"
 		setTextTrigger bwarp_lock :bwarp_no_range "This planetary transporter does not have the range."
 		setTextTrigger no_bwrp_lock :no_bwarp_lock "Do you want to make this transport blind?"
@@ -23,18 +19,12 @@
 		setTextLineTrigger no_bwarpfuel :bwarpNoFuel "This planet does not have enough Fuel Ore to transport you."
 		pause
 	:bwarp_no_range
-		killtrigger bwarp_lock
-		killtrigger no_bwrp_lock
-		killtrigger bwarp_ready
-		killtrigger no_bwarpfuel
+		gosub :killbwarptriggers
 		setVar $SWITCHBOARD~message "Not enough range on this planet's transporter.*"
 		gosub :SWITCHBOARD~switchboard
 		return
 	:no_bwarp_lock
-		killtrigger bwarp_lock
-		killtrigger no_bwrp_lock
-		killtrigger bwarp_ready
-		killtrigger no_bwarpfuel
+		gosub :killbwarptriggers
 		send "* "
 		setVar $target $warpto
 		setSectorParameter $target "FIGSEC" FALSE
@@ -42,10 +32,7 @@
 		gosub :SWITCHBOARD~switchboard
 		return
 	:bwarp_lock
-		killtrigger bwarp_lock
-		killtrigger no_bwrp_lock
-		killtrigger bwarp_ready
-		killtrigger no_bwarpfuel
+		gosub :killbwarptriggers
 		send "y     * "
 		setVar $target $warpto
 		setSectorParameter $target "FIGSEC" TRUE
@@ -53,17 +40,22 @@
 		gosub :SWITCHBOARD~switchboard
 		return
 	:bwarpNoFuel
-		killtrigger bwarp_lock
-		killtrigger no_bwrp_lock
-		killtrigger bwarp_ready
-		killtrigger no_bwarpfuel
+		gosub :killbwarptriggers
 		setVar $SWITCHBOARD~message "Not enough fuel on the planet to make the transport!*"
 		gosub :SWITCHBOARD~switchboard
 		return
 	:bwarpPhotoned
-		killtrigger yesBwarp
-		killtrigger IGBwarp
-		killtrigger noBwarp
+		gosub :killbwarptriggers
 		setVar $SWITCHBOARD~message "I have been photoned and can not B-warp!*"
 		gosub :SWITCHBOARD~switchboard
 		return
+
+:killbwarptriggers
+	killtrigger yesBwarp
+	killtrigger IGBwarp
+	killtrigger noBwarp
+	killtrigger bwarp_lock
+	killtrigger no_bwrp_lock
+	killtrigger bwarp_ready
+	killtrigger no_bwarpfuel
+return

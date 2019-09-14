@@ -58,5 +58,5 @@
 		return
 	:noPath
 
-		send "q '{" $SWITCHBOARD~bot_name "} - No path to that sector, cannot mow!*"
+		send "q '{" $SWITCHBOARD~bot_name "} - No path to that sector!*"
 		return
