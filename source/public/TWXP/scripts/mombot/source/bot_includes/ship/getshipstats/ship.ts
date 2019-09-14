@@ -26,17 +26,17 @@
 		getWord $shield_line $SHIP_SHIELD_MAX 10
 		pause
 	:shipoffenseodds
-	getWordPos CURRENTANSILINE $pos "[0;31m:[1;36m1"
-	if ($pos > 0)
-		getText CURRENTANSILINE $SHIP_OFFENSIVE_ODDS "Offensive Odds[1;33m:[36m " "[0;31m:[1;36m1"
-		stripText $SHIP_OFFENSIVE_ODDS "."
-		stripText $SHIP_OFFENSIVE_ODDS " "
-		gettext CURRENTANSILINE $SHIP_FIGHTERS_MAX "Max Fighters[1;33m:[36m" "[0;32m Offensive Odds"
-		stripText $SHIP_FIGHTERS_MAX ","
-		stripText $SHIP_FIGHTERS_MAX " "
-		savevar $SHIP~SHIP_OFFENSIVE_ODDS
-	end
-	pause
+		getWordPos CURRENTANSILINE $pos "[0;31m:[1;36m1"
+		if ($pos > 0)
+			getText CURRENTANSILINE $SHIP_OFFENSIVE_ODDS "Offensive Odds[1;33m:[36m " "[0;31m:[1;36m1"
+			stripText $SHIP_OFFENSIVE_ODDS "."
+			stripText $SHIP_OFFENSIVE_ODDS " "
+			gettext CURRENTANSILINE $SHIP_FIGHTERS_MAX "Max Fighters[1;33m:[36m" "[0;32m Offensive Odds"
+			stripText $SHIP_FIGHTERS_MAX ","
+			stripText $SHIP_FIGHTERS_MAX " "
+			savevar $SHIP~SHIP_OFFENSIVE_ODDS
+		end
+		pause
 	:shipmaxmines
 		getText CURRENTLINE $SHIP_MINES_MAX "Mine Max:" "Beacon Max:"
 		stripText $SHIP_MINES_MAX " "

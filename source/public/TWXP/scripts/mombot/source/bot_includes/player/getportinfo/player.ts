@@ -1,7 +1,7 @@
 # ----- SUB :getPortInfo -----
 :getPortInfo
 	if ($startingLocation = "Citadel")
-	send "S*CR*Q"
+		send "S*CR*Q"
 	else
 		send "*CR*Q"
 	end
@@ -14,23 +14,15 @@
 	pause
 
 	:noport2
-	killtrigger foundport
-	killtrigger noport
-	killtrigger noport2
-	killtrigger noport3
-	killtrigger noport4
-	return
+		gosub :portkillingtriggers
+		return
 
 	:foundport2
-	killtrigger foundport
-	killtrigger noport
-	killtrigger noport2
-	killtrigger noport3
-	killtrigger noport4
-	setVar $fuelselling 0
+		gosub :portkillingtriggers
+		setVar $fuelselling 0
 		setVar $orgselling 0
 		setVar $equipselling 0
-	setVar $validPortFound TRUE
+		setVar $validPortFound TRUE
 		:getselling
 			setTextLineTrigger portfuelinfo :portfuelinfo2 "Fuel Ore   Selling"
 			setTextLineTrigger portorginfo :portorginfo2 "Organics   Selling"
@@ -46,16 +38,25 @@
 		:portorginfo2
 			getWord CURRENTLINE $orgselling 3
 			setTextLineTrigger portorginfo :portorginfo2 "Organics   Selling"
-		pause
+			pause
 
 		:portequipinfo2
 			getWord CURRENTLINE $equipselling 3
 			setTextLineTrigger portequipinfo :portequipinfo2 "Equipment  Selling"
-		pause
+			pause
 
 		:gotallportinfo2
 			killtrigger portfuelinfo
-		killtrigger portorginfo
-		killtrigger portequipinfo
-		killtrigger gotallportinfo
+			killtrigger portorginfo
+			killtrigger portequipinfo
+			killtrigger gotallportinfo
+return
+
+
+:portkillingtriggers
+	killtrigger foundport
+	killtrigger noport
+	killtrigger noport2
+	killtrigger noport3
+	killtrigger noport4
 return

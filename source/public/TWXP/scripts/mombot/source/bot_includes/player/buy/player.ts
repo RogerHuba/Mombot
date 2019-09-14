@@ -342,22 +342,7 @@
 	pause
 
 	:buyfirstoffer
-		killtrigger buyprice 
-		killtrigger buyfinaloffer 
-		killtrigger buynotinterested 
-		killtrigger buyexperience 
-		killtrigger buyempty 
-		killtrigger buyscrewup1 
-		killtrigger buyscrewup2 
-		killtrigger buyscrewup3 
-		killtrigger buyscrewup4 
-		killtrigger buyscrewup5 
-		killtrigger buyscrewup6 
-		killtrigger buyscrewup7 
-		killtrigger buyscrewup8 
-		killtrigger buyscrewup9 
-		killtrigger buyscrewup10 
-
+		gosub :killbuytriggers
 		getWord CURRENTLINE $offer 5
 		striptext $offer ","
 
@@ -400,22 +385,7 @@
 		pause
 		pause
 	:buyscrewup
-		killtrigger buyprice 
-		killtrigger buyfinaloffer 
-		killtrigger buynotinterested 
-		killtrigger buyexperience 
-		killtrigger buyempty 
-		killtrigger buyscrewup1 
-		killtrigger buyscrewup2 
-		killtrigger buyscrewup3 
-		killtrigger buyscrewup4 
-		killtrigger buyscrewup5 
-		killtrigger buyscrewup6 
-		killtrigger buyscrewup7 
-		killtrigger buyscrewup8 
-		killtrigger buyscrewup9 
-		killtrigger buyscrewup10 
-	  
+		gosub :killbuytriggers
 		if ($buydown_mode = "Best Price")
 			multiply $counter 102
 			divide $counter 100
@@ -428,21 +398,7 @@
 		send $counter & "*"
 		goto :buyofferloop
 	:buyprice
-		killtrigger buyprice 
-		killtrigger buyfinaloffer 
-		killtrigger buynotinterested 
-		killtrigger buyexperience 
-		killtrigger buyempty 
-		killtrigger buyscrewup1 
-		killtrigger buyscrewup2 
-		killtrigger buyscrewup3 
-		killtrigger buyscrewup4 
-		killtrigger buyscrewup5 
-		killtrigger buyscrewup6 
-		killtrigger buyscrewup7 
-		killtrigger buyscrewup8 
-		killtrigger buyscrewup9 
-		killtrigger buyscrewup10 
+		gosub :killbuytriggers
 		setVar $old_offer $offer
 		setVar $old_counter $counter
 		getWord CURRENTLINE $offer 5
@@ -461,21 +417,7 @@
 		send $counter & "*"
 		goto :buyofferloop
 	:buyfinaloffer
-		killtrigger buyprice 
-		killtrigger buyfinaloffer 
-		killtrigger buynotinterested 
-		killtrigger buyexperience 
-		killtrigger buyempty 
-		killtrigger buyscrewup1 
-		killtrigger buyscrewup2 
-		killtrigger buyscrewup3 
-		killtrigger buyscrewup4 
-		killtrigger buyscrewup5 
-		killtrigger buyscrewup6 
-		killtrigger buyscrewup7 
-		killtrigger buyscrewup8 
-		killtrigger buyscrewup9 
-		killtrigger buyscrewup10 
+		gosub :killbuytriggers
 		setVar $old_offer $offer
 		setVar $old_counter $counter
 		getWord CURRENTLINE $offer 5
@@ -493,60 +435,18 @@
 		send $counter & "*"
 		goto :buyofferloop
 	:buynotinterested
-		killtrigger buyprice 
-		killtrigger buyfinaloffer 
-		killtrigger buynotinterested 
-		killtrigger buyexperience 
-		killtrigger buyempty 
-		killtrigger buyscrewup1 
-		killtrigger buyscrewup2 
-		killtrigger buyscrewup3 
-		killtrigger buyscrewup4 
-		killtrigger buyscrewup5 
-		killtrigger buyscrewup6 
-		killtrigger buyscrewup7 
-		killtrigger buyscrewup8 
-		killtrigger buyscrewup9 
-		killtrigger buyscrewup10 
+		gosub :killbuytriggers
 		send "0* "
 		send "0* "
 		goto :buyhagglefailed
 	:buyexperience
-		killtrigger buyprice 
-		killtrigger buyfinaloffer 
-		killtrigger buynotinterested 
-		killtrigger buyexperience 
-		killtrigger buyempty 
-		killtrigger buyscrewup1 
-		killtrigger buyscrewup2 
-		killtrigger buyscrewup3 
-		killtrigger buyscrewup4 
-		killtrigger buyscrewup5 
-		killtrigger buyscrewup6 
-		killtrigger buyscrewup7 
-		killtrigger buyscrewup8 
-		killtrigger buyscrewup9 
-		killtrigger buyscrewup10 
+		gosub :killbuytriggers
 		getWord CURRENTLINE $exp_bonus 7
 		add $exp $exp_bonus
 		add $jetbonus $exp_bonus
 		goto :buyofferloop
 	:buyempty
-		killtrigger buyprice 
-		killtrigger buyfinaloffer 
-		killtrigger buynotinterested 
-		killtrigger buyexperience 
-		killtrigger buyempty 
-		killtrigger buyscrewup1 
-		killtrigger buyscrewup2 
-		killtrigger buyscrewup3 
-		killtrigger buyscrewup4 
-		killtrigger buyscrewup5 
-		killtrigger buyscrewup6 
-		killtrigger buyscrewup7 
-		killtrigger buyscrewup8 
-		killtrigger buyscrewup9 
-		killtrigger buyscrewup10 
+		gosub :killbuytriggers
 		getWord CURRENTLINE $CREDITS 3
 		stripText $CREDITS ","
 		setVar $oldempty $empty
@@ -583,6 +483,25 @@
 		waitOn " Sect "
 	end
 	return
+
+
+:killbuytriggers
+	killtrigger buyprice 
+	killtrigger buyfinaloffer 
+	killtrigger buynotinterested 
+	killtrigger buyexperience 
+	killtrigger buyempty 
+	killtrigger buyscrewup1 
+	killtrigger buyscrewup2 
+	killtrigger buyscrewup3 
+	killtrigger buyscrewup4 
+	killtrigger buyscrewup5 
+	killtrigger buyscrewup6 
+	killtrigger buyscrewup7 
+	killtrigger buyscrewup8 
+	killtrigger buyscrewup9 
+	killtrigger buyscrewup10 
+return
 
 include "source\bot_includes\player\swathoff\player"
 include "source\bot_includes\player\clearadjacent\player"

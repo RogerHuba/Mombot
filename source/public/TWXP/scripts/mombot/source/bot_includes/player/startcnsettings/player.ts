@@ -14,8 +14,8 @@
 	:cncheck
 		gosub :getCNC
 		pause
-		:setsschn
-			getWord CURRENTLINE $BOT~subspace 6
+	:setsschn
+		getWord CURRENTLINE $BOT~subspace 6
 		if ($BOT~subspace = 0)
 			getRnd $BOT~subspace 101 60000
 			send "4" & $BOT~subspace & "*"
