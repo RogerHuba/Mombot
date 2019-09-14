@@ -27,13 +27,13 @@ end
 	end
 
 :shoot1
+	killtrigger shot
+	killtrigger missed
 	if ($player~current_prompt = "Computer")
 		send "p  y  " $target "**  q* @"
 	else
 		send "c  p  y  " $target "**  q* @"
 	end
-	killtrigger shot
-	killtrigger missed
 	setTextTrigger shot :shot1 "Photon Missile launched into sector "&$target&"*"
 	setTextTrigger missed :missed1 "Average Interval Lag:"
 	pause
