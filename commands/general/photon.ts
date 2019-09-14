@@ -4,6 +4,7 @@ if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
 	goto :wait_for_command
 end
 
+
 	setVar $target $bot~parm1 
 	isNumber $isNumber $target 
 	if ($isNumber <> TRUE)
@@ -17,16 +18,14 @@ end
 		goto :wait_for_command
 	end
 	gosub :PLAYER~quikstats
+	setVar $BOT~validPrompts "Citadel Command"
+	gosub :BOT~checkStartingPrompt
 	if ($PLAYER~PHOTONS <= 0)
 		setVar $SWITCHBOARD~message "You don't have any photons! Halting.*"
 		gosub :SWITCHBOARD~switchboard
 		goto :wait_for_command		
 	end
-	if (($PLAYER~CURRENT_PROMPT <> "Citadel") AND ($PLAYER~CURRENT_PROMPT <> "Command"))
-		setVar $SWITCHBOARD~message "Photon must be run from command or citadel prompt.  Halting.*"
-		gosub :SWITCHBOARD~switchboard
-		goto :wait_for_command		
-	end
+
 :shoot1
 	send "c  p  y  " $target "**  q*"
 	killtrigger shot
