@@ -761,6 +761,9 @@ return
 		end
 		echo "*"
 		echo ANSI_12&"           "&#27&"[35m["&#27&"[32m<"&#27&"[35m]"&ANSI_15&"Hot Keys                 Planet List"&#27&"[35m["&#27&"[32m>"&#27&"[35m]*"&ANSI_7&"**"
+		if ($toggleagain = true)
+			goto :toggleagain
+		end
 
 		echo "  " & ANSI_5 & "Update Planet Info (0-9)?   Toggle (k)eeper planet"
 		getConsoleInput $selection SINGLEKEY
@@ -784,17 +787,18 @@ return
 			setVar $options "1234567890"
 			upperCase $planet
 			getWordPos $options $pos $planet
+			setvar $toggleagain false
 			if ($pos > 0)
 				if ($PLANET~planetList[($planet+$thisPage)][7] = true)
 					setVar $PLANET~planetList[($planet+$thisPage)][7] false		
 				else
 					setVar $PLANET~planetList[($planet+$thisPage)][7] true		
 				end
+				setvar $toggleagain true
 			else
 				gosub :rewrite_planet_file
 				goto :PreferencesMenuPagePlanet
 			end
-			goto :toggleagain
 		elseif (($pagesExist) AND ($selection = "+"))
 			if ($i >= $PLANET~planetcounter)
 				setVar $i 1
