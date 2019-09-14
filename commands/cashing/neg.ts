@@ -34,23 +34,16 @@
 	killtrigger 1
 	killtrigger 2
 
-	gosub  :player~currentPrompt
+
+	setVar $BOT~validPrompts "Citadel Planet"
+	gosub :BOT~checkStartingPrompt
 	setVar $startingLocation $player~CURRENT_PROMPT
 	
-	#send "'[" $startingLocation "]*"
-
 	if (($startingLocation = 0) or ($startingLocation = ""))
 		gosub :player~quikstats
 		setVar $startingLocation $player~CURRENT_PROMPT
 	end
 
-	if ($startingLocation <> "Citadel") 
-		if ($startingLocation <> "Planet")
-			setvar $switchboard~message "Must start at planet or citadel prompt*"
-			gosub :switchboard~switchboard
-			halt
-		end
-	end
 	if ($bot~parm1 = 0)
 		setVar $planet~_ck_pnego_fueltosell "-1"
 		setVar $planet~_ck_pnego_orgtosell "max"
@@ -95,6 +88,6 @@
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
-include "source\bot_includes\player\currentprompt\player"
+include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\planetneg\planet"

@@ -8,14 +8,15 @@
 	setVar $isMega TRUE
 :rob
 	gosub :PLAYER~quikstats
-	setVar $bot~validPrompts "Citadel Command"
-	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+	setVar $BOT~validPrompts "Citadel Command"
+	gosub :BOT~checkStartingPrompt
+	setVar $startingLocation $player~CURRENT_PROMPT
+
 	if (($PLAYER~TURNS = 0) and ($PLAYER~unlimitedGame = FALSE))
-			setvar $switchboard~message "I have no turns*"
-			gosub :switchboard~switchboard
-			halt
-		end
-	gosub :bot~checkStartingPrompt
+		setvar $switchboard~message "I have no turns*"
+		gosub :switchboard~switchboard
+		halt
+	end
 	cutText $PLAYER~ALIGNMENT $neg_ck 1 1
 	stripText $PLAYER~ALIGNMENT "-"
 	if ((($PLAYER~ALIGNMENT < 100) and ($neg_ck = "-")) OR ($neg_ck <> "-"))
@@ -23,7 +24,7 @@
 		gosub :switchboard~switchboard
 		goto :portrm_done
 	end
-	if ($bot~startingLocation = "Citadel")
+	if ($startingLocation = "Citadel")
 		send "q"
 		gosub :PLANET~getPlanetInfo
 		send "q"
@@ -38,7 +39,7 @@
 	pause
 :port_fake
 	killalltriggers
-	if ($bot~startingLocation = "Citadel")
+	if ($startingLocation = "Citadel")
 		gosub :PLANET~landingSub
 	end
 	setSectorParameter $PLAYER~CURRENT_SECTOR "BUSTED" TRUE
@@ -55,7 +56,7 @@
 			setVar $port_cash (($port_cash*10)/9)
 			setVar $mega_short (3300000 - $port_cash)
 			send "0* "
-			if ($bot~startingLocation = "Citadel")
+			if ($startingLocation = "Citadel")
 				gosub :PLANET~landingSub
 			end
 			setvar $switchboard~message "Port is short "&$mega_short&" credits*"
@@ -68,7 +69,7 @@
 		setvar $switchboard~message  $port_cash&" credits on port.  Port is ready for Mega Rob*"
 		gosub :switchboard~switchboard
 		send "*"
-		if ($bot~startingLocation = "Citadel")
+		if ($startingLocation = "Citadel")
 			gosub :PLANET~landingSub
 		end
 		goto :portrm_done
@@ -102,7 +103,7 @@
 	end
 :port_bust
 	killalltriggers
-	if ($bot~startingLocation = "Citadel")
+	if ($startingLocation = "Citadel")
 		gosub :PLANET~landingSub
 	end
 	setSectorParameter $PLAYER~CURRENT_SECTOR "BUSTED" TRUE
@@ -110,7 +111,7 @@
 	goto :portrm_done
 :port_suc
 	killalltriggers
-	if ($bot~startingLocation = "Citadel")
+	if ($startingLocation = "Citadel")
 		gosub :PLANET~landingSub
 		send "tt" $actual_cash "*"
 	end
