@@ -738,7 +738,7 @@ return
 		echo ANSI_15 "    Type                     Min Fuel  Max Fuel  Min Org  Max Org  Min Equ  Max Equ   Keeper? *"
 		echo "   " #27 "[1m" ANSI_4 #196 #196 #196 #196 #196 #196  #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196  #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 "*"
 		while (($i <= $PLANET~planetcounter) AND ($menuCount < 10))
-			cutText $PLANET~planetList[$i]&"                                    " $temp 7 30
+			cutText $PLANET~planetList[$i]&"                                    " $temp 8 28
 			cutText $PLANET~planetList[$i][1]&"                                 " $tempfuelmin 1 8
 			cutText $PLANET~planetList[$i][2]&"                                 " $tempfuel 1 8
 			cutText $PLANET~planetList[$i][3]&"                                 " $temporgmin 1 8
