@@ -3,10 +3,7 @@
 #requires switchboard
 
 :landingSub
-	killtrigger noplanet
-	killtrigger no_land
-	killtrigger planet
-	killtrigger wrongone
+	gosub :killlandingtriggers
 	send "l" $PLANET "*z  n  z  n  *  "
 	setVar $sucessfulCitadel FALSE
 	setVar $sucessfulPlanet FALSE
@@ -16,32 +13,23 @@
 	setTextLineTrigger wrongone :wrong_num "That planet is not in this sector."
 	pause
 :noplanet
-	killtrigger no_land
-	killtrigger planet
-	killtrigger wrongone
+	gosub :killlandingtriggers
 	setVar $SWITCHBOARD~message "No Planet in Sector!*"
 	gosub :SWITCHBOARD~switchboard
 	return
 :no_land
-	killtrigger noplanet
-	killtrigger planet
-	killtrigger wrongone
+	gosub :killlandingtriggers
 	setVar $SWITCHBOARD~message "This ship cannot land!*"
 	gosub :SWITCHBOARD~switchboard
 	return
 :planet
 	getWord CURRENTLINE $pnum_ck 2
 	stripText $pnum_ck "#"
+	gosub :killlandingtriggers
 	if ($pnum_ck <> $PLANET)
-		killtrigger no_land
-		killtrigger wrongone
-		killtrigger no_planet
 		send "q"
 		goto :wrong_num
 	end
-	killtrigger noplanet
-	killtrigger no_land
-	killtrigger wrongone
 	setTextTrigger wrong_num :wrong_num "That planet is not in this sector."
 	setTextTrigger planet :planet_prompt "Planet command"
 	pause
@@ -68,18 +56,24 @@
 	setTextTrigger citnotbuiltyet :build_cit "Be patient, your Citadel is not yet finished."
 	pause
 :build_cit
-	killtrigger in_cit
-	killtrigger nocitallowed
-	killtrigger build_cit
-	killtrigger citnotbuiltyet
+	gosub :killlandingtriggers
 	setVar $sucessfulPlanet TRUE
 	setVar $startingLocation "Planet"
 	return
 :in_cit
+	gosub :killlandingtriggers
+	setVar $sucessfulCitadel TRUE
+	setVar $startingLocation "Citadel"
+return
+
+
+:killlandingtriggers
+	killtrigger noplanet
+	killtrigger no_land
+	killtrigger planet
+	killtrigger wrongone
 	killtrigger in_cit
 	killtrigger nocitallowed
 	killtrigger build_cit
 	killtrigger citnotbuiltyet
-	setVar $sucessfulCitadel TRUE
-	setVar $startingLocation "Citadel"
 return
