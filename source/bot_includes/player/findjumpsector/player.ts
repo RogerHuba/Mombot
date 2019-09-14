@@ -12,33 +12,21 @@
 			setTextLineTrigger TwarpAdj         :TwarpAdj "<Set NavPoint>"
 			pause
 			:TwarpAdj
-				killtrigger TwarpBlind
-				killtrigger TwarpLocked
-				killtrigger TwarpVoided
-				killtrigger TwarpAdj
+				gosub :killfindjumpsectors
 				send " * "
 				return
 
 			:TwarpVoided
-				killtrigger TwarpBlind
-				killtrigger TwarpLocked
-				killtrigger TwarpVoided
-				killtrigger TwarpAdj
+				gosub :killfindjumpsectors
 				send " N N "
 				goto :TryingNextAdj
 
 			:TwarpLocked
-				killtrigger TwarpBlind
-				killtrigger TwarpLocked
-				killtrigger TwarpVoided
-				killtrigger TwarpAdj
+				gosub :killfindjumpsectors
 				goto :SectorLocked
 
 			:TwarpBlind
-				killtrigger TwarpBlind
-				killtrigger TwarpLocked
-				killtrigger TwarpVoided
-				killtrigger TwarpAdj
+				gosub :killfindjumpsectors
 				send " N "
 		end
 		:TryingNextAdj
@@ -54,4 +42,11 @@
 			setVar $MAP~backdoor $RED_adj
 			saveVar $MAP~backdoor
 		end
+return
+
+:killfindjumpsectors
+	killtrigger TwarpBlind
+	killtrigger TwarpLocked
+	killtrigger TwarpVoided
+	killtrigger TwarpAdj
 return
