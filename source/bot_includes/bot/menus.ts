@@ -778,7 +778,8 @@ return
 			gosub :rewrite_planet_file
 			goto :PreferencesMenuPagePlanet
 		elseif ($selection = "K")
-			echo "  " & ANSI_5 & "Toggle keeper status for planet (0-9)?"
+			:toggleagain
+			echo "  " & ANSI_5 & "Which planet to set keeper status? (0-9)"
 			getConsoleInput $planet SINGLEKEY
 			setVar $options "1234567890"
 			upperCase $planet
@@ -789,9 +790,11 @@ return
 				else
 					setVar $PLANET~planetList[($planet+$thisPage)][7] true		
 				end
+			else
+				gosub :rewrite_planet_file
+				goto :PreferencesMenuPagePlanet
 			end
-			gosub :rewrite_planet_file
-			goto :PreferencesMenuPagePlanet
+			goto :toggleagain
 		elseif (($pagesExist) AND ($selection = "+"))
 			if ($i >= $PLANET~planetcounter)
 				setVar $i 1
