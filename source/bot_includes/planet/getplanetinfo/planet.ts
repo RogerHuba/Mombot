@@ -50,13 +50,8 @@
 		setVar $PLANET_CLASS_NAME CURRENTLINE
 		waitfor "2 Build 1   Product    Amount     Amount     Maximum"
 
-		killtrigger tport
-		killtrigger shields
-		killtrigger citadelstart
-		killtrigger cannon
-		killtrigger underConst
-		killtrigger maxedIG
-		
+		gosub :killplanettriggers
+
 		:getPlanetStuff
 		setTextLineTrigger fuelstart :fuelstart "Fuel Ore"
 		setTextLineTrigger orgstart :orgstart "Organics"
@@ -165,13 +160,26 @@
 		striptext $ATMOSPHERE_CANNON ","
 		pause
 	:planetInfoDone
-		killtrigger citadelstart
-		killtrigger cannon
-		killtrigger underConst
-		killtrigger tport
+		gosub :killplanettriggers
 	
-setVar $currentBotPlanet $PLANET
-saveVar $currentBotPlanet
-saveVar $planet_fighters
+		setVar $currentBotPlanet $PLANET
+		saveVar $currentBotPlanet
+		saveVar $planet_fighters
 return
 # ==============================  END PLANET INFO SUBROUTINE  =================
+
+
+:killplanettriggers
+	killtrigger fuelstart 
+	killtrigger orgstart 
+	killtrigger equipstart
+	killtrigger figstart
+	killtrigger tport
+	killtrigger shields
+	killtrigger citadelstart
+	killtrigger cannon
+	killtrigger citExists
+	killtrigger maxedIG
+	killtrigger underConst
+	killtrigger planetInfoDone
+return
