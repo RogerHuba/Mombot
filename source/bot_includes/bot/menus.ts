@@ -750,7 +750,7 @@ return
 			else
 				setVar $tempKeeper "No"
 			end
-			echo ANSI_14 "<" $menuCount "> " $temp " " $tempfuelmin " " $tempfuel "  " $temporgmin "  " $temporg "  " $tempequipmin "  " $tempequip " " $tempkeeper "*"
+			echo ANSI_14 "<" $menuCount ">" $temp " " $tempfuelmin " " $tempfuel "  " $temporgmin "  " $temporg "  " $tempequipmin "  " $tempequip " " $tempkeeper "*"
 			add $i 1
 			add $menuCount 1
 		end
