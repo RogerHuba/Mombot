@@ -168,6 +168,7 @@
 		killtrigger citadelstart
 		killtrigger cannon
 		killtrigger underConst
+		killtrigger tport
 	
 setVar $currentBotPlanet $PLANET
 saveVar $currentBotPlanet
