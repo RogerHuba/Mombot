@@ -856,15 +856,9 @@ return
 
 :rewrite_cap_file
 	if ($shipsChanged)
-		setVar $gbonus_file $folder&"/dbonus-ships.cfg"
-		delete $gbonus_file
-		delete $SHIP~cap_file
 		setVar $j 1
 		while ($j < $SHIP~shipcounter)
 			write $SHIP~cap_file $SHIP~shipList[$j][1] & " " & $SHIP~shipList[$j][2] & " " & $SHIP~shipList[$j][3] & " " & $SHIP~shipList[$j][9] & " " & $SHIP~shipList[$j][4] & " " & $SHIP~shipList[$j][5] & " " & $SHIP~shipList[$j][6] & " " & $SHIP~shipList[$j][7] & " " & $SHIP~shipList[$j][8] & " " & $SHIP~shipList[$j]
-			if ($SHIP~shipList[$j][8])
-				write $gbonus_file $SHIP~shipList[$j]
-			end
 			add $j 1
 		end
 	end
