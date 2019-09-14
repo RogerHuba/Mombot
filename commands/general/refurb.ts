@@ -5,12 +5,9 @@ end
 
 :scrub
 	setVar $message ""
-	gosub  :player~currentPrompt
-	setVar $startingLocation $PLAYER~CURRENT_PROMPT
-	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
-	gosub  :player~currentPrompt
 	setVar $BOT~validPrompts "Citadel Command"
 	gosub :BOT~checkStartingPrompt
+	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ((CURRENTSECTOR = 1) OR (PORT.CLASS[CURRENTSECTOR] = 0) or (CURRENTSECTOR = $map~rylos) or (CURRENTSECTOR = $map~alpha_centauri))
 		if ($startingLocation = "Citadel")
 			send "q "
@@ -96,7 +93,6 @@ halt
 # includes:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
-include "source\bot_includes\player\currentprompt\player"
 include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\player\quikstats\player"
