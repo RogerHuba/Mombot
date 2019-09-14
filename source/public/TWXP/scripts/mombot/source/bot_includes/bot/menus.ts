@@ -724,10 +724,10 @@ return
 		Echo #27 & "[2J"
 		Echo "**"
 		echo ANSI_11&"            Planet Type Information  (Max Colos Per Product Type)         **"
-		echo ANSI_15 "    Type                     Max Fuel  Max Org  Max Equ   Keeper? *"
+		echo ANSI_15 "    Type                       Min Fuel  Max Fuel  Min Org  Max Org  Min Equ  Max Equ  Keeper? *"
 		echo "   " #27 "[1m" ANSI_4 #196 #196 #196 #196 #196 #196  #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196  #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 #196 "*"
 		while (($i <= $PLANET~planetcounter) AND ($menuCount < 10))
-			cutText $PLANET~planetList[$i]&"                                    " $temp 1 25
+			cutText $PLANET~planetList[$i]&"                                    " $temp 8 28
 			cutText $PLANET~planetList[$i][1]&"                                 " $tempfuelmin 1 8
 			cutText $PLANET~planetList[$i][2]&"                                 " $tempfuel 1 8
 			cutText $PLANET~planetList[$i][3]&"                                 " $temporgmin 1 8
@@ -739,7 +739,7 @@ return
 			else
 				setVar $tempKeeper "No"
 			end
-			echo ANSI_14 "<" $menuCount "> " $temp " " $tempfuelmin " " $tempfuel "  " $temporgmin "  " $temporg "  " $tempequipmin "  " $tempequip "   " $tempkeeper "*"
+			echo ANSI_14 "<" $menuCount ">" $temp " " $tempfuelmin " " $tempfuel "  " $temporgmin "  " $temporg "  " $tempequipmin "  " $tempequip " " $tempkeeper "*"
 			add $i 1
 			add $menuCount 1
 		end
@@ -750,8 +750,11 @@ return
 		end
 		echo "*"
 		echo ANSI_12&"           "&#27&"[35m["&#27&"[32m<"&#27&"[35m]"&ANSI_15&"Hot Keys                 Planet List"&#27&"[35m["&#27&"[32m>"&#27&"[35m]*"&ANSI_7&"**"
+		if ($toggleagain = true)
+			goto :toggleagain
+		end
 
-		echo "  " & ANSI_5 & "Update Planet Info (0-9)? "
+		echo "  " & ANSI_5 & "Update Planet Info (0-9)?   Toggle (k)eeper planet"
 		getConsoleInput $selection SINGLEKEY
 		setVar $options "1234567890"
 		upperCase $selection
@@ -766,6 +769,25 @@ return
 		elseif ($selection = "?")
 			gosub :rewrite_planet_file
 			goto :PreferencesMenuPagePlanet
+		elseif ($selection = "K")
+			:toggleagain
+			echo "  " & ANSI_5 & "Which planet to set keeper status? (0-9)"
+			getConsoleInput $planet SINGLEKEY
+			setVar $options "1234567890"
+			upperCase $planet
+			getWordPos $options $pos $planet
+			setvar $toggleagain false
+			if ($pos > 0)
+				if ($PLANET~planetList[($planet+$thisPage)][7] = true)
+					setVar $PLANET~planetList[($planet+$thisPage)][7] false		
+				else
+					setVar $PLANET~planetList[($planet+$thisPage)][7] true		
+				end
+				setvar $toggleagain true
+			else
+				gosub :rewrite_planet_file
+			end
+			goto :PreferencesMenuPagePlanet
 		elseif (($pagesExist) AND ($selection = "+"))
 			if ($i >= $PLANET~planetcounter)
 				setVar $i 1
@@ -775,42 +797,42 @@ return
 			getInput $temp "What are the min fuel colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
 			isNumber $test $temp
 			if ($test = FALSE)
-				goto :NextPlanetInfoPage
+				goto :PreferencesMenuPagePlanet
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][1] $temp
 
 			getInput $temp "What are the max fuel colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
 			isNumber $test $temp
 			if ($test = FALSE)
-				goto :NextPlanetInfoPage
+				goto :PreferencesMenuPagePlanet
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][2] $temp
 
 			getInput $temp "What are the min organics colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
 			isNumber $test $temp
 			if ($test = FALSE)
-				goto :NextPlanetInfoPage
+				goto :PreferencesMenuPagePlanet
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][3] $temp
 
 			getInput $temp "What are the max organics colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
 			isNumber $test $temp
 			if ($test = FALSE)
-				goto :NextPlanetInfoPage
+				goto :PreferencesMenuPagePlanet
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][4] $temp
 
 			getInput $temp "What are the min equipment colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
 			isNumber $test $temp
 			if ($test = FALSE)
-				goto :NextPlanetInfoPage
+				goto :PreferencesMenuPagePlanet
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][5] $temp
 
 			getInput $temp "What are the max equipment colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
 			isNumber $test $temp
 			if ($test = FALSE)
-				goto :NextPlanetInfoPage
+				goto :PreferencesMenuPagePlanet
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][6] $temp
 
@@ -825,7 +847,7 @@ return
 			setVar $i $thisPage
 			setVar $planetsChanged TRUE
 			gosub :rewrite_planet_file
-			goto :NextPlanetInfoPage
+			goto :PreferencesMenuPagePlanet
 		else
 			gosub :rewrite_planet_file
 			gosub :donePrefer
@@ -834,7 +856,7 @@ return
 
 :rewrite_cap_file
 	if ($shipsChanged)
-		setVar $gbonus_file "_MOM_"&GAMENAME&"_dbonus-ships.txt"
+		setVar $gbonus_file $folder&"/dbonus-ships.cfg"
 		delete $gbonus_file
 		delete $SHIP~cap_file
 		setVar $j 1

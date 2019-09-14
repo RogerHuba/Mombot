@@ -867,7 +867,7 @@ return
 
 :rewrite_cap_file
 	if ($shipsChanged)
-		setVar $gbonus_file "_MOM_"&GAMENAME&"_dbonus-ships.txt"
+		setVar $gbonus_file $folder&"/dbonus-ships.cfg"
 		delete $gbonus_file
 		delete $SHIP~cap_file
 		setVar $j 1
