@@ -35,7 +35,7 @@ end
 	killtrigger shot
 	killtrigger missed
 	send $send
-	setTextTrigger shot :shot1 "Photon Missile launched into sector "&$target&"*"
+	setTextLineTrigger shot :shot1 "Photon Missile launched into sector "&$target
 	setTextTrigger missed :missed1 "<Computer deactivated>"
 	pause
 
