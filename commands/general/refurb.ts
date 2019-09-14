@@ -8,11 +8,9 @@ end
 	gosub  :player~currentPrompt
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
-	if (($startingLocation <> "Command") AND ($startingLocation <> "Citadel"))
-		gosub  :player~currentPrompt
-		setVar $BOT~validPrompts "Citadel Command"
-		gosub :BOT~checkStartingPrompt
-	end
+	gosub  :player~currentPrompt
+	setVar $BOT~validPrompts "Citadel Command"
+	gosub :BOT~checkStartingPrompt
 	if ((CURRENTSECTOR = 1) OR (PORT.CLASS[CURRENTSECTOR] = 0) or (CURRENTSECTOR = $map~rylos) or (CURRENTSECTOR = $map~alpha_centauri))
 		if ($startingLocation = "Citadel")
 			send "q "
