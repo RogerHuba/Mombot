@@ -1764,7 +1764,7 @@ return
 			killtrigger grab_colos
 			killtrigger no_colos
             setTextTrigger grab_colos :grab_colos_fuel "The Colonists file aboard your ship, eager to head out."
-			setTextTrigger no_colos   :no_colos_fuel1   "There aren't that many on the planet!"
+			setTextTrigger no_colos   :no_colos_fuel1  "There aren't that many on the planet!"
 			pause
 
 			:no_colos_fuel1

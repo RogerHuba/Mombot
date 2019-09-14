@@ -488,7 +488,7 @@ return
 	setVar $BOT~help[12] $BOT~tab&"  - [amount]  = number to purchase, default is maximum"
 	setVar $BOT~help[13] $BOT~tab&"      "
 	setVar $BOT~help[14] $BOT~tab&"  - Originally written by Cherokee.     "
-	setVar $BOT~help[15] $BOT~tab&"  - Now integrated with EP Haggle if it's running "
+	setVar $BOT~help[15] $BOT~tab&"  - Now integrated with EP Haggle if it is running "
 	gosub :bot~helpfile
 	
 
