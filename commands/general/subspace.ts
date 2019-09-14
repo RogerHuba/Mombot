@@ -9,12 +9,9 @@
 
 :subspace
 
-gosub :player~quikstats
-if (($PLAYER~CURRENT_PROMPT <> "Command") and ($PLAYER~CURRENT_PROMPT <> "Citadel"))
-	setVar $SWITCHBOARD~message "Must run from Command or Citadel Prompt*"
-	gosub :SWITCHBOARD~switchboard
-	halt
-end
+setVar $BOT~validPrompts "Citadel Command"
+gosub :BOT~checkStartingPrompt
+
 isNumber $isvalid $bot~parm1
 
 if ($isvalid <> true)
@@ -49,5 +46,6 @@ halt
 
 # includes:
 include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
