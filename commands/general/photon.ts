@@ -31,7 +31,7 @@ end
 	if ($player~current_prompt <> "Computer")
 		setvar $send "c  "
 	end
-	setvar $send $send&"p  y  " $target "**  q*"
+	setvar $send $send&"p  y  " $target "**  q*  "
 	killtrigger shot
 	killtrigger missed
 	send $send
@@ -40,13 +40,13 @@ end
 	pause
 
 :missed1
-	killtrigger shot
+	killalltriggers
 	setVar $SWITCHBOARD~message "Photon not fired.  Is the sector adjacent?*"
 	gosub :SWITCHBOARD~switchboard
 	goto :wait_for_command
 
 :shot1
-	killtrigger missed
+	killalltriggers
 	setVar $SWITCHBOARD~message "Photon fired -> Sector "&$target&"*"
 	gosub :SWITCHBOARD~switchboard
 	goto :wait_for_command
