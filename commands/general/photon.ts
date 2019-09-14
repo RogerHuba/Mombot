@@ -31,7 +31,7 @@ end
 	if ($player~current_prompt <> "Computer")
 		setvar $send "c  "
 	end
-	setvar $send $send&"p  y  " $target "**  q*  "
+	setvar $send $send&"p  y  "&$target&"**  q*  "
 	killtrigger shot
 	killtrigger missed
 	send $send
