@@ -660,7 +660,7 @@ if ($limit < $sectorResultsi)
 	setvar $sectorResultsi $limit
 end
 while ($y <= $sectorResultsi)
-	
+	setvar $count $sectorResultsi
 	if ($sortedResults[$y] > 0)
 		getSectorParameter $sortedResults[$y] "FIGSEC" $isFigged
 		setSectorParameter $sortedResults[$y] $mark TRUE
