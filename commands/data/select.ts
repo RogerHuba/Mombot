@@ -47,6 +47,7 @@ setVar $portClassWanted 0
 #final filter of search results 0 - none, 1 - secure (figs surrounded) 2- PAranoid (Figs + Limps)
 setVar $securityLevel 0
 setVar $warps 0
+setvar $limit sectors
 
 setvar $i 1
 
@@ -703,9 +704,9 @@ if ($count <= 0)
 	setVar $SWITCHBOARD~message "Displaying results for: select "&$original_query&"* *Your query returned "&$count&" results.*"
 else
 	if ($count > 1000)
-		setVar $SWITCHBOARD~message $limit&"]Displaying results for: select "&$original_query&"* *Your query returned "&$count&" results.*This is too many to display on subspace. *If you'd like to narrow your search, add more parameters.*All result sectors are now marked with QUERY sector parameter.*You can also display individual results with the sector bot command.*"
+		setVar $SWITCHBOARD~message "Displaying results for: select "&$original_query&"* *Your query returned "&$count&" results.*This is too many to display on subspace. *If you'd like to narrow your search, add more parameters.*All result sectors are now marked with QUERY sector parameter.*You can also display individual results with the sector bot command.*"
 	else
-		setVar $SWITCHBOARD~message $limit&"]Displaying results for: select "&$original_query&"* *"&$results&"* *Your query returned "&$count&" results.*All result sectors are now marked with QUERY sector parameter.*You can also display individual results with the sector bot command.*"
+		setVar $SWITCHBOARD~message "Displaying results for: select "&$original_query&"* *"&$results&"* *Your query returned "&$count&" results.*All result sectors are now marked with QUERY sector parameter.*You can also display individual results with the sector bot command.*"
 	end
 end
 gosub :SWITCHBOARD~switchboard
