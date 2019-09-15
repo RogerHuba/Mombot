@@ -651,7 +651,7 @@ return
 	end
 	if ($twarpbuy = true)
 		setvar $fueltotravel (($distance_back + $distance_there) * 3)
-		send "t * t 1"&fueltotravel&"* "
+		send "t * t 1"&$fueltotravel&"* "
 	end
 	if ($startingLocation = "Citadel")
 		send "C s* "
@@ -1093,8 +1093,6 @@ return
 :initbuyroutine
 	send "Q "
 	gosub :player~quikstats
-	send "'"&$player~current_prompt&"*"
-	pause
 	if ($movebuy = true)
 		if ($twarpbuy = true)
 			setVar $player~warpto $warpto
