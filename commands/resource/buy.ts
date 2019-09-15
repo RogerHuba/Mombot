@@ -218,7 +218,7 @@ return
 			setVar $maxfueltobuy $planet~planetfuelroom
 		end
 		setVar $maxfuelrounds $maxfueltobuy
-		divide $maxfuelrounds $player~total_holds
+		divide $maxfuelrounds ($player~total_holds-$fueltotravel)
 		if ($maxfuelrounds > $player~turns_allowed)
 			setVar $maxfuelrounds $player~turns_allowed
 		end
@@ -241,7 +241,7 @@ return
 			setVar $maxorgtobuy $planet~planetorgroom
 		end
 		setVar $maxorgrounds $maxorgtobuy
-		divide $maxorgrounds $player~total_holds
+		divide $maxorgrounds ($player~total_holds-$fueltotravel)
 		if ($maxorgrounds > $player~turns_allowed)
 			setVar $maxorgrounds $player~turns_allowed
 		end
@@ -264,9 +264,9 @@ return
 			setVar $maxequiptobuy $planet~planetequiproom
 		end
 		setVar $maxequiprounds $maxequiptobuy
-		divide $maxequiprounds $player~total_holds
+		divide $maxequiprounds ($player~total_holds-$fueltotravel)
 		if ($maxequiprounds > $player~turns_allowed)
-		setVar $maxequiprounds $player~turns_allowed
+			setVar $maxequiprounds $player~turns_allowed
 		end
 		if ($maxequiprounds > $buydown_equiprounds)
 			setVar $maxequiprounds $buydown_equiprounds
@@ -679,6 +679,7 @@ return
 			getDistance $distance_back $warpto $player~current_sector
 		end		
 	end
+	setvar $fueltotravel 0
 	if ($twarpbuy = true)
 		setvar $fueltotravel (($distance_back + $distance_there) * 3)
 		send "t * t 1"&$fueltotravel&"* "
