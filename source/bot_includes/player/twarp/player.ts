@@ -123,6 +123,9 @@
 	if (($twarpSuccess = TRUE) AND (($original = $MAP~stardock) OR ($original <= 10)))
 		send "* m "&$original&"*  za"&$ship~SHIP_MAX_ATTACK&"* * "
 	end
+	if ($twarpSuccess = true)
+		setvar $player~current_sector $warpto
+	end
 return
 
 :killtwarptriggers
