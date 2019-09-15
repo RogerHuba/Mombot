@@ -51,6 +51,9 @@ setvar $limit sectors
 
 setvar $i 1
 
+setvar $original_query $bot~user_command_line
+
+
 getWordPos $bot~user_command_line $pos "dist"
 if ($pos > 0)
 	setVar $dist 1
@@ -111,7 +114,6 @@ end
 setArray $sector_params 100 3
 setvar $sector_param_count 0
 
-setvar $original_query $bot~user_command_line
 getWordPos $bot~user_command_line $pos #34
 if ($pos > 0)
 	getText $bot~user_command_line $like " "&#34 #34
