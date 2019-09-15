@@ -1092,6 +1092,9 @@ return
 
 :initbuyroutine
 	send "Q "
+	gosub :player~quikstats
+	send "'"&$player~current_prompt&"*"
+	pause
 	if ($movebuy = true)
 		if ($twarpbuy = true)
 			setVar $player~warpto $warpto
