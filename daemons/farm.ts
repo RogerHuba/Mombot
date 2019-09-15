@@ -66,22 +66,22 @@
 	
 
 	setvar $portname "Mind ()ver Matter"
- 	setvar $planet~planetnamedoor "DOOR GUN"
- 	setvar $bot~parmameter "FARM"
- 	setvar $name_the_planet "Mind ()ver Matter"
- 	setVar $j 1
- 	setvar $status_message "Initializing"
-    setVar $version "3.0.0"
+	setvar $planet~planetnamedoor "DOOR GUN"
+	setvar $bot~parmameter "FARM"
+	setvar $name_the_planet "Mind ()ver Matter"
+	setVar $j 1
+	setvar $status_message "Initializing"
+	setVar $version "3.0.0"
 	
 	setVar $BOT~script_title "M()M Farmer"
 		
-    if ($bot~parm1 = "off")
+	if ($bot~parm1 = "off")
 		setVar $SWITCHBOARD~message "Shutting down "&$BOT~script_title&".*"
 		gosub :SWITCHBOARD~switchboard
-    	halt
-    end
+		halt
+	end
 
-    if ($bot~parm1 = "setbubble") or ($bot~parm1 = "bubbleset")
+	if ($bot~parm1 = "setbubble") or ($bot~parm1 = "bubbleset")
 		setVar $DOOR $bot~parm2
 		setSectorParameter $DOOR "DOOR" TRUE
 		setSectorParameter $DOOR "BUBBLE" TRUE
@@ -133,7 +133,7 @@
 		halt
 
 
-    end
+	end
 
 	getWordPos $bot~user_command_line $pos "balance"
 	if ($pos > 0)
@@ -179,48 +179,48 @@
 
 	getWordPos $bot~user_command_line $pos "fig"
 	if ($pos > 0)
-	        setVar $strip TRUE
+			setVar $strip TRUE
 		setVar $get_figs TRUE
 	else
 		setVar $get_figs FALSE
 	end
 	
-    getWordPos $bot~user_command_line $pos "reverse"
+	getWordPos $bot~user_command_line $pos "reverse"
 	if ($pos > 0)
 		setVar $reverse TRUE
 	else
 		setVar $reverse FALSE
 	end
 
-    getWordPos " "&$bot~user_command_line&" " $pos "one"
+	getWordPos " "&$bot~user_command_line&" " $pos "one"
 	if ($pos > 0)
 		setVar $one_per_sector TRUE
 	else
 		setVar $one_per_Sector FALSE
 	end
 
-    getWordPos $bot~user_command_line $pos "nostrip"
+	getWordPos $bot~user_command_line $pos "nostrip"
 	if ($pos > 0)
 		setVar $nostrip TRUE
 	else
 		setVar $nostrip FALSE
 	end
 
-    getWordPos $bot~user_command_line $pos "noupgrade"
+	getWordPos $bot~user_command_line $pos "noupgrade"
 	if ($pos > 0)
 		setVar $noupgrade TRUE
 	else
 		setVar $noupgrade FALSE
 	end
 
-    getWordPos $bot~user_command_line $pos "movefig"
+	getWordPos $bot~user_command_line $pos "movefig"
 	if ($pos > 0)
 		setVar $movefig TRUE
 	else
 		setVar $movefig FALSE
 	end
 
-    getWordPos $bot~user_command_line $pos "defense"
+	getWordPos $bot~user_command_line $pos "defense"
 	if ($pos > 0)
 		setVar $defense TRUE
 	else
@@ -229,7 +229,7 @@
 
 	getWordPos " "&$bot~user_command_line&" " $pos " f "
 	if ($pos > 0)
-       	setVar $strip TRUE
+		setVar $strip TRUE
 		setVar $get_fuel TRUE
 	else
 		setVar $get_fuel FALSE
@@ -237,7 +237,7 @@
 
 	getWordPos " "&$bot~user_command_line&" " $pos " o "
 	if ($pos > 0)
-	    setVar $strip TRUE
+		setVar $strip TRUE
 		setVar $get_org TRUE
 	else
 		setVar $get_org FALSE
@@ -245,7 +245,7 @@
 
 	getWordPos " "&$bot~user_command_line&" " $pos " e "
 	if ($pos > 0)
-	    setVar $strip TRUE
+		setVar $strip TRUE
 		setVar $get_equip TRUE
 	else
 		setVar $get_equip FALSE
@@ -258,28 +258,28 @@
 		setVar $upgrade FALSE
 	end
 
-    getWordPos $bot~user_command_line $pos "port"
+	getWordPos $bot~user_command_line $pos "port"
 	if ($pos > 0)
 		setVar $port TRUE
 	else
 		setVar $port FALSE
 	end
 
-    getWordPos $bot~user_command_line $pos "skipfuel"
+	getWordPos $bot~user_command_line $pos "skipfuel"
 	if ($pos > 0)
 		setVar $skipfuel TRUE
 	else
 		setVar $skipfuel FALSE
 	end
 
-    getWordPos $bot~user_command_line $pos "skiporg"
+	getWordPos $bot~user_command_line $pos "skiporg"
 	if ($pos > 0)
 		setVar $skiporg TRUE
 	else
 		setVar $skiporg FALSE
 	end
 
-    getWordPos $bot~user_command_line $pos "skipequip"
+	getWordPos $bot~user_command_line $pos "skipequip"
 	if ($pos > 0)
 		setVar $skipequip TRUE
 	else
@@ -313,7 +313,7 @@
 		setVar $destroyports FALSE
 	end
 
-    getWordPos $bot~user_command_line $pos "cash"
+	getWordPos $bot~user_command_line $pos "cash"
 	if ($pos > 0)
 		setVar $cash TRUE
 	else
@@ -373,7 +373,7 @@
 		setVar $barricade FALSE
 	end
 
-    getWordPos $bot~user_command_line $pos "clear"
+	getWordPos $bot~user_command_line $pos "clear"
 	if ($pos > 0)
 		setVar $IDX 11
 		setVar $perc 0
@@ -390,7 +390,7 @@
 				echo ANSI_14 "?" ANSI_15 " " $perc "%" #27 & "[1A   "
 			end
 		end
-    	DELETE $BUBBLE_LIST
+		DELETE $BUBBLE_LIST
 		setVar $SWITCHBOARD~message "Bot Farming and Bubble Sectors Have Been Cleared.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -420,14 +420,14 @@
 		if ($test)
 			if (($bot~parm2 > 10) AND ($bot~parm2 <= SECTORS) AND ($bot~parm2 <> STARDOCK))
 				setSectorParameter $bot~parm2 $bot~parmameter TRUE
-		        setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector added as "&$bot~parmameter&" Sector.*"
+				setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector added as "&$bot~parmameter&" Sector.*"
 				gosub :SWITCHBOARD~switchboard
 			end
 		else
-            setVar $SWITCHBOARD~message "Sector to add not Valid.*"
+			setVar $SWITCHBOARD~message "Sector to add not Valid.*"
 			gosub :SWITCHBOARD~switchboard
-        end
-	    halt
+		end
+		halt
 	end
 
 
@@ -437,27 +437,27 @@
 		if ($test)
 			if (($bot~parm2 > 10) AND ($bot~parm2 <= SECTORS) AND ($bot~parm2 <> STARDOCK))
 				setSectorParameter $bot~parm2 $bot~parmameter FALSE
-		        setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector removed from "&$bot~parmameter&" Sector Parameters.*"
+				setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector removed from "&$bot~parmameter&" Sector Parameters.*"
 				gosub :SWITCHBOARD~switchboard
 			end
 		else
-            setVar $SWITCHBOARD~message "Sector to remove not Valid.*"
+			setVar $SWITCHBOARD~message "Sector to remove not Valid.*"
 			gosub :SWITCHBOARD~switchboard
-        end
-	    halt
+		end
+		halt
 	end
 
 	gosub :BOT~banner
 
-    if (($get_figs = FALSE) and ($strip = FALSE) and ($warp = FALSE) and ($port = FALSE) and ($upgrade = FALSE) and ($colo = FALSE) and ($cash = FALSE) and ($shield = FALSE) and ($build = FALSE) and ($colonize = FALSE) and ($colo = FALSE) and ($bot~parm1 <> "") and ($defense = FALSE) and ($balance = FALSE) and ($barricade = FALSE) and ($armageddon = FALSE))
+	if (($get_figs = FALSE) and ($strip = FALSE) and ($warp = FALSE) and ($port = FALSE) and ($upgrade = FALSE) and ($colo = FALSE) and ($cash = FALSE) and ($shield = FALSE) and ($build = FALSE) and ($colonize = FALSE) and ($colo = FALSE) and ($bot~parm1 <> "") and ($defense = FALSE) and ($balance = FALSE) and ($barricade = FALSE) and ($armageddon = FALSE))
 		setVar $SWITCHBOARD~message "What's the point?*"
 		gosub :SWITCHBOARD~switchboard
 		halt
-    elseif ($bot~parm1 = "")
+	elseif ($bot~parm1 = "")
 		setVar $SWITCHBOARD~message "What's the point?*"
 		gosub :SWITCHBOARD~switchboard
 		halt
-    end
+	end
 
 
 
@@ -478,15 +478,15 @@
 	
 	gosub :PLANET~loadplanetInfo
 
-    send "q"
+	send "q"
 	gosub :PLANET~getPlanetInfo
 	send "c"
 	setvar $planet~planetToFill $planet~planet
 	gosub :SHIP~getShipStats
 	gosub :fillplanetstats
 
-    Window Farm_Script 330 424 ("M()M Farmer - " & GAMENAME) ONTOP
-    gosub :setWindow
+	Window Farm_Script 330 424 ("M()M Farmer - " & GAMENAME) ONTOP
+	gosub :setWindow
 
 	gosub :get_tl_list
 	setArray $checked SECTORS
@@ -495,12 +495,12 @@
 	killalltriggers
 
 :inac
-:tryAgain
-		setVar $PLAYER~save TRUE
-		gosub :player~quikstats
 		setVar $bottom 1
 		setVar $top 1
 		setVar $que[1] $player~current_sector
+:tryAgain
+		setVar $PLAYER~save TRUE
+		gosub :player~quikstats
 		setVar $checked[$player~current_sector] 1
 		while ($bottom <= $top)
 			# Now, pull out the next sector in the que, and make it our focus
@@ -538,9 +538,9 @@
 
 			if (($BUBBLE = TRUE) and ($focus <> $player~current_sector))
 				setvar $farmsector $focus
-			    goto :move_the_planet
+				goto :move_the_planet
 			else
-			    goto :notit
+				goto :notit
 			end
 
 
@@ -579,11 +579,13 @@
 
 		:warp_it
 			killalltriggers
+			setvar $player~current_sector $focus
+			gosub :setWindow
 			if ($WARP)
-			      send "tt"
-			      waitfor "How much to transfer?"
-			      send $PLAYER~CREDITS&"*"
-			      waitfor "Citadel treasury contains"
+				  send "tt"
+				  waitfor "How much to transfer?"
+				  send $PLAYER~CREDITS&"*"
+				  waitfor "Citadel treasury contains"
 			end
 
 			send "q"
@@ -592,9 +594,11 @@
 
 			send "m*** q* "
 			gosub :count_planets
-	        if ($build = TRUE)
-	    		gosub :buildplanets
-	        end
+			if ($build = TRUE)
+				gosub :buildplanets
+			end
+			gosub :setWindow
+
 			gosub :count_planets
 			if (($port) OR ($build))
 				gosub :check_ports
@@ -656,11 +660,11 @@
 					end
 				end
 			end
-	        :done_moving_planets
+			:done_moving_planets
 			if ($balance = true)
 				gosub :count_planets
-	        end
-	        if ($armageddon = TRUE)
+			end
+			if ($armageddon = TRUE)
 				setVar $BOT~command "mover"
 				setVar $BOT~user_command_line "dump all fc oc ec turbo silent"
 				setVar $BOT~parm1 "dump"
@@ -702,20 +706,20 @@
 				end
 
 
-	        end
-	        if (($strip) or ($colo) or ($upgrade) or ($cash) or ($warp) or ($shield) or ($colonize) or ($figs) or ($defense) or ($movefig) or ($barricade) or ($armageddon))
+			end
+			if (($strip) or ($colo) or ($upgrade) or ($cash) or ($warp) or ($shield) or ($colonize) or ($figs) or ($defense) or ($movefig) or ($barricade) or ($armageddon))
 				gosub :stripallplanets
-	        end
-	        if ($silent <> TRUE)
-                setVar $SWITCHBOARD~message "Completed All Farming/Building/Port Actions Sector: "&$farmSector&".*"
+			end
+			if ($silent <> TRUE)
+				setVar $SWITCHBOARD~message "Completed All Farming/Building/Port Actions Sector: "&$farmSector&".*"
 				gosub :SWITCHBOARD~switchboard
-            end
-            send "qq* l " & #8 & $planet~planetToFill & "* "
+			end
+			send "qq* l " & #8 & $planet~planetToFill & "* "
 			gosub :PLANET~getPlanetInfo
 			gosub :fillplanetstats
 			send "c"
 			:next_farm_sector
-            if ($strip = TRUE)
+			if ($strip = TRUE)
 				if ((($get_org = TRUE) AND ($planet~planet_ORGANICS > ($planet~planet_ORGANICS_MAX-1000))) AND (($get_equ = TRUE) AND ($planet~planet_EQUIPMENT > ($planet~planet_EQUIPMENT_MAX - 1000))))
 					setVar $planet~planetIsFull TRUE
 					goto :end
@@ -749,8 +753,8 @@
 		setTextLineTrigger getend :done "Land on which planet "
 		pause
 	:done
-         killalltriggers
-         return
+		 killalltriggers
+		 return
 
 :get_tl_list
 	setVar $sectorCount 0
@@ -781,18 +785,18 @@
 return
 
 :stripallplanets
- 	setVar $j 1
+	setVar $j 1
 	send "qq* "
 	if ((($upgrade) OR ($build)) AND ($noupgrade = FALSE))
-         if ($planet~planetCount > 1)
-         	send "l " & #8 & $planet~planetToFill & "* c " 
-         	gosub :upgrade_planets
+		 if ($planet~planetCount > 1)
+			send "l " & #8 & $planet~planetToFill & "* c " 
+			gosub :upgrade_planets
 			send "qq* "
-    	end
-    end
+		end
+	end
 	while ($j <= $planet~planetCount)
 		if ($planet~planetToFill <> $planet~planets[$j])
-                        send "l " & #8 & $planet~planets[$j] & "* "
+						send "l " & #8 & $planet~planets[$j] & "* "
 						gosub :PLANET~getPlanetInfo
 						setVar $planet~planet_FUEL $planet~planet_FUEL
 						setVar $planet~planet_ORGANICS $planet~planet_ORGANICS
@@ -806,7 +810,7 @@ return
 						setVar $planet~planet_SHIELD_POWER $planet~SHIELD_POWER
 						lowercase $planet~planet_CLASS
 
-                        if ($armageddon = TRUE)
+						if ($armageddon = TRUE)
 							setVar $BOT~user_command_line "s silent"
 							saveVar $BOT~user_command_line
 							setEventTrigger		1		:movefigarmended "SCRIPT STOPPED" "scripts\momBot\modes\resource\movefig.cts"
@@ -872,19 +876,19 @@ return
 							gosub :switchboard~switchboard
 							goto :doneWithThisPlanet
 						end
-                        if ($colonize)
+						if ($colonize)
 							if (($planet~planet_FUEL_COLONISTS < ($planet~planet_FUEL_COLONISTS_MAX-1000)) OR ($planet~planet_ORGANICS_COLONISTS < ($planet~planet_ORGANICS_COLONISTS_MAX-1000)) OR ($planet~planet_EQUIPMENT_COLONISTS < ($planet~planet_EQUIPMENT_COLONISTS_MAX-1000)))
 								gosub :colonize
 							end
 							send "l " & #8 & $planet~planets[$j] & "* "
 							gosub :PLANET~getPlanetInfo
 							lowercase $planet~planet_CLASS
-                        end
-                        if ($defense)
-	                        if ($planet~planet_CITADEL >= 3)
+						end
+						if ($defense)
+							if ($planet~planet_CITADEL >= 3)
 								send "cls0*la100*q "                        	
-	                        end
-	                    end
+							end
+						end
 						if ($barricade = TRUE)
 							if (($planet~planet_FUEL > 50000) AND ($planet~planet_CITADEL >= 4))
 								send "c  "
@@ -900,14 +904,14 @@ return
 								setVar $movefig FALSE
 							end
 						end
-	                    if ($movefig = TRUE)
+						if ($movefig = TRUE)
 							setVar $BOT~user_command_line "s silent"
 							saveVar $BOT~user_command_line
 							setEventTrigger		movefigended		:movefigended "SCRIPT STOPPED" "scripts\mombot\modes\resource\movefig.cts"
 							load "scripts\mombot\modes\resource\movefig.cts"
 							pause
 							:movefigended	                    
-	                    end
+						end
 						if ($barricade = TRUE)
 							gosub :PLAYER~quikstats
 							if (($PLAYER~CURRENT_SECTOR = $home) AND ($PLAYER~CURRENT_PROMPT = "Citadel"))
@@ -918,8 +922,8 @@ return
 						end
 
 						#AUTOMATICALLY ADJUST COLOS
-                        if ($planet~planet_FUEL_COLONISTS > $planet~planet_FUEL_COLONISTS_MAX)
-                        	setVar $extra_colos ($planet~planet_FUEL_COLONISTS-$planet~planet_FUEL_COLONISTS_MAX)
+						if ($planet~planet_FUEL_COLONISTS > $planet~planet_FUEL_COLONISTS_MAX)
+							setVar $extra_colos ($planet~planet_FUEL_COLONISTS-$planet~planet_FUEL_COLONISTS_MAX)
 							if ($planet~planet_ORGANICS_COLONISTS < $planet~planet_ORGANICS_COLONISTS_MAX)
 								setVar $colos_needed ($planet~planet_ORGANICS_COLONISTS_MAX-$planet~planet_ORGANICS_COLONISTS)
 								if ($colos_needed >= $extra_colos)
@@ -950,7 +954,7 @@ return
 									waitOn "The Colonists drop what"
 								end
 							end
-                        end
+						end
 						if ($planet~planet_ORGANICS_COLONISTS > $planet~planet_ORGANICS_COLONISTS_MAX)
 							setVar $extra_colos ($planet~planet_ORGANICS_COLONISTS-$planet~planet_ORGANICS_COLONISTS_MAX)
 							if ($planet~planet_FUEL_COLONISTS < $planet~planet_FUEL_COLONISTS_MAX)
@@ -984,43 +988,43 @@ return
 								end
 							end
 						end
-                        if ($planet~planet_EQUIPMENT_COLONISTS > $planet~planet_EQUIPMENT_COLONISTS_MAX)
-                        	setVar $extra_colos ($planet~planet_EQUIPMENT_COLONISTS-$planet~planet_EQUIPMENT_COLONISTS_MAX)
-                        	if ($planet~planet_ORGANICS_COLONISTS < $planet~planet_ORGANICS_COLONISTS_MAX)
-                        		setVar $colos_needed ($planet~planet_ORGANICS_COLONISTS_MAX-$planet~planet_ORGANICS_COLONISTS)
-                        		if ($colos_needed >= $extra_colos)
-                        			setVar $colos_to_move $extra_colos
-                        		else
-                        			setVar $colos_to_move $colos_needed
-                        		end
+						if ($planet~planet_EQUIPMENT_COLONISTS > $planet~planet_EQUIPMENT_COLONISTS_MAX)
+							setVar $extra_colos ($planet~planet_EQUIPMENT_COLONISTS-$planet~planet_EQUIPMENT_COLONISTS_MAX)
+							if ($planet~planet_ORGANICS_COLONISTS < $planet~planet_ORGANICS_COLONISTS_MAX)
+								setVar $colos_needed ($planet~planet_ORGANICS_COLONISTS_MAX-$planet~planet_ORGANICS_COLONISTS)
+								if ($colos_needed >= $extra_colos)
+									setVar $colos_to_move $extra_colos
+								else
+									setVar $colos_to_move $colos_needed
+								end
 								setVar $extra_colos ($extra_colos - $colos_to_move)
-                        		setVar $planet~planet_ORGANICS_COLONISTS ($planet~planet_ORGANICS_COLONISTS+$colos_to_move)
-                        		setVar $planet~planet_EQUIPMENT_COLONISTS ($planet~planet_EQUIPMENT_COLONISTS-$colos_to_move)
+								setVar $planet~planet_ORGANICS_COLONISTS ($planet~planet_ORGANICS_COLONISTS+$colos_to_move)
+								setVar $planet~planet_EQUIPMENT_COLONISTS ($planet~planet_EQUIPMENT_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*3"&$colos_to_move&"*2"
 									waitOn "The Colonists drop what"
 								end
 							end
-                        	if ($planet~planet_FUEL_COLONISTS < $planet~planet_FUEL_COLONISTS_MAX)
-                        		setVar $colos_needed ($planet~planet_FUEL_COLONISTS_MAX-$planet~planet_FUEL_COLONISTS)
-                        		if ($colos_needed >= $extra_colos)
-                        			setVar $colos_to_move $extra_colos
-                        		else
-                        			setVar $colos_to_move $colos_needed
-                        		end
+							if ($planet~planet_FUEL_COLONISTS < $planet~planet_FUEL_COLONISTS_MAX)
+								setVar $colos_needed ($planet~planet_FUEL_COLONISTS_MAX-$planet~planet_FUEL_COLONISTS)
+								if ($colos_needed >= $extra_colos)
+									setVar $colos_to_move $extra_colos
+								else
+									setVar $colos_to_move $colos_needed
+								end
 								setVar $extra_colos ($extra_colos - $colos_to_move)
 								setVar $planet~planet_FUEL_COLONISTS ($planet~planet_FUEL_COLONISTS+$colos_to_move)
-                        		setVar $planet~planet_EQUIPMENT_COLONISTS ($planet~planet_EQUIPMENT_COLONISTS-$colos_to_move)
+								setVar $planet~planet_EQUIPMENT_COLONISTS ($planet~planet_EQUIPMENT_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*3"&$colos_to_move&"*1"
 									waitOn "The Colonists drop what"
 								end
-                        	end
-                        end
+							end
+						end
 
-                        send "qq* l " & #8 & $planet~planets[$j] & "* c "
-		        		gosub :setWindow
-                        if (($planet~planet_CITADEL_CREDITS > 0) and ($cash = true))
+						send "qq* l " & #8 & $planet~planets[$j] & "* c "
+						gosub :setWindow
+						if (($planet~planet_CITADEL_CREDITS > 0) and ($cash = true))
 							while ($planet~planet_citadel_credits > 0)
 								if ($planet~planet_CITADEL_CREDITS > 999999999) or (($planet~planet_CITADEL_CREDITS +  $PLAYER~CREDITS) > 999999999)
 									setVar $amount_of_cash_to_transfer (999999999 - $PLAYER~CREDITS)
@@ -1031,23 +1035,23 @@ return
 								send "t f " & $amount_of_cash_to_transfer & "* qq* l " & #8 & $planet~planetToFill & "* c t t " & $amount_of_cash_to_transfer & "* qq* l " & #8 & $planet~planets[$j] & "* c "
 							end
 							send "qq* "
-                        end
-                        if (($shield) and ($planet~planet_CITADEL > 4) and ($planet~planet_SHIELD_POWER < 200))
-                            if ($PLAYER~SHIELDS < 2000)
-                                    send "qq* l " & #8 & $planet~planetToFill & "*"
-                                    gosub :PLANET~getPlanetInfo
-                                    gosub :fillplanetstats
-                                    if ($planet~SHIELD_POWER < 200)
-                                          setVar $shield FALSE
-                                          send "qq* "
-                                    else
-                                          send "cgf200*qq* "
-                                    end
-                            else
-                                   send "qq* l " & #8 & $planet~planets[$j] & "* c gt200*"
-                            end
-                        end
-                        if (($warp = TRUE) and ($planet~planet_CITADEL > 3) and ($planet~planet_FUEL > 50000) and (($planet~planet_ORGANICS > 50000) or ($planet~planet_EQUIPMENT > 50000)))
+						end
+						if (($shield) and ($planet~planet_CITADEL > 4) and ($planet~planet_SHIELD_POWER < 200))
+							if ($PLAYER~SHIELDS < 2000)
+									send "qq* l " & #8 & $planet~planetToFill & "*"
+									gosub :PLANET~getPlanetInfo
+									gosub :fillplanetstats
+									if ($planet~SHIELD_POWER < 200)
+										  setVar $shield FALSE
+										  send "qq* "
+									else
+										  send "cgf200*qq* "
+									end
+							else
+								   send "qq* l " & #8 & $planet~planets[$j] & "* c gt200*"
+							end
+						end
+						if (($warp = TRUE) and ($planet~planet_CITADEL > 3) and ($planet~planet_FUEL > 50000) and (($planet~planet_ORGANICS > 50000) or ($planet~planet_EQUIPMENT > 50000)))
 							send "qq* l " & #8 & $planet~planets[$j] & "* c "
 							gosub :merch
 							send "d"
@@ -1062,8 +1066,8 @@ return
 								end
 								send "t f " & $planet~CITADELCash & "* qq* l " & #8 & $planet~planetToFill & "* c t t " & $planet~CITADELCash & "* "
 							end
-                        end
-                        send "qq* * "
+						end
+						send "qq* * "
 
 						if ($strip)
 							send "l " & #8 & $planet~planetToFill & "* c "
@@ -1100,14 +1104,14 @@ return
 							gosub :fillplanetstats
 							send "q * "
 						end
-                        :try_colo
-                        if ($colo)
+						:try_colo
+						if ($colo)
 							send "qq* jy* l " & #8 & $planet~planetToFill & "*  "
 							gosub :planet~getplanetinfo
 							gosub :fillplanetstats
 
-	                        setVar $cyclebuffer 0
-	                        setVar $cyclebufferlimit 20
+							setVar $cyclebuffer 0
+							setVar $cyclebufferlimit 20
 							send "qq* jy* l " & #8 & $planet~planets[$j] & "*  "
 							gosub :planet~getplanetinfo
 
@@ -1164,15 +1168,15 @@ return
 					:doneWithThisPlanet
 						killAllTriggers
 		end
-                add $j 1
+				add $j 1
 	end
 	send "qq* l " & #8 & $planet~planetToFill & "*  c"
 RETURN
 
 :upgrade_planets
-    setvar $status_message "Upgrading Planet(s)"
-    gosub :setWindow
-    killalltriggers
+	setvar $status_message "Upgrading Planet(s)"
+	gosub :setWindow
+	killalltriggers
 	setVar $BOT~command "massupgrade"
 	setVar $BOT~user_command_line "massupgrade silent *"
 	setVar $BOT~parm1 ""
@@ -1186,38 +1190,38 @@ RETURN
 return
 
 :buildplanets
-    killalltriggers
-    setTextLineTrigger port_blown1 :buildplanetsend "<=-DANGER-=>  Scanners indicate massive debris and heavy"
-    setTextLineTrigger port_here1 :buildnext "Class"
-    setTextLineTrigger needs_port1 :buildnext "Warps to Sector(s)"
-    send "qqzn*"
-    pause
+	killalltriggers
+	setTextLineTrigger port_blown1 :buildplanetsend "<=-DANGER-=>  Scanners indicate massive debris and heavy"
+	setTextLineTrigger port_here1 :buildnext "Class"
+	setTextLineTrigger needs_port1 :buildnext "Warps to Sector(s)"
+	send "qqzn*"
+	pause
 
 :buildnext
-    killalltriggers
-    setVar $doneWithPlanets FALSE
-    setVar $tempPlanetCount ($planet~planetCount)
-    loadVar $GAME~MAX_PLANETS_PER_SECTOR
-    setVar $planet~planetsPerSector2 $GAME~MAX_PLANETS_PER_SECTOR
-    subtract $tempPlanetCount 1
-    send "qqzn * l " & #8 & $planet~planetToFill & "*mnt* qq* "
-    setvar $planet~planetsPerSector2 ($planet~planetsPerSector2 - $tempPlanetCount)
-    if (($tempPlanetCount > 0) AND ($one_per_sector = TRUE))
+	killalltriggers
+	setVar $doneWithPlanets FALSE
+	setVar $tempPlanetCount ($planet~planetCount)
+	loadVar $GAME~MAX_PLANETS_PER_SECTOR
+	setVar $planet~planetsPerSector2 $GAME~MAX_PLANETS_PER_SECTOR
+	subtract $tempPlanetCount 1
+	send "qqzn * l " & #8 & $planet~planetToFill & "*mnt* qq* "
+	setvar $planet~planetsPerSector2 ($planet~planetsPerSector2 - $tempPlanetCount)
+	if (($tempPlanetCount > 0) AND ($one_per_sector = TRUE))
 		setvar $status_message "Already a planet in this sector."
-	    gosub :setWindow
-        goto :buildplanetsend
-    end
+		gosub :setWindow
+		goto :buildplanetsend
+	end
 	if ($planet~planetsPerSector2 <= 0)
-        goto :buildplanetsend
-    end
+		goto :buildplanetsend
+	end
 	setvar $status_message "Building planets in sector "&$PLAYER~CURRENT_SECTOR&"*    (Needs "&$planet~planetsPerSector2&" planet(s))"
-    gosub :setWindow
+	gosub :setWindow
 
 :LetsGoAgain
-    gosub :PLAYER~quikstats
-    if (($PLAYER~ATOMIC < 1) OR ($PLAYER~GENESIS < 1))
-            gosub :get_dets
-    end
+	gosub :PLAYER~quikstats
+	if (($PLAYER~ATOMIC < 1) OR ($PLAYER~GENESIS < 1))
+			gosub :get_dets
+	end
 	send "u y"
 	setTextLineTrigger NoOverLoad	:NoOverload "What do you want to name this planet?"
 	setTextLineTrigger Yikes		:Yikes      "I'm sorry, but not enough free matter exists."
@@ -1277,7 +1281,7 @@ return
 		setVar $planet~planetLabel $first_half&" "&$last_half
 		setVar $name_the_planet $planet~planetLabel
 
-    else
+	else
 		getRnd $PTag 100000 999999
 		setVar $planet~planetLabel "["&$PTag&"]"&"M()M Planet Farm "&"["&$PTag&"]"
 	end
@@ -1332,7 +1336,7 @@ return
 				killAllTriggers
 				send "qq*l"&$landing&"*"
 				waitOn "Planet command (?="
-		        send "  z  d  y  "
+				send "  z  d  y  "
 				setTextLineTrigger NoDets	:NoDets "You do not have any Atomic Detonators!"
 				setTextTrigger KaBoom		:KaBoom "Command [TL="
 				pause
@@ -1340,40 +1344,40 @@ return
 		:NoDets
 				killTrigger kaboom
 				setVar $SWITCHBOARD~message "Out Of Atomic Dets*"
-		        gosub :SWITCHBOARD~switchboard
-		        gosub :get_dets
-		        goto :blow_planet_dud
+				gosub :SWITCHBOARD~switchboard
+				gosub :get_dets
+				goto :blow_planet_dud
 
 		:KaBoom
 				killtrigger nodets
 				goto :LetsGoAgain
-    else
- 		killAllTriggers
-    	subtract $planet~planetsPerSector2 1
+	else
+		killAllTriggers
+		subtract $planet~planetsPerSector2 1
 		if (($planet~planetsPerSector2 <= 0) OR ($one_per_sector = TRUE))
-    		 goto :buildplanetsend
-    	else
+			 goto :buildplanetsend
+		else
 			goto :LetsGoAgain
 		end
-    end
+	end
 
 :buildplanetsend
-    killalltriggers
-    return
+	killalltriggers
+	return
 
 :end
-    killalltriggers
-    if ($merch)
-    	gosub :merch
-    end
-    send "p " & $home & "  *ys* "
-    setVar $SWITCHBOARD~message "Farming run is complete.*"
+	killalltriggers
+	if ($merch)
+		gosub :merch
+	end
+	send "p " & $home & "  *ys* "
+	setVar $SWITCHBOARD~message "Farming run is complete.*"
 	gosub :SWITCHBOARD~switchboard
-    gosub :PLAYER~quikstats
-    if ($PLAYER~CURRENT_SECTOR <> $home)
-        setVar $SWITCHBOARD~message "Could not make it back to starting sector!*"
-    end
-    halt
+	gosub :PLAYER~quikstats
+	if ($PLAYER~CURRENT_SECTOR <> $home)
+		setVar $SWITCHBOARD~message "Could not make it back to starting sector!*"
+	end
+	halt
 
 :setWindow
 	#gosub :PLAYER~quikstats
@@ -1381,7 +1385,7 @@ return
 	setVar $msg $msg & "* Home Sector:   " & $home
 	setVar $msg $msg & "* Current Sector " & $PLAYER~CURRENT_SECTOR
 	if ($PLAYER~TURNS > 0)
-	        setVar $msg $msg & "* Turns: " & $PLAYER~TURNS
+			setVar $msg $msg & "* Turns: " & $PLAYER~TURNS
 	end
 	setVar $msg $msg & "* Farm Planet: " & $planet~planetToFill
 	setVar $msg $msg & "* ----------------"
@@ -1408,7 +1412,7 @@ return
 	replaceText $window_content "*" "[][]"
 	saveVar $window_content
 return
-        
+		
 
 
 
@@ -1423,7 +1427,7 @@ return
 	pause
 
 	:port_here
-	    killalltriggers
+		killalltriggers
 		setTextLineTrigger port_building :port_blown "(Under Construction - "
 		waitOn "Warps to Sector(s)"
 		killalltriggers
@@ -1433,12 +1437,12 @@ return
 			waitfor "Citadel command"
 			gosub :PLAYER~quikstats
 			if ($PLAYER~FIGHTERS < $SHIP~SHIP_MAX_ATTACK)
-			    setVar $SWITCHBOARD~message "Not Enough Fighters to Blow Port.*"
-			    gosub :SWITCHBOARD~switchboard
+				setVar $SWITCHBOARD~message "Not Enough Fighters to Blow Port.*"
+				gosub :SWITCHBOARD~switchboard
 			end
 		elseif ($port)
 			if (PORT.BUILDTIME[$PLAYER~CURRENT_SECTOR] > 0)
-			    goto :under_construction
+				goto :under_construction
 			end
 			send "q  q  q  z  n  * o 1"
 			waitfor "to quit)"
@@ -1474,39 +1478,39 @@ return
 			end
 			send "s"
 			waitfor "Citadel command (?=h"
-	    end
-	    goto  :end_check_ports
+		end
+		goto  :end_check_ports
 
 :build_port
-        killalltriggers
-        send "l " & #8 & $planet~planetToFill & "*  m n t *  c "
-        waitfor "Citadel command (?"
-        if ($PLAYER~CREDITS < 50000)
-                send "T F 50000*"
-                gosub :PLAYER~quikstats
-                if ($PLAYER~CREDITS < 50000)
-                        setVar $SWITCHBOARD~message "Not Enough Credits to Make Ports*"
-                        send "qq* l " & #8 & $planet~planet & "*  c  *"
-                end
-        end
-        send "q q q z n * o3y" $portname "* l " & #8 & $planet~planet & "*  c  *"
-        goto :end_check_ports
+		killalltriggers
+		send "l " & #8 & $planet~planetToFill & "*  m n t *  c "
+		waitfor "Citadel command (?"
+		if ($PLAYER~CREDITS < 50000)
+				send "T F 50000*"
+				gosub :PLAYER~quikstats
+				if ($PLAYER~CREDITS < 50000)
+						setVar $SWITCHBOARD~message "Not Enough Credits to Make Ports*"
+						send "qq* l " & #8 & $planet~planet & "*  c  *"
+				end
+		end
+		send "q q q z n * o3y" $portname "* l " & #8 & $planet~planet & "*  c  *"
+		goto :end_check_ports
 
 :port_blown
-        killalltriggers
-        send "qq* l " & #8 & $planet~planet & "*  c  *"
-        goto :end_check_ports
+		killalltriggers
+		send "qq* l " & #8 & $planet~planet & "*  c  *"
+		goto :end_check_ports
 
 :under_construction
-        killalltriggers
-        setVar $SWITCHBOARD~message "Port at " & $PLAYER~CURRENT_SECTOR & " is Under Construction. " & PORT.BUILDTIME[$PLAYER~CURRENT_SECTOR] & " More Days*"
-        gosub :SWITCHBOARD~switchboard
-        send "l " & #8 & $planet~planet & "*  m n t *  c "
-        goto :end_check_ports
+		killalltriggers
+		setVar $SWITCHBOARD~message "Port at " & $PLAYER~CURRENT_SECTOR & " is Under Construction. " & PORT.BUILDTIME[$PLAYER~CURRENT_SECTOR] & " More Days*"
+		gosub :SWITCHBOARD~switchboard
+		send "l " & #8 & $planet~planet & "*  m n t *  c "
+		goto :end_check_ports
 
 :end_check_ports
-        killalltriggers
-        return
+		killalltriggers
+		return
 
 :get_dets
 	setVar $JUMP 0
@@ -1515,22 +1519,22 @@ return
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-    send "qq* jy* l " & $planet~planetToFill & "* tnt1*mnt*c"
-    waitFor "Citadel command ("
-    setVar $player~creditsNeeded (($SHIP~SHIP_GENESIS_MAX*$GAME~GENESIS_COST)+($SHIP~SHIP_GENESIS_MAX*$GAME~ATOMIC_COST))
-    if ($PLAYER~CREDITS < $player~creditsNeeded)
-    	setVar $withdraw ($player~creditsNeeded-$PLAYER~CREDITS)
+	send "qq* jy* l " & $planet~planetToFill & "* tnt1*mnt*c"
+	waitFor "Citadel command ("
+	setVar $player~creditsNeeded (($SHIP~SHIP_GENESIS_MAX*$GAME~GENESIS_COST)+($SHIP~SHIP_GENESIS_MAX*$GAME~ATOMIC_COST))
+	if ($PLAYER~CREDITS < $player~creditsNeeded)
+		setVar $withdraw ($player~creditsNeeded-$PLAYER~CREDITS)
 		send "T F "&$withdraw&"*"
 		gosub :PLAYER~quikstats
 		if ($PLAYER~CREDITS < $player~creditsNeeded)
-		        setVar $SWITCHBOARD~message "Not Enough Credits to Make Ports*"
-		        gosub :SWITCHBOARD~switchboard
-		        send "qq* l " & #8 & $planet~planet & "*  c  *"
-		        goto :end
+				setVar $SWITCHBOARD~message "Not Enough Credits to Make Ports*"
+				gosub :SWITCHBOARD~switchboard
+				send "qq* l " & #8 & $planet~planet & "*  c  *"
+				goto :end
 		end
-    end
-    send "qq*"
-    WAITFOR "Command [TL="
+	end
+	send "qq*"
+	WAITFOR "Command [TL="
 
 	send " C R " & STARDOCK & "*Q "
 	setTextLineTrigger itsalive	:itsalive	"Items     Status  Trading % of max OnBoard"
@@ -1569,7 +1573,7 @@ return
 					killAllTriggers
 					send "  *   "
 			end
-        	add $adj 1
+			add $adj 1
 		end
 		setVar $JUMP 0
 	end
@@ -1697,29 +1701,29 @@ return
 			pause
 
 			:no_room1
-			       killtrigger no_room
-			       killtrigger is_room
-			       killtrigger nocolos
-			       setVar $moveColo "org"
-			       send "snl2*"
-			       setTextTrigger no_room :no_room2 "on the planet"
-			       setTextTrigger is_room :is_room1 "The Colonists disembark to begin their new life."
-			       settexttrigger nocolos :no_room3 "How many groups of Colonists do you want to leave ([0] on board)"
-			       pause
+				   killtrigger no_room
+				   killtrigger is_room
+				   killtrigger nocolos
+				   setVar $moveColo "org"
+				   send "snl2*"
+				   setTextTrigger no_room :no_room2 "on the planet"
+				   setTextTrigger is_room :is_room1 "The Colonists disembark to begin their new life."
+				   settexttrigger nocolos :no_room3 "How many groups of Colonists do you want to leave ([0] on board)"
+				   pause
 
 			:no_room2
-			       killtrigger no_room
-			       killtrigger is_room
-			       killtrigger nocolos
-			       setVar $moveColo "equip"
-			       send "snl3*"
-			       setTextTrigger no_room :no_room3 "on the planet"
-			       setTextTrigger is_room :is_room1 "The Colonists disembark to begin their new life."
-			       settexttrigger nocolos :no_room3 "How many groups of Colonists do you want to leave ([0] on board)"
-			       pause
+				   killtrigger no_room
+				   killtrigger is_room
+				   killtrigger nocolos
+				   setVar $moveColo "equip"
+				   send "snl3*"
+				   setTextTrigger no_room :no_room3 "on the planet"
+				   setTextTrigger is_room :is_room1 "The Colonists disembark to begin their new life."
+				   settexttrigger nocolos :no_room3 "How many groups of Colonists do you want to leave ([0] on board)"
+				   pause
 
 			:no_room3
-			        setVar $moveColo "NO ROOM - EMPTY FULL PLANET"
+					setVar $moveColo "NO ROOM - EMPTY FULL PLANET"
 
 			:is_room1
 				killtrigger no_room
@@ -1752,7 +1756,7 @@ return
 
 :add_colos
 
-    setVar $cyclebuffer 0
+	setVar $cyclebuffer 0
 	while (($COLOS < $COLOS_MIN) and (($planet~planetToFillFuelColonists >= $player~total_holds) or ($planet~planetToFillOrganicsColonists >= $player~total_holds) or ($planet~planetToFillEquipmentColonists >= $player~total_holds)))
 		killtrigger grab_colos
 		killtrigger no_colos
@@ -1760,10 +1764,10 @@ return
 		if ($cyclebuffer >= $cyclebufferlimit)
 			setVar $cyclebuffer 1
 			gosub :PLAYER~quikstats
-            send "q q* l " & #8 & $planet~planetToFill & "*  snt1*"
+			send "q q* l " & #8 & $planet~planetToFill & "*  snt1*"
 			killtrigger grab_colos
 			killtrigger no_colos
-            setTextTrigger grab_colos :grab_colos_fuel "The Colonists file aboard your ship, eager to head out."
+			setTextTrigger grab_colos :grab_colos_fuel "The Colonists file aboard your ship, eager to head out."
 			setTextTrigger no_colos   :no_colos_fuel1  "There aren't that many on the planet!"
 			pause
 
@@ -1829,11 +1833,11 @@ return
 return
 
 :colonize
-    killalltriggers
-    setvar $status_message "Colonizing Planet"
-    gosub :setWindow
-    send "qq* l " & #8 & $planet~planetToFill & "*m n t * q l " & #8 & $planet~planets[$j] & "* c"
-    waitfor "Planet command (?"
+	killalltriggers
+	setvar $status_message "Colonizing Planet"
+	gosub :setWindow
+	send "qq* l " & #8 & $planet~planetToFill & "*m n t * q l " & #8 & $planet~planets[$j] & "* c"
+	waitfor "Planet command (?"
 	setVar $BOT~command "colo"
 	setVar $BOT~user_command_line " s 50 silent "
 	setVar $BOT~parm1 "s"
@@ -1846,7 +1850,7 @@ return
 	setEventTrigger		coloended		:coloended "SCRIPT STOPPED" "scripts\mombot\modes\resource\colo.cts"
 	pause
 	:coloended
-         send "qq* "
+		 send "qq* "
 return
 
 :merch
@@ -1870,11 +1874,11 @@ return
 return
 
 :pwarp
-    send "p "& $player~warpto &"  *ys* "
-    settextlinetrigger 1 :warp_its "All Systems Ready, shall we engage?"
-    settextlinetrigger 2 :no_warps "You do not have any fighters in Sector"
-    setTextLineTrigger 3 :warp_its "You are already in that sector!"
-    pause
+	send "p "& $player~warpto &"  *ys* "
+	settextlinetrigger 1 :warp_its "All Systems Ready, shall we engage?"
+	settextlinetrigger 2 :no_warps "You do not have any fighters in Sector"
+	setTextLineTrigger 3 :warp_its "You are already in that sector!"
+	pause
 
 	:no_warps
 		killtrigger 1
