@@ -586,7 +586,7 @@ return
 		setVar $buydown_orgrounds 0
 		setVar $buydown_fuelrounds 0
 	elseif ($bot~parm1 = "o")
-			setVar $buydown_equiprounds 0
+		setVar $buydown_equiprounds 0
 		setVar $buydown_orgrounds $buydownRoundsFromParam
 		setVar $buydown_fuelrounds 0
 	elseif ($bot~parm1 = "f")
@@ -683,10 +683,15 @@ return
 
 
 :voidAdjacent
+	if ($movebuy = true)
+		setvar $sector $warpto
+	else
+		setvar $sector $player~current_sector
+	end
 	SetVar $i 1
 	send "  C  "
-	While (SECTOR.WARPS[$player~current_sector][$i] <> 0)
-		setVar $focus SECTOR.WARPS[$player~current_sector][$i]
+	While (SECTOR.WARPS[$sector][$i] <> 0)
+		setVar $focus SECTOR.WARPS[$sector][$i]
 		if ($focus <> 0)
 			send "V"&$Focus&"*"
 		end
@@ -696,10 +701,15 @@ return
 	waiton "<Computer deactivated>"
 	return
 :clearadjacent
+	if ($movebuy = true)
+		setvar $sector $warpto
+	else
+		setvar $sector $player~current_sector
+	end
 	setVar $i 1
 	send "  C  "
-	while (SECTOR.WARPS[$player~current_sector][$i] <> 0)
-		setVar $Focus SECTOR.WARPS[$player~current_sector][$i]
+	while (SECTOR.WARPS[$sector][$i] <> 0)
+		setVar $Focus SECTOR.WARPS[$sector][$i]
 		if ($Focus <> 0)
 			send "V0*YN" & $Focus & "*"
 		end
@@ -1019,10 +1029,14 @@ return
 		end
 		halt
 
-:getPortInfo
 # ----- SUB :getPortInfo -----
 :getPortInfo
-	send "C R*Q"
+	if ($movebuy = true)
+		setvar $sector $warpto
+	else
+		setvar $sector $player~current_sector
+	end
+	send "C R"&$sector&"*Q"
 	setVar $validPortFound FALSE
 	setTextLineTrigger foundport	:foundport2		"Items     Status  Trading % of max OnBoard"
 	setTextLineTrigger noport		:noport2		"I have no information about a port in that sector."
