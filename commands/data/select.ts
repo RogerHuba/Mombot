@@ -154,7 +154,7 @@ while ($word <> "@@@###@@@")
 		setVar $limit $word
 		isNumber $test $limit
 		if ($test <> true)
-			setvar $limit 1
+			setvar $limit sectors
 		end
 	end
 	getWordPos $word $pos "count:"
