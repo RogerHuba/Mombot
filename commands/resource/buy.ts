@@ -374,7 +374,7 @@ return
 		end
 		gosub :choosehaggle
 		gosub :movehome
-		if ($twarpbuy - true)
+		if ($twarpbuy = true)
 			send "L " & $planet~planet & "* t n l 3* t * t 1"&$fueltotravel&"* "
 		else
 			send "L " & $planet~planet & "* t n l 3* "
@@ -397,7 +397,7 @@ return
 		gosub :choosehaggle
 		send "0* "
 		gosub :movehome
-		if ($twarpbuy - true)
+		if ($twarpbuy = true)
 			send "L " & $planet~planet & "* t n l 2* t * t 1"&$fueltotravel&"* "
 		else
 			send "L " & $planet~planet & "* t n l 2* "
@@ -417,7 +417,7 @@ return
 		gosub :choosehaggle
 		send "0* 0* " 
 		gosub :movehome
-		if ($twarpbuy - true)
+		if ($twarpbuy = true)
 			send "L " & $planet~planet & "* t n l 1* t * t 1"&$fueltotravel&"* "
 		else
 			send "L " & $planet~planet & "* t n l 1* "
