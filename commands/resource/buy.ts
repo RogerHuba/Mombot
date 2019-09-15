@@ -679,9 +679,9 @@ return
 	waiton "Warps to Sector(s) :"
 
 	gosub :player~getinfo
+	pause
 	if ($mowbuy = true)
 		gosub :clearAdjacent
-		halt
 	else
 		gosub :voidAdjacent
 	end
