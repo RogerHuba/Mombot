@@ -9,7 +9,7 @@
 
 	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored | sector | ports}"
 	setVar $BOT~help[2]   $BOT~tab&"       {BBB | XXB | SSX etc} {count:n} {mark:PARAM} {dist | route} "
-	setVar $BOT~help[3]   $BOT~tab&"       {warps:n} {beam:botname}"
+	setVar $BOT~help[3]   $BOT~tab&"       {warps:n} {beam:botname} {limit:n}"
 	setVar $BOT~help[4]   $BOT~tab&"       "
 	setVar $BOT~help[5]   $BOT~tab&"     Searches TWX database for known info."
 	setVar $BOT~help[6]   $BOT~tab&"      "
@@ -27,7 +27,8 @@
 	setVar $BOT~help[18]  $BOT~tab&"      {warps:n} - Restrict matches to nwarps  "
 	setVar $BOT~help[19]  $BOT~tab&"      {count:n} - limit results to sectors with a minimum count of "
 	setVar $BOT~help[20]  $BOT~tab&"                  planets/traders/ships"
-	setVar $BOT~help[21]  $BOT~tab&" {beam:botname} - Beam to bot name  "
+	setVar $BOT~help[21]  $BOT~tab&"      {limit:n} - limit query results to first n found "
+	setVar $BOT~help[22]  $BOT~tab&" {beam:botname} - Beam to bot name  "
 	# ham select ports ore-mcic<-70
 	gosub :bot~helpfile
 
@@ -146,6 +147,16 @@ while ($word <> "@@@###@@@")
 		goto :nextWord
 	end
 
+	setvar $limit sectors
+	getWordPos $word $pos "limit:"
+	if ($pos > 0)
+		replaceText $word "limit:" ""
+		setVar $limit $word
+		isNumber $test $limit
+		if ($test <> true)
+			setvar $limit 1
+		end
+	end
 	getWordPos $word $pos "count:"
 	if ($pos > 0)
 		replaceText $word "count:" ""
@@ -224,8 +235,9 @@ setarray $pairedports sectors
 setVar $sectorResults 0
 setVar $sectorResultsi 0
 setvar $count 0
+setvar $done false
 setvar $i 1
-while ($i <= SECTORS)    
+while (($i <= SECTORS) and ($done <> true))
 	setvar $j 1
 	setvar $skip false
 	if ((($warps > 0) and (SECTOR.WARPCOUNT[$i] = $warps)) or ($warps = 0))
@@ -513,6 +525,9 @@ while ($i <= SECTORS)
 			setvar $result_memory $result_memory&" "&$i&" "
 			setVar $sectorResults[$sectorResultsi] $i
 
+			if ($count >= $limit)
+				setvar $done true
+			end
 			#getSectorParameter $i "FIGSEC" $isFigged
 			#setSectorParameter $i $mark TRUE
 			#if ($isFigged = true)
