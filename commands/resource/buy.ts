@@ -1090,9 +1090,6 @@ return
 	send "Q "
 	if ($movebuy = true)
 		if ($twarpbuy = true)
-			setdelaytrigger waithere :goon 5000
-			pause
-			:goon
 			setVar $player~warpto $warpto
 			gosub :player~twarp
 			gosub :player~currentPrompt
@@ -1157,3 +1154,5 @@ include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\player\currentprompt\player"
