@@ -656,6 +656,9 @@ end
 
 setVar $d ""
 setVar $y 1
+if ($limit < $sectorResultsi)
+	setvar $sectorResultsi $limit
+end
 while ($y <= $sectorResultsi)
 	
 	if ($sortedResults[$y] > 0)
