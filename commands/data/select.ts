@@ -54,8 +54,8 @@ setvar $i 1
 getWordPos $bot~user_command_line $pos "dist"
 if ($pos > 0)
 	setVar $dist 1
-	stripText $bot~user_command_line " dist "
-	stripText $bot~user_command_line " dist"
+	replaceText $bot~user_command_line " dist " " "
+	replaceText $bot~user_command_line " dist" " "
 
 end
 
@@ -76,8 +76,8 @@ if ($pos > 0)
 			gosub :switchboard~switchboard
 			halt
 		else
-			stripText $bot~user_command_line " warps:" & $warps & " "
-			stripText $bot~user_command_line " warps:" & $warps 
+			replaceText $bot~user_command_line " warps:" & $warps & " " " "
+			replaceText $bot~user_command_line " warps:" & $warps " "
 			
 		end
 	else
@@ -92,16 +92,16 @@ end
 getWordPos " "&$bot~user_command_line&" " $pos " ppt "
 if ($pos > 0)
 	setvar $portpair true
-	#stripText $bot~user_command_line " ppt "
-	#stripText $bot~user_command_line " ppt"
+	replaceText $bot~user_command_line " ppt " " "
+	replaceText $bot~user_command_line " ppt" " "
 end
 
 getWordPos $bot~user_command_line $pos "route"
 if ($pos > 0)
 	setVar $dist 0
 	setVar $doroute 1
-	stripText $bot~user_command_line " route "
-	stripText $bot~user_command_line " route"
+	replaceText $bot~user_command_line " route " " "
+	replaceText $bot~user_command_line " route" " "
 
 end
 
