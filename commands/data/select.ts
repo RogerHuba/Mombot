@@ -8,7 +8,7 @@
 	loadvar $switchboard~self_command
 
 	setVar $BOT~help[1]   $BOT~tab&"select {planets | traders | ships | anomalies | unexplored | sector | ports}"
-	setVar $BOT~help[2]   $BOT~tab&"       {BBB | XXB | SSX etc} {mark:PARAM} {dist | route} "
+	setVar $BOT~help[2]   $BOT~tab&"       {BBB | XXB | SSX etc} {count:n} {mark:PARAM} {dist | route} "
 	setVar $BOT~help[3]   $BOT~tab&"       {warps:n} {beam:botname}"
 	setVar $BOT~help[4]   $BOT~tab&"       "
 	setVar $BOT~help[5]   $BOT~tab&"     Searches TWX database for known info."
@@ -16,16 +16,17 @@
 	setVar $BOT~help[7]   $BOT~tab&"     {mark:PARAM}  marks sectors PARAM=1 defult QUERY=1 "
 	setVar $BOT~help[8]   $BOT~tab&"                   selectors = > < like"
 	setVar $BOT~help[9]   $BOT~tab&"     {BBB | SSX}   match PORTS query to this pattern"
-	setVar $BOT~help[10]   $BOT~tab&"                   X is wildcard."
-	setVar $BOT~help[11]   $BOT~tab&"    {secure | paranoid}  "
-	setVar $BOT~help[12]   $BOT~tab&"     Example: >select traders bubble=false equ-mcic<-60 "
-	setVar $BOT~help[13]   $BOT~tab&"              >select planet like "&#34&"<<<< (a)"&#34
-	setVar $BOT~help[14]   $BOT~tab&"            "
-	setVar $BOT~help[15]   $BOT~tab&"           {dist} - All results include distance from current. "
-	setVar $BOT~help[16]   $BOT~tab&"          {route} - Plots a basic shortest path (slow). "
-	setVar $BOT~help[17]   $BOT~tab&"            {ppt} - Finds port pair trading ports  "
-	setVar $BOT~help[18]   $BOT~tab&"        {warps:n} - Restrict matches to nwarps  "
-	setVar $BOT~help[19]   $BOT~tab&"   {beam:botname} - Beam to bot name  "
+	setVar $BOT~help[10]  $BOT~tab&"                   X is wildcard."
+	setVar $BOT~help[11]  $BOT~tab&"    {secure | paranoid}  "
+	setVar $BOT~help[12]  $BOT~tab&"     Example: >select traders bubble=false equ-mcic<-60 "
+	setVar $BOT~help[13]  $BOT~tab&"              >select planet like "&#34&"<<<< (a)"&#34
+	setVar $BOT~help[14]  $BOT~tab&"            "
+	setVar $BOT~help[15]  $BOT~tab&"         {dist} - All results include distance from current. "
+	setVar $BOT~help[16]  $BOT~tab&"        {route} - Plots a basic shortest path (slow). "
+	setVar $BOT~help[17]  $BOT~tab&"          {ppt} - Finds port pair trading ports  "
+	setVar $BOT~help[18]  $BOT~tab&"      {warps:n} - Restrict matches to nwarps  "
+	setVar $BOT~help[19]  $BOT~tab&"      {count:n} - limit results to minimum count of n (planets/traders/ships)"
+	setVar $BOT~help[20]  $BOT~tab&" {beam:botname} - Beam to bot name  "
 	# ham select ports ore-mcic<-70
 	gosub :bot~helpfile
 
