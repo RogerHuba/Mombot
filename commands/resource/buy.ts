@@ -681,6 +681,7 @@ return
 	gosub :player~getinfo
 	if ($mowbuy = true)
 		gosub :clearAdjacent
+		halt
 	else
 		gosub :voidAdjacent
 	end
