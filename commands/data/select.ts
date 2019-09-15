@@ -580,7 +580,7 @@ elseif ($doroute = 1)
 		setvar $sectorResultsi $limit 
 	end
 	if ($sectorResultsi > 50)
-		setVar $SWITCHBOARD~message "To many results for route calculation; please narrow search.*"
+		setVar $SWITCHBOARD~message $limit&"]To many results for route calculation; please narrow search.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
