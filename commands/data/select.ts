@@ -524,7 +524,7 @@ while (($i <= SECTORS) and ($done <> true))
 			setvar $result_memory $result_memory&" "&$i&" "
 			setVar $sectorResults[$sectorResultsi] $i
 
-			if ($count >= $limit)
+			if (($count >= $limit) and ($dist <> true))
 				setvar $done true
 			end
 			#getSectorParameter $i "FIGSEC" $isFigged
