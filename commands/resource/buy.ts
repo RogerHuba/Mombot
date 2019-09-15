@@ -465,7 +465,7 @@ return
 	setVar $BOT~help[1]  $BOT~tab&"BUY - Buy Product from port in Sector or Fighters and/or"
 	setVar $BOT~help[2]  $BOT~tab&"      shields from Rylos or Alpha"
 	setVar $BOT~help[3]  $BOT~tab&"      "
-	setVar $BOT~help[4]  $BOT~tab&"  - buy {sector to buy from) [product] {mode} {cycles}"
+	setVar $BOT~help[4]  $BOT~tab&"  - buy {sector to buy from) [product] {mode} {cycles} {twarp} {mow}"
 	setVar $BOT~help[5]  $BOT~tab&"  - [product] = [f]uel or [o]rg or [e]quip"
 	setVar $BOT~help[6]  $BOT~tab&"  - [mode]    = [b]est or [s]peed or [w]orst - default is speed"
 	setVar $BOT~help[7]  $BOT~tab&"  - [cycles]  = number of cycles             - default is max" 
@@ -563,7 +563,7 @@ return
 		setvar $mowbuy true
 	end
 
-	if ($twarpbuy = true)
+	if (($twarpbuy = true) and ($movebuy = true))
 		if ($PLAYER~TWARP_TYPE = "No")
 			setVar $SWITCHBOARD~message "This ship does not have a transwarp drive, so can't twarp buy.*"
 			gosub :SWITCHBOARD~switchboard
