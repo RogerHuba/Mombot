@@ -373,6 +373,7 @@ return
 			send "0*"
 		end
 		gosub :choosehaggle
+		gosub :movehome
 		send "L " & $planet~planet & "* t n l 3* "
 		subtract $equiproundsleft 1
 		goto :buydownequip
@@ -494,6 +495,7 @@ return
 		halt
 	end
 
+	setvar $homesector $player~current_sector
 	setvar $movebuy false
 	isNumber $isNumber $bot~parm1
 	if (($isNumber = true) and ($bot~parm1 <> $player~current_sector))
@@ -1113,6 +1115,32 @@ return
 		send "P T  "
 	else
 		send "P T"
+	end
+return
+
+:movehome
+	if ($movebuy = true)
+		if ($twarpbuy = true)
+			setVar $player~warpto $homesector
+			gosub :player~twarp
+			gosub :player~currentPrompt
+			if ($player~twarpSuccess <> TRUE)
+				setVar $switchboard~message $player~msg&"*"
+				gosub :switchboard~switchboard
+				halt
+			end
+		elseif ($mowbuy = true)
+			setVar $BOT~command "mow"
+			setVar $BOT~user_command_line " mow "&$homesector&" 1"
+			setVar $BOT~parm1 $homesector
+			saveVar $BOT~parm1
+			saveVar $BOT~command
+			saveVar $BOT~user_command_line
+			load "scripts\mombot\modes\grid\mow.cts"
+			setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+			pause
+			:mowended
+		end
 	end
 return
 
