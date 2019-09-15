@@ -580,7 +580,13 @@ return
 	if ($pos > 0)
 		setvar $mowbuy true
 	end
-
+	if (($movebuy = true) and ($twarpbuy <> true) and ($mowbuy <> true))
+		if ($PLAYER~TWARP_TYPE <> "No")
+			setvar $twarpbuy = true
+		else
+			setvar $mowbuy = true
+		end
+	end
 	if (($twarpbuy = true) and ($movebuy = true))
 		if ($PLAYER~TWARP_TYPE = "No")
 			setVar $SWITCHBOARD~message "This ship does not have a transwarp drive, so can't twarp buy.*"
@@ -673,7 +679,11 @@ return
 	waiton "Warps to Sector(s) :"
 
 	gosub :player~getinfo
-	gosub :voidAdjacent
+	if ($mowbuy = true)
+		gosub :clearAdjacent
+	else
+		gosub :voidAdjacent
+	end
 	gosub :getportinfo
 
 	if ($validPortFound <> TRUE)
