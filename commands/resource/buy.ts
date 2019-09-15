@@ -374,7 +374,11 @@ return
 		end
 		gosub :choosehaggle
 		gosub :movehome
-		send "L " & $planet~planet & "* t n l 3* "
+		if ($twarpbuy - true)
+			send "L " & $planet~planet & "* t n l 3* t * t 1"&$fueltotravel&"* "
+		else
+			send "L " & $planet~planet & "* t n l 3* "
+		end
 		subtract $equiproundsleft 1
 		goto :buydownequip
 	end
@@ -393,7 +397,11 @@ return
 		gosub :choosehaggle
 		send "0* "
 		gosub :movehome
-		send "L " & $planet~planet & "* t n l 2* "
+		if ($twarpbuy - true)
+			send "L " & $planet~planet & "* t n l 2* t * t 1"&$fueltotravel&"* "
+		else
+			send "L " & $planet~planet & "* t n l 2* "
+		end
 		subtract $orgroundsleft 1
 		goto :buydownorg
 	end
@@ -409,7 +417,11 @@ return
 		gosub :choosehaggle
 		send "0* 0* " 
 		gosub :movehome
-		send "L " & $planet~planet & "* t n l 1* "
+		if ($twarpbuy - true)
+			send "L " & $planet~planet & "* t n l 1* t * t 1"&$fueltotravel&"* "
+		else
+			send "L " & $planet~planet & "* t n l 1* "
+		end
 		subtract $fuelroundsleft 1
 		goto :buydownfuel
 	end
