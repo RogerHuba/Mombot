@@ -582,9 +582,9 @@ return
 	end
 	if (($movebuy = true) and ($twarpbuy <> true) and ($mowbuy <> true))
 		if ($PLAYER~TWARP_TYPE <> "No")
-			setvar $twarpbuy = true
+			setvar $twarpbuy true
 		else
-			setvar $mowbuy = true
+			setvar $mowbuy true
 		end
 	end
 	if (($twarpbuy = true) and ($movebuy = true))
@@ -679,7 +679,6 @@ return
 	waiton "Warps to Sector(s) :"
 
 	gosub :player~getinfo
-	pause
 	if ($mowbuy = true)
 		gosub :clearAdjacent
 	else
