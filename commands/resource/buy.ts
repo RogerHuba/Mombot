@@ -366,7 +366,7 @@ return
 :buydownequip
 	if ($equiproundsleft > 0)
 		gosub :initbuyroutine
-		if ($fuelselling > 0)
+		if (($fuelselling > 0) or ($twarpbuy = true))
 			send "0* "
 		end
 		if ($orgselling > 0)
@@ -391,7 +391,7 @@ return
 :buydownorg
 	if ($orgroundsleft > 0)
 		gosub :initbuyroutine
-		if ($fuelselling > 0)
+		if (($fuelselling > 0) or ($twarpbuy = true))
 			send "0*"
 		end
 		gosub :choosehaggle
