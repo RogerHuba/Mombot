@@ -1090,6 +1090,9 @@ return
 	send "Q "
 	if ($movebuy = true)
 		if ($twarpbuy = true)
+			setdelaytrigger waithere :goon 5000
+			pause
+			:goon
 			setVar $player~warpto $warpto
 			gosub :player~twarp
 			gosub :player~currentPrompt
