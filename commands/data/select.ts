@@ -580,7 +580,7 @@ elseif ($doroute = 1)
 		setvar $sectorResultsi $limit 
 	end
 	if ($sectorResultsi > 50)
-		setVar $SWITCHBOARD~message $bot~user_command_line&"]To many results for route calculation; please narrow search.*"
+		setVar $SWITCHBOARD~message "To many results for route calculation; please narrow search.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
@@ -703,9 +703,9 @@ if ($count <= 0)
 	setVar $SWITCHBOARD~message "Displaying results for: select "&$original_query&"* *Your query returned "&$count&" results.*"
 else
 	if ($count > 1000)
-		setVar $SWITCHBOARD~message $limit&"]Displaying results for: select "&$original_query&"* *Your query returned "&$count&" results.*This is too many to display on subspace. *If you'd like to narrow your search, add more parameters.*All result sectors are now marked with QUERY sector parameter.*You can also display individual results with the sector bot command.*"
+		setVar $SWITCHBOARD~message "Displaying results for: select "&$original_query&"* *Your query returned "&$count&" results.*This is too many to display on subspace. *If you'd like to narrow your search, add more parameters.*All result sectors are now marked with QUERY sector parameter.*You can also display individual results with the sector bot command.*"
 	else
-		setVar $SWITCHBOARD~message $limit&"]Displaying results for: select "&$original_query&"* *"&$results&"* *Your query returned "&$count&" results.*All result sectors are now marked with QUERY sector parameter.*You can also display individual results with the sector bot command.*"
+		setVar $SWITCHBOARD~message "Displaying results for: select "&$original_query&"* *"&$results&"* *Your query returned "&$count&" results.*All result sectors are now marked with QUERY sector parameter.*You can also display individual results with the sector bot command.*"
 	end
 end
 gosub :SWITCHBOARD~switchboard
