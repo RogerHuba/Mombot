@@ -122,6 +122,7 @@ else
 	setVar $like ""
 end
 setvar $beam ""
+setvar $mincount 1
 	
 
 while ($word <> "@@@###@@@")
@@ -143,6 +144,15 @@ while ($word <> "@@@###@@@")
 		goto :nextWord
 	end
 
+	getWordPos $word $pos "count:"
+	if ($pos > 0)
+		replaceText $word "count:" ""
+		setVar $mincount $word
+		isNumber $test $mincount
+		if ($test <> true)
+			setvar $mincount 1
+		end
+	end
 	getWordPos $word $pos "beam:"
 	if ($pos > 0)
 		replaceText $word "beam:" ""
@@ -279,7 +289,7 @@ while ($i <= SECTORS)
 	end
 	if ($skip <> true)
 		if (($bot~parm1 = "planet") or ($bot~parm1 = "planets"))
-			if (SECTOR.PLANETCOUNT[$i] <= 0)
+			if (SECTOR.PLANETCOUNT[$i] < $mincount)
 				setvar $skip true
 			else
 				if ($like <> "")
@@ -301,7 +311,7 @@ while ($i <= SECTORS)
 			end
 		else
 			if (($bot~parm1 = "trader") or ($bot~parm1 = "traders"))
-				if (SECTOR.TRADERCOUNT[$i] <= 0)
+				if (SECTOR.TRADERCOUNT[$i] < $mincount)
 					setvar $skip true
 				else
 					if ($like <> "")
@@ -323,7 +333,7 @@ while ($i <= SECTORS)
 				end
 			else
 				if (($bot~parm1 = "ship") or ($bot~parm1 = "ships"))
-					if (SECTOR.SHIPCOUNT[$i] <= 0)
+					if (SECTOR.SHIPCOUNT[$i] < $mincount)
 						setvar $skip true
 					else 
 						if ($like <> "")
