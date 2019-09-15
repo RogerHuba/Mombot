@@ -365,11 +365,7 @@ return
 
 :buydownequip
 	if ($equiproundsleft > 0)
-		if ($buydown_mode = "Speedbuy")
-			send "Q P T  "
-		else
-			send "Q P T"
-		end
+		gosub :initbuyroutine
 		if ($fuelselling > 0)
 			send "0* "
 		end
@@ -389,11 +385,7 @@ return
 
 :buydownorg
 	if ($orgroundsleft > 0)
-		if ($buydown_mode = "Speedbuy")
-			send "Q P T  "
-		else
-			send "Q P T"
-		end
+		gosub :initbuyroutine
 		if ($fuelselling > 0)
 			send "0*"
 		end
@@ -410,11 +402,7 @@ return
 
 :buydownfuel
 	if ($fuelroundsleft > 0)
-		if ($buydown_mode = "Speedbuy")
-			send "Q P T  "
-		else
-			send "Q P T"
-		end
+		gosub :initbuyroutine
 		gosub :choosehaggle
 		send "0* 0* L " & $planet~planet & "* t n l 1* "
 		subtract $fuelroundsleft 1
@@ -477,7 +465,7 @@ return
 	setVar $BOT~help[1]  $BOT~tab&"BUY - Buy Product from port in Sector or Fighters and/or"
 	setVar $BOT~help[2]  $BOT~tab&"      shields from Rylos or Alpha"
 	setVar $BOT~help[3]  $BOT~tab&"      "
-	setVar $BOT~help[4]  $BOT~tab&"  - buy [product] {mode} {cycles}"
+	setVar $BOT~help[4]  $BOT~tab&"  - buy {sector to buy from) [product] {mode} {cycles}"
 	setVar $BOT~help[5]  $BOT~tab&"  - [product] = [f]uel or [o]rg or [e]quip"
 	setVar $BOT~help[6]  $BOT~tab&"  - [mode]    = [b]est or [s]peed or [w]orst - default is speed"
 	setVar $BOT~help[7]  $BOT~tab&"  - [cycles]  = number of cycles             - default is max" 
@@ -504,6 +492,18 @@ return
 		setvar $switchboard~message "Must start at Citadel or Planet Prompt for Buy Down*"
 		gosub :switchboard~switchboard
 		halt
+	end
+
+	setvar $movebuy false
+	isNumber $isNumber $bot~parm1
+	if (($isNumber = true) and ($bot~parm1 <> $player~current_sector))
+		setvar $movebuy true
+		setvar $warpto $bot~parm1
+		setvar $bot~parm1 $bot~parm2
+		setvar $bot~parm2 $bot~parm3
+		setvar $bot~parm3 $bot~parm4
+		setvar $bot~parm4 $bot~parm5
+		setvar $bot~parm5 $bot~parm6
 	end
 
 	if ($bot~parm1 = "sh")
@@ -552,8 +552,28 @@ return
 	else
 		setVar $buydownRoundsFromParam 999999
 	end
+	getwordpos " "&$bot~user_command_line&" " $pos " twarp "
+	setvar $twarpbuy false
+	if ($pos > 0)
+		setvar $twarpbuy true
+	end
+	getwordpos " "&$bot~user_command_line&" " $pos " mow "
+	setvar $mowbuy false
+	if ($pos > 0)
+		setvar $mowbuy true
+	end
+
+	if ($twarpbuy = true)
+		if ($PLAYER~TWARP_TYPE = "No")
+			setVar $SWITCHBOARD~message "This ship does not have a transwarp drive, so can't twarp buy.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+	end
+
 	getwordpos " "&$bot~user_command_line&" " $isworst " w "
 	getwordpos " "&$bot~user_command_line&" " $isbest " b "
+
 	if ($isworst > 0)
 		setVar $buydown_mode 3
 	elseif ($isbest > 0)
@@ -609,11 +629,28 @@ return
 	end
 
 	gosub :planet~getplanetinfo
-
+	if ($movebuy = true)
+		getDistance $distance_there $player~current_sector $warpto
+		if ($distance_there <= 0)
+			send "^f" & $$player~current_sector & "*" & $warpto & "*q"
+			waitOn "ENDINTERROG"
+			getDistance $distance_there $player~current_sector $warpto 
+		end
+		getDistance $distance_back $warpto $player~current_sector
+		if ($distance_back <= 0)
+			send "^f" & $warpto & "*" & $player~current_sector & "*q"
+			waitOn "ENDINTERROG"
+			getDistance $distance_back $warpto $player~current_sector
+		end		
+	end
+	if ($twarpbuy = true)
+		setvar $fueltotravel (($distance_back + $distance_there) * 3)
+		send "t * t 1"&fueltotravel&"* "
+	end
 	if ($startingLocation = "Citadel")
 		send "C s* "
 	else
-		send "Q D"
+		send "Q *"
 	end
 	waiton "Warps to Sector(s) :"
 
@@ -1033,6 +1070,37 @@ return
 			killAllTriggers
 	return
 
+:initbuyroutine
+	send "Q "
+	if ($movebuy = true)
+		if ($twarpbuy = true)
+			setVar $player~warpto $warpto
+			gosub :player~twarp
+			gosub :player~currentPrompt
+			if ($player~twarpSuccess <> TRUE)
+				setVar $switchboard~message $player~msg&"*"
+				gosub :switchboard~switchboard
+				halt
+			end
+		elseif ($mowbuy = true)
+			setVar $BOT~command "mow"
+			setVar $BOT~user_command_line " mow "&$warpto&" 1"
+			setVar $BOT~parm1 $warpto
+			saveVar $BOT~parm1
+			saveVar $BOT~command
+			saveVar $BOT~user_command_line
+			load "scripts\mombot\modes\grid\mow.cts"
+			setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+			pause
+			:mowended
+		end
+	end
+	if ($buydown_mode = "Speedbuy")
+		send "P T  "
+	else
+		send "P T"
+	end
+return
 
 
 #INCLUDES:
