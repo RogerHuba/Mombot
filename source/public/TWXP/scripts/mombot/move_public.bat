@@ -59,7 +59,6 @@ copy "..\..\..\..\..\commands\general\callout.cts" "commands\general\callout.cts
 copy "..\..\..\..\..\commands\defense\call.cts" "commands\defense\call.cts"
 copy "..\..\..\..\..\commands\defense\_macro_kit.cts" "commands\defense\_macro_kit.cts"
 copy "..\..\..\..\..\commands\defense\evac.cts" "commands\defense\evac.cts"
-copy "..\..\..\..\..\commands\resource\buy.cts" "commands\resource\buy.cts"
 copy "..\..\..\..\..\commands\resource\_dock_shopper.cts" "commands\resource\_dock_shopper.cts"
 copy "..\..\..\..\..\commands\cashing\mega.cts" "commands\cashing\mega.cts"
 copy "..\..\..\..\..\commands\cashing\tricon.ts" "commands\cashing\tricon.cts"

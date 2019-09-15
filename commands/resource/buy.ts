@@ -482,7 +482,7 @@ return
 	setVar $BOT~help[1]  $BOT~tab&"BUY - Buy Product from port in Sector or Fighters and/or"
 	setVar $BOT~help[2]  $BOT~tab&"      shields from Rylos or Alpha"
 	setVar $BOT~help[3]  $BOT~tab&"      "
-	setVar $BOT~help[4]  $BOT~tab&"  buy {sector to buy from) [product] {mode} {cycles} {twarp} {mow}"
+	setVar $BOT~help[4]  $BOT~tab&"  buy {sector to buy from) [product] {mode} {cycles} {twarp} {mow} {paranoid}"
 	setVar $BOT~help[5]  $BOT~tab&"  -  [product] = [f]uel or [o]rg or [e]quip"
 	setVar $BOT~help[6]  $BOT~tab&"  -     [mode] = [b]est or [s]peed or [w]orst - default is speed"
 	setVar $BOT~help[7]  $BOT~tab&"  -   [cycles] = number of cycles             - default is max" 
@@ -495,11 +495,15 @@ return
 	setVar $BOT~help[14] $BOT~tab&"  -    [twarp] = twarp to port and back"
 	setVar $BOT~help[15] $BOT~tab&"  -      [mow] = mow to port and back"
 	setVar $BOT~help[16] $BOT~tab&"      "
-	setVar $BOT~help[17] $BOT~tab&"  -   If you choose sector outside current sector, twarp  "
-	setVar $BOT~help[18] $BOT~tab&"  -   will be used if ship has it, otherwise mow will be used  "
+	setVar $BOT~help[17] $BOT~tab&"  - [paranoid] = make sure both sectors have corp limpets and armids"
+	setVar $BOT~help[18] $BOT~tab&"  -     [safe] = make sure both sectors have corp limpets "
 	setVar $BOT~help[19] $BOT~tab&"      "
-	setVar $BOT~help[20] $BOT~tab&"  Originally written by Cherokee.     "
-	setVar $BOT~help[21] $BOT~tab&"  Now integrated with EP Haggle if it is running "
+	setVar $BOT~help[20] $BOT~tab&"      "
+	setVar $BOT~help[21] $BOT~tab&"  -   If you choose sector outside current sector, twarp  "
+	setVar $BOT~help[22] $BOT~tab&"  -   will be used if ship has it, otherwise mow will be used  "
+	setVar $BOT~help[23] $BOT~tab&"      "
+	setVar $BOT~help[24] $BOT~tab&"  Originally written by Cherokee.     "
+	setVar $BOT~help[25] $BOT~tab&"  Now integrated with EP Haggle if it is running "
 	gosub :bot~helpfile
 	
 
@@ -586,6 +590,8 @@ return
 	if ($pos > 0)
 		setvar $mowbuy true
 	end
+
+
 	if (($movebuy = true) and ($twarpbuy <> true) and ($mowbuy <> true))
 		if ($PLAYER~TWARP_TYPE <> "No")
 			setvar $twarpbuy true
@@ -683,6 +689,51 @@ return
 		send "Q *"
 	end
 	waiton "Warps to Sector(s) :"
+
+	getwordpos " "&$bot~user_command_line&" " $pos " paranoid "
+	setvar $paranoid false
+	if ($pos > 0)
+		setvar $paranoid true
+		getSectorParameter $homesector "MINESEC"  $isArmided
+		getSectorParameter $homesector "LIMPSEC" $isLimped
+		setVar $mineOwner SECTOR.MINES.OWNER[$homesector]
+		setVar $mineCount SECTOR.MINES.QUANTITY[$homesector]
+	
+		if (($mineCount <= 0) or ($mineOwner = "belong to your Corp") or ($mineOwner = "yours"))
+			setvar $isArmided true
+		end
+		if (($isArmided <> true) or ($isLimped <> true))
+			setVar $SWITCHBOARD~message "Starting sector does not have limpets and/or armid mines.  Can't run in paranoid mode.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		getSectorParameter $warpto "MINESEC" $isArmided
+		getSectorParameter $warpto "LIMPSEC" $isLimped
+		if (($isArmided <> true) or ($isLimped <> true))
+			setVar $SWITCHBOARD~message "Port sector does not have limpets and/or armids mines.  Can't run in paranoid mode.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+	end
+	getwordpos " "&$bot~user_command_line&" " $pos " safe "
+	setvar $safe false
+	if ($pos > 0)
+		setvar $safe true
+		getSectorParameter $homesector "LIMPSEC" $isLimped
+	
+		if ($isLimped <> true)
+			setVar $SWITCHBOARD~message "Starting sector does not have limpets.  Can't run in safe mode.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		getSectorParameter $warpto "LIMPSEC" $isLimped
+		if ($isLimped <> true)
+			setVar $SWITCHBOARD~message "Port sector does not have limpets.  Can't run in safe mode.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+	end
+
 
 	gosub :player~getinfo
 	if ($mowbuy = true)
