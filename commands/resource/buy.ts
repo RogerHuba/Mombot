@@ -391,7 +391,9 @@ return
 			send "0*"
 		end
 		gosub :choosehaggle
-		send "0* L " & $planet~planet & "* t n l 2* "
+		send "0* "
+		gosub :movehome
+		send "L " & $planet~planet & "* t n l 2* "
 		subtract $orgroundsleft 1
 		goto :buydownorg
 	end
@@ -405,7 +407,9 @@ return
 	if ($fuelroundsleft > 0)
 		gosub :initbuyroutine
 		gosub :choosehaggle
-		send "0* 0* L " & $planet~planet & "* t n l 1* "
+		send "0* 0* " 
+		gosub :movehome
+		send "L " & $planet~planet & "* t n l 1* "
 		subtract $fuelroundsleft 1
 		goto :buydownfuel
 	end
@@ -1090,9 +1094,6 @@ return
 	send "Q "
 	if ($movebuy = true)
 		if ($twarpbuy = true)
-			setdelaytrigger waithere :goon 5000
-			pause
-			:goon
 			setVar $player~warpto $warpto
 			gosub :player~twarp
 			gosub :player~currentPrompt
