@@ -1129,7 +1129,7 @@ return
 			gosub :player~twarp
 			gosub :player~currentPrompt
 			if ($player~twarpSuccess <> TRUE)
-				setVar $switchboard~message $player~msg&"*"
+				setVar $switchboard~message $player~msg&" - "&$homesector&"*"
 				gosub :switchboard~switchboard
 				halt
 			end
