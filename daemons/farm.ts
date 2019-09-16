@@ -1816,12 +1816,12 @@ return
 				subtract $planet~planetToFillFuelColonists $player~total_holds
 			end
 		elseif ($moveColo = "org")
-			if ($planet~planetToFillFuelColonists - $player~total_holds > 0)
+			if ($planet~planetToFillOrganicsColonists - $player~total_holds > 0)
 				add $planet~planet_ORGANICS_COLONISTS $player~total_holds
 				subtract $planet~planetToFillOrganicsColonists $player~total_holds
 			end
 		elseif ($moveColo = "equip")
-			if ($planet~planetToFillFuelColonists - $player~total_holds > 0)
+			if ($planet~planetToFillEquipmentColonists - $player~total_holds > 0)
 				add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
 				subtract $planet~planetToFillEquipmentColonists $player~total_holds
 			end
