@@ -798,6 +798,7 @@ return
 		if ($planet~planetToFill <> $planet~planets[$j])
 						send "l " & #8 & $planet~planets[$j] & "* "
 						gosub :PLANET~getPlanetInfo
+						setVar $planet~planet_CLASS $planet~planet_CLASS_NAME
 						lowercase $planet~planet_CLASS
 
 						if ($armageddon = TRUE)
@@ -1824,15 +1825,13 @@ return
 			end
 		elseif ($moveColo = "equip")
 			if ($planet~planetToFillEquipmentColonists - $player~total_holds > 0)
-				add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
 				subtract $planet~planetToFillEquipmentColonists $player~total_holds
 			elseif ($planet~planetToFillOrganicsColonists - $player~total_holds > 0)
-				add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
 				subtract $planet~planetToFillOrganicsColonists $player~total_holds
 			elseif ($planet~planetToFillFuelColonists - $player~total_holds > 0)
-				add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
 				subtract $planet~planetToFillFuelColonists $player~total_holds
 			end
+			add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
 		end
 		gosub :setWindow
 	end
