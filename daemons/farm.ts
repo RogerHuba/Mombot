@@ -798,16 +798,6 @@ return
 		if ($planet~planetToFill <> $planet~planets[$j])
 						send "l " & #8 & $planet~planets[$j] & "* "
 						gosub :PLANET~getPlanetInfo
-						setVar $planet~planet_FUEL $planet~planet_FUEL
-						setVar $planet~planet_ORGANICS $planet~planet_ORGANICS
-						setVar $planet~planet_EQUIPMENT $planet~planet_EQUIPMENT
-						setVar $planet~planet_FUEL_COLONISTS $planet~planet_FUEL_COLONISTS
-						setVar $planet~planet_ORGANICS_COLONISTS $planet~planet_ORGANICS_COLONISTS
-						setVar $planet~planet_EQUIPMENT_COLONISTS $planet~planet_EQUIPMENT_COLONISTS
-						setVar $planet~planet_CLASS $planet~planet_CLASS_NAME
-						setVar $planet~planet_CITADEL_CREDITS $planet~CITADEL_CREDITS
-						setVar $planet~planet_CITADEL $planet~CITADEL
-						setVar $planet~planet_SHIELD_POWER $planet~SHIELD_POWER
 						lowercase $planet~planet_CLASS
 
 						if ($armageddon = TRUE)
@@ -1814,16 +1804,34 @@ return
 			if ($planet~planetToFillFuelColonists - $player~total_holds > 0)
 				add $planet~planet_FUEL_COLONISTS $player~total_holds
 				subtract $planet~planetToFillFuelColonists $player~total_holds
+			elseif ($planet~planetToFillOrganicsColonists - $player~total_holds > 0)
+				add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
+				subtract $planet~planetToFillOrganicsColonists $player~total_holds
+			elseif ($planet~planetToFillEquipmentColonists - $player~total_holds > 0)
+				add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
+				subtract $planet~planetToFillEquipmentColonists $player~total_holds
 			end
 		elseif ($moveColo = "org")
 			if ($planet~planetToFillOrganicsColonists - $player~total_holds > 0)
 				add $planet~planet_ORGANICS_COLONISTS $player~total_holds
 				subtract $planet~planetToFillOrganicsColonists $player~total_holds
+			elseif ($planet~planetToFillFuelColonists - $player~total_holds > 0)
+				add $planet~planet_ORGANICS_COLONISTS $player~total_holds
+				subtract $planet~planetToFillFuelColonists $player~total_holds
+			elseif ($planet~planetToFillEquipmentColonists - $player~total_holds > 0)
+				add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
+				subtract $planet~planetToFillEquipmentColonists $player~total_holds
 			end
 		elseif ($moveColo = "equip")
 			if ($planet~planetToFillEquipmentColonists - $player~total_holds > 0)
 				add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
 				subtract $planet~planetToFillEquipmentColonists $player~total_holds
+			elseif ($planet~planetToFillOrganicsColonists - $player~total_holds > 0)
+				add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
+				subtract $planet~planetToFillOrganicsColonists $player~total_holds
+			elseif ($planet~planetToFillFuelColonists - $player~total_holds > 0)
+				add $planet~planet_EQUIPMENT_COLONISTS $player~total_holds
+				subtract $planet~planetToFillFuelColonists $player~total_holds
 			end
 		end
 		gosub :setWindow
