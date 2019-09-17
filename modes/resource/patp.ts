@@ -23,6 +23,7 @@
 
   
    setVar $switchboard~bot_name $SWITCHBOARD~bot_name
+	Window patp_script 330 424 ("PATP - " & GAMENAME) ONTOP
 
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
@@ -34,6 +35,7 @@
 	send "q"
 	waitOn "Planet command (?"
 	gosub :PLANET~getPlanetInfo
+	gosub :setwindow
 	send "c"
 	if ($planet~CITADEL < 4)
 		setVar $SWITCHBOARD~message "You must run Pay At The Pump from at least a level 4 planet.*"
@@ -92,7 +94,7 @@
 	send "qsnl1*tnl1*tnl2*tnl3*"
 	waitOn "Planet command (?"
 	gosub :PLANET~getPlanetInfo
-	
+	gosub :setwindow
 	send "qjy l "&$planet~planet&"* c"
 	send "c;q"
 	waitFor "Figs Per Attack:"
@@ -202,6 +204,7 @@
 					send "q"
 					waitOn "Planet command (?"
 					gosub :PLANET~getPlanetInfo
+					gosub :setwindow
 					send "c"
 					setVar $total_creds_needed (300*7000)
 					if ($total_creds_needed > $PLAYER~CREDITS)
@@ -244,6 +247,8 @@
 				setVar $PLAYER~buydownRoundsFromParam $player~turnsToEmpty
 				gosub :player~buy
 				gosub :PLAYER~quikstats
+				gosub :planet~getplanetinfo
+				gosub :setwindow
 				send "c r*q "
 				
 				if ($PLAYER~exit_message <> "Normal Exit")
@@ -291,6 +296,8 @@
 							gosub :SWITCHBOARD~switchboard
 							gosub :PLAYER~quikstats
 					end
+					gosub :planet~getplanetinfo
+					gosub :setwindow
 					send "c r*q "
 					gosub :landOnPlanetEnterCitadel
 				end
@@ -350,6 +357,29 @@ return
 	setSectorParameter $NearFig "FIGSEC" FALSE
 	goto :tryAgain2
 
+
+:setWindow
+	#gosub :PLAYER~quikstats
+	setVar $msg "* Status: " & $status_message
+	setVar $msg $msg & "* Starting Sector:   " & $startingSector
+	setVar $msg $msg & "* Current Sector " & $PLAYER~CURRENT_SECTOR
+	if ($PLAYER~TURNS > 0)
+			setVar $msg $msg & "* Turns: " & $PLAYER~TURNS
+	end
+	setVar $msg $msg & "** PATP Planet: " & $planet~planets[$j]
+	setVar $msg $msg & "* ----------------"
+	setVar $msg $msg & "* Fuel: " & $planet~planet_FUEL
+	setVar $msg $msg & "* Organics: " & $planet~planet_ORGANICS
+	setVar $msg $msg & "* Equipment: " & $planet~planet_EQUIPMENT
+	setVar $msg $msg & "* Fuel Colonists: " & $planet~planet_FUEL_COLONISTS
+	setVar $msg $msg & "* Organics Colonists: " & $planet~planet_ORGANICS_COLONISTS
+	setVar $msg $msg & "* Equipment Colonists: " & $planet~planet_EQUIPMENT_COLONISTS
+	setVar $msg $msg & "** Credits: " & $PLAYER~CREDITS
+	setWindowContents patp_script $msg & $msg1
+	setVar $window_content $msg 
+	replaceText $window_content "*" "[][]"
+	saveVar $window_content
+return
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"

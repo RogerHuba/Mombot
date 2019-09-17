@@ -270,6 +270,7 @@
 					send "q q *O 1 100*O 2 100*O 3 100** "
 					gosub :PLAYER~quikstats
 					gosub :PLANET~landOnPlanetEnterCitadel
+					gosub :PLAYER~quikstats
 				end
 
 				if ($planet~planetNegotiate = TRUE)
