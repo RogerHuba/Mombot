@@ -94,6 +94,7 @@
 	send "qsnl1*tnl1*tnl2*tnl3*"
 	waitOn "Planet command (?"
 	gosub :PLANET~getPlanetInfo
+	setVar $startingSector $PLAYER~CURRENT_SECTOR
 	gosub :setwindow
 	send "qjy l "&$planet~planet&"* c"
 	send "c;q"
@@ -106,7 +107,6 @@
 	end
 	setVar $totalHolds 0 
 	setVar $spentCredits 0 
-	setVar $startingSector $PLAYER~CURRENT_SECTOR
 
 	setArray $checkedPorts SECTORS
 	setArray $que SECTORS
@@ -359,9 +359,7 @@ return
 
 
 :setWindow
-	#gosub :PLAYER~quikstats
-	setVar $msg "* Status: " & $status_message
-	setVar $msg $msg & "* Starting Sector:   " & $startingSector
+	setVar $msg & "* Starting Sector:   " & $startingSector
 	setVar $msg $msg & "* Current Sector " & $PLAYER~CURRENT_SECTOR
 	if ($PLAYER~TURNS > 0)
 			setVar $msg $msg & "* Turns: " & $PLAYER~TURNS
