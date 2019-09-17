@@ -787,11 +787,17 @@ return
 :stripallplanets
 	setVar $j 1
 	send "qq* "
-	if ((($upgrade) OR ($build)) AND ($noupgrade = FALSE))
+	if ((($upgrade = true) OR ($build = true)) AND ($noupgrade = FALSE))
 		 if ($planet~planetCount > 1)
-			send "l " & #8 & $planet~planetToFill & "* c " 
+			send "l " & #8 & $planet~planetToFill & "*"
+			gosub :PLANET~getPlanetInfo
+			gosub :fillplanetstats
+			send " c " 
 			gosub :upgrade_planets
-			send "qq* "
+			send "q"
+			gosub :PLANET~getPlanetInfo
+			gosub :fillplanetstats
+			send "q* "
 		end
 	end
 	while ($j <= $planet~planetCount)
@@ -867,7 +873,7 @@ return
 							gosub :switchboard~switchboard
 							goto :doneWithThisPlanet
 						end
-						if ($colonize)
+						if ($colonize = true)
 							if (($planet~planet_FUEL_COLONISTS < ($planet~planet_FUEL_COLONISTS_MAX-1000)) OR ($planet~planet_ORGANICS_COLONISTS < ($planet~planet_ORGANICS_COLONISTS_MAX-1000)) OR ($planet~planet_EQUIPMENT_COLONISTS < ($planet~planet_EQUIPMENT_COLONISTS_MAX-1000)))
 								gosub :colonize
 							end
@@ -875,7 +881,7 @@ return
 							gosub :PLANET~getPlanetInfo
 							lowercase $planet~planet_CLASS
 						end
-						if ($defense)
+						if ($defense = true)
 							if ($planet~planet_CITADEL >= 3)
 								send "cls0*la100*q "                        	
 							end
@@ -1027,7 +1033,7 @@ return
 							end
 							send "qq* "
 						end
-						if (($shield) and ($planet~planet_CITADEL > 4) and ($planet~planet_SHIELD_POWER < 200))
+						if (($shield = true) and ($planet~planet_CITADEL > 4) and ($planet~planet_SHIELD_POWER < 200))
 							if ($PLAYER~SHIELDS < 2000)
 									send "qq* l " & #8 & $planet~planetToFill & "*"
 									gosub :PLANET~getPlanetInfo
@@ -1060,7 +1066,7 @@ return
 						end
 						send "qq* * "
 
-						if ($strip)
+						if ($strip = true)
 							send "l " & #8 & $planet~planetToFill & "* c "
 							setVar $options ""
 							if ($get_fuel)
@@ -1096,7 +1102,7 @@ return
 							send "q * "
 						end
 						:try_colo
-						if ($colo)
+						if ($colo = true)
 							send "qq* jy* l " & #8 & $planet~planetToFill & "*  "
 							gosub :planet~getplanetinfo
 							gosub :fillplanetstats
@@ -2906,6 +2912,7 @@ return
 return
 
 :fillplanetstats
+	setVar $planet~planetToFill $planet~planet
 	setVar $planet~planetToFillFuel $planet~planet_FUEL
 	setVar $planet~planetToFillOrganics $planet~planet_ORGANICS
 	setVar $planet~planetToFillEquipment $planet~planet_EQUIPMENT
@@ -2915,6 +2922,7 @@ return
 	setvar $planet~planetToFillFuelMax $planet~planet_FUEL_COLONISTS_MAX
 	setvar $planet~planetToFillOrgMax $planet~planet_ORGANICS_COLONISTS_MAX
 	setvar $planet~planetToFillEquipMax $planet~planet_EQUIPMENT_COLONISTS_MAX
+	gosub :setWindow						
 return
 
 :waiton
