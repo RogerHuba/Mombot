@@ -247,7 +247,9 @@
 				setVar $PLAYER~buydownRoundsFromParam $player~turnsToEmpty
 				gosub :player~buy
 				gosub :PLAYER~quikstats
+				send "q"
 				gosub :planet~getplanetinfo
+				send "c"
 				gosub :setwindow
 				send "c r*q "
 				
