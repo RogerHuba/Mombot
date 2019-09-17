@@ -9,6 +9,7 @@
 	loadvar $planet~planet_file
 	setVar $BUBBLE_LIST $bot~folder&"/bubble.list"
 	setVar $BOT~command "farm"
+	Window Farm_Script 330 424 ("M()M Farmer - " & GAMENAME) ONTOP
 
 	setVar $BOT~help[1]  $BOT~tab&"Farms sectors marked with FARM parameters.  "
 	setVar $BOT~help[2]  $BOT~tab&"       "
@@ -485,7 +486,6 @@
 	gosub :SHIP~getShipStats
 	gosub :fillplanetstats
 
-	Window Farm_Script 330 424 ("M()M Farmer - " & GAMENAME) ONTOP
 	gosub :setWindow
 
 	gosub :get_tl_list
