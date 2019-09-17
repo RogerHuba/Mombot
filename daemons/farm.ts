@@ -927,7 +927,7 @@ return
 								setVar $planet~planet_FUEL_COLONISTS ($planet~planet_FUEL_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*1"&$colos_to_move&"*2"
-									waitOn "The Colonists drop what"
+									gosub :waiton
 								end
 							end
 							if ($planet~planet_EQUIPMENT_COLONISTS < $planet~planet_EQUIPMENT_COLONISTS_MAX)
@@ -942,7 +942,7 @@ return
 								setVar $planet~planet_FUEL_COLONISTS ($planet~planet_FUEL_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*1"&$colos_to_move&"*3"
-									waitOn "The Colonists drop what"
+									gosub :waiton
 								end
 							end
 						end
@@ -960,7 +960,7 @@ return
 								setVar $planet~planet_ORGANICS_COLONISTS ($planet~planet_ORGANICS_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*2"&$colos_to_move&"*1"
-									waitOn "The Colonists drop what"
+									gosub :waiton
 								end
 							end
 							if ($planet~planet_EQUIPMENT_COLONISTS < $planet~planet_EQUIPMENT_COLONISTS_MAX)
@@ -975,7 +975,7 @@ return
 								setVar $planet~planet_ORGANICS_COLONISTS ($planet~planet_ORGANICS_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*2"&$colos_to_move&"*3"
-									waitOn "The Colonists drop what"
+									gosub :waiton
 								end
 							end
 						end
@@ -993,7 +993,7 @@ return
 								setVar $planet~planet_EQUIPMENT_COLONISTS ($planet~planet_EQUIPMENT_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*3"&$colos_to_move&"*2"
-									waitOn "The Colonists drop what"
+									gosub :waiton
 								end
 							end
 							if ($planet~planet_FUEL_COLONISTS < $planet~planet_FUEL_COLONISTS_MAX)
@@ -1008,7 +1008,7 @@ return
 								setVar $planet~planet_EQUIPMENT_COLONISTS ($planet~planet_EQUIPMENT_COLONISTS-$colos_to_move)
 								if ($colos_to_move > 0)
 									send "p*3"&$colos_to_move&"*1"
-									waitOn "The Colonists drop what"
+									gosub :waiton
 								end
 							end
 						end
@@ -2917,6 +2917,12 @@ return
 	setvar $planet~planetToFillEquipMax $planet~planet_EQUIPMENT_COLONISTS_MAX
 return
 
+:waiton
+	setdelaytrigger waitfortime :donewaitingfortime 5000
+	waitOn "The Colonists drop what"
+	killtrigger waitfortime
+	:donewaitingfortime
+return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
