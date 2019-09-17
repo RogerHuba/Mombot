@@ -359,7 +359,7 @@ return
 
 
 :setWindow
-	setVar $msg & "* Starting Sector:   " & $startingSector
+	setVar $msg "* Starting Sector:   " & $startingSector
 	setVar $msg $msg & "* Current Sector " & $PLAYER~CURRENT_SECTOR
 	if ($PLAYER~TURNS > 0)
 			setVar $msg $msg & "* Turns: " & $PLAYER~TURNS
