@@ -197,9 +197,9 @@
 					setSectorParameter $NearFig "FIGSEC" TRUE
 
 
-
+				killAllTriggers
+					
 				if ($upgrade)
-					killAllTriggers
 					gosub :PLAYER~quikstats
 					send "q"
 					waitOn "Planet command (?"
