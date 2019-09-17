@@ -804,6 +804,7 @@ return
 		if ($planet~planetToFill <> $planet~planets[$j])
 						send "l " & #8 & $planet~planets[$j] & "* "
 						gosub :PLANET~getPlanetInfo
+						gosub :setwindow
 						setVar $planet~planet_CLASS $planet~planet_CLASS_NAME
 						lowercase $planet~planet_CLASS
 
