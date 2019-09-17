@@ -57,6 +57,30 @@ return
 	setvar $parm6 $bot~parm6
 	setvar $parm7 $bot~parm7
 	setvar $parm8 $bot~parm8
+	if ($parm1 = "")
+		setvar $parm1 "0"
+	end
+	if ($parm2 = "")
+		setvar $parm2 "0"
+	end
+	if ($parm3 = "")
+		setvar $parm3 "0"
+	end
+	if ($parm4 = "")
+		setvar $parm4 "0"
+	end
+	if ($parm5 = "")
+		setvar $parm5 "0"
+	end
+	if ($parm6 = "")
+		setvar $parm6 "0"
+	end
+	if ($parm7 = "")
+		setvar $parm7 "0"
+	end
+	if ($parm8 = "")
+		setvar $parm8 "0"
+	end
 	saveVar $parm1
 	saveVar $parm2
 	saveVar $parm3
@@ -93,6 +117,7 @@ return
 	saveVar $ptradesetting
 
 return
+
 
 #INCLUDES:
 include "source\bot_includes\bot"
