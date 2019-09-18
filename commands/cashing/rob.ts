@@ -1,5 +1,6 @@
 	gosub :BOT~loadVars
 	loadVar $GAME~rob_factor
+	loadvar $bot~subspace
 		
 	setVar $BOT~help[1] $BOT~tab&"Attempts to rob a port"
 	gosub :bot~helpfile
@@ -105,7 +106,7 @@
 		gosub :PLANET~landingSub
 	end
 	setSectorParameter $PLAYER~CURRENT_SECTOR "BUSTED" TRUE
-	send "'<" & $subspace & ">[Busted:" & $PLAYER~CURRENT_SECTOR & "]<" & $subspace & ">*"
+	send "'<" & $bot~subspace & ">[Busted:" & $PLAYER~CURRENT_SECTOR & "]<" & $bot~subspace & ">*"
 	goto :portrm_done
 :port_suc
 	killalltriggers
