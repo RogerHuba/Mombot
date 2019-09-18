@@ -590,6 +590,15 @@ return
 						waitOn "<Computer deactivated>"
 					gosub :PLAYER~quikstats
 					send "l "&$planet~planet&"*  c "
+
+					setVar $PLAYER~buyobject "f"
+					setVar $PLAYER~buytype "s"
+					gosub :player~buy
+					gosub :PLAYER~quikstats
+					send "q"
+					gosub :planet~getplanetinfo
+					send "c"
+
 			end
 		:gotallportinfo
 			killAllTriggers			
