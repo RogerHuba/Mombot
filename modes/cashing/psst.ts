@@ -592,15 +592,15 @@ return
 						waitOn "<Computer deactivated>"
 					gosub :PLAYER~quikstats
 					send "l "&$planet~planet&"*  c "
-
-					setVar $PLAYER~buyobject "f"
-					setVar $PLAYER~buytype "s"
-					gosub :player~buy
-					gosub :PLAYER~quikstats
-					send "q"
-					gosub :planet~getplanetinfo
-					send "c"
-
+			end
+			if ((($buyfuel = true) AND ((PORT.BUYFUEL[$focus] = FALSE) and (port.exists[$focus] = true))))
+				setVar $PLAYER~buyobject "f"
+				setVar $PLAYER~buytype "s"
+				gosub :player~buy
+				gosub :PLAYER~quikstats
+				send "q"
+				gosub :planet~getplanetinfo
+				send "c"
 			end
 		:gotallportinfo
 			killAllTriggers			
