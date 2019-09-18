@@ -592,6 +592,7 @@ return
 				else
 					setvar $planet~planet2Fuel $planet~PLANET_FUEL
 				end
+				gosub :displayCredits
 			end
 		:gotallportinfo
 			killAllTriggers			
