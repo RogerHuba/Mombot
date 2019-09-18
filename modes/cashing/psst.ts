@@ -53,16 +53,9 @@
 						setVar $ship1Equipment $player~equipment_holds
 						gosub :displayCredits
 						send "q *q *"
-						if ($p1chk=1)
-							setvar $p1chk 2
-						elseif ($p1chk=2)
-							setvar $p1chk 3
-						elseif ($p1chk=3)
-							setvar $p1chk 1
-						end
 						waitOn "Fuel Ore"
-						getWord CURRENTLINE $planet~planet1Fuel[$p1chk] 6
-						stripText $planet~planet1Fuel[$p1chk] ","
+						getWord CURRENTLINE $planet~planet1Fuel 6
+						stripText $planet~planet1Fuel ","
 						goto :continueOnShip1   
 					:pwarpNoShip1
 						killAllTriggers	
@@ -127,16 +120,9 @@
 						setVar $ship2Equipment $player~equipment_holds
 						gosub :displayCredits
 						send "q *q *"
-						if ($p2chk=1)
-							setvar $p2chk 2
-						elseif ($p2chk=2)
-							setvar $p2chk 3
-						elseif ($p2chk=3)
-							setvar $p2chk 1
-						end
 						waitOn "Fuel Ore"
-						getWord CURRENTLINE $planet~planet2Fuel[$p2chk] 6
-						stripText $planet~planet2Fuel[$p2chk] ","
+						getWord CURRENTLINE $planet~planet2Fuel 6
+						stripText $planet~planet2Fuel ","
 						goto :continueOnShip2   
 					:pwarpNoShip2
 						killAllTriggers
@@ -460,9 +446,9 @@ return
 		if (($ship1TotalHolds < $minRefurb) OR ($ship2TotalHolds < $minRefurb))
 			gosub :refurb
 		end
-		if (($planet~planet1Fuel[1] < 100000) and ($planet~planet1Fuel[2] < 100000) and ($planet~planet1Fuel[3] < 100000))
+		if ($planet~planet1Fuel < 100000)
 			goto :endSST
-		elseif (($planet~planet2Fuel[1] < 100000) and ($planet~planet2Fuel[2] < 100000) and ($planet~planet2Fuel[3] < 100000))
+		elseif ($planet~planet2Fuel < 100000)
 			goto :endSST
 		end
 	end
@@ -601,6 +587,11 @@ return
 				send "q"
 				gosub :planet~getplanetinfo
 				send "c"
+				if ($planet~planet = $psst_Planet1)
+					setvar $planet~planet1Fuel $planet~PLANET_FUEL
+				else
+					setvar $planet~planet2Fuel $planet~PLANET_FUEL
+				end
 			end
 		:gotallportinfo
 			killAllTriggers			
@@ -761,7 +752,7 @@ return
 		setvar $numberbusted 1
 	end
 	divide $portaverage $numberbusted
-	setWindowContents cash "    Cash Deposited: "&$formattedDepositedCredits&"*      Cash On Hand: "&$formattedOnHandCredits&"*  Busted xxB Ports: "&$numberbusted&"*     Planet 1 Fuel: "&$planet~planet1Fuel[1]&"*     Planet 2 Fuel: "&$planet~planet2Fuel[1]&"*  Credits per Port: "&$portaverage&"*        Experience: "&$player~experience&"*"
+	setWindowContents cash "    Cash Deposited: "&$formattedDepositedCredits&"*      Cash On Hand: "&$formattedOnHandCredits&"*  Busted xxB Ports: "&$numberbusted&"*     Planet 1 Fuel: "&$planet~planet1Fuel&"*     Planet 2 Fuel: "&$planet~planet2Fuel&"*  Credits per Port: "&$portaverage&"*        Experience: "&$player~experience&"*"
 
 
 return
@@ -819,9 +810,9 @@ return
 		send "l "&$psst_Planet2&"* c p "&$startingSector&"*y"
 	end
 	
-	if (($planet~planet1Fuel[1] < 100000) and ($planet~planet1Fuel[2] < 100000) and ($planet~planet1Fuel[3] < 100000))
+	if ($planet~planet1Fuel < 100000)
 		send "'{" $switchboard~bot_name "} - Planet(s) low on fuel, stopping script.  Put total of "&$formattedDepositedCredits&" credits in treasury.*"
-	elseif (($planet~planet2Fuel[1] < 100000) and ($planet~planet2Fuel[2] < 100000) and ($planet~planet2Fuel[3] < 100000))
+	elseif ($planet~planet2Fuel < 100000)
 		send "'{" $switchboard~bot_name "} - Planet(s) low on fuel, stopping script.  Put total of "&$formattedDepositedCredits&" credits in treasury.*"
 	elseif (($player~unlimitedGame = FALSE) AND ($player~turns <= $bot_turn_limit))
 		send "'{" $switchboard~bot_name "} - Too low turns to continue Planet SST.*"
