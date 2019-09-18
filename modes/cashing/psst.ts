@@ -157,7 +157,7 @@ return
 
 :steal
 	if (($isBusted1 <> TRUE) AND ($isBusted2 <> TRUE))
-		setVar $maxSteal ($player~experience / $steal_factor - 1)
+		setVar $maxSteal ($player~experience / $game~steal_factor - 1)
 		setVar $send ""
 			if ($inShip1)
 				if ($ship1Equipment > 0)
@@ -280,159 +280,30 @@ return
 return
 
 
-# ============================== QUICKSTATS ==============================
-:player~quikstats
-	
-
-	killtrigger noprompt
-	killtrigger prompt1
-	killtrigger prompt2
-	killtrigger prompt3
-	killtrigger prompt4
-	killtrigger statlinetrig
-	killtrigger getLine2
-	setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
-	setTextLineTrigger 	statlinetrig 	:statStart 		#179
-	send #145&"/"
-	pause
-
-	:allPrompts
-		getWord CURRENTLINE $player~current_prompt 1
-		stripText $player~current_prompt #145
-		stripText $player~current_prompt #8
-		#getWord currentansiline $checkPrompt 1
-		#getWord currentline $tempPrompt 1
-		#getWordPos $checkPrompt $pos "[35m"
-		#if ($pos > 0)
-		#	setVar $player~current_prompt $tempPrompt
-		#end
-		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
-		pause
-
-	:statStart
-		killtrigger prompt
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger noprompt
-		setVar $stats ""
-		setVar $wordy ""
-
-
-	:statsline
-		killtrigger statlinetrig
-		killtrigger getLine2
-		setVar $line2 CURRENTLINE
-		replacetext $line2 #179 " "
-		striptext $line2 ","
-		setVar $stats $stats & $line2
-		getWordPos $line2 $pos "Ship"
-		if ($pos > 0)
-			goto :gotStats
-		else
-			setTextLineTrigger getLine2 :statsline
-			pause
-		end
-
-	:gotStats
-		setVar $stats $stats & " @@@"
-
-		setVar $current_word 0
-		while ($wordy <> "@@@")
-			if ($wordy = "Sect")
-				getWord $stats $player~current_sector   	($current_word + 1)
-			elseif ($wordy = "Turns")
-				getWord $stats $player~turns  			($current_word + 1)
-			elseif ($wordy = "Creds")
-				getWord $stats $player~credits  		($current_word + 1)
-			elseif ($wordy = "Figs")
-				getWord $stats $player~fighters   		($current_word + 1)
-			elseif ($wordy = "Shlds")
-				getWord $stats $player~shields  		($current_word + 1)
-			elseif ($wordy = "Hlds")
-				getWord $stats $player~total_holds   		($current_word + 1)
-			elseif ($wordy = "Ore")
-				getWord $stats $player~ore_holds    		($current_word + 1)
-			elseif ($wordy = "Org")
-				getWord $stats $player~organic_holds    	($current_word + 1)
-			elseif ($wordy = "Equ")
-				getWord $stats $player~equipment_holds    	($current_word + 1)
-			elseif ($wordy = "Col")
-				getWord $stats $player~colonist_holds    	($current_word + 1)
-			elseif ($wordy = "Phot")
-				getWord $stats $player~photons   		($current_word + 1)
-			elseif ($wordy = "Armd")
-				getWord $stats $player~armids   		($current_word + 1)
-			elseif ($wordy = "Lmpt")
-				getWord $stats $player~limpets   		($current_word + 1)
-			elseif ($wordy = "GTorp")
-				getWord $stats $player~genesis  		($current_word + 1)
-			elseif ($wordy = "TWarp")
-				getWord $stats $player~twarp_type  		($current_word + 1)
-			elseif ($wordy = "Clks")
-				getWord $stats $player~cloaks   		($current_word + 1)
-			elseif ($wordy = "Beacns")
-				getWord $stats $player~beacons 		($current_word + 1)
-			elseif ($wordy = "AtmDt")
-				getWord $stats $player~atomic  		($current_word + 1)
-			elseif ($wordy = "Corbo")
-				getWord $stats $player~corbo   		($current_word + 1)
-			elseif ($wordy = "EPrb")
-				getWord $stats $player~eprobes   		($current_word + 1)
-			elseif ($wordy = "MDis")
-				getWord $stats $player~mine_disruptors   	($current_word + 1)
-			elseif ($wordy = "PsPrb")
-				getWord $stats $player~psychic_probe  		($current_word + 1)
-			elseif ($wordy = "PlScn")
-				getWord $stats $player~planet_scanner  	($current_word + 1)
-			elseif ($wordy = "LRS")
-				getWord $stats $player~scan_type    		($current_word + 1)
-			elseif ($wordy = "Aln")
-				getWord $stats $player~alignment    		($current_word + 1)
-			elseif ($wordy = "Exp")
-				getWord $stats $player~experience    		($current_word + 1)
-			elseif ($wordy = "Corp")
-				getWord $stats $player~corp   			($current_word + 1)
-			elseif ($wordy = "Ship")
-				getWord $stats $player~ship_number   		($current_word + 1)
-			end
-			add $current_word 1
-			getWord $stats $wordy $current_word
-		end
-	:doneQuikstats
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger statlinetrig
-		killtrigger getLine2
-
-return
-# ============================== END QUICKSTATS SUB==============================
-
 
 :start_script
-	#Version 1.1
-	setVar $BUST_FILE "MOM_"&GAMENAME&"_Busts.txt"
-	setVar $FIG_FILE "MOM_"&GAMENAME&"_Fighter_Grid.txt"
-	setVar $FIG_COUNT_FILE "MOM_"&GAMENAME&"_Fighter_Grid_Count.cnt"
-	loadVar $steal_factor
+	gosub :BOT~loadVars
+	loadVar $game~steal_factor
 	loadVar $player~unlimitedGame
-	loadVar $bot_turn_limit
-	loadVar $bot~user_command_line
-	loadVar $bot~parm1
-	loadVar $bot~parm2
-	loadVar $bot~parm3
-	loadVar $bot~parm4
-	loadVar $bot~parm5
-	loadVar $bot~parm6
-	loadVar $bot~parm7
-	loadVar $bot~parm8
-	loadVar $switchboard~bot_name	
-	loadVar $rylos
-	loadVar $alpha_centauri
-	loadVar $stardock
-	loadVar $subspace
+	loadVar $map~rylos
+	loadVar $map~alpha_centauri
+	loadVar $map~stardock
+	loadvar $bot~folder
+
+
+	setVar $BOT~help[1]  $BOT~tab&"              Planet SST              "
+	setVar $BOT~help[2]  $BOT~tab&"  psst [ship2] [planet1] [planet2] {furb:x} {buyfuel} "
+	setVar $BOT~help[3]  $BOT~tab&"       "
+	setVar $BOT~help[4]  $BOT~tab&"        "
+	setVar $BOT~help[5]  $BOT~tab&"Options:"
+	setVar $BOT~help[6]  $BOT~tab&"     [furb:x]  Use furbing bot where x is bot name"
+	setVar $BOT~help[7]  $BOT~tab&"    [buyfuel]  buy fuel while cashing"
+	gosub :bot~helpfile
+
+	setVar $BOT~script_title "Planet SST"
+	gosub :BOT~banner
+
+	setVar $BUST_FILE $bot~folder&"/busts.cfg"
 	
 	gosub :player~quikstats
 	setVar $startingLocation $player~current_prompt
@@ -449,6 +320,12 @@ return
 	if ($pos > 0)
 		setVar $furb TRUE
 		getText " "&$bot~user_command_line&" " $furb_bot "furb:" " "
+	end
+
+	setVar $buyfuel FALSE
+	getWordPos $bot~user_command_line $pos "buyfuel"
+	if ($pos > 0)
+		setVar $buyfuel TRUE
 	end
 
 	lowerCase $bot~parm1
@@ -479,7 +356,7 @@ return
 	setArray $planet~planet2Fuel 3
 	setVar $psst_Ship1 $player~ship_number
 	
-	if ($psst_Ship2 <= 0) OR ($psst_Planet1 <= 0) OR ($psst_Planet2 <= 0) OR ($steal_factor <= 0)
+	if ($psst_Ship2 <= 0) OR ($psst_Planet1 <= 0) OR ($psst_Planet2 <= 0) OR ($game~steal_factor <= 0)
 		send "'This module should be run from the MOM Bot.*"
 		setVar $mode "General"
 		saveVar $mode
@@ -489,10 +366,10 @@ return
 	setVar $inShip1 TRUE
 	setvar $p1chk 3
 	setvar $p2chk 3
-	if ($RYLOS > 10)
-		setVar $refurbPort $RYLOS
-	elseif ($ALPHA_CENTAURI > 10)
-		setVar $refurbPort $ALPHA_CENTAURI
+	if ($map~RYLOS > 10)
+		setVar $refurbPort $map~RYLOS
+	elseif ($map~ALPHA_CENTAURI > 10)
+		setVar $refurbPort $map~ALPHA_CENTAURI
 	elseif ($furb)
 		send "'{" $switchboard~bot_name "} - This bot has no locations of Class 0 ports in its database.  Furbing only option enabled.*"
 	else
@@ -678,8 +555,42 @@ return
 				if ($x < 0)
 					setVar $equipAtPort[$focus] 0
 				else
-       	 				setVar $equipAtPort[$focus] $x
+       	 			setVar $equipAtPort[$focus] $x
 				end
+			end
+			if ($buyfuel = true)
+				gosub :PLAYER~quikstats
+				send "q"
+				waitOn "Planet command (?"
+				gosub :PLANET~getPlanetInfo
+				send "c"
+			end
+			if ((($buyfuel = true) AND ((PORT.BUYFUEL[$focus] = FALSE) and (port.exists[$focus] = true))) and ($planet~planetfuel < ($planet~planetfuelmax-65000)))
+					setVar $total_creds_needed (300*7000)
+					if ($total_creds_needed > $PLAYER~CREDITS)
+						setVar $cashonhand $planet~CITADEL_CREDITS
+						add $cashonhand $PLAYER~CREDITS
+						if ($cashonhand > $total_creds_needed)
+								send "T T " & $PLAYER~CREDITS & "* "
+								send "T F " & $total_creds_needed & "* "
+								setVar $PLAYER~CREDITS $total_creds_needed
+							end
+					end
+					send "q q *O 1"
+					waitOn ", 0 to quit)"
+					getWord CURRENTLINE $upgradeAmount 9
+					stripText $upgradeAmount "("
+					send $upgradeAmount&"* * *CR*Q"
+					waitOn "What sector is the port in? ["&$PLAYER~CURRENT_SECTOR&"]"
+					setTextLineTrigger getFuel2 :fuelDuring "Fuel Ore"
+					pause
+					:fuelDuring
+						killalltriggers
+						getWord CURRENTLINE $totalPortFuel 4
+						waitOn "<Computer deactivated>"
+					gosub :PLAYER~quikstats
+					gosub :PLANET~landOnPlanetEnterCitadel
+
 			end
 		:gotallportinfo
 			killAllTriggers			
@@ -753,9 +664,9 @@ return
 		:pwarpNoRefurbFig
 			killAllTriggers
 			send "'{" $switchboard~bot_name "} No fighter down at refurb port in sector " &$refurbPort& ".*"
-			if ($refurbPort = $RYLOS)
-				if ($ALPHA_CENTAURI > 10)
-					setVar $refurbPort $ALPHA_CENTAURI
+			if ($refurbPort = $map~RYLOS)
+				if ($map~ALPHA_CENTAURI > 10)
+					setVar $refurbPort $map~ALPHA_CENTAURI
 					send "qq"
 					goto :refurb
 				end
