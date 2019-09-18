@@ -255,7 +255,7 @@ return
 				else
 					setVar $ship2NeedsPort TRUE
 				end
-				send "'<"&$subspace&">[Busted:"&$lastBustSector&"]<"&$subspace&">* c"
+				send "'<"&$bot~subspace&">[Busted:"&$lastBustSector&"]<"&$bot~subspace&">* c"
 				setSectorParameter $lastBustSector "BUSTED" TRUE
 				saveVar $lastBustSector
 				waitOn "<Computer activated>"
@@ -289,6 +289,8 @@ return
 	loadVar $map~alpha_centauri
 	loadVar $map~stardock
 	loadvar $bot~folder
+	loadvar $bot~subspace
+	
 
 
 	setVar $BOT~help[1]  $BOT~tab&"              Planet SST              "
