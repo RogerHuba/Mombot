@@ -590,6 +590,7 @@ return
 						waitOn "<Computer deactivated>"
 					gosub :PLAYER~quikstats
 					gosub :PLANET~landOnPlanetEnterCitadel
+					gosub :PLAYER~quikstats
 
 			end
 		:gotallportinfo
