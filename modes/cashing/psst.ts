@@ -589,9 +589,7 @@ return
 						getWord CURRENTLINE $totalPortFuel 4
 						waitOn "<Computer deactivated>"
 					gosub :PLAYER~quikstats
-					gosub :PLANET~landOnPlanetEnterCitadel
-					gosub :PLAYER~quikstats
-
+					send "l "&$planet~planet&"*  c "
 			end
 		:gotallportinfo
 			killAllTriggers			
