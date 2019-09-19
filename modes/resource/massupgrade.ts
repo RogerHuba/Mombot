@@ -58,9 +58,11 @@ setVar $planet~planetsFilled 1
 	if ($player~current_prompt = "Citadel")
 		send "q"
 	else
-		setvar $switchboard~message "Wrong prompt!  Halting.*"
-		gosub :switchboard~switchboard
-		halt
+		if ($player~current_prompt <> "Planet")
+			setvar $switchboard~message "Wrong prompt!  Halting.*"
+			gosub :switchboard~switchboard
+			halt
+		end
 	end
 	gosub :PLANET~getPlanetInfo
 	if ($start_planet_check = "")
