@@ -661,13 +661,13 @@ return
 		subtract $i 1
 	end
 
-	setVar $output $output&ANSI_15&"----"&ANSI_12&" "&#27&"[35m["&#27&"[32m'"&#27&"[35m]"&ANSI_15&"Sub ("&$BOT~subspace&") "&ansi_15&"----- "&#27&"[35m["&#27&"[32m`"&#27&"[35m]"&ANSI_15&"Fed "&ansi_15&"---- "&#27&"[35mPage ["&#27&"[32mU"&#27&"[35m]p Chat "&ansi_15&"--"&#27&"[35m Page "&#27&"[35m["&#27&"[32mD"&#27&"[35m]own Chat "&ansi_15&"---- "
+	setVar $output $output&ANSI_15&"------"&ANSI_12&" "&#27&"[35m["&#27&"[32m'"&#27&"[35m]"&ANSI_15&"Sub ("&$BOT~subspace&") "&ansi_15&"----- "&#27&"[35m["&#27&"[32m`"&#27&"[35m]"&ANSI_15&"Fed "&ansi_15&"---- "&#27&"[35mPage ["&#27&"[32mU"&#27&"[35m]p Chat "&ansi_15&"--"&#27&"[35m Page "&#27&"[35m["&#27&"[32mD"&#27&"[35m]own Chat "&ansi_15&"---- "
 	loadvar $bot~subspace
 
 	if ($ignoreme = true)
-		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Show Me"&ANSI_15&" ----------*"
+		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Show Me"&ANSI_15&" --------*"
 	else
-		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Ignore Me"&ANSI_15&" --------*"
+		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Ignore Me"&ANSI_15&" ------*"
 	end
 
 	if ($output <> $old_output)
