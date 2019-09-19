@@ -664,6 +664,8 @@ return
 	end
 	if ($fighter_output <> "")
 		setVar $output $output&ANSI_15&"-----------------------------------------"&ansi_2&" Fighter Hits "&ansi_15&"--------------------------------------------*"&$fighter_output
+	else
+		setvar $output $output&"*"
 	end
 	setVar $output $output&ANSI_15&"------"&ANSI_12&" "&#27&"[35m["&#27&"[32m'"&#27&"[35m]"&ANSI_15&"Sub ("&$BOT~subspace&") "&ansi_15&"----- "&#27&"[35m["&#27&"[32m`"&#27&"[35m]"&ANSI_15&"Fed "&ansi_15&"---- "&#27&"[35mPage ["&#27&"[32mU"&#27&"[35m]p Chat "&ansi_15&"--"&#27&"[35m Page "&#27&"[35m["&#27&"[32mD"&#27&"[35m]own Chat "&ansi_15&"---- "
 	loadvar $bot~subspace
