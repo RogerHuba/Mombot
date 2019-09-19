@@ -28,7 +28,7 @@ setvar $logFileName $bot~folder&"/"&$year & $month & $day & ".comms"
 
 setvar $count 1
 setvar $comstring ""
-setVar $comsize 280
+setVar $comsize 1000
 setVar $figsize 5
 setvar $comm_line_length 75
 setVar $comm_window_size 10
@@ -134,8 +134,7 @@ if ($BOT~botIsDeaf = true)
 	setTextOutTrigger talk4 :process_up "u" 
 	setTextOutTrigger talk5 :process_up "U" 
 
-	setTextOutTrigger talk7 :toggle_mute_me "m" 
-	setTextOutTrigger talk8 :toggle_mute_me "M" 
+	setTextOutTrigger talk7 :toggle_mute_me "+" 
 	setTextOutTrigger talk6 :start_no_refresh "" 
 end
 pause
@@ -666,9 +665,9 @@ return
 	loadvar $bot~subspace
 
 	if ($ignoreme = true)
-		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Show "&#27&"[32mM"&#27&"[35m]e"&ANSI_15&" ----------*"
+		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Show Me"&ANSI_15&" ----------*"
 	else
-		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Ignore "&#27&"[32mM"&#27&"[35m]e"&ANSI_15&" --------*"
+		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Ignore Me"&ANSI_15&" --------*"
 	end
 
 	if ($output <> $old_output)
