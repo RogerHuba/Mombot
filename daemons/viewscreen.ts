@@ -102,7 +102,8 @@ while ($i <= $figsize)
 	add $i 1
 end
 :start
-if ($BOT~botIsDeaf)
+loadvar $bot~botisdeaf
+if ($BOT~botIsDeaf = true)
     gosub :refreshChatMenu
 end
 :start_no_refresh
@@ -142,11 +143,12 @@ setdelaytrigger    silentdelay :checksilent 900000
 #settextlinetrigger limpet :limpetProcess "Limpet mine in "
 
 loadVar $BOT~botIsDeaf
-if ($BOT~botIsDeaf)
+if ($BOT~botIsDeaf = true)
     setDelayTrigger delay :refresh 500 
 end
 setTextOutTrigger open :process_command "_" 
-if ($BOT~botIsDeaf)
+loadVar $BOT~botIsDeaf
+if ($BOT~botIsDeaf = true)
     setTextOutTrigger talk2 :process_down "d" 
     setTextOutTrigger talk3 :process_down "D" 
     setTextOutTrigger talk4 :process_up "u" 
@@ -729,9 +731,9 @@ return
     setVar $output $output&ANSI_12&" "&#27&"[35m["&#27&"[32m'"&#27&"[35m]"&ANSI_15&"Subspace ("&$BOT~subspace&")      "&#27&"[35m["&#27&"[32m`"&#27&"[35m]"&ANSI_15&"Fedspace      "&#27&"[35mPage ["&#27&"[32mU"&#27&"[35m]p Chat History   Page "&#27&"[35m["&#27&"[32mD"&#27&"[35m]own Chat History  "
 
     if ($battle_screen = true)
-        setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Comms Screen*"&ANSI_7&"**"
+        setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Comms Screen*"&ANSI_7&""
     else
-        setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Navigation Screen*"&ANSI_7&"**"
+        setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Navigation Screen*"&ANSI_7&""
     end
 
     if ($output <> $old_output)
