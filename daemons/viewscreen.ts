@@ -657,7 +657,9 @@ return
 	setvar $fighter_output ""
 	while ($i >= 1)
 		setVar $line $figs[$i]
-		setVar $fighter_output $fighter_output&$line&"*"
+		if ($line <> "")
+			setVar $fighter_output $fighter_output&$line&"*"
+		end
 		subtract $i 1
 	end
 	if ($fighter_output <> "")
