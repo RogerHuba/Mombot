@@ -683,14 +683,12 @@ return
         gosub :MAP~displayNavigation
         setvar $output $output&$map~map&"*"
     else
-        if ($window_content <> "")
-            setVar $output $output&ANSI_13&"                                                    Script status window                                    *"
-            setVar $output $output&ANSI_15&"-----------------------------------------------------------------------------------------------------------------------------*"
+        if (($window_content <> "") and ($window_content <> "0"))
+            setVar $output $output&ANSI_15&"---------------------------------------------------"&ansi_13&" Script Status Window "&ansi_15&"-----------------------------------------------------*"
             setVar $output $output&ANSI_10&""&ANSI_15&$window_content&"*"
         end
         setVar $output $output&ANSI_15&"-----------------------------------------------------------------------------------------------------------------------------*"
-        setVar $output $output&ANSI_13&"                                   Communications                                                      Stats                 *"
-        setVar $output $output&ANSI_15&"-----------------------------------------------------------------------------------------------------------------------------*"
+        setVar $output $output&ANSI_15&"---------------------------------"&ansi_13&" Communications "&ansi_15&"------------------------------------------------------"&ansi_13&" Stats "&ansi_15&"-------------*"
         setVar $i $comm_window_size
         setVar $j 1
         while ($i >= 0)
@@ -717,7 +715,7 @@ return
             add $j 1
         end
     end
-    setVar $output $output&ANSI_15&"-----------------------------------------------------------------------------------------------------------------------------*"
+    setVar $output $output&ANSI_15&"------------------------------------------------------"&ansi_2&" Fighter Hits "&ansi_15&"---------------------------------------------------------*"
     setVar $i $figsize
     setVar $j 1
     while ($i >= 1)
