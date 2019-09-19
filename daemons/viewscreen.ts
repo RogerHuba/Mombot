@@ -52,7 +52,7 @@ if ($logFileName <> "")
 			if ($length > 15)
 				cuttext $line $line 14 9999
 				getlength $line $length
-				setVar $line_length 85
+				setVar $line_length 65
 				if ($length > $line_length)
 				    cuttext $line $line1 1 $line_length
 				    cuttext $line $line2 ($line_length+1) ($line_length*2)
