@@ -1,11 +1,11 @@
 gosub :targeting~initializetargeting 
-
+ 
 window COMS 250 400 "Who's Playing?" ONTOP
 setwindowcontents COMS "Starting up..*"
 
 setVar $i 1
-while ($i < $PLAYER~ranksLength)
-	setVar $temp $PLAYER~ranks[$i]
+while ($i < $targeting~ranksLength)
+	setVar $temp $targeting~ranks[$i]
 	stripText $temp "31m"
     stripText $temp "36m"
 	settextlinetrigger lookFor&$i :lookFor&$i $temp
@@ -163,7 +163,7 @@ pause
 	setVar $i 46
 
 :set_the_triggers
-	setVar $temp $PLAYER~ranks[$i]
+	setVar $temp $targeting~ranks[$i]
 	getWordPos CURRENTANSILINE $pos5 "Trader Name   "
 	setVar $line CURRENTANSILINE
 	getWordPos $line $pos "33m,[0;32m w/ "
