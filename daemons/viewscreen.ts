@@ -580,9 +580,7 @@ return
     setVar $stats[4]  "       Exp : "&$PLAYER~EXPERIENCE&"*"
     setVar $stats[5]  "     Align : "&$PLAYER~ALIGNMENT&"*"
     setVar $stats[6]  "   Credits : "&$PLAYER~CREDITS&"*"
-    setVar $stats[7]  ANSI_7&"----------------------------------*"
     setVar $stats[8]  "Holds Info : "&$player~total_holds&"*"
-    setVar $stats[9]  ANSI_7&"----------------------------------*"
     setVar $stats[10] "  Fuel Ore : "&$player~ore_holds&"*"
     setVar $stats[11] "  Organics : "&$player~organic_holds&"*"
     setVar $stats[12] " Equipment : "&$player~equipment_holds&"*"
@@ -593,16 +591,13 @@ return
     setVar $empty_holds ($empty_holds - $player~colonist_holds)
     
     setVar $stats[14] "     Empty : "&$PLAYER~EMPTY_HOLDS&"*"
-    setVar $stats[15] ANSI_7&"----------------------------------*"
     setVar $stats[16] "    Ship # : "&$PLAYER~SHIP_NUMBER&"*"
-    setVar $stats[17] ANSI_7&"----------------------------------*"
     setVar $stats[18] "  Fighters : "&$PLAYER~FIGHTERS&"*"
     setVar $stats[19] "   Shields : "&$PLAYER~SHIELDS&"*"
     setVar $stats[20] "  Max Figs : "&$SHIP~SHIP_FIGHTERS_MAX&"*"
     setVar $stats[21] "  Max Wave : "&$SHIP~SHIP_MAX_ATTACK&"*"
     setVar $stats[22] "Turns/Warp : "&$PLAYER~TURNS_PER_WARP&"*"
-    setVar $stats[23] ANSI_7&"----------------------------------*"
-  
+    
     cutText $PLAYER~ARMIDS&"    " $player~armids 0 3
     cutText $PLAYER~CLOAKS&"    " $player~cloaks 0 3
     cutText $PLAYER~GENESIS&"    " $player~genesis 0 3
@@ -674,8 +669,7 @@ return
     setVar $output #27 & "[2J"
     setVar $output $output&"**"
     if ($BOT~who_is_online <> "0")
-        setVar $output $output&ANSI_13&"                                                           Who's Online?                                     *"
-        setVar $output $output&ANSI_15&"-----------------------------------------------------------------------------------------------------------------------------*"
+        setVar $output $output&ANSI_15&"----------------------------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"---------------------------------------------------*"
         setVar $output $output&ANSI_10&""&ANSI_7&$BOT~who_is_online&"*"
     end
     if ($battle_screen = true)
