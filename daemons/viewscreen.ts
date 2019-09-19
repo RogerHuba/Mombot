@@ -34,7 +34,7 @@ setVar $comm_window_size 10
 setVar $comm_window_start_index 1
 setArray $coms $comsize
 setArray $figs $figsize
-setArray $stats 38
+setArray $stats 26
 setVar $isOdd FALSE
 setVar $window_content ""
 saveVar $window_content
@@ -580,23 +580,23 @@ return
     setVar $stats[4]  "       Exp : "&$PLAYER~EXPERIENCE&"*"
     setVar $stats[5]  "     Align : "&$PLAYER~ALIGNMENT&"*"
     setVar $stats[6]  "   Credits : "&$PLAYER~CREDITS&"*"
-    setVar $stats[8]  "Holds Info : "&$player~total_holds&"*"
-    setVar $stats[10] "  Fuel Ore : "&$player~ore_holds&"*"
-    setVar $stats[11] "  Organics : "&$player~organic_holds&"*"
-    setVar $stats[12] " Equipment : "&$player~equipment_holds&"*"
-    setVar $stats[13] " Colonists : "&$player~colonist_holds&"*"
+    setVar $stats[7]  "Holds Info : "&$player~total_holds&"*"
+    setVar $stats[8] "  Fuel Ore : "&$player~ore_holds&"*"
+    setVar $stats[9] "  Organics : "&$player~organic_holds&"*"
+    setVar $stats[10] " Equipment : "&$player~equipment_holds&"*"
+    setVar $stats[11] " Colonists : "&$player~colonist_holds&"*"
     setVar $empty_holds ($player~total_holds - $player~ore_holds)
     setVar $empty_holds ($empty_holds - $player~organic_holds)
     setVar $empty_holds ($empty_holds - $player~equipment_holds)
     setVar $empty_holds ($empty_holds - $player~colonist_holds)
     
-    setVar $stats[14] "     Empty : "&$PLAYER~EMPTY_HOLDS&"*"
-    setVar $stats[16] "    Ship # : "&$PLAYER~SHIP_NUMBER&"*"
-    setVar $stats[18] "  Fighters : "&$PLAYER~FIGHTERS&"*"
-    setVar $stats[19] "   Shields : "&$PLAYER~SHIELDS&"*"
-    setVar $stats[20] "  Max Figs : "&$SHIP~SHIP_FIGHTERS_MAX&"*"
-    setVar $stats[21] "  Max Wave : "&$SHIP~SHIP_MAX_ATTACK&"*"
-    setVar $stats[22] "Turns/Warp : "&$PLAYER~TURNS_PER_WARP&"*"
+    setVar $stats[12] "     Empty : "&$PLAYER~EMPTY_HOLDS&"*"
+    setVar $stats[13] "    Ship # : "&$PLAYER~SHIP_NUMBER&"*"
+    setVar $stats[14] "  Fighters : "&$PLAYER~FIGHTERS&"*"
+    setVar $stats[15] "   Shields : "&$PLAYER~SHIELDS&"*"
+    setVar $stats[16] "  Max Figs : "&$SHIP~SHIP_FIGHTERS_MAX&"*"
+    setVar $stats[17] "  Max Wave : "&$SHIP~SHIP_MAX_ATTACK&"*"
+    setVar $stats[18] "Turns/Warp : "&$PLAYER~TURNS_PER_WARP&"*"
     
     cutText $PLAYER~ARMIDS&"    " $player~armids 0 3
     cutText $PLAYER~CLOAKS&"    " $player~cloaks 0 3
@@ -606,14 +606,14 @@ return
     cutText $PLAYER~TWARP_TYPE&"    " $player~twarp_type 0 3
     cutText $PLAYER~SCAN_TYPE&"    " $player~scan_type 0 3
 
-    setVar $stats[24] "   EProbes : "&$player~eprobes&" | Beacons : "&$PLAYER~beacons&"*"
-    setVar $stats[25] "   Disrupt : "&$player~mine_disruptors&" | Photons : "&$PLAYER~PHOTONS&"*"
-    setVar $stats[26] "    Armids : "&$player~armids&" | Limpets : "&$PLAYER~LIMPETS&"*"
-    setVar $stats[27] "   Genesis : "&$player~genesis&" | AtmDets : "&$PLAYER~ATOMIC&"*"
-    setVar $stats[28] "    Cloaks : "&$player~cloaks&" |  Corbos : "&$PLAYER~CORBO&"*"
-    setVar $stats[29] "     Twarp : "&$player~twarp_type&" | PlnScan : "&$PLAYER~PLANET_SCANNER&"*"
-    setVar $stats[30] "   Scanner : "&$player~scan_type&" | PsiProb : "&$PLAYER~PSYCHIC_PROBE&"*"
-    setVar $stats[31] "     *"
+    setVar $stats[19] "   EProbes : "&$player~eprobes&" | Beacons : "&$PLAYER~beacons&"*"
+    setVar $stats[20] "   Disrupt : "&$player~mine_disruptors&" | Photons : "&$PLAYER~PHOTONS&"*"
+    setVar $stats[21] "    Armids : "&$player~armids&" | Limpets : "&$PLAYER~LIMPETS&"*"
+    setVar $stats[22] "   Genesis : "&$player~genesis&" | AtmDets : "&$PLAYER~ATOMIC&"*"
+    setVar $stats[23] "    Cloaks : "&$player~cloaks&" |  Corbos : "&$PLAYER~CORBO&"*"
+    setVar $stats[24] "     Twarp : "&$player~twarp_type&" | PlnScan : "&$PLAYER~PLANET_SCANNER&"*"
+    setVar $stats[25] "   Scanner : "&$player~scan_type&" | PsiProb : "&$PLAYER~PSYCHIC_PROBE&"*"
+    setVar $stats[26] "     *"
 return
 
 :loadVars
