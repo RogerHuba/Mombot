@@ -96,28 +96,11 @@ setVar $BOT~botIsDeaf FALSE
 saveVar $BOT~botIsDeaf
 gosub :buildComString
 
-
-setVar $figs[1] ""
-setVar $figs[2] ""
-setVar $figs[3] ""
-setVar $figs[4] ""
-setVar $figs[5] ""
-setVar $figs[6] ""
-setVar $figs[7] ""
-setVar $figs[8] ""
-setVar $figs[9] ""
-setVar $figs[10] ""
-setVar $figs[11] ""
-setVar $figs[12] ""
-setVar $figs[13] ""
-setVar $figs[14] ""
-setVar $figs[15] ""
-setVar $figs[16] ""
-setVar $figs[17] ""
-setVar $figs[18] ""
-setVar $figs[19] ""
-setVar $figs[20] ""
-
+setvar $i 1
+while ($i <= $figsize)
+	setVar $figs[$i] ""
+	add $i 1
+end
 :start
 if ($BOT~botIsDeaf)
     gosub :refreshChatMenu
