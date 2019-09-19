@@ -371,8 +371,8 @@ getlength $line $length
 setvar $numline 1
 setvar $line " " & $line
 if ($length > 86)
-    cuttext $line $line1 1 76
-    cuttext $line $line2 77 200
+    cuttext $line $line1 1 66
+    cuttext $line $line2 67 200
     setvar $line $line1&"* "&$line2
     setvar $numline 2
 
