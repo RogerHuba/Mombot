@@ -170,7 +170,7 @@ pause
     killtrigger talk7
     if ($BOT~botIsDeaf)
         if ($comm_window_start_index < ($comsize-$comm_window_size))
-            add $comm_window_start_index 29
+            add $comm_window_start_index $comm_window_size
             if ($comm_window_start_index > ($comsize-$comm_window_size))
                 setVar $comm_window_start_index ($comsize-$comm_window_size)
             end
@@ -189,7 +189,7 @@ pause
     killtrigger talk7
     if ($BOT~botIsDeaf)
         if ($comm_window_start_index > 1)
-            subtract $comm_window_start_index 29
+            subtract $comm_window_start_index $comm_window_size
             if ($comm_window_start_index < 1)
                 setVar $comm_window_start_index 1
             end
