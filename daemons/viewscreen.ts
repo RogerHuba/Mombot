@@ -717,9 +717,8 @@ return
         subtract $i 1
     end
 
-    setVar $output $output&ANSI_15&"-----------------------------------------------------------------------------------------------------------------------------*"
+    setVar $output $output&ANSI_15&"----"&ANSI_12&" "&#27&"[35m["&#27&"[32m'"&#27&"[35m]"&ANSI_15&"Subspace ("&$BOT~subspace&") "&ansi_15&"----- "&#27&"[35m["&#27&"[32m`"&#27&"[35m]"&ANSI_15&"Fedspace "&ansi_15&"---- "&#27&"[35mPage ["&#27&"[32mU"&#27&"[35m]p Chat History   Page "&#27&"[35m["&#27&"[32mD"&#27&"[35m]own Chat History "&ansi_15&"----*"
     loadvar $bot~subspace
-    setVar $output $output&ANSI_12&" "&#27&"[35m["&#27&"[32m'"&#27&"[35m]"&ANSI_15&"Subspace ("&$BOT~subspace&")      "&#27&"[35m["&#27&"[32m`"&#27&"[35m]"&ANSI_15&"Fedspace      "&#27&"[35mPage ["&#27&"[32mU"&#27&"[35m]p Chat History   Page "&#27&"[35m["&#27&"[32mD"&#27&"[35m]own Chat History  "
 
     if ($battle_screen = true)
         setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Comms Screen*"&ANSI_7&""
