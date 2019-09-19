@@ -669,19 +669,19 @@ return
     setVar $output #27 & "[2J"
     setVar $output $output&"**"
     if ($BOT~who_is_online <> "0")
-        setVar $output $output&ANSI_15&"----------------------------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"-----------------------------------------------------*"
+        setVar $output $output&ANSI_15&"----------------------------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"---------------------------*"
         setVar $output $output&ANSI_10&""&ANSI_7&$BOT~who_is_online
     end
     if ($battle_screen = true)
-        setVar $output $output&ANSI_15&"-----------------------------------------------------------------------------------------------------------------------------*"
+        setVar $output $output&ANSI_15&"---------------------------------------------------------------------------------------------------*"
         gosub :MAP~displayNavigation
         setvar $output $output&$map~map&"*"
     else
         if (($window_content <> "") and ($window_content <> "0"))
-            setVar $output $output&ANSI_15&"---------------------------------------------------"&ansi_13&" Script Status Window "&ansi_15&"-----------------------------------------------------*"
+            setVar $output $output&ANSI_15&"---------------------------------------------------"&ansi_13&" Script Status Window "&ansi_15&"---------------------------*"
             setVar $output $output&ANSI_10&""&ANSI_15&$window_content
         end
-        setVar $output $output&ANSI_15&"---------------------------------"&ansi_13&" Communications "&ansi_15&"------------------------------------------------------"&ansi_13&" Stats "&ansi_15&"---------------*"
+        setVar $output $output&ANSI_15&"---------------------------------"&ansi_13&" Communications "&ansi_15&"------------------------------------------"&ansi_13&" Stats "&ansi_15&"-*"
         setVar $i $comm_window_size
         setVar $j 1
         while ($i >= 0)
@@ -708,7 +708,7 @@ return
             add $j 1
         end
     end
-    setVar $output $output&ANSI_15&"------------------------------------------------------"&ansi_2&" Fighter Hits "&ansi_15&"---------------------------------------------------------*"
+    setVar $output $output&ANSI_15&"------------------------------------------------------"&ansi_2&" Fighter Hits "&ansi_15&"-------------------------------*"
     setVar $i $figsize
     setVar $j 1
     while ($i >= 1)
@@ -717,7 +717,7 @@ return
         subtract $i 1
     end
 
-    setVar $output $output&ANSI_15&"--"&ANSI_12&" "&#27&"[35m["&#27&"[32m'"&#27&"[35m]"&ANSI_15&"Subspace ("&$BOT~subspace&") "&ansi_15&"----- "&#27&"[35m["&#27&"[32m`"&#27&"[35m]"&ANSI_15&"Fedspace "&ansi_15&"---- "&#27&"[35mPage ["&#27&"[32mU"&#27&"[35m]p Chat History "&ansi_15&"--"&#27&"[35m Page "&#27&"[35m["&#27&"[32mD"&#27&"[35m]own Chat History "&ansi_15&"---- "
+    setVar $output $output&ANSI_15&"--"&ANSI_12&" "&#27&"[35m["&#27&"[32m'"&#27&"[35m]"&ANSI_15&"Sub ("&$BOT~subspace&") "&ansi_15&"----- "&#27&"[35m["&#27&"[32m`"&#27&"[35m]"&ANSI_15&"Fed "&ansi_15&"---- "&#27&"[35mPage ["&#27&"[32mU"&#27&"[35m]p Chat "&ansi_15&"--"&#27&"[35m Page "&#27&"[35m["&#27&"[32mD"&#27&"[35m]own Chat "&ansi_15&"---- "
     loadvar $bot~subspace
 
     if ($battle_screen = true)
