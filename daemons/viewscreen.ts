@@ -687,8 +687,7 @@ return
             setVar $output $output&ANSI_15&"---------------------------------------------------"&ansi_13&" Script Status Window "&ansi_15&"-----------------------------------------------------*"
             setVar $output $output&ANSI_10&""&ANSI_15&$window_content&"*"
         end
-        setVar $output $output&ANSI_15&"-----------------------------------------------------------------------------------------------------------------------------*"
-        setVar $output $output&ANSI_15&"---------------------------------"&ansi_13&" Communications "&ansi_15&"------------------------------------------------------"&ansi_13&" Stats "&ansi_15&"-------------*"
+        setVar $output $output&ANSI_15&"---------------------------------"&ansi_13&" Communications "&ansi_15&"------------------------------------------------------"&ansi_13&" Stats "&ansi_15&"---------------*"
         setVar $i $comm_window_size
         setVar $j 1
         while ($i >= 0)
