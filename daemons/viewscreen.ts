@@ -652,15 +652,17 @@ return
 			add $j 1
 		end
 	end
-	setVar $output $output&ANSI_15&"-----------------------------------------"&ansi_2&" Fighter Hits "&ansi_15&"--------------------------------------------*"
 	setVar $i $figsize
 	setVar $j 1
+	setvar $fighter_output ""
 	while ($i >= 1)
 		setVar $line $figs[$i]
-		setVar $output $output&$line&"*"
+		setVar $fighter_output $fighter_output&$line&"*"
 		subtract $i 1
 	end
-
+	if ($fighter_output <> "")
+		setVar $output $output&ANSI_15&"-----------------------------------------"&ansi_2&" Fighter Hits "&ansi_15&"--------------------------------------------*"&$fighter_output
+	end
 	setVar $output $output&ANSI_15&"------"&ANSI_12&" "&#27&"[35m["&#27&"[32m'"&#27&"[35m]"&ANSI_15&"Sub ("&$BOT~subspace&") "&ansi_15&"----- "&#27&"[35m["&#27&"[32m`"&#27&"[35m]"&ANSI_15&"Fed "&ansi_15&"---- "&#27&"[35mPage ["&#27&"[32mU"&#27&"[35m]p Chat "&ansi_15&"--"&#27&"[35m Page "&#27&"[35m["&#27&"[32mD"&#27&"[35m]own Chat "&ansi_15&"---- "
 	loadvar $bot~subspace
 
