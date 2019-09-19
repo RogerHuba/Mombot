@@ -371,8 +371,8 @@ getlength $line $length
 setvar $numline 1
 setvar $line " " & $line
 if ($length > 86)
-    cuttext $line $line1 1 86
-    cuttext $line $line2 87 200
+    cuttext $line $line1 1 76
+    cuttext $line $line2 77 200
     setvar $line $line1&"* "&$line2
     setvar $numline 2
 
@@ -669,7 +669,7 @@ return
     setVar $output #27 & "[2J"
     setVar $output $output&"**"
     if ($BOT~who_is_online <> "0")
-        setVar $output $output&ANSI_15&"----------------------------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"---------------------------*"
+        setVar $output $output&ANSI_15&"---------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"----------------------------------------------*"
         setVar $output $output&ANSI_10&""&ANSI_7&$BOT~who_is_online
     end
     if ($battle_screen = true)
@@ -678,10 +678,10 @@ return
         setvar $output $output&$map~map&"*"
     else
         if (($window_content <> "") and ($window_content <> "0"))
-            setVar $output $output&ANSI_15&"---------------------------------------------------"&ansi_13&" Script Status Window "&ansi_15&"---------------------------*"
+            setVar $output $output&ANSI_15&"------------------------------------"&ansi_13&" Script Status Window "&ansi_15&"------------------------------------------*"
             setVar $output $output&ANSI_10&""&ANSI_15&$window_content
         end
-        setVar $output $output&ANSI_15&"---------------------------------"&ansi_13&" Communications "&ansi_15&"------------------------------------------"&ansi_13&" Stats "&ansi_15&"-*"
+        setVar $output $output&ANSI_15&"---------------------------------"&ansi_13&" Communications "&ansi_15&"--------------------------------"&ansi_13&" Stats "&ansi_15&"-----------*"
         setVar $i $comm_window_size
         setVar $j 1
         while ($i >= 0)
@@ -708,7 +708,7 @@ return
             add $j 1
         end
     end
-    setVar $output $output&ANSI_15&"------------------------------------------------------"&ansi_2&" Fighter Hits "&ansi_15&"-------------------------------*"
+    setVar $output $output&ANSI_15&"-----------------------------------------"&ansi_2&" Fighter Hits "&ansi_15&"--------------------------------------------*"
     setVar $i $figsize
     setVar $j 1
     while ($i >= 1)
