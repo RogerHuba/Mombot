@@ -669,7 +669,7 @@ return
     setVar $output #27 & "[2J"
     setVar $output $output&"**"
     if ($BOT~who_is_online <> "0")
-        setVar $output $output&ANSI_15&"----------------------------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"---------------------------------------------------*"
+        setVar $output $output&ANSI_15&"----------------------------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"-----------------------------------------------------*"
         setVar $output $output&ANSI_10&""&ANSI_7&$BOT~who_is_online
     end
     if ($battle_screen = true)
@@ -721,9 +721,9 @@ return
     loadvar $bot~subspace
 
     if ($battle_screen = true)
-        setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Comms Screen"&ANSI_15&" --"
+        setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Comms Screen"&ANSI_15&" --*"
     else
-        setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Navigation Screen"&ANSI_15&" --"
+        setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Navigation Screen"&ANSI_15&" --*"
     end
 
     if ($output <> $old_output)
