@@ -29,8 +29,8 @@ setvar $logFileName $bot~folder&"/"&$year & $month & $day & ".comms"
 setvar $count 1
 setvar $comstring ""
 setVar $comsize 280
-setVar $figsize 10
-setVar $comm_window_size 15
+setVar $figsize 5
+setVar $comm_window_size 10
 setVar $comm_window_start_index 1
 setArray $coms $comsize
 setArray $figs $figsize
