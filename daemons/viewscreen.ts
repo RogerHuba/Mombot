@@ -613,7 +613,7 @@ return
 	setVar $output #27 & "[2J"
 	setVar $output $output&"**"
 	if ($BOT~who_is_online <> "0")
-		setVar $output $output&ANSI_15&"---------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"----------------------------------------------*"
+		setVar $output $output&ANSI_15&"---------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"---------------------------------------------*"
 		setVar $output $output&ANSI_10&""&ANSI_7&$BOT~who_is_online
 	end
 	if ($battle_screen = true)
@@ -622,7 +622,7 @@ return
 		setvar $output $output&$map~map&"*"
 	else
 		if (($window_content <> "") and ($window_content <> "0"))
-			setVar $output $output&ANSI_15&"------------------------------------"&ansi_13&" Script Status Window "&ansi_15&"------------------------------------------*"
+			setVar $output $output&ANSI_15&"------------------------------------"&ansi_13&" Script Status Window "&ansi_15&"-----------------------------------------*"
 			setVar $output $output&ANSI_10&""&ANSI_15&$window_content
 		end
 		setVar $output $output&ANSI_15&"---------------------------------"&ansi_13&" Communications "&ansi_15&"--------------------------------"&ansi_13&" Stats "&ansi_15&"-----------*"
