@@ -26,7 +26,9 @@ if ($player~current_prompt <> "Planet") and ($player~current_prompt <> "Citadel"
    gosub :switchboard~switchboard
    halt
 end
-gosub :player~getinfo
+if ($player~current_prompt = "Citadel")
+	gosub :player~getinfo
+end
 
 setVar $shipholds $player~total_holds
 setvar $start_planet_check ""
