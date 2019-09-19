@@ -30,6 +30,7 @@ setvar $count 1
 setvar $comstring ""
 setVar $comsize 280
 setVar $figsize 5
+setvar $comm_line_length 75
 setVar $comm_window_size 10
 setVar $comm_window_start_index 1
 setArray $coms $comsize
@@ -52,8 +53,8 @@ if ($logFileName <> "")
 			if ($length > 15)
 				cuttext $line $line 14 9999
 				getlength $line $length
-				setVar $line_length 65
-				if ($length > $line_length)
+				setVar $line_length $comm_line_length
+				if ($length > $comm_line_length)
 				    cuttext $line $line1 1 $line_length
 				    cuttext $line $line2 ($line_length+1) ($line_length*2)
 				    subtract $i 1
@@ -370,9 +371,9 @@ write $logFileName $hour & ":" & $minute & ":" & $second & ":" & $msec & "  " &$
 getlength $line $length
 setvar $numline 1
 setvar $line " " & $line
-if ($length > 86)
-    cuttext $line $line1 1 66
-    cuttext $line $line2 67 200
+if ($length > ($comm_line_length+1))
+    cuttext $line $line1 1 ($comm_line_length+1)
+    cuttext $line $line2 ($comm_line_length+2) 200
     setvar $line $line1&"* "&$line2
     setvar $numline 2
 
