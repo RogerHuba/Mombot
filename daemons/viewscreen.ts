@@ -721,9 +721,9 @@ return
     loadvar $bot~subspace
 
     if ($battle_screen = true)
-        setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Comms Screen*"&ANSI_15&" --"
+        setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Comms Screen"&ANSI_15&" --"
     else
-        setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Navigation Screen*"&ANSI_15&" --"
+        setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Navigation Screen"&ANSI_15&" --"
     end
 
     if ($output <> $old_output)
