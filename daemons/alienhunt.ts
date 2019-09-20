@@ -23,7 +23,7 @@
 	setVar $BOT~help[14] $BOT~tab&"{passive} - Surround passively when hunting."
 	setVar $BOT~help[15] $BOT~tab&"   {home} - Move ships to starting sector instead of stardock."
 	gosub :bot~helpfile
-
+ 
 	setVar $BOT~script_title "Alien Hunter"
 	gosub :BOT~banner
 
@@ -34,8 +34,8 @@
 	setVar $ALIEN_ANSI    #27 & "[1;36m" & #27 & "["
 	setVar $START_FIG_HIT_OWNER ":"
 	setVar $END_FIG_HIT_OWNER "'s"
-	setVar $CAP_FILE	"_MOM_" & GAMENAME & ".ships"
-
+	
+	Window alienhunt_script 330 424 ("Alienhunt - " & GAMENAME) ONTOP
 
 
 	getSectorParameter SECTORS "FIGSEC" $isFigged
@@ -137,6 +137,7 @@
 	killalltriggers	
 	send "q"
 	gosub :PLANET~getPlanetInfo	
+	gosub :setwindow
 	setvar $starting_sector_cannon $planet~SECTOR_CANNON
 	setvar $starting_atmos_cannon $planet~ATMOSPHERE_CANNON
 	setvar $sector_total ((($planet~planet_FUEL * $starting_sector_cannon) / 100)/3)
@@ -424,6 +425,7 @@ return
 		
 	        send "q "
 	        gosub :PLANET~getPlanetInfo
+        	gosub :setwindow
 	        send "q "
 			gosub :grid~surround
             send "l "&$planet~planet&"* m*** c "
@@ -557,6 +559,7 @@ return
 						send "q"
 						waitOn "Planet command (?"
 						gosub :PLANET~getPlanetInfo
+						gosub :setwindow
 						send "c"
 						setVar $total_creds_needed (300*7000)
 						if ($total_creds_needed > $PLAYER~CREDITS)
@@ -630,6 +633,26 @@ return
 	end
 	setVar $isValid TRUE
 return
+
+
+:setWindow
+	setVar $msg "* Starting Sector:   " & $startingSector
+	setVar $msg $msg & "* Current Sector " & $PLAYER~CURRENT_SECTOR
+	if ($PLAYER~TURNS > 0)
+			setVar $msg $msg & "* Turns: " & $PLAYER~TURNS
+	end
+	setVar $msg $msg & "** Alienhunt Planet: " & $planet~planet
+	setVar $msg $msg & "* ----------------"
+	setVar $msg $msg & "* Fuel: " & $planet~planet_FUEL
+	setVar $msg $msg & "* Fighters: " & $planet~planet_fighters
+	setVar $msg $msg & "* Shields: " & $planet~planet_shields
+	setVar $msg $msg & "* Citadel Credits: " & $planet~citadel_credits
+	setWindowContents alienhunt_script $msg & $msg1
+	setVar $window_content $msg 
+	replaceText $window_content "*" "[][]"
+	saveVar $window_content
+return
+
 
 
 #INCLUDES:
