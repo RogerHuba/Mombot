@@ -317,8 +317,8 @@ if (($isme = true) and ($ignoreme = true))
 	# ignore self chat if ignore me is set. #
 else
 	if ($length > ($comm_line_length+1))
-		cuttext $line $line1 1 ($comm_line_length+1)
-		cuttext $line $line2 ($comm_line_length+2) 200
+		cuttext $line $line1 1 ($comm_line_length)
+		cuttext $line $line2 ($comm_line_length+1) 200
 		setvar $line $line1&"* "&$line2
 		setvar $numline 2
 
