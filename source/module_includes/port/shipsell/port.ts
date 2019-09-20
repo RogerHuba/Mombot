@@ -71,5 +71,28 @@ end
 
 	end
 	return
+
+:CommaSize
+	If ($CashAmount < 1000)
+		#do nothing
+	ElseIf ($CashAmount < 1000000)
+    	getLength $CashAmount $len
+		SetVar $len ($len - 3)
+		cutText $CashAmount $tmp 1 $len
+		cutText $CashAMount $tmp1 ($len + 1) 999
+		SetVar $tmp $tmp & "," & $tmp1
+		SetVar $CashAmount $tmp
+	ElseIf ($CashAmount <= 999999999)
+		getLength $CashAmount $len
+		SetVar $len ($len - 6)
+		cutText $CashAmount $tmp 1 $len
+		SetVar $tmp $tmp & ","
+		cutText $CashAmount $tmp1 ($len + 1) 3
+		SetVar $tmp $tmp & $tmp1 & ","
+		cutText $CashAmount $tmp1 ($len + 4) 999
+		SetVar $tmp $tmp & $tmp1
+		SetVar $CashAmount $tmp
+	end
+return
 # ============================== END SellShip (sellship) Sub ==============================
 halt

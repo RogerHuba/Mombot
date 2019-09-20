@@ -2,8 +2,7 @@
 :getPlanetInfo
 
 	# ============================ START PLANET VARIABLES ==========================
-			setVar $CURRENT_SECTOR      0
-			setVar $PLANET          0
+		setVar $PLANET          0
 		setVar $PLANET_FUEL     0
 		setVar $PLANET_FUEL_MAX     0
 		setVar $PLANET_ORGANICS     0   
@@ -165,6 +164,27 @@
 		setVar $currentBotPlanet $PLANET
 		saveVar $currentBotPlanet
 		saveVar $planet_fighters
+		savevar $player~CURRENT_SECTOR 
+		savevar $PLANET      
+		savevar $PLANET_FUEL     
+		savevar $PLANET_FUEL_MAX     
+		savevar $PLANET_ORGANICS        
+		savevar $PLANET_ORGANICS_MAX 
+		savevar $PLANET_EQUIPMENT    
+		savevar $PLANET_EQUIPMENT_MAX    
+		savevar savevarPLANET_FIGHTERS     
+		savevar $PLANET_TRANSPORT    
+		savevar $PLANET_FIGHTERS_MAX 
+		savevar $CITADEL         
+		savevar $CITADEL_CREDITS     
+		savevar $ATMOSPHERE_CANNON   
+		savevar $SECTOR_CANNON       
+		savevar $PLANET_CLASS_NAME   
+		savevar $PLANET_NAME     
+		savevar $UNDER_CONSTRUCTION  
+		savevar $MAXED_LEVEL      
+
+
 return
 # ==============================  END PLANET INFO SUBROUTINE  =================
 

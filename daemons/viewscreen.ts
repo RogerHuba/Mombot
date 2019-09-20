@@ -643,6 +643,7 @@ return
 		gosub :MAP~displayNavigation
 		setvar $output $output&$map~map&"*"
 	else
+
 		if (($window_content <> "") and ($window_content <> "0"))
 			if ($window_content = $previous_window_content)
 				add $window_content_time 500
