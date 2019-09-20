@@ -62,7 +62,7 @@ end
 		gosub :player~quikstats
 		setVar $CashAmount ($player~CREDITS - $CASH)
 		gosub :CommaSize
-		setvar $switchboard~message "You sold " $inc " ships. You made $" $CashAmount " credits.*"
+		setvar $switchboard~message "You sold "&$inc&" ships. You made $"&$CashAmount&" credits.*"
 		gosub :switchboard~message
 
 	elseif ($inc < 1)
