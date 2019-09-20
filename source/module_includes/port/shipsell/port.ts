@@ -63,11 +63,11 @@ end
 		setVar $CashAmount ($player~CREDITS - $CASH)
 		gosub :CommaSize
 		setvar $switchboard~message "You sold "&$inc&" ships. You made $"&$CashAmount&" credits.*"
-		gosub :switchboard~message
+		gosub :switchboard~switchboard
 
 	elseif ($inc < 1)
 		setvar $switchboard~message " No Ships to Sell.*"
-		gosub :switchboard~message
+		gosub :switchboard~switchboard
 	end
 	return
 
