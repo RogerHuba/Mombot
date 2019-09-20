@@ -103,7 +103,7 @@ while ($i <= $figsize)
 	add $i 1
 end
 :start
-loadvar $bot~botisdeaf
+getDeafClients $BOT~botIsDeaf
 if ($BOT~botIsDeaf = true)
 	gosub :refreshChatMenu
 end
@@ -124,12 +124,12 @@ setdelaytrigger    silentdelay :checksilent 900000
 #setTextLineTrigger enter :enterProcess "Deployed Fighters Report Sector "
 #settextlinetrigger limpet :limpetProcess "Limpet mine in "
 
-loadVar $BOT~botIsDeaf
+getDeafClients $BOT~botIsDeaf
 if ($BOT~botIsDeaf = true)
 	setDelayTrigger delay :refresh 500 
 end
 setTextOutTrigger open :process_command "_" 
-loadVar $BOT~botIsDeaf
+getDeafClients $BOT~botIsDeaf
 if ($BOT~botIsDeaf = true)
 	setTextOutTrigger talk2 :process_down "d" 
 	setTextOutTrigger talk3 :process_down "D" 
@@ -143,6 +143,7 @@ pause
 
 :process_up
 	gosub :killchattriggers
+	getDeafClients $BOT~botIsDeaf
 	if ($BOT~botIsDeaf)
 		if ($comm_window_start_index < ($comsize-$comm_window_size))
 			add $comm_window_start_index $comm_window_size
@@ -167,22 +168,22 @@ pause
 
 :process_command
 	gosub :killchattriggers
-	openMenu TWX_TOGGLEDEAF false
-	closeMenu
-	loadVar $BOT~botIsDeaf
+	getDeafClients $BOT~botIsDeaf
 	if ($BOT~botIsDeaf)
-		setVar $BOT~botIsDeaf FALSE
+		setDeafClients false
 	else
-		setVar $BOT~botIsDeaf TRUE
+		setDeafClients true
 		setVar $comm_window_start_index 1
 		setvar $old_output ""
 		gosub :refreshChatMenu
 	end           
+	getDeafClients $BOT~botIsDeaf
 	saveVar $BOT~botIsDeaf  
 	goto :start
 
 :toggle_battle_screen
 	gosub :killchattriggers
+	getDeafClients $BOT~botIsDeaf
 	if ($BOT~botIsDeaf)
 		if ($battle_screen = true)
 			setvar $battle_screen false
@@ -193,6 +194,7 @@ pause
 	end
 :toggle_mute_me
 	gosub :killchattriggers
+	getDeafClients $BOT~botIsDeaf
 	if ($BOT~botIsDeaf)
 		if ($ignoreme = true)
 			setvar $ignoreme false
@@ -203,17 +205,16 @@ pause
 	end
 
 :doneChat
-	openMenu TWX_TOGGLEDEAF false
-	closeMenu
-		echo #27 "[30D                        " #27 "[30D"
-		echo CURRENTANSILINE
-		setVar $botIsDeaf FALSE
-		saveVar $botIsDeaf
-		halt
+	setDeafClients false
+	echo #27 "[30D                        " #27 "[30D"
+	echo CURRENTANSILINE
+	setVar $botIsDeaf FALSE
+	saveVar $botIsDeaf
+	halt
 return
 
 :refresh
-	loadVar $BOT~botIsDeaf
+	getDeafClients $BOT~botIsDeaf
 	if ($BOT~botIsDeaf)
 		gosub :refreshChatMenu
 		setDelayTrigger delay :refresh 500
@@ -763,7 +764,7 @@ return
 	goto :msgs_on_again
 	:onMSGS_ON
 	killtrigger onMSGS_OFF
-	loadvar $BOT~botIsDeaf
+	getDeafClients $BOT~botIsDeaf
 	if ($BOT~botIsDeaf = TRUE)
 		gosub :MENUS~donePrefer
 	end
