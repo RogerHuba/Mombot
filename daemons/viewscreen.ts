@@ -628,6 +628,14 @@ return
 		if ($found = true)
 			setVar $output $output&ANSI_15&"---------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"---------------------------------------------*"
 			setVar $output $output&ANSI_10&""&ANSI_7&$BOT~who_is_online
+		else
+			setvar $bot~who_is_online ""
+			savevar $bot~who_is_online
+		end
+	else
+		if ($BOT~who_is_online = "0")
+			setvar $bot~who_is_online ""
+			savevar $bot~who_is_online
 		end
 	end
 	if ($battle_screen = true)
@@ -650,9 +658,37 @@ return
 				savevar $window_content
 				setvar $window_content_time 0
 			end
+		else
+			if ($window_content = "0")
+				setvar $window_content ""
+				savevar $window_content
+			end
 		end
 		setVar $output $output&ANSI_15&"---------------------------------"&ansi_13&" Communications "&ansi_15&"--------------------------------"&ansi_13&" Stats "&ansi_15&"-----------*"
-		setVar $i $comm_window_size
+
+		setVar $i $figsize
+		setVar $j 1
+		setvar $fighter_output ""
+		setvar $figlines 0
+		while ($i >= 1)
+			setVar $line $figs[$i]
+			if ($line <> "")
+				setVar $fighter_output $fighter_output&$line&"*"
+				add $figlines 1
+			end
+			subtract $i 1
+		end
+
+
+		setvar $additional_com_lines 0
+		if ($bot~who_is_online = "")
+			add $additional_com_lines 3
+		end
+		if ($window_content = "")
+			add $additional_com_lines 5
+		end
+		setvar $additional_com_lines ($additional_com_lines + ($figsize - $figlines))
+		setVar $i ($comm_window_size + $additional_com_lines)
 		setVar $j 1
 		while ($i >= 0)
 			setVar $line $coms[($comm_window_start_index+$i)]
@@ -677,16 +713,6 @@ return
 			subtract $i 1
 			add $j 1
 		end
-	end
-	setVar $i $figsize
-	setVar $j 1
-	setvar $fighter_output ""
-	while ($i >= 1)
-		setVar $line $figs[$i]
-		if ($line <> "")
-			setVar $fighter_output $fighter_output&$line&"*"
-		end
-		subtract $i 1
 	end
 	if ($fighter_output <> "")
 		setVar $output $output&ANSI_15&"-----------------------------------------"&ansi_2&" Fighter Hits "&ansi_15&"--------------------------------------------*"&$fighter_output
