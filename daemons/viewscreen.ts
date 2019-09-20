@@ -118,6 +118,8 @@ settextlinetrigger lookForSelfF :lookForCom "`"
 settextlinetrigger lookForSelfMul :lookForCom "S: "
 settextlinetrigger figHit :figHitProcess "of your fighters in sector"
 settextlinetrigger offFigHit :figHitProcess "Your fighters in sector"
+#settextlinetrigger entered :figHitProcess "Deployed Fighters Report Sector"
+
 setdelaytrigger    silentdelay :checksilent 900000
 #setTextLineTrigger enter :enterProcess "Deployed Fighters Report Sector "
 #settextlinetrigger limpet :limpetProcess "Limpet mine in "
@@ -612,9 +614,21 @@ return
 	gosub :getStats
 	setVar $output #27 & "[2J"
 	setVar $output $output&"**"
-	if ($BOT~who_is_online <> "0")
-		setVar $output $output&ANSI_15&"---------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"---------------------------------------------*"
-		setVar $output $output&ANSI_10&""&ANSI_7&$BOT~who_is_online
+	if (($BOT~who_is_online <> "0") and ($bot~who_is_online <> ""))
+		setvar $i 1
+		listActiveScripts $scripts
+		setvar $found false
+		while ($i <= $scripts)
+			getWordPos $scripts[$i] $pos "online.cts"
+			if ($pos > 0)
+				setVar $found TRUE
+			end
+			add $i 1
+		end
+		if ($found = true)
+			setVar $output $output&ANSI_15&"---------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"---------------------------------------------*"
+			setVar $output $output&ANSI_10&""&ANSI_7&$BOT~who_is_online
+		end
 	end
 	if ($battle_screen = true)
 		setVar $output $output&ANSI_15&"---------------------------------------------------------------------------------------------------*"
@@ -622,8 +636,20 @@ return
 		setvar $output $output&$map~map&"*"
 	else
 		if (($window_content <> "") and ($window_content <> "0"))
-			setVar $output $output&ANSI_15&"------------------------------------"&ansi_13&" Script Status Window "&ansi_15&"-----------------------------------------*"
-			setVar $output $output&ANSI_10&""&ANSI_15&$window_content
+			if ($window_content = $previous_window_content)
+				add $window_content_time 500
+			else
+				setvar $window_content_time 0
+			end
+			if ($window_content_time < 120000)
+				setVar $output $output&ANSI_15&"------------------------------------"&ansi_13&" Script Status Window "&ansi_15&"-----------------------------------------*"
+				setVar $output $output&ANSI_10&""&ANSI_15&$window_content
+				setvar $previous_window_content $window_content
+			else
+				setvar $window_content ""
+				savevar $window_content
+				setvar $window_content_time 0
+			end
 		end
 		setVar $output $output&ANSI_15&"---------------------------------"&ansi_13&" Communications "&ansi_15&"--------------------------------"&ansi_13&" Stats "&ansi_15&"-----------*"
 		setVar $i $comm_window_size
@@ -671,9 +697,9 @@ return
 	loadvar $bot~subspace
 
 	if ($ignoreme = true)
-		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Show Me"&ANSI_15&" --------*"
+		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m]Show Me"&ANSI_15&" ---------*"
 	else
-		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m] Ignore Me"&ANSI_15&" ------*"
+		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m]Ignore Me"&ANSI_15&" -------*"
 	end
 
 	if ($output <> $old_output)
