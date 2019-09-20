@@ -30,7 +30,7 @@ setvar $count 1
 setvar $comstring ""
 setVar $comsize 1000
 setVar $figsize 5
-setvar $comm_line_length 75
+setvar $comm_line_length 70
 setVar $comm_window_size 10
 setVar $comm_window_start_index 1
 setArray $coms $comsize
