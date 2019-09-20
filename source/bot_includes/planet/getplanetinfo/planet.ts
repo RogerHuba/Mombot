@@ -172,7 +172,7 @@
 		savevar $PLANET_ORGANICS_MAX 
 		savevar $PLANET_EQUIPMENT    
 		savevar $PLANET_EQUIPMENT_MAX    
-		savevar savevarPLANET_FIGHTERS     
+		savevar $PLANET_FIGHTERS     
 		savevar $PLANET_TRANSPORT    
 		savevar $PLANET_FIGHTERS_MAX 
 		savevar $CITADEL         
