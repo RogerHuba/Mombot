@@ -523,9 +523,15 @@ return
 	else
 		setVar $stats[3] "     Turns : "&$PLAYER~TURNS&"*"
 	end 
-	setVar $stats[4]  "       Exp : "&$PLAYER~EXPERIENCE&"*"
-	setVar $stats[5]  "     Align : "&$PLAYER~ALIGNMENT&"*"
-	setVar $stats[6]  "   Credits : "&$PLAYER~CREDITS&"*"
+	setvar $value $player~experience
+	gosub :player~commasize
+	setVar $stats[4]  "       Exp : "&$value&"*"
+	setvar $value $player~alignment
+	gosub :player~commasize
+	setVar $stats[5]  "     Align : "&$value&"*"
+	setvar $value $player~credits
+	gosub :player~commasize
+	setVar $stats[6]  "   Credits : "&$value&"*"	
 	setVar $stats[7]  "Holds Info : "&$player~total_holds&"*"
 	setVar $stats[8] "  Fuel Ore : "&$player~ore_holds&"*"
 	setVar $stats[9] "  Organics : "&$player~organic_holds&"*"
@@ -538,10 +544,18 @@ return
 	
 	setVar $stats[12] "     Empty : "&$PLAYER~EMPTY_HOLDS&"*"
 	setVar $stats[13] "    Ship # : "&$PLAYER~SHIP_NUMBER&"*"
-	setVar $stats[14] "  Fighters : "&$PLAYER~FIGHTERS&"*"
-	setVar $stats[15] "   Shields : "&$PLAYER~SHIELDS&"*"
-	setVar $stats[16] "  Max Figs : "&$SHIP~SHIP_FIGHTERS_MAX&"*"
-	setVar $stats[17] "  Max Wave : "&$SHIP~SHIP_MAX_ATTACK&"*"
+	setvar $value $player~fighters
+	gosub :player~commasize
+	setVar $stats[14] "  Fighters : "&$value&"*"
+	setvar $value $player~shields
+	gosub :player~commasize
+	setVar $stats[15] "   Shields : "&$value&"*"
+	setvar $value $ship~ship_fighters_max
+	gosub :player~commasize
+	setVar $stats[16] "  Max Figs : "&$value&"*"
+	setvar $value $ship~ship_max_attack
+	gosub :player~commasize
+	setVar $stats[17] "  Max Wave : "&$value&"*"
 	setVar $stats[18] "Turns/Warp : "&$PLAYER~TURNS_PER_WARP&"*"
 	
 	cutText $PLAYER~ARMIDS&"    " $player~armids 0 3
@@ -556,7 +570,9 @@ return
 	setVar $stats[20] "   Disrupt : "&$player~mine_disruptors&" | Photons : "&$PLAYER~PHOTONS&"*"
 	setVar $stats[21] "    Armids : "&$player~armids&" | Limpets : "&$PLAYER~LIMPETS&"*"
 	setVar $stats[22] "   Genesis : "&$player~genesis&" | AtmDets : "&$PLAYER~ATOMIC&"*"
-	setVar $stats[23] "    Cloaks : "&$player~cloaks&" |  Corbos : "&$PLAYER~CORBO&"*"
+	setvar $value $player~corbo
+	gosub :player~commasize
+	setVar $stats[23] "    Cloaks : "&$player~cloaks&" |  Corbos : "&$value&"*"
 	setVar $stats[24] "     Twarp : "&$player~twarp_type&" | PlnScan : "&$PLAYER~PLANET_SCANNER&"*"
 	setVar $stats[25] "   Scanner : "&$player~scan_type&" | PsiProb : "&$PLAYER~PSYCHIC_PROBE&"*"
 	setVar $stats[26] "     *"
@@ -787,3 +803,4 @@ include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\map\displaynavigation\map"
+include "source\bot_includes\player\commasize\player"

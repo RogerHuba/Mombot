@@ -363,7 +363,7 @@ return
 :setWindow
 	setVar $msg "* Starting Sector:   " & $startingSector
 	setVar $msg $msg & "* Current Sector " & $PLAYER~CURRENT_SECTOR
-	if ($PLAYER~TURNS > 0)
+	if (($PLAYER~TURNS > 0) and ($player~unlimitedGame <> true))
 			setVar $msg $msg & "* Turns: " & $PLAYER~TURNS
 	end
 	setVar $msg $msg & "** PATP Planet: " & $planet~planets[$j]

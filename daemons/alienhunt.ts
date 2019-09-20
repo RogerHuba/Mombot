@@ -636,17 +636,24 @@ return
 
 
 :setWindow
-	setVar $msg "* Starting Sector:   " & $startingSector
-	setVar $msg $msg & "* Current Sector " & $PLAYER~CURRENT_SECTOR
-	if ($PLAYER~TURNS > 0)
+	setVar $msg " Current Sector " & $PLAYER~CURRENT_SECTOR
+	if (($PLAYER~TURNS > 0) and ($player~unlimitedGame <> true))
 			setVar $msg $msg & "* Turns: " & $PLAYER~TURNS
 	end
 	setVar $msg $msg & "** Alienhunt Planet: " & $planet~planet
 	setVar $msg $msg & "* ----------------"
-	setVar $msg $msg & "* Fuel: " & $planet~planet_FUEL
-	setVar $msg $msg & "* Fighters: " & $planet~planet_fighters
-	setVar $msg $msg & "* Shields: " & $planet~planet_shields
-	setVar $msg $msg & "* Citadel Credits: " & $planet~citadel_credits
+	setvar $value $planet~planet_fuel
+	gosub :player~commasize
+	setVar $msg $msg & "* Fuel: " & $value
+	setvar $value $planet~planet_fighters
+	gosub :player~commasize
+	setVar $msg $msg & "* Fighters: " & $value
+	setvar $value $planet~planet_shields
+	gosub :player~commasize
+	setVar $msg $msg & "* Shields: " & $value
+	setvar $value $planet~citadel_credits
+	gosub :player~commasize
+	setVar $msg $msg & "* Citadel Credits: " & $value&"*"
 	setWindowContents alienhunt_script $msg & $msg1
 	setVar $window_content $msg 
 	replaceText $window_content "*" "[][]"
