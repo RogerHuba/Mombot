@@ -62,13 +62,12 @@ end
 		gosub :player~quikstats
 		setVar $CashAmount ($player~CREDITS - $CASH)
 		gosub :CommaSize
-		send "'{" $bot~bot_name "} - You sold " $inc " ships. You made $" $CashAmount " credits.*"
-		waitfor "Message sent on sub-space channel"
+		setvar $switchboard~message "You sold " $inc " ships. You made $" $CashAmount " credits.*"
+		gosub :switchboard~message
 
 	elseif ($inc < 1)
-		send "'{" $bot~bot_name "} - No Ships to Sell.*"
-		waitfor "Message sent on sub-space channel"
-
+		setvar $switchboard~message " No Ships to Sell.*"
+		gosub :switchboard~message
 	end
 	return
 
