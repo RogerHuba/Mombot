@@ -31,6 +31,8 @@ pause
 	echo $prompt
 	:getInput
 		setVar $promptOutput ""
+		setVar $charCount 0
+		setVar $charPos 0
 		killTrigger             text
 		killtrigger             reecho
 		killtrigger fed
