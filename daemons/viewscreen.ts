@@ -128,16 +128,16 @@ getDeafClients $BOT~botIsDeaf
 if ($BOT~botIsDeaf = true)
 	setDelayTrigger delay :refresh 500 
 end
-setTextOutTrigger open :process_command "_" 
+setTextOutTrigger open :process_command "_"
 getDeafClients $BOT~botIsDeaf
 if ($BOT~botIsDeaf = true)
-	setTextOutTrigger talk2 :process_down "d" 
-	setTextOutTrigger talk3 :process_down "D" 
-	setTextOutTrigger talk4 :process_up "u" 
-	setTextOutTrigger talk5 :process_up "U" 
+	setTextOutTrigger talk2 :process_down "d"
+	setTextOutTrigger talk3 :process_down "D"
+	setTextOutTrigger talk4 :process_up "u"
+	setTextOutTrigger talk5 :process_up "U"
 
-	setTextOutTrigger talk7 :toggle_mute_me "+" 
-	setTextOutTrigger talk6 :start_no_refresh "" 
+	setTextOutTrigger talk7 :toggle_mute_me "+"
+	setTextOutTrigger talk6 :start_no_refresh ""
 end
 pause
 
