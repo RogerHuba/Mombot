@@ -75,7 +75,7 @@
 			add $c 1
 		end
 	end
-	if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($player~isFound = true) AND ($player~onlyAliens <> TRUE) and ($player~empty_ships_only <> true))
+	if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($player~onlyAliens <> TRUE) and ($player~empty_ships_only <> true))
 		if ($player~fedspace <> true)
 			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 			if ($beaconPos > 0)
