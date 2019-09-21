@@ -215,10 +215,10 @@ pause
 	gosub :killchattriggers
 	getDeafClients $BOT~botIsDeaf
 	if ($BOT~botIsDeaf)
-		if ($hidestats = true)
-			setvar $hidestats false
+		if ($ignoreme = true)
+			setvar $ignoreme false
 		else
-			setvar $hidestats true
+			setvar $ignoreme true
 		end
 		goto :start
 	end
@@ -333,7 +333,7 @@ getlength $line $length
 setvar $numline 1
 setvar $line2 ""
 setvar $line " " & $line
-if (($isme = true) and ($hidestats = true))
+if (($isme = true) and ($ignoreme = true))
 	# ignore self chat if ignore me is set. #
 else
 	if ($length > ($comm_line_length+1))
@@ -663,11 +663,7 @@ return
 			add $i 1
 		end
 		if ($found = true)
-			if ($hidestats = true)
-				setVar $output $output&ANSI_15&"------------------"&ansi_13&" Who's Online? "&ansi_15&"-------------*"
-			else
-				setVar $output $output&ANSI_15&"---------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"---------------------------------------------*"
-			end
+			setVar $output $output&ANSI_15&"---------------------------------------"&ansi_13&" Who's Online? "&ansi_15&"---------------------------------------------*"
 			setVar $output $output&ANSI_10&""&ANSI_7&$BOT~who_is_online
 		else
 			setvar $bot~who_is_online ""
@@ -692,11 +688,7 @@ return
 				setvar $window_content_time 0
 			end
 			if ($window_content_time < 120000)
-				if ($hidestats = true)
-					setVar $output $output&ANSI_15&"------------------"&ansi_13&" Script Status Window "&ansi_15&"------------*"
-				else
-					setVar $output $output&ANSI_15&"------------------------------------"&ansi_13&" Script Status Window "&ansi_15&"-----------------------------------------*"
-				end
+				setVar $output $output&ANSI_15&"------------------------------------"&ansi_13&" Script Status Window "&ansi_15&"-----------------------------------------*"
 				setVar $output $output&ANSI_10&""&ANSI_15&$window_content
 				setvar $previous_window_content $window_content
 			else
@@ -712,11 +704,8 @@ return
 				savevar $window_content
 			end
 		end
-		if ($hidestats = true)
-			setVar $output $output&ANSI_15&"-------------------"&ansi_13&" Communications "&ansi_15&"--------------*"
-		else
-			setVar $output $output&ANSI_15&"---------------------------------"&ansi_13&" Communications "&ansi_15&"--------------------------------"&ansi_13&" Stats "&ansi_15&"-----------*"
-		end
+		setVar $output $output&ANSI_15&"---------------------------------"&ansi_13&" Communications "&ansi_15&"--------------------------------"&ansi_13&" Stats "&ansi_15&"-----------*"
+
 		setVar $i $figsize
 		setVar $j 1
 		setvar $fighter_output ""
@@ -747,11 +736,7 @@ return
 			getWordPos $line $posR "R"
 			getWordPos $line $posP "P"
 			getWordPos $line $posPlus "+"
-			if ($hidestats = true)
-				setvar $comm_line_length 45
-			else
-				setvar $comm_line_length 70
-			end
+
 			if (($posF > 0) OR ($posR > 0) OR ($posP > 0) OR ($posPlus > 0))
 				setVar $line_length ($comm_line_length+23)
 			else
@@ -764,11 +749,7 @@ return
 			end
 			replaceText $stats[$j] ":" ANSI_14&":"&ANSI_11
 			replaceText $stats[$j] "|" ANSI_5&":"&ANSI_11
-			if ($hidestats = true)
-				setVar $output $output&$line&"*"
-			else
-				setVar $output $output&$line&" "&ANSI_5&$stats[$j]
-			end
+			setVar $output $output&$line&" "&ANSI_5&$stats[$j]
 			subtract $i 1
 			add $j 1
 		end
@@ -781,7 +762,7 @@ return
 	setVar $output $output&ANSI_15&"--------"&ANSI_12&" "&#27&"[35m["&#27&"[32m'"&#27&"[35m]"&ANSI_15&"Sub ("&$BOT~subspace&") "&ansi_15&"----- "&#27&"[35m["&#27&"[32m`"&#27&"[35m]"&ANSI_15&"Fed "&ansi_15&"---- "&#27&"[35mPage ["&#27&"[32mU"&#27&"[35m]p Chat "&ansi_15&"--"&#27&"[35m Page "&#27&"[35m["&#27&"[32mD"&#27&"[35m]own Chat "&ansi_15&"---- "
 	loadvar $bot~subspace
 
-	if ($hidestats = true)
+	if ($ignoreme = true)
 		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m]Show Me"&ANSI_15&" ---------*"
 	else
 		setvar $output $output&#27&"[35m["&#27&"[32m+"&#27&"[35m]Ignore Me"&ANSI_15&" -------*"
