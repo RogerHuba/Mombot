@@ -199,7 +199,6 @@
 			send "z R * q q q q * "
 			gosub :grabfigs
 		end
-		gosub :switchboard~switchboard
 		setvar $switchboard~message "Kamikaze run ended.*"
 		gosub :switchboard~switchboard
 		halt
