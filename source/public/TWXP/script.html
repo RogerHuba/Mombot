@@ -4,10 +4,36 @@
   <meta content="ElderProphet <ElderProphet@comcast.net>" name="Developer">
 </HEAD>
 <BODY FACE="Arial">
-  <CENTER><H1>TWX Proxy Script Reference v2.04</H1></CENTER><BR><BR>
+  <CENTER><H1>TWX Proxy Script Reference v2.06</H1></CENTER><BR><BR>
   <FONT FACE="Arial">Welcome to the TWX Proxy script reference.  This document is designed specially for programmers, scripters, or just people that want to learn TWX Proxy a little better.  Unfortunately there is currently no specification detailing language syntax or the internals of how things actually work, although easily the best way of learning this is to just read over the open source pack1 scripts or the unencrypted portions of the pack2 scripts and see how they work.</FONT><BR><BR><BR>
-<H2>Contents</H2><BR><BR>
-<H3>Script Commands</H3><font>Many of these commands exist only for internal use or backwards compatibility.</font><br><br>
+<H3>Commands Added in 2.06</H3>
+
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_601">updateQuickStats</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_602">getDeafClients</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_603">setDeafClients</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_604">saveGlobal</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_605">loadGlobal</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_606">clearGlobals</A><BR><BR>
+
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#QSS">Thirty new System Variables</A> to hold QuickStats data.<BR>
+
+<H3>Commands Added in 2.05</H3>
+
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_501">cutLengths</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_502">format</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_503">getDirList</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_504">getWordCount</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_505">MakeDir</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_506">padLeft</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_507">padRight</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_508">RemoveDir</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_509">setMenuKey</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_510">splitText</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_511">trim</A><BR>
+&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_512">truncate</A><BR>
+
+<H3>Commands Added in 2.04 and earlier</H3>
+Many of these commands exist only for internal use or backwards compatibility.</font><br><br>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_1">add</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_2">addMenu</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_3">and</A><BR>
@@ -23,13 +49,11 @@
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_11">divide</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_12">echo</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_13">fileExists</A><BR>
-&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_102">format</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_94">getAllCourses</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_14">getCharCode</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_15">getConsoleInput</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_16">getCourse</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_17">getDate</A><BR>
-&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_103">getDirList</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_18">getDistance</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_95">getFileList</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_19">getInput</A><BR>
@@ -45,7 +69,6 @@
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_26">getTime</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_91">getTimer</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_27">getWord</A><BR>
-&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_104">getWordCount</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_28">getWordPos</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_29">gosub</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_30">goto</A><BR>
@@ -67,7 +90,6 @@
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_43">loadVar</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_44">logging</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_45">lowerCase</A><BR>
-&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_105">makeDir</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_46">mergeText</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_47">multiply</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_48">openMenu</A><BR>
@@ -77,7 +99,6 @@
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_52">processOut</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_53">read</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_90">readToArray</A><BR>
-&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_106">removeDir</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_54">rename</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_55">replaceText</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_56">reqRecording</A><BR>
@@ -90,7 +111,6 @@
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_61">setDelayTrigger</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_62">setEventTrigger</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_85">setMenuHelp</A><BR>
-&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_107">setMenuKey</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_64">setMenuOptions</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_63">setMenuValue</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_86">setPrecision</A><BR>
@@ -106,8 +126,6 @@
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_73">stripText</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_74">subtract</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_79">systemScript</A><BR>
-&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_108">trim</A><BR>
-&nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_109">truncate</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_80">upperCase</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_81">waitFor</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#CMD_82">window</A><BR>
@@ -193,6 +211,41 @@
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#VAL_58">STARDOCK</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#VAL_59">TIME</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#VAL_60">TRUE</A><BR>
+<A NAME="QSS">
+<H3>The following system varables were added in 2.06 for QuickStats<H3>
+<BR>
+CURRENTTURNS<BR>
+CURRENTCREDITS<BR>
+CURRENTFIGHTERS<BR>
+CURRENTSHIELDS<BR>
+CURRENTTOTALHOLDS<BR>
+CURRENTOREHOLDS<BR>
+CURRENTORGHOLDS<BR>
+CURRENTEQUHOLDS<BR>
+CURRENTCOLHOLDS<BR>
+CURRENTEMPTYHOLDS<BR>
+CURRENTPHOTONS<BR>
+CURRENTARMIDS<BR>
+CURRENTLIMPETS<BR>
+CURRENTGENTORPS<BR>
+CURRENTTWARPTYPE<BR>
+CURRENTCLOAKS<BR>
+CURRENTBEACONS<BR>
+CURRENTATOMICS<BR>
+CURRENTCORBOMITE<BR>
+CURRENTEPROBES<BR>
+CURRENTMINEDISR<BR>
+CURRENTPSYCHICPROBE<BR>
+CURRENTPLANETSCANNER<BR>
+CURRENTSCANTYPE<BR>
+CURRENTALIGNMENT<BR>
+CURRENTEXPERIENCE<BR>
+CURRENTCORP<BR>
+CURRENTSHIPNUMBER<BR>
+CURRENTSHIPCLASS<BR>
+CURRENTQUICKSTATS<BR><BR>
+<BR>The valuse of these System Variables is updated every time QuickStats '/' is displayed.<BR><BR>
+
 <H3>Terminal Menu References</H3><font>The terminal menu references are the names of the built-in TWX Terminal Menus.  These menus can be accessed using the menu scripting commands (addMenu, setMenuValue, getMenuValue, etc)</font><br><br>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#MENU_78">TWX_ACCEPTEXTERNAL</A><BR>
 &nbsp;&nbsp;&nbsp;<A HREF="script.html#MENU_74">TWX_BUBBLESIZE</A><BR>
@@ -372,6 +425,22 @@ set in the game itself.</FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE>
 </PRE></FONT><BR><BR><HR>
 
+<A NAME="CMD_606"><H3>clearGlobals</H3><BR><BR>
+<FONT><B>Purpose:</B> Clears all global variables from memory.</FONT><BR><BR>
+<FONT><B>Syntax:</B> clearGlobals <BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> Use with caution, as other scripts amy be using globals.</FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE>
+#Sendng script
+clearGlobals
+saveGlobal $CommandOptions
+load "script2.ts"
+
+#Receiving script
+loadGlobal $CommandOptions
+</PRE></FONT><BR><BR><HR>
+
 <A NAME="CMD_5"><H3>clientMessage</H3><BR><BR>
 <FONT><B>Purpose:</B> Broadcast a block of formatted text to all connected telnet terminals.</FONT><BR><BR>
 <FONT><B>Syntax:</B> clientMessage {value} <BR>
@@ -399,6 +468,18 @@ command.</FONT><BR><BR>
 <FONT><B>Notes:</B> This command is exactly the same as using the 'Connect' option from the TWX Terminal menu.
 It will connect TWX Proxy to the game server defined in the currently selected database.</FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
+
+<A NAME="CMD_501"><H3>cutLengths</H3><BR><BR>
+<FONT><B>Purpose:</B> </FONT><BR><BR>
+<FONT><B>Syntax:</B> cutLengths <value> array <lengths1,length2,...><BR>
+<BR>
+Value:<BR> 
+Array:<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> </FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
+
 <A NAME="CMD_8"><H3>cutText</H3><BR><BR>
 <FONT><B>Purpose:</B> 'Cuts' a value out of a piece of text.</FONT><BR><BR>
 <FONT><B>Syntax:</B> cutText {value} var {start} {length} <BR>
@@ -431,7 +512,7 @@ cutText CURRENTLINE $Name ($Pos + 2) 999</PRE></FONT><BR><BR><HR>
 <BR>
 </FONT><BR><BR>
 <FONT><B>Notes:</B> This command will immediately delete the specified file.  If the file does not exist, no error
-will be given.  The file cannot be in a parent directory.</FONT><BR><BR>
+will be given.</FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE># write dead-end list to a file
 
 clientMessage "Querying..."
@@ -523,48 +604,30 @@ if ($BustFile <> "")
   fileExists $exists $BustFile
 
   if ($exists)
-	setArray $BustList SECTORS
-	setVar $i 1
-	read $BustFile $bust $i
-	while ($bust <> EOF)
-	  setVar $BustList[$bust] 1
-	  add $i 1
-	  read $BustFile $bust $i
-	end
+    setArray $BustList SECTORS
+    setVar $i 1
+    read $BustFile $bust $i
+    while ($bust <> EOF)
+      setVar $BustList[$bust] 1
+      add $i 1
+      read $BustFile $bust $i
+    end
   end
 end</PRE></FONT><BR><BR><HR>
-<A NAME="CMD_102"><H3>format</H3><BR><BR>
-<FONT><B>Purpose:</B> Formats a variable based on the VALUE keyword.</FONT><BR><BR>
-<FONT><B>Syntax:</B> format inputVar outputVar {VALUE} <BR>
+
+<A NAME="CMD_502"><H3>format</H3><BR><BR>
+<FONT><B>Purpose:</B> Formats a string for display.</FONT><BR><BR>
+<FONT><B>Syntax:</B> format InputVar OutputVar CONSTANT<BR>
 <BR>
-inputVar: The variable that will have its value formatted.<BR>
+InputVar: A variable containing the text to be formatted.
+OutputVar: A varable to hold the formated string.
+CONSTANT: The format to be applied (CURRENCY, NUMBER, DATETIMETOSTR, STRTODATETIME).
 <BR>
-outputVar: The resulting formatted variable.<BR>
-<BR>
-{VALUE}: The keyword indicating how the output will be formatted.<BR>
 <BR>
 </FONT><BR><BR>
-<FONT><B>Notes:</B> This command is used to accomplish conversions which would otherwise be very difficult.<BR>
-<BR>
-Currently, TWX Proxy supports the following VALUE keywords:<BR>
-<BR>
-CURRENCY :  A number is formatted to include the dollar sign, thousands separator, and 2 decimal places. (Eg. $4,567.00)<BR>
-<BR>
-NUMBER : Thousands separator(s) added, and the number of decimals shown will be according to the PRECISION setting.<BR>
-<BR>
-DATETIMETOSTR : Converts a DateTime value (A double, indicating days since 1899, including fraction) to a string value such as "1/1/2000 12:00:00"<BR>
-<BR>
-STRTODATETIME : Converts a string such as "1/1/2000" to it's DateTime decimal value.</FONT><BR><BR>
-<FONT><B>Example:</B><BR><BR><PRE># determine the time elapsed between two string values
+<FONT><B>Notes:</B> </FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
 
-format "4/27/2013 14:20:00" $dateTime1 STRTODATETIME
-setVar $now DATE & " " & TIME \\ date and time are TWX constants
-format $now $dateTime2 STRTODATETIME
-setPrecision 10
-setVar $elapsed ($dateTime2 - $dateTime1)
-echo "*Elapsed: " $elapsed
-
-</PRE></FONT><BR><BR><HR>
 <A NAME="CMD_94"><H3>getAllCourses</H3><BR><BR>
 <FONT><B>Purpose:</B> Creates a 2-dimensional array with all course plots and distances where the StartSector is
 the specified sector, and the EndSector is the 1st dimension index.</FONT><BR><BR>
@@ -699,15 +762,33 @@ var: A variable that will contain the current date.<BR>
 vary depending upon your regional settings.  For more flexibility when formatting your date,
 refer to the 'getTime' command.</FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
-<A NAME="CMD_103"><H3>getDirList</H3><BR><BR>
-<FONT><B>Purpose:</B> Populates a specified array with any directory names that match a specified Mask (like TWX*).</FONT><BR><BR>
-<FONT><B>Syntax:</B> getDirList varArray {FileMask} <BR>
+
+<A NAME="CMD_602"><H3>getDeafClients</H3><BR><BR>
+<FONT><B>Purpose:</B> Rtreieves the status of any deaf clients.</FONT><BR><BR>
+<FONT><B>Syntax:</B> getDeafClients var <BR>
 <BR>
-varArray:  The array to hold the results.  Also, a variable whose value is the number of directories found.<BR>
+var: A variable that will contain TRUE if any dead clients are found.<BR>
 <BR>
-{FileMask}:  A pattern to match.</FONT><BR><BR>
-<FONT><B>Notes:</B> This command allows a script to inventory the TWX folder or a subfolder for directory names that match the Mask's search criteria, using wildcards as needed.  Both an array and matching variable (to indicate the array size) are created or reused.</FONT><BR><BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> </FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE>
+getDeafClients $Deaf
+if $Deaf = FALSE then
+  ToggleDeaf
+end
+</PRE></FONT><BR><BR><HR>
+
+<A NAME="CMD_503"><H3>getDirList</H3><BR><BR>
+<FONT><B>Purpose:</B> Gets a list of files from a directory.</FONT><BR><BR>
+<FONT><B>Syntax:</B> getDirList varArray <FileMask> <BR>
+<BR>
+varArray: A variable arry to hold the list of files.<BR>
+FileMask: Path and mask of the desired directory.<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> </FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
+
 <A NAME="CMD_18"><H3>getDistance</H3><BR><BR>
 <FONT><B>Purpose:</B> Internally calculates the distance between two sectors through the use of the TWX Proxy Database.</FONT><BR><BR>
 <FONT><B>Syntax:</B> getDistance var {fromSector} {toSector} <BR>
@@ -981,7 +1062,7 @@ while ($i <= SECTORS)
   getSectorParameter $i "Owner" $owner
 
   if ($owner = "Enemy")
-	echo $i "*"
+    echo $i "*"
   end
 end</PRE></FONT><BR><BR><HR>
 <A NAME="CMD_25"><H3>getText</H3><BR><BR>
@@ -1085,15 +1166,18 @@ getWord $line $word 4
 
 # displays: line
 echo $word</PRE></FONT><BR><BR><HR>
-<A NAME="CMD_104"><H3>getWordCount</H3><BR><BR>
-<FONT><B>Purpose:</B> Returns the number of words in a line of text.</FONT><BR><BR>
-<FONT><B>Syntax:</B> getWordCount {line} var<BR>
+
+<A NAME="CMD_504"><H3>getWordCount</H3><BR><BR>
+<FONT><B>Purpose:</B> Counts the words in a string.</FONT><BR><BR>
+<FONT><B>Syntax:</B> getWordCount <text> storageVar<BR>
 <BR>
-{line}: A line of text to determine the word count of.<BR>
+text: A variable containing the text to be counted.<BR>
+storageVar: A varable to hole the resulting word count.<BR>
 <BR>
-var: A variable to hold the word count.</FONT><BR><BR>
-<FONT><B>Notes:</B> There are numerous times when each word of a line of text needs to be processed.  Knowing the number of words helps.</FONT><BR><BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> </FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
+
 <A NAME="CMD_28"><H3>getWordPos</H3><BR><BR>
 <FONT><B>Purpose:</B> Finds the location of a value within a block of text.</FONT><BR><BR>
 <FONT><B>Syntax:</B> getWordPos {text} storageVar {subString} <BR>
@@ -1392,6 +1476,25 @@ end</PRE></FONT><BR><BR><HR>
 </FONT><BR><BR>
 <FONT><B>Notes:</B> This is exactly the same as the $SS TWX Terminal Menu function.</FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
+
+<A NAME="CMD_605"><H3>loadGlobal</H3><BR><BR>
+<FONT><B>Purpose:</B> Loads a variable from a global array without all that mucking around in INI files.</FONT><BR><BR>
+<FONT><B>Syntax:</B> loadGlobal var <BR>
+<BR>
+var: The name of the varable to loaded from Globals.<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> Variables can be stored in one script and loaded in another, but data will be lost when TWX closes or clearGlobals is called.</FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE>
+#Sendng script
+clearGlobals
+saveGlobal $CommandOptions
+load "script2.ts"
+
+#Receiving script
+loadGlobal $CommandOptions
+</PRE></FONT><BR><BR><HR>
+
 <A NAME="CMD_43"><H3>loadVar</H3><BR><BR>
 <FONT><B>Purpose:</B> Loads a variable from a file automatically associated with the currently selected TWX Database.</FONT><BR><BR>
 <FONT><B>Syntax:</B> loadVar var <BR>
@@ -1457,13 +1560,17 @@ var: A variable containing text to be converted to lower case.<BR>
 </FONT><BR><BR>
 <FONT><B>Notes:</B> </FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
-<A NAME="CMD_105"><H3>makeDir</H3><BR><BR>
-<FONT><B>Purpose:</B> Creates a subfolder within the TWX Proxy folder.</FONT><BR><BR>
-<FONT><B>Syntax:</B> makeDir {folderName}<BR>
+
+<A NAME="CMD_505"><H3>makeDir</H3><BR><BR>
+<FONT><B>Purpose:</B> Creates a directory.</FONT><BR><BR>
+<FONT><B>Syntax:</B> makeDir <directory name> <BR>
 <BR>
-{folderName}: The name of the folder to be created.<BR></FONT><BR><BR>
-<FONT><B>Notes:</B></FONT><BR><BR>
+<directory name>: Path and name of the directory to be created.<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> </FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
+
 <A NAME="CMD_46"><H3>mergeText</H3><BR><BR>
 <FONT><B>Purpose:</B> Concatenates two text values together to form one.</FONT><BR><BR>
 <FONT><B>Syntax:</B> mergeText {value1} {value2} var <BR>
@@ -1545,12 +1652,30 @@ var: The variable to be operated.  The value in this variable must be either TRU
 <FONT><B>Notes:</B> This command is used internally by the compiler to allow conditions to work properly.  Its
 use in conventional scripting is almost unheard of.</FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
-##################################################################################################
-##################################################################################################
-padLeft
-padRight
-##################################################################################################
-##################################################################################################
+
+<A NAME="CMD_506"><H3>padLeft</H3><BR><BR>
+<FONT><B>Purpose:</B> Add spaces to the left of a variable.</FONT><BR><BR>
+<FONT><B>Syntax:</B> padLeft var <value><BR>
+<BR>
+var: A variable containing the text to be paded.<BR>
+Value: The number of spaces to be added.<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> </FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
+
+<A NAME="CMD_507"><H3>padRight</H3><BR><BR>
+<FONT><B>Purpose:</B> Add spaces to the right of a variable.</FONT><BR><BR>
+<FONT><B>Syntax:</B> padRight var <value><BR>
+<BR>
+var: A variable containing the text to be paded.<BR>
+Value: The number of spaces to be added.<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> </FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
+
+
 <A NAME="CMD_50"><H3>pause</H3><BR><BR>
 <FONT><B>Purpose:</B> Pauses the script's execution, allowing it to wait for its triggers to activate.</FONT><BR><BR>
 <FONT><B>Syntax:</B> pause</FONT><BR><BR>
@@ -1622,14 +1747,14 @@ if ($BustFile <> "")
   fileExists $exists $BustFile
 
   if ($exists)
-	setArray $BustList SECTORS
-	setVar $i 1
-	read $BustFile $bust $i
-	while ($bust <> EOF)
-	  setVar $BustList[$bust] 1
-	  add $i 1
-	  read $BustFile $bust $i
-	end
+    setArray $BustList SECTORS
+    setVar $i 1
+    read $BustFile $bust $i
+    while ($bust <> EOF)
+      setVar $BustList[$bust] 1
+      add $i 1
+      read $BustFile $bust $i
+    end
   end
 end</PRE></FONT><BR><BR><HR>
 <A NAME="CMD_90"><H3>readToArray</H3><BR><BR>
@@ -1651,11 +1776,17 @@ while ($i <= $figArray)
 	echo "*" $figArray[$i]
 	add $i 1
 end</PRE></FONT><BR><BR><HR>
-##################################################################################################
-##################################################################################################
-removeDir
-##################################################################################################
-##################################################################################################
+
+<A NAME="CMD_508"><H3>removeDir</H3><BR><BR>
+<FONT><B>Purpose:</B> Removes a directory.</FONT><BR><BR>
+<FONT><B>Syntax:</B> removeDir <directory name> <BR>
+<BR>
+<directory name>: Path and name of the directory to be removed.<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> </FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
+
 <A NAME="CMD_54"><H3>rename</H3><BR><BR>
 <FONT><B>Purpose:</B> Renames a file.</FONT><BR><BR>
 <FONT><B>Syntax:</B> rename {oldfile} {newfile} <BR>
@@ -1723,6 +1854,25 @@ round $x 1
 
 # this line will display: 500.5
 echo $x</PRE></FONT><BR><BR><HR>
+
+<A NAME="CMD_604"><H3>saveGlobal</H3><BR><BR>
+<FONT><B>Purpose:</B> Saves a variable to a global array without all that mucking around in INI files.</FONT><BR><BR>
+<FONT><B>Syntax:</B> saveGlobal var <BR>
+<BR>
+var: The name of the varable to save to Globals.<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> Variables can be stored in one script and loaded in another, but data will be lost when TWX closes or clearGlobals is called.</FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE>
+#Sendng script
+clearGlobals
+saveGlobal $CommandOptions
+load "script2.ts"
+
+#Receiving script
+loadGlobal $CommandOptions
+</PRE></FONT><BR><BR><HR>
+
 <A NAME="CMD_58"><H3>saveVar</H3><BR><BR>
 <FONT><B>Purpose:</B> Saves a variable to a file automatically associated with the currently selected TWX Database.</FONT><BR><BR>
 <FONT><B>Syntax:</B> saveVar var <BR>
@@ -1791,14 +1941,14 @@ if ($BustFile <> "")
   fileExists $exists $BustFile
 
   if ($exists)
-	setArray $BustList SECTORS
-	setVar $i 1
-	read $BustFile $bust $i
-	while ($bust <> EOF)
-	  setVar $BustList[$bust] 1
-	  add $i 1
-	  read $BustFile $bust $i
-	end
+    setArray $BustList SECTORS
+    setVar $i 1
+    read $BustFile $bust $i
+    while ($bust <> EOF)
+      setVar $BustList[$bust] 1
+      add $i 1
+      read $BustFile $bust $i
+    end
   end
 end</PRE></FONT><BR><BR><HR>
 
@@ -1822,6 +1972,24 @@ else
 	# is $hops + 1, it is also the next-to-last warp
 	echo "*Backdoor: " $course[$course]
 end</PRE></FONT><BR><BR><HR>
+
+<A NAME="CMD_603"><H3>setDeafClients</H3><BR><BR>
+<FONT><B>Purpose:</B> Sets the deaf status on all clients.</FONT><BR><BR>
+<FONT><B>Syntax:</B> setDeafClients var <BR>
+<BR>
+var: An optional variable that will wake clients if set to FALSE.<BR>
+     By default the command will deafen all clients.<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> </FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE>
+setDeafClients
+  echo "Processing CIM Ports..."
+  send "^r"
+  waitfor ":"
+setDeafClients FALSE
+</PRE></FONT><BR><BR><HR>
+
 
 <A NAME="CMD_61"><H3>setDelayTrigger</H3><BR><BR>
 <FONT><B>Purpose:</B> Creates a trigger that will automatically activate after a specified time period.</FONT><BR><BR>
@@ -1903,11 +2071,18 @@ or "waitOn" command.</FONT><BR><BR>
 option.  The menu must have been created using the 'addMenu' command, or be a member of the
 TWX Terminal Menu.</FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
-##################################################################################################
-##################################################################################################
-setMenuKey
-##################################################################################################
-##################################################################################################
+
+<A NAME="CMD_509"><H3>setMenuKey</H3><BR><BR>
+<FONT><B>Purpose:</B> Sets the menu key used to activate TWX.</FONT><BR><BR>
+<FONT><B>Syntax:</B> setMenuKey <value> <BR>
+<BR>
+value: A variable containing the character to be used to activate the TWX main menu.<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> </FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
+
+
 <A NAME="CMD_64"><H3>setMenuOptions</H3><BR><BR>
 <FONT><B>Purpose:</B> Configures standard options accessible from a menu.</FONT><BR><BR>
 <FONT><B>Syntax:</B> setMenuOptions {menuName} {Q} {?} {+} <BR>
@@ -1942,21 +2117,21 @@ command, or is part of the TWX Terminal Menu.<BR>
 To get the display value of a menu, use the 'getMenu' command.</FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE>:sub_SetMenu
   if ($evil_haggle)
-	setMenuValue "Haggling" "ON"
+    setMenuValue "Haggling" "ON"
   else
-	setMenuValue "Haggling" "OFF"
+    setMenuValue "Haggling" "OFF"
   end
 
   if ($evil_continue > 0)
-	setMenuValue "Continue" "YES"
+    setMenuValue "Continue" "YES"
   else
-	setMenuValue "Continue" "NO"
+    setMenuValue "Continue" "NO"
   end
 
   if ($evil_broadcast > 0)
-	setMenuValue "Broadcast" "YES"
+    setMenuValue "Broadcast" "YES"
   else
-	setMenuValue "Broadcast" "NO"
+    setMenuValue "Broadcast" "NO"
   end
 
   setMenuValue "StealFactor" $evil_stealFactor
@@ -2170,7 +2345,6 @@ for the send/echo commands.</FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE># Create ZTM progress window - as managed in 1_ZTM.ts
 window ztm 170 94 "ZTM" ONTOP
 setWindowContents ztm "Perc Done:*Est Time:*Speed:*Up to:"
-
 </PRE></FONT><BR><BR><HR>
 <A NAME="CMD_71"><H3>sound</H3><BR><BR>
 <FONT><B>Purpose:</B> Plays a sound (.WAV) file.</FONT><BR><BR>
@@ -2184,48 +2358,31 @@ sound files in combat situations as this may effect your play.  However, this is
 to give warning signals if you are asleep or away from the keyboard.</FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE># play a sound
 sound click.wav</PRE></FONT><BR><BR><HR>
-##################################################################################################
-##################################################################################################
-<A NAME="CMD_110"><H3>splitText</H3><BR><BR>
-<FONT><B>Purpose:</B> Devides text into array elements.</FONT><BR><BR>
-<FONT><B>Syntax:</B> splitText {text} {arrayName} [delimiters]<BR>
+
+<A NAME="CMD_510"><H3>splitText</H3><BR><BR>
+<FONT><B>Purpose:</B> Splits a string into an array of words.</FONT><BR><BR>
+<FONT><B>Syntax:</B> splitText <text> varArray {delims} <BR>
 <BR>
-{text}: The block of text to be split.<BR>
-<BR>
-{arrayName}: The array where the text blocks will be saved.  Also a variable whose value is the array size.<BR>
-<BR>
-[delimiter]: Optional list of characters to use as delimiters.  If not specified, the defaults of space (#32) 
-and tab (#9) will be used.<BR>
+text: A variable containing the text to be split.<BR>
+varArray: An array to contain the split strings.
+delims: Delimiters used to split string. Space and Tab will be used if omitted.
 <BR>
 </FONT><BR><BR>
-<FONT><B>Notes:</B> This command is useful for breaking a line up into words, or a quickstat line into stats.  
-The results are stored in an array for easy iteration over the elements.  Additionaly, the number of elements 
-(size of the array) is set to a variable with the same name as the array.
-Important: The list of delimiters is not a quoted value, but a list.  Each character will be used as a delimiter.</FONT><BR><BR>
+<FONT><B>Notes:</B> </FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
+
+<A NAME="CMD_72"><H3>stop</H3><BR><BR>
+<FONT><B>Purpose:</B> Terminates an active script.</FONT><BR><BR>
+<FONT><B>Syntax:</B> stop {scriptName} <BR>
+<BR>
+{scriptName}: The file name of the active script to terminate (not case sensitive).<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> This command will terminate the first script currently being executed by TWX Proxy with a
+name that matches the one specified.  The specified script name does not require the extension
+(.ts or .cts) of the target script, nor its file path.</FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE># load then terminate keepalive script (completely useless)
 load 1_keepalive
-stop 1_keepalive</PRE></FONT><BR><BR><HR>
-##################################################################################################
-##################################################################################################
-CMD: splitText <text> varArray {delims}
-<A NAME="CMD_110"><H3>splitText</H3><BR><BR>
-<FONT><B>Purpose:</B> Devides text into blocks based on a delimiter, and saves the blocks in an array.</FONT><BR><BR>
-<FONT><B>Syntax:</B> splitText text {array} {delimiter(s)}<BR>
-<BR>
-text: The text to be split.
-<BR>
-{array}: The array where the text blocks will be saved.  Also a variable whose value is the array size.
-<BR>
-{delimiters}: A list of character(s) which will be used to delimit the block of text.  If none is specified, 
-SPACE and TAB will be used.
-<BR>
-</FONT><BR><BR>
-<FONT><B>Notes:</B> This command can be used to quickly divide a sentence into the individual words,
-or to divide a Quickstat line into the individual elements.  A character's Char code can be specified for
-difficult characters.  The delimiters are optional, and the default white space characters (SPACE and TAB)
-will be used if none are specified.  The delimiters are not a quoted value, but rather a list of characters.</FONT><BR><BR>
-<FONT><B>Example:</B><BR><BR><PRE># break a line of text into the individual words
-splitText "This is a line of text." $words
 stop 1_keepalive</PRE></FONT><BR><BR><HR>
 <A NAME="CMD_73"><H3>stripText</H3><BR><BR>
 <FONT><B>Purpose:</B> Removes a character or sub-string from a variable.</FONT><BR><BR>
@@ -2282,14 +2439,44 @@ ability for it to be quick-terminated.</FONT><BR><BR>
 <FONT><B>Notes:</B> System scripts cannot be terminated by the "Stop all scripts" TWX Terminal Menu options.
 This makes them useful as keepalive, control or monitor scripts.</FONT><BR><BR>
 <FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
-##################################################################################################
-##################################################################################################
-trim
-##################################################################################################
-##################################################################################################
-truncate
-##################################################################################################
-##################################################################################################
+
+<A NAME="CMD_601"><H3>updateQuickStats</H3><BR><BR>
+<FONT><B>Purpose:</B> Updates stats from the '/' command.</FONT><BR><BR>
+<FONT><B>Syntax:</B> updateQuickStats [silent]<BR>
+<BR>
+silent: An optional paramater that will supress the output of this command.<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> updateQuickStats is implemented as a simple macro that sends '/' and <BR>
+waits on the response. TWX Extractor automatically parses the response any time <BR>
+quickstats is displayed and populates CURRENT* System Constants including <BR>
+CURRENTQUICKSTATS, which is a formated text containing 27 of the constants. </FONT><BR>
+<FONT><B>Example:</B><BR><BR><PRE>
+updateQuickStats Silent
+send "'*" CURRENTQUICKSTATS "*"
+echo "ShipClass : " CURRENTSHIPCLASS
+</PRE></FONT><BR><BR><HR>
+
+<A NAME="CMD_511"><H3>trim</H3><BR><BR>
+<FONT><B>Purpose:</B> Removes leading and trailing spaces from a string.</FONT><BR><BR>
+<FONT><B>Syntax:</B> trim var <BR>
+<BR>
+var: A variable containing the text to be trimmed<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> </FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
+
+<A NAME="CMD_512"><H3>truncate</H3><BR><BR>
+<FONT><B>Purpose:</B> </FONT><BR><BR>
+<FONT><B>Syntax:</B> truncate var <BR>
+<BR>
+var: A variable containing the value to be truncated.<BR>
+<BR>
+</FONT><BR><BR>
+<FONT><B>Notes:</B> </FONT><BR><BR>
+<FONT><B>Example:</B><BR><BR><PRE></PRE></FONT><BR><BR><HR>
+
 <A NAME="CMD_80"><H3>upperCase</H3><BR><BR>
 <FONT><B>Purpose:</B> Converts all text within a variable to upper case.</FONT><BR><BR>
 <FONT><B>Syntax:</B> upperCase var <BR>
