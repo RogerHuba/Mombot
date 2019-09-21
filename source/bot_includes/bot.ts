@@ -385,7 +385,7 @@ return
 	end
 	setVar $PLAYER~startingLocation ""
 	setArray $INTERNALCOMMANDLISTS 7
-	setVar $internalCommandLists[1]  " stopall stop listall reset emq bot relog tow refresh login logoff unlock lift with dep callin about cn extern twarp bwarp pwarp relog help "
+	setVar $internalCommandLists[1]  " stopall stop listall reset emq bot relog tow refresh login logoff unlock lift with dep callin about cn extern twarp bwarp pwarp relog help switchbot "
 	setVar $internalCommandLists[2]  " " 
 	setVar $internalCommandLists[3]  " hkill kill htorp "
 	setVar $internalCommandLists[4]  " refurb scrub "

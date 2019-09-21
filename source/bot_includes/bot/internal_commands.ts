@@ -759,4 +759,6 @@ goto :BOT~wait_for_command
 	setVar $BOT~user_command_line "refurb "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
 	goto :USER_INTERFACE~runUserCommandLine
 
-
+:switchbot
+	SwitchBot $bot~parm1
+	halt
