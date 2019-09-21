@@ -11,15 +11,6 @@ systemscript
 	setvar $version "2.0.1 12/09/05"
 :setup
 gosub :getTime
-loadvar $MH_LoginName
-if ($MH_LoginName = 0) OR ($MH_LoginName = "")
-	if (LOGINNAME = "")
-		setvar $MH_LoginName "ME"
-	else
-		setvar $MH_LoginName LOGINNAME
-		savevar $MH_LoginName
-	end
-end
 loadvar $bot~folder
 setvar $startDate $year & $month & $day
 setvar $logFileName $bot~folder&"/"&$year & $month & $day & ".comms"
@@ -39,6 +30,8 @@ setArray $stats 26
 setVar $isOdd FALSE
 setVar $window_content ""
 saveVar $window_content
+setvar $switchboard~window_content ""
+savevar $switchboard~window_content
 setVar $old_output ""
 
 if ($logFileName <> "")
@@ -701,6 +694,8 @@ return
 			else
 				setvar $window_content ""
 				savevar $window_content
+				setvar $switchboard~window_content ""
+				savevar $switchboard~window_content
 				setvar $window_content_time 0
 			end
 		else
