@@ -18,7 +18,6 @@ setTextOutTrigger fed :fed "`"
 setTextOutTrigger ss :ss "'" 
 pause
 
-	gosub :BOT~bigdelay_killthetriggers
 	:ss
 	setVar $prompt ANSI_10&#27&"[255D"&#27&"[255B"&#27&"[K"&ANSI_4&"{"&ANSI_14&"Subspace chat"&ANSI_4&"}"&ANSI_15&" "&$SWITCHBOARD~bot_name&ANSI_2&">"&ANSI_7
 	setvar $type "ss"
