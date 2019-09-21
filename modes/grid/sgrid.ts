@@ -591,8 +591,8 @@ return
 
 :attemptRefurb
 :attempt_Refurb
-	setVar $limpetCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~LIMPETS)*$LIMPET_COST)+$LIMPET_REMOVAL_COST)
-	setVar $armidCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~ARMIDS)*$ARMID_COST))
+	setVar $limpetCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~LIMPETS)*$game~LIMPET_COST)+$game~LIMPET_REMOVAL_COST)
+	setVar $armidCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~ARMIDS)*$game~ARMID_COST))
 	setVar $cashNeeded ($limpetCashNeeded+$armidCashNeeded)
 	setVar $furbing TRUE
 	if ($cashNeeded > $PLAYER~CREDITS)
@@ -601,7 +601,8 @@ return
 		getWord CURRENTLINE $planet~CITADELCash 4
 		stripText $planet~CITADELCash ","
 		if ($planet~CITADELCash < $cashNeeded)
-			send "'{" & $SWITCHBOARD~bot_name & "} - Not enough cash for mine refurbs in treasury or on hand.*"	
+			setvar $switchboard~message "Not enough cash for mine refurbs in treasury or on hand.*"	
+			gosub :switchboard~switchboard
 			halt
 		end
 		send "t f "&($cashNeeded-$PLAYER~CREDITS)&"* "
@@ -619,10 +620,11 @@ return
 	end
 
 	if (($PLAYER~ALIGNMENT < 1000) AND ($WeAreAdjDock = FALSE))
-		setVar $RED_adj 0
+		setVar $player~RED_adj 0
+		setvar $player~target $map~stardock
 		gosub :player~findjumpsector
-		if ($RED_adj <> 0)
-			setvar $switchboard~message "Jump Sector Found - Using Sector "&$RED_adj&"*"
+		if ($player~RED_adj <> 0)
+			setvar $switchboard~message "Jump Sector Found - Using Sector "&$player~RED_adj&"*"
 			gosub :switchboard~switchboard
 		else
 			waitfor "Command [TL="
@@ -642,7 +644,7 @@ return
 		if ($WeAreAdjDock)
 			send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
 		else
-			send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			send "^F" & $START_SECTOR & "*" & $player~RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
 		end
 	end
 	setTextLineTrigger noJoy :noJoy "*** Error - No route within"
@@ -665,7 +667,7 @@ return
 		if (($PLAYER~ALIGNMENT >= 1000) OR ($WeAreAdjDock))
 			getdistance $dist1 $START_SECTOR $MAP~stardock
 		else
-			getdistance $dist1 $START_SECTOR $RED_adj
+			getdistance $dist1 $START_SECTOR $player~RED_adj
 		end
 
 		if ($dist1 <= 0)
@@ -731,8 +733,8 @@ return
 		if (($PLAYER~ALIGNMENT >= 1000) AND ($WeAreAdjDock = FALSE))
 			setVar $player~warpto $MAP~stardock
 			gosub :DoTwarp
-		elseif (($WeAreAdjDock = FALSE) AND ($RED_adj <> 0))
-			setVar $player~warpto $RED_adj
+		elseif (($WeAreAdjDock = FALSE) AND ($player~RED_adj <> 0))
+			setVar $player~warpto $player~RED_adj
 			gosub :DoTwarp
 		else
 			send " m " & $MAP~stardock & "*  *  P  S G Y G Q "
@@ -866,48 +868,6 @@ return
 	send "y z * "
 	return
 
-:FindJumpSector
-	setVar $i 1
-	setVar $RED_adj 0
-	send "qq*"
-	while (SECTOR.WARPSIN[$MAP~stardock][$i] > 0)
-		setVar $RED_adj SECTOR.WARPSIN[$MAP~stardock][$i]
-		send "m " & $RED_adj & "* y"
-		setTextTrigger TwarpBlind 			:TwarpBlind "Do you want to make this jump blind? "
-		setTextTrigger TwarpLocked			:TwarpLocked "All Systems Ready, shall we engage? "
-		setTextLineTrigger TwarpVoided			:TwarpVoided "Danger Warning Overridden"
-		setTextLineTrigger TwarpAdj			:TwarpAdj "<Set NavPoint>"
-		pause
-		:TwarpAdj
-		killAllTriggers
-		send " * "
-		return
-
-		:TwarpVoided
-		killAllTriggers
-		send " N N "
-		goto :TryingNextAdj
-
-		:TwarpLocked
-		killAllTriggers
-		send " N "
-
-		goto :SectorLocked
-
-		:TwarpBlind
-		killAllTriggers
-		send " N "
-
-		:TryingNextAdj
-    	add $i 1
-	end
-
-	:NoAdjsFound
-		setVar $RED_adj 0
-		return
-
-	:SectorLocked
-		return
 
 
 :TurnsRequired
@@ -919,7 +879,7 @@ return
 	killAllTriggers
 	getWord CURRENTLINE $PLAYER~TURNSRequired_TPW 5
 
-	if ($RED_adj > 0)
+	if ($player~RED_adj > 0)
 		# twarp to jmp sector, then into SD sect, then twarp home
 		setVar $PLAYER~TURNSRequired_temp ($PLAYER~TURNSRequired_TPW * 3)
 		if ($_Tow > 0)
