@@ -337,6 +337,7 @@ end
 write $logFileName $hour & ":" & $minute & ":" & $second & ":" & $msec & "  " &$line
 getlength $line $length
 setvar $numline 1
+setvar $line2 ""
 setvar $line " " & $line
 if (($isme = true) and ($ignoreme = true))
 	# ignore self chat if ignore me is set. #
