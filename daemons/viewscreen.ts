@@ -7,6 +7,7 @@ systemscript
 
 	setVar $BOT~script_title "Viewscreen"
 	gosub :BOT~banner
+	setvar $active_viewscreen false
 
 	setvar $version "2.0.1 12/09/05"
 :setup
@@ -187,10 +188,12 @@ pause
 	gosub :killchattriggers
 	getDeafClients $BOT~botIsDeaf
 	if ($BOT~botIsDeaf)
+		setvar $active_viewscreen false
 		setDeafClients false
 		echo #27&"[255D"&#27&"[255B"&#27&"[K"	
 		echo "*"&ansi_5&"Viewscreen shutting down..*"&ansi_15&CURRENTANSILINE
 	else
+		setvar $active_viewscreen true
 		setDeafClients true
 		setVar $comm_window_start_index 1
 		setvar $old_output ""
@@ -234,7 +237,7 @@ return
 
 :refresh
 	getDeafClients $BOT~botIsDeaf
-	if ($BOT~botIsDeaf)
+	if (($BOT~botIsDeaf) and ($active_viewscreen = true))
 		gosub :refreshChatMenu
 		setDelayTrigger delay :refresh 500
 	end
