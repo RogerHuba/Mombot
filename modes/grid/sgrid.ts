@@ -338,7 +338,7 @@ goSub :checkAvoidedSectors
 
 :update_box
 	setvar $window_content "*      Targets left to hit:"&$databaseCount&"**"&$PLAYER~surroundOutput
-	gosub :update_window
+	gosub :setwindow
 return
 
 #-=-=-=-=- Find All Target Sectors -=-=-=-=-=-
