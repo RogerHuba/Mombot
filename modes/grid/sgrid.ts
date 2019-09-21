@@ -556,7 +556,7 @@ return
 return
 
 :xenter
-	send "q y * t* * *" $password "*    *    *       za"&$figs&"*   z*   f z 1*  z c d *  "
+	send "q y * t* * *" $bot~password "*    *    *       za"&$figs&"*   z*   f z 1*  z c d *  "
 return
 
 
