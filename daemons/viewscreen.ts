@@ -145,6 +145,7 @@ pause
 
 
 :process_chat
+	gosub :killchattriggers
 	getOutText $chat_symbol
 	processOut $chat_symbol
 	:wait_for_chat
