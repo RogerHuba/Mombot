@@ -156,6 +156,7 @@ pause
 						goto :start
 					end
 			end
+		end
 
 goto :start
 
