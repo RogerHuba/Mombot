@@ -747,7 +747,11 @@ return
 			getWordPos $line $posR "R"
 			getWordPos $line $posP "P"
 			getWordPos $line $posPlus "+"
-
+			if ($hidestats = true)
+				setvar $comm_line_length 45
+			else
+				setvar $comm_line_length 70
+			end
 			if (($posF > 0) OR ($posR > 0) OR ($posP > 0) OR ($posPlus > 0))
 				setVar $line_length ($comm_line_length+23)
 			else
