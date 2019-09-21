@@ -135,12 +135,24 @@ if ($BOT~botIsDeaf = true)
 	setTextOutTrigger talk3 :process_down "D"
 	setTextOutTrigger talk4 :process_up "u"
 	setTextOutTrigger talk5 :process_up "U"
+	settextouttrigger ignore :process_ss "'"
+	settextouttrigger ignore2 :process_fed "`"
 
 	setTextOutTrigger talk7 :toggle_mute_me "+"
 	setTextOutTrigger talk6 :start_no_refresh ""
 end
 pause
 
+
+:process_ss
+	processOut "'"
+	settextouttrigger ignore :process_ss "'"
+	pause
+
+:process_fed
+	processOut "`"
+	settextouttrigger ignore2 :process_fed "`"
+	pause
 :process_up
 	gosub :killchattriggers
 	getDeafClients $BOT~botIsDeaf
@@ -797,6 +809,8 @@ pause
 	killtrigger enter
 	killtrigger delay
 	killtrigger lookForP
+	killtrigger ignore
+	killtrigger ignore2
 return
 
 #INCLUDES:
