@@ -45,7 +45,7 @@
 		end
 		setVar $c 1
 		while (($c <= $SECTOR~realTraderCount) AND ($player~isFound = FALSE))
-			echo "*"&$player~traders[$c]&"[]"&$player~traders[$c][1]&"[]"&$player~traders[$c][2]&"*"
+			#echo "*"&$player~traders[$c]&"[]"&$player~traders[$c][1]&"[]"&$player~traders[$c][2]&"*"
 			if (($player~fedspace = true) AND ($player~traders[$c][2] = TRUE))
 				setVar $targetString $targetString&"* "
 			elseif ($player~traders[$c][1] = $player~CORP)
@@ -181,8 +181,8 @@
 					cutText $thistarget $thistarget 1 $end_of_line_pos
 						
 				end
-				echo "*["&$thistarget&"]*"
-				echo "*["&$player~lasttarget&"]*"
+				#echo "*["&$thistarget&"]*"
+				#echo "*["&$player~lasttarget&"]*"
 				if (($thisTarget = $player~lasttarget) and ($firstLoop <> true))
 					setVar $isSameTarget TRUE
 				elseif ($player~lasttarget = "")
