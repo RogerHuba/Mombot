@@ -980,4 +980,5 @@ include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\grid\surround\grid"
 include "source\bot_includes\player\findjumpsector\player"
 include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\loadvars\bot"
 
