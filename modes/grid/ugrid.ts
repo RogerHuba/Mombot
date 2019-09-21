@@ -1031,11 +1031,11 @@ return
 	end
 
 	if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE))
-		setVar $RED_adj 0
+		setVar $player~RED_adj 0
 		setvar $player~target $map~stardock
 		gosub :player~findjumpsector
-		if ($RED_adj <> 0)
-			send ("'{"&$bot~bot_name&"} - Jump Sector Found - Using Sector "&$RED_adj&"**")
+		if ($player~RED_adj <> 0)
+			send ("'{"&$bot~bot_name&"} - Jump Sector Found - Using Sector "&$player~RED_adj&"**")
 		else
 			waitfor "Command [TL="
 			send "'{" & $bot~bot_name & "} - Cannot Find Jump Sector Adjacent Dock**"
@@ -1053,7 +1053,7 @@ return
 		if ($WeAreAdjDock)
 			send "^F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
 		else
-			send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
+			send "^F" & $START_SECTOR & "*" & $player~RED_adj & "*F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
 		end
 	end
 	setTextLineTrigger noJoy :noJoy "*** Error - No route within"
@@ -1075,7 +1075,7 @@ return
 		if (($player~alignment >= 1000) OR ($WeAreAdjDock))
 			getdistance $dist1 $START_SECTOR $map~stardock
 		else
-			getdistance $dist1 $START_SECTOR $RED_adj
+			getdistance $dist1 $START_SECTOR $player~RED_adj
 		end
 
 		if ($dist1 <= 0)
@@ -1130,8 +1130,8 @@ return
 		if (($player~alignment >= 1000) AND ($WeAreAdjDock = FALSE))
 			setVar $player~warpto $map~stardock
 			gosub :DoTwarp
-		elseif (($WeAreAdjDock = FALSE) AND ($RED_adj <> 0))
-			setVar $player~warpto $RED_adj
+		elseif (($WeAreAdjDock = FALSE) AND ($player~RED_adj <> 0))
+			setVar $player~warpto $player~RED_adj
 			gosub :DoTwarp
 		else
 			send " m " & $map~stardock & "*  *  P  S G Y G Q "
@@ -1275,11 +1275,11 @@ return
 
 :FindJumpSector
 	setVar $i 1
-	setVar $RED_adj 0
+	setVar $player~RED_adj 0
 	send "qq*"
 	while (SECTOR.WARPSIN[$map~stardock][$i] > 0)
-		setVar $RED_adj SECTOR.WARPSIN[$map~stardock][$i]
-		send "m " & $RED_adj & "* y"
+		setVar $player~RED_adj SECTOR.WARPSIN[$map~stardock][$i]
+		send "m " & $player~RED_adj & "* y"
 		setTextTrigger TwarpBlind 			:TwarpBlind "Do you want to make this jump blind? "
 		setTextTrigger TwarpLocked			:TwarpLocked "All Systems Ready, shall we engage? "
 		setTextLineTrigger TwarpVoided			:TwarpVoided "Danger Warning Overridden"
@@ -1310,7 +1310,7 @@ return
 	end
 
 	:NoAdjsFound
-		setVar $RED_adj 0
+		setVar $player~RED_adj 0
 		return
 
 	:SectorLocked
@@ -1326,7 +1326,7 @@ return
 	killAllTriggers
 	getWord CURRENTLINE $player~turnsRequired_TPW 5
 
-	if ($RED_adj > 0)
+	if ($player~RED_adj > 0)
 		# twarp to jmp sector, then into SD sect, then twarp home
 		setVar $player~turnsRequired_temp ($player~turnsRequired_TPW * 3)
 		if ($_Tow > 0)
