@@ -78,40 +78,7 @@ pause
 						end
 					end
 				elseif (($character = #27&"[A") OR ($character = #28))
-					if ($chatHistoryCount > 0)
-						if ($chatHistoryIndex <= 0)
-							setVar $currentPromptText $promptOutput
-						end
-						add $chatHistoryIndex 1
-						if ($chatHistoryIndex > $chatHistoryMax)
-							setVar $chatHistoryIndex $chatHistoryMax
-						elseif ($chatHistoryIndex > $chatHistoryCount)
-							setVar $chatHistoryIndex $chatHistoryCount
-						end
-						getLength $chatHistory[$chatHistoryIndex] $charCount
-						setVar $charPos $charCount
-						echo $prompt $chatHistory[$chatHistoryIndex]
-						setVar $promptOutput $chatHistory[$chatHistoryIndex]
-					end
 				elseif (($character = #27&"[B") OR ($character = #29))
-					if ($chatHistoryCount > 0)
-						if ($chatHistoryIndex <= 0)
-							setVar $currentPromptText $promptOutput
-						end
-						subtract $chatHistoryIndex 1
-						if ($chatHistoryIndex < 1)
-							setVar $chatHistoryIndex 0
-							getLength $currentPromptText $charCount
-							setVar $charPos $charCount
-							echo $prompt $currentPromptText
-							setVar $promptOutput $currentPromptText
-						else
-							getLength $chatHistory[$chatHistoryIndex] $charCount
-							setVar $charPos $charCount
-							echo $prompt $chatHistory[$chatHistoryIndex]
-							setVar $promptOutput $chatHistory[$chatHistoryIndex]
-						end
-					end
 				elseif (($character = #27&"[D") OR ($character = #31))
 					if ($charPos > 0)
 						subtract $charPos 1
@@ -189,30 +156,8 @@ goto :start
 			send "`"&$message&"*"
 		end
 	end
-	gosub :doAddHistory
 return
 
-:doAddHistory
-	setVar $charCount 0
-	setVar $currentPromptText ""
-	setVar $chatHistoryIndex 0
-	setvar $chatHistoryMax 100
-	setVar $charPos 0
-	setVar $promptOutput ""
-	setVar $chatHistoryString ""
-	if ($message <> "")
-		add $chatHistoryCount 1
-		if ($chatHistoryCount > 1)
-			setVar $i $chatHistoryMax
-			while ($i > 1)
-				setVar  $chatHistory[$i] $chatHistory[($i-1)]
-				setVar $chatHistoryString $chatHistory[$i]&"<<|HS|>>"&$chatHistoryString
-				subtract $i 1
-			end
-		end
-		saveVar $chatHistoryString
-	end
-return
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
