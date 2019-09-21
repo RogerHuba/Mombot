@@ -157,6 +157,15 @@ pause
 					end
 			end
 		end
+	:reecho
+		if (($charCount-$charPos) > 0)
+			echo $prompt&$promptOutput&#27&"["&($charCount-$charPos+1)&"D"
+		else
+			echo $prompt&$promptOutput
+		end
+		settexttrigger reEcho :reEcho
+		pause
+
 
 goto :start
 
