@@ -1032,6 +1032,7 @@ return
 
 	if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE))
 		setVar $RED_adj 0
+		setvar $player~target $map~stardock
 		gosub :player~findjumpsector
 		if ($RED_adj <> 0)
 			send ("'{"&$bot~bot_name&"} - Jump Sector Found - Using Sector "&$RED_adj&"**")
