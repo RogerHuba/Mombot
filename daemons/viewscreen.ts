@@ -135,8 +135,8 @@ if ($BOT~botIsDeaf = true)
 	setTextOutTrigger talk3 :process_down "D"
 	setTextOutTrigger talk4 :process_up "u"
 	setTextOutTrigger talk5 :process_up "U"
-	settextouttrigger ignore :process_ss "'"
-	settextouttrigger ignore2 :process_fed "`"
+	settextouttrigger ignore :process_chat "'"
+	settextouttrigger ignore2 :process_chat "`"
 
 	setTextOutTrigger talk7 :toggle_mute_me "+"
 	setTextOutTrigger talk6 :start_no_refresh ""
@@ -144,15 +144,26 @@ end
 pause
 
 
-:process_ss
-	processOut "'"
-	settextouttrigger ignore :process_ss "'"
+:process_chat
+	getOutText $chat_symbol
+	processOut $chat_symbol
+	:wait_for_chat
+	settextouttrigger chat :processchatstring ""
 	pause
+	:processchatstring
+		getOutText $character
+		processOut $character
+		getwordpos $character $pos #13
+		setvar $found_enter_key false
+		if ($pos > 0)
+			setvar $found_enter_key true
+		end
+		if ($found_enter_key = true)
+			goto :start
+		else
+			goto :wait_for_chat
+		end
 
-:process_fed
-	processOut "`"
-	settextouttrigger ignore2 :process_fed "`"
-	pause
 :process_up
 	gosub :killchattriggers
 	getDeafClients $BOT~botIsDeaf
