@@ -184,7 +184,7 @@ pause
 	if ($BOT~botIsDeaf)
 		setDeafClients false
 		echo #27&"[255D"&#27&"[255B"&#27&"[K"	
-		echo "*"&ansi_5&"Viewscreen shutting down..*"&ansi_15
+		echo "*"&ansi_5&"Viewscreen shutting down..*"&ansi_15&CURRENTANSILINE
 	else
 		setDeafClients true
 		setVar $comm_window_start_index 1
