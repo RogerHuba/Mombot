@@ -1,40 +1,23 @@
 	logging off
 	reqRecording
-	goto :load_script
+	gosub :BOT~loadVars
 	
 
 :load_script
-	loadVar $SWITCHBOARD~bot_name
 	loadVar $avoidedSectorsUgrid
 	loadVar $PLAYER~unlimitedGame
 	loadVar $bot_turn_limit
-	loadVar $bot~user_command_line
-	loadVar $bot~parm1
-	loadVar $bot~parm2
-	loadVar $bot~parm3
-	loadVar $bot~parm4
-	loadVar $bot~parm5
-	loadVar $bot~parm6
-	loadVar $bot~parm7
-	loadVar $bot~parm8
 	loadVar $MAP~stardock
 	loadVar $MAP~home_sector
 	loadVar $MAP~backdoor
-	loadvar $LIMPET_COST
-	loadvar $ARMID_COST
-	loadVar $LIMPET_REMOVAL_COST
-	loadvar $password
-	loadVar $alarm_list
+	loadvar $game~LIMPET_COST
+	loadvar $game~ARMID_COST
+	loadVar $game~LIMPET_REMOVAL_COST
+	loadvar $bot~password
+	loadVar $bot~alarm_list
 	setVar $PLAYER~surroundLimp 3
 	setVar $PLAYER~surroundMine 3
 	setVar $refurb TRUE
-	loadVar $FIG_FILE 		
-	loadVar $LIMP_FILE 		
-	loadVar $ARMID_FILE 
-	loadvar $command
-	setVar $GRIDDER_FILE 		"_MOM"&GAMENAME&"_GRIDDER_TARGETS.txt"
-	setVar $MASTER_EDGE_FILE 	"_MOM_" & GAMENAME & "_EdgeMasterList.sectors"
-	setVar $UNEXPLORED_FILE         "_MOM_UNEXPLORED_" & GAMENAME & ".sectors"
 	setVar $imlimped FALSE
 	setArray $move SECTORS
 	setVar $checkedForInfo ""
@@ -45,40 +28,34 @@
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	getSectorParameter SECTORS "MINESEC" $isArmided
 	getSectorParameter SECTORS "LIMPSEC" $isLimped
-	if ($bot~parm1 = "help")
-		delete "scripts\mombot\help\"&$command&".txt"
-	end
-	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
-	if ($doesHelpFileExist <> TRUE)
-		write "scripts\mombot\help\"&$command&".txt" "- sgrid {figs} {armids} {limpets} {min_unfigged} {safety} {planets} {warp} {norefurb}" 
-		write "scripts\mombot\help\"&$command&".txt" "  Surround gridder. Visits all targeted sectors and surrounds     " 
-		write "scripts\mombot\help\"&$command&".txt" "  them before twarping back.                                      " 
-		write "scripts\mombot\help\"&$command&".txt" "   - [figs]        = Number of fighters to drop                   " 
-		write "scripts\mombot\help\"&$command&".txt" "                         - Default: 1                             " 
-		write "scripts\mombot\help\"&$command&".txt" "   - [armids]      = Number of armid mines to drop                " 
-		write "scripts\mombot\help\"&$command&".txt" "                         - Default: 3                             " 
-		write "scripts\mombot\help\"&$command&".txt" "   - [limps]       = Number of limpet mines to drop               " 
-		write "scripts\mombot\help\"&$command&".txt" "                         - Default: 3                             " 
-		write "scripts\mombot\help\"&$command&".txt" "   - [min_unfigged]= Minimum unfigged sectors needed to surround  " 
-		write "scripts\mombot\help\"&$command&".txt" "                         - Default: 3                             " 
-		write "scripts\mombot\help\"&$command&".txt" "   - [safety]      = 'ultra', 'safe', and 'none'                  " 
-		write "scripts\mombot\help\"&$command&".txt" "              none = Will surround all figged sectors             " 
-		write "scripts\mombot\help\"&$command&".txt" "              safe = Will surround sectors that have corp limps   " 
-		write "scripts\mombot\help\"&$command&".txt" "             ultra = Like safe, but needs friendly armids too     " 
-		write "scripts\mombot\help\"&$command&".txt" "                         - Default: none                          " 
-		write "scripts\mombot\help\"&$command&".txt" "   - [planets]     = 'all', 'shielded'                            " 
-		write "scripts\mombot\help\"&$command&".txt" "               all = Avoid all planets in target sectors          " 
-		write "scripts\mombot\help\"&$command&".txt" "          shielded = Avoid only shielded planets in target sectors" 
-		write "scripts\mombot\help\"&$command&".txt" "                         - Default: all                           " 
-		write "scripts\mombot\help\"&$command&".txt" "   - [warp]        = 'twarp' or 'bwarp'                           " 
-		write "scripts\mombot\help\"&$command&".txt" "                         - Default: twarp                         " 
-		write "scripts\mombot\help\"&$command&".txt" "   - [norefurb]    = Turns off auto refurbing of mines at Stardock" 
-		write "scripts\mombot\help\"&$command&".txt" "   - [restart]     = Automatically restarts gridding when finished" 
-		send "'{" $SWITCHBOARD~bot_name "} - Writing help file for this command in Help directory.*"
-	end
-	if ($bot~parm1 = "help")
-		halt
-	end
+
+
+	setVar $BOT~help[1] $BOT~tab&"- sgrid {figs} {armids} {limpets} {min_unfigged} {safety} {planets} {warp} {norefurb}" 
+	setVar $BOT~help[1] $BOT~tab&"  Surround gridder. Visits all targeted sectors and surrounds     " 
+	setVar $BOT~help[1] $BOT~tab&"  them before twarping back.                                      " 
+	setVar $BOT~help[1] $BOT~tab&"   - [figs]        = Number of fighters to drop                   " 
+	setVar $BOT~help[1] $BOT~tab&"                         - Default: 1                             " 
+	setVar $BOT~help[1] $BOT~tab&"   - [armids]      = Number of armid mines to drop                " 
+	setVar $BOT~help[1] $BOT~tab&"                         - Default: 3                             " 
+	setVar $BOT~help[1] $BOT~tab&"   - [limps]       = Number of limpet mines to drop               " 
+	setVar $BOT~help[1] $BOT~tab&"                         - Default: 3                             " 
+	setVar $BOT~help[1] $BOT~tab&"   - [min_unfigged]= Minimum unfigged sectors needed to surround  " 
+	setVar $BOT~help[1] $BOT~tab&"                         - Default: 3                             " 
+	setVar $BOT~help[1] $BOT~tab&"   - [safety]      = 'ultra', 'safe', and 'none'                  " 
+	setVar $BOT~help[1] $BOT~tab&"              none = Will surround all figged sectors             " 
+	setVar $BOT~help[1] $BOT~tab&"              safe = Will surround sectors that have corp limps   " 
+	setVar $BOT~help[1] $BOT~tab&"             ultra = Like safe, but needs friendly armids too     " 
+	setVar $BOT~help[1] $BOT~tab&"                         - Default: none                          " 
+	setVar $BOT~help[1] $BOT~tab&"   - [planets]     = 'all', 'shielded'                            " 
+	setVar $BOT~help[1] $BOT~tab&"               all = Avoid all planets in target sectors          " 
+	setVar $BOT~help[1] $BOT~tab&"          shielded = Avoid only shielded planets in target sectors" 
+	setVar $BOT~help[1] $BOT~tab&"                         - Default: all                           " 
+	setVar $BOT~help[1] $BOT~tab&"   - [warp]        = 'twarp' or 'bwarp'                           " 
+	setVar $BOT~help[1] $BOT~tab&"                         - Default: twarp                         " 
+	setVar $BOT~help[1] $BOT~tab&"   - [norefurb]    = Turns off auto refurbing of mines at Stardock" 
+	setVar $BOT~help[1] $BOT~tab&"   - [restart]     = Automatically restarts gridding when finished" 
+	gosub :bot~helpfile
+
 	getWord $bot~user_command_line $bot~parm1 1 "EMPTY"
 	getWord $bot~user_command_line $bot~parm2 2 "EMPTY"
 	getWord $bot~user_command_line $bot~parm3 3 "EMPTY"
@@ -168,19 +145,23 @@
 	
 
 	if (($MAP~stardock = 0) OR ($MAP~stardock = ""))
-		send "'{" $SWITCHBOARD~bot_name "} - Stardock is not defined.  Please define stardock variable in the bot.*"
+		setvar $switchboard~message "Stardock is not defined.  Please define stardock variable in the bot.*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($isFigged = "")
-		send "'{" $SWITCHBOARD~bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
+		setvar $switchboard~message "It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($isArmided = "")
-		send "'{" $SWITCHBOARD~bot_name "} - It appears no armid data is available.  Run an armid grid checker that uses the sector parameter MINESEC. (Try armids command)*"
+		setvar $switchboard~message "It appears no armid data is available.  Run an armid grid checker that uses the sector parameter MINESEC. (Try armids command)*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($isLimped = "")
-		send "'{" $SWITCHBOARD~bot_name "} - It appears no limpet data is available.  Run a limpet grid checker that uses the sector parameter LIMPSEC. (Try limps command)*"
+		setvar $switchboard~message "It appears no limpet data is available.  Run a limpet grid checker that uses the sector parameter LIMPSEC. (Try limps command)*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($alarm_active)
@@ -188,11 +169,13 @@
 	end
 	gosub :PLAYER~quikstats
 	if ($PLAYER~current_prompt <> "Citadel")
-		send "'{" $SWITCHBOARD~bot_name "} - Must start gridder from citadel prompt.*"
+		setvar $switchboard~message "Must start gridder from citadel prompt.*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	if ($player~photons > 0)
-		send "'{" $SWITCHBOARD~bot_name "} - You should not use a ship with photons to grid.*"
+		setvar $switchboard~message "You should not use a ship with photons to grid.*"
+		gosub :switchboard~switchboard
 		halt
 	end
 
@@ -204,7 +187,8 @@ goSub :checkAvoidedSectors
 	send "q"
 	gosub :PLANET~getPlanetInfo
 	send "tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*mnt*q"
-	send "'{" $SWITCHBOARD~bot_name "} - Clearing messages for possible exit/enter later*"
+	setvar $switchboard~message "Clearing messages for possible exit/enter later*"
+	gosub :switchboard~switchboard
 	gosub :xenter
 	gosub :xenter
 	gosub :xenter
@@ -214,8 +198,9 @@ goSub :checkAvoidedSectors
 	setVar $armidBefore $PLAYER~ARMIDS
 	setVar $armidAfter $armidBefore
 
-	send "'{" $SWITCHBOARD~bot_name "} - M()M Surround Gridder Powering Up!*"
-	waitFor "(?="
+	setvar $switchboard~message "M()M Surround Gridder Powering Up!*"
+	gosub :switchboard~switchboard
+
 	window gridder 500 270 ("M()M Surround Gridder - " & GAMENAME) ONTOP
 	setWindowContents gridder "      Starting up!*"
 
@@ -279,7 +264,8 @@ goSub :checkAvoidedSectors
 				gosub :PLAYER~quikstats
 				send "p "&$MAP~home_sector&"* y "
 				gosub :PLAYER~quikstats
-				send "'{" $SWITCHBOARD~bot_name "} - Scrubbed at dock and pwarped home..*"
+				setvar $switchboard~message "Scrubbed at dock and pwarped home..*"
+				gosub :switchboard~switchboard
 
 				halt
 			end
@@ -431,14 +417,17 @@ return
 			add $targetSectorCount 1
 
 		end
-	send "'{" $SWITCHBOARD~bot_name "} - "&$databaseCount&" target sectors found.*"
+	setvar $switchboard~message ""&$databaseCount&" target sectors found.*"
+	gosub :switchboard~switchboard
 	if ($databaseCount <= 0)
-		send "'{" $SWITCHBOARD~bot_name "} - Visited every sector possible. Refresh fighters and update warp data to verify..*"
+		setvar $switchboard~message "Visited every sector possible. Refresh fighters and update warp data to verify..*"
+		gosub :switchboard~switchboard
 			gosub :attempt_refurb
 			gosub :PLAYER~quikstats
 			send "p "&$MAP~home_sector&"* y "
 			gosub :PLAYER~quikstats
-			send "'{" $SWITCHBOARD~bot_name "} - Scrubbed at dock and pwarped home..*"
+			setvar $switchboard~message "Scrubbed at dock and pwarped home..*"
+			gosub :switchboard~switchboard
 
 		halt
 	end
@@ -631,10 +620,12 @@ return
 		setVar $RED_adj 0
 		gosub :player~findjumpsector
 		if ($RED_adj <> 0)
-			send ("'{"&$SWITCHBOARD~bot_name&"} - Jump Sector Found - Using Sector "&$RED_adj&"**")
+			setvar $switchboard~message "Jump Sector Found - Using Sector "&$RED_adj&"*"
+			gosub :switchboard~switchboard
 		else
 			waitfor "Command [TL="
-			send "'{" & $SWITCHBOARD~bot_name & "} - Cannot Find Jump Sector Adjacent Dock**"
+			setvar $switchboard~message "Cannot Find Jump Sector Adjacent Dock*"
+			gosub :switchboard~switchboard
 			halt
 		end
 	end
@@ -658,7 +649,8 @@ return
 
 	:noJoy
 		killAllTriggers
-		send "'{" $SWITCHBOARD~bot_name "} - Cannot Find Path to StarDock!**"
+		setvar $switchboard~message "Cannot Find Path to StarDock!*"
+		gosub :switchboard~switchboard
 		halt
 	:cont
 		killAllTriggers
@@ -675,37 +667,47 @@ return
 		end
 
 		if ($dist1 <= 0)
-			send "'{" $SWITCHBOARD~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Course to Dock**"
+			setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
+			gosub :switchboard~switchboard
 			halt
 		end
 
 		getdistance $dist2 $MAP~stardock $START_SECTOR
 		if ($dist2 <= 0)
-			send "'{" $SWITCHBOARD~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Return Course From Dock**"
+			setvar $switchboard~message "Insufficient Warp Data Plotting Return Course From Dock*"
+			gosub :switchboard~switchboard
 			halt
 		end
 
 		setVar $ore_req (($dist1 + $dist2) * 3)
 
 		if ($player~ore_holds < $ore_req)
-			send "'{" $SWITCHBOARD~bot_name "} - Not Enough ORE In Holds To Make Round Trip**"
+			setvar $switchboard~message "Not Enough ORE In Holds To Make Round Trip*"
+			gosub :switchboard~switchboard
+			send "*"
 			halt
 		end
 
 		if ($PLAYER~TWARP_TYPE = "No")
-			send "'{" $SWITCHBOARD~bot_name "} - Must Have Twarp 1 or 2**"
+			setvar $switchboard~message "Must Have Twarp 1 or 2*"
+			gosub :switchboard~switchboard
+			send "*"
 			halt
 		end
 
 		if ($PLAYER~unlimitedGame = 0)
 			gosub :TurnsRequired
 			if ($PLAYER~TURNSRequired > $PLAYER~TURNS)
-				send "'{" $SWITCHBOARD~bot_name "} - Not Enough Turns. " & ANSI_12 & $PLAYER~TURNSRequired & ANSI_15 & ", Required**"
+				setvar $switchboard~message "Not Enough Turns. " & ANSI_12 & $PLAYER~TURNSRequired & ANSI_15 & ", Required*"
+				gosub :switchboard~switchboard
+				send "*"
 				halt
 			elseif ($PLAYER~TURNSRequired <= $PLAYER~TURNS)
 				setVar $tmp ($PLAYER~TURNS - $PLAYER~TURNSRequired)
 				if ($tmp <= $bot_turn_limit)
-					send "'{" $SWITCHBOARD~bot_name "} - Proceeding Will Leave Fewer Than " & $bot_turn_limit & " Turns!**"
+					setvar $switchboard~message "Proceeding Will Leave Fewer Than " & $bot_turn_limit & " Turns!*"
+					gosub :switchboard~switchboard
+					send "*"
 					halt
 				end
 			end
@@ -717,7 +719,8 @@ return
 	pause
 	:nosoupforme
 		killAllTriggers
-		send "'{" $SWITCHBOARD~bot_name "} " & $TagLineB & " - StarDock appears to have been Blown Up!**"
+		setvar $switchboard~message "StarDock appears to have been Blown Up!*"
+		gosub :switchboard~switchboard
 		halt
 	:itsalive
 		killAllTriggers
@@ -735,7 +738,8 @@ return
 		if ($msg = "")
 			waitfor "You leave the Galactic Bank."
 		else
-			send "'{" $SWITCHBOARD~bot_name "} - Unknown Problem Detected. Check TA!**"
+			setvar $switchboard~message "Unknown Problem Detected. Check TA!*"
+			gosub :switchboard~switchboard
 			halt
 		end
 		gosub :PLAYER~quikstats
@@ -746,7 +750,8 @@ return
 		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet~planet & "* p  s  s * * c *"
 		gosub :PLAYER~quikstats
 		if ($PLAYER~CURRENT_SECTOR = $MAP~stardock)
-			send "'{" $SWITCHBOARD~bot_name "} - Twarp Error, Should be Hiding on Dock!**"
+			setvar $switchboard~message "Twarp Error, Should be Hiding on Dock!*"
+			gosub :switchboard~switchboard
 			halt
 		end
 		send "q tnt1* c "
@@ -832,7 +837,8 @@ return
 			end
 		:twarpDone
 			if ($msg <> "")
-				send "'{" $SWITCHBOARD~bot_name "} Twarp Error - " & $msg & "**"
+				setvar $switchboard~message "Twarp Error - " & $msg & "*"
+				gosub :switchboard~switchboard
 			end
 	end
 	return
@@ -972,5 +978,6 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\grid\surround\grid"
-include "source\bot_includes\switchboard"
 include "source\bot_includes\player\findjumpsector\player"
+include "source\module_includes\bot\helpfile\bot"
+
