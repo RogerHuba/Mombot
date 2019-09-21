@@ -265,7 +265,8 @@ goSub :checkAvoidedSectors
 
 	waitFor "(?="
 	window gridder 300 170 ("M()M Unlimited Gridder - " & GAMENAME) ONTOP
-	setWindowContents gridder "      Starting up!*"
+	setvar $window_content "      Starting up!*"
+	gosub :setwindow
 
 	setVar $homesec $player~current_sector
 
@@ -333,7 +334,8 @@ goSub :checkAvoidedSectors
 
 	if ((($player~limpets < $grid_limpets) OR ($player~armids < $grid_armids)) OR (($imlimped = TRUE) AND ($autoClean = TRUE)))
 		if ($refurb)
-			setWindowContents gridder "    Auto Refurbing.. *"
+			setvar $window_content "    Auto Refurbing.. *"
+			gosub :setwindow
 			gosub :attempt_refurb
 		else
 			echo ANSI_12 "*You must stock up on mines before continuing." ANSI_7
@@ -348,7 +350,8 @@ goSub :checkAvoidedSectors
 :continueOn
 	getRnd $random 1 $databaseCount
 	getWord $database $player~warpto $random
-	setWindowContents gridder "*      Targets left to hit:"&$databaseCount&"*"
+	setvar $window_content "*      Targets left to hit:"&$databaseCount&"*"
+	gosub :setwindow
 	
 	if ($player~warpto = 0)
 		setvar $switchboard~message "Database Cleared - Recalculating and Restarting...*"
@@ -1381,7 +1384,11 @@ return
 		waitfor "<Hardware Emporium>"
 	end
 	return
-
+:setwindow
+	setWindowContents gridder $window_content
+	replacetext $window_content "*" "[][]"
+	savevar $window_content
+return
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"

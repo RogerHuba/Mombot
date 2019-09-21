@@ -202,8 +202,8 @@ goSub :checkAvoidedSectors
 	gosub :switchboard~switchboard
 
 	window gridder 500 270 ("M()M Surround Gridder - " & GAMENAME) ONTOP
-	setWindowContents gridder "      Starting up!*"
-
+	setvar $window_content "      Starting up!*"
+	gosub :setwindow
 	setVar $homesec $PLAYER~CURRENT_SECTOR
 
 
@@ -279,7 +279,8 @@ goSub :checkAvoidedSectors
 	if (($SHIP~SHIP_MINES_MAX > $PLAYER~surroundLimp) AND ($SHIP~SHIP_MINES_MAX > $PLAYER~surroundMine))
 		if ((($PLAYER~LIMPETS < $PLAYER~surroundLimp) OR ($PLAYER~ARMIDS < $PLAYER~surroundMine)))
 			if ($refurb)
-				setWindowContents gridder "    Auto Refurbing.. *"
+				setvar $window_content "    Auto Refurbing.. *"
+				gosub :setwindow
 				gosub :attempt_refurb
 			else
 				echo ANSI_12 "*You must stock up on mines before continuing." ANSI_7
@@ -336,7 +337,8 @@ goSub :checkAvoidedSectors
 	goto :select_boomsec
 
 :update_box
-	setWindowContents gridder "*      Targets left to hit:"&$databaseCount&"**"&$PLAYER~surroundOutput
+	setvar $window_content "*      Targets left to hit:"&$databaseCount&"**"&$PLAYER~surroundOutput
+	gosub :update_window
 return
 
 #-=-=-=-=- Find All Target Sectors -=-=-=-=-=-
@@ -973,6 +975,11 @@ return
 	end
 	return
 
+:setwindow
+	setWindowContents gridder $window_content
+	replacetext $window_content "*" "[][]"
+	savevar $window_content
+return
 #INCLUDES:
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
