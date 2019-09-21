@@ -11,8 +11,8 @@ gosub :BOT~banner
 :start
 killtrigger fed
 killtrigger ss
-killTrigger             text
-killtrigger             reecho
+killTrigger text
+killtrigger reecho
 setvar $type ""
 setTextOutTrigger fed :fed "`" 
 setTextOutTrigger ss :ss "'" 
@@ -161,6 +161,9 @@ pause
 					end
 			end
 		end
+	setTextOutTrigger text :getCharacter
+	pause
+
 	:reecho
 		if (($charCount-$charPos) > 0)
 			echo $prompt&$promptOutput&#27&"["&($charCount-$charPos+1)&"D"
