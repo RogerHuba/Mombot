@@ -1,4 +1,4 @@
-for /r %%n in (*moveship.ts) do call :checkit "%%n" 
+for /r %%n in (*sgrid.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
