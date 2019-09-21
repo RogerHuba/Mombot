@@ -98,7 +98,7 @@ while ($i <= $figsize)
 end
 :start
 getDeafClients $BOT~botIsDeaf
-if ($BOT~botIsDeaf = true)
+if (($BOT~botIsDeaf = true) and ($active_viewscreen = true))
 	gosub :refreshChatMenu
 end
 :start_no_refresh
