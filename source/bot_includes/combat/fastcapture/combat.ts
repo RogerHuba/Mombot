@@ -89,6 +89,7 @@
 		end
 		setVar $c 1
 		while (($c <= $SECTOR~realTraderCount) AND ($player~isFound = FALSE))
+			echo "*"&$player~traders[$c]&"[]"&$player~traders[$c][1]&"[]"&$player~traders[$c][2]"*"
 			if (($player~fedspace = true) AND $player~traders[$c][2] = TRUE)
 				setVar $targetString $targetString&"* "
 			elseif ($player~traders[$c][1] = $player~CORP)
