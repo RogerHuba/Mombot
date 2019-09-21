@@ -183,6 +183,7 @@ pause
 	getDeafClients $BOT~botIsDeaf
 	if ($BOT~botIsDeaf)
 		setDeafClients false
+		echo #27&"[255D"&#27&"[255B"&#27&"[K"	
 		echo "*"&ansi_5&"Viewscreen shutting down..*"&ansi_15
 	else
 		setDeafClients true
