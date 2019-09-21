@@ -163,6 +163,7 @@ pause
 		else
 			echo $prompt&$promptOutput
 		end
+		killtrigger reecho
 		settexttrigger reEcho :reEcho
 		pause
 
