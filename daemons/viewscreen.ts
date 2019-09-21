@@ -750,7 +750,7 @@ return
 			replaceText $stats[$j] ":" ANSI_14&":"&ANSI_11
 			replaceText $stats[$j] "|" ANSI_5&":"&ANSI_11
 			if ($ignoreme = true)
-				setVar $output $output&$line
+				setVar $output $output&$line&"*"
 			else
 				setVar $output $output&$line&" "&ANSI_5&$stats[$j]
 			end
