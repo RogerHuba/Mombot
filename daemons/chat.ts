@@ -11,6 +11,8 @@ gosub :BOT~banner
 :start
 killtrigger fed
 killtrigger ss
+killTrigger             text
+killtrigger             reecho
 setvar $type ""
 setTextOutTrigger fed :fed "`" 
 setTextOutTrigger ss :ss "'" 
@@ -32,6 +34,8 @@ pause
 		setVar $promptOutput ""
 		killTrigger             text
 		killtrigger             reecho
+		killtrigger fed
+		killtrigger ss
 		setTextOutTrigger       text                    :getCharacter
 		settexttrigger          reecho                  :reEcho
 		pause
