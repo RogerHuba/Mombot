@@ -31,6 +31,36 @@
 			send "q q * "
 		end
 		setVar $targetString "a "
+	if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($player~onlyAliens <> TRUE) and ($player~empty_ships_only <> true))
+		if ($player~fedspace <> true)
+			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
+			if ($beaconPos > 0)
+				setVar $targetString $targetString&"*"
+			end
+		end
+		setVar $i 0
+		while ($i < ($SECTOR~emptyShipCount + $SECTOR~fakeTraderCount))
+			setVar $targetString $targetString&"* "
+			add $i 1
+		end
+		setVar $c 1
+		while (($c <= $SECTOR~realTraderCount) AND ($player~isFound = FALSE))
+			echo "*"&$player~traders[$c]&"[]"&$player~traders[$c][1]&"[]"&$player~traders[$c][2]&"*"
+			if (($player~fedspace = true) AND ($player~traders[$c][2] = TRUE))
+				setVar $targetString $targetString&"* "
+			elseif ($player~traders[$c][1] = $player~CORP)
+				setVar $targetString $targetString&"* "
+			elseif (($player~targetingCorp = TRUE) AND ($player~traders[$c][1] <> $target))
+				setVar $targetString $targetString&"* "
+			elseif (($player~targetingPerson = TRUE) AND ($player~traders[$c] <> $target))
+				setVar $targetString $targetString&"* "
+			else
+				setVar $player~isFound TRUE
+				setVar $targetString $targetString&"zy z"
+			end
+			add $c 1
+		end
+	end
 
 	if ((($SECTOR~fakeTraderCount > 0) AND ($player~cappingAliens = TRUE)) AND ($player~isFound <> TRUE) and ($player~empty_ships_only <> true))
 		if ($player~fedspace <> true)
@@ -68,36 +98,6 @@
 		while (($c <= $SECTOR~emptyShipCount) AND (($player~isFound = FALSE) or ($player~fedspace <> true)))
 			if (($player~emptyships[$c] = $player~CORP) OR ($player~emptyships[$c] = $player~TRADER_NAME))
 				setVar $targetString $targetString&"* " 
-			else
-				setVar $player~isFound TRUE
-				setVar $targetString $targetString&"zy z"
-			end
-			add $c 1
-		end
-	end
-	if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($player~onlyAliens <> TRUE) and ($player~empty_ships_only <> true))
-		if ($player~fedspace <> true)
-			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
-			if ($beaconPos > 0)
-				setVar $targetString $targetString&"*"
-			end
-		end
-		setVar $i 0
-		while ($i < ($SECTOR~emptyShipCount + $SECTOR~fakeTraderCount))
-			setVar $targetString $targetString&"* "
-			add $i 1
-		end
-		setVar $c 1
-		while (($c <= $SECTOR~realTraderCount) AND ($player~isFound = FALSE))
-			echo "*"&$player~traders[$c]&"[]"&$player~traders[$c][1]&"[]"&$player~traders[$c][2]&"*"
-			if (($player~fedspace = true) AND ($player~traders[$c][2] = TRUE))
-				setVar $targetString $targetString&"* "
-			elseif ($player~traders[$c][1] = $player~CORP)
-				setVar $targetString $targetString&"* "
-			elseif (($player~targetingCorp = TRUE) AND ($player~traders[$c][1] <> $target))
-				setVar $targetString $targetString&"* "
-			elseif (($player~targetingPerson = TRUE) AND ($player~traders[$c] <> $target))
-				setVar $targetString $targetString&"* "
 			else
 				setVar $player~isFound TRUE
 				setVar $targetString $targetString&"zy z"
