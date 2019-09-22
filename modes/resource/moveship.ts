@@ -84,6 +84,7 @@
 		setVar $SWITCHBOARD~self_command TRUE
 	end
 
+	setvar $filterships ""
 	getWordPos $bot~user_command_line $pos #34
 	if ($pos > 0)
 		getText $bot~user_command_line $filterships #34 #34
