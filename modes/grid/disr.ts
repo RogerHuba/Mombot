@@ -21,11 +21,8 @@
 	#		NOTE		:	I Modified :quikstat to include the 'Port' Prompt. Also added
 	#                       the Variable $PORT_PROMPT_TYPE to indicate which product-prompt
 	#						user's on --though not used in this script.
-	LoadVar 	$MODE
-	LoadVar 	$switchboard~bot_name
-	LoadVar 	$bot~parm1
-	LoadVar 	$bot~parm2
-	LoadVar		$bot~parm3
+	gosub :BOT~loadVars
+
 	setVar		$TagLine				("{" & $switchboard~bot_name & "} DisR")
 	setVar		$ErrMsg					("'{" & $switchboard~bot_name & "} - DisR Syntax Error")
 	setVar 		$planet~planet					0
@@ -36,31 +33,32 @@
    	setArray	$ADJ2HiT				6 1
 	#			ADJ2HiT Break Down - 1st Dimension: ADdj Sector Numbers; 2nd Dimension: Armids Scanned/Remaining
 
-	if ($bot~parm1 = "help")
-		send "'*" & $TagLine & " {Sector} {NScan} {Burst}*"
-		send "   *"
-		send "      {Sector}  Disrupt Mines in Adj Sector*"
-		send "      {Burst}   Sends only 1 Disruptor into each Sector*"
-		send "      {NScan}   Do Not Perform Holo Scan --otherwise it*"
-		send "                Auto Detect enemy Armids*"
-		send "   *"
-		send "         Start Prompts:*"
-		send "                         Command Prompt*"
-		send "                         Planet/Citadel Prompt(S)*"
-		send "                         Computer Prompt*"
-		send "                         StarDock Prompt*"
-		send "                         Port Prompt*"
-		send "   *"
-		send "      Default Action: Disrupt All Adjs, With Holo Scan.**"
-		halt
-	end
+	setVar $BOT~help[1]  $BOT~tab&" disr {sector} {nscan} {burst}"
+	setVar $BOT~help[2]  $BOT~tab&"   "
+	setVar $BOT~help[3]  $BOT~tab&"      {sector}  Disrupt Mines in Adj Sector"
+	setVar $BOT~help[4]  $BOT~tab&"      {burst}   Sends only 1 Disruptor into each Sector"
+	setVar $BOT~help[5]  $BOT~tab&"      {nscan}   Do Not Perform Holo Scan --otherwise it"
+	setVar $BOT~help[6]  $BOT~tab&"                Auto Detect enemy Armids"
+	setVar $BOT~help[7]  $BOT~tab&"   "
+	setVar $BOT~help[8]  $BOT~tab&"         Start Prompts:"
+	setVar $BOT~help[9]  $BOT~tab&"                         Command Prompt"
+	setVar $BOT~help[10] $BOT~tab&"                         Planet/Citadel Prompt(s)"
+	setVar $BOT~help[11] $BOT~tab&"                         Computer Prompt"
+	setVar $BOT~help[12] $BOT~tab&"                         StarDock Prompt"
+	setVar $BOT~help[13] $BOT~tab&"                         Port Prompt"
+	setVar $BOT~help[14] $BOT~tab&"   "
+	setVar $BOT~help[15] $BOT~tab&"      Default Action: Disrupt All Adjs, With Holo Scan."
+	setVar $BOT~help[16] $BOT~tab&"   "
+	setVar $BOT~help[17] $BOT~tab&"                        Author - Lonestar"
+	gosub :bot~helpfile
 
-	isNumber $tst $MODE
+	isNumber $tst $bot~MODE
 	if ($tst = 0)
-		LowerCase $MODE
-		if ($MODE <> "general")
-			send ("'" & $TagLine & " - M()MBot Must Be In General Mode!*")
-		   halt
+		LowerCase $bot~MODE
+		if ($bot~MODE <> "general")
+			setvar $switchboard~message "M()MBot Must Be In General Mode!*"
+			gosub :switchboard~switchboard
+			halt
     	end
     end
 
@@ -80,7 +78,8 @@
 	end
 
 	if ((($bot~parm1 < 11) AND ($bot~parm1 <> 0)) OR ($bot~parm1 = STARDOCK))
-		send ($ErrMsg & " - Invalid Target!*")
+		setvar $switchboard~message $ErrMsg & " - Invalid Target!*"
+		gosub :switchboard~switchboard
 		halt
 	elseif (($bot~parm1 = 0) AND ($ScanIT = 0))
 		setVar $idx	1
@@ -119,20 +118,23 @@
 	end
 
 	:Prompt_Checking
-	gosub	:player~quikstats
+	gosub :player~quikstats
 	if (($ScanIT) AND ($player~scan_type <> "Holo"))
-	   send ("'" & $TagLine & " - Ship Does Not Have A Long Range Scanner!*")
-	   halt
+		setvar $switchboard~message "Ship Does Not Have A Long Range Scanner!*"
+		gosub :switchboard~switchboard
+		halt
 	end
 	if ($player~mine_disruptors = 0)
-		send ("'" & $TagLine & " - No Disruptors On Board!*")
+		setvar $switchboard~message "No Disruptors On Board!*"
+		gosub :switchboard~switchboard
 		halt
 	end
 
 	if ($player~current_prompt = "Planet")
 		gosub :planet~getplanetinfo
 		if ($planet~planet = 0)
-			send ("'" & $TagLine & " - Unable To Obtain Planet Number!*")
+			setvar $switchboard~message "Unable To Obtain Planet Number!*"
+			gosub :switchboard~switchboard
 			halt
 		end
 		send "  Q  "
@@ -141,7 +143,8 @@
 		gosub :planet~getplanetinfo
 		send "  Q  "
 		if ($planet~planet = 0)
-			send ("'" & $TagLine & " - Unable To Obtain Planet Number!*")
+			setvar $switchboard~message "Unable To Obtain Planet Number!*"
+			gosub :switchboard~switchboard
 			halt
 		end
 	elseif ($player~current_prompt = "Command")
@@ -154,7 +157,8 @@
 	elseif ($player~current_prompt = "Port")
 		send " 0*  0*  0*  0*  "
 	else
-		send ("'" & $TagLine & " - At Unkown Prompt!*")
+		setvar $switchboard~message "At Unkown Prompt!*"
+		gosub :switchboard~switchboard
 		halt
 	end
 
@@ -213,12 +217,13 @@
 	end
 
 	if ($str = "")
-		send ("'" & $TagLine & " - Disrupted " & $Total_Mines_Poofed & " Mines!*")
+		setvar $switchboard~message "Disrupted " & $Total_Mines_Poofed & " Mines!*"
 	else
-		send ("'*" & $TagLine & " - Status Report:*")
-		send (" *" & $str)
-		send ("        Disrupted: " & $Total_Mines_Poofed & "**")
+		setvar $switchboard~message "Status Report:*")
+		setvar $switchboard~message $switchboard~message&" *" & $str
+		setvar $switchboard~message $switchboard~message&"        Disrupted: " & $Total_Mines_Poofed & "*"
 	end
+	gosub :switchboard~switchboard
 
 	halt
 
@@ -247,245 +252,26 @@
 		send ("  S  H")
 	elseif ($Start_Prompt = "Command")
 		send ("  S  H")
-	elseif ($Start_Prompt = "Port")
-		send (" S   H")
 	else
-		gosub :quikstat
-		send ("'" & $TagLine & " - Unknown Problem Occured, at '"&$player~current_prompt&"' Prompt!*")
+		gosub :player~quikstats
+		setvar $switchboard~message "Unknown Problem Occured, at '"&$player~current_prompt&"' Prompt!*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	pause
 	:Whoa_WuzUp
 		killAllTriggers
-		send ("'" & $TagLine & " - Unknown Problem Occured, Attempting to reach Command Prompt!*  P D 0* 0* 0* * *** * C  Q  Q  Q  Q  Q  Z  2  2  C  Q  *  Z  *  ***  *  *  ^Q")
+		setvar $switchboard~message "Unknown Problem Occured, Attempting to reach Command Prompt!*"
+		gosub :switchboard~switchboard
+		send "  P D 0* 0* 0* * *** * C  Q  Q  Q  Q  Q  Z  2  2  C  Q  *  Z  *  ***  *  *  ^Q"
 		waitfor ": ENDINTERROG"
 		gosub :player~quikstats
-		send ("'" & $TagLine & " - Unknown Problem Occured, at '"&$player~current_prompt&"' Prompt!*")
+		setvar $switchboard~message "Unknown Problem Occured, at '"&$player~current_prompt&"' Prompt!*"
+		gosub :switchboard~switchboard
 		halt
 	:Scan_Complete
 		killAllTriggers
 		return
-
-:Planet_Info
-	setTextLineTrigger	Planet		:Planet "Planet #"
-	send "D"
-	pause
-	:Planet
-		killTrigger Planet
-		getWord CURRENTLINE $planet~planet 2
-		stripText $planet~planet "#"
-		isNumber $tst $planet~planet
-		if ($tst = 0)
-			setVar $planet~planet 0
-		end
-	return
-
-:player~quikstats
-	setVar $player~current_prompt 		"Undefined"
-	killtrigger 		noprompt
-	killtrigger 		prompt1
-	killtrigger 		prompt2
-	killtrigger 		prompt3
-	killtrigger 		prompt4
-	killtrigger			prompt5
-	killtrigger 		statlinetrig
-	killtrigger 		getLine2
-	setTextTrigger 		prompt1 		:allPrompts 		"(?="
-	setTextLineTrigger 	prompt2 		:secondaryPrompts 	"(?)"
-	setTextLineTrigger 	statlinetrig 	:statStart 			#179
-	setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
-	setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
-	setTextTrigger		prompt5			:portPrompt			"How many holds of"
-	send "^Q/"
-	pause
-
-	:allPrompts
-		getWord currentansiline $checkPrompt 1
-		getWord currentline $tempPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $player~current_prompt $tempPrompt
-		end
-		setTextLineTrigger prompt1 :allPrompts "(?="
-		pause
-	:secondaryPrompts
-		getWord currentansiline $checkPrompt 1
-		getWord currentline $tempPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $player~current_prompt $tempPrompt
-		end
-		setTextLineTrigger prompt2 :secondaryPrompts "(?)"
-		pause
-	:terraPrompts
-		killtrigger prompt3
-		killtrigger prompt4
-		getWord currentansiline $checkPrompt 1
-		getWordPos $checkPrompt $pos "[35m"
-		if ($pos > 0)
-			setVar $player~current_prompt "Terra"
-		end
-		setTextTrigger		prompt3         :terraPrompts		"Do you wish to (L)eave or (T)ake Colonists?"
-		setTextTrigger		prompt4         :terraPrompts		"How many groups of Colonists do you want to take ("
-		pause
-	:portPrompt
-		getWord CURRENTANSILINE $checkPrompt 1
-		setVar $PORT_PROMPT_TYPE CURRENTLINE
-		getWord $PORT_PROMPT_TYPE $tempPrompt 1
-		getWordPos $checkPrompt $pos "[35mHow"
-		if ($pos > 0)
-			setVar $player~current_prompt "Port"
-		end
-		setTextTrigger		prompt5			:portPrompt			"How many holds of"
-		pause
-
-	:statStart
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger prompt5
-		killtrigger noprompt
-		setVar $stats ""
-		setVar $wordy ""
-
-	:statsline
-		killtrigger statlinetrig
-		killtrigger getLine2
-		setVar $line2 CURRENTLINE
-		replacetext $line2 #179 " "
-		striptext $line2 ","
-		setVar $stats $stats & $line2
-		getWordPos $line2 $pos "Ship"
-		if ($pos > 0)
-			goto :gotStats
-		else
-			setTextLineTrigger getLine2 :statsline
-			pause
-		end
-
-	:gotStats
-		setVar $stats $stats & " @@@"
-
-		setVar $current_word 0
-		while ($wordy <> "@@@")
-			if ($wordy = "Sect")
-				getWord $stats $player~current_sector   	($current_word + 1)
-			elseif ($wordy = "Turns")
-				getWord $stats $player~turns  				($current_word + 1)
-			elseif ($wordy = "Creds")
-				getWord $stats $player~credits  			($current_word + 1)
-			elseif ($wordy = "Figs")
-				getWord $stats $player~fighters   			($current_word + 1)
-			elseif ($wordy = "Shlds")
-				getWord $stats $player~shields  			($current_word + 1)
-			elseif ($wordy = "Hlds")
-				getWord $stats $player~total_holds   		($current_word + 1)
-			elseif ($wordy = "Ore")
-				getWord $stats $player~ore_holds    		($current_word + 1)
-			elseif ($wordy = "Org")
-				getWord $stats $player~organic_holds    	($current_word + 1)
-			elseif ($wordy = "Equ")
-				getWord $stats $player~equipment_holds    	($current_word + 1)
-			elseif ($wordy = "Col")
-				getWord $stats $player~colonist_holds    	($current_word + 1)
-			elseif ($wordy = "Phot")
-				getWord $stats $player~photons   			($current_word + 1)
-			elseif ($wordy = "Armd")
-				getWord $stats $player~armids   			($current_word + 1)
-			elseif ($wordy = "Lmpt")
-				getWord $stats $player~limpets   			($current_word + 1)
-			elseif ($wordy = "GTorp")
-				getWord $stats $player~genesis  			($current_word + 1)
-			elseif ($wordy = "TWarp")
-				getWord $stats $player~twarp_type  		($current_word + 1)
-			elseif ($wordy = "Clks")
-				getWord $stats $player~cloaks   			($current_word + 1)
-			elseif ($wordy = "Beacns")
-				getWord $stats $player~beacons 			($current_word + 1)
-			elseif ($wordy = "AtmDt")
-				getWord $stats $player~atomic  			($current_word + 1)
-			elseif ($wordy = "Corbo")
-				getWord $stats $player~corbo   			($current_word + 1)
-			elseif ($wordy = "EPrb")
-				getWord $stats $player~eprobes   			($current_word + 1)
-			elseif ($wordy = "MDis")
-				getWord $stats $player~mine_disruptors   	($current_word + 1)
-			elseif ($wordy = "PsPrb")
-				getWord $stats $player~psychic_probe  		($current_word + 1)
-			elseif ($wordy = "PlScn")
-				getWord $stats $player~planet_scanner  	($current_word + 1)
-			elseif ($wordy = "LRS")
-				getWord $stats $player~scan_type    		($current_word + 1)
-			elseif ($wordy = "Aln")
-				getWord $stats $player~alignment    		($current_word + 1)
-			elseif ($wordy = "Exp")
-				getWord $stats $player~experience    		($current_word + 1)
-			elseif ($wordy = "Corp")
-				getWord $stats $player~corp   				($current_word + 1)
-			elseif ($wordy = "Ship")
-				getWord $stats $player~ship_number   		($current_word + 1)
-			end
-			add $current_word 1
-			getWord $stats $wordy $current_word
-		end
-	:doneQuikstats
-		killtrigger prompt1
-		killtrigger prompt2
-		killtrigger prompt3
-		killtrigger prompt4
-		killtrigger prompt5
-		killtrigger statlinetrig
-		killtrigger getLine2
-
-		stripText $player~current_prompt "<"
-		stripText $player~current_prompt ">"
-	return
-
-:Global_Grover
-	setVar $player~current_prompt 		"Undefined"
-	setVar $player~psychic_probe 		"NO"
-	setVar $player~planet_scanner 		"NO"
-	setVar $player~scan_type 			"NONE"
-	setVar $player~current_sector 		0
-	setVar $player~turns 				0
-	setVar $player~credits 			0
-	setVar $player~fighters 			0
-	setVar $player~shields 			0
-	setVar $player~total_holds 		0
-	setVar $player~ore_holds 			0
-	setVar $player~organic_holds 		0
-	setVar $player~equipment_holds 	0
-	setVar $player~colonist_holds		0
-	setVar $player~photons 			0
-	setVar $player~armids 				0
-	setVar $player~limpets 			0
-	setVar $player~genesis 			0
-	setVar $player~twarp_type 			0
-	setVar $player~cloaks 				0
-	setVar $player~beacons 			0
-	setVar $player~atomic 				0
-	setVar $player~corbo 				0
-	setVar $player~eprobes 			0
-	setVar $player~mine_disruptors 	0
-	setVar $player~alignment 			0
-	setVar $player~experience			0
-	setVar $player~corp 				0
-	setVar $player~ship_number			0
-	setVar $player~turns_PER_WARP 		0
-	setVar $COMMAND_PROMPT 		"Command"
-	setVar $COMPUTER_PROMPT 	"Computer"
-	setVar $planet~CITADEL_PROMPT		"Citadel"
-	setVar $planet~planet_PROMPT		"Planet"
-	setVar $player~corpORATE_PROMPT	"Corporate"
-	setVar $STARDOCK_PROMPT 	"Stardock"
-	setVar $HARDWARE_PROMPT 	"Hardware"
-	setVar $SHIPYARD_PROMPT 	"Shipyard"
-	setVar $TERRA_PROMPT 		"Terra"
-	setVar $PORT_PROMPT			"Port"
-	setVar $PORT_PROMPT_TYPE	""
-	return
-
 
 :STAR_BURST
 	setVar $DisRuptors $player~mine_disruptors
@@ -548,5 +334,8 @@
 	end
 	send " Q "
 	return
+
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
