@@ -166,6 +166,7 @@ logging off
 		killtrigger enter
 		killtrigger doneships
 		send "*|"
+		pause
 		if ($startingLocation <> "Command")
 			send "l "&$planet~planet&"* c    "
 		else
