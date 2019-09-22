@@ -23,8 +23,7 @@
 	#						user's on --though not used in this script.
 	gosub :BOT~loadVars
 
-	setVar		$TagLine				("{" & $switchboard~bot_name & "} DisR")
-	setVar		$ErrMsg					("'{" & $switchboard~bot_name & "} - DisR Syntax Error")
+	setVar		$ErrMsg					"DisR Syntax Error"
 	setVar 		$planet~planet					0
 	setVar		$ScanIT					TRUE
 	setVar		$Bursting				FALSE
