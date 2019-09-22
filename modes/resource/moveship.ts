@@ -5,14 +5,16 @@
 	setVar $BOT~help[2]  $BOT~tab&"                "
 	setVar $BOT~help[3]  $BOT~tab&"  moveship [sector] {back} {sell} {dep} {"&#34&"ship filter"&#34&"}"
 	setVar $BOT~help[4]  $BOT~tab&"                  "
-	setVar $BOT~help[5]  $BOT~tab&"        [sector] - target sector"
-	setVar $BOT~help[6]  $BOT~tab&"          [back] - will grab ships from target sector and bring"
-	setVar $BOT~help[7]  $BOT~tab&"                   them back to current sector   "
-	setVar $BOT~help[8]  $BOT~tab&"          [sell] - if moving to stardock, attempt to sell ships"
-	setVar $BOT~help[9]  $BOT~tab&" ["&#34&"ship filter"&#34&"] - move ships only matching this filter"
-	setVar $BOT~help[10] $BOT~tab&"                          "
-	setVar $BOT~help[11] $BOT~tab&"              Can use either planet or SXX port in        "
-	setVar $BOT~help[12] $BOT~tab&"              starting sector for fuel."
+	setVar $BOT~help[5]  $BOT~tab&"   Options:            "
+	setVar $BOT~help[6]  $BOT~tab&"        [sector] - target sector"
+	setVar $BOT~help[7]  $BOT~tab&"          [back] - will grab ships from target sector and bring"
+	setVar $BOT~help[8]  $BOT~tab&"                   them back to current sector   "
+	setVar $BOT~help[9]  $BOT~tab&"          [sell] - if moving to stardock, attempt to sell ships"
+	setVar $BOT~help[10] $BOT~tab&" ["&#34&"ship filter"&#34&"] - move ships only matching this filter"
+	setVar $BOT~help[11] $BOT~tab&"                   "
+	setVar $BOT~help[12] $BOT~tab&"             -  Ship filter list can be comma delimited.    "
+	setVar $BOT~help[13] $BOT~tab&"             -  Can use either planet or SXX port in        "
+	setVar $BOT~help[14] $BOT~tab&"                starting sector for fuel."
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Ship Mover"
@@ -94,7 +96,6 @@
 			halt			
 		else
 			splitText $filterships $shiptypes ","
-			pause
 			setVar $SWITCHBOARD~message "Moving all ships matching: ["&$filterships&"].*"
 			gosub :SWITCHBOARD~switchboard
 		end
@@ -220,8 +221,16 @@
 			if ($temp > 0)
 
 				if ($filterships <> "")
-					getwordpos $shiptype $filterpos $filterships
-					if ($filterpos > 0)
+					setvar $i 1
+					setvar $shipfound false
+					while ($i <= $shiptypes)
+						getwordpos $shiptype $filterpos $shiptypes[$i]
+						if ($filterpos > 0)
+							setvar $shipfound true
+						end
+						add $i 1
+					end
+					if ($shipfound = true)
 						add $shipCount 1
 						setVar $theShips[$shipCount] $temp
 					end
