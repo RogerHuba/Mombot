@@ -126,7 +126,6 @@
 		gosub :switchboard~switchboard
 		halt
 	end
-		echo "*["&$player~current_prompt&"]*"
 
 	if ($player~mine_disruptors = 0)
 		setvar $switchboard~message "No Disruptors On Board!*"
@@ -255,6 +254,8 @@
 	elseif ($Start_Prompt = "StarDock")
 		send ("  S  H")
 	elseif ($Start_Prompt = "Command")
+		send ("  S  H")
+	elseif ($Start_Prompt = "How")
 		send ("  S  H")
 	else
 		gosub :player~quikstats
