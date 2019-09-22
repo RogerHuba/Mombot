@@ -197,6 +197,7 @@
 		getLength $line $length
 		if ($length > 54)
 			cuttext $line $shiptype 54 999
+			echo "*["&$shiptype&"]*"
 		end
 		lowercase $shiptype
 
