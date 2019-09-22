@@ -3,16 +3,19 @@ logging off
 										loadVar $MAP~stardock
 
 
-	setVar $BOT~help[1] $BOT~tab&"Grabs all empty ships and brings them to your sector"
-	setVar $BOT~help[2] $BOT~tab&"                "
-	setVar $BOT~help[3] $BOT~tab&"getallships  {bubble}"
-	setVar $BOT~help[4] $BOT~tab&"                  "
-	setVar $BOT~help[5] $BOT~tab&"    Options:       "
-	setVar $BOT~help[6] $BOT~tab&"           bubble - grabs bubble ships        "
-	setVar $BOT~help[7] $BOT~tab&"                    (default ignores bubble sectors) "
-	setVar $BOT~help[8] $BOT~tab&"                        "
-	setVar $BOT~help[9] $BOT~tab&"           Can use either planet or SXX port in        "
-	setVar $BOT~help[10] $BOT~tab&"           starting sector for fuel."
+	setVar $BOT~help[1]  $BOT~tab&" Grabs all empty ships and brings them to your sector"
+	setVar $BOT~help[2]  $BOT~tab&"                "
+	setVar $BOT~help[3]  $BOT~tab&" getallships  {bubble} {"&#34&"ship filter"&#34&"}"
+	setVar $BOT~help[4]  $BOT~tab&"                  "
+	setVar $BOT~help[5]  $BOT~tab&"    Options:       "
+	setVar $BOT~help[6]  $BOT~tab&"      ["&#34&"ship filter"&#34&"] - move ships only matching this filter"
+	setVar $BOT~help[7]  $BOT~tab&"                   "
+	setVar $BOT~help[8]  $BOT~tab&"           bubble - grabs bubble ships        "
+	setVar $BOT~help[9]  $BOT~tab&"                    (default ignores BUBBLE sector param) "
+	setVar $BOT~help[10] $BOT~tab&"                        "
+	setVar $BOT~help[11] $BOT~tab&"              -  Can use either planet or SXX port in        "
+	setVar $BOT~help[12] $BOT~tab&"                 starting sector for fuel."
+	setVar $BOT~help[13]  $BOT~tab&"             -  Ship filter list can be comma delimited.    "
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Get All Ships"
@@ -24,6 +27,21 @@ logging off
 		setVar $bubble TRUE
 	else
 		setVar $bubble FALSE
+	end
+
+	setvar $filterships ""
+	getWordPos $bot~user_command_line $pos #34
+	if ($pos > 0)
+		getText $bot~user_command_line $filterships #34 #34
+		if ($filterships = false)
+			setVar $SWITCHBOARD~message "Invalid ship filter entered.*"
+			gosub :SWITCHBOARD~switchboard
+			halt			
+		else
+			splitText $filterships $shiptypes ","
+			setVar $SWITCHBOARD~message "Moving all ships matching: ["&$filterships&"].*"
+			gosub :SWITCHBOARD~switchboard
+		end
 	end
 
 	gosub :PLAYER~quikstats
@@ -82,26 +100,48 @@ logging off
 	setVar $SWITCHBOARD~message "Starting ship scan..*"
 	gosub :SWITCHBOARD~switchboard
 	:tryshipscan
-		send "|xnq*@|"
+
+		send "|x*"
 		setTextLineTrigger statlinetrig :shipline "-----------------------------"
-		setTextLineTrigger towalreadyon :continuetowon "You shut off your Tractor Beam."
-		setTextLineTrigger doneships :gotShips "Average Interval Lag:"
+		settextlinetrigger enter :enter "[Pause]"
+		setTextTrigger doneships :gotShips "Choose which ship to beam to (Q=Quit)"
 		pause
-		:continuetowon
-			killtrigger statlinetrig
-			killtrigger doneships
-			goto :tryshipscan
+		:enter
+			send "*"
+			settextlinetrigger enter :enter "[Pause]"
+			pause
 
 	:shipline
-		killtrigger towalreadyon
 		setVar $line CURRENTLINE
-		getWordPos $line $pos "Average Interval Lag:"
+		getWordPos $line $pos "Choose which ship to beam to (Q=Quit)"
 		getWord $line $temp 2
 		isNumber $result $temp
+		getLength $line $length
+		if ($length > 52)
+			cuttext $line $shiptype 54 999
+		end
+		lowercase $shiptype
+
 		if (($result = TRUE))
 			if ($temp > 0)
-				add $shipCount 1
-				setVar $theShips[$shipCount] $temp
+				if ($filterships <> "")
+					setvar $i 1
+					setvar $shipfound false
+					while ($i <= $shiptypes)
+						getwordpos $shiptype $filterpos $shiptypes[$i]
+						if ($filterpos > 0)
+							setvar $shipfound true
+						end
+						add $i 1
+					end
+					if ($shipfound = true)
+						add $shipCount 1
+						setVar $theShips[$shipCount] $temp
+					end
+				else
+					add $shipCount 1
+					setVar $theShips[$shipCount] $temp
+				end
 			end
 		end
 		if ($pos > 0)
@@ -114,10 +154,14 @@ logging off
 
 	:gotShips
 		killtrigger getline
+		killtrigger statlinetrig
+		killtrigger enter
+		killtrigger doneships
+		send "*|"
 		if ($startingLocation <> "Command")
 			send "l "&$planet~planet&"* c    "
 		else
-			if ($fuelInSector)
+			if ($fuelInSector = true)
 				send " p t * * 0 * * 0 * * 0 * * "
 			end
 		end
