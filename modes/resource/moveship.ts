@@ -3,15 +3,16 @@
 
 	setVar $BOT~help[1]  $BOT~tab&"Moves empty ships from one sector to another."
 	setVar $BOT~help[2]  $BOT~tab&"                "
-	setVar $BOT~help[3]  $BOT~tab&"moveship [sector] {back} {sell} {dep} "
+	setVar $BOT~help[3]  $BOT~tab&"  moveship [sector] {back} {sell} {dep} {filter:x}"
 	setVar $BOT~help[4]  $BOT~tab&"                  "
-	setVar $BOT~help[5]  $BOT~tab&"[sector] - target sector"
-	setVar $BOT~help[6]  $BOT~tab&"  [back] - will grab ships from target sector and bring"
-	setVar $BOT~help[7]  $BOT~tab&"           them back to current sector   "
-	setVar $BOT~help[8]  $BOT~tab&"  [sell] - if moving to stardock, attempt to sell ships"
-	setVar $BOT~help[9]  $BOT~tab&"                          "
-	setVar $BOT~help[10] $BOT~tab&"           Can use either planet or SXX port in        "
-	setVar $BOT~help[11] $BOT~tab&"           starting sector for fuel."
+	setVar $BOT~help[5]  $BOT~tab&"    [sector] - target sector"
+	setVar $BOT~help[6]  $BOT~tab&"      [back] - will grab ships from target sector and bring"
+	setVar $BOT~help[7]  $BOT~tab&"               them back to current sector   "
+	setVar $BOT~help[8]  $BOT~tab&"      [sell] - if moving to stardock, attempt to sell ships"
+	setVar $BOT~help[9]  $BOT~tab&"  [filter:x] - if moving to stardock, attempt to sell ships"
+	setVar $BOT~help[10] $BOT~tab&"                          "
+	setVar $BOT~help[11] $BOT~tab&"              Can use either planet or SXX port in        "
+	setVar $BOT~help[12] $BOT~tab&"              starting sector for fuel."
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Ship Mover"
@@ -30,6 +31,7 @@
 		halt
 	end
 	setVar $startSector $PLAYER~CURRENT_SECTOR
+	setarray $theShips 1000 
 	isNumber $test $bot~parm1
 	if ($test)
 		if ($bot~parm1 > 0)
@@ -81,6 +83,18 @@
 	if ($BOT~silent_running = TRUE)
 		setVar $SWITCHBOARD~self_command TRUE
 	end
+
+	getWordPos $bot~user_command_line $pos #34
+	if ($pos > 0)
+		getText $bot~user_command_line $filterships #34 #34
+		if ($filterships = false)
+			setVar $SWITCHBOARD~message "Invalid ship filter entered.*"
+			gosub :SWITCHBOARD~switchboard
+			halt			
+		end
+	end
+
+
 
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	send "** "
@@ -166,6 +180,8 @@
 		setTextLineTrigger statlinetrig :shipline "-----------------------------------------------------------------------------"
 		setTextLineTrigger towalreadyon :continuetowon "You shut off your Tractor Beam."
 		setTextLineTrigger doneships :gotShips "Average Interval Lag:"
+
+   3 11989 .               Corp       2T      5T    0
 		send "|wnq*@|"
 		pause
 		:continuetowon
@@ -178,11 +194,23 @@
 		setVar $line CURRENTLINE
 		getWordPos $line $pos "Average Interval Lag:"
 		getWord $line $temp 1
+		cuttext $line $shiptype 54 999
+		lowercase $shiptype
+
 		isNumber $result $temp
 		if (($result = TRUE))
 			if ($temp > 0)
-				add $shipCount 1
-				setVar $theShips[$shipCount] $temp
+
+				if ($filterships <> "")
+					getwordpos $shiptype $pos $filterships
+					if ($pos > 0)
+						add $shipCount 1
+						setVar $theShips[$shipCount] $temp
+					end
+				else
+					add $shipCount 1
+					setVar $theShips[$shipCount] $temp
+				end
 			end
 		end
 		if ($pos > 0)

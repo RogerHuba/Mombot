@@ -127,7 +127,16 @@
 		setvar $home false
 	end
 
-	
+	getWordPos $bot~user_command_line $pos #34
+	if ($pos > 0)
+		getText $bot~user_command_line $filterships #34 #34
+		if ($filterships = false)
+			setVar $SWITCHBOARD~message "Invalid ship filter entered.*"
+			gosub :SWITCHBOARD~switchboard
+			halt			
+		end
+	end
+
 
 	
 
@@ -492,36 +501,30 @@ return
 			
 			setVar $emptyShips SECTOR.SHIPCOUNT[$PLAYER~CURRENT_SECTOR]
 			if ($emptyShips > 0)
-				setvar $i 1
-				setvar $found_keeper false
-				while ($i <= $emptyShips)
-					#setvar $ship_name SECTOR.SHIPS[$player~current_sector][$i]
-					#lowercase $ship_name
-					#getwordpos $ship_name $pos "alien starship"
-					#send "'[["&$ship_name&"]]*"
-					#if ($pos > 0)
-					#	setvar $found_keeper true
-					#end
-					add $i 1
-				end
 				setVar $BOT~command "moveship"
 				loadVar $MAP~stardock
-				if ($found_keeper = true)
-					setVar $BOT~user_command_line " moveship h silent"
+				if ($filterships <> "")
+					setVar $BOT~user_command_line " moveship h silent "&#34&$filterships&#34
 					setVar $BOT~parm1 $MAP~home_sector
-				else
-					if ($sell)
-						if ($home = true)
-							setVar $BOT~user_command_line " moveship "&$homesector&" silent"
-							setVar $BOT~parm1 $homesector
-						else
-							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
-							setVar $BOT~parm1 $MAP~stardock
-						end
+					saveVar $BOT~parm1
+					saveVar $BOT~command
+					saveVar $BOT~user_command_line
+					load "scripts\mombot\modes\resource\moveship.cts"
+					setEventTrigger		moveshipended2		:movehomeshipended "SCRIPT STOPPED" "scripts\mombot\modes\resource\moveship.cts"
+					pause
+					:movehomeshipended
+				end
+				if ($sell)
+					if ($home = true)
+						setVar $BOT~user_command_line " moveship "&$homesector&" silent"
+						setVar $BOT~parm1 $homesector
 					else
-							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" silent"
-							setVar $BOT~parm1 $MAP~stardock						
+						setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
+						setVar $BOT~parm1 $MAP~stardock
 					end
+				else
+						setVar $BOT~user_command_line " moveship "&$MAP~stardock&" silent"
+						setVar $BOT~parm1 $MAP~stardock						
 				end
 				saveVar $BOT~parm1
 				saveVar $BOT~command
