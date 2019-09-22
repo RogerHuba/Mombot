@@ -181,7 +181,6 @@
 		setTextLineTrigger towalreadyon :continuetowon "You shut off your Tractor Beam."
 		setTextLineTrigger doneships :gotShips "Average Interval Lag:"
 
-   3 11989 .               Corp       2T      5T    0
 		send "|wnq*@|"
 		pause
 		:continuetowon
