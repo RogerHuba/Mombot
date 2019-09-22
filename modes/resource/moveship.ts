@@ -191,9 +191,13 @@
 	:shipline
 		killtrigger towalreadyon
 		setVar $line CURRENTLINE
+		setvar $shiptype ""
 		getWordPos $line $pos "Average Interval Lag:"
 		getWord $line $temp 1
-		cuttext $line $shiptype 54 999
+		getLength $line $length
+		if ($length > 54)
+			cuttext $line $shiptype 54 999
+		end
 		lowercase $shiptype
 
 		isNumber $result $temp
