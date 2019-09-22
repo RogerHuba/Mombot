@@ -5,10 +5,10 @@ logging off
 
 	setVar $BOT~help[1]  $BOT~tab&" Grabs all empty ships and brings them to your sector"
 	setVar $BOT~help[2]  $BOT~tab&"                "
-	setVar $BOT~help[3]  $BOT~tab&" getallships  {bubble} {'ship filter'}"
+	setVar $BOT~help[3]  $BOT~tab&" getallships  {bubble} {+ship filter+}"
 	setVar $BOT~help[4]  $BOT~tab&"                  "
 	setVar $BOT~help[5]  $BOT~tab&"    Options:       "
-	setVar $BOT~help[6]  $BOT~tab&"      ['ship filter'] - move ships only matching this filter"
+	setVar $BOT~help[6]  $BOT~tab&"      [+ship filter+] - move ships only matching this filter"
 	setVar $BOT~help[7]  $BOT~tab&"                   "
 	setVar $BOT~help[8]  $BOT~tab&"           bubble - grabs bubble ships        "
 	setVar $BOT~help[9]  $BOT~tab&"                    (default ignores BUBBLE sector param) "
@@ -30,9 +30,9 @@ logging off
 	end
 
 	setvar $filterships ""
-	getWordPos " "&$bot~user_command_line&" " $pos "'"
+	getWordPos " "&$bot~user_command_line&" " $pos "+"
 	if ($pos > 0)
-		getText " "&$bot~user_command_line&" " $filterships "'" "'"
+		getText " "&$bot~user_command_line&" " $filterships "+" "+"
 		if ($filterships = false)
 			setVar $SWITCHBOARD~message "Invalid ship filter entered.*"
 			gosub :SWITCHBOARD~switchboard
@@ -46,7 +46,6 @@ logging off
 		setVar $SWITCHBOARD~message "Moving all ships back to this sector.*"
 		gosub :SWITCHBOARD~switchboard
 	end
-	pause
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	send "** "

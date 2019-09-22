@@ -3,14 +3,14 @@
 
 	setVar $BOT~help[1]  $BOT~tab&"Moves empty ships from one sector to another."
 	setVar $BOT~help[2]  $BOT~tab&"                "
-	setVar $BOT~help[3]  $BOT~tab&"  moveship [sector] {back} {sell} {dep} {'ship filter'}"
+	setVar $BOT~help[3]  $BOT~tab&"  moveship [sector] {back} {sell} {dep} {"&#34&"ship filter"&#34&"}"
 	setVar $BOT~help[4]  $BOT~tab&"                  "
 	setVar $BOT~help[5]  $BOT~tab&"   Options:            "
 	setVar $BOT~help[6]  $BOT~tab&"        [sector] - target sector"
 	setVar $BOT~help[7]  $BOT~tab&"          [back] - will grab ships from target sector and bring"
 	setVar $BOT~help[8]  $BOT~tab&"                   them back to current sector   "
 	setVar $BOT~help[9]  $BOT~tab&"          [sell] - if moving to stardock, attempt to sell ships"
-	setVar $BOT~help[10] $BOT~tab&" ['ship filter'] - move ships only matching this filter"
+	setVar $BOT~help[10] $BOT~tab&" ["&#34&"ship filter"&#34&"] - move ships only matching this filter"
 	setVar $BOT~help[11] $BOT~tab&"                   "
 	setVar $BOT~help[12] $BOT~tab&"             -  Ship filter list can be comma delimited.    "
 	setVar $BOT~help[13] $BOT~tab&"             -  Can use either planet or SXX port in        "
@@ -87,9 +87,9 @@
 	end
 
 	setvar $filterships ""
-	getWordPos $bot~user_command_line $pos "'"
+	getWordPos $bot~user_command_line $pos #34
 	if ($pos > 0)
-		getText $bot~user_command_line $filterships "'" "'"
+		getText $bot~user_command_line $filterships #34 #34
 		if ($filterships = false)
 			setVar $SWITCHBOARD~message "Invalid ship filter entered.*"
 			gosub :SWITCHBOARD~switchboard
