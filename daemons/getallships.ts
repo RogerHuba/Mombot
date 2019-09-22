@@ -181,7 +181,7 @@ logging off
 				if ((($bubble = TRUE) AND ($isBubble = TRUE)) OR (($bubble = FALSE) AND ($isBubble <> TRUE)))
 					setVar $sectors_done $sectors_done&" "&$theShips[$i]&" "
 					setVar $BOT~command "moveship"
-					setVar $BOT~user_command_line "moveship "&$theShips[$i]&" back silent "
+					setVar $BOT~user_command_line "moveship "&$theShips[$i]&" back silent "&#34&$filterships&#34&" "
 					setVar $BOT~parm1 $theShips[$i]
 					setVar $BOT~parm2 "back"
 					saveVar $BOT~parm1
