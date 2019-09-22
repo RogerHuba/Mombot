@@ -187,7 +187,7 @@ logging off
 
 				getsectorparameter $theShips[$i] "BUBBLE" $isBubble
 
-				if ((($bubble = TRUE) AND ($isBubble = TRUE)) OR (($bubble = FALSE) AND ($isBubble <> TRUE)))
+				if ((($bubble = TRUE) AND ($isBubble = TRUE)) OR (($bubble = FALSE)))
 					setVar $sectors_done $sectors_done&" "&$theShips[$i]&" "
 					setVar $BOT~command "moveship"
 					setVar $BOT~user_command_line "moveship "&$theShips[$i]&" back silent "&#34&$filterships&#34&" "
