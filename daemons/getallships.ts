@@ -1,6 +1,6 @@
 logging off
 		gosub :BOT~loadVars
-										loadVar $MAP~stardock
+		loadVar $MAP~stardock
 
 
 	setVar $BOT~help[1]  $BOT~tab&" Grabs all empty ships and brings them to your sector"
@@ -42,6 +42,9 @@ logging off
 			setVar $SWITCHBOARD~message "Moving all ships matching: ["&$filterships&"].*"
 			gosub :SWITCHBOARD~switchboard
 		end
+	else
+		setVar $SWITCHBOARD~message "Moving all ships back to this sector.*"
+		gosub :SWITCHBOARD~switchboard
 	end
 
 	gosub :PLAYER~quikstats
@@ -121,7 +124,7 @@ logging off
 			cuttext $line $shiptype 54 999
 		end
 		lowercase $shiptype
-
+		setvar $grabbed " "
 		if (($result = TRUE))
 			if ($temp > 0)
 				if ($filterships <> "")
@@ -135,8 +138,12 @@ logging off
 						add $i 1
 					end
 					if ($shipfound = true)
-						add $shipCount 1
-						setVar $theShips[$shipCount] $temp
+						getwordpos $grabbed $checkpos " "&$temp&" "
+						if ($checkpos <= 0)
+							add $shipCount 1
+							setVar $theShips[$shipCount] $temp
+							setvar $grabbed " "&$grabbed&" "&$temp
+						end
 					end
 				else
 					add $shipCount 1
@@ -158,7 +165,6 @@ logging off
 		killtrigger enter
 		killtrigger doneships
 		send "*|"
-		pause
 		if ($startingLocation <> "Command")
 			send "l "&$planet~planet&"* c    "
 		else
