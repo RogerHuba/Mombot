@@ -1,6 +1,6 @@
-    #=--------                                                                       -------=#
-     #=------------------------------     DisRuption v1.0    ------------------------------=#
-    #=--------                                                                       -------=#
+	#=--------                                                                       -------=#
+	 #=------------------------------     DisRuption v1.0    ------------------------------=#
+	#=--------                                                                       -------=#
 	#		Incep Date	:	March 10, 2007  -  Version 1.0
 	#		Author		:	LoneStar
 	#		TWX			:	Should Work with TWX 2.03, 2.04b, and 2.04 Final
@@ -29,7 +29,7 @@
 	setVar		$Bursting				FALSE
 	setVar		$Start_Prompt			""
 	setVar 		$Total_Mines_Poofed		0
-   	setArray	$ADJ2HiT				6 1
+	setArray	$ADJ2HiT				6 1
 	#			ADJ2HiT Break Down - 1st Dimension: ADdj Sector Numbers; 2nd Dimension: Armids Scanned/Remaining
 
 	setVar $BOT~help[1]  $BOT~tab&" disr {sector} {nscan} {burst}"
@@ -58,8 +58,8 @@
 			setvar $switchboard~message "M()MBot Must Be In General Mode!*"
 			gosub :switchboard~switchboard
 			halt
-    	end
-    end
+		end
+	end
 
 	isNumber $tst $bot~parm1
 	if (($tst = 0) and ($bot~parm1 <> ""))
@@ -178,7 +178,7 @@
 					setVar $ADJ2HiT[$idx][1] 0
 				end
 			end
-        	add $idx 1
+			add $idx 1
 		end
 	end
 
@@ -188,14 +188,14 @@
 
 	if ($planet~planet <> 0)
 		if ($Start_Prompt = "Citadel")
-			send (" Q Q Q Z N L Z" & #8 & $planet~planet & "*  *  J  C  *  * ")
+			send " Q Q Q Z N L Z" & #8 & $planet~planet & "*  *  J  C  *  * "
 		else
-			send (" Q Q Q Z N L Z" & #8 & $planet~planet & "*  *  ")
+			send " Q Q Q Z N L Z" & #8 & $planet~planet & "*  *  "
 		end
 	elseif ($Start_Prompt = "StarDock")
 		SetTextLineTrigger	Limpet_Found	:Limpet_Found	"A port official runs up to you as you dock and informs you that"
 		SetTextTrigger		On_Dock			:On_Dock		"<StarDock> Where to?"
-		send (" P  S")
+		send " P  S"
 		pause
 		:Limpet_Found
 			send  " Y "
@@ -210,7 +210,7 @@
 	setVar $str ""
 	while ($idx <= 6)
 		if ($ADJ2HiT[$idx][1] <> 0)
-			setVar $str ($str & "        Sector " & $ADJ2HiT[$idx] & ", " & $ADJ2HiT[$idx][1] & " Mines Remain*")
+			setVar $str $str&"        Sector "&$ADJ2HiT[$idx]&", "&$ADJ2HiT[$idx][1]&" Mines Remain*"
 		end
 		add $idx 1
 	end
@@ -218,7 +218,7 @@
 	if ($str = "")
 		setvar $switchboard~message "Disrupted " & $Total_Mines_Poofed & " Mines!*"
 	else
-		setvar $switchboard~message "Status Report:*")
+		setvar $switchboard~message "Status Report:*"
 		setvar $switchboard~message $switchboard~message&" *" & $str
 		setvar $switchboard~message $switchboard~message&"        Disrupted: " & $Total_Mines_Poofed & "*"
 	end
@@ -226,12 +226,12 @@
 
 	halt
 
-    #=--------                                                                       -------=#
-     #=------------------------------      SUB ROUTINES      ------------------------------=#
-    #=--------                                                                       -------=#
-    #
-    #		:Do_Scan				Performs simple Holo-Scan. Assumes users at Cmd Prompt.
-    #
+	#=--------                                                                       -------=#
+	 #=------------------------------      SUB ROUTINES      ------------------------------=#
+	#=--------                                                                       -------=#
+	#
+	#		:Do_Scan				Performs simple Holo-Scan. Assumes users at Cmd Prompt.
+	#
 	#		:player~quikstats				Mind Dagger's version of Singularity's quikstat routine
 	#								Modified by me to Include the Prompt Type:  Port
 	#
@@ -301,9 +301,9 @@
 				getWordPos $Temp $pos "remain)"
 				setVar $DisRuptors ($DisRuptors - 1)
 				if ($pos = 0)
-            		getWord $Temp $Temp 4
-            		isNumber $tst $Temp
-            		if ($tst)
+					getWord $Temp $Temp 4
+					isNumber $tst $Temp
+					if ($tst)
 						setVar $Total_Mines_Poofed ($Total_Mines_Poofed + $Temp)
 					end
 					setVar $ADJ2HiT[$idx][1] 0
@@ -326,7 +326,7 @@
 				setVar $idx 6
 			end
 		end
-    	add $idx 1
+		add $idx 1
 	end
 	if (($Adj_Hits <> 0) AND ($DisRuptors > 0) AND ($Bursting = 0))
 		goto :Lets_Go_Again
