@@ -132,7 +132,9 @@ logging off
 					setvar $i 1
 					setvar $shipfound false
 					while ($i <= $shiptypes)
-						getwordpos $shiptype $filterpos $shiptypes[$i]
+						setvar $testship $shiptypes[$i]
+						trim $testship
+						getwordpos $shiptype $filterpos $testship
 						if ($filterpos > 0)
 							setvar $shipfound true
 						end
