@@ -183,17 +183,25 @@
 	:tryshipscan
 		setTextLineTrigger statlinetrig :shipline "-----------------------------------------------------------------------------"
 		setTextLineTrigger towalreadyon :continuetowon "You shut off your Tractor Beam."
-		setTextLineTrigger doneships :gotShips "Average Interval Lag:"
-
-		send "|wnq*@|"
+		settextlinetrigger enter :enter "[Pause]"
+		setTextTrigger doneships :gotShips "Choose which ship to tow (Q=Quit)"
+		send "|wnq*"
 		pause
 		:continuetowon
 			killtrigger statlinetrig
 			killtrigger doneships
+			killtrigger enter
 			goto :tryshipscan
+		:enter
+			killtrigger statlinetrig
+			killtrigger doneships
+			send "*"
+			settextlinetrigger enter :enter "[Pause]"
+			pause
 
 	:shipline
 		killtrigger towalreadyon
+		killtrigger enter
 		setVar $line CURRENTLINE
 		setvar $shiptype ""
 		getWordPos $line $pos "Average Interval Lag:"
@@ -230,6 +238,7 @@
 
 
 	:gotShips
+		send "|"
 		killtrigger statlinetrig
 		killtrigger towalreadyon
 		killtrigger doneships
