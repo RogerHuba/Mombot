@@ -91,6 +91,9 @@
 			setVar $SWITCHBOARD~message "Invalid ship filter entered.*"
 			gosub :SWITCHBOARD~switchboard
 			halt			
+		else
+			setVar $SWITCHBOARD~message "Moving all ships matching: ["&$filterships&"].*"
+			gosub :SWITCHBOARD~switchboard
 		end
 	end
 
