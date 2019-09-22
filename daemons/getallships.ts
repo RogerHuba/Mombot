@@ -30,7 +30,7 @@ logging off
 	end
 
 	setvar $filterships ""
-	getWordPos "test "&$bot~user_command_line&" " $pos #34
+	getWordPos "test "&$bot~user_command_line&" test" $pos #34
 	if ($pos > 0)
 		getText "test "&$bot~user_command_line&" " $filterships #34 #34
 		if ($filterships = false)
