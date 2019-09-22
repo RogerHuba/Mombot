@@ -29,8 +29,8 @@
 		getWord $CURRENTLINE $radio_type 1
 		stripText $radio_type $temp_bot_name
 		setvar $BOT~user_command_line $CURRENTLINE
-				setVar $BOT~user_command_line $BOT~user_command_line&"              "
-				lowercase $BOT~user_command_line
+		setVar $BOT~user_command_line $BOT~user_command_line&"              "
+		lowercase $BOT~user_command_line
 		if ($radio_type = "'")
 			getLength "'"&$temp_bot_name&" " $length
 			cutText $BOT~user_command_line $BOT~user_command_line $length+1 9999
@@ -145,7 +145,7 @@
 :getParameters
 	setVar $i 1
 	while ($i <= 8)
-		getWord ($BOT~user_command_line & " ") $BOT~parms[$i] $i ""
+		getWord (" " & $BOT~user_command_line & " ") $BOT~parms[$i] $i ""
 		add $i 1
 	end
 return
