@@ -36,7 +36,7 @@
 	setVar $BOT~help[2]  $BOT~tab&"   "
 	setVar $BOT~help[3]  $BOT~tab&"      {sector} - Disrupt mines in adj sector"
 	setVar $BOT~help[4]  $BOT~tab&"       {burst} - Sends only 1 disruptor into each sector"
-	setVar $BOT~help[5]  $BOT~tab&"       {nscan} - Do not perform holo scan --otherwise it"
+	setVar $BOT~help[5]  $BOT~tab&"       {nscan} - Do not perform holo scan - otherwise it"
 	setVar $BOT~help[6]  $BOT~tab&"                 will auto detect enemy armids"
 	setVar $BOT~help[7]  $BOT~tab&"   "
 	setVar $BOT~help[8]  $BOT~tab&"         Start prompts:"
@@ -54,7 +54,7 @@
 	isNumber $tst $bot~MODE
 	if ($tst = 0)
 		LowerCase $bot~MODE
-		if ($bot~MODE <> "general")
+		if (($bot~MODE <> "general") and ($bot~mode <> ""))
 			setvar $switchboard~message "M()MBot Must Be In General Mode!*"
 			gosub :switchboard~switchboard
 			halt
