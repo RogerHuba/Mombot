@@ -28,7 +28,6 @@ logging off
 	else
 		setVar $bubble FALSE
 	end
-
 	setvar $filterships ""
 	setvar $grabbed " "
 	#some stupid issue with twx where you can use quotes or single quotes in user command line 
@@ -168,7 +167,6 @@ logging off
 		killtrigger enter
 		killtrigger doneships
 		send "*|"
-		pause
 		if ($startingLocation <> "Command")
 			send "l "&$planet~planet&"* c    "
 		else
