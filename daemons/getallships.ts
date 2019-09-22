@@ -46,7 +46,7 @@ logging off
 		setVar $SWITCHBOARD~message "Moving all ships back to this sector.*"
 		gosub :SWITCHBOARD~switchboard
 	end
-
+	pause
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	send "** "
