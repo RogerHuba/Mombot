@@ -143,7 +143,7 @@ logging off
 						if ($checkpos <= 0)
 							add $shipCount 1
 							setVar $theShips[$shipCount] $temp
-							setvar $grabbed " "&$grabbed&" "&$temp
+							setvar $grabbed $grabbed&" "&$temp&" "
 						end
 					end
 				else
