@@ -93,6 +93,8 @@
 			gosub :SWITCHBOARD~switchboard
 			halt			
 		else
+			splitText $filterships $shiptypes ","
+			pause
 			setVar $SWITCHBOARD~message "Moving all ships matching: ["&$filterships&"].*"
 			gosub :SWITCHBOARD~switchboard
 		end
