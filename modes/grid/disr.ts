@@ -55,7 +55,7 @@
 	if ($tst = 0)
 		LowerCase $bot~MODE
 		if (($bot~MODE <> "general") and ($bot~mode <> ""))
-			setvar $switchboard~message "M()MBot Must Be In General Mode!*"
+			setvar $switchboard~message "M()MBot Must Be In General Mode!"&$bot~mode&"*"
 			gosub :switchboard~switchboard
 			halt
 		end
