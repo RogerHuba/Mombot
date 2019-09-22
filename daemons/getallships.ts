@@ -30,6 +30,7 @@ logging off
 	end
 
 	setvar $filterships ""
+	setvar $grabbed " "
 	#some stupid issue with twx where you can use quotes or single quotes in user command line 
 	#unless there are multiple parameters guaranteed - so using + for this one script.
 	getWordPos " "&$bot~user_command_line&" " $pos "+"
@@ -125,7 +126,6 @@ logging off
 			cuttext $line $shiptype 54 999
 		end
 		lowercase $shiptype
-		setvar $grabbed " "
 		if (($result = TRUE))
 			if ($temp > 0)
 				if ($filterships <> "")
@@ -166,7 +166,6 @@ logging off
 		killtrigger enter
 		killtrigger doneships
 		send "*|"
-		pause
 		if ($startingLocation <> "Command")
 			send "l "&$planet~planet&"* c    "
 		else
