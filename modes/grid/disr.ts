@@ -55,7 +55,7 @@
 	if ($tst = 0)
 		LowerCase $bot~MODE
 		if (($bot~MODE <> "general") and ($bot~mode <> ""))
-			setvar $switchboard~message "M()MBot Must Be In General Mode!"&$bot~mode&"*"
+			setvar $switchboard~message "M()MBot Must Be In General Mode!*"
 			gosub :switchboard~switchboard
 			halt
 		end
@@ -126,13 +126,14 @@
 		gosub :switchboard~switchboard
 		halt
 	end
+		echo "*["&$player~current_prompt&"]*"
+
 	if ($player~mine_disruptors = 0)
 		setvar $switchboard~message "No Disruptors On Board!*"
 		gosub :switchboard~switchboard
 		halt
 	end
 
-	echo "*["&$player~current_prompt&"]*"
 	if ($player~current_prompt = "Planet")
 		gosub :planet~getplanetinfo
 		if ($planet~planet = 0)
