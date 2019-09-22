@@ -184,8 +184,7 @@
 		setTextLineTrigger statlinetrig :shipline "-----------------------------------------------------------------------------"
 		setTextLineTrigger towalreadyon :continuetowon "You shut off your Tractor Beam."
 		settextlinetrigger enter :enter "[Pause]"
-		setTextTrigger doneships :gotShips "Choose which ship to tow (Q=Quit)"
-		send "|wnq*"
+		send "|w*"
 		pause
 		:continuetowon
 			killtrigger statlinetrig
@@ -204,7 +203,7 @@
 		killtrigger enter
 		setVar $line CURRENTLINE
 		setvar $shiptype ""
-		getWordPos $line $pos "Average Interval Lag:"
+		getWordPos $line $pos "Choose which ship to tow (Q=Quit)"
 		getWord $line $temp 1
 		getLength $line $length
 		if ($length > 54)
@@ -238,7 +237,7 @@
 
 
 	:gotShips
-		send "|"
+		send "*|"
 		killtrigger statlinetrig
 		killtrigger towalreadyon
 		killtrigger doneships
