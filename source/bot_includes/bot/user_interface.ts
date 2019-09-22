@@ -565,7 +565,7 @@ return
 	gosub :BOT~load_watcher_variables
 	lowercase $BOT~command
 :command_filtering
-	cutText $BOT~user_command_line&"  " $checkForChat 1 1
+	cutText $BOT~command&"  " $checkForChat 1 1
 	cutText $BOT~command&"  " $checkForFinder 1 1
 	if ($checkForChat = "'")
 		goto :INTERNAL_COMMANDS~ss
