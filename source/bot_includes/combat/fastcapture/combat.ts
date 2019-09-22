@@ -199,8 +199,8 @@
 				setVar $is_ship 0
 				while ($type_count < $SHIP~shipcounter)
 					add $type_count 1
-					#echo "*["&$cap_ship_info&"]*"
-					#echo "*["&$SHIP~shipList[$type_count]&"]*"
+					echo "*["&$cap_ship_info&"]*"
+					echo "*["&$SHIP~shipList[$type_count]&"]*"
 					getWordPos $cap_ship_info $is_ship $SHIP~shipList[$type_count]
 					getWordPos $cap_ship_info $unman "'s unmanned "
 					getwordpos $cap_ship_info $unman2 "s' unmanned "
