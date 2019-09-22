@@ -203,8 +203,6 @@
 
 	:shipline
 		killtrigger towalreadyon
-		killtrigger enter
-		killtrigger enter2
 		setVar $line CURRENTLINE
 		setvar $shiptype ""
 		getWordPos $line $pos "Choose which ship to tow (Q=Quit)"
