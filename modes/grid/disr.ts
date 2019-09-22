@@ -34,9 +34,9 @@
 
 	setVar $BOT~help[1]  $BOT~tab&" disr {sector} {nscan} {burst}"
 	setVar $BOT~help[2]  $BOT~tab&"   "
-	setVar $BOT~help[3]  $BOT~tab&"      {sector}  Disrupt Mines in Adj Sector"
-	setVar $BOT~help[4]  $BOT~tab&"      {burst}   Sends only 1 Disruptor into each Sector"
-	setVar $BOT~help[5]  $BOT~tab&"      {nscan}   Do Not Perform Holo Scan --otherwise it"
+	setVar $BOT~help[3]  $BOT~tab&"      {sector} - Disrupt Mines in Adj Sector"
+	setVar $BOT~help[4]  $BOT~tab&"       {burst} - Sends only 1 Disruptor into each Sector"
+	setVar $BOT~help[5]  $BOT~tab&"       {nscan} - Do Not Perform Holo Scan --otherwise it"
 	setVar $BOT~help[6]  $BOT~tab&"                Auto Detect enemy Armids"
 	setVar $BOT~help[7]  $BOT~tab&"   "
 	setVar $BOT~help[8]  $BOT~tab&"         Start Prompts:"
@@ -129,6 +129,7 @@
 		halt
 	end
 
+	echo "*["&$player~current_prompt&"]*"
 	if ($player~current_prompt = "Planet")
 		gosub :planet~getplanetinfo
 		if ($planet~planet = 0)
