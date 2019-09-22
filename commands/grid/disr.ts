@@ -158,7 +158,7 @@
 		goto :Prompt_Checking
 	elseif ($player~current_prompt = "StarDock")
 		send "Q  "
-	elseif ($player~current_prompt = "Port")
+	elseif ($player~current_prompt = "How")
 		send " 0*  0*  0*  0*  "
 	else
 		setvar $switchboard~message "At Unkown Prompt!*"
@@ -207,7 +207,7 @@
 			pause
 		:On_Dock
 			killAllTriggers
-	elseif ($Start_Prompt = "Port")
+	elseif ($Start_Prompt = "How")
 		send " P  T  "
 	end
 
