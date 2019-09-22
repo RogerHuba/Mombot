@@ -22,7 +22,7 @@
 	setVar $BOT~help[13] $BOT~tab&"       {return} - Return to starting sector after each hunt."
 	setVar $BOT~help[14] $BOT~tab&"      {passive} - Surround passively when hunting."
 	setVar $BOT~help[15] $BOT~tab&"         {home} - Move ships to starting sector instead of stardock."
-	setVar $BOT~help[16] $BOT~tab&"["&#34&"ship filter"&#34&"] - move ships matching this home, stardock for the others"
+	setVar $BOT~help[16] $BOT~tab&"{"&#34&"ship filter"&#34&"} - move ships matching this home, stardock for the others"
 	gosub :bot~helpfile
  
 	setVar $BOT~script_title "Alien Hunter"
