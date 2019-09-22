@@ -184,17 +184,19 @@
 		setTextLineTrigger statlinetrig :shipline "-----------------------------------------------------------------------------"
 		setTextLineTrigger towalreadyon :continuetowon "You shut off your Tractor Beam."
 		settextlinetrigger enter :enter "[Pause]"
-		settexttrigger enter2 :enter "Choose which ship to tow (Q=Quit)"
+		settexttrigger enter2 :shipline "Choose which ship to tow (Q=Quit)"
 		send "|w*"
 		pause
 		:continuetowon
 			killtrigger statlinetrig
 			killtrigger doneships
 			killtrigger enter
+			killtrigger enter2
 			goto :tryshipscan
 		:enter
 			killtrigger statlinetrig
 			killtrigger doneships
+			killtrigger enter2
 			send "*"
 			settextlinetrigger enter :enter "[Pause]"
 			pause
@@ -202,6 +204,7 @@
 	:shipline
 		killtrigger towalreadyon
 		killtrigger enter
+		killtrigger enter2
 		setVar $line CURRENTLINE
 		setvar $shiptype ""
 		getWordPos $line $pos "Choose which ship to tow (Q=Quit)"
