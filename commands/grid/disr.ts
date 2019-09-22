@@ -66,21 +66,24 @@
 		lowerCase $bot~parm1
 		if ($bot~parm1 = "nscan")
 			setVar $ScanIT 		FALSE
-			setVar $bot~parm1 		0
+			setVar $bot~parm1 "0"
 		elseif ($bot~parm1 = "burst")
-			setVar $bot~parm1 		0
+			setVar $bot~parm1 "0"
 			setVar $Bursting 	TRUE
 		else
-			send ($ErrMsg & "*")
+			setvar $switchboard~message $ErrMsg&"*"
+			gosub :switchboard~switchboard
 			halt
 		end
 	end
-
+	if ($bot~parm1 = "")
+		setvar $bot~parm1 "0"
+	end
 	if ((($bot~parm1 < 11) AND ($bot~parm1 <> 0)) OR ($bot~parm1 = STARDOCK))
 		setvar $switchboard~message $ErrMsg & " - Invalid Target!*"
 		gosub :switchboard~switchboard
 		halt
-	elseif (($bot~parm1 = 0) AND ($ScanIT = 0))
+	elseif (($bot~parm1 = "0") AND ($ScanIT = 0))
 		setVar $idx	1
 		while (SECTOR.WARPS[CURRENTSECTOR][$idx] > 0)
 			setVar $adj SECTOR.WARPS[CURRENTSECTOR][$idx]
