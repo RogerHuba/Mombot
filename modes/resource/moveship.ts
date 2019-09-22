@@ -184,7 +184,7 @@
 		setTextLineTrigger statlinetrig :shipline "-----------------------------------------------------------------------------"
 		setTextLineTrigger towalreadyon :continuetowon "You shut off your Tractor Beam."
 		settextlinetrigger enter :enter "[Pause]"
-		settexttrigger enter2 :shipline "Choose which ship to tow (Q=Quit)"
+		settexttrigger enter2 :gotShips "Choose which ship to tow (Q=Quit)"
 		send "|w*"
 		pause
 		:continuetowon
@@ -246,6 +246,9 @@
 		killtrigger towalreadyon
 		killtrigger doneships
 		killtrigger getLine
+		killtrigger towalreadyon
+		killtrigger enter
+		killtrigger enter2
 		if ($back = TRUE)
 			gosub :PLAYER~quikstats
 			setVar $PLAYER~WARPTO $startSector
