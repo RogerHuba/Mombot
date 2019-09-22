@@ -197,7 +197,6 @@
 		getLength $line $length
 		if ($length > 54)
 			cuttext $line $shiptype 54 999
-			echo "*["&$shiptype&"]*"
 		end
 		lowercase $shiptype
 
@@ -206,8 +205,8 @@
 			if ($temp > 0)
 
 				if ($filterships <> "")
-					getwordpos $shiptype $pos $filterships
-					if ($pos > 0)
+					getwordpos $shiptype $filterpos $filterships
+					if ($filterpos > 0)
 						add $shipCount 1
 						setVar $theShips[$shipCount] $temp
 					end
