@@ -4,7 +4,7 @@
 	if ($botIsDeaf)
 		gosub :switchboard~switchboard
 	else
-		echo $switchboard~message
+		echo "*"&$switchboard~message&"*"
 	end
 return
 
