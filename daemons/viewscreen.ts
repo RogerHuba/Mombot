@@ -23,7 +23,7 @@ setvar $comstring ""
 setVar $comsize 1000
 setVar $figsize 5
 setvar $comm_line_length 70
-setVar $comm_window_size 10
+setVar $comm_window_size 23
 setVar $comm_window_start_index 1
 setArray $coms $comsize
 setArray $figs $figsize
@@ -648,11 +648,13 @@ return
 	loadvar $switchboard~window_content
 	if ($switchboard~window_content <> "")
 		setvar $window_content $window_content&"[][][][]"&$switchboard~window_content
-		setvar $switchboard~window_content ""
 		savevar $switchboard~window_content
 	end
 	replaceText $BOT~who_is_online "," "*"
 	replaceText $window_content "[][]" "*"
+	splittext $window_content $window_linecount "*"
+	splittext $BOT~who_is_online $who_linecount "*"
+
 	gosub :getStats
 	setVar $output #27 & "[2J"
 	setVar $output $output&"**"
@@ -725,15 +727,16 @@ return
 		end
 
 
-		setvar $additional_com_lines 0
-		if ($bot~who_is_online = "")
-			add $additional_com_lines 3
+		setvar $subtract_com_lines 0
+		if ($bot~who_is_online <> "")
+			add $subtract_com_lines $who_linecount
 		end
-		if ($window_content = "")
-			add $additional_com_lines 5
+		if ($window_content <> "")
+			add $subtract_com_lines $window_linecount
 		end
-		setvar $additional_com_lines ($additional_com_lines + ($figsize - $figlines))
-		setVar $i ($comm_window_size + $additional_com_lines)
+		add $subtract_com_lines $figlines
+
+		setVar $i ($comm_window_size - $subtract_com_lines)
 		setVar $j 1
 		while ($i >= 0)
 			setVar $line $coms[($comm_window_start_index+$i)]
