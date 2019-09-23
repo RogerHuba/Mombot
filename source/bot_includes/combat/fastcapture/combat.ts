@@ -223,7 +223,7 @@
 				end
 
 				#  if you don't know the ship, just guess weakest with most shield.  Probably blow it up, but better than doing nothing #
-				setVar $SWITCHBOARD~message "Unknown ship type, cannot calculate attack.  I'm going to guess.*" 
+				setVar $SWITCHBOARD~message "Unknown ship type, cannot calculate attack.  I'm going to guess. ["&$cap_ship_info&"]*" 
 				gosub :SWITCHBOARD~switchboard
 				setvar $shieldpoints 16000
 				setVar $defodds 5
