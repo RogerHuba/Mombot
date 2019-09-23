@@ -23,7 +23,7 @@ setvar $comstring ""
 setVar $comsize 1000
 setVar $figsize 5
 setvar $comm_line_length 70
-setVar $comm_window_size 27
+setVar $comm_window_size 25
 setVar $comm_window_start_index 1
 setArray $coms $comsize
 setArray $figs $figsize
@@ -226,14 +226,6 @@ pause
 		goto :start
 	end
 
-:doneChat
-	setDeafClients false
-	echo #27 "[30D                        " #27 "[30D"
-	echo CURRENTANSILINE
-	setVar $botIsDeaf FALSE
-	saveVar $botIsDeaf
-	halt
-return
 
 :refresh
 	getDeafClients $BOT~botIsDeaf
