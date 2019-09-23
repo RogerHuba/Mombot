@@ -681,7 +681,7 @@ return
 	setvar $window_lines[7] "* Ship Fighters: " & $player~value&"*"
 
 	setvar $i 1
-	while ($i >= 7)
+	while ($i <= 7)
 		setvar $msg $msg&$window_lines[$i]
 		add $i 1
 	end
