@@ -678,6 +678,7 @@ return
 	setvar $window[6] "   Citadel Credits: " & $player~value
 	format $player~fighters $player~value NUMBER
 	setvar $window[7] "* Ship Fighters: " & $player~value&"*"
+	setarray $new_window 7
 	setvar $new_window[1] 20
 	setvar $new_window[2] 20
 	setvar $new_window[3] 20
