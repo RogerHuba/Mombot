@@ -23,7 +23,7 @@ setvar $comstring ""
 setVar $comsize 1000
 setVar $figsize 5
 setvar $comm_line_length 70
-setVar $comm_window_size 26
+setVar $comm_window_size 25
 setVar $comm_window_start_index 1
 setArray $coms $comsize
 setArray $figs $figsize
@@ -194,7 +194,7 @@ pause
 		echo "*"&ansi_5&"Viewscreen shutting down..*"&ansi_15&CURRENTANSILINE
 	else
 		setvar $active_viewscreen true
-		setDeafClients true
+		#setDeafClients true
 		setVar $comm_window_start_index 1
 		setvar $old_output ""
 		gosub :refreshChatMenu
