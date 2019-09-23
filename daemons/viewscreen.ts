@@ -675,7 +675,7 @@ return
 			end
 			if ($window_content_time < 120000)
 				setVar $output $output&ANSI_15&"------------------------------------"&ansi_13&" Script Status Window "&ansi_15&"-----------------------------------------*"
-				setVar $output $output&ANSI_10&""&ANSI_15&$window_content
+				setVar $output $output&ANSI_10&""&ANSI_15&$window_content&"*"
 				setvar $previous_window_content $window_content
 			else
 				setvar $window_content ""

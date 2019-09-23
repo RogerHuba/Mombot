@@ -275,7 +275,7 @@
 
 		gosub :attackandmoveship
 
-		setvar $switchboard~message "Waiting for something to hunt..*"
+		setvar $switchboard~message "* Waiting for something to hunt..*"
 		gosub :bot~echo 
 
 		:restart
@@ -381,7 +381,7 @@ return
 		setVar $checkSector SECTOR.WARPS[$dropSector][$i]
 	end
 	if ($targetCount <= 0)
-		setvar $switchboard~message "No Targets..*"
+		setvar $switchboard~message " No Targets..*"
 		gosub :bot~echo 
 		setVar $targetSectors[1] $CURRENT_LOCATION
 	end
@@ -465,7 +465,7 @@ return
 			send "l "&$planet~planet&"* m*** c "
 			setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
 			gosub :SWITCHBOARD~switchboard
-			setvar $switchboard~message ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
+			setvar $switchboard~message "* " & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
 			gosub :bot~echo
 
 return
