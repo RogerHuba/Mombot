@@ -288,7 +288,7 @@
 	gosub :planet~getplanetinfo
 	gosub :setwindow
 	send "c "
-	if ($planet~fighters <= $player~fighters)
+	if ($planet~planet_fighters <= $player~fighters)
 		send "p"&$map~home_sector&"*y  "
 		send "qoccco*cq"
 		waitOn "<Computer deactivated>"
