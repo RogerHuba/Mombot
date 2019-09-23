@@ -631,8 +631,6 @@ return
 	end
 	replaceText $BOT~who_is_online "," "*"
 	replaceText $window_content "[][]" "*"
-	splittext $window_content $window_linecount "*"
-	splittext $BOT~who_is_online $who_linecount "*"
 
 	gosub :getStats
 	setVar $output #27 & "[2J"
@@ -691,6 +689,9 @@ return
 			end
 		end
 		setVar $output $output&ANSI_15&"---------------------------------"&ansi_13&" Communications "&ansi_15&"--------------------------------"&ansi_13&" Stats "&ansi_15&"-----------*"
+
+		splittext $window_content $window_linecount "*"
+		splittext $BOT~who_is_online $who_linecount "*"
 
 		setVar $i $figsize
 		setVar $j 1
