@@ -147,7 +147,7 @@
 
 	gosub :PLAYER~getInfo
 	setVar $homesector $PLAYER~CURRENT_SECTOR
-    	
+		
 	killalltriggers	
 	send "q"
 	gosub :PLANET~getPlanetInfo	
@@ -230,14 +230,18 @@
 	setVar $PLAYER~defenderCapping TRUE
 	setVar $PLAYER~surroundAvoidShieldedOnly TRUE
 
-    fileExists $SHIP~cap_file_chk $SHIP~cap_file
-    if ($SHIP~cap_file_chk <> TRUE)
-        gosub :SHIP~getShipCapStats
-    end
+	loadvar $ship~CAP_FILE	
+	fileExists $CAP_FILE_chk $ship~CAP_FILE
+	if ($CAP_FILE_chk)
+		gosub :ship~loadshipinfo
+	else
+		gosub :ship~getShipCapStats
+		gosub :ship~loadShipInfo
+	end 
 
-    if ($SHIP~SHIP_OFFENSIVE_ODDS <= 0)
-        gosub :SHIP~getShipStats
-    end
+	if ($SHIP~SHIP_OFFENSIVE_ODDS <= 0)
+		gosub :SHIP~getShipStats
+	end
 
 	while (TRUE)
 		gosub :PLAYER~quikstats
@@ -379,42 +383,42 @@ return
 return
 
 :dopwarp
-    send "p" $player~warpto "*y"
-    setTextLineTrigger pwarp_lock       :pwarp_lock     "Locating beam pinpointed"
-    setTextLineTrigger no_pwarp_lock    :no_pwarp_lock  "Your own fighters must be"
-    setTextLineTrigger already      :already    "You are already in that sector!"
-    setTextLineTrigger no_ore       :no_ore     "You do not have enough Fuel Ore"
-    setTextLineTrigger No_pwarp     :noPwarp    "This Citadel does not have a Planetary TransWarp"
-    setTextLineTrigger wrong_number     :wrong_number   "Invalid Sector number,"
-    pause
-    :wrong_number
-        killalltriggers
-        setVar $SWITCHBOARD~message "Not a valid sector to pwarp to!*"
-        gosub :SWITCHBOARD~switchboard
-        return
-        
-    :noPwarp
-        killalltriggers
-        setVar $SWITCHBOARD~message "Planet Does Not Have A Planetary TransWarp Drive!*"
-        gosub :SWITCHBOARD~switchboard
-        return
-    :no_pwarp_lock
-        killalltriggers
-        setVar $target $player~warpto
-        setSectorParameter $gotoSector "FIGSEC" FALSE
-        return
-    :no_ore
-        killalltriggers
-        setVar $SWITCHBOARD~message "Not enough fuel for that pwarp.*"
-        gosub :SWITCHBOARD~switchboard
-        return
-    :pwarp_lock
-        killalltriggers
-        waitOn "Planet is now in sector"
-        setVar $target $gotoSector
-        return
-    :already
-        killalltriggers
+	send "p" $player~warpto "*y"
+	setTextLineTrigger pwarp_lock       :pwarp_lock     "Locating beam pinpointed"
+	setTextLineTrigger no_pwarp_lock    :no_pwarp_lock  "Your own fighters must be"
+	setTextLineTrigger already      :already    "You are already in that sector!"
+	setTextLineTrigger no_ore       :no_ore     "You do not have enough Fuel Ore"
+	setTextLineTrigger No_pwarp     :noPwarp    "This Citadel does not have a Planetary TransWarp"
+	setTextLineTrigger wrong_number     :wrong_number   "Invalid Sector number,"
+	pause
+	:wrong_number
+		killalltriggers
+		setVar $SWITCHBOARD~message "Not a valid sector to pwarp to!*"
+		gosub :SWITCHBOARD~switchboard
+		return
+		
+	:noPwarp
+		killalltriggers
+		setVar $SWITCHBOARD~message "Planet Does Not Have A Planetary TransWarp Drive!*"
+		gosub :SWITCHBOARD~switchboard
+		return
+	:no_pwarp_lock
+		killalltriggers
+		setVar $target $player~warpto
+		setSectorParameter $gotoSector "FIGSEC" FALSE
+		return
+	:no_ore
+		killalltriggers
+		setVar $SWITCHBOARD~message "Not enough fuel for that pwarp.*"
+		gosub :SWITCHBOARD~switchboard
+		return
+	:pwarp_lock
+		killalltriggers
+		waitOn "Planet is now in sector"
+		setVar $target $gotoSector
+		return
+	:already
+		killalltriggers
 return
 
 :dosurround
@@ -423,7 +427,7 @@ return
 			setVar $SWITCHBOARD~message "Turns Exceed Bot Turn Limit.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
-	        end
+			end
 		
 	
 		setVar $BOT~command "dscan"
@@ -437,15 +441,15 @@ return
 		pause
 		:dscandone
 		
-	        send "q "
-	        gosub :PLANET~getPlanetInfo
-        	gosub :setwindow
-	        send "q "
+			send "q "
+			gosub :PLANET~getPlanetInfo
+			gosub :setwindow
+			send "q "
 			gosub :grid~surround
-            send "l "&$planet~planet&"* m*** c "
-	        setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
-	        gosub :SWITCHBOARD~switchboard
-	        echo "*" & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
+			send "l "&$planet~planet&"* m*** c "
+			setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
+			gosub :SWITCHBOARD~switchboard
+			echo "*" & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
 
 return
 
@@ -468,15 +472,15 @@ return
 				setvar $player~startingLocation $player~current_prompt
 			end
 			goSub :SECTOR~getSectorData			
-		    if ($SECTOR~realTraderCount > $SECTOR~corpieCount)
-		    	setvar $targetsFound true
-		    	gosub :combat~fastCitadelAttack
+			if ($SECTOR~realTraderCount > $SECTOR~corpieCount)
+				setvar $targetsFound true
+				gosub :combat~fastCitadelAttack
 				send "'Just attacked (and hopefully killed) a trader in my sector! Sector "&$player~current_sector&".*"
-		    end
-		    if ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
-		    	setVar $targetsFound TRUE
-		    	goSub :combat~fastCapture
-		    end
+			end
+			if ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
+				setVar $targetsFound TRUE
+				goSub :combat~fastCapture
+			end
 		end
 		gosub :PLAYER~quikstats
 		if ($player~current_prompt = "Command")
@@ -574,10 +578,10 @@ return
 							setVar $cashonhand $planet~CITADEL_CREDITS
 							add $cashonhand $PLAYER~CREDITS
 							if ($cashonhand > $total_creds_needed)
-							        send "T T " & $PLAYER~CREDITS & "* "
-					        		send "T F " & $total_creds_needed & "* "
-					        		setVar $PLAYER~CREDITS $total_creds_needed
-			    				end
+									send "T T " & $PLAYER~CREDITS & "* "
+									send "T F " & $total_creds_needed & "* "
+									setVar $PLAYER~CREDITS $total_creds_needed
+								end
 						end
 						send "q q *O 1"
 						waitOn ", 0 to quit)"
@@ -615,7 +619,7 @@ return
 					end
 					if (($PLAYER~unlimitedGame = FALSE) AND (($PLAYER~turns-$player~turnsToEmpty) <= $BOT~bot_turn_limit))
 						setVar $SWITCHBOARD~message "Turns too low to continue.*"
-		        		gosub :SWITCHBOARD~switchboard
+						gosub :SWITCHBOARD~switchboard
 						halt	        
 					end
 
@@ -680,6 +684,7 @@ include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\ship\getshipcapstats\ship"
 include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\ship\loadshipinfo\ship"
 include "source\module_includes\bot\disconnecttriggers\bot"
 include "source\bot_includes\grid\surround\grid"
 include "source\bot_includes\planet\landingsub\planet"
