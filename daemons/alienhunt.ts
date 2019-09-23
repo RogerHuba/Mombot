@@ -664,7 +664,8 @@ return
 	if (($PLAYER~TURNS > 0) and ($player~unlimitedGame <> true))
 			setVar $msg $msg & "* Turns: " & $PLAYER~TURNS
 	end
-	setarray $window 10
+	setarray $window 7
+	setvar $window 7
 	setvar $window[1] "** Alienhunt Planet: " & $planet~planet
 	setvar $window[2] "* -----------------------------------------------"
 	format $planet~planet_fuel $player~value NUMBER
@@ -679,13 +680,11 @@ return
 	setvar $window[7] "* Ship Fighters: " & $player~value&"*"
 	cutLengths $window $new_window  20
 
-	setVar $msg $msg & "** Alienhunt Planet: " & $planet~planet
-	setVar $msg $msg & "* -----------------------------------------------"
-	setVar $msg $msg & "* Planet Fuel: " & $player~value
-	setVar $msg $msg & "   Planet Fighters: " & $player~value
-	setVar $msg $msg & "* Planet Shields: " & $player~value
-	setVar $msg $msg & "   Citadel Credits: " & $player~value
-	setVar $msg $msg & "* Ship Fighters: " & $player~value&"*"
+	setvar $i 1
+	while ($i >= window)
+		setvar $msg $msg&$window[$i]
+		add $i 1
+	end
 	setWindowContents alienhunt_script $msg & $msg1
 	setVar $window_content $msg 
 	replaceText $window_content "*" "[][]"
