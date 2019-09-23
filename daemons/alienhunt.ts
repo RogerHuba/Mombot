@@ -678,8 +678,15 @@ return
 	setvar $window[6] "   Citadel Credits: " & $player~value
 	format $player~fighters $player~value NUMBER
 	setvar $window[7] "* Ship Fighters: " & $player~value&"*"
+	setvar $new_window[1] 20
+	setvar $new_window[2] 20
+	setvar $new_window[3] 20
+	setvar $new_window[4] 20
+	setvar $new_window[5] 20
+	setvar $new_window[6] 20
+	setvar $new_window[7] 20
 	cutLengths $window $new_window  20
-
+pause
 	setvar $i 1
 	while ($i >= $window)
 		setvar $msg $msg&$window[$i]
