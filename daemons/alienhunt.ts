@@ -686,7 +686,7 @@ return
 	setvar $new_window[5] 20
 	setvar $new_window[6] 20
 	setvar $new_window[7] 20
-	cutLengths $window $new_window  20
+	cutLengths $window 20
 pause
 	setvar $i 1
 	while ($i >= $window)
