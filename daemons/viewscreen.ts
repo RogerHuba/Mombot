@@ -647,7 +647,7 @@ return
 	loadVar $window_content
 	loadvar $switchboard~window_content
 	if ($switchboard~window_content <> "")
-		setvar $window_content $switchboard~window_content
+		setvar $window_content $window_content&"[][][][]"&$switchboard~window_content
 		setvar $switchboard~window_content ""
 		savevar $switchboard~window_content
 	end
