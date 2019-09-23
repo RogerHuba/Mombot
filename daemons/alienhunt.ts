@@ -669,31 +669,24 @@ return
 	setvar $window[1] "** Alienhunt Planet: " & $planet~planet
 	setvar $window[2] "* -----------------------------------------------"
 	format $planet~planet_fuel $player~value NUMBER
-	setvar $window[3] "* Planet Fuel: " & $player~value
+	setvar $window[3] "* Planet Fuel: " & $player~value&"                          "
+	cutText $window[3] $window[3] 1 30
 	format $planet~planet_fighters $player~value NUMBER
 	setvar $window[4] "   Planet Fighters: " & $player~value
 	format $planet~planet_shields $player~value NUMBER
-	setvar $window[5] "* Planet Shields: " & $player~value
+	setvar $window[5] "* Planet Shields: " & $player~value&"                          "
+	cutText $window[5] $window[5] 1 30
 	format $planet~citadel_credits $player~value NUMBER
 	setvar $window[6] "   Citadel Credits: " & $player~value
 	format $player~fighters $player~value NUMBER
 	setvar $window[7] "* Ship Fighters: " & $player~value&"*"
-	setarray $new_window 7
-	setvar $new_window[1] 20
-	setvar $new_window[2] 20
-	setvar $new_window[3] 20
-	setvar $new_window[4] 20
-	setvar $new_window[5] 20
-	setvar $new_window[6] 20
-	setvar $new_window[7] 20
-	cutLengths $window $new_window 1 
-pause
+
 	setvar $i 1
 	while ($i >= $window)
 		setvar $msg $msg&$window[$i]
 		add $i 1
 	end
-	setWindowContents alienhunt_script $msg & $msg1
+	setWindowContents alienhunt_script $msg 
 	setVar $window_content $msg 
 	replaceText $window_content "*" "[][]"
 	saveVar $window_content
