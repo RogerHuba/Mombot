@@ -194,7 +194,7 @@ pause
 		echo "*"&ansi_5&"Viewscreen shutting down..*"&ansi_15&CURRENTANSILINE
 	else
 		setvar $active_viewscreen true
-		#setDeafClients true
+		setDeafClients true
 		setVar $comm_window_start_index 1
 		setvar $old_output ""
 		gosub :refreshChatMenu
