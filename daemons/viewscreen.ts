@@ -23,7 +23,7 @@ setvar $comstring ""
 setVar $comsize 1000
 setVar $figsize 5
 setvar $comm_line_length 70
-setVar $comm_window_size 25
+setVar $comm_window_size 30
 setVar $comm_window_start_index 1
 setArray $coms $comsize
 setArray $figs $figsize
