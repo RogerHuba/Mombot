@@ -665,19 +665,17 @@ return
 			setVar $msg $msg & "* Turns: " & $PLAYER~TURNS
 	end
 	setVar $msg $msg & "** Alienhunt Planet: " & $planet~planet
-	setVar $msg $msg & "* ----------------"
-	setvar $player~value $planet~planet_fuel
-	gosub :player~commasize
-	setVar $msg $msg & "* Fuel: " & $player~value
-	setvar $player~value $planet~planet_fighters
-	gosub :player~commasize
-	setVar $msg $msg & "* Fighters: " & $player~value
-	setvar $player~value $planet~planet_shields
-	gosub :player~commasize
-	setVar $msg $msg & "* Shields: " & $player~value
-	setvar $player~value $planet~citadel_credits
-	gosub :player~commasize
-	setVar $msg $msg & "* Citadel Credits: " & $player~value&"*"
+	setVar $msg $msg & "* ----------------------------------------"
+	format $planet~planet_fuel $player~value NUMBER
+	setVar $msg $msg & "* Planet Fuel: " & $player~value
+	format $planet~planet_fighters $player~value NUMBER
+	setVar $msg $msg & "   Planet Fighters: " & $player~value
+	format $planet~planet_shields $player~value NUMBER
+	setVar $msg $msg & "* Planet Shields: " & $player~value
+	format $planet~citadel_credits $player~value CURRENCY
+	setVar $msg $msg & "   Citadel Credits: " & $player~value
+	format $player~fighters $player~value NUMBER
+	setVar $msg $msg & "* Ship Fighters: " & $player~value&"*"
 	setWindowContents alienhunt_script $msg & $msg1
 	setVar $window_content $msg 
 	replaceText $window_content "*" "[][]"
@@ -705,4 +703,3 @@ include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\planet\landonplanetentercitadel\planet"
 include "source\bot_includes\player\buy\player"
-include "source\bot_includes\player\commasize\player"
