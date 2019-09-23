@@ -185,6 +185,11 @@
 				#echo "*["&$player~lasttarget&"]*"
 				if (($thisTarget = $player~lasttarget) and ($firstLoop <> true))
 					setVar $isSameTarget TRUE
+					getwordpos $thisTarget $ourshippos " ["&$player~CORP&"]'s unmanned "
+					if ($ourshippos > 0)
+						# our ship, so stop! #
+						setvar $isSameTarget false
+					end
 				elseif ($player~lasttarget = "")
 					setVar $player~lasttarget $thisTarget
 					setvar $firstLoop false
