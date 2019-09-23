@@ -274,7 +274,10 @@
 		setVar $thisTarget ""
 
 		gosub :attackandmoveship
-		echo "*Waiting for something to hunt..*"
+
+		setvar $switchboard~message "*Waiting for something to hunt..*"
+		gosub :bot~echo 
+
 		:restart
 		gosub :validateFighterHit
 		gosub :attackandmoveship
@@ -378,7 +381,8 @@ return
 		setVar $checkSector SECTOR.WARPS[$dropSector][$i]
 	end
 	if ($targetCount <= 0)
-		echo "No Targets..*"
+		setvar $switchboard~message "No Targets..*"
+		gosub :bot~echo 
 		setVar $targetSectors[1] $CURRENT_LOCATION
 	end
 
@@ -461,7 +465,8 @@ return
 			send "l "&$planet~planet&"* m*** c "
 			setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
 			gosub :SWITCHBOARD~switchboard
-			echo "*" & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
+			setvar $switchboard~message "*" & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
+			gosub :bot~echo
 
 return
 
@@ -660,7 +665,7 @@ return
 
 
 :setWindow
-	setVar $msg " Current Sector " & $PLAYER~CURRENT_SECTOR&"                            "
+	setVar $msg "  Current Sector " & $PLAYER~CURRENT_SECTOR&"                            "
 	cutText $msg $msg 1 30
 	if ($player~unlimitedGame = true)
 		setVar $msg $msg & "   Turns: Unlimited"
@@ -701,6 +706,7 @@ include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\combat\init\combat"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
+include "source\module_includes\bot\echo\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
