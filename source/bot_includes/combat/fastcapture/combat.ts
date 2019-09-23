@@ -149,6 +149,7 @@
 				killtrigger noctarget
 				killtrigger foundcaptarget
 				killtrigger checkcaptarget
+				killtrigger wrongtarget
 				setVar $cap_ship_info CURRENTLINE
 				setVar $thisTarget CURRENTANSILINE
 				getWord $cap_ship_info $attack_prompt 1
@@ -242,7 +243,7 @@
 				killtrigger notarget2
 				killtrigger nocombat
 				killtrigger theyattacked
-
+				killtrigger wrongtarget
 				getText $cap_ship_info $ship_fighters $SHIP~shipList[$type_count] "(Y/N)"
 				if ($ship_fighters = "")
 					getText $cap_ship_info $ship_fighters " (" ") (Y/N)"
@@ -333,6 +334,7 @@
 	goto :capStoppingPoint
 	:nocappingtargets
 		killtrigger noctarget
+		killtrigger wrongtarget
 		killtrigger foundcaptarget
 		killtrigger combat_scan
 		killtrigger cap_it
