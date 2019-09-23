@@ -36,7 +36,7 @@
 	setVar $START_FIG_HIT_OWNER ":"
 	setVar $END_FIG_HIT_OWNER "'s"
 	
-	Window alienhunt_script 330 424 ("Alienhunt - " & GAMENAME) ONTOP
+	Window alienhunt_script 630 200("Alienhunt - " & GAMENAME) ONTOP
 
 
 	getSectorParameter SECTORS "FIGSEC" $isFigged
