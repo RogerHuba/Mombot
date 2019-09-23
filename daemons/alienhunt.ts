@@ -664,17 +664,27 @@ return
 	if (($PLAYER~TURNS > 0) and ($player~unlimitedGame <> true))
 			setVar $msg $msg & "* Turns: " & $PLAYER~TURNS
 	end
-	setVar $msg $msg & "** Alienhunt Planet: " & $planet~planet
-	setVar $msg $msg & "* ----------------------------------------"
+	setarray $window 10
+	setvar $window[1] "** Alienhunt Planet: " & $planet~planet
+	setvar $window[2] "* -----------------------------------------------"
 	format $planet~planet_fuel $player~value NUMBER
-	setVar $msg $msg & "* Planet Fuel: " & $player~value
+	setvar $window[3] "* Planet Fuel: " & $player~value
 	format $planet~planet_fighters $player~value NUMBER
-	setVar $msg $msg & "   Planet Fighters: " & $player~value
+	setvar $window[4] "   Planet Fighters: " & $player~value
 	format $planet~planet_shields $player~value NUMBER
-	setVar $msg $msg & "* Planet Shields: " & $player~value
-	format $planet~citadel_credits $player~value CURRENCY
-	setVar $msg $msg & "   Citadel Credits: " & $player~value
+	setvar $window[5] "* Planet Shields: " & $player~value
+	format $planet~citadel_credits $player~value NUMBER
+	setvar $window[6] "   Citadel Credits: " & $player~value
 	format $player~fighters $player~value NUMBER
+	setvar $window[7] "* Ship Fighters: " & $player~value&"*"
+	cutLengths $window $new_window  20
+
+	setVar $msg $msg & "** Alienhunt Planet: " & $planet~planet
+	setVar $msg $msg & "* -----------------------------------------------"
+	setVar $msg $msg & "* Planet Fuel: " & $player~value
+	setVar $msg $msg & "   Planet Fighters: " & $player~value
+	setVar $msg $msg & "* Planet Shields: " & $player~value
+	setVar $msg $msg & "   Citadel Credits: " & $player~value
 	setVar $msg $msg & "* Ship Fighters: " & $player~value&"*"
 	setWindowContents alienhunt_script $msg & $msg1
 	setVar $window_content $msg 
