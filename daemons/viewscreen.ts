@@ -9,7 +9,6 @@ systemscript
 	gosub :BOT~banner
 	setvar $active_viewscreen false
 
-	setvar $version "2.0.1 12/09/05"
 :setup
 gosub :getTime
 loadvar $bot~folder
@@ -115,7 +114,6 @@ settextlinetrigger offFigHit :figHitProcess "Your fighters in sector"
 #settextlinetrigger entered :figHitProcess "Deployed Fighters Report Sector"
 
 setdelaytrigger    silentdelay :checksilent 900000
-#setTextLineTrigger enter :enterProcess "Deployed Fighters Report Sector "
 #settextlinetrigger limpet :limpetProcess "Limpet mine in "
 
 getDeafClients $BOT~botIsDeaf
@@ -291,17 +289,6 @@ else
 end
 
 
-:enterProcess
-setvar $line CURRENTLINE
-echo "**[][]"  CURRENTLINE "[][]**"
-gosub :killchattriggers
-getword $line $spoofCheck 1
-if ($spoofCheck = "P") OR ($spoofCheck = "F") OR ($spoofCheck = "R") OR ($spoofCheck = ">")
-	goto :start
-else
-	gosub :addEntry2Window
-	goto :start
-end
 
 :limpetProcess
 gosub :killchattriggers

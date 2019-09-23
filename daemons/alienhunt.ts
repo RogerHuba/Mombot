@@ -275,7 +275,7 @@
 
 		gosub :attackandmoveship
 		echo "*Waiting for something to hunt..*"
-		:BOT~restart
+		:restart
 		gosub :validateFighterHit
 		gosub :attackandmoveship
 		gosub :dosurround
@@ -284,6 +284,18 @@
 	halt
 
 :validateFighterHit
+	send "q "
+	gosub :planet~getplanetinfo
+	gosub :setwindow
+	send "c "
+	if ($planet~fighters <= $player~fighters)
+		send "p"&$map~home_sector&"*y  "
+		send "qoccco*cq"
+		waitOn "<Computer deactivated>"
+		setVar $SWITCHBOARD~message "Alien hunter shutting down.  Making ship and planet corporate again.  Check to make sure I made it home.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
 	setTextLineTrigger fig :checkFighter "Deployed Fighters Report Sector"
 	setTextTrigger armid :attackSectorMine "Your mines in "
 	setTextLineTrigger liftsoff :pwarpConfirmed " lifts off from "
