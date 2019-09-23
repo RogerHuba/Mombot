@@ -665,7 +665,7 @@ return
 
 
 :setWindow
-	setVar $msg " Current Sector: " & $PLAYER~CURRENT_SECTOR&"                            "
+	setVar $msg "* Current Sector: " & $PLAYER~CURRENT_SECTOR&"                            "
 	cutText $msg $msg 1 30
 	if ($player~unlimitedGame = true)
 		setVar $msg $msg & "   Turns: Unlimited"
