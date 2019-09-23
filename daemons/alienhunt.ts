@@ -36,7 +36,7 @@
 	setVar $START_FIG_HIT_OWNER ":"
 	setVar $END_FIG_HIT_OWNER "'s"
 	
-	Window alienhunt_script 560 175 ("Alienhunt - " & GAMENAME) ONTOP
+	Window alienhunt_script 560 170 ("Alienhunt - " & GAMENAME) ONTOP
 
 
 	getSectorParameter SECTORS "FIGSEC" $isFigged
@@ -674,7 +674,7 @@ return
 	end
 	setarray $window_lines 7
 	setvar $window_lines[1] "** Alienhunt Planet: " & $planet~planet
-	setvar $window_lines[2] "* ------------------------------------------------------------"
+	setvar $window_lines[2] "* ---------------------------------------------------------------"
 	format $planet~planet_fuel $player~value NUMBER
 	setvar $window_lines[3] "* Planet Fuel: " & $player~value&"                          "
 	cutText $window_lines[3] $window_lines[3] 1 30
