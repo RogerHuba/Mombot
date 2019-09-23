@@ -681,7 +681,7 @@ return
 	cutLengths $window $new_window  20
 
 	setvar $i 1
-	while ($i >= window)
+	while ($i >= $window)
 		setvar $msg $msg&$window[$i]
 		add $i 1
 	end
