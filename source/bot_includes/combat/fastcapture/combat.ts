@@ -197,10 +197,14 @@
 			:ship_type
 				setVar $type_count 0
 				setVar $is_ship 0
+				if ($ship~shipcounter <= 0)
+					setvar $switchboard~message "ERROR with capture.  No ship data loaded.  Look into loadshipinfo not being called.*"
+					gosub :switchboard~switchboard
+				end
 				while ($type_count < $SHIP~shipcounter)
 					add $type_count 1
-					echo "*["&$cap_ship_info&"]*"
-					echo "*["&$SHIP~shipList[$type_count]&"]*"
+					#echo "*["&$cap_ship_info&"]*"
+					#echo "*["&$SHIP~shipList[$type_count]&"]*"
 					getWordPos $cap_ship_info $is_ship $SHIP~shipList[$type_count]
 					getWordPos $cap_ship_info $unman "'s unmanned "
 					getwordpos $cap_ship_info $unman2 "s' unmanned "
