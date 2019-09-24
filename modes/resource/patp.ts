@@ -362,7 +362,7 @@ return
 
 :setWindow
 
-	setarray $window_lines 7
+	setarray $window_lines 8
 
 	setvar $window_lines[1] "** PATP Planet: " & $planet~planets[$j]
 	setvar $window_lines[2] "* ---------------------------------------------------------------"
