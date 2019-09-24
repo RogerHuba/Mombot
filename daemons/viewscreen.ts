@@ -697,11 +697,11 @@ return
 			getWordPos $line $posP "P"
 			getWordPos $line $posPlus "+"
 
-			if (($posF = 1) OR ($posR = 1) OR ($posP = 1) OR ($posPlus = 1))
+			#if (($posF = 1) OR ($posR = 1) OR ($posP = 1) OR ($posPlus = 1))
 				setVar $line_length ($comm_line_length+23)
-			else
-				setVar $line_length $comm_line_length
-			end
+			#else
+			#	setVar $line_length $comm_line_length
+			#end
 			getlength $line $length
 			while ($length <= $line_length)
 				setVar $line $line&" "
