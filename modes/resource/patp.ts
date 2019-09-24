@@ -362,30 +362,31 @@ return
 
 :setWindow
 
+	setarray $window_lines 7
+
 	setvar $window_lines[1] "** PATP Planet: " & $planet~planets[$j]
 	setvar $window_lines[2] "* ---------------------------------------------------------------"
 	setvar $window_lines[3] "*   Current Sector: " & $PLAYER~CURRENT_SECTOR&"                            "
 	cutText $window_lines[3] $window_lines[3] 1 30
 	if ($player~unlimitedGame = true)
-		setvar $window_lines[3] "   Turns: Unlimited"
+		setvar $window_lines[4] "   Turns: Unlimited"
 	else
 		format $player~turns $player~value NUMBER
-		setvar $window_lines[3] "   Turns: " & $PLAYER~value
+		setvar $window_lines[4] "   Turns: " & $PLAYER~value
 	end
-	setarray $window_lines 7
 	format $planet~planet_fuel $player~value NUMBER
-	setvar $window_lines[4] "*    Planet Fuel: " & $player~value&"                          "
-	cutText $window_lines[4] $window_lines[3] 1 30
+	setvar $window_lines[5] "*    Planet Fuel: " & $player~value&"                          "
+	cutText $window_lines[5] $window_lines[3] 1 30
 	format $planet~planet_fighters $player~value NUMBER
-	setvar $window_lines[5] "   Planet Fighters: " & $player~value
+	setvar $window_lines[6] "   Planet Fighters: " & $player~value
 	format $planet~planet_shields $player~value NUMBER
-	setvar $window_lines[6] "* Planet Shields: " & $player~value&"                          "
-	cutText $window_lines[6] $window_lines[5] 1 30
+	setvar $window_lines[7] "* Planet Shields: " & $player~value&"                          "
+	cutText $window_lines[7] $window_lines[5] 1 30
 	format $planet~citadel_credits $player~value NUMBER
-	setvar $window_lines[7] "   Citadel Credits: " & $player~value
+	setvar $window_lines[8] "   Citadel Credits: " & $player~value
 
 	setvar $i 1
-	while ($i <= 7)
+	while ($i <= 8)
 		setvar $msg $msg&$window_lines[$i]
 		add $i 1
 	end
