@@ -420,7 +420,7 @@ if ($WEEKDAY = "Sun")
 	setvar $PELHOH 12
 	goto :76
 end
-setvat $switchboard~message "*GetDay failed, $weekday captured is:" $WEEKDAY "*halting..."
+setvar $switchboard~message "*GetDay failed, $weekday captured is:"&$WEEKDAY&"*halting..."
 gosub :bot~echo
 halt
 
@@ -969,11 +969,11 @@ if ($MCIC <> $HEEEOE)
 				setvar $LHHOLR (($OOHEHY + $variance) * $OLDPEH)
 				if ($planet~planetSHIP = "PLANET") and ($planet~planettrade_ratio <> 1)
 					if ($verbose_debug_mode = TRUE)
-						setvar $switchboard~message "*PTrade="~$planet~planettrade_ratio~", IOTest changed from " $LHHOLR " to "
+						setvar $switchboard~message "*PTrade="&$planet~planettrade_ratio&", IOTest changed from "&$LHHOLR&" to "
 					end
 					multiply $LHHOLR $planet~planettrade_ratio
 					if ($verbose_debug_mode = TRUE)
-						setvar $switchboard~message $LHHOLR&"."
+						setvar $switchboard~message $switchboard~message&$LHHOLR&"."
 						gosub :bot~echo
 					end
 				end
