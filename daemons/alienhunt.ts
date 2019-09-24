@@ -686,7 +686,7 @@ return
 	format $planet~citadel_credits $player~value NUMBER
 	setvar $window_lines[6] "   Citadel Credits: " & $player~value
 	format $player~fighters $player~value NUMBER
-	setvar $window_lines[7] "* Ship Fighters: " & $player~value
+	setvar $window_lines[7] "*  Ship Fighters: " & $player~value
 
 	setvar $i 1
 	while ($i <= 7)
