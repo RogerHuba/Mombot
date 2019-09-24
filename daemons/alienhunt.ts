@@ -665,7 +665,7 @@ return
 
 
 :setWindow
-	setVar $msg "* Current Sector: " & $PLAYER~CURRENT_SECTOR&"                            "
+	setVar $msg "*   Current Sector: " & $PLAYER~CURRENT_SECTOR&"                            "
 	cutText $msg $msg 1 30
 	if ($player~unlimitedGame = true)
 		setVar $msg $msg & "   Turns: Unlimited"
@@ -676,7 +676,7 @@ return
 	setvar $window_lines[1] "** Alienhunt Planet: " & $planet~planet
 	setvar $window_lines[2] "* ---------------------------------------------------------------"
 	format $planet~planet_fuel $player~value NUMBER
-	setvar $window_lines[3] "* Planet Fuel: " & $player~value&"                          "
+	setvar $window_lines[3] "*    Planet Fuel: " & $player~value&"                          "
 	cutText $window_lines[3] $window_lines[3] 1 30
 	format $planet~planet_fighters $player~value NUMBER
 	setvar $window_lines[4] "   Planet Fighters: " & $player~value
