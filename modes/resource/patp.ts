@@ -375,12 +375,12 @@ return
 	end
 	format $planet~planet_fuel $player~value NUMBER
 	setvar $window_lines[5] "*    Planet Fuel: " & $player~value&"                          "
-	cutText $window_lines[5] $window_lines[3] 1 30
+	cutText $window_lines[5] $window_lines[5] 1 30
 	format $planet~planet_fighters $player~value NUMBER
 	setvar $window_lines[6] "   Planet Fighters: " & $player~value
 	format $planet~planet_shields $player~value NUMBER
 	setvar $window_lines[7] "* Planet Shields: " & $player~value&"                          "
-	cutText $window_lines[7] $window_lines[5] 1 30
+	cutText $window_lines[7] $window_lines[7] 1 30
 	format $planet~citadel_credits $player~value NUMBER
 	setvar $window_lines[8] "   Citadel Credits: " & $player~value
 
