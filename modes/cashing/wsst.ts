@@ -932,7 +932,7 @@ return
 	end
 	setVar $formattedPortAverage $spentCredits2&$formattedPortAverage
 
-	setvar $window_content "    Cash Deposited: "&$formattedDepositedCredits&"*      Cash On Hand: "&$formattedOnHandCredits&"*  Busted xxB Ports: "&$numberbusted&"*  Credits per Port: "&$formattedPortAverage&"*   Fighters bought: "&$formattedFighters&"*    Shields bought: "&$formattedShields&"*        Experience: "&$player~experience&"*             Turns: "&$player~turns&"*"
+	setvar $window_content "*    Cash Deposited: "&$formattedDepositedCredits&*  Busted xxB Ports: "&$numberbusted&"*  Credits per Port: "&$formattedPortAverage&"*   Fighters bought: "&$formattedFighters&"*    Shields bought: "&$formattedShields&"*"
 
 	setWindowContents cash $window_content
 	replacetext $window_content "*" "[][]"
