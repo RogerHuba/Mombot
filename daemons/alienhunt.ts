@@ -673,7 +673,7 @@ return
 		setVar $msg $msg & "   Turns: " & $PLAYER~TURNS
 	end
 	setarray $window_lines 7
-	setvar $window_lines[1] "** Alienhunt Planet: " & $planet~planet
+	setvar $window_lines[1] "* Alienhunt Planet: " & $planet~planet
 	setvar $window_lines[2] "* ---------------------------------------------------------------"
 	format $planet~planet_fuel $player~value NUMBER
 	setvar $window_lines[3] "*    Planet Fuel: " & $player~value&"                          "
