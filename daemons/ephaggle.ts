@@ -851,7 +851,7 @@ if ($FINALOFFER = 1)
 	round $PADLENGTH 0
 	getDeafClients $botIsDeaf
 	if ($botIsDeaf)
-		setvar $switchboard~message #27&"[1A"&$toecho
+		setvar $switchboard~message #27&"  "&$toecho
 		gosub :bot~echo
 	else
 		echo #27&"[s"&#27&"["&$PADLENGTH&"C"&#27&"[1A"&$TOECHO&#27&"[u"&ANSI_5
