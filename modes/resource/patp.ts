@@ -363,11 +363,10 @@ return
 :setWindow
 
 	setarray $window_lines 8
-
-	setvar $window_lines[1] "** PATP Planet: " & $planet~planets[$j]
+	setvar $window_lines[1] "** PATP Planet: " & $planet~planet
 	setvar $window_lines[2] "* ---------------------------------------------------------------"
 	setvar $window_lines[3] "*   Current Sector: " & $PLAYER~CURRENT_SECTOR&"                            "
-	cutText $window_lines[3] $window_lines[3] 1 30
+	cutText $window_lines[3] $window_lines[3] 1 25
 	if ($player~unlimitedGame = true)
 		setvar $window_lines[4] "   Turns: Unlimited"
 	else
@@ -386,6 +385,7 @@ return
 	setvar $window_lines[8] "   Citadel Credits: " & $player~value
 
 	setvar $i 1
+	setvar $msg ""
 	while ($i <= 8)
 		setvar $msg $msg&$window_lines[$i]
 		add $i 1
