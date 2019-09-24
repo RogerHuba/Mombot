@@ -108,7 +108,6 @@ setprecision 0
 killalltriggers
 setvar $line CURRENTANSILINE
 gosub :player~quikstats
-waitOn "Command [TL="
 
 setvar $exp $player~experience
 setvar $sector player~current_sector
