@@ -584,33 +584,6 @@ return
 :loadVars
 	loadVar $planet~planet
 	loadVar $PLAYER~unlimitedGame
-	loadVar $PLAYER~CREDITS
-	loadVar $PLAYER~current_sector
-	loadVar $PLAYER~TURNS
-	loadVar $PLAYER~FIGHTERS
-	loadVar $PLAYER~SHIELDS
-	loadVar $player~total_holds
-	loadVar $player~ore_holds
-	loadVar $player~organic_holds
-	loadVar $player~equipment_holds
-	loadVar $player~colonist_holds
-	loadVar $PLAYER~PHOTONS
-	loadVar $PLAYER~ARMIDS
-	loadVar $PLAYER~LIMPETS
-	loadVar $PLAYER~GENESIS
-	loadVar $PLAYER~TWARP_TYPE
-	loadVar $PLAYER~CLOAKS
-	loadVar $PLAYER~BEACONS
-	loadVar $PLAYER~ATOMIC
-	loadVar $PLAYER~CORBO
-	loadVar $PLAYER~EPROBES
-	loadVar $PLAYER~MINE_DISRUPTORS
-	loadVar $PLAYER~PSYCHIC_PROBE
-	loadVar $PLAYER~PLANET_SCANNER
-	loadVar $PLAYER~SCAN_TYPE
-	loadVar $PLAYER~ALIGNMENT
-	loadVar $PLAYER~EXPERIENCE
-	loadVar $PLAYER~SHIP_NUMBER
 	loadVar $PLAYER~TRADER_NAME
 	loadVar $MAP~STARDOCK
 	loadVar $MAP~alpha_centauri
