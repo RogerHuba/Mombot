@@ -697,7 +697,7 @@ return
 			getWordPos $line $posP "P"
 			getWordPos $line $posPlus "+"
 
-			if (($posF > 0) OR ($posR > 0) OR ($posP > 0) OR ($posPlus > 0))
+			if (($posF = 1) OR ($posR = 1) OR ($posP = 1) OR ($posPlus = 1))
 				setVar $line_length ($comm_line_length+23)
 			else
 				setVar $line_length $comm_line_length
