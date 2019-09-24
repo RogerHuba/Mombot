@@ -569,15 +569,15 @@ return
 	cutText CURRENTTWARPTYPE&"    " $player~twarp_type 0 3
 	cutText CURRENTSCANTYPE&"    " $player~scan_type 0 3
 
-	setVar $stats[19] "   EProbes: "&$player~eprobes&"   Beacons: "&CURRENTBEACONS&"*"
-	setVar $stats[20] "   Disrupt: "&$player~mine_disruptors&"   Photons: "&CURRENTPHOTONS&"*"
-	setVar $stats[21] "    Armids: "&$player~armids&"   Limpets: "&CURRENTLIMPETS&"*"
-	setVar $stats[22] "   Genesis: "&$player~genesis&"   AtmDets: "&CURRENTATOMICS&"*"
+	setVar $stats[19] "   EProbes: "&$player~eprobes&ANSI_5&"   Beacons: "&CURRENTBEACONS&"*"
+	setVar $stats[20] "   Disrupt: "&$player~mine_disruptors&ANSI_5&"   Photons: "&CURRENTPHOTONS&"*"
+	setVar $stats[21] "    Armids: "&$player~armids&ANSI_5&"   Limpets: "&CURRENTLIMPETS&"*"
+	setVar $stats[22] "   Genesis: "&$player~genesis&ANSI_5&"   AtmDets: "&CURRENTATOMICS&"*"
 	setvar $player~value CURRENTCORBOMITE
 	gosub :player~commasize
-	setVar $stats[23] "    Cloaks: "&$player~cloaks&"    Corbos: "&$player~value&"*"
-	setVar $stats[24] "     Twarp: "&$player~twarp_type&"   PlnScan: "&CURRENTPLANETSCANNER&"*"
-	setVar $stats[25] "   Scanner: "&$player~scan_type&"   PsiProb: "&CURRENTPSYCHICPROBE&"*"
+	setVar $stats[23] "    Cloaks: "&$player~cloaks&ANSI_5&"    Corbos: "&$player~value&"*"
+	setVar $stats[24] "     Twarp: "&$player~twarp_type&ANSI_5&"   PlnScan: "&CURRENTPLANETSCANNER&"*"
+	setVar $stats[25] "   Scanner: "&$player~scan_type&ANSI_5&"   PsiProb: "&CURRENTPSYCHICPROBE&"*"
 	setVar $stats[26] "     *"
 return
 
