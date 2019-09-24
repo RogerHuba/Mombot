@@ -526,31 +526,31 @@ return
 	else
 		setVar $stats[3] "     Turns : "&$PLAYER~TURNS&"*"
 	end 
-	setvar $player~value $player~experience
+	setvar $player~value CURRENTEXPERIENCE
 	gosub :player~commasize
 	setVar $stats[4]  "       Exp : "&$player~value&"*"
-	setvar $player~value $player~alignment
+	setvar $player~value CURRENTALIGNMENT
 	gosub :player~commasize
 	setVar $stats[5]  "     Align : "&$player~value&"*"
-	setvar $player~value $player~credits
+	setvar $player~value CURRENTCREDITS
 	gosub :player~commasize
 	setVar $stats[6]  "   Credits : "&$player~value&"*"	
-	setVar $stats[7]  "Holds Info : "&$player~total_holds&"*"
-	setVar $stats[8] "  Fuel Ore : "&$player~ore_holds&"*"
-	setVar $stats[9] "  Organics : "&$player~organic_holds&"*"
-	setVar $stats[10] " Equipment : "&$player~equipment_holds&"*"
-	setVar $stats[11] " Colonists : "&$player~colonist_holds&"*"
-	setVar $empty_holds ($player~total_holds - $player~ore_holds)
-	setVar $empty_holds ($empty_holds - $player~organic_holds)
-	setVar $empty_holds ($empty_holds - $player~equipment_holds)
-	setVar $empty_holds ($empty_holds - $player~colonist_holds)
+	setVar $stats[7]  "Holds Info : "&CURRENTTOTALHOLDS&"*"
+	setVar $stats[8] "  Fuel Ore : "&CURRENTOREHOLDS&"*"
+	setVar $stats[9] "  Organics : "&CURRENTORGHOLDS&"*"
+	setVar $stats[10] " Equipment : "&CURRENTEQUHOLDS&"*"
+	setVar $stats[11] " Colonists : "&CURRENTCOLHOLDS&"*"
+	setVar $empty_holds (CURRENTTOTALHOLDS - CURRENTOREHOLDS)
+	setVar $empty_holds ($empty_holds - CURRENTORGHOLDS)
+	setVar $empty_holds ($empty_holds - CURRENTEQUHOLDS)
+	setVar $empty_holds ($empty_holds - CURRENTCOLHOLDS)
 	
-	setVar $stats[12] "     Empty : "&$PLAYER~EMPTY_HOLDS&"*"
-	setVar $stats[13] "    Ship # : "&$PLAYER~SHIP_NUMBER&"*"
-	setvar $player~value $player~fighters
+	setVar $stats[12] "     Empty : "&CURRENTEMPTYHOLDS&"*"
+	setVar $stats[13] "    Ship # : "&CURRENTSHIPNUMBER&"*"
+	setvar $player~value CURRENTFIGHTERS
 	gosub :player~commasize
 	setVar $stats[14] "  Fighters : "&$player~value&"*"
-	setvar $player~value $player~shields
+	setvar $player~value CURRENTSHIELDS
 	gosub :player~commasize
 	setVar $stats[15] "   Shields : "&$player~value&"*"
 	setvar $player~value $ship~ship_fighters_max
@@ -561,23 +561,23 @@ return
 	setVar $stats[17] "  Max Wave : "&$player~value&"*"
 	setVar $stats[18] "Turns/Warp : "&$PLAYER~TURNS_PER_WARP&"*"
 	
-	cutText $PLAYER~ARMIDS&"    " $player~armids 0 3
-	cutText $PLAYER~CLOAKS&"    " $player~cloaks 0 3
-	cutText $PLAYER~GENESIS&"    " $player~genesis 0 3
-	cutText $PLAYER~MINE_DISRUPTORS&"    " $player~mine_disruptors 0 3
-	cutText $PLAYER~EPROBES&"    " $player~eprobes 0 3
-	cutText $PLAYER~TWARP_TYPE&"    " $player~twarp_type 0 3
-	cutText $PLAYER~SCAN_TYPE&"    " $player~scan_type 0 3
+	cutText CURRENTARMIDS&"    " $player~armids 0 3
+	cutText CURRENTCLOAKS&"    " $player~cloaks 0 3
+	cutText CURRENTGENTORPS&"    " $player~genesis 0 3
+	cutText CURRENTMINEDISR&"    " $player~mine_disruptors 0 3
+	cutText CURRENTEPROBES&"    " $player~eprobes 0 3
+	cutText CURRENTTWARPTYPE&"    " $player~twarp_type 0 3
+	cutText CURRENTSCANTYPE&"    " $player~scan_type 0 3
 
-	setVar $stats[19] "   EProbes : "&$player~eprobes&" | Beacons : "&$PLAYER~beacons&"*"
-	setVar $stats[20] "   Disrupt : "&$player~mine_disruptors&" | Photons : "&$PLAYER~PHOTONS&"*"
-	setVar $stats[21] "    Armids : "&$player~armids&" | Limpets : "&$PLAYER~LIMPETS&"*"
-	setVar $stats[22] "   Genesis : "&$player~genesis&" | AtmDets : "&$PLAYER~ATOMIC&"*"
-	setvar $player~value $player~corbo
+	setVar $stats[19] "   EProbes : "&$player~eprobes&" | Beacons : "&CURRENTBEACONS&"*"
+	setVar $stats[20] "   Disrupt : "&$player~mine_disruptors&" | Photons : "&CURRENTPHOTONS&"*"
+	setVar $stats[21] "    Armids : "&$player~armids&" | Limpets : "&CURRENTLIMPETS&"*"
+	setVar $stats[22] "   Genesis : "&$player~genesis&" | AtmDets : "&CURRENTATOMICS&"*"
+	setvar $player~value CURRENTCORBOMITE
 	gosub :player~commasize
 	setVar $stats[23] "    Cloaks : "&$player~cloaks&" |  Corbos : "&$player~value&"*"
-	setVar $stats[24] "     Twarp : "&$player~twarp_type&" | PlnScan : "&$PLAYER~PLANET_SCANNER&"*"
-	setVar $stats[25] "   Scanner : "&$player~scan_type&" | PsiProb : "&$PLAYER~PSYCHIC_PROBE&"*"
+	setVar $stats[24] "     Twarp : "&$player~twarp_type&" | PlnScan : "&CURRENTPLANETSCANNER&"*"
+	setVar $stats[25] "   Scanner : "&$player~scan_type&" | PsiProb : "&CURRENTPSYCHICPROBE&"*"
 	setVar $stats[26] "     *"
 return
 
