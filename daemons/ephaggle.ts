@@ -11,6 +11,7 @@ setvar $SIGLINE "EP's Perfect Haggle, v. " & $VERSION
 
 
 gosub :BOT~loadVars
+loadvar $GAME~ptradesetting
 
 setvar $bot~command "ephaggle"
 setVar $BOT~help[1]  $BOT~tab&"ephaggle {blue|worst} {planet"
@@ -32,7 +33,7 @@ setvar $MCICFILENAME $folder&"/mcic.csv"
 setvar $HAHTOGGLE "Off"
 setvar $WPTOGGLE "Off"
 setvar $game~mbbsTOGGLE "Off"
-setvar $game~ptradesetting 100
+#setvar $game~ptradesetting 100
 setvar $bot~bluehaggle false
 setvar $SWATHBIDCAP "On"
 setvar $HAGGLESTAT "Active"
@@ -240,7 +241,8 @@ killtrigger "EXP"
 killtrigger "EXP2"
 getword CURRENTLINE $player~experience_increase 8
 if ($verbose_debug_mode = TRUE)
-	echo ANSI_14 "*EXP added: " $player~experience_increase
+	setvar $switchboard~message ANSI_14&"*EXP added: "&$player~experience_increase
+	gosub :bot~echo
 end
 add $player~experience $player~experience_increase
 round $player~experience 0
@@ -318,7 +320,8 @@ if ($PERCENT[$PRODUCT] = 0)
 	getsectorparameter $SECTOR $PRODUCT & "L" $TEMPPROD1
 	getsectorparameter $SECTOR $PRODUCT & "H" $TEMPPROD2
 	if ($TEMPPROD1 = 0) or ($TEMPPROD2 = 0)
-		echo "*Can not derive values when Percentage is 0 and Productivity is unknown.*Complete haggling manually."
+		setvar $switchboard~message "*Can not derive values when Percentage is 0 and Productivity is unknown.*Complete haggling manually."
+		gosub :bot~echo
 		send "*"
 		killalltriggers
 		settextlinetrigger STARTCREDITS :STARTCREDITS "credits"
@@ -417,7 +420,8 @@ if ($WEEKDAY = "Sun")
 	setvar $PELHOH 12
 	goto :76
 end
-echo "*GetDay failed, $weekday captured is:" $WEEKDAY "*halting..."
+setvat $switchboard~message "*GetDay failed, $weekday captured is:" $WEEKDAY "*halting..."
+gosub :bot~echo
 halt
 
 :76
@@ -444,8 +448,10 @@ end
 getsectorparameter $SECTOR $PRODUCT & "L" $LOWPRODUCTIVITY
 getsectorparameter $SECTOR $PRODUCT & "H" $HIGHPRODUCTIVITY
 if ($verbose_debug_mode = TRUE)
-	echo "*LowProductivity (Saved) = " $LOWPRODUCTIVITY
-	echo "*HighProductivity (Saved) = " $HIGHPRODUCTIVITY
+	setvar $switchboard~message "*LowProductivity (Saved) = "&$LOWPRODUCTIVITY
+	gosub :bot~echo
+	setvar $switchboard~message "*HighProductivity (Saved) = "&$HIGHPRODUCTIVITY
+	gosub :bot~echo
 end
 isnumber $isnumber $LOWPRODUCTIVITY
 if ($isnumber <> true)
@@ -465,13 +471,15 @@ if ($PERCENT = 100)
 	end
 	setvar $HIGHPRODUCTIVITY $HHREPP
 	if ($verbose_debug_mode = TRUE)
-		echo "*Percent=100, Productivity=" $PRODUCTIVITY
+		setvar $switchboard~message "*Percent=100, Productivity="&$PRODUCTIVITY
+		gosub :bot~echo
 	end
 	goto :93
 end
 if ($PERCENT = 0)
 	if ($LOWPRODUCTIVITY = "") or ($HIGHPRODUCTIVITY = "")
-		echo "*Unable to determine MCIC when Percentage is zero, complete haggle by hand.*"
+		setvar $switchboard~message "*Unable to determine MCIC when Percentage is zero, complete haggle by hand.*"
+		gosub :bot~echo
 		settextlinetrigger STARTCREDITS :STARTCREDITS "credits"
 		settextlinetrigger GOODTRADE :GOODTRADE "For your good trading"
 		settextlinetrigger GREATTRADE :GOODTRADE "For your great trading"
@@ -517,8 +525,10 @@ isnumber $YN2 $high_mcic_guess
 if ($YN1) and ($YN2)
 	if (($low_mcic_guess * $EHYLOD) < $low_mcic_guess[$PRODUCT]) or (($low_mcic_guess * $EHYLOD) > $high_mcic_guess[$PRODUCT]) or (($high_mcic_guess * $EHYLOD) < $low_mcic_guess[$PRODUCT]) or (($high_mcic_guess * $EHYLOD) > $high_mcic_guess[$PRODUCT])
 		if ($verbose_debug_mode = TRUE)
-			echo "*Invalid Parameter previously saved for Sector " $SECTOR
-			echo "mcicMin was <" $low_mcic_guess ">   mcicMax was <" $high_mcic_guess ">    Resetting."
+			setvar $switchboard~message "*Invalid Parameter previously saved for Sector "&$SECTOR
+			gosub :bot~echo
+			setvar $switchboard~message "mcicMin was <"&$low_mcic_guess&">   mcicMax was <"&$high_mcic_guess&">    Resetting."
+			gosub :bot~echo
 		end
 		setsectorparameter $SECTOR $PRODUCT & "-" ""
 		setsectorparameter $SECTOR $PRODUCT & "+" ""
@@ -529,12 +539,14 @@ end
 if ($low_mcic_guess <> "") and ($high_mcic_guess <> "")
 	if ($low_mcic_guess = $high_mcic_guess)
 		if ($verbose_debug_mode = TRUE)
-			echo "*Using saved MCIC of " $low_mcic_guess
+			setvar $switchboard~message "*Using saved MCIC of "&$low_mcic_guess
+			gosub :bot~echo
 		end
 		goto :115
 	end
 	if ($verbose_debug_mode = TRUE)
-		echo "*Using saved MCIC values: " $low_mcic_guess " - " $high_mcic_guess
+		setvar $switchboard~message "*Using saved MCIC values: "&$low_mcic_guess&" - "&$high_mcic_guess
+		gosub :bot~echo
 	end
 
 :115
@@ -553,7 +565,8 @@ setvar $FAILED 0
 gettime $STARTTIME
 isnumber $YN $player~experience
 if ($YN = 0)
-	echo "*At START, but $exp is not a number, pausing..."
+	setvar $switchboard~message "*At START, but $exp is not a number, pausing..."
+	gosub :bot~echo
 	pause
 end
 if ($player~experience > 999) or ($planet~planetSHIP = "PLANET")
@@ -569,13 +582,15 @@ setvar $LEDREO (($HIGHPRODUCTIVITY -$LOWPRODUCTIVITY) + 1)
 round $LEDREO 0
 if ($LEDREO > 10) and ($planet~planetSHIP = "SHIP")
 	if ($verbose_debug_mode = TRUE)
-		echo "*Productivity range = " ANSI_12 $LEDREO ANSI_10 ", using LowPercent routine*"
+		setvar $switchboard~message "*Productivity range = "&ANSI_12&$LEDREO&ANSI_10&", using LowPercent routine*"
+		gosub :bot~echo
 	end
 	gosub :LOWPERCENT
 	goto :125
 end
 if ($verbose_debug_mode = TRUE)
-	echo "*Productivity range = " ANSI_12 $LEDREO ANSI_10 ", using Conventional routine*"
+	setvar $switchboard~message "*Productivity range = "&ANSI_12&$LEDREO&ANSI_10&", using Conventional routine*"
+	gosub :bot~echo
 end
 gosub :CONVENTIONAL
 
@@ -624,7 +639,8 @@ setvar $LASTCOUNTER $LTPEHL
 if ($planet~planetSHIP = "PLANET") and ($planet~planettrade_ratio <> 1)
 	setvar $LASTCOUNTER ($RHYEDL / $planet~planettrade_ratio)
 	if ($verbose_debug_mode = TRUE)
-		echo "*Faking LastCounter as " $LASTCOUNTER " instead of " $RHYEDL "."
+		setvar $switchboard~message "*Faking LastCounter as "&$LASTCOUNTER&" instead of "&$RHYEDL&"."
+		gosub :bot~echo
 	end
 end
 setvar $LTPEHL 0
@@ -732,7 +748,8 @@ if ($I <= $LHTEYH)
 			round $TEMP 4
 			round $HDPYDH 4
 			if ($verbose_debug_mode = TRUE)
-				echo "*Counter (" $TEMP ") is below StupidOffer (" $HDPYDH "), adjusting."
+				setvar $switchboard~message "*Counter ("&$TEMP&") is below StupidOffer ("&$HDPYDH&"), adjusting."
+				gosub :bot~echo
 			end
 			setvar $LTPEHL ($HDPYDH + ".5")
 		end
@@ -794,7 +811,8 @@ if ($BID > 3) and ($FINALOFFER <> 1) or ($bot~haggleandhold = 1) and ($FINALOFFE
 	setvar $LTPEHL $LASTCOUNTER
 end
 if ($LTPEHL = 0)
-	echo ANSI_12 "*Counter is ZERO, input Counter manually, (or ENTER to accept their offer):"
+	setvar $switchboard~message ANSI_12&"*Counter is ZERO, input Counter manually, (or ENTER to accept their offer):"
+	gosub :bot~echo
 	#getconsoleinput $LTPEHL
 	send "*"
 	if ($LTPEHL = "")
@@ -815,12 +833,14 @@ if ($FINALOFFER = 1) or ($planet~planetSHIP = "SHIP") and ($bot~worstprice = 1) 
 	setvar $TOECHO $TOECHO & ANSI_12 & "  >>>"
 	replacetext $OUTTEXTSTRING "*" "[CR]"
 	if ($verbose_debug_mode = TRUE)
-		echo $toecho
+		setvar $switchboard~message $toecho
+		gosub :bot~echo
 	end
 end
 if ($LHTEYH = 1) and ($LHTEYH[1][6] = 1)
 	if ($verbose_debug_mode = TRUE)
-		echo ANSI_12 "*   <<<  " ANSI_14 "Exact .5 Anomaly Detected for this MCIC" ANSI_12 "  >>>"
+		setvar $switchboard~message ANSI_12 "*   <<<  " ANSI_14 "Exact .5 Anomaly Detected for this MCIC" ANSI_12 "  >>>"
+		gosub :bot~echo
 	end
 end
 if ($FINALOFFER = 1)
@@ -829,7 +849,8 @@ if ($FINALOFFER = 1)
 	getlength CURRENTLINE $LINELENGTH
 	setvar $PADLENGTH ((80 -$LINELENGTH) -$ECHOLENGTH)
 	round $PADLENGTH 0
-	echo #27 "[s" #27 "[" $PADLENGTH "C" #27 "[1A" $TOECHO #27 "[u" ANSI_5
+	setvar $switchboard~message #27&"[s"&#27&"["&$PADLENGTH&"C"&#27&"[1A"&$TOECHO&#27&"[u"&ANSI_5
+	gosub :bot~echo
 end
 if ($planet~planetSHIP = "PLANET") and ($planet~planettrade_ratio <> 1)
 	gosub :SUBPTRADENOT100
@@ -837,7 +858,8 @@ if ($planet~planetSHIP = "PLANET") and ($planet~planettrade_ratio <> 1)
 end
 if ($planet~planetSHIP = "PLANET") and ($FINALOFFER = 1)
 	if ($verbose_debug_mode = TRUE)
-		echo "*Deducting Final Counter by 1*"
+		setvar $switchboard~message "*Deducting Final Counter by 1*"
+		gosub :bot~echo
 	end
 	subtract $LTPEHL 1
 	round $LTPEHL 0
@@ -864,8 +886,10 @@ pause
 
 :CONVENTIONAL
 if ($verbose_debug_mode = TRUE)
-	echo "*Calculated MinProductivity=" $HHREPP
-	echo "*Calculated MaxProductivity=" $MAXPRODUCTIVITY
+	setvar $switchboard~message  "*Calculated MinProductivity="&$HHREPP
+	gosub :bot~echo
+	setvar $switchboard~message  "*Calculated MaxProductivity="&$MAXPRODUCTIVITY
+	gosub :bot~echo
 end
 setvar $LHTEYH 0
 setarray $LHTEYH 0
@@ -880,7 +904,8 @@ round $HEEEOE 0
 if ($MCIC <> $HEEEOE)
 	if ($verbose_debug_mode = TRUE)
 		setvar $CONVENTIONALSUBECHO ""
-		echo "*MCIC=" $MCIC
+		setvar $switchboard~message "*MCIC="&$MCIC
+		gosub :bot~echo
 	end
 	setvar $OOHEHY (($MCIC / 1000) + 1)
 	setvar $OTYHLY (($MCIC * ($price_ratio_per_hold[$PRODUCT] * $PORTQTY)) / 10)
@@ -889,7 +914,8 @@ if ($MCIC <> $HEEEOE)
 :233
 	if ($PRODUCTIVITY <= $HIGHPRODUCTIVITY)
 		if ($verbose_debug_mode = TRUE)
-			echo " Productivity=" $PRODUCTIVITY
+			setvar $switchboard~message " Productivity="&$PRODUCTIVITY
+			gosub :bot~echo
 		end
 		setvar $HTTYPY ($OTYHLY / $PRODUCTIVITY)
 		setvar $base_var $EDDHPO
@@ -897,7 +923,8 @@ if ($MCIC <> $HEEEOE)
 :237
 		if ($base_var <= $PELHOH)
 			if ($verbose_debug_mode = TRUE)
-				echo ANSI_10 "*BaseVar=" $base_var
+				setvar $switchboard~message ANSI_10&"*BaseVar="&$base_var
+				gosub :bot~echo
 			end
 			setvar $EODERY (($PLUSMINUS * $base_var) + $ODHPTH)
 			setvar $calculated_price_per_hold (($EODERY -$under_1000_experience_rate) -$HTTYPY)
@@ -913,7 +940,8 @@ if ($MCIC <> $HEEEOE)
 			if ($verbose_debug_mode = TRUE)
 				setvar $ECHOEXACTPRICE $OLDPEH
 				round $ECHOEXACTPRICE 4
-				echo " ExactPrice=" $ECHOEXACTPRICE
+				setvar $switchboard~message " ExactPrice="&$ECHOEXACTPRICE
+				gosub :bot~echo
 			end
 			setvar $OLHYOY ((($OOHEHY -"0.003") * $OLDPEH) -"0.5001")
 			round $OLHYOY 0
@@ -921,13 +949,16 @@ if ($MCIC <> $HEEEOE)
 			round $TDLEOH 0
 			if ($OFFER < $OLHYOY) or ($OFFER > $TDLEOH)
 				if ($verbose_debug_mode = TRUE)
-					echo ANSI_15 " (" $OLHYOY " - " $TDLEOH ")*"
+					setvar $switchboard~message  ANSI_15&" ("&$OLHYOY&" - "&$TDLEOH&")*"
+					gosub :bot~echo
 				end
 				goto :246
 			end
 			if ($verbose_debug_mode = TRUE)
-				echo ANSI_15 " (" ANSI_12 $OLHYOY ANSI_15 " - " ANSI_12 $TDLEOH ANSI_15 ")*"
-				echo ANSI_11 "*-.003 -.002 -.001 -000- +.001 +.002 +.003*" ANSI_10
+				setvar $switchboard~message ANSI_15&" ("&ANSI_12&$OLHYOY&ANSI_15&" - "&ANSI_12&$TDLEOH&ANSI_15&")*"
+				gosub :bot~echo
+				setvar $switchboard~message ANSI_11&"*-.003 -.002 -.001 -000- +.001 +.002 +.003*"&ANSI_10
+				gosub :bot~echo
 			end
 			setvar $variance $ROLLHH
 
@@ -938,11 +969,12 @@ if ($MCIC <> $HEEEOE)
 				setvar $LHHOLR (($OOHEHY + $variance) * $OLDPEH)
 				if ($planet~planetSHIP = "PLANET") and ($planet~planettrade_ratio <> 1)
 					if ($verbose_debug_mode = TRUE)
-						echo "*PTrade=" $planet~planettrade_ratio ", IOTest changed from " $LHHOLR " to "
+						setvar $switchboard~message "*PTrade="~$planet~planettrade_ratio~", IOTest changed from " $LHHOLR " to "
 					end
 					multiply $LHHOLR $planet~planettrade_ratio
 					if ($verbose_debug_mode = TRUE)
-						echo $LHHOLR "."
+						setvar $switchboard~message $LHHOLR&"."
+						gosub :bot~echo
 					end
 				end
 				setvar $ROUNDANOMALY FALSE
@@ -975,7 +1007,8 @@ if ($MCIC <> $HEEEOE)
 				end
 				if ($LHHOLR = $OFFER)
 					if ($verbose_debug_mode = TRUE)
-						echo ANSI_12 $IOTPAD $LHHOLR " "
+						setvar $switchboard~message ANSI_12&$IOTPAD&$LHHOLR&" "
+						gosub :bot~echo
 					end
 					gosub :CONVENTIONALSUB
 					goto :267
@@ -984,13 +1017,15 @@ if ($MCIC <> $HEEEOE)
 					if ($ISROUNDEDDOWN = TRUE)
 						if (($LHHOLR + 1) = $OFFER)
 							if ($verbose_debug_mode = TRUE)
-								echo ANSI_13 $IOTPAD "v" ANSI_12 $LHHOLR " "
+								setvar $switchboard~message ANSI_13&$IOTPAD&"v"&ANSI_12&$LHHOLR&" "
+								gosub :bot~echo
 							end
 							gosub :CONVENTIONALSUB
 							goto :275
 						end
 						if ($verbose_debug_mode = TRUE)
-							echo ANSI_13 $IOTPAD "v" ANSI_10 $LHHOLR " "
+							setvar $switchboard~message ANSI_13&$IOTPAD&"v"&ANSI_10&$LHHOLR&" "
+							gosub :bot~echo
 						end
 
 :275
@@ -999,13 +1034,15 @@ if ($MCIC <> $HEEEOE)
 					if ($ISROUNDEDDOWN = FALSE)
 						if (($LHHOLR -1) = $OFFER)
 							if ($verbose_debug_mode = TRUE)
-								echo ANSI_13 $IOTPAD "^" ANSI_12 $LHHOLR " "
+								setvar $switchboard~message ANSI_13&$IOTPAD&"^"&ANSI_12&$LHHOLR&" "
+								gosub :bot~echo
 							end
 							gosub :CONVENTIONALSUB
 							goto :282
 						end
 						if ($verbose_debug_mode = TRUE)
-							echo ANSI_13 $IOTPAD "^" ANSI_10 $LHHOLR " "
+							setvar $switchboard~message ANSI_13&$IOTPAD&"^"&ANSI_10&$LHHOLR&" "
+							gosub :bot~echo
 						end
 
 :282
@@ -1016,10 +1053,12 @@ if ($MCIC <> $HEEEOE)
 				if ($verbose_debug_mode = TRUE)
 					if ($ROUNDANOMALY = FALSE)
 						if (($LHHOLR -$OFFER) = 1) or (($OFFER -$LHHOLR) = 1)
-							echo ANSI_13 $IOTPAD $LHHOLR " "
+							setvar $switchboard~message ANSI_13&$IOTPAD&$LHHOLR&" "
+							gosub :bot~echo
 							goto :292
 						end
-						echo ANSI_10 $IOTPAD $LHHOLR " "
+						setvar $switchboard~message ANSI_10&$IOTPAD&$LHHOLR&" "
+						gosub :bot~echo
 
 :292
 					end
@@ -1031,7 +1070,8 @@ if ($MCIC <> $HEEEOE)
 				goto :251
 			end
 			if ($verbose_debug_mode = TRUE)
-				echo "*"
+				setvar $switchboard~message "*"
+				gosub :bot~echo
 			end
 
 :246
@@ -1044,7 +1084,8 @@ if ($MCIC <> $HEEEOE)
 		goto :233
 	end
 	if ($verbose_debug_mode = TRUE)
-		echo ANSI_15 $CONVENTIONALSUBECHO ANSI_10
+		setvar $switchboard~message ANSI_15&$CONVENTIONALSUBECHO&ANSI_10
+		gosub :bot~echo
 	end
 	add $MCIC $EHYLOD
 	round $MCIC 0
@@ -1106,7 +1147,8 @@ if (($MCIC * $EHYLOD) <= ($high_mcic_guess * $EHYLOD))
 	round $OEYROT 3
 	if ($OEYROT < 4)
 		if ($verbose_debug_mode = TRUE)
-			echo "*Risk of anomaly at MCIC " $MCIC ", Min=" $OEYROT ", going to Conventional routine."
+			setvar $switchboard~message "*Risk of anomaly at MCIC "&$MCIC&", Min="&$OEYROT&", going to Conventional routine."
+			gosub :bot~echo
 		end
 		gosub :CONVENTIONAL
 		return
@@ -1201,7 +1243,8 @@ if ($LHTEYH > 0)
 		if (($LHTEYH[$I][1] * $EHYLOD) < ($LHEEHH * $EHYLOD)) or ($LHEEHH = 0)
 			setvar $LHEEHH $LHTEYH[$I][1]
 			if ($verbose_debug_mode = TRUE)
-				echo "*In :saveDeriveResults, setting $lHEEhh to " $LHTEYH[$I][1]
+				setvar $switchboard~message "*In :saveDeriveResults, setting $lHEEhh to "&$LHTEYH[$I][1]
+				gosub :bot~echo
 			end
 		end
 		if (($LHTEYH[$I][1] * $EHYLOD) > ($EHPHHL * $EHYLOD))
@@ -1218,8 +1261,10 @@ if ($LHTEYH > 0)
 		goto :339
 	end
 	if ($verbose_debug_mode = TRUE)
-		echo "*Derived Min/Max MCIC = " $LHEEHH " & " $EHPHHL
-		echo "*Derived Min/Max Productivity = " $HODDHL " & " $PYHOPR
+		setvar $switchboard~message "*Derived Min/Max MCIC = "&$LHEEHH&" & "&$EHPHHL
+		gosub :bot~echo
+		setvar $switchboard~message "*Derived Min/Max Productivity = "&$HODDHL&" & "&$PYHOPR
+		gosub :bot~echo
 	end
 	setsectorparameter $SECTOR $PRODUCT & "-" $LHEEHH
 	setsectorparameter $SECTOR $PRODUCT & "+" $EHPHHL
@@ -1229,10 +1274,12 @@ if ($LHTEYH > 0)
 end
 if ($FAILED = 0)
 	if ($verbose_debug_mode = TRUE)
-		echo ANSI_12 "*Derive Failed Once, Adjusting highProductivity.*"
+		setvar $switchboard~message ANSI_12&"*Derive Failed Once, Adjusting highProductivity.*"
+		gosub :bot~echo
 		gosub :LOGDERIVEFAILURE
 		if ($paused_debug_mode = TRUE)
-			echo "*Press SPACE to continue..."
+			setvar $switchboard~message "*Press SPACE to continue..."
+			gosub :bot~echo
 			settextouttrigger DEBUGPAUSE :DBP1 " "
 			pause
 
@@ -1246,9 +1293,11 @@ if ($FAILED = 0)
 end
 if ($FAILED = 1)
 	if ($verbose_debug_mode = TRUE)
-		echo ANSI_12 "*Derive Failed Twice, Resetting Productivity and MCIC values.*"
+		setvar $switchboard~message ANSI_12&"*Derive Failed Twice, Resetting Productivity and MCIC values.*"
+		gosub :bot~echo
 		if ($paused_debug_mode = TRUE)
-			echo "*Press SPACE to continue..."
+			setvar $switchboard~message "*Press SPACE to continue..."
+			gosub :bot~echo
 			settextouttrigger DEBUGPAUSE :DBP2 " "
 			pause
 
@@ -1271,19 +1320,23 @@ if ($FAILED = 1)
 	goto :338
 end
 if ($FAILED = 2)
-	echo ANSI_12 "*Derive Failed, Port parameters could not be determined.*"
+	setvar $switchboard~message ANSI_12&"*Derive Failed, Port parameters could not be determined.*"
+	gosub :bot~echo
 	if ($paused_debug_mode = TRUE)
-		echo "*Press SPACE to continue..."
+		setvar $switchboard~message "*Press SPACE to continue..."
+		gosub :bot~echo
 		settextouttrigger DEBUGPAUSE :DBP3 " "
 		pause
 
 :DBP3
 	end
 	if ($planet~planetSHIP = "PLANET")
-		echo "Ensure that MBBS and Planetary Trade values are correct.*"
+		setvar $switchboard~message "Ensure that MBBS and Planetary Trade values are correct.*"
+		gosub :bot~echo
 		goto :367
 	end
-	echo "Ensure that MBBS value is correct.*"
+	setvar $switchboard~message "Ensure that MBBS value is correct.*"
+	gosub :bot~echo
 
 :367
 	gosub :KILLTEXTOUTS
@@ -1314,7 +1367,8 @@ return
 :SUBPTRADENOT100
 setvar $RHYEDL ($LTPEHL * $planet~planettrade_ratio)
 if ($verbose_debug_mode = TRUE)
-	echo "*PTradeCounter=" $LTPEHL " X " $planet~planettrade_ratio " = " $RHYEDL "*"
+	setvar $switchboard~message "*PTradeCounter="&$LTPEHL&" X "&$planet~planettrade_ratio&" = "&$RHYEDL&"*"
+	gosub :bot~echo
 end
 if ($FINALOFFER = 1)
 	if ($BUYSELL = "BUYING")
@@ -1326,7 +1380,8 @@ if ($FINALOFFER = 1)
 :379
 end
 round $RHYEDL 0
-echo "$RHYEDL:*"
+setvar $switchboard~message "$RHYEDL:"&$RHYEDL&"*"
+gosub :bot~echo
 send $RHYEDL "*"
 return
 
@@ -1373,12 +1428,14 @@ return
 
 :READMCICFILE
 setprecision 0
-echo ANSI_10 "*Merging data from file into Database..."
+setvar $switchboard~message ANSI_10&"*Merging data from file into Database..."
+gosub :bot~echo
 setvar $ERRORS ""
 setvar $MCICFILELINE 2
 read $MCICFILENAME $$FILETEST 1
 if ($FILETEST <> "Sector,Product,LowMCIC,HighMCIC,LowProductivity,HighProductivity")
-	echo ANSI_12 "FAILED!*THIS FILE IS NOT A VALID EXPORT!**"
+	setvar $switchboard~message ANSI_12&"FAILED!*THIS FILE IS NOT A VALID EXPORT!**"
+	gosub :bot~echo
 	return
 end
 read $MCICFILENAME $MCICFILEDATA $MCICFILELINE
@@ -1445,14 +1502,18 @@ if ($MCICFILEDATA <> "EOF")
 	read $MCICFILENAME $MCICFILEDATA $MCICFILELINE
 	goto :382
 end
-echo ANSI_10 "COMPLETE*"
+setvar $switchboard~message ANSI_10&"COMPLETE*"
+gosub :bot~echo
 if ($ERRORS <> "")
-	echo ANSI_12 "*ERRORS ENCOUNTERED, UNMERGED DATA AS FOLLOWS:" ANSI_11 $ERRORS "*"
+	setvar $switchboard~message ANSI_12&"*ERRORS ENCOUNTERED, UNMERGED DATA AS FOLLOWS:"&ANSI_11&$ERRORS&"*"
+	gosub :bot~echo
 end
 return
 
 :WRITEMCICFILE
-echo ANSI_10 "*Exporting known MCIC data..."
+setvar $switchboard~message ANSI_10&"*Exporting known MCIC data..."
+gosub :bot~echo
+
 write $MCICFILENAME "Test Passed"
 delete $MCICFILENAME
 write $MCICFILENAME "Sector,Product,LowMCIC,HighMCIC,LowProductivity,HighProductivity"
@@ -1481,7 +1542,8 @@ if ($I <= SECTORS)
 	goto :402
 end
 setprecision 15
-echo ANSI_11 "COMPLETE**Data saved in the TWX Proxy folder as " $MCICFILENAME ".**"
+setvar $switchboard~message ANSI_11&"COMPLETE**Data saved in the TWX Proxy folder as "&$MCICFILENAME&".**"
+gosub :bot~echo
 return
 
 

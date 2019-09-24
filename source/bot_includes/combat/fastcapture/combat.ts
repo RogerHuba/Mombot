@@ -106,8 +106,8 @@
 		end
 	end
 	if ($player~isFound = FALSE)
-		echo "*You have no targets.*" 
-		#gosub :SWITCHBOARD~switchboard
+		setvar $switchboard~message "*You have no targets.*" 
+		gosub :bot~echo
 		goto :capstoppingPoint
 	else
 		setVar $attackString ""
@@ -268,7 +268,8 @@
 				pause
 				pause
 			:theyattacked
-				echo "*They attacked me, switching to 1 fighter attacks.*"
+				setvar $switchboard~message "*They attacked me, switching to 1 fighter attacks.*"
+				gosub :bot~echo
 				setVar $ship_fighters 1
 			:cap_it
 				killtrigger combat_scan

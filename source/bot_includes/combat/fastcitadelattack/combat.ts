@@ -46,7 +46,8 @@
 		end
 	
 	else
-		echo ANSI_12 "*You have no targets.*" ANSI_7
+		setvar $switchboard~message  ANSI_12&"*You have no targets.*"&ANSI_7
+		gosub :bot~echo
 		return
 	end
 	if ($player~isFound = TRUE)
@@ -84,7 +85,8 @@
 					getText $player~thisKillTarget&"/\ENDOFSHIPTAG/\" $player~thisKillTarget "m" "/\ENDOFSHIPTAG/\"
 					getWordPos $player~traders[($c-1)][1] $pos $player~thisKillTarget
 					if ((($player~lastKillTarget <> "") AND ($player~thisKillTarget <> $player~lastKillTarget)))
-						echo "*Target has changed, time to rescan..*"
+						setvar $switchboard~message "*Target has changed, time to rescan..*"
+						gosub :bot~echo
 						send " c "
 						goto :doneKill
 					end
@@ -113,7 +115,8 @@
 			send "q "&$attackString&" c "
 		end
 	else	
-		echo ANSI_12 "*You have no valid targets.*" ANSI_7
+		setvar $switchboard~message ANSI_12&"*You have no valid targets.*"&ANSI_7
+		gosub :bot~echo
 		return
 	end
 	:doneKill

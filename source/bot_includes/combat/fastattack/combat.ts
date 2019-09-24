@@ -14,7 +14,8 @@
 		if ($player~fighters <= 0)
 			gosub :player~quikstats
 			if ($player~fighters <= 0)
-				echo ANSI_12 "*You have no fighters.*" ANSI_7
+				setvar $switchboard~message ANSI_12&"*You have no fighters.*"&ANSI_7
+				gosub :bot~echo
 				goto :stoppingPoint
 			end
 		end
@@ -44,8 +45,8 @@
 			add $c 1
 		end
 	else
-		echo "*You have no targets.*" 
-		#gosub :SWITCHBOARD~switchboard
+		setvar $switchboard~message "*You have no targets.*" 
+		gosub :bot~echo
 		goto :stoppingPoint
 	end
 	if ($player~isFound = TRUE)
@@ -77,8 +78,8 @@
 			end
 		end
 	else
-		echo "*You have no valid targets.*" 
-		#gosub :SWITCHBOARD~switchboard
+		setvar $switchboard~message "*You have no valid targets.*" 
+		gosub :bot~echo
 		goto :stoppingPoint
 	end
 	send $attackString&"* "

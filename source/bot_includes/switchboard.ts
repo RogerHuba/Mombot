@@ -185,3 +185,5 @@ return
 	striptext $message ANSI_14
 	striptext $message ANSI_15
 return
+
+include "source\module_includes\bot\echo\bot"
