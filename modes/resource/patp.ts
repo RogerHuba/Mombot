@@ -361,24 +361,39 @@ return
 
 
 :setWindow
-	setVar $msg "* Starting Sector:   " & $startingSector
-	setVar $msg $msg & "* Current Sector " & $PLAYER~CURRENT_SECTOR
-	if (($PLAYER~TURNS > 0) and ($player~unlimitedGame <> true))
-			setVar $msg $msg & "* Turns: " & $PLAYER~TURNS
+
+	setvar $window_lines[1] "** PATP Planet: " & $planet~planets[$j]
+	setvar $window_lines[2] "* ---------------------------------------------------------------"
+	setvar $window_lines[3] "*   Current Sector: " & $PLAYER~CURRENT_SECTOR&"                            "
+	cutText $window_lines[3] $window_lines[3] 1 30
+	if ($player~unlimitedGame = true)
+		setvar $window_lines[3] "   Turns: Unlimited"
+	else
+		format $player~turns $player~value NUMBER
+		setvar $window_lines[3] "   Turns: " & $PLAYER~value
 	end
-	setVar $msg $msg & "** PATP Planet: " & $planet~planets[$j]
-	setVar $msg $msg & "* ----------------"
-	setVar $msg $msg & "* Fuel: " & $planet~planet_FUEL
-	setVar $msg $msg & "* Organics: " & $planet~planet_ORGANICS
-	setVar $msg $msg & "* Equipment: " & $planet~planet_EQUIPMENT
-	setVar $msg $msg & "* Fuel Colonists: " & $planet~planet_FUEL_COLONISTS
-	setVar $msg $msg & "* Organics Colonists: " & $planet~planet_ORGANICS_COLONISTS
-	setVar $msg $msg & "* Equipment Colonists: " & $planet~planet_EQUIPMENT_COLONISTS
-	setVar $msg $msg & "** Credits: " & $PLAYER~CREDITS
-	setWindowContents patp_script $msg & $msg1
+	setarray $window_lines 7
+	format $planet~planet_fuel $player~value NUMBER
+	setvar $window_lines[4] "*    Planet Fuel: " & $player~value&"                          "
+	cutText $window_lines[4] $window_lines[3] 1 30
+	format $planet~planet_fighters $player~value NUMBER
+	setvar $window_lines[5] "   Planet Fighters: " & $player~value
+	format $planet~planet_shields $player~value NUMBER
+	setvar $window_lines[6] "* Planet Shields: " & $player~value&"                          "
+	cutText $window_lines[6] $window_lines[5] 1 30
+	format $planet~citadel_credits $player~value NUMBER
+	setvar $window_lines[7] "   Citadel Credits: " & $player~value
+
+	setvar $i 1
+	while ($i <= 7)
+		setvar $msg $msg&$window_lines[$i]
+		add $i 1
+	end
+	setWindowContents patp_script $msg 
 	setVar $window_content $msg 
 	replaceText $window_content "*" "[][]"
 	saveVar $window_content
+
 return
 
 #INCLUDES:
