@@ -130,7 +130,6 @@
 				setTextTrigger  foundcaptarget  :foundcaptarget  "(Y/N) [N]? Y"
 				setTextTrigger checkcaptarget :checkcaptarget "Yes"
 				setTextLineTrigger noctarget    :nocappingtargets "Do you want instructions (Y/N) [N]?"
-				settextlinetrigger wrongtarget :nocappingtargets " ["&$player~corp&"]'s unmanned "
 				send $targetString
 				pause
 				pause
@@ -151,6 +150,10 @@
 				killtrigger checkcaptarget
 				killtrigger wrongtarget
 				setVar $cap_ship_info CURRENTLINE
+				getwordpos $cap_ship_info $targetpos " ["&$player~corp&"]'s unmanned "
+				if ($targetpos > 0)
+					goto :nocappingtargets
+				end
 				setVar $thisTarget CURRENTANSILINE
 				getWord $cap_ship_info $attack_prompt 1
 				if ($attack_prompt <> "Attack")
