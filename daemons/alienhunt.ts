@@ -278,7 +278,7 @@
 		setvar $switchboard~message "* Waiting for something to hunt..*"
 		gosub :bot~echo 
 
-		:restart
+		:bot~restart
 		gosub :validateFighterHit
 		gosub :attackandmoveship
 		gosub :dosurround
