@@ -824,7 +824,7 @@ if ($LTPEHL = 0)
 end
 setvar $TOECHO ""
 if ($FINALOFFER = 1) or ($planet~planetSHIP = "SHIP") and ($bot~worstprice = 1) and ($BUYSELL = "SELLING")
-	setvar $TOECHO " "&ANSI_12 & "<<<  " & ANSI_11 & $PRODUCT & " MCIC = " & ANSI_14 & $MCIC
+	setvar $TOECHO ANSI_12 & "<<<  " & ANSI_11 & $PRODUCT & " MCIC = " & ANSI_14 & $MCIC
 	setvar $ANSILENGTH 28
 	if ($MCIC <> $UPPER_RANGE_MCIC)
 		setvar $TOECHO $TOECHO & ANSI_11 & " to " & ANSI_14 & $UPPER_RANGE_MCIC
@@ -851,7 +851,7 @@ if ($FINALOFFER = 1)
 	round $PADLENGTH 0
 	getDeafClients $botIsDeaf
 	if ($botIsDeaf)
-		setvar $switchboard~message $toecho
+		setvar $switchboard~message #27&"[1A"&$toecho
 		gosub :bot~echo
 	else
 		echo #27&"[s"&#27&"["&$PADLENGTH&"C"&#27&"[1A"&$TOECHO&#27&"[u"&ANSI_5
