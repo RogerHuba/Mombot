@@ -676,21 +676,21 @@ if ($I <= $COUNT)
 	round $I 0
 	goto :134
 end
-setvar $LHEEHH 0
-setvar $EHPHHL 0
+setvar $MCIC 0
+setvar $UPPER_RANGE_MCIC 0
 setvar $HODDHL 0
 setvar $PYHOPR 0
 setvar $I 1
 
 :148
 if ($I <= $LHTEYH)
-	if (($LHTEYH[$I][1] * $EHYLOD) < ($LHEEHH * $EHYLOD)) or ($LHEEHH = 0)
-		setvar $LHEEHH $LHTEYH[$I][1]
+	if (($LHTEYH[$I][1] * $EHYLOD) < ($MCIC * $EHYLOD)) or ($MCIC = 0)
+		setvar $MCIC $LHTEYH[$I][1]
 		if ($verbose_debug_mode = TRUE)
 		end
 	end
-	if (($LHTEYH[$I][1] * $EHYLOD) > ($EHPHHL * $EHYLOD))
-		setvar $EHPHHL $LHTEYH[$I][1]
+	if (($LHTEYH[$I][1] * $EHYLOD) > ($UPPER_RANGE_MCIC * $EHYLOD))
+		setvar $UPPER_RANGE_MCIC $LHTEYH[$I][1]
 	end
 	if ($LHTEYH[$I][4] < $HODDHL) or ($HODDHL = 0)
 		setvar $HODDHL $LHTEYH[$I][4]
@@ -704,8 +704,8 @@ if ($I <= $LHTEYH)
 end
 if ($verbose_debug_mode = TRUE)
 end
-setsectorparameter $SECTOR $PRODUCT & "-" $LHEEHH
-setsectorparameter $SECTOR $PRODUCT & "+" $EHPHHL
+setsectorparameter $SECTOR $PRODUCT & "-" $MCIC
+setsectorparameter $SECTOR $PRODUCT & "+" $UPPER_RANGE_MCIC
 setsectorparameter $SECTOR $PRODUCT & "L" $HODDHL
 setsectorparameter $SECTOR $PRODUCT & "H" $PYHOPR
 
@@ -824,10 +824,10 @@ if ($LTPEHL = 0)
 end
 setvar $TOECHO ""
 if ($FINALOFFER = 1) or ($planet~planetSHIP = "SHIP") and ($bot~worstprice = 1) and ($BUYSELL = "SELLING")
-	setvar $TOECHO ANSI_12 & "<<<  " & ANSI_11 & $PRODUCT & " MCIC = " & ANSI_14 & $LHEEHH
+	setvar $TOECHO ANSI_12 & "<<<  " & ANSI_11 & $PRODUCT & " MCIC = " & ANSI_14 & $MCIC
 	setvar $ANSILENGTH 28
-	if ($LHEEHH <> $EHPHHL)
-		setvar $TOECHO $TOECHO & ANSI_11 & " to " & ANSI_14 & $EHPHHL
+	if ($MCIC <> $UPPER_RANGE_MCIC)
+		setvar $TOECHO $TOECHO & ANSI_11 & " to " & ANSI_14 & $UPPER_RANGE_MCIC
 		setvar $ANSILENGTH 42
 	end
 	setvar $TOECHO $TOECHO & ANSI_12 & "  >>>"
@@ -849,8 +849,13 @@ if ($FINALOFFER = 1)
 	getlength CURRENTLINE $LINELENGTH
 	setvar $PADLENGTH ((80 -$LINELENGTH) -$ECHOLENGTH)
 	round $PADLENGTH 0
-	setvar $switchboard~message #27&"[s"&#27&"["&$PADLENGTH&"C"&#27&"[1A"&$TOECHO&#27&"[u"&ANSI_5
-	gosub :bot~echo
+	getDeafClients $botIsDeaf
+	if ($botIsDeaf)
+		setvar $switchboard~message $toecho
+		gosub :bot~echo
+	else
+		echo #27&"[s"&#27&"["&$PADLENGTH&"C"&#27&"[1A"&$TOECHO&#27&"[u"&ANSI_5
+	end
 end
 if ($planet~planetSHIP = "PLANET") and ($planet~planettrade_ratio <> 1)
 	gosub :SUBPTRADENOT100
@@ -1232,23 +1237,23 @@ return
 :SAVEDERIVERESULTS
 if ($LHTEYH > 0)
 	setvar $FAILED 0
-	setvar $LHEEHH 0
-	setvar $EHPHHL 0
+	setvar $MCIC 0
+	setvar $UPPER_RANGE_MCIC 0
 	setvar $HODDHL 0
 	setvar $PYHOPR 0
 	setvar $I 1
 
 :339
 	if ($I <= $LHTEYH)
-		if (($LHTEYH[$I][1] * $EHYLOD) < ($LHEEHH * $EHYLOD)) or ($LHEEHH = 0)
-			setvar $LHEEHH $LHTEYH[$I][1]
+		if (($LHTEYH[$I][1] * $EHYLOD) < ($MCIC * $EHYLOD)) or ($MCIC = 0)
+			setvar $MCIC $LHTEYH[$I][1]
 			if ($verbose_debug_mode = TRUE)
-				setvar $switchboard~message "*In :saveDeriveResults, setting $lHEEhh to "&$LHTEYH[$I][1]
+				setvar $switchboard~message "*In :saveDeriveResults, setting $MCIC to "&$LHTEYH[$I][1]
 				gosub :bot~echo
 			end
 		end
-		if (($LHTEYH[$I][1] * $EHYLOD) > ($EHPHHL * $EHYLOD))
-			setvar $EHPHHL $LHTEYH[$I][1]
+		if (($LHTEYH[$I][1] * $EHYLOD) > ($UPPER_RANGE_MCIC * $EHYLOD))
+			setvar $UPPER_RANGE_MCIC $LHTEYH[$I][1]
 		end
 		if ($LHTEYH[$I][4] < $HODDHL) or ($HODDHL = 0)
 			setvar $HODDHL $LHTEYH[$I][4]
@@ -1261,13 +1266,13 @@ if ($LHTEYH > 0)
 		goto :339
 	end
 	if ($verbose_debug_mode = TRUE)
-		setvar $switchboard~message "*Derived Min/Max MCIC = "&$LHEEHH&" & "&$EHPHHL
+		setvar $switchboard~message "*Derived Min/Max MCIC = "&$MCIC&" & "&$UPPER_RANGE_MCIC
 		gosub :bot~echo
 		setvar $switchboard~message "*Derived Min/Max Productivity = "&$HODDHL&" & "&$PYHOPR
 		gosub :bot~echo
 	end
-	setsectorparameter $SECTOR $PRODUCT & "-" $LHEEHH
-	setsectorparameter $SECTOR $PRODUCT & "+" $EHPHHL
+	setsectorparameter $SECTOR $PRODUCT & "-" $MCIC
+	setsectorparameter $SECTOR $PRODUCT & "+" $UPPER_RANGE_MCIC
 	setsectorparameter $SECTOR $PRODUCT & "L" $HODDHL
 	setsectorparameter $SECTOR $PRODUCT & "H" $PYHOPR
 	goto :338
