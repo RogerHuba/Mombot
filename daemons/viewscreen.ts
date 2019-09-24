@@ -21,7 +21,7 @@ setvar $count 1
 setvar $comstring ""
 setVar $comsize 1000
 setVar $figsize 5
-setvar $comm_line_length 68
+setvar $comm_line_length 70
 setVar $comm_window_size 25
 setVar $comm_window_start_index 1
 setArray $coms $comsize
@@ -698,7 +698,7 @@ return
 			getWordPos $line $posPlus "+"
 
 			#if (($posF = 1) OR ($posR = 1) OR ($posP = 1) OR ($posPlus = 1))
-				setVar $line_length ($comm_line_length+23)
+				setVar $line_length ($comm_line_length+30)
 			#else
 			#	setVar $line_length $comm_line_length
 			#end
