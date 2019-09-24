@@ -512,54 +512,54 @@ return
 	gosub :loadVars
 	
 	if ($PLAYER~CURRENT_SECTOR = 0)
-		setVar $stats[1] "    Sector : "&CURRENTSECTOR&"*"
+		setVar $stats[1] "    Sector: "&CURRENTSECTOR&"*"
 	else
-		setVar $stats[1] "    Sector : "&$PLAYER~CURRENT_SECTOR&"*"
+		setVar $stats[1] "    Sector: "&$PLAYER~CURRENT_SECTOR&"*"
 	end
 	if ($planet~planet <> 0)
-		setVar $stats[2] "    Planet : "&$planet~planet&"*"
+		setVar $stats[2] "    Planet: "&$planet~planet&"*"
 	else
-		setVar $stats[2] "    Planet : None*"
+		setVar $stats[2] "    Planet: None*"
 	end
 	if ($PLAYER~unlimitedGame)
-		setVar $stats[3] "     Turns : Unlimited*"
+		setVar $stats[3] "     Turns: Unlimited*"
 	else
-		setVar $stats[3] "     Turns : "&$PLAYER~TURNS&"*"
+		setVar $stats[3] "     Turns: "&$PLAYER~TURNS&"*"
 	end 
 	setvar $player~value CURRENTEXPERIENCE
 	gosub :player~commasize
-	setVar $stats[4]  "       Exp : "&$player~value&"*"
+	setVar $stats[4]  "       Exp: "&$player~value&"*"
 	setvar $player~value CURRENTALIGNMENT
 	gosub :player~commasize
-	setVar $stats[5]  "     Align : "&$player~value&"*"
+	setVar $stats[5]  "     Align: "&$player~value&"*"
 	setvar $player~value CURRENTCREDITS
 	gosub :player~commasize
-	setVar $stats[6]  "   Credits : "&$player~value&"*"	
-	setVar $stats[7]  "Holds Info : "&CURRENTTOTALHOLDS&"*"
-	setVar $stats[8] "  Fuel Ore : "&CURRENTOREHOLDS&"*"
-	setVar $stats[9] "  Organics : "&CURRENTORGHOLDS&"*"
-	setVar $stats[10] " Equipment : "&CURRENTEQUHOLDS&"*"
-	setVar $stats[11] " Colonists : "&CURRENTCOLHOLDS&"*"
+	setVar $stats[6]  "   Credits: "&$player~value&"*"	
+	setVar $stats[7]  "Holds Info: "&CURRENTTOTALHOLDS&"*"
+	setVar $stats[8] "  Fuel Ore: "&CURRENTOREHOLDS&"*"
+	setVar $stats[9] "  Organics: "&CURRENTORGHOLDS&"*"
+	setVar $stats[10] " Equipment: "&CURRENTEQUHOLDS&"*"
+	setVar $stats[11] " Colonists: "&CURRENTCOLHOLDS&"*"
 	setVar $empty_holds (CURRENTTOTALHOLDS - CURRENTOREHOLDS)
 	setVar $empty_holds ($empty_holds - CURRENTORGHOLDS)
 	setVar $empty_holds ($empty_holds - CURRENTEQUHOLDS)
 	setVar $empty_holds ($empty_holds - CURRENTCOLHOLDS)
 	
-	setVar $stats[12] "     Empty : "&CURRENTEMPTYHOLDS&"*"
-	setVar $stats[13] "    Ship # : "&CURRENTSHIPNUMBER&"*"
+	setVar $stats[12] "     Empty: "&CURRENTEMPTYHOLDS&"*"
+	setVar $stats[13] "    Ship #: "&CURRENTSHIPNUMBER&"*"
 	setvar $player~value CURRENTFIGHTERS
 	gosub :player~commasize
-	setVar $stats[14] "  Fighters : "&$player~value&"*"
+	setVar $stats[14] "  Fighters: "&$player~value&"*"
 	setvar $player~value CURRENTSHIELDS
 	gosub :player~commasize
-	setVar $stats[15] "   Shields : "&$player~value&"*"
+	setVar $stats[15] "   Shields: "&$player~value&"*"
 	setvar $player~value $ship~ship_fighters_max
 	gosub :player~commasize
-	setVar $stats[16] "  Max Figs : "&$player~value&"*"
+	setVar $stats[16] "  Max Figs: "&$player~value&"*"
 	setvar $player~value $ship~ship_max_attack
 	gosub :player~commasize
-	setVar $stats[17] "  Max Wave : "&$player~value&"*"
-	setVar $stats[18] "Turns/Warp : "&$PLAYER~TURNS_PER_WARP&"*"
+	setVar $stats[17] "  Max Wave: "&$player~value&"*"
+	setVar $stats[18] "Turns/Warp: "&$PLAYER~TURNS_PER_WARP&"*"
 	
 	cutText CURRENTARMIDS&"    " $player~armids 0 3
 	cutText CURRENTCLOAKS&"    " $player~cloaks 0 3
@@ -569,15 +569,15 @@ return
 	cutText CURRENTTWARPTYPE&"    " $player~twarp_type 0 3
 	cutText CURRENTSCANTYPE&"    " $player~scan_type 0 3
 
-	setVar $stats[19] "   EProbes : "&$player~eprobes&" | Beacons : "&CURRENTBEACONS&"*"
-	setVar $stats[20] "   Disrupt : "&$player~mine_disruptors&" | Photons : "&CURRENTPHOTONS&"*"
-	setVar $stats[21] "    Armids : "&$player~armids&" | Limpets : "&CURRENTLIMPETS&"*"
-	setVar $stats[22] "   Genesis : "&$player~genesis&" | AtmDets : "&CURRENTATOMICS&"*"
+	setVar $stats[19] "   EProbes: "&$player~eprobes&"   Beacons: "&CURRENTBEACONS&"*"
+	setVar $stats[20] "   Disrupt: "&$player~mine_disruptors&"   Photons: "&CURRENTPHOTONS&"*"
+	setVar $stats[21] "    Armids: "&$player~armids&"   Limpets: "&CURRENTLIMPETS&"*"
+	setVar $stats[22] "   Genesis: "&$player~genesis&"   AtmDets: "&CURRENTATOMICS&"*"
 	setvar $player~value CURRENTCORBOMITE
 	gosub :player~commasize
-	setVar $stats[23] "    Cloaks : "&$player~cloaks&" |  Corbos : "&$player~value&"*"
-	setVar $stats[24] "     Twarp : "&$player~twarp_type&" | PlnScan : "&CURRENTPLANETSCANNER&"*"
-	setVar $stats[25] "   Scanner : "&$player~scan_type&" | PsiProb : "&CURRENTPSYCHICPROBE&"*"
+	setVar $stats[23] "    Cloaks: "&$player~cloaks&"    Corbos: "&$player~value&"*"
+	setVar $stats[24] "     Twarp: "&$player~twarp_type&"   PlnScan: "&CURRENTPLANETSCANNER&"*"
+	setVar $stats[25] "   Scanner: "&$player~scan_type&"   PsiProb: "&CURRENTPSYCHICPROBE&"*"
 	setVar $stats[26] "     *"
 return
 
