@@ -23,7 +23,7 @@
 
   
    setVar $switchboard~bot_name $SWITCHBOARD~bot_name
-	Window patp_script 330 424 ("PATP - " & GAMENAME) ONTOP
+	Window patp_script 560 170 ("PATP - " & GAMENAME) ONTOP
 
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
