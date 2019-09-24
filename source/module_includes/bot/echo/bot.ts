@@ -2,7 +2,7 @@
 :echo
 	getDeafClients $botIsDeaf
 	if ($botIsDeaf)
-		setvar $switchboard~isSilent true
+		setvar $bot~silent_running true
 		gosub :switchboard~switchboard
 	else
 		echo $switchboard~message
