@@ -824,7 +824,7 @@ if ($LTPEHL = 0)
 end
 setvar $TOECHO ""
 if ($FINALOFFER = 1) or ($planet~planetSHIP = "SHIP") and ($bot~worstprice = 1) and ($BUYSELL = "SELLING")
-	setvar $TOECHO ANSI_12 & "<<<  " & ANSI_11 & $PRODUCT & " MCIC = " & ANSI_14 & $MCIC
+	setvar $TOECHO " "&ANSI_12 & "<<<  " & ANSI_11 & $PRODUCT & " MCIC = " & ANSI_14 & $MCIC
 	setvar $ANSILENGTH 28
 	if ($MCIC <> $UPPER_RANGE_MCIC)
 		setvar $TOECHO $TOECHO & ANSI_11 & " to " & ANSI_14 & $UPPER_RANGE_MCIC
