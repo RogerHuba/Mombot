@@ -366,7 +366,7 @@ return
 	setvar $window_lines[1] "* PATP Planet: " & $planet~planet
 	setvar $window_lines[2] "* ---------------------------------------------------------------"
 	setvar $window_lines[3] "*   Current Sector: " & $PLAYER~CURRENT_SECTOR&"                            "
-	cutText $window_lines[3] $window_lines[3] 1 25
+	cutText $window_lines[3] $window_lines[3] 1 30
 	if ($player~unlimitedGame = true)
 		setvar $window_lines[4] "   Turns: Unlimited"
 	else
