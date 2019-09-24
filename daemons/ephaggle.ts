@@ -839,7 +839,7 @@ if ($FINALOFFER = 1) or ($planet~planetSHIP = "SHIP") and ($bot~worstprice = 1) 
 end
 if ($LHTEYH = 1) and ($LHTEYH[1][6] = 1)
 	if ($verbose_debug_mode = TRUE)
-		setvar $switchboard~message ANSI_12 "*   <<<  " ANSI_14 "Exact .5 Anomaly Detected for this MCIC" ANSI_12 "  >>>"
+		setvar $switchboard~message ANSI_12&"*   <<<  "&ANSI_14&"Exact .5 Anomaly Detected for this MCIC"&ANSI_12&"  >>>"
 		gosub :bot~echo
 	end
 end
