@@ -478,7 +478,7 @@ return
 		setvar $startingLocation $player~current_prompt
 		if ($player~current_prompt = "Command")
 			gosub :PLANET~landingSub		
-			gosub :PLAYER~quikstats
+			gosub :PLAYER~currentprompt
 		end
 		setVar $SECTOR~federalCount 0
 		setvar $SECTOR~fakeTraderCount 1
@@ -502,7 +502,7 @@ return
 				goSub :combat~fastCapture
 			end
 		end
-		gosub :PLAYER~quikstats
+		gosub :PLAYER~currentprompt
 		if ($player~current_prompt = "Command")
 			gosub :PLANET~landingSub
 		end
@@ -636,7 +636,7 @@ return
 					setVar $PLAYER~buytype "s"
 					setVar $PLAYER~buydownRoundsFromParam $player~turnsToEmpty
 					gosub :player~buy
-					gosub :PLAYER~quikstats
+					gosub :PLAYER~currentprompt
 					send "c r*q "
 					
 					if ($PLAYER~exit_message <> "Normal Exit")
