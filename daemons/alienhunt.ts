@@ -310,6 +310,10 @@
 			pause
 		end
 	:checkFighter
+		killtrigger bot~pause
+		killtrigger bot~pause2
+		killtrigger bot~pause3
+		killtrigger bot~restart
 		cutText CURRENTLINE&" " $radio 1 1
 		getText CURRENTLINE $dropSector $START_FIG_HIT $END_FIG_HIT
 		getText CURRENTANSILINE $alien_check $START_FIG_HIT_OWNER $END_FIG_HIT_OWNER
@@ -319,10 +323,6 @@
 			pause
 		end
 	:go_to_drop_sector
-		killtrigger bot~pause
-		killtrigger bot~pause2
-		killtrigger bot~pause3
-		killtrigger bot~restart
 		killtrigger armid
 		killtrigger liftsoff
 		killtrigger power
@@ -446,7 +446,8 @@ return
 		load "scripts\mombot\commands\data\dscan.cts"
 		setEventTrigger		dscandone		:dscandone "SCRIPT STOPPED" "scripts\mombot\commands\data\dscan.cts"
 		pause
-		:dscandone		
+		:dscandone
+		
 			send "q "
 			gosub :PLANET~getPlanetInfo
 			gosub :setwindow
@@ -585,6 +586,7 @@ return
 				if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true))
 					if ($upgrade = true)
 						send "q"
+						waitOn "Planet command (?"
 						gosub :PLANET~getPlanetInfo
 						gosub :setwindow
 						send "c"

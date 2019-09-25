@@ -22,6 +22,7 @@
 		setVar $MAXED_LEVEL         FALSE
 	# ============================  END PLANET VARIABLES ==========================
 
+
 	send "*"
 	killtrigger planetInfo2
 	setTextLineTrigger planetInfo2 :planetInfo2 "Planet #"
