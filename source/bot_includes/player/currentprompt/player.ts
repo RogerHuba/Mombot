@@ -1,39 +1,27 @@
 :currentPrompt
+	setVar $CURRENT_PROMPT      "Undefined"
+	killtrigger noprompt
 	killtrigger prompt
-	killtrigger prompt_delay
-	setTextTrigger      prompt          :allPromptsCatch        #145 & #8
-	setDelayTrigger     prompt_delay    :current_prompt_delay   5000
-	send #145
+	killtrigger getLine2
+	setvar $fedspace false
+	loadvar $unlimitedGame
+	setTextLineTrigger  prompt      :allPrompts     #145 & #8
+	send #145&#8
 	pause
-	:current_prompt_delay
-		killtrigger prompt
-		killtrigger prompt_delay
-		setTextOutTrigger   atkeys      :current_prompt_at_keys
-		setDelayTrigger     prompt_delay    :verifyDelay        30000
-		pause
-	:current_prompt_at_keys
-		killtrigger prompt_delay
-		killtrigger atkeys
-		getOutText $out
-		send $out
-		killtrigger prompt_delay
-		return
-	:allPromptsCatch
-		killtrigger prompt
-		killtrigger prompt_delay
+	:allPrompts
 		setvar $ansiline currentansiline
 		setvar $self_destruct_prompt false
 		getwordpos $ansiline $pos "ARE YOU SURE CAPTAIN? (Y/N) [N]"
 		if ($pos > 0)
 			setvar $self_destruct_prompt true
 		end
+
 		getWord CURRENTLINE $CURRENT_PROMPT 1
-		if ($CURRENT_PROMPT = 0)
-			getWord CURRENTANSILINE $CURRENT_PROMPT 1
-		end
+		setVar $FULL_CURRENT_PROMPT CURRENTLINE
+		stripText $FULL_CURRENT_PROMPT #145
+		stripText $FULL_CURRENT_PROMPT #8
 		stripText $CURRENT_PROMPT #145
 		stripText $CURRENT_PROMPT #8
-		setVar $startingLocation $CURRENT_PROMPT
 return
 
 
