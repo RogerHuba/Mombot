@@ -503,7 +503,7 @@ return
 		send "q m*** c "
 		gosub :PLAYER~quikstats
 		setVar $startingSector $PLAYER~CURRENT_SECTOR
-		if ($PLAYER~SHIELDS < $SHIP~SHIP_SHIELD_MAX)
+		if (($PLAYER~SHIELDS < $SHIP~SHIP_SHIELD_MAX) and ($planet~planet_shields > 360))
 			setVar $player~shields_needed ($SHIP~SHIP_SHIELD_MAX - $PLAYER~SHIELDS)
 			setVar $planet~planet_shields_to_take ($player~shields_needed/10)
 			send "gf"&$planet~planet_shields_to_take&"*"
