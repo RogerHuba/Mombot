@@ -28,7 +28,9 @@
 			setVar $ship_name $frontletter&$ship_name
 			getWordPos $database $pos "^^^^^^"&$Ship_Name&"^^^^^^"
 			if ($pos > 0)
-				send "'{" $SWITCHBOARD~bot_name "} - This ship is already stored in bot file.*"
+				setvar $switchboard~message "This ship is already stored in bot file.*"
+				gosub :switchboard~switchboard
+				send "q "
 				return
 			end
 		end
@@ -85,7 +87,8 @@
 		getWord $line $max_holds 1
 		setVar $isDefender FALSE
 		write $cap_file $max_shields & " " & $def_odds & " " & $off_odds & " " & $cost & " " & $max_holds & " " & $max_figs & " " & $init_holds & " " & $tpw & " " & $isDefender & " " & $ship_name
-		send "'{" $SWITCHBOARD~bot_name "} - "&$ship_name&" added to bot's ship file.*"
+		setvar $switchboard~message $ship_name&" added to bot's ship file.*"
+		gosub :switchboard~switchboard
 		send "q"
 		gosub :loadShipInfo
 return
