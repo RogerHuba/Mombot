@@ -267,6 +267,10 @@
 		gosub :bot~echo 
 
 		:bot~restart
+		killtrigger bot~pause
+		killtrigger bot~pause2
+		killtrigger bot~pause3
+		killtrigger bot~restart
 		gosub :validateFighterHit
 		gosub :attackandmoveship
 		gosub :dosurround
