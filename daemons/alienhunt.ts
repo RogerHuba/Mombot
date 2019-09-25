@@ -514,17 +514,22 @@ return
 		if ($targetsFound = TRUE)
 
 			send "s*  "
-			setVar $BOT~command "xenter"
-			setVar $BOT~user_command_line " xenter silent"
-			setVar $BOT~parm1 "silent"
-			saveVar $BOT~parm1
-			saveVar $BOT~command
-			saveVar $BOT~user_command_line
-			load "scripts\mombot\commands\grid\xenter.cts"
-			setEventTrigger		xenterended		:xenterended "SCRIPT STOPPED" "scripts\mombot\commands\grid\xenter.cts"
-			pause
-			:xenterended
-			
+			gosub :PLAYER~quikstats
+			setVar $figowner SECTOR.FIGS.OWNER[$player~current_sector]
+			setVar $figCount SECTOR.FIGS.QUANTITY[$player~current_sector]
+
+			if (($figcount <= 0) or (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
+				setVar $BOT~command "xenter"
+				setVar $BOT~user_command_line " xenter silent"
+				setVar $BOT~parm1 "silent"
+				saveVar $BOT~parm1
+				saveVar $BOT~command
+				saveVar $BOT~user_command_line
+				load "scripts\mombot\commands\grid\xenter.cts"
+				setEventTrigger		xenterended		:xenterended "SCRIPT STOPPED" "scripts\mombot\commands\grid\xenter.cts"
+				pause
+				:xenterended
+			end		
 			setVar $emptyShips SECTOR.SHIPCOUNT[$PLAYER~CURRENT_SECTOR]
 			if ($emptyShips > 0)
 				setVar $BOT~command "moveship"
