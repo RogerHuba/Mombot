@@ -441,12 +441,6 @@ return
 return
 
 :dosurround
-		gosub :PLAYER~quikstats
-		if ((CURRENTTURNS <= $BOT~bot_turn_limit) and ($PLAYER~unlimitedGame <> TRUE))
-			setVar $SWITCHBOARD~message "Turns Exceed Bot Turn Limit.*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end
 		
 	
 		setVar $BOT~command "dscan"
@@ -514,6 +508,12 @@ return
 			setVar $planet~planet_shields_to_take ($player~shields_needed/10)
 			send "gf"&$planet~planet_shields_to_take&"*"
 		end
+		if ((CURRENTTURNS <= $BOT~bot_turn_limit) and ($PLAYER~unlimitedGame <> TRUE))
+			setVar $SWITCHBOARD~message "Turns Exceed Bot Turn Limit.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+
 		if ($targetsFound = TRUE)
 
 			send "s*  "
@@ -581,9 +581,7 @@ return
 					gosub :PLANET~landingSub
 				end
 			end
-			
-			#gosub :PLAYER~quikstats
-			
+						
 			if ($startingSector = currentsector)
 				killalltriggers
 				setvar $is_fuel_buyer PORT.BUYFUEL[$startingSector]
