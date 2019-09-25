@@ -108,7 +108,8 @@
 	setVar $fuelInSector FALSE
 	if (($startingLocation <> "Citadel") AND ($startingSector <> "Planet"))
 		if ($startingLocation = "Command")
-			if ((PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = TRUE) AND (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = FALSE))
+			getSectorParameter $PLAYER~CURRENT_SECTOR "BUSTED" $isBusted
+			if ((PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = TRUE) AND (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = FALSE) and ($isBusted <> true))
 				if ($player~CREDITS < 50000)
 					setVar $SWITCHBOARD~message "Need at least 50,000 credits to use port as fuel source*"
 					gosub :SWITCHBOARD~switchboard
@@ -143,7 +144,7 @@
 	setVar $shipCount 0
 	if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
 		gosub :PLANET~GETPLANETINFO
-		send "q "
+		send "t * l 1 * t * l 2 * t * l 3 * s * l 1 * s * l 2 * s * l 3 * t * t1*m* * * q "
 	end
 	send "*"
 	gosub :PLAYER~quikstats
