@@ -148,6 +148,7 @@
 	gosub :PLAYER~getInfo
 	setVar $homesector $PLAYER~CURRENT_SECTOR
 		
+	killalltriggers	
 	send "q"
 	gosub :PLANET~getPlanetInfo	
 	gosub :setwindow
@@ -168,8 +169,7 @@
 		gosub :SWITCHBOARD~switchboard
 
 	:skipig
-	killtrigger ig_was_off
-	killtrigger skip_ig
+	killalltriggers
 	send "l"&$planet~planet&"*"
 	waitOn "Planet command"
 	if ($corp <> true)
@@ -196,7 +196,21 @@
 		gosub :SWITCHBOARD~switchboard
 	end
 
+	#setTextTrigger need_ig :planet_ig_was_off "Your Interdictor Generator is now ACTIVE"
+	#setTextTrigger skip_ig :skipplanetig "This Citadel does not have an Interdictor Generator."
+	#send "n"
+	#waitOn "Do you want to change this setting? (Y/N)"
+	goto :skipplanetig
+
+	:planet_ig_was_off
+		send "y"
+		setVar $SWITCHBOARD~message "Turning off planet IG.*"
+		gosub :SWITCHBOARD~switchboard
+
 	:skipplanetig
+	killalltriggers
+
+
 	if ($sell = true)
 		setVar $SWITCHBOARD~message "Selling every ship after capture.  Will deposit money in the citadel.*"
 		gosub :SWITCHBOARD~switchboard
@@ -230,6 +244,7 @@
 	end
 
 	while (TRUE)
+		#gosub :PLAYER~quikstats
 		if (CURRENTFIGHTERS < $SHIP~SHIP_FIGHTERS_MAX)
 			setVar $SWITCHBOARD~message "Not enough fighters to continue the hunt.*"
 			gosub :switchboard~switchboard
@@ -267,10 +282,6 @@
 		gosub :bot~echo 
 
 		:bot~restart
-		killtrigger bot~pause
-		killtrigger bot~pause2
-		killtrigger bot~pause3
-		killtrigger bot~restart
 		gosub :validateFighterHit
 		gosub :attackandmoveship
 		gosub :dosurround
@@ -309,11 +320,10 @@
 			setTextTrigger armid :attackSectorMine "Your mines in "
 			pause
 		end
+	pause
 	:checkFighter
-		killtrigger bot~pause
-		killtrigger bot~pause2
-		killtrigger bot~pause3
-		killtrigger bot~restart
+		killalltriggers
+
 		cutText CURRENTLINE&" " $radio 1 1
 		getText CURRENTLINE $dropSector $START_FIG_HIT $END_FIG_HIT
 		getText CURRENTANSILINE $alien_check $START_FIG_HIT_OWNER $END_FIG_HIT_OWNER
@@ -323,20 +333,18 @@
 			pause
 		end
 	:go_to_drop_sector
-		killtrigger armid
-		killtrigger liftsoff
-		killtrigger power
-		killtrigger wave
 		if ($dropSector <> $player~current_sector)
 			send "*ls0* la0*  p " $dropSector "*y"
 			setTextLineTrigger pwarpNotOk :pwarpTryAdjacent "You do not have any fighters in Sector "
 			setTextLineTrigger pwarpOk :pwarpConfirmed " Planetary TransWarp Drive Engaged! "
 			setTextLineTrigger pwarpOk2 :pwarpConfirmed "You are already in that sector!"
 			pause
+			
+			:pwarpDone
+				killAllTriggers
 		end
 		:pwarpTryAdjacent
-			killtrigger pwarpok
-			killtrigger pwarpok2
+			killAllTriggers
 			setSectorParameter $dropSector "FIGSEC" FALSE
 			gosub :findAdjacent
 			gosub :attemptDrop
@@ -344,9 +352,7 @@
 			send "p " $dropSector "*y"
 			return
 		:pwarpConfirmed
-			killtrigger pwarpnotok
-			killtrigger pwarpok
-			killtrigger pwarpok2
+			killalltriggers
 			gosub :dosurround
 			gosub :attackandmoveship
 			setVar $i 1
@@ -405,33 +411,33 @@ return
 	setTextLineTrigger wrong_number     :wrong_number   "Invalid Sector number,"
 	pause
 	:wrong_number
-		gosub :killpwarptriggers
+		killalltriggers
 		setVar $SWITCHBOARD~message "Not a valid sector to pwarp to!*"
 		gosub :SWITCHBOARD~switchboard
 		return
 		
 	:noPwarp
-		gosub :killpwarptriggers
+		killalltriggers
 		setVar $SWITCHBOARD~message "Planet Does Not Have A Planetary TransWarp Drive!*"
 		gosub :SWITCHBOARD~switchboard
 		return
 	:no_pwarp_lock
-		gosub :killpwarptriggers
+		killalltriggers
 		setVar $target $player~warpto
 		setSectorParameter $gotoSector "FIGSEC" FALSE
 		return
 	:no_ore
-		gosub :killpwarptriggers
+		killalltriggers
 		setVar $SWITCHBOARD~message "Not enough fuel for that pwarp.*"
 		gosub :SWITCHBOARD~switchboard
 		return
 	:pwarp_lock
-		gosub :killpwarptriggers
+		killalltriggers
 		waitOn "Planet is now in sector"
 		setVar $target $gotoSector
 		return
 	:already
-		gosub :killpwarptriggers
+		killalltriggers
 return
 
 :dosurround
@@ -483,8 +489,7 @@ return
 			if ($SECTOR~realTraderCount > $SECTOR~corpieCount)
 				setvar $targetsFound true
 				gosub :combat~fastCitadelAttack
-				setvar $switchboard~message "Just attacked (and hopefully killed) a trader in my sector! Sector "&$player~current_sector&".*"
-				gosub :switchboard~switchboard
+				send "'Just attacked (and hopefully killed) a trader in my sector! Sector "&$player~current_sector&".*"
 			end
 			if ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
 				setVar $targetsFound TRUE
@@ -576,8 +581,11 @@ return
 					gosub :PLANET~landingSub
 				end
 			end
-						
+			
+			#gosub :PLAYER~quikstats
+			
 			if ($startingSector = currentsector)
+				killalltriggers
 				setvar $is_fuel_buyer PORT.BUYFUEL[$startingSector]
 				setvar $is_port PORT.EXISTS[$startingSector]
 				setvar $class PORT.CLASS[$startingSector]
@@ -585,6 +593,7 @@ return
 
 				if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true))
 					if ($upgrade = true)
+						killAllTriggers
 						send "q"
 						waitOn "Planet command (?"
 						gosub :PLANET~getPlanetInfo
@@ -609,6 +618,7 @@ return
 						setTextLineTrigger getFuel2 :fuelDuring "Fuel Ore"
 						pause
 						:fuelDuring
+							killalltriggers
 							getWord CURRENTLINE $totalPortFuel 4
 							waitOn "<Computer deactivated>"
 						gosub :PLAYER~currentprompt
@@ -643,6 +653,7 @@ return
 			end
 
 		end
+		killalltriggers
 return
 
 :validateMineHit
@@ -697,14 +708,7 @@ return
 	saveVar $window_content
 return
 
-:killpwarptriggers
-	killtrigger pwarp_lock
-	killtrigger no_pwarp_lock
-	killtrigger already
-	killtrigger no_ore
-	killtrigger no_pwarp
-	killtrigger wrong_number
-return
+
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
