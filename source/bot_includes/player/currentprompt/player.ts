@@ -6,7 +6,7 @@
 	setvar $fedspace false
 	loadvar $unlimitedGame
 	setTextLineTrigger  prompt      :allPrompts     #145 & #8
-	send #145&#8
+	send #145
 	pause
 	:allPrompts
 		setvar $ansiline currentansiline
