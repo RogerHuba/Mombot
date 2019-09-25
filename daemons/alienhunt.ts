@@ -183,7 +183,7 @@
 		setVar $SWITCHBOARD~message "Turning off quasar cannons.*"
 		gosub :SWITCHBOARD~switchboard
 	end
-	gosub :PLAYER~quikstats
+	gosub :PLAYER~currentprompt
 	if ($PLAYER~CURRENT_PROMPT = "Citadel")
 		if ($corp <> true)
 			setVar $SWITCHBOARD~message "Made ship and planet personal for convenience. Turning off military reaction.*"
@@ -244,8 +244,8 @@
 	end
 
 	while (TRUE)
-		gosub :PLAYER~quikstats
-		if ($PLAYER~FIGHTERS < $SHIP~SHIP_FIGHTERS_MAX)
+		#gosub :PLAYER~quikstats
+		if (CURRENTFIGHTERS < $SHIP~SHIP_FIGHTERS_MAX)
 			setVar $SWITCHBOARD~message "Not enough fighters to continue the hunt.*"
 			gosub :switchboard~switchboard
 			send "p"&$homeSector&"*y"
@@ -253,6 +253,9 @@
 			if ($cannon = true)
 				send " *ls"&$percentToSet&"* la"&$starting_atmos_cannon&"*"  
 			end
+			send "qoccco*cq"
+			waitOn "<Computer deactivated>"
+
 			halt
 		end
 		if ($return = true)
@@ -291,7 +294,7 @@
 	gosub :planet~getplanetinfo
 	gosub :setwindow
 	send "c "
-	if ($planet~planet_fighters <= $player~fighters)
+	if ($planet~planet_fighters <= $SHIP~SHIP_FIGHTERS_MAX)
 		send "p"&$map~home_sector&"*y  "
 		send "qoccco*cq"
 		waitOn "<Computer deactivated>"
@@ -439,11 +442,11 @@ return
 
 :dosurround
 		gosub :PLAYER~quikstats
-		if (($PLAYER~TURNS <= $BOT~bot_turn_limit) and ($PLAYER~unlimitedGame <> TRUE))
+		if ((CURRENTTURNS <= $BOT~bot_turn_limit) and ($PLAYER~unlimitedGame <> TRUE))
 			setVar $SWITCHBOARD~message "Turns Exceed Bot Turn Limit.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
-			end
+		end
 		
 	
 		setVar $BOT~command "dscan"
@@ -471,7 +474,7 @@ return
 return
 
 :attackandmoveship
-		gosub :PLAYER~quikstats
+		gosub :PLAYER~currentprompt
 		setvar $startingLocation $player~current_prompt
 		if ($player~current_prompt = "Command")
 			gosub :PLANET~landingSub		
@@ -481,11 +484,11 @@ return
 		setvar $SECTOR~fakeTraderCount 1
 		setVar $targetsFound FALSE
 		while ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
-			gosub :PLAYER~quikstats
+			gosub :PLAYER~currentprompt
 			setvar $player~startingLocation $player~current_prompt
 			if ($player~current_prompt = "Command")
 				gosub :PLANET~landingSub		
-				gosub :PLAYER~quikstats
+				gosub :PLAYER~currentprompt
 				setvar $player~startingLocation $player~current_prompt
 			end
 			goSub :SECTOR~getSectorData			
@@ -514,7 +517,7 @@ return
 		if ($targetsFound = TRUE)
 
 			send "s*  "
-			gosub :PLAYER~quikstats
+			waiton "Warps to Sector(s) : "
 			setVar $figowner SECTOR.FIGS.OWNER[$player~current_sector]
 			setVar $figCount SECTOR.FIGS.QUANTITY[$player~current_sector]
 
@@ -564,8 +567,7 @@ return
 				setEventTrigger		moveshipended2		:moveshipended "SCRIPT STOPPED" "scripts\mombot\modes\resource\moveship.cts"
 				pause
 				:moveshipended
-				gosub :PLAYER~quikstats
-				if ($startingSector <> $PLAYER~CURRENT_SECTOR)
+				if ($startingSector <> currentsector)
 					setVar $BOT~command "mow"
 					setVar $BOT~user_command_line " mow "&$startingSector&" 1"
 					setVar $BOT~parm1 $startingSector
@@ -580,9 +582,9 @@ return
 				end
 			end
 			
-			gosub :PLAYER~quikstats
+			#gosub :PLAYER~quikstats
 			
-			if ($startingSector = $player~current_sector)
+			if ($startingSector = currentsector)
 				killalltriggers
 				setvar $is_fuel_buyer PORT.BUYFUEL[$startingSector]
 				setvar $is_port PORT.EXISTS[$startingSector]
@@ -619,7 +621,7 @@ return
 							killalltriggers
 							getWord CURRENTLINE $totalPortFuel 4
 							waitOn "<Computer deactivated>"
-						gosub :PLAYER~quikstats
+						gosub :PLAYER~currentprompt
 						gosub :PLANET~landOnPlanetEnterCitadel
 					end
 					if (($planet~planet_fuel_max-$planet~planet_fuel) < $totalPortFuel)
