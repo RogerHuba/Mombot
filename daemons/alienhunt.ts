@@ -683,12 +683,12 @@ return
 	setvar $window_lines[1] "* Alienhunt Planet: " & $planet~planet
 	setvar $window_lines[2] "* ---------------------------------------------------------------"
 	format $planet~planet_fuel $player~value NUMBER
-	setvar $window_lines[3] "*    Planet Fuel: " & $player~value&"                          "
+	setvar $window_lines[3] "*      Planet Fuel: " & $player~value&"                          "
 	cutText $window_lines[3] $window_lines[3] 1 30
 	format $planet~planet_fighters $player~value NUMBER
 	setvar $window_lines[4] "   Planet Fighters: " & $player~value
 	format $planet~planet_shields $player~value NUMBER
-	setvar $window_lines[5] "* Planet Shields: " & $player~value&"                          "
+	setvar $window_lines[5] "*   Planet Shields: " & $player~value&"                          "
 	cutText $window_lines[5] $window_lines[5] 1 30
 	format $planet~citadel_credits $player~value NUMBER
 	setvar $window_lines[6] "   Citadel Credits: " & $player~value
