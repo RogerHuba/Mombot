@@ -79,7 +79,7 @@
 		setvar $corp false
 	end
 
-	getwordpos $bot~user_command_line $pos "refuel"
+	getwordpos $bot~user_command_line $pos "fuel"
 	if ($pos > 0)
 		setvar $refuel true
 	else
@@ -581,78 +581,74 @@ return
 					gosub :PLANET~landingSub
 				end
 			end
-			
-			#gosub :PLAYER~quikstats
-			
-			if ($startingSector = currentsector)
-				killalltriggers
-				setvar $is_fuel_buyer PORT.BUYFUEL[$startingSector]
-				setvar $is_port PORT.EXISTS[$startingSector]
-				setvar $class PORT.CLASS[$startingSector]
-				getSectorParameter $startingSector "BUSTED" $isBusted
+		end
 
-				if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true))
-					if ($upgrade = true)
-						killAllTriggers
-						send "q"
-						waitOn "Planet command (?"
-						gosub :PLANET~getPlanetInfo
-						gosub :setwindow
-						send "c"
-						setVar $total_creds_needed (300*7000)
-						if ($total_creds_needed > $PLAYER~CREDITS)
-							setVar $cashonhand $planet~CITADEL_CREDITS
-							add $cashonhand $PLAYER~CREDITS
-							if ($cashonhand > $total_creds_needed)
-									send "T T " & $PLAYER~CREDITS & "* "
-									send "T F " & $total_creds_needed & "* "
-									setVar $PLAYER~CREDITS $total_creds_needed
-								end
+		killalltriggers
+		setvar $is_fuel_buyer PORT.BUYFUEL[currentsector]
+		setvar $is_port PORT.EXISTS[currentsector]
+		setvar $class PORT.CLASS[currentsector]
+		getSectorParameter currentsector "BUSTED" $isBusted
+
+		if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true))
+			if ($upgrade = true)
+				killAllTriggers
+				send "q"
+				waitOn "Planet command (?"
+				gosub :PLANET~getPlanetInfo
+				gosub :setwindow
+				send "c"
+				setVar $total_creds_needed (300*7000)
+				if ($total_creds_needed > $PLAYER~CREDITS)
+					setVar $cashonhand $planet~CITADEL_CREDITS
+					add $cashonhand $PLAYER~CREDITS
+					if ($cashonhand > $total_creds_needed)
+							send "T T " & $PLAYER~CREDITS & "* "
+							send "T F " & $total_creds_needed & "* "
+							setVar $PLAYER~CREDITS $total_creds_needed
 						end
-						send "q q *O 1"
-						waitOn ", 0 to quit)"
-						getWord CURRENTLINE $upgradeAmount 9
-						stripText $upgradeAmount "("
-						send $upgradeAmount&"* * *CR*Q"
-						waitOn "What sector is the port in? ["&$PLAYER~CURRENT_SECTOR&"]"
-						setTextLineTrigger getFuel2 :fuelDuring "Fuel Ore"
-						pause
-						:fuelDuring
-							killalltriggers
-							getWord CURRENTLINE $totalPortFuel 4
-							waitOn "<Computer deactivated>"
-						gosub :PLAYER~currentprompt
-						gosub :PLANET~landOnPlanetEnterCitadel
-					end
-					if (($planet~planet_fuel_max-$planet~planet_fuel) < $totalPortFuel)
-						setVar $player~turnsToEmpty (($planet~planet_fuel_max-$planet~planet_fuel)/$player~total_holds)
-						add $totalHolds ($planet~planet_fuel_max-$planet~planet_fuel)
-						setVar $isDone TRUE
-					else
-						setVar $player~turnsToEmpty ($totalPortFuel/$player~total_holds)
-						add $totalHolds $totalPortFuel
-					end
-					setVar $PLAYER~buyobject "f"
-					setVar $PLAYER~buytype "s"
-					setVar $PLAYER~buydownRoundsFromParam $player~turnsToEmpty
-					gosub :player~buy
-					gosub :PLAYER~currentprompt
-					send "c r*q "
-					
-					if ($PLAYER~exit_message <> "Normal Exit")
-						setVar $SWITCHBOARD~message $PLAYER~exit_message&"*"
-						gosub :SWITCHBOARD~switchboard
-					end
-					if (($PLAYER~unlimitedGame = FALSE) AND (($PLAYER~turns-$player~turnsToEmpty) <= $BOT~bot_turn_limit))
-						setVar $SWITCHBOARD~message "Turns too low to continue.*"
-						gosub :SWITCHBOARD~switchboard
-						halt	        
-					end
-
 				end
+				send "q q *O 1"
+				waitOn ", 0 to quit)"
+				getWord CURRENTLINE $upgradeAmount 9
+				stripText $upgradeAmount "("
+				send $upgradeAmount&"* * *CR*Q"
+				waitOn "What sector is the port in? ["&currentsector&"]"
+				setTextLineTrigger getFuel2 :fuelDuring "Fuel Ore"
+				pause
+				:fuelDuring
+					killalltriggers
+					getWord CURRENTLINE $totalPortFuel 4
+					waitOn "<Computer deactivated>"
+				gosub :PLAYER~currentprompt
+				gosub :PLANET~landOnPlanetEnterCitadel
+			end
+			if (($planet~planet_fuel_max-$planet~planet_fuel) < $totalPortFuel)
+				setVar $player~turnsToEmpty (($planet~planet_fuel_max-$planet~planet_fuel)/$player~total_holds)
+				add $totalHolds ($planet~planet_fuel_max-$planet~planet_fuel)
+				setVar $isDone TRUE
+			else
+				setVar $player~turnsToEmpty ($totalPortFuel/$player~total_holds)
+				add $totalHolds $totalPortFuel
+			end
+			setVar $PLAYER~buyobject "f"
+			setVar $PLAYER~buytype "s"
+			setVar $PLAYER~buydownRoundsFromParam $player~turnsToEmpty
+			gosub :player~buy
+			gosub :PLAYER~currentprompt
+			send "c r*q "
+			
+			if ($PLAYER~exit_message <> "Normal Exit")
+				setVar $SWITCHBOARD~message $PLAYER~exit_message&"*"
+				gosub :SWITCHBOARD~switchboard
+			end
+			if (($PLAYER~unlimitedGame = FALSE) AND (($PLAYER~turns-$player~turnsToEmpty) <= $BOT~bot_turn_limit))
+				setVar $SWITCHBOARD~message "Turns too low to continue.*"
+				gosub :SWITCHBOARD~switchboard
+				halt	        
 			end
 
 		end
+
 		killalltriggers
 return
 
