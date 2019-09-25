@@ -582,7 +582,7 @@ return
 				setvar $is_fuel_buyer PORT.BUYFUEL[$startingSector]
 				setvar $is_port PORT.EXISTS[$startingSector]
 				setvar $class PORT.CLASS[$startingSector]
-				getSectorParameter $PLAYER~CURRENT_SECTOR "BUSTED" $isBusted
+				getSectorParameter $startingSector "BUSTED" $isBusted
 
 				if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true))
 					if ($upgrade = true)
