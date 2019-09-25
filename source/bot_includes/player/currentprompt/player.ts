@@ -1,25 +1,32 @@
 :currentPrompt
+	killtrigger prompt
+	killtrigger prompt_delay
 	setTextTrigger      prompt          :allPromptsCatch        #145 & #8
 	setDelayTrigger     prompt_delay    :current_prompt_delay   5000
 	send #145
 	pause
 	:current_prompt_delay
+		killtrigger prompt
+		killtrigger prompt_delay
 		setTextOutTrigger   atkeys      :current_prompt_at_keys
 		setDelayTrigger     prompt_delay    :verifyDelay        30000
 		pause
 	:current_prompt_at_keys
+		killtrigger prompt_delay
+		killtrigger atkeys
 		getOutText $out
 		send $out
 		killtrigger prompt_delay
 		return
 	:allPromptsCatch
+		killtrigger prompt
+		killtrigger prompt_delay
 		setvar $ansiline currentansiline
 		setvar $self_destruct_prompt false
 		getwordpos $ansiline $pos "ARE YOU SURE CAPTAIN? (Y/N) [N]"
 		if ($pos > 0)
 			setvar $self_destruct_prompt true
 		end
-		killtrigger prompt_delay
 		getWord CURRENTLINE $CURRENT_PROMPT 1
 		if ($CURRENT_PROMPT = 0)
 			getWord CURRENTANSILINE $CURRENT_PROMPT 1
