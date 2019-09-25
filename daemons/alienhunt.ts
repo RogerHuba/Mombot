@@ -319,6 +319,10 @@
 			pause
 		end
 	:go_to_drop_sector
+		killtrigger bot~pause
+		killtrigger bot~pause2
+		killtrigger bot~pause3
+		killtrigger bot~restart
 		killtrigger armid
 		killtrigger liftsoff
 		killtrigger power
