@@ -22,9 +22,6 @@
 		setVar $MAXED_LEVEL         FALSE
 	# ============================  END PLANET VARIABLES ==========================
 
-	setdelaytrigger planetinfodelay :keepgoingplanetinfo 1000
-	waitOn "Planet command (?"
-	:keepgoingplanetinfo
 	send "*"
 	killtrigger planetInfo2
 	setTextLineTrigger planetInfo2 :planetInfo2 "Planet #"
