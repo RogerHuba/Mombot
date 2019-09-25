@@ -446,8 +446,7 @@ return
 		load "scripts\mombot\commands\data\dscan.cts"
 		setEventTrigger		dscandone		:dscandone "SCRIPT STOPPED" "scripts\mombot\commands\data\dscan.cts"
 		pause
-		:dscandone
-		
+		:dscandone		
 			send "q "
 			gosub :PLANET~getPlanetInfo
 			gosub :setwindow
@@ -586,7 +585,6 @@ return
 				if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true))
 					if ($upgrade = true)
 						send "q"
-						waitOn "Planet command (?"
 						gosub :PLANET~getPlanetInfo
 						gosub :setwindow
 						send "c"
