@@ -799,6 +799,9 @@ return
 			else
 				gosub :rewrite_planet_file
 			end
+			setVar $i $thisPage
+			setVar $planetsChanged TRUE
+			gosub :rewrite_planet_file
 			goto :PreferencesMenuPagePlanet
 		elseif (($pagesExist) AND ($selection = "+"))
 			if ($i >= $PLANET~planetcounter)

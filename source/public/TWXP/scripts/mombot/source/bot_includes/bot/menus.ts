@@ -1,9 +1,8 @@
 # ======================     START PREFERENCES MENU SUBROUTINE    ==========================
 :preferencesMenu
-	setVar $botIsDeaf TRUE
-	saveVar $botIsDeaf
-	openMenu TWX_TOGGLEDEAF false
-	closeMenu
+	setDeafClients true
+	setVar $bot~botIsDeaf TRUE
+	saveVar $bot~botIsDeaf
 :refreshPreferencesMenu
 	gosub :BOT~killthetriggers
 	gosub :BOT~load_watcher_variables
@@ -415,13 +414,14 @@
 		gosub :preferenceStats
 		goto :refreshPreferencesMenu
 :donePrefer
-	openMenu TWX_TOGGLEDEAF false
-	closeMenu
-		echo #27 "[30D                        " #27 "[30D"
-		echo CURRENTANSILINE
-		setVar $BOT~botIsDeaf FALSE
-		saveVar $BOT~botIsDeaf
-		goto :BOT~wait_for_command
+	setDeafClients false
+	setVar $bot~botIsDeaf false
+	saveVar $bot~botIsDeaf
+	echo #27 "[30D                        " #27 "[30D"
+	echo CURRENTANSILINE
+	setVar $BOT~botIsDeaf FALSE
+	saveVar $BOT~botIsDeaf
+	goto :BOT~wait_for_command
 return
 :preferenceStats
 	gosub :BOT~save_the_variables
@@ -787,6 +787,9 @@ return
 			else
 				gosub :rewrite_planet_file
 			end
+			setVar $i $thisPage
+			setVar $planetsChanged TRUE
+			gosub :rewrite_planet_file
 			goto :PreferencesMenuPagePlanet
 		elseif (($pagesExist) AND ($selection = "+"))
 			if ($i >= $PLANET~planetcounter)
