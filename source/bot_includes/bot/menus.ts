@@ -1,6 +1,6 @@
 # ======================     START PREFERENCES MENU SUBROUTINE    ==========================
 :preferencesMenu
-	setDeafClients false
+	setDeafClients true
 	setVar $bot~botIsDeaf TRUE
 	saveVar $bot~botIsDeaf
 :refreshPreferencesMenu
