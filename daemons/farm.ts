@@ -15,7 +15,7 @@
 	setVar $BOT~help[2]  $BOT~tab&"       "
 	setVar $BOT~help[3]  $BOT~tab&"Farm Options: "
 	setVar $BOT~help[4]  $BOT~tab&"         [fig] - will strip fighters off planets"
-	setVar $BOT~help[5]  $BOT~tab&"           [f o e] - will strip fuel, organics, equipment off planets"
+	setVar $BOT~help[5]  $BOT~tab&"       [f o e] - will strip fuel, organics, equipment off planets"
 	setVar $BOT~help[6]  $BOT~tab&"        [cash] - will grab cash off planets"
 	setVar $BOT~help[7]  $BOT~tab&"        [warp] - will warp planets to sell product"
 	setVar $BOT~help[8] $BOT~tab&"        [half] - only sell half of port capacity when warping"
