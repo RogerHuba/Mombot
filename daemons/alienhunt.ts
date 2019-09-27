@@ -21,8 +21,10 @@
 	setVar $BOT~help[12] $BOT~tab&"       {cannon} - Will reset cannon levels after hunting alien."
 	setVar $BOT~help[13] $BOT~tab&"       {return} - Return to starting sector after each hunt."
 	setVar $BOT~help[14] $BOT~tab&"      {passive} - Surround passively when hunting."
-	setVar $BOT~help[15] $BOT~tab&"         {home} - Move ships to starting sector instead of stardock."
-	setVar $BOT~help[16] $BOT~tab&"{"&#34&"ship filter"&#34&"} - move ships matching this home, stardock for the others"
+	setVar $BOT~help[15] $BOT~tab&"       {buyfig} - Auto buy figs when low.  Withdraws from citadel."
+	setVar $BOT~help[16] $BOT~tab&"    {buyshield} - Auto buy shields when low.  Withdraws from citadel."
+	setVar $BOT~help[17] $BOT~tab&"         {home} - Move ships to starting sector instead of stardock."
+	setVar $BOT~help[18] $BOT~tab&"{"&#34&"ship filter"&#34&"} - move ships matching this home, stardock for the others"
 	gosub :bot~helpfile
  
 	setVar $BOT~script_title "Alien Hunter"
@@ -77,6 +79,20 @@
 		setvar $corp true
 	else
 		setvar $corp false
+	end
+	
+	getwordpos $bot~user_command_line $pos "buyfig"
+	if ($pos > 0)
+		setvar $buyfig true
+	else
+		setvar $buyfig false
+	end
+
+	getwordpos $bot~user_command_line $pos "buyshield"
+	if ($pos > 0)
+		setvar $buyshield true
+	else
+		setvar $buyshield false
 	end
 
 	getwordpos $bot~user_command_line $pos "fuel"
@@ -295,12 +311,68 @@
 	gosub :setwindow
 	send "c "
 	if ($planet~planet_fighters <= $SHIP~SHIP_FIGHTERS_MAX)
-		send "p"&$map~home_sector&"*y  "
-		send "qoccco*cq"
-		waitOn "<Computer deactivated>"
-		setVar $SWITCHBOARD~message "Alien hunter shutting down.  Making ship and planet corporate again.  Check to make sure I made it home.*"
-		gosub :SWITCHBOARD~switchboard
-		halt
+
+		if ($buyfig = true)
+			setVar $BOT~command "with"
+			if ($buyfig = true)
+				setVar $BOT~user_command_line " with silent"
+				setVar $BOT~parm1 ""
+			end
+			saveVar $BOT~parm1
+			saveVar $BOT~command
+			saveVar $BOT~user_command_line
+			load "scripts\mombot\commands\general\with.cts"
+			setEventTrigger		withended		:withended "SCRIPT STOPPED" "scripts\mombot\commands\general\with.cts"
+			pause
+			:withended
+
+			setVar $BOT~command "buy"
+			if ($buyfig = true)
+				setVar $BOT~user_command_line " buy fig silent"
+				setVar $BOT~parm1 "fig"
+			end
+			saveVar $BOT~parm1
+			saveVar $BOT~command
+			saveVar $BOT~user_command_line
+			load "scripts\mombot\commands\resource\buy.cts"
+			setEventTrigger		buyended		:buyended "SCRIPT STOPPED" "scripts\mombot\commands\resource\buy.cts"
+			pause
+			:buyended
+		else
+			send "p"&$map~home_sector&"*y  "
+			send "qoccco*cq"
+			waitOn "<Computer deactivated>"
+			setVar $SWITCHBOARD~message "Alien hunter shutting down.  Making ship and planet corporate again.  Check to make sure I made it home.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+	end
+	if (($planet~planet_shields <= 300) and ($buyshield = true))
+			setVar $BOT~command "with"
+			if ($buyfig = true)
+				setVar $BOT~user_command_line " with silent"
+				setVar $BOT~parm1 ""
+			end
+			saveVar $BOT~parm1
+			saveVar $BOT~command
+			saveVar $BOT~user_command_line
+			load "scripts\mombot\commands\general\with.cts"
+			setEventTrigger		withended2		:withended2 "SCRIPT STOPPED" "scripts\mombot\commands\general\with.cts"
+			pause
+			:withended2
+
+			setVar $BOT~command "buy"
+			if ($buyfig = true)
+				setVar $BOT~user_command_line " buy sh silent"
+				setVar $BOT~parm1 "sh"
+			end
+			saveVar $BOT~parm1
+			saveVar $BOT~command
+			saveVar $BOT~user_command_line
+			load "scripts\mombot\commands\resource\buy.cts"
+			setEventTrigger		buyshieldended		:buyshieldended "SCRIPT STOPPED" "scripts\mombot\commands\resource\buy.cts"
+			pause
+			:buyshieldended
 	end
 	setTextLineTrigger fig :checkFighter "Deployed Fighters Report Sector"
 	setTextTrigger armid :attackSectorMine "Your mines in "
