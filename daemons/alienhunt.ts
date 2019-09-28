@@ -317,8 +317,18 @@
 			if ($buyfig = true)
 				setVar $BOT~user_command_line " with silent"
 				setVar $BOT~parm1 ""
+				setVar $BOT~parm2 ""
+				setVar $BOT~parm3 ""
+				setVar $BOT~parm4 ""
+				setVar $BOT~parm5 ""
+				setVar $BOT~parm6 ""
 			end
 			saveVar $BOT~parm1
+			saveVar $BOT~parm2
+			saveVar $BOT~parm3
+			saveVar $BOT~parm4
+			saveVar $BOT~parm5
+			saveVar $BOT~parm6
 			saveVar $BOT~command
 			saveVar $BOT~user_command_line
 			load "scripts\mombot\commands\general\with.cts"
@@ -330,8 +340,18 @@
 			if ($buyfig = true)
 				setVar $BOT~user_command_line " buy fig silent"
 				setVar $BOT~parm1 "fig"
+				setVar $BOT~parm2 ""
+				setVar $BOT~parm3 ""
+				setVar $BOT~parm4 ""
+				setVar $BOT~parm5 ""
+				setVar $BOT~parm6 ""
 			end
-			saveVar $BOT~parm1
+			saveVar $BOT~parm1 
+			saveVar $BOT~parm2 
+			saveVar $BOT~parm3 
+			saveVar $BOT~parm4 
+			saveVar $BOT~parm5 
+			saveVar $BOT~parm6 
 			saveVar $BOT~command
 			saveVar $BOT~user_command_line
 			load "scripts\mombot\commands\resource\buy.cts"
@@ -352,8 +372,18 @@
 			if ($buyfig = true)
 				setVar $BOT~user_command_line " with silent"
 				setVar $BOT~parm1 ""
+				setVar $BOT~parm2 ""
+				setVar $BOT~parm3 ""
+				setVar $BOT~parm4 ""
+				setVar $BOT~parm5 ""
+				setVar $BOT~parm6 ""
 			end
 			saveVar $BOT~parm1
+			saveVar $BOT~parm2 
+			saveVar $BOT~parm3 
+			saveVar $BOT~parm4 
+			saveVar $BOT~parm5 
+			saveVar $BOT~parm6 
 			saveVar $BOT~command
 			saveVar $BOT~user_command_line
 			load "scripts\mombot\commands\general\with.cts"
@@ -365,8 +395,18 @@
 			if ($buyfig = true)
 				setVar $BOT~user_command_line " buy sh silent"
 				setVar $BOT~parm1 "sh"
+				setVar $BOT~parm2 ""
+				setVar $BOT~parm3 ""
+				setVar $BOT~parm4 ""
+				setVar $BOT~parm5 ""
+				setVar $BOT~parm6 ""
 			end
 			saveVar $BOT~parm1
+			saveVar $BOT~parm2 
+			saveVar $BOT~parm3 
+			saveVar $BOT~parm4 
+			saveVar $BOT~parm5 
+			saveVar $BOT~parm6 
 			saveVar $BOT~command
 			saveVar $BOT~user_command_line
 			load "scripts\mombot\commands\resource\buy.cts"
