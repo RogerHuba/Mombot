@@ -532,7 +532,7 @@ return
 			halt
 		end
 
-		if ($targetsFound = TRUE)
+#		if ($targetsFound = TRUE)
 
 			send "s*  "
 			waiton "Warps to Sector(s) : "
@@ -570,7 +570,7 @@ return
 					gosub :PLANET~landingSub
 				end
 			end
-		end
+#		end
 
 		killalltriggers
 		setvar $is_fuel_buyer PORT.BUYFUEL[currentsector]
