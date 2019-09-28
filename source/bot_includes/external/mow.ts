@@ -2,7 +2,7 @@
 # $mow~deploy is optional #
 
 if ($mow~deploy = "0")
-	set $mow~deploy ""
+	setvar $mow~deploy ""
 end
 :run
 :mow
