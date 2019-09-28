@@ -469,7 +469,9 @@ return
 return
 
 :dosurround
-	gosub :dscan~run		
+	if ($player~surroundPassive = true)
+		gosub :dscan~run		
+	end
 	send "q "
 	gosub :PLANET~getPlanetInfo
 	gosub :setwindow
