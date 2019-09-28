@@ -313,51 +313,9 @@
 	if ($planet~planet_fighters <= $SHIP~SHIP_FIGHTERS_MAX)
 
 		if ($buyfig = true)
-			setVar $BOT~command "with"
-			if ($buyfig = true)
-				setVar $BOT~user_command_line " with silent"
-				setVar $BOT~parm1 ""
-				setVar $BOT~parm2 ""
-				setVar $BOT~parm3 ""
-				setVar $BOT~parm4 ""
-				setVar $BOT~parm5 ""
-				setVar $BOT~parm6 ""
-			end
-			saveVar $BOT~parm1
-			saveVar $BOT~parm2
-			saveVar $BOT~parm3
-			saveVar $BOT~parm4
-			saveVar $BOT~parm5
-			saveVar $BOT~parm6
-			saveVar $BOT~command
-			saveVar $BOT~user_command_line
-			load "scripts\mombot\commands\general\with.cts"
-			setEventTrigger		withended		:withended "SCRIPT STOPPED" "scripts\mombot\commands\general\with.cts"
-			pause
-			:withended
-
-			setVar $BOT~command "buy"
-			if ($buyfig = true)
-				setVar $BOT~user_command_line " buy fig silent"
-				setVar $BOT~parm1 "fig"
-				setVar $BOT~parm2 ""
-				setVar $BOT~parm3 ""
-				setVar $BOT~parm4 ""
-				setVar $BOT~parm5 ""
-				setVar $BOT~parm6 ""
-			end
-			saveVar $BOT~parm1 
-			saveVar $BOT~parm2 
-			saveVar $BOT~parm3 
-			saveVar $BOT~parm4 
-			saveVar $BOT~parm5 
-			saveVar $BOT~parm6 
-			saveVar $BOT~command
-			saveVar $BOT~user_command_line
-			load "scripts\mombot\commands\resource\buy.cts"
-			setEventTrigger		buyended		:buyended "SCRIPT STOPPED" "scripts\mombot\commands\resource\buy.cts"
-			pause
-			:buyended
+			gosub :external~with
+			gosub :external~buyfig
+			gosub :external~dep
 		else
 			send "p"&$map~home_sector&"*y  "
 			send "qoccco*cq"
@@ -368,51 +326,9 @@
 		end
 	end
 	if (($planet~planet_shields <= 300) and ($buyshield = true))
-			setVar $BOT~command "with"
-			if ($buyfig = true)
-				setVar $BOT~user_command_line " with silent"
-				setVar $BOT~parm1 ""
-				setVar $BOT~parm2 ""
-				setVar $BOT~parm3 ""
-				setVar $BOT~parm4 ""
-				setVar $BOT~parm5 ""
-				setVar $BOT~parm6 ""
-			end
-			saveVar $BOT~parm1
-			saveVar $BOT~parm2 
-			saveVar $BOT~parm3 
-			saveVar $BOT~parm4 
-			saveVar $BOT~parm5 
-			saveVar $BOT~parm6 
-			saveVar $BOT~command
-			saveVar $BOT~user_command_line
-			load "scripts\mombot\commands\general\with.cts"
-			setEventTrigger		withended2		:withended2 "SCRIPT STOPPED" "scripts\mombot\commands\general\with.cts"
-			pause
-			:withended2
-
-			setVar $BOT~command "buy"
-			if ($buyfig = true)
-				setVar $BOT~user_command_line " buy sh silent"
-				setVar $BOT~parm1 "sh"
-				setVar $BOT~parm2 ""
-				setVar $BOT~parm3 ""
-				setVar $BOT~parm4 ""
-				setVar $BOT~parm5 ""
-				setVar $BOT~parm6 ""
-			end
-			saveVar $BOT~parm1
-			saveVar $BOT~parm2 
-			saveVar $BOT~parm3 
-			saveVar $BOT~parm4 
-			saveVar $BOT~parm5 
-			saveVar $BOT~parm6 
-			saveVar $BOT~command
-			saveVar $BOT~user_command_line
-			load "scripts\mombot\commands\resource\buy.cts"
-			setEventTrigger		buyshieldended		:buyshieldended "SCRIPT STOPPED" "scripts\mombot\commands\resource\buy.cts"
-			pause
-			:buyshieldended
+			gosub :external~with
+			gosub :external~buyshield
+			gosub :external~dep
 	end
 	setTextLineTrigger fig :checkFighter "Deployed Fighters Report Sector"
 	setTextTrigger armid :attackSectorMine "Your mines in "
@@ -553,29 +469,17 @@ return
 return
 
 :dosurround
-		
-	
-		setVar $BOT~command "dscan"
-		setVar $BOT~user_command_line " dscan silent"
-		setVar $BOT~parm1 "silent"
-		saveVar $BOT~parm1
-		saveVar $BOT~command
-		saveVar $BOT~user_command_line
-		load "scripts\mombot\commands\data\dscan.cts"
-		setEventTrigger		dscandone		:dscandone "SCRIPT STOPPED" "scripts\mombot\commands\data\dscan.cts"
-		pause
-		:dscandone
-		
-			send "q "
-			gosub :PLANET~getPlanetInfo
-			gosub :setwindow
-			send "q "
-			gosub :grid~surround
-			send "l "&$planet~planet&"* m*** c "
-			setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
-			gosub :SWITCHBOARD~switchboard
-			setvar $switchboard~message "* " & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
-			gosub :bot~echo
+	gosub :external~dscan		
+	send "q "
+	gosub :PLANET~getPlanetInfo
+	gosub :setwindow
+	send "q "
+	gosub :grid~surround
+	send "l "&$planet~planet&"* m*** c "
+	setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
+	gosub :SWITCHBOARD~switchboard
+	setvar $switchboard~message "* " & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
+	gosub :bot~echo
 
 return
 
@@ -634,31 +538,15 @@ return
 			setVar $figCount SECTOR.FIGS.QUANTITY[$player~current_sector]
 
 			if (($figcount <= 0) or (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
-				setVar $BOT~command "xenter"
-				setVar $BOT~user_command_line " xenter silent"
-				setVar $BOT~parm1 "silent"
-				saveVar $BOT~parm1
-				saveVar $BOT~command
-				saveVar $BOT~user_command_line
-				load "scripts\mombot\commands\grid\xenter.cts"
-				setEventTrigger		xenterended		:xenterended "SCRIPT STOPPED" "scripts\mombot\commands\grid\xenter.cts"
-				pause
-				:xenterended
+				gosub :external~xenter
 			end		
 			setVar $emptyShips SECTOR.SHIPCOUNT[$PLAYER~CURRENT_SECTOR]
 			if ($emptyShips > 0)
-				setVar $BOT~command "moveship"
 				loadVar $MAP~stardock
 				if ($filterships <> "")
 					setVar $BOT~user_command_line " moveship h silent "&#34&$filterships&#34
 					setVar $BOT~parm1 $MAP~home_sector
-					saveVar $BOT~parm1
-					saveVar $BOT~command
-					saveVar $BOT~user_command_line
-					load "scripts\mombot\modes\resource\moveship.cts"
-					setEventTrigger		moveshipended2		:movehomeshipended "SCRIPT STOPPED" "scripts\mombot\modes\resource\moveship.cts"
-					pause
-					:movehomeshipended
+					gosub :external~moveship
 				end
 				if ($sell)
 					if ($home = true)
@@ -672,24 +560,10 @@ return
 						setVar $BOT~user_command_line " moveship "&$MAP~stardock&" silent"
 						setVar $BOT~parm1 $MAP~stardock						
 				end
-				saveVar $BOT~parm1
-				saveVar $BOT~command
-				saveVar $BOT~user_command_line
-				load "scripts\mombot\modes\resource\moveship.cts"
-				setEventTrigger		moveshipended2		:moveshipended "SCRIPT STOPPED" "scripts\mombot\modes\resource\moveship.cts"
-				pause
-				:moveshipended
+				gosub :external~moveship
 				if ($startingSector <> currentsector)
-					setVar $BOT~command "mow"
-					setVar $BOT~user_command_line " mow "&$startingSector&" 1"
-					setVar $BOT~parm1 $startingSector
-					saveVar $BOT~parm1
-					saveVar $BOT~command
-					saveVar $BOT~user_command_line
-					load "scripts\mombot\modes\grid\mow.cts"
-					setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
-					pause
-					:mowended
+					setvar $external~destination $startingSector
+					gosub :external~mow
 					gosub :PLANET~landingSub
 				end
 			end
@@ -837,4 +711,11 @@ include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\planet\landonplanetentercitadel\planet"
-include "source\bot_includes\player\buy\player"
+include "source\bot_includes\external\buyfig"
+include "source\bot_includes\external\buyshield"
+include "source\bot_includes\external\dep"
+include "source\bot_includes\external\with"
+include "source\bot_includes\external\dscan"
+include "source\bot_includes\external\moveship"
+include "source\bot_includes\external\xenter"
+include "source\bot_includes\external\mow"
