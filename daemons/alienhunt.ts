@@ -313,9 +313,9 @@
 	if ($planet~planet_fighters <= $SHIP~SHIP_FIGHTERS_MAX)
 
 		if ($buyfig = true)
-			gosub :external~with
-			gosub :external~buyfig
-			gosub :external~dep
+			gosub :with~with
+			gosub :buyfig~buyfig
+			gosub :dep~dep
 		else
 			send "p"&$map~home_sector&"*y  "
 			send "qoccco*cq"
@@ -326,9 +326,9 @@
 		end
 	end
 	if (($planet~planet_shields <= 300) and ($buyshield = true))
-			gosub :external~with
-			gosub :external~buyshield
-			gosub :external~dep
+			gosub :with~with
+			gosub :buyshield~buyshield
+			gosub :dep~dep
 	end
 	setTextLineTrigger fig :checkFighter "Deployed Fighters Report Sector"
 	setTextTrigger armid :attackSectorMine "Your mines in "
@@ -469,7 +469,7 @@ return
 return
 
 :dosurround
-	gosub :external~dscan		
+	gosub :dscan~dscan		
 	send "q "
 	gosub :PLANET~getPlanetInfo
 	gosub :setwindow
@@ -538,7 +538,7 @@ return
 			setVar $figCount SECTOR.FIGS.QUANTITY[$player~current_sector]
 
 			if (($figcount <= 0) or (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
-				gosub :external~xenter
+				gosub :xenter~xenter
 			end		
 			setVar $emptyShips SECTOR.SHIPCOUNT[$PLAYER~CURRENT_SECTOR]
 			if ($emptyShips > 0)
@@ -546,7 +546,7 @@ return
 				if ($filterships <> "")
 					setVar $BOT~user_command_line " moveship h silent "&#34&$filterships&#34
 					setVar $BOT~parm1 $MAP~home_sector
-					gosub :external~moveship
+					gosub :moveship~moveship
 				end
 				if ($sell)
 					if ($home = true)
@@ -560,10 +560,10 @@ return
 						setVar $BOT~user_command_line " moveship "&$MAP~stardock&" silent"
 						setVar $BOT~parm1 $MAP~stardock						
 				end
-				gosub :external~moveship
+				gosub :moveship~moveship
 				if ($startingSector <> currentsector)
-					setvar $external~destination $startingSector
-					gosub :external~mow
+					setvar $mow~destination $startingSector
+					gosub :mow~mow
 					gosub :PLANET~landingSub
 				end
 			end
