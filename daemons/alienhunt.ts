@@ -536,13 +536,13 @@ return
 
 			send "s*  "
 			waiton "Warps to Sector(s) : "
-			setVar $figowner SECTOR.FIGS.OWNER[$player~current_sector]
-			setVar $figCount SECTOR.FIGS.QUANTITY[$player~current_sector]
+			setVar $figowner SECTOR.FIGS.OWNER[currentsector]
+			setVar $figCount SECTOR.FIGS.QUANTITY[currentsector]
 
 			if (($figcount <= 0) or (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
 				gosub :xenter~run
 			end		
-			setVar $emptyShips SECTOR.SHIPCOUNT[$PLAYER~CURRENT_SECTOR]
+			setVar $emptyShips SECTOR.SHIPCOUNT[currentsector]
 			if ($emptyShips > 0)
 				loadVar $MAP~stardock
 				if ($filterships <> "")
