@@ -404,11 +404,11 @@ return
 	setArray $targetSectors 6
 	setVar $targetCount 0
 	while ($checkSector > 0)
-		getSectorParameter $checkSector "FIGSEC" $isFigged
-		if ($isFigged = TRUE)
+#		getSectorParameter $checkSector "FIGSEC" $isFigged
+#		if ($isFigged = TRUE)
 			add $targetCount 1
 			setVar $targetSectors[$targetCount] $checkSector
-		end
+#		end
 		add $i 1
 		setVar $checkSector SECTOR.WARPS[$dropSector][$i]
 	end
