@@ -262,17 +262,23 @@
 	while (TRUE)
 		#gosub :PLAYER~quikstats
 		if (CURRENTFIGHTERS < $SHIP~SHIP_FIGHTERS_MAX)
-			setVar $SWITCHBOARD~message "Not enough fighters to continue the hunt.*"
-			gosub :switchboard~switchboard
-			send "p"&$homeSector&"*y"
-			send "'"&$SWITCHBOARD~bot_name&" scrub seek*"
-			if ($cannon = true)
-				send " *ls"&$percentToSet&"* la"&$starting_atmos_cannon&"*"  
-			end
-			send "qoccco*cq"
-			waitOn "<Computer deactivated>"
+			if ($buyfig = true)
+				gosub :with~run
+				gosub :buyfig~run
+				gosub :dep~run
+			else
+				setVar $SWITCHBOARD~message "Not enough fighters to continue the hunt.*"
+				gosub :switchboard~switchboard
+				send "p"&$homeSector&"*y"
+				send "'"&$SWITCHBOARD~bot_name&" scrub seek*"
+				if ($cannon = true)
+					send " *ls"&$percentToSet&"* la"&$starting_atmos_cannon&"*"  
+				end
+				send "qoccco*cq"
+				waitOn "<Computer deactivated>"
 
-			halt
+				halt
+			end
 		end
 		if ($return = true)
 			send "p"&$homeSector&"*y"
@@ -350,8 +356,6 @@
 		end
 	pause
 	:checkFighter
-		killalltriggers
-
 		cutText CURRENTLINE&" " $radio 1 1
 		getText CURRENTLINE $dropSector $START_FIG_HIT $END_FIG_HIT
 		getText CURRENTANSILINE $alien_check $START_FIG_HIT_OWNER $END_FIG_HIT_OWNER
@@ -361,6 +365,7 @@
 			pause
 		end
 	:go_to_drop_sector
+		killAllTriggers
 		if ($dropSector <> $player~current_sector)
 			send "*ls0* la0*  p " $dropSector "*y"
 			setTextLineTrigger pwarpNotOk :pwarpTryAdjacent "You do not have any fighters in Sector "
