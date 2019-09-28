@@ -563,6 +563,7 @@ return
 				gosub :moveship~run
 				if ($startingSector <> currentsector)
 					setvar $mow~destination $startingSector
+					setvar $mow~deploy "1"
 					gosub :mow~run
 					gosub :PLANET~landingSub
 				end
