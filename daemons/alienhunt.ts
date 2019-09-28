@@ -576,9 +576,10 @@ return
 		setvar $is_fuel_buyer PORT.BUYFUEL[currentsector]
 		setvar $is_port PORT.EXISTS[currentsector]
 		setvar $class PORT.CLASS[currentsector]
+		setvar $under_construction (PORT.BUILDTIME[currentsector] > 0)
 		getSectorParameter currentsector "BUSTED" $isBusted
 
-		if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true))
+		if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true) and ($under_construction <> true))
 			if ($upgrade = true)
 				killAllTriggers
 				send "q"

@@ -13,7 +13,7 @@
 	setVar $BOT~help[7]  $BOT~tab&"     {d}ensity  - constant density scan, photons on density change"
 	setVar $BOT~help[8]  $BOT~tab&"     {p}lanet   - standard planet warp photon script"
 	setVar $BOT~help[9]  $BOT~tab&"     {s}urround - attempts to foton retreat sector"
-	setVar $BOT~help[10]  $BOT~tab&"     d{o}ck     - sits on dock and attempts to foton on adjacent fig hit"
+	setVar $BOT~help[10] $BOT~tab&"     d{o}ck     - sits on dock and attempts to foton on adjacent fig hit"
 	setVar $BOT~help[11] $BOT~tab&"   "
 	setVar $BOT~help[12] $BOT~tab&"     {sector}   - Apply the mode from/to that sector"
 	setVar $BOT~help[13] $BOT~tab&"     {return}   - Returns Planet Home after Pwarp"
