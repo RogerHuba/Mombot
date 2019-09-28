@@ -1,3 +1,4 @@
+:run
 :dscan
 	setVar $BOT~command "dscan"
 	setVar $BOT~user_command_line " dscan silent"

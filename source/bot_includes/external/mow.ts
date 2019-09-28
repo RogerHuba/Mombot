@@ -1,5 +1,6 @@
 # requires destination to be defined #
 
+:run
 :mow
 	setVar $BOT~command "mow"
 	setVar $BOT~user_command_line " mow "&$destination&" 1"

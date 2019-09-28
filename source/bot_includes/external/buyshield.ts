@@ -1,3 +1,4 @@
+:run
 :buyshield
 	setVar $BOT~command "buy"
 	setVar $BOT~user_command_line " buy sh silent"

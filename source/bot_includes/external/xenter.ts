@@ -1,3 +1,4 @@
+:run
 :xenter
 	setVar $BOT~command "xenter"
 	setVar $BOT~user_command_line " xenter silent"

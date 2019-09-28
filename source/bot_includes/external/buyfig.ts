@@ -1,3 +1,4 @@
+:run
 :buyfig
 	setVar $BOT~command "buy"
 	setVar $BOT~user_command_line " buy fig silent"

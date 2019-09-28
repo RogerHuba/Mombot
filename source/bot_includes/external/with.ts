@@ -1,3 +1,6 @@
+# $with~amount is not required, but can be set for specific amounts #
+
+:run
 :with
 
 	if ($amount = "0")

@@ -1,5 +1,6 @@
 
 # requires $bot~user_command_line and $bot~parm1 to be defined before calling this #
+:run
 :moveship
 	setvar $bot~command "moveship"
 	saveVar $BOT~parm1
