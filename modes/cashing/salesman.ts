@@ -222,7 +222,7 @@
 				waitOn "Planet command (?"
 				gosub :PLANET~getPlanetInfo
 				send "c"
-				if ((($upgrade_fuel = true) AND (PORT.BUYFUEL[$player~current_sector] = FALSE)) and ($planet~planetfuel < ($planet~planetfuelmax-65000)))
+				if ((($upgrade_fuel = true) AND (PORT.BUYFUEL[$player~current_sector] = FALSE)) and ($planet~planetfuel < ($planet~planetfuelmax-$game~port_max)))
 					setVar $total_creds_needed ((300*7000) + 500000)
 
 					if (($total_creds_needed > $PLAYER~CREDITS) and (($player~credits+$planet~CITADEL_CREDITS) > $total_creds_needed))

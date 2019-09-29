@@ -3,6 +3,7 @@
 	loadVar $MAP~home_sector
 		loadvar $ship~cap_file
 	loadvar $planet~planet_file
+	loadvar $game~port_max
 
 	gosub :combat~init 
 
@@ -551,7 +552,7 @@ return
 		getSectorParameter currentsector "BUSTED" $isBusted
 		getSectorParameter currentsector "UPGRADEF" $isUpgradedFuel
 
-		if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true) and ($under_construction <> true))
+		if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true) and ($under_construction <> true) and ($planet~planetfuel < ($planet~planetfuelmax-$game~port_max))
 			if (($upgrade = true) and ($isUpgradedFuel <> true))
 				gosub :max~run
 				gosub :setwindow
