@@ -608,12 +608,12 @@ return
 
 
 :setWindow
-	setVar $msg "*   Current Sector: " & $PLAYER~CURRENT_SECTOR&"                            "
+	setVar $msg "*   Current Sector: " & currentsector &"                            "
 	cutText $msg $msg 1 30
 	if ($player~unlimitedGame = true)
 		setVar $msg $msg & "   Turns: Unlimited"
 	else
-		setVar $msg $msg & "   Turns: " & $PLAYER~TURNS
+		setVar $msg $msg & "   Turns: " & currentturns
 	end
 	setarray $window_lines 7
 	setvar $window_lines[1] "* Alienhunt Planet: " & $planet~planet
@@ -649,7 +649,8 @@ return
 :gohome
 	setvar $pwarp~destination $homesector
 	gosub :pwarp~run
-	send "'"&$SWITCHBOARD~bot_name&" scrub seek*"
+	setvar $scrub~seek true
+	gosub :scrub~run
 	if ($cannon = true)
 		send " *ls"&$percentToSet&"* la"&$starting_atmos_cannon&"*"  
 	end
@@ -691,3 +692,4 @@ include "source\bot_includes\external\mow"
 include "source\bot_includes\external\max"
 include "source\bot_includes\external\pwarp"
 include "source\bot_includes\external\buyfuel"
+include "source\bot_includes\external\scrub"
