@@ -392,14 +392,14 @@
 			if ($dropSector <= 0)
 				setvar $dropsector $player~current_sector
 			end
-			setVar $i 1
-			setVar $checkSector SECTOR.WARPS[$dropSector][$i]
+			setVar $index 1
+			setVar $checkSector SECTOR.WARPS[$dropSector][$index]
 			while ($checkSector > 0)
 				setvar $pwarp~destination $checksector
 				gosub :pwarp~run
 				gosub :attackandmoveship
-				add $i 1
-				setVar $checkSector SECTOR.WARPS[$dropSector][$i]
+				add $index 1
+				setVar $checkSector SECTOR.WARPS[$dropSector][$index]
 			end
 
 return
