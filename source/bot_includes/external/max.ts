@@ -11,7 +11,7 @@
 		setvar $type "f"
 	end
 	setVar $BOT~command "port"
-	setVar $BOT~user_command_line " port upgrade "&$type&" "&noexp
+	setVar $BOT~user_command_line " port upgrade "&$type&" "&noexp&" silent "
 	setVar $BOT~parm1 "upgrade"
 	setVar $BOT~parm2 ""
 	setVar $BOT~parm3 ""
