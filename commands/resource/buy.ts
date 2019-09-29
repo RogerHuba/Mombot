@@ -298,7 +298,7 @@ return
 		elseif ($buydown_mode = 3)
 			setVar $buydown_mode "Worst Price"
 		end
-		setvar $switchboard~message "*Buying down using " & $buydown_mode & "*" $fuelrounds & " rounds of fuel*" $orgrounds & " rounds of org*" $equiprounds & " rounds of equip**"
+		setvar $switchboard~message "*Buying down using " & $buydown_mode & "*" & $fuelrounds & " rounds of fuel*" & $orgrounds & " rounds of org*" & $equiprounds & " rounds of equip**"
 		gosub :switchboard~switchboard
 		setVar $fuelroundsleft $fuelrounds
 		setVar $orgroundsleft $orgrounds
