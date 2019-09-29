@@ -377,6 +377,15 @@
 			gosub :dosurround
 			setvar $pwarp~destination $dropSector
 			gosub :pwarp~run
+			setVar $index 1
+			setVar $checkSector SECTOR.WARPS[$dropSector][$index]
+			while ($checkSector > 0)
+				setvar $pwarp~destination $checksector
+				gosub :pwarp~run
+				gosub :attackandmoveship
+				add $index 1
+				setVar $checkSector SECTOR.WARPS[$dropSector][$index]
+			end
 			return
 		:pwarpConfirmed
 			killalltriggers
