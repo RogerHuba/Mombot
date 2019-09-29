@@ -1,13 +1,9 @@
-# requires $mow~destination to be defined #
-# $mow~deploy is optional #
+# requires $pwarp~destination to be defined #
 
-if ($mow~deploy = "0")
-	setvar $mow~deploy ""
-end
 :run
-:mow
-	setVar $BOT~command "mow"
-	setVar $BOT~user_command_line " mow "&$destination&" "&$mow~deploy
+:pwarp
+	setVar $BOT~command "pwarp"
+	setVar $BOT~user_command_line " pwarp "&$destination&" silent"
 	setVar $BOT~parm1 $destination
 	setVar $BOT~parm2 $mow~deploy
 	setVar $BOT~parm3 ""
@@ -22,8 +18,8 @@ end
 	saveVar $BOT~parm6 
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\modes\grid\mow.cts"
-	setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+	load "scripts\mombot\commands\general\pwarp.cts"
+	setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\mombot\commands\general\pwarp.cts"
 	pause
 	:mowended
 return

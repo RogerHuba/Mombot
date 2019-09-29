@@ -395,7 +395,8 @@
 			setVar $i 1
 			setVar $checkSector SECTOR.WARPS[$dropSector][$i]
 			while ($checkSector > 0)
-				send "p " $checkSector "*y"
+				setvar $pwarp~destination $checksector
+				gosub :pwarp~run
 				gosub :attackandmoveship
 				add $i 1
 				setVar $checkSector SECTOR.WARPS[$dropSector][$i]
@@ -707,3 +708,4 @@ include "source\bot_includes\external\moveship"
 include "source\bot_includes\external\xenter"
 include "source\bot_includes\external\mow"
 include "source\bot_includes\external\max"
+include "source\bot_includes\external\pwarp"
