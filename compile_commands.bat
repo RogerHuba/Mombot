@@ -1,4 +1,4 @@
-for /r %%n in (*disr.ts) do call :checkit "%%n" 
+for /r %%n in (*buy.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
