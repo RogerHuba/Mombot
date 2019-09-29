@@ -130,16 +130,19 @@
 		setVar $product 1
 		setVar $noExpAmount 9
 		gosub :doMaxPort
+		setSectorParameter CURRENTSECTOR "UPGRADEF" TRUE
 	end
 	if ($doOrg = true)
 		setVar $product 2
 		setVar $noExpAmount 4
 		gosub :doMaxPort
+		setSectorParameter CURRENTSECTOR "UPGRADEO" TRUE
 	end
 	if ($doEqu = true)
 		setVar $product 3
 		setVar $noExpAmount 3
 		gosub :doMaxPort
+		setSectorParameter CURRENTSECTOR "UPGRADEE" TRUE
 	end
 	if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
 		gosub :PLANET~landingSub
@@ -150,6 +153,7 @@
 	end
 	setvar $switchboard~message "Port upgrade complete in sector "&currentsector&".*"
 	gosub :switchboard~switchboard
+
 return
 #============================== END MAX PORT SUB ==============================
 
