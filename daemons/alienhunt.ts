@@ -553,7 +553,7 @@ return
 		getSectorParameter currentsector "UPGRADEF" $isUpgradedFuel
 		loadvar $planet~planet_fuel_max
 		loadvar $planet~planet_fuel
-		if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true) and ($under_construction <> true) and ($planet~planet_fuel < ($planet~planet_fuel_max-$game~port_max))
+		if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true) and ($under_construction <> true) and ($planet~planet_fuel < ($planet~planet_fuel_max-$game~port_max)))
 			if (($upgrade = true) and ($isUpgradedFuel <> true))
 				gosub :max~run
 				gosub :setwindow
