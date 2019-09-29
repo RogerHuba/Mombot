@@ -103,7 +103,6 @@
 				if ($doEqu = true)
 					add $total_creds_needed (1000*$totalEquipUpgradeNeeded)
 				end
-				echo "*total_creds_needed:["&$total_creds_needed&"]*"
 				
 				if ($total_creds_needed > $PLAYER~CREDITS)
 					setVar $cashonhand $PLANET~CITADEL_CREDITS
