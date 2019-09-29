@@ -585,7 +585,10 @@ return
 				gosub :max~run
 				gosub :setwindow
 			end
-			gosub :buyfuel~run
+			setvar $fuel PORT.FUEL[currentsector]
+			if ($fuel > 1000)
+				gosub :buyfuel~run
+			end
 		end
 
 		killalltriggers
