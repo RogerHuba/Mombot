@@ -582,7 +582,6 @@ return
 				gosub :setwindow
 			end
 			gosub :buyfuel~run
-			send "c r*q "
 		end
 
 		killalltriggers
