@@ -148,7 +148,7 @@
 		setvar $switchboard~message "No valid port here.*"
 		gosub :switchboard~switchboard
 	end
-	setvar $switchboard~message "Port upgrade complete.*"
+	setvar $switchboard~message "Port upgrade complete in sector "&currentsector&".*"
 	gosub :switchboard~switchboard
 return
 #============================== END MAX PORT SUB ==============================
