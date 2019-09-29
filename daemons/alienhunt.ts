@@ -565,6 +565,10 @@ return
 					gosub :mow~run
 					gosub :PLANET~landingSub
 				end
+				gosub :PLAYER~currentprompt
+				if ($player~current_prompt = "Command")
+					gosub :PLANET~landingSub
+				end
 			end
 		end
 
