@@ -584,6 +584,8 @@ return
 			if (($upgrade = true) and ($isUpgradedFuel <> true))
 				gosub :max~run
 				gosub :setwindow
+			else
+				send "c r*q "
 			end
 			setvar $fuel PORT.FUEL[currentsector]
 			if ($fuel > 1000)
