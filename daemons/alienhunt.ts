@@ -24,8 +24,9 @@
 	setVar $BOT~help[14] $BOT~tab&"      {passive} - Surround passively when hunting."
 	setVar $BOT~help[15] $BOT~tab&"       {buyfig} - Auto buy figs when low.  Withdraws from citadel."
 	setVar $BOT~help[16] $BOT~tab&"    {buyshield} - Auto buy shields when low.  Withdraws from citadel."
-	setVar $BOT~help[17] $BOT~tab&"         {home} - Move ships to starting sector instead of stardock."
-	setVar $BOT~help[18] $BOT~tab&"{"&#34&"ship filter"&#34&"} - move ships matching this home, stardock for the others"
+	setVar $BOT~help[17] $BOT~tab&"         {patp} - When planet is less than 10% of fuel, run patp."
+	setVar $BOT~help[18] $BOT~tab&"         {home} - Move ships to starting sector instead of stardock."
+	setVar $BOT~help[19] $BOT~tab&"{"&#34&"ship filter"&#34&"} - move ships matching this home, stardock for the others"
 	gosub :bot~helpfile
  
 	setVar $BOT~script_title "Alien Hunter"
@@ -82,6 +83,13 @@
 		setvar $corp false
 	end
 	
+	getwordpos $bot~user_command_line $pos "patp"
+	if ($pos > 0)
+		setvar $patp true
+	else
+		setvar $patp false
+	end
+
 	getwordpos $bot~user_command_line $pos "buyfig"
 	if ($pos > 0)
 		setvar $buyfig true
