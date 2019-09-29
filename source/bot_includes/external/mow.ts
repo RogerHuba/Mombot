@@ -1,11 +1,11 @@
 # requires $mow~destination to be defined #
 # $mow~deploy is optional #
 
-if ($mow~deploy = "0")
-	setvar $mow~deploy ""
-end
 :run
 :mow
+	if ($mow~deploy = "0")
+		setvar $mow~deploy ""
+	end
 	setVar $BOT~command "mow"
 	setVar $BOT~user_command_line " mow "&$destination&" "&$mow~deploy
 	setVar $BOT~parm1 $destination
