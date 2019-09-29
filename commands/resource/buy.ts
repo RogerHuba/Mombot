@@ -751,6 +751,7 @@ return
 			gosub :planet~landingsub
 		end
 		gosub :clearAdjacent
+		gosub :getportinfo
 		goto :buydownExit
 	end
 

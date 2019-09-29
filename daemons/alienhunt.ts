@@ -574,17 +574,15 @@ return
 		setvar $class PORT.CLASS[currentsector]
 		setvar $under_construction (PORT.BUILDTIME[currentsector] > 0)
 		getSectorParameter currentsector "BUSTED" $isBusted
+		getSectorParameter currentsector "UPGRADEF" $isUpgradedFuel
 
 		if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true) and ($under_construction <> true))
-			if ($upgrade = true)
+			if (($upgrade = true) and ($isUpgradedFuel <> true))
 				gosub :max~run
 				gosub :setwindow
 			end
 			gosub :buyfuel~run
 			send "c r*q "
-			
-
-
 		end
 
 		killalltriggers
