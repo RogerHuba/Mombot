@@ -588,7 +588,7 @@ return
 				send "c r*q "
 			end
 			setvar $fuel PORT.FUEL[currentsector]
-			if ($fuel > 1000)
+			if ((($upgrade = true) and ($fuel > 10000)) or (($upgrade <> true) and ($fuel > 1000)))
 				gosub :buyfuel~run
 			end
 		end
