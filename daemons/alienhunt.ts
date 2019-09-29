@@ -538,7 +538,7 @@ return
 			halt
 		end
 
-#		if ($targetsFound = TRUE)
+		if ($targetsFound = TRUE)
 
 			send "s*  "
 			waiton "Warps to Sector(s) : "
@@ -576,7 +576,7 @@ return
 					gosub :PLANET~landingSub
 				end
 			end
-#		end
+		end
 
 		killalltriggers
 		setvar $is_fuel_buyer PORT.BUYFUEL[currentsector]
@@ -587,36 +587,8 @@ return
 
 		if (($refuel = true) and ($is_fuel_buyer <> true) and ($is_port = true) and ($class > 0) and ($isBusted <> true) and ($under_construction <> true))
 			if ($upgrade = true)
-				killAllTriggers
-				send "q"
-				waitOn "Planet command (?"
-				gosub :PLANET~getPlanetInfo
+				gosub :max~run
 				gosub :setwindow
-				send "c"
-				setVar $total_creds_needed (300*7000)
-				if ($total_creds_needed > $PLAYER~CREDITS)
-					setVar $cashonhand $planet~CITADEL_CREDITS
-					add $cashonhand $PLAYER~CREDITS
-					if ($cashonhand > $total_creds_needed)
-							send "T T " & $PLAYER~CREDITS & "* "
-							send "T F " & $total_creds_needed & "* "
-							setVar $PLAYER~CREDITS $total_creds_needed
-						end
-				end
-				send "q q *O 1"
-				waitOn ", 0 to quit)"
-				getWord CURRENTLINE $upgradeAmount 9
-				stripText $upgradeAmount "("
-				send $upgradeAmount&"* * *CR*Q"
-				waitOn "What sector is the port in? ["&currentsector&"]"
-				setTextLineTrigger getFuel2 :fuelDuring "Fuel Ore"
-				pause
-				:fuelDuring
-					killalltriggers
-					getWord CURRENTLINE $totalPortFuel 4
-					waitOn "<Computer deactivated>"
-				gosub :PLAYER~currentprompt
-				gosub :PLANET~landOnPlanetEnterCitadel
 			end
 			if (($planet~planet_fuel_max-$planet~planet_fuel) < $totalPortFuel)
 				setVar $player~turnsToEmpty (($planet~planet_fuel_max-$planet~planet_fuel)/$player~total_holds)
@@ -676,14 +648,18 @@ return
 	setarray $window_lines 7
 	setvar $window_lines[1] "* Alienhunt Planet: " & $planet~planet
 	setvar $window_lines[2] "* ---------------------------------------------------------------"
+	loadvar $planet~planet_fuel
 	format $planet~planet_fuel $player~value NUMBER
 	setvar $window_lines[3] "*      Planet Fuel: " & $player~value&"                          "
 	cutText $window_lines[3] $window_lines[3] 1 30
+	loadvar $planet~planet_fighters
 	format $planet~planet_fighters $player~value NUMBER
 	setvar $window_lines[4] "   Planet Fighters: " & $player~value
+	loadvar $planet~planet_shields
 	format $planet~planet_shields $player~value NUMBER
 	setvar $window_lines[5] "*   Planet Shields: " & $player~value&"                          "
 	cutText $window_lines[5] $window_lines[5] 1 30
+	loadvar $planet~citadel_credits
 	format $planet~citadel_credits $player~value NUMBER
 	setvar $window_lines[6] "   Citadel Credits: " & $player~value
 	format $player~fighters $player~value NUMBER
@@ -730,3 +706,4 @@ include "source\bot_includes\external\dscan"
 include "source\bot_includes\external\moveship"
 include "source\bot_includes\external\xenter"
 include "source\bot_includes\external\mow"
+include "source\bot_includes\external\max"

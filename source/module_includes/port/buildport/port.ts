@@ -27,7 +27,6 @@
 		halt
 	end
 
-
 	if ($bot~user_command_line = " port ")
 		setvar $port_name "Mind ()ver Matter"
 	else

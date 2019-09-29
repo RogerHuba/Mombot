@@ -38,7 +38,18 @@
 		gosub :switchboard~switchboard
 		halt
 	end
-
+	setvar $class PORT.CLASS[currentsector] 
+	if (($class = "0") or ($class = "9"))
+		setvar $switchboard~message "Can't upgrade a class "&$class&" port.*"
+		gosub :switchboard~switchboard
+		halt
+	end
+	setvar $under_construction (PORT.BUILDTIME[currentsector] > 0)
+	if ($under_construction = true)
+		setvar $switchboard~message "Can't upgrade a port that's under construction.*"
+		gosub :switchboard~switchboard
+		halt
+	end
 
 	if (($doFuel <> TRUE) and ($doOrg <> TRUE) and ($doEqu <> TRUE))
 		setvar $switchboard~message "Must choose f, o, or e to upgrade.*"
