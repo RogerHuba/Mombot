@@ -314,7 +314,6 @@
 	gosub :setwindow
 	send "c "
 	if ($planet~planet_fighters < ($planet~planet_fighters_max/10))
-
 		if ($buyfig = true)
 			gosub :with~run
 			gosub :buyfig~run
@@ -376,7 +375,8 @@
 			gosub :findAdjacent
 			gosub :attemptDrop
 			gosub :dosurround
-			send "p " $dropSector "*y"
+			setvar $pwarp~destination $dropSector
+			gosub :pwarp~run
 			return
 		:pwarpConfirmed
 			killalltriggers
@@ -424,50 +424,12 @@ return
 	if ($targetCount > 0)
 		getRnd $randomTarget 1 $targetCount
 		setVar $gotoSector $targetSectors[$randomTarget]
-		setVar $player~warpto $gotoSector
-		gosub :dopwarp
+		setvar $pwarp~destination $gotoSector
+		gosub :pwarp~run
 	end
 	
 return
 
-:dopwarp
-	send "p" $player~warpto "*y"
-	setTextLineTrigger pwarp_lock       :pwarp_lock     "Locating beam pinpointed"
-	setTextLineTrigger no_pwarp_lock    :no_pwarp_lock  "Your own fighters must be"
-	setTextLineTrigger already      :already    "You are already in that sector!"
-	setTextLineTrigger no_ore       :no_ore     "You do not have enough Fuel Ore"
-	setTextLineTrigger No_pwarp     :noPwarp    "This Citadel does not have a Planetary TransWarp"
-	setTextLineTrigger wrong_number     :wrong_number   "Invalid Sector number,"
-	pause
-	:wrong_number
-		killalltriggers
-		setVar $SWITCHBOARD~message "Not a valid sector to pwarp to!*"
-		gosub :SWITCHBOARD~switchboard
-		return
-		
-	:noPwarp
-		killalltriggers
-		setVar $SWITCHBOARD~message "Planet Does Not Have A Planetary TransWarp Drive!*"
-		gosub :SWITCHBOARD~switchboard
-		return
-	:no_pwarp_lock
-		killalltriggers
-		setVar $target $player~warpto
-		setSectorParameter $gotoSector "FIGSEC" FALSE
-		return
-	:no_ore
-		killalltriggers
-		setVar $SWITCHBOARD~message "Not enough fuel for that pwarp.*"
-		gosub :SWITCHBOARD~switchboard
-		return
-	:pwarp_lock
-		killalltriggers
-		waitOn "Planet is now in sector"
-		setVar $target $gotoSector
-		return
-	:already
-		killalltriggers
-return
 
 :dosurround
 	if ($player~surroundPassive = true)
