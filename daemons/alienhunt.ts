@@ -261,6 +261,11 @@
 
 	while (TRUE)
 		#gosub :PLAYER~quikstats
+		if (($PLAYER~unlimitedGame = FALSE) AND (($PLAYER~turns-$player~turnsToEmpty) <= $BOT~bot_turn_limit))
+			setVar $SWITCHBOARD~message "Turns too low to continue.*"
+			gosub :SWITCHBOARD~switchboard
+			gosub :gohome
+		end
 		if (CURRENTFIGHTERS < $SHIP~SHIP_FIGHTERS_MAX)
 			if ($buyfig = true)
 				gosub :with~run
@@ -269,15 +274,7 @@
 			else
 				setVar $SWITCHBOARD~message "Not enough fighters to continue the hunt.*"
 				gosub :switchboard~switchboard
-				send "p"&$homeSector&"*y"
-				send "'"&$SWITCHBOARD~bot_name&" scrub seek*"
-				if ($cannon = true)
-					send " *ls"&$percentToSet&"* la"&$starting_atmos_cannon&"*"  
-				end
-				send "qoccco*cq"
-				waitOn "<Computer deactivated>"
-
-				halt
+				gosub :gohome
 			end
 		end
 		if ($return = true)
@@ -323,12 +320,9 @@
 			gosub :buyfig~run
 			gosub :dep~run
 		else
-			send "p"&$map~home_sector&"*y  "
-			send "qoccco*cq"
-			waitOn "<Computer deactivated>"
 			setVar $SWITCHBOARD~message "Alien hunter shutting down.  Making ship and planet corporate again.  Check to make sure I made it home.*"
 			gosub :SWITCHBOARD~switchboard
-			halt
+			gosub :gohome
 		end
 	end
 	if (($planet~planet_shields <= 300) and ($buyshield = true))
@@ -533,11 +527,6 @@ return
 			setVar $planet~planet_shields_to_take ($player~shields_needed/10)
 			send "gf"&$planet~planet_shields_to_take&"*"
 		end
-		if ((CURRENTTURNS <= $BOT~bot_turn_limit) and ($PLAYER~unlimitedGame <> TRUE))
-			setVar $SWITCHBOARD~message "Turns Exceed Bot Turn Limit.*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end
 
 		if ($targetsFound = TRUE)
 
@@ -591,30 +580,10 @@ return
 				gosub :max~run
 				gosub :setwindow
 			end
-			if (($planet~planet_fuel_max-$planet~planet_fuel) < $totalPortFuel)
-				setVar $player~turnsToEmpty (($planet~planet_fuel_max-$planet~planet_fuel)/$player~total_holds)
-				add $totalHolds ($planet~planet_fuel_max-$planet~planet_fuel)
-				setVar $isDone TRUE
-			else
-				setVar $player~turnsToEmpty ($totalPortFuel/$player~total_holds)
-				add $totalHolds $totalPortFuel
-			end
-			setVar $PLAYER~buyobject "f"
-			setVar $PLAYER~buytype "s"
-			setVar $PLAYER~buydownRoundsFromParam $player~turnsToEmpty
-			gosub :player~buy
-			gosub :PLAYER~currentprompt
+			gosub :buyfuel~run
 			send "c r*q "
 			
-			if ($PLAYER~exit_message <> "Normal Exit")
-				setVar $SWITCHBOARD~message $PLAYER~exit_message&"*"
-				gosub :SWITCHBOARD~switchboard
-			end
-			if (($PLAYER~unlimitedGame = FALSE) AND (($PLAYER~turns-$player~turnsToEmpty) <= $BOT~bot_turn_limit))
-				setVar $SWITCHBOARD~message "Turns too low to continue.*"
-				gosub :SWITCHBOARD~switchboard
-				halt	        
-			end
+
 
 		end
 
@@ -677,6 +646,18 @@ return
 	saveVar $window_content
 return
 
+:gohome
+	setvar $pwarp~destination $homesector
+	gosub :pwarp~run
+	send "'"&$SWITCHBOARD~bot_name&" scrub seek*"
+	if ($cannon = true)
+		send " *ls"&$percentToSet&"* la"&$starting_atmos_cannon&"*"  
+	end
+	send "qoccco*cq"
+	waitOn "<Computer deactivated>"
+
+	halt
+return
 
 
 #INCLUDES:
