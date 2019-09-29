@@ -751,7 +751,6 @@ return
 			gosub :planet~landingsub
 		end
 		gosub :clearAdjacent
-		gosub :getportinfo
 		goto :buydownExit
 	end
 
@@ -767,6 +766,7 @@ return
 :buydownExit
 	setvar $switchboard~message "Buy down exiting --- " & $exit_message & "*"
 	gosub :switchboard~switchboard
+	gosub :getportinfo
 	halt
 
 
