@@ -313,7 +313,7 @@
 	gosub :planet~getplanetinfo
 	gosub :setwindow
 	send "c "
-	if ($planet~planet_fighters <= $SHIP~SHIP_FIGHTERS_MAX)
+	if ($planet~planet_fighters < ($planet~planet_fighters_max/10))
 
 		if ($buyfig = true)
 			gosub :with~run
