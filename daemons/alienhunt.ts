@@ -1,7 +1,7 @@
 	gosub :BOT~loadVars
 									loadVar $MAP~STARDOCK
 	loadVar $MAP~home_sector
-		loadvar $ship~cap_file
+	loadvar $ship~cap_file
 	loadvar $planet~planet_file
 	loadvar $game~port_max
 
@@ -333,6 +333,7 @@
 			gosub :gohome
 		end
 	end
+	loadvar $planet~planet_shields
 	if (($planet~planet_shields <= 300) and ($buyshield = true))
 			gosub :with~run
 			gosub :buyshield~run
