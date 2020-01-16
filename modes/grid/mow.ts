@@ -3,6 +3,24 @@
 	loadvar $SWITCHBOARD~bot_name 
 	loadvar $ship~ship_max_attack
 	loadvar $planet~planet
+    
+	setVar $BOT~help[1]  $BOT~tab&"              <<<< mow >>>>"
+	setVar $BOT~help[2]  $BOT~tab&" "
+	setVar $BOT~help[3]  $BOT~tab&" mow [destination] {figs} {kill} {cap} {saveme} {p} {back}"
+	setVar $BOT~help[4]  $BOT~tab&"                   {personal} {backdoor} {i1/i2/i3} "
+	setVar $BOT~help[5]  $BOT~tab&"                    "
+	setVar $BOT~help[6]  $BOT~tab&" Options:"
+	setVar $BOT~help[7]  $BOT~tab&"        {p} - port ship immediately upon arrival."
+	setVar $BOT~help[8]  $BOT~tab&"     {kill} - attempt to kill immediately upon arrival."
+	setVar $BOT~help[9]  $BOT~tab&"      {cap} - attempt to capture immediately upon arrival."
+	setVar $BOT~help[10]  $BOT~tab&"   {saveme} - call saveme to be picked up at destination."
+	setVar $BOT~help[11]  $BOT~tab&"     {back} - twarp back to start sector after mow"
+	setVar $BOT~help[12]  $BOT~tab&"   {hoover} - attempts to pull fighters from sectors "
+	setVar $BOT~help[13]  $BOT~tab&" {personal} - drops personal fighters instead of corp  "
+	setVar $BOT~help[14]  $BOT~tab&" {backdoor} - mow to sector via backdoor"
+	setVar $BOT~help[15]  $BOT~tab&" {i1/i2/i3} - Indirect mow, void 1-3 sectors"
+	
+	gosub :BOT~helpfile
 
 
 	if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
@@ -301,7 +319,7 @@ return
 	send "cf" $PLAYER~CURRENT_SECTOR "*" $PLAYER~destination "*q"
 	setVar $course ""
 	setTextLineTrigger voidl :voidl "The shortest path" 
-	setTextLineTrigger noindirect :noindirect "Error - No route within 45 warps from sect"
+	setTextLineTrigger noindirect :noindirect "Error - No route within"
 	pause
 	:noindirect
 		killalltriggers
@@ -377,7 +395,7 @@ return
 	send "cf" $PLAYER~CURRENT_SECTOR "*" $PLAYER~destination "*q"
 	
 	setTextLineTrigger void3 :void3 "The shortest path" 
-	setTextLineTrigger nobackdoor :nobackdoor "Error - No route within 45 warps from sect"
+	setTextLineTrigger nobackdoor :nobackdoor "Error - No route within"
 	pause
 	:nobackdoor
 		killalltriggers
@@ -396,7 +414,7 @@ return
 	setVar $voidfound 0
 	send "cf" $PLAYER~destination "*" $PLAYER~CURRENT_SECTOR "*q"
 	setTextLineTrigger void1 :void1 "The shortest path" 
-	setTextLineTrigger nopath :nopath "Error - No route within 45 warps from sect"
+	setTextLineTrigger nopath :nopath "Error - No route within "
 	pause
 	:nopath
 		killAllTriggers
