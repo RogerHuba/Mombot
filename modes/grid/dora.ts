@@ -199,6 +199,7 @@ else
 	end
 end
 
+setVar $msg $msg&"Prioritising sectors with SBS or SSB ports*"
 getWordPos $bot~user_command_line $pos "ports"
 if ($pos > 0)
 	setVar $gridPriority "ports"
@@ -1323,7 +1324,7 @@ return
 		subtract $i 1
 	end
 	send "/"
-	waitfor "³Shlds"
+	waitfor "ï¿½Shlds"
 
 	setVar $plot 1
 	while ($plot = 1)
