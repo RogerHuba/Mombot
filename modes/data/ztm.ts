@@ -4,18 +4,19 @@ gosub :BOT~loadVars
 #HELP FILE
 		setVar $BOT~help[1]  $BOT~tab&"   Zero Turn Mapping"
 		setVar $BOT~help[2]  $BOT~tab&"  "
-		setVar $BOT~help[3]  $BOT~tab&"   ztm {p:n} {s:n} {one}"
+		setVar $BOT~help[3]  $BOT~tab&"   ztm {p:n} {s:n} {one} {noreport}"
 		setVar $BOT~help[4]  $BOT~tab&"         "
 		setVar $BOT~help[5]  $BOT~tab&"   Will resume from PASS and FROMSECTOR if cancelled "
 		setVar $BOT~help[6]  $BOT~tab&"         "
 		setVar $BOT~help[7]  $BOT~tab&"   {p:n} - Start Pass - n from 0 to 6"
 		setVar $BOT~help[8]  $BOT~tab&"   {s:n} - Start Sector - n from 2 to MAXSECTORS"
 		setVar $BOT~help[9]  $BOT~tab&"   {one} - Plot to Terra instead of random"
-		setVar $BOT~help[10] $BOT~tab&"   "
-		setVar $BOT~help[11] $BOT~tab&"   Examples:"
-		setVar $BOT~help[12] $BOT~tab&"   >ztm p:2 s:400   - Pass 2, sector 400"
-		setVar $BOT~help[13] $BOT~tab&"   >ztm one         - Plot to one"
-		setVar $BOT~help[14] $BOT~tab&"   >ztm p:0 s:2 one - Start Again, Plot to one"
+		setVar $BOT~help[10]  $BOT~tab&"   {noreport} - Will not report potenial Class 0s"
+		setVar $BOT~help[11] $BOT~tab&"   "
+		setVar $BOT~help[12] $BOT~tab&"   Examples:"
+		setVar $BOT~help[13] $BOT~tab&"   >ztm p:2 s:400   - Pass 2, sector 400"
+		setVar $BOT~help[14] $BOT~tab&"   >ztm one         - Plot to one"
+		setVar $BOT~help[15] $BOT~tab&"   >ztm p:0 s:2 one - Start Again, Plot to one"
 	   gosub :bot~helpfile
 
 
@@ -98,7 +99,13 @@ setVar $startlocation "x"
 			setVar $error 1
 		end
 	end
-	
+
+	setVar $sendStats 1
+	getWordPos $bot~user_command_line $pos "noreport"
+	if ($pos > 0)
+		setVar $sendStats 0
+		
+	end
 
 	if ($error = 1)
 		setvar $switchboard~message "Please use format >ztm p:2 s:400*"
@@ -141,8 +148,9 @@ setVar $startlocation "x"
 	end
 
 	
-
-
+	
+	setVar $warpsCheckedi 0
+	setArray $sendReport SECTORS
 
 # --- INIT PROGRAM ---
 :init
@@ -189,6 +197,7 @@ end
 				add $forwardSectorsFound 1
 				setVar $forwardSectors[$forwardSectorsFound] $forwardi
 				echo "Checking: " $forwardi " has " SECTOR.WARPCOUNT[$forwardi] " looking for " $dztm_resumepass "*"
+				add $warpsCheckedi 1
 			else
 				echo "Skip: " $forwardi " has " SECTOR.WARPCOUNT[$forwardi] " looking for " $dztm_resumepass "*"
 			end
@@ -241,13 +250,37 @@ end
 		end
 		
 		goSub :waitForComplete
+
+		# Check Stats
+
+		if ($sendStats = 1) and ($warpsCheckedi > 200)
+
+			setVar $i 1
+			setVar $warpsCheckedi 0
+			while ($i <= SECTORS)
+
+				if (SECTOR.WARPCOUNT[$i] = 6)
+
+					if (SECTOR.BACKDOORCOUNT[$i] > 0)
+						if ($sendReport[$i] = 0)
+							setVar $sendReport[$i] 1
+							send "'Potenial Class 0 Sector: " $i "*"
+						end
+					end
+				end
+				
+				add $i 1
+			end
+
+		end
 		# Remove 
 		setVar $dztm_resumesectorforward $forwardi
 		saveVar $dztm_resumesectorforward
 	
 		setVar $forwardSectorsFound 0
 		setVar $forwardSectors 0
-	
+
+		
 	end
 	
 	
@@ -349,7 +382,7 @@ halt
 		halt
 	:finishedPaths
 		killtrigger timeout
-		#waitfor "³PlScn"
+		#waitfor "ï¿½PlScn"
 return
 
 :waitForSafeResume
