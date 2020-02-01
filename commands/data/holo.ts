@@ -163,11 +163,11 @@
 		gosub :spitItOut
 		halt
 	:no_turns_available1
-		setvar $switchboard~message "No turns available.** "
+		setvar $switchboard~message "No turns available.**"
 		gosub :switchboard~switchboard
 		halt
 	:no_scanner_available1
-		setvar $switchboard~message "No scanner available.** "
+		setvar $switchboard~message "No scanner available.**"
 		gosub :switchboard~switchboard
 		halt
 	:no_scanner_available2
