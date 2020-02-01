@@ -594,6 +594,21 @@ halt
 		else
 			setVar $SWITCHBOARD~message "Continuing the hunt!*"
 			gosub :SWITCHBOARD~switchboard
+			if ($attackMethod = "b") or ($attackMethod = "p")
+				send "l" $currentPlanet "c c "
+			else
+				send "p t * * * *"
+				gosub :player~quikstats
+				if ($player~total_holds < $minOre)
+					setVar $minOre $player~total_holds
+				end
+				if ($player~ore_holds < $minOre)
+					setVar $SWITCHBOARD~message "We need more ore!*"
+					gosub :SWITCHBOARD~switchboard
+					halt
+				end
+			end
+			send "c"
 			goto :restart1
 		end
 	end
