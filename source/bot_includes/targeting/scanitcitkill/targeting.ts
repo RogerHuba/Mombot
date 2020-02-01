@@ -12,3 +12,5 @@
 		goto :checkForVictimsFromCitadel
 	end
 return
+
+include "source\bot_includes\sector\getSectorData\sector"
