@@ -38,6 +38,7 @@ setVar $BOT~help[30]  $BOT~tab&"              WARNING: Does not check for target
 setVar $BOT~help[31]  $BOT~tab&" {surround} - (optimistically) surrounds sector before kill "
 setVar $BOT~help[32]  $BOT~tab&" {pig}      - Bring a friend to lift and IG during kill cycle"
 setVar $BOT~help[33]  $BOT~tab&" {direct}   - Skip secondary scan"
+setVar $BOT~help[34]  $BOT~tab&" {retrigger}  - Continue photoning until out of photons"
 
 
 
@@ -74,6 +75,8 @@ setVar $attackPattern ""
 setVar $fotonKill 0
 setVar $fotonSurround 0
 setVar $fotonPig 0
+setVar $fotonReTrigger 0
+
 
 getWordPos $cline $pos "fotonlist"
 if ($pos > 0)
@@ -139,8 +142,12 @@ else
 			setVar $directscan 0
 
 		end
-		
-
+		getWordPos $cline $pos "retrigger"
+		if ($pos > 0)
+			replaceText $cline "direct" ""
+			setVar $fotonReTrigger 1
+			setVar $attackmsg $attackmsg & "*We will keep firing until out of bullets"
+		end
 	else
 		getWordPos $cline $pos "checkports"
 		if ($pos > 0)
@@ -356,6 +363,16 @@ setVar $firingSolutions 0
 setVar $fsi 0
 
 
+setArray $portsClasses 10
+setVar $portsClasses[9] "CLASS 0"
+setVar $portsClasses[1] "BBS"
+setVar $portsClasses[2] "BSB"
+setVar $portsClasses[3] "SBB"
+setVar $portsClasses[4] "SSB"
+setVar $portsClasses[5] "SBS"
+setVar $portsClasses[6] "BSS"
+setVar $portsClasses[7] "SSS"
+setVar $portsClasses[8] "BBB"
 
 
 if ($attackPattern <> "fotonlist")
@@ -554,6 +571,7 @@ end
 				end
 			else
 				gosub :boomboomboomshaketheroom
+				goto :checkEndOption
 			end
 			
 			
@@ -562,7 +580,24 @@ end
 
 
 halt
-
+:checkEndOption
+	gosub :player~quikstats
+	if ($fotonReTrigger = 0)
+		setVar $SWITCHBOARD~message "Single shot mode, PrHunt exiting!*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	else
+		if ($player~photons = 0)
+			setVar $SWITCHBOARD~message "Out of Photons, Please reload and restart!*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		else
+			setVar $SWITCHBOARD~message "Continuing the hunt!*"
+			gosub :SWITCHBOARD~switchboard
+			goto :restart1
+		end
+	end
+return
 :boomboomboomshaketheroom
 	
 	setVar $landing 0
@@ -614,7 +649,37 @@ halt
 	if (($attackmethod = "t") or ($attackmethod = "b"))
 		
 		goSub :doHolo
+		if ($fotonKill = 1)
+			
+			setTextLineTrigger tphotonOver :tphotonOver "Photon Wave Duration has ended in sector"
+			setDelayTrigger tphotonOver2 :tphotonOver2 (($game~photon_duration * 1000) + 1000)
+			pause
+			:tphotonOver
+			:tphotonOver2
+				killalltriggers
+				setVar $player~moveIntoSector $attacking
+				goSub :player~moveIntoSector
+				
+				
+				if ($fotonSurround = 1)
+					gosub :player~quikstats
 
+					gosub :grid~surround
+					
+					gosub :shipKill
+					gosub :shipKill
+					gosub :shipKill
+
+				else
+					gosub :shipKill
+
+					gosub :shipKill
+					gosub :shipKill
+
+				end
+				
+				
+		end
 		#waitfor success - move home
 		send "m" $homeSector "*y"
 		waitfor "ating beam pinpointed, Tran"
@@ -863,13 +928,17 @@ return
 						setVar $announceTarget 1
 						add $monitorTargetsi 1
 						setVar $monitorTargets[$monitorTargetsi] $targetList[$loopTargeti]
-						send "'PORT G0NE: " $targetList[$loopTargeti] "*"
+						setVar $portGone $targetList[$loopTargeti] 
+						goSub :portGone 
+						
 					end
 
 				else
 					add $monitorTargetsi 1
 					setVar $monitorTargets[$monitorTargetsi] $targetList[$loopTargeti]
-					send "'PORT GONE: " $targetList[$loopTargeti] "*"
+					
+					setVar $portGone $targetList[$loopTargeti] 
+					goSub :portGone 
 					setVar $logentry "PORT GONE: " & $targetList[$loopTargeti]
 					goSub :writeLog
 
@@ -1292,6 +1361,7 @@ return
 
 	setVar $SWITCHBOARD~message "Blocked Ports are updated; please restart using preferred search pattern.*"
 	gosub :SWITCHBOARD~switchboard
+	send "q"
 return
 
 :writeLog
@@ -1301,6 +1371,25 @@ return
 
 return
 
+:portGone
+
+	send "'PORT GONE: " $portGone " class: " $portsClasses[PORT.CLASS[$portGone]] "*"
+
+return 
+
+:shipKill
+	setVar $BOT~command "kill " 
+	setVar $bot~user_command_line " kill "
+
+
+	saveVar $BOT~command
+	saveVar $bot~user_command_line
+	load "scripts\mombot\commands\offense\kill.cts"
+	setEventTrigger        killended        :killended "SCRIPT STOPPED" "scripts\mombot\commands\offense\kill.cts"
+	pause
+	:killended
+		killalltriggers
+return
 
 include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\combat\init\combat"
@@ -1311,5 +1400,6 @@ include "source\bot_includes\ship\getshipcapstats\ship"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\targeting\initializetargeting\targeting"
+include "source\bot_includes\player\moveintosector\player"
 include "source\bot_includes\grid\surround\grid"
 include "source\bot_includes\targeting\scanitcitkill\targeting"
