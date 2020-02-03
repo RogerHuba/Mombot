@@ -1,4 +1,5 @@
-
+Look at making mow holo more efficent
+turn limit or reporting? 
 loadVar $switchboard~bot_name
 gosub :BOT~loadVars
 clearAllAvoids
@@ -134,17 +135,16 @@ setVar $i 1
     while ($i <= $sectorListi)
         setVar $target $sectorCourse[$i]
 echo $target "*"
-        gosub :PLAYER~quikstats
-
-        if ($player~FIGHTERS < $minFigs)
-            setVar $SWITCHBOARD~message "Fighters are low, stopping...*"
-            gosub :switchboard~switchboard
-            halt
-        end
+        
         getSectorParameter $target "FIGSEC" $hasFig
         if ($hasFig = 0) and ($player~CURRENT_SECTOR <> $target)
             
-
+            gosub :PLAYER~quikstats
+            if ($player~FIGHTERS < $minFigs)
+                setVar $SWITCHBOARD~message "Fighters are low, stopping...*"
+                gosub :switchboard~switchboard
+                halt
+            end
             setVar $BOT~command "mow"
             if ($endFigsOnly = 0)
                 setVar $BOT~user_command_line " mow "& $target & " 1 "
