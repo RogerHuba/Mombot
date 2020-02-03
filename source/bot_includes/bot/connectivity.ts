@@ -366,8 +366,8 @@ return
 
 		echo #27 "[30D                        " #27 "[30D"
 		isNumber $isNumber $menus~mowDestination  
-		if ($isNumber and ((($BOT~mowToDock) OR ($menus~mowToRylos) OR ($menus~mowToAlpha) OR ($menus~mowToOther))))
-			if ($BOT~mowToDock)
+		if ($isNumber and ((($BOT~mowToDock) OR ($menus~mowToRylos) OR ($menus~mowToAlpha) OR ($menus~mowToOther) OR ($menus~fmowToDock))))
+			if ($BOT~mowToDock) or ($menus~fmowToDock)
 				if (((STARDOCK = "0") OR (STARDOCK = "")) and ($map~stardock = "0"))
 					send "v"
 					waitOn "-=-=-=-  Current "
@@ -382,23 +382,36 @@ return
 					setVar $menus~mowDestination $MAP~stardock
 				end
 			end
-			setvar $BOT~user_command_line "mow "&$menus~mowDestination&" "
+			if ($menus~fmowToDock = true)
+				setvar $BOT~user_command_line "fmow "&$menus~mowDestination&" 1 "
+			else
+				setvar $BOT~user_command_line "mow "&$menus~mowDestination&" 1 "
+			end
 			setVar $BOT~parm1 $menus~mowDestination
+			setVar $BOT~parm2 1
 			if ($menus~start_mow_option <> "")
 				setvar $BOT~user_command_line $BOT~user_command_line & $menus~start_mow_option & " "
-				setVar $BOT~parm2 $menus~start_mow_option
+				setVar $BOT~parm3 $menus~start_mow_option
 			end
 			savevar $bot~user_command_line
 			savevar $bot~parm1
+			savevar $bot~parm2
 			if ($menus~start_mow_option <> "")
-				savevar $bot~parm2
+				savevar $bot~parm3
 			end
 			setVar $menus~start_mow_option ""
 			saveVar $menus~start_mow_option
-			load "scripts\mombot\modes\grid\mow.cts"
-			setEventTrigger		1		:mowended	"SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
-			pause
-			:mowended
+			if ($menus~fmowToDock = true)
+				load "scripts\mombot\modes\grid\fmow.cts"
+				setEventTrigger		1		:fmowended	"SCRIPT STOPPED" "scripts\mombot\modes\grid\fmow.cts"
+				pause
+				:fmowended
+			else
+				load "scripts\mombot\modes\grid\mow.cts"
+				setEventTrigger		1		:mowended	"SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+				pause
+				:mowended
+			end
 		else
 			if (($isNumber) and ($menus~xportToShip))
 				send "x    "&$menus~mowDestination&"  "
