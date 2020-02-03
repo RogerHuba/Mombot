@@ -88,7 +88,7 @@
 			gosub :SWITCHBOARD~switchboard
 		end
 	end
-	goto :wait_for_command
+	halt
 
 
 :mow
@@ -148,6 +148,17 @@
 		else
 			setVar $personal FALSE
 		end
+		getWordPos " "&$bot~user_command_line&" " $pos " holo "
+		if ($pos > 0)
+			setVar $doholo TRUE
+			if ($player~lra <> "Holo")
+				send "'{" $SWITCHBOARD~bot_name "} - You need holo scanners!*"
+				halt
+			end
+		else
+			setVar $doholo FALSE
+		end
+
 		setVar $figsToDrop $bot~parm2
 		isNumber $number $figsToDrop
 		if ($number <> TRUE)
@@ -206,6 +217,9 @@
 					setVar $target $PLAYER~mowCourse[$j]
 					gosub :player~addfigtodata
 				end
+				if ($doholo = TRUE) and ($j <> ($PLAYER~courseLength))
+					setVar $result $result&"sh"
+				end
 				if (($called = FALSE) AND ($mow_saveme = TRUE) AND ($j >= ($PLAYER~courseLength-2)))
 					setVar $result $result&"'"&$PLAYER~destination&"=saveme*  "
 					setVar $called TRUE
@@ -254,18 +268,6 @@ return
 
 :wait_for_command
 
-	# write the help file at the end for speed purposes #
-	setVar $BOT~help[1]  $BOT~tab&"mow [destination] {figs} {kill} {cap} {saveme} {p} {back}"
-	setVar $BOT~help[2]  $BOT~tab&"                  {personal} "
-	setVar $BOT~help[3]  $BOT~tab&" Options: "
-	setVar $BOT~help[4]  $BOT~tab&"       {p} - port ship immediately upon arrival."
-	setVar $BOT~help[5]  $BOT~tab&"    {kill} - attempt to kill immediately upon arrival."
-	setVar $BOT~help[6]  $BOT~tab&"     {cap} - attempt to capture immediately upon arrival."
-	setVar $BOT~help[7]  $BOT~tab&"  {saveme} - call saveme to be picked up at destination."
-	setVar $BOT~help[8]  $BOT~tab&"    {back} - twarp back to start sector after mow"
-	setVar $BOT~help[9]  $BOT~tab&"  {hoover} - attempts to pull fighters from sectors     "
-	setVar $BOT~help[10] $BOT~tab&"{personal} - drops personal fighters instead of ocrp     "
-	gosub :bot~helpfile
 
 halt
 
@@ -304,7 +306,9 @@ return
 	if ($pos > 0)
 		setVar $voids 3
 	end
-
+	if ($PLAYER~CURRENT_SECTOR = 1)
+		goSub :voidfirstnotFed
+	end
 	setVar $i 1
 
 	while ($i <= $voids)
@@ -383,6 +387,11 @@ return
 		end
 		add $i 1
 	end
+	
+	if ($PLAYER~CURRENT_SECTOR = 1)
+		goSub :voidfirstnotFed
+	end
+	
 	setVar $go 1
 	while ($go = 1)
 		goSub :getWarpAndAvoid
@@ -435,7 +444,57 @@ return
 
 return
 
+:voidfirstnotFed
+	
+	send "cf" $PLAYER~CURRENT_SECTOR "*" $PLAYER~destination "*q"
+	setVar $course ""
+	setTextLineTrigger voidnotfedl :voidnotfedl "The shortest path" 
+	setTextLineTrigger noindirectfed :noindirectfed "Error - No route within"
+	pause
+	:noindirectfed
+		killalltriggers
+		send "yq"
+		setVar $SWITCHBOARD~message "Not initial path, exiting.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	:voidnotfedl
+		killalltriggers
+		:keepaddingfed
+		setTextLineTrigger addCoursefed :addCoursefed ">"
+		setTextTrigger endCoursefed :endCoursefed "Computer command [" 
+		pause
+		:addCoursefed
+			killalltriggers
+			setVar $course $course & " " & CURRENTLINE
+			goto :keepaddingfed
+		:endCoursefed
+			killalltriggers
+			setVar $prevwarp ""
+			setVar $y 1
+			setVar $go 1
+			while ($go = 1)
+				
+				getWord $course $warp $y
+				if ($warp <> ">")
+					stripText $warp "("
+					stripText $warp ")"
+			echo $warp "*"
+					if (($warp > 10) and ($y > 1))
+						setVar $go 0
+						send "cv" $warp "*q"
+					end
+					
+					setVar $prevwarp $warp
+				end
+				add $y 1
+				if ($y > 50)
+					setVar $go 0
+				end
+			end
 
+
+
+return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"

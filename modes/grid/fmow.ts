@@ -36,23 +36,25 @@
 	setVar $bot~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
 	gosub :bot~checkStartingPrompt
 
-		setVar $PLAYER~destination $bot~parm1
-		isNumber $number $PLAYER~destination
-		if ($number <> 1)
-			setVar $SWITCHBOARD~message "Sector entered is not a number, cannot mow!*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		elseif (($PLAYER~destination <= 0) OR ($PLAYER~destination > SECTORS))
-			setVar $SWITCHBOARD~message "Sector entered is not valid, cannot mow!*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end
-		setVar $PLAYER~destination ($bot~parm1+0)
-		if ($PLAYER~destination = $PLAYER~CURRENT_SECTOR)
-			setVar $SWITCHBOARD~message "You are already in that sector!*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end   
+	setVar $PLAYER~destination $bot~parm1
+	isNumber $number $PLAYER~destination
+	if ($number <> 1)
+		setVar $SWITCHBOARD~message "Sector entered is not a number, cannot mow!*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	elseif (($PLAYER~destination <= 0) OR ($PLAYER~destination > SECTORS))
+		setVar $SWITCHBOARD~message "Sector entered is not valid, cannot mow!*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	setVar $PLAYER~destination ($bot~parm1+0)
+	if ($PLAYER~destination = $PLAYER~CURRENT_SECTOR)
+		setVar $SWITCHBOARD~message "You are already in that sector!*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end   
+	
+
 	 getWordPos " "&$bot~user_command_line&" " $pos "backdoor"
 	 if ($pos > 0)
 		striptext $bot~user_command_line "backdoor"
@@ -99,10 +101,11 @@
 		if ($bot~startingLocation = "Citadel")
 			send "q"
 			gosub :PLANET~getPlanetInfo
-			send "t*t1* c "
+			send " c "
 		end
 
 		if ($bot~startingLocation = "Command")
+			
 			gosub :SHIP~getShipStats
 			setVar $mow_SHIP_MAX_ATTACK $SHIP~SHIP_MAX_ATTACK
 		elseif ($SHIP~SHIP_MAX_ATTACK <= 0)
@@ -334,6 +337,10 @@ return
 		setVar $voids 3
 	end
 
+	if ($PLAYER~CURRENT_SECTOR = 1)
+		goSub :voidfirstnotFed
+	end
+
 	setVar $i 1
 
 	while ($i <= $voids)
@@ -413,9 +420,11 @@ return
 		add $i 1
 	end
 	
-	if ($PLAYER~CURRENT_SECTOR)
+	
+	if ($PLAYER~CURRENT_SECTOR = 1)
 		goSub :voidfirstnotFed
 	end
+	
 	setVar $go 1
 	while ($go = 1)
 		goSub :getWarpAndAvoid
