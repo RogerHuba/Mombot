@@ -298,7 +298,7 @@ return
 		elseif ($buydown_mode = 3)
 			setVar $buydown_mode "Worst Price"
 		end
-		setvar $switchboard~message "*Buying down using " & $buydown_mode & "*" & $fuelrounds & " rounds of fuel*" & $orgrounds & " rounds of org*" & $equiprounds & " rounds of equip**"
+		setvar $switchboard~message "Buying down using " & $buydown_mode & "*" & $fuelrounds & " rounds of fuel*" & $orgrounds & " rounds of org*" & $equiprounds & " rounds of equip**"
 		gosub :switchboard~switchboard
 		setVar $fuelroundsleft $fuelrounds
 		setVar $orgroundsleft $orgrounds
@@ -537,7 +537,7 @@ return
 
 	if ($bot~parm1 = "sh")
 		if ($startingLocation <> "Citadel")
-			setvar $switchboard~message "Shield Buyer must be run from the Citadel"
+			setvar $switchboard~message "Shield Buyer must be run from the Citadel*"
 			gosub :switchboard~switchboard
 			halt
 		end
@@ -545,7 +545,7 @@ return
 	end
 	if ($bot~parm1 = "fig")
 		if ($startingLocation <> "Citadel")
-			setvar $switchboard~message "Fighter Buyer must be run from the Citadel"
+			setvar $switchboard~message "Fighter Buyer must be run from the Citadel*"
 			gosub :switchboard~switchboard
 		halt
 		end
