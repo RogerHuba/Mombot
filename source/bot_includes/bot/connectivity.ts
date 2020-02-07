@@ -302,6 +302,41 @@ return
 	:back_in_game
 	killalltriggers
 
+	# Testing this addition - Can we check briefly for our corp before mowing?
+	if (($BOT~isCEO = FALSE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
+		setVar $skipJoin 0
+		setVar $attemps 0
+		gosub :BOT~killthetriggers
+		:checkForCorp2
+			add $attemps 1
+			if ($attemps >= 5)
+				gosub :BOT~killthetriggers
+				send "q"
+				goto :resumeStartAfterCorpJoin
+			end
+			send "*TD"
+			gosub :PLAYER~quikstats
+			setTextLineTrigger	1 :thereIsMyCorp2	"    "&$BOT~corpName
+			setTextTrigger 		2 :noCorpThatName2	"Corporate command ["
+			send "L"
+			pause
+		:noCorpThatName2
+			gosub :BOT~killthetriggers
+			echo "[[ Waiting 3 seconds to check for corp again, press [Spacebar] to cancel. ]]*"
+			setDelayTrigger		3 :checkForCorp2		200
+			setTextOutTrigger 	4 :alreadyCorped2 	#32
+			pause
+		:thereIsMyCorp2
+			gosub :BOT~killthetriggers
+			getWord CURRENTLINE $corpNumber 1
+		:continueCorpCreation2
+			gosub :BOT~killthetriggers
+			send "J"&$corpNumber&"*"&$BOT~corpPassword&"* * *CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q c o* c q "
+			setVar $skipJoin 1
+	end
+	:resumeStartAfterCorpJoin
+
+	# End Testing 
 	if ($menus~mowDestination <> "")
 		gosub :moving
 	end
@@ -317,25 +352,27 @@ return
 				send $BOT~corpName&"*Y"&$BOT~corpPassword&"*Y*CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q c o* c q "
 
 		elseif (($BOT~isCEO = FALSE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
-			:checkForCorp
-				send "*TD"
-				gosub :PLAYER~quikstats
-				setTextLineTrigger	1 :thereIsMyCorp	"    "&$BOT~corpName
-				setTextTrigger 		2 :noCorpThatName	"Corporate command ["
-				send "L"
-				pause
-			:noCorpThatName
-				gosub :BOT~killthetriggers
-				echo "[[ Waiting 3 seconds to check for corp again, press [Spacebar] to cancel. ]]*"
-				setDelayTrigger		3 :checkForCorp		3000
-				setTextOutTrigger 	4 :alreadyCorped 	#32
-				pause
-			:thereIsMyCorp
-				gosub :BOT~killthetriggers
-				getWord CURRENTLINE $corpNumber 1
-			:continueCorpCreation
-				gosub :BOT~killthetriggers
-				send "J"&$corpNumber&"*"&$BOT~corpPassword&"* * *CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q c o* c q "
+			if ($skipJoin = 0)
+				:checkForCorp
+					send "*TD"
+					gosub :PLAYER~quikstats
+					setTextLineTrigger	1 :thereIsMyCorp	"    "&$BOT~corpName
+					setTextTrigger 		2 :noCorpThatName	"Corporate command ["
+					send "L"
+					pause
+				:noCorpThatName
+					gosub :BOT~killthetriggers
+					echo "[[ Waiting 3 seconds to check for corp again, press [Spacebar] to cancel. ]]*"
+					setDelayTrigger		3 :checkForCorp		3000
+					setTextOutTrigger 	4 :alreadyCorped 	#32
+					pause
+				:thereIsMyCorp
+					gosub :BOT~killthetriggers
+					getWord CURRENTLINE $corpNumber 1
+				:continueCorpCreation
+					gosub :BOT~killthetriggers
+					send "J"&$corpNumber&"*"&$BOT~corpPassword&"* * *CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q c o* c q "
+			end
 		else
 			:alreadyCorped
 				gosub :BOT~killthetriggers

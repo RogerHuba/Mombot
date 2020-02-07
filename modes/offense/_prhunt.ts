@@ -77,6 +77,7 @@ setVar $fotonSurround 0
 setVar $fotonPig 0
 setVar $fotonReTrigger 0
 
+setVar $noLockRequired 1
 
 getWordPos $cline $pos "fotonlist"
 if ($pos > 0)
@@ -633,6 +634,13 @@ return
 		else
 			send "b" $landing "*y"
 		end
+		if ($noLockRequired = 1)
+			getSectorParameter $landing "FIGSEC" $chkfig
+			if ($landing = TRUE)
+				send "y * "
+				goto :jumpToShooting
+			end
+		end
 		setTextLineTrigger twarpyes :twarpyes "ocating beam pinpointed, TransWarp"
 		setTextLineTrigger twarpno :twarpno "No locating beam found for sector"
 		pause
@@ -646,6 +654,8 @@ return
 	elseif ($attackMethod = "p")
 		send "p" $landing "*y"
 
+		# We don't really need this? lets just check success of photon
+		goto :jumpToShooting
 		setTextLineTrigger pwarpno :pwarpno "Your own fighters must be in the destination to make a sa"
 		setTextLineTrigger pwarpyes :pwarpyes "Planetary TransWarp Drive Engaged!"
 		pause
@@ -658,8 +668,25 @@ return
 			
 
 	end
+	:jumpToShooting
 	send "cpy" $attacking "*q"
-	send "'Fired photon from " $landing " to " $attacking "*"
+	setTextLineTrigger shotno :shotno "That is not an adjacent sector"
+	setTextLineTrigger shotyes :shotyes "Photon Missile launched into sector"
+	pause
+	:shotno
+		if (($attackMethod = "t") or ($attackMethod = "b"))
+			killalltriggers
+			send "'Failed to fire photon, may have just blind warped. HELP?*"
+			halt
+		else
+			killalltriggers
+			send "'failed to hit foton sector, assuming failed pwarp, restarting.*"
+			return
+		end
+
+	:shotyes
+		killalltriggers
+		send "'Fired photon from " $landing " to " $attacking "*"
 	
 	if (($attackmethod = "t") or ($attackmethod = "b"))
 		

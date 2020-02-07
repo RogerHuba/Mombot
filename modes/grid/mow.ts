@@ -19,6 +19,7 @@
 	setVar $BOT~help[13]  $BOT~tab&" {personal} - drops personal fighters instead of corp  "
 	setVar $BOT~help[14]  $BOT~tab&" {backdoor} - mow to sector via backdoor"
 	setVar $BOT~help[15]  $BOT~tab&" {i1/i2/i3} - Indirect mow, void 1-3 sectors"
+	setVar $BOT~help[16]  $BOT~tab&" {holo} - holo scans every sector - no checks/pauses"
 	
 	gosub :BOT~helpfile
 
@@ -151,7 +152,8 @@
 		getWordPos " "&$bot~user_command_line&" " $pos " holo "
 		if ($pos > 0)
 			setVar $doholo TRUE
-			if ($player~lra <> "Holo")
+			echo $PLAYER~SCAN_TYPE 
+			if ($PLAYER~SCAN_TYPE <> "Holo")
 				send "'{" $SWITCHBOARD~bot_name "} - You need holo scanners!*"
 				halt
 			end
@@ -391,7 +393,7 @@ return
 	if ($PLAYER~CURRENT_SECTOR = 1)
 		goSub :voidfirstnotFed
 	end
-	
+
 	setVar $go 1
 	while ($go = 1)
 		goSub :getWarpAndAvoid

@@ -30,6 +30,7 @@ loadVar $PLAYER~SURROUNDMINE
 loadVar $MAP~STARDOCK	
 loadVar $BOT~LIMP_FILE 		
 loadVar $BOT~ARMID_FILE 
+loadvar $BOT~BOT_NAME
 
 # ORE
 
@@ -337,6 +338,7 @@ end
 
 setvar $switchboard~message "Pause for effect....*"
 gosub :switchboard~switchboard
+send "'" $BOT~BOT_NAME " ephaggle*"
 setDelayTrigger delay :startPause 3000
 pause
 :startPause

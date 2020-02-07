@@ -16,6 +16,7 @@ loadVar $MAP~STARDOCK
 loadVar $BOT~LIMP_FILE 		
 loadVar $BOT~ARMID_FILE 
 loadvar $bot~bot_turn_limit
+loadvar $BOT~BOT_NAME
 
 setVar $BOT~help[1]  $BOT~tab&"       Marco Polo - Trade Route for PPTing"
 setVar $BOT~help[2]  $BOT~tab&"       "
@@ -130,7 +131,11 @@ if ($bot~parm1 = "trade")
 		gosub :switchboard~switchboard
 		halt
 	end
-
+	send "'" $BOT~BOT_NAME " ephaggle*"
+	setDelayTrigger delay :startPause 1000
+	pause
+	:startPause
+	
 	if ($bot~parm3 <> "")
 		setVar $trademode "file" 
 		setVar $fread $BOT~FOLDER & "/" & $bot~parm3
