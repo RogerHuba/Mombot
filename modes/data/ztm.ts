@@ -264,7 +264,7 @@ end
 					if (SECTOR.BACKDOORCOUNT[$i] > 0)
 						if ($sendReport[$i] = 0)
 							setVar $sendReport[$i] 1
-							send "'Potenial Class 0 Sector: " $i "*"
+							send "'Potenial Class 0 Sector: " $i " backdoor: " SECTOR.BACKDOORS[$i][1] "*"
 						end
 					end
 				end
