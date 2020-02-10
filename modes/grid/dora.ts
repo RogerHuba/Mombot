@@ -86,6 +86,7 @@ end
 
 
 setVar $stardock $MAP~STARDOCK
+
 # FUTURE VARS
 # Limps/Mines bot vars
 setVar $restock 0
@@ -335,10 +336,22 @@ if ($figlchk = 1)
 end
 
 
+listActiveScripts $scripts
+setVar $foundep 0
+setVar $a 1
+while ($a <= $scripts)
+	if ($scripts[$a] = "ephaggle.cts")
+		setVar $foundep 1
+	end
+	add $a 1
+end
 
 setvar $switchboard~message "Pause for effect....*"
 gosub :switchboard~switchboard
-send "'" $BOT~BOT_NAME " ephaggle*"
+if ($foundep = 0)
+	send "'" $BOT~BOT_NAME " ephaggle*"
+end
+
 setDelayTrigger delay :startPause 3000
 pause
 :startPause
@@ -1325,8 +1338,9 @@ return
 		send "f" $i "*1*"
 		subtract $i 1
 	end
+	
 	send "/"
-	waitfor "�Shlds"
+	waitfor "Shlds"
 
 	setVar $plot 1
 	while ($plot = 1)
