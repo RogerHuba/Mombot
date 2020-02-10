@@ -131,11 +131,25 @@ if ($bot~parm1 = "trade")
 		gosub :switchboard~switchboard
 		halt
 	end
-	send "'" $BOT~BOT_NAME " ephaggle*"
+	
+	listActiveScripts $scripts
+	setVar $foundep 0
+	setVar $a 1
+	while ($a <= $scripts)
+		if ($scripts[$a] = "ephaggle.cts")
+			setVar $foundep 1
+		end
+		add $a 1
+	end
+
+	if ($foundep = 0)
+		send "'" $BOT~BOT_NAME " ephaggle*"
+	end
+
 	setDelayTrigger delay :startPause 1000
 	pause
 	:startPause
-	
+
 	if ($bot~parm3 <> "")
 		setVar $trademode "file" 
 		setVar $fread $BOT~FOLDER & "/" & $bot~parm3
