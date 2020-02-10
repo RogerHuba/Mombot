@@ -340,6 +340,7 @@ return
 	if ($menus~mowDestination <> "")
 		gosub :moving
 	end
+
 	if ($newgame)
 		gosub :BOT~killthetriggers
 		if (($BOT~isCEO = TRUE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
@@ -372,6 +373,8 @@ return
 				:continueCorpCreation
 					gosub :BOT~killthetriggers
 					send "J"&$corpNumber&"*"&$BOT~corpPassword&"* * *CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q c o* c q "
+			else
+				goto :AllDone
 			end
 		else
 			:alreadyCorped
@@ -388,6 +391,7 @@ return
 	# Don't think is needed now I've moved command_to_issue to below
 	if ($menus~mowDestination = "")
 		gosub :moving
+
 	end
 
 	if (($menus~command_to_issue <> "") and ($menus~command_to_issue <> "0"))
@@ -396,7 +400,6 @@ return
 		saveVar $menus~command_to_issue
 		goto :USER_INTERFACE~runUserCommandLine
 	end
-
 return
 
 :moving
