@@ -6,28 +6,67 @@ setVar $BOT~help[2]  $BOT~tab&"        "
 setVar $BOT~help[3]  $BOT~tab&"    setdora   - Preps for Dora and gets out safely."
 setVar $BOT~help[4]  $BOT~tab&"    stripcash - strips cash from corp mates (11k+ req)"
 setVar $BOT~help[5]  $BOT~tab&"    buydora   - Buys and setsup Merchie for trading "
-setVar $BOT~help[6]  $BOT~tab&"    buymerch  - buys Merch and set it up "
-setVar $BOT~help[7]  $BOT~tab&"    buycolt   - buys Colt "
-setVar $BOT~help[8]  $BOT~tab&"    movecolt  - moves Colts to sectors  "
-setVar $BOT~help[9]  $BOT~tab&"                  >movecolt 95 16822 87 "
-setVar $BOT~help[10] $BOT~tab&"    grabcolo  - fills any Colt in sector with colos "
-setVar $BOT~help[11] $BOT~tab&"    docim     - downloads port/warp data "
-setVar $BOT~help[12] $BOT~tab&"    runtrade  - cim - figs - tradereport "
+setVar $BOT~help[6]  $BOT~tab&"    swapore   - Swaps or with specified ship (gtorp req)"
+setVar $BOT~help[7]  $BOT~tab&"                 >ice2020 swapore [shipnum]"
+setVar $BOT~help[8]  $BOT~tab&"    buycolt   - buys Colt transPORT "
+setVar $BOT~help[9]  $BOT~tab&"    movecolt  - moves Colts to sectors  "
+setVar $BOT~help[10]  $BOT~tab&"                  >movecolt [sec1] [sec2] [sec3=3]"
+setVar $BOT~help[11] $BOT~tab&"    safeexit  - Takes starter ship with ore, buys twarp ship "
+setVar $BOT~help[12] $BOT~tab&"                to tow merchie out for trading"
+setVar $BOT~help[13] $BOT~tab&"                 >ice2020 safeexit [merchship]"
+setVar $BOT~help[14] $BOT~tab&"    docim     - downloads port/warp data "
+setVar $BOT~help[15] $BOT~tab&"    runtrade  - cim - figs - tradereport "
+setVar $BOT~help[16] $BOT~tab&"    backup    - Mow to dock > swap ore to twarp ship"
 
 gosub :bot~helpfile
 
 setVar $BOT~script_title "ICE2020 Utilities"
 setVar $pod #42 & #42 & #42 & " Escape Pod " & #42 & #42 & #42
 
+
 gosub :BOT~banner
 
+# someone might run a script to blow all plants at dock
+# this will ask someone to counter that 
+#  i.e. they load up with g-torps and unload just as you swap
+#  and hopefully you can swap
+setVar $planetKillerCounter 1
+
+#goSub :safeexit
+
+
+if ($bot~parm1 = "safeexit")
+	gosub :safeexit
+	halt
+end
 
 if ($bot~parm1 = "setdora")
 	gosub :setDora
 	halt
 end
 
+if ($bot~parm1 = "swapore")
+	gosub :swapore
+	halt
+end
+
 if ($bot~parm1 = "stripcash")
+    
+    if ($bot~parm2 <> "")
+		isnumber $isanumber $bot~parm2
+		if ($isanumber <> true)
+			setVar $SWITCHBOARD~message "Please specify the total cash required (yours + strip amount)*"
+			gosub :switchboard~switchboard
+			HALT
+		end
+		setVar $cashRequired $bot~parm2
+        
+    else
+        setVar $SWITCHBOARD~message "Please specify the total cash required (yours + strip amount).*"
+        gosub :switchboard~switchboard
+        HALT
+	end
+
     gosub :player~quikstats
 	gosub :stripcash
 	halt
@@ -69,6 +108,149 @@ gosub :switchboard~switchboard
 halt
 halt
 
+:safeexit
+    #
+    # Start with starter ship with ore (merch + ore + 500 figs)
+    # Specify ship you want to get out of dodge
+    #  - Must have ore
+    #  - Cash to buy Twarp ship + gtorp
+    #
+    #  Merch with 60 holds - 32k for holds 1k for ore 
+    #  buy colt - 173k
+    #  swap ore - 20k
+    #  
+    #  sell mecrch + 135k
+    #  twarp 2 - 80k
+    #  99 figs 30k
+
+
+
+    gosub :player~quikstats
+	setVar $location $player~current_prompt
+	if ($location <> "Command")
+		setVar $SWITCHBOARD~message "Start from Command Prompt.*"
+		gosub :switchboard~switchboard
+		HALT
+	end
+    if ($bot~parm2 <> "")
+		isnumber $isanumber $bot~parm2
+		if ($isanumber <> true)
+			setVar $SWITCHBOARD~message "Ship number needs to be a number, fancy that?*"
+			gosub :switchboard~switchboard
+			HALT
+		end
+		setVar $towShipNum $bot~parm2
+        
+    else
+        setVar $SWITCHBOARD~message "Please specify ship num >ice2020 swapore [shipnum].*"
+        gosub :switchboard~switchboard
+        HALT
+	end
+
+    if ($player~ore_holds < 30)
+        setVar $SWITCHBOARD~message "We need at least 30 units of ore to get range*"
+		gosub :switchboard~switchboard
+        halt
+    end
+
+    setVar $foudShip 0
+    send "w"
+    setTextTrigger towManned :towManned "Do you wish to tow a manned ship? (Y/N)"
+    setTextLineTrigger towAlready :towAlready "You shut off your Tractor Beam."
+    pause
+    :towAlready
+        killalltriggers
+        send "w"
+    :towManned
+        killalltriggers
+        send "n"
+    
+        waitfor "----------------------------------------------------------------------------"
+        :towagain
+        setTextTrigger towCommand :towCommand "Choose which ship to tow"
+        setTextTrigger towCommand2 :towCommand2 "Command ["
+        setTextLineTrigger towline :towLine ""
+        pause
+        :towLine
+            killalltriggers
+            getWord CURRENTLINE $towShipTemp 1
+            if ($towShipTemp = $towShipNum)
+                setVar $foudShip 1
+                goto :towCommand
+            end
+            goto :towagain
+    
+        :towCommand
+            send "q*"
+        :towCommand2
+            killalltriggers
+    if ($foudShip = 0)
+        setVar $SWITCHBOARD~message "Could not find the ship we want to tow out of here.*"
+		gosub :switchboard~switchboard
+		HALT
+    end
+
+    setVar $cashRequired 340000
+    goSub :stripcash
+    send "pssbnyfycShpMatters***"
+    # now have ship above us
+    send "sq"
+    waitfor "vailable Ships in Orbit"
+	setTextLineTrigger getTwarpShipNum :getTwarpShipNum "ShpMatters"
+	pause
+		:getTwarpShipNum
+		getWord CURRENTLINE $twarpShipNum 1
+		killalltriggers
+
+    send "qht1*qs"
+    setVar $swap_ship_num $twarpShipNum
+    goSub :swap_ore
+
+    gosub :player~quikstats
+    
+    # confirm we are in new ship with the ore via quikstats
+    if ($player~SHIP_NUMBER = $twarpShipNum)
+        if ($player~ore_holds < 30)
+            setVar $SWITCHBOARD~message "We don't have ore, something went wrong.*"
+            gosub :switchboard~switchboard
+            HALT
+        else
+            send "qhw2"
+            setTextLineTrigger warpinstallgood :warpinstallgood "Ok!  We'll get that installed in your ship right away!"
+            setTextLineTrigger warpinstallalready :warpinstallalready "You don't need two!"
+            setTextLineTrigger warpinstallnotallowed :warpinstallnotallowed "Sorry, your ship is not equipped for a TransWarp Drive!"
+            setTextLineTrigger warpinstallnocash :warpinstallnocash "Sigh, another poor trader.  Come back when you have the cash!"
+            pause
+            :warpinstallalready
+                killalltriggers
+                setVar $SWITCHBOARD~message "We already have twarp - something went wrong.*"
+                gosub :switchboard~switchboard
+                HALT
+            :warpinstallnotallowed
+                killalltriggers
+                setVar $SWITCHBOARD~message "Twarp not allowed - something went wrong.*"
+                gosub :switchboard~switchboard
+                HALT
+            :warpinstallnocash
+                killalltriggers
+                setVar $SWITCHBOARD~message "Not enough cas for twarp - something went wrong.*"
+                gosub :switchboard~switchboard
+                HALT
+            :warpinstallgood
+                killalltriggers
+                # ok we got ore, we got ships, we got type 2
+                send "qq"
+echo "GOOD GOOD* GOOD GOOD*"
+                send "wn" $towShipNum "*"
+           
+        end
+    else
+        setVar $SWITCHBOARD~message "We aren't in the twarp ship, something went wrong.*"
+		gosub :switchboard~switchboard
+		HALT
+    end
+halt
+
 
 :setDora
     gosub :player~quikstats
@@ -78,7 +260,7 @@ halt
 		gosub :switchboard~switchboard
 		HALT
 	end
-
+    setVar $cashRequired 350000
     goSub :stripcash
     goSub :buydora
 
@@ -113,32 +295,32 @@ return
         setEventTrigger		mowterraended		:mowterraended "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
         pause
         :mowterraended
-	killalltriggers
-	send "d"
-	waitfor "Sector  :"
-	waitfor "Command ["
-	setVar $BOT~command "scrub"
-        setVar $BOT~user_command_line " scrub "
-        
-        saveVar $BOT~command
-        saveVar $BOT~user_command_line
-        load "scripts\mombot\commands\general\scrub.cts"
-        #setEventTrigger		scrubfinished		:scrubfinished "SCRIPT STOPPED" "scripts\mombot\commands\general\scrub.cts"
-	setTextLineTrigger scrubfailpause :scrubfailpause "Limpet exists, but not enough cash to get scrubbed."
-	setTextLineTrigger scrublimp :scrublimp "Limpet scrubbed off of hull."
-	setTextLineTrigger scrubnolimptet :scrubnolimptet "No limpet on my ship."
-        pause
-	:scrubfailpause
-		killalltriggers
-		setVar $SWITCHBOARD~message "Kill script or type go ! (nospace) to continue.*"
-		gosub :switchboard~switchboard
-		waitfor "go!"
-		goto :continueafterscrub
-        :scrublimp
-	:scrubnolimptet
-		killalltriggers
-		
-	:continueafterscrub
+        killalltriggers
+        send "d"
+        waitfor "Sector  :"
+        waitfor "Command ["
+        setVar $BOT~command "scrub"
+            setVar $BOT~user_command_line " scrub "
+            
+            saveVar $BOT~command
+            saveVar $BOT~user_command_line
+            load "scripts\mombot\commands\general\scrub.cts"
+            #setEventTrigger		scrubfinished		:scrubfinished "SCRIPT STOPPED" "scripts\mombot\commands\general\scrub.cts"
+        setTextLineTrigger scrubfailpause :scrubfailpause "Limpet exists, but not enough cash to get scrubbed."
+        setTextLineTrigger scrublimp :scrublimp "Limpet scrubbed off of hull."
+        setTextLineTrigger scrubnolimptet :scrubnolimptet "No limpet on my ship."
+            pause
+        :scrubfailpause
+            killalltriggers
+            setVar $SWITCHBOARD~message "Kill script or type go ! (nospace) to continue.*"
+            gosub :switchboard~switchboard
+            waitfor "go!"
+            goto :continueafterscrub
+            :scrublimp
+        :scrubnolimptet
+            killalltriggers
+            
+        :continueafterscrub
     end
 
     getRnd $sec 11 10000
@@ -622,6 +804,7 @@ return
 return
 
 :buycolt
+
 	gosub :player~quikstats
 	setVar $origship $player~SHIP_NUMBER
 	setVar $location $player~current_prompt
@@ -645,12 +828,12 @@ return
 
 
 	setVar $origshi $player~SHIP_NUMBER
-	if ($player~credits < 565000)
-		setVar $SWITCHBOARD~message "Need 565k for Colt, 120 holds, twarp and torp*"
+	if ($player~credits < 860000)
+		setVar $SWITCHBOARD~message "Need 860k for Colt, Max holds and twarp*"
 		gosub :switchboard~switchboard
 		halt
 	end
-	send "pssbnyfyc1234512345***sq"
+	send "pssbnyeyc1234512345***sq"
 
 	waitfor "vailable Ships in Orbit"
 	setTextLineTrigger theship :theship "1234512345"
@@ -662,7 +845,7 @@ return
 		send "qqx*" $shipnum "*qpss"
 		waitfor "You walk past row after row of space ships"
 		send "ryShip " $shipnum "*y"
-		send "pa120*yb200*c500*qqhrw1t1*qq"
+        send "pa150*yb500*c500*qqhrdt1*qq"
 		waitfor "You return to your ship and blast off from the StarDock."
 		send "x*" $origship "**"
 		setVar $SWITCHBOARD~message "Colt purchased.*"
@@ -671,8 +854,21 @@ return
 return
 
 :stripcash
+
     setVar $havecorpies 0
     setVar $totalCash $player~credits
+    setVar $cashToTake ($cashRequired - $totalCash)
+
+    if ($cashToTake < 0)
+        setVar $SWITCHBOARD~message "We already have more than " &$cashRequired &", exiting strip.*"
+		gosub :switchboard~switchboard
+        return
+    end
+    if ($cashRequired < 1)
+        setVar $SWITCHBOARD~message "We didn't specify how much cash is required for stripCash.*"
+		gosub :switchboard~switchboard
+		halt
+    end
 	send "t"
 	setVar $go 1
 	setVar $i 1
@@ -715,15 +911,23 @@ return
 			getText CurrentLine $DECASH " has " "."
 			stripText $DECASH ","
 			stripText $DECASH " "
-			if ($DECASH > 11000)
-				setVar $DECASH ($DECASH - 5000)
-				send $DECASH & "*"
+            # $cashToTake
+            if ($DECASH > 5001)
+                if ($cashToTake > ($DECASH - 5000))
+                    setVar $takeCash ($DECASH -5000)
+                    setVar $cashToTake ($cashToTake - $takeCash)
+                else
+                    setVar $takeCash $cashToTake
+                    setVar $cashToTake 0
+                end
+			
+				send $takeCash & "*"
 			else
 				setVar $DECASH 0
 				send "*"
 			end
-            add $totalCash $DECASH
-            if ($totalCash > 350000)
+            
+            if ($cashToTake = 0)
                 send "* * * * * * * * * "
                 return 
             end
@@ -739,7 +943,12 @@ return
 :buydora
 	
 	gosub :atdockinmerch
-	
+
+	if ($player~credits < 350000)
+		setVar $SWITCHBOARD~message "Need 350k cash to get flag.*"
+		gosub :switchboard~switchboard
+		halt
+	end
 	send "pssbyygycLets Go**pa120*yb500*qqhrhqq"
 	waitfor "You return to your ship and blast off from the StarDock"
 	goSub :player~quikstats
@@ -831,59 +1040,107 @@ return
 
 return
 
-:swap_ore
-     You flag down a used ship salesperson and get ready to deal.
-
-                    --<  Available Ships in Orbit >--
-        Ship  Sect Name                  Fighters Shields Hops Type
-        -----------------------------------------------------------------------------
-        4  2146 s               Corp      500       0    0  Merchant Cruiser
-
-        Choose which ship to sell (Q=Quit) Q
-
-   # this should both scan and take in a var
-    echo "**"
-    echo ANSI_11 "This automates the process of trading ore between ships.**"
-    echo ANSI_15 "It pops a planet, drops ore and re-docks.*"
-    echo ANSI_15 "After a brief pause it then lifts, xports, grabs the ore and re-docks.*"
-    echo ANSI_15 "The result... you're in your new ship, safe at dock w/ ore.*"
-    echo ANSI_15 "It tries to be as safe as possible but there's always some risk.*"
-    echo "*"
-    echo ANSI_14 "Are you sure you want to start the Ore Swapper X-port? (y/N)*"
-    getConsoleInput $choice singlekey
-    upperCase $choice
-    if ($choice = "Y")
-        goto :init_ore_swap_vars
+:swapore
+    if ($bot~parm2 <> "")
+		isnumber $isanumber $bot~parm2
+		if ($isanumber <> true)
+			setVar $SWITCHBOARD~message "Ship number needs to be a number, fancy that?*"
+			gosub :switchboard~switchboard
+			HALT
+		end
+		setVar $swap_ship_num $bot~parm2
+        goSub :swap_ore
     else
-        echo ANSI_12 & "**Aborting Ore Swapper X-port.*"
+        setVar $SWITCHBOARD~message "Please specify ship num >ice2020 swapore [shipnum].*"
+        gosub :switchboard~switchboard
+        HALT
+	end
+    
+
+halt
+
+:swap_ore
+    # must have G-Torp
+    # pass this in:
+    
+    gosub :PLAYER~quikstats
+    :checkShip
+    
+    if ($PLAYER~CURRENT_PROMPT <> "<Shipyards>")
+        setVar $SWITCHBOARD~message "Start from shipyards!*"
+		gosub :switchboard~switchboard
         halt
     end
+    setVar $shipfound 0
+    send "s"
+    
+    
+    
+    :scanShips
+        killalltriggers
+        :scanShipLineAgain
+        setTextTrigger scanDone :scanDone "Choose which ship to sell"
+        setTextLineTrigger scanNoShips :scanNoShips "You do not own any other ships orbiting the"
+        setTextLineTrigger scanShipLine :scanShipLine ""
+        pause
+        :scanNoShips
+        killalltriggers
+            
+            setVar $SWITCHBOARD~message "Couldn't find ship in orbit above Dock.*"
+            gosub :switchboard~switchboard
+            halt
+        :scanShipLine
+            killalltriggers
+            getWord CURRENTLINE $testship 1
+            if ($testship = $swap_ship_num)
+                setVar $shipfound 1
+            end
+            goto :scanShipLineAgain
+        :scanDone
+            killalltriggers
+
+        if ($shipfound = 0)
+            send "q"
+            setVar $SWITCHBOARD~message "Couldn't find ship in orbit above Dock.*"
+            gosub :switchboard~switchboard
+            halt
+        end
+
     :init_ore_swap_vars
     setVar $funky_counter 0
-    getInput $shipnum "Ship number to transfer fuel to: "
-    isNumber $numtest $shipnum
+    
+    isNumber $numtest $swap_ship_num
     if ($numtest < 1)
-        echo ANSI_12 "*Invalid ship number!*"
+        setVar $SWITCHBOARD~message "Invalid ship number!*"
+		gosub :switchboard~switchboard
         halt
     end
-    if ($shipnum < 1) OR ($shipnum > 65000)
-        echo ANSI_12 "*Invalid ship number!*"
+    if ($swap_ship_num < 1) OR ($swap_ship_num > 65000)
+        setVar $SWITCHBOARD~message "Invalid ship number!*"
+		gosub :switchboard~switchboard
         halt
     end
+   
     :top_of_ore_swap
     gosub :PLAYER~quikstats
     add $funky_counter 1
     if ($PLAYER~GENESIS < 1)
-        echo ANSI_12 "**Out of Genesis Torps. You're going to need one for this.*"
+        setVar $SWITCHBOARD~message "Out of Genesis Torps. You're going to need one for this.*"
+        send "Q"
+		gosub :switchboard~switchboard
         halt
     end
     if ($player~ore_holds < 3)
-        echo ANSI_12 "**There's no ore on your ship! You can't drop ore if you don't have any.*"
+        setVar $SWITCHBOARD~message "There's no ore on your ship! You can't drop ore if you don't have any.*"
+		gosub :switchboard~switchboard
         halt
+    end
+    if ($planetKillerCounter = 1)
+        send "'swaporecountergo*"
     end
     send "qqq  z  n  u  y  *  .*  z  c  *  p  s  h "
     waitOn "Landing on Federation StarDock."
-    getRnd $rand_wait 100 300
+    getRnd $rand_wait 50 200
     killtrigger safety_delay
     setDelayTrigger safety_delay :lift_stuff $rand_wait
     pause
@@ -897,15 +1154,19 @@ return
     setTextLineTrigger result_trg5 :res_backd "Landing on Federation StarDock."
     pause
     :res_torps
-    echo ANSI_12 "**You somehow ran out of Genesis Torps before launching. This should not have happened! Check your status!*"
-    send "? "
-    halt
+        setVar $SWITCHBOARD~message "You somehow ran out of Genesis Torps before launching. This should not have happened! Check your status!*"
+		gosub :switchboard~switchboard
+        send "? "
+        halt
     :res_nopln
-    echo ANSI_12 "**The planet is gone! Someone might be messing with us.*"
+        
+        setVar $SWITCHBOARD~message "The planet is gone! Someone might be messing with us.*"
+		gosub :switchboard~switchboard
     if ($funky_counter < 4)
         goto :top_of_ore_swap
     else
-        echo ANSI_12 "**I've tried this 3 times, something is definately going on. Check your status!*"
+        setVar $SWITCHBOARD~message "I've tried this 3 times, something is definately going on. Check your status!*"
+		gosub :switchboard~switchboard
         send "? "
         halt
     end
@@ -940,18 +1201,20 @@ return
     :plist_end
             killalltriggers
         if ($p_array_idx < 1)
-            echo ANSI_12 "**The planet is gone! Someone might be messing with us.*"
+            setVar $SWITCHBOARD~message "The planet is gone! Someone might be messing with us.*"
+		    gosub :switchboard~switchboard
             if ($funky_counter < 4)
                 goto :top_of_ore_swap
             else
-                    echo ANSI_12 "**I've tried this 3 times, something is definately going on. Check your status!*"
+                    setVar $SWITCHBOARD~message "I've tried this 3 times, something is definately going on. Check your status!*"
+		            gosub :switchboard~switchboard
                     send "? "
                 halt
             end
         end
     waitOn "Landing on Federation StarDock."
     waitOn "<Hardware Emporium> So what are you looking for (?)"
-    getRnd $rand_wait 100 300
+    getRnd $rand_wait 50 200
     killtrigger safety_delay
     setDelayTrigger safety_delay :more_lift_stuff $rand_wait
     pause
@@ -967,11 +1230,13 @@ return
         pause
     :res_baddd
         killalltriggers
-    echo ANSI_12 "**Our planet is gone! Someone might be messing with us.*"
+        setVar $SWITCHBOARD~message "The planet is gone! Someone might be messing with us.*"
+		    gosub :switchboard~switchboard
     if ($funky_counter < 4)
             goto :top_of_ore_swap
     else
-        echo ANSI_12 "**I've tried this 3 times, something is definately going on. Check your status!*"
+        setVar $SWITCHBOARD~message "I've tried this 3 times, something is definately going on. Check your status!*"
+		gosub :switchboard~switchboard
         send "? "
     end
     halt
@@ -999,60 +1264,61 @@ return
         setTextLineTrigger result_trg9 :swap_pland_prodtakn "<Take all>"
         setTextLineTrigger result_trg0 :swap_pland_complete "Landing on Federation StarDock."
         send "qqq  z  n  "
-        send "x    " & $shipnum & "    *    *    *   "
+        send "x    " & $swap_ship_num & "    *    *    *   "
         send "l " & $pnum & "  *  *  z  n  z  n  *  z  q  a  *  q  q  z  n  "
-        send "p  s  h "
+        send "p  s  s "
         pause
     :swap_xport_notavail
-        setVar $msg $msg & ANSI_12 & "*That ship is not available, using the original ship...*"
+        setVar $msg $msg & "*That ship is not available, using the original ship...*"
         pause
     :swap_xport_badrange
-        setVar $msg $msg & ANSI_12 & "*That ship is too far away, using the original ship...*"
+        setVar $msg $msg & "That ship is too far away, using the original ship...*"
         pause
     :swap_xport_security
-        setVar $msg $msg & ANSI_12 & "*That ship is passworded, using the original ship...*"
+        setVar $msg $msg & "That ship is passworded, using the original ship...*"
         pause
     :swap_xport_noaccess
-        setVar $msg $msg & ANSI_12 & "*Cannot access that ship, using the original ship...*"
+        setVar $msg $msg & "Cannot access that ship, using the original ship...*"
         pause
     :swap_xport_xprtgood
-        setVar $msg $msg & ANSI_10 & "*Xport good!*"
+        setVar $msg $msg & "Xport good!*"
         pause
     :swap_pland_noplnet1
-        setVar $msg $msg & ANSI_12 & "*The planet has gone missing. Check your status!*"
+        setVar $msg $msg & "The planet has gone missing. Check your status!*"
         pause
     :swap_pland_noplnet2
-        setVar $msg $msg & ANSI_12 & "*The planet has gone missing. Check your status!*"
+        setVar $msg $msg & "The planet has gone missing. Check your status!*"
         pause
     :swap_pland_noplnet3
-        setVar $msg $msg & ANSI_12 & "*The planet has gone missing. Check your status!*"
+        setVar $msg $msg & "The planet has gone missing. Check your status!*"
         pause
     :swap_pland_prodtakn
-        setVar $msg $msg & ANSI_10 & "*Products collected!*"
+        setVar $msg $msg & "Products collected!*"
         pause
     :swap_pland_complete
             killalltriggers
         gosub :PLAYER~quikstats
-        waitOn "<Hardware Emporium> So what are you looking for (?)"
-        echo $msg
-        halt
+        waitOn "<Shipyards> Your option (?) ?"
+        setVar $SWITCHBOARD~message $msg
+		gosub :switchboard~switchboard
+        return
     pause
     halt
     # -------------------------------------------------------------------
     :pland_trg_1
-    setVar $msg ANSI_12 & "**There are no planets in the StarDock sector!*"
+    setVar $msg "*There are no planets in the StarDock sector!*"
     pause
     :pland_trg_2
-    setVar $msg ANSI_12 & "**That planet is not in the StarDock sector!*"
+    setVar $msg "*That planet is not in the StarDock sector!*"
     pause
     :pland_trg_3
-    setVar $msg ANSI_10 & "**Products taken!*"
+    setVar $msg "*Products taken!*"
     pause
     :pland_trg_4
-    setVar $msg ANSI_10 & "**Fuel dropped!*"
+    setVar $msg "*Fuel dropped!*"
     pause
     :pland_trg_6
-    setVar $msg ANSI_10 & "**Planet destroyed!*"
+    setVar $msg "*Planet destroyed!*"
     pause
     :pland_trg_5
     gosub :PLAYER~quikstats
@@ -1060,6 +1326,7 @@ return
         killalltriggers
     echo $msg
     halt
+return
 
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
