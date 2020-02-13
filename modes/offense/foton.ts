@@ -2,6 +2,17 @@
 	gosub :BOT~loadVars
 	loadVar $game~MULTIPLE_PHOTONS
 
+	#  Add "retreat" - i.e. move X distance away
+	# add tripwire - tripwire should set to 1% atmosph - 0% sect - and take planet back somewhere 'safe' for the kill
+	#   attacker macro   l^Ma100^M^Ma200^M      (land qcanshot atshlds qcanshot atfigs 
+	# NEEDS TO CHECK EITHER POSITION OF blasted/destroyed fighters - to ensure no spoofing
+	# Should work from planet prompt - not citadel in general
+	# With no delays - took about 5 waves of figs required to kill attacked
+	#  also the chance the attacker waits for "land" prompt, then attacks
+	#   Then need the attack land sector
+	#   blow planet (attack attack attack attack xport?)
+	#  pod doesnt' stay - so... probably best to move back to a surrounded sector - backup xport
+	
 
 
 	setVar $BOT~help[1]  $BOT~tab&"- foton [on/off/sec] {a/d/p/s/d/t} {towship} {sector} {return} {den40}"
@@ -84,6 +95,8 @@ end
                 goto :adjphoton
         elseif ($bot~parm2 = "s")
                 goto :surround_foton
+		elseif ($bot~parm2 = "r")
+                goto :trap_foton
         elseif ($bot~parm2 = "o")
                 goto :dockPhoton
 		elseif ($bot~parm2 = "t")
@@ -128,6 +141,16 @@ end
 	#setTextLineTrigger 2 :foton_pwparmid "Your mines in "
 	setTextLineTrigger 3 :surround_foton_fighit "Deployed Fighters Report Sector "
 	pause
+
+:trapPhotonTriggers
+
+	killalltriggers
+	#setTextLineTrigger 1 :foton_pwplimp "Limpet mine in "
+	#setTextLineTrigger 2 :foton_pwparmid "Your mines in "
+	setTextLineTrigger 3 :trap_foton_fighit "Deployed Fighters Report Sector "
+	pause
+
+
 
 :setAdjacentTriggers
 	killalltriggers
@@ -1167,6 +1190,176 @@ goto :surroundPhotonTriggers
 		:exitcooldownsurround
 	end
 	goto :surroundPhotonTriggers
+
+
+:trap_foton
+	gosub :player~quikstats
+	setVar $startingLocation $player~current_prompt
+	if ($startingLocation = "Citadel")
+		goto :trap_foton_start
+	else
+		send "'{" $bot~bot_name "} - Must Start at Citadel.*"
+		halt
+	end
+
+:trap_foton_start
+	setVar $home_sector2 $player~current_sector
+	if ($player~photons <= 0)
+		goto :foton_out_of_fotons
+	end
+	send "q"
+
+	gosub :planet~getplanetinfo
+	send "c"
+
+:trap_foton_get_figs
+	send "*"
+	waitFor "Citadel command (?="
+
+
+:trap_foton_go
+	if ($auto_return)
+		send "'{" $bot~bot_name "} - Trap Foton Running From Planet " & $planet~planet & " w/ Return Home enabled. " & $player~photons &" Photons armed and ready.*"
+	else
+		send "'{" $bot~bot_name "} - Trap Foton Running From Planet " & $planet~planet & ", " & $player~photons &" Photons armed and ready.*"
+	end
+	goto :trapPhotonTriggers
+
+:trap_foton_fighit
+	# Check for spoofs
+
+	getWord CURRENTLINE $spoof_test 1
+	getWord CURRENTANSILINE $ansi_spoof_test 1
+	getWordPos $ansi_spoof_test $ansi_spoof_pos #27 & "[1;33m"
+	if ($spoof_test <> "Deployed") OR ($ansi_spoof_pos <= 0)
+	     goto :trapPhotonTriggers
+	end
+
+	# Torp only on sector entry
+	getWordPos CURRENTLINE $pos "entered sector."
+	if ($pos < 1)
+		goto :trapPhotonTriggers
+	end
+
+	# Check for alien hits
+	getText CURRENTANSILINE $alien_check ": " "'s"
+	getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+	if ($pos > 0)
+	     goto :trapPhotonTriggers
+	end
+
+	# Get the sector number
+	getWord CURRENTLINE $sector 5
+	stripText $sector ":"
+	isNumber $result $sector
+	if ($result < 1)
+		goto :trapPhotonTriggers
+	end
+:testTrapEnterHere
+	if (($sector > SECTORS) OR ($sector <= 10))
+		 goto :trapPhotonTriggers
+	end
+:attemptTrapDrop
+	setVar $i 1
+	setVar $checkSector SECTOR.WARPS[$sector][$i]
+	setVar $fadj 0
+	setVar $fadji 0
+	setVar $isFound FALSE
+	while ($checkSector > 0)
+		getSectorParameter $checkSector "FIGSEC" $isFigged
+		getSectorParameter $checkSector "LIMPSEC" $isLimp
+		# Can't hide in a sector with limpets
+		if (($isFigged = TRUE) and ($isLimp <> TRUE))
+			add $fadji 1
+			setVar $fadj[$fadji] $checkSector
+			setVar $isFound TRUE
+		end
+		add $i 1
+		setVar $checkSector SECTOR.WARPS[$sector][$i]
+	end
+
+	if ($isFound)
+		setVar $trapSecLand 0
+		setVar $trapSecFireTo 0
+		setVar $trapSeci 0
+		setVar $isFound FALSE
+		setVar $i 1
+		while ($i <= $fadji)
+			setVar $testSector $fadj[$i]
+			setVar $y 1
+			while ($y <= SECTOR.WARPINCOUNT[$testSector])
+				getSectorParameter SECTOR.WARPSIN[$testSector][$y] "FIGSEC" $isFigged
+				if (($isFigged = TRUE) and (SECTOR.WARPSIN[$testSector][$y] <> $sector))
+					setVar $isFound TRUE
+					add $trapSeci 1
+					setVar $trapSecLand[$trapSeci] SECTOR.WARPSIN[$testSector][$y]
+					setVar $trapSecFireTo[$trapSeci] $testSector
+					# we only need one trap drop sector per adjacent ($i) hit sector
+					setVar $y 99
+				end
+				add $y 1
+			end
+			add $i 1
+		end
+
+		if ($isFound = TRUE)
+			getRnd $whichTrap 1 $trapSeci
+			killalltriggers
+			send "p" $trapSecLand[$whichTrap] "*y c p y " $trapSecFireTo[$whichTrap] "**q"
+			
+			setTextLineTrigger s_wrong	:trap_foton_wrong	"That is not an adjacent sector"
+			setTextLineTrigger s_gotem	:trap_foton_gotem	"Photon Missile launched into sector"
+			setTextLineTrigger s_fed	:trap_foton_fed		"The Feds do not permit Photon Torpedos"
+			pause
+		else
+			echo "** No Adjacent Fig Next To Possible Adjacent Sector **"
+		end
+	else
+		echo "** No Possible Trap Sector **"
+	end
+goto :trapPhotonTriggers
+
+:trap_foton_wrong
+	killtrigger s_gotem
+	killtrigger s_wrong
+	
+	send "'{" $bot~bot_name "} - Foton Missed! Resetting!*"
+	setSectorParameter $gotoSector "FIGSEC" FALSE
+	if ($auto_return)
+		gosub :foton_go_home
+	end
+	goto :trapPhotonTriggers
+
+:trap_foton_wrong
+	killtrigger s_gotem
+	killtrigger s_fed
+	
+	send "'{" $bot~bot_name "} - Foton Missed! Resetting!*"
+	if ($auto_return)
+		gosub :foton_go_home
+	end
+	goto :trapPhotonTriggers
+
+:trap_foton_gotem
+	killtrigger s_wrong
+	killtrigger s_fed
+	send "'{" $bot~bot_name "} - Foton Fired - Sector => " $trapSecFireTo[$whichTrap] "!*"
+	if ($holo)
+		gosub :doholo
+	end
+	if ($auto_return)
+		gosub :foton_go_home
+	end
+	gosub :player~quikstats
+	if ($player~photons = 0)
+		goto :foton_out_of_fotons
+	end
+	if ($game~multiple_photons <> TRUE)
+		setTextLineTrigger waitingforcooldown :exitcooldowntrap "Photon Wave Duration has ended in sector "& $trapSecFireTo[$whichTrap]
+		pause
+		:exitcooldowntrap
+	end
+	goto :trapPhotonTriggers
 
 
 :foton_launch
