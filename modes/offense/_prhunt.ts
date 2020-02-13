@@ -7,13 +7,13 @@ loadVar $game~photon_duration
 
 setVar $BOT~help[1]  $BOT~tab&" PRHunt - Port Report Hunter - Foton"
 setVar $BOT~help[2]  $BOT~tab&""
-setVar $BOT~help[3]  $BOT~tab&" prhunt [foton/announce/checkports/fotonlist] {120 120 15 120}"
-setVar $BOT~help[4]  $BOT~tab&"        {bwarp} {3warp/4warp/5warp/6warp}"
+setVar $BOT~help[3]  $BOT~tab&" prhunt [foton/announce/checkports/fotonlist/prtargets]"
+setVar $BOT~help[4]  $BOT~tab&"        {120 120 15 120} {bwarp} {3warp/4warp/5warp/6warp}"
 setVar $BOT~help[5]  $BOT~tab&"  "
 setVar $BOT~help[6]  $BOT~tab&" foton - Scans ports and fires foton at tertiary port."
 setVar $BOT~help[7]  $BOT~tab&" announce - Primary/Secondary search only, announces hits. "
-setVar $BOT~help[8]  $BOT~tab&" fotonlist - Supply list of ports; it will scan those only "
-setVar $BOT~help[9]  $BOT~tab&"             and attempt to foton. "
+setVar $BOT~help[8]  $BOT~tab&" fotonlist - Targets list of ports supplid via mombot prompt "
+setVar $BOT~help[9]  $BOT~tab&" prtargets - Targets sectors with param: PRTARGETS"
 setVar $BOT~help[10]  $BOT~tab&" checkports - Must be run regularly for accurate targetting. "
 setVar $BOT~help[11]  $BOT~tab&"  "
 setVar $BOT~help[12]  $BOT~tab&" Search Pattern"
@@ -32,7 +32,7 @@ setVar $BOT~help[24]  $BOT~tab&"     - Scan 60 secondary ports 250 times"
 setVar $BOT~help[25]  $BOT~tab&"     - Scan 15 tertiary ports 200 times"
 setVar $BOT~help[26]  $BOT~tab&"     "
 setVar $BOT~help[27]  $BOT~tab&" {bwarp} - uses bwarp from citadel prompt"
-setVar $BOT~help[28]  $BOT~tab&" Additional planet (foton/fotonlist) Options:"
+setVar $BOT~help[28]  $BOT~tab&" Additional planet (foton/fotonlist/prtargets) Options:"
 setVar $BOT~help[29]  $BOT~tab&" {kill}     - pgrid into sector and attempt kill"
 setVar $BOT~help[30]  $BOT~tab&"              WARNING: Does not check for target or Saveme"
 setVar $BOT~help[31]  $BOT~tab&" {surround} - (optimistically) surrounds sector before kill "
@@ -79,14 +79,21 @@ setVar $fotonReTrigger 0
 
 setVar $noLockRequired 1
 
+
+getWordPos $cline $pos2 "prtargets"
 getWordPos $cline $pos "fotonlist"
-if ($pos > 0)
-	setVar $attackPattern "fotonlist"
+if ($pos > 0) or ($pos2 > 0)
+	if ($pos > 0)
+		setVar $attackPattern "fotonlist"
+	else
+		setVar $attackPattern "prtargets"
+	end
 	# create list
 	# bwarp option ok
 	# confirm list to subspace
 	setVar $attackmsg "Using port list for targets"
 	replaceText $cline "fotonlist" ""
+	replaceText $cline "prtargets" ""
 	getWordPos $cline $pos "kill"
 	if ($pos > 0)
 		replaceText $cline "kill" ""
@@ -153,6 +160,26 @@ else
 		getWordPos $cline $pos "checkports"
 		if ($pos > 0)
 			goSub :getAllBlocked
+			listActiveScripts $scripts
+			setVar $foundep 0
+			setVar $a 1
+			while ($a <= $scripts)
+				if ($scripts[$a] = "watcher.cts")
+					setVar $foundep 1
+				end
+				add $a 1
+			end
+
+			
+			if ($foundep = 0)
+				send "'" $BOT~BOT_NAME " watcher*"
+				setDelayTrigger delay :startPause 2000
+				pause
+				:startPause
+				send "*"
+			end
+
+			
 			halt
 		else
 			getWordPos $cline $pos "announce"
@@ -162,7 +189,7 @@ else
 				setVar $attackmsg "Search mode only will announce targets."
 				replaceText $cline "announce" ""
 			else
-				setVar $SWITCHBOARD~message "Please include a task: foton, fotonlist, announce or checkports*"
+				setVar $SWITCHBOARD~message "Please include a task: foton, fotonlist, announce, PRTARGETS or checkports*"
 				gosub :SWITCHBOARD~switchboard
 				halt
 			end
@@ -184,7 +211,7 @@ gosub :SWITCHBOARD~switchboard
 replaceText $cline "  " " "
 replaceText $cline "  " " "
 
-if (($attackPattern = "fotonlist") or ($attackPattern = "foton"))
+if (($attackPattern = "fotonlist") or ($attackPattern = "foton") or ($attackPattern = "prtargets"))
 	if ($player~photons = 0)
 		setVar $SWITCHBOARD~message "A verbal barrage won't do, give me photons!*"
 		gosub :SWITCHBOARD~switchboard
@@ -199,7 +226,7 @@ if (($startingLocation <> "Command") and ($startingLocation <> "Citadel"))
 	gosub :SWITCHBOARD~switchboard
 	halt
 else
-	if (($attackPattern = "fotonlist") or ($attackPattern = "foton"))
+	if (($attackPattern = "fotonlist") or ($attackPattern = "foton") or ($attackPattern = "prtargets"))
 
 		if ($startingLocation = "Command")
 			setVar $attackMethod "t"
@@ -376,7 +403,7 @@ setVar $portsClasses[7] "SSS"
 setVar $portsClasses[8] "BBB"
 
 
-if ($attackPattern <> "fotonlist")
+if (($attackPattern <> "fotonlist") and ($attackPattern <> "prtargets"))
 	if ($cline <> "")
 		getword $cline $secCount 1
 		isNumber $number $secCount
@@ -526,6 +553,7 @@ end
 			if ($fsi = 0)
 				setVar $SWITCHBOARD~message "No firing solutions? Halting.. *"
 				gosub :SWITCHBOARD~switchboard
+				send "q"
 				halt
 
 			end
@@ -545,7 +573,7 @@ end
 			
 			# now we monitor that list of close by targets
 			
-			if ($attackPattern = "fotonlist")
+			if (($attackPattern = "fotonlist") or ($attackPattern = "prtargets"))
 				# just keeeeeep scanning
 				setVar $scanThisManyTimes 999999
 			else
@@ -636,7 +664,7 @@ return
 		end
 		if ($noLockRequired = 1)
 			getSectorParameter $landing "FIGSEC" $chkfig
-			if ($landing = TRUE)
+			if ($chkfig = TRUE)
 				send "y * "
 				goto :jumpToShooting
 			end
@@ -674,16 +702,14 @@ return
 	setTextLineTrigger shotyes :shotyes "Photon Missile launched into sector"
 	pause
 	:shotno
+		killalltriggers
 		if (($attackMethod = "t") or ($attackMethod = "b"))
-			killalltriggers
 			send "'Failed to fire photon, may have just blind warped. HELP?*"
 			halt
 		else
-			killalltriggers
 			send "'failed to hit foton sector, assuming failed pwarp, restarting.*"
 			return
 		end
-
 	:shotyes
 		killalltriggers
 		send "'Fired photon from " $landing " to " $attacking "*"
@@ -895,7 +921,12 @@ return
 	echo "*### ENTERING monitorLIst"
 	echo "*### $totalTargets " $totalTargets
 	echo "*### $maxPortScansApplied " $maxPortScansApplied
-
+	if ($totalTargets = 0)
+		send "q"
+		setVar $SWITCHBOARD~message "No targets were found, exiting!*"
+		gosub :SWITCHBOARD~switchboard
+		halt	
+	end
 	setVar $monitorTargets 0
 	setVar $monitorTargetsi 0
 	# This will monitor where we are in the port loop
@@ -1082,11 +1113,48 @@ return
 	
 	if ($attackPattern = "foton")
 		goSub :getFiringSolutions_calculate
+	elseif ($attackPattern = "prtargets")
+		goSub :getFiringSolutions_param
 	else
 		goSub :getFiringSolutions_selfserve
 	end
 
 return
+
+:getFiringSolutions_param
+	setVar $firingSolutions 0
+	setVar $fsi 0
+
+	setVar $sector 11
+
+	while ($sector < $sectors)
+		getSectorParameter $sector "PRTARGETS" $isTarget
+
+		if ($isTarget = 1)
+			if ($sector <> $map~stardock)
+				setVar $y 1
+				setVar $hasAFig 0
+				while ($y <= SECTOR.WARPINCOUNT[$sector])
+					if ($sectorHasFig[SECTOR.WARPSIN[$sector][$y]] = 1)
+						setVar $hasAFig SECTOR.WARPSIN[$sector][$y]
+					end
+					add $y 1
+				end
+				if ($hasAFig > 0)
+					add $fsi 1
+					setVar $firingSolutions[$fsi][1] $hasAFig
+					setVar $firingSolutions[$fsi][2] $sector
+echo "Adding " $sector "*"
+				end
+
+			end
+		end
+
+		add $sector 1
+	end
+
+return
+
 
 :getFiringSolutions_selfserve
 	# we will be a little more relaxed about what counts here
