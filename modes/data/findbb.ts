@@ -248,6 +248,11 @@ return
 				goSub :checkBubble
 				if ($foundBubble = 0)
 					goSub :checkTunnel
+					if ($foundBubble = 0)
+						echo "*#######################################################"
+						echo "*######## NO SOLUTION FOR:  " $cSector " ###############"
+						echo "*#######################################################"
+					end
 				end
 				setVar $x 1
 				while ($x <= $bubblei)
