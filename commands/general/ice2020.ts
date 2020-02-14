@@ -16,7 +16,7 @@ setVar $BOT~help[12] $BOT~tab&"                to tow merchie out for trading"
 setVar $BOT~help[13] $BOT~tab&"                 >ice2020 safeexit [merchship]"
 setVar $BOT~help[14] $BOT~tab&"    docim     - downloads port/warp data "
 setVar $BOT~help[15] $BOT~tab&"    runtrade  - cim - figs - tradereport "
-setVar $BOT~help[16] $BOT~tab&"    backup    - Mow to dock > swap ore to twarp ship"
+setVar $BOT~help[16] $BOT~tab&"    backup    - fMow to dock > swap ore to twarp ship"
 
 gosub :bot~helpfile
 
@@ -34,6 +34,10 @@ setVar $planetKillerCounter 1
 
 #goSub :safeexit
 
+if ($bot~parm1 = "backup")
+    gosub :backup
+    halt
+end
 
 if ($bot~parm1 = "safeexit")
 	gosub :safeexit
@@ -473,24 +477,6 @@ echo "Selected Exit SEctor: " $exitSector " from "  $goodSectori " Sectors via t
             add $i 1
         end
         
-    
-    # strip someone of cash
-    # sell ship and get in merch
-    # lift and density check
-    #   check safe exits
-    #   if 0 found, void others
-    #       elseif only 100s, void others
-    #
-    #           Check for -ve alignments
-    #           elseif < 500 and no anomoly
-    #               else if < 500 + anomoly
-    #                   Mow to terra safest route
-    #                   Strip Limp, and continue
-    #                       Else - ABORT - need to twarp out
-
-    #      Find sector 5 warps out - Mow not dropping figs
-    #       Do fig scan 
-    #       Start default dora settigs
 
 
 return
@@ -1327,6 +1313,226 @@ halt
     echo $msg
     halt
 return
+
+:backup
+
+    gosub :player~quikstats
+
+    if (($PLAYER~CURRENT_SECTOR <> 1) or ($PLAYER~CURRENT_PROMPT <> "Command"))
+        setVar $SWITCHBOARD~message "Need to be at Terra and at Command Prompt.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+    end
+    send "p t a30* y q "
+    waitfor "Which item do you wish to buy?"
+    waitfor "Command ["
+
+    
+
+    send "v"
+    setTextLineTrigger getBackDock :getBackDock "The StarDock is located in sector"
+    pause
+    :getBackDock
+        killalltriggers
+        getWord CURRENTLINE $stardock 7
+
+   
+    setVar $PLAYER~destination $stardock
+    goSub :voidfirstnotFed
+
+    setVar $go 1
+	while ($go = 1)
+		goSub :getWarpAndAvoid
+	
+		if ($voidfound = 0)
+			setVar $go 0
+		end
+	end
+
+    setVar $cashRequired 260000
+    goSub :stripcash
+
+    getRnd $dest 11 5000
+    setVar $dist 6
+    goSub :fuelMowToRandom
+    gosub :player~quikstats
+
+    :findFuelAgain
+    if ($player~ore_holds < 30)
+        getRnd $dest 11 5000
+        setVar $dist 5
+        goSub :fuelMowToRandom
+        gosub :player~quikstats
+        goto :findFuelAgain
+    end
+
+    setVar $BOT~command "mow"
+    setVar $BOT~user_command_line " mow " & $stardock & " 1 "
+    setVar $BOT~parm1 $stardock
+    setVar $BOT~parm2 "1"
+    saveVar $BOT~parm1
+    saveVar $BOT~parm2
+    saveVar $BOT~command
+    saveVar $BOT~user_command_line
+    load "scripts\mombot\modes\grid\mow.cts"
+    setEventTrigger		mowSDEnded		:mowSDEnded "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+    pause
+    :mowSDEnded
+    killalltriggers
+    
+    gosub :player~quikstats
+    if ($player~current_sector <> $stardock)
+        setVar $SWITCHBOARD~message "Not at dock - uh oh, mow back to terra or random?*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+    end
+    setVar $cashRequired 210000
+    goSub :stripcash
+
+    send "p s s b n y f ycPrime Time II***s*q h t1* q s"
+    waitfor "vailable Ships in Orbit"
+	setTextLineTrigger getSwapShip :getSwapShip "Prime Time II"
+	pause
+		:getSwapShip
+		getWord CURRENTLINE $swap_ship_num 1
+		killalltriggers
+
+    waitfor "How many Genesis Torpedoes"
+    waitfor "<Shipyards>"
+
+    goSub :swap_ore
+    gosub :player~quikstats
+
+    send "q q"
+    send "cv0*yyq"
+    setVar $SWITCHBOARD~message "Backup ship bought - sell other and get some figs?*"
+	gosub :SWITCHBOARD~switchboard
+
+    halt
+return
+
+:fuelMowToRandom
+    :fmpathagain
+	send "cf*" $dest "*q"
+	
+	setTextLineTrigger fmshortest :fmshortest "The shortest path"
+	pause
+	:fmshortest
+		killalltriggers
+		getword CURRENTLINE $hops 4
+		STRIPTEXT $hops "("
+		if ($hops < ($dist + 1))
+			add $dest 1
+			waitfor "<Computer deactivated>"
+			goto :fmpathagain
+		else
+			
+			setTextLineTrigger thepath :fmthepath " > "
+			pause
+			:fmthepath
+				killalltriggers
+                # $whereToWord = HOPS + 1 + HOPS to get word 1 > 2 > 3 > 4 > 5   i.e. 3 hops out if sector 4 = 3 + 1 + 3 = 7
+                setVar $whereToWord ($dist + 1 + $dist)
+				getword CURRENTLINE $whereto $whereToWord
+				STRIPTEXT $whereto ")"
+				STRIPTEXT $whereto "("
+				setVar $BOT~command "fmow"
+				setVar $BOT~user_command_line " fmow "& $whereto & " 1 "
+				setVar $BOT~parm1 $whereto
+                setVar $BOT~parm2 1
+				saveVar $BOT~parm1
+                saveVar $BOT~parm2
+				saveVar $BOT~command
+				saveVar $BOT~user_command_line
+				load "scripts\mombot\modes\grid\fmow.cts"
+				setEventTrigger		fmmowended		:fmmowended "SCRIPT STOPPED" "scripts\mombot\modes\grid\fmow.cts"
+				pause
+				:fmmowended
+                    killAllTriggers
+					return
+
+		end
+
+return
+
+:getWarpAndAvoid
+	setVar $voidfound 0
+	send "cf" $PLAYER~destination "*" $PLAYER~CURRENT_SECTOR "*q"
+	setTextLineTrigger void1 :void1 "The shortest path" 
+	setTextLineTrigger nopath :nopath "Error - No route within "
+	pause
+	:nopath
+		killAllTriggers
+		send "nq"
+		return
+	:void1
+		killAllTriggers
+		setTextLineTrigger void2 :void2 ">" 
+		pause
+		:void2 
+		killAllTriggers
+
+		getWord CURRENTLINE $warp1 3
+		stripText $warp1 "("
+		stripText $warp1 ")"
+		send "cv" $warp1 "*q"
+		setVar $voidfound 1
+
+return
+
+:voidfirstnotFed
+	
+	send "cf" $PLAYER~CURRENT_SECTOR "*" $PLAYER~destination "*q"
+	setVar $course ""
+	setTextLineTrigger voidnotfedl :voidnotfedl "The shortest path" 
+	setTextLineTrigger noindirectfed :noindirectfed "Error - No route within"
+	pause
+	:noindirectfed
+		killalltriggers
+		send "yq"
+		setVar $SWITCHBOARD~message "Not initial path, exiting.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	:voidnotfedl
+		killalltriggers
+		:keepaddingfed
+		setTextLineTrigger addCoursefed :addCoursefed ">"
+		setTextTrigger endCoursefed :endCoursefed "Computer command [" 
+		pause
+		:addCoursefed
+			killalltriggers
+			setVar $course $course & " " & CURRENTLINE
+			goto :keepaddingfed
+		:endCoursefed
+			killalltriggers
+			setVar $prevwarp ""
+			setVar $y 1
+			setVar $go 1
+			while ($go = 1)
+				
+				getWord $course $warp $y
+				if ($warp <> ">")
+					stripText $warp "("
+					stripText $warp ")"
+					if (($warp > 10) and ($y > 1))
+						setVar $go 0
+						if ($warp <> $PLAYER~destination)
+							send "cv" $warp "*q"
+						end
+					end
+					
+					setVar $prevwarp $warp
+				end
+				add $y 1
+				if ($y > 50)
+					setVar $go 0
+				end
+			end
+
+
+
+return
+
 
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"

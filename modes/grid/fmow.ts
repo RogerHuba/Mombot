@@ -514,7 +514,9 @@ return
 			echo $warp "*"
 					if (($warp > 10) and ($y > 1))
 						setVar $go 0
-						send "cv" $warp "*q"
+						if ($warp <> $PLAYER~destination)
+							send "cv" $warp "*q"
+						end
 					end
 					
 					setVar $prevwarp $warp

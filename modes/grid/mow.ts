@@ -482,8 +482,11 @@ return
 					stripText $warp ")"
 			echo $warp "*"
 					if (($warp > 10) and ($y > 1))
+						if ($warp <> $PLAYER~destination)
+							send "cv" $warp "*q"
+						end
 						setVar $go 0
-						send "cv" $warp "*q"
+						
 					end
 					
 					setVar $prevwarp $warp
