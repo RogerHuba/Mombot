@@ -26,6 +26,7 @@ gosub :BOT~loadVars
 reqRecording
 
 
+
 # CREDITS
 # -------
 # Written by Hammer
@@ -38,24 +39,37 @@ reqRecording
 #  re-write of Cherokee's as I had reliability issues - stored in ztm_old.ts in the bot archives if this one turns out bad
 
 
-
 # --- CHECK LOCATION ---
+
+
 gosub :PLAYER~quikstats
 setVar $location $PLAYER~CURRENT_PROMPT
 setVar $startlocation "x"
 :checkLocation
 	if (($location = "Command") OR ($location = "Citadel") OR ($location = "Computer"))
 		if ($location <> "Computer")
-		send "C"
-		waitFor "Computer command [TL="
+			send "C"
+			waitFor "Computer command [TL="
+		else
+			setVar $startlocation "comp"
+		end
 	else
-		setVar $startlocation "comp"
-	end
-	else
-	send "'{" $switchboard~bot_name "} - ZTM must be started from Command, Computer, or Citadel prompt.*"
+		send "'{" $switchboard~bot_name "} - ZTM must be started from Command, Computer, or Citadel prompt.*"
 	end
 
+if ($location = "Command")
 	
+	if ($map~stardock = 0)
+		send "qvc"
+		setTextLineTrigger getBackDock :getBackDock "The StarDock is located in sector"
+		pause
+		:getBackDock
+			killalltriggers
+			getWord CURRENTLINE $map~stardock 7
+			
+			waitFor "Computer command [TL="
+	end
+end
 # --- INIT VARIABLES ---
 :initVars
   
@@ -264,7 +278,9 @@ end
 					if (SECTOR.BACKDOORCOUNT[$i] > 0)
 						if ($sendReport[$i] = 0)
 							setVar $sendReport[$i] 1
-							send "'Potenial Class 0 Sector: " $i " backdoor: " SECTOR.BACKDOORS[$i][1] "*"
+							if ($i <> $map~stardock)
+								send "'Potenial Class 0 Sector: " $i " backdoor: " SECTOR.BACKDOORS[$i][1] "*"
+							end
 						end
 					end
 				end
