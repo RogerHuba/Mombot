@@ -27,7 +27,7 @@ setVar $BOT~help[8]  $BOT~tab&"                 calculates what sectors in or ou
 setVar $BOT~help[9]  $BOT~tab&"                 bubble."
 setVar $BOT~help[10] $BOT~tab&"                 "
 setVar $BOT~help[11] $BOT~tab&"    {calcsecs}   Calcs what sectors in or out of bubbles."
-setVar $BOT~help[12] $BOT~tab&"                 Writes to files in data dir."
+setVar $BOT~help[12] $BOT~tab&"                 Writes to sector param WHICHBUB."
 setVar $BOT~help[13] $BOT~tab&"    {report}     Reports findings previously"
 setVar $BOT~help[14] $BOT~tab&"    "
 setVar $BOT~help[15] $BOT~tab&"    Ham: Add report sectors for each bubble"
@@ -42,12 +42,17 @@ gosub :BOT~banner
 
 gosub :player~quikstats
 
+
+
 setVar $startingLocation $PLAYER~CURRENT_PROMPT
 if ($startingLocation <> "Command")
 	setVar $SWITCHBOARD~message "Start from the command prompt please.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
 end
+
+
+
 
 setVar $doplots 1
 setVar $doGuestimate 1
@@ -68,6 +73,15 @@ if ($pos > 0)
 	setVar $SWITCHBOARD~message "Only completing sectors in or out of a bubble.*"
 end
 
+getWordPos $bot~user_command_line $pos "plotsonly"
+if ($pos > 0)
+	setVar $doplots 1
+	setVar $doGuestimate 0
+	setVar $doSectorSorter 0
+	setVar $SWITCHBOARD~message "Just plotting bubbles and tunnels.*"
+end
+
+
 getWordPos $bot~user_command_line $pos "report"
 if ($pos > 0)
 	setVar $doplots 0
@@ -79,12 +93,24 @@ if ($pos > 0)
 	halt
 end
 
+setVar $goCrazy 0
+getWordPos $bot~user_command_line $pos "crazy"
+if ($pos > 0)
+	# We going to mow to first tunnel door - block it - mow into back and stop
+	setVar $doplots 1
+	setVar $goCrazy 1
+	setVar $doGuestimate 0
+	setVar $doSectorSorter 0
+	setVar $SWITCHBOARD~message "Finding bubbles and doing guestimate.*"
+
+end
+
 
 gosub :SWITCHBOARD~switchboard
 
 
 
-
+setVar $bubblesToFind 10
 
 setVar $bubbleDoors 0
 setVar $bubbleDoorsCount 0
@@ -98,7 +124,7 @@ setVar $tunnelEnds 0
 setVar $tunnelsi 0
 
 setVar $cSector 11
-setVar $maxChecks 300
+setVar $maxChecks 200
 setVar $checkCounter 1
 setVar $go 1
 
@@ -116,9 +142,12 @@ setVar $allDoorsCount 0
 setVar $totalSecs 0
 
 setArray $normalSectors SECTORS
+setVAr $plotsReport ""
 
 if ($doplots = 1)
 	goSub :doplotsFunction
+	setVar $SWITCHBOARD~message $plotsReport & "*"
+	gosub :SWITCHBOARD~switchboard
 	gosub :report
 end
 
@@ -128,10 +157,11 @@ end
 
 if ($doSectorSorter = 1)
 	if ($doplots = 0)
-		goSub :getDoors
+	#	goSub :getDoors
 	end
 	
-	gosub :determineNormalSpace
+	#gosub :determineNormalSpace
+	goSub :plotAllSectorsToBubble
 end			
 
 halt
@@ -227,7 +257,7 @@ return
 :doplotsFunction
 	send "c"
 	send "v0*yy"
-
+echo "Entering DO PLOTS*"
 	while ($go = 1)
 
 		send "f1*" $cSector "*"
@@ -252,6 +282,10 @@ return
 						echo "*#######################################################"
 						echo "*######## NO SOLUTION FOR:  " $cSector " ###############"
 						echo "*#######################################################"
+					else
+						if ($goCrazy = 1)
+							goSub :goCrazy
+						end
 					end
 				end
 				setVar $x 1
@@ -271,8 +305,14 @@ return
 			end
 
 		:again
+			
 			add $cSector 1
 			add $checkCounter 1
+			setVar $totalFound ($tunnelsi + $bubblei)
+			if ($totalFound = $bubblesToFind)
+				send "q * * "
+				return
+			end
 			if ($checkCounter > $maxChecks)
 				send "q * * "
 				return
@@ -521,8 +561,9 @@ return
 
 	:checkGoing
 	setTextLineTrigger startlog :startlog "shortest path"
-	setTextLineTrigger goodline :goodline ")"
 	setTextTrigger endlog :endlog "Computer command ["
+	setTextLineTrigger goodline :goodline ""
+	
 	pause
 	:startlog
 		killalltriggers
@@ -530,14 +571,18 @@ return
 		goto :checkGoing
 	:goodline
 		killalltriggers
-		if ($log = 1)
-			setVar $logText $logText & CURRENTLINE
+		if ($log = 1) and (CURRENTLINE <> "")
+			cuttext CURRENTLINE $firstchar 1 1
+			if ($firstchar = "1") or ($firstchar = " ")
+				setVar $logText $logText & CURRENTLINE
+			end
 		end
 		goto :checkGoing
 	:endlog
 		killalltriggers
 		
 	setVar $logText $logText & " end"
+
 	setVar $y 1
 	getWord $logTEXT $stuff $y
 
@@ -588,15 +633,19 @@ return
 			setVar $bubbleDoorAt ($totalRec + 5)
 			
 			echo "*############# FOUND DOOR " $course[$bubbleDoorAt] " #############"
-			setVar $msg "Found Big Bubble - Door: " & $course[$bubbleDoorAt] & " Internal Sec:" & $course[$lastPlot] & "*"
+			setVar $msg "[Found Big Bubble] Door: " & $course[$bubbleDoorAt] & " Internal Sec:" & $course[$lastPlot] & "*"
+			setVar $plotsReport $plotsReport & $msg 
 			setSectorParameter $course[$bubbleDoorAt] "BUBBLEDOOR" 1
-			send "'" $msg
-
+			setSectorParameter $course[$bubbleDoorAt] "BUBBLEINT" $course[$lastPlot]
+			
 			add $bubblei 1
 			setVar $bubbleDoors[$bubblei] $course[$bubbleDoorAt]
 			setVar $bubbleEnds[$bubblei] $course[$lastPlot]
 			setVar $foundBubble 1
+
+			
 			waitfor "ENDINTERROG"
+			send "'" $msg
 			return
 		:bubbleNotFoundBub
 			killalltriggers
@@ -679,8 +728,9 @@ echo "VOID SEARCH FROM $y" $y " to " $coursei "*"
 				setVar $bubbleTwoAt ($totalRec + 5)
 				echo "*############# FOUND FIRST DOOR " $voidSec " #############"
 				echo "*############# FOUND SECOND DOOR " $course[$bubbleTwoAt] " #############"
-				setVar $msg "Found Big Tunnel - Door 1: " & $voidSec & " Door 2: " & $course[$bubbleTwoAt] & " Internal Sec:" & $tunnelTarget & "*"
-				send "'" $msg
+				setVar $msg "[Found Big Tunnel] Door 1: " & $voidSec & " Door 2: " & $course[$bubbleTwoAt] & " Internal Sec:" & $tunnelTarget & "*"
+				setVar $plotsReport $plotsReport & $msg 
+				
 			
 				setVar $foundBubble 1
 				add $tunnelsi 1
@@ -689,7 +739,10 @@ echo "VOID SEARCH FROM $y" $y " to " $coursei "*"
 				setVar $tunnelEnds[$tunnelsi] $tunnelTarget
 				setSectorParameter $voidSec "TUNNELDOOR" $tunnelsi
 				setSectorParameter $course[$bubbleTwoAt] "TUNNELDOOR" $tunnelsi
+				setSectorParameter $voidSec "TUNNELINT" $tunnelTarget
+				setSectorParameter $course[$bubbleTwoAt] "TUNNELINT" $tunnelTarget
 				waitfor "ENDINTERROG"
+				send "'" $msg
 				return
 			:bubbleNotFound
 				killalltriggers
@@ -728,8 +781,9 @@ return
 
 	:checkGoing2
 	setTextLineTrigger startlog2 :startlog2 "shortest path"
-	setTextLineTrigger goodline2 :goodline2 ")"
 	setTextTrigger endlog2 :endlog2 "Computer command ["
+	setTextLineTrigger goodline2 :goodline2 ""
+	
 	pause
 	:startlog2
 		killalltriggers
@@ -737,9 +791,13 @@ return
 		goto :checkGoing2
 	:goodline2
 		killalltriggers
-		if ($log = 1)
-			setVar $logText $logText & CURRENTLINE
+		if ($log = 1) and (CURRENTLINE <> "")
+			cuttext CURRENTLINE $firstchar 1 1
+			if ($firstchar = "1") or ($firstchar = " ")
+				setVar $logText $logText & CURRENTLINE
+			end
 		end
+		
 		goto :checkGoing2
 	:endlog2
 		killalltriggers
@@ -773,13 +831,17 @@ return
 	setVar $spitEVerything 0
 	
 	:checkGoingCourse
-	setTextLineTrigger goodlineCourse :goodlineCourse ">"
 	setTextTrigger endlogCourse :endlogCourse "Computer command ["
+	setTextLineTrigger goodlineCourse :goodlineCourse ">"
+	
 	pause
 	:goodlineCourse
 		killalltriggers
-		if ($log = 1)
-			setVar $logText $logText & CURRENTLINE
+		if ($log = 1) and (CURRENTLINE <> "")
+			cuttext CURRENTLINE $firstchar 1 1
+			if ($firstchar = "1") or ($firstchar = " ")
+				setVar $logText $logText & CURRENTLINE
+			end
 		end
 		goto :checkGoingCourse
 	:endlogCourse
@@ -855,6 +917,380 @@ Echo "Found:" $course[$i] "*"
 	
 	
 return
+
+:goCrazy
+	
+	send "v0*yyq"
+	waitfor "Computer deactivated>"
+	
+	setVar $BOT~command "mow"
+	setVar $BOT~user_command_line " mow " & $tunnelDoors1[$tunnelsi] & " 0 "
+	setVar $BOT~parm1 $tunnelDoors1[$tunnelsi]
+	setVar $BOT~parm2 "0"
+	saveVar $BOT~parm1
+	saveVar $BOT~parm2
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	load "scripts\mombot\modes\grid\mow.cts"
+	setEventTrigger		goCrazyMow1		:goCrazyMow1 "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+	pause
+	:goCrazyMow1
+	killalltriggers
+
+	send "f1*cd"
+	send "cf*" $tunnelEnds[$tunnelsi] "*q"
+	waitfor "The shortest path"
+	setTextLineTrigger goCrazy1in :goCrazy1in " > "
+	pause
+	:goCrazy1in
+		getWord CURRENTLINE $onein 3
+		STRIPTEXT $onein "("
+		STRIPTEXT $onein ")"
+	
+		setVar $BOT~command "mow"
+		setVar $BOT~user_command_line " mow " & $onein & " 1 "
+		setVar $BOT~parm1 $onein
+		setVar $BOT~parm2 "1"
+		saveVar $BOT~parm1
+		saveVar $BOT~parm2
+		saveVar $BOT~command
+		saveVar $BOT~user_command_line
+		load "scripts\mombot\modes\grid\mow.cts"
+		setEventTrigger		goCrazyonein		:goCrazyonein "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+		pause
+		:goCrazyonein
+			halt
+return
+
+
+	setVar $bubbleDoors 0
+	setVar $bubbleDoorsCount 0
+	setVar $bubbleEnds 0
+	setVar $bubblei 0
+
+	setVar $tunnelDoors1 0
+	setVar $tunnelDoors2 0
+	setVar $tunnelDoorsCount 0
+	setVar $tunnelEnds 0
+	setVar $tunnelsi 0
+
+
+
+:plotAllSectorsToBubble
+	# Assumes max 20 doors
+
+	send "c"
+
+	setArray $sFilter SECTORS
+	setArray $bIndex SECTORS
+	setArray $allSectors SECTORS
+	setVar $totalBubs 0
+	setVar $totalBubsReport 0
+
+	setVar $allDoors 0
+	setVar $allDoorsi 0
+	goSub :getDoors
+
+	setVar $i 1
+	while ($i <= 20)
+		setVar $allDoors[$i] 99999
+		add $i 1
+	end
+	
+	setVar $i 11
+	while ($i < SECTORS)
+		setSectorParameter $i "WHICHBUB" ""
+		setSectorParameter $i "NOTBUB" ""
+		add $i 1
+	end
+	
+	setVar $i 1
+	while ($i <= $bubblei)
+		add $totalBubs 1
+		setVar $totalBubsReport[$totalBubs] "B:" & $bubbleDoors[$i]
+		setVar $y ((($totalBubs - 1) *2) + 1)
+		setVar $allDoors[$y] $bubbleDoors[$i]
+		setVar $y2 ($y+1)
+		setVar $allDoors[$y2] 99999
+		setVar $bIndex[$bubbleDoors[$i]] $totalBubs
+		setVar $sFilter[$bubbleDoors[$i]] 1
+		add $i 1
+	end
+
+	setVar $i 1
+	while ($i <= $tunnelsi)
+		add $totalBubs 1
+		setVar $y ((($totalBubs - 1) * 2) + 1)
+
+		setVar $y2 ($y+1)
+		setVar $allDoors[$y] $tunnelDoors1[$i]
+		setVar $allDoors[$y2] $tunnelDoors2[$i]
+		setVar $bIndex[$tunnelDoors1[$i]] $totalBubs
+		setVar $sFilter[$tunnelDoors1[$i]] 1
+		setVar $bIndex[$tunnelDoors2[$i]] $totalBubs
+		setVar $sFilter[$tunnelDoors2[$i]] 1
+		setVar $totalBubsReport[$totalBubs] "T:" & $tunnelDoors1[$i] & " " & $tunnelDoors2[$i]
+		add $i 1
+	end
+
+	setVar $i 1
+	while ($i <= 20)
+		echo $allDoors[$i] "*"
+		add $i 1
+	end
+
+	
+	
+	setVar $totalPlots 11
+	setVar $maxPlots 10000
+	setVar $lastRun 0
+
+	:plotAllMore
+	setVar $i 11
+	while ($i <= 61)
+		if ($totalPlots > $maxPlots)
+			setVar $lastRun 1
+			goto :iiiend
+		end
+		if ($sFilter[$i] <> 1)
+			send "f1*" $totalPlots "**"
+		end
+		add $totalPlots 1
+		add $i 1
+	end 
+	:iiiend
+	send "^q"
+
+	:waitMorePlots
+
+	setTextLineTrigger startPLook :startPLook "Computed."
+	setTextLineTrigger 41 :entranceEnd "ENDINTERROG"
+	pause
+	:startPLook
+		killalltriggers
+	setTextLineTrigger shortestP :shortestP "The shortest path"
+	pause
+		:shortestP
+		killalltriggers
+		getword CURRENTLINE $lastSector 13
+		
+	setTextLineTrigger plotComputerDone :plotComputerDone "Computer command ["
+	setTextLineTrigger 1 :enterance1 " (" & $allDoors[1] & ") "
+	setTextLineTrigger 2 :enterance2 " (" & $allDoors[2] & ") "
+	setTextLineTrigger 3 :enterance3 " (" & $allDoors[3] & ") "
+	setTextLineTrigger 4 :enterance4 " (" & $allDoors[4] & ") "
+	setTextLineTrigger 5 :enterance5 " (" & $allDoors[5] & ") "
+	setTextLineTrigger 6 :enterance6 " (" & $allDoors[6] & ") "
+	setTextLineTrigger 7 :enterance7 " (" & $allDoors[7] & ") "
+	setTextLineTrigger 8 :enterance8 " (" & $allDoors[8] & ") "
+	setTextLineTrigger 9 :enterance9 " (" & $allDoors[9] & ") "
+	setTextLineTrigger 10 :enterance10 " (" & $allDoors[10] & ") "
+	setTextLineTrigger 11 :enterance11 " (" & $allDoors[11] & ") "
+	setTextLineTrigger 12 :enterance12 " (" & $allDoors[12] & ") "
+	setTextLineTrigger 13 :enterance13 " (" & $allDoors[13] & ") "
+	setTextLineTrigger 14 :enterance14 " (" & $allDoors[14] & ") "
+	setTextLineTrigger 15 :enterance15 " (" & $allDoors[15] & ") "
+	setTextLineTrigger 16 :enterance16 " (" & $allDoors[16] & ") "
+	setTextLineTrigger 17 :enterance17 " (" & $allDoors[17] & ") "
+	setTextLineTrigger 18 :enterance18 " (" & $allDoors[18] & ") "
+	setTextLineTrigger 19 :enterance19 " (" & $allDoors[19] & ") "
+	setTextLineTrigger 20 :enterance20 " (" & $allDoors[20] & ") "
+		
+	setTextLineTrigger 21 :enterance1b " " & $allDoors[1] & " "
+	setTextLineTrigger 22 :enterance2b " " & $allDoors[2] & " "
+	setTextLineTrigger 23 :enterance3b " " & $allDoors[3] & " "
+	setTextLineTrigger 24 :enterance4b " " & $allDoors[4] & " "
+	setTextLineTrigger 25 :enterance5b " " & $allDoors[5] & " "
+	setTextLineTrigger 26 :enterance6b " " & $allDoors[6] & " "
+	setTextLineTrigger 27 :enterance7b " " & $allDoors[7] & " "
+	setTextLineTrigger 28 :enterance8b " " & $allDoors[8] & " "
+	setTextLineTrigger 29 :enterance9b " " & $allDoors[9] & " "
+	setTextLineTrigger 30 :enterance10b " " & $allDoors[10] & " "
+	setTextLineTrigger 31 :enterance11b " " & $allDoors[11] & " "
+	setTextLineTrigger 32 :enterance12b " " & $allDoors[12] & " "
+	setTextLineTrigger 33 :enterance13b " " & $allDoors[13] & " "
+	setTextLineTrigger 34 :enterance14b " " & $allDoors[14] & " "
+	setTextLineTrigger 35 :enterance15b " " & $allDoors[15] & " "
+	setTextLineTrigger 36 :enterance16b " " & $allDoors[16] & " "
+	setTextLineTrigger 37 :enterance17b " " & $allDoors[17] & " "
+	setTextLineTrigger 38 :enterance18b " " & $allDoors[18] & " "
+	setTextLineTrigger 39 :enterance19b " " & $allDoors[19] & " "
+	setTextLineTrigger 40 :enterance20b " " & $allDoors[20] & " "
+
+
+	
+	pause
+	:plotComputerDone
+		killalltriggers
+		goto :waitMorePlots
+			:enterance1
+			:enterance2
+			:enterance1b 
+			:enterance2b 
+			killalltriggers
+				setVar $bub 1
+				goSub :addDoor
+				goto :waitMorePlots
+
+			:enterance3 
+			:enterance4
+			:enterance3b 
+			:enterance4b 
+			killalltriggers
+				setVar $bub 2
+				goSub :addDoor
+				goto :waitMorePlots
+
+			:enterance5 
+			:enterance6 
+			:enterance5b 
+			:enterance6b 
+			killalltriggers
+				setVar $bub 3
+				goSub :addDoor
+				goto :waitMorePlots
+
+			:enterance7 
+			:enterance8 
+			:enterance7b 
+			:enterance8b 
+			killalltriggers
+				setVar $bub 4
+				goSub :addDoor
+				goto :waitMorePlots
+
+			:enterance9 
+			:enterance10
+			:enterance9b 
+			:enterance10b 
+			killalltriggers
+				setVar $bub 5
+				goSub :addDoor
+				goto :waitMorePlots
+
+			:enterance11
+			:enterance12
+			:enterance11b 
+			:enterance12b 
+			killalltriggers
+				setVar $bub 6
+				goSub :addDoor
+				goto :waitMorePlots
+
+			:enterance13
+			:enterance14
+			:enterance13b 
+			:enterance14b 
+			killalltriggers
+				setVar $bub 7
+				goSub :addDoor
+				goto :waitMorePlots
+
+			:enterance15
+			:enterance16
+			:enterance15b 
+			:enterance16b 
+			killalltriggers
+				setVar $bub 8
+				goSub :addDoor
+				goto :waitMorePlots
+
+			:enterance17 
+			:enterance18
+			:enterance17b 
+			:enterance18b 
+			killalltriggers
+				setVar $bub 9
+				goSub :addDoor
+				goto :waitMorePlots
+
+	:enterance19
+	:enterance20
+	:enterance19b 
+	:enterance20b 
+	killalltriggers
+		setVar $bub 10
+		goSub :addDoor
+		goto :waitMorePlots
+
+	:entranceEnd
+		killalltriggers
+		if ($lastRun = 1)
+			echo "DONE - sending.. *"
+		else
+			goto :plotAllMore
+		end
+
+	#setVar $i 11
+	#while ($i <= $maxPlots)
+	#	echo $i " " $allSectors[$i] " " $totalBubsReport[$allSectors[$i]] "*"
+	#	add $i 1
+	#end
+
+	setVar $i 11
+	while ($i < SECTORS)
+		getSectorParameter $i "WHICHBUB" $test
+		if ($test = "")
+			setVar $test 0
+		end
+		if ($test = 0)
+			setSectorParameter $i "NOTBUB" "1"
+		end
+		add $i 1
+	end
+
+	setVar $i 1
+	while ($i <= 20)
+		if ($allDoors[$i] <= SECTORS)
+			if ($i <=2)
+				setVar $bub 1
+			elseif ($i <=4)
+				setVar $bub 1
+			elseif ($i <=6)
+				setVar $bub 1
+			elseif ($i <=8)
+				setVar $bub 1
+			elseif ($i <=10)
+				setVar $bub 1
+			elseif ($i <=12)
+				setVar $bub 1
+			elseif ($i <=14)
+				setVar $bub 1
+			elseif ($i <=16)
+				setVar $bub 1
+			elseif ($i <=18)
+				setVar $bub 1
+			elseif ($i <=20)
+				setVar $bub 1
+			end
+			setSectorParameter $allDoors[$i] "BUBCOUNT" $bubbleCounts[$i]
+			setSectorParameter $allDoors[$i] "BUBINDEX" $bub
+		end
+		add $i 1
+	end
+
+
+	setVar $i 1
+	setVar $rep  "BUBBLE SECTOR         SECTOR COUNT*"
+	while ($i <= 10)
+		
+		setvar $rep $rep & $totalBubsReport[$i] &  "            "  & $bubbleCounts[$i] &  "*"
+		add $i 1
+	end
+	setVar $SWITCHBOARD~message $rep
+	gosub :SWITCHBOARD~switchboard
+	halt
+
+	send "q"
+
+return
+
+:addDoor
+	setVar $allSectors[$lastSector] $bub
+	add $bubbleCounts[$bub] 1
+	setSectorParameter $lastSector "WHICHBUB" $bub
+return
+
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"

@@ -54,6 +54,8 @@ setVar $BOT~help[16]  $BOT~tab&" "
 setVar $BOT~help[17]  $BOT~tab&" - {mcicsell}  - Test XXS ports for MCIC "
 setVar $BOT~help[18]  $BOT~tab&" - {mcicbuy}   - Test XXB ports for MCIC "
 setVar $BOT~help[19]  $BOT~tab&" - {mcicboth}  - Test all ports for MCIC "
+setVar $BOT~help[20]  $BOT~tab&" "
+setVar $BOT~help[21]  $BOT~tab&" - {deldata }  Deletes explored sectors "
 
 
 gosub :BOT~helpfile
@@ -86,14 +88,22 @@ end
 
 
 setVar $stardock $MAP~STARDOCK
-
+if ($stardock = 0)
+	send "v"
+    setTextLineTrigger getBackDockCrazy :getBackDockCrazy "The StarDock is located in sector"
+    pause
+    :getBackDockCrazy
+        killalltriggers
+        getWord CURRENTLINE $stardock 7
+		STRIPTEXT $stardock "."
+end
 # FUTURE VARS
 # Limps/Mines bot vars
 setVar $restock 0
 # Figs - Mines - Limps - maybe even figs called in?
 setVar $callInFigs 0
 
-
+setVar $cashPause 0
 
 setVar $halt_turns $bot~parm1
 isNumber $number $halt_turns
@@ -335,6 +345,30 @@ if ($figlchk = 1)
 	end
 end
 
+# Block Tunnel Bubble Doors
+setVar $i 11
+while ($i <= SECTORS)
+
+	getSectorParameter $i "BUBBLEDOOR" $blockSec
+	isNumber $test $blockSec
+	if ($test = 1)
+		if ($blockSec > 0)
+			setVar $explored[$i] 1
+			echo "Blocking Bubble Door: " $i "*"
+		end
+	end
+
+	getSectorParameter $i "TUNNELDOOR" $blockSec 
+	isNumber $test $blockSec
+	if ($test = 1)
+		if ($blockSec > 0)
+			setVar $explored[$i] 1
+			echo "Blocking Tunnel Door: " $i "*"
+		end
+	end
+	
+	add $i 1
+end
 
 listActiveScripts $scripts
 setVar $foundep 0
@@ -381,7 +415,17 @@ while ($iSaySo)
 	
 	gosub :player~quikstats
 	setvar $turnsNow $player~turns
-
+	
+	if ($cashPause = 1)
+		if (PORT.EXISTS[CURRENTSECTOR] = TRUE)
+			if (PORT.BUYFUEL[CURRENTSECTOR] = FALSE)
+				send "'[atm:" $switchboard~BOT_NAME "=" CURRENTSECTOR "]*"
+				waitfor "[atmdone]"
+				send "'[atm]Spend it wisely, I'm out here risking my hide for peanuts!*"
+				setVar $cashPause 0
+			end
+		end
+	end
 	if ($turnsNow < $halt_turns)
 		setvar $switchboard~message "Turn Limit Reached*"
 		gosub :switchboard~switchboard
@@ -452,7 +496,19 @@ while ($iSaySo)
 	
 	end
 	setVar $skipNextTrade 0
-	
+	# Check ATM
+
+	if ($cashPause = 1)
+		if (PORT.EXISTS[CURRENTSECTOR] = TRUE)
+			if (PORT.BUYFUEL[CURRENTSECTOR] = FALSE)
+				send "'[atm:" $switchboard~BOT_NAME "=" CURRENTSECTOR "]*"
+				waitfor "[atmdone]"
+				send "'[atm]Spend it wisely, I'm out here risking my hide for peanuts!*"
+				setVar $cashPause 0
+			end
+		end
+	end
+
 	# Trading Done
 	
 	if (($freshSectorsNewPorts > 0) and ($doneHolo = 0))
@@ -909,6 +965,7 @@ return
 				setVar $tradePort $trades[1]
 			end
 
+			
 			setVar $originSector $PLAYER~CURRENT_SECTOR
 			setVar $prepptc $player~credits
 
@@ -927,9 +984,15 @@ return
 	
 			load "scripts\mombot\commands\cashing\ppt.cts"
 			:backpptwait
+			setTextLineTrigger        pptPauseForCash        :pptPauseForCash "[atm:" & $SWITCHBOARD~BOT_NAME & "]"
 			setTextLineTrigger        pptMove        :pptMove "<Move>"
 			setEventTrigger        pptended        :pptended "SCRIPT STOPPED" "scripts\mombot\commands\cashing\ppt.cts"
 			pause
+			:pptPauseForCash
+				killalltriggers
+				setVar $cashPause 1
+				send "'[atm:ack] Will pause at next SXB post trading.*"
+				goto :backpptwait
 			:pptMove
 				killalltriggers
 				add $stat_moves 1
@@ -942,7 +1005,7 @@ return
 			add $stat_ppts_done 1
 			add $stat_figsdown 1
 			setSectorParameter $tradePort "FIGSEC" TRUE
-
+			
 			if ($originSector <> $PLAYER~CURRENT_SECTOR)
 				# Finished up next door, return
 				
@@ -987,16 +1050,22 @@ return
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
 	load "scripts\mombot\commands\cashing\trade.cts"
+	:backtradewait
+	setTextLineTrigger        tradePauseForCash        :tradePauseForCash "[atm:" & $SWITCHBOARD~BOT_NAME & "]"
 	setEventTrigger        tradeended        :tradeended "SCRIPT STOPPED" "scripts\mombot\commands\cashing\trade.cts"
 	pause
+	:tradePauseForCash
+		killalltriggers
+		setVar $cashPause 1
+		send "'[atm:ack] Will pause at next SXB post trading.*"
+		goto :backtradewait
 	:tradeended
 		killalltriggers
 	add $stat_trades 1
 	gosub :player~quikstats
 
 	setVar $stat_dollarstrade ($stat_dollarstrade + ($player~credits - $pretradec))
-
-
+	
 return
 
 :isAllPair

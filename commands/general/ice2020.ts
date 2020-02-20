@@ -11,19 +11,26 @@ setVar $BOT~help[7]  $BOT~tab&"                 >ice2020 swapore [shipnum]"
 setVar $BOT~help[8]  $BOT~tab&"    buycolt   - buys Colt transPORT "
 setVar $BOT~help[9]  $BOT~tab&"    movecolt  - moves Colts to sectors  "
 setVar $BOT~help[10]  $BOT~tab&"                  >movecolt [sec1] [sec2] [sec3=3]"
-setVar $BOT~help[11] $BOT~tab&"    safeexit  - Takes starter ship with ore, buys twarp ship "
-setVar $BOT~help[12] $BOT~tab&"                to tow merchie out for trading"
-setVar $BOT~help[13] $BOT~tab&"                 >ice2020 safeexit [merchship]"
-setVar $BOT~help[14] $BOT~tab&"    docim     - downloads port/warp data "
-setVar $BOT~help[15] $BOT~tab&"    runtrade  - cim - figs - tradereport "
-setVar $BOT~help[16] $BOT~tab&"    backup    - fMow to dock > swap ore to twarp ship"
+setVar $BOT~help[11] $BOT~tab&"    grabcolos - Tows colt to terra, loads with cols, returns "
+setVar $BOT~help[12] $BOT~tab&"    safeexit  - Takes starter ship with ore, buys twarp ship "
+setVar $BOT~help[13] $BOT~tab&"                to tow merchie out for trading"
+setVar $BOT~help[14] $BOT~tab&"                 >ice2020 safeexit [merchship]"
+setVar $BOT~help[15] $BOT~tab&"    docim     - downloads port/warp data "
+setVar $BOT~help[16] $BOT~tab&"    runtrade  - cim - figs - tradereport "
+setVar $BOT~help[17] $BOT~tab&"    backup    - fMow to dock > swap ore to twarp ship"
+setVar $BOT~help[18] $BOT~tab&"    xbust     - Evil player xports to Colt Transport"
+setVar $BOT~help[19] $BOT~tab&"                at dock, tbusts, xports back"
+setVar $BOT~help[20] $BOT~tab&"                 >ice2020 xbust [exp_needed] [shipnum]"
+setVar $BOT~help[21] $BOT~tab&"    sellship  - Sells current ship and jumps in scout"
+setVar $BOT~help[22] $BOT~tab&"    atm [bot] - Pause Dora and get cash from [bot]"
 
 gosub :bot~helpfile
 
 setVar $BOT~script_title "ICE2020 Utilities"
 setVar $pod #42 & #42 & #42 & " Escape Pod " & #42 & #42 & #42
 
-
+# should be san
+setVar $wallBot "san"
 gosub :BOT~banner
 
 # someone might run a script to blow all plants at dock
@@ -31,17 +38,52 @@ gosub :BOT~banner
 #  i.e. they load up with g-torps and unload just as you swap
 #  and hopefully you can swap
 setVar $planetKillerCounter 1
+setVar $doCrazyAlign 0
 
 #goSub :safeexit
+
+
+if ($bot~parm1 = "crazymow")
+    goSub :crazyStart
+    halt
+end
+
+
+if ($bot~parm1 = "xbust")
+    goSub :xbust
+    halt
+end
 
 if ($bot~parm1 = "backup")
     gosub :backup
     halt
 end
 
+if ($bot~parm1 = "fullstart")
+    gosub :player~quikstats
+    setVar $ogiginalShip $player~SHIP_NUMBER
+    
+    if ($bot~parm2 <> "skipback")
+        
+        gosub :backup
+       
+    else
+        getInput $ogiginalShip "Enter the ship number of the Merch you started in (we will sell it)"
+    end
+    send "tt.**q"
+    waitfor "CMS link terminated"
+    goSub :fullstart
+    halt
+end
+
 if ($bot~parm1 = "safeexit")
 	gosub :safeexit
 	halt
+end
+
+if ($bot~parm1 = "sellship")
+    goSub :sellship
+    halt
 end
 
 if ($bot~parm1 = "setdora")
@@ -51,6 +93,35 @@ end
 
 if ($bot~parm1 = "swapore")
 	gosub :swapore
+	halt
+end
+
+
+if ($bot~parm1 = "atm")
+    goSub :getAtm
+	halt
+end
+
+
+if ($bot~parm1 = "stripfig")
+    
+    if ($bot~parm2 <> "")
+		isnumber $isanumber $bot~parm2
+		if ($isanumber <> true)
+			setVar $SWITCHBOARD~message "Please specify the total figs required (yours + strip amount)*"
+			gosub :switchboard~switchboard
+			HALT
+		end
+		setVar $figsRequired $bot~parm2
+        
+    else
+        setVar $SWITCHBOARD~message "Please specify the total figs required (yours + strip amount).*"
+        gosub :switchboard~switchboard
+        HALT
+	end
+
+    gosub :player~quikstats
+	gosub :stripfig
 	halt
 end
 
@@ -112,22 +183,184 @@ gosub :switchboard~switchboard
 halt
 halt
 
+:xbust
+    gosub :player~quikstats
+	setVar $location $player~current_prompt
+	if ($location <> "Command")
+		setVar $SWITCHBOARD~message "Start from Command Prompt.*"
+		gosub :switchboard~switchboard
+		HALT
+	end
+
+    setVar $expWanted $bot~parm2
+    setVar $starDockShip $bot~parm3
+    setVar $startShip $player~SHIP_NUMBER
+
+    isNumber $test $expWanted
+    if ($test <> true)
+        setVar $SWITCHBOARD~message "Experience should be a number from 1001 - 10000*"
+		gosub :switchboard~switchboard
+		HALT
+    end
+
+    isNumber $test $starDockShip
+    if ($test <> true)
+        setVar $SWITCHBOARD~message "Ship should be a number from 1 - 1000*"
+		gosub :switchboard~switchboard
+		HALT
+    end
+    setVar $msg ""
+    if (($starDockShip > 200) and ($expWanted < 1000))
+        setVar $msg "Ship and Exp params around wrong way, swapping*"
+        setVar $temp $expWanted
+        setVar $expWanted $starDockShip
+        setVar $starDockShip $temp
+    elseif ($expWanted < 1001)
+        setVar $SWITCHBOARD~message "Experience wanted should be more than 1000*"
+		gosub :switchboard~switchboard
+		HALT
+    elseif ($starDockShip > 200)
+        setVar $SWITCHBOARD~message "Stardock Ship should be less than 200*"
+		gosub :switchboard~switchboard
+		HALT
+    end
+
+    setVar $msg $msg&"Xport Ship: " & $starDockShip & " Exp Wanted: " & $expWanted & "*"
+    setVar $SWITCHBOARD~message $msg
+    gosub :switchboard~switchboard
+
+    setVar $current_exp $player~Experience
+    setVar $exp_needed ($expWanted - $current_exp)
+
+    if ($exp_needed <= 0)
+        setVar $SWITCHBOARD~message "You've already got enough exp! My work here is done!*"
+		gosub :switchboard~switchboard
+		HALT
+
+    end
+    
+     # 525000 gets 1125 exp - which is like 460 creds per exp - we will round up to 500
+    setVar $dollarsPerExp 500
+    setVar $dollarsNeeded ($exp_needed * $dollarsPerExp)
+    add $dollarsNeeded 20000
+    
+    if ($player~CREDITS < $dollarsNeeded)
+        setVar $SWITCHBOARD~message "Short on Credits. Estimate we need:" & $dollarsNeeded & " att 500k creds per 1k exp.*"
+		gosub :switchboard~switchboard
+		HALT
+
+    end
+
+    echo "Dollars Needed:"  $dollarsNeeded " Creds:" $player~CREDITS " Exp Needed:" $exp_needed "*"
+    
+    if (($player~ALIGNMENT >= 0) or ($player~current_sector = $map~stardock))
+        setVar $SWITCHBOARD~message "We need to be away from dock, and evil..*"
+		gosub :switchboard~switchboard
+		HALT
+    end
+    
+    setVar $xportShipFound 0
+    send "x**"
+    setTextLineTrigger myXportRange :myXportRange " has a transport range of"
+    pause
+    :myXportRange
+         killalltriggers
+         getText CURRENTLINE $myXportRange "transport range of " " hops."
+
+    :xBustMoreShips
+    setTextLineTrigger xBustShipListDone :xBustShipListDone "<I> Ship details"
+    setTextLineTrigger xBustShipListNone :xBustShipListNone "You do not own any other ships!"
+    setTextLineTrigger xBustNoShipList :xBustNoShipList ""
+    pause
+        :xBustNoShipList 
+            killAllTriggers
+            getWord CURRENTLINE $shipNum 1
+            if ($shipNum = $starDockShip)
+                setVar $xportShipFound 1
+                getWord CURRENTLINE $sectorNum 2
+                cutText CURRENTLINE $xportShipType 56 18
+                echo "#" $xportShipType "#*"
+                echo "#" $xportShipType "#*"
+                echo "#" $xportShipType "#*"
+                goto :xBustShipListNone
+            end
+            goto :xBustMoreShips
+        :xBustShipListDone 
+        :xBustShipListNone 
+        killAllTriggers
+    if ($xportShipFound = 0)
+        setVar $SWITCHBOARD~message "Could not locate ship at Stardock*"
+		gosub :switchboard~switchboard
+		HALT
+    else
+        if ($sectorNum <> $MAP~StarDock)
+            setVar $SWITCHBOARD~message "Found the ship but it's not at dock!*"
+            gosub :switchboard~switchboard
+            HALT
+        end
+        if ($xportShipType <> "Colonial Transport")
+            setVar $SWITCHBOARD~message "Needs to be a Colonial Transport*"
+            gosub :switchboard~switchboard
+            HALT
+        end
+    end
+
+    send "cf*" $MAP~StarDock "*q"
+    setTextLineTrigger xBustfirstPlot :xBustfirstPlot "The shortest path"
+    pause
+    :xBustfirstPlot
+        killAllTriggers
+        getWord CURRENTLINE $range1 4
+        STRIPTEXT $range1 "("
+
+    send "cf" $MAP~StarDock "*" $PLAYER~CURRENT_SECTOR "*q"
+    setTextLineTrigger xBustSecondPlot :xBustSecondPlot "The shortest path"
+    pause
+    :xBustSecondPlot
+        killAllTriggers
+        getWord CURRENTLINE $range2 4
+        STRIPTEXT $range2 "("
+    echo $range1 "#" $range2 "*"
+
+    if ($range1 > $myXportRange)
+        setVar $SWITCHBOARD~message "XPort range of my current ship won't make it to dock*"
+        gosub :switchboard~switchboard
+        HALT
+    end
+
+    if ($range2 > 20)
+        setVar $SWITCHBOARD~message "XPort range back is longer than 20 - Colt won't make it*"
+        gosub :switchboard~switchboard
+        HALT
+    end
+
+    :FirstXport
+    send "x " & $starDockShip & "* q p s "
+    waitfor "<StarDock> Where to? (?=Help)"
+
+
+    setVar $BOT~command "tbust"
+    setVar $BOT~user_command_line " tbust " & $expWanted
+    setVar $BOT~parm1 $expWanted
+    setVar $BOT~parm2 ""
+    setVar $BOT~parm3 ""
+    
+    saveVar $BOT~parm1
+    saveVar $BOT~parm2
+    saveVar $BOT~parm3
+    saveVar $BOT~command
+    saveVar $BOT~user_command_line
+    load "scripts\mombot\modes\cashing\tbust.cts"
+    setEventTrigger		xbustTbustEnd		:xbustTbustEnd "SCRIPT STOPPED" "scripts\mombot\modes\cashing\tbust.cts"
+    pause
+    :xbustTbustEnd
+    killalltriggers
+    send "q x* " & $startShip & "* q"
+halt
+return
+
 :safeexit
-    #
-    # Start with starter ship with ore (merch + ore + 500 figs)
-    # Specify ship you want to get out of dodge
-    #  - Must have ore
-    #  - Cash to buy Twarp ship + gtorp
-    #
-    #  Merch with 60 holds - 32k for holds 1k for ore 
-    #  buy colt - 173k
-    #  swap ore - 20k
-    #  
-    #  sell mecrch + 135k
-    #  twarp 2 - 80k
-    #  99 figs 30k
-
-
+  
 
     gosub :player~quikstats
 	setVar $location $player~current_prompt
@@ -278,7 +511,7 @@ halt
 
     goSub :mowOutFromDock
 
-	send "'" $SWITCHBOARD~BOT_NAME " dora 1300 buys warps*"
+	send "'" $SWITCHBOARD~BOT_NAME " dora 1300 buys ports mcicbuy*"
 	halt
 return
 
@@ -608,11 +841,16 @@ return
 		gosub :switchboard~switchboard
 		HALT
 	end
+    :towAgainPlease
 	send "w** "
+    setTextLineTrigger oopsTowAlready :oopsTowAlready "You shut off your Tractor Beam"
 	settextlinetrigger foundcolt :foundcolt "  0  Colonial Transport"
 	settextlinetrigger nomore :nomore "Choose which ship to tow (Q=Quit)"
 	settextlinetrigger nomore2 :nomore "You do not own any other ships in this sector!"
 	pause
+    :oopsTowAlready
+        killalltriggers
+        goto :towAgainPlease
 	:foundcolt
 		getword currentline $shipnumber 1
 		add $colts 1
@@ -720,9 +958,12 @@ return
 	pause
 	:foundcoltmove
 		getword currentline $shipnumber 1
-		add $colts 1
-		setvar $colts[$colts] $shipnumber
-		settextlinetrigger foundcolt :foundcolt "  0  Colonial Transport"
+		getword currentline $shipWord 3
+        if ($shipWord = "Ship")
+		    add $colts 1
+		    setvar $colts[$colts] $shipnumber
+        end
+		settextlinetrigger foundcolt :foundcoltmove "  0  Colonial Transport"
 		pause
 	:nomoremove
 		killtrigger foundcolt
@@ -739,8 +980,8 @@ return
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
-	
-		setvar $i 1
+  
+        setvar $i 1
 		while ($i <= $coltcount)
 			send "w * "&$colts[$i]&"* "
 			setVar $player~warpto $colts[$i][1]
@@ -868,7 +1109,7 @@ return
 
         if ($havecorpies = 0)
             :waitcorpies
-    
+    #c count - if 100 alert and quit
             setTextLineTrigger nocorpies :nocorpies "Your Associate must be in the same sector to conduct transfers!"
             setTextTrigger corpies :corpies "Exchange with"
             pause 
@@ -915,6 +1156,8 @@ return
             
             if ($cashToTake = 0)
                 send "* * * * * * * * * "
+                setVar $SWITCHBOARD~message "Cash Strip Complete.*"
+			    gosub :switchboard~switchboard
                 return 
             end
 		add $i 1
@@ -927,22 +1170,78 @@ return
 return
 
 :buydora
-	
-	gosub :atdockinmerch
-
-	if ($player~credits < 350000)
-		setVar $SWITCHBOARD~message "Need 350k cash to get flag.*"
+    gosub :player~quikstats
+	setVar $origship $player~SHIP_NUMBER
+	setVar $location $player~current_prompt
+	if ($location <> "Command")
+		setVar $SWITCHBOARD~message "Start from Command Prompt.*"
 		gosub :switchboard~switchboard
-		halt
+		if ($doraReturn = 1)
+            return
+        else
+            halt
+        end
 	end
-	send "pssbyygycLets Go**pa120*yb500*qqhrhqq"
-	waitfor "You return to your ship and blast off from the StarDock"
-	goSub :player~quikstats
-    if ($player~TOTAL_HOLDS <> 150)
-        setVar $SWITCHBOARD~message "Do not have 150 holds ,press go ! (no space) to continue or tab tab to stop..*"
-	    gosub :switchboard~switchboard
-        waitfor "go!"
+
+
+	if ($bot~parm2 = "new")
+
+        if ($player~credits < 330000)
+            setVar $SWITCHBOARD~message "Need 330k cash to get Merchie.*"
+            gosub :switchboard~switchboard
+            if ($doraReturn = 1)
+                return
+            else
+                halt
+            end
+        end
+        send "pssbnygycNewMerch***sqqq"
+        waitfor "vailable Ships in Orbit"
+        setTextLineTrigger buyDoraShip :buyDoraShip "NewMerch"
+        pause
+            :buyDoraShip
+            getWord CURRENTLINE $shipnum 1
+            killalltriggers
+            waitfor "ou return to your ship and blast off from the StarDock."
+
+            send "x*" $shipnum "*qpss"
+            waitfor "You walk past row after row of space ships"
+            send "ryShip " $shipnum "*y"
+            send "pa120*yqqhrhqq"
+            waitfor "You return to your ship and blast off from the StarDock."
+            setVar $figsRequired 500
+            gosub :player~quikstats
+	        gosub :stripfig
+
+            send "x*" $origship "**"
+            setVar $SWITCHBOARD~message "Merch purchased.*"
+            gosub :switchboard~switchboard
+            
+    else
+	    gosub :atdockinmerch
+    
+        if ($player~credits < 350000)
+            setVar $SWITCHBOARD~message "Need 350k cash to get flag.*"
+            gosub :switchboard~switchboard
+            if ($doraReturn = 1)
+                return
+            else
+                halt
+            end
+        end
+        send "pssbyygycLets Go**pa120*yb500*qqhrhqq"
+        waitfor "You return to your ship and blast off from the StarDock"
+        goSub :player~quikstats
+        if ($player~TOTAL_HOLDS <> 150)
+            setVar $SWITCHBOARD~message "Do not have 150 holds ,press go ! (no space) to continue or tab tab to stop..*"
+            gosub :switchboard~switchboard
+            waitfor "go!"
+        end
     end
+
+	
+	
+	
 	
 return
 
@@ -985,7 +1284,7 @@ return
 	
 	gosub :atdockinmerch
 	
-	send "pssbyybycSitInIt**qq"
+	send "pssbyybyc...**qq"
 	waitfor "You return to your ship and blast off from the StarDock"
 	setVar $SWITCHBOARD~message "Ship sold, cash on me.*"
 	gosub :switchboard~switchboard
@@ -1314,6 +1613,254 @@ halt
     halt
 return
 
+:crazyStart
+
+    setDelayTrigger crazyStartDelay :crazyStartDelay 3000
+    :crazyStartDelay
+        killAllTriggers
+    send "lt7*"
+
+    # Find first tunnel entrance - Mow to it - fig it.
+    setVar $BOT~command "findbb"
+    setVar $BOT~user_command_line " findbb crazy "
+    setVar $BOT~parm1 "crazy"
+    setVar $BOT~parm2 ""
+    saveVar $BOT~parm1
+    saveVar $BOT~parm2
+    saveVar $BOT~command
+    saveVar $BOT~user_command_line
+    load "scripts\mombot\modes\data\findbb.cts"
+    setEventTrigger		findbbCrazy		:findbbCrazy "SCRIPT STOPPED" "scripts\mombot\modes\data\findbb.cts"
+    pause
+    :findbbCrazy
+        killalltriggers
+    # Eject Cols
+    send "jy"
+    send "v0*yyq"
+    send "tt.**q"
+    waitfor "Corporate command ["
+    waitfor "Command ["
+    send "'all watcher*"
+
+    # Run complete BB
+    setVar $BOT~command "findbb"
+    setVar $BOT~user_command_line " findbb plotsonly "
+    setVar $BOT~parm1 "plotsonly"
+    setVar $BOT~parm2 ""
+    saveVar $BOT~parm1
+    saveVar $BOT~parm2
+    saveVar $BOT~command
+    saveVar $BOT~user_command_line
+    load "scripts\mombot\modes\data\findbb.cts"
+    setEventTrigger		findbbNormal		:findbbNormal "SCRIPT STOPPED" "scripts\mombot\modes\data\findbb.cts"
+    pause
+    :findbbNormal
+        killalltriggers
+    setVar $doCrazyAlign 0
+    send "cv0*yyq"
+    goto :crazyMow
+halt
+
+:crazyMow
+
+    gosub :player~quikstats
+
+    if ($PLAYER~CURRENT_PROMPT <> "Command")
+        setVar $SWITCHBOARD~message "Need to be at Command Prompt.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+    end
+
+    send "v"
+    setTextLineTrigger getBackDockCrazy :getBackDockCrazy "The StarDock is located in sector"
+    pause
+    :getBackDockCrazy
+        killalltriggers
+        getWord CURRENTLINE $stardock 7
+        STRIPTEXT $stardock "."
+   
+    setVar $PLAYER~destination $stardock
+    #goSub :voidfirstnotFed
+
+    setVar $go 1
+	while ($go = 1)
+		goSub :getWarpAndAvoid
+	
+		if ($voidfound = 0)
+			setVar $go 0
+		end
+	end
+
+    setVar $targets 0
+    setVar $targeti 0
+    setVar $targetDone 0
+
+    setVar $totalTargets 0
+    setVar $totalDone 0
+
+    
+    setVar $i 11
+	while ($i < SECTORS)
+		getSectorParameter $i "BUBBLEDOOR" $param_bubble
+		getSectorParameter $i "TUNNELDOOR" $param_tunnel
+
+		if ($param_tunnel = "")
+			setVar $param_tunnel 0
+		end
+		if ($param_bubble = "")
+			setVar $param_bubble 0
+		end
+		if ($param_bubble = 1)
+			add $targeti 1
+			setVar $targets[$targeti] $i
+            setVar $targetDone[$targeti] 0
+		end
+		if ($param_tunnel > 0)
+			add $targeti 1
+			setVar $targets[$targeti] $i
+            setVar $targetDone[$targeti] 0
+		end
+		add $i 1
+	end
+
+    setVar $totalTargets $targeti
+    # Technically totaldone is 0 but loops look neater this way goign 1 to 10 vs 0 to 9
+    setVar $totalDone 1
+    setVar $shortestTarget 99999
+
+    while ($totalDone <= $totalTargets)
+        setVar $shortestTarget 99999
+
+        if ($totalDone = $totalTargets)
+        echo "LAST TARGET!"
+            setVar $i 1
+            while ($i <= $totalTargets)
+
+                if ($targetDone[$i] = 0)
+                     setVar $shortestTarget $targets[$i]
+                end
+                add $i 1
+            end
+        else
+            goSub :crazyGetCloset
+        end
+echo  "TARGET" $totalDone ": " $shortestTarget "*"
+
+        :DoMow
+            setVar $BOT~command "mow"
+            setVar $BOT~user_command_line " mow " & $shortestTarget & " 1 "
+            setVar $BOT~parm1 $shortestTarget
+            setVar $BOT~parm2 "1"
+            saveVar $BOT~parm1
+            saveVar $BOT~parm2
+            saveVar $BOT~command
+            saveVar $BOT~user_command_line
+            load "scripts\mombot\modes\grid\mow.cts"
+            setEventTrigger		mowCrazyEnd		:mowCrazyEnd "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+            pause
+            :mowCrazyEnd
+            killalltriggers
+                
+                send "i"
+                setTextLineTrigger crazyMowPod :crazyMowPod "Escape Pod"
+                setTextLineTrigger crazyMowNoPod :crazyMowNoPod "Total Holds    :"
+                pause
+                :crazyMowPod 
+                    killAllTriggers
+                    send "pzt"
+                    send "'ALERT I'VE BEEN PODED! MAY be AFK! HELP*"
+                    send "'ALERT I'VE BEEN PODED! MAY be AFK! HELP*"
+                    send "'ALERT I'VE BEEN PODED! MAY be AFK! HELP*"
+                    halt
+                :crazyMowNoPod 
+                    killAllTriggers
+
+                    gosub :player~quikstats
+                    if ($player~current_sector <> $shortestTarget)
+                        send "'Didn't make mow sector.. going on still*"
+                    end
+                #check SEctor
+                #CHECK SHIP - issue xport to anything
+            if ((PORT.EXISTS[$player~current_sector]) and ($doCrazyAlign = 1))
+                setVar $doCrazyAlign 0
+                send "o120*q"
+            end
+        add $totalDone 1
+    end 
+
+    getSectorParameter CURRENTSECTOR "TUNNELINT" $inTheTunnel
+   
+    if ($inTheTunnel = "")
+        getSectorParameter CURRENTSECTOR "BUBBLEINT" $inTheTunnel
+      
+    end
+    
+    setVar $BOT~command "mow"
+    setVar $BOT~user_command_line " mow " & $inTheTunnel & " "
+    setVar $BOT~parm1 $inTheTunnel
+    setVar $BOT~parm2 ""
+    saveVar $BOT~parm1
+    saveVar $BOT~parm2
+    saveVar $BOT~command
+    saveVar $BOT~user_command_line
+    load "scripts\mombot\modes\grid\mow.cts"
+    setEventTrigger		mowCrazyEnd2		:mowCrazyEnd2 "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+    pause
+    :mowCrazyEnd2
+    send "f1*cd"
+    send "pztn"
+    send "'TUnnels Blocked - Can I go 0 alignment and mow to safety?? - hidden in tunnel/bubble!*"
+
+    halt
+
+    
+return
+
+:crazyGetCloset
+
+    setVar $shortestDist 99
+    setVar $shortestTarget 99999
+
+    setVar $i 1
+    while ($i <= $targeti)
+            #The shortest path (19 hops, 38 turns) from sector 1 to sector 12 is:
+        if ($targetDone[$i] = 0)
+            send "cf*" $targets[$i] "*q"
+        end
+        add $i 1
+    end
+    send "^q"
+
+    :crazyClosestWaitMore
+    setTextLineTrigger crazyShortestPath :crazyShortestPath "The shortest path "
+    setTextLineTrigger crazyEndInterrog :crazyEndInterrog "ENDINTERROG"
+    pause
+    :crazyShortestPath
+        killAllTriggers
+        getWord CURRENTLINE $cshort 4
+        getWord CURRENTLINE $cSector 13
+        STRIPTEXT $cshort "("
+        if ($cshort < $shortestDist)
+            setVar $shortestDist $cshort
+            setVar $shortestTarget $cSector 
+echo "Setting shortest:" $cshort " to sector " $cSector "*"
+        end
+        goto :crazyClosestWaitMore
+
+    :crazyEndInterrog
+        killAllTriggers
+
+    setVar $i 1
+    while ($i <= $targeti)
+           
+        if ($targets[$i] = $shortestTarget)
+            setVar $targetDone[$i] 1
+        end
+        add $i 1
+    end
+
+
+return
 :backup
 
     gosub :player~quikstats
@@ -1328,6 +1875,8 @@ return
     waitfor "Command ["
 
     
+    setVar $cashRequired 1200000
+    goSub :stripcash
 
     send "v"
     setTextLineTrigger getBackDock :getBackDock "The StarDock is located in sector"
@@ -1335,7 +1884,7 @@ return
     :getBackDock
         killalltriggers
         getWord CURRENTLINE $stardock 7
-
+        STRIPTEXT $stardock "."
    
     setVar $PLAYER~destination $stardock
     goSub :voidfirstnotFed
@@ -1349,7 +1898,7 @@ return
 		end
 	end
 
-    setVar $cashRequired 260000
+    setVar $cashRequired 1200000
     goSub :stripcash
 
     getRnd $dest 11 5000
@@ -1408,7 +1957,7 @@ return
     setVar $SWITCHBOARD~message "Backup ship bought - sell other and get some figs?*"
 	gosub :SWITCHBOARD~switchboard
 
-    halt
+    
 return
 
 :fuelMowToRandom
@@ -1445,8 +1994,16 @@ return
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
 				load "scripts\mombot\modes\grid\fmow.cts"
-				setEventTrigger		fmmowended		:fmmowended "SCRIPT STOPPED" "scripts\mombot\modes\grid\fmow.cts"
+				:waitAgainFuelMow
+                setEventTrigger		fmmowended		:fmmowended "SCRIPT STOPPED" "scripts\mombot\modes\grid\fmow.cts"
+                setTextLineTrigger fMowGotPort :fMowGotPort "How many holds of"
 				pause
+                :fMowGotPort
+                    killalltriggers
+                    echo CURRENTSECTOR "*"
+                    echo CURRENTSECTOR "*"
+                    setSectorParameter 2 "KNOWNORE" CURRENTSECTOR 
+                    goto :waitAgainFuelMow
 				:fmmowended
                     killAllTriggers
 					return
@@ -1534,8 +2091,513 @@ return
 return
 
 
+:stripfig
+
+    send "c;q"
+    setTextLineTrigger getMaxFigs :getMaxFigs " Main Drive Cost: "
+    pause
+        :getMaxFigs
+        killAllTriggers
+        getWord CURRENTLINE $maxFigs 7
+        striptext $maxFigs ","
+
+        if ($maxFigs < $figsRequired)
+            setVar $figsRequired $maxFigs
+            setVar $SWITCHBOARD~message "You want more figs than this ship holds so readjusting to " & $maxFigs & ".*"
+		    gosub :switchboard~switchboard
+        end
+
+
+    setVar $havecorpies 0
+    setVar $totalFigs $player~fighters
+    setVar $figsToTake ($figsRequired - $totalFigs)
+
+    if ($figsToTake <= 0)
+        setVar $SWITCHBOARD~message "We already have equal or more than " & $figsRequired &", exiting strip.*"
+		gosub :switchboard~switchboard
+        return
+    end
+    if ($figsRequired < 1)
+        setVar $SWITCHBOARD~message "We didn't specify how many fighters is required for stripFigs.*"
+		gosub :switchboard~switchboard
+		halt
+    end
+    
+	send "t"
+	setVar $go 1
+	setVar $i 1
+	while ($go = 1)
+		send "f"
+		setVar $y 1
+		while ($y < $i)
+			send "nm"
+			add $y 1
+		end
+
+        if ($havecorpies = 0)
+            :waitcorpiesFigs
+    #c count - if 100 alert and quit
+            setTextLineTrigger nocorpiesFigs :nocorpiesFigs "Your Associate must be in the same sector to conduct transfers!"
+            setTextTrigger corpiesFigs :corpiesFigs "Exchange with"
+            pause 
+            :nocorpiesFigs 
+                killalltriggers
+                send "f"
+                goto :waitcorpiesFigs
+            :corpiesFigs
+                killalltriggers
+                setVar $havecorpies 1
+        else
+		    waitfor "Exchange with"
+        end
+		send "yf"
+		setTextLineTrigger Figs :Figs "fighters, and"
+		setTextLineTrigger Figsdone :Figsdone "You may only be on one Corp at a time"
+		pause
+		:Figsdone 
+			killalltriggers
+			send "* * * * * * * * * "
+			setVar $SWITCHBOARD~message "Fig Strip Complete.*"
+			gosub :switchboard~switchboard
+			return
+		:Figs
+			killalltriggers
+			getText CurrentLine $DEFIG " has " "."
+			stripText $DEFIG ","
+			stripText $DEFIG " "
+            # $figsToTake
+            if ($DEFIG > 100)
+                if ($figsToTake > ($DEFIG - 99))
+                    setVar $takeFigs ($DEFIG -99)
+                    setVar $figsToTake ($figsToTake - $takeFigs)
+                else
+                    setVar $takeFigs $figsToTake
+                    setVar $figsToTake 0
+                end
+			
+				send $takeFigs & "*"
+			else
+				setVar $DEFIG 0
+				send "*"
+			end
+            
+            if ($figsToTake = 0)
+                setVar $SWITCHBOARD~message "Fig Strip Complete.*"
+			    gosub :switchboard~switchboard
+                send "* * * * * * * * * "
+                return 
+            end
+		add $i 1
+		if ($i > 10)
+			send "* * * "
+			halt
+		end
+	end
+
+return
+:copshop
+
+    gosub :player~quikstats
+    setVar $alignNeeded (500 - $player~ALIGNMENT)
+    if ($alignNeeded < 0)
+        send "a"
+        setVar $SWITCHBOARD~message "You already have a fed comm.*"
+		gosub :switchboard~switchboard
+        return
+    end
+
+    send "p1*"
+    
+    :copitAgain
+    waitfor "---"
+    setTextLineTrigger noBountiesYet :noBountiesYet "Changed your mind eh? Too bad."
+    setTextTrigger gotABounty :gotABounty "How much reward do you want to offer?"
+    pause
+    :noBountiesYet
+        killalltriggers
+        send "qpp1*"
+        goto :copitAgain
+    :gotABounty
+        killalltriggers
+        setVar $cashToGive ($alignNeeded * 1000)
+        send $cashToGive "*a"
+return
+
+:fullstart  
+    # now at Dock - Merch is still there with 490 figs
+    # In Colt 
+    setVar $cashRequired 1100000
+    gosub :player~quikstats
+	gosub :stripcash
+    send "'" $wallBot " figs*"
+    getSectorParameter 2 "KNOWNORE" $fuelSector 
+    setVar $figsRequired 500
+    gosub :player~quikstats
+	gosub :stripfig
+
+    setVar $stardock $player~current_sector
+    setVar $twarpShipNum $player~SHIP_NUMBER
+    send "cuyq"
+    send "pshw2qp"
+    goSub :copshop
+    send "qq"
+    waitfor "You return to your ship and blast off from the StarDock."
+    gosub :player~quikstats
+    if ($player~ALIGNMENT < 1000)
+        setVar $SWITCHBOARD~message "You did not get your fedcom!!!*"
+		gosub :switchboard~switchboard
+		HALT
+    end    
+
+    # move us in - this is ok if first sector
+    setVar $player~warpto $fuelSector
+    gosub :player~twarp
+    if ($player~twarpSuccess = FALSE)
+        setVar $SWITCHBOARD~message "Sector missing fig, can't get more ore!*"
+        gosub :SWITCHBOARD~switchboard
+       halt
+    end
+    gosub :player~quikstats
+
+    send "P t * * * "
+    waitfor "Your offer ["
+    
+    setVar $player~warpto $stardock
+    gosub :player~twarp
+    if ($player~twarpSuccess = FALSE)
+        setVar $SWITCHBOARD~message "We didn't get back to dock!!!*"
+        gosub :SWITCHBOARD~switchboard
+       halt
+    end
+    gosub :player~quikstats
+
+    send "psss" $ogiginalShip "*y"
+    waitfor "The shipmaster takes possession of your"
+
+    send "bnygycSandStorm***"
+    waitfor "will repossess any unmanned"
+    send "sq"
+    
+    waitfor "vailable Ships in Orbit"
+	setTextLineTrigger getSandoShipNum :getSandoShipNum "SandStorm"
+	pause
+		:getSandoShipNum
+		getWord CURRENTLINE $sanShipNum 1
+		killalltriggers
+
+    send "qq"
+    waitfor "You return to your ship and blast off from the StarDock"
+    send "'" $SWITCHBOARD~BOT_NAME " x " $sanShipNum "*"
+    waitfor " - Xport complete"
+    send "pshrhqq"
+    waitfor "You return to your ship and blast off from the StarDock"
+    send "'" $SWITCHBOARD~BOT_NAME " x " $twarpShipNum "*"
+    waitfor " - Xport complete"
+    gosub :player~quikstats
+
+    # Drop Sando Ship Off
+    setVar $towShipNum $sanShipNum
+    setVar $towShipSector 1
+    goSub :towShipAndTwarp
+    gosub :player~quikstats
+    
+
+    send "'" $SWITCHBOARD~BOT_NAME " x " $sanShipNum "*"
+    waitfor " - Xport complete"
+    gosub :player~quikstats
+    setVar $figsRequired 500
+    goSub :stripFig
+    send "'" $SWITCHBOARD~BOT_NAME " x " $twarpShipNum "*"
+    waitfor " - Xport complete"
+
+    send "'" $wallBot " x " $sanShipNum "*"
+    waitfor " - Xport complete"
+
+    setVar $i 1
+    while ($i < SECTORS)
+        getSectorParameter $i "TUNNELDOOR" $isADoor
+        if ($isADoor = 1)
+            setVar $sandoGoTo $i
+            setVar $i 99999
+        end
+        add $i 1
+    end
+    
+    
+    send "'" $wallBot " mow " $sandoGoTo "*"
+
+    waitfor "{" & $wallBot & "} - Mow completed."
+    send "'" $wallBot " wall " $stardock " 3 block*"
+    waitfor "{" & $wallBot & "} - Wall Completed Block Routine"
+    send "'" $wallBot " wall 1 6 limit:50 useblock holo*"
+    waitfor "Putting up fig wall"
+
+    gosub :player~quikstats
+    setVar $player~warpto $fuelSector
+    gosub :player~twarp
+    if ($player~twarpSuccess = FALSE)
+        setVar $SWITCHBOARD~message "We didn't make it - type 'go !' to try (no space). *"
+        gosub :SWITCHBOARD~switchboard
+        waitfor "go!"
+    end
+    gosub :player~quikstats
+    send "P T * * * "
+    waitfor "Your offer ["
+    
+    setVar $player~warpto $stardock
+    gosub :player~twarp
+    if ($player~twarpSuccess = FALSE)
+        setVar $SWITCHBOARD~message "We didn't make it - type 'go !' to try (no space). *"
+        gosub :SWITCHBOARD~switchboard
+        waitfor "go!"
+    end
+    gosub :player~quikstats
+    
+
+    setVar $cashRequired 350000
+    gosub :player~quikstats
+	gosub :stripcash
+    
+    setVar $doraReturn 1
+    :tryDoraAgain
+    setVar $doraError 0
+
+    setVar $bot~parm2 "new"
+    goSub :buyDora
+    setVar $doraShipNum $shipnum
+    setVar $bot~parm2 ""
+
+    if ($doraError = 1)
+        setVar $SWITCHBOARD~message "Dora Fail - get 330K cash. type 'go !' to try (no space). *"
+        gosub :SWITCHBOARD~switchboard
+        waitfor "go!"
+        goto :tryDoraAgain
+    end
+    setDelayTrigger fullpause :fullpause 1000
+    pause
+    :fullpause
+    killAllTriggers
+
+    goSub :moveToTunnel
+    
+return
+
+:moveToTunnel
+    # REQUIRES
+    # $stardock
+    # $doraShipNum
+    # $fuelSector 
+    # $xportShipNum
+    # 
+
+    setVar $hasfuel 0
+
+    
+    send "***"
+    echo "IF WE GOT THIS FAR WE CAN START MOVING PEOPLE"
+    getInput $corpMatesBot "Enter the persons bot name we will take"
+    :tunnelTrouble
+    getInput $tunnelDoor "Enter the tunnel door to take Dora Ship"
+
+    send "tt.**q"
+    waitfor "CMS link terminated"
+
+    getSectorParameter $tunnelDoor "TUNNELINT" $tInternal
+    if ($tInternal = "")
+        getSectorParameter CURRENTSECTOR "BUBBLEINT" $tInternal
+    end
+    isNumber $isit $tInternal 
+    if ($isit = TRUE)
+        if ($tInternal > 0)
+            setVar $towShipNum $doraShipNum
+            setVar $towShipSector 1
+            goSub :towShipAndTwarp
+            gosub :player~quikstats
+            setVar $current_ship $player~SHIP_NUMBER
+            
+            send "cf" $tunnelDoor "*" $tInternal "*q"
+            waitfor "The shortest path"
+            setTextLineTrigger getMoveToTunnelInt :getMoveToTunnelInt " > "
+            pause
+            :getMoveToTunnelInt
+                killAllTriggers
+                getWord CURRENTLINE $intSec 3
+                STRIPTEXT $intSec "("
+                STRIPTEXT $intSec ")"
+            setVar $figsRequired 1000
+            goSub :stripFig
+
+            send "'" $corpMatesBot " x " $doraShipNum "*"
+            waitfor "Xport complete"
+            
+            send "'" $corpMatesBot " ice2020 stripfig 500*"
+            setTextLineTrigger corpMateStrip3 :corpMateStrip3 "Fig Strip Complete"
+            setTextLineTrigger corpMateStrip4 :corpMateStrip4 "We already have equal or more than"
+            pause
+            :corpMateStrip3
+            :corpMateStrip4
+                killAllTriggers
+
+            send "'" $corpMatesBot " ice2020 stripcash 17000*"
+            setTextLineTrigger corpMateStrip1 :corpMateStrip1 "Cash Strip Complete"
+            setTextLineTrigger corpMateStrip2 :corpMateStrip2 "We already have more than"
+            pause
+            :corpMateStrip1
+            :corpMateStrip2
+                killAllTriggers       
+
+            send "'"  $corpMatesBot " mow " $intSec "*" 
+            waitfor "[Mow] {" & $corpMatesBot &"} - Mow completed."
+            send "'"  $corpMatesBot " dora 1200 buys ports mcicbuy*" 
+
+           
+            setVar $player~warpto $fuelSector
+            gosub :player~twarp
+            if ($player~twarpSuccess = FALSE)
+                setVar $SWITCHBOARD~message "We didn't make it - type 'go !' to try (no space). *"
+                gosub :SWITCHBOARD~switchboard
+                waitfor "go!"
+            else
+                 send "P T * * * "
+                waitfor "Your offer ["
+            end
+            gosub :player~quikstats
+           
+               
+            setVar $player~warpto $stardock
+            gosub :player~twarp
+            if ($player~twarpSuccess = FALSE)
+                setVar $SWITCHBOARD~message "We didn't make it - type 'go !' to try (no space). *"
+                gosub :SWITCHBOARD~switchboard
+                waitfor "go!"
+            end
+            gosub :player~quikstats
+
+        else
+            setVar $SWITCHBOARD~message "Not a known tunnel- type 'go !' to renter again (no space).*"
+            gosub :switchboard~switchboard
+            waitfor "go!"
+            goto :tunnelTrouble
+        end
+    else
+        setVar $SWITCHBOARD~message "Not a known tunnel- type 'go !' to renter again (no space).*"
+        gosub :switchboard~switchboard
+        waitfor "go!"
+        goto :tunnelTrouble
+    end
+return
+
+:towShipAndTwarp
+        
+    gosub :player~quikstats
+    if ($player~ORE_HOLDS < 60)
+        setVar $SWITCHBOARD~message "Less than 60 ore.. type 'go !' to try (no space).*"
+        gosub :switchboard~switchboard
+        waitfor "go!"
+    end
+    send "'" $SWITCHBOARD~BOT_NAME " tow " $towShipNum "*"
+    setTextLineTrigger towGoodtowAndGo :towGoodtowAndGo "Tow locked onto ship number"
+    setTextLineTrigger towBadtowAndGo :towBadtowAndGo "That ship number is not in the sector"
+    pause
+    :towBadtowAndGo
+        killAllTriggers
+        setVar $SWITCHBOARD~message "Couldn't locate the ship - Attach ship and type 'go !' to try (no space).*"
+        gosub :switchboard~switchboard
+        waitfor "go!"
+    :towGoodtowAndGo
+        killAllTriggers
+
+    setVar $player~warpto $towShipSector
+    gosub :player~twarp
+    if ($player~twarpSuccess = FALSE)
+        setVar $SWITCHBOARD~message "We didn't make it out with the ship!!!.. type 'go !' to try (no space).*"
+        gosub :switchboard~switchboard
+        waitfor "go!"
+    end
+
+return
+
+:getAtm
+
+    if ($bot~parm2 <> "")
+		setVar $friendbot $bot~parm2
+    else
+        setVar $SWITCHBOARD~message "Please specify the bot name (i.e. ham / kane) you will be taking cash from*"
+        gosub :switchboard~switchboard
+        HALT
+	end
+
+    gosub :player~quikstats
+    setVar $startLocation $player~current_sector
+    
+    setTextLineTrigger friendISTrading :friendISTrading "{"& $friendbot & "} - Trade starting up!"
+    setTextLineTrigger friendISPPTing :friendISPPTing "{"& $friendbot & "} - Paired Port Trade starting up!"
+    setDelayTrigger friendNotHome :friendNotHome 30000
+    pause
+    :friendNotHome
+        killalltriggers
+        setVar $SWITCHBOARD~message "Waited 30 seconds, no response from friendy trader*"
+        gosub :switchboard~switchboard
+        return
+    :friendISTrading
+    :friendISPPTing
+        killalltriggers
+        send "'[atm:" $friendbot "]*"
+        
+    setTextLineTrigger atmIsReadyForAction :atmIsReadyForAction "[atm:" & $friendbot & "="
+    pause
+    :atmIsReadyForAction
+    killalltriggers 
+        getText CURRENTLINE $atmLocation $friendbot & "=" "]"
+        echo $atmLocation
+    
+    setVar $player~warpto $atmLocation
+    gosub :player~twarp
+    if ($player~twarpSuccess = FALSE)
+        setVar $SWITCHBOARD~message "We didn't make it out with the ship!!!*"
+        gosub :SWITCHBOARD~switchboard
+        halt
+    end
+    gosub :player~quikstats
+
+    send "P T * * * "
+    waitfor "Your offer ["
+    send "tcyf"
+    setTextLineTrigger atmGetCreds :atmGetCreds "credits, and"
+    pause
+    :atmGetCreds
+    killalltriggers
+        getWord CURRENTLINE $cashheld 8
+        STRIPTEXT $cashheld "."
+        STRIPTEXT $cashheld ","
+        setVar $cashToTake ($cashheld - 35000)
+        if ($cashToTake > 0)
+            send $cashToTake "*"
+        else
+            send "0*"
+        end
+        send "q"
+
+    waitfor "Command ["
+    send "'[atmdone]*"
+    setVar $player~warpto $startLocation
+    gosub :player~twarp
+    if ($player~twarpSuccess = FALSE)
+        setVar $SWITCHBOARD~message "We didn't make it out with the ship!!!*"
+        gosub :SWITCHBOARD~switchboard
+        halt
+    end
+    gosub :player~quikstats
+
+    
+return
+
+
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\switchboard"
+include "source\bot_includes\player\moveintosector\player"
+

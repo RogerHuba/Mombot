@@ -3,7 +3,7 @@
 									
 
 	setVar $FURB_HOLDS "33"
-	setVar $FURB_SHIP "h"
+	setVar $FURB_SHIP "g"
 
 	setVar $MAX_RED_BOTS 5
 	setVar $MIN_RED_EXP 1500
@@ -451,9 +451,20 @@
 					end
 				add $j 1
 			end
-			
-			send "'red"&$i&" ephaggle planet*"
-			waitfor "EP Perfect Haggle loaded"
+			if ($ephaggle = 1)
+				send "'red"&$i&" ephaggle planet*"
+				waitfor "EP Perfect Haggle loaded"
+			else
+				send "'red"&$i&" stop ephaggle*"
+				setDelayTrigger stopep2 :stopep2 1000 
+				pause
+				:stopep2
+			end
+			send "'red"&$i&" watcher*"
+			setDelayTrigger watchstop :watchstop 1000 
+			pause
+			:watchstop
+
 			add $i 1
 		end
 		if ($SWITCHBOARD~SELF_COMMAND = FALSE)

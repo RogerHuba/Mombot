@@ -48,7 +48,7 @@ setVar $turns_taken 0
 setVar $mode ""
 # from own data or file  self/file
 setVar $trademode "" 
-
+setVar $cashPause 0
 setArray $PortsUsed SECTORS
 
 # report for port pair - currently using only figged sectors
@@ -132,6 +132,40 @@ if ($bot~parm1 = "trade")
 		halt
 	end
 	
+	if ($player~fighters < 100)
+		setvar $switchboard~message "Less than 100 figs - are you mad?*"
+			gosub :switchboard~switchboard
+			halt
+	end
+	send "cuyq"
+	if ($player~TOTAL_HOLDS > 200)
+		if ($player~CREDITS < 25000)
+			setvar $switchboard~message "We have 200+ holds and less than 25k Creds - more Cash Please!*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	elseif ($player~TOTAL_HOLDS > 150)
+		if ($player~CREDITS < 20000)
+			setvar $switchboard~message "We have 150+ holds and less than 20k Creds - more Cash Please!*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	elseif ($player~TOTAL_HOLDS > 100)
+		if ($player~CREDITS < 15000)
+			setvar $switchboard~message "We have 100+ holds and less than 15k Creds - more Cash Please!*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	else
+		if ($player~CREDITS < 10000)
+			setvar $switchboard~message "We need at least 10k Creds please!*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
+	
+
+
 	listActiveScripts $scripts
 	setVar $foundep 0
 	setVar $a 1
@@ -141,6 +175,7 @@ if ($bot~parm1 = "trade")
 		end
 		add $a 1
 	end
+
 
 	if ($foundep = 0)
 		send "'" $BOT~BOT_NAME " ephaggle*"
@@ -243,7 +278,19 @@ while ($loopi <= $portPairsi)
 		halt
 	end
 	if ($PLAYER~CURRENT_SECTOR <> $pairsec)
-
+		# Check second port has fig
+		send "m" $sec "*yn"
+		setTextLineTrigger checkPair2LockYes :checkPair2LockYes "Locating beam pinpointed, TransWarp"
+		setTextLineTrigger checkPair2LockNo :checkPair2LockNo "No locating beam found for sector"
+		pause
+		:checkPair2LockNo
+			killAllTriggers
+			setVar $SWITCHBOARD~message "Sector missing fig, moving onto next.*"
+			gosub :SWITCHBOARD~switchboard
+			goto :nextLoop
+		:checkPair2LockYes
+			killAllTriggers
+		# move us in - this is ok if first sector
 		setVar $player~warpto $pairsec
 		gosub :player~twarp
 		if ($player~twarpSuccess = FALSE)
@@ -258,6 +305,16 @@ while ($loopi <= $portPairsi)
 	goSub :checkDist
 	send "d"
 	waitfor "Warps to Sect"
+	if ($cashPause = 1)
+		if (PORT.EXISTS[CURRENTSECTOR] = TRUE)
+			if (PORT.BUYFUEL[CURRENTSECTOR] = FALSE)
+				send "'[atm:" $switchboard~BOT_NAME "=" CURRENTSECTOR "]*"
+				waitfor "[atmdone]"
+				send "'[atm]Spend it wisely, I'm out here risking my hide for peanuts!*"
+				setVar $cashPause 0
+			end
+		end
+	end
 	if (PORT.BUYFUEL[$pairsec] = 1)
 		
 		goSub :balanceTrade
@@ -276,6 +333,16 @@ while ($loopi <= $portPairsi)
 		gosub :player~quikstats
 		send "d"
 		waitfor "Warps to Sect"
+		if ($cashPause = 1)
+			if (PORT.EXISTS[CURRENTSECTOR] = TRUE)
+				if (PORT.BUYFUEL[CURRENTSECTOR] = FALSE)
+					send "'[atm:" $switchboard~BOT_NAME "=" CURRENTSECTOR "]*"
+					waitfor "[atmdone]"
+					send "'[atm]Spend it wisely, I'm out here risking my hide for peanuts!*"
+					setVar $cashPause 0
+				end
+			end
+		end
 	end
 	#begin trading
 	setVar $beforeTradeCash $player~credits
@@ -436,9 +503,15 @@ return
 
 	load "scripts\mombot\commands\cashing\ppt.cts"
 	:backpptwait
+	setTextLineTrigger        pptPauseForCash        :pptPauseForCash "[atm:" & $SWITCHBOARD~BOT_NAME & "]"
 	setTextLineTrigger        pptMove        :pptMove "<Move>"
 	setEventTrigger        pptended        :pptended "SCRIPT STOPPED" "scripts\mombot\commands\cashing\ppt.cts"
 	pause
+	:pptPauseForCash
+			killalltriggers
+			setVar $cashPause 1
+			send "'[atm:ack] Will pause at next SXB post trading.*"
+			goto :backpptwait
 	:pptMove
 		killalltriggers
 		if ($PLAYER~Turns < $halt_turns)

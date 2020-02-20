@@ -50,8 +50,46 @@ settextlinetrigger lracheck2 :lracheck "For robbing this port, your alignment"
 settextlinetrigger busted :busted "For getting caught your alignment went down by"
 settextlinetrigger fakebusted :fakebusted "(You realize the guards saw you last time!)"
 settextlinetrigger manualsubspace :manualsubspace "Ok, you will send and receive sub-space messages on channel "
+setTextLineTrigger foundbigbubble :foundbigbubble "[Found Big Bubble]"
+setTextLineTrigger foundbigtunnel :foundbigtunnel "[Found Big Tunnel]"
 pause
 
+:foundbigbubble
+	getText CURRENTLINE $bsec " Door: " " Internal Sec:"
+	isnumber $test $bsec 
+	if ($test = TRUE)
+		getSectorParameter $bsec "BUBBLEDOOR" $param_tunnel
+		if ($param_tunnel = "")
+			setVar $param_tunnel FALSE
+		end
+		if ($param_tunnel = FALSE)
+			setSectorParameter $bsec "BUBBLEDOOR" 1
+			getText CURRENTLINE $int "Internal Sec:" ""
+			setSectorParameter $bsec "BUBBLEINT" $int
+		end
+	end
+	setTextLineTrigger foundbigbubble :foundbigbubble "[Found Big Bubble]"
+	pause
+:foundbigtunnel
+	getText CURRENTLINE $dsec1 "Door 1: " " Door 2:"
+	getText CURRENTLINE $dsec2 "Door 2: " " Internal"
+	isnumber $test $dsec1 
+	if ($test = TRUE)
+		getSectorParameter $dsec1 "TUNNELDOOR" $param_tunnel
+
+		if ($param_tunnel = "")
+			setVar $param_tunnel FALSE
+		end
+		if ($param_tunnel = FALSE)
+			setSectorParameter $dsec1 "TUNNELDOOR" 1
+			setSectorParameter $dsec2 "TUNNELDOOR" 1
+			getText CURRENTLINE $int "Internal Sec:" ""
+			setSectorParameter $dsec1 "TUNNELINT" $int
+			setSectorParameter $dsec2 "TUNNELINT" $int
+		end
+	end
+	setTextLineTrigger foundbigtunnel :foundbigtunnel "[Found Big Tunnel]"
+	pause
 :manualsubspace
 	getText CURRENTLINE&"  [XX][XX][XX]" $bot~subspace "Ok, you will send and receive sub-space messages on channel " " now.  [XX][XX][XX]"
 	savevar $bot~subspace

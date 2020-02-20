@@ -3,25 +3,41 @@
 		gosub :BOT~loadVars
 									
 
-	 setVar $BOT~help[1] $BOT~tab&"Bwarp Photon"
-	 setVar $BOT~help[2] $BOT~tab&"Uses planet teleport-pad to arrive adjacent a fighter"
-	 setVar $BOT~help[3] $BOT~tab&"hit; Launches a photon, returns, and lands"
-	 setVar $BOT~help[4] $BOT~tab&"         "
-	 setVar $BOT~help[5] $BOT~tab&"Options: "
-	 setVar $BOT~help[6] $BOT~tab&"    {scrub sector} - use this if you want to scrub somewhere other"
-	 setVar $BOT~help[7] $BOT~tab&"                     than your starting sector"
-	 setVar $BOT~help[8] $BOT~tab&"            {holo) - holoscan after photon     "
-	 setVar $BOT~help[9] $BOT~tab&"         {dens)ity - density scan after photon     "
-	setVar $BOT~help[10] $BOT~tab&"           {mine)s - trigger on mine hits too"
-	setVar $BOT~help[11] $BOT~tab&"           "
-	setVar $BOT~help[12] $BOT~tab&"  Usage:     "
-	setVar $BOT~help[13] $BOT~tab&"     >boton holo"
-	setVar $BOT~help[14] $BOT~tab&"     >boton 1234 dens"
-	setVar $BOT~help[15] $BOT~tab&"     >boton h mine "
-	setVar $BOT~help[16] $BOT~tab&"     >boton "
+	setVar $BOT~help[1] $BOT~tab&"Bwarp Photon"
+	setVar $BOT~help[2] $BOT~tab&"Uses planet teleport-pad to arrive adjacent a fighter"
+	setVar $BOT~help[3] $BOT~tab&"hit; Launches a photon, returns, and lands"
+	setVar $BOT~help[4] $BOT~tab&"         "
+	setVar $BOT~help[5] $BOT~tab&"Options: "
+	setVar $BOT~help[6] $BOT~tab&"    {scrub sector} - use this if you want to scrub somewhere other"
+	setVar $BOT~help[7] $BOT~tab&"                     than your starting sector"
+	setVar $BOT~help[8] $BOT~tab&"            {holo} - holoscan after photon"
+	setVar $BOT~help[9] $BOT~tab&"         {dens}ity - density scan after photon"
+	setVar $BOT~help[10] $BOT~tab&"           {mine} - trigger on mine hits too"
+	setVar $BOT~help[11] $BOT~tab&"         {multi:n} - number of hits req'd in 2 secs to trigger"
+	setVar $BOT~help[12] $BOT~tab&"        {noreturn} - Stay after shot"
+	setVar $BOT~help[13] $BOT~tab&"  Usage:     "
+	setVar $BOT~help[14] $BOT~tab&"     >boton holo"
+	setVar $BOT~help[15] $BOT~tab&"     >boton 1234 dens"
+	setVar $BOT~help[16] $BOT~tab&"     >boton h mine "
+	setVar $BOT~help[17] $BOT~tab&"     >boton "
 
 
 	gosub :bot~helpfile
+
+	# 
+	# Hammer Additions
+	#   Auto Turn on IG
+	#   No Blind warp protection
+	#   Adding a "multi hit mode" i.e. launched on 2/3/4 hit in 2 seconds
+	#
+
+	setVar $multiHitMode 0
+	setVar $multiHitReq 2
+	setVar $multiHitCount 1
+	setVar $fizzletime 2000
+	setVar $multiPrevHit 0
+	# End Hammer New Vars
+
 
 	setVar $TagLine				"LoneStar's BWARP PHOTON"
 	setVar $TagLineB			"[LSBOTON]"
@@ -42,7 +58,13 @@
 
 	setVar $FIREPHOTON		TRUE
 	setVar $ALIENS			FALSE
-	setVar $AUTO_RETURN		TRUE
+	
+	getWordPos " "&$bot~user_command_line&" " $pos " noreturn "
+	if ($pos > 0)
+		setVar $AUTO_RETURN	FALSE
+	else
+		setVar $AUTO_RETURN	TRUE
+	end
 
 	getWordPos " "&$bot~user_command_line&" " $pos " holo "
 
@@ -70,6 +92,24 @@
 	else
 		setVar $MINE_REACTION	"None"
 	end
+	getWordPos " "&$bot~user_command_line&" " $pos " multi:"
+	if ($pos > 0)
+		setVar $multiHitMode 1
+		setVar $multiHitReq 2
+		setVar $temp $bot~user_command_line&" "
+		getText $temp $value "multi:" " "
+		isNumber $number $value
+
+		if ($number = 1)
+			setVar $multiHitReq $value
+		else
+			setVar $multiHitReq 2
+		end
+		send "'Multihit Mode, needing " $multiHitReq " hits*" 
+	else
+		setVar $multiHitMode 0
+	end
+	
 
 	setVar $UNLIM				$PLAYER~unlimitedGame
 	setVar $CREDIT_LIMIT		50000
@@ -86,6 +126,24 @@
 	else
 		setVar $SCRUB_SECT $bot~parm1
 	end
+
+	listActiveScripts $scripts
+	setVar $foundep 0
+	setVar $a 1
+	while ($a <= $scripts)
+		if ($scripts[$a] = "watcher.cts")
+			setVar $foundep 1
+		end
+		add $a 1
+	end
+
+	if ($foundep = 0)
+		send "'" $BOT~BOT_NAME " watcher*"
+		setDelayTrigger watchstart :watchstart 1000
+		pause
+		:watchstart
+	end
+
 
    	setVar $SWITCHBOARD~message ($TagLine&" v" & $CURENT_VERSION & " - Loading...*")
 	gosub :SWITCHBOARD~switchboard
@@ -305,13 +363,58 @@
 			goto :Again
 		end
 	:Pwarp_GO
+		setVar $okToFire 0
+		if ($multiHitMode = 1)
+			
+			if ($multiPrevHit <> $Hit_Sector)
+			echo "Multihit mode hit #:" $multiHitCount " " $multiHitReq "*"
+			echo "not prev sector*"
+				if ($multiHitCount = 1)
+					killTrigger fizzle
+					echo "Resetting Fizzle Retrigger..*"
+					setDelayTrigger		fizzle	:fizzle	$fizzletime
+				elseif ($multiHitCount >= $multiHitReq)
+					setVar $okToFire 1
+				end
+				add $multiHitCount 1
+			end
+		else
+			setVar $okToFire 1
+		end
 		SetVar $Launch_From $Sects[$Hit_Sector]
+echo "HitSEC:" $Hit_Sector " Launch From: " $Launch_From " HitCount:" $multiHitCount "*"
+echo "Last Sector " $multiPrevHit " OkToFire:" $okToFire "*"
+		
+		if ($multiPrevHit <> $Hit_Sector)
+			setVar $multiPrevHit $Hit_Sector
+		end
+
 		if ($Launch_From <> 0)
-			send " B " & $Launch_From & "*  C  Q  "
-			pause
+			if ($okToFire = 1)
+				getSectorParameter $Launch_From "FIGSEC" $chkfig
+				if ($chkfig = TRUE)
+					send (" B " & $Launch_From & "*  C  Q  y  *  c  p  y  "&$Hit_Sector&"**Q")
+					pause
+				else
+					send "'Landing Fig is gone!*"
+					goto :Again
+				end
+			else
+				goSub :Clear_Sector
+				goto :Again
+			end
 		else
 			goto :Again
 		end
+	:fizzle
+		killTrigger inac
+		killTrigger Mines
+		killTrigger Limp
+		killTrigger FigHit
+		killtrigger fizzle
+		setVar $multiHitCount 1
+		send "'Boton - Did not get " $multiHitReq " hits in 2 secs.. resetting..*"
+		goto :again
 	:BWarp_Blind
 		killAllTriggers
 		send " N "
@@ -320,14 +423,16 @@
 		goto :inac
 	:BWarp_Miss
 		killAllTriggers
+		setVar $multiHitCount 1
 		gosub :Clear_Sector
 		goto :inac
 	:BWarp_GO
 		killTrigger BWARP_Miss
 		killTrigger BWarp_Blind
 		killTrigger BWarp_GO
+		setVar $multiHitCount 1
 		if ($FIREPHOTON)
-			send ("y  *  c  p  y  "&$Hit_Sector&"**Q")
+			# send ("y  *  c  p  y  "&$Hit_Sector&"**Q")
 			pause
 		else
 			send ("y  *  ")
@@ -349,11 +454,11 @@
 			if ($AUTO_RETURN)
 				if ($SCRUB_SECT <> 0)
 					if ($FIREPHOTON)
-					    setVar $SWITCHBOARD~message ($TagLineB&" FIRED " & $Launch_From & "->" & $Hit_Sector & "* ")
+					    setVar $SWITCHBOARD~message ($TagLineB&" FIRED " & $Launch_From & "->" & $Hit_Sector & "*")
 					    gosub :SWITCHBOARD~switchboard
 					    send $Suffix
 					else
-					    setVar $SWITCHBOARD~message ($TagLineB&" TRIGGERED " & $Launch_From & "->" & $Hit_Sector & "* ")
+					    setVar $SWITCHBOARD~message ($TagLineB&" TRIGGERED " & $Launch_From & "->" & $Hit_Sector & "*")
 					    gosub :SWITCHBOARD~switchboard
 						send  $Suffix
 					end
@@ -372,11 +477,11 @@
 						halt
 				else
 					if ($FIREPHOTON)
-				    	setVar $SWITCHBOARD~message ($TagLineB&" FIRED " & $Launch_From & "->" & $Hit_Sector & "* ")
+				    	setVar $SWITCHBOARD~message ($TagLineB&" FIRED " & $Launch_From & "->" & $Hit_Sector & "*")
 					    gosub :SWITCHBOARD~switchboard
 				    	send $suffix
 				    else
-						setVar $SWITCHBOARD~message ($TagLineB&" TRIGGERED " & $Launch_From & "->" & $Hit_Sector & "* ")
+						setVar $SWITCHBOARD~message ($TagLineB&" TRIGGERED " & $Launch_From & "->" & $Hit_Sector & "*")
 					    gosub :SWITCHBOARD~switchboard
 						send $suffix
 					end
@@ -449,7 +554,7 @@
 					halt
 				end
 			else
-				setVar $SWITCHBOARD~message ($TagLineB&" At Wrong Prompt. Should be in the Citadel!**")
+				setVar $SWITCHBOARD~message ($TagLineB&" At Wrong Prompt. Should be in the Citadel!*")
 				gosub :SWITCHBOARD~switchboard
 				halt
 			end
@@ -495,6 +600,7 @@ halt
 
 		:wrong
 			killAllTriggers
+			setVar $multiHitCount 1
 			gosub :PLAYER~quikstats
 			if ($PLAYER~CURRENT_PROMPT = "Citadel")
 
@@ -508,7 +614,7 @@ halt
 					waitfor ": ENDINTERROG"
 					gosub :PLAYER~quikstats
 					if ($PLAYER~CURRENT_PROMPT <> "Citadel")
-						setVar $SWITCHBOARD~message ($TagLineB&" At Wrong Prompt. Should be in the Citadel!**")
+						setVar $SWITCHBOARD~message ($TagLineB&" At Wrong Prompt. Should be in the Citadel!*")
 						gosub :SWITCHBOARD~switchboard
 						halt
 					end
@@ -540,7 +646,7 @@ halt
 					halt
 				end
 			else
-				setVar $SWITCHBOARD~message ($TagLineB&" At Wrong Prompt. Should be in the Citadel!**")
+				setVar $SWITCHBOARD~message ($TagLineB&" At Wrong Prompt. Should be in the Citadel!*")
 		gosub :SWITCHBOARD~switchboard
 				halt
 			end
@@ -572,7 +678,7 @@ halt
     pause
     :timeout
         killalltriggers
-		setVar $SWITCHBOARD~message ($TagLineB&" 30 seconds after save call, script halted.**")
+		setVar $SWITCHBOARD~message ($TagLineB&" 30 seconds after save call, script halted.*")
 		gosub :SWITCHBOARD~switchboard
 		halt
     :friendlyplanet
@@ -584,13 +690,13 @@ halt
 
 :GOOD_TO_GO
 	if ($PLAYER~CURRENT_PROMPT <> "Citadel")
-		setVar $SWITCHBOARD~message ($TagLineB&" Must Start From The Citadel**")
+		setVar $SWITCHBOARD~message ($TagLineB&" Must Start From The Citadel*")
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 
 	if ((STARDOCK = "") OR (STARDOCK = 0))
-		setVar $SWITCHBOARD~message ($TagLineB&" StarDock Not In TWX DBase!**")
+		setVar $SWITCHBOARD~message ($TagLineB&" StarDock Not In TWX DBase!*")
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
@@ -631,6 +737,26 @@ halt
 		halt
 	end
 
+	send "q q b "
+	setTextLineTrigger igNoIG :igNoIG "Your Interdictor generator is now OFF"
+	setTextLineTrigger igYesIG :igYesIG "Your Interdictor generator is now ON"
+	setTextLineTrigger igNotOnThisShip :igNotOnThisShip "is not equipped with an Interdictor Generator!"
+	pause
+		:igNoIG
+			killAllTriggers
+			send "y"
+			goto :igdone
+		:igYesIG
+			killAllTriggers
+			send "n"
+			goto :igdone
+		:igNotOnThisShip
+			killAllTriggers
+			goto :igdone
+		:igdone
+
+	send "l" $planet~planet "* c "
+	waitfor "<Enter Citadel>"
 	send " cn"
 	setTextLineTrigger 	CN1				:CN1			" ANSI graphics            - Off"
 	setTextLineTrigger	CN2				:CN2			" Animation display        - On"
@@ -701,7 +827,7 @@ halt
 	return
 
 :Read_In_Figs
-	Echo ("**" & ANSI_14 & $TagLineB & ANSI_15 & " Reading Sector Parameters & Building Arrays...**")
+	Echo ("**" & ANSI_14 & $TagLineB & ANSI_15 & " Reading Sector Parameters & Building Arrays...*")
 		gosub :SWITCHBOARD~switchboard
 	setVar $idx 11
 
@@ -781,7 +907,7 @@ halt
 
 :doScan_Den
 	setVar $Line_Pointer 1
-	send ("  S  D*  J  *  ")
+	send ("  SD*  J  *  ")
 	waitfor "-------------------------------------------"
 	setTextTrigger	DoneScan_D			:DoneScan_D		"Command [TL="
 	setTextTrigger end_of_lines_D		:end_of_lines_D	"Are you sure you want to jettison all cargo"
@@ -911,6 +1037,7 @@ halt
 				end
                 	add $i 1
 			end
+			send "*"
 			:Done_Scn_D
 		end
 	end
@@ -995,7 +1122,7 @@ halt
 
 	    setTextTrigger Buy_Fotonstwarp_lock       :Buy_Fotonstwarp_lock 	"All Systems Ready, shall we engage"
 	    setTextTrigger Buy_Fotonsno_twrp_lock     :Buy_Fotonsno_twarp_lock	"Do you want to make this jump blind"
-		send ("Q  Q  Q  Z  N  *  M" & $Start_Sector & "* Y ")
+		send ("QQ  Q  Z  N  *  M" & $Start_Sector & "* Y ")
 		pause
 		:Buy_Fotonsno_twarp_lock
 			killAllTriggers
