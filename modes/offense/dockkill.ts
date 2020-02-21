@@ -21,6 +21,12 @@
 		setVar $pods FALSE
 	end
 
+	getWordPos $BOT~user_command_line $pos "meat"
+	if ($pos > 0)
+		setVar $meatgrind TRUE
+	else
+		setVar $meatgrind FALSE
+	end
 
 	goto :start_script
 :inac
@@ -32,6 +38,26 @@
 	goSub :SECTOR~getSectorData
 	#set player~refurbString to allow fast refurbing if you have a mac#
 	goSub :combat~fastAttack
+	if (($player~isFound = true) and ($meatgrind = true))
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+		send $combat~attackString&"* "
+	end
 	goSub :combat~fastAttack
 	goSub :combat~fastAttack
 	goto :execute
