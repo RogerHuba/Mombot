@@ -41,22 +41,8 @@
 	gosub :PLAYER~quikstats	
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $PLAYER~targetingPerson FALSE
-	setvar $filterships ""
-	getWordPos $bot~user_command_line $pos #34
-	if ($pos > 0)
-		getText $bot~user_command_line $filterships #34 #34
-		if ($filterships = false)
-			setVar $SWITCHBOARD~message "Invalid ship filter entered.*"
-			gosub :SWITCHBOARD~switchboard
-			halt			
-		else
-			setVar $SWITCHBOARD~message "Attacking only ships matching: ["&$filterships&"].*"
-			gosub :SWITCHBOARD~switchboard
-		end
-	end
-
-	if (($filterships <> "") and ($filterships <> false))
-		setVar $PLAYER~targetingShip $filterships
+	if ($pods)
+		setVar $PLAYER~targetingShip "Escape Pod"
 	else 
 		setVar $PLAYER~targetingShip FALSE
 	end
