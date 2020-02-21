@@ -32,6 +32,8 @@
 	goSub :SECTOR~getSectorData
 	#set player~refurbString to allow fast refurbing if you have a mac#
 	goSub :combat~fastAttack
+	goSub :combat~fastAttack
+	goSub :combat~fastAttack
 	goto :execute
 
 
