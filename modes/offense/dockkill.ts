@@ -58,8 +58,6 @@
 		send $combat~attackString&"* "
 		send $combat~attackString&"* "
 	end
-	goSub :combat~fastAttack
-	goSub :combat~fastAttack
 	goto :execute
 
 
