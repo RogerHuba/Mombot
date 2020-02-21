@@ -59,7 +59,7 @@
 				add $realTraderCount 1
 			end
 			#for defender recognition once ansi ships are in array in bot
-			if (($pos3 > 0) AND ($tempCorp <> $player~CORP) AND ($player~override <> TRUE))
+			if (($PLAYER~targetingShip <> 0) AND ($pos3 > 0) AND ($tempCorp <> $player~CORP) AND ($player~override <> TRUE))
 				getText $temp $shipname "(" ")"
 				#getText $shipname $shipname "m"&#27 #27&"["
 				if ($shipname = "")
@@ -115,6 +115,12 @@
 					setVar $player~traders[($realTraderCount)][1] 100000
 					#echo "*Adding defender ship:"&$shipname&"*"
 					add $defenderShips 1
+				end
+				getwordpos $shipname $isTargetedShip $PLAYER~targetingShip
+				if ($isTargetedShip > 0)
+					setVar $player~traders[($realTraderCount)][3] TRUE
+					#echo "*Adding targeted ship:"&$shipname&"*"
+					add $targetedShips 1
 				end
 			end
 			getText $traderData $temp $STARTLINE $ENDLINE   

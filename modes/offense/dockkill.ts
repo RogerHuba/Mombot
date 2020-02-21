@@ -13,6 +13,15 @@
 	gosub :combat~init 
 	setVar $SWITCHBOARD~self_command TRUE
 	
+
+	getWordPos $BOT~user_command_line $pos "pod"
+	if ($pos > 0)
+		setVar $pods TRUE
+	else
+		setVar $pods FALSE
+	end
+
+
 	goto :start_script
 :inac
 	gosub :PLAYER~quikstats
@@ -32,6 +41,11 @@
 	gosub :PLAYER~quikstats	
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $PLAYER~targetingPerson FALSE
+	if ($pods)
+		setVar $PLAYER~targetingShip "Escape Pod"
+	else 
+		setVar $PLAYER~targetingShip FALSE
+	end
 	setVar $PLAYER~targetingCorp FALSE
 	setVar $PLAYER~target ""
 	loadvar $ship~ship_fighters_max

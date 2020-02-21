@@ -38,6 +38,8 @@
 				setVar $targetString $targetString&"* "
 			elseif (($player~fedspace = true) AND ($player~traders[$c][2] = TRUE))
 				setVar $targetString $targetString&"* "
+			elseif (($SECTOR~isTargetedShip <> false) and ($player~traders[$c][3] <> true))
+				setVar $targetString $targetString&"* "
 			else
 				setVar $player~isFound TRUE
 				setVar $targetString $targetString&"zy z"
