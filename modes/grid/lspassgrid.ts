@@ -179,7 +179,7 @@
 
 		if ($ignore = "")
 			setVar $bot~user_command_line $bot~user_command_line & " "
-			getText $bot~user_command_line $warps "ignore:" " "
+			getText $bot~user_command_line $ignore "ignore:" " "
 		end
 		replaceText $bot~user_command_line " ignore:" & $ignore & " " " "
 		replaceText $bot~user_command_line " ignore:" & $ignore " "
