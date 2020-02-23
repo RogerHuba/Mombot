@@ -38,9 +38,7 @@
 	end
 
 	if ($starting_prompt = "Citadel")
-		send "q"
 		gosub :planetStats
-		send "q *"
 	else
 		send "*"
 	end
