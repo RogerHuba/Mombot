@@ -624,7 +624,7 @@ halt
 			setVar $SWITCHBOARD~message "Continuing the hunt!*"
 			gosub :SWITCHBOARD~switchboard
 			if ($attackMethod = "b") or ($attackMethod = "p")
-				send "l" $currentPlanet "c c "
+				#send "l" $currentPlanet "c c "
 			else
 				send "p t * * * *"
 				gosub :player~quikstats
