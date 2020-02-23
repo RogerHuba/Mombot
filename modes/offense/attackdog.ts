@@ -177,10 +177,15 @@
 		pause
 
 	:gettrader
-		killtrigger getsector
 		setvar $target_trader CURRENTLINE 
-		# w/ 45,990 ftrs #
-		getText $target_fighters $filterships " w/ " " ftrs"
+	
+		getText $target_trader $target_fighters ", w/ " " ftrs"
+		getText $target_trader $target_corp "[" "], w/ "
+		if ($target_corp = $player~corp)
+			setTextLineTrigger gettrader :gettrader "Traders :"
+			pause		
+		end
+		killtrigger getsector
 		striptext $target_fighters ","
 		if (($player~fighters/2) > $target_fighters)
 			setVar $SWITCHBOARD~message "Ruff Ruff Ruff!  Time to kill!*"
