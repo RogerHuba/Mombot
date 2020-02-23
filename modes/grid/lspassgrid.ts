@@ -185,6 +185,8 @@
 		replaceText $bot~user_command_line " ignore:" & $ignore " "
 	end
 
+	echo "*["&$ignore&"]*"
+	halt
 	getWordPos $bot~user_command_line $pos "a1"
 	if ($pos > 0)
 		setVar $DROP_ARMID 1
