@@ -520,7 +520,7 @@
 				end
 					
 			end
-			if ($ignorea = 1)
+			if (($ignorea = 1) OR (($ignore <> "") and ($ignore <> "0")))
 				if ($firstFilter = 1)
 					getSectorParameter $adj "FIGSEC" $Flag
 					isNumber $tst $Flag
