@@ -39,6 +39,7 @@ setVar $BOT~help[31]  $BOT~tab&" {surround} - (optimistically) surrounds sector 
 setVar $BOT~help[32]  $BOT~tab&" {pig}      - Bring a friend to lift and IG during kill cycle"
 setVar $BOT~help[33]  $BOT~tab&" {direct}   - Skip secondary scan"
 setVar $BOT~help[34]  $BOT~tab&" {retrigger}  - Continue photoning until out of photons"
+setVar $BOT~help[35]  $BOT~tab&" {lock:param}  - Locks clais"
 
 
 
@@ -78,6 +79,17 @@ setVar $fotonPig 0
 setVar $fotonReTrigger 0
 
 setVar $noLockRequired 1
+
+
+setVar $param_lock FALSE
+setVar $param_locked ""
+getWordPos $cline $pos "lock:"
+if ($pos > 0)
+	setVar $tline $cline & " "
+	getText $tline $param_locked "lock:" " "
+	upperCase $param_locked
+	setVar $param_lock 1
+end
 
 
 getWordPos $cline $pos2 "prtargets"
@@ -476,12 +488,22 @@ if (($attackPattern = "foton") or ($attackPattern = "announce"))
 		 while ($i <= $sectors)
 			if (PORT.EXISTS[$i] = 1)
 				if (SECTOR.WARPCOUNT[$i] >= $primaryPattern)
-					getSectorParameter $i "FIGSEC" $hasFig
-					if (($hasFig <> 1) and ($i <> $map~stardock))
-						add $startTargetsi 1
-						setVar $startTargets[$startTargetsi] $i
+					if ($param_lock = 1)
+						getSectorParameter $i $param_locked $param_chk
+						if ($param_chk = 1)
+							getSectorParameter $i "FIGSEC" $hasFig
+							if (($hasFig <> 1) and ($i <> $map~stardock))
+								add $startTargetsi 1
+								setVar $startTargets[$startTargetsi] $i
+							end
+						end
+					else
+						getSectorParameter $i "FIGSEC" $hasFig
+						if (($hasFig <> 1) and ($i <> $map~stardock))
+							add $startTargetsi 1
+							setVar $startTargets[$startTargetsi] $i
+						end
 					end
-
 				end
 					 
 			end
