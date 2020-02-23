@@ -4,7 +4,10 @@
 
 	setVar $BOT~help[1]  $BOT~tab&"Attackdog will attempt to reach and kill any "
 	setVar $BOT~help[2]  $BOT~tab&"opponent it sees in a holoscan on subspace."
-	setVar $BOT~help[3]  $BOT~tab&"    "
+	setVar $BOT~help[3]  $BOT~tab&"       "
+	setVar $BOT~help[4]  $BOT~tab&"     {hunt} - will search into target sector for enemy "
+	setVar $BOT~help[5]  $BOT~tab&"     {stay} - will not go home after attack"
+	setVar $BOT~help[6]  $BOT~tab&"    "
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Attack Dog"
@@ -17,6 +20,18 @@
 		setVar $SWITCHBOARD~message "Attack dog shutting down.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " hunt "
+	setvar $hunt false
+	if ($pos > 0)
+		setvar $hunt true
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " stay "
+	setvar $stay false
+	if ($pos > 0)
+		setvar $stay true
 	end
 
 	gosub :PLAYER~quikstats
@@ -196,7 +211,16 @@
 		gosub :findAdjacent
 		gosub :attemptDrop
 		gosub :checkForVictims
-		gosub :gohome
+
+		if ($hunt = true)
+			setVar $PLAYER~WARPTO $dropSector
+			gosub :PLAYER~twarp
+			gosub :checkForVictims
+		end
+
+		if ($stay = false)
+			gosub :gohome
+		end
 
 		setVar $SWITCHBOARD~message "Did I get em?  Did I get em!?*"
 		gosub :SWITCHBOARD~switchboard
