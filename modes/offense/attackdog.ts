@@ -64,12 +64,6 @@
 	# making ship corporate #
 	send "co*cqq* "
 
-	if ((PORT.BUYFUEL[$player~current_sector] <> true) and (PORT.EXISTS[$player~current_sector] = true))
-		#buying fuel from port if possible#
-		send "pt*** "
-		gosub :player~quikstats
-	end
-
 	:pickupfighters
 		setVar $BOT~command "topoff"
 		setVar $BOT~user_command_line " topoff "
@@ -162,8 +156,10 @@
 		pause
 
 	:checkscan
-		setTextLineTrigger getsector :getsector "Sector  :"
-		setTextLineTrigger gettrader :gettrader "Traders :"
+		setTextLineTrigger getsector :getsector 		"Sector  :"
+		setTextLineTrigger gettrader :gettrader 		"Traders :"
+		setTextLineTrigger getphoton :getphoton 		"Photon residue detected!"
+		setTextLineTrigger done      :reset_attack_dog	"Warps To:"
 		pause
 
 
@@ -182,6 +178,7 @@
 			pause		
 		end
 		killtrigger getsector
+		killtrigger getphoton
 		striptext $target_fighters ","
 		if (($player~fighters/2) > $target_fighters)
 			setVar $SWITCHBOARD~message "Ruff Ruff Ruff!  Time to kill!*"
@@ -191,6 +188,11 @@
 			gosub :SWITCHBOARD~switchboard
 			goto :reset_attack_dog
 		end
+	:getphoton
+		killtrigger getsector
+		killtrigger gettrader
+		killtrigger done
+
 		gosub :findAdjacent
 		gosub :attemptDrop
 		gosub :checkForVictims
@@ -394,18 +396,6 @@ return
 	elseif (($sector~emptyShipCount > $sector~myShipCount))
 		gosub :combat~fastCapture
 		goto :scanit_again
-	end
-	if ($holotorp)
-		setVar $BOT~command "htorp"
-		setVar $BOT~user_command_line " htorp "
-		setVar $BOT~parm1 ""
-		saveVar $BOT~parm1
-		saveVar $BOT~command
-		saveVar $BOT~user_command_line
-		load "scripts\mombot\commands\offense\htorp.cts"
-		setEventTrigger		htorpdone		:htorpdone "SCRIPT STOPPED" "scripts\mombot\commands\offense\htorp.cts"
-		pause
-		:htorpdone
 	end
 	setvar $before_holo_kill_sector $player~current_sector
 	gosub :combat~holokill
