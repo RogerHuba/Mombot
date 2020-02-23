@@ -2,14 +2,9 @@
 	gosub :combat~init 
 
 
-	setVar $BOT~help[1]  $BOT~tab&"Once someone tows onto a ship with sidecar running  "
-	setVar $BOT~help[2]  $BOT~tab&"it will automatically begin its function."
+	setVar $BOT~help[1]  $BOT~tab&"Attackdog will attempt to reach and kill any "
+	setVar $BOT~help[2]  $BOT~tab&"opponent it sees in a holoscan on subspace."
 	setVar $BOT~help[3]  $BOT~tab&"    "
-	setVar $BOT~help[4]  $BOT~tab&"Options: "
-	setVar $BOT~help[5]  $BOT~tab&"    {off} - Turns off script"
-	setVar $BOT~help[6]  $BOT~tab&" {refill} - Refills towing ship fighters when attacked"
-	setVar $BOT~help[7]  $BOT~tab&"   {kill} - Kills automatically"
-	setVar $BOT~help[8]  $BOT~tab&"     {ig} - IG reset"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Attack Dog"
@@ -411,20 +406,18 @@ return
 		pause
 		:htorpdone
 	end
-	if ($holokill)
-		setvar $before_holo_kill_sector $player~current_sector
-		gosub :combat~holokill
-		if ($player~current_sector <> $before_holo_kill_sector)
-			setVar $PLAYER~WARPTO $before_holo_kill_sector
-			gosub :PLAYER~twarp
-			if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
-				setvar $switchboard~message "Could not make it back to starting sector before holokill. - ["&$player~msg&"]*"
-				gosub :switchboard~switchboard
-				halt
-			end
+	setvar $before_holo_kill_sector $player~current_sector
+	gosub :combat~holokill
+	if ($player~current_sector <> $before_holo_kill_sector)
+		setVar $PLAYER~WARPTO $before_holo_kill_sector
+		gosub :PLAYER~twarp
+		if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+			setvar $switchboard~message "Could not make it back to starting sector before holokill. - ["&$player~msg&"]*"
+			gosub :switchboard~switchboard
+			halt
 		end
-
 	end
+
 return	
 
 
