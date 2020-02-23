@@ -68,7 +68,7 @@
 	setVar $BOT~help[16]  $BOT~tab&"    {restock}      Buys more Limpets and Mines."
 	setVar $BOT~help[17]  $BOT~tab&"    {filter}       Filters mines/armids/planets to detect"
 	setVar $BOT~help[18]  $BOT~tab&"                   safe sectors. run >limps >armids 1st"
-	setVar $BOT~help[29]  $BOT~tab&"    {ignorea}      Uses holo scan to passive grid alien figs"
+	setVar $BOT~help[19]  $BOT~tab&"    {ignorea}      Uses holo scan to passive grid alien figs"
 	setVar $BOT~help[20]  $BOT~tab&"    {resume}       Roughly resumes last run"
 	setVar $BOT~help[21]  $BOT~tab&"    {ignore:}      Ignore corp or trader fighters"
 	setVar $BOT~help[22]  $BOT~tab&"    Doesn't require ZTM but works better"
