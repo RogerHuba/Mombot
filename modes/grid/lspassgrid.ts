@@ -53,7 +53,7 @@
 	setVar $BOT~help[1]  $BOT~tab&"       LS Passive Gridder - Still the best "
 	setVar $BOT~help[2]  $BOT~tab&"       "
 	setVar $BOT~help[3]  $BOT~tab&" lspassgrid [stopturns] {a1/a2/a3} {l1/l2/l3} {ports}"
-	setVar $BOT~help[4]  $BOT~tab&"            {holo} {trade} {restock} {filter}"
+	setVar $BOT~help[4]  $BOT~tab&"            {holo} {trade} {restock} {filter} {ignore:}"
 	setVar $BOT~help[5]  $BOT~tab&" Options:"
 	setVar $BOT~help[6]  $BOT~tab&"    [stopturns]     Passive Grid Stops at here"
 	setVar $BOT~help[7]  $BOT~tab&"	   {a1/a2/a3}      Drop 1/2/3 Armid Mines"
@@ -70,8 +70,9 @@
 	setVar $BOT~help[19]  $BOT~tab&"                   safe sectors. run >limps >armids 1st"
 	setVar $BOT~help[20]  $BOT~tab&"    {ignorea}      Uses holo scan to passive grid alien figs"
 	setVar $BOT~help[21]  $BOT~tab&"    {resume}       Roughly resumes last run"
-	setVar $BOT~help[22]  $BOT~tab&"    Doesn't require ZTM but works better"
-	setVar $BOT~help[23]  $BOT~tab&"    Works best with T-Warp to reroute"
+	setVar $BOT~help[22]  $BOT~tab&"    {ignore:}      Ignore corp or trader fighters"
+	setVar $BOT~help[23]  $BOT~tab&"    Doesn't require ZTM but works better"
+	setVar $BOT~help[24]  $BOT~tab&"    Works best with T-Warp to reroute"
 
 	gosub :bot~helpfile
 
@@ -172,6 +173,18 @@
 	
 	end
 
+	getWordPos $bot~user_command_line $pos "ignore:"
+	if ($pos > 0)
+		getText $bot~user_command_line $ignore "ignore:" " "
+
+		if ($ignore = "")
+			setVar $bot~user_command_line $bot~user_command_line & " "
+			getText $bot~user_command_line $warps "ignore:" " "
+		end
+		replaceText $bot~user_command_line " ignore:" & $ignore & " " " "
+		replaceText $bot~user_command_line " ignore:" & $ignore " "
+	end
+
 	getWordPos $bot~user_command_line $pos "a1"
 	if ($pos > 0)
 		setVar $DROP_ARMID 1
@@ -197,7 +210,9 @@
 	if ($pos > 0)
 		setVar $DROP_LIMP 3
 	end	
-	
+
+
+
 	setVar $LSDString ""
 	if (($DROP_ARMID > 0) and ($DROP_LIMP > 0))
 		setVar $DROPING_MINES 3
@@ -520,11 +535,16 @@
 				else
 					setVar $figsowner SECTOR.FIGS.OWNER[$adj]
 					getWordPos $figsowner $whereowner "belong to"
-		
+					getWordPos $figsowner $whereownercorp "belong to Corp#"&$ignore
+					getWordPos $figsowner $whereownerplayer "belong to "&$ignore
 					if ($whereowner = 0)
 						if (SECTOR.FIGS.QUANTITY[$adj] < $player~FIGHTERS)
 							subtract $currentDensity (SECTOR.FIGS.QUANTITY[$adj] * 5)
 						end
+					elseif (($whereownercorp > 0) OR ($whereownerplayer > 0))
+						if (SECTOR.FIGS.QUANTITY[$adj] < $player~FIGHTERS)
+							subtract $currentDensity (SECTOR.FIGS.QUANTITY[$adj] * 5)
+						end					
 					end
 					
 
