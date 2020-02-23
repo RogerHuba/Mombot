@@ -71,8 +71,9 @@
 	setVar $BOT~help[19]  $BOT~tab&"    {ignorea}      Uses holo scan to passive grid alien figs"
 	setVar $BOT~help[20]  $BOT~tab&"    {resume}       Roughly resumes last run"
 	setVar $BOT~help[21]  $BOT~tab&"    {ignore:}      Ignore corp or trader fighters"
-	setVar $BOT~help[22]  $BOT~tab&"    Doesn't require ZTM but works better"
-	setVar $BOT~help[23]  $BOT~tab&"    Works best with T-Warp to reroute"
+	setVar $BOT~help[22]  $BOT~tab&"    {skip:}        Skips sectors with this param !=0 !=''"
+	setVar $BOT~help[23]  $BOT~tab&"    Doesn't require ZTM but works better"
+	setVar $BOT~help[24]  $BOT~tab&"    Works best with T-Warp to reroute"
 
 	gosub :bot~helpfile
 
@@ -183,6 +184,19 @@
 		end
 		replaceText $bot~user_command_line " ignore:" & $ignore & " " " "
 		replaceText $bot~user_command_line " ignore:" & $ignore " "
+	end
+
+	getWordPos $bot~user_command_line $pos "skip:"
+	if ($pos > 0)
+		getText $bot~user_command_line $skipparam "skip:" " "
+
+		if ($skipparam = "")
+			setVar $bot~user_command_line $bot~user_command_line & " "
+			getText $bot~user_command_line $skipparam "skip:" " "
+		end
+		replaceText $bot~user_command_line " skip:" & $skipparam & " " " "
+		replaceText $bot~user_command_line " skip:" & $skipparam " "
+		upperCase $skipparam
 	end
 
 	getWordPos $bot~user_command_line $pos "a1"
@@ -602,6 +616,20 @@
 				setSectorParameter $adj "FIGSEC" FALSE
 			end
 
+			if ($skipparam <> "")
+				getSectorParameter $adj $skipparam $skipChk
+				if ($skipChk = "")
+					setVar $skipChk 0
+				end
+				
+				if ($skipChk <> 0)
+					goto :Next_ADJ_Please
+
+				end
+				
+			end
+
+
 			# Log anything interesting
 
 			if (($currentDensity > 200) AND ($Flag = 0))
@@ -862,9 +890,19 @@
 									setVar $Flag 0
 									setSectorParameter $w_adj "FIGSEC" FALSE
 								end
-								
-				
-								if (($Flag = 0) AND ($CHKD[$w_adj] <> 1))
+
+								setVar $skipWarp 0
+								if ($skipparam <> "")
+									getSectorParameter $w_adj $skipparam $skipChk
+									if ($skipChk = "")
+										setVar $skipChk 0
+									end
+									if ($skipChk <> 0)
+										setVar $skipWarp 1
+									end
+								end
+
+								if (($Flag = 0) AND ($CHKD[$w_adj] <> 1) AND ($skipWarp = 0))
 									setVar $CHKD[$w_adj] 1
 									if ($NextRequiresReport = 1)
 								
