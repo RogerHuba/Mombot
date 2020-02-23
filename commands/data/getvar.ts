@@ -10,6 +10,12 @@
 	setVar $BOT~help[7]  $BOT~tab&"    x - safe ship"
 	setVar $BOT~help[8]  $BOT~tab&"   tl - turn limit"
 	gosub :bot~helpfile
+	
+	loadvar $map~rylos
+	loadvar $map~stardock
+	loadvar $map~alpha_centauri
+	loadvar $map~backdoor
+	loadvar $map~home_sector
 
 	getWord $BOT~user_command_line $BOT~parm1 1
 	setVar $SWITCHBOARD~message ""
