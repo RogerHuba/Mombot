@@ -67,6 +67,7 @@
 	if ((PORT.BUYFUEL[$player~current_sector] <> true) and (PORT.EXISTS[$player~current_sector] = true))
 		#buying fuel from port if possible#
 		send "pt*** "
+		gosub :player~quikstats
 	end
 
 	:pickupfighters
