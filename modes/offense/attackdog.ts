@@ -123,7 +123,7 @@
 	#  Fighters: 1 (belong to your Corp) [Defensive]
 	#  Warps To: 650 - 5818 - 6839 - 7028
 
-	setVar $SWITCHBOARD~message "Attack dog should attack any weak target it sees in a subspace holoscan.  Warning: This attack dog comes back home, and could bring back fleas (limpets).  So I'd set them somewhere outside your home sector.*"
+	setVar $SWITCHBOARD~message "Attack dog should attack any weak target it sees in a subspace holoscan.  *Warning: This attack dog comes back home, and could bring back fleas (limpets).  So I'd set them somewhere outside your home sector.*"
 	gosub :SWITCHBOARD~switchboard
 
 	:reset_attack_dog
@@ -434,6 +434,9 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\sector\getsectordata\sector"
-include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\combat\holokill\combat"
