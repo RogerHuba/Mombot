@@ -246,24 +246,6 @@
 	end
 return
 
-:checkForVictims
-	gosub :player~quikstats
-	:scanit_again
-	if ($player~fighters > 0)
-		setvar $player~startingLocation $player~current_prompt
-		gosub :sector~getSectorData
-		if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-			setvar $istowed false
-			gosub :combat~fastAttack
-			goto :scanit_again
-		elseif (($sector~emptyShipCount > $sector~myShipCount))
-			setvar $istowed false
-			gosub :combat~fastCapture
-			goto :scanit_again
-		end
-	end
-	gosub :setkilltriggers
-	pause
 
 	:ig_turn_it_on
 		getWord CURRENTLINE $test 1
