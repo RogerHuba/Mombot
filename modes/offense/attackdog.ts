@@ -2,14 +2,12 @@
 	gosub :combat~init 
 
 
-	setVar $BOT~help[1]  $BOT~tab&"Once someone tows onto a ship with sidecar running  "
-	setVar $BOT~help[2]  $BOT~tab&"it will automatically begin its function."
-	setVar $BOT~help[3]  $BOT~tab&"    "
-	setVar $BOT~help[4]  $BOT~tab&"Options: "
-	setVar $BOT~help[5]  $BOT~tab&"    {off} - Turns off script"
-	setVar $BOT~help[6]  $BOT~tab&" {refill} - Refills towing ship fighters when attacked"
-	setVar $BOT~help[7]  $BOT~tab&"   {kill} - Kills automatically"
-	setVar $BOT~help[8]  $BOT~tab&"     {ig} - IG reset"
+	setVar $BOT~help[1]  $BOT~tab&"Attackdog will attempt to reach and kill any "
+	setVar $BOT~help[2]  $BOT~tab&"opponent it sees in a holoscan on subspace."
+	setVar $BOT~help[3]  $BOT~tab&"       "
+	setVar $BOT~help[4]  $BOT~tab&"     {hunt} - will search into target sector for enemy "
+	setVar $BOT~help[5]  $BOT~tab&"     {stay} - will not go home after attack"
+	setVar $BOT~help[6]  $BOT~tab&"    "
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Attack Dog"
@@ -22,6 +20,18 @@
 		setVar $SWITCHBOARD~message "Attack dog shutting down.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " hunt "
+	setvar $hunt false
+	if ($pos > 0)
+		setvar $hunt true
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " stay "
+	setvar $stay false
+	if ($pos > 0)
+		setvar $stay true
 	end
 
 	gosub :PLAYER~quikstats
@@ -68,11 +78,6 @@
 
 	# making ship corporate #
 	send "co*cqq* "
-
-	if ((PORT.BUYFUEL[$player~current_sector] <> true) and (PORT.EXISTS[$player~current_sector] = true))
-		#buying fuel from port if possible#
-		send "pt*** "
-	end
 
 	:pickupfighters
 		setVar $BOT~command "topoff"
@@ -166,13 +171,15 @@
 		pause
 
 	:checkscan
-		setTextLineTrigger getsector :getsector "Sector  :"
-		setTextLineTrigger gettrader :gettrader "Traders :"
+		setTextLineTrigger getsector :getsector 		"Sector  :"
+		setTextLineTrigger gettrader :gettrader 		"Traders :"
+		setTextLineTrigger getphoton :getphoton 		"Photon residue detected!"
+		setTextLineTrigger done      :reset_attack_dog	"Warps To:"
 		pause
 
 
 	:getsector
-		getWord CURRENTLINE $dropSector 3
+		getText CURRENTLINE $dropSector "Sector  : " " in "
 		setTextLineTrigger getsector :getsector "Sector  :"
 		pause
 
@@ -186,6 +193,7 @@
 			pause		
 		end
 		killtrigger getsector
+		killtrigger getphoton
 		striptext $target_fighters ","
 		if (($player~fighters/2) > $target_fighters)
 			setVar $SWITCHBOARD~message "Ruff Ruff Ruff!  Time to kill!*"
@@ -195,10 +203,24 @@
 			gosub :SWITCHBOARD~switchboard
 			goto :reset_attack_dog
 		end
+	:getphoton
+		killtrigger getsector
+		killtrigger gettrader
+		killtrigger done
+
 		gosub :findAdjacent
 		gosub :attemptDrop
 		gosub :checkForVictims
-		gosub :gohome
+
+		if ($hunt = true)
+			setVar $PLAYER~WARPTO $dropSector
+			gosub :PLAYER~twarp
+			gosub :checkForVictims
+		end
+
+		if ($stay = false)
+			gosub :gohome
+		end
 
 		setVar $SWITCHBOARD~message "Did I get em?  Did I get em!?*"
 		gosub :SWITCHBOARD~switchboard
@@ -224,24 +246,6 @@
 	end
 return
 
-:checkForVictims
-	gosub :player~quikstats
-	:scanit_again
-	if ($player~fighters > 0)
-		setvar $player~startingLocation $player~current_prompt
-		gosub :sector~getSectorData
-		if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-			setvar $istowed false
-			gosub :combat~fastAttack
-			goto :scanit_again
-		elseif (($sector~emptyShipCount > $sector~myShipCount))
-			setvar $istowed false
-			gosub :combat~fastCapture
-			goto :scanit_again
-		end
-	end
-	gosub :setkilltriggers
-	pause
 
 	:ig_turn_it_on
 		getWord CURRENTLINE $test 1
@@ -358,6 +362,7 @@ return
 return
 
 :attemptDrop
+	gosub :player~quikstats
 	setVar $PLAYER~WARPTO $targetSector
 	gosub :PLAYER~twarp
 	if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
@@ -399,32 +404,18 @@ return
 		gosub :combat~fastCapture
 		goto :scanit_again
 	end
-	if ($holotorp)
-		setVar $BOT~command "htorp"
-		setVar $BOT~user_command_line " htorp "
-		setVar $BOT~parm1 ""
-		saveVar $BOT~parm1
-		saveVar $BOT~command
-		saveVar $BOT~user_command_line
-		load "scripts\mombot\commands\offense\htorp.cts"
-		setEventTrigger		htorpdone		:htorpdone "SCRIPT STOPPED" "scripts\mombot\commands\offense\htorp.cts"
-		pause
-		:htorpdone
-	end
-	if ($holokill)
-		setvar $before_holo_kill_sector $player~current_sector
-		gosub :combat~holokill
-		if ($player~current_sector <> $before_holo_kill_sector)
-			setVar $PLAYER~WARPTO $before_holo_kill_sector
-			gosub :PLAYER~twarp
-			if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
-				setvar $switchboard~message "Could not make it back to starting sector before holokill. - ["&$player~msg&"]*"
-				gosub :switchboard~switchboard
-				halt
-			end
+	setvar $before_holo_kill_sector $player~current_sector
+	gosub :combat~holokill
+	if ($player~current_sector <> $before_holo_kill_sector)
+		setVar $PLAYER~WARPTO $before_holo_kill_sector
+		gosub :PLAYER~twarp
+		if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+			setvar $switchboard~message "Could not make it back to starting sector before holokill. - ["&$player~msg&"]*"
+			gosub :switchboard~switchboard
+			halt
 		end
-
 	end
+
 return	
 
 
