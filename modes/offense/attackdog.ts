@@ -362,6 +362,7 @@ return
 return
 
 :attemptDrop
+	gosub :player~quikstats
 	setVar $PLAYER~WARPTO $targetSector
 	gosub :PLAYER~twarp
 	if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
