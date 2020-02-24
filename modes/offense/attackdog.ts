@@ -179,7 +179,7 @@
 
 
 	:getsector
-		getWord CURRENTLINE $dropSector 3
+		getText CURRENTLINE $dropSector "Sector  : " " in "
 		setTextLineTrigger getsector :getsector "Sector  :"
 		pause
 
