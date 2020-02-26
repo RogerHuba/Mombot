@@ -318,7 +318,7 @@ while (($i <= SECTORS) and ($done <> true))
 						lowercase $value
 					else
 						//If it's not one of these specific variables, assume sector param
-						getSectorParameter $i $sector_params[$j] $bot~parmameter
+						getSectorParameter $i $sector_params[$j] $value
 					end
 				end
 			end
