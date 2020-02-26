@@ -549,8 +549,9 @@
 					end
 				else
 					setVar $figsowner SECTOR.FIGS.OWNER[$adj]
+					lowercase $figsowner
 					getWordPos $figsowner $whereowner "belong to"
-					getWordPos $figsowner $whereownercorp "belong to Corp#"&$ignore
+					getWordPos $figsowner $whereownercorp "belong to corp#"&$ignore
 					getWordPos $figsowner $whereownerplayer "belong to "&$ignore
 					if ($whereowner = 0)
 						if (SECTOR.FIGS.QUANTITY[$adj] < $player~FIGHTERS)

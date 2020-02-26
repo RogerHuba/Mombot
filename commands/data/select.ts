@@ -20,15 +20,20 @@
 	setVar $BOT~help[11]  $BOT~tab&"    {secure | paranoid}  "
 	setVar $BOT~help[12]  $BOT~tab&"     Example: >select traders bubble=false equ-mcic<-60 "
 	setVar $BOT~help[13]  $BOT~tab&"              >select planet like "&#34&"<<<< (a)"&#34
-	setVar $BOT~help[14]  $BOT~tab&"            "
-	setVar $BOT~help[15]  $BOT~tab&"         {dist} - All results include distance from current. "
-	setVar $BOT~help[16]  $BOT~tab&"        {route} - Plots a basic shortest path (slow). "
-	setVar $BOT~help[17]  $BOT~tab&"          {ppt} - Finds port pair trading ports  "
-	setVar $BOT~help[18]  $BOT~tab&"      {warps:n} - Restrict matches to nwarps  "
-	setVar $BOT~help[19]  $BOT~tab&"      {count:n} - limit results to sectors with a minimum count of "
-	setVar $BOT~help[20]  $BOT~tab&"                  planets/traders/ships"
-	setVar $BOT~help[21]  $BOT~tab&"      {limit:n} - limit query results to first n found "
-	setVar $BOT~help[22]  $BOT~tab&" {beam:botname} - Beam to bot name  "
+	setVar $BOT~help[14]  $BOT~tab&"              >select port port.f > 10000 figsec=true"
+	setVar $BOT~help[15]  $BOT~tab&"              >select port port.o > 10000 figsec=false"
+	setVar $BOT~help[16]  $BOT~tab&"              >select port port.e > 10000 warps:1"
+	setVar $BOT~help[17]  $BOT~tab&"              >select sector fig.owner=1 armid.owner=kane"
+	setVar $BOT~help[18]  $BOT~tab&"              >select sector limp.owner=3 limp.count > 10"
+	setVar $BOT~help[19]  $BOT~tab&"              >select sector armid.count > 100"
+	setVar $BOT~help[20]  $BOT~tab&"         {dist} - All results include distance from current. "
+	setVar $BOT~help[21]  $BOT~tab&"        {route} - Plots a basic shortest path (slow). "
+	setVar $BOT~help[22]  $BOT~tab&"          {ppt} - Finds port pair trading ports  "
+	setVar $BOT~help[23]  $BOT~tab&"      {warps:n} - Restrict matches to nwarps  "
+	setVar $BOT~help[24]  $BOT~tab&"      {count:n} - limit results to sectors with a minimum count of "
+	setVar $BOT~help[25]  $BOT~tab&"                  planets/traders/ships"
+	setVar $BOT~help[26]  $BOT~tab&"      {limit:n} - limit query results to first n found "
+	setVar $BOT~help[27]  $BOT~tab&" {beam:botname} - Beam to bot name  "
 	# ham select ports ore-mcic<-70
 	gosub :bot~helpfile
 
@@ -168,6 +173,7 @@ while ($word <> "@@@###@@@")
 			setvar $mincount 1
 		end
 	end
+
 	getWordPos $word $pos "beam:"
 	if ($pos > 0)
 		replaceText $word "beam:" ""
@@ -257,9 +263,62 @@ while (($i <= SECTORS) and ($done <> true))
 					getwordpos $bot~parmameter $pos "port.e"
 					if ($pos > 0)
 						setvar $value port.equip[$i]
+					end
+				end
+			end
+
+
+			getwordpos $bot~parmameter $pos "fig.o"
+			if ($pos > 0)
+				setVar $value SECTOR.FIGS.OWNER[$i]
+				isNumber $test $sector_params[$j][1]
+				lowercase $value
+				if ($test = true)
+					setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
+				else
+					setvar $sector_params[$j][1] "belong to "&$sector_params[$j][1]
+				end
+			else
+				getwordpos $bot~parmameter $pos "limp.o"
+				if ($pos > 0)
+					setVar $value SECTOR.LIMPETS.OWNER[$i]
+					lowercase $value
+					if ($test = true)
+						setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
+					else
+						setvar $sector_params[$j][1] "belong to "&$sector_params[$j][1]
+					end
+				else
+					getwordpos $bot~parmameter $pos "armid.o"
+					if ($pos > 0)
+						setVar $value SECTOR.MINES.OWNER[$i]
+						lowercase $value
+						if ($test = true)
+							setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
+						else
+							setvar $sector_params[$j][1] "belong to "&$sector_params[$j][1]
+						end
+					end
+				end
+			end
+
+			getwordpos $bot~parmameter $pos "fig.c"
+			if ($pos > 0)
+				setVar $value SECTOR.FIGS.QUANTITY[$i]
+				lowercase $value
+			else
+				getwordpos $bot~parmameter $pos "limp.c"
+				if ($pos > 0)
+					setVar $value SECTOR.LIMPETS.QUANTITY[$i]
+					lowercase $value
+				else
+					getwordpos $bot~parmameter $pos "armid.c"
+					if ($pos > 0)
+						setVar $value SECTOR.MINES.QUANTITY[$i]
+						lowercase $value
 					else
 						//If it's not one of these specific variables, assume sector param
-						getSectorParameter $i $sector_params[$j] $value
+						getSectorParameter $i $sector_params[$j] $bot~parmameter
 					end
 				end
 			end
