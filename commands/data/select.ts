@@ -250,7 +250,7 @@ while (($i <= SECTORS) and ($done <> true))
 	setvar $skip false
 	if ((($warps > 0) and (SECTOR.WARPCOUNT[$i] = $warps)) or ($warps = 0))
 		while (($j <= $sector_param_count) and ($skip <> true))
-			setvar $value = ""
+			setvar $value ""
 
 			setvar $bot~parmameter $sector_params[$j]
 			lowercase $bot~parmameter
@@ -327,7 +327,7 @@ while (($i <= SECTORS) and ($done <> true))
 				//If it's not one of these specific variables, assume sector param
 				getSectorParameter $i $sector_params[$j] $value
 			end
-			
+
 			if ($sector_params[$j][2] = "=")
 				
 				if ($value = $sector_params[$j][1])
