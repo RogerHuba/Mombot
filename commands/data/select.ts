@@ -275,6 +275,16 @@ while (($i <= SECTORS) and ($done <> true))
 				setVar $value SECTOR.FIGS.OWNER[$i]
 				isNumber $test $sector_params[$j][1]
 				lowercase $value
+				#belong to corp#4, king's court#
+				getwordpos $value $pos "belong to corp#"
+				if ($pos > 0)
+					gettext $value $corpnumber "belong to corp#" ","
+					setvar $value "belong to corp#"&$corpnumber
+				end
+				getwordpos $value $pos "belong to your corp"
+				if ($pos > 0)
+					setvar $value "belong to corp#"&CURRENTCORP
+				end
 				if ($test = true)
 					setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
 				else
@@ -285,6 +295,16 @@ while (($i <= SECTORS) and ($done <> true))
 				if ($pos > 0)
 					setVar $value SECTOR.LIMPETS.OWNER[$i]
 					lowercase $value
+					#belong to corp#4, king's court#
+					getwordpos $value $pos "belong to corp#"
+					if ($pos > 0)
+						gettext $value $corpnumber "belong to corp#" ","
+						setvar $value "belong to corp#"&$corpnumber
+					end
+					getwordpos $value $pos "belong to your corp"
+					if ($pos > 0)
+						setvar $value "belong to corp#"&CURRENTCORP
+					end
 					if ($test = true)
 						setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
 					else
@@ -295,7 +315,16 @@ while (($i <= SECTORS) and ($done <> true))
 					if ($pos > 0)
 						setVar $value SECTOR.MINES.OWNER[$i]
 						lowercase $value
-						echo "*value:["&$value&"]*"
+						#belong to corp#4, king's court#
+						getwordpos $value $pos "belong to corp#"
+						if ($pos > 0)
+							gettext $value $corpnumber "belong to corp#" ","
+							setvar $value "belong to corp#"&$corpnumber
+						end
+						getwordpos $value $pos "belong to your corp"
+						if ($pos > 0)
+							setvar $value "belong to corp#"&CURRENTCORP
+						end
 
 						if ($test = true)
 							setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
