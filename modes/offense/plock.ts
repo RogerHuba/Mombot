@@ -124,3 +124,9 @@ loadVar $switchboard~bot_name
 include "source\bot_includes\targeting\scanitcitkill\targeting"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\targeting\initializetargeting\targeting"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+
