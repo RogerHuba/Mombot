@@ -15,10 +15,10 @@
 	setVar $BOT~help[8]  $BOT~tab&"    {neg/hold}   Determines planet negotiate or hold "
 	setVar $BOT~help[9]  $BOT~tab&"                 selling approach"
 	setVar $BOT~help[10] $BOT~tab&"     {skipcim}   Uses current cim data and skips searching"
-	setVar $BOT~help[10] $BOT~tab&"       {docim}   Does cim check before starting and skips searching"
-	setVar $BOT~help[11] $BOT~tab&"     {buyfuel}   Buys all the fuel in fuel selling ports "
-	setVar $BOT~help[12] $BOT~tab&"                 on route  "
-	setVar $BOT~help[13] $BOT~tab&"        {half}   sell half of port (neg only for now) "
+	setVar $BOT~help[11] $BOT~tab&"       {docim}   Does cim check before starting and skips searching"
+	setVar $BOT~help[12] $BOT~tab&"     {buyfuel}   Buys all the fuel in fuel selling ports "
+	setVar $BOT~help[13] $BOT~tab&"                 on route  "
+	setVar $BOT~help[14] $BOT~tab&"        {half}   sell half of port (neg only for now) "
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Merchant"

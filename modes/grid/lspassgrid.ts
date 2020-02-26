@@ -72,6 +72,7 @@
 	setVar $BOT~help[20]  $BOT~tab&"    {resume}       Roughly resumes last run"
 	setVar $BOT~help[21]  $BOT~tab&"    {ignore:}      Ignore corp or trader fighters"
 	setVar $BOT~help[22]  $BOT~tab&"    {skip:}        Skips sectors with this param !=0 !=''"
+	setVar $BOT~help[22]  $BOT~tab&"    {twenty}       Drop 20 fighters in density 0 sectors"
 	setVar $BOT~help[23]  $BOT~tab&"    Doesn't require ZTM but works better"
 	setVar $BOT~help[24]  $BOT~tab&"    Works best with T-Warp to reroute"
 
