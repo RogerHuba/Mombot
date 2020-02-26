@@ -325,7 +325,7 @@ while (($i <= SECTORS) and ($done <> true))
 						if ($pos > 0)
 							setvar $value "belong to corp#"&CURRENTCORP
 						end
-
+						echo "*["&$value&"]*"
 						if ($test = true)
 							setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
 						else
