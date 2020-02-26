@@ -295,6 +295,7 @@ while (($i <= SECTORS) and ($done <> true))
 					if ($pos > 0)
 						setVar $value SECTOR.MINES.OWNER[$i]
 						lowercase $value
+						echo "*value:["&$value&"]*"
 						echo "*["&$sector_params[$j][1]&"]*"
 						if ($test = true)
 							setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
