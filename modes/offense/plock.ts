@@ -66,7 +66,7 @@ loadVar $switchboard~bot_name
      		halt
 	end
 	send "Q"
-	gosub :planetinfo~getPlanetInfo
+	gosub :planet~getPlanetInfo
 	send "C "
 	getWordPos $bot~user_command_line $pos "kill"
 	if ($pos > 0)
