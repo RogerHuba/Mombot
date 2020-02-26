@@ -250,7 +250,7 @@ while (($i <= SECTORS) and ($done <> true))
 	setvar $skip false
 	if ((($warps > 0) and (SECTOR.WARPCOUNT[$i] = $warps)) or ($warps = 0))
 		while (($j <= $sector_param_count) and ($skip <> true))
-			setvar $value ""
+			setvar $value "[[NOVALUE]]"
 
 			setvar $bot~parmameter $sector_params[$j]
 			lowercase $bot~parmameter
@@ -295,8 +295,6 @@ while (($i <= SECTORS) and ($done <> true))
 					if ($pos > 0)
 						setVar $value SECTOR.MINES.OWNER[$i]
 						lowercase $value
-						echo "*value:["&$value&"]*"
-						echo "*["&$sector_params[$j][1]&"]*"
 						if ($test = true)
 							setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
 						else
@@ -323,10 +321,8 @@ while (($i <= SECTORS) and ($done <> true))
 					end
 				end
 			end
-
-			echo "*value:["&$value&"]*"
 						
-			if ($value = "")
+			if ($value = "[[NOVALUE]]")
 				//If it's not one of these specific variables, assume sector param
 				getSectorParameter $i $sector_params[$j] $value
 			end
