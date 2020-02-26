@@ -294,11 +294,6 @@ while (($i <= SECTORS) and ($done <> true))
 						setvar $sector_params[$j][1] "belong to "&$sector_params[$j][1]
 					end
 				end
-				if ($test = true)
-					setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
-				else
-					setvar $sector_params[$j][1] "belong to "&$sector_params[$j][1]
-				end
 			else
 				getwordpos $bot~parmameter $pos "limp.o"
 				if ($pos > 0)
@@ -322,11 +317,6 @@ while (($i <= SECTORS) and ($done <> true))
 						else
 							setvar $sector_params[$j][1] "belong to "&$sector_params[$j][1]
 						end
-					end
-					if ($test = true)
-						setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
-					else
-						setvar $sector_params[$j][1] "belong to "&$sector_params[$j][1]
 					end
 				else
 					getwordpos $bot~parmameter $pos "armid.o"
