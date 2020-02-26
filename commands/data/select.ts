@@ -285,6 +285,15 @@ while (($i <= SECTORS) and ($done <> true))
 				if ($pos > 0)
 					setvar $value "belong to corp#"&CURRENTCORP
 				end
+				isNumber $test $sector_params[$j][1]
+				getwordpos $sector_params[$j][1] $pos "belong to"
+				if ($pos <= 0)
+					if ($test = true)
+						setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
+					else
+						setvar $sector_params[$j][1] "belong to "&$sector_params[$j][1]
+					end
+				end
 				if ($test = true)
 					setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
 				else
@@ -304,6 +313,15 @@ while (($i <= SECTORS) and ($done <> true))
 					getwordpos $value $pos "belong to your corp"
 					if ($pos > 0)
 						setvar $value "belong to corp#"&CURRENTCORP
+					end
+					isNumber $test $sector_params[$j][1]
+					getwordpos $sector_params[$j][1] $pos "belong to"
+					if ($pos <= 0)
+						if ($test = true)
+							setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
+						else
+							setvar $sector_params[$j][1] "belong to "&$sector_params[$j][1]
+						end
 					end
 					if ($test = true)
 						setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
@@ -325,14 +343,18 @@ while (($i <= SECTORS) and ($done <> true))
 						if ($pos > 0)
 							setvar $value "belong to corp#"&CURRENTCORP
 						end
-						if ($test = true)
-							setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
-						else
-							setvar $sector_params[$j][1] "belong to "&$sector_params[$j][1]
+						isNumber $test $sector_params[$j][1]
+						getwordpos $sector_params[$j][1] $pos "belong to"
+						if ($pos <= 0)
+							if ($test = true)
+								setvar $sector_params[$j][1] "belong to corp#"&$sector_params[$j][1]
+							else
+								setvar $sector_params[$j][1] "belong to "&$sector_params[$j][1]
+							end
 						end
-						if ($value <> "")
-							echo "*["&$value&"] = ["&$sector_params[$j][1]&"]*"
-						end
+#						if ($value <> "")
+#							echo "*["&$value&"] = ["&$sector_params[$j][1]&"]*"
+#						end
 					end
 				end
 			end
