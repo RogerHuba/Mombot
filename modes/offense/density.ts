@@ -147,7 +147,7 @@
 	end
 
 	setVar $message "Density Trigger running in sector "&CURRENTSECTOR&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-	setVar $message $message&"*        On density change > &$density_change, we will:
+	setVar $message $message&"*        On density change > &$density_change, we will:"
 	if ($kill)
 		setVar $message $message&"*        Kill"
 	end
