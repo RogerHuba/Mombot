@@ -2,7 +2,7 @@
 	gosub :combat~init 
 
 
-	setVar $BOT~help[1]   $BOT~tab&" density {kill} {escape:#} {photon} {pel} {call} "
+	setVar $BOT~help[1]   $BOT~tab&" density {kill} {escape:#} {photon} {pel} {call} {holo}"
 	setVar $BOT~help[2]   $BOT~tab&"   - Density scans until it sees ship or planet and "
 	setVar $BOT~help[3]   $BOT~tab&"     then performs an action  "
 	setVar $BOT~help[4]   $BOT~tab&"             "
@@ -10,17 +10,18 @@
 	setVar $BOT~help[6]   $BOT~tab&"        {escape} - will escape to home sector "
 	setVar $BOT~help[7]   $BOT~tab&"      {escape:#} - will escape to sector provided"
 	setVar $BOT~help[8]   $BOT~tab&"        {photon} - photon sector"
-	setVar $BOT~help[9]   $BOT~tab&"          {call} - calls saveme"
-	setVar $BOT~help[10]  $BOT~tab&"           {pel} - photon, enter, land"
-	setVar $BOT~help[11]  $BOT~tab&"         {pel:#} - pel with planet number"
-	setVar $BOT~help[12]  $BOT~tab&" {density:value} - only react to density changes of this "
-	setVar $BOT~help[13]  $BOT~tab&"                   value or higher. Default is 40."
-	setVar $BOT~help[14]  $BOT~tab&"                  "
-	setVar $BOT~help[15]  $BOT~tab&"      Examples:   "
-	setVar $BOT~help[16]  $BOT~tab&"             >density kill call escape:1922"
-	setVar $BOT~help[17]  $BOT~tab&"             >density pel density:500"
-	setVar $BOT~help[18]  $BOT~tab&"             >density pel:10 "
-	setVar $BOT~help[19]  $BOT~tab&"    "
+	setVar $BOT~help[9]   $BOT~tab&"          {holo} - holoscan sector and broadcast"
+	setVar $BOT~help[10]  $BOT~tab&"          {call} - calls saveme"
+	setVar $BOT~help[11]  $BOT~tab&"           {pel} - photon, enter, land"
+	setVar $BOT~help[12]  $BOT~tab&"         {pel:#} - pel with planet number"
+	setVar $BOT~help[13]  $BOT~tab&" {density:value} - only react to density changes of this "
+	setVar $BOT~help[14]  $BOT~tab&"                   value or higher. Default is 40."
+	setVar $BOT~help[15]  $BOT~tab&"                  "
+	setVar $BOT~help[16]  $BOT~tab&"      Examples:   "
+	setVar $BOT~help[17]  $BOT~tab&"             >density kill call escape:1922"
+	setVar $BOT~help[18]  $BOT~tab&"             >density pel density:500"
+	setVar $BOT~help[19]  $BOT~tab&"             >density pel:10 "
+	setVar $BOT~help[20]  $BOT~tab&"             >density photon holo"
 	gosub :bot~helpfile
 
 
@@ -56,6 +57,22 @@
 	setvar $kill false
 	if ($pos > 0)
 		setvar $kill true
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " holo "
+	setvar $holo false
+	if ($pos > 0)
+		setvar $holo true
+		if (CURRENTSCANTYPE <> "2")
+			setVar $SWITCHBOARD~message "Can't holoscan without a holoscanner.  Duh.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+		if ((CURRENTTURNS <= 0) and ($player~unlimitedGame <> true))
+			setVar $SWITCHBOARD~message "Can't holoscan without turns.*"
+			gosub :switchboard~switchboard
+			halt
+		end
 	end
 
 	getWordPos " "&$bot~user_command_line&" " $pos " escape "
@@ -147,9 +164,9 @@
 	end
 
 	setVar $message "Density Trigger running in sector "&CURRENTSECTOR&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-	setVar $message $message&"*        On Density Change > "&$density_change&", I will:"
+	setVar $message $message&"*        On Density Change >= "&$density_change&", I will:"
 	if ($kill)
-		setVar $message $message&"*          Kill"
+		setVar $message $message&"*          Kill/Holokill"
 	end
 	if ($photon)
 		setVar $message $message&"*          Photon"
@@ -158,6 +175,9 @@
 		if ($pel_planet <> 0)
 			setVar $message $message&" on Planet "&$pel_planet
 		end
+	end
+	if ($holo)
+		setVar $message $message&"*          Holoscan"
 	end
 	if ($call)
 		setVar $message $message&"*          Call Saveme"
@@ -288,6 +308,10 @@
 		end
 	end
 
+	if ($holo = true)
+		gosub :holo~run
+	end
+
 	if ($pel = true)
 		setvar $pel~destination $adj[$w]
 		setvar $pel~planet $pel_planet
@@ -346,6 +370,7 @@ include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\external\photon"
 include "source\bot_includes\external\pel"
+include "source\bot_includes\external\holo"
 include "source\bot_includes\external\call"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\combat\fastattack\combat"
