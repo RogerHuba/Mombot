@@ -1,4 +1,5 @@
 :pwarpto
+:pwarp
 	if ($scan)
 		send "q *c p" $PLAYER~warpto "*ys"
 	else
