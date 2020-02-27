@@ -72,9 +72,10 @@
 	setVar $BOT~help[20]  $BOT~tab&"    {resume}       Roughly resumes last run"
 	setVar $BOT~help[21]  $BOT~tab&"    {ignore:}      Ignore corp or trader fighters"
 	setVar $BOT~help[22]  $BOT~tab&"    {skip:}        Skips sectors with this param !=0 !=''"
-	setVar $BOT~help[22]  $BOT~tab&"    {twenty}       Drop 20 fighters in density 0 sectors"
-	setVar $BOT~help[23]  $BOT~tab&"    Doesn't require ZTM but works better"
-	setVar $BOT~help[24]  $BOT~tab&"    Works best with T-Warp to reroute"
+	setVar $BOT~help[23]  $BOT~tab&"    {lock:PARAM=n} Lock grid to this param - WHICHBUB=2"
+	setVar $BOT~help[24]  $BOT~tab&"    {twenty}       Drop 20 fighters in density 0 sectors"
+	setVar $BOT~help[25]  $BOT~tab&"    Doesn't require ZTM but works better"
+	setVar $BOT~help[26]  $BOT~tab&"    Works best with T-Warp to reroute"
 
 	gosub :bot~helpfile
 
@@ -199,6 +200,33 @@
 		replaceText $bot~user_command_line " skip:" & $skipparam " "
 		upperCase $skipparam
 	end
+
+	getWordPos $bot~user_command_line $pos "lock:"
+	if ($pos > 0)
+		getText $bot~user_command_line $lockparamtemp "lock:" " "
+
+		if ($lockparamtemp = "")
+			setVar $bot~user_command_line $bot~user_command_line & " "
+			getText $bot~user_command_line $lockparamtemp "lock:" " "
+			
+		end
+		replaceText $bot~user_command_line " lock:" & $lockparamtemp & " " " "
+		replaceText $bot~user_command_line " lock:" & $lockparamtemp " "
+
+		setVar $temp $lockparamtemp
+		
+		replaceText $temp "=" " "
+		getWord $temp $lockparam 1
+		getWord $temp $lockvalue 2
+		if ($lockparam = "") or ($lockvalue = "")
+			setVar $SWITCHBOARD~message "Issue with Lock syntax try LOCK:WHICHBUB=2*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		upperCase $lockparam
+	end
+
+	
 
 	getWordPos $bot~user_command_line $pos "a1"
 	if ($pos > 0)
@@ -631,6 +659,18 @@
 				
 			end
 
+			if ($lockparam <> "")
+				getSectorParameter $adj $lockparam $lockChk
+				if ($lockChk = "")
+					setVar $lockChk 0
+				end
+				
+				if ($lockChk <> $lockvalue)
+					goto :Next_ADJ_Please
+
+				end
+				
+			end
 
 			# Log anything interesting
 
@@ -900,6 +940,16 @@
 										setVar $skipChk 0
 									end
 									if ($skipChk <> 0)
+										setVar $skipWarp 1
+									end
+								end
+
+								if ($lockparam <> "")
+									getSectorParameter $adj $lockparam $lockChk
+									if ($lockChk = "")
+										setVar $lockChk 0
+									end
+									if ($lockChk <> $lockvalue)
 										setVar $skipWarp 1
 									end
 								end
