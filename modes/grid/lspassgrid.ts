@@ -35,7 +35,7 @@
 	#						It's a good idea to update your deployed limp data, as the the Gridder will report
 	#						if, for example, an adjacent possibly has someone cloaked.
 	#
-	#		Notes:          Modified quikstats to change $player~turns to 68536, if $UNLIM ='s TRUE
+	#		Notes:          Modified quikstats to change CURRENTTURNS to 68536, if $UNLIM ='s TRUE
 	#                       Had to use two Arrays: $DENS and $ANOM for: Adj Warp Count, and
 	#                       Anomoly readings in adj sectors as TWX is more than a little retarded
 	#                       (SECTOR.ANOMOLY[idx] doesn't work, and SECTOR.WARPCOUNT isn't accurate)
@@ -152,7 +152,7 @@
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	if ($PLAYER~CREDITS < 10000)
+	if (CURRENTCREDITS < 10000)
 		
 		setVar $SWITCHBOARD~message "Must At Least Have 10,000 creds.*"
 		gosub :SWITCHBOARD~switchboard
@@ -431,7 +431,7 @@
 		setVar $maxFigAttack 9999
 	end
 
-	while ($player~TURNS > $Turn_Limit)
+	while (CURRENTTURNS > $Turn_Limit)
 		:To_The_Top
 		gosub :player~quikstats
 		setVar $anon_ptr 1
@@ -468,7 +468,7 @@
 				end
 			end
 			if ($restock = 1)
-				if ($player~CREDITS < 100000)
+				if (CURRENTCREDITS < 100000)
 					send ("'["&$TagLineB&"] Restocking halted as credits low*")
 					setVar $restock 0
 				end
@@ -1039,24 +1039,24 @@
 
 									gosub :player~quikstats
 									if ($player~total_holds <> $player~ore_holds) AND ($TRACKER = 0)
-										if ($player~CREDITS < 10000)
+										if (CURRENTCREDITS < 10000)
 											Echo "**" & $TAGLINEc & " " & " Appear To Be Out of Funds for ORE purchase.**"
-										elseif (($UNLIM = FALSE) AND ($player~turns < 1))
+										elseif (($UNLIM = FALSE) AND (CURRENTTURNS < 1))
 											Echo "**" & $TAGLINEc & " " & " Appear To Be Out Turns. Photon'd Maybe??**"
 										else
 											Echo "**" & $TAGLINEc & " " & " Not Enough ORE to continue.**"
 										end
 										halt
 									elseif ($TRACKER) AND ($player~ore_holds < ($player~total_holds - $EQU_MIN))
-										if ($player~CREDITS < 10000)
+										if (CURRENTCREDITS < 10000)
 											Echo "**" & $TAGLINEc & " " & " Appear To Be Out of Funds for ORE purchase.**"
-										elseif (($UNLIM = FALSE) AND ($player~turns < 1))
+										elseif (($UNLIM = FALSE) AND (CURRENTTURNS < 1))
 											Echo "**" & $TAGLINEc & " " & " Appear To Be Out Turns. Photon'd Maybe??**"
 										else
 											Echo "**" & $TAGLINEc & " " & " Not Enough ORE to continue.**"
 										end
 										halt
-									elseif ($player~CREDITS < 10000)
+									elseif (CURRENTCREDITS < 10000)
 										Echo "**" & $TAGLINEc & " " & " Too Few Credits to continue.**"
 										halt
 									end
@@ -1231,7 +1231,7 @@
 	end
 
 	if ($UNLIM = 0)
-		if ($player~turns <= $Turn_Limit)
+		if (CURRENTTURNS <= $Turn_Limit)
 			send "'["&$TagLineB&"] Turn Limit Reached, Halting*"
 		end
 	else
@@ -1342,7 +1342,7 @@
 	if ($UNLIM)
 		setVar $Window_TXT ($Window_TXT & " Turns     : Unlimited*")
 	else
-		setVar $CashAmount $player~TURNS
+		setVar $CashAmount CURRENTTURNS
 		gosub :CommaSize
 		setVar $Window_TXT ($Window_TXT & " Turns     : " & $CashAmount)
 		setVar $CashAmount $Turn_Limit
@@ -1350,7 +1350,7 @@
 		setVar $Window_TXT ($Window_TXT & " (Turn Limit " & $CashAmount & ")*")
 	end
 
-	setVar $CashAmount $player~CREDITS
+	setVar $CashAmount CURRENTCREDITS
 	gosub :CommaSize
 	setVar $Window_TXT ($Window_TXT & " Credits   : $" & $CashAmount & "*")
 
