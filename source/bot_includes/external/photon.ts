@@ -1,11 +1,8 @@
-# $with~amount is not required, but can be set for specific amounts #
+# $photon~sector is required#
 
 :run
 :photon
 
-	if ($amount = "0")
-		setvar $sector ""
-	end	
 	setVar $BOT~command "photon"
 	setVar $BOT~user_command_line " photon "&$sector
 	setVar $BOT~parm1 $sector
@@ -25,5 +22,5 @@
 	load "scripts\mombot\commands\general\photon.cts"
 	setEventTrigger		photonended		:photonended "SCRIPT STOPPED" "scripts\mombot\commands\general\photon.cts"
 	pause
-	:withended
+	:photonended
 return

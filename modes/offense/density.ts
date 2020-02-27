@@ -2,47 +2,31 @@
 	gosub :combat~init 
 
 
-	setVar $BOT~help[1]  $BOT~tab&" density {kill} {escape:sectornumber} {photon} "
-	setVar $BOT~help[2]  $BOT~tab&"   - Density scans until it sees ship or planet and "
-	setVar $BOT~help[3]  $BOT~tab&"     then performs an action  "
-	setVar $BOT~help[4]  $BOT~tab&"             "
-	setVar $BOT~help[5]  $BOT~tab&"       {kill} - will kill/holokill "
-	setVar $BOT~help[6]  $BOT~tab&"     {escape} - will escape to sector provided "
-	setVar $BOT~help[7]  $BOT~tab&"     {photon} - photon sector"
-	setVar $BOT~help[8]  $BOT~tab&"    "
+	setVar $BOT~help[1]   $BOT~tab&" density {kill} {escape:#} {photon} {pel} {call} "
+	setVar $BOT~help[2]   $BOT~tab&"   - Density scans until it sees ship or planet and "
+	setVar $BOT~help[3]   $BOT~tab&"     then performs an action  "
+	setVar $BOT~help[4]   $BOT~tab&"             "
+	setVar $BOT~help[5]   $BOT~tab&"          {kill} - will kill/holokill "
+	setVar $BOT~help[6]   $BOT~tab&"        {escape} - will escape to home sector "
+	setVar $BOT~help[7]   $BOT~tab&"      {escape:#} - will escape to sector provided"
+	setVar $BOT~help[8]   $BOT~tab&"        {photon} - photon sector"
+	setVar $BOT~help[9]   $BOT~tab&"          {call} - calls saveme"
+	setVar $BOT~help[10]  $BOT~tab&"           {pel} - photon, enter, land"
+	setVar $BOT~help[11]  $BOT~tab&"         {pel:#} - pel with planet number"
+	setVar $BOT~help[12]  $BOT~tab&" {density:value} - only react to density changes of this "
+	setVar $BOT~help[13]  $BOT~tab&"                   value or higher. Default is 40."
+	setVar $BOT~help[14]  $BOT~tab&"                  "
+	setVar $BOT~help[15]  $BOT~tab&"      Examples:   "
+	setVar $BOT~help[16]  $BOT~tab&"             >density kill call escape:1922"
+	setVar $BOT~help[17]  $BOT~tab&"             >density pel density:500"
+	setVar $BOT~help[18]  $BOT~tab&"             >density pel:10 "
+	setVar $BOT~help[19]  $BOT~tab&"    "
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Density Trigger"
 	gosub :BOT~banner
 
 	setVar $PLAYER~save TRUE
-
-
-	getWordPos " "&$bot~user_command_line&" " $pos " kill "
-	setvar $kill false
-	if ($pos > 0)
-		setvar $kill true
-	end
-
-	getWordPos $bot~user_command_line $pos "escape:"
-	if ($pos > 0)
-		setvar $escape true
-		getText $bot~user_command_line&" " $escape_sector "escape:" " "
-
-		isNumber $test $escape_sector
-		
-		if ($test <> true)
-			setVar $SWITCHBOARD~message "Escape sector should be a number.*"
-			gosub :switchboard~switchboard
-			halt
-		end
-	end
-
-	getWordPos " "&$bot~user_command_line&" " $pos " photon "
-	setvar $photon false
-	if ($pos > 0)
-		setvar $photon true
-	end
 
 	gosub :player~quikstats
 	gosub :ship~getshipstats
@@ -52,8 +36,9 @@
 	setArray $dens 7
 	setArray $adjsec 7
 	setArray $density 7
+	setvar $looking_for_planet false
+
 	if ($startingLocation = "Command")
-		goto :checkndtorps
 	elseif ($startingLocation = "Planet")
 		gosub :planet~getplanetinfo
 		send "q"
@@ -69,7 +54,100 @@
 		halt
 	end
 
-	goto :check_dens
+	getWordPos " "&$bot~user_command_line&" " $pos " kill "
+	setvar $kill false
+	if ($pos > 0)
+		setvar $kill true
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " escape "
+	setvar $escape false
+	if ($pos > 0)
+		setvar $escape true
+		setvar $escape_sector $map~home_sector
+		getWordPos $bot~user_command_line $pos "escape:"
+		if ($pos > 0)
+			getText $bot~user_command_line&" " $escape_sector "escape:" " "
+
+			isNumber $test $escape_sector
+			
+			if ($test <> true)
+				setVar $SWITCHBOARD~message "Escape sector should be a number.*"
+				gosub :switchboard~switchboard
+				halt
+			end
+		end
+		if ($escape_sector = 0)
+			setVar $SWITCHBOARD~message "Escape sector is not defined.  Either define when calling, or define home sector.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
+	
+	getWordPos " "&$bot~user_command_line&" " $pos " photon "
+	setvar $photon false
+	if ($pos > 0)
+		setvar $photon true
+		if (CURRENTPHOTONS <= 0)
+			setVar $SWITCHBOARD~message "Without a photon, you can't run photon option.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
+
+
+	getWordPos " "&$bot~user_command_line&" " $pos " pel "
+	setvar $pel false
+	if ($pos > 0)
+		setvar $pel true
+		setvar $pel_planet 0
+		getWordPos $bot~user_command_line $pos "pel:"
+		if ($pos > 0)
+			getText $bot~user_command_line&" " $pel_planet "pel:" " "
+
+			isNumber $test $pel_planet
+			
+			if ($test <> true)
+				setVar $SWITCHBOARD~message "Pel planet should be a number.*"
+				gosub :switchboard~switchboard
+				halt
+			end
+		end
+
+		if (CURRENTPHOTONS <= 0)
+			setVar $SWITCHBOARD~message "Without a photon, you can't run pel option.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+
+		if (($pel_planet = 0) and (CURRENTPLANETSCANNER = "Yes"))
+			setVar $SWITCHBOARD~message "Pel option can't be run with a planet scanner onboard unless you define a planet number.  Believe me, it'd just be messy.*"
+			gosub :SWITCHBOARD~switchboard
+			halt		
+		end
+
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " call "
+	setvar $call false
+	if ($pos > 0)
+		setvar $call true
+	end
+
+	getWordPos $bot~user_command_line $pos "density:"
+	setvar $density_change 40
+	if ($pos > 0)
+		getText $bot~user_command_line&" " $density_change "density:" " "
+
+		isNumber $test $density_change
+		
+		if ($test <> true)
+			setVar $SWITCHBOARD~message "Density change amount should be a number.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
+
 
 :check_dens
 	setVar $mm 0
@@ -107,7 +185,7 @@
 		goto :alldone
 	elseif ($density[$w] <> $dens[$w])
 		setVar $diff ($density[$w] - $den[$w])
-		if ($diff > 39)
+		if ($diff >= $density_change)
 			gosub :do_action
 			goto :dtorp_end
 		else
@@ -151,7 +229,7 @@
 
 :dtorp_end
 	if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
-		if ($escape <> true)
+		if (($escape <> true) and ($call <> true))
 			gosub :planet~landingsub
 		end
 	end
@@ -160,7 +238,7 @@
 
 :do_action
 	if (($photon = true) and (CURRENTPHOTONS > 0))
-		setvar $sector $adj[$w]
+		setvar $photon~sector $adj[$w]
 		gosub :photon~run
 	end
 
@@ -188,20 +266,39 @@
 		end
 	end
 
+	if ($pel = true)
+		setvar $pel~destination $adj[$w]
+		setvar $pel~planet $pel_planet
+		gosub :pel~run
+	end
+
+	if ($call = true)
+		gosub :call~run
+	end
+
 	if ($escape = true)
 		killalltriggers
 
 		setVar $PLAYER~WARPTO $escape_sector
 		if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
-			gosub :planet~landingsub
-			gosub :PLAYER~pwarp
-		else
-			gosub :PLAYER~twarp
-			if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
-				setvar $switchboard~message "Could not escape. - ["&$player~msg&"]*"
-				gosub :switchboard~switchboard
-				halt
+			gosub :player~quikstats
+			if (($player~current_prompt <> "Citadel") and ($player~current_prompt <> "Planet"))
+				gosub :planet~landingsub
 			end
+			gosub :player~quikstats
+			if ($player~current_prompt = "Citadel")
+				gosub :PLAYER~pwarp
+			else
+				goto :twarp
+			end
+		else
+			:twarp
+				gosub :PLAYER~twarp
+				if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+					setvar $switchboard~message "Could not escape. - ["&$player~msg&"]*"
+					gosub :switchboard~switchboard
+					halt
+				end
 		end
 	end
 
@@ -226,6 +323,8 @@ include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\external\photon"
+include "source\bot_includes\external\pel"
+include "source\bot_includes\external\call"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\combat\fastattack\combat"
 include "source\bot_includes\combat\holokill\combat"
