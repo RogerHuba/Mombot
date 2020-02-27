@@ -147,23 +147,23 @@
 	end
 
 	setVar $message "Density Trigger running in sector "&CURRENTSECTOR&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-	setVar $message $message&"*        On density change > &$density_change, we will:"
+	setVar $message $message&"*        On Density Change > "&$density_change&", I will:"
 	if ($kill)
-		setVar $message $message&"*        Kill"
+		setVar $message $message&"*          Kill"
 	end
 	if ($photon)
-		setVar $message $message&"*        Photon"
+		setVar $message $message&"*          Photon"
 	elseif ($pel)
-		setVar $message $message&"*        Photon, Enter, Land"
+		setVar $message $message&"*          Photon, Enter, Land"
 		if ($pel_planet <> 0)
-			setVar $message $message&" on planet "&$pel_planet
+			setVar $message $message&" on Planet "&$pel_planet
 		end
 	end
 	if ($call)
-		setVar $message $message&"*        Call saveme"
+		setVar $message $message&"*          Call Saveme"
 	end
 	if ($escape)
-		setVar $message $message&"*        Escape to sector "&$escape_sector
+		setVar $message $message&"*          Escape to Sector "&$escape_sector
 	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	setvar $switchboard~message $message
