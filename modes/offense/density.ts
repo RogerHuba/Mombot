@@ -45,6 +45,8 @@
 	end
 
 	gosub :player~quikstats
+	gosub :ship~getshipstats
+
 	setVar $startingLocation $player~current_prompt
 	setArray $adj 7
 	setArray $dens 7
@@ -155,7 +157,7 @@
 	end
 	halt
 
-	
+
 :do_action
 	if (($photon = true) and (CURRENTPHOTONS > 0))
 		setvar $sector $adj[$w]
@@ -227,5 +229,6 @@ include "source\bot_includes\external\photon"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\combat\fastattack\combat"
 include "source\bot_includes\combat\holokill\combat"
+include "source\bot_includes\ship\getshipstats\ship"
 
 
