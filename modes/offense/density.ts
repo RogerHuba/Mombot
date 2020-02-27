@@ -116,11 +116,6 @@
 	end
 
 :firechk
-	add $mm 1
-	if ($mm = 150)
-		send "'{" $bot~bot_name "} - WARNING  Density Foton Running at My TA!!!*"
-		setVar $mm 0
-	end
 	setVar $y 0
 	send "sz*"
 	waiton "Relative Density Scan"
