@@ -149,12 +149,13 @@
 
 :dtorp_end
 	if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
-		gosub :planet~landingsub
-		halt
-	else
-		halt
+		if ($escape <> true)
+			gosub :planet~landingsub
+		end
 	end
+	halt
 
+	
 :do_action
 	if (($photon = true) and (CURRENTPHOTONS > 0))
 		setvar $sector $adj[$w]
