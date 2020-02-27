@@ -255,15 +255,18 @@ while (($i <= SECTORS) and ($done <> true))
 			setvar $bot~parmameter $sector_params[$j]
 			lowercase $bot~parmameter
 			getwordpos $bot~parmameter $pos "port.f"
-			if ($pos > 0)
+			getwordpos $bot~parmameter $pos2 "ports.f"
+			if (($pos > 0) or ($pos2 > 0))
 				setvar $value port.fuel[$i]
 			else
 				getwordpos $bot~parmameter $pos "port.o"
-				if ($pos > 0)
+				getwordpos $bot~parmameter $pos2 "ports.o"
+				if (($pos > 0) or ($pos2 > 0))
 					setvar $value port.org[$i]
 				else
 					getwordpos $bot~parmameter $pos "port.e"
-					if ($pos > 0)
+					getwordpos $bot~parmameter $pos2 "ports.e"
+					if (($pos > 0) or ($pos2 > 0))
 						setvar $value port.equip[$i]
 					end
 				end
