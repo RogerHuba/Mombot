@@ -232,7 +232,7 @@ return
 		echo $scripts[$a] "*"
 		cuttext $scripts[$a] $ss 1 3
 
-		getWordPos $scripts[$a] $mombos "mombot"
+		getWordPos $scripts[$a] $mombos "ombot"
 		if ($mombos > 0)
 			echo "found: " $scripts[$a] "*"
 		end
@@ -248,7 +248,10 @@ return
 :startbot
 	setvar $do_not_resuscitate false
 	savevar $do_not_resuscitate
-	load "scripts\mombot\" & $momname
+	if ($monname = "")
+		setVar $monname "mombot.cts"
+	end
+	load "scripts\Mombot\mombot.cts"
 	halt
 return
 
