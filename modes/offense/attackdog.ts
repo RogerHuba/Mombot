@@ -168,9 +168,25 @@
 
 		killalltriggers
 		setTextLineTrigger checkscan :checkscan "-=-| Holo Scan |-=-"
+		if ($player~current_prompt = "Command")
+			gosub :setkilltriggers
+		end
 		pause
 
 	:checkscan
+		killtrigger liftsoff
+		killtrigger warps
+		killtrigger power
+		killtrigger wave
+		killtrigger moved
+		killtrigger deffig
+		killtrigger secgun
+		killtrigger ig
+		killtrigger planet
+		killtrigger atomic
+		killtrigger exits
+		killtrigger enters
+		
 		setTextLineTrigger getsector :getsector 		"Sector  :"
 		setTextLineTrigger gettrader :gettrader 		"Traders :"
 		setTextLineTrigger getphoton :getphoton 		"Photon residue detected!"
