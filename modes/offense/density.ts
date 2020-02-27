@@ -190,6 +190,7 @@
 
 		setVar $PLAYER~WARPTO $escape_sector
 		if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
+			gosub :planet~landingsub
 			gosub :PLAYER~pwarp
 		else
 			gosub :PLAYER~twarp
@@ -212,6 +213,8 @@ include "source\bot_includes\combat\init\combat"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\player\pwarp\player"
 include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
@@ -220,4 +223,8 @@ include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\external\photon"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\combat\holokill\combat"
+
 
