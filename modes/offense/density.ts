@@ -23,8 +23,6 @@
 	setVar $BOT~help[19]  $BOT~tab&"    "
 	gosub :bot~helpfile
 
-	setVar $BOT~script_title "Density Trigger"
-	gosub :BOT~banner
 
 	setVar $PLAYER~save TRUE
 
@@ -147,6 +145,30 @@
 			halt
 		end
 	end
+
+	setVar $message "Density Trigger running in sector "&CURRENTSECTOR&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	setVar $message $message&"*        On density change > &$density_change, we will:
+	if ($kill)
+		setVar $message $message&"*        Kill"
+	end
+	if ($photon)
+		setVar $message $message&"*        Photon"
+	elseif ($pel)
+		setVar $message $message&"*        Photon, Enter, Land"
+		if ($pel_planet <> 0)
+			setVar $message $message&" on planet "&$pel_planet
+		end
+	end
+	if ($call)
+		setVar $message $message&"*        Call saveme"
+	end
+	if ($escape)
+		setVar $message $message&"*        Escape to sector "&$escape_sector
+	end
+	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
+	setvar $switchboard~message $message
+	gosub :switchboard~switchboard
+
 
 
 :check_dens
