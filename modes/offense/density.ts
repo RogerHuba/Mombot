@@ -64,7 +64,7 @@
 	if ($pos > 0)
 		setvar $holo true
 		if (CURRENTSCANTYPE <> "LRS Holo")
-			setVar $SWITCHBOARD~message "Can't holoscan without a holoscanner.  Duh.*"
+			setVar $SWITCHBOARD~message "Can't holoscan without a holoscanner.  Duh."&CURRENTSCANTYPE&"*"
 			gosub :switchboard~switchboard
 			halt
 		end
