@@ -23,6 +23,7 @@ reqRecording
 	setVar $BOT~help[11]  $BOT~tab&"     - [fastkill]  = does kill mac without checking"
 	setVar $BOT~help[12]  $BOT~tab&"     - [defender]  = sets and lifts IG capable defender"
 	setVar $BOT~help[13]  $BOT~tab&"     - [perfect]   = Only drops on adjacent when it as single option"
+	setVar $BOT~help[14]  $BOT~tab&"     - [density]   = Drops adjacent, runs density photon"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Dropper"
@@ -162,6 +163,19 @@ reqRecording
 		setVar $perfect FALSE
 	end
 
+	getWordPos $bot~user_command_line $pos "density"
+	if ($pos > 0)
+		setVar $density TRUE
+		setVar $dropDescription "Adjacent"
+		if ($Player~Photons < 1)
+			setVar $SWITCHBOARD~message "No Photons on Board!!*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+	else
+		setVar $density FALSE
+	end
+
 	setVar $randomAttack TRUE
 
 	gosub :player~quikstats
@@ -219,6 +233,9 @@ reqRecording
 	end
 	if ($perfect = 1)
 		setVar $message $message&"*          Perfect: Will only drop adjacent on perfect firing solution."
+	end
+	if ($density = 1)
+		setVar $message $message&"*          Density: Dropping in next door with density foton."
 	end
 	
 	if ($randomAttack)
@@ -377,6 +394,9 @@ reqRecording
 			elseif ($dropDescription = "Adjacent")			
 				gosub :findAdjacent
 				goSub :attemptDrop
+				if ($density = 1)
+					goSub :densityDrop
+				end
 				if ($defender = 1)
 					killAllTriggers
 					goSub :liftDefenders
@@ -868,6 +888,25 @@ return
 
 return
 
+# ============================== DENSITY PHOTON =========================
+:densityDrop
+
+	waitfor "Citadel command"
+	
+	setVar $BOT~command "density"
+	setVar $BOT~user_command_line " density photon "
+	setVar $BOT~parm1 "photon"
+	setVar $BOT~parm2 ""
+	saveVar $BOT~parm1
+	saveVar $BOT~parm2
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	load "scripts\mombot\modes\offense\density.cts"
+	setEventTrigger        densityended        :densityended "SCRIPT STOPPED" "scripts\mombot\modes\offense\density.cts"
+	pause
+	:densityended
+		killalltriggers
+return
 
 # ============================== DEFENDER ROUTINES ==============================
 :waitforrestart
