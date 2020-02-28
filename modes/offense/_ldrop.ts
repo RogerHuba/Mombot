@@ -187,7 +187,7 @@ setVar $moveFigMacro ""
 					setVar $moved $moved + $thisMove
 				end
 
-				setVar $moveFigMacro $moveFigMacro & "q m n t* q fz " & $moved & "* * zc" & $dropftrsType & " * l" & $planet~planet & " *m* t * c"
+				setVar $moveFigMacro $moveFigMacro & "q m n t* q fz " & $moved & "* * zc" & $dropftrsType & " * l" & $planet~planet & " *m* t * ccq"
 			end
 
 		end
@@ -449,17 +449,38 @@ setVar $moveFigMacro ""
 	:ldrop_in_sector
 		killalltriggers
 		if ($dropftrs)
+echo "### DROPPING FIGS*"
 			send $moveFigMacro
+			gosub :player~quikstats
+			send "s"
 		end
 
 		if ($kill)
+	echo "### KILL IT*"
+	echo "### KILL IT*"
+	echo "### KILL IT*"
+	echo "### KILL IT*"
 			gosub :targeting~scanitcitkill
+		echo "### done IT*"
+		echo "### done IT*"
+		echo "### done IT*"
+		echo "### done IT*"
+
 		else
 			send "s* "
 		end
+				echo "### holo IT*"
+				echo "### holo IT*"
+				echo "### holo IT*"
+
 		gosub :holooptions
 		if ($return)
 			if ($dropftrs)
+							echo "### grab figs IT*"
+							echo "### grab figs IT*"
+							echo "### grab figs IT*"
+							echo "### grab figs IT*"
+
 				setVar $BOT~command "movefig"
 				setVar $BOT~user_command_line " movefig p "& $dropFigQuant 
 				setVar $BOT~parm1 $p
@@ -566,3 +587,5 @@ include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\combat\holokill\combat"
+
+include "source\bot_includes\ship\getshipstats\ship"
