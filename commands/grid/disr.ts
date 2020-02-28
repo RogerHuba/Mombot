@@ -27,28 +27,31 @@
 	setVar 		$planet~planet					0
 	setVar		$ScanIT					TRUE
 	setVar		$Bursting				FALSE
+	setVar		$Trigger				FALSE
 	setVar		$Start_Prompt			""
 	setVar 		$Total_Mines_Poofed		0
 	setArray	$ADJ2HiT				6 1
 	#			ADJ2HiT Break Down - 1st Dimension: ADdj Sector Numbers; 2nd Dimension: Armids Scanned/Remaining
 
-	setVar $BOT~help[1]  $BOT~tab&" disr {sector} {nscan} {burst}"
+	setVar $BOT~help[1]  $BOT~tab&" disr {sector} {nscan} {burst} {trigger}"
 	setVar $BOT~help[2]  $BOT~tab&"   "
 	setVar $BOT~help[3]  $BOT~tab&"      {sector} - Disrupt mines in adj sector"
 	setVar $BOT~help[4]  $BOT~tab&"       {burst} - Sends only 1 disruptor into each sector"
 	setVar $BOT~help[5]  $BOT~tab&"       {nscan} - Do not perform holo scan - otherwise it"
 	setVar $BOT~help[6]  $BOT~tab&"                 will auto detect enemy armids"
-	setVar $BOT~help[7]  $BOT~tab&"   "
-	setVar $BOT~help[8]  $BOT~tab&"         Start prompts:"
-	setVar $BOT~help[9]  $BOT~tab&"                         [Command Prompt]"
-	setVar $BOT~help[10] $BOT~tab&"                         [Planet/Citadel Prompt(s)]"
-	setVar $BOT~help[11] $BOT~tab&"                         [Computer Prompt]"
-	setVar $BOT~help[12] $BOT~tab&"                         [StarDock Prompt]"
-	setVar $BOT~help[13] $BOT~tab&"                         [Port Prompt]"
-	setVar $BOT~help[14] $BOT~tab&"   "
-	setVar $BOT~help[15] $BOT~tab&"      Default action: disrupt all adjs, with holo scan."
+	setVar $BOT~help[7]  $BOT~tab&"     {trigger} - Holds fire until photon fire"
+	setVar $BOT~help[8]  $BOT~tab&"                  >disr [sector] trigger"
+	setVar $BOT~help[9]  $BOT~tab&"   "
+	setVar $BOT~help[10]  $BOT~tab&"         Start prompts:"
+	setVar $BOT~help[11]  $BOT~tab&"                         [Command Prompt]"
+	setVar $BOT~help[12] $BOT~tab&"                         [Planet/Citadel Prompt(s)]"
+	setVar $BOT~help[13] $BOT~tab&"                         [Computer Prompt]"
+	setVar $BOT~help[14] $BOT~tab&"                         [StarDock Prompt]"
+	setVar $BOT~help[15] $BOT~tab&"                         [Port Prompt]"
 	setVar $BOT~help[16] $BOT~tab&"   "
-	setVar $BOT~help[17] $BOT~tab&"                             Author - Lonestar"
+	setVar $BOT~help[17] $BOT~tab&"      Default action: disrupt all adjs, with holo scan."
+	setVar $BOT~help[18] $BOT~tab&"   "
+	setVar $BOT~help[19] $BOT~tab&"                             Author - Lonestar"
 	gosub :bot~helpfile
 
 	isNumber $tst $bot~MODE
@@ -105,6 +108,10 @@
 		elseif ($bot~parm2 = "burst")
 			setVar $ScanIT 		FALSE
 			setVar $Bursting	TRUE
+		elseif ($bot~parm2 = "trigger")
+			setVar $ScanIT 		FALSE
+			setVar $Bursting	FALSE
+			setVar $trigger		TRUE
 		end
 	end
 
@@ -186,6 +193,13 @@
 		end
 	end
 
+	if ($Trigger = TRUE)
+		send "'Trigger has been set! I Fire when you Fire!*"
+		setTextLineTrigger photonTrigger :photonTrigger "just launched a Photon Torpedo!"
+		pause
+			:photonTrigger
+			killAllTriggers
+	end
 
 	gosub :STAR_BURST
 
