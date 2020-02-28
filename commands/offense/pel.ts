@@ -4,7 +4,9 @@
 	setVar $BOT~help[2] $BOT~tab&"      Used to launch a Photon into an adjacent Sector, Enter"
 	setVar $BOT~help[3] $BOT~tab&"      Photon'd Sector and land on a Planet."
 	setVar $BOT~help[4] $BOT~tab&"      "
-	setVar $BOT~help[5] $BOT~tab&"      pel [Sector] [PlanetNumber]"
+	setVar $BOT~help[5] $BOT~tab&"      pel [Sector] [PlanetNumber] {llll}"
+	setVar $BOT~help[6] $BOT~tab&"      "
+	setVar $BOT~help[7] $BOT~tab&"      {llll} - spams land for 5 seconds"
 
 	gosub :bot~helpfile
 
