@@ -64,11 +64,7 @@
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	if (($MAP~home_sector = 0) OR ($MAP~home_sector = ""))
-		setvar $map~home_sector $player~current_sector
-		savevar $map~home_sector
-	end
-
+	setvar $map~home_sector currentsector
 
 
 	getwordpos " "&$bot~user_command_line&" " $pos " f "
@@ -226,8 +222,8 @@
 
 		setTextLineTrigger 10 :scan "warps into the sector."
 		setTextLineTrigger 11 :scan " lifts off from"
-		setTextLineTrigger 12 :scan "Limpet mine in "&$player~CURRENT_SECTOR
-		setTextLineTrigger 13 :scan "Deployed Fighters Report Sector "&$player~CURRENT_SECTOR&":"
+		setTextLineTrigger 12 :scan "Limpet mine in "&currentsector
+		setTextLineTrigger 13 :scan "Deployed Fighters Report Sector "&currentsector&":"
 		setTextLineTrigger 14 :scan "Quasar Cannon on"
 		setTextLineTrigger 15 :scan "Shipboard Computers The Interdictor Generator on"
 		setTextLineTrigger 16 :scan " is powering up weapons systems!"
@@ -250,7 +246,7 @@
 		:head_home 
 		gosub :player~quikstats
 		echo ansi_2&"*Checking status after inactivity..*"
-		if ($player~current_sector <> $map~home_sector)
+		if (currentsector <> $map~home_sector)
 			setvar $switchboard~message "No activity in an hour, so heading home.*"
 			gosub :switchboard~switchboard
 			gosub :navigate~navigate_to_limp
@@ -300,6 +296,9 @@
 			gosub :doholo
 		end
 
+		if ((SECTOR.LIMPETS.QUANTITY[currentsector] <= 0) and (currentlimpets > 0))
+			gosub :doMines
+		end
 		setvar $photon~last_sector $photon~sector
 		setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
 		gosub :navigate~navigate_away
@@ -438,6 +437,21 @@ return
 		killtrigger holoend1
 return
 
+:doMines
+	setVar $BOT~command "mines"
+	setVar $BOT~user_command_line " mines 2"
+	setvar $bot~parm1 "2"
+
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	saveVar $bot~parm1 
+
+	load "scripts\mombot\commands\grid\mines.cts"
+	setEventTrigger        minesend        :minesend "SCRIPT STOPPED" "scripts\mombot\commands\grid\mines.cts"
+	pause
+	:minesend
+		killtrigger minesend
+return
 
 
 #INCLUDES:
@@ -452,7 +466,7 @@ include "source\bot_includes\ship\getshipcapstats\ship"
 include "source\bot_includes\ship\loadshipinfo\ship"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\sector\getsectordata\sector"
-include "source\module_includes\navigate"
-include "source\module_includes\photon"
-include "source\module_includes\restock"
-include "source\module_includes\killing"
+include "source\module_includes\defender\navigate"
+include "source\module_includes\defender\photon"
+include "source\module_includes\defender\restock"
+include "source\module_includes\defender\killing"
