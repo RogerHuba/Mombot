@@ -112,8 +112,9 @@
 
 
 	getWordPos " "&$bot~user_command_line&" " $pos " pel "
+	getWordPos " "&$bot~user_command_line&" " $pos2 " pel:"
 	setvar $pel false
-	if ($pos > 0)
+	if ($pos > 0) or ($pos2 > 0)
 		setvar $pel true
 		setvar $pel_planet 0
 		getWordPos $bot~user_command_line $pos "pel:"
@@ -121,7 +122,7 @@
 			getText $bot~user_command_line&" " $pel_planet "pel:" " "
 
 			isNumber $test $pel_planet
-			
+
 			if ($test <> true)
 				setVar $SWITCHBOARD~message "Pel planet should be a number.*"
 				gosub :switchboard~switchboard
@@ -314,8 +315,13 @@
 
 	if ($pel = true)
 		setvar $pel~destination $adj[$w]
-		setvar $pel~planet $pel_planet
+		if ($pel_planet = 0) 
+			# Fake planet number to make script trigger - no scanners so will still land
+			setVar $pel_planet 99999
+		end
+		setvar $pel~pel_planet $pel_planet
 		gosub :pel~run
+		halt
 	end
 
 	if ($call = true)
