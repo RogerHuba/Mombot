@@ -1,8 +1,13 @@
+##############################################################################
+# requires $player~startingLocation to be set before getSectorData is called #
+##############################################################################
+
 :getSectorData
 	setVar $ENDLINE     "_ENDLINE_"
 	setVar $STARTLINE   "_STARTLINE_"
 	
-	 killalltriggers
+	killalltriggers
+
 	if ($PLAYER~startingLocation = "Citadel")
 		send "s* "
 	else
