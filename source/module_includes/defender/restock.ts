@@ -11,7 +11,7 @@
 		waitOn "Citadel treasury contains "
 		getWord CURRENTLINE $citadelCash 4
 		stripText $citadelCash ","
-		if ($citadelCash < $cashNeeded)
+		if (($citadelCash+currentcredits) < $cashNeeded)
 			send "'{" & $SWITCHBOARD~bot_name & "} - Not enough cash for mine refurbs in treasury or on hand.*"	
 			gosub :navigate~head_home
 		end
@@ -142,10 +142,10 @@
 		end
 		gosub :PLAYER~quikstats
 
-		setVar $_Limps "Max"
-		setVar $_Mines "Max"
+		#setVar $_Limps "Max"
+		#setVar $_Mines "Max"
 		setVar $_Photon "Max"
-		setVar $_Disrupt "Max"
+		#setVar $_Disrupt "Max"
 		gosub :DoPurchases
 		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
 		gosub :PLAYER~quikstats
