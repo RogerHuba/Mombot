@@ -6,7 +6,7 @@
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-	setVar $BOT~help[1]    $BOT~tab&"[delay] {plock/foton} {kill} {direct} {return} {figs:n} {0ffensive}"
+	setVar $BOT~help[1]    $BOT~tab&"[delay] {plock/foton} {kill} {direct} {return} {figs:n} {offensive}"
 	setVar $BOT~help[2]    $BOT~tab&"      "
 	setVar $BOT~help[3]    $BOT~tab&"    {plock} - plocks sector and triggers directly or after {delay}"
 	setVar $BOT~help[3]    $BOT~tab&"              if {return} is set plock cancels and returns after 5 seconds"
@@ -449,22 +449,22 @@ setVar $moveFigMacro ""
 	:ldrop_in_sector
 		killalltriggers
 		if ($dropftrs)
-echo "### DROPPING FIGS*"
+			echo "### DROPPING FIGS*"
 			send $moveFigMacro
 			gosub :player~quikstats
 			send "s"
 		end
 
 		if ($kill)
-	echo "### KILL IT*"
-	echo "### KILL IT*"
-	echo "### KILL IT*"
-	echo "### KILL IT*"
+			echo "### KILL IT*"
+			echo "### KILL IT*"
+			echo "### KILL IT*"
+			echo "### KILL IT*"
 			gosub :targeting~scanitcitkill
-		echo "### done IT*"
-		echo "### done IT*"
-		echo "### done IT*"
-		echo "### done IT*"
+			echo "### done IT*"
+			echo "### done IT*"
+			echo "### done IT*"
+			echo "### done IT*"
 
 		else
 			send "s* "

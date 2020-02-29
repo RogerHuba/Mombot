@@ -5,7 +5,7 @@
 
 :checkForVictimsFromCitadel
 	gosub :player~quikstats
-	setVar $startingLocation $player~CURRENT_PROMPT
+	setVar $player~startingLocation $player~CURRENT_PROMPT
 	gosub :sector~getSectorData
 	if ($sector~corpieCount < $sector~realTraderCount)
 		goSub :combat~fastCitadelAttack
