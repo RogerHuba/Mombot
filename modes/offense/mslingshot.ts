@@ -12,16 +12,28 @@
 	setVar $BOT~help[4]  $BOT~tab&"{waves}         - number of waves to fire once landing "
 	setVar $BOT~help[5]  $BOT~tab&"                  on planet. Default: None"
 	setVar $BOT~help[6]  $BOT~tab&"{wavesize}      - number of figs in wave. Def: 9999*"
-	setVar $BOT~help[7]  $BOT~tab&"Slingshots primary bot into sector to pgrid."
-	setVar $BOT~help[8]  $BOT~tab&"Invasion bot(s) land on the target planets "
-	setVar $BOT~help[9]  $BOT~tab&"to moth ."
+	setVar $BOT~help[7]  $BOT~tab&"{kill}          - Go into kill mode if you land ok"
+	setVar $BOT~help[8]  $BOT~tab&"Slingshots primary bot into sector to pgrid."
+	setVar $BOT~help[9]  $BOT~tab&"Invasion bot(s) land on the target planets "
+	setVar $BOT~help[10]  $BOT~tab&"to moth ."
 
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Mass Sling Shot"
 	gosub :BOT~banner
 	
-		
+	
+	getWordPos $bot~user_command_line $pos "kill"
+	if ($pos > 0)
+		setVar $kill TRUE
+		setVar $SWITCHBOARD~message "kill mode enabled!*"
+		gosub :SWITCHBOARD~switchboard
+	else
+		setVar $kill FALSE
+	end
+	replaceText $bot~user_command_line "kill " ""
+	replaceText $bot~user_command_line "kill" ""
+
 	getWord $bot~user_command_line $bot~parm1 1
 	getWord $bot~user_command_line $bot~parm2 2
 	getWord $bot~user_command_line $bot~parm3 3
@@ -86,9 +98,10 @@
 	end
 	gosub :player~quikstats
 	
-
-	setVar $startingLocation $player~CURRENT_PROMPT
-	setVar $bot~validPrompts "Citadel"
+	
+	
+	setVar $startingLocation $PLAYER~CURRENT_PROMPT
+	
 	if ($startingLocation <> "Citadel")
 		setVar $SWITCHBOARD~message "Start from the Citadel Prompt.*"
 		gosub :SWITCHBOARD~switchboard
@@ -184,6 +197,10 @@
 			gosub :checkShip
 			setVar $enter_attack_mac "*   n n z * a z " & $maxFigAttack & "* z a z " & $maxFigAttack & "*     z  *"
 			setVar $deploy_fig_mac "  f  z  1*  z  c *  d  * "
+			if ($kill)
+				setVar $targeting~PLANET $planet~planet
+				gosub :targeting~initializetargeting
+			end
 			:slingreset
 			send "'Slingshot pulled back and ready!*"
 		:startTargetingAdjacent
@@ -217,7 +234,7 @@
 			echo "#" $dropSector "#"
 			while ($w <= SECTOR.WARPINCOUNT[$dropSector])
 				getSectorParameter SECTOR.WARPSIN[$dropSector][$w] "FIGSEC" $isFigged
-echo $w ":" SECTOR.WARPSIN[$dropSector][$w] " " $isFigged " *"
+
 				if ($isFigged = TRUE)
 					setVar $adjSector SECTOR.WARPSIN[$dropSector][$w]
 					goto :donew
@@ -246,11 +263,37 @@ echo $w ":" SECTOR.WARPSIN[$dropSector][$w] " " $isFigged " *"
 				end
 				halt
 			end
-			send "m * * * c "
+			send "c"
+			if ($kill)
+				gosub :checkForVictims
+			else
+				send "s* "
+			end
+			#send "m * * * c "
 			killalltriggers
 			#gosub :checkForVictimsFromCitadel
 		halt
 
+
+
+:checkForVictims
+	gosub :player~quikstats
+	:scanit_again
+	setvar $player~startingLocation $player~current_prompt
+	gosub :sector~getSectorData
+	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+		if ($isPlanetDrop)
+			goSub :combat~fastCitadelAttack
+		else
+			gosub :combat~fastAttack
+		end
+		goto :scanit_again
+	elseif (($sector~emptyShipCount > $sector~myShipCount))
+		gosub :combat~fastCapture
+		goto :scanit_again
+	end
+	gosub :holooptions
+return	
 
 :getSectorLocation
 	killalltriggers
@@ -351,13 +394,6 @@ return
         end
 return
 
-:checkForVictimsFromCitadel
-	gosub :getSectorData
-	if ($player~corpieCount < $realTraderCount)
-		goSub :fastCitadelAttack
-		goto :checkForVictimsFromCitadel
-	end
-return
 
 :getTraders
 	getWordPos $sectorData $posTrader "[0m[33mTraders [1m:"
@@ -609,132 +645,6 @@ return
 	send "q "&$attackString&"c "
 return
 
-# -=-=-=-=- quikstats -=-=-=-=-=-=-
-:player~quikstats
-	
-	setVar $player~current_sector 0
-	setVar $player~turns 0
-	setVar $player~credits 0
-	setVar $player~fighters 0
-	setVar $player~shields 0
-	setVar $player~total_holds 0
-	setVar $player~ore_holds 0
-	setVar $player~organic_holds 0
-	setVar $player~equipment_holds 0
-	setVar $player~colonist_holds 0
-	setVar $player~photons 0
-	setVar $player~armids 0
-	setVar $player~limpets 0
-	setVar $player~genesis 0
-	setVar $player~twarp_type 0
-	setVar $player~cloaks 0
-	setVar $player~beacons 0
-	setVar $player~atomic 0
-	setVar $player~corbo 0
-	setVar $player~eprobes 0
-	setVar $player~mine_disruptors 0
-	setVar $player~psychic_probe "NO"
-	setVar $player~planet_scanner "NO"
-	setVar $player~scan_type "NONE"
-	setVar $player~alignment 0
-	setVar $player~experience 0
-	setVar $player~corp 0
-	setVar $player~ship_number 0
-	setVar $player~turns_PER_WARP 0
-
-:getstats
-	killAllTriggers
-	send "/"
-	setTextLineTrigger statlinetrig :statStart #179
-	pause
-
-
-	:statStart
-		setVar $stats ""
-		setVar $wordy ""
-	
-	:statsline
-		killtrigger statlinetrig
-		killtrigger getLine2
-		killtrigger permenantStatTrig
-		setVar $line2 CURRENTLINE
-		replacetext $line2 #179 " "
-		striptext $line2 ","
-		setVar $stats $stats & $line2
-		getWordPos $line2 $pos "Ship"
-		if ($pos > 0)
-			goto :gotStats
-		else
-			setTextLineTrigger getLine2 :statsline 
-		end
-		pause
-
-	:gotStats
-		setVar $stats $stats & " @@@"
-		upperCase $stats
-		setVar $current_word 0
-		while ($wordy <> "@@@")
-			if ($wordy = "SECT")
-				getWord $stats $player~current_sector   ($current_word + 1)
-			elseif ($wordy = "TURNS")
-				getWord $stats $player~turns  ($current_word + 1)
-			elseif ($wordy = "CREDS")
-				getWord $stats $player~credits  ($current_word + 1)
-			elseif ($wordy = "FIGS")
-				getWord $stats $player~fighters   ($current_word + 1)
-			elseif ($wordy = "SHLDS")
-				getWord $stats $player~shields  ($current_word + 1)
-			elseif ($wordy = "HLDS")
-				getWord $stats $player~total_holds   ($current_word + 1)
-			elseif ($wordy = "ORE")
-				getWord $stats $player~ore_holds    ($current_word + 1)
-			elseif ($wordy = "ORG")
-				getWord $stats $player~organic_holds    ($current_word + 1)
-			elseif ($wordy = "EQU")
-				getWord $stats $player~equipment_holds    ($current_word + 1)
-			elseif ($wordy = "COL")
-				getWord $stats $player~colonist_holds    ($current_word + 1)
-			elseif ($wordy = "PHOT")
-				getWord $stats $player~photons   ($current_word + 1)
-			elseif ($wordy = "ARMD")
-				getWord $stats $player~armids   ($current_word + 1)
-			elseif ($wordy = "LMPT")
-				getWord $stats $player~limpets   ($current_word + 1)
-			elseif ($wordy = "GTORP")
-				getWord $stats $player~genesis  ($current_word + 1)
-			elseif ($wordy = "TWARP")
-				getWord $stats $player~twarp_type  ($current_word + 1)
-			elseif ($wordy = "CLKS")
-				getWord $stats $player~cloaks   ($current_word + 1)
-			elseif ($wordy = "BEACNS")
-				getWord $stats $player~beacons ($current_word + 1)
-			elseif ($wordy = "ATMDT")
-				getWord $stats $player~atomic  ($current_word + 1)
-			elseif ($wordy = "CORBO")
-				getWord $stats $player~corbo   ($current_word + 1)
-			elseif ($wordy = "EPRB")
-				getWord $stats $player~eprobes   ($current_word + 1)
-			elseif ($wordy = "MDIS")
-				getWord $stats $player~mine_disruptors   ($current_word + 1)
-			elseif ($wordy = "PSPRB")
-				getWord $stats $player~psychic_probe  ($current_word + 1)
-			elseif ($wordy = "PLSCN")
-				getWord $stats $player~planet_scanner  ($current_word + 1)
-			elseif ($wordy = "LRS")
-				getWord $stats $player~scan_type    ($current_word + 1)
-			elseif ($wordy = "ALN")
-				getWord $stats $player~alignment    ($current_word + 1)
-			elseif ($wordy = "EXP")
-				getWord $stats $player~experience    ($current_word + 1)
-			elseif ($wordy = "CORP")
-				getWord $stats $player~corp   ($current_word + 1)
-			elseif ($wordy = "SHIP")
-				getWord $stats $SHIP   ($current_word + 1)
-			end
-			add $current_word 1
-			getWord $stats $wordy $current_word
-		end
-return
 
 
 
@@ -742,3 +652,11 @@ include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\combat\holokill\combat"
+include "source\bot_includes\targeting\initializetargeting\targeting"
+include "source\bot_includes\targeting\scanitcitkill\targeting"
+
+include "source\bot_includes\ship\getshipstats\ship"
