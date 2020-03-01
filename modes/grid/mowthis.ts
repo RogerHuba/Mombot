@@ -12,7 +12,8 @@
 	setVar $BOT~help[9]  $BOT~tab&"    {alarm}  - activate alarm                               " 
 	setVar $BOT~help[10] $BOT~tab&"    {notwarp}  - don't attempt twarp                        " 
 	setVar $BOT~help[11] $BOT~tab&"    {all}  - visits all sectors whether fig is down or not  " 
-	setVar $BOT~help[12] $BOT~tab&"                                                            " 
+	setVar $BOT~help[12] $BOT~tab&"    {slowmow}  - Grids a sector, warps home to clear, reports. " 
+	setVar $BOT~help[13] $BOT~tab&"                 Start from a safe scrub sector!" 
 	gosub :bot~helpfile
 
 	if ($bot~parm1 <> "")
@@ -49,6 +50,7 @@
 		setVar $no_twarp FALSE
 	end
 
+
 	if ($no_twarp <> true)
 		if (($player~TWARP_TYPE <> "1") and ($player~TWARP_TYPE <> "2"))
 			setvar $switchboard~message "You don't have the no twarp option on, but you don't have a twarp drive.  Halting in case you're in the wrong ship.*"
@@ -56,6 +58,11 @@
 		end
 	end
 	# TO DO
+	if ($player~photons > 0)
+		setvar $switchboard~message "Carrying photons while Mowing is not a safe practice!!*"
+		gosub :switchboard~switchboard
+		halt
+	end
 
 	getWordPos $bot~user_command_line $pos "density" 
 	if ($pos > 0)
@@ -63,6 +70,7 @@
 	else
 		setVar $do_density FALSE
 	end
+	
 	getWordPos $bot~user_command_line $pos "killport" 
 	if ($pos > 0)
 		setVar $killport TRUE
@@ -71,7 +79,17 @@
 		setVar $killport FALSE
 	end
 
-
+	getWordPos $bot~user_command_line $pos "slowmo" 
+	if ($pos > 0)
+		setVar $slowmow TRUE
+	else
+		getWordPos $bot~user_command_line $pos "slowmow" 
+		if ($pos > 0)
+			setVar $slowmow TRUE
+		else
+			setVar $slowmow FALSE
+		end
+	end
 
 	# 
 	setVar $true TRUE
@@ -88,6 +106,7 @@
 	if ($pos > 0)
 		setVar $allsectors TRUE
 	end
+
 
 	setVar $location $player~current_prompt
 	setVar $homeSector $player~current_sector
@@ -148,14 +167,16 @@ send "qq"
 			setVar $focus $que[$bottom]
 			getSectorParameter $focus $parameter $isTarget
 			getSectorParameter $focus "FIGSEC" $isFigged
-
-			if (((($true = true) and ($isTarget = true)) or (($true = false) and ($isTarget <> true))) and (($isFigged <> true) or ($allSectors = true)))
-				# fig found 0 hops
-				setVar $NearFig $focus
-				setVar $checkedPorts[$NearFig] TRUE
-				goto :mowtotarget
-			else
-				setVar $nearfig 0
+			
+			if ($focus > 10)
+				if (((($true = true) and ($isTarget = true)) or (($true = false) and ($isTarget <> true))) and (($isFigged <> true) or ($allSectors = true)))
+					# fig found 0 hops
+					setVar $NearFig $focus
+					setVar $checkedPorts[$NearFig] TRUE
+					goto :mowtotarget
+				else
+					setVar $nearfig 0
+				end
 			end
 			# That wasn't it, so let's add all the adjacents to the que for future testing.
 			setVar $a 1
@@ -171,6 +192,7 @@ send "qq"
 				add $a 1
 			end
 			# The adjacents of $focus were all queued, now on to the next one.
+			:gotoBottom
 			add $bottom 1
 		end	
 		setVar $SWITCHBOARD~message "Can't find a route to any other ports.*"
@@ -179,49 +201,49 @@ send "qq"
 
 		:mowtotarget
 	
-			if ($NearFig > 0)
-				setvar $destination $nearfig
-			end
+		if ($NearFig > 0)
+			setvar $destination $nearfig
+		end
 
-			if ($destination <> $homeSector)
-					gosub :getCourse
-					if ($valid)
-							setVar $temp " "&$destination&" "
-							replaceText $randomSectors $temp " "
-							subtract $databasecount 1
+		if ($destination <> $homeSector)
+			gosub :getCourse
+			if ($valid)
+					setVar $temp " "&$destination&" "
+					replaceText $randomSectors $temp " "
+					subtract $databasecount 1
 
-							#send "qm***t n t 1* q"
-							loadVar $alarm_list
-							if (($alarm_active) AND ($alarm_list <> ""))
-								loadVar $who_is_online
-								lowercase $alarm_list
-								lowercase $who_is_online
-								getWordPos $alarm_list $pos ","
-								if ($pos > 0)
-									splitText $alarm_list $alarm ","
-								else
-									setArray $alarm 1
-									setVar $alarm[1] $alarm_list
-									setVar $alarm 1
-								end
-								setVar $i 1
-								while ($i <= $alarm)
-									getWordPos $who_is_online $pos " "&$alarm[$i]&" "
-									if ($pos > 0)
-										setvar $switchboard~message "Alarm triggered by "&$alarm[$i]&", contingency plan engaged.*"
-										gosub :switchboard~switchboard
-										:shutdown
-										halt
-									end
-									add $i 1
-								end
+					#send "qm***t n t 1* q"
+					loadVar $alarm_list
+					if (($alarm_active) AND ($alarm_list <> ""))
+						loadVar $who_is_online
+						lowercase $alarm_list
+						lowercase $who_is_online
+						getWordPos $alarm_list $pos ","
+						if ($pos > 0)
+							splitText $alarm_list $alarm ","
+						else
+							setArray $alarm 1
+							setVar $alarm[1] $alarm_list
+							setVar $alarm 1
+						end
+						setVar $i 1
+						while ($i <= $alarm)
+							getWordPos $who_is_online $pos " "&$alarm[$i]&" "
+							if ($pos > 0)
+								setvar $switchboard~message "Alarm triggered by "&$alarm[$i]&", contingency plan engaged.*"
+								gosub :switchboard~switchboard
+								:shutdown
+								halt
 							end
-							gosub :mow
-							setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "&$destination&"*"
-							setWindowContents mowWindow $windowData
-							setVar $lastDestination $destination			
+							add $i 1
+						end
 					end
+					gosub :mow
+					setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "&$destination&"*"
+					setWindowContents mowWindow $windowData
+					setVar $lastDestination $destination			
 			end
+		end
 	end
 
 	goto :DOAGAIN
@@ -233,8 +255,6 @@ send "qq"
 	if ($maxFigAttack2 > $player~fighters)
 		setVar $maxFigAttack2 9999
 	end
-
-	
 
 	setVar $result ""		
 
@@ -248,70 +268,170 @@ send "qq"
 			if ($isFigged = 1)
 				setVar $closestFiggedSector $COURSE[$j]
 				setVar $index $j
-				if ($j = $courseLength)
-					setVar $PLAYER~warpto $closestFiggedSector
-					gosub :player~twarp
-					gosub  :player~currentPrompt
-					if ($PLAYER~twarpSuccess = TRUE)
-						setVar $j $index
-					else
-						setVar $j 3
-					end
-					goto :mowfromhere
-				end
-			else
-				if ($closestFiggedSector > 0)
-					setVar $PLAYER~warpto $closestFiggedSector
-					gosub :player~twarp
-					gosub  :player~currentPrompt
-					if ($PLAYER~twarpSuccess = TRUE)
-						setVar $j ($index + 1)
-					else
-						setVar $j 3
-					end
-					goto :mowfromhere
-				end
 			end
 			add $j 1	
 		end
+		if ($closestFiggedSector > 0)
+			setVar $PLAYER~warpto $closestFiggedSector
+			gosub :player~twarp
+			gosub  :player~currentPrompt
+			if ($PLAYER~twarpSuccess = TRUE)
+				setVar $j ($index + 1)
+			else
+				setVar $j 3
+			end
+			goto :mowfromhere
+		end
+		
+		
 	end
 
 	setVar $j 3
 	:mowfromhere
+
+
 	setVar $tempj $j
 	while ($tempj <= $courseLength)
 		setvar $sector $COURSE[$tempj]
-		if ((PORT.EXISTS[$sector] = TRUE) AND (PORT.CLASS[$sector] > 0) AND (((PORT.FUEL[$sector] > 0) AND (PORT.BUYFUEL[$sector] = FALSE))))
-			setvar $fuelsector $sector
+		if ($sector <> 1)
+			if ((PORT.EXISTS[$sector] = TRUE) AND (PORT.CLASS[$sector] > 0) AND (((PORT.FUEL[$sector] > 0) AND (PORT.BUYFUEL[$sector] = FALSE))))
+				setvar $fuelsector $sector
+			end
 		end
 		add $tempj 1	
 	end
-	while ($j <= $courseLength)
+	
+	# main mow routine
+	
+	if ($slowmow = TRUE)
 
-		setVar $result $result&"m  "&$COURSE[$j]&"* "
-		if (($COURSE[$j] > 10) AND ($COURSE[$j] <> $STARDOCK))
-			setVar $result $result&"za"&$maxFigAttack2&"* z * "	
-		end
-		if (($COURSE[$j] > 10) AND ($COURSE[$j] <> $STARDOCK) AND ($j > 2))
-			if ($figsToDrop > 0)
-				setVar $result $result&"f "&$figsToDrop&"* c d "
-				setSectorParameter $COURSE[$j] "FIGSEC" TRUE
-			else
-				setVar $result $result&"f "&$figsToDrop&"*"
-				setSectorParameter $COURSE[$j] "FIGSEC" FALSE
+		while ($j <= $courseLength)
+			setVar $result ""
+			setVar $result $result&"m  "&$COURSE[$j]&"* "
+			if (($COURSE[$j] > 10) AND ($COURSE[$j] <> STARDOCK))
+				setVar $result $result&"za"&$maxFigAttack2&"* z * "	
 			end
-		end
-		setvar $result $result&"zr* "
-		if ($course[$j] = $fuelsector)
-			setvar $result $result&" p   t   *   *  "
-		end
-		if ($do_density = TRUE)
-			setvar $result $result&"s d"
-		end 
-		add $j 1	
-	end
+			if (($COURSE[$j] > 10) AND ($COURSE[$j] <> STARDOCK) AND ($j > 2))
+				if ($figsToDrop > 0)
+					setVar $result $result&"f "&$figsToDrop&"* c d "
+					setSectorParameter $COURSE[$j] "FIGSEC" TRUE
+				else
+					setVar $result $result&"f "&$figsToDrop&"*"
+					setSectorParameter $COURSE[$j] "FIGSEC" FALSE
+				end
+			end
+			setvar $result $result&"zr* "
+			if ($course[$j] = $fuelsector)
+				setvar $result $result&" p   t   *   *  "
+			end
+			#if ($do_density = TRUE)
+				setvar $result $result&"s d"
+			#end 
+			setVar $current_target $COURSE[$j]
+			goSub :doDensity
+			if ($denSkip = 1)
+				goto :gotoBottom
+				return
+			end
+			send $result
+			gosub :player~quikstats
+			if ($player~current_sector <> $COURSE[$j])
+				setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "& $COURSE[$j] &"*Target Status: DANGER - Call Save Me Activated!"
+				setWindowContents mowWindow $windowData			
+				gosub :callSaveMe
+				
+			end
+			if ($hasAnom = 1)
+		
+				# go to origin - assume scrubbed - fuel up and go
+				# we can't return - as sector may still be compromised.
+				setVar $canReturn 1
+				setVar $minesOnce 0
+				send "h2*"
+				:minesAgain
+				setTextLineTrigger safeReturnNo :safeReturnNo  "These mines are not under your control."
+				setTextLineTrigger safeReturnYes :safeReturnYes	"Your ship can support up to"
+				pause
+					:safeReturnNo
+						killalltriggers
+						setVar $canReturn 0
+						goto :minesDone
+					:safeReturnYes
+						killalltriggers
+						if ($minesOnce = 1)
+							goto :minesDone
+						end
+						send "h1*"
+						setVar $minesOnce 1
+						goto :minesAgain
 
-	send $result
+				
+				:minesDone
+
+				setVar $returnSector $player~current_sector
+				setVar $PLAYER~warpto $homeSector
+				gosub :player~twarp
+				gosub  :player~currentPrompt
+				send "l" $planet~planet "*"
+				send "tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*mnt*tnt1*q"
+	
+				if ($canReturn = 1)
+					# i.e. no mines
+					setVar $PLAYER~warpto $returnSector
+					gosub :player~twarp
+					gosub  :player~currentPrompt
+					gosub :player~quikstats
+				else
+		
+					goto :gotoBottom
+					return
+				end
+			else
+				if ($player~ORE_HOLDS < 100)
+					setVar $returnSector $player~current_sector
+					setVar $PLAYER~warpto $homeSector
+					gosub :player~twarp
+					gosub  :player~currentPrompt
+					send "l" $planet~planet "*"
+					send "tnl1*tnl2*tnl3*snl1*snl2*snl3*tnt1*mnt*tnt1*q"
+					setVar $PLAYER~warpto $returnSector
+					gosub :player~twarp
+					gosub  :player~currentPrompt
+					gosub :player~quikstats
+				end
+			end
+			
+			add $j 1	
+		end
+	else
+
+		while ($j <= $courseLength)
+
+			setVar $result $result&"m  "&$COURSE[$j]&"* "
+			if (($COURSE[$j] > 10) AND ($COURSE[$j] <> STARDOCK))
+				setVar $result $result&"za"&$maxFigAttack2&"* z * "	
+			end
+			if (($COURSE[$j] > 10) AND ($COURSE[$j] <> STARDOCK) AND ($j > 2))
+				if ($figsToDrop > 0)
+					setVar $result $result&"f "&$figsToDrop&"* c d "
+					setSectorParameter $COURSE[$j] "FIGSEC" TRUE
+				else
+					setVar $result $result&"f "&$figsToDrop&"*"
+					setSectorParameter $COURSE[$j] "FIGSEC" FALSE
+				end
+			end
+			setvar $result $result&"zr* "
+			if ($course[$j] = $fuelsector)
+				setvar $result $result&" p   t   *   *  "
+			end
+			if ($do_density = TRUE)
+				setvar $result $result&"s d"
+			end 
+			add $j 1	
+		end
+		send $result
+	end
+	
 	gosub :player~quikstats
 	if ($player~current_sector <> $destination)
 		setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "&$destination&"*Target Status: DANGER - Call Save Me Activated!"
@@ -474,7 +594,7 @@ return
 				getSectorParameter $i "FIGSEC" $isFigged
 			end
 			getSectorParameter $i $parameter $isTrue
-			if (($i <> $stardock) AND ($isTrue = $true) AND ($isFigged <> TRUE))
+			if (($i <> STARDOCK) AND ($isTrue = $true) AND ($isFigged <> TRUE) and ($i > 10))
 				setVar $randomSectors $randomSectors&$i&"  "
 				add $databasecount 1
 				getCourse $path $homeSector $i 
@@ -488,7 +608,7 @@ return
 				end
 					setVar $j 2
 					while ($j <= $path)
-						if (($path[$j] > 10) AND ($path[$j] <> $stardock))
+						if (($path[$j] > 10) AND ($path[$j] <> STARDOCK))
 							setVar $path_database $path_database&" "&$path[$j]
 						end
 						add $j 1
@@ -500,7 +620,7 @@ return
 			setVar $perc (($i * 100) / SECTORS)
 			echo "*"
 			echo #27 "["&($perc / 2)&"C"
-			echo ANSI_14 "°" ANSI_15 " " $perc "%" #27 & "[1A   "
+			echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
 		end
 		add $i 1
 	end
@@ -761,6 +881,46 @@ return
 	waitOn "Command [TL"
 	return
 
+
+
+:doDensity
+	
+	setVar $hasAnom 0
+	setVar $denSkip 0
+	send "sd"
+	waitfor "Long Range Scan"
+	:denAgain
+	setTextLineTrigger denSec :denSec "==>"
+	setTextTrigger denDone :denDone "Command ["
+	pause
+	:denSec
+		killalltriggers
+		setVar $tline CURRENTLINE
+		stripText $tline "("
+		stripText $tline ")"
+
+		getword $tline $dsec 2
+		getWord $tline $Den 4
+		stripText $Den ","
+		if ($Den > 499)
+			send "'Density in sector: " $dsec " is " $Den " - possible alert*"
+		end
+		if ($dsec = $current_target)
+			
+			if ($Den > 495)
+				send "'Skipping Sector due to density*"
+				setVar $denSkip 1
+			end
+			getWord CURRENTLINE $Anom 13
+			if ($Anom = "Yes")
+				setVar $hasAnom 1
+			end
+		end
+		goto :denAgain
+	:denDone
+		killalltriggers
+
+return
 
 #-=-=-=-=-includes-=-=-=-=-
 include "source\module_includes\bot\loadvars\bot"
