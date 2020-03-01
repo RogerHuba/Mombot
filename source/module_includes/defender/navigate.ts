@@ -23,9 +23,10 @@
 			# Now, pull out the next sector in the queue, and make it our focus
 			setVar $focus $que[$bottom]
 			getsectorparameter $focus "FIGSEC" $isFigged
+			getsectorparameter $focus "LIMPSEC" $isLimped
 			getsectorparameter $focus "BUBBLE" $isBubble
 			getsectorparameter $focus "MSLSEC" $isMsl
-			if (($isFigged = true) and ($isBubble <> true) and ($isMsl <> true) and ($focus <> currentsector))
+			if (((($isLimped = true) and ($securePwarp = true)) or ($securePwarp = false)) and ($isFigged = true) and ($isBubble <> true) and ($isMsl <> true) and ($focus <> currentsector))
 				setVar $nearfig $focus
 				goto :pwarp_away
 			end
