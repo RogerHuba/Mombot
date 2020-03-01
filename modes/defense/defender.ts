@@ -31,8 +31,9 @@
 	setVar $BOT~help[4] $BOT~tab&"         a - Photon armid hits "
 	setVar $BOT~help[5] $BOT~tab&"  nocannon - Will not reset cannon damages "
 	setVar $BOT~help[6] $BOT~tab&"      holo - holoscan on ss after photon "
-	setVar $BOT~help[7] $BOT~tab&"    extern - stops defender 5 minutes before extern "
-	setVar $BOT~help[8] $BOT~tab&"             as defined by local system time "
+	setVar $BOT~help[7] $BOT~tab&"    secure - will only escape to limped sectors "
+	setVar $BOT~help[8] $BOT~tab&"    extern - stops defender 5 minutes before extern "
+	setVar $BOT~help[9] $BOT~tab&"             as defined by local system time "
 
 	gosub :bot~helpfile
 
@@ -100,6 +101,13 @@
 		setvar $holo true
 	else
 		setvar $holo false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " secure "
+	if ($pos > 0)
+		setvar $navigate~securePwarp true
+	else
+		setvar $navigate~securePwarp false
 	end
 
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
