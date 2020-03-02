@@ -250,7 +250,7 @@ setVar $millevel 0
 			return
 		elseif ($spoof = "R")
 			echo "*["&$subsender&"] = ["&$subtarget&"]*"
-			halt
+			pause
 			if ($subSender = $subTarget)
 				setVar $auth_result "true"
 				return
