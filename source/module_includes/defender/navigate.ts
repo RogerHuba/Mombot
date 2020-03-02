@@ -46,7 +46,7 @@
 			# The adjacents of $focus were all queued, now on to the next one.
 			add $bottom 1
 		end	
-		setVar $SWITCHBOARD~message "Can't find a route to any safe sectors.*"
+		setVar $SWITCHBOARD~message "Can't find a route to any safe sectors, heading back to start sector.*"
 		gosub :SWITCHBOARD~switchboard
 		gosub :head_home
 		halt
