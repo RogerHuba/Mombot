@@ -249,7 +249,7 @@ setVar $millevel 0
 			setVar $auth_result "self"
 			return
 		elseif ($spoof = "R")
-			if ($subSender <> $subTarget)
+			if ($subSender = $subTarget)
 				setVar $auth_result "true"
 				return
 			else
