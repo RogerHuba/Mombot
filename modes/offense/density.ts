@@ -188,8 +188,14 @@
 
 	setVar $message "Density Trigger running in sector "&CURRENTSECTOR&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	setVar $message $message&"*        On Density Change >= "&$density_change&", I will:"
+	if ($pgrid)
+		setVar $message $message&"*          PGRID to Sector"
+	end
 	if ($kill)
 		setVar $message $message&"*          Kill/Holokill"
+	end
+	if ($killport)
+		setVar $message $message&"*          Kill Port"
 	end
 	if ($photon)
 		setVar $message $message&"*          Photon"
