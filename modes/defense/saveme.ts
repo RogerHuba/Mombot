@@ -249,6 +249,8 @@ setVar $millevel 0
 			setVar $auth_result "self"
 			return
 		elseif ($spoof = "R")
+			echo "*["&$subsender&"] = ["&$subtarget&"]*"
+			halt
 			if ($subSender = $subTarget)
 				setVar $auth_result "true"
 				return
@@ -294,7 +296,7 @@ pause
     cuttext $subLine $spoof 1 1
     setVar $auth_result FALSE
     if ($spoof = "R")
-	setVar $auth_result TRUE
+		setVar $auth_result TRUE
     end
 return
 
