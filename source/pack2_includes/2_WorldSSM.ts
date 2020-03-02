@@ -191,5 +191,5 @@ halt
   
 
 # includes:
-include "include\header"
-include "include\worldSSM"
+include "source\pack2_includes\header"
+include "source\pack2_includes\worldSSM"

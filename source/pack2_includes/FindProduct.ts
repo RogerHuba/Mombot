@@ -129,5 +129,5 @@
   
 # includes:
 
-include "include\planetCheck"
-include "include\planetInfo"
+include "source\pack2_includes\planetCheck"
+include "source\pack2_includes\planetInfo"

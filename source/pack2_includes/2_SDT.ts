@@ -267,6 +267,6 @@ halt
   
 
 # includes:
-include "include\header"
-include "include\SDT"
-include "include\playerInfo"
+include "source\pack2_includes\header"
+include "source\pack2_includes\SDT"
+include "source\pack2_includes\playerInfo"

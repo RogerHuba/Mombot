@@ -407,8 +407,8 @@
   
 # includes
 
-include "include\playerInfo"
-include "include\planetInfo"
-include "include\gamePrefs"
-include "include\warp"
-include "include\haggle"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\planetInfo"
+include "source\pack2_includes\gamePrefs"
+include "source\pack2_includes\warp"
+include "source\pack2_includes\haggle"

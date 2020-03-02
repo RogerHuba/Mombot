@@ -325,7 +325,7 @@ halt
 
 # includes:
 
-include "include\gamePrefs"
-include "include\evil"
-include "include\header"
+include "source\pack2_includes\gamePrefs"
+include "source\pack2_includes\evil"
+include "source\pack2_includes\header"
 

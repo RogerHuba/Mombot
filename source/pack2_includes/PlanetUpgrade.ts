@@ -197,5 +197,5 @@
   
 # includes:
 
-include "include\planetInfo"
-include "include\gather"
+include "source\pack2_includes\planetInfo"
+include "source\pack2_includes\gather"

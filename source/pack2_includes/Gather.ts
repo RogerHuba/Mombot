@@ -140,7 +140,7 @@
   
 # includes:
 
-include "include\move"
-include "include\findProduct"
-include "include\moveProduct"
-include "include\playerInfo"
+include "source\pack2_includes\move"
+include "source\pack2_includes\findProduct"
+include "source\pack2_includes\moveProduct"
+include "source\pack2_includes\playerInfo"

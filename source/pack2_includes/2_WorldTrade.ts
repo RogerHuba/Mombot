@@ -143,5 +143,5 @@ halt
   
 
 # includes:
-include "include\header"
-include "include\worldTrade"
+include "source\pack2_includes\header"
+include "source\pack2_includes\worldTrade"

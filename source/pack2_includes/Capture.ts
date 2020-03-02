@@ -115,4 +115,4 @@
 
 # includes:
 
-include "include\shipStats"
+include "source\pack2_includes\shipStats"

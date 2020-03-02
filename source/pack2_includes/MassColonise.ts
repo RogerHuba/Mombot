@@ -144,9 +144,9 @@
 
 # includes:
 
-include "include\colonise"
-include "include\planetCheck"
-include "include\planetInfo"
-include "include\findProduct"
-include "include\playerInfo"
-include "include\gamePrefs"
+include "source\pack2_includes\colonise"
+include "source\pack2_includes\planetCheck"
+include "source\pack2_includes\planetInfo"
+include "source\pack2_includes\findProduct"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\gamePrefs"

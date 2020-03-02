@@ -138,5 +138,5 @@
 
 
 # includes:
-include "include\stripCorp"
-include "include\stripRank"
+include "source\pack2_includes\stripCorp"
+include "source\pack2_includes\stripRank"

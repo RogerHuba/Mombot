@@ -231,7 +231,7 @@ halt
   
 
 # includes:
-include "include\header"
-include "include\Colonise"
+include "source\pack2_includes\header"
+include "source\pack2_includes\Colonise"
 
 

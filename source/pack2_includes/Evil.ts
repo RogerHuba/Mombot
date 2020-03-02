@@ -224,8 +224,8 @@
 
 # includes:
 
-include "include\playerInfo"
-include "include\sellSteal"
-include "include\stealDump"
-include "include\rob"
-include "include\gamePrefs"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\sellSteal"
+include "source\pack2_includes\stealDump"
+include "source\pack2_includes\rob"
+include "source\pack2_includes\gamePrefs"

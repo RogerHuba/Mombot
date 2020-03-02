@@ -165,6 +165,6 @@
   
 # includes:
 
-include "include\nearFig"
-include "include\playerInfo"
-include "include\cache"
+include "source\pack2_includes\nearFig"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\cache"

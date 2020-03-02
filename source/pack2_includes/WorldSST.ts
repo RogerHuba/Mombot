@@ -288,9 +288,9 @@ clientMessage "Checking for refurb ... " & $PlayerInfo~Holds & " on ship, agains
   
 # includes:
 
-include "include\SSTScout"
-include "include\moveShip"
-include "include\fastSST"
-include "include\playerInfo"
-include "include\refurb"
-include "include\warp"
+include "source\pack2_includes\SSTScout"
+include "source\pack2_includes\moveShip"
+include "source\pack2_includes\fastSST"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\refurb"
+include "source\pack2_includes\warp"

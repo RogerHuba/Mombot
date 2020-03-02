@@ -203,6 +203,6 @@ halt
 
 # includes:
 
-include "include\playerInfo"
-include "include\header"
-include "include\moveProduct"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\header"
+include "source\pack2_includes\moveProduct"

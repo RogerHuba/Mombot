@@ -289,7 +289,7 @@ pause
 
 # includes:
 
-include "include\header"
-include "include\checkCLV"
-include "include\checkOnline"
-include "include\checkCIM"
+include "source\pack2_includes\header"
+include "source\pack2_includes\checkCLV"
+include "source\pack2_includes\checkOnline"
+include "source\pack2_includes\checkCIM"

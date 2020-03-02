@@ -20,7 +20,7 @@
 # These files should be stored in the root of the compression you 
 # received this source in.
 
-setVar $Header~Script "Mass Colonise"
+setVar $Header~Script "Mass Upgrade"
 
 # check location
 cutText CURRENTLINE $location 1 12
@@ -32,67 +32,69 @@ end
 reqRecording
 logging off
 
-gosub :Header~Pack2Header
 
-loadVar $MassColoniseSaved
 
-if ($MassColoniseSaved)
-  loadVar $MassColonise_EWarp
+getWordPos " "&$bot~user_command_line&" " $pos "ignore:"
+if ($pos > 0)
+
 else
-  setVar $MassColonise_EWarp 0
-  saveVar $MassColonise_EWarp
-
-  setVar $MassColoniseSaved 1
-  saveVar $MassColoniseSaved
+	setVar $MassUpgrade~IgnoreList ""
 end
 
-# create setup menu
-addMenu "" "MassColonise" "Mass Colonise Settings" "." "" "Main" FALSE
-addMenu "MassColonise" "GO" "GO!" "G" :Menu_Go "" TRUE
-addMenu "MassColonise" "EWarp" "Allow E-Warp colonising" "E" :Menu_EWarp "" FALSE
-
-setMenuHelp "EWarp" "If this option is enabled, this script will perform Express-Warp colonising if it runs out of fuel or for some reason is unable to T-Warp to fedspace."
-
-gosub :sub_SetMenu
-
-# open config menu
-openMenu "MassColonise"
-
-:Menu_EWarp
-if ($MassColonise_EWarp)
-  setVar $MassColonise_EWarp 0
+getWordPos " "&$bot~user_command_line&" " $pos "seek"
+if ($pos > 0)
+	setVar $MassUpgrade~Seek true
 else
-  setVar $MassColonise_EWarp 1
+	setVar $MassUpgrade~Seek false
 end
 
-saveVar $MassColonise_EWarp
-gosub :sub_SetMenu
-openMenu "MassColonise"
+
+
+
+# set move routine prefs
+loadVar $Move~Saved
+
+if ($Move~Saved)
+  loadVar $Move~ScanHolo
+  loadVar $Move~Evasion
+  loadVar $Move~Attack
+  loadVar $Move~PortPriority
+  loadVar $Move~ExtraSend
+  replaceText $Move~ExtraSend #42 "*"
+else
+  setVar $Move~ScanHolo 1
+  setVar $Move~Evasion 0
+  setVar $Move~Attack 3
+  setVar $Move~PortPriority 1
+  setVar $Move~ExtraSend "f1" & #42 & "ct"
+  saveVar $Move~ExtraSend
+  replaceText $Move~ExtraSend #42 "*"
+  
+  saveVar $Move~ScanHolo
+  saveVar $Move~Evasion
+  saveVar $Move~Attack
+  saveVar $Move~PortPriority
+  
+  setVar $Move~Saved 1
+  saveVar $Move~Saved
+end
 
 :Menu_Go
 setEventTrigger disconnect :disconnected "Connection lost"
-setVar $MassColonise~EWarp $MassColonise_EWarp
-gosub :MassColonise~MassColonise
+gosub :MassUpgrade~MassUpgrade
 halt
 
 :disconnected
   # disconnected.  Wait for the prompt then restart
   killAllTriggers
+  setEventTrigger disconnect :disconnected "Connection lost"
   
   waitFor "Command [TL="
   goto :Menu_Go
-
-:sub_SetMenu
-  if ($MassColonise_EWarp)
-    setMenuValue "EWarp" "YES"
-  else
-    setMenuValue "EWarp" "NO"
-  end
-  
-  return
   
 
 # includes:
-include "source\pack2_includes\header"
-include "source\pack2_includes\massColonise"
 
+include "source\module_includes\bot\loadvars\bot"
+include "source\pack2_includes\massUpgrade"
+include "source\pack2_includes\move"

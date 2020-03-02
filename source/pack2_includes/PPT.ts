@@ -413,5 +413,5 @@
 
 # includes:
 
-include "include\haggle"
-include "include\playerInfo"
+include "source\pack2_includes\haggle"
+include "source\pack2_includes\playerInfo"

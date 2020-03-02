@@ -156,8 +156,8 @@ halt
   
 
 # includes:
-include "include\header"
-include "include\move"
-include "include\testSector"
-include "include\gamePrefs"
+include "source\pack2_includes\header"
+include "source\pack2_includes\move"
+include "source\pack2_includes\testSector"
+include "source\pack2_includes\gamePrefs"
 

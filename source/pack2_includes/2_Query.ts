@@ -119,5 +119,5 @@ halt
 
 
 # includes:
-include "include\header"
-include "include\testSector"
+include "source\pack2_includes\header"
+include "source\pack2_includes\testSector"

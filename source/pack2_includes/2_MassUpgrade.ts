@@ -108,6 +108,6 @@ halt
   
 
 # includes:
-include "include\header"
-include "include\massUpgrade"
-include "include\move"
+include "source\pack2_includes\header"
+include "source\pack2_includes\massUpgrade"
+include "source\pack2_includes\move"

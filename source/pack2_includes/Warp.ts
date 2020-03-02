@@ -397,7 +397,7 @@
   
 # includes:
 
-include "include\playerInfo"
-include "include\nearFig"
-include "include\findProduct"
-include "include\haggle"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\nearFig"
+include "source\pack2_includes\findProduct"
+include "source\pack2_includes\haggle"

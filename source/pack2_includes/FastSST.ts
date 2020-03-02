@@ -278,5 +278,5 @@ clientMessage "Result registered - clock now at " & $curClock
   
 # includes:
 
-include "include\playerInfo"
-include "include\gamePrefs"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\gamePrefs"

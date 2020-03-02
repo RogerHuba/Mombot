@@ -248,6 +248,6 @@
 
 # includes:
 
-include "include\playerInfo"
-include "include\warp"
-include "include\seekProduct"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\warp"
+include "source\pack2_includes\seekProduct"

@@ -118,7 +118,7 @@
 
 # includes:
 
-include "include\planetUpgrade"
-include "include\playerInfo"
-include "include\planetLoop"
-include "include\gamePrefs"
+include "source\pack2_includes\planetUpgrade"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\planetLoop"
+include "source\pack2_includes\gamePrefs"

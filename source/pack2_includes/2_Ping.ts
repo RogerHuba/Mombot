@@ -226,6 +226,6 @@ halt
   
 
 # includes:
-include "include\header"
-include "include\getTarget"
-include "include\getAttack"
+include "source\pack2_includes\header"
+include "source\pack2_includes\getTarget"
+include "source\pack2_includes\getAttack"

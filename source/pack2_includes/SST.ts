@@ -113,5 +113,5 @@
 
 # includes:
 
-include "include\sellSteal"  
-include "include\playerInfo"
+include "source\pack2_includes\sellSteal"  
+include "source\pack2_includes\playerInfo"

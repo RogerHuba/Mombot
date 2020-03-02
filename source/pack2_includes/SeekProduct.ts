@@ -102,7 +102,7 @@
   
 # includes:
 
-include "include\move"
-include "include\findProduct"
-include "include\playerInfo"
-include "include\haggle"
+include "source\pack2_includes\move"
+include "source\pack2_includes\findProduct"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\haggle"

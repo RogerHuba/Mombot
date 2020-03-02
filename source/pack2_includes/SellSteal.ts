@@ -205,4 +205,4 @@
 
 # includes:
 
-include "include\haggle"
+include "source\pack2_includes\haggle"

@@ -241,7 +241,7 @@ halt
   
 
 # includes:
-include "include\header"
-include "include\SSF"
-include "include\playerInfo"
+include "source\pack2_includes\header"
+include "source\pack2_includes\SSF"
+include "source\pack2_includes\playerInfo"
 

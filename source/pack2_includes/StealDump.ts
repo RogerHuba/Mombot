@@ -324,4 +324,4 @@ clientMessage "Landing on first planet"
   
 # includes:
 
-include "include\land"
+include "source\pack2_includes\land"

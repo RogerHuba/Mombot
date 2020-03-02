@@ -150,10 +150,10 @@
   
 # includes:
 
-include "include\refurb"
-include "include\SSM"
-include "include\move"
-include "include\playerInfo"
-include "include\warp"
-include "include\portCheck"
-include "include\gamePrefs"
+include "source\pack2_includes\refurb"
+include "source\pack2_includes\SSM"
+include "source\pack2_includes\move"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\warp"
+include "source\pack2_includes\portCheck"
+include "source\pack2_includes\gamePrefs"

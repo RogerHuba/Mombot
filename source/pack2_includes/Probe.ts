@@ -314,5 +314,5 @@
   
 # includes:
 
-include "include\playerInfo"
-include "include\gamePrefs"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\gamePrefs"

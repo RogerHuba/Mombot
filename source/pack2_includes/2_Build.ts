@@ -347,12 +347,12 @@ goto :findBase
   
 
 # includes:
-include "include\header"
-include "include\worldTrade"
-include "include\move"
-include "include\makePlanet"
-include "include\massColonise"
-include "include\massUpgrade"
-include "include\playerInfo"
-include "include\warp"
-include "include\gamePrefs"
+include "source\pack2_includes\header"
+include "source\pack2_includes\worldTrade"
+include "source\pack2_includes\move"
+include "source\pack2_includes\makePlanet"
+include "source\pack2_includes\massColonise"
+include "source\pack2_includes\massUpgrade"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\warp"
+include "source\pack2_includes\gamePrefs"

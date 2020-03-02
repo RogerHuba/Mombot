@@ -94,9 +94,9 @@
 
 # includes:
 
-include "include\PPT"
-include "include\PortCheck"
-include "include\move"
-include "include\haggle"
-include "include\playerInfo"
-include "include\gamePrefs"
+include "source\pack2_includes\PPT"
+include "source\pack2_includes\PortCheck"
+include "source\pack2_includes\move"
+include "source\pack2_includes\haggle"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\gamePrefs"

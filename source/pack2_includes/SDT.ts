@@ -125,6 +125,6 @@
 
 # includes:
 
-include "include\stealDump"
-include "include\playerInfo"
-include "include\gamePrefs"
+include "source\pack2_includes\stealDump"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\gamePrefs"

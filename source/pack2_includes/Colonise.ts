@@ -329,6 +329,6 @@
 
 # includes:
 
-include "include\planetInfo"
-include "include\playerInfo"
-include "include\warp"
+include "source\pack2_includes\planetInfo"
+include "source\pack2_includes\playerInfo"
+include "source\pack2_includes\warp"
