@@ -1,4 +1,4 @@
-for /r %%n in (*mowthis.ts) do call :checkit "%%n" 
+for /r %%n in (*saveme.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
