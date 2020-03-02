@@ -138,12 +138,12 @@ setVar $millevel 0
 	killalltriggers
 	setVar $line CURRENTLINE
 	gosub :authenticate
-	if ($auth_result = "false")
-		goto :settriggers
-	elseif ($auth_result = "true")
+	if ($auth_result = "true")
 		cutText $line $target_sector 9 13
 	elseif ($auth_result = "self")
 		cutText $line $target_sector 2 12
+	else
+		goto :settriggers
 	end
 	setVar $target_sector " " & $target_sector
 	striptext $target_sector " 000"
@@ -238,36 +238,31 @@ setVar $millevel 0
 
 :authenticate
 	killalltriggers
-	setVar $subLine CURRENTLINE
+	setVar $subLine $line
 	setVar $subLine $subLine & "             "
 	getWord $subLine $spoof 1
 	cutText $subLine $subSender 3 6
 	setVar $auth_result "false"
-	if ($targetingPerson)
+	if ($targetingPerson = true)
 		lowerCase $subSender
 		if ($spoof = "'")
 			setVar $auth_result "self"
-			return
 		elseif ($spoof = "R")
-			echo "*["&$subsender&"] = ["&$subtarget&"]*"
-			pause
+			send "'["&$subsender&"] = ["&$subtarget&"]*"
+			halt
 			if ($subSender = $subTarget)
 				setVar $auth_result "true"
-				return
-			else
-				return
 			end
-		else
-			return
 		end
 	else
 		if ($spoof = "'")
 			setVar $auth_result "self"
 		elseif ($spoof = "R")
 			setVar $auth_result "true"
-        	end
-        	return
+		end
 	end
+return
+
 :settriggers
 	killalltriggers
 	setTextLineTrigger 1 :announce "script?"
