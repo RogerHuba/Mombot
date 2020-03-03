@@ -199,6 +199,7 @@ else
   # see if we want it
   setVar $i 0
   while ($i < $WantedPlanetCount)
+  	send "'"&$WantedPlanets[$i]&"]["&$Type&"*"
     if ($WantedPlanets[$i] = $Type)
       goto :Bust_Wanted
     end
