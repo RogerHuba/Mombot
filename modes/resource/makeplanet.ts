@@ -41,19 +41,25 @@
 
 	gosub :BOT~loadVars
 
-	setVar $BOT~help[1]    $BOT~tab&"makeplanet {ewarp} {create:} "
+	setVar $BOT~help[1]    $BOT~tab&"makeplanet {ewarp} {create:} {"&#34&"custom planet name"&#34&"} "
 	setVar $BOT~help[2]    $BOT~tab&"       "
-	setVar $BOT~help[3]    $BOT~tab&"     {ewarp} - Will refurb torps and atomics by ewarp "
-	setVar $BOT~help[4]    $BOT~tab&"               This is NOT safe."         
+	setVar $BOT~help[3]    $BOT~tab&"     {ewarp}  - Will refurb torps and atomics by ewarp "
+	setVar $BOT~help[4]    $BOT~tab&"                This is NOT safe."         
 	setVar $BOT~help[5]    $BOT~tab&"       "
-	setVar $BOT~help[6]    $BOT~tab&"   {create:} - List of planet types to make.  First word"
-	setVar $BOT~help[7]    $BOT~tab&"               of planet types separated by commas and no spaces."
-	setVar $BOT~help[8]    $BOT~tab&"                              "
-	setVar $BOT~help[9]    $BOT~tab&"           Examples:                   "
-	setVar $BOT~help[10]   $BOT~tab&"                   >makeplanet create:earth,volcanic,oceanic    "
-	setVar $BOT~help[11]   $BOT~tab&"                   >makeplanet ewarp create:earth         "
+	setVar $BOT~help[6]    $BOT~tab&"   {create:}  - List of planet types to make.  First word"
+	setVar $BOT~help[7]    $BOT~tab&"                of planet types separated by commas and no spaces."
+	setVar $BOT~help[8]    $BOT~tab&"                Default will use keeper planets in preferences."
+	setVar $BOT~help[9]    $BOT~tab&"                "
+	setVar $BOT~help[10]   $BOT~tab&"{custom name} - Name the planet will be.  Otherwise it's a random   "
+	setVar $BOT~help[11]   $BOT~tab&"                name from a database              "
 	setVar $BOT~help[12]   $BOT~tab&"                              "
-	setVar $BOT~help[13]   $BOT~tab&"               - Originally written by Xide"
+	setVar $BOT~help[13]   $BOT~tab&"                              "
+	setVar $BOT~help[14]   $BOT~tab&"           Examples:                   "
+	setVar $BOT~help[15]   $BOT~tab&"                   >makeplanet create:earth,volcanic,oceanic    "
+	setVar $BOT~help[16]   $BOT~tab&"                   >makeplanet ewarp create:earth         "
+	setVar $BOT~help[17]   $BOT~tab&"                   >makeplanet "death" create:volcanic         "
+	setVar $BOT~help[18]   $BOT~tab&"                              "
+	setVar $BOT~help[19]   $BOT~tab&"               - Originally written by Xide"
 	gosub :bot~helpfile
 
 	loadVar $GAME~GENESIS_COST
@@ -118,6 +124,21 @@ else
 		halt
 	end
 end
+
+setvar $custom_planet_name ""
+getWordPos $bot~user_command_line $pos #34
+if ($pos > 0)	
+	setvar $bot~user_command_line $bot~user_command_line&" "
+	getText " "&$bot~user_command_line&" " $custom_planet_name " "&#34 #34&" "
+	if ($custom_planet_name <> "")
+		stripText $bot~user_command_line " "&#34&$custom_planet_name&#34&" "
+		cuttext $custom_planet_name $first_letter 1 1 
+		cuttext $custom_planet_name $rest_of_letters 2 9999 
+		uppercase $first_letter
+		setvar $custom_planet_name $first_letter&$rest_of_letters
+	end
+end
+
 gosub :planet~make_planet_array
 
 gosub :makeplanet
@@ -242,6 +263,7 @@ end
   :Bust_Wanted
   # give it a nice name
 
+if ($custom_planet_name = "")
 	getRnd $planet~planet_pointer 1 1000
 	setVar $first_part $planet~planet_names[$planet~planet_pointer]
 	getWord $first_part $first_half 1
@@ -254,7 +276,9 @@ end
 	end
 	setVar $planet~planetLabel $first_half&" "&$last_half
 	setVar $name $planet~planetLabel
-
+else
+	setvar $name $custom_planet_name
+end
   send $Name "*cl"
   
   # get its ID
