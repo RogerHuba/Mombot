@@ -169,6 +169,7 @@ halt
   :Bust_TestPlanet
   getWord CURRENTLINE $Type 11
   stripText $Type ")"
+  lowercase $type
   
 if ($wantedplanets[1] = 0)
 	setvar $planet~planet_type $type
@@ -190,7 +191,7 @@ if ($wantedplanets[1] = 0)
 		add $i 1
 	end
 	if ($isAKeeper = true)
-	goto :Bust_Wanted
+		goto :Bust_Wanted
 	end
 else
 
