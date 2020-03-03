@@ -13,13 +13,13 @@
 	setVar $BUBBLE_LIST $bot~folder&"/bubble.list"
 	setVar $BOT~command "unstack"
 
-	setVar $BOT~help[1]  $BOT~tab&"Moves overloaded planet automatically into FARM sectors.  "
+	setVar $BOT~help[1]  $BOT~tab&"Moves overloaded planet automatically into FARM sectors."
 	setVar $BOT~help[2]  $BOT~tab&"       "
-	setVar $BOT~help[3]  $BOT~tab&"  unstack {planet#1} {planet#2} ... {planet#x} {restack}    "
+	setVar $BOT~help[3]  $BOT~tab&" unstack {planet#1} {planet#2} ... {planet#x} {restack}"
 	setVar $BOT~help[4]  $BOT~tab&"       "
 	setVar $BOT~help[5]  $BOT~tab&"      Options: "
-	setVar $BOT~help[6]  $BOT~tab&"         {planet#} - will not move listed planets"
-	setVar $BOT~help[7]  $BOT~tab&"         {restack} - restacks last unstacked planets"
+	setVar $BOT~help[6]  $BOT~tab&"        {planet#} - will not move listed planets"
+	setVar $BOT~help[7]  $BOT~tab&"        {restack} - restacks last unstacked planets"
 	gosub :bot~helpfile
 
 	
