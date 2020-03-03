@@ -196,7 +196,7 @@ if ($wantedplanets[1] = 0)
 	end
 else
 
-  if ($wantedplanet = 0)
+  if ($wantedplanets = 0)
 		setVar $SWITCHBOARD~message "Somehow no wanted planets are defined.  Halting.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
