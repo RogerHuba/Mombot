@@ -59,7 +59,7 @@
 		gosub :clear_sector_deployEquipment
 		return
 	:clear_sector_xenter
-		send "q y n * t* * *" $password "*    *    *       za9999*   z*   "
+		send "q y n * t* * *" $bot~password "*    *    *       za9999*   z*   "
 		return
 	:clear_sector_deployEquipment
 		if ($player~surroundmine <= 0)
@@ -99,5 +99,6 @@ halt
 
 include "source\bot_includes\player\quikstats\player"
 include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\module_includes\bot\waitforcommand\bot"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\planet\landingsub\planet"
