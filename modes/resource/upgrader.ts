@@ -65,7 +65,7 @@ logging off
 
 getWordPos " "&$bot~user_command_line&" " $pos "ignore:"
 if ($pos > 0)
-	getText $bot~user_command_line $ignore_list "ignore:" " "
+	getText " "&$bot~user_command_line&" " $ignore_list "ignore:" " "
 	replacetext $MassUpgrade~IgnoreList "," " "
 else
 	setVar $MassUpgrade~IgnoreList ""
