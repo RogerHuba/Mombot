@@ -49,7 +49,7 @@
 	end
 	
 	if (($SWITCHBOARD~self_command = true) or ($silent_running = TRUE))
-		setVar $helpOutput "  *"&ansi_14&"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*  *"&ansi_15&$helpOutput&ansi_14&"  *     *-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"&ansi_15
+		setVar $helpOutput "  *"&ansi_14&"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*  *"&ansi_15&$helpOutput&ansi_14&"  *     *-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"&ansi_15
 		setVar $SWITCHBOARD~message $helpOutput
 		gosub :SWITCHBOARD~switchboard
 	else
