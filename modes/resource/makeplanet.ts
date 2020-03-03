@@ -99,7 +99,7 @@ if ($pos > 0)
 		splitText $create_list $wantedplanets  ","
 	else
 		setarray $wantedplanets 1
-		setvar $wantedplanets $create_list
+		setvar $wantedplanets[1] $create_list
 		setvar $wantedplanets 1
 	end
 else
@@ -200,9 +200,11 @@ else
   # see if we want it
   setVar $i 1
   while ($i < $WantedPlanets)
-  	send "'"&$WantedPlanets[$i]&"]["&$Type&"*"
     if ($WantedPlanets[$i] = $Type)
       goto :Bust_Wanted
+    else
+		setVar $SWITCHBOARD~message "Looking for "&$WantedPlanets[$i]&", but found "&$Type&" instead.*"
+		gosub :SWITCHBOARD~switchboard
     end
     add $i 1
   end
