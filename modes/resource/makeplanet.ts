@@ -93,11 +93,10 @@ end
 
 getWordPos " "&$bot~user_command_line&" " $pos "create:"
 if ($pos > 0)
-	getText $bot~user_command_line $create_list "create:" " "
-	replacetext $create "," " "
-	getwordpos $create_list $pos ","
+	getText $bot~user_command_line $wantedplanets "create:" " "
+	getwordpos $wantedplanets $pos ","
 	if ($pos > 0)
-		splitText $create_list $wantedplanets ","
+		splitText $wantedplanets ","
 	else
 		setarray $wantedplanets 1
 		setvar $wantedplanets $create_list
