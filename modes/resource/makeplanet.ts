@@ -93,7 +93,7 @@ end
 
 getWordPos " "&$bot~user_command_line&" " $pos "create:"
 if ($pos > 0)
-	getText $bot~user_command_line $create_list "create:" " "
+	getText " "&$bot~user_command_line&" " $create_list "create:" " "
 	getwordpos $create_list $pos ","
 	if ($pos > 0)
 		splitText $create_list $wantedplanets  ","
@@ -117,7 +117,6 @@ else
 		halt
 	end
 end
-pause
 gosub :planet~make_planet_array
 
 gosub :makeplanet
