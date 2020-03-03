@@ -96,7 +96,7 @@ if ($pos > 0)
 	getText $bot~user_command_line $create_list "create:" " "
 	getwordpos $create_list $pos ","
 	if ($pos > 0)
-		splitText $wantedplanets $create_list ","
+		splitText $create_list $wantedplanets  ","
 	else
 		setarray $wantedplanets 1
 		setvar $wantedplanets $create_list
