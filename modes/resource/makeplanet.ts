@@ -166,7 +166,7 @@ halt
   getWord CURRENTLINE $Type 11
   stripText $Type ")"
   
-if ($wantedplanets[0] = 0)
+if ($wantedplanets[1] = 0)
 	setvar $planet~planet_type $type
 	lowercase $planet~planet_type
 	striptext $planet~planet_type ")"
