@@ -38,31 +38,109 @@
 #            $Failed - "1" if failed to create planet (out of cash)
 #                      "2" if failed to create planet
 
+
+	gosub :BOT~loadVars
+
+	setVar $BOT~help[1]    $BOT~tab&"makeplanet {ewarp} {create:} "
+	setVar $BOT~help[2]    $BOT~tab&"       "
+	setVar $BOT~help[3]    $BOT~tab&"     {ewarp} - Will refurb torps and atomics by ewarp "
+	setVar $BOT~help[4]    $BOT~tab&"               This is NOT safe."         
+	setVar $BOT~help[5]    $BOT~tab&"       "
+	setVar $BOT~help[6]    $BOT~tab&"   {create:} - List of planet types to make.  First word"
+	setVar $BOT~help[7]    $BOT~tab&"               of planet types separated by commas and no spaces."
+	setVar $BOT~help[8]    $BOT~tab&"                              "
+	setVar $BOT~help[9]    $BOT~tab&"           Examples:                   "
+	setVar $BOT~help[10]   $BOT~tab&"                   >makeplanet create:earth,volcanic,oceanic    "
+	setVar $BOT~help[11]   $BOT~tab&"                   >makeplanet ewarp create:earth         "
+	setVar $BOT~help[12]   $BOT~tab&"                              "
+	setVar $BOT~help[13]   $BOT~tab&"               - Originally written by Xide"
+	gosub :bot~helpfile
+
+
+gosub :player~quikstats
+setVar $startingLocation $PLAYER~CURRENT_PROMPT
+if ($startingLocation = "Command")
+
+elseif ($startingLocation = "Citadel")
+	send "q"
+	gosub :PLANET~getPlanetInfo
+	setvar $startingPlanet $planet~planet
+	send "q"
+elseif ($startingLocation = "Planet")
+	gosub :PLANET~getPlanetInfo
+	setvar $startingPlanet $planet~planet
+	send "q"
+else
+	setVar $SWITCHBOARD~message "Have to be on Command, Planet, or Citadel prompt to start upgrader.*"
+	gosub :SWITCHBOARD~switchboard
+	halt
+end
+
+gosub :PLANET~loadplanetInfo
+
+getWordPos " "&$bot~user_command_line&" " $pos "ewarp"
+setvar $warptype "T"
+if ($pos > 0)
+	setVar $warptype "E"
+end
+
+
+getWordPos " "&$bot~user_command_line&" " $pos "create:"
+if ($pos > 0)
+	getText $bot~user_command_line $create_list "create:" " "
+	replacetext $create "," " "
+	splitText $create_list $wantedplanets ","
+else
+	setVar $i 1
+	setVar $foundPlanet FALSE
+	setVar $isAKeeper FALSE
+	while (($i <= $planet~planetcounter) AND ($foundPlanet = FALSE))
+		lowercase $planet~planetList[$i]
+		lowercase $planet~planet_type
+		getWordPos $planet~planetList[$i] $pos $planet~planet_type
+		if ($pos > 0)
+			setVar $isAKeeper $planet~planetList[$i][7]
+			setVar $foundPlanet TRUE
+		end
+		add $i 1
+	end
+	if ($isAKeeper <> TRUE)
+		setVar $SWITCHBOARD~message "Create list not defined, and no keeper planets defined in preferences.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+end
+
+
+gosub :makeplanet
+if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
+	setvar $planet~planet $startingPlanet
+	gosub :PLANET~landingsub
+end
+halt
+
 :MakePlanet
   # sys_check
   
-  setVar $Failed 0
 
-  if ($Sector = 0)
-    send "d"
-    setTextLineTrigger getSector :getSector "Sector  : "
-    pause
-    :getSector
-    getWord CURRENTLINE $Sector 3
-  end
+
+  setVar $Failed 0
+  gosub :player~quikstats
+
+  setvar $sector currentsector
+  setVar $Credits currentcredits
+  setVar $holds currentholds
+  setVar $torps currentgentorps
+  setVar $dets currentatomics
+  setVar $figs currentfighters
+  setVar $shield currentshields
   
-  # get player info
-  gosub :PlayerInfo~InfoQuick
-  setVar $Credits $PlayerInfo~Credits
-  setVar $holds $PlayerInfo~Holds
-  setVar $torps $PlayerInfo~GenTorps
-  setVar $dets $PlayerInfo~Dets
-  setVar $figs $PlayerInfo~Figs
-  setVar $shield $PlayerInfo~Shields
-  
+
   # see if we really can twarp
-  if ((SECTOR.FIGS.QUANTITY[$Sector] <= 0) or ((SECTOR.FIGS.OWNER[$Sector] <> "belong to your Corp") and (SECTOR.FIGS.OWNER[$Sector] = "yours")) or ($PlayerInfo~TWarp = 0) or ($PlayerInfo~Align < 1000)) and ($WarpType = "T")
-    setVar $WarpType E
+  if ((SECTOR.FIGS.QUANTITY[$Sector] <= 0) or ((SECTOR.FIGS.OWNER[$Sector] <> "belong to your Corp") and (SECTOR.FIGS.OWNER[$Sector] = "yours")) or (currenttwarptype = 0) or (currentalignment < 1000)) and ($WarpType = "T")
+	setVar $SWITCHBOARD~message "Cannot twarp safely, so halting.  Check alignment and make sure fighter is in sector.*"
+	gosub :SWITCHBOARD~switchboard
+	halt
   end
   
   :bust
@@ -85,6 +163,31 @@
   getWord CURRENTLINE $Type 11
   stripText $Type ")"
   
+if ($wantedplanets[0] = 0)
+	setvar $planet~planet_type $type
+	lowercase $planet~planet_type
+	striptext $planet~planet_type ")"
+	#echo $planet~planet_type&"*"
+
+	setVar $i 1
+	setVar $foundPlanet FALSE
+	setVar $isAKeeper FALSE
+	while (($i <= $planet~planetcounter) AND ($foundPlanet = FALSE))
+		lowercase $planet~planetList[$i]
+		lowercase $planet~planet_type
+		getWordPos $planet~planetList[$i] $pos $planet~planet_type
+		if ($pos > 0)
+			setVar $isAKeeper $planet~planetList[$i][7]
+			setVar $foundPlanet TRUE
+		end
+		add $i 1
+	end
+	if ($isAKeeper = true)
+	goto :Bust_Wanted
+	end
+else
+
+
   # see if we want it
   setVar $i 0
   while ($i < $WantedPlanetCount)
@@ -93,7 +196,8 @@
     end
     add $i 1
   end
-  
+end
+
   # we don't want it
   getRnd $name 1000 99999
   mergeText "Kill-" $name $longName
@@ -121,8 +225,20 @@
 
   :Bust_Wanted
   # give it a nice name
-  getRnd $Name 1000 99999
-  setVar $Name "TWX-" & $type & "-" & $Name
+
+	getRnd $planet~planet_pointer 1 1000
+	setVar $first_part $planet~planet_names[$planet~planet_pointer]
+	getWord $first_part $first_half 1
+	getRnd $planet~planet_pointer 1 1000
+	setVar $second_part $planet~planet_names[$planet~planet_pointer]
+	getRnd $flip_a_coin 1 2
+	getWord $second_part $last_half $flip_a_coin
+	if (($last_half = "")  OR ($last_half = "0"))
+		getWord $second_part $last_half 1
+	end
+	setVar $planet~planetLabel $first_half&" "&$last_half
+	setVar $name $planet~planetLabel
+
   send $Name "*cl"
   
   # get its ID
@@ -158,32 +274,26 @@
   end
   
   gosub :PlayerInfo~InfoQuick
-  setVar $buyFigs ($figs - $PlayerInfo~Figs)
-  setVar $buyShield ($shield - $PlayerInfo~Shield)
-  setVar $Credits $PlayerInfo~Credits
+  setVar $buyFigs ($figs - currentfighters)
+  setVar $buyShield ($shield - currentshields)
+  setVar $Credits currentcredits
   
-  # find stardock (hack)
-  send "v"
-  setTextLineTrigger getStardock :getStardock "The StarDock is located in sector"
-  pause
-  :getStardock
-  getWord CURRENTLINE $stardock 7
-  stripText $stardock "."
-  
+  loadvar $map~stardock
+	  
   if ($WarpType = "T")
     # TWarp to stardock
     setVar $SeekProduct~Product 1
-    setVar $SeekProduct~Holds $holds
+    setVar $SeekProduct~Holds currentholds
     gosub :SeekProduct~SeekProduct
     
-    if ($stardock < 600) or (SECTORS > 5000)
-      send $stardock "*yy"
+    if ($map~stardock < 600) or (SECTORS > 5000)
+      send $map~stardock "*yy"
     else
-      send $stardock "yy"
+      send $map~stardock "yy"
     end
   else
     setVar $Warp~Mode $WarpType
-    setVar $Warp~Dest $stardock
+    setVar $Warp~Dest $map~stardock
     gosub :Warp~Warp
   end
 
@@ -251,3 +361,10 @@
 include "source\pack2_includes\playerInfo"
 include "source\pack2_includes\warp"
 include "source\pack2_includes\seekProduct"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\loadplanetinfo\planet"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\player\twarp\player"
+
