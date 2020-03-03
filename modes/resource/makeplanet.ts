@@ -100,6 +100,7 @@ if ($pos > 0)
 	else
 		setarray $wantedplanets 1
 		setvar $wantedplanets $create_list
+		setvar $wantedplanets 1
 	end
 else
 	setVar $i 1
@@ -198,7 +199,7 @@ else
 
   # see if we want it
   setVar $i 0
-  while ($i < $WantedPlanetCount)
+  while ($i < $WantedPlanets)
   	send "'"&$WantedPlanets[$i]&"]["&$Type&"*"
     if ($WantedPlanets[$i] = $Type)
       goto :Bust_Wanted
