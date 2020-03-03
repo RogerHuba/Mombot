@@ -56,6 +56,12 @@
 	setVar $BOT~help[13]   $BOT~tab&"               - Originally written by Xide"
 	gosub :bot~helpfile
 
+	loadVar $GAME~GENESIS_COST
+	loadVar $GAME~ATOMIC_COST
+	loadVar $MAP~STARDOCK 
+	loadvar $bot~folder
+	loadvar $game~MAX_PLANETS_PER_SECTOR
+	loadvar $planet~planet_file
 
 gosub :player~quikstats
 setVar $startingLocation $PLAYER~CURRENT_PROMPT
@@ -95,12 +101,8 @@ else
 	setVar $foundPlanet FALSE
 	setVar $isAKeeper FALSE
 	while (($i <= $planet~planetcounter) AND ($foundPlanet = FALSE))
-		lowercase $planet~planetList[$i]
-		lowercase $planet~planet_type
-		getWordPos $planet~planetList[$i] $pos $planet~planet_type
-		if ($pos > 0)
-			setVar $isAKeeper $planet~planetList[$i][7]
-			setVar $foundPlanet TRUE
+		if ($planet~planetList[$i][7] = true)
+			setVar $isAKeeper TRUE
 		end
 		add $i 1
 	end
@@ -111,6 +113,7 @@ else
 	end
 end
 
+gosub :planet~make_planet_array
 
 gosub :makeplanet
 if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
@@ -367,4 +370,6 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\loadplanetinfo\planet"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\planet\makeplanetarray\planet"
+
 

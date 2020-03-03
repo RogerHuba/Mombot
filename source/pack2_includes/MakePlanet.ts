@@ -95,12 +95,8 @@ else
 	setVar $foundPlanet FALSE
 	setVar $isAKeeper FALSE
 	while (($i <= $planet~planetcounter) AND ($foundPlanet = FALSE))
-		lowercase $planet~planetList[$i]
-		lowercase $planet~planet_type
-		getWordPos $planet~planetList[$i] $pos $planet~planet_type
-		if ($pos > 0)
-			setVar $isAKeeper $planet~planetList[$i][7]
-			setVar $foundPlanet TRUE
+		if ($planet~planetList[$i][7] = true)
+			setVar $isAKeeper TRUE
 		end
 		add $i 1
 	end
