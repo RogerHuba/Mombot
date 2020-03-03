@@ -53,13 +53,12 @@
 	setVar $BOT~help[10]   $BOT~tab&"{custom name} - Name the planet will be.  Otherwise it's a random   "
 	setVar $BOT~help[11]   $BOT~tab&"                name from a database              "
 	setVar $BOT~help[12]   $BOT~tab&"                              "
-	setVar $BOT~help[13]   $BOT~tab&"                              "
-	setVar $BOT~help[14]   $BOT~tab&"      Examples:                   "
-	setVar $BOT~help[15]   $BOT~tab&"            >makeplanet create:earth,volcanic,oceanic "
-	setVar $BOT~help[16]   $BOT~tab&"            >makeplanet ewarp create:earth         "
-	setVar $BOT~help[17]   $BOT~tab&"            >makeplanet "&#34&"death"&#34&" create:volcanic "
-	setVar $BOT~help[18]   $BOT~tab&"                              "
-	setVar $BOT~help[19]   $BOT~tab&"               - Originally written by Xide"
+	setVar $BOT~help[13]   $BOT~tab&"      Examples:                   "
+	setVar $BOT~help[14]   $BOT~tab&"            >makeplanet create:earth,volcanic,oceanic "
+	setVar $BOT~help[15]   $BOT~tab&"            >makeplanet ewarp create:earth         "
+	setVar $BOT~help[16]   $BOT~tab&"            >makeplanet "&#34&"death"&#34&" create:volcanic "
+	setVar $BOT~help[17]   $BOT~tab&"                              "
+	setVar $BOT~help[18]   $BOT~tab&"               - Originally written by Xide"
 	gosub :bot~helpfile
 
 	loadVar $GAME~GENESIS_COST
