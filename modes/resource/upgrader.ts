@@ -20,13 +20,42 @@
 # These files should be stored in the root of the compression you 
 # received this source in.
 
-setVar $Header~Script "Mass Upgrade"
 
-# check location
-cutText CURRENTLINE $location 1 12
-if ($location <> "Command [TL=")
-        clientMessage "This script must be run from the command menu"
-        halt
+	gosub :BOT~loadVars
+
+	setVar $BOT~help[1]    $BOT~tab&"upgrader {seek} {ignore:} "
+	setVar $BOT~help[2]    $BOT~tab&"       "
+	setVar $BOT~help[3]    $BOT~tab&"      {seek} - Will attempt to search for ports to upgrade "
+	setVar $BOT~help[4]    $BOT~tab&"               planets.  This is NOT safe."         
+	setVar $BOT~help[5]    $BOT~tab&"       "
+	setVar $BOT~help[6]    $BOT~tab&"   {ignore:} - List of planet numbers to ignore.  Separate"
+	setVar $BOT~help[7]    $BOT~tab&"               numbers by commas and no spaces."
+	setVar $BOT~help[8]    $BOT~tab&"                              "
+	setVar $BOT~help[9]    $BOT~tab&"           Examples:                   "
+	setVar $BOT~help[10]   $BOT~tab&"                   >upgrader seek ignore:5,8,9       "
+	setVar $BOT~help[11]   $BOT~tab&"                   >upgrader            "
+	setVar $BOT~help[12]   $BOT~tab&"                              "
+	setVar $BOT~help[13]   $BOT~tab&"               - Originally written by Xide"
+	gosub :bot~helpfile
+
+
+gosub :player~quikstats
+setVar $startingLocation $PLAYER~CURRENT_PROMPT
+if ($startingLocation = "Command")
+
+elseif ($startingLocation = "Citadel")
+	send "q"
+	gosub :PLANET~getPlanetInfo
+	setvar $startingPlanet $planet~planet
+	send "q"
+elseif ($startingLocation = "Planet")
+	gosub :PLANET~getPlanetInfo
+	setvar $startingPlanet $planet~planet
+	send "q"
+else
+	setVar $SWITCHBOARD~message "Have to be on Command, Planet, or Citadel prompt to start upgrader.*"
+	gosub :SWITCHBOARD~switchboard
+	halt
 end
 
 reqRecording
@@ -36,7 +65,8 @@ logging off
 
 getWordPos " "&$bot~user_command_line&" " $pos "ignore:"
 if ($pos > 0)
-
+	getText $bot~user_command_line $ignore_list "ignore:" " "
+	replacetext $MassUpgrade~IgnoreList "," " "
 else
 	setVar $MassUpgrade~IgnoreList ""
 end
@@ -82,6 +112,12 @@ end
 :Menu_Go
 setEventTrigger disconnect :disconnected "Connection lost"
 gosub :MassUpgrade~MassUpgrade
+
+if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
+	setvar $planet~planet $startingPlanet
+	gosub :PLANET~landingsub
+end
+
 halt
 
 :disconnected
@@ -98,3 +134,9 @@ halt
 include "source\module_includes\bot\loadvars\bot"
 include "source\pack2_includes\massUpgrade"
 include "source\pack2_includes\move"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"
