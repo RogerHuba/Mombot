@@ -198,7 +198,7 @@ else
 
 
   # see if we want it
-  setVar $i 0
+  setVar $i 1
   while ($i < $WantedPlanets)
   	send "'"&$WantedPlanets[$i]&"]["&$Type&"*"
     if ($WantedPlanets[$i] = $Type)
