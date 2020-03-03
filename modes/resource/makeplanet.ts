@@ -199,7 +199,7 @@ else
 
   # see if we want it
   setVar $i 1
-  while ($i < $WantedPlanets)
+  while ($i <= $WantedPlanets)
     if ($WantedPlanets[$i] = $Type)
       goto :Bust_Wanted
     else
