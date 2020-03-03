@@ -299,7 +299,7 @@ end
   if ($WarpType = "T")
     # TWarp to stardock
     setVar $SeekProduct~Product 1
-    setVar $SeekProduct~Holds currentholds
+    setVar $SeekProduct~Holds currenttotalholds
     gosub :SeekProduct~SeekProduct
     
     if ($map~stardock < 600) or (SECTORS > 5000)
