@@ -53,7 +53,7 @@
 		setVar $SWITCHBOARD~message $helpOutput
 		gosub :SWITCHBOARD~switchboard
 	else
-		setVar $helpOutput "  *"&"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"&$helpOutput&"  *     *-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"
+		setVar $helpOutput "  *"&"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"&$helpOutput&"  *     *-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*"
 		send "'*{"&$SWITCHBOARD~bot_name&"} - *"&$helpOutput&"*"
 	end
 return
