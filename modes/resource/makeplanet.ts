@@ -118,7 +118,7 @@ else
 		halt
 	end
 end
-
+pause
 gosub :planet~make_planet_array
 
 gosub :makeplanet
