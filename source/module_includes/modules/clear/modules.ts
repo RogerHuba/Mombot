@@ -21,17 +21,17 @@
 	if (($PLAYER~LIMPETS <= 0) AND (($limpetOwner <> "belong to your Corp") AND ($limpetOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Need limpets to clear this sector*"
 		gosub :SWITCHBOARD~switchboard
-		goto :bot~wait_for_command 
+		halt 
 	end
 	if (($PLAYER~ARMIDS <= 0) AND (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Need armids to clear this sector*"
 		gosub :SWITCHBOARD~switchboard
-		goto :bot~wait_for_command
+		halt
 	end
 	if ((($limpetOwner = "belong to your Corp") or ($limpetOwner = "yours")) and (($armidOwner = "belong to your Corp") or ($armidOwner = "yours")))
 		setVar $SWITCHBOARD~message "Current Sector Already Clear of Enemy Mines!*"
 		gosub :SWITCHBOARD~switchboard
-		goto :bot~wait_for_command
+		halt
 	end
 	setvar $switchboard~message "Clearing Current Sector*"
 	gosub :SWITCHBOARD~switchboard
@@ -49,7 +49,7 @@
 	setvar $switchboard~message "Sector Cleared*"
 	gosub :SWITCHBOARD~switchboard
 		
-	goto :bot~wait_for_command
+	halt
 	:clear_sector_attemptClearingMines
 		setVar $i 0
 		while ($i < 10)
