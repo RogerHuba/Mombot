@@ -1,6 +1,11 @@
 :clear
 	gosub :PLAYER~QUIKSTATS
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
+	if ((currentsector = $map~stardock) or (currentsector <= 10))
+		setVar $SWITCHBOARD~message "Can't clear fedspace.*"
+		gosub :SWITCHBOARD~switchboard
+		halt 
+	end
 	setVar $bot~validPrompts "Command Citadel"
 	gosub :bot~checkStartingPrompt
 
