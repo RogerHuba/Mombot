@@ -25,15 +25,17 @@
 	setVar $END_FIG_HIT_OWNER "'s"
 
 
-	setVar $BOT~help[1] $BOT~tab&"Grid defender {f} {l} {a} {nocannon} {holo} {extern:11pm}  "
-	setVar $BOT~help[2] $BOT~tab&"         f - Photon fighter hits "
-	setVar $BOT~help[3] $BOT~tab&"         l - Photon limpet hits "
-	setVar $BOT~help[4] $BOT~tab&"         a - Photon armid hits "
-	setVar $BOT~help[5] $BOT~tab&"  nocannon - Will not reset cannon damages "
-	setVar $BOT~help[6] $BOT~tab&"      holo - holoscan on ss after photon "
-	setVar $BOT~help[7] $BOT~tab&"    secure - will only escape to limped sectors "
-	setVar $BOT~help[8] $BOT~tab&"    extern - stops defender 5 minutes before extern "
-	setVar $BOT~help[9] $BOT~tab&"             as defined by local system time "
+	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f} {l} {a} {nocannon} {holo} {extern:11pm}  "
+	setVar $BOT~help[2]  $BOT~tab&"         f - Photon fighter hits "
+	setVar $BOT~help[3]  $BOT~tab&"         l - Photon limpet hits "
+	setVar $BOT~help[4]  $BOT~tab&"         a - Photon armid hits "
+	setVar $BOT~help[5]  $BOT~tab&"  nocannon - Will not reset cannon damages "
+	setVar $BOT~help[6]  $BOT~tab&"      holo - holoscan on ss after photon "
+	setVar $BOT~help[7]  $BOT~tab&"    secure - will only escape to limped sectors "
+	setVar $BOT~help[8]  $BOT~tab&"    extern - stops defender 5 minutes before extern "
+	setVar $BOT~help[9]  $BOT~tab&"             as defined by local system time "
+	setVar $BOT~help[10] $BOT~tab&"   density - after usual photon, will attempt "
+	setVar $BOT~help[11] $BOT~tab&"             density photon "
 
 	gosub :bot~helpfile
 
