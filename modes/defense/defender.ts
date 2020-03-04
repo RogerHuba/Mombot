@@ -486,8 +486,8 @@ return
 
 :doMines
 	setVar $BOT~command "mines"
-	setVar $BOT~user_command_line " mines 2"
-	setvar $bot~parm1 "2"
+	setVar $BOT~user_command_line " 3"
+	setvar $bot~parm1 "3"
 
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
