@@ -65,7 +65,7 @@
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	setvar $map~home_sector currentsector
+	setvar $map~home_sector $player~current_sector
 
 
 	getwordpos " "&$bot~user_command_line&" " $pos " f "
@@ -108,6 +108,13 @@
 		setvar $navigate~securePwarp true
 	else
 		setvar $navigate~securePwarp false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " density "
+	if ($pos > 0)
+		setvar $photon~density true
+	else
+		setvar $photon~density false
 	end
 
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
@@ -200,7 +207,12 @@
 	else
 		setVar $message $message&"*     Cannon Reset: Yes"
 	end
-		setVar $message $message&"*        Auto Kill: Enabled With "&$planet~planet_Fighters&" Fighters"
+	if ($photon~density)
+		setVar $message $message&"*     Density Photon: Yes"
+	else
+		setVar $message $message&"*     Density Photon: No"
+	end
+	setVar $message $message&"*        Auto Kill: Enabled With "&$planet~planet_Fighters&" Fighters"
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	send $message
 
@@ -230,8 +242,8 @@
 
 		setTextLineTrigger 10 :scan "warps into the sector."
 		setTextLineTrigger 11 :scan " lifts off from"
-		setTextLineTrigger 12 :scan "Limpet mine in "&currentsector
-		setTextLineTrigger 13 :scan "Deployed Fighters Report Sector "&currentsector&":"
+		setTextLineTrigger 12 :scan "Limpet mine in "&$player~current_sector
+		setTextLineTrigger 13 :scan "Deployed Fighters Report Sector "&$player~current_sector&":"
 		setTextLineTrigger 14 :scan "Quasar Cannon on"
 		setTextLineTrigger 15 :scan "Shipboard Computers The Interdictor Generator on"
 		setTextLineTrigger 16 :scan " is powering up weapons systems!"
@@ -254,7 +266,7 @@
 		:head_home 
 		gosub :player~quikstats
 		echo ansi_2&"*Checking status after inactivity..*"
-		if (currentsector <> $map~home_sector)
+		if ($player~current_sector <> $map~home_sector)
 			setvar $switchboard~message "No activity in an hour, so heading home.*"
 			gosub :switchboard~switchboard
 			gosub :navigate~navigate_to_limp
@@ -304,7 +316,7 @@
 			gosub :doholo
 		end
 
-		if ((SECTOR.LIMPETS.QUANTITY[currentsector] <= 0) and (currentlimpets > 0))
+		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and (currentlimpets > 0))
 			gosub :doMines
 		end
 		setvar $photon~last_sector $photon~sector
