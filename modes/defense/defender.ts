@@ -34,8 +34,13 @@
 	setVar $BOT~help[7]  $BOT~tab&"    secure - will only escape to limped sectors "
 	setVar $BOT~help[8]  $BOT~tab&"    extern - stops defender 5 minutes before extern "
 	setVar $BOT~help[9]  $BOT~tab&"             as defined by local system time "
-	setVar $BOT~help[10] $BOT~tab&"   density - after usual photon, will attempt "
-	setVar $BOT~help[11] $BOT~tab&"             density photon "
+	setVar $BOT~help[10] $BOT~tab&"   density - density photon option"
+	setVar $BOT~help[11] $BOT~tab&"  adjacent - adjacent photon option (default)"
+	setVar $BOT~help[12] $BOT~tab&"           "
+	setVar $BOT~help[13] $BOT~tab&"        Examples: "
+	setVar $BOT~help[14] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[15] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[16] $BOT~tab&"             >defender f density adjacent secure"
 
 	gosub :bot~helpfile
 
@@ -117,6 +122,17 @@
 		setvar $photon~density true
 	else
 		setvar $photon~density false
+	end
+
+	if ($photon~density = true)
+		getwordpos " "&$bot~user_command_line&" " $pos " adj"
+		if ($pos > 0)
+			setvar $photon~adjacentphoton true
+		else
+			setvar $photon~adjacentphoton false
+		end
+	else
+		setvar $photon~adjacentphoton true
 	end
 
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))

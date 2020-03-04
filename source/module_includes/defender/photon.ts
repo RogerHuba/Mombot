@@ -8,7 +8,12 @@
 		getSectorParameter $tempAdj "FIGSEC" $isFigged
 		if ($isFigged)
 			setVar $adjsec $tempAdj
-			goto :fire_photon
+			if ($adjacentphoton = true)
+				goto :fire_photon
+			else
+				gosub :densityDrop
+				return
+			end
 		end
 		add $i 1
 	end
