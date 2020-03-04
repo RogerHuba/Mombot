@@ -10,7 +10,7 @@
 	gosub :player~quikstats
 	setvar $player~startinglocation $player~current_prompt
 	gosub :sector~getSectorData
-	setvar $planet_count SECTOR.PLANETCOUNT[currentsector]
+	setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
 	if (($planet_count = 1) and ($overide = false))
 		setvar $one_planet true
 		setvar $player~override true
@@ -18,11 +18,11 @@
 		setvar $player~override false
 	end
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-		gosub :player~fastCitadelAttack
+		gosub :combat~fastCitadelAttack
 		goto :scanit_again
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
 		setvar $player~startinglocation "Citadel"
-		gosub :player~fastCapture
+		gosub :combat~fastCapture
 		send "l "&$PLANET~PLANET&"* m * * * c "
 		gosub :player~quikstats
 		goto :scanit_again
