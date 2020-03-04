@@ -346,6 +346,10 @@
 		setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
 		gosub :navigate~navigate_away
 		gosub :player~quikstats
+		gosub :killing~checkForVictims
+		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and (currentlimpets > 0))
+			gosub :doMines
+		end
 		if ($sector~realTraderCount = $sector~corpieCount)
 			#############################################
 			# do nothing if there is no enemy in sector #
