@@ -11,7 +11,7 @@
 	setVar $BOT~help[8]   $BOT~tab&"         "
 	setVar $BOT~help[9]   $BOT~tab&"       Examples: "
 	setVar $BOT~help[10]  $BOT~tab&"           >citfill 25000 auto"
-	setVar $BOT~help[11]  $BOT~tab&"           >citfill
+	setVar $BOT~help[11]  $BOT~tab&"           >citfill"
 	setVar $BOT~help[12]  $BOT~tab&"           >citfill auto "
 	gosub :bot~helpfile
 
