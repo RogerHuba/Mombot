@@ -1,11 +1,18 @@
 	gosub :BOT~loadVars
 
 
-	setVar $BOT~help[1]   $BOT~tab&"CITFILL - Citadel Base Refill Mode"
-	setVar $BOT~help[2]   $BOT~tab&"          Refills any corpie above a planet who attacks/is "
-	setVar $BOT~help[3]   $BOT~tab&"         attacked or deploys fighters."
-	setVar $BOT~help[4]   $BOT~tab&"         "
-	setVar $BOT~help[5]   $BOT~tab&"          citfill [on/off] {number figs to attempt per try} "
+	setVar $BOT~help[1]   $BOT~tab&"citfill {number of fighters to refill} {auto}"
+	setVar $BOT~help[2]   $BOT~tab&"              "
+	setVar $BOT~help[3]   $BOT~tab&"      Refills any corpie above a planet who "
+	setVar $BOT~help[4]   $BOT~tab&"      attacks/is attacked or deploys fighters."
+	setVar $BOT~help[5]   $BOT~tab&"         "
+	setVar $BOT~help[6]   $BOT~tab&"       Options:"
+	setVar $BOT~help[7]   $BOT~tab&"           {auto} - auto refill every five minutes"
+	setVar $BOT~help[8]   $BOT~tab&"         "
+	setVar $BOT~help[9]   $BOT~tab&"       Examples: "
+	setVar $BOT~help[10]  $BOT~tab&"           >citfill 25000 auto"
+	setVar $BOT~help[11]  $BOT~tab&"           >citfill
+	setVar $BOT~help[12]  $BOT~tab&"           >citfill auto "
 	gosub :bot~helpfile
 
 
@@ -69,52 +76,58 @@
 	killalltriggers
 	gosub :player~quikstats
 	setVar $startingLocation $player~CURRENT_PROMPT
-	if ($bot~parm1 <> "on")
-        	send "'{" $bot~bot_name "} - Please use - citfill [on/off]*"
+	if ($startingLocation <> "Citadel")
+		setvar $switchboard~message "This mode must be run from the Citadel Prompt*"
+		gosub :switchboard~switchboard
 		halt
+	end
+	if ($bot~parm1 = "on")
+		setvar $bot~parm1 $bot~parm2
+	end
+	gosub :ship~getShipStats
+
+	isNumber $test $bot~parm1
+	if ($test <> true)
+		setVar $bot~parm1 $ship~ship_max_attack
+	end
+	if ($bot~parm1 <= 0)
+		setVar $figsToRefill $ship~ship_max_attack
 	else
-		if ($startingLocation <> "Citadel")
-			send "'{" $bot~bot_name "} - This mode must be run from the Citadel Prompt*"
-			setVar $mode "General"
-			halt
-		end
-		isNumber $test $bot~parm2
-		if ($test <= 0)
-			setVar $bot~parm2 0
-		end
-		if ($bot~parm2 <= 0)
-			setVar $figsToRefill 9999
-		else
-			setVar $figsToRefill $bot~parm2
-		end
+		setVar $figsToRefill $bot~parm1
+	end
 
-		getwordpos " "&$bot~user_command_line&" " $pos " auto "
-		if ($pos > 0)
-			setvar $auto true
-		else
-			setvar $auto false
-		end
-		:start_cit_fill
-			send "'{" $bot~bot_name "} - Citadel Ship Re-Filler :: Powering Up!*"
+	getwordpos " "&$bot~user_command_line&" " $pos " auto "
+	if ($pos > 0)
+		setvar $auto true
+	else
+		setvar $auto false
+	end
+:start_cit_fill
+	setvar $switchboard~message "Citadel Ship Re-Filler :: Powering Up!*"
+	gosub :switchboard~switchboard
 
-		:warning_cit_fill
+	:warning_cit_fill
+		send "\"
+		waitFor "Online Auto Flee"
+		getWord CURRENTLINE $fleetest 5
+		if ($fleetest = "enabled.")
 			send "\"
-			waitFor "Online Auto Flee"
-			getWord CURRENTLINE $fleetest 5
-			if ($fleetest = "enabled.")
-				send "\"
-			end
+		end
 
-			send "q m***"
-			gosub :planet~getPlanetInfo
-			send "c "
+		send "q m***"
+		gosub :planet~getPlanetInfo
+		send "c "
 
-			send "'{" $bot~bot_name "} - Citadel Ship Re-Filler :: Running on Planet " $planet~planet " :: " $planet~planet_FIGHTERS " Fighters available on surface.*"
-			send "'{" $bot~bot_name "} - Citadel Ship Re-Filler now active! Script will re-fig an ally in the sector over planet " & $planet~planet & ".*"
-			send "'{" $bot~bot_name "} - Citadel Ship Re-Filler will attempt to refill "&$figsToRefill&" fighters at a time.*"
-			if ($auto = true)
-				send "'{" $bot~bot_name "} - Doing auto refill every five minutes.*"
-			end
+		setvar $switchboard~message "Citadel Ship Re-Filler :: Running on Planet "&$planet~planet&" :: "&$planet~planet_FIGHTERS&" Fighters available on surface.*"
+		gosub :switchboard~switchboard
+		setvar $switchboard~message "Citadel Ship Re-Filler now active! Script will re-fig an ally in the sector over planet " & $planet~planet & ".*"
+		gosub :switchboard~switchboard
+		setvar $switchboard~message "Citadel Ship Re-Filler will attempt to refill "&$figsToRefill&" fighters at a time.*"
+		gosub :switchboard~switchboard
+		if ($auto = true)
+			setvar $switchboard~message " Doing auto refill every five minutes.*"
+			gosub :switchboard~switchboard
+		end
 	end
 	goto :reloadfigme
 
@@ -391,3 +404,5 @@ include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipstats\ship"
+
