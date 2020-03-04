@@ -106,28 +106,27 @@
 	setvar $switchboard~message "Citadel Ship Re-Filler :: Powering Up!*"
 	gosub :switchboard~switchboard
 
-	:warning_cit_fill
+:warning_cit_fill
+	send "\"
+	waitFor "Online Auto Flee"
+	getWord CURRENTLINE $fleetest 5
+	if ($fleetest = "enabled.")
 		send "\"
-		waitFor "Online Auto Flee"
-		getWord CURRENTLINE $fleetest 5
-		if ($fleetest = "enabled.")
-			send "\"
-		end
+	end
 
-		send "q m***"
-		gosub :planet~getPlanetInfo
-		send "c "
+	send "q m***"
+	gosub :planet~getPlanetInfo
+	send "c "
 
-		setvar $switchboard~message "Citadel Ship Re-Filler :: Running on Planet "&$planet~planet&" :: "&$planet~planet_FIGHTERS&" Fighters available on surface.*"
+	setvar $switchboard~message "Citadel Ship Re-Filler :: Running on Planet "&$planet~planet&" :: "&$planet~planet_FIGHTERS&" Fighters available on surface.*"
+	gosub :switchboard~switchboard
+	setvar $switchboard~message "Citadel Ship Re-Filler now active! Script will re-fig an ally in the sector over planet " & $planet~planet & ".*"
+	gosub :switchboard~switchboard
+	setvar $switchboard~message "Citadel Ship Re-Filler will attempt to refill "&$figsToRefill&" fighters at a time.*"
+	gosub :switchboard~switchboard
+	if ($auto = true)
+		setvar $switchboard~message " Doing auto refill every five minutes.*"
 		gosub :switchboard~switchboard
-		setvar $switchboard~message "Citadel Ship Re-Filler now active! Script will re-fig an ally in the sector over planet " & $planet~planet & ".*"
-		gosub :switchboard~switchboard
-		setvar $switchboard~message "Citadel Ship Re-Filler will attempt to refill "&$figsToRefill&" fighters at a time.*"
-		gosub :switchboard~switchboard
-		if ($auto = true)
-			setvar $switchboard~message " Doing auto refill every five minutes.*"
-			gosub :switchboard~switchboard
-		end
 	end
 	goto :reloadfigme
 
