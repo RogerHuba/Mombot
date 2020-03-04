@@ -11,11 +11,11 @@
 		setVar $bottom 1
 		setVar $top 1
 		setArray $checked SECTORS
-		setVar $que[1] currentsector
-		setVar $checked[currentsector] 1
+		setVar $que[1] $player~current_sector
+		setVar $checked[$player~current_sector] 1
 		setvar $a 1
-		while (SECTOR.WARPS[currentsector][$a] > 0)
-			setVar $checked[SECTOR.WARPS[currentsector][$a]] 1	
+		while (SECTOR.WARPS[$player~current_sector][$a] > 0)
+			setVar $checked[SECTOR.WARPS[$player~current_sector][$a]] 1	
 			add $a 1
 		end
 		:try_again
@@ -26,7 +26,7 @@
 			getsectorparameter $focus "LIMPSEC" $isLimped
 			getsectorparameter $focus "BUBBLE" $isBubble
 			getsectorparameter $focus "MSLSEC" $isMsl
-			if (((($isLimped = true) and ($securePwarp = true)) or ($securePwarp = false)) and ($isFigged = true) and ($isBubble <> true) and ($isMsl <> true) and ($focus <> currentsector))
+			if (((($isLimped = true) and ($securePwarp = true)) or ($securePwarp = false)) and ($isFigged = true) and ($isBubble <> true) and ($isMsl <> true) and ($focus <> $player~current_sector))
 				setVar $nearfig $focus
 				goto :pwarp_away
 			end
@@ -83,8 +83,8 @@ return
 		setVar $bottom 1
 		setVar $top 1
 		setArray $checked SECTORS
-		setVar $que[1] currentsector
-		setVar $checked[currentsector] 0
+		setVar $que[1] $player~current_sector
+		setVar $checked[$player~current_sector] 0
 		:try_again
 		while ($bottom <= $top)
 			# Now, pull out the next sector in the queue, and make it our focus
@@ -137,7 +137,7 @@ return
 :head_home
 	send "p" $map~home_sector "*y"
 	gosub :player~quikstats
-	if (currentsector = $map~home_sector)
+	if ($player~current_sector = $map~home_sector)
 		setVar $SWITCHBOARD~message "Made it back to home sector.  Shutting down.*"
 		gosub :SWITCHBOARD~switchboard
 	else
