@@ -156,7 +156,13 @@ return
 	saveVar $BOT~user_command_line
 	load "scripts\mombot\modes\offense\density.cts"
 	setEventTrigger        densityended        :densityended "SCRIPT STOPPED" "scripts\mombot\modes\offense\density.cts"
+	setdelaytrigger        densitytime        :densitytime  120000
 	pause
+	:densitytime
+		killalltriggers
+		stop "scripts\mombot\modes\offense\density.cts"
+		gosub :player~quikstats
+		gosub :planet~landingsub
 	:densityended
 		killalltriggers
 return
