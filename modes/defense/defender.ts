@@ -226,9 +226,14 @@
 		setVar $message $message&"*     Cannon Reset: Yes"
 	end
 	if ($photon~density)
-		setVar $message $message&"*     Density Photon: Yes"
+		setVar $message $message&"*   Density Photon: Yes"
 	else
-		setVar $message $message&"*     Density Photon: No"
+		setVar $message $message&"*   Density Photon: No"
+	end
+	if ($photon~adjacentphoton)
+		setVar $message $message&"*  Adjacent Photon: Yes"
+	else
+		setVar $message $message&"*  Adjacent Photon: No"
 	end
 	setVar $message $message&"*        Auto Kill: Enabled With "&$planet~planet_Fighters&" Fighters"
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
