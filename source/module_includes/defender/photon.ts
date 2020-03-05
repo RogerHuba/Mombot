@@ -11,7 +11,10 @@
 			if ($adjacentphoton = true)
 				goto :fire_photon
 			else
-				gosub :densityDrop
+				send "p" $adjsec "*  y  "
+				if ($density = true)
+					gosub :densityDrop
+				end
 				return
 			end
 		end

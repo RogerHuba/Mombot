@@ -110,6 +110,13 @@
 		setvar $holo false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " holokill "
+	if ($pos > 0)
+		setvar $holokill true
+	else
+		setvar $holokill false
+	end
+
 	getwordpos " "&$bot~user_command_line&" " $pos " secure "
 	if ($pos > 0)
 		setvar $navigate~securePwarp true
@@ -164,7 +171,7 @@
 
 	if ($player~photons <= 0)
 		gosub :navigate~navigate_to_limp
-		gosub :killing~checkForVictims
+		gosub :killing~scan_for_targets
 		if ($sector~realTraderCount = $sector~corpieCount)
 			#############################################
 			# do nothing if there is no enemy in sector #
@@ -174,7 +181,7 @@
 			####################################################################
 			# after navigating away, check for enemies in sector, just in case #
 			####################################################################
-			gosub :killing~checkForVictims
+			gosub :killing~scan_for_targets
 		end
 		gosub :restock~refurb_photons
 	end
@@ -235,7 +242,14 @@
 	else
 		setVar $message $message&"*  Adjacent Photon: No"
 	end
-	setVar $message $message&"*        Auto Kill: Enabled With "&$planet~planet_Fighters&" Fighters"
+	if ($holokill)
+		setVar $message $message&"*         Holokill: Yes"
+	else
+		setVar $message $message&"*         Holokill: No"
+	end
+	setVar $message $message&"*          Home Sector: "&$map~home_sector
+	format $planet~planet_Fighters $formatted_fighters NUMBER
+	setVar $message $message&"*        Auto Kill: Enabled With "&$formatted_fighters&" Fighters"
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	send $message
 
@@ -293,7 +307,7 @@
 			setvar $switchboard~message "No activity in an hour, so heading home.*"
 			gosub :switchboard~switchboard
 			gosub :navigate~navigate_to_limp
-			gosub :killing~checkForVictims
+			gosub :killing~scan_for_targets
 			gosub :restock~refurb_photons
 			send "p"&$map~home_sector&"*y "
 		end
@@ -325,8 +339,9 @@
 			goto :can_not_fire
 		end
 		getsectorparameter $photon~sector "BUBBLE" $isBubble
-		if ($isBubble = true)
-			setvar $switchboard~message "Can not fire into bubble sector "&$photon~sector&"!*"
+		getsectorparameter $photon~sector "FARM" $isFarm
+		if (($isBubble = true) or ($isFarm = true))
+			setvar $switchboard~message "Can not fire into bubble or farm sector "&$photon~sector&"!*"
 			gosub :switchboard~switchboard
 			goto :can_not_fire
 		end
@@ -335,19 +350,23 @@
 		#############################################
 		# holoscan sector to see if victim is there #
 		#############################################
+		if ($holokill = true)
+			gosub :killing~doholokill
+		end
 		if ($holo = true)
 			gosub :doholo
 		end
 
-		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and (currentlimpets > 0))
+		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and ($player~limpets > 0))
 			gosub :doMines
 		end
 		setvar $photon~last_sector $photon~sector
 		setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
+		gosub :killing~scan_for_targets
 		gosub :navigate~navigate_away
 		gosub :player~quikstats
-		gosub :killing~checkForVictims
-		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and (currentlimpets > 0))
+		gosub :killing~scan_for_targets
+		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and ($player~limpets > 0))
 			gosub :doMines
 		end
 		if ($sector~realTraderCount = $sector~corpieCount)
@@ -359,7 +378,7 @@
 			####################################################################
 			# after navigating away, check for enemies in sector, just in case #
 			####################################################################
-			gosub :killing~checkForVictims
+			gosub :killing~scan_for_targets
 		end
 		####################
 		# check for refurb #
@@ -367,7 +386,7 @@
 		gosub :player~quikstats
 		if ($player~photons <= 0)
 			gosub :navigate~navigate_to_limp
-			gosub :killing~checkForVictims
+			gosub :killing~scan_for_targets
 			if ($sector~realTraderCount = $sector~corpieCount)
 				#############################################
 				# do nothing if there is no enemy in sector #
@@ -377,7 +396,7 @@
 				####################################################################
 				# after navigating away, check for enemies in sector, just in case #
 				####################################################################
-				gosub :killing~checkForVictims
+				gosub :killing~scan_for_targets
 			end
 			gosub :restock~refurb_photons
 		end
@@ -400,7 +419,7 @@
 				gosub :switchboard~switchboard
 			end
 		end
-		gosub :killing~checkForVictims
+		gosub :killing~scan_for_targets
 		if ($sector~realTraderCount = $sector~corpieCount)
 			#############################################
 			# do nothing if there is no enemy in sector #
@@ -410,7 +429,7 @@
 			####################################################################
 			# after navigating away, check for enemies in sector, just in case #
 			####################################################################
-			gosub :killing~checkForVictims
+			gosub :killing~scan_for_targets
 		end
 	end
 	goto :processing
@@ -439,7 +458,7 @@
 		####################################################################
 		# after navigating away, check for enemies in sector, just in case #
 		####################################################################
-		gosub :killing~checkForVictims
+		gosub :killing~scan_for_targets
 	end
 	goto :processing
 

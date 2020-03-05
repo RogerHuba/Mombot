@@ -6,7 +6,7 @@
 		return
 	end	
 
-:scanit_again
+:scan_for_targets
 	gosub :player~quikstats
 	setvar $player~startinglocation $player~current_prompt
 	gosub :sector~getSectorData
@@ -19,13 +19,13 @@
 	end
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
 		gosub :combat~fastCitadelAttack
-		goto :scanit_again
+		goto :scan_for_targets
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
 		setvar $player~startinglocation "Citadel"
 		gosub :combat~fastCapture
 		send "l "&$PLANET~PLANET&"* m * * * c "
 		gosub :player~quikstats
-		goto :scanit_again
+		goto :scan_for_targets
 	end
 return
 
@@ -84,6 +84,20 @@ return
 		add $i 1
 	end
 return
+
+:doHoloKill
+	setvar $before_holo_kill_sector $player~current_sector
+	gosub :combat~holokill
+	if ($player~current_sector <> $before_holo_kill_sector)
+		setVar $PLAYER~WARPTO $before_holo_kill_sector
+		gosub :PLAYER~twarp
+		if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+			setvar $switchboard~message "Could not make it back to starting sector before holokill. - ["&$player~msg&"]*"
+			gosub :switchboard~switchboard
+		end
+	end
+return
+
 
 :killtriggers
 	killalltriggers
