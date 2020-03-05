@@ -226,7 +226,6 @@
 
 
 	setVar $message "'*  {"&$bot~bot_name&"} - "&$script_ver&" Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-	    setvar $message $message&"*      Photon Type: Adjacent "
 	if ($fighter)
 		setVar $message $message&"*   On Fighter Hit: Yes"
 	else
@@ -242,6 +241,21 @@
 	else
 		setVar $message $message&"*     On Armid Hit: No"
 	end
+	if ($photon~adjacentphoton)
+		setVar $message $message&"*  Adjacent Photon: Yes"
+	else
+		setVar $message $message&"*  Adjacent Photon: No"
+	end
+	if ($photon~density)
+		setVar $message $message&"*   Density Photon: Yes"
+	else
+		setVar $message $message&"*   Density Photon: No"
+	end
+	if ($holokill)
+		setVar $message $message&"*         Holokill: Yes"
+	else
+		setVar $message $message&"*         Holokill: No"
+	end
 	if ($holo)
 		setVar $message $message&"*      Holo Report: Yes"
 	else
@@ -251,21 +265,6 @@
 		setVar $message $message&"*     Cannon Reset: No"
 	else
 		setVar $message $message&"*     Cannon Reset: Yes"
-	end
-	if ($photon~density)
-		setVar $message $message&"*   Density Photon: Yes"
-	else
-		setVar $message $message&"*   Density Photon: No"
-	end
-	if ($photon~adjacentphoton)
-		setVar $message $message&"*  Adjacent Photon: Yes"
-	else
-		setVar $message $message&"*  Adjacent Photon: No"
-	end
-	if ($holokill)
-		setVar $message $message&"*         Holokill: Yes"
-	else
-		setVar $message $message&"*         Holokill: No"
 	end
 	setVar $message $message&"*      Home Sector: "&$map~home_sector
 	format $planet~planet_Fighters $formatted_fighters NUMBER
