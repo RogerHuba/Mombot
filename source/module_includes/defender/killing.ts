@@ -95,6 +95,8 @@ return
 		if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
 			setvar $switchboard~message "Could not make it back to starting sector before holokill. - ["&$player~msg&"]*"
 			gosub :switchboard~switchboard
+		else 
+			gosub :switchboard~switchboard
 		end
 	end
 return
