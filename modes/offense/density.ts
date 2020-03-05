@@ -27,6 +27,9 @@
 	setVar $BOT~help[23]  $BOT~tab&"             >density pgrid killport kill escape:123"
 	gosub :bot~helpfile
 
+#check mines * on portkill
+#check plist 
+#add kazi option
 
 	setVar $PLAYER~save TRUE
 
@@ -320,7 +323,7 @@
 		setvar $pgrid~pgridSector $adj[$w]
 		gosub :pgrid~run
 		if ($killport = true)
-			send "s"
+			send "s*"
 			waitfor "Warps to Sector(s)"
 			if (PORT.EXISTS[CURRENTSECTOR] = 1)
 				if ($player~current_prompt = "Citadel")
