@@ -65,6 +65,35 @@
 		isNumber $test $xportShip
 		if ($test)
 			setVar $xporting TRUE
+			setVar $xportShipFound FALSE
+			send "czq"
+			waitfor "-----------------------------------------------------------------------------"
+			:shipsagain
+			setTextTrigger shipsDone :shipsDone "Computer command ["
+			setTextLineTrigger shipFound :shipFound ""
+			pause
+				:shipFound
+				killalltriggers
+				getWord CURRENTLINE $maybeship 1
+				isNumber $test $maybeship
+				if ($test)
+					if ($maybeship = $xportShip)
+						getWord CURRENTLINE $xportShipSector 2
+						setVar $xportShipFound true
+
+						goto :shipsDone
+					end
+				end
+				goto :shipsagain
+			:shipsDone
+				killalltriggers
+			
+			if ($xportShipFound = FALSE)
+				setVar $SWITCHBOARD~message "Could not find xport ship in shipscan*"
+				gosub :SWITCHBOARD~switchboard
+			else
+				
+			end
 		else
 			setVar $SWITCHBOARD~message "Invalid xport ship entered*"
 			gosub :SWITCHBOARD~switchboard
@@ -149,6 +178,56 @@
 	if ($SHIP~SHIP_MAX_ATTACK <= 0)
 		gosub :SHIP~getShipStats
 	end
+
+	if ($xportShipFound = TRUE)
+		if ($SHIP~SHIP_XPORT_RANGE <= 0)
+			gosub :SHIP~getShipStats
+		end
+		send "cf" $pgridSector "*" $xportShipSector "*q"
+		setTextLineTrigger shortestPath1 :shortestPath1 "The shortest path"
+		setTextLineTrigger noRouteToSec1 :noRouteToSec1 "No route within 50 warps fro"
+		settextLineTrigger whatsThePoint1 :whatsThePoint1 "So what's the point?"
+		pause
+		:noRouteToSec1
+			killalltriggers
+			setVar $SWITCHBOARD~message "Error determining path, ship out of range or avoids blocking path.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		:shortestPath1
+			killalltriggers
+			getWord CURRENTLINE $dist1 4
+			stripText $dist1 "("
+			if ($dist > $SHIP~SHIP_XPORT_RANGE)
+				setVar $SWITCHBOARD~message "Return XPort will be out of range.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
+		:whatsThePoint1
+			killalltriggers
+
+		send "cf" $xportShipSector "*" $pgridSector "*q"
+		setTextLineTrigger shortestPath2 :shortestPath2 "The shortest path"
+		setTextLineTrigger noRouteToSec2 :noRouteToSec2 "No route within 50 warps fro"
+		settextLineTrigger whatsThePoint2 :whatsThePoint2 "So what's the point?"
+		pause
+		:noRouteToSec2
+			killalltriggers
+			setVar $SWITCHBOARD~message "Error determining path, ship out of range or avoids blocking path.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		:shortestPath2
+			killalltriggers
+			getWord CURRENTLINE $dist2 4
+			stripText $dist2 "("
+			if ($dist2 > $SHIP~SHIP_XPORT_RANGE)
+				setVar $SWITCHBOARD~message "First XPort will be out of range.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
+		:whatsThePoint2
+			killalltriggers
+	end
+	
 	setVar $i 1
 	setVar $isFound false
 	while (SECTOR.WARPS[$PLAYER~CURRENT_Sector][$i] > 0)
@@ -184,8 +263,10 @@
 	end
 	if ($unsafe = true)
 		setVar $mac $mac & "f z "&$fighterDrop&" * z c d l j" & #8 & $planet~planet & "* l j" & #8 & $planet~planet & "*  "
-	else
+	elseif ($xporting = false)
 		setVar $mac $mac & "j r * f z "&$fighterDrop&" * z c d * "
+	else
+		# still testing - but not adding anything - not even the reteat
 	end
 	setVar $previousPlanetsInSector SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
 	if ($doDensityScan = TRUE)
@@ -250,9 +331,9 @@
 	if ($retreating)
 		send $inCitadel & "m " & $pgridSector & $mac & "< n n n * "
 
-	if ($surrendor = TRUE)
-		send " h s y * "
-	end
+		if ($surrendor = TRUE)
+			send " h s y * "
+		end
 		if ($planet~planet > 0)
 			send "l j" & #8 & $planet~planet & "*  *  "
 		end
@@ -277,13 +358,18 @@
 		end
 	else
 
-		setVar $pgridString "'" & $pgridSector & "=saveme* " & $inCitadel & "m " & $pgridSector & $mac
+		if ($xporting = false)
+			setVar $pgridString "'" & $pgridSector & "=saveme* " & $inCitadel & "m " & $pgridSector & $mac
+		else
+			# Xporting - we will grid in > Xport out > wait > xport in and drop fig/saveme
+			setVar $pgridString $inCitadel & "m " & $pgridSector & $mac
 
-	if ($surrendor = TRUE)
-		setVar $pgridString $pgridString & " h s y * "
+		end	
+		if ($surrendor = TRUE)
+			setVar $pgridString $pgridString & " h s y * "
 
-	end
-	if ($xporting)
+		end
+		if ($xporting)
 			setVar $pgridString $pgridString & "x   " & $xportship & "* * "
 		end
 		send $pgridString
@@ -293,28 +379,29 @@
 				gosub :emergencyLanding
 				setVar $SWITCHBOARD~message "Unsuccessful xport out of sector " & $pgridSector & ". Ship too far away or I was photoned.*"  
 				gosub :SWITCHBOARD~switchboard
+				send " f 1* c d  * * "
+				send "'" & $player~Current_sector & "=saveme* "
+				gosub :emergencyLanding
 			else
-				if ($PLAYER~CURRENT_SECTOR = $startingPgridSector)
+				getRND $theDelay 150 450
+				setDelayTrigger waitPgridXport :goPgridXport $theDelay
+				pause
+				:goPgridXport
+					
+					send "'" & $pgridSector & "=saveme* x   " & $startingShip & "* * f "&$fighterDrop&" * c d "
 					gosub :emergencyLanding
-					setVar $SWITCHBOARD~message "Unsuccessful pgrid unless xport ship was in starting sector. Currently in xport ship.*"
-					gosub :SWITCHBOARD~switchboard
-				else
-					setDelayTrigger waitPgridXport :goPgridXport 3000
-					pause
-					:goPgridXport
-						send "x   " & $startingShip & "* * l j" & #8 & $planet~planet & "*  *  "
-						gosub :PLAYER~QUIKSTATS
-						if ($PLAYER~CURRENT_PROMPT = "Planet")
-							send "m * * * c s* "
-						end
-						if ($PLAYER~SHIP_NUMBER <> $startingShip)
-							setVar $SWITCHBOARD~message "Gridding ship not available for re-export.  Bot is in safe ship.*" 
-							gosub :SWITCHBOARD~switchboard
-						else
-							setVar $SWITCHBOARD~message "Successfully P-gridded w/xport into sector " & $pgridSector & "*"
-							gosub :SWITCHBOARD~switchboard
-						end
-				end
+					gosub :PLAYER~QUIKSTATS
+					if ($PLAYER~CURRENT_PROMPT = "Planet")
+						send "m * * * c s* "
+					end
+					if ($PLAYER~SHIP_NUMBER <> $startingShip)
+						setVar $SWITCHBOARD~message "Gridding ship not available for re-export.  Bot is in safe ship.*" 
+						gosub :SWITCHBOARD~switchboard
+					else
+						setVar $SWITCHBOARD~message "Successfully P-gridded w/xport into sector " & $pgridSector & "*"
+						gosub :SWITCHBOARD~switchboard
+					end
+				
 			end
 		else
 			gosub :emergencyLanding
