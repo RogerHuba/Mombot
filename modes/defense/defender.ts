@@ -115,9 +115,9 @@
 
 	getwordpos " "&$bot~user_command_line&" " $pos " holokill "
 	if ($pos > 0)
-		setvar $holokill true
+		setvar $killing~holokill true
 	else
-		setvar $holokill false
+		setvar $killing~holokill false
 	end
 
 	getwordpos " "&$bot~user_command_line&" " $pos " secure "
@@ -236,7 +236,7 @@
 	else
 		setVar $message $message&"*   Density Photon: No"
 	end
-	if ($holokill)
+	if ($killing~holokill)
 		setVar $message $message&"*         Holokill: Yes"
 	else
 		setVar $message $message&"*         Holokill: No"
@@ -357,7 +357,7 @@
 		#############################################
 		# holoscan sector to see if victim is there #
 		#############################################
-		if ($holokill = true)
+		if ($killing~holokill = true)
 			gosub :killing~doholokill
 		end
 		if ($holo = true)
