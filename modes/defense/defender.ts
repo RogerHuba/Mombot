@@ -257,7 +257,10 @@
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	send $message
 
-    
+    if (($killing~holokill = true) and ($player~photons > 1))
+		setvar $switchboard~message "Holokill with more than one photon is not advised.  Be careful.*"
+		gosub :switchboard~switchboard
+	end
 
 	###########################################
 	# Main information processor for defender #
