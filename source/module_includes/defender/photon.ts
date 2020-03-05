@@ -8,7 +8,12 @@
 		getSectorParameter $tempAdj "FIGSEC" $isFigged
 		if ($isFigged)
 			setVar $adjsec $tempAdj
-			goto :fire_photon
+			if ($adjacentphoton = true)
+				goto :fire_photon
+			else
+				gosub :densityDrop
+				return
+			end
 		end
 		add $i 1
 	end
@@ -57,6 +62,9 @@
 	gosub :killtriggers
 	setvar $switchboard~message "Photon Fired - Sector => " & $sector & "!*"
 	gosub :switchboard~switchboard
+	if ($density = true)
+		gosub :densityDrop
+	end
 	return
 
 :killtriggers
@@ -137,4 +145,29 @@ return
 	end
 	getWord CURRENTLINE $sector 4
 	setvar $found true
+return
+
+:densityDrop
+
+	waitfor "Citadel command"
+	
+	setVar $BOT~command "density"
+	setVar $BOT~user_command_line " density photon "
+	setVar $BOT~parm1 "photon"
+	setVar $BOT~parm2 ""
+	saveVar $BOT~parm1
+	saveVar $BOT~parm2
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	load "scripts\mombot\modes\offense\density.cts"
+	setEventTrigger        densityended        :densityended "SCRIPT STOPPED" "scripts\mombot\modes\offense\density.cts"
+	setdelaytrigger        densitytime        :densitytime  120000
+	pause
+	:densitytime
+		killalltriggers
+		stop "scripts\mombot\modes\offense\density.cts"
+		gosub :player~quikstats
+		gosub :planet~landingsub
+	:densityended
+		killalltriggers
 return

@@ -405,6 +405,7 @@ include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\loadplanetinfo\planet"
 include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\planet\makeplanetarray\planet"
 

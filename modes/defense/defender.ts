@@ -25,15 +25,22 @@
 	setVar $END_FIG_HIT_OWNER "'s"
 
 
-	setVar $BOT~help[1] $BOT~tab&"Grid defender {f} {l} {a} {nocannon} {holo} {extern:11pm}  "
-	setVar $BOT~help[2] $BOT~tab&"         f - Photon fighter hits "
-	setVar $BOT~help[3] $BOT~tab&"         l - Photon limpet hits "
-	setVar $BOT~help[4] $BOT~tab&"         a - Photon armid hits "
-	setVar $BOT~help[5] $BOT~tab&"  nocannon - Will not reset cannon damages "
-	setVar $BOT~help[6] $BOT~tab&"      holo - holoscan on ss after photon "
-	setVar $BOT~help[7] $BOT~tab&"    secure - will only escape to limped sectors "
-	setVar $BOT~help[8] $BOT~tab&"    extern - stops defender 5 minutes before extern "
-	setVar $BOT~help[9] $BOT~tab&"             as defined by local system time "
+	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f} {l} {a} {nocannon} {holo} {extern:11pm}  "
+	setVar $BOT~help[2]  $BOT~tab&"         f - Photon fighter hits "
+	setVar $BOT~help[3]  $BOT~tab&"         l - Photon limpet hits "
+	setVar $BOT~help[4]  $BOT~tab&"         a - Photon armid hits "
+	setVar $BOT~help[5]  $BOT~tab&"  nocannon - Will not reset cannon damages "
+	setVar $BOT~help[6]  $BOT~tab&"      holo - holoscan on ss after photon "
+	setVar $BOT~help[7]  $BOT~tab&"    secure - will only escape to limped sectors "
+	setVar $BOT~help[8]  $BOT~tab&"    extern - stops defender 5 minutes before extern "
+	setVar $BOT~help[9]  $BOT~tab&"             as defined by local system time "
+	setVar $BOT~help[10] $BOT~tab&"   density - density photon option"
+	setVar $BOT~help[11] $BOT~tab&"  adjacent - adjacent photon option (default)"
+	setVar $BOT~help[12] $BOT~tab&"           "
+	setVar $BOT~help[13] $BOT~tab&"        Examples: "
+	setVar $BOT~help[14] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[15] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[16] $BOT~tab&"             >defender f density adjacent secure"
 
 	gosub :bot~helpfile
 
@@ -65,7 +72,7 @@
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	setvar $map~home_sector currentsector
+	setvar $map~home_sector $player~current_sector
 
 
 	getwordpos " "&$bot~user_command_line&" " $pos " f "
@@ -108,6 +115,24 @@
 		setvar $navigate~securePwarp true
 	else
 		setvar $navigate~securePwarp false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " density "
+	if ($pos > 0)
+		setvar $photon~density true
+	else
+		setvar $photon~density false
+	end
+
+	if ($photon~density = true)
+		getwordpos " "&$bot~user_command_line&" " $pos " adj"
+		if ($pos > 0)
+			setvar $photon~adjacentphoton true
+		else
+			setvar $photon~adjacentphoton false
+		end
+	else
+		setvar $photon~adjacentphoton true
 	end
 
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
@@ -200,7 +225,17 @@
 	else
 		setVar $message $message&"*     Cannon Reset: Yes"
 	end
-		setVar $message $message&"*        Auto Kill: Enabled With "&$planet~planet_Fighters&" Fighters"
+	if ($photon~density)
+		setVar $message $message&"*   Density Photon: Yes"
+	else
+		setVar $message $message&"*   Density Photon: No"
+	end
+	if ($photon~adjacentphoton)
+		setVar $message $message&"*  Adjacent Photon: Yes"
+	else
+		setVar $message $message&"*  Adjacent Photon: No"
+	end
+	setVar $message $message&"*        Auto Kill: Enabled With "&$planet~planet_Fighters&" Fighters"
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	send $message
 
@@ -230,8 +265,8 @@
 
 		setTextLineTrigger 10 :scan "warps into the sector."
 		setTextLineTrigger 11 :scan " lifts off from"
-		setTextLineTrigger 12 :scan "Limpet mine in "&currentsector
-		setTextLineTrigger 13 :scan "Deployed Fighters Report Sector "&currentsector&":"
+		setTextLineTrigger 12 :scan "Limpet mine in "&$player~current_sector
+		setTextLineTrigger 13 :scan "Deployed Fighters Report Sector "&$player~current_sector&":"
 		setTextLineTrigger 14 :scan "Quasar Cannon on"
 		setTextLineTrigger 15 :scan "Shipboard Computers The Interdictor Generator on"
 		setTextLineTrigger 16 :scan " is powering up weapons systems!"
@@ -254,7 +289,7 @@
 		:head_home 
 		gosub :player~quikstats
 		echo ansi_2&"*Checking status after inactivity..*"
-		if (currentsector <> $map~home_sector)
+		if ($player~current_sector <> $map~home_sector)
 			setvar $switchboard~message "No activity in an hour, so heading home.*"
 			gosub :switchboard~switchboard
 			gosub :navigate~navigate_to_limp
@@ -304,13 +339,17 @@
 			gosub :doholo
 		end
 
-		if ((SECTOR.LIMPETS.QUANTITY[currentsector] <= 0) and (currentlimpets > 0))
+		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and (currentlimpets > 0))
 			gosub :doMines
 		end
 		setvar $photon~last_sector $photon~sector
 		setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
 		gosub :navigate~navigate_away
 		gosub :player~quikstats
+		gosub :killing~checkForVictims
+		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and (currentlimpets > 0))
+			gosub :doMines
+		end
 		if ($sector~realTraderCount = $sector~corpieCount)
 			#############################################
 			# do nothing if there is no enemy in sector #
@@ -447,8 +486,8 @@ return
 
 :doMines
 	setVar $BOT~command "mines"
-	setVar $BOT~user_command_line " mines 2"
-	setvar $bot~parm1 "2"
+	setVar $BOT~user_command_line " 3"
+	setvar $bot~parm1 "3"
 
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
@@ -469,7 +508,10 @@ include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\ship\getshipcapstats\ship"
 include "source\bot_includes\ship\loadshipinfo\ship"
 include "source\bot_includes\ship\getshipstats\ship"
