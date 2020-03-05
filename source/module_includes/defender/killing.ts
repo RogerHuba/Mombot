@@ -86,6 +86,7 @@ return
 return
 
 :doHoloKill
+	gosub :player~quikstats
 	setvar $before_holo_kill_sector $player~current_sector
 	gosub :combat~holokill
 	if ($player~current_sector <> $before_holo_kill_sector)

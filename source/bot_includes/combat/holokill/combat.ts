@@ -73,12 +73,12 @@
 		setVar $kill_idx 1
 		if ($player~surround_before_hkill = TRUE)
 			gosub :player~quikstats
-			gosub :surround
+			gosub :grid~surround
 			setVar $insurround_before_hkill FALSE
 			gosub :player~quikstats
 		end
 	
-		gosub  :player~currentPrompt
+		gosub  :player~quikstats
 		if ($player~current_prompt <> "Command")
 			setVar $SWITCHBOARD~message "Wrong prompt for holokill kill.*"
 			return
@@ -103,3 +103,5 @@
 return
 
 include "source\bot_includes\player\currentprompt\player"
+include "source\bot_includes\grid\surround\grid"
+include "source\bot_includes\ship\getshipstats\ship"
