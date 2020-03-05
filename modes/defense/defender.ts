@@ -189,22 +189,7 @@
     gosub :SHIP~getShipStats
     gosub :player~quikstats
 
-	if ($player~photons <= 0)
-		gosub :navigate~navigate_to_limp
-		gosub :killing~scan_for_targets
-		if ($sector~realTraderCount = $sector~corpieCount)
-			#############################################
-			# do nothing if there is no enemy in sector #
-			#############################################
-		else
-			gosub :navigate~navigate_to_limp
-			####################################################################
-			# after navigating away, check for enemies in sector, just in case #
-			####################################################################
-			gosub :killing~scan_for_targets
-		end
-		gosub :restock~refurb_photons
-	end
+	gosub :check_for_photon_refurb
 
 	################################
 	# check for aliens in the game #
@@ -408,22 +393,7 @@
 		# check for refurb #
 		####################
 		gosub :player~quikstats
-		if ($player~photons <= 0)
-			gosub :navigate~navigate_to_limp
-			gosub :killing~scan_for_targets
-			if ($sector~realTraderCount = $sector~corpieCount)
-				#############################################
-				# do nothing if there is no enemy in sector #
-				#############################################
-			else
-				gosub :navigate~navigate_away
-				####################################################################
-				# after navigating away, check for enemies in sector, just in case #
-				####################################################################
-				gosub :killing~scan_for_targets
-			end
-			gosub :restock~refurb_photons
-		end
+		gosub :check_for_photon_refurb
 		if (($killing~last_fighter_attack <> "") and ($nocannon <> true))
 			gosub :killing~set_the_cannon
 		end
@@ -543,6 +513,24 @@ return
 		killtrigger minesend
 return
 
+:check_for_photon_refurb
+	if (($player~photons <= 0) and ($nophotons <> true))
+		gosub :navigate~navigate_to_limp
+		gosub :killing~scan_for_targets
+		if ($sector~realTraderCount = $sector~corpieCount)
+			#############################################
+			# do nothing if there is no enemy in sector #
+			#############################################
+		else
+			gosub :navigate~navigate_away
+			####################################################################
+			# after navigating away, check for enemies in sector, just in case #
+			####################################################################
+			gosub :killing~scan_for_targets
+		end
+		gosub :restock~refurb_photons
+	end
+return
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
