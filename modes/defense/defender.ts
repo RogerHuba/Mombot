@@ -257,8 +257,11 @@
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	send $message
 
-    if (($killing~holokill = true) and ($player~photons > 1))
+	if (($killing~holokill = true) and ($player~photons > 1))
 		setvar $switchboard~message "Holokill with more than one photon is not advised.  Be careful.*"
+		gosub :switchboard~switchboard
+	elseif (($killing~holokill = true) and ($nophoton = true) and ($player~photons > 0))
+		setvar $switchboard~message "You are running holokill with a photon, with photon mode off.  Could be a recipe for disaster.  Be careful out there.*"
 		gosub :switchboard~switchboard
 	end
 
