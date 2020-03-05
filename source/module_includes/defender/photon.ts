@@ -94,12 +94,13 @@ return
 	#############################
 
 	getwordpos CURRENTLINE $posretreat " retreated."
+	getwordpos CURRENTLINE $posdestroyed " DESTROYED "
 	getWordPos CURRENTLINE $pos "entered sector."
 	setvar $retreatfighter false
-	if (($pos < 1) and ($posretreat < 1))
+	if (($pos < 1) and ($posretreat < 1) and ($posdestroyed < 1))
 		return
 	else
-		if ($posretreat > 0)
+		if (($posretreat > 0) or ($posdestroyed > 0))
 			setvar $retreatfighter true
 		end
 	end

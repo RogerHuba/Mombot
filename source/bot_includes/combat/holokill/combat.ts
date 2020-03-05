@@ -83,6 +83,7 @@
 			setVar $SWITCHBOARD~message "Wrong prompt for holokill kill.*"
 			return
 		end
+		setvar $PLAYER~startingLocation "Command"
 		goSub :SECTOR~getSectorData
 		goSub :fastAttack
 	
