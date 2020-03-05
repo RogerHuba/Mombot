@@ -29,18 +29,21 @@
 	setVar $BOT~help[2]  $BOT~tab&"         f - Photon fighter hits "
 	setVar $BOT~help[3]  $BOT~tab&"         l - Photon limpet hits "
 	setVar $BOT~help[4]  $BOT~tab&"         a - Photon armid hits "
-	setVar $BOT~help[5]  $BOT~tab&"  nocannon - Will not reset cannon damages "
-	setVar $BOT~help[6]  $BOT~tab&"      holo - holoscan on ss after photon "
-	setVar $BOT~help[7]  $BOT~tab&"    secure - will only escape to limped sectors "
-	setVar $BOT~help[8]  $BOT~tab&"    extern - stops defender 5 minutes before extern "
-	setVar $BOT~help[9]  $BOT~tab&"             as defined by local system time "
-	setVar $BOT~help[10] $BOT~tab&"   density - density photon option"
-	setVar $BOT~help[11] $BOT~tab&"  adjacent - adjacent photon option (default)"
-	setVar $BOT~help[12] $BOT~tab&"           "
-	setVar $BOT~help[13] $BOT~tab&"        Examples: "
-	setVar $BOT~help[14] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[15] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[16] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[5]  $BOT~tab&"      holo - holoscan on ss after photon "
+	setVar $BOT~help[6]  $BOT~tab&"    secure - will only escape to limped sectors "
+	setVar $BOT~help[7]  $BOT~tab&"    extern - stops defender 5 minutes before extern "
+	setVar $BOT~help[8]  $BOT~tab&"             as defined by local system time "
+	setVar $BOT~help[9]  $BOT~tab&"   density - density photon option"
+	setVar $BOT~help[10] $BOT~tab&"  adjacent - adjacent photon option (default)"
+	setVar $BOT~help[11] $BOT~tab&"  holokill - holokill if possible"
+	setVar $BOT~help[12] $BOT~tab&"  nophoton - will not fire photon"
+	setVar $BOT~help[13] $BOT~tab&"  noescape - will not retreat from attack sector"
+	setVar $BOT~help[14] $BOT~tab&"  nocannon - Will not reset cannon damages "
+	setVar $BOT~help[15] $BOT~tab&"           "
+	setVar $BOT~help[16] $BOT~tab&"        Examples: "
+	setVar $BOT~help[17] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[18] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[19] $BOT~tab&"             >defender f density adjacent secure"
 
 	gosub :bot~helpfile
 
@@ -141,6 +144,23 @@
 	else
 		setvar $photon~adjacentphoton true
 	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " nophoton "
+	if ($pos > 0)
+		setvar $nophoton true
+		setvar $photon~adjacentphoton false
+		setvar $photon~density false
+	else
+		setvar $nophoton false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " noescape "
+	if ($pos > 0)
+		setvar $noescape true
+	else
+		setvar $noescape false
+	end
+
 
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
 		setvar $fighter true
@@ -357,28 +377,30 @@
 			gosub :doholo
 		end
 
-		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and ($player~limpets > 0))
-			gosub :doMines
-		end
 		setvar $photon~last_sector $photon~sector
 		setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
 		gosub :killing~scan_for_targets
-		gosub :navigate~navigate_away
-		gosub :player~quikstats
-		gosub :killing~scan_for_targets
 		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and ($player~limpets > 0))
 			gosub :doMines
 		end
-		if ($sector~realTraderCount = $sector~corpieCount)
-			#############################################
-			# do nothing if there is no enemy in sector #
-			#############################################
-		else
+		if ($noescape <> true)
 			gosub :navigate~navigate_away
-			####################################################################
-			# after navigating away, check for enemies in sector, just in case #
-			####################################################################
+			gosub :player~quikstats
 			gosub :killing~scan_for_targets
+			if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and ($player~limpets > 0))
+				gosub :doMines
+			end
+			if ($sector~realTraderCount = $sector~corpieCount)
+				#############################################
+				# do nothing if there is no enemy in sector #
+				#############################################
+			else
+				gosub :navigate~navigate_away
+				####################################################################
+				# after navigating away, check for enemies in sector, just in case #
+				####################################################################
+				gosub :killing~scan_for_targets
+			end
 		end
 		####################
 		# check for refurb #
