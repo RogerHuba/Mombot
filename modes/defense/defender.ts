@@ -354,18 +354,21 @@
 :check_to_fire_photon
 	gosub :killtriggers
 	if ($photon~found = true)
-		if (($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
-			goto :can_not_fire
+		if ($photon~retreatfighter <> true)
+			if (($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
+				goto :can_not_fire
+			end
+			getsectorparameter $photon~sector "BUBBLE" $isBubble
+			getsectorparameter $photon~sector "FARM" $isFarm
+			if (($isBubble = true) or ($isFarm = true))
+				setvar $switchboard~message "Can not fire into bubble or farm sector "&$photon~sector&"!*"
+				gosub :switchboard~switchboard
+				goto :can_not_fire
+			end
+			gosub :photon~photon
+		else
+			gosub :photon~retreatphoton
 		end
-		getsectorparameter $photon~sector "BUBBLE" $isBubble
-		getsectorparameter $photon~sector "FARM" $isFarm
-		if (($isBubble = true) or ($isFarm = true))
-			setvar $switchboard~message "Can not fire into bubble or farm sector "&$photon~sector&"!*"
-			gosub :switchboard~switchboard
-			goto :can_not_fire
-		end
-		gosub :photon~photon
-		
 		#############################################
 		# holoscan sector to see if victim is there #
 		#############################################
@@ -561,3 +564,4 @@ include "source\module_includes\defender\navigate"
 include "source\module_includes\defender\photon"
 include "source\module_includes\defender\restock"
 include "source\module_includes\defender\killing"
+include "source\module_includes\external\htorp"

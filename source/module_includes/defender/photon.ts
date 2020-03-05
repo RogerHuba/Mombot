@@ -93,9 +93,15 @@ return
 	# Torp only on sector entry #
 	#############################
 
+	getwordpos CURRENTLINE $posretreat " retreated."
 	getWordPos CURRENTLINE $pos "entered sector."
-	if ($pos < 1)
+	setvar $retreatfighter false
+	if (($pos < 1) and ($posretreat < 1))
 		return
+	else
+		if ($posretreat > 0)
+			setvar $retreatfighter true
+		end
 	end
 
 	###############################################
@@ -173,4 +179,10 @@ return
 		gosub :planet~landingsub
 	:densityended
 		killalltriggers
+return
+
+
+:retreatphoton
+	send "p" $sector "*  y  "
+	gosub :htorp~run
 return
