@@ -514,7 +514,7 @@ return
 return
 
 :check_for_photon_refurb
-	if (($player~photons <= 0) and ($nophotons <> true))
+	if (($player~photons <= 0) and ($nophoton <> true))
 		gosub :navigate~navigate_to_limp
 		gosub :killing~scan_for_targets
 		if ($sector~realTraderCount = $sector~corpieCount)
