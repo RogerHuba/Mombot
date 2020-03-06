@@ -61,7 +61,9 @@
 	end
 	getWordPos " " & $bot~user_command_line & " " $pos " x:"
 	if ($pos > 0)
-		getText $bot~user_command_line $xportShip "x:" " "
+		
+		setVar $xline $bot~user_command_line&" t"
+		getText $xline $xportShip "x:" " "
 		isNumber $test $xportShip
 		if ($test)
 			setVar $xporting TRUE
@@ -83,14 +85,20 @@
 
 						goto :shipsDone
 					end
+				else
+					if ($maybeship = "Computer")
+						goto :shipsDone
+					end
+					
 				end
 				goto :shipsagain
 			:shipsDone
 				killalltriggers
-			
+		
 			if ($xportShipFound = FALSE)
 				setVar $SWITCHBOARD~message "Could not find xport ship in shipscan*"
 				gosub :SWITCHBOARD~switchboard
+				halt
 			else
 				
 			end
