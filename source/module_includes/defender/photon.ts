@@ -11,7 +11,10 @@
 			if ($adjacentphoton = true)
 				goto :fire_photon
 			else
-				gosub :densityDrop
+				send "p" $adjsec "*  y  "
+				if ($density = true)
+					gosub :densityDrop
+				end
 				return
 			end
 		end
@@ -23,7 +26,7 @@
 	end
 
 :fire_photon
-	send "p" $adjsec "*  y  c  p  y  " $sector "**q"
+	send "p" $adjsec "*  y  c  p  y  " $sector "**qp" $sector "*  y  "
 	setTextLineTrigger	1	:photon_missed	      "That is not an adjacent sector"
 	setTextLineTrigger	2	:photon_gotem	      "Photon Missile launched into sector"
 	setTextLineTrigger	3	:photon_fed 	      "The Feds do not permit Photon Torpedos"
@@ -62,6 +65,13 @@
 	gosub :killtriggers
 	setvar $switchboard~message "Photon Fired - Sector => " & $sector & "!*"
 	gosub :switchboard~switchboard
+	gosub :player~quikstats
+	###################################
+	# if direct drop worked, do htorp #
+	###################################
+	if ($player~current_sector = $sector)
+		gosub :htorp
+	end
 	if ($density = true)
 		gosub :densityDrop
 	end
@@ -90,9 +100,16 @@ return
 	# Torp only on sector entry #
 	#############################
 
+	getwordpos CURRENTLINE $posretreat " retreated."
+	getwordpos CURRENTLINE $posdestroyed " DESTROYED "
 	getWordPos CURRENTLINE $pos "entered sector."
-	if ($pos < 1)
+	setvar $retreatfighter false
+	if (($pos < 1) and ($posretreat < 1) and ($posdestroyed < 1))
 		return
+	else
+		if (($posretreat > 0) or ($posdestroyed > 0))
+			setvar $retreatfighter true
+		end
 	end
 
 	###############################################
@@ -170,4 +187,14 @@ return
 		gosub :planet~landingsub
 	:densityended
 		killalltriggers
+return
+
+
+:retreatphoton
+	send "p" $sector "*  y  "
+	gosub :htorp
+return
+
+:htorp
+	gosub :htorp~run
 return

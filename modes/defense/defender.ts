@@ -29,18 +29,21 @@
 	setVar $BOT~help[2]  $BOT~tab&"         f - Photon fighter hits "
 	setVar $BOT~help[3]  $BOT~tab&"         l - Photon limpet hits "
 	setVar $BOT~help[4]  $BOT~tab&"         a - Photon armid hits "
-	setVar $BOT~help[5]  $BOT~tab&"  nocannon - Will not reset cannon damages "
-	setVar $BOT~help[6]  $BOT~tab&"      holo - holoscan on ss after photon "
-	setVar $BOT~help[7]  $BOT~tab&"    secure - will only escape to limped sectors "
-	setVar $BOT~help[8]  $BOT~tab&"    extern - stops defender 5 minutes before extern "
-	setVar $BOT~help[9]  $BOT~tab&"             as defined by local system time "
-	setVar $BOT~help[10] $BOT~tab&"   density - density photon option"
-	setVar $BOT~help[11] $BOT~tab&"  adjacent - adjacent photon option (default)"
-	setVar $BOT~help[12] $BOT~tab&"           "
-	setVar $BOT~help[13] $BOT~tab&"        Examples: "
-	setVar $BOT~help[14] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[15] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[16] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[5]  $BOT~tab&"      holo - holoscan on ss after photon "
+	setVar $BOT~help[6]  $BOT~tab&"    secure - will only escape to limped sectors "
+	setVar $BOT~help[7]  $BOT~tab&"    extern - stops defender 5 minutes before extern "
+	setVar $BOT~help[8]  $BOT~tab&"             as defined by local system time "
+	setVar $BOT~help[9]  $BOT~tab&"   density - density photon option"
+	setVar $BOT~help[10] $BOT~tab&"  adjacent - adjacent photon option (default)"
+	setVar $BOT~help[11] $BOT~tab&"  holokill - holokill if possible"
+	setVar $BOT~help[12] $BOT~tab&"  nophoton - will not fire photon"
+	setVar $BOT~help[13] $BOT~tab&"  noescape - will not retreat from attack sector"
+	setVar $BOT~help[14] $BOT~tab&"  nocannon - Will not reset cannon damages "
+	setVar $BOT~help[15] $BOT~tab&"           "
+	setVar $BOT~help[16] $BOT~tab&"        Examples: "
+	setVar $BOT~help[17] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[18] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[19] $BOT~tab&"             >defender f density adjacent secure"
 
 	gosub :bot~helpfile
 
@@ -110,6 +113,13 @@
 		setvar $holo false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " holokill "
+	if ($pos > 0)
+		setvar $killing~holokill true
+	else
+		setvar $killing~holokill false
+	end
+
 	getwordpos " "&$bot~user_command_line&" " $pos " secure "
 	if ($pos > 0)
 		setvar $navigate~securePwarp true
@@ -134,6 +144,23 @@
 	else
 		setvar $photon~adjacentphoton true
 	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " nophoton "
+	if ($pos > 0)
+		setvar $nophoton true
+		setvar $photon~adjacentphoton false
+		setvar $photon~density false
+	else
+		setvar $nophoton false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " noescape "
+	if ($pos > 0)
+		setvar $noescape true
+	else
+		setvar $noescape false
+	end
+
 
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
 		setvar $fighter true
@@ -162,22 +189,7 @@
     gosub :SHIP~getShipStats
     gosub :player~quikstats
 
-	if ($player~photons <= 0)
-		gosub :navigate~navigate_to_limp
-		gosub :killing~checkForVictims
-		if ($sector~realTraderCount = $sector~corpieCount)
-			#############################################
-			# do nothing if there is no enemy in sector #
-			#############################################
-		else
-			gosub :navigate~navigate_to_limp
-			####################################################################
-			# after navigating away, check for enemies in sector, just in case #
-			####################################################################
-			gosub :killing~checkForVictims
-		end
-		gosub :restock~refurb_photons
-	end
+	gosub :check_for_photon_refurb
 
 	################################
 	# check for aliens in the game #
@@ -199,7 +211,6 @@
 
 
 	setVar $message "'*  {"&$bot~bot_name&"} - "&$script_ver&" Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-	    setvar $message $message&"*      Photon Type: Adjacent "
 	if ($fighter)
 		setVar $message $message&"*   On Fighter Hit: Yes"
 	else
@@ -215,6 +226,21 @@
 	else
 		setVar $message $message&"*     On Armid Hit: No"
 	end
+	if ($photon~adjacentphoton)
+		setVar $message $message&"*  Adjacent Photon: Yes"
+	else
+		setVar $message $message&"*  Adjacent Photon: No"
+	end
+	if ($photon~density)
+		setVar $message $message&"*   Density Photon: Yes"
+	else
+		setVar $message $message&"*   Density Photon: No"
+	end
+	if ($killing~holokill)
+		setVar $message $message&"*         Holokill: Yes"
+	else
+		setVar $message $message&"*         Holokill: No"
+	end
 	if ($holo)
 		setVar $message $message&"*      Holo Report: Yes"
 	else
@@ -225,21 +251,19 @@
 	else
 		setVar $message $message&"*     Cannon Reset: Yes"
 	end
-	if ($photon~density)
-		setVar $message $message&"*   Density Photon: Yes"
-	else
-		setVar $message $message&"*   Density Photon: No"
-	end
-	if ($photon~adjacentphoton)
-		setVar $message $message&"*  Adjacent Photon: Yes"
-	else
-		setVar $message $message&"*  Adjacent Photon: No"
-	end
-	setVar $message $message&"*        Auto Kill: Enabled With "&$planet~planet_Fighters&" Fighters"
+	setVar $message $message&"*      Home Sector: "&$map~home_sector
+	format $planet~planet_Fighters $formatted_fighters NUMBER
+	setVar $message $message&"*        Auto Kill: Enabled With "&$formatted_fighters&" Fighters"
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	send $message
 
-    
+	if (($killing~holokill = true) and ($player~photons > 1))
+		setvar $switchboard~message "Holokill with more than one photon is not advised.  Be careful.*"
+		gosub :switchboard~switchboard
+	elseif (($killing~holokill = true) and ($nophoton = true) and ($player~photons > 0))
+		setvar $switchboard~message "You are running holokill with a photon, with photon mode off.  Could be a recipe for disaster.  Be careful out there.*"
+		gosub :switchboard~switchboard
+	end
 
 	###########################################
 	# Main information processor for defender #
@@ -293,7 +317,7 @@
 			setvar $switchboard~message "No activity in an hour, so heading home.*"
 			gosub :switchboard~switchboard
 			gosub :navigate~navigate_to_limp
-			gosub :killing~checkForVictims
+			gosub :killing~scan_for_targets
 			gosub :restock~refurb_photons
 			send "p"&$map~home_sector&"*y "
 		end
@@ -321,53 +345,44 @@
 :check_to_fire_photon
 	gosub :killtriggers
 	if ($photon~found = true)
-		if (($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
-			goto :can_not_fire
+		if ($photon~retreatfighter <> true)
+			if (($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
+				goto :can_not_fire
+			end
+			getsectorparameter $photon~sector "BUBBLE" $isBubble
+			getsectorparameter $photon~sector "FARM" $isFarm
+			if (($isBubble = true) or ($isFarm = true))
+				setvar $switchboard~message "Can not fire into bubble or farm sector "&$photon~sector&"!*"
+				gosub :switchboard~switchboard
+				goto :can_not_fire
+			end
+			gosub :photon~photon
+		else
+			gosub :photon~retreatphoton
 		end
-		getsectorparameter $photon~sector "BUBBLE" $isBubble
-		if ($isBubble = true)
-			setvar $switchboard~message "Can not fire into bubble sector "&$photon~sector&"!*"
-			gosub :switchboard~switchboard
-			goto :can_not_fire
-		end
-		gosub :photon~photon
-		
 		#############################################
 		# holoscan sector to see if victim is there #
 		#############################################
+		if ($killing~holokill = true)
+			gosub :killing~doholokill
+		end
 		if ($holo = true)
 			gosub :doholo
 		end
 
-		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and (currentlimpets > 0))
-			gosub :doMines
-		end
 		setvar $photon~last_sector $photon~sector
 		setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
-		gosub :navigate~navigate_away
-		gosub :player~quikstats
-		gosub :killing~checkForVictims
-		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and (currentlimpets > 0))
+		gosub :killing~scan_for_targets
+		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and ($player~limpets > 0))
 			gosub :doMines
 		end
-		if ($sector~realTraderCount = $sector~corpieCount)
-			#############################################
-			# do nothing if there is no enemy in sector #
-			#############################################
-		else
+		if ($noescape <> true)
 			gosub :navigate~navigate_away
-			####################################################################
-			# after navigating away, check for enemies in sector, just in case #
-			####################################################################
-			gosub :killing~checkForVictims
-		end
-		####################
-		# check for refurb #
-		####################
-		gosub :player~quikstats
-		if ($player~photons <= 0)
-			gosub :navigate~navigate_to_limp
-			gosub :killing~checkForVictims
+			gosub :player~quikstats
+			gosub :killing~scan_for_targets
+			if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and ($player~limpets > 0))
+				gosub :doMines
+			end
 			if ($sector~realTraderCount = $sector~corpieCount)
 				#############################################
 				# do nothing if there is no enemy in sector #
@@ -377,10 +392,14 @@
 				####################################################################
 				# after navigating away, check for enemies in sector, just in case #
 				####################################################################
-				gosub :killing~checkForVictims
+				gosub :killing~scan_for_targets
 			end
-			gosub :restock~refurb_photons
 		end
+		####################
+		# check for refurb #
+		####################
+		gosub :player~quikstats
+		gosub :check_for_photon_refurb
 		if (($killing~last_fighter_attack <> "") and ($nocannon <> true))
 			gosub :killing~set_the_cannon
 		end
@@ -400,7 +419,7 @@
 				gosub :switchboard~switchboard
 			end
 		end
-		gosub :killing~checkForVictims
+		gosub :killing~scan_for_targets
 		if ($sector~realTraderCount = $sector~corpieCount)
 			#############################################
 			# do nothing if there is no enemy in sector #
@@ -410,7 +429,7 @@
 			####################################################################
 			# after navigating away, check for enemies in sector, just in case #
 			####################################################################
-			gosub :killing~checkForVictims
+			gosub :killing~scan_for_targets
 		end
 	end
 	goto :processing
@@ -439,7 +458,7 @@
 		####################################################################
 		# after navigating away, check for enemies in sector, just in case #
 		####################################################################
-		gosub :killing~checkForVictims
+		gosub :killing~scan_for_targets
 	end
 	goto :processing
 
@@ -500,16 +519,36 @@ return
 		killtrigger minesend
 return
 
+:check_for_photon_refurb
+	if (($player~photons <= 0) and ($nophoton <> true))
+		gosub :navigate~navigate_to_limp
+		gosub :killing~scan_for_targets
+		if ($sector~realTraderCount = $sector~corpieCount)
+			#############################################
+			# do nothing if there is no enemy in sector #
+			#############################################
+		else
+			gosub :navigate~navigate_away
+			####################################################################
+			# after navigating away, check for enemies in sector, just in case #
+			####################################################################
+			gosub :killing~scan_for_targets
+		end
+		gosub :restock~refurb_photons
+	end
+return
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\combat\holokill\combat"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\combat\fastattack\combat"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\ship\getshipcapstats\ship"
@@ -520,3 +559,4 @@ include "source\module_includes\defender\navigate"
 include "source\module_includes\defender\photon"
 include "source\module_includes\defender\restock"
 include "source\module_includes\defender\killing"
+include "source\bot_includes\external\htorp"

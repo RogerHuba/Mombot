@@ -2,7 +2,11 @@
 
 	setVar $limpetCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~LIMPETS)*$game~LIMPET_COST))
 	setVar $armidCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~ARMIDS)*$game~ARMID_COST))
-	setVar $photonCashNeeded (5*$game~photon_cost)
+	if ($killing~holokill)
+		setVar $photonCashNeeded (1*$game~photon_cost)
+	else
+		setVar $photonCashNeeded (5*$game~photon_cost)
+	end
 	setVar $disruptorCashNeeded (10*$game~DISRUPTOR_COST)
 	setVar $cashNeeded ($photonCashNeeded+$game~LIMPET_REMOVAL_COST)
 	setVar $furbing TRUE
@@ -144,7 +148,11 @@
 
 		#setVar $_Limps "Max"
 		#setVar $_Mines "Max"
-		setVar $_Photon "Max"
+		if ($killing~holokill)
+			setVar $_Photon "1"
+		else
+			setVar $_Photon "Max"
+		end
 		#setVar $_Disrupt "Max"
 		gosub :DoPurchases
 		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
