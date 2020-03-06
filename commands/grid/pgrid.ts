@@ -197,7 +197,7 @@
 			killalltriggers
 			getWord CURRENTLINE $dist1 4
 			stripText $dist1 "("
-			if ($dist > $SHIP~SHIP_XPORT_RANGE)
+			if ($dist1 > $SHIP~SHIP_XPORT_RANGE)
 				setVar $SWITCHBOARD~message "Return XPort will be out of range.*"
 				gosub :SWITCHBOARD~switchboard
 				halt
@@ -365,12 +365,13 @@
 			setVar $pgridString $inCitadel & "m " & $pgridSector & $mac
 
 		end	
-		if ($surrendor = TRUE)
-			setVar $pgridString $pgridString & " h s y * "
-
-		end
+	
 		if ($xporting)
 			setVar $pgridString $pgridString & "x   " & $xportship & "* * "
+		else 
+			if ($surrendor = TRUE)
+				setVar $pgridString $pgridString & " h s y * "
+			end
 		end
 		send $pgridString
 		if ($xporting)
