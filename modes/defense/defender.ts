@@ -25,7 +25,7 @@
 	setVar $END_FIG_HIT_OWNER "'s"
 
 
-	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f} {l} {a} {nocannon} {holo} {extern:11pm}  "
+	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f} {l} {a} {auto} {holo} {extern:11pm}  "
 	setVar $BOT~help[2]  $BOT~tab&"         f - Photon fighter hits "
 	setVar $BOT~help[3]  $BOT~tab&"         l - Photon limpet hits "
 	setVar $BOT~help[4]  $BOT~tab&"         a - Photon armid hits "
@@ -38,7 +38,7 @@
 	setVar $BOT~help[11] $BOT~tab&"  holokill - holokill if possible"
 	setVar $BOT~help[12] $BOT~tab&"  nophoton - will not fire photon"
 	setVar $BOT~help[13] $BOT~tab&"  noescape - will not retreat from attack sector"
-	setVar $BOT~help[14] $BOT~tab&"  nocannon - Will not reset cannon damages "
+	setVar $BOT~help[14] $BOT~tab&"      auto - Will reset cannon damages automatically"
 	setVar $BOT~help[15] $BOT~tab&"   citkill - citkill instead of capture "
 	setVar $BOT~help[16] $BOT~tab&"           "
 	setVar $BOT~help[17] $BOT~tab&"        Examples: "
@@ -100,11 +100,11 @@
 		setvar $armid false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " nocannon "
+	getwordpos " "&$bot~user_command_line&" " $pos " auto "
 	if ($pos > 0)
-		setvar $nocannon true
+		setvar $auto true
 	else
-		setvar $nocannon false
+		setvar $auto false
 	end
 
 	getwordpos " "&$bot~user_command_line&" " $pos " holo "
@@ -253,10 +253,10 @@
 	else
 		setVar $message $message&"*      Holo Report: No"
 	end
-	if ($nocannon)
-		setVar $message $message&"*     Cannon Reset: No"
-	else
+	if ($auto)
 		setVar $message $message&"*     Cannon Reset: Yes"
+	else
+		setVar $message $message&"*     Cannon Reset: No"
 	end
 	setVar $message $message&"*      Home Sector: "&$map~home_sector
 	format $planet~planet_Fighters $formatted_fighters NUMBER
@@ -407,7 +407,7 @@
 		####################
 		gosub :player~quikstats
 		gosub :check_for_photon_refurb
-		if (($killing~last_fighter_attack <> "") and ($nocannon <> true))
+		if (($killing~last_fighter_attack <> "") and ($auto = true))
 			gosub :killing~set_the_cannon
 		end
 	else
