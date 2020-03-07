@@ -18,7 +18,8 @@
 		setvar $player~override false
 	end
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-		gosub :combat~fastCitadelAttack
+		gosub :combat~fastCapture
+		#gosub :combat~fastCitadelAttack
 		goto :scan_for_targets
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
 		setvar $player~startinglocation "Citadel"
