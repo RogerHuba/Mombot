@@ -39,11 +39,12 @@
 	setVar $BOT~help[12] $BOT~tab&"  nophoton - will not fire photon"
 	setVar $BOT~help[13] $BOT~tab&"  noescape - will not retreat from attack sector"
 	setVar $BOT~help[14] $BOT~tab&"  nocannon - Will not reset cannon damages "
-	setVar $BOT~help[15] $BOT~tab&"           "
-	setVar $BOT~help[16] $BOT~tab&"        Examples: "
-	setVar $BOT~help[17] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[18] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[19] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[15] $BOT~tab&"   citkill - citkill instead of capture "
+	setVar $BOT~help[16] $BOT~tab&"           "
+	setVar $BOT~help[17] $BOT~tab&"        Examples: "
+	setVar $BOT~help[18] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[19] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[20] $BOT~tab&"             >defender f density adjacent secure"
 
 	gosub :bot~helpfile
 
@@ -161,6 +162,12 @@
 		setvar $noescape false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " citkill "
+	if ($pos > 0)
+		setvar $killing~citkill true
+	else
+		setvar $killing~citkill false
+	end
 
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
 		setvar $fighter true
