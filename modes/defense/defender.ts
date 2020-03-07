@@ -373,7 +373,7 @@
 		if ($killing~holokill = true)
 			gosub :killing~doholokill
 		end
-		if ($holo = true)
+		if ((($photon~adjacentphoton = true) and ($photon~success = true)) or ($nophoton = true)) and ($holo = true))
 			gosub :doholo
 		end
 

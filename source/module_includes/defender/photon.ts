@@ -1,6 +1,6 @@
 :photon
 	gosub :killtriggers
-
+	setvar $success false
 	setVar $adjsec 0
 	setVar $i 1
 	while (SECTOR.WARPSIN[$sector][$i] > 0)
@@ -43,7 +43,7 @@
 
 :photon_missed
 	gosub :killtriggers
-	setvar $switchboard~message "Photon Missed! Resetting!*"
+	setvar $switchboard~message "Didn't make it to sector "&$adjsec&". Resetting!*"
 	gosub :switchboard~switchboard
 	setSectorParameter $adjsec "FIGSEC" FALSE
 	return
@@ -66,6 +66,7 @@
 	setvar $switchboard~message "Photon Fired - Sector => " & $sector & "!*"
 	gosub :switchboard~switchboard
 	gosub :player~quikstats
+	setvar $success true
 	###################################
 	# if direct drop worked, do htorp #
 	###################################
