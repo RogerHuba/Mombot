@@ -9,6 +9,12 @@
 :scan_for_targets
 	gosub :player~quikstats
 	setvar $player~startinglocation $player~current_prompt
+	if ($player~startinglocation <> "Citadel")
+		#########################################
+		# Something has gone wrong, call saveme #
+		#########################################
+		gosub :callsaveme
+	end
 	gosub :sector~getSectorData
 	setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
 	if (($planet_count = 1) and ($overide = false))
@@ -22,12 +28,13 @@
 			gosub :combat~fastCitadelAttack
 		else
 			gosub :combat~fastCapture
+			send "l " $PLANET~PLANET "* n n n n n * m 0 * * * c "
+			gosub :player~quikstats
 		end
 		goto :scan_for_targets
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
-		setvar $player~startinglocation "Citadel"
 		gosub :combat~fastCapture
-		send "l "&$PLANET~PLANET&"* m * * * c "
+		send "l " $PLANET~PLANET "* n n n n n * m 0 * * * c "
 		gosub :player~quikstats
 		goto :scan_for_targets
 	end
@@ -108,4 +115,8 @@ return
 
 :killtriggers
 	killalltriggers
+return
+
+:callsaveme
+	gosub :call~run
 return
