@@ -24,17 +24,17 @@
 		setvar $player~override false
 	end
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-		if ($citkill = true)
-			gosub :combat~fastCitadelAttack
-		else
+		if ($capture = true)
 			gosub :combat~fastCapture
-			send "l " $PLANET~PLANET "* n n n n n * m 0 * * * c "
+			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 			gosub :player~quikstats
+		else
+			gosub :combat~fastCitadelAttack
 		end
 		goto :scan_for_targets
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
 		gosub :combat~fastCapture
-		send "l " $PLANET~PLANET "* n n n n n * m 0 * * * c "
+		send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 		gosub :player~quikstats
 		goto :scan_for_targets
 	end
@@ -96,18 +96,30 @@ return
 	end
 return
 
+:slingshot
+	setvar $combat~slingshot true
 :doHoloKill
 	gosub :player~quikstats
 	setvar $before_holo_kill_sector $player~current_sector
-	gosub :combat~holokill
+	if ($capture)
+		gosub :combat~holocap		
+	else
+		gosub :combat~holokill
+	end
 	if ($player~current_sector <> $before_holo_kill_sector)
 		setVar $PLAYER~WARPTO $before_holo_kill_sector
 		gosub :PLAYER~twarp
 		if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
-			setvar $switchboard~message "Could not make it back to starting sector before holokill. - ["&$player~msg&"]*"
+			setvar $switchboard~message "Could not make it back to starting sector after holokill. - ["&$player~msg&"]*"
 			gosub :switchboard~switchboard
+
+			#########################################
+			# Something has gone wrong, call saveme #
+			#########################################
+			gosub :callsaveme
 		else 
 			gosub :switchboard~switchboard
+			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 		end
 	end
 return

@@ -2,7 +2,7 @@
 	if ($SHIP~SHIP_MAX_ATTACK <= 0)
 		gosub :ship~getshipstats
 	end
-	setVar $refurbString "l "&$PLANET~PLANET&"* n n n n n * m 0 * * * "
+	setVar $refurbString " l " $PLANET~PLANET " * n n * j m * * * "
 	setVar $attackString ""
 	setVar $targetString  "a z "
 	setVar $targetShotgun "a z z y z"&$SHIP~SHIP_MAX_ATTACK&"* * a z z * y z"&$SHIP~SHIP_MAX_ATTACK&"* * a z z * * y z"&$SHIP_MAX_ATTACK&"* * "

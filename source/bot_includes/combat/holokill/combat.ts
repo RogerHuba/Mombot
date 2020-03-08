@@ -1,3 +1,5 @@
+:holocap
+	setvar $holocapture true
 :holokill
 :holo_kill
 :holo_kill_kill_check
@@ -57,51 +59,84 @@
 		goto :holo_kill_no_targets
 
 :holo_kill_killem
-		send "'{" $SWITCHBOARD~bot_name "} - HoloKill - Attacking sector " & $test_sector & ".*"
-		setVar $no_str ""
-		setVar $no_cnt SECTOR.SHIPCOUNT[$killsector]
-		setVar $no_idx 1
-		while ($no_idx <= $no_cnt)
-			setVar $no_str $no_str & "n"
-			add $no_idx 1
+		if ($slingshot)
+			setvar $title "Slingshot Holokill"
+		else
+			setvar $title "Holokill"
 		end
-		send " c v 0 * y n " & $test_sector & " * q "
+		send "'{" $SWITCHBOARD~bot_name "} - " $title " - Attacking sector "  $test_sector  ".*   c v 0 * y n "  $test_sector  " *  q  "
 		if ($player~cit = true)
 			send " qmnt*qqz* "
 		end
-		send " m z " & $test_sector & " *  *  z  a  "&$SHIP~SHIP_MAX_ATTACK&"*  z  a  "&$SHIP~SHIP_MAX_ATTACK&"*  R  *  f  z  1  *  z  c  d  *   "
-		setVar $kill_idx 1
-		if ($player~surround_before_hkill = TRUE)
+		if ($slingshot)
+			send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  j R  *  " $test_sector "=saveme* f  z  1  *  z  c  d  *   "
+			setVar $i 0
+			while ($i < 15)
+				add $i 1
+				send " l " $PLANET~PLANET " * n n *  "
+			end
 			gosub :player~quikstats
-			gosub :grid~surround
-			setVar $insurround_before_hkill FALSE
+			if (($player~current_prompt <> $test_sector))
+				send "'Possible splatter on a planet, check for pod.*"
+				return
+			end
+			send "m * * * c "		
+			goSub :SECTOR~getSectorData
+			if ($holocapture)
+				gosub :combat~fastCapture
+				send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+				gosub :player~quikstats
+			else
+				goSub :fastCitadelAttack
+			end
+			send "p " $hkill_start_sector "* y "
 			gosub :player~quikstats
-		end
-	
-		gosub  :player~quikstats
-		if ($player~current_prompt <> "Command")
-			setVar $SWITCHBOARD~message "Wrong prompt for holokill kill.*"
-			return
-		end
-		setvar $PLAYER~startingLocation "Command"
-		goSub :SECTOR~getSectorData
-		goSub :fastAttack
-	
-		send "m " & $hkill_start_sector & " *  *  z  a  99999  *  z  a  99999  *  R  *  f  z  1  *  z  c  d  *   "
-		if ($player~CIT = TRUE)
-			send " l " & $PLANET~PLANET & " * n n * j m * * * j c  *  "
-		end
-		gosub :player~quikstats
-		if ($player~current_sector <> $hkill_start_sector)
-			   send "'" & $SWITCHBOARD~bot_name " call*"
+			if ($player~current_sector <> $hkill_start_sector)
+				   send "'" & $SWITCHBOARD~bot_name " call*"
+			else
+				setVar $SWITCHBOARD~message "Attack made and back in original sector!*"
+			end
 		else
-			setVar $SWITCHBOARD~message "Attack made and back in original sector!*"
+			send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  f  z  1  *  z  c  d  *   "
+
+			if ($player~surround_before_hkill = TRUE)
+				gosub :player~quikstats
+				gosub :grid~surround
+				setVar $insurround_before_hkill FALSE
+				gosub :player~quikstats
+			end
+		
+			gosub  :player~quikstats
+			if ($player~current_prompt <> "Command")
+				setVar $SWITCHBOARD~message "Wrong prompt for holokill kill.*"
+				return
+			end
+			setvar $PLAYER~startingLocation "Command"
+			goSub :SECTOR~getSectorData
+			if ($holocapture)
+				gosub :combat~fastCapture
+			else
+				goSub :fastAttack
+			end		
+			send "m "  $hkill_start_sector  " *  *  z  a  99999  *  z  a  99999  *  R  *  f  z  1  *  z  c  d  *   "
+			if ($player~CIT = TRUE)
+				send " l "  $PLANET~PLANET  " * n n * j m * * * j c  *  "
+			end
+			gosub :player~quikstats
+			if ($player~current_sector <> $hkill_start_sector)
+				   send "'" & $SWITCHBOARD~bot_name " call*"
+			else
+				setVar $SWITCHBOARD~message "Attack made and back in original sector!*"
+			end
+
 		end
-		return
+	return
 :holo_kill_no_targets
 		setVar $SWITCHBOARD~self_command TRUE
 		setVar $SWITCHBOARD~message "No Enemies found adjacent!*"
 return
+
+
 
 include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\grid\surround\grid"

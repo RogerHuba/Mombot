@@ -36,10 +36,11 @@
 	setVar $BOT~help[9]  $BOT~tab&"   density - density photon option"
 	setVar $BOT~help[10] $BOT~tab&"  adjacent - adjacent photon option (default)"
 	setVar $BOT~help[11] $BOT~tab&"  holokill - holokill if possible"
+	setVar $BOT~help[11] $BOT~tab&" slingshot - will pgrid holokill"
 	setVar $BOT~help[12] $BOT~tab&"  nophoton - will not fire photon"
 	setVar $BOT~help[13] $BOT~tab&"  noescape - will not retreat from attack sector"
 	setVar $BOT~help[14] $BOT~tab&"      auto - Will reset cannon damages automatically"
-	setVar $BOT~help[15] $BOT~tab&"   citkill - citkill instead of capture "
+	setVar $BOT~help[15] $BOT~tab&"   capture - capture instead of kill "
 	setVar $BOT~help[16] $BOT~tab&"           "
 	setVar $BOT~help[17] $BOT~tab&"        Examples: "
 	setVar $BOT~help[18] $BOT~tab&"             >defender f l a holo "
@@ -121,6 +122,14 @@
 		setvar $killing~holokill false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " slingshot "
+	if ($pos > 0)
+		setvar $killing~slingshot true
+		setvar $killing~holokill false
+	else
+		setvar $killing~slingshot false
+	end
+
 	getwordpos " "&$bot~user_command_line&" " $pos " secure "
 	if ($pos > 0)
 		setvar $navigate~securePwarp true
@@ -162,11 +171,11 @@
 		setvar $noescape false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " citkill "
+	getwordpos " "&$bot~user_command_line&" " $pos " capture "
 	if ($pos > 0)
-		setvar $killing~citkill true
+		setvar $killing~capture true
 	else
-		setvar $killing~citkill false
+		setvar $killing~capture false
 	end
 
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
@@ -248,6 +257,11 @@
 	else
 		setVar $message $message&"*         Holokill: No"
 	end
+	if ($killing~slingshot)
+		setVar $message $message&"*        Slingshot: Yes"
+	else
+		setVar $message $message&"*        Slingshot: No"
+	end
 	if ($holo)
 		setVar $message $message&"*      Holo Report: Yes"
 	else
@@ -257,6 +271,11 @@
 		setVar $message $message&"*     Cannon Reset: Yes"
 	else
 		setVar $message $message&"*     Cannon Reset: No"
+	end
+	if ($killing~capture)
+		setVar $message $message&"*Capture, not kill: Yes"
+	else
+		setVar $message $message&"*Capture, not kill: No"
 	end
 	setVar $message $message&"*      Home Sector: "&$map~home_sector
 	format $planet~planet_Fighters $formatted_fighters NUMBER
@@ -370,7 +389,9 @@
 		#############################################
 		# holoscan sector to see if victim is there #
 		#############################################
-		if ($killing~holokill = true)
+		if ($killing~slingshot = true)
+			gosub :killing~slingshot
+		elseif ($killing~holokill = true)
 			gosub :killing~doholokill
 		end
 		if (((($photon~adjacentphoton = true) and ($photon~success = true)) or ($nophoton = true)) and ($holo = true))
