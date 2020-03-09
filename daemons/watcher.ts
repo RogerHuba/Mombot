@@ -28,6 +28,7 @@ setTextLineTrigger  federase        :fedEraseFig        "The Federation We destr
 setTextLineTrigger  fighterserase       :eraseFig       " of your fighters in sector "
 setTextLineTrigger  warpfigerase        :eraseWarpFig       "You do not have any fighters in Sector "
 setTextLineTrigger  pgridadd    :pgridadd   "Successfully P-gridded into sector "
+setTextLineTrigger  pgridxportadd    :pgridxportadd   "Successfully P-gridded w/xport into sector "
 setTextLineTrigger  pgridremove    :pgridremove   "Unsuccessful P-grid into sector "
 setTextLineTrigger  clearbusts      :erasebusts     ">[Busted:"
 setTextLineTrigger  addfigs      :addFigs     ">[Figged:"
@@ -318,6 +319,26 @@ pause
 		end
 	end
 	setTextLineTrigger  pgridadd    :pgridadd   "Successfully P-gridded into sector "
+	pause
+
+:pgridxportadd
+	cutText CURRENTLINE&"   " $spoof 1 1
+	if ($spoof <> "R")
+		setTextLineTrigger  pgridxportadd    :pgridxportadd   "Successfully P-gridded w/xport into sector "
+		pause
+	end
+
+	getText CURRENTLINE&" [XX][XX][XX]" $temp "Successfully P-gridded w/xport into sector " " [XX][XX][XX]"
+	if ($temp <> "")
+		isNumber $test $temp
+		if ($test)
+			if (($temp <= SECTORS) AND ($temp > 0))
+				setVar $target $temp
+				gosub :addfigtodata 
+			end
+		end
+	end
+	setTextLineTrigger  pgridxportadd    :pgridxportadd   "Successfully P-gridded w/xport into sector "
 	pause
 
 :pgridremove
