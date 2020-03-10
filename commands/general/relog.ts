@@ -2,7 +2,8 @@
 	loadvar $bot~username
 	loadvar $bot~letter
 	loadvar $bot~password
-		
+	loadvar $bot~servername
+
 	setvar $bot~command "relog"	
 	setVar $BOT~help[1] $BOT~tab&"relog"
 	setVar $BOT~help[2] $BOT~tab&"  - attempt to log the bot back into the game"
@@ -110,7 +111,7 @@ return
 			gosub :killrelogtriggers
 			setTextTrigger loginsuccessful :continueRelog4 "Trade Wars 2002"
 			setTextTrigger loginsuccessful2 :continueRelog4 "Copyright (C) EIS"
-			send $BOT~username & "*"
+			send $BOT~servername & "*"
 			pause
 
 		:continueRelog4
