@@ -1159,12 +1159,15 @@ return
 	end
 	if ($BOT~username = 0)
 		setVar $BOT~username LOGINNAME
+		savevar $bot~username
 	end
 	if ($BOT~servername = 0)
 		setVar $BOT~servername LOGINNAME
+		savevar $bot~servername
 	end
 	if ($BOT~letter = 0)
 		setVar $BOT~letter GAME
+		savevar $bot~letter
 	end
 	if (($BOT~startShipName = 0) OR ($BOT~startShipName = ""))
 		setVar $BOT~startShipName "Mind ()ver Matter"
