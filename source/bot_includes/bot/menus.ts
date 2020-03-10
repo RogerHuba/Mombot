@@ -1160,6 +1160,9 @@ return
 	if ($BOT~username = 0)
 		setVar $BOT~username LOGINNAME
 	end
+	if ($BOT~servername = 0)
+		setVar $BOT~servername LOGINNAME
+	end
 	if ($BOT~letter = 0)
 		setVar $BOT~letter GAME
 	end
@@ -1181,20 +1184,20 @@ return
 	setArray $h 26
 	setArray $qss 26
 	setVar $h[1]  "Bot Name:        "
-	setVar $h[2]  "Login Name:      "
-	setVar $h[3]  "Password:        "
-	setVar $h[4]  "Game Letter:     "
-	setVar $h[5]  "Ship Name:       "
-	setVar $h[6]  "Type of login:   "
-	setVar $h[7]  "Are you CEO?     "
-	setVar $h[8]  "Corp Name:       "
-	setVar $h[9]  "Corp Password:   "
-	setVar $h[10] "Subspace Channel:"
-	setVar $h[11] "Delay (Minutes): "
-	setVar $h[12] "After login:     "
-	setVar $h[13] "Bot command to perform:"
-	setVar $h[14] "Mow Option       "
-	setVar $h[15] "                 "
+	setVar $h[2]  "Server Name:     "
+	setVar $h[3]  "Login Name:      "
+	setVar $h[4]  "Password:        "
+	setVar $h[5]  "Game Letter:     "
+	setVar $h[6]  "Ship Name:       "
+	setVar $h[7]  "Type of login:   "
+	setVar $h[8]  "Are you CEO?     "
+	setVar $h[9]  "Corp Name:       "
+	setVar $h[10] "Corp Password:   "
+	setVar $h[11] "Subspace Channel:"
+	setVar $h[12] "Delay (Minutes): "
+	setVar $h[13] "After login:     "
+	setVar $h[14] "Bot command to perform:"
+	setVar $h[15] "Mow Option       "
 	setVar $h[16] "                 "
 	setVar $h[17] "                 "
 	setVar $h[18] "                 "
@@ -1207,63 +1210,63 @@ return
 	setVar $h[25] "                 "
 	setVar $h[26] "                 "
 	setVar $qss[1] $SWITCHBOARD~bot_name
-	setVar $qss[2] $BOT~username
-	setVar $qss[3] $BOT~password
-	setVar $qss[4] $BOT~letter
-	setVar $qss[5] $BOT~startShipName
+	setVar $qss[2] $BOT~servername
+	setVar $qss[3] $BOT~username
+	setVar $qss[4] $BOT~password
+	setVar $qss[5] $BOT~letter
+	setVar $qss[6] $BOT~startShipName
 	if ($BOT~newGameDay1)
-		setVar $qss[6] "New Game Account Creation"
+		setVar $qss[7] "New Game Account Creation"
 	elseif ($BOT~newGameOlder)
-		setVar $qss[6] "Normal Relog"
+		setVar $qss[7] "Normal Relog"
 	else
-		setVar $qss[6] "Return after being destroyed."
+		setVar $qss[7] "Return after being destroyed."
 	end
 	if ($BOT~isCEO)
-		setVar $qss[7] "Yes"
+		setVar $qss[8] "Yes"
 	else
-		setVar $qss[7] "No"
+		setVar $qss[8] "No"
 	end
 	loadvar $bot~corpName
-	setVar $qss[8] $BOT~corpName
-	setVar $qss[9] $BOT~corpPassword
-	setVar $qss[10] $BOT~subspace
-	setVar $qss[11] $BOT~startGameDelay
+	setVar $qss[9] $BOT~corpName
+	setVar $qss[10] $BOT~corpPassword
+	setVar $qss[11] $BOT~subspace
+	setVar $qss[12] $BOT~startGameDelay
 	if ($BOT~mowToDock)
-		setVar $qss[12] "Mow To Stardock"
+		setVar $qss[13] "Mow To Stardock"
 	elseif ($fmowToDock)
-		setVar $qss[12] "Fuel Mow to Stardock"
+		setVar $qss[13] "Fuel Mow to Stardock"
 	elseif ($mowToAlpha)
-		setVar $qss[12] "Mow To Alpha"
+		setVar $qss[13] "Mow To Alpha"
 	elseif ($mowToRylos)
-		setVar $qss[12] "Mow To Rylos"
+		setVar $qss[13] "Mow To Rylos"
 	elseif ($mowToOther)
-		setVar $qss[12] "Mow To Custom TA"
+		setVar $qss[13] "Mow To Custom TA"
 	elseif ($xportToShip)
-		setVar $qss[12] "Xport to ship"
+		setVar $qss[13] "Xport to ship"
 	elseif ($landOnTerra)
-		setVar $qss[12] "Land on Terra"
+		setVar $qss[13] "Land on Terra"
 	else
-		setVar $qss[12] "Nothing"
+		setVar $qss[13] "Nothing"
 	end
 	loadvar $command_to_issue
 	if (($command_to_issue = "") or ($command_to_issue = "0"))
-		setVar $qss[13] "None"
+		setVar $qss[14] "None"
 	else
-		setVar $qss[13] $command_to_issue
+		setVar $qss[14] $command_to_issue
 	end
 	loadvar $start_mow_option
 	if (($start_mow_option = "") or ($start_mow_option = "0"))
-		setVar $qss[14] "Direct"
+		setVar $qss[15] "Direct"
 	elseif ($start_mow_option = "backdoor")
-		setVar $qss[14] "Via Backdoor"
+		setVar $qss[15] "Via Backdoor"
 	elseif ($start_mow_option = "i1")
-		setVar $qss[14] "Indirect Mow 1"
+		setVar $qss[15] "Indirect Mow 1"
 	elseif ($start_mow_option = "i2")
-		setVar $qss[14] "Indirect Mow 2"
+		setVar $qss[15] "Indirect Mow 2"
 	elseif ($start_mow_option = "i3")
-		setVar $qss[14] "Indirect Mow 3"
+		setVar $qss[15] "Indirect Mow 3"
 	end
-	setVar $qss[15] ""
 	setVar $qss[16] ""
 	setVar $qss[17] ""
 	setVar $qss[18] ""
@@ -1279,27 +1282,28 @@ return
 	gosub :menuSpacing
 	echo "**"
 	echo ANSI_11&" Relog Menu   (Q to quit, Z to start logging in.)         *"
-	echo ANSI_10&#27&"[35m<"&#27&"[32m1"&#27&"[35m> "&ANSI_7&$qss_var[6] &"*"
+	echo ANSI_10&#27&"[35m<"&#27&"[32m1"&#27&"[35m> "&ANSI_7&$qss_var[7] &"*"
 	echo "*"
 	echo ANSI_10&#27&"[35m<"&#27&"[32mB"&#27&"[35m> "&ANSI_7&$qss_var[1] &"*"
-	echo ANSI_10&#27&"[35m<"&#27&"[32mL"&#27&"[35m> "&ANSI_7&$qss_var[2] &"*"
-	echo ANSI_10&#27&"[35m<"&#27&"[32mP"&#27&"[35m> "&ANSI_7&$qss_var[3] &"*"
-	echo ANSI_10&#27&"[35m<"&#27&"[32mG"&#27&"[35m> "&ANSI_7&$qss_var[4] &"*"
+	echo ANSI_10&#27&"[35m<"&#27&"[32mS"&#27&"[35m> "&ANSI_7&$qss_var[2] &"*"
+	echo ANSI_10&#27&"[35m<"&#27&"[32mL"&#27&"[35m> "&ANSI_7&$qss_var[3] &"*"
+	echo ANSI_10&#27&"[35m<"&#27&"[32mP"&#27&"[35m> "&ANSI_7&$qss_var[4] &"*"
+	echo ANSI_10&#27&"[35m<"&#27&"[32mG"&#27&"[35m> "&ANSI_7&$qss_var[5] &"*"
 	if ($BOT~newGameOlder = FALSE)
-		echo ANSI_10&#27&"[35m<"&#27&"[32mS"&#27&"[35m> "&ANSI_7&$qss_var[5] &"*"
+		echo ANSI_10&#27&"[35m<"&#27&"[32mS"&#27&"[35m> "&ANSI_7&$qss_var[6] &"*"
 	end
 	if ($BOT~newGameDay1 = TRUE)
-		echo ANSI_10&#27&"[35m<"&#27&"[32m2"&#27&"[35m> "&ANSI_7&$qss_var[7] &"*"
-		echo ANSI_10&#27&"[35m<"&#27&"[32m3"&#27&"[35m> "&ANSI_7&$qss_var[8] &"*"
-		echo ANSI_10&#27&"[35m<"&#27&"[32m4"&#27&"[35m> "&ANSI_7&$qss_var[9] &"*"
-		echo ANSI_10&#27&"[35m<"&#27&"[32m5"&#27&"[35m> "&ANSI_7&$qss_var[10]&"*"
+		echo ANSI_10&#27&"[35m<"&#27&"[32m2"&#27&"[35m> "&ANSI_7&$qss_var[8] &"*"
+		echo ANSI_10&#27&"[35m<"&#27&"[32m3"&#27&"[35m> "&ANSI_7&$qss_var[9] &"*"
+		echo ANSI_10&#27&"[35m<"&#27&"[32m4"&#27&"[35m> "&ANSI_7&$qss_var[10] &"*"
+		echo ANSI_10&#27&"[35m<"&#27&"[32m5"&#27&"[35m> "&ANSI_7&$qss_var[11]&"*"
 	end
-	echo ANSI_10&#27&"[35m<"&#27&"[32m6"&#27&"[35m> "&ANSI_7&$qss_var[11]&"*"
-	echo ANSI_10&#27&"[35m<"&#27&"[32m7"&#27&"[35m> "&ANSI_7&$qss_var[12]&"*"
+	echo ANSI_10&#27&"[35m<"&#27&"[32m6"&#27&"[35m> "&ANSI_7&$qss_var[12]&"*"
+	echo ANSI_10&#27&"[35m<"&#27&"[32m7"&#27&"[35m> "&ANSI_7&$qss_var[13]&"*"
 	if (($BOT~mowToDock = true) or ($mowToAlpha = true) or ($mowToRylos = true) or ($mowToOther = true) or ($fmowToDock = true))
-		echo ANSI_10&#27&"[35m<"&#27&"[32mM"&#27&"[35m> "&ANSI_7&$qss_var[14]&"*"	
+		echo ANSI_10&#27&"[35m<"&#27&"[32mM"&#27&"[35m> "&ANSI_7&$qss_var[15]&"*"	
 	end
-	echo ANSI_10&#27&"[35m<"&#27&"[32m8"&#27&"[35m> "&ANSI_7&$qss_var[13]&"*"
+	echo ANSI_10&#27&"[35m<"&#27&"[32m8"&#27&"[35m> "&ANSI_7&$qss_var[14]&"*"
 	echo "*"
 	:getStartGameInput
 		getConsoleInput $chosen_option SINGLEKEY
@@ -1323,15 +1327,23 @@ return
 		elseif ($chosen_option = "P")
 			killalltriggers
 			getInput $BOT~password "Please Enter your Game Password"
+			savevar $bot~password
 		elseif ($chosen_option = "G")
 			killalltriggers
 			getInput $BOT~letter "Please Enter your Game Letter"
+			savevar $bot~letter
+		elseif ($chosen_option = "S")
+			killalltriggers
+			getInput $BOT~servername "Please Enter your Server Name"
+			savevar $bot~servername
 		elseif ($chosen_option = "L")
 			killalltriggers
 			getInput $BOT~username "Please Enter your Login Name"
+			savevar $BOT~username
 		elseif ($chosen_option = "S")
 			killalltriggers
 			getInput $BOT~startShipName "What ship name would you like?"
+			savevar $BOT~startShipName
 		elseif ($chosen_option = "1")
 			if ($BOT~newGameDay1)
 				setvar $BOT~newGameDay1 FALSE

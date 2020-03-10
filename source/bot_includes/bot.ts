@@ -164,6 +164,7 @@ return
 	saveVar $PLAYER~surroundPassive
 	saveVar $PLAYER~surroundNormal
 	saveVar $username
+	savevar $servername
 	saveVar $letter
 	saveVar $PLAYER~defenderCapping
 	saveVar $PLAYER~offenseCapping
@@ -255,6 +256,7 @@ return
 	loadVar $PLAYER~surroundPassive
 	loadVar $PLAYER~surroundNormal
 	loadVar $username
+	loadvar $servername
 	loadVar $letter
 	loadVar $PLAYER~defenderCapping
 	loadVar $bot_turn_limit

@@ -77,7 +77,7 @@
 			# formly "Copyright (C) EIS"
 			setTextTrigger loginsuccessful :continueRelog4v1 "Trade Wars 2002 Game Server v1"
 			setTextTrigger loginsuccessful2 :continueRelog4v2 "TWGS v2"
-			send $BOT~username & "*"
+			send $BOT~servername & "*"
 			pause
 		
 		:continueRelog4v1
