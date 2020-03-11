@@ -394,6 +394,7 @@
 		elseif ($killing~holokill = true)
 			gosub :killing~doholokill
 			gosub :killing~doholokill
+			gosub :killing~doholokill
 		end
 		if (((($photon~adjacentphoton = true) and ($photon~success = true)) or ($nophoton = true)) and ($holo = true))
 			gosub :doholo
