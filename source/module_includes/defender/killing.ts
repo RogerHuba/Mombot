@@ -131,5 +131,10 @@ return
 return
 
 :callsaveme
+	if ($capture)
+		setvar $call~capture true
+	else
+		setvar $call~kill true
+	end
 	gosub :call~run
 return

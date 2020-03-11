@@ -1,8 +1,15 @@
 :run
 :holo
 	setVar $BOT~command "call"
-	setVar $BOT~user_command_line " call"
-	setvar $bot~parm1 ""
+	if ($capture)
+		setvar $bot~parm1 "cap"
+		setVar $BOT~user_command_line " call  cap"
+	elseif ($kill)
+		setvar $bot~parm1 "kill"
+		setVar $BOT~user_command_line " call kill "
+	else
+		setVar $BOT~user_command_line " call"
+	end
 	setvar $bot~parm2 ""
 	setvar $bot~parm3 ""
 	setvar $bot~parm4 ""
