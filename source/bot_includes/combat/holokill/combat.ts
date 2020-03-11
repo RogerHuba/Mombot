@@ -92,7 +92,11 @@
 			send "p " $hkill_start_sector "* y "
 			gosub :player~quikstats
 			if ($player~current_sector <> $hkill_start_sector)
-				   send "'" & $SWITCHBOARD~bot_name " call*"
+				if ($holocapture)
+					send "'" & $SWITCHBOARD~bot_name " call cap*"
+				else
+					send "'" & $SWITCHBOARD~bot_name " call kill*"
+				end
 			else
 				setVar $SWITCHBOARD~message "Attack made and back in original sector!*"
 			end
