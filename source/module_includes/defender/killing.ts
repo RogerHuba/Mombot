@@ -117,6 +117,7 @@ return
 			# Something has gone wrong, call saveme #
 			#########################################
 			gosub :callsaveme
+			halt
 		else 
 			gosub :switchboard~switchboard
 			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "

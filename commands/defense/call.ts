@@ -67,7 +67,7 @@
     :nocontrol
         killalltriggers
         send "'We don't control the figs in this sector!*"
-        gosub :xenter
+        gosub :xenter~run
 	return
 
     :abletodeploy
@@ -89,3 +89,5 @@ return
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\external\xenter"
+
