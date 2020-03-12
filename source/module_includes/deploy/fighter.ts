@@ -40,14 +40,8 @@
 			if ($available_fighters >= $amount)
 				setVar $ftrs_to_leave ($available_fighters-$amount)
 			else
-				setVar $ftrs_to_leave $player~fighters
+				setVar $ftrs_to_leave $available_fighters
 			end
-			if ($available_fighters < $ftrs_to_leave)
-				setvar $ftrs_to_leave $available_fighters
-			end
-			if ($available_fighters > $ftrs_to_leave)
-				setvar $ftrs_to_leave ($available_fighters-$ftrs_to_leave)
-			end 
 			send " " $ftrs_to_leave " * " $owner " " $type
 			gosub :player~quikstats
 			if ($bot~startingLocation = "Citadel")
