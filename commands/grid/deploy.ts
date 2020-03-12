@@ -40,9 +40,6 @@
 		add $i 1
 	end
 
-	send "'"&$bot~user_Command_line&"*"
-	send "'"&$line&"*"
-
 	isNumber $isnumber $bot~parm1
 	setvar $default false
 	if ($isnumber = true)
