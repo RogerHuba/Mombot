@@ -152,7 +152,13 @@
 		if ($topoff)
 			gosub :topoff~deploy
 		else
-
+			setvar $fighter~offensive $offensive
+			setvar $fighter~defensive $defensive
+			setvar $fighter~toll $toll
+			setvar $fighter~corporate $corporate
+			setvar $fighter~personal $personal
+			setvar $fighter~amount $amount
+			gosub :fighter~deploy
 		end
 	elseif (($limpet) and ($armid))
 		setvar $mines~personal $personal
@@ -179,7 +185,9 @@ include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"
 include "source\module_includes\deploy\limp"
 include "source\module_includes\deploy\armid"
 include "source\module_includes\deploy\mines"
+include "source\module_includes\deploy\fighter"
 include "source\module_includes\deploy\topoff"
