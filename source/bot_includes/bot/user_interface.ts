@@ -576,6 +576,20 @@ return
 	if ($BOT~command = "?")
 		setVar $BOT~command "help"
 	end
+	if ($BOT~command = "lay") or ($BOT~command = "plimp") or ($BOT~command = "mines") or ($BOT~command = "climp") or ($BOT~command = "cmine") or ($BOT~command = "pmine")
+		if ($bot~command <> "lay")
+			setVar $replace_param $bot~command
+			setvar $bot~parms[8] $bot~parms[7]
+			setvar $bot~parms[7] $bot~parms[6]
+			setvar $bot~parms[6] $bot~parms[5]
+			setvar $bot~parms[5] $bot~parms[4]
+			setvar $bot~parms[4] $bot~parms[3]
+			setvar $bot~parms[3] $bot~parms[2]
+			setvar $bot~parms[2] $bot~parms[1]
+			setvar $bot~parms[1] $replace_param		
+		end
+		setVar $BOT~command "deploy"
+	end
 	if ($BOT~command = "build") or ($BOT~command = "create")
 		setVar $BOT~command $bot~parms[1]
 		setvar $bot~parms[1] "create"

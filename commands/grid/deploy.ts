@@ -57,14 +57,16 @@
 	end
 
 	getwordpos " "&$bot~user_command_line&" " $pos " l"
-	if ($pos > 0)
+	getwordpos " "&$bot~user_command_line&" " $pos2 "limp"
+	if (($pos > 0) or ($pos2 > 0))
 		setvar $limpet true
 	else
 		setvar $limpet false
 	end
 
 	getwordpos " "&$bot~user_command_line&" " $pos " a"
-	if ($pos > 0)
+	getwordpos " "&$bot~user_command_line&" " $pos2 "mine"
+	if (($pos > 0) or ($pos2 > 0))
 		setvar $armid true
 	else
 		setvar $armid false
@@ -113,6 +115,11 @@
 		setvar $corporate false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " mines "
+	if ($pos > 0)
+		setvar $limpet true
+		setvar $armid true
+	end
 
 	if (($fighter <> true) and ($limpet <> true) and ($armid <> true))
 		setvar $fighter true
@@ -124,12 +131,17 @@
 		setvar $corporate true
 	end
 
-	if ($limpet)
+	if ($fighter)
+
+	elseif (($limpet) and ($armid))
+		setvar $mines~personal $personal
+		setvar $mines~amount $deploy_amount
+		gosub :mines~deploy
+	elseif ($limpet)
 		setvar $limp~personal $personal
 		setvar $limp~amount $deploy_amount
 		gosub :limp~deploy
-	end
-	if ($armid)
+	elseif ($armid)
 		setvar $armid~personal $personal
 		setvar $armid~amount $deploy_amount
 		gosub :armid~deploy
@@ -144,3 +156,5 @@ include "source\bot_includes\player\quikstats\player"
 include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\module_includes\deploy\limp"
+include "source\module_includes\deploy\armid"
+include "source\module_includes\deploy\mines"
