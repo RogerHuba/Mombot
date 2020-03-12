@@ -40,11 +40,15 @@
 		add $i 1
 	end
 
+	send "'"&$bot~user_Command_line&"*"
+
 	isNumber $isnumber $bot~parm1
+	setvar $default false
 	if ($isnumber = true)
 		setvar $deploy_amount $bot~parm1
 	else
 		setvar $deploy_amount 1
+		setvar $default true
 	end
 	setvar $deploy_corp true
 	setvar $deploy "defensive"
@@ -135,6 +139,9 @@
 
 	elseif (($limpet) and ($armid))
 		setvar $mines~personal $personal
+		if ($default)
+			setvar $deploy_amount 3
+		end
 		setvar $mines~amount $deploy_amount
 		gosub :mines~deploy
 	elseif ($limpet)
