@@ -90,7 +90,7 @@
 		setvar $offensive false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " o"
+	getwordpos " "&$bot~user_command_line&" " $pos " d"
 	if ($pos > 0)
 		setvar $defensive true
 		setvar $toll false
