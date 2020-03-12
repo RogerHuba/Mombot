@@ -641,7 +641,7 @@ return
 		setvar $bot~parms[1] $bot~command
 		setVar $BOT~command "find"
 	end
-
+	setvar $bot~user_command_line $bot~parms[1]&" "&$bot~parms[2]&" "&$bot~parms[3]&" "&$bot~parms[4]&" "&$bot~parms[5]&" "&$bot~parms[6]&" "&$bot~parms[7]&" "&$bot~parms[8]&" "
 	setVar $i 1
 	while ($i <= $BOT~parmS)
 		if ($BOT~parmS[$i] = "s")
