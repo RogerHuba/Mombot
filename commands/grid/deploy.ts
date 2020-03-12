@@ -157,7 +157,7 @@
 			setvar $fighter~toll $toll
 			setvar $fighter~corporate $corporate
 			setvar $fighter~personal $personal
-			setvar $fighter~amount $amount
+			setvar $fighter~amount $deploy_amount
 			gosub :fighter~deploy
 		end
 	elseif (($limpet) and ($armid))
