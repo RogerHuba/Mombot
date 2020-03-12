@@ -38,10 +38,11 @@
 			stripText $ship_fighters " "
 			
 			if ($available_fighters >= $amount)
-				setVar $ftrs_to_leave ($available_fighters-$amount)
+				setVar $ftrs_to_leave ($available_fighters-($player~fighters-$amount))
 			else
 				setVar $ftrs_to_leave $available_fighters
 			end
+
 			send " " $ftrs_to_leave " * " $owner " " $type
 			gosub :player~quikstats
 			if ($bot~startingLocation = "Citadel")
