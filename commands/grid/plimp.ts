@@ -18,6 +18,7 @@
 	killalltriggers
 	if ($PLAYER~LIMPETS <= 0)
 		setvar $switchboard~message "Out of limpets!*"
+		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 	if ($PLAYER~startingLocation = "Citadel")

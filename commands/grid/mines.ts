@@ -30,11 +30,11 @@
 	if ($bot~startingLocation = "Citadel")
 		send "s* "
 		setVar $start_mac "q q "
-		setVar $end_mac "l "&$planet~planet&"* c "
+		setVar $end_mac "l "&$planet~planet&"* c s* "
 	else
 		send "** "
 		setVar $start_mac ""
-		setVar $end_mac ""
+		setVar $end_mac "** "
 	end
 	waitOn "Warps to Sector(s) :"
 	setVar $limpetOwner SECTOR.LIMPETS.OWNER[currentsector]
