@@ -41,7 +41,8 @@ return
 			getWordPos $temp $posa "Zyrain"
 			getWordPos $temp $posb "Clausewitz"
 			getWordPos $temp $posc "Nelson"
-			if (($posa > 0) or ($posb > 0) or ($posc > 0))
+			getWordPos $temp $posd "Wilson"
+			if (($posa > 0) or ($posb > 0) or ($posc > 0) or ($posd > 0))
 				add $federalCount 1
 			end
 			add $fakeTraderCount 1

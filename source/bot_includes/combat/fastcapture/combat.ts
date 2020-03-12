@@ -1,4 +1,4 @@
-
+# [Attack Captain Wilson (60,000-45,000) (Y/N) [N]? Yes] #
 :fastCapture
 	setVar $player~isFound FALSE
 	setVar $targetIsAlien FALSE
@@ -74,7 +74,8 @@
 			getWordPos $player~faketraders[$a] $pos "Zyrain"
 			getWordPos $player~faketraders[$a] $pos2 "Clausewitz"
 			getWordPos $player~faketraders[$a] $pos3 "Nelson"
-			if (($pos <= 0) AND ($pos2 <= 0) AND ($pos3 <= 0))
+			getWordPos $player~faketraders[$a] $pos4 "Wilson"
+			if (($pos <= 0) AND ($pos2 <= 0) AND ($pos3 <= 0) AND ($pos4 <= 0))
 				setVar $i 0
 				setVar $player~isFound TRUE
 				setVar $targetIsAlien TRUE

@@ -21,11 +21,18 @@
 		setVar $pods FALSE
 	end
 
+	getWordPos $BOT~user_command_line $pos "cap"
+	if ($pos > 0)
+		setVar $pods TRUE
+	else
+		setVar $pods FALSE
+	end
+
 	getWordPos $BOT~user_command_line $pos "meat"
 	if ($pos > 0)
-		setVar $meatgrind TRUE
+		setVar $cap TRUE
 	else
-		setVar $meatgrind FALSE
+		setVar $cap FALSE
 	end
 
 	goto :start_script
@@ -37,7 +44,11 @@
 	:okaygo
 	goSub :SECTOR~getSectorData
 	#set player~refurbString to allow fast refurbing if you have a mac#
-	goSub :combat~fastAttack
+	if ($cap)
+		goSub :combat~fastCapture
+	else
+		goSub :combat~fastAttack
+	end
 	if (($player~isFound = true) and ($meatgrind = true))
 		send $combat~attackString&"* "
 		send $combat~attackString&"* "
@@ -239,5 +250,6 @@ include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\player\setconnectiontriggers\player"
