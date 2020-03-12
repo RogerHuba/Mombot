@@ -36,9 +36,9 @@
 			stripText $ship_fighters ","
 			stripText $ship_fighters " "
 			
-			if ($ftrs_to_leave < $amount)
+			#if ($ftrs_to_leave < $amount)
 				setVar $ftrs_to_leave $amount
-			end
+			#end
 			if ($available_fighters < $ftrs_to_leave)
 				setvar $ftrs_to_leave $available_fighters
 			end
