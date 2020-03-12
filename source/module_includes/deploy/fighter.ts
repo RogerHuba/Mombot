@@ -4,6 +4,7 @@
 				gosub :PLANET~getPlanetInfo
 				send " q "
 			end
+			gosub :player~quikstats
 			if ($corporate)
 				setvar $owner "c"
 				setvar $owner_label "corporate"
@@ -36,14 +37,16 @@
 			stripText $ship_fighters ","
 			stripText $ship_fighters " "
 			
-			#if ($ftrs_to_leave < $amount)
+			if ($player~fighters >= $amount)
 				setVar $ftrs_to_leave $amount
-			#end
+			else
+				setVar $ftrs_to_leave $player~fighters
+			end
 			if ($available_fighters < $ftrs_to_leave)
 				setvar $ftrs_to_leave $available_fighters
 			end
-			if (($available_fighters+$ship_fighters) > $amount)
-				setvar $ftrs_to_leave ($available_fighters-$amount)
+			if ($available_fighters > $amount)
+				setvar $ftrs_to_leave ($available_fighters-($ship_fighters-$ftrs_to_leave))
 			end 
 			send " " $ftrs_to_leave " * " $owner " " $type
 			gosub :player~quikstats
