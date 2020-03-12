@@ -4,7 +4,7 @@
 	if ((currentsector = $map~stardock) or (currentsector <= 10))
 		setVar $SWITCHBOARD~message "Can't clear fedspace.*"
 		gosub :SWITCHBOARD~switchboard
-		halt 
+		return
 	end
 	setVar $bot~validPrompts "Command Citadel"
 	gosub :bot~checkStartingPrompt
@@ -26,17 +26,17 @@
 	if (($PLAYER~LIMPETS <= 0) AND (($limpetOwner <> "belong to your Corp") AND ($limpetOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Need limpets to clear this sector*"
 		gosub :SWITCHBOARD~switchboard
-		halt 
+		return 
 	end
 	if (($PLAYER~ARMIDS <= 0) AND (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Need armids to clear this sector*"
 		gosub :SWITCHBOARD~switchboard
-		halt
+		return
 	end
 	if ((($limpetOwner = "belong to your Corp") or ($limpetOwner = "yours")) and (($armidOwner = "belong to your Corp") or ($armidOwner = "yours")))
 		setVar $SWITCHBOARD~message "Current Sector Already Clear of Enemy Mines!*"
 		gosub :SWITCHBOARD~switchboard
-		halt
+		return
 	end
 	setvar $switchboard~message "Clearing Current Sector*"
 	gosub :SWITCHBOARD~switchboard
@@ -54,7 +54,7 @@
 	setvar $switchboard~message "Sector Cleared*"
 	gosub :SWITCHBOARD~switchboard
 		
-	halt
+	return
 	:clear_sector_attemptClearingMines
 		setVar $i 0
 		while ($i < 10)
