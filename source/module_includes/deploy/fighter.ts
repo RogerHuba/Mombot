@@ -38,7 +38,11 @@
 			stripText $ship_fighters " "
 			
 			if ($available_fighters >= $amount)
-				setVar $ftrs_to_leave ($available_fighters-($player~fighters-$amount))
+				if ($available_fighters < $ship_fighters)
+					setVar $ftrs_to_leave $amount
+				else
+					setVar $ftrs_to_leave ($available_fighters-($player~fighters-$amount))
+				end
 			else
 				setVar $ftrs_to_leave $available_fighters
 			end
