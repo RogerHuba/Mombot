@@ -1,10 +1,4 @@
-gosub :BOT~loadVars
-if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
-	goto :wait_for_command
-end
-
-#============================== START TOPOFF (TOPOFF) ==============================
-:topoff
+:deploy
 	killalltriggers
 	gosub  :player~currentPrompt
 	setVar $bot~startingLocation $PLAYER~current_prompt
@@ -41,7 +35,7 @@ end
 	end
 	setVar $SWITCHBOARD~message "TopOff complete Left "&$ftrs_to_leave&" fighters.*"
 	gosub :SWITCHBOARD~switchboard
-	goto :wait_for_command
+	return
 :do_topoff
 	:do_topoff_again
 		killalltriggers
@@ -61,18 +55,3 @@ end
 	:topoff_success
 return
 #============================== END TOPOFF (TOPOFF) ==============================
-
-:wait_for_command
-	setVar $BOT~help[1]  $BOT~tab&"topoff - fill up ship with fighters from sector "
-	gosub :bot~helpfile
-halt
-
-
-
-# includes:
-include "source\module_includes\bot\loadvars\bot"
-include "source\module_includes\bot\helpfile\bot"
-include "source\bot_includes\player\currentprompt\player"
-include "source\module_includes\bot\checkstartingprompt\bot"
-include "source\bot_includes\planet\getplanetinfo\planet"
-include "source\bot_includes\planet\landingsub\planet"

@@ -130,6 +130,14 @@
 		setvar $armid true
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " topoff "
+	if ($pos > 0)
+		setvar $topoff true
+		setvar $fighter true
+		setvar $armid false
+		setvar $limpet false
+	end
+
 	if (($fighter <> true) and ($limpet <> true) and ($armid <> true))
 		setvar $fighter true
 	end
@@ -141,7 +149,11 @@
 	end
 
 	if ($fighter)
+		if ($topoff)
+			gosub :topoff~deploy
+		else
 
+		end
 	elseif (($limpet) and ($armid))
 		setvar $mines~personal $personal
 		if ($default)
@@ -170,3 +182,4 @@ include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\module_includes\deploy\limp"
 include "source\module_includes\deploy\armid"
 include "source\module_includes\deploy\mines"
+include "source\module_includes\deploy\topoff"

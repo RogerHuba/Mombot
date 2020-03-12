@@ -576,7 +576,7 @@ return
 	if ($BOT~command = "?")
 		setVar $BOT~command "help"
 	end
-	if ($BOT~command = "lay") or ($BOT~command = "plimp") or ($BOT~command = "mines") or ($BOT~command = "climp") or ($BOT~command = "cmine") or ($BOT~command = "pmine")
+	if ($BOT~command = "lay") or ($BOT~command = "plimp") or ($BOT~command = "mines") or ($BOT~command = "climp") or ($BOT~command = "cmine") or ($BOT~command = "pmine") or ($BOT~command = "topoff")
 		if ($bot~command <> "lay")
 			setvar $bot~parms[8] $bot~command
 		end
