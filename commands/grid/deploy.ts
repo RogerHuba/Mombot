@@ -142,7 +142,20 @@
 		setvar $fighter true
 	end
 	if (($offensive <> true) and ($defensive <> true) and ($toll <> true))
-		setvar $defensive true
+		if ((CURRENTSECTOR > 0) AND (CURRENTSECTOR <= SECTORS))
+			setVar $type SECTOR.FIGS.TYPE[CURRENTSECTOR]
+			if ($type = "Offensive")
+				setvar $offensive true
+			elseif ($type = "Defensive")
+				setvar $defensive true
+			elseif ($type = "Toll")
+				setvar $toll true
+			else
+				setvar $defensive true
+			end
+		else
+			setvar $defensive true
+		end
 	end
 	if (($corporate <> true) and ($personal <> true))
 		setvar $corporate true
