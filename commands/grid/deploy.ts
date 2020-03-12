@@ -21,6 +21,7 @@
 	
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
+	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
 	if (($startingLocation <> "Citadel") AND ($startingLocation <> "Command"))
 		setVar $SWITCHBOARD~message "You must run deploy from command or citadel prompt.*"
 		gosub :SWITCHBOARD~switchboard
