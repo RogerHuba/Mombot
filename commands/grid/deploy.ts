@@ -2,11 +2,18 @@
 	loadvar $game~port_max
 
 	setVar $BOT~help[1]   $BOT~tab&"  deploy {number} {fig/mine/limp/armid} {personal/corp} "
-	setVar $BOT~help[2]   $BOT~tab&"  Examples:"
-	setVar $BOT~help[3]   $BOT~tab&"     >deploy 1000 corp fig "
-	setVar $BOT~help[4]   $BOT~tab&"     >deploy"
-	setVar $BOT~help[5]   $BOT~tab&"     >deploy 100000 c f "
-	setVar $BOT~help[6]   $BOT~tab&"     >deploy l p "
+	setVar $BOT~help[2]   $BOT~tab&"     "
+	setVar $BOT~help[3]   $BOT~tab&"  Command to replace old climp/plimp/mines/cmine/pmine "
+	setVar $BOT~help[4]   $BOT~tab&"  commands.  Old syntax still works but can also use new"
+	setVar $BOT~help[5]   $BOT~tab&"  options"
+	setVar $BOT~help[6]   $BOT~tab&"     "
+	setVar $BOT~help[7]   $BOT~tab&"  Examples:"
+	setVar $BOT~help[8]   $BOT~tab&"     >deploy 1000 corp fig "
+	setVar $BOT~help[9]   $BOT~tab&"     >deploy"
+	setVar $BOT~help[10]  $BOT~tab&"     >lay 100000 c f "
+	setVar $BOT~help[11]  $BOT~tab&"     >deploy l p "
+	setVar $BOT~help[12]  $BOT~tab&"     >plimp 3 "
+	setVar $BOT~help[13]  $BOT~tab&"     >mines"
 	gosub :bot~helpfile
 
 
