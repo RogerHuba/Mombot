@@ -45,8 +45,8 @@
 			if ($available_fighters < $ftrs_to_leave)
 				setvar $ftrs_to_leave $available_fighters
 			end
-			if ($available_fighters > $amount)
-				setvar $ftrs_to_leave ($available_fighters-($player~fighters-$ftrs_to_leave))
+			if ($available_fighters > $ftrs_to_leave)
+				setvar $ftrs_to_leave ($available_fighters-$ftrs_to_leave)
 			end 
 			send " " $ftrs_to_leave " * " $owner " " $type
 			gosub :player~quikstats
