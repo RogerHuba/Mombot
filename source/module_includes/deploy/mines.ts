@@ -1,6 +1,11 @@
 :deploy
 
-	
+	if ($personal)
+		setvar $mine "p"
+	else
+		setvar $mine "c"
+	end
+
 	gosub :PLAYER~QUIKSTATS
 
 	if ((currentsector = $map~stardock) OR (currentsector <= 10))
@@ -45,7 +50,7 @@
 	elseif ($amount > currentlimpets)
 		setVar $amount currentlimpets
 	end
-	send $start_mac "z n h 2 z " $amount "*  zc * * h 1 z " $amount "*  z c * * * " $end_mac
+	send $start_mac "z n h 2 z " $amount "*  z" $mine " * * h 1 z " $amount "*  z " $mine " * * * " $end_mac
 	gosub :PLAYER~quikstats
 	
 	
