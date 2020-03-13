@@ -33,8 +33,8 @@
 	setVar $BOT~help[24]  $BOT~tab&"        {route} - Plots a basic shortest path (slow). "
 	setVar $BOT~help[25]  $BOT~tab&"          {ppt} - Finds port pair trading ports  "
 	setVar $BOT~help[26]  $BOT~tab&"      {warps:n} - Restrict matches to nwarps  "
-	setVar $BOT~help[27]  $BOT~tab&"      {count:n} - limit results to sectors with a minimum count of "
-	setVar $BOT~help[28]  $BOT~tab&"                  planets/traders/ships"
+	setVar $BOT~help[27]  $BOT~tab&"      {count:n} - limit results to sectors with a  "
+	setVar $BOT~help[28]  $BOT~tab&"                  minimum count of planets/traders/ships"
 	setVar $BOT~help[29]  $BOT~tab&"      {limit:n} - limit query results to first n found "
 	setVar $BOT~help[30]  $BOT~tab&" {beam:botname} - Beam to bot name  "
 	# ham select ports ore-mcic<-70
