@@ -7,7 +7,7 @@
 			stripText $help[$i] #13
 			stripText $help[$i] "`"
 			stripText $help[$i] "'"
-			replaceText $help[$i] "=" "-"
+			#replaceText $help[$i] "=" "-"
 			setVar $temp $help[$i]
 			getLength $temp $length
 			setVar $isTooLong FALSE
