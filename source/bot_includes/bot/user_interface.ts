@@ -576,7 +576,9 @@ return
 	if ($BOT~command = "?")
 		setVar $BOT~command "help"
 	end
-	if (($BOT~command = "lay") or ($BOT~command = "put") or ($BOT~command = "place") or ($BOT~command = "plimp") or ($BOT~command = "mines") or ($BOT~command = "climp") or ($BOT~command = "cmine") or ($BOT~command = "pmine") or ($BOT~command = "topoff"))
+	setvar $deploy_list " lay put place limp mine armid plimp mines climp cmine pmine topoff mines fig "
+	getwordpos $deploy_list $pos " "&$bot~command&" "
+	if ($pos > 0)
 		if (($bot~command <> "lay") or ($bot~command <> "put") or ($bot~command <> "place"))
 			setvar $bot~parms[8] $bot~command
 		end

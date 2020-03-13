@@ -1,19 +1,33 @@
 	gosub :BOT~loadVars
 	loadvar $game~port_max
 
-	setVar $BOT~help[1]   $BOT~tab&"  deploy {number} {fig/mine/limp/armid} {personal/corp} "
+	setVar $BOT~help[1]   $BOT~tab&"  deploy/put/lay/place {number} {type} {personal/corp} "
 	setVar $BOT~help[2]   $BOT~tab&"     "
 	setVar $BOT~help[3]   $BOT~tab&"  Command to replace old climp/plimp/mines/cmine/pmine "
 	setVar $BOT~help[4]   $BOT~tab&"  commands.  Old syntax still works but can also use new"
 	setVar $BOT~help[5]   $BOT~tab&"  options"
 	setVar $BOT~help[6]   $BOT~tab&"     "
-	setVar $BOT~help[7]   $BOT~tab&"  Examples:"
-	setVar $BOT~help[8]   $BOT~tab&"     >deploy 1000 corp fig "
-	setVar $BOT~help[9]   $BOT~tab&"     >deploy"
-	setVar $BOT~help[10]  $BOT~tab&"     >lay 100000 c f "
-	setVar $BOT~help[11]  $BOT~tab&"     >deploy l p "
-	setVar $BOT~help[12]  $BOT~tab&"     >plimp 3 "
-	setVar $BOT~help[13]  $BOT~tab&"     >mines"
+	setVar $BOT~help[7]   $BOT~tab&"  topoff - will fill ship up with fighters from sector "
+	setVar $BOT~help[8]   $BOT~tab&"     >topoff"
+	setVar $BOT~help[9]   $BOT~tab&"     "
+	setVar $BOT~help[10]  $BOT~tab&"  plimp/climp/cmine/pmine - drops corp or personal mines"
+	setVar $BOT~help[11]  $BOT~tab&"                          - default 1 
+	setVar $BOT~help[12]  $BOT~tab&"     >plimp "
+	setVar $BOT~help[13]  $BOT~tab&"     >place 100 limp"
+	setVar $BOT~help[14]   $BOT~tab&"     >put p limp"
+	setVar $BOT~help[15]  $BOT~tab&"     >lay 250 corp mine"
+	setVar $BOT~help[16]  $BOT~tab&"     >deploy l p "
+	setVar $BOT~help[17]  $BOT~tab&"     >plimp 3 "
+	setVar $BOT~help[18]  $BOT~tab&"     "
+	setVar $BOT~help[19]  $BOT~tab&"  mines - drops both limps and armids into sector   "
+	setVar $BOT~help[20]  $BOT~tab&"        - default 3"
+	setVar $BOT~help[21]  $BOT~tab&"     >lay 250 mines"
+	setVar $BOT~help[22]  $BOT~tab&"     >mines"
+	setVar $BOT~help[23]  $BOT~tab&"   "
+	setVar $BOT~help[24]  $BOT~tab&"   deploy - puts fighter into sector (default)"
+	setVar $BOT~help[25]  $BOT~tab&"     >deploy 10000 figs"
+	setVar $BOT~help[26]  $BOT~tab&"     >deploy 100000"
+	setVar $BOT~help[27]  $BOT~tab&"     >put 100 personal"
 	gosub :bot~helpfile
 
 
