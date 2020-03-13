@@ -11,7 +11,7 @@
 	setVar $BOT~help[8]   $BOT~tab&"     >topoff"
 	setVar $BOT~help[9]   $BOT~tab&"     "
 	setVar $BOT~help[10]  $BOT~tab&"  plimp/climp/cmine/pmine - drops corp or personal mines"
-	setVar $BOT~help[11]  $BOT~tab&"                          - default 1 
+	setVar $BOT~help[11]  $BOT~tab&"                          - default 1 "
 	setVar $BOT~help[12]  $BOT~tab&"     >plimp "
 	setVar $BOT~help[13]  $BOT~tab&"     >place 100 limp"
 	setVar $BOT~help[14]   $BOT~tab&"     >put p limp"
