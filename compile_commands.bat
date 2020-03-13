@@ -1,4 +1,4 @@
-for /r %%n in (*deploy.ts) do call :checkit "%%n" 
+for /r %%n in (*select.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
