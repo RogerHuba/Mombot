@@ -10,13 +10,13 @@ reqRecording
 	loadvar $switchboard~self_command
 	loadvar $ship~ship_max_attack
 
-	setVar $BOT~help[1]   $BOT~tab&"pdrop [on/off]{delay}{drop type}{trigger}{return}{kill} "
+	setVar $BOT~help[1]   $BOT~tab&"pdrop [on | off]{delay}{drop type}{trigger}{return}{kill} "
 	setVar $BOT~help[2]   $BOT~tab&"      "
 	setVar $BOT~help[3]   $BOT~tab&"    [delay] - delay before dropping in milliseconds"
 	setVar $BOT~help[4]   $BOT~tab&"[drop type] - [d]irect, [a]djacent, [s]urround, "
 	setvar $BOT~help[5]   $BOT~tab&"              or [da] direct, then adjacent"
 	setVar $BOT~help[6]   $BOT~tab&"    [delay] - delay before dropping in milliseconds"
-	setVar $BOT~help[7]   $BOT~tab&"  [trigger] - [f]igs, [fm] figs/mines,  "
+	setVar $BOT~help[7]   $BOT~tab&"  [trigger] - [f]igs, [fm] figs or mines,  "
 	setVar $BOT~help[8]   $BOT~tab&"              [m]ines, [uf] No-Fig Mines"
 	setVar $BOT~help[9]   $BOT~tab&"   [return] - will return planet home after 10 seconds"
 	setVar $BOT~help[10]  $BOT~tab&"     [kill] - checks for enemy, and kills if possible"

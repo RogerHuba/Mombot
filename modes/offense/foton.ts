@@ -15,7 +15,7 @@
 	
 
 
-	setVar $BOT~help[1]  $BOT~tab&"- foton [on/off/sec] {a/d/p/s/d/t} {towship} {sector} "
+	setVar $BOT~help[1]  $BOT~tab&"- foton [on|off|sec] {a|d|p|s|d|t} {towship} {sector} "
 	setVar $BOT~help[2]  $BOT~tab&"                     {return} {den40}"
 	setVar $BOT~help[3]  $BOT~tab&"  Multiple use photon script.  "
 	setVar $BOT~help[4]  $BOT~tab&"  "
