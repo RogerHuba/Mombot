@@ -9,6 +9,8 @@
 	setVar $BOT~help[5] $BOT~tab&"   {pod} - Only shoots pods"
 	setVar $BOT~help[6] $BOT~tab&"  {meat} - meatgrinder mode"
 	setVar $BOT~help[7] $BOT~tab&"   {cap} - capture instead of kill"
+	setVar $BOT~help[8] $BOT~tab&"    {dt} - doubletap mode"
+	setVar $BOT~help[9] $BOT~tab&"    {sg} - shotgun mode"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Dock Killer"
@@ -26,53 +28,54 @@
 
 	getWordPos $BOT~user_command_line $pos "cap"
 	if ($pos > 0)
-		setVar $pods TRUE
-	else
-		setVar $pods FALSE
-	end
-
-	getWordPos $BOT~user_command_line $pos "meat"
-	if ($pos > 0)
 		setVar $cap TRUE
 	else
 		setVar $cap FALSE
 	end
 
-	goto :start_script
-:inac
-	gosub :PLAYER~quikstats
-:execute
-		setdelaytrigger justwait :okaygo 100
-		pause
-	:okaygo
-	goSub :SECTOR~getSectorData
-	#set player~refurbString to allow fast refurbing if you have a mac#
-	if ($cap)
-		goSub :combat~fastCapture
+	getWordPos $BOT~user_command_line $pos "meat"
+	if ($pos > 0)
+		setVar $meatgrind TRUE
 	else
-		goSub :combat~fastAttack
+		setVar $meatgrind FALSE
 	end
-	if (($player~isFound = true) and ($meatgrind = true))
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-		send $combat~attackString&"* "
-	end
-	goto :execute
+
+	goto :start_script
+
+	:inac
+		gosub :PLAYER~quikstats
+	:execute
+			setdelaytrigger justwait :okaygo 100
+			pause
+		:okaygo
+		goSub :SECTOR~getSectorData
+		#set player~refurbString to allow fast refurbing if you have a mac#
+		if ($cap)
+			goSub :combat~fastCapture
+		else
+			goSub :combat~fastAttack
+		end
+		if (($player~isFound = true) and ($meatgrind = true))
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+			send $combat~attackString&"* "
+		end
+		goto :execute
 
 
 :start_script
