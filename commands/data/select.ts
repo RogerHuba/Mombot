@@ -407,6 +407,13 @@ while (($i <= SECTORS) and ($done <> true))
 						else
 							setvar $skip true
 						end
+					elseif ($sector_params[$j][2] = "!")
+						
+						if ($value <> $sector_params[$j][1])
+							//possible candidate
+						else
+							setvar $skip true
+						end
 					end
 				else
 					setvar $skip true
