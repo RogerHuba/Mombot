@@ -16,27 +16,29 @@
 	setVar $BOT~help[7]   $BOT~tab&"     Searches TWX database for known info."
 	setVar $BOT~help[8]   $BOT~tab&"      "
 	setVar $BOT~help[9]   $BOT~tab&"     {mark:PARAM}  marks sectors PARAM=1 defult QUERY=1 "
-	setVar $BOT~help[10]  $BOT~tab&"                   selectors = > < like"
+	setVar $BOT~help[10]  $BOT~tab&"                   selectors = > < like !="
 	setVar $BOT~help[11]  $BOT~tab&"     {BBB | SSX}   match PORTS query to this pattern"
 	setVar $BOT~help[12]  $BOT~tab&"                   X is wildcard."
 	setVar $BOT~help[13]  $BOT~tab&"     {secure | paranoid}  "
-	setVar $BOT~help[14]  $BOT~tab&"    Examples:  "
-	setVar $BOT~help[15]  $BOT~tab&"              >select traders bubble=false equ-mcic<=60"
-	setVar $BOT~help[16]  $BOT~tab&"              >select planet like "&#34&"<<<< (a)"&#34
-	setVar $BOT~help[17]  $BOT~tab&"              >select port port.f>10000 figsec=true"
-	setVar $BOT~help[18]  $BOT~tab&"              >select port port.o>10000 figsec=false"
-	setVar $BOT~help[19]  $BOT~tab&"              >select port port.e>10000 warps:1"
-	setVar $BOT~help[20]  $BOT~tab&"              >select sector fig.owner=1 armid.owner=kane"
-	setVar $BOT~help[21]  $BOT~tab&"              >select sector limp.owner=3 limp.count>10"
-	setVar $BOT~help[22]  $BOT~tab&"              >select sector armid.count>100"
-	setVar $BOT~help[23]  $BOT~tab&"         {dist} - All results include distance from current. "
-	setVar $BOT~help[24]  $BOT~tab&"        {route} - Plots a basic shortest path (slow). "
-	setVar $BOT~help[25]  $BOT~tab&"          {ppt} - Finds port pair trading ports  "
-	setVar $BOT~help[26]  $BOT~tab&"      {warps:n} - Restrict matches to nwarps  "
-	setVar $BOT~help[27]  $BOT~tab&"      {count:n} - limit results to sectors with a  "
-	setVar $BOT~help[28]  $BOT~tab&"                  minimum count of planets/traders/ships"
-	setVar $BOT~help[29]  $BOT~tab&"      {limit:n} - limit query results to first n found "
-	setVar $BOT~help[30]  $BOT~tab&" {beam:botname} - Beam to bot name  "
+	setVar $BOT~help[14]  $BOT~tab&"           "
+	setVar $BOT~help[15]  $BOT~tab&"    Examples:  "
+	setVar $BOT~help[16]  $BOT~tab&"              >select traders bubble=false equ-mcic<=60"
+	setVar $BOT~help[17]  $BOT~tab&"              >select planet like "&#34&"<<<< (a)"&#34
+	setVar $BOT~help[18]  $BOT~tab&"              >select port port.f>10000 figsec=true"
+	setVar $BOT~help[19]  $BOT~tab&"              >select port port.o>10000 figsec=false"
+	setVar $BOT~help[20]  $BOT~tab&"              >select port port.e>10000 warps:1"
+	setVar $BOT~help[21]  $BOT~tab&"              >select sector fig.owner=1 armid.owner=kane"
+	setVar $BOT~help[22]  $BOT~tab&"              >select sector limp.owner=3 limp.count>10"
+	setVar $BOT~help[23]  $BOT~tab&"              >select sector armid.count>100"
+	setVar $BOT~help[24]  $BOT~tab&"         "
+	setVar $BOT~help[25]  $BOT~tab&"         {dist} - All results include distance from current. "
+	setVar $BOT~help[26]  $BOT~tab&"        {route} - Plots a basic shortest path (slow). "
+	setVar $BOT~help[27]  $BOT~tab&"          {ppt} - Finds port pair trading ports  "
+	setVar $BOT~help[28]  $BOT~tab&"      {warps:n} - Restrict matches to nwarps  "
+	setVar $BOT~help[29]  $BOT~tab&"      {count:n} - limit results to sectors with a  "
+	setVar $BOT~help[30]  $BOT~tab&"                  minimum count of planets/traders/ships"
+	setVar $BOT~help[31]  $BOT~tab&"      {limit:n} - limit query results to first n found "
+	setVar $BOT~help[32]  $BOT~tab&" {beam:botname} - Beam to bot name  "
 	# ham select ports ore-mcic<-70
 	gosub :bot~helpfile
 
@@ -217,10 +219,10 @@ while ($word <> "@@@###@@@")
 						setVar $selectchar "<"
 						replaceText $word "<" " "
 					else
-						getWordPos $word $pos "!"
+						getWordPos $word $pos "!="
 						if ($pos > 0)
-							setVar $selectchar "!"
-							replaceText $word "!" " "
+							setVar $selectchar "!="
+							replaceText $word "!=" " "
 						end
 					end
 				end
@@ -407,7 +409,7 @@ while (($i <= SECTORS) and ($done <> true))
 						else
 							setvar $skip true
 						end
-					elseif ($sector_params[$j][2] = "!")
+					elseif ($sector_params[$j][2] = "!=")
 						
 						if ($value <> $sector_params[$j][1])
 							//possible candidate
