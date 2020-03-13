@@ -16,7 +16,7 @@
 	setVar $BOT~help[7]   $BOT~tab&"     Searches TWX database for known info."
 	setVar $BOT~help[8]   $BOT~tab&"      "
 	setVar $BOT~help[9]   $BOT~tab&"     {mark:PARAM}  marks sectors PARAM=1 defult QUERY=1 "
-	setVar $BOT~help[10]  $BOT~tab&"                   selectors = > < like !="
+	setVar $BOT~help[10]  $BOT~tab&"                   selectors = > < like !"
 	setVar $BOT~help[11]  $BOT~tab&"     {BBB | SSX}   match PORTS query to this pattern"
 	setVar $BOT~help[12]  $BOT~tab&"                   X is wildcard."
 	setVar $BOT~help[13]  $BOT~tab&"     {secure | paranoid}  "
@@ -219,10 +219,10 @@ while ($word <> "@@@###@@@")
 						setVar $selectchar "<"
 						replaceText $word "<" " "
 					else
-						getWordPos $word $pos "!="
+						getWordPos $word $pos "!"
 						if ($pos > 0)
-							setVar $selectchar "!="
-							replaceText $word "!=" " "
+							setVar $selectchar "!"
+							replaceText $word "!" " "
 						end
 					end
 				end
