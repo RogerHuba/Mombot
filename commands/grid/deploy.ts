@@ -1,7 +1,7 @@
 	gosub :BOT~loadVars
 	loadvar $game~port_max
 
-	setVar $BOT~help[1]   $BOT~tab&"  deploy/put/lay/place {number} {type} {personal/corp} "
+	setVar $BOT~help[1]   $BOT~tab&"  deploy/put/lay/place {number} {type} {pers | corp} "
 	setVar $BOT~help[2]   $BOT~tab&"     "
 	setVar $BOT~help[3]   $BOT~tab&"  Command to replace old climp/plimp/mines/cmine/pmine "
 	setVar $BOT~help[4]   $BOT~tab&"  commands.  Old syntax still works but can also use new"
@@ -11,7 +11,7 @@
 	setVar $BOT~help[8]   $BOT~tab&"              Example:"
 	setVar $BOT~help[9]   $BOT~tab&"                    >topoff"
 	setVar $BOT~help[10]  $BOT~tab&"     "
-	setVar $BOT~help[11]  $BOT~tab&"   [plimp/climp/cmine/pmine] - drops mines (default 1)"
+	setVar $BOT~help[11]  $BOT~tab&"   [plimp | climp | cmine | pmine] - drops mines (default 1)"
 	setVar $BOT~help[12]  $BOT~tab&"              Examples: "
 	setVar $BOT~help[13]  $BOT~tab&"                    >plimp "
 	setVar $BOT~help[14]  $BOT~tab&"                    >place 100 limp"
