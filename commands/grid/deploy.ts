@@ -25,10 +25,10 @@
 	setVar $BOT~help[22]  $BOT~tab&"           >mines"
 	setVar $BOT~help[23]  $BOT~tab&"   "
 	setVar $BOT~help[24]  $BOT~tab&"   deploy - puts fighter into sector (default)"
-	setVar $BOT~help[25]  $BOT~tab&"     Examples: "
-	setVar $BOT~help[25]  $BOT~tab&"           >deploy 10000 figs"
-	setVar $BOT~help[26]  $BOT~tab&"           >deploy 100000"
-	setVar $BOT~help[27]  $BOT~tab&"           >put 100 personal"
+	setVar $BOT~help[26]  $BOT~tab&"     Examples: "
+	setVar $BOT~help[27]  $BOT~tab&"           >deploy 10000 figs"
+	setVar $BOT~help[28]  $BOT~tab&"           >deploy 100000"
+	setVar $BOT~help[29]  $BOT~tab&"           >put 100 personal"
 	gosub :bot~helpfile
 
 
