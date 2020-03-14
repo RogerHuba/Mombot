@@ -576,6 +576,14 @@ return
 	if ($BOT~command = "?")
 		setVar $BOT~command "help"
 	end
+	setvar $update_list " refresh limps figs armids "
+	getwordpos $deploy_list $pos " "&$bot~command&" "
+	if ($pos > 0)
+		if ($bot~command <> "refresh")
+			setvar $bot~parms[8] $bot~command
+		end
+		setVar $BOT~command "update"
+	end
 	setvar $deploy_list " lay put place limp mine armid plimp mines climp cmine pmine topoff mines fig "
 	getwordpos $deploy_list $pos " "&$bot~command&" "
 	if ($pos > 0)
