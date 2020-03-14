@@ -90,6 +90,7 @@
 		gosub :PLANET~landingsub
 	end
 
+	setvar $switchboard~message ""
 	if ($all or $fighter)
 		gosub :fighters~report
 	end
@@ -99,6 +100,12 @@
 	if ($all or $limpet)
 		gosub :limpets~report
 	end
+	if ($SWITCHBOARD~self_command = FALSE)
+		setVar $SWITCHBOARD~self_command 2
+	end
+
+	gosub :SWITCHBOARD~switchboard
+
 
 halt
 #===================================== END REFRESH LIMPS ========================================

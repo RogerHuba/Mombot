@@ -89,10 +89,6 @@ return
 	if ($gridChange > 0)
 		setVar $gridChange "+"&$gridChange
 	end
-	if ($SWITCHBOARD~self_command = FALSE)
-		setVar $SWITCHBOARD~self_command 2
-	end
-	setVar $SWITCHBOARD~message "          - Armid Grid Report -*          - "&$count&" sectors, "&$personalCount&" personal. ("&$percent&"%) ("&$gridChange&" Change)**"
-	gosub :SWITCHBOARD~switchboard
+	setVar $SWITCHBOARD~message $switchboard~message&"          - Armid Grid Report -*          - "&$count&" sectors, "&$personalCount&" personal. ("&$percent&"%) ("&$gridChange&" Change)**"
 
 return

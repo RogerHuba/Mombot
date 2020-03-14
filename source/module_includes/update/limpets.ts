@@ -115,9 +115,5 @@ return
 		setVar $gridChange "+"&$gridChange
 	end
 	setVar $player~limpetsGridded TRUE
-	if ($SWITCHBOARD~self_command = FALSE)
-		setVar $SWITCHBOARD~self_command 2
-	end
-	setVar $SWITCHBOARD~message "          - Limpet Grid Report -*          - "&$count&" sectors, "&$personalCount&" personal. ("&$percent&"%) ("&$gridChange&" Change)*          - Activated  Limpet  Scan*            *             Sector    Personal/Corp*            ========================*"&$limpetOutput&"*"
-	gosub :SWITCHBOARD~switchboard
+	setVar $switchboard~message $SWITCHBOARD~message&"          - Limpet Grid Report -*          - "&$count&" sectors, "&$personalCount&" personal. ("&$percent&"%) ("&$gridChange&" Change)*          - Activated  Limpet  Scan*            *             Sector    Personal/Corp*            ========================*"&$limpetOutput&"*"
 return
