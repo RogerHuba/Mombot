@@ -117,3 +117,6 @@ include "source\bot_includes\planet\landingsub\planet"
 include "source\module_includes\update\limpets"
 include "source\module_includes\update\fighters"
 include "source\module_includes\update\armids"
+include "source\bot_includes\player\formatnumberforspaces\player"
+include "source\bot_includes\player\formatpercentagesforspaces\player"
+
