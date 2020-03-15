@@ -27,7 +27,7 @@
 	setVar $player~cappingAliens TRUE
 	setVar $player~target ""
 	setvar $capEmptyShips true
-	
+
 	setvar $bot~mode "Citcap"
 	saveVar $bot~mode
 
@@ -145,7 +145,6 @@
 		goto :main
 	end	
 	gosub :checkForCappingVictimsFromCitadel
-	echo ansi_12 "*NO Targets*"
 	goto :main
 
 :checkForCappingVictimsFromCitadel
