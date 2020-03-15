@@ -194,8 +194,10 @@
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
 		setvar $player~startinglocation "Citadel"
 		gosub :combat~fastCapture
-		send "l "&$planet~planet&"* m * * * c "
 		gosub :player~quikstats
+		if ($player~current_prompt = "Command")
+			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+		end
 		goto :scanit_again
 	end
 	goto :halt

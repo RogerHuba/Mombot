@@ -162,8 +162,10 @@
 		setvar $player~startinglocation "Citadel"
 		if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)) or ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))))
 			gosub :combat~fastCapture
-			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 			gosub :player~quikstats
+			if ($player~current_prompt = "Command")
+				send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			end
 			goto :scanit_again
 		end	
 		echo ansi_12 "*NO Targets*"
