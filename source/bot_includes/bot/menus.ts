@@ -3,10 +3,10 @@
 	setDeafClients true
 	setVar $bot~botIsDeaf TRUE
 	saveVar $bot~botIsDeaf
-:refreshPreferencesMenu
 	gosub :BOT~killthetriggers
 	gosub :BOT~load_watcher_variables
 	gosub :bot~load_the_variables
+:refreshPreferencesMenu
 	setArray $h 31
 	setArray $qss 31
 	setVar $h[2]  "                 "
