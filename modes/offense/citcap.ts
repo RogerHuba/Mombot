@@ -79,14 +79,15 @@
 :warning_cit_kill
 	send "q m * * * "
 	gosub :planet~getPlanetInfo
+	format $planet~planet_fighters $formatted_fighters NUMBER
 	if ($targetingPerson)
-		setvar $switchboard~message "Citadel Capper Targeting "&$player~target&" :: Running on Planet "&$planet~planet&" :: "&$planet~planet_fighters&" Fighters available on surface.*"
+		setvar $switchboard~message "Citadel Capper Targeting "&$player~target&" :: Running on Planet "&$planet~planet&" :: "&$formatted_fighters&" Fighters available on surface.*"
 		gosub :switchboard~switchboard
 	elseif ($targetingCorp)
-		setvar $switchboard~message "Citadel Capper Targeting Corp "&$player~target&" :: Running on Planet&" $planet~planet&" :: "&$planet~planet_FIGHTERS&" Fighters available on surface.*"
+		setvar $switchboard~message "Citadel Capper Targeting Corp "&$player~target&" :: Running on Planet"&$planet~planet&" :: "&$formatted_fighters&" Fighters available on surface.*"
 		gosub :switchboard~switchboard
 	else
-		setvar $switchboard~message "Citadel Capper :: Running on Planet "&$planet~planet&" :: "&$planet~planet_fighters&" Fighters available on surface.*"
+		setvar $switchboard~message "Citadel Capper :: Running on Planet "&$planet~planet&" :: "&$formatted_fighters&" Fighters available on surface.*"
 		gosub :switchboard~switchboard
 	end
 	send "c "
