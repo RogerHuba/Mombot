@@ -6,9 +6,11 @@
 	gosub :BOT~killthetriggers
 	gosub :BOT~load_watcher_variables
 	gosub :bot~load_the_variables
-:refreshPreferencesMenu
 	setArray $h 31
 	setArray $qss 31
+	setArray $qss_var 100
+
+:refreshPreferencesMenu
 	setVar $h[2]  "                 "
 	setVar $h[3]  "Bot Name         "
 	setVar $h[4]  "Login Password   "
@@ -153,7 +155,7 @@
 		setVar $qss[31] "Not Defined"
 	end
 	setVar $qss_total 31
-	#gosub :menuSpacing
+	gosub :menuSpacing
 	Echo #27 & "[2J"
 	Echo "**"
 	echo ANSI_11&"         General Info                     Gridding/Attack Options*"
@@ -1562,7 +1564,6 @@ return
 	gosub :BOT~save_the_variables
 return
 :menuSpacing
-	setArray $qss_var 100
 	setVar $qss_ss 0
 	setVar $qss_count 1
 	setVar $spc " "
