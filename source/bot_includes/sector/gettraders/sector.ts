@@ -38,6 +38,7 @@
 			getWordPos $temp $pos "[0;32m w/"
 			getWordPos $temp $pos2 "[0;35m[[31mOwned by[35m]"
 			getWordPos $temp $pos3 #27&"[0m      "&#27&"[32m     in "&#27
+			echo "*["&$temp&"]"&$pos3&"*"
 			if (($pos > 0) AND ($pos2 <= 0))
 				getWordPos $temp $pos "[[1;36m"
 				if ($pos > 0)
