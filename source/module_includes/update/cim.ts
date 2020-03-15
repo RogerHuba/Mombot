@@ -1,5 +1,12 @@
 :update
         
+	loadVar $PLAYER~unlimitedGame
+	loadvar $GAME~ptradesetting
+	loadvar $bot~bot_turn_limit
+	loadVar $game~port_max
+	loadVar $game~ptradesetting
+	loadvar $bot~MCIC_FILE
+
 	gosub :player~quikstats
 	setVar $startingLocation $player~current_prompt
 	isNumber $test $bot~parm1
