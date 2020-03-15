@@ -14,8 +14,7 @@
 	if ((currentsector = stardock) or (currentsector <= 10))
 		setvar $player~fedspace true
 	end
-
-	setVar $refurbString "l "&$PLANET~PLANET&"* m * * * q "
+	setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j q * " 
 	:checkingFigs
 		if ($player~fighters <= 0)
 			gosub :player~quikstats

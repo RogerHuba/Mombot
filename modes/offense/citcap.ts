@@ -144,7 +144,7 @@
 	goSub :combat~fastCapture
 	gosub :player~quikstats
 	if ($player~current_prompt = "Command")
-		send "l "&$planet~planet&"* m * * * c "
+		send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 		if ($player~isFound = true)
 			goto :checkForCappingVictimsFromCitadel
 		end
