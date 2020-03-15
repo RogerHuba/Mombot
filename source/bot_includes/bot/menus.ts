@@ -207,15 +207,22 @@
 			gosub :getinput 
 			setvar $bot~password $response
 		elseif ($chosen_option = "Z")
-			getInput $BOT~bot_password "Please Enter your Bot Password"
+			setvar $question "Please Enter your Bot Password"
+			gosub :getinput 
+			setvar $bot~bot_password $response
 		elseif ($chosen_option = "G")
-			getInput $BOT~letter "Please Enter your Game Letter"
+			setvar $question "Please Enter your Game Letter"
+			gosub :getinput 
+			setvar $bot~letter $response
 		elseif ($chosen_option = "C")
-			getInput $BOT~username "Please Enter your Login Name"
+			setvar $question "Please Enter your Login Name"
+			gosub :getinput 
+			setvar $bot~username $response
 		elseif ($chosen_option = "1")
 			if ($PLAYER~unlimitedGame = FALSE)
-				gosub :BOT~killthetriggers
-				getInput $temp "What are the minimum turns you need to do bot commands?"
+				setvar $question "What are the minimum turns you need to do bot commands?"
+				gosub :getinput 
+				setvar $temp $response
 				isNumber $test $temp
 				if ($test)
 					if (($temp <= 65000) AND ($temp >= 0))
@@ -234,7 +241,9 @@
 				end
 			end
 		elseif ($chosen_option = "4")
-			getInput $temp "How many limpets to drop on surround?"
+			setvar $question "How many limpets to drop on surround/gridding?"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test)
 				if (($temp <= 250) AND ($temp >= 0))
@@ -242,7 +251,9 @@
 				end
 			end
 		elseif ($chosen_option = "5")
-			getInput $temp "How many armid mines to drop on surround?"
+			setvar $question "How many armid mines to drop on surround/gridding?"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test)
 				if (($temp <= 250) AND ($temp >= 0))
@@ -315,7 +326,9 @@
 				setVar $PLAYER~surround_before_hkill TRUE
 			end
 		elseif ($chosen_option = "S")
-			getInput $temp "What sector is the Stardock? (0 to set to twx variable)"
+			setvar $question "What sector is the Stardock? (0 to set to twx variable)"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test)
 				if (($temp <= SECTORS) AND ($temp >= 1))
@@ -327,24 +340,32 @@
 				end
 			end
 		elseif ($chosen_option = "J")
-			getInput $temp "Please enter name of traders, seperated by commas.  Can also use [2],[1] for Corporations."
+			setvar $question "Please enter name of traders, seperated by commas.  Can also use [2],[1] for Corporations."
+			gosub :getinput 
+			setvar $temp $response
 			setVar $BOT~alarm_list $temp
 			saveVar $BOT~alarm_list
 		elseif ($chosen_option = "X")
-			getInput $temp "What ship number is your safe ship?"
+			setvar $question "What ship number is your safe ship?"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test)
 				setVar $BOT~safe_ship $temp
 			end
 		elseif ($chosen_option = "L")
-			getInput $temp "What planet is your safe planet?"
+			setvar $question "What planet is your safe planet?"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test)
 				setVar $BOT~safe_planet $temp
 			end
 		elseif ($chosen_option = "E")
 			setvar $temp 5760
-			getInput $temp "How many minutes afk do you want the echo banner to show each time?"
+			setvar $question "How many minutes afk do you want the echo banner to show each time?"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test)
 				if ($temp > 0)
@@ -354,7 +375,9 @@
 				end
 			end
 		elseif ($chosen_option = "R")
-			getInput $temp "What sector is the Rylos port? (0 to set to twx variable)"
+			setvar $question "What sector is the Rylos port? (0 to set to twx variable)"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test)
 				if (($temp <= SECTORS) AND ($temp >= 1))
@@ -365,7 +388,9 @@
 				savevar $MAP~rylos
 			end
 		elseif ($chosen_option = "A")
-			getInput $temp "What sector is the Alpha Centauri port? (0 to set to twx variable)"
+			setvar $question "What sector is the Alpha Centauri port? (0 to set to twx variable)"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test)
 				if (($temp <= SECTORS) AND ($temp >= 1))
@@ -376,7 +401,9 @@
 				savevar $MAP~alpha_centauri 
 			end
 		elseif ($chosen_option = "B")
-			getInput $temp "What sector is the Backdoor to Stardock?"
+			setvar $question "What sector is the Backdoor to Stardock?"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test)
 				if (($temp <= SECTORS) AND ($temp >= 1))
@@ -385,7 +412,9 @@
 				savevar $MAP~backdoor 
 			end
 		elseif ($chosen_option = "H")
-			getInput $temp "What sector is the Home Sector port?"
+			setvar $question "What sector is the Home Sector?"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test)
 				if (($temp <= SECTORS) AND ($temp >= 1))
@@ -419,6 +448,7 @@
 	setDeafClients false
 	setVar $bot~botIsDeaf false
 	saveVar $bot~botIsDeaf
+	echo "*Saving preferences..*"
 	gosub :BOT~save_the_variables
 
 	echo #27 "[30D                        " #27 "[30D"
@@ -584,9 +614,10 @@ return
 		elseif ($chosen_option = "<")
 			goto :preferencesMenuPage2
 		elseif ($pos > 0)
-			gosub :BOT~killthetriggers
+			setDeafClients false
 			echo "*What should this hotkey be set to?*"
 			getConsoleInput $temp SINGLEKEY
+			setDeafClients true
 			lowerCase $temp
 			getCharCode $temp $lower
 			upperCase $temp
@@ -603,7 +634,9 @@ return
 				setVar $BOT~hotkeys[$lower] $pos
 				setVar $BOT~custom_keys[$pos] $temp
 				if ($pos > 17)
-					getInput $temp "What is the bot command to connect to this hotkey?"
+					setvar $question "What is the bot command to connect to this hotkey?"
+					gosub :getinput 
+					setvar $temp $response
 					setVar $BOT~custom_commands[$pos] $temp
 				end
 				setVar $i 1
@@ -697,6 +730,8 @@ return
 			end
 			goto :NextShipPage
 		elseif ($pos > 0)
+			setDeafClients false
+	
 			if ($SHIP~shipList[($selection+$thisPage)][8])
 				setVar $SHIP~shipList[($selection+$thisPage)][8] FALSE
 			else
@@ -704,6 +739,7 @@ return
 			end
 			setVar $i $thisPage
 			setVar $shipsChanged TRUE
+			gosub :rewrite_cap_file
 			goto :NextShipPage
 		else
 			gosub :rewrite_cap_file
