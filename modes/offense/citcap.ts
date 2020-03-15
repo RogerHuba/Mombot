@@ -112,18 +112,22 @@
 :main
 	killalltriggers
 	gosub :player~quikstats
-	setTextLineTrigger 	limp 	:scanit_cit_cap 	"Limpet mine in "&$player~current_sector
+	setTextLineTrigger 	limp 	:scanit_cit_cap 	"Limpet mine in "&$player~CURRENT_SECTOR
 	setTextLineTrigger 	warps 	:scanit_cit_cap 	"warps into the sector."
 	setTextLineTrigger 	lifts 	:scanit_cit_cap 	"lifts off from"
-	setTextLineTrigger 	deffig 	:scanit_cit_cap 	"Deployed Fighters Report Sector "&$player~current_sector
+	setTextLineTrigger 	deffig 	:scanit_cit_cap 	"Deployed Fighters Report Sector "&$player~CURRENT_SECTOR
 	setTextLineTrigger 	secgun 	:scanit_cit_cap 	"Quasar Cannon on"
-	setTextLineTrigger 	ig 	:scanit_cit_cap 	"Shipboard Computers The Interdictor Generator on"
+	setTextLineTrigger 	ig		:scanit_cit_cap 	"Shipboard Computers The Interdictor Generator on"
 	setTextLineTrigger 	power 	:scanit_cit_cap 	"is powering up weapons systems!"
+	settextlinetrigger  wave    :scanit_cit_cap    	" launches a wave of fighters at  "
+	settextlinetrigger  planet  :scanit_cit_cap		" launches a Genesis Torpedo into the sector!"
+	settextlinetrigger  atomic  :scanit_cit_cap    	" appears from the planetary rubble."
 	setTextLineTrigger 	exits 	:scanit_cit_cap 	"exits the game."
 	setTextLineTrigger 	enters 	:scanit_cit_cap 	"enters the game."
-	setTextTrigger 		pause 	:pausing 		"Planet command (?="
-	setTextTrigger 		pause2 	:pausing 		"Computer command ["
-	setTextTrigger 		pause3 	:pausing 		"Corporate command ["
+	setDelayTrigger		delay	:scanit_cit_cap		30000
+	setTextTrigger 		pause 	:pausing 			"Planet command (?="
+	setTextTrigger 		pause2 	:pausing 			"Computer command ["
+	setTextTrigger 		pause3 	:pausing 			"Corporate command ["
 	pause
 
 
