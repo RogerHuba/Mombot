@@ -577,7 +577,7 @@ return
 		setVar $BOT~command "help"
 	end
 	setvar $update_list " refresh limps figs armids "
-	getwordpos $deploy_list $pos " "&$bot~command&" "
+	getwordpos $update_list $pos " "&$bot~command&" "
 	if ($pos > 0)
 		if ($bot~command <> "refresh")
 			setvar $bot~parms[8] $bot~command
@@ -782,14 +782,18 @@ return
 
 :load_the_module
 	gosub :MAIN~module_vars
-	if ($currentCategory = "Modes") 
+	getWordPos " "&$BOT~user_command_line&" " $helpCheck " help "
+	getWordPos " "&$BOT~user_command_line&" " $helpCheck2 " ? "
+	if (($currentCategory = "Modes") and (($helpCheck <= 0) and ($helpCheck2 <= 0)))
 		stop $BOT~LAST_LOADED_MODULE
 		setVar $BOT~LAST_LOADED_MODULE "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
 		setVar $BOT~mode $formatted_command
 		savevar $bot~mode
 	end
 
-	stop "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
+	if (($helpCheck <= 0) and ($helpCheck2 <= 0))
+		stop "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
+	end
 	load "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"  
 return
 #============================ END COMMAND PROCESSING/EXTERNAL MODULE RUNNING =======================

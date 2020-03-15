@@ -5,7 +5,7 @@
 	loadVar $bot~LIMP_FILE
 	loadVar $bot~ARMID_FILE
 
-	setVar $BOT~help[1]  $BOT~tab&" update {figs} {limps} {armids} {all}"
+	setVar $BOT~help[1]  $BOT~tab&" update {figs} {limps} {armids} {cim}"
 	setVar $BOT~help[2]  $BOT~tab&"   "
 	setVar $BOT~help[3]  $BOT~tab&"     Checks deployment lists and sets sector"
 	setVar $BOT~help[4]  $BOT~tab&"     parameters.  Shows differences since last"
@@ -14,7 +14,17 @@
 	setVar $BOT~help[7]  $BOT~tab&"     {figs} - fighter refresh"
 	setVar $BOT~help[8]  $BOT~tab&"    {limps} - limpet refresh, including active"
 	setVar $BOT~help[9]  $BOT~tab&"   {armids} - armid refresh"
-	setVar $BOT~help[10] $BOT~tab&"      {all} - will refresh all at once"
+	setVar $BOT~help[10] $BOT~tab&"      {cim} - will refresh port and warp info"
+	setVar $BOT~help[11] $BOT~tab&"             "
+	setVar $BOT~help[3]  $BOT~tab&"    cim {upgrade level} {warps}   "
+	setVar $BOT~help[4]  $BOT~tab&"                             "
+	setVar $BOT~help[5]  $BOT~tab&"Options:"
+	setVar $BOT~help[6]  $BOT~tab&"    {upgrade level} - Amount on port to be considered "
+	setVar $BOT~help[7]  $BOT~tab&"                      upgraded"
+	setVar $BOT~help[8]  $BOT~tab&"                                            "
+	setVar $BOT~help[9]  $BOT~tab&"    {warps}         - Perform warp data instead of "
+	setVar $BOT~help[10] $BOT~tab&"                      port CIM"
+
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Update"
@@ -46,11 +56,11 @@
 		setvar $armid false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " all "
+	getwordpos " "&$bot~user_command_line&" " $pos " cim "
 	if ($pos > 0)
-		setvar $all true
+		setvar $cim true
 	else
-		setvar $all false
+		setvar $cim false
 	end
 
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
