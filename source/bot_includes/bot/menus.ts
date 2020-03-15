@@ -186,7 +186,11 @@
 		elseif ($chosen_option = "+")
 			 goto :chatMenu
 		elseif ($chosen_option = "N")
-			getInput $new_bot_name ANSI_13&"What is the 'in game' name of the bot? (one word, no spaces)"&ANSI_7
+
+			setvar $question ANSI_13&"What is the 'in game' name of the bot? (one word, no spaces)"&ANSI_7
+			gosub :getinput 
+			setvar $new_bot_name $response
+
 			stripText $new_bot_name "^"
 			stripText $new_bot_name " "
 			lowerCase $new_bot_name
@@ -199,7 +203,9 @@
 			saveVar $SWITCHBOARD~bot_name
 
 		elseif ($chosen_option = "P")
-			getInput $BOT~password "Please Enter your Game Password"
+			setvar $question "Please Enter your Game Password"
+			gosub :getinput 
+			setvar $bot~password $response
 		elseif ($chosen_option = "Z")
 			getInput $BOT~bot_password "Please Enter your Bot Password"
 		elseif ($chosen_option = "G")
@@ -218,7 +224,9 @@
 				end
 			end
 		elseif ($chosen_option = "3")
-			getInput $temp "How many fighters to drop on surround?"
+			setvar $question "How many fighters to drop on surround/gridding?"
+			gosub :getinput
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test)
 				if (($temp <= 50000) AND ($temp >= 0))
@@ -1613,7 +1621,11 @@ return
 
 
 
-
+:getinput 
+	setDeafClients false
+	getInput $response $question
+	setDeafClients false
+return
 
 #####========================================== END BOT INTERNAL MENUS SECTION ========================================#####
 
