@@ -1624,7 +1624,7 @@ return
 :getinput 
 	setDeafClients false
 	getInput $response $question
-	setDeafClients false
+	setDeafClients true
 return
 
 #####========================================== END BOT INTERNAL MENUS SECTION ========================================#####
