@@ -38,7 +38,7 @@
 			getWordPos $temp $pos "[0;32m w/"
 			getWordPos $temp $pos2 "[0;35m[[31mOwned by[35m]"
 			getWordPos $temp $pos3 #27&"[0m      "&#27&"[32m     in "&#27
-			echo "*["&$temp&"]"&$pos3&"*"
+			#echo "*["&$temp&"]"&$pos3&"*"
 			if (($pos > 0) AND ($pos2 <= 0))
 				getWordPos $temp $pos "[[1;36m"
 				if ($pos > 0)
@@ -60,7 +60,7 @@
 				add $realTraderCount 1
 			end
 			#for defender recognition once ansi ships are in array in bot
-			if (($PLAYER~targetingShip <> 0) AND ($pos3 > 0) AND ($tempCorp <> $player~CORP) AND ($player~override <> TRUE))
+			if (($pos3 > 0) AND ($tempCorp <> $player~CORP) AND ($player~override <> TRUE))
 				getText $temp $shipname "(" ")"
 				#getText $shipname $shipname "m"&#27 #27&"["
 				if ($shipname = "")
@@ -104,7 +104,7 @@
 				while (($isFound = FALSE) AND ($s < $ship~shipCounter))
 					striptext $ship~shipList[$s] "["
 					getwordpos $shipname $pos $ship~shipList[$s]
-					send "'"&$shipname&"]["&$ship~shipList[$s]&"*"
+					#send "'"&$shipname&"]["&$ship~shipList[$s]&"*"
 					if ($pos > 0)
 						#echo "*["&$shipname&"*][*"&$ship~shipList[$s]&"]*"
 						setVar $isFound TRUE
@@ -115,7 +115,7 @@
 				setVar $player~traders[($realTraderCount)][3] $shipname
 				if ($isDefender = TRUE)
 					setVar $player~traders[($realTraderCount)][1] 100000
-					echo "*Adding defender ship:"&$shipname&"*"
+					#echo "*Adding defender ship:"&$shipname&"*"
 					add $defenderShips 1
 				end
 				pause
