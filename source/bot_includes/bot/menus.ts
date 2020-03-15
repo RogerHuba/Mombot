@@ -153,7 +153,7 @@
 		setVar $qss[31] "Not Defined"
 	end
 	setVar $qss_total 31
-	gosub :menuSpacing
+	#gosub :menuSpacing
 	Echo #27 & "[2J"
 	Echo "**"
 	echo ANSI_11&"         General Info                     Gridding/Attack Options*"
