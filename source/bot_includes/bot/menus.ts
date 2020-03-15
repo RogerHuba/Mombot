@@ -658,7 +658,9 @@ return
 					add $i 1
 				end
 			else
+				setDeafClients false
 				echo ANSI_4 "*Hot key already bound to another function.**" ANSI_7
+				setDeafClients true
 				setDelayTrigger warningdelay :preferencesMenuPage3 1000
 				pause
 			end
@@ -832,50 +834,64 @@ return
 			end
 			goto :NextPlanetInfoPage
 		elseif ($pos > 0)
-			getInput $temp "What are the min fuel colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
+			setvar $question "What are the min fuel colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test = FALSE)
 				goto :PreferencesMenuPagePlanet
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][1] $temp
 
-			getInput $temp "What are the max fuel colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
+			setvar $question "What are the max fuel colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test = FALSE)
 				goto :PreferencesMenuPagePlanet
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][2] $temp
 
-			getInput $temp "What are the min organics colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
+			setvar $question "What are the min organics colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test = FALSE)
 				goto :PreferencesMenuPagePlanet
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][3] $temp
 
-			getInput $temp "What are the max organics colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
+			setvar $question "What are the max organics colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test = FALSE)
 				goto :PreferencesMenuPagePlanet
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][4] $temp
 
-			getInput $temp "What are the min equipment colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
+			setvar $question "What are the min equipment colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test = FALSE)
 				goto :PreferencesMenuPagePlanet
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][5] $temp
 
-			getInput $temp "What are the max equipment colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
+			setvar $question "What are the max equipment colos for "&$PLANET~planetList[($selection+$thisPage)]&"?"
+			gosub :getinput 
+			setvar $temp $response
 			isNumber $test $temp
 			if ($test = FALSE)
 				goto :PreferencesMenuPagePlanet
 			end
 			setVar $PLANET~planetList[($selection+$thisPage)][6] $temp
 
+			setDeafClients false
 			echo "Is this planet a keeper? (y/n)*"
 			getConsoleInput $keeperselection SINGLEKEY
+			setDeafClients true
 			upperCase $keeperselection
 			if ($keeperselection = "Y")
 				setVar $PLANET~planetList[($selection+$thisPage)][7] TRUE
