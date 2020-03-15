@@ -165,6 +165,12 @@
 			gosub :player~quikstats
 			if ($player~current_prompt = "Command")
 				send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+				gosub :player~quikstats
+				if ($player~fighters <= 0)
+					setvar $switchboard~message "Fighters are gone - halting.*"
+					gosub :switchboard~switchboard
+					halt
+				end
 			end
 			goto :scanit_again
 		end	
