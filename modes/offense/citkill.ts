@@ -1,20 +1,21 @@
 	logging off
 	gosub :BOT~loadVars
 
-	setVar $BOT~help[1]  $BOT~tab&"- citkill [on/off] {"&#34&"player name"&#34&"|corp#} {sg} {dt} {empty} {smart} {override}"
-	setVar $BOT~help[2]  $BOT~tab&"- Citadel Killer destroys enemy ships from planet citadel."
-	setVar $BOT~help[3]  $BOT~tab&"  "
-	setVar $BOT~help[4]  $BOT~tab&"- {"&#34&"player name"&#34&"}   = Player to target, name must be"
-	setVar $BOT~help[5]  $BOT~tab&"                                  surrounded by double quotes"
-	setVar $BOT~help[6]  $BOT~tab&"- {corp#}           = Corporation number to target"
-	setVar $BOT~help[7]  $BOT~tab&"- {sg}              = Shotgun mode, fires waves at"
-	setVar $BOT~help[8]  $BOT~tab&"                      first three possible targets"
-	setVar $BOT~help[9]  $BOT~tab&"- {dt}              = Doubletap mode, fires two waves"
-	setVar $BOT~help[10] $BOT~tab&"                      before refurbing"
-	setVar $BOT~help[11] $BOT~tab&"- {empty}           = Will capture empty ships in sector"
-	setVar $BOT~help[12] $BOT~tab&"- {smart}           = Notices changes in ship type/target"
-	setVar $BOT~help[13] $BOT~tab&"- {override}        = Overrides safety on attacking defender bonus ships"
-	setVar $BOT~help[14] $BOT~tab&"- {photon}          = Will fire photon to adjacent fig hits"
+	setVar $BOT~help[1]  $BOT~tab&"citkill {"&#34&"player name"&#34&"|corp#} {sg} {dt}"
+	setVar $BOT~help[2]  $BOT~tab&"        {empty} {smart} {override}"
+	setVar $BOT~help[3]  $BOT~tab&"Citadel Killer destroys enemy ships from planet citadel."
+	setVar $BOT~help[4]  $BOT~tab&"  "
+	setVar $BOT~help[5]  $BOT~tab&"{"&#34&"player name"&#34&"}   - Player to target, name must be"
+	setVar $BOT~help[6]  $BOT~tab&"                    surrounded by double quotes"
+	setVar $BOT~help[7]  $BOT~tab&"{corp#}           - Corporation number to target"
+	setVar $BOT~help[8]  $BOT~tab&"{sg}              - Shotgun mode, fires waves at"
+	setVar $BOT~help[9]  $BOT~tab&"                    first three possible targets"
+	setVar $BOT~help[10] $BOT~tab&"{dt}              - Doubletap mode, fires two waves"
+	setVar $BOT~help[11] $BOT~tab&"                    before refurbing"
+	setVar $BOT~help[12] $BOT~tab&"{empty}           - Will capture empty ships in sector"
+	setVar $BOT~help[13] $BOT~tab&"{smart}           - Notices changes in ship type/target"
+	setVar $BOT~help[14] $BOT~tab&"{override}        - Overrides safety on attacking defender bonus ships"
+	setVar $BOT~help[15] $BOT~tab&"{photon}          - Will fire photon to adjacent fig hits"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Citadel Killer"
@@ -29,16 +30,6 @@
 	setVar $player~targetingPerson FALSE
 	setVar $player~targetingCorp FALSE
 	setVar $player~target ""
-	if ($bot~parm1 = "off")
-        setvar $switchboard~message "Shutting down citkill*"
-        gosub :switchboard~switchboard
-		halt
-	end
-	if ($bot~parm1 <> "on")
-        setvar $switchboard~message "Please use - citkill [on/off]*"
-        gosub :switchboard~switchboard
-		halt
-	else
 		setvar $bot~mode "Citkill"
 		saveVar $bot~mode
 		
@@ -49,14 +40,14 @@
 			savevar $bot~mode
 			halt
 		end
-		isNumber $test $bot~parm2
+		isNumber $test $bot~parm1
 		if ($test)
-			if ($bot~parm2 > 0)
+			if ($bot~parm1 > 0)
 				setVar $player~targetingCorp TRUE
-				setVar $player~target $bot~parm2
+				setVar $player~target $bot~parm1
 			end
 		else
-			getWordPos $bot~parm2 $pos #34
+			getWordPos $bot~user_command_line $pos #34
 			if ($pos > 0)	
 				setVar $bot~user_command_line $bot~user_command_line&" "
 				getText $bot~user_command_line $target " "&#34 #34&" "
@@ -109,8 +100,7 @@
 			gosub :ship~loadShipInfo
 		end 
 
-			:start_cit_kill
-		end		
+	:start_cit_kill
 
 	gosub :player~quikstats
 	if ($player~CURRENT_PROMPT <> "Citadel")
@@ -125,14 +115,16 @@
 	send "q m * * * "
 	gosub :player~quikstats
 	gosub :planet~getPlanetInfo
+	format $planet~planet_fighters $formatted_fighters NUMBER
+	
 	if ($player~targetingPerson)
-		setvar $switchboard~message "Citadel Killer Targeting "&$target&" :: Running on Planet "&$planet~planet&" :: "&$planet~planet_FIGHTERS&" Fighters available on surface.*"
+		setvar $switchboard~message "Citadel Killer Targeting "&$target&" :: Running on Planet "&$planet~planet&" :: "&$formatted_fighters&" Fighters available on surface.*"
 		gosub :switchboard~switchboard
 	elseif ($player~targetingCorp)
-		setvar $switchboard~message "Citadel Killer Targeting Corp "&$target&" :: Running on Planet "&$planet~planet&" :: "&$planet~planet_FIGHTERS&" Fighters available on surface.*"
+		setvar $switchboard~message "Citadel Killer Targeting Corp "&$target&" :: Running on Planet "&$planet~planet&" :: "&$formatted_fighters&" Fighters available on surface.*"
 		gosub :switchboard~switchboard
 	else
-		setvar $switchboard~message "Citadel Killer :: Running on Planet "&$planet~planet&" :: "&$planet~planet_FIGHTERS&" Fighters available on surface.*"
+		setvar $switchboard~message "Citadel Killer :: Running on Planet "&$planet~planet&" :: "&$formatted_fighters&" Fighters available on surface.*"
 		gosub :switchboard~switchboard
 	end
 	if ($player~shotgun)

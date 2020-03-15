@@ -6,11 +6,12 @@
 	setVar $BOT~help[4]  $BOT~tab&" {"&#34&"player name"&#34&"} - Player to target, name must be"
 	setVar $BOT~help[5]  $BOT~tab&"                   surrounded by double quotes"
 	setVar $BOT~help[6]  $BOT~tab&"         {corp#} - Corporation number to target"
-	setVar $BOT~help[7]  $BOT~tab&"         "
-	setVar $BOT~help[8]  $BOT~tab&"         Examples:"
-	setVar $BOT~help[9]  $BOT~tab&"              >citcap "
-	setVar $BOT~help[10] $BOT~tab&"              >citcap "&#34&"player name"&#34&" "
-	setVar $BOT~help[11] $BOT~tab&"              >citcap 3"
+	setVar $BOT~help[7]  $BOT~tab&"      {override} - override to cap defender ships"
+	setVar $BOT~help[8]  $BOT~tab&"         "
+	setVar $BOT~help[9]  $BOT~tab&"         Examples:"
+	setVar $BOT~help[10] $BOT~tab&"              >citcap "
+	setVar $BOT~help[11] $BOT~tab&"              >citcap "&#34&"player name"&#34&" "
+	setVar $BOT~help[12] $BOT~tab&"              >citcap 3"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Citadel Capper"
@@ -25,6 +26,7 @@
 	setVar $player~targetingCorp FALSE
 	setVar $player~cappingAliens TRUE
 	setVar $player~target ""
+	setvar $capEmptyShips true
 	
 	setvar $bot~mode "Citcap"
 	saveVar $bot~mode
@@ -37,9 +39,9 @@
 	end
 	isNumber $test $bot~parm1
 	if ($test)
-		if ($bot~parm2 > 0)
+		if ($bot~parm1 > 0)
 			setVar $targetingCorp TRUE
-			setVar $player~target $bot~parm2
+			setVar $player~target $bot~parm1
 		end
 	else
 		getWordPos $bot~user_command_line $pos #34
@@ -54,6 +56,13 @@
 				setVar $targetingPerson FALSE
 			end
 		end
+	end
+
+	getWordPos $bot~user_command_line $pos "override"
+	if ($pos > 0)
+		setVar $override TRUE
+	else
+		setVar $override FALSE
 	end
 
 	gosub :player~quikstats
@@ -140,16 +149,30 @@
 	goto :main
 
 :checkForCappingVictimsFromCitadel
-	gosub :sector~getSectorData
-	goSub :combat~fastCapture
-	gosub :player~quikstats
-	if ($player~current_prompt = "Command")
-		send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
-		if ($player~isFound = true)
-			goto :checkForCappingVictimsFromCitadel
+	:scanit_again
+		killAllTriggers
+		gosub :player~quikstats
+		gosub :sector~getSectorData
+		setvar $planet~planet_count SECTOR.PLANETCOUNT[$player~current_sector]
+		if (($planet~planet_count = 1) and ($overide = false))
+			setvar $one_planet true
+			setvar $player~override true
+		else
+			setvar $player~override $override
 		end
-	end
-	
+		setvar $player~startinglocation "Citadel"
+		if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)) or ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))))
+			gosub :combat~fastCapture
+			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			gosub :player~quikstats
+			goto :scanit_again
+		end	
+		echo ansi_12 "*NO Targets*"
+		if ($sector~defenderShips > 0)
+			setvar $switchboard~message "Enemy defender ship in sector!  Not attacking.  Override if you want to attempt to kill them.*"
+			gosub :switchboard~switchboard
+		end
+
 return
 
 
