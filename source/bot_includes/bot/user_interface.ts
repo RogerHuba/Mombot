@@ -576,7 +576,7 @@ return
 	if ($BOT~command = "?")
 		setVar $BOT~command "help"
 	end
-	setvar $update_list " limps figs armids "
+	setvar $update_list " limps figs armids cim "
 	getwordpos $update_list $pos " "&$bot~command&" "
 	if ($pos > 0)
 		setvar $bot~parms[8] $bot~command

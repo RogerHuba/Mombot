@@ -16,14 +16,23 @@
 	setVar $BOT~help[9]  $BOT~tab&"   {armids} - armid refresh"
 	setVar $BOT~help[10] $BOT~tab&"      {cim} - will refresh port and warp info"
 	setVar $BOT~help[11] $BOT~tab&"             "
-	setVar $BOT~help[3]  $BOT~tab&"    cim {upgrade level} {warps}   "
-	setVar $BOT~help[4]  $BOT~tab&"                             "
-	setVar $BOT~help[5]  $BOT~tab&"Options:"
-	setVar $BOT~help[6]  $BOT~tab&"    {upgrade level} - Amount on port to be considered "
-	setVar $BOT~help[7]  $BOT~tab&"                      upgraded"
-	setVar $BOT~help[8]  $BOT~tab&"                                            "
-	setVar $BOT~help[9]  $BOT~tab&"    {warps}         - Perform warp data instead of "
-	setVar $BOT~help[10] $BOT~tab&"                      port CIM"
+	setVar $BOT~help[12] $BOT~tab&"    update {cim} {upgrade level} {warps}   "
+	setVar $BOT~help[13] $BOT~tab&"                             "
+	setVar $BOT~help[14] $BOT~tab&"     Options:"
+	setVar $BOT~help[15] $BOT~tab&"           {upgrade level} - Amount on port to  "
+	setVar $BOT~help[16] $BOT~tab&"                             be considered upgraded"
+	setVar $BOT~help[17] $BOT~tab&"                             (default 10,000)"
+	setVar $BOT~help[18] $BOT~tab&"                                            "
+	setVar $BOT~help[19] $BOT~tab&"                  {warps}  - Perform warp data  "
+	setVar $BOT~help[20] $BOT~tab&"                             instead of port CIM"
+	setVar $BOT~help[21] $BOT~tab&"                             "
+	setVar $BOT~help[22] $BOT~tab&"     Examples:            "
+	setVar $BOT~help[23] $BOT~tab&"            >update figs limps armids      "
+	setVar $BOT~help[24] $BOT~tab&"            >update                 "
+	setVar $BOT~help[25] $BOT~tab&"            >update cim warps     "
+	setVar $BOT~help[26] $BOT~tab&"            >figs             "
+	setVar $BOT~help[27] $BOT~tab&"            >limps            "
+	setVar $BOT~help[28] $BOT~tab&"            >cim 10000       "
 
 	gosub :bot~helpfile
 
@@ -84,37 +93,42 @@
 		halt
 	end
 
-	gosub :PLAYER~turnOffAnsi
 	
-	if ($all or $fighter)
-		gosub :fighters~update
-	end
-	if ($all or $armid)
-		gosub :armids~update
-	end
-	if ($all or $limpet)
-		gosub :limpets~update
-	end
-	gosub :PLAYER~turnOnAnsi
-	if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
-		gosub :PLANET~landingsub
+	if ($cim)
+		gosub :cim~update
+	else
+		gosub :PLAYER~turnOffAnsi
+		if ($all or $fighter)
+			gosub :fighters~update
+		end
+		if ($all or $armid)
+			gosub :armids~update
+		end
+		if ($all or $limpet)
+			gosub :limpets~update
+		end
+		gosub :PLAYER~turnOnAnsi
+		if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
+			gosub :PLANET~landingsub
+		end
+
+		setvar $switchboard~message ""
+		if ($all or $fighter)
+			gosub :fighters~report
+		end
+		if ($all or $armid)
+			gosub :armids~report
+		end
+		if ($all or $limpet)
+			gosub :limpets~report
+		end
+		if ($SWITCHBOARD~self_command = FALSE)
+			setVar $SWITCHBOARD~self_command 2
+		end
+
+		gosub :SWITCHBOARD~switchboard
 	end
 
-	setvar $switchboard~message ""
-	if ($all or $fighter)
-		gosub :fighters~report
-	end
-	if ($all or $armid)
-		gosub :armids~report
-	end
-	if ($all or $limpet)
-		gosub :limpets~report
-	end
-	if ($SWITCHBOARD~self_command = FALSE)
-		setVar $SWITCHBOARD~self_command 2
-	end
-
-	gosub :SWITCHBOARD~switchboard
 
 
 halt
@@ -134,6 +148,7 @@ include "source\bot_includes\planet\landingsub\planet"
 include "source\module_includes\update\limpets"
 include "source\module_includes\update\fighters"
 include "source\module_includes\update\armids"
+include "source\module_includes\update\cim"
 include "source\bot_includes\player\formatnumberforspaces\player"
 include "source\bot_includes\player\formatpercentagesforspaces\player"
 
