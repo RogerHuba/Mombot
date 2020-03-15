@@ -1,11 +1,16 @@
 	gosub :BOT~loadVars
 
-	setVar $BOT~help[1]  $BOT~tab&"- {"&#34&"player name"&#34&" | corp#}"
-	setVar $BOT~help[2]  $BOT~tab&"- Citadel Capper captures enemy ships from planet citadel"
+	setVar $BOT~help[1]  $BOT~tab&" citcap {"&#34&"player name"&#34&" | corp#}"
+	setVar $BOT~help[2]  $BOT~tab&" Citadel Capper captures enemy ships from planet citadel"
 	setVar $BOT~help[3]  $BOT~tab&"  "
-	setVar $BOT~help[4]  $BOT~tab&"- {"&#34&"player name"&#34&"} - Player to target, name must be"
-	setVar $BOT~help[5]  $BOT~tab&"                                surrounded by double quotes"
-	setVar $BOT~help[6]  $BOT~tab&"-         {corp#} - Corporation number to target"
+	setVar $BOT~help[4]  $BOT~tab&" {"&#34&"player name"&#34&"} - Player to target, name must be"
+	setVar $BOT~help[5]  $BOT~tab&"                   surrounded by double quotes"
+	setVar $BOT~help[6]  $BOT~tab&"         {corp#} - Corporation number to target"
+	setVar $BOT~help[7]  $BOT~tab&"         "
+	setVar $BOT~help[8]  $BOT~tab&"     Examples:"
+	setVar $BOT~help[9]  $BOT~tab&"         >citcap "
+	setVar $BOT~help[10] $BOT~tab&"         >citcap "&#34&"player name"&#34&" "
+	setVar $BOT~help[11] $BOT~tab&"         >citcap 3"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Citadel Capper"
