@@ -180,14 +180,12 @@
 	echo ANSI_12&"           "&#27&"[35m["&#27&"[32m<"&#27&"[35m]"&ANSI_15&"Trader List                    Game Stats"&#27&"[35m["&#27&"[32m>"&#27&"[35m]*"&ANSI_7&"**"
 	getConsoleInput $chosen_option SINGLEKEY
 	upperCase $chosen_option
-	gosub :BOT~killthetriggers
 	:process_command
 		if ($chosen_option = "?")
 			 goto :refreshPreferencesMenu
 		elseif ($chosen_option = "+")
 			 goto :chatMenu
 		elseif ($chosen_option = "N")
-				gosub :BOT~killthetriggers
 			getInput $new_bot_name ANSI_13&"What is the 'in game' name of the bot? (one word, no spaces)"&ANSI_7
 			stripText $new_bot_name "^"
 			stripText $new_bot_name " "
@@ -201,16 +199,12 @@
 			saveVar $SWITCHBOARD~bot_name
 
 		elseif ($chosen_option = "P")
-			gosub :BOT~killthetriggers
 			getInput $BOT~password "Please Enter your Game Password"
 		elseif ($chosen_option = "Z")
-			gosub :BOT~killthetriggers
 			getInput $BOT~bot_password "Please Enter your Bot Password"
 		elseif ($chosen_option = "G")
-			gosub :BOT~killthetriggers
 			getInput $BOT~letter "Please Enter your Game Letter"
 		elseif ($chosen_option = "C")
-			gosub :BOT~killthetriggers
 			getInput $BOT~username "Please Enter your Login Name"
 		elseif ($chosen_option = "1")
 			if ($PLAYER~unlimitedGame = FALSE)
@@ -224,7 +218,6 @@
 				end
 			end
 		elseif ($chosen_option = "3")
-			gosub :BOT~killthetriggers
 			getInput $temp "How many fighters to drop on surround?"
 			isNumber $test $temp
 			if ($test)
@@ -233,7 +226,6 @@
 				end
 			end
 		elseif ($chosen_option = "4")
-			gosub :BOT~killthetriggers
 			getInput $temp "How many limpets to drop on surround?"
 			isNumber $test $temp
 			if ($test)
@@ -242,7 +234,6 @@
 				end
 			end
 		elseif ($chosen_option = "5")
-			gosub :BOT~killthetriggers
 			getInput $temp "How many armid mines to drop on surround?"
 			isNumber $test $temp
 			if ($test)
@@ -316,7 +307,6 @@
 				setVar $PLAYER~surround_before_hkill TRUE
 			end
 		elseif ($chosen_option = "S")
-			gosub :BOT~killthetriggers
 			getInput $temp "What sector is the Stardock? (0 to set to twx variable)"
 			isNumber $test $temp
 			if ($test)
@@ -329,26 +319,22 @@
 				end
 			end
 		elseif ($chosen_option = "J")
-			gosub :BOT~killthetriggers
 			getInput $temp "Please enter name of traders, seperated by commas.  Can also use [2],[1] for Corporations."
 			setVar $BOT~alarm_list $temp
 			saveVar $BOT~alarm_list
 		elseif ($chosen_option = "X")
-			gosub :BOT~killthetriggers
 			getInput $temp "What ship number is your safe ship?"
 			isNumber $test $temp
 			if ($test)
 				setVar $BOT~safe_ship $temp
 			end
 		elseif ($chosen_option = "L")
-			gosub :BOT~killthetriggers
 			getInput $temp "What planet is your safe planet?"
 			isNumber $test $temp
 			if ($test)
 				setVar $BOT~safe_planet $temp
 			end
 		elseif ($chosen_option = "E")
-			gosub :BOT~killthetriggers
 			setvar $temp 5760
 			getInput $temp "How many minutes afk do you want the echo banner to show each time?"
 			isNumber $test $temp
@@ -360,7 +346,6 @@
 				end
 			end
 		elseif ($chosen_option = "R")
-			gosub :BOT~killthetriggers
 			getInput $temp "What sector is the Rylos port? (0 to set to twx variable)"
 			isNumber $test $temp
 			if ($test)
@@ -372,7 +357,6 @@
 				savevar $MAP~rylos
 			end
 		elseif ($chosen_option = "A")
-			gosub :BOT~killthetriggers
 			getInput $temp "What sector is the Alpha Centauri port? (0 to set to twx variable)"
 			isNumber $test $temp
 			if ($test)
@@ -384,7 +368,6 @@
 				savevar $MAP~alpha_centauri 
 			end
 		elseif ($chosen_option = "B")
-			gosub :BOT~killthetriggers
 			getInput $temp "What sector is the Backdoor to Stardock?"
 			isNumber $test $temp
 			if ($test)
@@ -394,7 +377,6 @@
 				savevar $MAP~backdoor 
 			end
 		elseif ($chosen_option = "H")
-			gosub :BOT~killthetriggers
 			getInput $temp "What sector is the Home Sector port?"
 			isNumber $test $temp
 			if ($test)
@@ -416,7 +398,7 @@
 				setVar $PLAYER~surroundOverwrite TRUE
 				setVar $PLAYER~surroundPassive   FALSE
 				setVar $PLAYER~surroundNormal    FALSE
-						end
+			end
 		elseif ($chosen_option = ">")
 			goto :preferencesMenuPage2
 		elseif ($chosen_option = "<")
@@ -424,21 +406,18 @@
 		else
 			gosub :donePrefer
 		end
-		gosub :preferenceStats
 		goto :refreshPreferencesMenu
 :donePrefer
 	setDeafClients false
 	setVar $bot~botIsDeaf false
 	saveVar $bot~botIsDeaf
+	gosub :BOT~save_the_variables
 
 	echo #27 "[30D                        " #27 "[30D"
 	echo CURRENTANSILINE
 	setVar $BOT~botIsDeaf FALSE
 	saveVar $BOT~botIsDeaf
 	goto :BOT~wait_for_command
-return
-:preferenceStats
-	gosub :BOT~save_the_variables
 return
 
 :preferencesMenuPage2
