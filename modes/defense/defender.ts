@@ -25,7 +25,7 @@
 	setVar $END_FIG_HIT_OWNER "'s"
 
 
-	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f} {l} {a} {auto} {holo} {extern:11pm}  "
+	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f} {l} {a} {auto} {holo} {mines} {extern:11pm}  "
 	setVar $BOT~help[2]  $BOT~tab&"             "
 	setVar $BOT~help[3]  $BOT~tab&"        {f} - Photon fighter hits "
 	setVar $BOT~help[4]  $BOT~tab&"        {l} - Photon limpet hits "
@@ -42,11 +42,12 @@
 	setVar $BOT~help[15] $BOT~tab&" {noescape} - will not retreat from attack sector"
 	setVar $BOT~help[16] $BOT~tab&"     {auto} - Will reset cannon damages automatically"
 	setVar $BOT~help[17] $BOT~tab&"  {capture} - capture instead of kill "
-	setVar $BOT~help[18] $BOT~tab&"           "
-	setVar $BOT~help[19] $BOT~tab&"        Examples: "
-	setVar $BOT~help[20] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[21] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[22] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[18] $BOT~tab&"    {mines} - auto deploy mines as you go "
+	setVar $BOT~help[19] $BOT~tab&"           "
+	setVar $BOT~help[20] $BOT~tab&"        Examples: "
+	setVar $BOT~help[21] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[22] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[23] $BOT~tab&"             >defender f density adjacent secure"
 
 	gosub :bot~helpfile
 
@@ -179,6 +180,13 @@
 		setvar $killing~capture false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " mines "
+	if ($pos > 0)
+		setvar $deploymines true
+	else
+		setvar $deploymines false
+	end
+
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
 		setvar $fighter true
 		setvar $armid true
@@ -277,6 +285,11 @@
 		setVar $message $message&"*Capture, not kill: Yes"
 	else
 		setVar $message $message&"*Capture, not kill: No"
+	end
+	if ($deploymines)
+		setVar $message $message&"*     Deploy mines: Yes"
+	else
+		setVar $message $message&"*     Deploy mines: No"
 	end
 	setVar $message $message&"*      Home Sector: "&$map~home_sector
 	format $planet~planet_Fighters $formatted_fighters NUMBER
@@ -404,14 +417,14 @@
 		setvar $photon~last_sector $photon~sector
 		setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
 		gosub :killing~scan_for_targets
-		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and ($player~limpets > 0))
+		if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($deploymines = true))
 			gosub :doMines
 		end
 		if ($noescape <> true)
 			gosub :navigate~navigate_away
 			gosub :player~quikstats
 			gosub :killing~scan_for_targets
-			if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and ($player~limpets > 0))
+			if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($deploymines = true))
 				gosub :doMines
 			end
 			if ($sector~realTraderCount = $sector~corpieCount)

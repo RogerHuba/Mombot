@@ -26,7 +26,23 @@
 			getsectorparameter $focus "LIMPSEC" $isLimped
 			getsectorparameter $focus "BUBBLE" $isBubble
 			getsectorparameter $focus "MSLSEC" $isMsl
-			if (((($isLimped = true) and ($securePwarp = true)) or ($securePwarp = false)) and ($isFigged = true) and ($isBubble <> true) and ($isMsl <> true) and ($focus <> $player~current_sector))
+
+			setVar $i 1
+			if ($islimped = true)
+				setvar $issecure true
+				while (SECTOR.WARPSIN[$focus][$i] > 0)
+					setVar $tempAdj SECTOR.WARPSIN[$sector][$i]
+					getSectorParameter $tempAdj "FIGSEC" $isFigged
+					if ($isFigged <> true)
+						setvar $issecure false
+					end
+					add $i 1
+				end
+			else
+				setvar $issecure false
+			end
+
+			if (((($issecure = true) and ($securePwarp = true)) or ($securePwarp = false)) and ($isFigged = true) and ($isBubble <> true) and ($isMsl <> true) and ($focus <> $player~current_sector))
 				setVar $nearfig $focus
 				goto :pwarp_away
 			end

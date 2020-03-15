@@ -22,10 +22,9 @@
 		end
 		add $i 1
 	end
-	if ($adjsec <= 0)
-		echo ANSI_12 "No Adjacent fig found*" ANSI_7
-		return
-	end
+	setvar $switchboard~message "No Adjacent fig found!*"
+	gosub :switchboard~switchboard
+	return
 
 :fire_photon
 	send "p" $adjsec "*  y  c  p  y  " $sector "**qp" $sector "*  y  "
