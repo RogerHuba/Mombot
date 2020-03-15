@@ -134,7 +134,8 @@
 		setvar $switchboard~message "Doubletap mode enabled.*"
 		gosub :switchboard~switchboard
 	end
-	send "c "
+	send "c  s* "
+
 	setvar $first true
 	goto :scanit_cit_kill
 
@@ -180,7 +181,6 @@
 :scanit_again
 	killAllTriggers
 	gosub :player~quikstats
-	gosub :sector~getSectorData
 	setvar $planet~planet_count SECTOR.PLANETCOUNT[$player~current_sector]
 	if (($planet~planet_count = 1) and ($overide = false))
 		setvar $one_planet true
@@ -188,8 +188,14 @@
 	else
 		setvar $player~override $override
 	end
+	gosub :sector~getSectorData
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
 		goSub :combat~fastCitadelAttack
+		if ($player~fighters <= 0)
+			setvar $switchboard~message "Fighters are gone - halting.*"
+			gosub :switchboard~switchboard
+			halt
+		end
 		goto :scanit_again
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
 		setvar $player~startinglocation "Citadel"

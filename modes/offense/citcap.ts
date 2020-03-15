@@ -104,7 +104,8 @@
 		setvar $switchboard~message "Citadel Capper :: Running on Planet "&$planet~planet&" :: "&$formatted_fighters&" Fighters available on surface.*"
 		gosub :switchboard~switchboard
 	end
-	send "c "
+	send "c  s* "
+
 	goto :scanit_cit_cap
 
 
