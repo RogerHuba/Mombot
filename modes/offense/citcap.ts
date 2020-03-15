@@ -152,7 +152,6 @@
 	:scanit_again
 		killAllTriggers
 		gosub :player~quikstats
-		gosub :sector~getSectorData
 		setvar $planet~planet_count SECTOR.PLANETCOUNT[$player~current_sector]
 		if (($planet~planet_count = 1) and ($overide = false))
 			setvar $one_planet true
@@ -160,6 +159,7 @@
 		else
 			setvar $player~override $override
 		end
+		gosub :sector~getSectorData
 		setvar $player~startinglocation "Citadel"
 		if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)) or ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))))
 			gosub :combat~fastCapture
