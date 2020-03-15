@@ -44,7 +44,7 @@
 			#echo "*"&$player~traders[$c]&"[]"&$player~traders[$c][1]&"[]"&$player~traders[$c][2]&"*"
 			if (($player~fedspace = true) AND ($player~traders[$c][2] = TRUE))
 				setVar $targetString $targetString&"* "
-			elseif ($player~traders[$c][1] = $player~CORP)
+			elseif (($player~traders[$c][1] = $player~CORP) OR ($player~traders[$c][1] = 100000))
 				setVar $targetString $targetString&"* "
 			elseif (($player~targetingCorp = TRUE) AND ($player~traders[$c][1] <> $target))
 				setVar $targetString $targetString&"* "
