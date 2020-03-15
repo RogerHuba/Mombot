@@ -118,7 +118,6 @@
 					#echo "*Adding defender ship:"&$shipname&"*"
 					add $defenderShips 1
 				end
-				pause
 				getwordpos $shipname $isTargetedShip $PLAYER~targetingShip
 				if ($isTargetedShip > 0)
 					setVar $player~traders[($realTraderCount)][3] TRUE
