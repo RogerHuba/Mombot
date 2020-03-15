@@ -103,6 +103,7 @@
 				while (($isFound = FALSE) AND ($s < $ship~shipCounter))
 					striptext $ship~shipList[$s] "["
 					getwordpos $shipname $pos $ship~shipList[$s]
+					send "'"&$shipname&"]["&$ship~shipList[$s]&"*"
 					if ($pos > 0)
 						#echo "*["&$shipname&"*][*"&$ship~shipList[$s]&"]*"
 						setVar $isFound TRUE
@@ -113,9 +114,10 @@
 				setVar $player~traders[($realTraderCount)][3] $shipname
 				if ($isDefender = TRUE)
 					setVar $player~traders[($realTraderCount)][1] 100000
-					#echo "*Adding defender ship:"&$shipname&"*"
+					echo "*Adding defender ship:"&$shipname&"*"
 					add $defenderShips 1
 				end
+				pause
 				getwordpos $shipname $isTargetedShip $PLAYER~targetingShip
 				if ($isTargetedShip > 0)
 					setVar $player~traders[($realTraderCount)][3] TRUE
