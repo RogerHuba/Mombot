@@ -669,13 +669,13 @@ return
 :preferencesMenuPage4
 	gosub :BOT~killthetriggers
 	setVar $i 1
-	setVar $shipsChanged FALSE
 	if ($SHIP~shipcounter > 10)
 		setVar $pagesExist TRUE
 	else
 		setVar $pagesExist FALSE
 	end
 	:NextShipPage
+		setVar $shipsChanged FALSE
 		setVar $thisPage $i
 		setVar $menuCount 0
 		Echo #27 & "[2J"
@@ -730,8 +730,6 @@ return
 			end
 			goto :NextShipPage
 		elseif ($pos > 0)
-			setDeafClients false
-	
 			if ($SHIP~shipList[($selection+$thisPage)][8])
 				setVar $SHIP~shipList[($selection+$thisPage)][8] FALSE
 			else
@@ -896,7 +894,7 @@ return
 
 :rewrite_cap_file
 	if ($shipsChanged)
-		setVar $gbonus_file $folder&"/dbonus-ships.cfg"
+		setVar $gbonus_file $bot~folder&"/dbonus-ships.cfg"
 		delete $gbonus_file
 		delete $SHIP~cap_file
 		setVar $j 1
