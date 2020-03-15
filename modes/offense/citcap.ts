@@ -1,11 +1,11 @@
 	gosub :BOT~loadVars
 
-	setVar $BOT~help[1]  $BOT~tab&"- [on/off] {"&#34&"player name"&#34&"|corp#}"
+	setVar $BOT~help[1]  $BOT~tab&"- {"&#34&"player name"&#34&" | corp#}"
 	setVar $BOT~help[2]  $BOT~tab&"- Citadel Capper captures enemy ships from planet citadel"
 	setVar $BOT~help[3]  $BOT~tab&"  "
-	setVar $BOT~help[4]  $BOT~tab&"- {"&#34&"player name"&#34&"}   = Player to target, name must be"
-	setVar $BOT~help[5]  $BOT~tab&"                                  surrounded by double quotes"
-	setVar $BOT~help[6]  $BOT~tab&"- {corp#}           = Corporation number to target"
+	setVar $BOT~help[4]  $BOT~tab&"- {"&#34&"player name"&#34&"} - Player to target, name must be"
+	setVar $BOT~help[5]  $BOT~tab&"                                surrounded by double quotes"
+	setVar $BOT~help[6]  $BOT~tab&"-         {corp#} - Corporation number to target"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Citadel Capper"
@@ -21,47 +21,43 @@
 	setVar $player~cappingAliens TRUE
 	setVar $player~target ""
 	
-	if ($bot~parm1 <> "on") AND ($bot~parm1 <> "off")
-        	send "'{" $bot~bot_name "} - Please use - citcap [on/off]*"
+	setvar $bot~mode "Citcap"
+	saveVar $bot~mode
+
+	if ($startingLocation <> "Citadel")
+		setvar $switchboard~message "Citadel Capper must be run from the Citadel Prompt*"
+		gosub :switchboard~switchboard
+		setVar $mode "General"
 		halt
-	elseif ($bot~parm1 = "on")
-		setvar $bot~mode "Citcap"
-		saveVar $bot~mode
-
-		if ($startingLocation <> "Citadel")
-			send "'{" $bot~bot_name "} - Citadel Capper must be run from the Citadel Prompt*"
-			setVar $mode "General"
-			halt
-		end
-		isNumber $test $bot~parm2
-		if ($test)
-			if ($bot~parm2 > 0)
-				setVar $targetingCorp TRUE
-				setVar $player~target $bot~parm2
-			end
-		else
-			getWordPos $bot~parm2 $pos #34
-			if ($pos > 0)
-				setvar $bot~user_command_line $bot~user_command_line&" "
-				getText $bot~user_command_line $player~target " "&#34 #34&" "
-				if ($player~target <> "")
-					setVar $targetingPerson TRUE
-					stripText $player~target #34
-					lowercase $player~target
-				else
-					setVar $targetingPerson FALSE
-				end
-			end
-		end
-
 	end
-	setvar $player~save true
+	isNumber $test $bot~parm1
+	if ($test)
+		if ($bot~parm2 > 0)
+			setVar $targetingCorp TRUE
+			setVar $player~target $bot~parm2
+		end
+	else
+		getWordPos $bot~user_command_line $pos #34
+		if ($pos > 0)
+			setvar $bot~user_command_line $bot~user_command_line&" "
+			getText $bot~user_command_line $player~target " "&#34 #34&" "
+			if ($player~target <> "")
+				setVar $targetingPerson TRUE
+				stripText $player~target #34
+				lowercase $player~target
+			else
+				setVar $targetingPerson FALSE
+			end
+		end
+	end
+
 	gosub :player~quikstats
-		setVar $player~startingLocation $player~current_prompt
+	setVar $player~startingLocation $player~current_prompt
 	gosub :combat~init 
 
 	if ($player~current_prompt <> "Citadel")
-		send "'{" $bot~bot_name "} - Must start at the citadel prompt*"
+		setvar $switchboard~message "Must start at the citadel prompt*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	loadvar $ship~CAP_FILE	
@@ -76,18 +72,22 @@
 
 
 :start_cit_cap
-	send "'{" $bot~bot_name "} - Citadel Capper :: Powering Up!*"
+	setvar $switchboard~message "Citadel Capper :: Powering Up!*"
+	gosub :switchboard~switchboard
 :stats_cit_cap
 	gosub :ship~getShipStats
 :warning_cit_kill
 	send "q m * * * "
 	gosub :planet~getPlanetInfo
 	if ($targetingPerson)
-		send "'{" $bot~bot_name "} - Citadel Capper Targeting "&$player~target&" :: Running on Planet " $planet~planet " :: " $planet~planet_FIGHTERS " Fighters available on surface.*"
+		setvar $switchboard~message "Citadel Capper Targeting "&$player~target&" :: Running on Planet "&$planet~planet&" :: "&$planet~planet_fighters&" Fighters available on surface.*"
+		gosub :switchboard~switchboard
 	elseif ($targetingCorp)
-		send "'{" $bot~bot_name "} - Citadel Capper Targeting Corp "&$player~target&" :: Running on Planet " $planet~planet " :: " $planet~planet_FIGHTERS " Fighters available on surface.*"
+		setvar $switchboard~message "Citadel Capper Targeting Corp "&$player~target&" :: Running on Planet&" $planet~planet&" :: "&$planet~planet_FIGHTERS&" Fighters available on surface.*"
+		gosub :switchboard~switchboard
 	else
-		send "'{" $bot~bot_name "} - Citadel Capper :: Running on Planet " $planet~planet " :: " $planet~planet_FIGHTERS " Fighters available on surface.*"
+		setvar $switchboard~message "Citadel Capper :: Running on Planet "&$planet~planet&" :: "&$planet~planet_fighters&" Fighters available on surface.*"
+		gosub :switchboard~switchboard
 	end
 	send "c "
 	goto :scanit_cit_cap
@@ -120,13 +120,6 @@
 	killAllTriggers
 	echo ANSI_6 "*[" ANSI_14 "Citadel Capture restarted" ANSI_6 "]*" ANSI_7
 	goto :main
-
-
-
-
-
-
-
 
 
 :scanit_cit_cap

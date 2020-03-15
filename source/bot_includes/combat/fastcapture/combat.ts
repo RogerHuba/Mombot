@@ -27,9 +27,6 @@
 				goto :checkingFigs
 			end
 		end
-		if ($player~startingLocation = "Citadel")
-			send "q q * "
-		end
 		setVar $targetString "a "
 	if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($player~onlyAliens <> TRUE) and ($player~empty_ships_only <> true))
 		if ($player~fedspace <> true)
@@ -111,6 +108,9 @@
 		gosub :bot~echo
 		goto :capstoppingPoint
 	else
+		if ($player~startingLocation = "Citadel")
+			send "q q * "
+		end
 		setVar $attackString ""
 		:cap_ship
 			#get own offensive odds
