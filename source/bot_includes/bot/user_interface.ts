@@ -791,9 +791,7 @@ return
 		savevar $bot~mode
 	end
 
-	if (($helpCheck <= 0) and ($helpCheck2 <= 0))
-		stop "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
-	end
+	stop "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
 	load "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"  
 return
 #============================ END COMMAND PROCESSING/EXTERNAL MODULE RUNNING =======================
