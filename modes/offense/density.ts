@@ -110,7 +110,7 @@
 	setvar $attack false
 	if ($pos > 0)
 		setvar $attack true
-		getText $bot~user_command_line&" " $attack_sector "escape:" " "
+		getText $bot~user_command_line&" " $attack_sector "attack:" " "
 		isNumber $test $attack_sector
 		if ($test <> true)
 			setVar $SWITCHBOARD~message "Attack sector should be a number.*"
