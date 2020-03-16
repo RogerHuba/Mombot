@@ -225,10 +225,12 @@ else
   setVar $i 1
   while ($i <= $WantedPlanets)
     if ($WantedPlanets[$i] = $Type)
-      goto :Bust_Wanted
-    else
-		setVar $SWITCHBOARD~message "Looking for "&$WantedPlanets[$i]&", but found "&$Type&" instead.*"
+		setVar $SWITCHBOARD~message "Made "&$WantedPlanets[$i]&" planet!.*"
 		gosub :SWITCHBOARD~switchboard
+		goto :Bust_Wanted
+    else
+		#setVar $SWITCHBOARD~message "Looking for "&$WantedPlanets[$i]&", but found "&$Type&" instead.*"
+		#gosub :SWITCHBOARD~switchboard
     end
     add $i 1
   end
