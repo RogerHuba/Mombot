@@ -292,7 +292,7 @@
 	if ($w > $i)
 		goto :alldone
 	elseif ($density[$w] <> $dens[$w])
-		setVar $diff ($density[$w] - $den[$w])
+		setVar $diff ($density[$w] - $dens[$w])
 		if ($diff >= $density_change)
 			gosub :do_action
 			goto :dtorp_end
