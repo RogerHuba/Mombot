@@ -249,9 +249,7 @@ return
 			send "n*zn"
 			send "l " & #8 & $PLANET~PLANET "*c"
 			setSectorParameter $warpto "FIGSEC" FALSE
-			setVar $temp " "&$warpto&" "
-			replaceText $database $temp " "
-			subtract $database_count 1
+			setvar $msg "no twarp lock"
 			return
 
 		:twarpIgd

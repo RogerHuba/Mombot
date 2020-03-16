@@ -442,7 +442,7 @@
 		if ($fighter)
 			setTextTrigger 3 :attackSectorFighter "Deployed Fighters "
 		end
-		setDelayTrigger wait :done_waiting_for_hits 500
+		setDelayTrigger wait :done_waiting_for_hits 300
 		pause
 
 		:done_waiting_for_hits
