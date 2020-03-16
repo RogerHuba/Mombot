@@ -245,7 +245,7 @@
 
 :check_dens
 	setVar $mm 0
-	setVar $i 0
+	setVar $i 1
 	send "sz*"
 	waiton "Relative Density Scan"
 
@@ -257,7 +257,6 @@
 	pause
 
 :getSec
-	add $i 1
 	getText CURRENTLINE $Adj[$i] "Sector" "==>"
 	stripText $adj[$i] "("
 	stripText $adj[$i] ")"
@@ -269,6 +268,9 @@
 		getText CURRENTLINE $Dens[$i] "==>" "Warps :"
 		stripText $dens[$i] ","
 		stripText $dens[$i] " "
+	end
+	if ($attack <> true)
+		add $i 1
 	end
 	setTextLineTrigger getSec :getSec "Sector"
 	pause
@@ -301,7 +303,7 @@
 	end
 
 :firechk
-	setVar $y 0
+	setVar $y 1
 	send "sz*"
 	waiton "Relative Density Scan"
 
@@ -316,7 +318,6 @@
 	pause
 
 :looksec
-	add $y 1
 	getText CURRENTLINE $Adjsec[$y] "Sector" "==>"
 	stripText $adjsec[$y] "("
 	stripText $adjsec[$y] ")"
@@ -325,6 +326,9 @@
 		getText CURRENTLINE $Density[$y] "==>" "Warps :"
 		stripText $density[$y] ","
 		stripText $density[$y] " "
+	end
+	if ($attack <> true)
+		add $y 1
 	end
 	setTextLineTrigger getSec :looksec "Sector"
 	pause
@@ -344,8 +348,7 @@
 
 :do_action
 	if (($photon = true) and (CURRENTPHOTONS > 0))
-		setvar $photon~sector $adj[$w]
-		gosub :photon~run
+		send " c  p  y  " $adj[$w] "**q"
 	end
 
 	# #if we pgrid we want to do a different kill action
@@ -494,7 +497,6 @@ include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
-include "source\bot_includes\external\photon"
 include "source\bot_includes\external\pel"
 include "source\bot_includes\external\holo"
 include "source\bot_includes\external\call"
