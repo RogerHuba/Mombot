@@ -345,7 +345,25 @@
 			
 
 		:announce 
-		setvar $switchboard~message $script_ver&" is online and ready to fire.*"
+		setvar $description ""
+		if ($photon~adjacentphoton)
+			setvar $description $description&"Photon "
+		end
+		if ($photon~density)
+			setvar $description $description&"Density "
+		end
+		if ($killing~holokill)
+			setvar $description $description&"Holokill "
+		end
+		if ($killing~slingshot)
+			setvar $description $description&"Slingshot "
+		end
+		trim $description
+		if ($description <> "")
+			setvar $description " ("&$description&")"
+		end
+		setvar $switchboard~message $script_ver&$description&" is online and ready to fire.*"
+
 		gosub :switchboard~switchboard
 		setDelayTrigger	   22 :announce	1200000
 		pause		
