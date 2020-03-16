@@ -2,13 +2,15 @@
 	gosub :combat~init 
 
 
-	setVar $BOT~help[1]   $BOT~tab&" density {kill} {escape:#} {photon} {pel} {call} {holo}"
+	setVar $BOT~help[1]   $BOT~tab&" density {kill} {escape:#} {photon} {pel} "
+	setVar $BOT~help[1]   $BOT~tab&"         {call} {holo} {attack:#}"
 	setVar $BOT~help[2]   $BOT~tab&"   - Density scans until it sees ship or planet and "
 	setVar $BOT~help[3]   $BOT~tab&"     then performs an action  "
 	setVar $BOT~help[4]   $BOT~tab&"             "
 	setVar $BOT~help[5]   $BOT~tab&"          {kill} - will kill/holokill "
 	setVar $BOT~help[6]   $BOT~tab&"        {escape} - will escape to home sector "
 	setVar $BOT~help[7]   $BOT~tab&"      {escape:#} - will escape to sector provided"
+	setVar $BOT~help[7]   $BOT~tab&"      {attack:#} - will only photon sector provided"
 	setVar $BOT~help[8]   $BOT~tab&"        {photon} - photon sector"
 	setVar $BOT~help[9]   $BOT~tab&"          {holo} - holoscan sector and broadcast"
 	setVar $BOT~help[10]  $BOT~tab&"         {pgrid} - pgrid in to sector"
@@ -104,6 +106,24 @@
 		end
 	end
 	
+	getWordPos " "&$bot~user_command_line&" " $pos " attack:"
+	setvar $attack false
+	if ($pos > 0)
+		setvar $attack true
+		getText $bot~user_command_line&" " $attack_sector "escape:" " "
+		isNumber $test $attack_sector
+		if ($test <> true)
+			setVar $SWITCHBOARD~message "Attack sector should be a number.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+		if ($attack_sector = 0)
+			setVar $SWITCHBOARD~message "Escape sector is not defined.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
+
 	getWordPos " "&$bot~user_command_line&" " $pos " photon "
 	setvar $photon false
 	if ($pos > 0)
@@ -241,13 +261,25 @@
 	stripText $adj[$i] "("
 	stripText $adj[$i] ")"
 	stripText $adj[$i] " "
-	getText CURRENTLINE $Dens[$i] "==>" "Warps :"
-	stripText $dens[$i] ","
-	stripText $dens[$i] " "
-	goto :dtorp_Start
+	setvar $attack_sector_found false
+	if ((($attack = true) and ($adj[$i] = $attack_sector)) or ($attack = false))
+		if (($attack = true) and ($adj[$i] = $attack_sector))
+			setvar $attack_sector_found true
+		end
+		getText CURRENTLINE $Dens[$i] "==>" "Warps :"
+		stripText $dens[$i] ","
+		stripText $dens[$i] " "
+	end
+	setTextLineTrigger getSec :getSec "Sector"
+	pause
 
 :allDone
 	killTrigger getSec
+	if (($attack = true) and ($attack_sector_found <> true))
+		setvar $switchboard~message "Attack sector is not adjacent.  Try again.*"
+		gosub :switchboard~switchboard
+		goto :dtorp_end
+	end
 	gosub :firechk
 
 :letslook
@@ -279,8 +311,9 @@
 	killtrigger dtop_dtorp
 	killtrigger getsec
 	killtrigger alldone
+	killtrigger donelook
 	setTextLineTrigger getSec :looksec "Sector"
-	setTextTrigger allDone :donelook "Command [TL="
+	setTextTrigger donelook :donelook "Command [TL="
 	pause
 
 :looksec
@@ -289,13 +322,13 @@
 	stripText $adjsec[$y] "("
 	stripText $adjsec[$y] ")"
 	stripText $adjsec[$y] " "
-	getText CURRENTLINE $Density[$y] "==>" "Warps :"
-	stripText $density[$y] ","
-	stripText $density[$y] " "
-	killtrigger dtop_dtorp
-	killtrigger manual_Stop
-	killtrigger alldone
-	goto :looky
+	if ((($attack = true) and ($adjsec[$y] = $attack_sector)) or ($attack = false))
+		getText CURRENTLINE $Density[$y] "==>" "Warps :"
+		stripText $density[$y] ","
+		stripText $density[$y] " "
+	end
+	setTextLineTrigger getSec :looksec "Sector"
+	pause
 
 :donelook
 	killtrigger getSec
