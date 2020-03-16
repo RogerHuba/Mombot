@@ -31,7 +31,7 @@
 			if ($islimped = true)
 				setvar $issecure true
 				while (SECTOR.WARPSIN[$focus][$i] > 0)
-					setVar $tempAdj SECTOR.WARPSIN[$sector][$i]
+					setVar $tempAdj SECTOR.WARPSIN[$focus][$i]
 					getSectorParameter $tempAdj "FIGSEC" $isFigged
 					if ($isFigged <> true)
 						setvar $issecure false
