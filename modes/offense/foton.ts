@@ -37,8 +37,10 @@
 	setVar $BOT~help[20] $BOT~tab&"      {holo}   - does holo command after firing"
 	setVar $BOT~help[21] $BOT~tab&"   {dockexp}   - Will pop planet to get to 1k"
 	setVar $BOT~help[22] $BOT~tab&"                 for dock photon"
-	setVar $BOT~help[23] $BOT~tab&"      "
-	setVar $BOT~help[24] $BOT~tab&"       Authors: Mind Dagger and The Bounty Hunter "
+	setVar $BOT~help[23] $BOT~tab&"      {self}   - Will pwarp out, photon your current "
+	setVar $BOT~help[24] $BOT~tab&"                 sector, and pwarp back in. "
+	setVar $BOT~help[25] $BOT~tab&"      "
+	setVar $BOT~help[26] $BOT~tab&"       Authors: Mind Dagger and The Bounty Hunter "
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Fast Foton"
@@ -87,6 +89,13 @@ else
 	setVar $dockexp 0
 end
 
+getWordPos " "&$bot~user_command_line&" " $pos " self "
+if ($pos > 0)
+	setVar $self 1
+else
+	setVar $self 0
+end
+
 # ============================== START FOTON CHECK SUB ==============================
 :foton_check
 	gosub :player~quikstats
@@ -94,20 +103,24 @@ end
 	isNumber $isnum $bot~parm1
 
 	if ($bot~parm2 = "d")
-                goto :start_dtorp
-        elseif ($bot~parm2 = "a")
-                goto :adjphoton
-        elseif ($bot~parm2 = "s")
-                goto :surround_foton
-		elseif ($bot~parm2 = "r")
-                goto :trap_foton
-        elseif ($bot~parm2 = "o")
-                goto :dockPhoton
-		elseif ($bot~parm2 = "t")
-				goto :photonTow
-        elseif (($bot~parm2 = "p") or ($bot~parm2 = ""))
-                goto :foton
-        elseif ($isnum = 1)
+	        goto :start_dtorp
+	elseif ($bot~parm2 = "a")
+	        goto :adjphoton
+	elseif ($bot~parm2 = "s")
+	        goto :surround_foton
+	elseif ($bot~parm2 = "r")
+	        goto :trap_foton
+	elseif ($bot~parm2 = "o")
+	        goto :dockPhoton
+	elseif ($bot~parm2 = "t")
+			goto :photonTow
+	elseif (($bot~parm2 = "p") or ($bot~parm2 = ""))
+	        goto :foton
+	elseif (($isnum = 1) or ($self = true))
+		if ($self)
+			setvar $bot~parm1 $player~current_sector
+			setvar $auto_return true
+		end
 		if (($bot~parm1 > 10) and ($bot~parm1 <= SECTORS) and ($bot~parm1 <> STARDOCK))
 			gosub :player~quikstats
 			goto :photonSector

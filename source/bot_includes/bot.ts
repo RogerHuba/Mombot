@@ -21,6 +21,7 @@ return
 return
 :unfreezebot
 	echo "*Bot timed out, unfreezing..*"
+	setDeafClients false
 	send "'{" $SWITCHBOARD~bot_name "} - Bot frozen for over 100 seconds, resetting...*"
 	goto :wait_for_command
 #==================================== END KILL TRIGGERS ======================================

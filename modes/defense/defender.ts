@@ -626,49 +626,50 @@ return
 
 :runaway
 
-	if (($sector~realTraderCount = $sector~corpieCount) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1))
-		#############################################
-		# do nothing if there is no enemy in sector #
-		#############################################
+	if ($player~current_sector <> $map~home_sector)	
+		if (($sector~realTraderCount = $sector~corpieCount) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1))
+			#############################################
+			# do nothing if there is no enemy in sector #
+			#############################################
 
-		if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
-			gosub :doMines
-		end
-	else
-		setVar $containsShieldedPlanet FALSE
-		setVar $shieldedPlanetCount 0
-		setVar $i 1
-		while ($i <= SECTOR.PLANETCOUNT[$player~current_sector])
-			getWord SECTOR.PLANETS[$player~current_sector][$i] $test 1
-			if ($test = "<<<<")
-				setVar $containsShieldedPlanet TRUE
-				add $shieldedPlanetCount 1
+			if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
+				gosub :doMines
 			end
-			add $i 1
-		end
-		if (SECTOR.PLANETCOUNT[$player~current_sector] < 1)
-			#################################################
-			# call saveme if there are no planets in sector #
-			#################################################
-			gosub :call~run
-		end
-		################################################
-		#  TODO                                        #
-		#for logic later to avoid only shielded planets#
-	    ################################################
+		else
+			setVar $containsShieldedPlanet FALSE
+			setVar $shieldedPlanetCount 0
+			setVar $i 1
+			while ($i <= SECTOR.PLANETCOUNT[$player~current_sector])
+				getWord SECTOR.PLANETS[$player~current_sector][$i] $test 1
+				if ($test = "<<<<")
+					setVar $containsShieldedPlanet TRUE
+					add $shieldedPlanetCount 1
+				end
+				add $i 1
+			end
+			if (SECTOR.PLANETCOUNT[$player~current_sector] < 1)
+				#################################################
+				# call saveme if there are no planets in sector #
+				#################################################
+				gosub :call~run
+			end
+			################################################
+			#  TODO                                        #
+			#for logic later to avoid only shielded planets#
+		    ################################################
 
-		:runaway_again
-		gosub :navigate~navigate_away
-		####################################################################
-		# after navigating away, check for enemies in sector, just in case #
-		####################################################################
-		gosub :killing~scan_for_targets
-		if (SECTOR.PLANETCOUNT[$player~current_sector] > 1)
-			setSectorParameter $player~current_sector "FIGSEC" false
-			goto :runaway_again
+			:runaway_again
+			gosub :navigate~navigate_away
+			####################################################################
+			# after navigating away, check for enemies in sector, just in case #
+			####################################################################
+			gosub :killing~scan_for_targets
+			if (SECTOR.PLANETCOUNT[$player~current_sector] > 1)
+				setSectorParameter $player~current_sector "FIGSEC" false
+				goto :runaway_again
+			end
 		end
-	end
-
+	end	
 return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"

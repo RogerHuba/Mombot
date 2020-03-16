@@ -1672,6 +1672,7 @@ return
 
 
 :getinput 
+	gosub :bot~killthetriggers
 	setDeafClients false
 	getInput $response $question
 	setDeafClients true
