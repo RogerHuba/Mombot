@@ -1,4 +1,4 @@
-for /r %%n in (*citcap.ts) do call :checkit "%%n" 
+for /r %%n in (*density.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
