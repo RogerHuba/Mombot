@@ -252,7 +252,7 @@ return
 			setVar $temp " "&$warpto&" "
 			replaceText $database $temp " "
 			subtract $database_count 1
-			goto :select_boomsec
+			return
 
 		:twarpIgd
 			killAllTriggers

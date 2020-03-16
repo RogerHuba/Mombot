@@ -340,7 +340,7 @@
 		setTextLineTrigger 20 :scan " exits the game."
 		setTextLineTrigger 21 :scan " enters the game."
 		setDelayTrigger	   22 :announce	1200000
-		setDelayTrigger	   23 :head_home 3600000
+		setDelayTrigger	   23 :head_home_timeout 3600000
 		pause
 			
 
@@ -368,30 +368,32 @@
 		setDelayTrigger	   22 :announce	1200000
 		pause		
 
+		:head_home_timeout 
+			if ($player~current_sector <> $map~home_sector)
+				setvar $switchboard~message "No activity in an hour, so heading home.*"
+				gosub :switchboard~switchboard
+			end
 		:head_home 
 		gosub :player~quikstats
 		echo ansi_2&"*Checking status after inactivity..*"
 		if ($player~current_sector <> $map~home_sector)
-			setvar $switchboard~message "No activity in an hour, so heading home.*"
-			gosub :switchboard~switchboard
 			gosub :navigate~navigate_to_limp
 			gosub :killing~scan_for_targets
 			gosub :restock~refurb_photons
 			send "p"&$map~home_sector&"*y "
-
-			setvar $movefig~planetorsector "p"
-			gosub :movefig~run
-
-			send "q"
-			gosub :PLANET~getPlanetInfo	
-			send "t*t1* c "
-			if ($planet~planet_fighters < 10000)
-				setvar $switchboard~message "Even after grabbing figs from sector, not enough fighters.  Shutting down..*"
-				gosub :switchboard~switchboard
-				halt
-			end
-
 		end
+		setvar $movefig~planetorsector "p"
+		gosub :movefig~run
+
+		send "q"
+		gosub :PLANET~getPlanetInfo	
+		send "t*t1* c "
+		if ($planet~planet_fighters < 10000)
+			setvar $switchboard~message "Even after grabbing figs from sector, not enough fighters.  Shutting down..*"
+			gosub :switchboard~switchboard
+			halt
+		end
+
 		goto :processing
 
 	halt
