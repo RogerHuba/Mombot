@@ -275,6 +275,7 @@
 
 :allDone
 	killTrigger getSec
+	pause
 	if (($attack = true) and ($attack_sector_found <> true))
 		setvar $switchboard~message "Attack sector is not adjacent.  Try again.*"
 		gosub :switchboard~switchboard
