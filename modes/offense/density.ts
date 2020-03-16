@@ -225,6 +225,9 @@
 	if ($escape)
 		setVar $message $message&"*          Escape to Sector "&$escape_sector
 	end
+	if ($attack)
+		setVar $message $message&"*          Only Responding to Sector "&$attack_sector
+	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	setvar $switchboard~message $message
 	gosub :switchboard~switchboard
