@@ -471,6 +471,7 @@
 		if (($killing~last_fighter_attack <> "") and ($auto = true))
 			gosub :killing~set_the_cannon
 		end
+
 	else
 		:can_not_fire
 		if ($photon~found = true)
@@ -491,19 +492,19 @@
 		if ($killing~error = true)
 			goto :head_home
 		end
-
-		if ($sector~realTraderCount = $sector~corpieCount)
-			#############################################
-			# do nothing if there is no enemy in sector #
-			#############################################
-		else
-			gosub :navigate~navigate_away
-			####################################################################
-			# after navigating away, check for enemies in sector, just in case #
-			####################################################################
-			gosub :killing~scan_for_targets
-		end
+		gosub :runaway
 	end
+	#############################################################################################
+	# Check for adjacent sectors in current location, for faster shooting if they come adjacent #
+	#############################################################################################
+	setVar $i 1
+	setvar $photon~adjacent_sectors " "
+	while (SECTOR.WARPS[$player~current_sector][$i] > 0)
+		setVar $tempAdj SECTOR.WARPS[$player~current_sector][$i]
+		setvar $photon~adjacent_sectors $photon~adjacent_sectors&" "&$tempAdj&" "
+		add $i 1
+	end
+
 	goto :processing
 
 
