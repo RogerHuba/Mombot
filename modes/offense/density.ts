@@ -251,6 +251,7 @@
 
 :dtorp_Start
 	killTrigger alldone
+	setvar $attack_sector_found false
 	setTextLineTrigger getSec :getSec "Sector"
 	setTextTrigger allDone :allDone "Command [TL="
 	pause
@@ -261,7 +262,6 @@
 	stripText $adj[$i] "("
 	stripText $adj[$i] ")"
 	stripText $adj[$i] " "
-	setvar $attack_sector_found false
 	if ((($attack = true) and ($adj[$i] = $attack_sector)) or ($attack = false))
 		if (($attack = true) and ($adj[$i] = $attack_sector))
 			setvar $attack_sector_found true
@@ -271,7 +271,6 @@
 		stripText $dens[$i] " "
 	end
 	setTextLineTrigger getSec :getSec "Sector"
-	pause
 
 :allDone
 	killTrigger getSec
