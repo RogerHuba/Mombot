@@ -74,12 +74,12 @@
 		if (CURRENTSCANTYPE <> "Holo")
 			setVar $SWITCHBOARD~message "Can't holoscan without a holoscanner.  Duh.*"
 			gosub :switchboard~switchboard
-			halt
+			goto :dtorp_end
 		end
 		if ((CURRENTTURNS <= 0) and ($player~unlimitedGame <> true))
 			setVar $SWITCHBOARD~message "Can't holoscan without turns.*"
 			gosub :switchboard~switchboard
-			halt
+			goto :dtorp_end
 		end
 	end
 
@@ -96,13 +96,13 @@
 			if ($test <> true)
 				setVar $SWITCHBOARD~message "Escape sector should be a number.*"
 				gosub :switchboard~switchboard
-				halt
+				goto :dtorp_end
 			end
 		end
 		if ($escape_sector = 0)
 			setVar $SWITCHBOARD~message "Escape sector is not defined.  Either define when calling, or define home sector.*"
 			gosub :switchboard~switchboard
-			halt
+			goto :dtorp_end
 		end
 	end
 	
@@ -115,12 +115,12 @@
 		if ($test <> true)
 			setVar $SWITCHBOARD~message "Attack sector should be a number.*"
 			gosub :switchboard~switchboard
-			halt
+			goto :dtorp_end
 		end
 		if ($attack_sector = 0)
 			setVar $SWITCHBOARD~message "Escape sector is not defined.*"
 			gosub :switchboard~switchboard
-			halt
+			goto :dtorp_end
 		end
 	end
 
@@ -131,7 +131,7 @@
 		if (CURRENTPHOTONS <= 0)
 			setVar $SWITCHBOARD~message "Without a photon, you can't run photon option.*"
 			gosub :switchboard~switchboard
-			halt
+			goto :dtorp_end
 		end
 	end
 
@@ -142,7 +142,7 @@
 		if ($startingLocation <> "Citadel")
 			setVar $SWITCHBOARD~message "Need to start at citadel for pgrid mode.*"
 			gosub :switchboard~switchboard
-			halt
+			goto :dtorp_end
 		end
 	end
 
@@ -171,20 +171,20 @@
 			if ($test <> true)
 				setVar $SWITCHBOARD~message "Pel planet should be a number.*"
 				gosub :switchboard~switchboard
-				halt
+				goto :dtorp_end
 			end
 		end
 
 		if (CURRENTPHOTONS <= 0)
 			setVar $SWITCHBOARD~message "Without a photon, you can't run pel option.*"
 			gosub :switchboard~switchboard
-			halt
+			goto :dtorp_end
 		end
 
 		if (($pel_planet = 0) and (CURRENTPLANETSCANNER = "Yes"))
 			setVar $SWITCHBOARD~message "Pel option can't be run with a planet scanner onboard unless you define a planet number.  Believe me, it'd just be messy.*"
 			gosub :SWITCHBOARD~switchboard
-			halt		
+			goto :dtorp_end
 		end
 
 	end
@@ -205,7 +205,7 @@
 		if ($test <> true)
 			setVar $SWITCHBOARD~message "Density change amount should be a number.*"
 			gosub :switchboard~switchboard
-			halt
+			goto :dtorp_end
 		end
 	end
 
