@@ -766,7 +766,7 @@ end
 		goto :alldone
 	elseif ($density[$w] <> $dens[$w])
 		if ($shipchange = 1)
-			setVar $diff ($density[$w] - $den[$w])
+			setVar $diff ($density[$w] - $dens[$w])
 			if (($diff > 39) and ($diff < 495))
 				send "c p y " $adj[$w] "*  Q  "
 				send "'{" $bot~bot_name "} - Foton Missle Fired into sector => " $adj[$w] "*"
