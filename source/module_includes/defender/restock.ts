@@ -1,14 +1,24 @@
 :refurb_photons
 
-	setVar $limpetCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~LIMPETS)*$game~LIMPET_COST))
-	setVar $armidCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~ARMIDS)*$game~ARMID_COST))
+
+	if ($deploymines = true)
+		setVar $limpetCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~LIMPETS)*$game~LIMPET_COST))
+		setVar $armidCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~ARMIDS)*$game~ARMID_COST))
+	else
+		setVar $limpetCashNeeded 0
+		setVar $armidCashNeeded 0
+	end
 	if ($killing~holokill)
 		setVar $photonCashNeeded (1*$game~photon_cost)
 	else
 		setVar $photonCashNeeded (5*$game~photon_cost)
 	end
-	setVar $disruptorCashNeeded (10*$game~DISRUPTOR_COST)
-	setVar $cashNeeded ($photonCashNeeded+$game~LIMPET_REMOVAL_COST)
+	if ($deploydisruptors = true)
+		setVar $disruptorCashNeeded (10*$game~DISRUPTOR_COST)
+	else
+		setVar $disruptorCashNeeded 0
+	end
+	setVar $cashNeeded ($photonCashNeeded+$limpetCashNeeded+$armidCashNeeded+$disruptorCashNeeded+$game~LIMPET_REMOVAL_COST)
 	setVar $furbing TRUE
 	if ($cashNeeded > currentcredits)
 		send "D" 
@@ -16,7 +26,8 @@
 		getWord CURRENTLINE $citadelCash 4
 		stripText $citadelCash ","
 		if (($citadelCash+currentcredits) < $cashNeeded)
-			send "'{" & $SWITCHBOARD~bot_name & "} - Not enough cash for mine refurbs in treasury or on hand.*"	
+			setvar $switchboard~message "Not enough cash ("&$cashNeeded&") for restock in treasury or on hand.*"
+			gosub :switchboard~switchboard
 			gosub :navigate~head_home
 		end
 		send "t f "&($cashNeeded-currentcredits)&"* "
@@ -37,10 +48,14 @@
 		setVar $RED_adj 0
 		gosub :FindJumpSector
 		if ($RED_adj <> 0)
-			send ("'{"&$SWITCHBOARD~bot_name&"} - Jump Sector Found - Using Sector "&$RED_adj&"**")
+			setvar $switchboard~message "Jump Sector Found - Using Sector "&$RED_adj&"*"
+			gosub :switchboard~switchboard
+			send "*"
 		else
 			waitfor "Command [TL="
-			send "'{" & $SWITCHBOARD~bot_name & "} - Cannot Find Jump Sector Adjacent Dock**"
+			setvar $switchboard~message "Cannot Find Jump Sector Adjacent Dock*"
+			gosub :switchboard~switchboard
+			send "*"
 			halt
 		end
 	end
@@ -64,7 +79,9 @@
 
 	:noJoy
 		killAllTriggers
-		send "'{" $SWITCHBOARD~bot_name "} - Cannot Find Path to StarDock!**"
+		setvar $switchboard~message "Cannot Find Path to StarDock!*"
+		gosub :switchboard~switchboard
+		send "*"
 		halt
 	:cont
 		killAllTriggers
@@ -81,37 +98,49 @@
 		end
 
 		if ($dist1 <= 0)
-			send "'{" $SWITCHBOARD~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Course to Dock**"
+			setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
+			gosub :switchboard~switchboard
+			send "*"
 			halt
 		end
 
 		getdistance $dist2 $MAP~stardock $START_SECTOR
 		if ($dist2 <= 0)
-			send "'{" $SWITCHBOARD~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Return Course From Dock**"
+			setvar $switchboard~message "Insufficient Warp Data Plotting Return Course From Dock*"
+			gosub :switchboard~switchboard
+			send "*"
 			halt
 		end
 
 		setVar $ore_req (($dist1 + $dist2) * 3)
 
 		if ($PLAYER~ORE_HOLDS < $ore_req)
-			send "'{" $SWITCHBOARD~bot_name "} - Not Enough ORE In Holds To Make Round Trip.  Needs "&$ore_req&".**"
+			setvar $switchboard~message "Not Enough ORE In Holds To Make Round Trip.  Needs "&$ore_req&".*"
+			gosub :switchboard~switchboard
+			send "*"
 			halt
 		end
 
 		if ($PLAYER~TWARP_TYPE = "No")
-			send "'{" $SWITCHBOARD~bot_name "} - Must Have Twarp 1 or 2**"
+			setvar $switchboard~message "Must Have Twarp 1 or 2*"
+			gosub :switchboard~switchboard
+			send "*"
 			halt
 		end
 
 		if ($PLAYER~unlimitedGame = 0)
 			gosub :TurnsRequired
 			if ($turnsRequired > currentturns)
-				send "'{" $SWITCHBOARD~bot_name "} - Not Enough Turns. " & ANSI_12 & $turnsRequired & ANSI_15 & ", Required**"
+				setvar $switchboard~message "Not Enough Turns. "&$turnsRequired&", Required*"
+				gosub :switchboard~switchboard
+				send "*"
 				halt
 			elseif ($turnsRequired <= currentturns)
 				setVar $tmp (currentturns - $turnsRequired)
 				if ($tmp <= $bot~bot_turn_limit)
-					send "'{" $SWITCHBOARD~bot_name "} - Proceeding Will Leave Fewer Than " & $bot~bot_turn_limit & " Turns!**"
+					setvar $switchboard~message "Proceeding Will Leave Fewer Than " & $bot~bot_turn_limit & " Turns!*"
+					gosub :switchboard~switchboard
+					send "*"
 					halt
 				end
 			end
@@ -123,7 +152,9 @@
 	pause
 	:nosoupforme
 		killAllTriggers
-		send "'{" $SWITCHBOARD~bot_name "} " & $TagLineB & " - StarDock appears to have been Blown Up!**"
+		setvar $switchboard~message "StarDock appears to have been Blown Up!*"
+		gosub :switchboard~switchboard
+		send "*"
 		halt
 	:itsalive
 		killAllTriggers
@@ -141,24 +172,32 @@
 		if ($msg = "")
 			waitfor "You leave the Galactic Bank."
 		else
-			send "'{" $SWITCHBOARD~bot_name "} - Unknown Problem Detected. Check TA!**"
+			setvar $switchboard~message "Unknown Problem Detected. Check TA!*"
+			gosub :switchboard~switchboard
+			send "*"
 			halt
 		end
 		gosub :PLAYER~quikstats
 
-		#setVar $_Limps "Max"
-		#setVar $_Mines "Max"
+		if ($deploymines = true)
+			setVar $_Limps "Max"
+			setVar $_Mines "Max"
+		end
 		if ($killing~holokill)
 			setVar $_Photon "1"
 		else
 			setVar $_Photon "Max"
 		end
-		#setVar $_Disrupt "Max"
+		if ($deploydisruptors = true)
+			setVar $_Disrupt "Max"
+		end
 		gosub :DoPurchases
 		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
 		gosub :PLAYER~quikstats
 		if (currentsector = $MAP~stardock)
-			send "'{" $SWITCHBOARD~bot_name "} - Twarp Error, Should be Hiding on Dock!**"
+			setvar $switchboard~message "Twarp Error, Should be Hiding on Dock!*"
+			gosub :switchboard~switchboard
+			send "*"
 			halt
 		end
 		send "q tnt1* c "
@@ -244,7 +283,9 @@ return
 			end
 		:twarpDone
 			if ($msg <> "")
-				send "'{" $SWITCHBOARD~bot_name "} Twarp Error - " & $msg & "**"
+				setvar $switchboard~message "Twarp Error - " & $msg & "*"
+				gosub :switchboard~switchboard
+				send "*"
 			end
 	end
 	return
@@ -262,8 +303,7 @@ return
 	killAllTriggers
 	send "n "
 	waitfor "Transporter shutting down."
-	setVar $FIGHTER_GRID[$warpto] 0
-	goto :select_boomsec
+	return
 
 :go5
 	killAllTriggers

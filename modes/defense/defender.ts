@@ -182,9 +182,9 @@
 
 	getwordpos " "&$bot~user_command_line&" " $pos " mines "
 	if ($pos > 0)
-		setvar $deploymines true
+		setvar $restock~deploymines true
 	else
-		setvar $deploymines false
+		setvar $restock~deploymines false
 	end
 
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
@@ -286,13 +286,13 @@
 	else
 		setVar $message $message&"*              Capture, not kill: No"
 	end
-	if ($deploymines)
+	if ($restock~deploymines)
 		setVar $message $message&"*                   Deploy mines: Yes"
 	else
 		setVar $message $message&"*                   Deploy mines: No"
 	end
 	setVar $message $message&"*                    Home Sector: "&$map~home_sector
-	format $planet~planet_Fighters $formatted_fighters NUMBER
+	format $planet~planet_fighters $formatted_fighters NUMBER
 	setVar $message $message&"*        Auto Kill: Enabled With "&$formatted_fighters&" Fighters"
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	send $message
@@ -378,6 +378,19 @@
 			gosub :killing~scan_for_targets
 			gosub :restock~refurb_photons
 			send "p"&$map~home_sector&"*y "
+
+			setvar $movefig~planetorsector "p"
+			gosub :movefig~run
+
+			send "q"
+			gosub :PLANET~getPlanetInfo	
+			send "t*t1* c "
+			if ($planet~planet_fighters < 10000)
+				setvar $switchboard~message "Even after grabbing figs from sector, not enough fighters.  Shutting down..*"
+				gosub :switchboard~switchboard
+				halt
+			end
+
 		end
 		goto :processing
 
@@ -435,27 +448,20 @@
 		setvar $photon~last_sector $photon~sector
 		setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
 		gosub :killing~scan_for_targets
-		if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($deploymines = true))
+		if ($killing~error = true)
+			goto :head_home
+		end
+		if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
 			gosub :doMines
 		end
 		if ($noescape <> true)
 			gosub :navigate~navigate_away
 			gosub :player~quikstats
 			gosub :killing~scan_for_targets
-			if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($deploymines = true))
-				gosub :doMines
+			if ($killing~error = true)
+				goto :head_home
 			end
-			if ($sector~realTraderCount = $sector~corpieCount)
-				#############################################
-				# do nothing if there is no enemy in sector #
-				#############################################
-			else
-				gosub :navigate~navigate_away
-				####################################################################
-				# after navigating away, check for enemies in sector, just in case #
-				####################################################################
-				gosub :killing~scan_for_targets
-			end
+			gosub :runaway
 		end
 		####################
 		# check for refurb #
@@ -482,6 +488,10 @@
 			end
 		end
 		gosub :killing~scan_for_targets
+		if ($killing~error = true)
+			goto :head_home
+		end
+
 		if ($sector~realTraderCount = $sector~corpieCount)
 			#############################################
 			# do nothing if there is no enemy in sector #
@@ -504,24 +514,16 @@
 :scan
 	gosub :killtriggers
 	gosub :killing~checkForVictims
+	if ($killing~error = true)
+		goto :head_home
+	end
 
 	################################################################
 	# after attempting to kill, need to move no matter the outcome #
 	# they could be sitting above in defender ship                 #
 	################################################################
 
-	if ($sector~realTraderCount = $sector~corpieCount)
-		#############################################
-		# do nothing if there is no enemy in sector #
-		#############################################
-	else
-		gosub :navigate~navigate_away
-
-		####################################################################
-		# after navigating away, check for enemies in sector, just in case #
-		####################################################################
-		gosub :killing~scan_for_targets
-	end
+	gosub :runaway
 	goto :processing
 
 
@@ -600,6 +602,53 @@ return
 	end
 return
 
+
+:runaway
+
+	if (($sector~realTraderCount = $sector~corpieCount) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1))
+		#############################################
+		# do nothing if there is no enemy in sector #
+		#############################################
+
+		if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
+			gosub :doMines
+		end
+	else
+		setVar $containsShieldedPlanet FALSE
+		setVar $shieldedPlanetCount 0
+		setVar $i 1
+		while ($i <= SECTOR.PLANETCOUNT[$player~current_sector])
+			getWord SECTOR.PLANETS[$player~current_sector][$i] $test 1
+			if ($test = "<<<<")
+				setVar $containsShieldedPlanet TRUE
+				add $shieldedPlanetCount 1
+			end
+			add $i 1
+		end
+		if (SECTOR.PLANETCOUNT[$player~current_sector] < 1)
+			#################################################
+			# call saveme if there are no planets in sector #
+			#################################################
+			gosub :call~run
+		end
+		################################################
+		#  TODO                                        #
+		#for logic later to avoid only shielded planets#
+	    ################################################
+
+		:runaway_again
+		gosub :navigate~navigate_away
+		####################################################################
+		# after navigating away, check for enemies in sector, just in case #
+		####################################################################
+		gosub :killing~scan_for_targets
+		if (SECTOR.PLANETCOUNT[$player~current_sector] > 1)
+			setSectorParameter $player~current_sector "FIGSEC" false
+			goto :runaway_again
+		end
+	end
+
+return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
@@ -623,3 +672,5 @@ include "source\module_includes\defender\restock"
 include "source\module_includes\defender\killing"
 include "source\bot_includes\external\htorp"
 include "source\bot_includes\external\call"
+include "source\bot_includes\external\movefig"
+include "source\bot_includes\external\disr"

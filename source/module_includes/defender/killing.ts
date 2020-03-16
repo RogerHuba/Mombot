@@ -7,7 +7,14 @@
 	end	
 
 :scan_for_targets
+	setvar $error false
 	gosub :player~quikstats
+	if ($player~fighters < 1000)
+		setvar $error true
+		setvar $switchboard~message "We don't have enough fighters - time to get out of here.*"
+		gosub :switchboard~switchboard
+		return
+	end
 	setvar $player~startinglocation $player~current_prompt
 	if ($player~startinglocation <> "Citadel")
 		#########################################
