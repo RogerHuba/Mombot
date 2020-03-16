@@ -291,7 +291,7 @@
 	else
 		setVar $message $message&"*                   Deploy mines: No"
 	end
-	setVar $message $message&"*      Home Sector: "&$map~home_sector
+	setVar $message $message&"*                    Home Sector: "&$map~home_sector
 	format $planet~planet_Fighters $formatted_fighters NUMBER
 	setVar $message $message&"*        Auto Kill: Enabled With "&$formatted_fighters&" Fighters"
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
