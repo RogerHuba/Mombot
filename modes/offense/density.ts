@@ -257,14 +257,15 @@
 	pause
 
 :getSec
-	getText CURRENTLINE $Adj[$i] "Sector" "==>"
-	stripText $adj[$i] "("
-	stripText $adj[$i] ")"
-	stripText $adj[$i] " "
-	if ((($attack = true) and ($adj[$i] = $attack_sector)) or ($attack = false))
-		if (($attack = true) and ($adj[$i] = $attack_sector))
+	getText CURRENTLINE $temp "Sector" "==>"
+	stripText $temp "("
+	stripText $temp ")"
+	stripText $temp " "
+	if ((($attack = true) and ($temp = $attack_sector)) or ($attack = false))
+		if (($attack = true) and ($temp = $attack_sector))
 			setvar $attack_sector_found true
 		end
+		setvar $adj[$i] $temp
 		getText CURRENTLINE $Dens[$i] "==>" "Warps :"
 		stripText $dens[$i] ","
 		stripText $dens[$i] " "
