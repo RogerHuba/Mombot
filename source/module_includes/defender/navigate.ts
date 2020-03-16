@@ -79,6 +79,7 @@
 		killtrigger homelock
 		killtrigger nohomelock
 		killtrigger home_now
+		getSectorParameter $nearfig "FIGSEC" false
 		goto :try_again
 
         :foton_home_lock
