@@ -237,59 +237,59 @@
 
 	setVar $message "'*  {"&$bot~bot_name&"} - "&$script_ver&" Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	if ($fighter)
-		setVar $message $message&"*   On Fighter Hit: Yes"
+		setVar $message $message&"*                 On Fighter Hit: Yes"
 	else
-		setVar $message $message&"*   On Fighter Hit: No"
+		setVar $message $message&"*                 On Fighter Hit: No"
 	end
 	if ($limpet)
-		setVar $message $message&"*    On Limpet Hit: Yes"
+		setVar $message $message&"*                  On Limpet Hit: Yes"
 	else
-		setVar $message $message&"*    On Limpet Hit: No"
+		setVar $message $message&"*                  On Limpet Hit: No"
 	end
 	if ($armid)
-		setVar $message $message&"*     On Armid Hit: Yes"
+		setVar $message $message&"*                   On Armid Hit: Yes"
 	else
-		setVar $message $message&"*     On Armid Hit: No"
+		setVar $message $message&"*                   On Armid Hit: No"
 	end
 	if ($photon~adjacentphoton)
-		setVar $message $message&"*  Adjacent Photon: Yes"
+		setVar $message $message&"*                Adjacent Photon: Yes"
 	else
-		setVar $message $message&"*  Adjacent Photon: No"
+		setVar $message $message&"*                Adjacent Photon: No"
 	end
 	if ($photon~density)
-		setVar $message $message&"*   Density Photon: Yes"
-	else
-		setVar $message $message&"*   Density Photon: No"
+		setVar $message $message&"*   Density Photon Attack Sector: Yes"
+	else 
+		setVar $message $message&"*   Density Photon Attack Sector: No"
 	end
 	if ($killing~holokill)
-		setVar $message $message&"*         Holokill: Yes"
+		setVar $message $message&"*                       Holokill: Yes"
 	else
-		setVar $message $message&"*         Holokill: No"
+		setVar $message $message&"*                       Holokill: No"
 	end
 	if ($killing~slingshot)
-		setVar $message $message&"*        Slingshot: Yes"
+		setVar $message $message&"*                      Slingshot: Yes"
 	else
-		setVar $message $message&"*        Slingshot: No"
+		setVar $message $message&"*                      Slingshot: No"
 	end
 	if ($holo)
-		setVar $message $message&"*      Holo Report: Yes"
+		setVar $message $message&"*                    Holo Report: Yes"
 	else
-		setVar $message $message&"*      Holo Report: No"
+		setVar $message $message&"*                    Holo Report: No"
 	end
 	if ($auto)
-		setVar $message $message&"*     Cannon Reset: Yes"
+		setVar $message $message&"*                   Cannon Reset: Yes"
 	else
-		setVar $message $message&"*     Cannon Reset: No"
+		setVar $message $message&"*                   Cannon Reset: No"
 	end
 	if ($killing~capture)
-		setVar $message $message&"*Capture, not kill: Yes"
+		setVar $message $message&"*              Capture, not kill: Yes"
 	else
-		setVar $message $message&"*Capture, not kill: No"
+		setVar $message $message&"*              Capture, not kill: No"
 	end
 	if ($deploymines)
-		setVar $message $message&"*     Deploy mines: Yes"
+		setVar $message $message&"*                   Deploy mines: Yes"
 	else
-		setVar $message $message&"*     Deploy mines: No"
+		setVar $message $message&"*                   Deploy mines: No"
 	end
 	setVar $message $message&"*      Home Sector: "&$map~home_sector
 	format $planet~planet_Fighters $formatted_fighters NUMBER
