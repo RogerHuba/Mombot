@@ -171,7 +171,7 @@ return
 	waitfor "Citadel command"
 	
 	setVar $BOT~command "density"
-	setVar $BOT~user_command_line " density photon "
+	setVar $BOT~user_command_line " density photon attack:"&$sector&" "
 	setVar $BOT~parm1 "photon"
 	setVar $BOT~parm2 ""
 	saveVar $BOT~parm1
