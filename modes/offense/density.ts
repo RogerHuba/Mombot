@@ -73,12 +73,10 @@
 		setvar $holo true
 		if (CURRENTSCANTYPE <> "Holo")
 			setVar $SWITCHBOARD~message "Can't holoscan without a holoscanner.  Duh.*"
-			gosub :switchboard~switchboard
 			goto :dtorp_end
 		end
 		if ((CURRENTTURNS <= 0) and ($player~unlimitedGame <> true))
 			setVar $SWITCHBOARD~message "Can't holoscan without turns.*"
-			gosub :switchboard~switchboard
 			goto :dtorp_end
 		end
 	end
@@ -95,13 +93,11 @@
 			isNumber $test $escape_sector
 			if ($test <> true)
 				setVar $SWITCHBOARD~message "Escape sector should be a number.*"
-				gosub :switchboard~switchboard
 				goto :dtorp_end
 			end
 		end
 		if ($escape_sector = 0)
 			setVar $SWITCHBOARD~message "Escape sector is not defined.  Either define when calling, or define home sector.*"
-			gosub :switchboard~switchboard
 			goto :dtorp_end
 		end
 	end
@@ -114,12 +110,10 @@
 		isNumber $test $attack_sector
 		if ($test <> true)
 			setVar $SWITCHBOARD~message "Attack sector should be a number.*"
-			gosub :switchboard~switchboard
 			goto :dtorp_end
 		end
 		if ($attack_sector = 0)
 			setVar $SWITCHBOARD~message "Escape sector is not defined.*"
-			gosub :switchboard~switchboard
 			goto :dtorp_end
 		end
 	end
@@ -130,7 +124,6 @@
 		setvar $photon true
 		if (CURRENTPHOTONS <= 0)
 			setVar $SWITCHBOARD~message "Without a photon, you can't run photon option.*"
-			gosub :switchboard~switchboard
 			goto :dtorp_end
 		end
 	end
@@ -141,7 +134,6 @@
 		setvar $pgrid true
 		if ($startingLocation <> "Citadel")
 			setVar $SWITCHBOARD~message "Need to start at citadel for pgrid mode.*"
-			gosub :switchboard~switchboard
 			goto :dtorp_end
 		end
 	end
@@ -170,20 +162,17 @@
 
 			if ($test <> true)
 				setVar $SWITCHBOARD~message "Pel planet should be a number.*"
-				gosub :switchboard~switchboard
 				goto :dtorp_end
 			end
 		end
 
 		if (CURRENTPHOTONS <= 0)
 			setVar $SWITCHBOARD~message "Without a photon, you can't run pel option.*"
-			gosub :switchboard~switchboard
 			goto :dtorp_end
 		end
 
 		if (($pel_planet = 0) and (CURRENTPLANETSCANNER = "Yes"))
 			setVar $SWITCHBOARD~message "Pel option can't be run with a planet scanner onboard unless you define a planet number.  Believe me, it'd just be messy.*"
-			gosub :SWITCHBOARD~switchboard
 			goto :dtorp_end
 		end
 
@@ -204,7 +193,6 @@
 		
 		if ($test <> true)
 			setVar $SWITCHBOARD~message "Density change amount should be a number.*"
-			gosub :switchboard~switchboard
 			goto :dtorp_end
 		end
 	end
@@ -279,7 +267,6 @@
 	killTrigger getSec
 	if (($attack = true) and ($attack_sector_found <> true))
 		setvar $switchboard~message "Attack sector is not adjacent.  Try again.*"
-		gosub :switchboard~switchboard
 		goto :dtorp_end
 	end
 	gosub :firechk
@@ -341,22 +328,31 @@
 
 :dtorp_end
 	if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
-		if (($escape <> true) and ($call <> true))
+		if (($escape <> true) and ($call <> true) and ($photon <> true))
 			gosub :planet~landingsub
 		end
 	end
+	gosub :switchboard~switchboard
+
 	halt
 
 
 :do_action
 	if (($photon = true) and (CURRENTPHOTONS > 0))
-		send " c  p  y  " $adj[$w] "**q"
+		if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
+			send " c  p  y  " $adj[$w] "**q   l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+		else
+			send " c  p  y  " $adj[$w] "**q   "		
+		end
 	end
+	gosub :player~quikstats
 
 	# #if we pgrid we want to do a different kill action
 	if (($pgrid = true) and (CURRENTFIGHTERS > 0))
 
-		gosub :planet~landingsub
+		if ($player~current_prompt = "Command")
+			gosub :planet~landingsub
+		end
 		setvar $pgrid~pgridSector $adj[$w]
 		gosub :pgrid~run
 		if ($killport = true)
