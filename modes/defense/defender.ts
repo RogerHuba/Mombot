@@ -433,6 +433,23 @@
 		else
 			gosub :photon~retreatphoton
 		end
+		if ($limpet)
+			setTextTrigger 1 :attackSectorLimpet "Limpet mine in "
+		end
+		if ($armid)
+			setTextTrigger 2 :attackSectorMine "Your mines in "
+		end
+		if ($fighter)
+			setTextTrigger 3 :attackSectorFighter "Deployed Fighters "
+		end
+		setDelayTrigger wait :done_waiting_for_hits 500
+		pause
+
+		:done_waiting_for_hits
+			killtrigger 1
+			killtrigger 2
+			killtrigger 3
+
 		#############################################
 		# holoscan sector to see if victim is there #
 		#############################################
@@ -553,6 +570,7 @@
 		killtrigger ""&$i&""
 		add $i 1
 	end
+	killtrigger wait
 return
 
 
