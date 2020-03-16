@@ -318,11 +318,12 @@
 	pause
 
 :looksec
-	getText CURRENTLINE $Adjsec[$y] "Sector" "==>"
-	stripText $adjsec[$y] "("
-	stripText $adjsec[$y] ")"
-	stripText $adjsec[$y] " "
-	if ((($attack = true) and ($adjsec[$y] = $attack_sector)) or ($attack = false))
+	getText CURRENTLINE $temp "Sector" "==>"
+	stripText $temp "("
+	stripText $temp ")"
+	stripText $temp " "
+	if ((($attack = true) and ($temp = $attack_sector)) or ($attack = false))
+		setvar $adjsec[$y] $temp
 		getText CURRENTLINE $Density[$y] "==>" "Warps :"
 		stripText $density[$y] ","
 		stripText $density[$y] " "
