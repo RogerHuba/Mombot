@@ -1,5 +1,5 @@
 :photon
-	gosub :killtriggers
+	killalltriggers
 	setvar $success false
 	setVar $adjsec 0
 	setVar $i 1
@@ -26,6 +26,7 @@
 	gosub :switchboard~switchboard
 return
 :fire_adjacent
+	killalltriggers
 	send " c  p  y  " $sector "**qp" $sector "*  y  "
 	goto :triggers
 :fire_photon
