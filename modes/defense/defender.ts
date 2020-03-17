@@ -712,7 +712,7 @@ return
 	send "p" $photon~sector "*y   "
 	gosub :player~quikstats
 	setvar $pwarp_success false
-	if ($player~current_sector = $sector)
+	if ($player~current_sector = $photon~sector)
 		setvar $pwarp_success true
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
