@@ -9,12 +9,6 @@
 	killalltriggers
 	setvar $error false
 	gosub :player~quikstats
-	if ($player~fighters < 1000)
-		setvar $error true
-		setvar $switchboard~message "We don't have enough fighters - time to get out of here.*"
-		gosub :switchboard~switchboard
-		return
-	end
 	setvar $player~startinglocation $player~current_prompt
 	if ($player~startinglocation <> "Citadel")
 		#########################################
@@ -30,7 +24,13 @@
 	else
 		setvar $player~override false
 	end
-	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+	if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1))
+		if ($player~fighters < 1000)
+			setvar $error true
+			setvar $switchboard~message "We don't have enough fighters - time to get out of here.*"
+			gosub :switchboard~switchboard
+			return
+		end
 		if ($capture = true)
 			gosub :combat~fastCapture
 			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
@@ -39,7 +39,13 @@
 			gosub :combat~fastCitadelAttack
 		end
 		goto :scan_for_targets
-	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
+	elseif ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE)) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1))
+		if ($player~fighters < 1000)
+			setvar $error true
+			setvar $switchboard~message "We don't have enough fighters - time to get out of here.*"
+			gosub :switchboard~switchboard
+			return
+		end
 		gosub :combat~fastCapture
 		send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 		gosub :player~quikstats
