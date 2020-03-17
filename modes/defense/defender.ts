@@ -516,7 +516,7 @@
 			gosub :killtriggers
 
 		:done_firing
-
+		killalltriggers
 		#############################################
 		# holoscan sector to see if victim is there #
 		#############################################

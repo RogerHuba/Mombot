@@ -3,33 +3,28 @@
 	setvar $success false
 	setVar $adjsec 0
 	setVar $i 1
-	getwordpos $adjacent_sectors $pos " "&$sector&" "
-	if ($pos > 0)
-		goto :fire_adjacent
-	else
-		while (SECTOR.WARPSIN[$sector][$i] > 0)
-			setVar $tempAdj SECTOR.WARPSIN[$sector][$i]
-			getSectorParameter $tempAdj "FIGSEC" $isFigged
-			if ($isFigged)
-				setVar $adjsec $tempAdj
-				if ($adjacentphoton = true)
-					goto :fire_photon
+	while (SECTOR.WARPSIN[$sector][$i] > 0)
+		setVar $tempAdj SECTOR.WARPSIN[$sector][$i]
+		getSectorParameter $tempAdj "FIGSEC" $isFigged
+		if ($isFigged)
+			setVar $adjsec $tempAdj
+			if ($adjacentphoton = true)
+				goto :fire_photon
+			else
+				if ($density = true)
+					send "p" $adjsec "*  y  "
+					gosub :densityDrop
 				else
-					if ($density = true)
-						send "p" $adjsec "*  y  "
-						gosub :densityDrop
-					else
-						send "p" $adjsec "*  y  p" $sector "*  y  "
-					end
-					return
+					send "p" $adjsec "*  y  p" $sector "*  y  "
 				end
+				return
 			end
-			add $i 1
 		end
-		setvar $switchboard~message "No Adjacent fig found!*"
-		gosub :switchboard~switchboard
+		add $i 1
 	end
-	return
+	setvar $switchboard~message "No Adjacent fig found!*"
+	gosub :switchboard~switchboard
+return
 :fire_adjacent
 	send " c  p  y  " $sector "**qp" $sector "*  y  "
 	goto :triggers
