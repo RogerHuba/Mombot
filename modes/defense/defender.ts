@@ -701,7 +701,7 @@ return
 return
 
 :pwarp_direct_and_kill
-	send "p" $sector "*y   "
+	send "p" $photon~sector "*y   "
 	gosub :player~quikstats
 	setvar $pwarp_success false
 	if ($player~current_sector = $sector)
