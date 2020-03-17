@@ -121,7 +121,7 @@
 			else
 				goSub :fastAttack
 			end		
-			send "m "  $hkill_start_sector  " *  *  z  a  99999  *  z  a  99999  *  R  *  f  z  1  *  z  c  d  *   "
+			send "m "  $hkill_start_sector  " *  *  z  a  99999  *  z  a  99999  *  R  *   "
 			if ($player~CIT = TRUE)
 				send " l "  $PLANET~PLANET  " * n n * j m * * * j c  *  "
 			end
