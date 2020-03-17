@@ -24,7 +24,6 @@
 		return
 :holo_kill_scandone
 		killalltriggers
-		gosub :SHIP~getShipStats
 
 :holo_kill_get_prompt
 :holo_kill_get_current_sector
@@ -80,7 +79,7 @@
 				send "'Possible splatter on a planet, check for pod.*"
 				return
 			end
-			send "m * * * c "		
+			send "m * * * c "
 			goSub :SECTOR~getSectorData
 			if ($holocapture)
 				gosub :combat~fastCapture
