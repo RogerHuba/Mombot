@@ -1,5 +1,4 @@
 :checkForVictims
-	gosub :killtriggers
 	getWord CURRENTLINE $test 1
 	if (($test = "P") OR ($test = "F") OR ($test = "R") OR ($test = ">"))
 		echo ANSI_14 "*spoof attempt!*"
@@ -7,6 +6,7 @@
 	end	
 
 :scan_for_targets
+	killalltriggers
 	setvar $error false
 	gosub :player~quikstats
 	if ($player~fighters < 1000)

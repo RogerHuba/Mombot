@@ -315,36 +315,49 @@
 
 	:processing
 		gosub :killtriggers
+		setTextTrigger 1 :pausing "Planet command (?="
+		setTextTrigger 2 :pausing "Computer command ["
+		setTextTrigger 3 :pausing "Corporate command ["
+		setTextTrigger 4 :pausing "Transfer To or From the Treasury (T/F)"
+		setTextTrigger 5 :pausing "Qcannon Control Type :"
+		setTextTrigger 6 :pausing "Beam to what sector? (U=Upgrade"
+
+		setTextLineTrigger 7  :scan "warps into the sector."
+		setTextLineTrigger 8  :scan " lifts off from"
+		setTextLineTrigger 9  :scan "Limpet mine in "&$player~current_sector
+		setTextLineTrigger 10 :scan "Deployed Fighters Report Sector "&$player~current_sector&":"
+		setTextLineTrigger 11 :scan "Quasar Cannon on"
+		setTextLineTrigger 12 :scan "Shipboard Computers The Interdictor Generator on"
+		setTextLineTrigger 13 :scan " is powering up weapons systems!"
+		settextlinetrigger 14 :scan " launches a wave of fighters at the "
+		settextlinetrigger 15 :scan	" launches a Genesis Torpedo into the sector!"
+		settextlinetrigger 16 :scan " appears from the planetary rubble."
+		setTextLineTrigger 17 :scan " exits the game."
+		setTextLineTrigger 18 :scan " enters the game."
+		setDelayTrigger	   19 :announce	1200000
+		setDelayTrigger	   20 :head_home_timeout 3600000
+
+		#############################################################################################
+		# Check for adjacent sectors in current location, for faster shooting if they come adjacent #
+		#############################################################################################
+		setarray $photon~adjacent 6
+		setVar $i 1
+		while (SECTOR.WARPS[$player~current_sector][$i] > 0)
+			setTextTrigger "adjl"&$i&"" :photon_adjacent_limpet "Limpet mine in "&SECTOR.WARPS[$player~current_sector][$i]&" "
+			setTextTrigger "adjf"&$i&"" :photon_adjacent_fighter "Deployed Fighters Report Sector "&SECTOR.WARPS[$player~current_sector][$i]&":"
+			setTextTrigger "adja"&$i&"" :photon_adjacent_armid "Your mines in "&SECTOR.WARPS[$player~current_sector][$i]&" "
+			add $i 1
+		end
+
 		if ($limpet)
-			setTextTrigger 1 :attackSectorLimpet "Limpet mine in "
+			setTextTrigger 21 :attackSectorLimpet "Limpet mine in "
 		end
 		if ($armid)
-			setTextTrigger 2 :attackSectorMine "Your mines in "
+			setTextTrigger 22 :attackSectorMine "Your mines in "
 		end
 		if ($fighter)
-			setTextTrigger 3 :attackSectorFighter "Deployed Fighters "
+			setTextTrigger 23 :attackSectorFighter "Deployed Fighters "
 		end
-		setTextTrigger 4 :pausing "Planet command (?="
-		setTextTrigger 5 :pausing "Computer command ["
-		setTextTrigger 6 :pausing "Corporate command ["
-		setTextTrigger 7 :pausing "Transfer To or From the Treasury (T/F)"
-		setTextTrigger 8 :pausing "Qcannon Control Type :"
-		setTextTrigger 9 :pausing "Beam to what sector? (U=Upgrade"
-
-		setTextLineTrigger 10 :scan "warps into the sector."
-		setTextLineTrigger 11 :scan " lifts off from"
-		setTextLineTrigger 12 :scan "Limpet mine in "&$player~current_sector
-		setTextLineTrigger 13 :scan "Deployed Fighters Report Sector "&$player~current_sector&":"
-		setTextLineTrigger 14 :scan "Quasar Cannon on"
-		setTextLineTrigger 15 :scan "Shipboard Computers The Interdictor Generator on"
-		setTextLineTrigger 16 :scan " is powering up weapons systems!"
-		settextlinetrigger 17 :scan " launches a wave of fighters at the "
-		settextlinetrigger 18 :scan	" launches a Genesis Torpedo into the sector!"
-		settextlinetrigger 19 :scan " appears from the planetary rubble."
-		setTextLineTrigger 20 :scan " exits the game."
-		setTextLineTrigger 21 :scan " enters the game."
-		setDelayTrigger	   22 :announce	1200000
-		setDelayTrigger	   23 :head_home_timeout 3600000
 		pause
 			
 
@@ -426,6 +439,23 @@
 # Photon routines - fire photon, move away, restock, set cannon #
 #################################################################
 
+:photon_adjacent_limpet
+	gosub :photon~limpet_spoof
+	gosub :photon~fire_adjacent
+	goto :done_firing
+
+
+:photon_adjacent_armid
+	gosub :photon~armid_spoof
+	gosub :photon~fire_adjacent
+	goto :done_firing
+
+:photon_adjacent_fighter
+	gosub :photon~fighter_spoof
+	gosub :photon~fire_adjacent
+	goto :done_firing
+
+
 :attackSectorLimpet
 	gosub :photon~limpet_spoof
 	goto :check_to_fire_photon
@@ -456,6 +486,13 @@
 		else
 			gosub :photon~retreatphoton
 		end
+		setVar $i 1
+		while (SECTOR.WARPS[$player~current_sector][$i] > 0)
+			setTextTrigger "adjl"&$i&"" :photon_adjacent_limpet "Limpet mine in "&SECTOR.WARPS[$player~current_sector][$i]&" "
+			setTextTrigger "adjf"&$i&"" :photon_adjacent_fighter "Deployed Fighters Report Sector "&SECTOR.WARPS[$player~current_sector][$i]&":"
+			setTextTrigger "adja"&$i&"" :photon_adjacent_armid "Your mines in "&SECTOR.WARPS[$player~current_sector][$i]&" "
+			add $i 1
+		end
 		if ($limpet)
 			setTextTrigger 1 :attackSectorLimpet "Limpet mine in "
 		end
@@ -469,9 +506,9 @@
 		pause
 
 		:done_waiting_for_hits
-			killtrigger 1
-			killtrigger 2
-			killtrigger 3
+			gosub :killtriggers
+
+		:done_firing
 
 		#############################################
 		# holoscan sector to see if victim is there #
@@ -536,16 +573,6 @@
 		end
 		gosub :navigate~runaway_if_needed
 	end
-	#############################################################################################
-	# Check for adjacent sectors in current location, for faster shooting if they come adjacent #
-	#############################################################################################
-	setVar $i 1
-	setvar $photon~adjacent_sectors " "
-	while (SECTOR.WARPS[$player~current_sector][$i] > 0)
-		setVar $tempAdj SECTOR.WARPS[$player~current_sector][$i]
-		setvar $photon~adjacent_sectors $photon~adjacent_sectors&" "&$tempAdj&" "
-		add $i 1
-	end
 
 	goto :processing
 
@@ -591,6 +618,13 @@
 	setvar $i 1
 	while ($i <= 23)
 		killtrigger ""&$i&""
+		add $i 1
+	end
+	setvar $i 1
+	while ($i <= 6)
+		killtrigger "adjf"&$i&""
+		killtrigger "adjl"&$i&""
+		killtrigger "adja"&$i&""
 		add $i 1
 	end
 	killtrigger wait
