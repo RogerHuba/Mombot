@@ -440,24 +440,22 @@
 #################################################################
 
 :photon_adjacent_limpet
-
+	gosub :photon~limpet_spoof
 	if ($nophoton <> true)
-		gosub :photon~limpet_spoof
 		gosub :photon~fire_adjacent
 	end
 	goto :done_firing
 
-
 :photon_adjacent_armid
+	gosub :photon~armid_spoof
 	if ($nophoton <> true)
-		gosub :photon~armid_spoof
 		gosub :photon~fire_adjacent
 	end
 	goto :done_firing
 
 :photon_adjacent_fighter
+	gosub :photon~fighter_spoof
 	if ($nophoton <> true)
-		gosub :photon~fighter_spoof
 		gosub :photon~fire_adjacent
 	end
 	goto :done_firing
@@ -476,7 +474,7 @@
 
 
 :check_to_fire_photon
-	gosub :killtriggers
+	killalltriggers
 	if ($photon~found = true)
 		if ($photon~retreatfighter <> true)
 			if (($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
