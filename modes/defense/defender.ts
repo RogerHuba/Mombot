@@ -336,7 +336,7 @@
 		setTextLineTrigger 18 :scan " enters the game."
 		setDelayTrigger	   19 :announce	1200000
 		setDelayTrigger	   20 :head_home_timeout 3600000
-		setTextLineTrigger 24 :manualPwarp "Planetary TransWarp Drive Engaged!"
+		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
 		
 
 		#############################################################################################
@@ -626,9 +626,6 @@
 		gosub :player~quikstats
 		goto :processing
 
-:manualPwarp
-		goSub :player~quikstats
-		goto :scan
 
 
 
