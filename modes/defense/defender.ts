@@ -589,7 +589,7 @@
 ############################################################################################
 
 :scan
-	gosub :killtriggers
+	killalltriggers
 	gosub :killing~checkForVictims
 	if ($killing~error = true)
 		goto :head_home
