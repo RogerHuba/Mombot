@@ -409,6 +409,7 @@
 			if ($player~current_sector <> $map~home_sector)
 				gosub :navigate~navigate_to_limp
 				gosub :killing~scan_for_targets
+				gosub :navigate~runaway_if_needed
 				gosub :restock~refurb_photons
 				send "p"&$map~home_sector&"*y "
 			end
