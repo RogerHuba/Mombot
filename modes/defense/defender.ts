@@ -710,6 +710,7 @@ return
 
 :pwarp_direct_and_kill
 	send "p" $photon~sector "*y   "
+	waiton "All Systems Ready, shall we engage? Yes"
 	gosub :player~quikstats
 	setvar $pwarp_success false
 	if ($player~current_sector = $photon~sector)
