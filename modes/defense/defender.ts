@@ -440,19 +440,26 @@
 #################################################################
 
 :photon_adjacent_limpet
-	gosub :photon~limpet_spoof
-	gosub :photon~fire_adjacent
+
+	if ($nophoton <> true)
+		gosub :photon~limpet_spoof
+		gosub :photon~fire_adjacent
+	end
 	goto :done_firing
 
 
 :photon_adjacent_armid
-	gosub :photon~armid_spoof
-	gosub :photon~fire_adjacent
+	if ($nophoton <> true)
+		gosub :photon~armid_spoof
+		gosub :photon~fire_adjacent
+	end
 	goto :done_firing
 
 :photon_adjacent_fighter
-	gosub :photon~fighter_spoof
-	gosub :photon~fire_adjacent
+	if ($nophoton <> true)
+		gosub :photon~fighter_spoof
+		gosub :photon~fire_adjacent
+	end
 	goto :done_firing
 
 
