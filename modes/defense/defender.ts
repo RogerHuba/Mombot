@@ -382,18 +382,26 @@
 			gosub :restock~refurb_photons
 			send "p"&$map~home_sector&"*y "
 		end
-		setvar $movefig~planetorsector "p"
-		gosub :movefig~run
-
-		send "q"
-		gosub :PLANET~getPlanetInfo	
-		send "t*t1* c "
-		if ($planet~planet_fighters < 10000)
-			setvar $switchboard~message "Even after grabbing figs from sector, not enough fighters.  Shutting down..*"
-			gosub :switchboard~switchboard
-			halt
+		if ($player~current_prompt = "Citadel")
+			send "q"
+			gosub :PLANET~getPlanetInfo	
+			send "t*t1* c "
+			if (($planet~PLANET_FIGHTERS_MAX - $planet~planet_fighters) > ($ship~SHIP_FIGHTERS_MAX))
+				setvar $movefig~planetorsector "p"
+				gosub :movefig~run
+			end
 		end
-
+		gosub :player~quikstats
+		if ($player~current_prompt = "Citadel")		
+			send "q"
+			gosub :PLANET~getPlanetInfo	
+			send "t*t1* c "
+			if ($planet~planet_fighters < 10000)
+				setvar $switchboard~message "Even after grabbing figs from sector, not enough fighters.  Shutting down..*"
+				gosub :switchboard~switchboard
+				halt
+			end
+		end
 		goto :processing
 
 	halt
