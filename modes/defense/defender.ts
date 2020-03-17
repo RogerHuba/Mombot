@@ -409,6 +409,9 @@
 			if ($player~current_sector <> $map~home_sector)
 				gosub :navigate~navigate_to_limp
 				gosub :killing~scan_for_targets
+				if ($killing~error = true)
+					goto :head_home
+				end
 				gosub :restock~refurb_photons
 				send "p"&$map~home_sector&"*y "
 			end
@@ -702,6 +705,9 @@ return
 	if (($player~photons <= 0) and ($nophoton <> true))
 		gosub :navigate~navigate_to_limp
 		gosub :killing~scan_for_targets
+		if ($killing~error = true)
+			goto :head_home
+		end
 		gosub :navigate~runaway_if_needed
 		gosub :restock~refurb_photons
 	end
