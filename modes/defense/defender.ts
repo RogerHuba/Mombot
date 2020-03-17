@@ -491,27 +491,27 @@
 		else
 			gosub :photon~retreatphoton
 		end
-		setVar $i 1
-		while (SECTOR.WARPS[$player~current_sector][$i] > 0)
-			setTextTrigger "adjl"&$i&"" :photon_adjacent_limpet "Limpet mine in "&SECTOR.WARPS[$player~current_sector][$i]&" "
-			setTextTrigger "adjf"&$i&"" :photon_adjacent_fighter "Deployed Fighters Report Sector "&SECTOR.WARPS[$player~current_sector][$i]&":"
-			setTextTrigger "adja"&$i&"" :photon_adjacent_armid "Your mines in "&SECTOR.WARPS[$player~current_sector][$i]&" "
-			add $i 1
-		end
-		if ($limpet)
-			setTextTrigger 1 :attackSectorLimpet "Limpet mine in "
-		end
-		if ($armid)
-			setTextTrigger 2 :attackSectorMine "Your mines in "
-		end
-		if ($fighter)
-			setTextTrigger 3 :attackSectorFighter "Deployed Fighters "
-		end
-		setDelayTrigger wait :done_waiting_for_hits 300
-		pause
-
-		:done_waiting_for_hits
-			gosub :killtriggers
+#		setVar $i 1
+#		while (SECTOR.WARPS[$player~current_sector][$i] > 0)
+#			setTextTrigger "adjl"&$i&"" :photon_adjacent_limpet "Limpet mine in "&SECTOR.WARPS[$player~current_sector][$i]&" "
+#			setTextTrigger "adjf"&$i&"" :photon_adjacent_fighter "Deployed Fighters Report Sector "&SECTOR.WARPS[$player~current_sector][$i]&":"
+#			setTextTrigger "adja"&$i&"" :photon_adjacent_armid "Your mines in "&SECTOR.WARPS[$player~current_sector][$i]&" "
+#			add $i 1
+#		end
+#		if ($limpet)
+#			setTextTrigger 1 :attackSectorLimpet "Limpet mine in "
+#		end
+#		if ($armid)
+#			setTextTrigger 2 :attackSectorMine "Your mines in "
+#		end
+#		if ($fighter)
+#			setTextTrigger 3 :attackSectorFighter "Deployed Fighters "
+#		end
+#		setDelayTrigger wait :done_waiting_for_hits 300
+#		pause
+#
+#		:done_waiting_for_hits
+#			gosub :killtriggers
 
 		:done_firing
 		killalltriggers
@@ -522,8 +522,15 @@
 			gosub :killing~slingshot
 		elseif ($killing~holokill = true)
 			gosub :killing~doholokill
-			gosub :killing~doholokill
-			gosub :killing~doholokill
+			gosub :pwarp_direct_and_kill
+			if ($pwarp_success <> true)
+				gosub :killing~doholokill
+				gosub :pwarp_direct_and_kill
+			end
+			if ($pwarp_success <> true)
+				gosub :killing~doholokill
+				gosub :pwarp_direct_and_kill
+			end
 		end
 		if (((($photon~adjacentphoton = true) and ($photon~success = true)) or ($nophoton = true)) and ($holo = true))
 			gosub :doholo
@@ -693,6 +700,18 @@ return
 	end
 return
 
+:pwarp_direct_and_kill
+	send "p" $sector "*y   "
+	gosub :player~quikstats
+	setvar $pwarp_success false
+	if ($player~current_sector = $sector)
+		setvar $pwarp_success true
+		gosub :killing~scan_for_targets
+		if ($killing~error = true)
+			goto :head_home
+		end
+	end
+return
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
