@@ -199,6 +199,8 @@
 	gosub :PLANET~getPlanetInfo	
 	send "t*t1* c "
 
+	setvar $call~starting_planet $planet~planet
+
 
 	#######################################################################################################
 	# need to add a check here to make sure no nav haz or enemy limpets in starting sector before furbing #
@@ -212,7 +214,9 @@
     end
 
     gosub :SHIP~getShipStats
-    gosub :player~quikstats
+	gosub :player~quikstats
+
+	setvar $call~starting_max_fighters $ship~SHIP_FIGHTERS_MAX
 
 	gosub :check_for_photon_refurb
 
@@ -353,55 +357,66 @@
 			setvar $description $description&"Density "
 		end
 		if ($killing~holokill)
-			setvar $description $description&"Holokill "
+			if ($killing~capture)
+				setvar $description $description&"Holocap "
+			else
+				setvar $description $description&"Holokill "
+			end
 		end
 		if ($killing~slingshot)
 			setvar $description $description&"Slingshot "
+		end
+		if ($killing~capture)
+			setvar $description $description&"Capture "
 		end
 		trim $description
 		if ($description <> "")
 			setvar $description " ("&$description&")"
 		end
 		setvar $switchboard~message $script_ver&$description&" is online and ready to fire.*"
-
 		gosub :switchboard~switchboard
+
 		setDelayTrigger	   22 :announce	1200000
 		pause		
 
-		:head_home_timeout 
+		:head_home_timeout
+			gosub :killtriggers
 			if ($player~current_sector <> $map~home_sector)
 				setvar $switchboard~message "No activity in an hour, so heading home.*"
 				gosub :switchboard~switchboard
+			else
+				goto :processing
 			end
 		:head_home 
-		gosub :player~quikstats
-		echo ansi_2&"*Checking status after inactivity..*"
-		if ($player~current_sector <> $map~home_sector)
-			gosub :navigate~navigate_to_limp
-			gosub :killing~scan_for_targets
-			gosub :restock~refurb_photons
-			send "p"&$map~home_sector&"*y "
-		end
-		if ($player~current_prompt = "Citadel")
-			send "q"
-			gosub :PLANET~getPlanetInfo	
-			send "t*t1* c "
-			if (($planet~PLANET_FIGHTERS_MAX - $planet~planet_fighters) > ($ship~SHIP_FIGHTERS_MAX))
-				setvar $movefig~planetorsector "p"
-				gosub :movefig~run
+			gosub :killtriggers
+			gosub :player~quikstats
+			echo ansi_2&"*Checking status after inactivity..*"
+			if ($player~current_sector <> $map~home_sector)
+				gosub :navigate~navigate_to_limp
+				gosub :killing~scan_for_targets
+				gosub :restock~refurb_photons
+				send "p"&$map~home_sector&"*y "
 			end
-		end
-		gosub :player~quikstats
-		if ($player~current_prompt = "Citadel")		
-			send "q"
-			gosub :PLANET~getPlanetInfo	
-			send "t*t1* c "
-			if ($planet~planet_fighters < 10000)
-				setvar $switchboard~message "Even after grabbing figs from sector, not enough fighters.  Shutting down..*"
-				gosub :switchboard~switchboard
-				halt
+			if ($player~current_prompt = "Citadel")
+				send "q"
+				gosub :PLANET~getPlanetInfo	
+				send "t*t1* c "
+				if (($planet~PLANET_FIGHTERS_MAX - $planet~planet_fighters) > ($ship~SHIP_FIGHTERS_MAX))
+					setvar $movefig~planetorsector "p"
+					gosub :movefig~run
+				end
 			end
-		end
+			gosub :player~quikstats
+			if ($player~current_prompt = "Citadel")		
+				send "q"
+				gosub :PLANET~getPlanetInfo	
+				send "t*t1* c "
+				if ($planet~planet_fighters < $ship~SHIP_FIGHTERS_MAX)
+					setvar $switchboard~message "Even after grabbing figs from sector, not enough fighters.  Shutting down..*"
+					gosub :switchboard~switchboard
+					halt
+				end
+			end
 		goto :processing
 
 	halt
@@ -488,7 +503,7 @@
 			if ($killing~error = true)
 				goto :head_home
 			end
-			gosub :runaway
+			gosub :navigate~runaway_if_needed
 		end
 		####################
 		# check for refurb #
@@ -519,7 +534,7 @@
 		if ($killing~error = true)
 			goto :head_home
 		end
-		gosub :runaway
+		gosub :navigate~runaway_if_needed
 	end
 	#############################################################################################
 	# Check for adjacent sectors in current location, for faster shooting if they come adjacent #
@@ -551,7 +566,7 @@
 	# they could be sitting above in defender ship                 #
 	################################################################
 
-	gosub :runaway
+	gosub :navigate~runaway_if_needed
 	goto :processing
 
 
@@ -597,88 +612,49 @@ return
 return
 
 :doMines
-	setVar $BOT~command "mines"
-	setVar $BOT~user_command_line " 3"
-	setvar $bot~parm1 "3"
+	setVar $BOT~command "deploy"
+	setVar $BOT~user_command_line " mines 3"
+	setvar $bot~parm1 "mines"
+	setvar $bot~parm2 "3"
 
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
 	saveVar $bot~parm1 
 
-	load "scripts\mombot\commands\grid\mines.cts"
-	setEventTrigger        minesend        :minesend "SCRIPT STOPPED" "scripts\mombot\commands\grid\mines.cts"
+	load "scripts\mombot\commands\grid\deploy.cts"
+	setEventTrigger        minesend        :minesend "SCRIPT STOPPED" "scripts\mombot\commands\grid\deploy.cts"
+	setdelaytrigger        minetime        :minetime  10000
 	pause
-	:minesend
+
+	:minetime
 		killtrigger minesend
+		stop "scripts\mombot\commands\grid\deploy.cts"
+		gosub :player~quikstats
+	:minesend
+		killtrigger minetime
+		gosub :player~quikstats
+		if ($player~current_prompt <> "Citadel")
+			send " q q q * l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			gosub :player~quikstats
+			if ($player~current_prompt <> "Citadel")
+				setvar $switchboard~message "Not at correct prompt after mine deploy!  Maybe planet is gone?  Check please!*"
+				gosub :switchboard~switchboard
+				gosub :navigate~callsaveme
+			end
+		end
+
 return
 
 :check_for_photon_refurb
 	if (($player~photons <= 0) and ($nophoton <> true))
 		gosub :navigate~navigate_to_limp
 		gosub :killing~scan_for_targets
-		if ($sector~realTraderCount = $sector~corpieCount)
-			#############################################
-			# do nothing if there is no enemy in sector #
-			#############################################
-		else
-			gosub :navigate~navigate_away
-			####################################################################
-			# after navigating away, check for enemies in sector, just in case #
-			####################################################################
-			gosub :killing~scan_for_targets
-		end
+		gosub :navigate~runaway_if_needed
 		gosub :restock~refurb_photons
 	end
 return
 
 
-:runaway
-
-	if ($player~current_sector <> $map~home_sector)	
-		if (($sector~realTraderCount = $sector~corpieCount) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1))
-			#############################################
-			# do nothing if there is no enemy in sector #
-			#############################################
-
-			if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
-				gosub :doMines
-			end
-		else
-			setVar $containsShieldedPlanet FALSE
-			setVar $shieldedPlanetCount 0
-			setVar $i 1
-			while ($i <= SECTOR.PLANETCOUNT[$player~current_sector])
-				getWord SECTOR.PLANETS[$player~current_sector][$i] $test 1
-				if ($test = "<<<<")
-					setVar $containsShieldedPlanet TRUE
-					add $shieldedPlanetCount 1
-				end
-				add $i 1
-			end
-			if (SECTOR.PLANETCOUNT[$player~current_sector] < 1)
-				#################################################
-				# call saveme if there are no planets in sector #
-				#################################################
-				gosub :call~run
-			end
-			################################################
-			#  TODO                                        #
-			#for logic later to avoid only shielded planets#
-		    ################################################
-
-			:runaway_again
-			gosub :navigate~navigate_away
-			####################################################################
-			# after navigating away, check for enemies in sector, just in case #
-			####################################################################
-			gosub :killing~scan_for_targets
-			if (SECTOR.PLANETCOUNT[$player~current_sector] > 1)
-				setSectorParameter $player~current_sector "FIGSEC" false
-				goto :runaway_again
-			end
-		end
-	end	
-return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"

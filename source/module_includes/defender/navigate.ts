@@ -163,3 +163,69 @@ return
 	end
 	halt
 return
+
+:runaway_if_needed
+	if ((($sector~realTraderCount = $sector~corpieCount) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1)) or ($player~current_sector = $map~home_sector))
+		#############################################
+		# do nothing if there is no enemy in sector #
+		#############################################
+
+		if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
+			gosub :doMines
+		end
+	else
+		setVar $containsShieldedPlanet FALSE
+		setVar $shieldedPlanetCount 0
+		setVar $i 1
+		while ($i <= SECTOR.PLANETCOUNT[$player~current_sector])
+			getWord SECTOR.PLANETS[$player~current_sector][$i] $test 1
+			if ($test = "<<<<")
+				setVar $containsShieldedPlanet TRUE
+				add $shieldedPlanetCount 1
+			end
+			add $i 1
+		end
+		if (SECTOR.PLANETCOUNT[$player~current_sector] < 1)
+			#################################################
+			# call saveme if there are no planets in sector #
+			#################################################
+			gosub :call~run
+		end
+		################################################
+		#  TODO                                        #
+		#for logic later to avoid only shielded planets#
+	    ################################################
+
+		:runaway_again
+		gosub :navigate~navigate_away
+		####################################################################
+		# after navigating away, check for enemies in sector, just in case #
+		####################################################################
+		gosub :killing~scan_for_targets
+		if (SECTOR.PLANETCOUNT[$player~current_sector] > 1)
+			setSectorParameter $player~current_sector "FIGSEC" false
+			goto :runaway_again
+		end
+	end
+	gosub :player~quikstats
+	if ($player~current_prompt <> "Citadel")
+		setvar $switchboard~message "Wrong prompt!  Something has gone wrong during runaway.*"
+		gosub :switchboard~switchboard
+		gosub :call~run
+	end
+	gosub :SHIP~getShipStats
+	if ($call~starting_max_fighters <> $ship~SHIP_FIGHTERS_MAX)
+		setvar $switchboard~message "I've been podded, but I am still on the planet.  Heading home and halting..*"
+		gosub :switchboard~switchboard
+		send "p"&$map~home_sector&"* y "
+		halt
+	end
+
+return
+
+:callsaveme
+	gosub :call~run
+	gosub :killing~scan_for_targets
+	gosub :runaway_if_needed
+return
+

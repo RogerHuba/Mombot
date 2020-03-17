@@ -192,12 +192,20 @@ return
 	setdelaytrigger        densitytime        :densitytime  120000
 	pause
 	:densitytime
-		killalltriggers
+		killtrigger densityended
 		stop "scripts\mombot\modes\offense\density.cts"
-		gosub :player~quikstats
-		gosub :planet~landingsub
 	:densityended
-		killalltriggers
+		killtrigger densitytime
+		gosub :player~quikstats
+		if ($player~current_prompt <> "Citadel")
+			send " q q q * l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			gosub :player~quikstats
+			if ($player~current_prompt <> "Citadel")		
+				setvar $switchboard~message "Not at correct prompt after density!  Maybe planet is gone?  Check please!*"
+				gosub :switchboard~switchboard
+				gosub :navigate~callsaveme
+			end
+		end
 return
 
 

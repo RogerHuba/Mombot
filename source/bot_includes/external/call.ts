@@ -1,12 +1,12 @@
 :run
-:holo
+:call
 	setVar $BOT~command "call"
 	if ($capture)
-		setvar $bot~parm1 "cap"
-		setVar $BOT~user_command_line " call  cap"
+		setvar $bot~parm1 ""
+		setVar $BOT~user_command_line " call  "
 	elseif ($kill)
-		setvar $bot~parm1 "kill"
-		setVar $BOT~user_command_line " call kill "
+		setvar $bot~parm1 ""
+		setVar $BOT~user_command_line " call  "
 	else
 		setVar $BOT~user_command_line " call"
 	end
@@ -27,4 +27,34 @@
 	setEventTrigger        callend1        :callend1 "SCRIPT STOPPED" "scripts\mombot\commands\defense\call.cts"
 	pause
 	:callend1
+
+
+	gosub :player~quikstats
+	if ($player~current_prompt <> "Citadel")
+		setvar $switchboard~message "Not on planet even after call saveme.  I'm in real trouble.  Will try again in 15 seconds.*"
+		gosub :switchboard~switchboard
+
+		killalltriggers
+		setDelayTrigger	   1 :call	15000
+		pause
+	end
+	
+	gosub :SHIP~getShipStats
+	setvar $call~starting_max_fighters $ship~SHIP_FIGHTERS_MAX
+
+	if ($starting_max_fighters <> $ship~SHIP_FIGHTERS_MAX)
+		setvar $switchboard~message "Looks like I've been podded after saveme!  Heading back home, and shutting down.*"
+		gosub :switchboard~switchboard
+		send "p"&$map~home_sector&"* y "
+		halt
+	end
+
+	gosub :planet~getplanetinfo
+	if ($starting_planet <> $planet~planet)
+		setvar $switchboard~message "Looks like I'm on a different planet than I started with.  Make sure the other one is picked up.  Will continue on my defender mission, though.*"
+		gosub :switchboard~switchboard
+
+		setvar $starting_planet $planet~planet		
+	end
+
 return
