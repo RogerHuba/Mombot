@@ -336,6 +336,8 @@
 		setTextLineTrigger 18 :scan " enters the game."
 		setDelayTrigger	   19 :announce	1200000
 		setDelayTrigger	   20 :head_home_timeout 3600000
+		setTextLineTrigger 24 :manualPwarp "Planetary TransWarp Drive Engaged!"
+		
 
 		#############################################################################################
 		# Check for adjacent sectors in current location, for faster shooting if they come adjacent #
@@ -624,22 +626,27 @@
 		gosub :player~quikstats
 		goto :processing
 
+:manualPwarp
+		goSub :player~quikstats
+		goto :scan
+
 
 
 :killtriggers
-	setvar $i 1
-	while ($i <= 23)
-		killtrigger ""&$i&""
-		add $i 1
-	end
-	setvar $i 1
-	while ($i <= 6)
-		killtrigger "adjf"&$i&""
-		killtrigger "adjl"&$i&""
-		killtrigger "adja"&$i&""
-		add $i 1
-	end
-	killtrigger wait
+	killalltriggers
+#	setvar $i 1
+#	while ($i <= 23)
+#		killtrigger ""&$i&""
+#		add $i 1
+#	end
+#	setvar $i 1
+#	while ($i <= 6)
+#		killtrigger "adjf"&$i&""
+#		killtrigger "adjl"&$i&""
+#		killtrigger "adja"&$i&""
+#		add $i 1
+#	end
+#	killtrigger wait
 return
 
 
