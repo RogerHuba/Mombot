@@ -134,9 +134,8 @@
 		setvar $switchboard~message "Doubletap mode enabled.*"
 		gosub :switchboard~switchboard
 	end
-	send "c  s* "
+	send "c  "
 
-	setvar $first true
 	goto :scanit_cit_kill
 
 :main
