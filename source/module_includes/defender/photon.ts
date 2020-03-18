@@ -103,6 +103,13 @@ return
 	     return
 	end
 
+	############################################################################################
+	# saving fighter line to look up ship for quasar hits                                      #
+	# the idea is to set the sector cannon to kill the type of ship that is hitting grid last. #
+	############################################################################################
+
+	setvar $killing~last_fighter_attack CURRENTLINE
+
 	#############################
 	# Torp only on sector entry #
 	#############################
@@ -142,12 +149,6 @@ return
 		 return
 	end
 
-	############################################################################################
-	# saving fighter line to look up ship for quasar hits                                      #
-	# the idea is to set the sector cannon to kill the type of ship that is hitting grid last. #
-	############################################################################################
-
-	setvar $killing~last_fighter_attack CURRENTLINE
 	setvar $found true
 return
 
