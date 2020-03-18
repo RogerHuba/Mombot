@@ -529,12 +529,14 @@
 			gosub :killing~slingshot
 		elseif ($killing~holokill = true)
 			gosub :killing~doholokill
-			gosub :pwarp_direct_and_kill
-			if ($pwarp_success <> true)
+			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+				gosub :pwarp_direct_and_kill
+			end
+			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
 				gosub :killing~doholokill
 				gosub :pwarp_direct_and_kill
 			end
-			if ($pwarp_success <> true)
+			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
 				gosub :killing~doholokill
 				gosub :pwarp_direct_and_kill
 			end
