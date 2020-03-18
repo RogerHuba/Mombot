@@ -105,9 +105,9 @@
 
 	getwordpos " "&$bot~user_command_line&" " $pos " auto "
 	if ($pos > 0)
-		setvar $auto true
+		setvar $killing~auto true
 	else
-		setvar $auto false
+		setvar $killing~auto false
 	end
 
 	getwordpos " "&$bot~user_command_line&" " $pos " holo "
@@ -562,7 +562,7 @@
 		####################
 		gosub :player~quikstats
 		gosub :check_for_photon_refurb
-		if (($killing~last_fighter_attack <> "") and ($auto = true))
+		if ($killing~last_fighter_attack <> "")
 			gosub :killing~set_the_cannon
 		end
 
