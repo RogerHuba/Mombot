@@ -10,13 +10,11 @@
 
 	if ($PLAYER~startingLocation = "Citadel")
 		send "s"
-		waiton "<Scan Sector>"
 	else
 		if ($player~fedspace = true)
 			send "*"
 		else
 			send "*"
-			waiton "<Re-Display>"
 		end
 	end
 	setVar $sectorData ""
