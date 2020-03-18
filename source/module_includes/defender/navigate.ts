@@ -118,7 +118,17 @@ return
 			if ((((($isFigged = true) and ($isLimped = true)) and ($isMsl <> true)) or ($isBubble = true)) and (sector.navhaz[$focus] <= 0))
 				setVar $nearfig $focus
 				gosub :pwarp_away
-				send "s* "
+				send "s"
+				settexttrigger nomines :nomines "Citadel command (?=help)" 
+				settexttrigger mines :mines "Mined Sector: Do you wish to Avoid this sector in the future? (Y/N)"
+				pause
+
+				:mines
+				send "* "
+				:nomines
+				killtrigger nomines
+				killtrigger mines
+				
 				if (sector.navhaz[$nearfig] > 0)
 					########################################
 					# don't restock where there is nav haz #
