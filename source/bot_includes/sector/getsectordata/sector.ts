@@ -11,30 +11,12 @@
 	if ($PLAYER~startingLocation = "Citadel")
 		send "s"
 		waiton "<Scan Sector>"
-		settexttrigger nominescit :nominescit "Citadel command (?=help)" 
-		settexttrigger minescit :minescit "Mined Sector: Do you wish to Avoid this sector in the future? (Y/N)"
-		pause
-
-		:minescit
-		send "* "
-		:nominescit
-		killtrigger nominescit
-		killtrigger minescit
 	else
 		if ($player~fedspace = true)
 			send "*"
 		else
 			send "*"
 			waiton "<Re-Display>"
-			settexttrigger nomines :nomines "Citadel command (?=help)" 
-			settexttrigger mines :mines "Mined Sector: Do you wish to Avoid this sector in the future? (Y/N)"
-			pause
-
-			:mines
-			send "* "
-			:nomines
-			killtrigger nomines
-			killtrigger mines
 		end
 	end
 	setVar $sectorData ""
@@ -50,6 +32,16 @@
 		end
 		pause
 	:gotSectorData
+		settexttrigger nomines :nomines "Citadel command (?=help)" 
+		settexttrigger mines :mines "Mined Sector: Do you wish to Avoid this sector in the future? (Y/N)"
+		pause
+
+		:mines
+		send "* "
+		:nomines
+		killtrigger nomines
+		killtrigger mines
+
 		getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 		if ($beaconPos > 0)
 			setVar $containsBeacon TRUE
