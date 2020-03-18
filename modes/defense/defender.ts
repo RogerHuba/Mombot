@@ -280,7 +280,7 @@
 	else
 		setVar $message $message&"*                    Holo Report: No"
 	end
-	if ($auto)
+	if ($killing~auto)
 		setVar $message $message&"*                   Cannon Reset: Yes"
 	else
 		setVar $message $message&"*                   Cannon Reset: No"
@@ -709,17 +709,21 @@ return
 return
 
 :pwarp_direct_and_kill
+	setTextTrigger 1 :jumped "All Systems Ready, shall we engage? Yes"
+	settexttrigger 2 :no_jump "Your own fighters must be in the destination to make a safe jump"
 	send "p" $photon~sector "*y   "
-	waiton "All Systems Ready, shall we engage? Yes"
-	gosub :player~quikstats
-	setvar $pwarp_success false
-	if ($player~current_sector = $photon~sector)
+	pause
+	:no_jump
+		killtrigger 1
+		setvar $pwarp_success false
+		return
+	:jumped
+		killtrigger 2
 		setvar $pwarp_success true
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
 			goto :head_home
 		end
-	end
 return
 
 #INCLUDES:
