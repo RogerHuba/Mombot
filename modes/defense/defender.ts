@@ -521,6 +521,10 @@
 		#############################################
 		# holoscan sector to see if victim is there #
 		#############################################
+		gosub :killing~scan_for_targets
+		if ($killing~error = true)
+			goto :head_home
+		end
 		if ($killing~slingshot = true)
 			gosub :killing~slingshot
 		elseif ($killing~holokill = true)
