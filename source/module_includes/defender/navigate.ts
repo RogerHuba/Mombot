@@ -32,8 +32,8 @@
 				setvar $issecure true
 				while (SECTOR.WARPSIN[$focus][$i] > 0)
 					setVar $tempAdj SECTOR.WARPSIN[$focus][$i]
-					getSectorParameter $tempAdj "FIGSEC" $isFigged
-					if ($isFigged <> true)
+					getSectorParameter $tempAdj "FIGSEC" $isSecureFigged
+					if ($isSecureFigged <> true)
 						setvar $issecure false
 					end
 					add $i 1
