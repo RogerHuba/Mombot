@@ -33,6 +33,7 @@
 		pause
 	:gotSectorData
 		settexttrigger nomines :nomines "Citadel command (?=help)" 
+		settexttrigger nomines2 :nomines "Command ["
 		settexttrigger mines :mines "Mined Sector: Do you wish to Avoid this sector in the future? (Y/N)"
 		pause
 
@@ -40,6 +41,7 @@
 		send "* "
 		:nomines
 		killtrigger nomines
+		killtrigger nomines2
 		killtrigger mines
 
 		getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
