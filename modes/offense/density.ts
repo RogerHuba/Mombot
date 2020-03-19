@@ -202,8 +202,11 @@
 		end
 	end
 
+	if ((pgrid <> true) and ($kill <> true) and ($killport <> true) and ($photon <> true) and ($pel <> true) and ($holo <> true) and ($call <> true) and ($escape <> true))
+		setvar $photon true
+	end
 	setVar $message "Density Trigger running in sector "&CURRENTSECTOR&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-	setVar $message $message&"*        On Density Change >= "&$density_change&" - "&$density_upper_limit&", I will:"
+	setVar $message $message&"*        On Density Change >= ("&$density_change&" - "&$density_upper_limit&"), I will:"
 	if ($pgrid)
 		setVar $message $message&"*          PGRID to Sector"
 	end
