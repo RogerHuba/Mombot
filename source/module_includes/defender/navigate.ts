@@ -216,19 +216,19 @@ return
 			setSectorParameter $player~current_sector "FIGSEC" false
 			goto :runaway_again
 		end
-	end
-	gosub :player~quikstats
-	if ($player~current_prompt <> "Citadel")
-		setvar $switchboard~message "Wrong prompt!  Something has gone wrong during runaway.*"
-		gosub :switchboard~switchboard
-		gosub :call~run
-	end
-	gosub :SHIP~getShipStats
-	if ($call~starting_max_fighters <> $ship~SHIP_FIGHTERS_MAX)
-		setvar $switchboard~message "I've been podded, but I am still on the planet.  Heading home and halting..*"
-		gosub :switchboard~switchboard
-		send "p"&$map~home_sector&"* y "
-		halt
+		gosub :player~quikstats
+		if ($player~current_prompt <> "Citadel")
+			setvar $switchboard~message "Wrong prompt!  Something has gone wrong during runaway.*"
+			gosub :switchboard~switchboard
+			gosub :call~run
+		end
+		gosub :SHIP~getShipStats
+		if ($call~starting_max_fighters <> $ship~SHIP_FIGHTERS_MAX)
+			setvar $switchboard~message "I've been podded, but I am still on the planet.  Heading home and halting..*"
+			gosub :switchboard~switchboard
+			send "p"&$map~home_sector&"* y "
+			halt
+		end
 	end
 
 return

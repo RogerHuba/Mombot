@@ -1,5 +1,6 @@
 :checkForVictims
 	getWord CURRENTLINE $test 1
+	setvar $error false
 	if (($test = "P") OR ($test = "F") OR ($test = "R") OR ($test = ">"))
 		echo ANSI_14 "*spoof attempt!*"
 		return
