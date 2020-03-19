@@ -36,7 +36,7 @@
 		setvar $history_limit $bot~parm1
 	else
 			setvar $switchboard~message "History limit must be a number*"
-			gosub :switchboard~message
+			gosub :switchboard~switchboard
 			halt
 	end
 	if ($history_limit = 0)
