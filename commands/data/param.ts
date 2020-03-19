@@ -55,9 +55,9 @@ else
             getSectorParameter $i "FIGSEC" $isFigged
             if (($check <> "") AND ($check <> "0"))
                 if ($isFigged = true)
-                    setVar $output $output&" ["&$i&"]"
+                    setVar $output $output&"["&$i&"] "
                 else
-                    setVar $output $output&" "&$i
+                    setVar $output $output&$i&" "
                 end
                 add $count 1
             end
