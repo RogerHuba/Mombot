@@ -1,9 +1,5 @@
 	logging off
 	gosub :BOT~loadVars
-	loadvar $bot~LIMP_COUNT_FILE
-	loadVar $bot~ARMID_COUNT_FILE
-	loadVar $bot~LIMP_FILE
-	loadVar $bot~ARMID_FILE
 
 	setVar $BOT~help[1]  $BOT~tab&" history "
 	setVar $BOT~help[2]  $BOT~tab&"   "
@@ -31,13 +27,8 @@
 	end
 
 	isNumber $isnumber $bot~parm1
-	setvar $default false
 	if ($isnumber = true)
 		setvar $history_limit $bot~parm1
-	else
-			setvar $switchboard~message "History limit must be a number*"
-			gosub :switchboard~switchboard
-			halt
 	end
 	if ($history_limit = 0)
 		setvar $history_limit $BOT~historyCount
