@@ -201,6 +201,11 @@
 			setvar $density_upper_limit 499
 		end
 	end
+	if ($density_change > 499)
+		setvar $density_upper_limit 99999
+	else
+		setvar $density_upper_limit 499
+	end
 
 	if ((pgrid <> true) and ($kill <> true) and ($killport <> true) and ($photon <> true) and ($pel <> true) and ($holo <> true) and ($call <> true) and ($escape <> true))
 		setvar $photon true
