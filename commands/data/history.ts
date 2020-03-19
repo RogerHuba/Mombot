@@ -38,8 +38,9 @@
 
 	setvar $i $BOT~historyCount
 	setvar $count 0
+	setvar $place ($bot~historycount - $history_limit)
 	setvar $switchboard~message $switchboard~message&"Displaying last "&$history_limit&" commands:*"
-	while (($i >= 1) and ($count <= $history_limit))
+	while (($i >= (1+$place)) and ($count <= $history_limit))
 		if ($history[$i] <> "0")
 			setvar $switchboard~message $switchboard~message&$history[$i]&"*"
 		end
