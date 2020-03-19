@@ -28,11 +28,12 @@
 		getWordPos $BOT~historyString $pos "<<|HS|>>"
 	end
 
-	while ($i <= $BOT~historyCount)
+	setvar $i $BOT~historyCount
+	while ($i >= 1)
 		if ($history[$i] <> "0")
-			setvar $switchboard~message $switchboard~message&$history[$i]&"*"
+			setvar $switchboard~message $switchboard~message&"   "&$i&". "$history[$i]&"*"
 		end
-		add $i 1
+		subtract $i 1
 	end
 
 	gosub :switchboard~switchboard
