@@ -23,9 +23,14 @@
 	while (($pos > 0) AND ($BOT~historyCount < $BOT~historyMax))
 		cutText $BOT~historyString $archive 1 ($pos-1)
 		replaceText $BOT~historyString $archive&"<<|HS|>>" "" 
-		setVar $switchboard~message $switchboard~message&$archive&"*"
+		setVar $history[($BOT~historyCount+1)] $archive
 		add $BOT~historyCount 1
 		getWordPos $BOT~historyString $pos "<<|HS|>>"
+	end
+
+	while ($i <= $BOT~historyCount)
+		setvar $switchboard~message $switchboard~message&$history[$i]
+		add $i 1
 	end
 
 	gosub :switchboard~switchboard
