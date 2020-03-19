@@ -195,10 +195,15 @@
 			setVar $SWITCHBOARD~message "Density change amount should be a number.*"
 			goto :dtorp_end
 		end
+		if ($density_change > 499)
+			setvar $density_upper_limit 99999
+		else
+			setvar $density_upper_limit 499
+		end
 	end
 
 	setVar $message "Density Trigger running in sector "&CURRENTSECTOR&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-	setVar $message $message&"*        On Density Change >= "&$density_change&", I will:"
+	setVar $message $message&"*        On Density Change >= "&$density_change&" - "&$density_upper_limit&", I will:"
 	if ($pgrid)
 		setVar $message $message&"*          PGRID to Sector"
 	end
@@ -283,7 +288,7 @@
 		goto :alldone
 	elseif ($density[$w] <> $dens[$w])
 		setVar $diff ($density[$w] - $dens[$w])
-		if ($diff >= $density_change)
+		if (($diff >= $density_change) and ($diff <= $density_upper_limit))
 			gosub :do_action
 			goto :dtorp_end
 		else
