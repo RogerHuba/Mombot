@@ -31,7 +31,7 @@
 	setvar $i $BOT~historyCount
 	while ($i >= 1)
 		if ($history[$i] <> "0")
-			setvar $switchboard~message $switchboard~message&"   "&$i&". "&$history[$i]&"*"
+			setvar $switchboard~message $switchboard~message&$history[$i]&"*"
 		end
 		subtract $i 1
 	end
