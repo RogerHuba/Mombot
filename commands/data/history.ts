@@ -36,7 +36,7 @@
 
 	setvar $i $BOT~historyCount
 	setvar $count 0
-	setvar $switchboard~message $switchboard~message&"Displaying last "&history_limit&" commands in self command prompt:*"
+	setvar $switchboard~message $switchboard~message&"Displaying last "&$history_limit&" commands in self command prompt:*"
 	while (($i >= 1) and ($count <= $history_limit))
 		if ($history[$i] <> "0")
 			setvar $switchboard~message $switchboard~message&$history[$i]&"*"
