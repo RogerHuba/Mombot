@@ -29,7 +29,9 @@
 	end
 
 	while ($i <= $BOT~historyCount)
-		setvar $switchboard~message $switchboard~message&$history[$i]
+		if ($history[$i] <> "0")
+			setvar $switchboard~message $switchboard~message&$history[$i]&"*"
+		end
 		add $i 1
 	end
 
