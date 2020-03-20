@@ -299,21 +299,9 @@
 			halt
 		end
 		gosub :PLAYER~quikstats
-
-		if ($deploymines = true)
-			setVar $_Limps "Max"
-			setVar $_Mines "Max"
-		end
-		if ($killing~holokill)
-			setVar $_Photon "1"
-		else
-			setVar $_Photon "Max"
-		end
-		if ($deploydisruptors = true)
-			setVar $_Disrupt "Max"
-		end
+		setVar $_Photon "1"
 		gosub :DoPurchases
-		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $starting_planet & "* p  s  s * * c *"
 		gosub :PLAYER~quikstats
 		if (currentsector = $MAP~stardock)
 			setvar $switchboard~message "Twarp Error, Should be Hiding on Dock!*"
