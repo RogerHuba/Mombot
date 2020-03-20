@@ -98,6 +98,7 @@
 
 	:invade
 	killalltriggers
+	setvar $no_damage_taken false
 	if ($player~photons <= 0)
 		gosub :refurb_photon
 	end
@@ -105,6 +106,9 @@
 		setvar $pe~destination $bot~parm1
 		gosub :pe~run
 		gosub :player~quikstats
+		if ($player~fighters = $starting_max_fig)
+			setvar $no_damage_taken true
+		end
 		if ($player~ship_type <> $starting_ship_type)
 			send "x    " $bot~safe_ship "*    "
 			setvar $switchboard~message "I seem to have been podded entering the sector.  Check to make sure I'm okay.*"
@@ -117,12 +121,22 @@
 			send "x    " $bot~safe_ship "*    *   "
 			gosub :player~quikstats
 			if (($player~ship_type <> $starting_ship_type) or ($player~ship_number = $bot~safe_ship))
-				setvar $switchboard~message "I seem to have been podded leaving the sector!  Check to make sure I'm okay.*"
-				gosub :switchboard~switchboard
+				if ($player~ship_number = $bot~safe_ship)
+					setvar $switchboard~message "I'm in the safe ship, so somehow I was podded or invading ship is stuck.*"
+					gosub :switchboard~switchboard
+				else
+					setvar $switchboard~message "I seem to have been podded leaving the sector! *"
+					gosub :switchboard~switchboard
+				end
 				halt
 			end
 		else
 			send "l " $starting_planet " * n n * j m * * * j c  *  "		
+		end
+		if ($no_damage_taken)
+			setvar $switchboard~message "No damage taken, seems like sector cannon damage is off.  Time to try a different tactic.*"
+			gosub :switchboard~switchboard			
+			halt
 		end
 		goto :invade
 	else
