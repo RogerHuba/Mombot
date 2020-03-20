@@ -102,6 +102,7 @@
 		gosub :refurb_photon
 	end
 	if ($player~fighters = $starting_max_fig)
+		setvar $pe~destination $bot~parm1
 		gosub :pe~run
 		gosub :player~quikstats
 		if ($player~ship_type <> $starting_ship_type)
