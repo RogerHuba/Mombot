@@ -69,7 +69,7 @@
 	killalltriggers
 	send "q"
 	gosub :PLANET~getPlanetInfo	
-	send "t*t1* c "
+	send "t*t1* m***  c "
 
 
 
