@@ -116,6 +116,7 @@
 				savevar $corpnumber
 			elseif ($wordy = "Ship")
 				getWord $stats $SHIP_NUMBER         ($current_word + 1)
+				getWord $stats $SHIP_TYPE         ($current_word + 2)
 			end
 			add $current_word 1
 			getWord $stats $wordy $current_word

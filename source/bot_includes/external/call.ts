@@ -39,10 +39,7 @@
 		pause
 	end
 	
-	gosub :SHIP~getShipStats
-	setvar $call~starting_max_fighters $ship~SHIP_FIGHTERS_MAX
-
-	if ($starting_max_fighters <> $ship~SHIP_FIGHTERS_MAX)
+	if ($starting_ship_type <> $player~ship_type)
 		setvar $switchboard~message "Looks like I've been podded after saveme!  Heading back home, and shutting down.*"
 		gosub :switchboard~switchboard
 		send "p"&$map~home_sector&"* y "

@@ -222,8 +222,7 @@ return
 			gosub :switchboard~switchboard
 			gosub :call~run
 		end
-		gosub :SHIP~getShipStats
-		if ($call~starting_max_fighters <> $ship~SHIP_FIGHTERS_MAX)
+		if ($call~starting_ship_type <> $player~ship_type)
 			setvar $switchboard~message "I've been podded, but I am still on the planet.  Heading home and halting..*"
 			gosub :switchboard~switchboard
 			send "p"&$map~home_sector&"* y "

@@ -216,7 +216,7 @@
     gosub :SHIP~getShipStats
 	gosub :player~quikstats
 
-	setvar $call~starting_max_fighters $ship~SHIP_FIGHTERS_MAX
+	setvar $call~starting_ship_type $player~ship_type
 
 	gosub :check_for_photon_refurb
 
