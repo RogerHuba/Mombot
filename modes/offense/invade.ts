@@ -93,8 +93,6 @@
 	setvar $starting_max_fig $ship~SHIP_FIGHTERS_MAX
 	setvar $starting_ship_type $player~ship_type
 
-	setVar $INVADER~speed_invade_macro  $INVADER~enter&"     *  "
-	setVar $INVADER~normal_invade_macro $INVADER~enter&"*            "
 
 
 
@@ -104,9 +102,7 @@
 		gosub :refurb_photon
 	end
 	if ($player~fighters = $starting_max_fig)
-		setvar $bot~command "pe"
-		gosub :INVADER~check_invade_macro_params
-		gosub :INVADER~start_invade_macro
+		gosub :pe~run
 		gosub :player~quikstats
 		if ($player~ship_type <> $starting_ship_type)
 			send "x    " $bot~safe_ship "*    "
@@ -527,7 +523,7 @@ return
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
-include "source\module_includes\invader"
+include "source\bot_includes\external\pe"
 include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
