@@ -93,7 +93,7 @@
 	setvar $starting_max_fig $ship~SHIP_FIGHTERS_MAX
 	setvar $starting_ship_type $player~ship_type
 
-
+	setvar $first true
 
 
 	:invade
@@ -195,37 +195,40 @@
 		end
 	end
 
-	if (currentalignment >= 1000)
-		if ($WeAreAdjDock)
-			send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+	if ($first)
+		setvar $first false
+		if (currentalignment >= 1000)
+			if ($WeAreAdjDock)
+				send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			else
+				send "^F" & $START_SECTOR & "*" & $MAP~stardock & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			end
 		else
-			send "^F" & $START_SECTOR & "*" & $MAP~stardock & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			if ($WeAreAdjDock)
+				send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			else
+				send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			end
 		end
-	else
-		if ($WeAreAdjDock)
-			send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
-		else
-			send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
-		end
-	end
-	setTextLineTrigger noJoy :noJoy "*** Error - No route within"
-	setTextTrigger cont :cont "(?="
-	pause
-
-	:noJoy
-		killAllTriggers
-		setvar $switchboard~message "Cannot Find Path to StarDock!*"
-		gosub :switchboard~switchboard
-		send "*"
-		halt
-	:cont
-		killAllTriggers
-		setDelayTrigger Latency_Delay		:Latency_Delay 500
+		setTextLineTrigger noJoy :noJoy "*** Error - No route within"
+		setTextTrigger cont :cont "(?="
 		pause
 
-		:Latency_Delay
+		:noJoy
+			killAllTriggers
+			setvar $switchboard~message "Cannot Find Path to StarDock!*"
+			gosub :switchboard~switchboard
+			send "*"
+			halt
+		:cont
+			killAllTriggers
+			setDelayTrigger Latency_Delay		:Latency_Delay 500
+			pause
 
-		Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
+			:Latency_Delay
+
+			Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
+	end
 		if ((currentalignment >= 1000) OR ($WeAreAdjDock))
 			getdistance $dist1 $START_SECTOR $MAP~stardock
 		else
