@@ -93,7 +93,6 @@
 	setvar $starting_max_fig $ship~SHIP_FIGHTERS_MAX
 	setvar $starting_ship_type $player~ship_type
 
-	gosub :INVADER~check_invade_macro_params
 	setVar $INVADER~speed_invade_macro  $INVADER~enter&"     *  "
 	setVar $INVADER~normal_invade_macro $INVADER~enter&"*            "
 
@@ -105,6 +104,7 @@
 		gosub :refurb_photon
 	end
 	if ($player~fighters = $starting_max_fig)
+		gosub :INVADER~check_invade_macro_params
 		gosub :INVADER~start_invade_macro
 		gosub :player~quikstats
 		if ($player~ship_type <> $starting_ship_type)
