@@ -113,8 +113,8 @@
 		end
 		setvar $player~warpto $starting_sector
 		gosub :player~twarp
-		if ($twarpSuccess <> true)
-			send "x    " $bot~safe_ship "*    "
+		if ($player~twarpSuccess <> true)
+			send "x    " $bot~safe_ship "*    *   "
 			gosub :player~quikstats
 			if (($player~ship_type <> $starting_ship_type) or ($player~ship_number = $bot~safe_ship))
 				setvar $switchboard~message "I seem to have been podded leaving the sector!  Check to make sure I'm okay.*"
