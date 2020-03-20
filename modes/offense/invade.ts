@@ -104,6 +104,7 @@
 		gosub :refurb_photon
 	end
 	if ($player~fighters = $starting_max_fig)
+		setvar $bot~command "pe"
 		gosub :INVADER~check_invade_macro_params
 		gosub :INVADER~start_invade_macro
 		gosub :player~quikstats
