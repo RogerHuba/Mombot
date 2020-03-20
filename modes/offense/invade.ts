@@ -228,28 +228,27 @@
 			:Latency_Delay
 
 			Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
+			if ((currentalignment >= 1000) OR ($WeAreAdjDock))
+				getdistance $dist1 $START_SECTOR $MAP~stardock
+			else
+				getdistance $dist1 $START_SECTOR $RED_adj
+			end
+
+			if ($dist1 <= 0)
+				setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
+				gosub :switchboard~switchboard
+				send "*"
+				halt
+			end
+
+			getdistance $dist2 $MAP~stardock $START_SECTOR
+			if ($dist2 <= 0)
+				setvar $switchboard~message "Insufficient Warp Data Plotting Return Course From Dock*"
+				gosub :switchboard~switchboard
+				send "*"
+				halt
+			end
 	end
-		if ((currentalignment >= 1000) OR ($WeAreAdjDock))
-			getdistance $dist1 $START_SECTOR $MAP~stardock
-		else
-			getdistance $dist1 $START_SECTOR $RED_adj
-		end
-
-		if ($dist1 <= 0)
-			setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
-			gosub :switchboard~switchboard
-			send "*"
-			halt
-		end
-
-		getdistance $dist2 $MAP~stardock $START_SECTOR
-		if ($dist2 <= 0)
-			setvar $switchboard~message "Insufficient Warp Data Plotting Return Course From Dock*"
-			gosub :switchboard~switchboard
-			send "*"
-			halt
-		end
-
 		setVar $ore_req (($dist1 + $dist2) * 3)
 
 		if ($PLAYER~ORE_HOLDS < $ore_req)
@@ -284,20 +283,22 @@
 			end
 		end
 
-	send " C R " & $MAP~stardock & "*Q "
-	setTextLineTrigger itsalive :itsalive "Items     Status  Trading % of max OnBoard"
-	setTextLineTrigger nosoupforme :nosoupforme "I have no information about a port in that sector"
-	pause
-	:nosoupforme
-		killAllTriggers
-		setvar $switchboard~message "StarDock appears to have been Blown Up!*"
-		gosub :switchboard~switchboard
-		send "*"
-		halt
-	:itsalive
-		killAllTriggers
-		waitfor "(?="
-		setVar $msg ""
+	if ($first)
+		send " C R " & $MAP~stardock & "*Q "
+		setTextLineTrigger itsalive :itsalive "Items     Status  Trading % of max OnBoard"
+		setTextLineTrigger nosoupforme :nosoupforme "I have no information about a port in that sector"
+		pause
+		:nosoupforme
+			killAllTriggers
+			setvar $switchboard~message "StarDock appears to have been Blown Up!*"
+			gosub :switchboard~switchboard
+			send "*"
+			halt
+		:itsalive
+			killAllTriggers
+			waitfor "(?="
+			setVar $msg ""
+	end
 		if ((currentalignment >= 1000) AND ($WeAreAdjDock = FALSE))
 			setVar $warpto $MAP~stardock
 			gosub :DoTwarp
