@@ -389,19 +389,9 @@ return
 		:twarp_lock
 			KillAlltriggers
 			if (currentalignment >= 1000)
-				if ($furbing)
-					setVar $str "y * * p s g y g q " 
-				else
-					setVar $str "y * *  " 
-				end
-				send $str
+				send "y * * p s g y g q " 
 			else
-				if ($furbing)
-					setVar $str "y  *  *  m " & $MAP~stardock & " *  *  p s g y g q "
-				else
-					setVar $str "y * *  " 
-				end
-				send $str
+				send "y  *  *  m " & $MAP~stardock & " *  *  p s g y g q "
 			end
 		:twarpDone
 			if ($msg <> "")
