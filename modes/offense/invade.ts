@@ -252,23 +252,23 @@
 				send "*"
 				halt
 			end
+			setVar $ore_req (($dist1 + $dist2) * 3)
+
+			if ($PLAYER~ORE_HOLDS < $ore_req)
+				setvar $switchboard~message "Not Enough ORE In Holds To Make Round Trip.  Needs "&$ore_req&".*"
+				gosub :switchboard~switchboard
+				send "*"
+				halt
+			end
+
+			if ($PLAYER~TWARP_TYPE = "No")
+				setvar $switchboard~message "Must Have Twarp 1 or 2*"
+				gosub :switchboard~switchboard
+				send "*"
+				halt
+			end
+
 	end
-		setVar $ore_req (($dist1 + $dist2) * 3)
-
-		if ($PLAYER~ORE_HOLDS < $ore_req)
-			setvar $switchboard~message "Not Enough ORE In Holds To Make Round Trip.  Needs "&$ore_req&".*"
-			gosub :switchboard~switchboard
-			send "*"
-			halt
-		end
-
-		if ($PLAYER~TWARP_TYPE = "No")
-			setvar $switchboard~message "Must Have Twarp 1 or 2*"
-			gosub :switchboard~switchboard
-			send "*"
-			halt
-		end
-
 		if ($PLAYER~unlimitedGame = 0)
 			gosub :TurnsRequired
 			if ($turnsRequired > currentturns)
@@ -333,7 +333,7 @@ return
 :DoTwarp
 	setVar $msg ""
 	if ($warpto > 0)
-		send "q q * * mz" $warpto "*"
+		send "q t*t1* m*** q * * mz" $warpto "*"
 		setTextTrigger there        :adj_warp "You are already in that sector!"
 		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $warpto & " "
 		setTextTrigger locking      :locking "Do you want to engage the TransWarp drive?"
