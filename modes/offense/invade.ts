@@ -91,6 +91,7 @@
 	setvar $starting_planet $planet~planet
 	setvar $starting_sector $player~current_sector
 	setvar $starting_max_fig $ship~SHIP_FIGHTERS_MAX
+	setvar $starting_max_shields $player~shields
 	setvar $starting_ship_type $player~ship_type
 
 	setvar $first true
@@ -106,7 +107,7 @@
 		setvar $pe~destination $bot~parm1
 		gosub :pe~run
 		gosub :player~quikstats
-		if ($player~fighters = $starting_max_fig)
+		if (($player~fighters = $starting_max_fig) and ($player~shields = $starting_max_shields))
 			setvar $no_damage_taken true
 		end
 		if ($player~ship_type <> $starting_ship_type)
@@ -163,40 +164,43 @@
 		if (($citadelCash+currentcredits) < $cashNeeded)
 			setvar $switchboard~message "Not enough cash ("&$cashNeeded&") for photon in treasury or on hand.*"
 			gosub :switchboard~switchboard
-			gosub :navigate~head_home
-		end
-		send "t f "&($cashNeeded-currentcredits)&"* "
-	end
-	# check adj's for Dock.. if present, then we don't need a jump sector.
-	setVar $i 1
-	setVar $START_SECTOR currentsector
-	setVar $WeAreAdjDock FALSE
-	while ($i <= SECTOR.WARPCOUNT[$START_SECTOR])
-		setVar $adj_start SECTOR.WARPS[$START_SECTOR][$i]
-		if ($adj_start = $MAP~stardock)
-			setVar $WeAreAdjDock TRUE
-		end
-		add $i 1
-	end
-
-	if ((currentalignment < 1000) AND ($WeAreAdjDock = FALSE))
-		setVar $RED_adj 0
-		gosub :FindJumpSector
-		if ($RED_adj <> 0)
-			setvar $switchboard~message "Jump Sector Found - Using Sector "&$RED_adj&"*"
-			gosub :switchboard~switchboard
-			send "*"
-		else
-			waitfor "Command [TL="
-			setvar $switchboard~message "Cannot Find Jump Sector Adjacent Dock*"
-			gosub :switchboard~switchboard
-			send "*"
 			halt
 		end
+		send "t f " ($cashNeeded-currentcredits) "* "
 	end
 
 	if ($first)
 		setvar $first false
+
+		# check adj's for Dock.. if present, then we don't need a jump sector.
+		setVar $i 1
+		setVar $START_SECTOR currentsector
+		setVar $WeAreAdjDock FALSE
+		while ($i <= SECTOR.WARPCOUNT[$START_SECTOR])
+			setVar $adj_start SECTOR.WARPS[$START_SECTOR][$i]
+			if ($adj_start = $MAP~stardock)
+				setVar $WeAreAdjDock TRUE
+			end
+			add $i 1
+		end
+
+		if ((currentalignment < 1000) AND ($WeAreAdjDock = FALSE))
+			setVar $RED_adj 0
+			gosub :FindJumpSector
+			if ($RED_adj <> 0)
+				setvar $switchboard~message "Jump Sector Found - Using Sector "&$RED_adj&"*"
+				gosub :switchboard~switchboard
+				send "*"
+			else
+				waitfor "Command [TL="
+				setvar $switchboard~message "Cannot Find Jump Sector Adjacent Dock*"
+				gosub :switchboard~switchboard
+				send "*"
+				halt
+			end
+		end
+
+
 		if (currentalignment >= 1000)
 			if ($WeAreAdjDock)
 				send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
@@ -284,7 +288,7 @@
 		end
 
 	if ($first)
-		send " C R " & $MAP~stardock & "*Q "
+		send " C R " $MAP~stardock "*Q "
 		setTextLineTrigger itsalive :itsalive "Items     Status  Trading % of max OnBoard"
 		setTextLineTrigger nosoupforme :nosoupforme "I have no information about a port in that sector"
 		pause
@@ -306,7 +310,7 @@
 			setVar $warpto $RED_adj
 			gosub :DoTwarp
 		else
-			send " m " & $MAP~stardock & "*  *  P  S G Y G Q "
+			send " m " $MAP~stardock "*  *  P  S G Y G Q "
 		end
 		if ($msg = "")
 			waitfor "You leave the Galactic Bank."
@@ -316,10 +320,7 @@
 			send "*"
 			halt
 		end
-		gosub :PLAYER~quikstats
-		setVar $_Photon "1"
-		gosub :DoPurchases
-		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $starting_planet & "* p  s  s * * c *"
+		send "h P 1* Q Q Q Q Z N M " $START_SECTOR "* Y  Y  Y  * L Z"  #8  $starting_planet  "* p  s  s * * c *"
 		gosub :PLAYER~quikstats
 		if (currentsector = $MAP~stardock)
 			setvar $switchboard~message "Twarp Error, Should be Hiding on Dock!*"
@@ -327,15 +328,12 @@
 			send "*"
 			halt
 		end
-		send "q tnt1* c "
-	
-
 return
 
 :DoTwarp
 	setVar $msg ""
 	if ($warpto > 0)
-		send "q q * * mz" & $warpto "*"
+		send "q q * * mz" $warpto "*"
 		setTextTrigger there        :adj_warp "You are already in that sector!"
 		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $warpto & " "
 		setTextTrigger locking      :locking "Do you want to engage the TransWarp drive?"
@@ -394,7 +392,7 @@ return
 			if (currentalignment >= 1000)
 				send "y * * p s g y g q " 
 			else
-				send "y  *  *  m " & $MAP~stardock & " *  *  p s g y g q "
+				send "y  *  *  m " $MAP~stardock " *  *  p s g y g q "
 			end
 		:twarpDone
 			if ($msg <> "")
@@ -499,30 +497,6 @@ return
 	setVar $turnsRequired $turnsRequired_temp
 	return
 
-:DoPurchases
-	send "|h "
-	waitfor "<Hardware Emporium>"
-	#=============================================== PURCHASE LIMPS
-	if ($_Photon  <> "")
-		setTextTrigger canhouse :canhouse "How many Photon Missiles do you want"
-		setTextTrigger canthouse :canthouse "<Hardware Emporium> So what are you looking for"
-		send "P "
-		pause
-		:canhouse
-			killAllTriggers
-			if ($_Photon  = "Max")
-				getText CURRENTLINE $buy "(Max" ")"
-				send $buy & "* "
-			else
-				send $_Photon & "* "
-			end
-			waitfor "<Hardware Emporium>"
-		:canthouse
-			killAllTriggers
-	end
-
-	send "|"
-return
 
 
 
