@@ -57,11 +57,11 @@
 		halt
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " f "
+	getwordpos " "&$bot~user_command_line&" " $pos " speed "
 	if ($pos > 0)
-		setvar $fighter true
+		setvar $speed true
 	else
-		setvar $fighter false
+		setvar $speed false
 	end
 
 
@@ -105,6 +105,7 @@
 	end
 	if ($player~fighters = $starting_max_fig)
 		setvar $pe~destination $bot~parm1
+		setvar $pe~speed $speed
 		gosub :pe~run
 		gosub :player~quikstats
 		if (($player~fighters = $starting_max_fig) and ($player~shields = $starting_max_shields))

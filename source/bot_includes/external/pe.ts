@@ -1,9 +1,13 @@
 # requires $pe~destination to be defined #
-
+# $speed to do faster enter #
 :run
 :pe
 	setVar $BOT~command "pe"
-	setVar $BOT~user_command_line " pe "&$destination&" "
+	if ($speed)
+		setVar $BOT~user_command_line " pe "&$destination&" "&" speed "
+	else
+		setVar $BOT~user_command_line " pe "&$destination&" "
+	end
 	setVar $BOT~parm1 $destination
 	setVar $BOT~parm2 ""
 	setVar $BOT~parm3 ""
