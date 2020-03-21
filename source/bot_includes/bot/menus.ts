@@ -1327,7 +1327,7 @@ return
 	echo ANSI_10&#27&"[35m<"&#27&"[32m1"&#27&"[35m> "&ANSI_7&$qss_var[7] &"*"
 	echo "*"
 	echo ANSI_10&#27&"[35m<"&#27&"[32mB"&#27&"[35m> "&ANSI_7&$qss_var[1] &"*"
-	echo ANSI_10&#27&"[35m<"&#27&"[32mS"&#27&"[35m> "&ANSI_7&$qss_var[2] &"*"
+	echo ANSI_10&#27&"[35m<"&#27&"[32mN"&#27&"[35m> "&ANSI_7&$qss_var[2] &"*"
 	echo ANSI_10&#27&"[35m<"&#27&"[32mL"&#27&"[35m> "&ANSI_7&$qss_var[3] &"*"
 	echo ANSI_10&#27&"[35m<"&#27&"[32mP"&#27&"[35m> "&ANSI_7&$qss_var[4] &"*"
 	echo ANSI_10&#27&"[35m<"&#27&"[32mG"&#27&"[35m> "&ANSI_7&$qss_var[5] &"*"
@@ -1374,7 +1374,7 @@ return
 			killalltriggers
 			getInput $BOT~letter "Please Enter your Game Letter"
 			savevar $bot~letter
-		elseif ($chosen_option = "S")
+		elseif ($chosen_option = "N")
 			killalltriggers
 			getInput $BOT~servername "Please Enter your Server Name"
 			savevar $bot~servername
