@@ -384,6 +384,9 @@
 		if ($killing~capture)
 			setvar $description $description&"Capture "
 		end
+		if ($navigate~securePwarp)
+			setvar $description $description&"Secure "
+		end
 		trim $description
 		if ($description <> "")
 			setvar $description " ("&$description&")"

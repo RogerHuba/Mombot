@@ -25,7 +25,7 @@
 	else
 		setvar $player~override false
 	end
-	if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1))
+	if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
 		if ($player~fighters < 1000)
 			setvar $error true
 			setvar $switchboard~message "We don't have enough fighters - time to get out of here.*"
@@ -40,7 +40,7 @@
 			gosub :combat~fastCitadelAttack
 		end
 		goto :scan_for_targets
-	elseif ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE)) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1))
+	elseif ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE)))
 		if ($player~fighters < 1000)
 			setvar $error true
 			setvar $switchboard~message "We don't have enough fighters - time to get out of here.*"
