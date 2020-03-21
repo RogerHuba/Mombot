@@ -15,7 +15,8 @@
 	loadvar $game~photon_cost
 	loadvar $game~DISRUPTOR_COST
 	loadvar $bot~username
-
+	lowercase $bot~username
+	
 	setvar $check_history false
 	setarray $fire_history sectors
 
