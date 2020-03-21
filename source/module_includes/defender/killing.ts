@@ -26,18 +26,18 @@
 		setvar $player~override false
 	end
 	if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
-		if ($player~fighters < 1000)
-			setvar $error true
-			setvar $switchboard~message "We don't have enough fighters - time to get out of here.*"
-			gosub :switchboard~switchboard
-			return
-		end
 		if ($capture = true)
 			gosub :combat~fastCapture
 			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 			gosub :player~quikstats
 		else
 			gosub :combat~fastCitadelAttack
+		end
+		if ($player~fighters < 1000)
+			setvar $error true
+			setvar $switchboard~message "We don't have enough fighters - time to get out of here.*"
+			gosub :switchboard~switchboard
+			return
 		end
 		goto :scan_for_targets
 	elseif ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE)))
