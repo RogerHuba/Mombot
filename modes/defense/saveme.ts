@@ -282,7 +282,7 @@ pause
 	send "q q z n a y y " $ship~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "* n n * j m  * * * c  s*  @"
 	waitOn "Average Interval Lag:"
 	setvar $switchboard~message "Attempted to blow up pod in sector.  Not sure if it worked!*"
-	gosub :switchboard~message
+	gosub :switchboard~switchboard
 	goto :settriggers
 
 :announce
