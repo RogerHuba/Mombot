@@ -11,15 +11,16 @@
 	setVar $BOT~help[3]    $BOT~tab&"      {delay} - number of seconds to wait before "
 	setVar $BOT~help[4]    $BOT~tab&"                moving planet back to starting sector"         
 	setVar $BOT~help[5]    $BOT~tab&"{target name} - saveme for only one player "
-	setVar $BOT~help[6]    $BOT~tab&"{defender}    - Let's corp mates ride shields"
-	setVar $BOT~help[7]    $BOT~tab&"{kill}          and lift. Kill option to attack."
-	setVar $BOT~help[8]    $BOT~tab&"                              "
-	setVar $BOT~help[9]    $BOT~tab&"    While running saveme, you can say: "
-	setVar $BOT~help[10]    $BOT~tab&"         bot_name personal limp - drop personal limp "
-	setVar $BOT~help[11]    $BOT~tab&"         bot_name deploy mines - drop corporate mines"
-	setVar $BOT~help[12]   $BOT~tab&"         abort saveme - cancel saveme call"
-	setVar $BOT~help[13]   $BOT~tab&"         "
-	setVar $BOT~help[14]   $BOT~tab&"               - Originally written by Cherokee"
+	setVar $BOT~help[6]    $BOT~tab&"   {defender} - Let's corp mates ride shields"
+	setVar $BOT~help[7]    $BOT~tab&"                and lift. "
+	setVar $BOT~help[8]    $BOT~tab&"       {kill} - Kill option to attack."
+	setVar $BOT~help[9]    $BOT~tab&"                              "
+	setVar $BOT~help[10]   $BOT~tab&"    While running saveme, you can say: "
+	setVar $BOT~help[11]   $BOT~tab&"         bot_name personal limp - drop personal limp "
+	setVar $BOT~help[12]   $BOT~tab&"         bot_name deploy mines - drop corporate mines"
+	setVar $BOT~help[13]   $BOT~tab&"         abort saveme - cancel saveme call"
+	setVar $BOT~help[14]   $BOT~tab&"         "
+	setVar $BOT~help[15]   $BOT~tab&"               - Originally written by Cherokee"
 	gosub :bot~helpfile
 
 
@@ -125,6 +126,7 @@ setVar $millevel 0
 				gosub :switchboard~switchboard
 			end
 		end
+		gosub :SHIP~getShipStats
 		goto :settriggers
 	else
 		setvar $switchboard~message "Please use - saveme [on/off] format**"
@@ -271,8 +273,17 @@ return
 	setTextLineTrigger 5 :savemePersonalLimpet $bot~bot_name & " Personal Limp"
 	setTextLineTrigger 6 :savemeDeployMines $bot~bot_name & " deploy mines"
 	setTextLineTrigger 7 :savemePersonalLimpet $bot~bot_name & " personal limp"
+	settexttrigger     8 :attackpod "'s ship just exploded into a brilliant fireball!"
 pause
 
+
+:attackpod
+	killalltriggers
+	send "q q z n a y y " $ship~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "* n n * j m  * * * c  s*  @"
+	waitOn "Average Interval Lag:"
+	setvar $switchboard~message "Attempted to blow up pod in sector.  Not sure if it worked!*"
+	gosub :switchboard~message
+	goto :settriggers
 
 :announce
 	killalltriggers

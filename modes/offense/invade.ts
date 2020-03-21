@@ -133,7 +133,7 @@
 				halt
 			end
 		else
-			send "l " $starting_planet " * n n * j m * * * j c  *  "		
+			send "l " $starting_planet " * n n * j t * t 1* m * * * j c  *  "		
 		end
 		if ($no_damage_taken)
 			setvar $switchboard~message "No damage taken, seems like sector cannon damage is off.  Time to try a different tactic.*"
