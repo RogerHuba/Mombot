@@ -27,27 +27,29 @@
 
 	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f} {l} {a} {auto} {holo} {mines} {extern:11pm}  "
 	setVar $BOT~help[2]  $BOT~tab&"             "
-	setVar $BOT~help[3]  $BOT~tab&"        {f} - Photon fighter hits "
-	setVar $BOT~help[4]  $BOT~tab&"        {l} - Photon limpet hits "
-	setVar $BOT~help[5]  $BOT~tab&"        {a} - Photon armid hits "
-	setVar $BOT~help[6]  $BOT~tab&"     {holo} - holoscan on ss after photon "
-	setVar $BOT~help[7]  $BOT~tab&"   {secure} - will only escape to limped sectors "
-	setVar $BOT~help[8]  $BOT~tab&"   {extern} - stops defender 5 minutes before extern "
-	setVar $BOT~help[9]  $BOT~tab&"              as defined by local system time "
-	setVar $BOT~help[10] $BOT~tab&"  {density} - density photon option"
-	setVar $BOT~help[11] $BOT~tab&" {adjacent} - adjacent photon option (default)"
-	setVar $BOT~help[12] $BOT~tab&" {holokill} - holokill if possible"
-	setVar $BOT~help[13] $BOT~tab&"{slingshot} - will pgrid holokill"
-	setVar $BOT~help[14] $BOT~tab&" {nophoton} - will not fire photon"
-	setVar $BOT~help[15] $BOT~tab&" {noescape} - will not retreat from attack sector"
-	setVar $BOT~help[16] $BOT~tab&"     {auto} - Will reset cannon damages automatically"
-	setVar $BOT~help[17] $BOT~tab&"  {capture} - capture instead of kill "
-	setVar $BOT~help[18] $BOT~tab&"    {mines} - auto deploy mines as you go "
-	setVar $BOT~help[19] $BOT~tab&"           "
-	setVar $BOT~help[20] $BOT~tab&"        Examples: "
-	setVar $BOT~help[21] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[22] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[23] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[3]  $BOT~tab&"         {f} - Photon fighter hits "
+	setVar $BOT~help[4]  $BOT~tab&"         {l} - Photon limpet hits "
+	setVar $BOT~help[5]  $BOT~tab&"         {a} - Photon armid hits "
+	setVar $BOT~help[6]  $BOT~tab&"      {holo} - holoscan on ss after photon "
+	setVar $BOT~help[7]  $BOT~tab&"    {secure} - will only escape to limped sectors "
+	setVar $BOT~help[8]  $BOT~tab&"    {extern} - stops defender 5 minutes before extern "
+	setVar $BOT~help[9]  $BOT~tab&"               as defined by local system time "
+	setVar $BOT~help[10] $BOT~tab&"   {density} - density photon option"
+	setVar $BOT~help[11] $BOT~tab&"  {adjacent} - adjacent photon option (default)"
+	setVar $BOT~help[12] $BOT~tab&"  {holokill} - holokill if possible"
+	setVar $BOT~help[13] $BOT~tab&" {slingshot} - will pgrid holokill"
+	setVar $BOT~help[14] $BOT~tab&"  {nophoton} - will not fire photon"
+	setVar $BOT~help[15] $BOT~tab&"  {noescape} - will not retreat from attack sector"
+	setVar $BOT~help[16] $BOT~tab&"      {auto} - Will reset cannon damages automatically"
+	setVar $BOT~help[17] $BOT~tab&"   {capture} - capture instead of kill "
+	setVar $BOT~help[18] $BOT~tab&"     {mines} - auto deploy mines as you go "
+	setVar $BOT~help[19] $BOT~tab&"{saveme:bot} - auto deploy mines as you go "
+	setVar $BOT~help[20] $BOT~tab&"           "
+	setVar $BOT~help[21] $BOT~tab&"        Examples: "
+	setVar $BOT~help[22] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[23] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[24] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[25] $BOT~tab&"             >defender secure saveme:hunt"
 
 	gosub :bot~helpfile
 
@@ -187,6 +189,19 @@
 		setvar $restock~deploymines false
 	end
 
+	getWordPos " "&$bot~user_command_line&" " $pos " saveme:"
+	setvar $saveme false
+	setvar $saveme_bot ""
+	if ($pos > 0)
+		setvar $saveme true
+		getText $bot~user_command_line&" " $saveme_bot "saveme:" " "
+		if ($saveme_bot = 0)
+			setVar $SWITCHBOARD~message "Saveme bot is not defined.*"
+			halt
+		end
+	end
+
+
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
 		setvar $fighter true
 		setvar $armid true
@@ -237,7 +252,25 @@
 		killtrigger 2
 		savevar $game~hasAliens
 
+	if ($saveme)
+		send "'" $saveme_bot " unlock*"
+		waiton "- Ship has been unlocked!"
 
+		send "'" $saveme_bot " saveme on " #34 $bot~username #34 "*"
+		setTextLineTrigger 1 :savemeready "- Saveme - Running from planet 55 for "&$bot~username&"."
+		setdelaytrigger 2 :savemefailed 3000
+		pause
+
+		:savemefailed
+			killtrigger 1
+			setvar $switchboard~message "Saveme bot isn't available or on wrong planet.  Please check and fix before running again.*"
+			gosub :switchboard~switchboard
+			halt
+		:savemeready
+			killtrigger 2
+			setvar $switchboard~message "Saveme bot activated and unlocked for possible switching of ships.*"
+			gosub :switchboard~switchboard
+	end
 
 	setVar $message "'*  {"&$bot~bot_name&"} - "&$script_ver&" Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	if ($fighter)

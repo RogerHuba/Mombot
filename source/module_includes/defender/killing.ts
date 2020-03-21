@@ -17,6 +17,13 @@
 		#########################################
 		gosub :callsaveme
 	end
+	if ($call~starting_ship_type <> $player~ship_type)
+		setvar $switchboard~message "I've been podded, but I am still on the planet.  Switching into ship on planet if possible.*"
+		gosub :switchboard~switchboard
+		send "e y "
+		gosub :player~quikstats
+		setvar $call~starting_ship_type $player~ship_type
+	end
 	gosub :sector~getSectorData
 	setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
 	if (($planet_count = 1) and ($overide = false))
@@ -33,20 +40,8 @@
 		else
 			gosub :combat~fastCitadelAttack
 		end
-		if ($player~fighters < 1000)
-			setvar $error true
-			setvar $switchboard~message "We don't have enough fighters - time to get out of here.*"
-			gosub :switchboard~switchboard
-			return
-		end
 		goto :scan_for_targets
 	elseif ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE)))
-		if ($player~fighters < 1000)
-			setvar $error true
-			setvar $switchboard~message "We don't have enough fighters - time to get out of here.*"
-			gosub :switchboard~switchboard
-			return
-		end
 		gosub :combat~fastCapture
 		send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 		gosub :player~quikstats
