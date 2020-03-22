@@ -16,7 +16,7 @@
 	loadvar $game~DISRUPTOR_COST
 	loadvar $bot~username
 	lowercase $bot~username
-	
+
 	setvar $check_history false
 	setarray $fire_history sectors
 
@@ -421,6 +421,9 @@
 		end
 		if ($navigate~securePwarp)
 			setvar $description $description&"Secure "
+		end
+		if ($saveme)
+			setvar $description $description&"Saveme:"&$saveme_bot&" "
 		end
 		trim $description
 		if ($description <> "")
