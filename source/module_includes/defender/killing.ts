@@ -63,6 +63,9 @@
 			setvar $ship~SHIP_MAX_ATTACK $call~starting_ship_max_attack
 			setvar $ship~SHIP_OFFENSIVE_ODDS $call~starting_ship_offensive_odds 
 		end
+		if ($error)
+			return
+		end
 		goto :scan_for_targets
 	elseif ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE)))
 		if ($switch)
