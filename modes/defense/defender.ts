@@ -407,6 +407,14 @@
 			setvar $photon~adjacent_sectors " "&$photon~adjacent_sectors&SECTOR.WARPS[$player~current_sector][$i]&" "
 			add $i 1
 		end
+		if ($photon~sector > 0)
+			setVar $i 1
+			setvar $photon~adjacent_to_last_attack_sectors " "
+			while (SECTOR.WARPS[$photon~sector][$i] > 0)
+				setvar $photon~adjacent_to_last_attack_sectors " "&$photon~adjacent_to_last_attack_sectors&SECTOR.WARPS[$photon~sector][$i]&" "
+				add $i 1
+			end
+		end
 
 		if ($limpet)
 			setTextTrigger 21 :attackSectorLimpet "Limpet mine in "
@@ -523,6 +531,7 @@
 
 :check_to_fire_photon
 	killalltriggers
+
 	if ($photon~found = true)
 		if ($photon~adjacent <> true)
 			if ($photon~retreatfighter <> true)

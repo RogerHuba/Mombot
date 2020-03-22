@@ -25,6 +25,11 @@
 	setvar $switchboard~message "No Adjacent fig found!*"
 	gosub :switchboard~switchboard
 return
+:fire_surround
+	killalltriggers
+	send "p" $adjsec "*  y  c  p  y  " $sector "**qp" $sector "*  y  "
+	send " c  p  y  " $sector "**qp" $sector "*  y  "
+	goto :triggers
 :fire_adjacent
 	killalltriggers
 	send " c  p  y  " $sector "**qp" $sector "*  y  "
@@ -97,6 +102,7 @@ return
 :fighter_spoof
 	setvar $found false
 	setvar $adjacent false
+	setvar $surround false
 	getWord CURRENTLINE $spoof_test 1
 	getWord CURRENTANSILINE $ansi_spoof_test 1
 	getWordPos $ansi_spoof_test $ansi_spoof_pos #27 & "[1;33m"
@@ -130,6 +136,18 @@ return
 		setvar $found true
 		setvar $adjacent true
 		goto :fire_adjacent
+	end
+
+	setVar $i 1
+	while (SECTOR.WARPS[$sector][$i] > 0)
+		getwordpos $adjacent_to_last_attack_sectors $pos " "&SECTOR.WARPS[$sector][$i]&" "
+		if ($pos > 0)
+			setvar $found true
+			setvar $surround true
+			setvar $sector SECTOR.WARPS[$sector][$i]
+			return
+		end
+		add $i 1
 	end
 
 	getwordpos CURRENTLINE $posretreat " retreated."
