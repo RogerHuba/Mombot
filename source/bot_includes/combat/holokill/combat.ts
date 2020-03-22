@@ -159,6 +159,9 @@
 :holo_kill_no_targets
 		setVar $SWITCHBOARD~self_command TRUE
 		setVar $SWITCHBOARD~message "No Enemies found adjacent!*"
+		if ($player~CIT = TRUE)
+			send " l "  $PLANET~PLANET  " * n n * j m * * * j c  *  "
+		end
 return
 
 
