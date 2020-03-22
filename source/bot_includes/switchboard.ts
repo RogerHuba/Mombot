@@ -5,6 +5,9 @@
 
 :switchboard
 
+	if (($message = "0") or ($message = ""))
+		return
+	end
 	setvar $discord_ignore "-- "
 	# length of discord string above # 
 	setvar $discord_ignore_length 3
