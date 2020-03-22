@@ -8,6 +8,11 @@
 
 :scan_for_targets
 	killalltriggers
+	if ($switch)
+		setvar $combat~switch true
+	else
+		setvar $combat~switch false
+	end
 	setvar $error false
 	gosub :player~quikstats
 	setvar $player~startinglocation $player~current_prompt
@@ -23,6 +28,10 @@
 		send "e y "
 		gosub :player~quikstats
 		setvar $call~starting_ship_type $player~ship_type
+		setvar $switch false
+		#####################################################################
+		# setting switch to false so we don't switch into a pod by accident #
+		#####################################################################
 	end
 	gosub :sector~getSectorData
 	setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
@@ -35,7 +44,11 @@
 	if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
 		if ($capture = true)
 			gosub :combat~fastCapture
-			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			if ($combat~switch)
+				send " l " $PLANET~PLANET " * n n * j m * * * j c  e y *  "
+			else
+				send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			end
 			gosub :player~quikstats
 		else
 			gosub :combat~fastCitadelAttack
@@ -43,7 +56,11 @@
 		goto :scan_for_targets
 	elseif ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE)))
 		gosub :combat~fastCapture
-		send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+		if ($combat~switch)
+			send " l " $PLANET~PLANET " * n n * j m * * * j c  e y *  "
+		else
+			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+		end
 		gosub :player~quikstats
 		goto :scan_for_targets
 	end

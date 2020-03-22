@@ -112,7 +112,11 @@
 				end
 				subtract $count 1			
 			end
-			send "q "&$attackString&" c "
+			if ($switch)
+				send " e y q "&$attackString&" c e y "
+			else
+				send " q "&$attackString&" c "
+			end
 		end
 	else	
 		setvar $switchboard~message ANSI_12&"*You have no valid targets.*"&ANSI_7
