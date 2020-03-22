@@ -144,6 +144,7 @@ return
 		if ($pos > 0)
 			setvar $found true
 			setvar $surround true
+			echo "*[Surround DETECTED]*"
 			setvar $sector SECTOR.WARPS[$sector][$i]
 			return
 		end
