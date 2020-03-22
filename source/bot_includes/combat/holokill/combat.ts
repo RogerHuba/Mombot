@@ -11,6 +11,7 @@
 	setTextLineTrigger scanned :holo_kill_scandone  "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
 	if ($player~current_prompt = "Citadel")
 		send " qqqz* sh*  l " & $PLANET~PLANET & " * j c * "
+		waiton "<Enter Citadel>"
 		setVar $player~CIT TRUE
 	else
 		send " sh*"
