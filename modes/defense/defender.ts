@@ -402,10 +402,9 @@
 		#############################################################################################
 		setarray $photon~adjacent 6
 		setVar $i 1
+		setvar $photon~adjacent_sectors " "
 		while (SECTOR.WARPS[$player~current_sector][$i] > 0)
-			setTextTrigger "adjl"&$i&"" :photon_adjacent_limpet "Limpet mine in "&SECTOR.WARPS[$player~current_sector][$i]&" "
-			setTextTrigger "adjf"&$i&"" :photon_adjacent_fighter "Deployed Fighters Report Sector "&SECTOR.WARPS[$player~current_sector][$i]&":"
-			setTextTrigger "adja"&$i&"" :photon_adjacent_armid "Your mines in "&SECTOR.WARPS[$player~current_sector][$i]&" "
+			setvar $photon~adjacent_sectors " "&$photon~adjacent_sectors&SECTOR.WARPS[$player~current_sector][$i]&" "
 			add $i 1
 		end
 
@@ -509,27 +508,6 @@
 # Photon routines - fire photon, move away, restock, set cannon #
 #################################################################
 
-:photon_adjacent_limpet
-	gosub :photon~limpet_spoof
-	if ($nophoton <> true)
-		gosub :photon~fire_adjacent
-	end
-	goto :done_firing
-
-:photon_adjacent_armid
-	gosub :photon~armid_spoof
-	if ($nophoton <> true)
-		gosub :photon~fire_adjacent
-	end
-	goto :done_firing
-
-:photon_adjacent_fighter
-	gosub :photon~fighter_spoof
-	if ($nophoton <> true)
-		gosub :photon~fire_adjacent
-	end
-	goto :done_firing
-
 
 :attackSectorLimpet
 	gosub :photon~limpet_spoof
@@ -546,45 +524,25 @@
 :check_to_fire_photon
 	killalltriggers
 	if ($photon~found = true)
-		if ($photon~retreatfighter <> true)
-			if (($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
-				goto :can_not_fire
+		if ($photon~adjacent <> true)
+			if ($photon~retreatfighter <> true)
+				if (($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
+					goto :can_not_fire
+				end
+				getsectorparameter $photon~sector "BUBBLE" $isBubble
+				getsectorparameter $photon~sector "FARM" $isFarm
+				if (($isBubble = true) or ($isFarm = true))
+					setvar $switchboard~message "Can not fire into bubble or farm sector "&$photon~sector&"!*"
+					gosub :switchboard~switchboard
+					goto :can_not_fire
+				end
+				gosub :photon~photon
+			else
+				gosub :photon~retreatphoton
 			end
-			getsectorparameter $photon~sector "BUBBLE" $isBubble
-			getsectorparameter $photon~sector "FARM" $isFarm
-			if (($isBubble = true) or ($isFarm = true))
-				setvar $switchboard~message "Can not fire into bubble or farm sector "&$photon~sector&"!*"
-				gosub :switchboard~switchboard
-				goto :can_not_fire
-			end
-			gosub :photon~photon
-		else
-			gosub :photon~retreatphoton
+			killalltriggers
 		end
-#		setVar $i 1
-#		while (SECTOR.WARPS[$player~current_sector][$i] > 0)
-#			setTextTrigger "adjl"&$i&"" :photon_adjacent_limpet "Limpet mine in "&SECTOR.WARPS[$player~current_sector][$i]&" "
-#			setTextTrigger "adjf"&$i&"" :photon_adjacent_fighter "Deployed Fighters Report Sector "&SECTOR.WARPS[$player~current_sector][$i]&":"
-#			setTextTrigger "adja"&$i&"" :photon_adjacent_armid "Your mines in "&SECTOR.WARPS[$player~current_sector][$i]&" "
-#			add $i 1
-#		end
-#		if ($limpet)
-#			setTextTrigger 1 :attackSectorLimpet "Limpet mine in "
-#		end
-#		if ($armid)
-#			setTextTrigger 2 :attackSectorMine "Your mines in "
-#		end
-#		if ($fighter)
-#			setTextTrigger 3 :attackSectorFighter "Deployed Fighters "
-#		end
-#		setDelayTrigger wait :done_waiting_for_hits 300
-#		pause
-#
-#		:done_waiting_for_hits
-#			gosub :killtriggers
-
 		:done_firing
-		killalltriggers
 		#############################################
 		# holoscan sector to see if victim is there #
 		#############################################

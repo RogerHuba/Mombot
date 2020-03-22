@@ -96,6 +96,7 @@ return
 
 :fighter_spoof
 	setvar $found false
+	setvar $adjacent false
 	getWord CURRENTLINE $spoof_test 1
 	getWord CURRENTANSILINE $ansi_spoof_test 1
 	getWordPos $ansi_spoof_test $ansi_spoof_pos #27 & "[1;33m"
@@ -113,6 +114,23 @@ return
 	#############################
 	# Torp only on sector entry #
 	#############################
+
+	# Get the sector number
+	getWord CURRENTLINE $sector 5
+	stripText $sector ":"
+	isNumber $result $sector
+	if ($result < 1)
+		return
+	end
+	if (($sector > SECTORS) OR ($sector <= 10))
+		 return
+	end
+	getwordpos $adjacent_sectors $pos " "&$sector&" "
+	if ($pos > 0)
+		setvar $found true
+		setvar $adjacent true
+		goto :fire_adjacent
+	end
 
 	getwordpos CURRENTLINE $posretreat " retreated."
 	getwordpos CURRENTLINE $posdestroyed " DESTROYED "
@@ -138,38 +156,39 @@ return
 		end
 	end
 
-	# Get the sector number
-	getWord CURRENTLINE $sector 5
-	stripText $sector ":"
-	isNumber $result $sector
-	if ($result < 1)
-		return
-	end
-	if (($sector > SECTORS) OR ($sector <= 10))
-		 return
-	end
-
 	setvar $found true
 return
 
 :limpet_spoof
 	setvar $found false
+	setvar $adjacent false
 	cutText CURRENTLINE&"      " $ck 1 6
 	if ($ck <> "Limpet")
 		return
 	end
 	getWord CURRENTLINE $sector 4
+	getwordpos $adjacent_sectors $pos " "&$sector&" "
 	setvar $found true
+	if ($pos > 0)
+		setvar $adjacent true
+		goto :fire_adjacent
+	end
 return
 
 :armid_spoof
 	setvar $found false
+	setvar $adjacent false
 	cutText CURRENTLINE&"    " $ck 1 4
 	if ($ck <> "Your")
 		return
 	end
 	getWord CURRENTLINE $sector 4
+	getwordpos $adjacent_sectors $pos " "&$sector&" "
 	setvar $found true
+	if ($pos > 0)
+		setvar $adjacent true
+		goto :fire_adjacent
+	end
 return
 
 :densityDrop
