@@ -46,12 +46,13 @@
 	setVar $BOT~help[17] $BOT~tab&"   {capture} - capture instead of kill "
 	setVar $BOT~help[18] $BOT~tab&"     {mines} - auto deploy mines as you go "
 	setVar $BOT~help[19] $BOT~tab&"{saveme:bot} - auto deploy mines as you go "
-	setVar $BOT~help[20] $BOT~tab&"           "
-	setVar $BOT~help[21] $BOT~tab&"        Examples: "
-	setVar $BOT~help[22] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[23] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[24] $BOT~tab&"             >defender f density adjacent secure"
-	setVar $BOT~help[25] $BOT~tab&"             >defender secure saveme:hunt"
+	setVar $BOT~help[20] $BOT~tab&"    {switch} - will switch into saveme bots ship before kill "
+	setVar $BOT~help[21] $BOT~tab&"           "
+	setVar $BOT~help[22] $BOT~tab&"        Examples: "
+	setVar $BOT~help[23] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[24] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[25] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[26] $BOT~tab&"             >defender secure saveme:hunt"
 
 	gosub :bot~helpfile
 
@@ -148,6 +149,13 @@
 		setvar $photon~density true
 	else
 		setvar $photon~density false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " switch "
+	if ($pos > 0)
+		setvar $killing~switch true
+	else
+		setvar $killing~switch false
 	end
 
 	if ($photon~density = true)
@@ -306,10 +314,17 @@
 		setVar $message $message&"*                   Density Photon"
 	end
 	if ($killing~holokill)
-		setVar $message $message&"*                   Holokill"
+		if ($killing~capture)
+			setVar $message $message&"*                   Holocap"
+		else
+			setVar $message $message&"*                   Holokill"
+		end
 	end
 	if ($killing~slingshot)
 		setVar $message $message&"*                   Slingshot"
+	end
+	if ($killing~switch)
+		setVar $message $message&"*                   Switch ships"
 	end
 	if ($holo)
 		setVar $message $message&"*                   Holo Report"

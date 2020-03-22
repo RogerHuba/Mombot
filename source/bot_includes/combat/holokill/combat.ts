@@ -65,7 +65,11 @@
 		end
 		send "'{" $SWITCHBOARD~bot_name "} - " $title " - Attacking sector "  $test_sector  ".*   c v 0 * y n "  $test_sector  " *  q  "
 		if ($player~cit = true)
-			send " qmnt*qqz* "
+			if ($switch)
+				send "e y qmnt*qqz* "
+			else
+				send " qmnt*qqz* "
+			end
 		end
 		if ($slingshot)
 			send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  j R  *  " $test_sector "=saveme* f  z  1  *  z  c  d  *   "
@@ -123,7 +127,11 @@
 			end		
 			send "m "  $hkill_start_sector  " *  *  z  a  99999  *  z  a  99999  *  R  *   "
 			if ($player~CIT = TRUE)
-				send " l "  $PLANET~PLANET  " * n n * j m * * * j c  *  "
+				if ($switch)
+					send " l "  $PLANET~PLANET  " * n n * j m * * * j c  e y *   "
+				else
+					send " l "  $PLANET~PLANET  " * n n * j m * * * j c  *  "
+				end
 			end
 			gosub :player~quikstats
 			if ($player~current_sector <> $hkill_start_sector)

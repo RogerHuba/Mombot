@@ -145,6 +145,11 @@ return
 :doHoloKill
 	gosub :player~quikstats
 	setvar $before_holo_kill_sector $player~current_sector
+	if ($switch)
+		setvar $combat~switch true
+	else
+		setvar $combat~switch false
+	end
 	if ($capture)
 		gosub :combat~holocap		
 	else
