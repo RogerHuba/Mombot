@@ -28,8 +28,7 @@
 		return
 :holo_kill_scandone
 		killalltriggers
-		send "@ "
-		waiton "Average Interval Lag:"
+		waiton "[" & $player~current_sector & "]"
 
 :holo_kill_get_prompt
 :holo_kill_get_current_sector
