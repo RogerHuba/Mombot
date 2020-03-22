@@ -2,8 +2,10 @@
 	killalltriggers
 	setvar $success false
 	setVar $adjsec 0
-	loadvar $bot~last_fighter_hit
-	setvar $sector $bot~last_hit
+	loadvar $bot~last_hit
+	if ($bot~last_hit > 0)
+		setvar $sector $bot~last_hit
+	end
 	setVar $i 1
 	while (SECTOR.WARPSIN[$sector][$i] > 0)
 		setVar $tempAdj SECTOR.WARPSIN[$sector][$i]
