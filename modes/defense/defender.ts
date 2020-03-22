@@ -274,7 +274,7 @@
 		waiton "- Ship has been unlocked!"
 
 		send "'" $saveme_bot " saveme on " #34 $bot~username #34 "*"
-		setTextLineTrigger 1 :savemeready "- Saveme - Running from planet 55 for "&$bot~username&"."
+		setTextLineTrigger 1 :savemeready "- Saveme - Running from planet "&$planet~planet&" for "&$bot~username&"."
 		setdelaytrigger 2 :savemefailed 3000
 		pause
 
