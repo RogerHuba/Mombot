@@ -25,6 +25,9 @@
 		killalltriggers
 		setVar $SWITCHBOARD~message "You don't have a HoloScanner!*"
 		send " *  "
+		if ($player~CIT = TRUE)
+			send " l "  $PLANET~PLANET  " * n n * j m * * * j c  *  "
+		end
 		return
 :holo_kill_scandone
 		killalltriggers
@@ -159,9 +162,6 @@
 :holo_kill_no_targets
 		setVar $SWITCHBOARD~self_command TRUE
 		setVar $SWITCHBOARD~message "No Enemies found adjacent!*"
-		if ($player~CIT = TRUE)
-			send " l "  $PLANET~PLANET  " * n n * j m * * * j c  *  "
-		end
 return
 
 
