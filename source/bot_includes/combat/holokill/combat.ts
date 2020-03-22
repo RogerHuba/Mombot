@@ -11,7 +11,6 @@
 	setTextLineTrigger scanned :holo_kill_scandone  "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
 	if ($player~current_prompt = "Citadel")
 		send " qqqz* sh*  l " & $PLANET~PLANET & " * j c * "
-		waiton "<Enter Citadel>"
 		setVar $player~CIT TRUE
 	else
 		send " sh*"
@@ -24,6 +23,8 @@
 		return
 :holo_kill_scandone
 		killalltriggers
+		send "@ "
+		waiton "Average Interval Lag:"
 
 :holo_kill_get_prompt
 :holo_kill_get_current_sector
