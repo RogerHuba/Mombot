@@ -225,7 +225,7 @@ pause
 	end
 	setTextLineTrigger      warpfigerase        :eraseWarpFig       "You do not have any fighters in Sector "
 	pause
-:saveLimp
+:limpsave
 	cutText CURRENTLINE&"     " $spoof 1 2 
 	cutText CURRENTLINE&"     " $spoof2 1 1 
 	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
