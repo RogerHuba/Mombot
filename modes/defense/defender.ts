@@ -207,8 +207,15 @@
 		getText $bot~user_command_line&" " $saveme_bot "saveme:" " "
 		if ($saveme_bot = 0)
 			setVar $SWITCHBOARD~message "Saveme bot is not defined.*"
+			gosub :switchboard~switchboard
 			halt
 		end
+	end
+
+	if (($killing~switch) and ($saveme <> true))
+		setVar $SWITCHBOARD~message "Switch ships option doesn't work without saveme bot defined.*"	
+		gosub :switchboard~switchboard
+		halt
 	end
 
 
