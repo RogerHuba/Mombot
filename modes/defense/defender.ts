@@ -562,7 +562,11 @@
 		if ($killing~error = true)
 			goto :head_home
 		end
-		if ($photon~sector > 10)
+		loadvar $bot~last_hit
+		if ($bot~last_hit > 0)
+			setvar $sector $bot~last_hit
+		end
+		if (($photon~sector > 10) and ($photon~sector = $bot~last_hit))
 			if ($killing~slingshot = true)
 				gosub :killing~slingshot
 			elseif ($killing~holokill = true)
