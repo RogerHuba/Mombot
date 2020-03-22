@@ -290,47 +290,37 @@
 	else
 		setVar $message $message&"*                   On Armid Hit: No"
 	end
-	if ($photon~adjacentphoton)
-		setVar $message $message&"*                Adjacent Photon: Yes"
-	else
-		setVar $message $message&"*                Adjacent Photon: No"
-	end
-	if ($photon~density)
-		setVar $message $message&"*   Density Photon Attack Sector: Yes"
-	else 
-		setVar $message $message&"*   Density Photon Attack Sector: No"
-	end
-	if ($killing~holokill)
-		setVar $message $message&"*                       Holokill: Yes"
-	else
-		setVar $message $message&"*                       Holokill: No"
-	end
-	if ($killing~slingshot)
-		setVar $message $message&"*                      Slingshot: Yes"
-	else
-		setVar $message $message&"*                      Slingshot: No"
-	end
-	if ($holo)
-		setVar $message $message&"*                    Holo Report: Yes"
-	else
-		setVar $message $message&"*                    Holo Report: No"
-	end
-	if ($killing~auto)
-		setVar $message $message&"*                   Cannon Reset: Yes"
-	else
-		setVar $message $message&"*                   Cannon Reset: No"
-	end
-	if ($killing~capture)
-		setVar $message $message&"*              Capture, not kill: Yes"
-	else
-		setVar $message $message&"*              Capture, not kill: No"
-	end
-	if ($restock~deploymines)
-		setVar $message $message&"*                   Deploy mines: Yes"
-	else
-		setVar $message $message&"*                   Deploy mines: No"
+	if ($saveme)
+		setVar $message $message&"*                   Saveme bot: "&$saveme_bot
 	end
 	setVar $message $message&"*                    Home Sector: "&$map~home_sector
+		setVar $message $message&"*                          "
+		setVar $message $message&"*                        Modes"
+		setVar $message $message&"*                       -------"
+	if ($photon~adjacentphoton)
+		setVar $message $message&"*                   Adjacent Photon"
+	end
+	if ($photon~density)
+		setVar $message $message&"*                   Density Photon"
+	end
+	if ($killing~holokill)
+		setVar $message $message&"*                   Holokill"
+	end
+	if ($killing~slingshot)
+		setVar $message $message&"*                   Slingshot"
+	end
+	if ($holo)
+		setVar $message $message&"*                   Holo Report"
+	end
+	if ($killing~auto)
+		setVar $message $message&"*                   Cannon Reset"
+	end
+	if ($killing~capture)
+		setVar $message $message&"*                   Capture"
+	end
+	if ($restock~deploymines)
+		setVar $message $message&"*                   Deploy mines"
+	end
 	format $planet~planet_fighters $formatted_fighters NUMBER
 	setVar $message $message&"*        Auto Kill: Enabled With "&$formatted_fighters&" Fighters"
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
