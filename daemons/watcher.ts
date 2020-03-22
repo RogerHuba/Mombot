@@ -26,6 +26,7 @@ end
 
 setTextLineTrigger  federase        :fedEraseFig        "The Federation We destroyed your Corp's "
 setTextLineTrigger  fighterserase       :eraseFig       " of your fighters in sector "
+setTextLineTrigger  fightersave 	:fightersave "Deployed Fighters "
 settextlinetrigger  limpsave		:limpsave	"Limpet mine in "
 setTextLineTrigger  warpfigerase        :eraseWarpFig       "You do not have any fighters in Sector "
 setTextLineTrigger  pgridadd    :pgridadd   "Successfully P-gridded into sector "
@@ -248,6 +249,29 @@ pause
 	settextlinetrigger  limpsave		:limpsave	"Limpet mine in "
 	pause
 
+:fightersave
+	cutText CURRENTLINE&"     " $spoof 1 2 
+	cutText CURRENTLINE&"     " $spoof2 1 1 
+	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
+		goto :endfightersave
+	end
+	#Deployed Fighters Report Sector 8920: Mind's Imperial StarShip entered sector.
+	getText CURRENTLINE&" [XX][XX][XX]" $temp "Deployed Fighters Report Sector " ": "
+	if ($temp <> "")
+		setvar $fighit $temp
+		isNumber $test $fighit 
+		if ($test = TRUE)
+			if (($fighit <= SECTORS) AND ($fighit > 0))
+				setvar $bot~last_fighter_hit $fighit
+				setvar $bot~last_hit $fighit
+				savevar $bot~last_hit
+				savevar $bot~last_fighter_hit
+			end
+		end
+	end
+:endfightersave
+	setTextLineTrigger  fightersave 	:fightersave "Deployed Fighters "
+	pause
 
 :erasebusts
 	loadvar $bot~subspace
