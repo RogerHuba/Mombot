@@ -247,10 +247,12 @@ setVar $millevel 0
 	setVar $auth_result "false"
 	if ($targetingPerson = true)
 		lowerCase $subSender
+		trim $subsender
+		trim $subtarget
 		if ($spoof = "'")
 			setVar $auth_result "self"
 		elseif ($spoof = "R")
-			send "'["&$subsender&"] = ["&$subtarget&"]*"
+			#send "'["&$subsender&"] = ["&$subtarget&"]*"
 			if ($subSender = $subTarget)
 				setVar $auth_result "true"
 			end
