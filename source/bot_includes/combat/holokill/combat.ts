@@ -67,6 +67,7 @@
 		if ($player~cit = true)
 			if ($switch)
 				send "e y qmnt*qqz* "
+				gosub :ship~getshipstats
 			else
 				send " qmnt*qqz* "
 			end
@@ -138,6 +139,7 @@
 				   send "'" & $SWITCHBOARD~bot_name " call*"
 			else
 				setVar $SWITCHBOARD~message "Attack made and back in original sector!*"
+				gosub :ship~getshipstats
 			end
 
 		end
