@@ -189,7 +189,7 @@ return
 	else
 		gosub :combat~holokill
 	end
-	if ($player~current_sector <> $before_holo_kill_sector)
+	if (($player~current_sector <> $before_holo_kill_sector) and ($player~current_prompt <> "Citadel"))
 		setVar $PLAYER~WARPTO $before_holo_kill_sector
 		gosub :PLAYER~twarp
 		if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
