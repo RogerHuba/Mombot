@@ -52,6 +52,7 @@
 				setvar $t 1
 				while ($t <= SECTOR.TRADERCOUNT[$test_sector])
 					getwordpos SECTOR.TRADERS[$test_sector][$t] $pos "["&$player~corp&"]"
+					echo "*pos: ["&$pos&"]*"
 					if ($pos <= 0)
 						setVar $containsEnemyTrader TRUE
 					end
