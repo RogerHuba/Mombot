@@ -40,6 +40,7 @@
 			setVar $test_sector SECTOR.WARPS[$player~current_sector][$idx]
 			setVar $safePlanets TRUE
 			setVar $containsShieldedPlanet FALSE
+			setvar $containsEnemyTrader FALSE
 			if (SECTOR.PLANETCOUNT[$test_sector] > 0)
 				setVar $p 1
 				while ($p <= SECTOR.PLANETCOUNT[$test_sector])
@@ -49,6 +50,14 @@
 					end
 					add $p 1
 				end
+				setvar $t 1
+				while ($t <= SECTOR.TRADERCOUNT[$test_sector])
+					getwordpos SECTOR.TRADERS[$test_sector][$t] $pos "["&$player~corp&"]"
+					if ($pos <= 0)
+						setVar $containsEnemyTrader TRUE
+					end
+					add $t 1
+				end
 				if ($player~surroundAvoidAllPlanets)
 					setVar $safePlanets FALSE
 				elseif (($containsShieldedPlanet) AND ($player~surroundAvoidShieldedOnly))
@@ -56,7 +65,7 @@
 				end
 			end
 			setVar $figowner SECTOR.FIGS.OWNER[$test_sector]
-			if (($test_sector <> $MAP~stardock) AND ($test_sector > 10) AND (SECTOR.TRADERCOUNT[$test_sector] > 0) AND ($safePlanets = TRUE) and ((SECTOR.FIGS.QUANTITY[$test_sector] < ($too_many_fighters*2)) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
+			if (($test_sector <> $MAP~stardock) AND ($test_sector > 10) AND (SECTOR.TRADERCOUNT[$test_sector] > 0) AND ($containsEnemyTrader = TRUE) AND ($safePlanets = TRUE) and ((SECTOR.FIGS.QUANTITY[$test_sector] < ($too_many_fighters*2)) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
 				setVar $killsector $test_sector
 				goto :holo_kill_killem
 			end
