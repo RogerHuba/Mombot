@@ -42,24 +42,32 @@
 		setvar $player~override false
 	end
 	if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
+		if ($combat~switch)
+			send " e y " 
+			gosub :ship~getshipstats
+		end
 		if ($capture = true)
 			gosub :combat~fastCapture
-			if ($combat~switch)
-				send " l " $PLANET~PLANET " * n n * j m * * * j c  e y *  "
-			else
-				send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
-			end
+			send " l " $PLANET~PLANET " * n n * j m * * * j c *  "
 			gosub :player~quikstats
 		else
 			gosub :combat~fastCitadelAttack
 		end
+		if ($combat~switch)
+			send " e y " 
+			gosub :ship~getshipstats
+		end
 		goto :scan_for_targets
 	elseif ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE)))
-		gosub :combat~fastCapture
 		if ($combat~switch)
-			send " l " $PLANET~PLANET " * n n * j m * * * j c  e y *  "
-		else
-			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			send " e y " 
+			gosub :ship~getshipstats
+		end
+		gosub :combat~fastCapture
+		send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+		if ($combat~switch)
+			send " e y " 
+			gosub :ship~getshipstats
 		end
 		gosub :player~quikstats
 		goto :scan_for_targets

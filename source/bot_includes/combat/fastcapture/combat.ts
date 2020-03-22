@@ -108,11 +108,7 @@
 		goto :capstoppingPoint
 	else
 		if ($player~startingLocation = "Citadel")
-			if ($switch)
-				send " e y q q * "
-			else
-				send "q q * "
-			end
+			send "q q * "
 		end
 		setVar $attackString ""
 		:cap_ship
