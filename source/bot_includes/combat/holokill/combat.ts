@@ -15,7 +15,7 @@
 	setTextLineTrigger noscan2 :holo_kill_noscanner "You don't have a long range scanner."
 	setTextLineTrigger scanned :holo_kill_scandone  "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
 	if ($player~current_prompt = "Citadel")
-		send " qqqz* sh*  l " & $PLANET~PLANET & " * j c * "
+		send " q q * sh*  l " & $PLANET~PLANET & "* j c * "
 		setVar $player~CIT TRUE
 	else
 		send " sh*"
@@ -78,16 +78,17 @@
 		else
 			setvar $title "Holokill"
 		end
-		send "'{" $SWITCHBOARD~bot_name "} - " $title " - Attacking sector "  $test_sector  ".*   c v 0 * y n "  $test_sector  " *  q  "
-		if ($player~cit = true)
-			if ($switch)
-				send "e y qmnt*qqz* "
-			else
-				send " qmnt*qqz* "
-			end
+		if ($noavoid <> true)
+			send "'{" $SWITCHBOARD~bot_name "} - " $title " - Attacking sector "  $test_sector  ".*   c v 0 * y n "  $test_sector  " *  q  "
 		end
 		if ($slingshot)
-			send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  j R  *  " $test_sector "=saveme* f  z  1  *  z  c  d  *   "
+			if ($player~cit = true)
+				if ($switch)
+					send " e y q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  j R  *  " $test_sector "=saveme* f  z  1  *  z  c  d  *   "
+				else
+					send " q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  j R  *  " $test_sector "=saveme* f  z  1  *  z  c  d  *   "
+				end
+			end
 			setVar $i 0
 			while ($i < 15)
 				add $i 1
@@ -119,7 +120,11 @@
 				setVar $SWITCHBOARD~message "Attack made and back in original sector!*"
 			end
 		else
-			send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  f  z  1  *  z  c  d  *   "
+			if ($switch)
+				send " e y q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  f  z  1  *  z  c  d  *   "
+			else
+				send " q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  f  z  1  *  z  c  d  *   "
+			end
 
 			if ($player~surround_before_hkill = TRUE)
 				gosub :player~quikstats
