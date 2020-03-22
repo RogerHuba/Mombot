@@ -199,8 +199,8 @@ pause
 				setVar $target $fig_hit
 				setvar $bot~last_fighter_hit $fig_hit
 				setvar $bot~last_hit $fig_hit
-				savevar $bot~last_fighter_hit
-				savevar $bot~last_hit
+				saveGlobal $bot~last_fighter_hit
+				saveGlobal $bot~last_hit
 				gosub :removefigfromdata
 			end
 		end
@@ -240,8 +240,8 @@ pause
 			if (($limp_hit <= SECTORS) AND ($limp_hit > 0))
 				setvar $bot~last_limpet_hit $limp_hit
 				setvar $bot~last_hit $limp_hit
-				savevar $bot~last_hit
-				savevar $bot~last_limpet_hit
+				saveGlobal $bot~last_hit
+				saveGlobal $bot~last_limpet_hit
 			end
 		end
 	end
@@ -264,8 +264,8 @@ pause
 			if (($fighit <= SECTORS) AND ($fighit > 0))
 				setvar $bot~last_fighter_hit $fighit
 				setvar $bot~last_hit $fighit
-				savevar $bot~last_hit
-				savevar $bot~last_fighter_hit
+				saveGlobal $bot~last_hit
+				saveGlobal $bot~last_fighter_hit
 			end
 		end
 	end

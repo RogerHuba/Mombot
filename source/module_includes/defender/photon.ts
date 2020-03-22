@@ -2,7 +2,7 @@
 	killalltriggers
 	setvar $success false
 	setVar $adjsec 0
-	loadvar $bot~last_hit
+	loadGlobal $bot~last_hit
 	if ($bot~last_hit > 0)
 		setvar $sector $bot~last_hit
 	end
