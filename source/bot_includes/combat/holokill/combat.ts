@@ -64,6 +64,10 @@
 				end
 			end
 			setVar $figowner SECTOR.FIGS.OWNER[$test_sector]
+			echo "*trader count: ["&SECTOR.TRADERCOUNT[$test_sector]&"]*"
+			echo "*fig count: ["&SECTOR.FIGS.QUANTITY[$test_sector]&"]*"
+			echo "*enemies?: ["&$containsEnemyTrader&"]*"
+			echo "*too many figs: ["&($too_many_fighters*2)&"]*"
 			if (($test_sector <> $MAP~stardock) AND ($test_sector > 10) AND (SECTOR.TRADERCOUNT[$test_sector] > 0) AND ($containsEnemyTrader = TRUE) AND ($safePlanets = TRUE) and ((SECTOR.FIGS.QUANTITY[$test_sector] < ($too_many_fighters*2)) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
 				setVar $killsector $test_sector
 				goto :holo_kill_killem
