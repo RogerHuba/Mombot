@@ -1,15 +1,8 @@
 :run
 :call
 	setVar $BOT~command "call"
-	if ($capture)
-		setvar $bot~parm1 ""
-		setVar $BOT~user_command_line " call  "
-	elseif ($kill)
-		setvar $bot~parm1 ""
-		setVar $BOT~user_command_line " call  "
-	else
-		setVar $BOT~user_command_line " call"
-	end
+	setvar $bot~parm1 ""
+	setVar $BOT~user_command_line " call  "
 	setvar $bot~parm2 ""
 	setvar $bot~parm3 ""
 	setvar $bot~parm4 ""
@@ -39,19 +32,4 @@
 		pause
 	end
 	
-	if ($starting_ship_type <> $player~ship_type)
-		setvar $switchboard~message "Looks like I've been podded after saveme!  Heading back home, and shutting down.*"
-		gosub :switchboard~switchboard
-		send "p"&$map~home_sector&"* y "
-		halt
-	end
-
-	gosub :planet~getplanetinfo
-	if ($starting_planet <> $planet~planet)
-		setvar $switchboard~message "Looks like I'm on a different planet than I started with.  Make sure the other one is picked up.  Will continue on my defender mission, though.*"
-		gosub :switchboard~switchboard
-
-		setvar $starting_planet $planet~planet		
-	end
-
 return

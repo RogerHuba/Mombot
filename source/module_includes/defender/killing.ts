@@ -22,7 +22,7 @@
 		#########################################
 		# Something has gone wrong, call saveme #
 		#########################################
-		gosub :callsaveme
+		gosub :navigate~call
 	end
 	if ($call~starting_ship_type <> $player~ship_type)
 		setvar $switchboard~message "I've been podded, but I am still on the planet.  Switching into ship on planet if possible.*"
@@ -199,8 +199,7 @@ return
 			#########################################
 			# Something has gone wrong, call saveme #
 			#########################################
-			gosub :callsaveme
-			halt
+			gosub :navigate~call
 		else 
 			gosub :switchboard~switchboard
 			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
@@ -218,6 +217,3 @@ return
 	killalltriggers
 return
 
-:callsaveme
-	gosub :call~run
-return
