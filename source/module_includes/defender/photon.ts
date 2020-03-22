@@ -2,6 +2,8 @@
 	killalltriggers
 	setvar $success false
 	setVar $adjsec 0
+	loadvar $bot~last_fighter_hit
+	setvar $sector $bot~last_hit
 	setVar $i 1
 	while (SECTOR.WARPSIN[$sector][$i] > 0)
 		setVar $tempAdj SECTOR.WARPSIN[$sector][$i]
@@ -25,11 +27,6 @@
 	setvar $switchboard~message "No Adjacent fig found!*"
 	gosub :switchboard~switchboard
 return
-:fire_surround
-	killalltriggers
-	send "p" $adjsec "*  y  c  p  y  " $sector "**qp" $sector "*  y  "
-	send " c  p  y  " $sector "**qp" $sector "*  y  "
-	goto :triggers
 :fire_adjacent
 	killalltriggers
 	send " c  p  y  " $sector "**qp" $sector "*  y  "

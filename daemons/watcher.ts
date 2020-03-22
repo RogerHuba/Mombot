@@ -26,6 +26,7 @@ end
 
 setTextLineTrigger  federase        :fedEraseFig        "The Federation We destroyed your Corp's "
 setTextLineTrigger  fighterserase       :eraseFig       " of your fighters in sector "
+settextlinetrigger  limpsave		:limpsave	"Limpet mine in "
 setTextLineTrigger  warpfigerase        :eraseWarpFig       "You do not have any fighters in Sector "
 setTextLineTrigger  pgridadd    :pgridadd   "Successfully P-gridded into sector "
 setTextLineTrigger  pgridxportadd    :pgridxportadd   "Successfully P-gridded w/xport into sector "
@@ -195,6 +196,10 @@ pause
 		if (($test = TRUE) AND ($fig_number <> "0"))
 			if (($fig_hit <= SECTORS) AND ($fig_hit > 0))
 				setVar $target $fig_hit
+				setvar $bot~last_fighter_hit $fig_hit
+				setvar $bot~last_hit $fig_hit
+				savevar $bot~last_fighter_hit
+				savevar $bot~last_hit
 				gosub :removefigfromdata
 			end
 		end
@@ -220,6 +225,29 @@ pause
 	end
 	setTextLineTrigger      warpfigerase        :eraseWarpFig       "You do not have any fighters in Sector "
 	pause
+:saveLimp
+	cutText CURRENTLINE&"     " $spoof 1 2 
+	cutText CURRENTLINE&"     " $spoof2 1 1 
+	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
+		goto :endSaveLimp
+	end
+	getText CURRENTLINE&" [XX][XX][XX]" $temp "Limpet mine in " " activated"
+	if ($temp <> "")
+		setvar $limp_hit $temp
+		isNumber $test $limp_hit 
+		if ($test = TRUE)
+			if (($limp_hit <= SECTORS) AND ($limp_hit > 0))
+				setvar $bot~last_limpet_hit $limp_hit
+				setvar $bot~last_hit $limp_hit
+				savevar $bot~last_hit
+				savevar $bot~last_limpet_hit
+			end
+		end
+	end
+:endSaveLimp
+	settextlinetrigger  limpsave		:limpsave	"Limpet mine in "
+	pause
+
 
 :erasebusts
 	loadvar $bot~subspace
