@@ -592,20 +592,22 @@
 		if ($killing~error = true)
 			goto :head_home
 		end
-		if ($killing~slingshot = true)
-			gosub :killing~slingshot
-		elseif ($killing~holokill = true)
-			gosub :killing~doholokill
-			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
-				gosub :pwarp_direct_and_kill
-			end
-			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+		if ($photon~sector > 10)
+			if ($killing~slingshot = true)
+				gosub :killing~slingshot
+			elseif ($killing~holokill = true)
 				gosub :killing~doholokill
-				gosub :pwarp_direct_and_kill
-			end
-			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
-				gosub :killing~doholokill
-				gosub :pwarp_direct_and_kill
+				if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+					gosub :pwarp_direct_and_kill
+				end
+				if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+					gosub :killing~doholokill
+					gosub :pwarp_direct_and_kill
+				end
+				if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+					gosub :killing~doholokill
+					gosub :pwarp_direct_and_kill
+				end
 			end
 		end
 		if (((($photon~adjacentphoton = true) and ($photon~success = true)) or ($nophoton = true)) and ($holo = true))
