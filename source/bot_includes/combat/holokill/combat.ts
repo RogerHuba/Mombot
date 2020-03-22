@@ -6,17 +6,16 @@
 	if ($SHIP~SHIP_MAX_ATTACK <= 0)
 		gosub :ship~getshipstats
 	end
-
-		setTextLineTrigger noscan1 :holo_kill_noscanner "Handle which mine type, 1 Armid or 2 Limpet"
-		setTextLineTrigger noscan2 :holo_kill_noscanner "You don't have a long range scanner."
-		setTextLineTrigger scanned :holo_kill_scandone  "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
-		if ($player~current_prompt = "Citadel")
-			   send " qqqz* sh*  l " & $PLANET~PLANET & " * j c * "
-			   setVar $player~CIT TRUE
-		else
-			   send " sh*"
-		end
-		pause
+	setTextLineTrigger noscan1 :holo_kill_noscanner "Handle which mine type, 1 Armid or 2 Limpet"
+	setTextLineTrigger noscan2 :holo_kill_noscanner "You don't have a long range scanner."
+	setTextLineTrigger scanned :holo_kill_scandone  "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
+	if ($player~current_prompt = "Citadel")
+		send " qqqz* sh*  l " & $PLANET~PLANET & " * j c * "
+		setVar $player~CIT TRUE
+	else
+		send " sh*"
+	end
+	pause
 :holo_kill_noscanner
 		killalltriggers
 		setVar $SWITCHBOARD~message "You don't have a HoloScanner!*"
@@ -31,29 +30,29 @@
 		setVar $killsector 0
 		setVar $idx 1
 		while ($idx <= SECTOR.WARPCOUNT[$player~current_sector])
-				setVar $test_sector SECTOR.WARPS[$player~current_sector][$idx]
-				setVar $safePlanets TRUE
-		setVar $containsShieldedPlanet FALSE
-		if (SECTOR.PLANETCOUNT[$test_sector] > 0)
-			setVar $p 1
-			while ($p <= SECTOR.PLANETCOUNT[$test_sector])
-				getWord SECTOR.PLANETS[$test_sector][$p] $test 1
-				if ($test = "<<<<")
-					setVar $containsShieldedPlanet TRUE
+			setVar $test_sector SECTOR.WARPS[$player~current_sector][$idx]
+			setVar $safePlanets TRUE
+			setVar $containsShieldedPlanet FALSE
+			if (SECTOR.PLANETCOUNT[$test_sector] > 0)
+				setVar $p 1
+				while ($p <= SECTOR.PLANETCOUNT[$test_sector])
+					getWord SECTOR.PLANETS[$test_sector][$p] $test 1
+					if ($test = "<<<<")
+						setVar $containsShieldedPlanet TRUE
+					end
+					add $p 1
 				end
-				add $p 1
-			end
-			if ($player~surroundAvoidAllPlanets)
-				setVar $safePlanets FALSE
-			elseif (($containsShieldedPlanet) AND ($player~surroundAvoidShieldedOnly))
-				setVar $safePlanets FALSE
-			end
-		end
-		if (($test_sector <> $MAP~stardock) AND ($test_sector > 10) AND (SECTOR.TRADERCOUNT[$test_sector] > 0) AND ($safePlanets = TRUE))
-					   setVar $killsector $test_sector
-					   goto :holo_kill_killem
+				if ($player~surroundAvoidAllPlanets)
+					setVar $safePlanets FALSE
+				elseif (($containsShieldedPlanet) AND ($player~surroundAvoidShieldedOnly))
+					setVar $safePlanets FALSE
 				end
-				add $idx 1
+			end
+			if (($test_sector <> $MAP~stardock) AND ($test_sector > 10) AND (SECTOR.TRADERCOUNT[$test_sector] > 0) AND ($safePlanets = TRUE))
+				setVar $killsector $test_sector
+				goto :holo_kill_killem
+			end
+			add $idx 1
 		end
 		goto :holo_kill_no_targets
 
@@ -67,7 +66,6 @@
 		if ($player~cit = true)
 			if ($switch)
 				send "e y qmnt*qqz* "
-				gosub :ship~getshipstats
 			else
 				send " qmnt*qqz* "
 			end
@@ -128,10 +126,9 @@
 			end		
 			send "m "  $hkill_start_sector  " *  *  z  a  99999  *  z  a  99999  *  R  *   "
 			if ($player~CIT = TRUE)
+				send " l "  $PLANET~PLANET  " * n n * j m * * * j c  *  "
 				if ($switch)
-					send " l "  $PLANET~PLANET  " * n n * j m * * * j c  e y *   "
-				else
-					send " l "  $PLANET~PLANET  " * n n * j m * * * j c  *  "
+					send " e y "
 				end
 			end
 			gosub :player~quikstats
@@ -139,7 +136,6 @@
 				   send "'" & $SWITCHBOARD~bot_name " call*"
 			else
 				setVar $SWITCHBOARD~message "Attack made and back in original sector!*"
-				gosub :ship~getshipstats
 			end
 
 		end

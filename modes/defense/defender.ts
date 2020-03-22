@@ -249,6 +249,9 @@
 	gosub :player~quikstats
 
 	setvar $call~starting_ship_type $player~ship_type
+	setvar $call~starting_ship_max_attack $ship~SHIP_MAX_ATTACK
+	setvar $call~starting_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
+
 
 	gosub :check_for_photon_refurb
 
@@ -287,6 +290,14 @@
 			killtrigger 2
 			setvar $switchboard~message "Saveme bot activated and unlocked for possible switching of ships.*"
 			gosub :switchboard~switchboard
+
+		send " e y "
+	    gosub :SHIP~getShipStats
+		setvar $killing~switch_ship_type $player~ship_type
+		setvar $killing~switch_ship_max_attack $ship~SHIP_MAX_ATTACK
+		setvar $killing~switch_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
+		send " e y "
+	    gosub :SHIP~getShipStats
 	end
 
 	setVar $message "'*  {"&$bot~bot_name&"} - "&$script_ver&" Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"

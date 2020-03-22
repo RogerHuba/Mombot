@@ -10,6 +10,8 @@
 	killalltriggers
 	if ($switch)
 		setvar $combat~switch true
+		setvar $SHIP~SHIP_MAX_ATTACK $switch_ship_max_attack
+		setvar $SHIP~SHIP_OFFENSIVE_ODDS $switch_ship_offensive_odds
 	else
 		setvar $combat~switch false
 	end
@@ -26,8 +28,11 @@
 		setvar $switchboard~message "I've been podded, but I am still on the planet.  Switching into ship on planet if possible.*"
 		gosub :switchboard~switchboard
 		send "e y "
+		gosub :ship~getshipstats
 		gosub :player~quikstats
 		setvar $call~starting_ship_type $player~ship_type
+		setvar $call~starting_ship_max_attack $ship~SHIP_MAX_ATTACK 
+		setvar $call~starting_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
 		setvar $switch false
 		#####################################################################
 		# setting switch to false so we don't switch into a pod by accident #
@@ -42,9 +47,8 @@
 		setvar $player~override false
 	end
 	if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
-		if ($combat~switch)
+		if ($switch)
 			send " e y " 
-			gosub :ship~getshipstats
 		end
 		if ($capture = true)
 			gosub :combat~fastCapture
@@ -53,21 +57,24 @@
 		else
 			gosub :combat~fastCitadelAttack
 		end
-		if ($combat~switch)
+		if ($switch)
 			send " e y " 
-			gosub :ship~getshipstats
+			setvar $player~ship_type $call~starting_ship_type 
+			setvar $ship~SHIP_MAX_ATTACK $call~starting_ship_max_attack
+			setvar $ship~SHIP_OFFENSIVE_ODDS $call~starting_ship_offensive_odds 
 		end
 		goto :scan_for_targets
 	elseif ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE)))
-		if ($combat~switch)
+		if ($switch)
 			send " e y " 
-			gosub :ship~getshipstats
 		end
 		gosub :combat~fastCapture
 		send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
-		if ($combat~switch)
-			send " e y " 
-			gosub :ship~getshipstats
+		if ($switch)
+			send " e y "
+			setvar $player~ship_type $call~starting_ship_type 
+			setvar $ship~SHIP_MAX_ATTACK $call~starting_ship_max_attack
+			setvar $ship~SHIP_OFFENSIVE_ODDS $call~starting_ship_offensive_odds 
 		end
 		gosub :player~quikstats
 		goto :scan_for_targets
@@ -172,6 +179,8 @@ return
 	setvar $before_holo_kill_sector $player~current_sector
 	if ($switch)
 		setvar $combat~switch true
+		setvar $SHIP~SHIP_MAX_ATTACK $switch_ship_max_attack
+		setvar $SHIP~SHIP_OFFENSIVE_ODDS $switch_ship_offensive_odds
 	else
 		setvar $combat~switch false
 	end
@@ -195,6 +204,11 @@ return
 		else 
 			gosub :switchboard~switchboard
 			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+		end
+	else
+		if ($switch)
+			setvar $ship~SHIP_MAX_ATTACK $call~starting_ship_max_attack
+			setvar $ship~SHIP_OFFENSIVE_ODDS $call~starting_ship_offensive_odds 
 		end
 	end
 return
