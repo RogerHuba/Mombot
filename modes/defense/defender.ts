@@ -291,7 +291,7 @@
 		setVar $message $message&"*                   On Armid Hit: No"
 	end
 	if ($saveme)
-		setVar $message $message&"*                   Saveme bot: "&$saveme_bot
+		setVar $message $message&"*                     Saveme bot: "&$saveme_bot
 	end
 	setVar $message $message&"*                    Home Sector: "&$map~home_sector
 		setVar $message $message&"*                          "
