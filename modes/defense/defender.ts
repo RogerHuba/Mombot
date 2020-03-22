@@ -294,6 +294,7 @@
 		setVar $message $message&"*                     Saveme bot: "&$saveme_bot
 	end
 	setVar $message $message&"*                    Home Sector: "&$map~home_sector
+	format $planet~planet_fighters $formatted_fighters NUMBER
 	setVar $message $message&"*                      Auto Kill: "&$formatted_fighters&" Fighters"
 		setVar $message $message&"*                          "
 		setVar $message $message&"*                        Modes"
@@ -322,7 +323,6 @@
 	if ($restock~deploymines)
 		setVar $message $message&"*                   Deploy mines"
 	end
-	format $planet~planet_fighters $formatted_fighters NUMBER
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	send $message
 
