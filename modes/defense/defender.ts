@@ -425,6 +425,9 @@
 				setvar $description $description&"Holokill "
 			end
 		end
+		if ($killing~switch)
+			setvar $description $description&"Switch "
+		end
 		if ($killing~slingshot)
 			setvar $description $description&"Slingshot "
 		end
