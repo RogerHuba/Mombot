@@ -558,13 +558,12 @@
 		#############################################
 		# holoscan sector to see if victim is there #
 		#############################################
-		gosub :killing~scan_for_targets
+		loadvar $bot~last_hit
+		if ($photon~sector = $bot~last_hit)
+			gosub :killing~scan_for_targets
+		end
 		if ($killing~error = true)
 			goto :head_home
-		end
-		loadvar $bot~last_hit
-		if ($bot~last_hit > 0)
-			setvar $sector $bot~last_hit
 		end
 		if (($photon~sector > 10) and ($photon~sector = $bot~last_hit))
 			if ($killing~slingshot = true)
