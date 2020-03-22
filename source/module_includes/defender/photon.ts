@@ -31,8 +31,18 @@
 return
 :fire_adjacent
 	killalltriggers
-	send " c  p  y  " $sector "**qp" $sector "*  y  "
-	goto :triggers
+	if ($adjacentphoton = true)
+		send " c  p  y  " $sector "**qp" $sector "*  y  "
+		goto :triggers
+	else
+		if ($density = true)
+			gosub :densityDrop
+		else
+			send " p" $sector "*  y  "
+		end
+		return
+	end
+	
 :fire_photon
 	send "p" $adjsec "*  y  c  p  y  " $sector "**qp" $sector "*  y  "
 
