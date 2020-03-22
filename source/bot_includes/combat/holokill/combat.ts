@@ -6,6 +6,11 @@
 	if ($SHIP~SHIP_MAX_ATTACK <= 0)
 		gosub :ship~getshipstats
 	end
+
+	
+	setvar $too_many_fighters (($ship~SHIP_OFFENSIVE_ODDS * $SHIP~SHIP_MAX_ATTACK))
+	divide $too_many_fighters 12
+
 	setTextLineTrigger noscan1 :holo_kill_noscanner "Handle which mine type, 1 Armid or 2 Limpet"
 	setTextLineTrigger noscan2 :holo_kill_noscanner "You don't have a long range scanner."
 	setTextLineTrigger scanned :holo_kill_scandone  "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
@@ -50,7 +55,8 @@
 					setVar $safePlanets FALSE
 				end
 			end
-			if (($test_sector <> $MAP~stardock) AND ($test_sector > 10) AND (SECTOR.TRADERCOUNT[$test_sector] > 0) AND ($safePlanets = TRUE))
+			setVar $figowner SECTOR.FIGS.OWNER[$test_sector]
+			if (($test_sector <> $MAP~stardock) AND ($test_sector > 10) AND (SECTOR.TRADERCOUNT[$test_sector] > 0) AND ($safePlanets = TRUE) and ((SECTOR.FIGS.QUANTITY[$test_sector] < ($too_many_fighters*2)) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
 				setVar $killsector $test_sector
 				goto :holo_kill_killem
 			end
