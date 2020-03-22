@@ -744,14 +744,19 @@ return
 :pwarp_direct_and_kill
 	setTextTrigger 1 :jumped "All Systems Ready, shall we engage? Yes"
 	settexttrigger 2 :no_jump "Your own fighters must be in the destination to make a safe jump"
+	settexttrigger 3 :jumped "You are already in that sector!"
 	send "p" $photon~sector "*y   "
 	pause
 	:no_jump
 		killtrigger 1
+		killtrigger 2
+		killtrigger 3
 		setvar $pwarp_success false
 		return
 	:jumped
+		killtrigger 1
 		killtrigger 2
+		killtrigger 3
 		setvar $pwarp_success true
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
