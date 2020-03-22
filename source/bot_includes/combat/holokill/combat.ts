@@ -159,6 +159,7 @@
 			gosub :player~quikstats
 			if ($player~current_sector <> $hkill_start_sector)
 				gosub :callsaveme
+				gosub :player~quikstats
 				setVar $SWITCHBOARD~message "After save me, resetting.*"
 			else
 				setVar $SWITCHBOARD~message "Attack made and back in original sector!*"
