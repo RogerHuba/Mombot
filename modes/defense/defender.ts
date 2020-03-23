@@ -291,12 +291,14 @@
 			setvar $switchboard~message "Saveme bot activated and unlocked for possible switching of ships.*"
 			gosub :switchboard~switchboard
 
-		send " e y "
-	    gosub :SHIP~getShipStats
-		setvar $killing~switch_ship_type $player~ship_type
-		setvar $killing~switch_ship_max_attack $ship~SHIP_MAX_ATTACK
-		setvar $killing~switch_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
-		send " e y "
+		if ($killing~switch)
+			send " e y "
+	    	gosub :SHIP~getShipStats
+			setvar $killing~switch_ship_type $player~ship_type
+			setvar $killing~switch_ship_max_attack $ship~SHIP_MAX_ATTACK
+			setvar $killing~switch_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
+			send " e y "
+	    end
 	    gosub :SHIP~getShipStats
 	end
 
