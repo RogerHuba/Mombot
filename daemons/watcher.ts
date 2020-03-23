@@ -28,6 +28,7 @@ setTextLineTrigger  federase        :fedEraseFig        "The Federation We destr
 setTextLineTrigger  fighterserase       :eraseFig       " of your fighters in sector "
 setTextLineTrigger  fightersave 	:fightersave "Deployed Fighters "
 settextlinetrigger  limpsave		:limpsave	"Limpet mine in "
+setTextLineTrigger 	armidsave 		:armidsave "Your mines in "
 setTextLineTrigger  warpfigerase        :eraseWarpFig       "You do not have any fighters in Sector "
 setTextLineTrigger  pgridadd    :pgridadd   "Successfully P-gridded into sector "
 setTextLineTrigger  pgridxportadd    :pgridxportadd   "Successfully P-gridded w/xport into sector "
@@ -248,6 +249,32 @@ pause
 :endSaveLimp
 	settextlinetrigger  limpsave		:limpsave	"Limpet mine in "
 	pause
+
+:armidsave
+	cutText CURRENTLINE&"     " $spoof 1 2 
+	cutText CURRENTLINE&"     " $spoof2 1 1 
+	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
+		goto :endSaveArmid
+	end
+	#Your mines in 4441 did 628 damage to Mind
+	getText CURRENTLINE&" [XX][XX][XX]" $temp "Your mines in " " did "
+	if ($temp <> "")
+		setvar $mine_hit $temp
+		isNumber $test $mine_hit 
+		if ($test = TRUE)
+			if (($mine_hit <= SECTORS) AND ($mine_hit > 0))
+				setvar $bot~last_armid_hit $mine_hit
+				setvar $bot~last_hit $mine_hit
+				saveGlobal $bot~last_hit
+				saveGlobal $bot~last_armid_hit
+			end
+		end
+	end
+:endSaveArmid
+	setTextLineTrigger 	armidsave 		:armidsave "Your mines in "
+	pause
+
+
 
 :fightersave
 	cutText CURRENTLINE&"     " $spoof 1 2 
