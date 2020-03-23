@@ -45,7 +45,7 @@
 	end
 	setvar $switchboard~message ""
 	if ($hit)
-		setvar $switchboard~message $switchboard~message&"Last hit of any kind was sector "&$bot~last_hit&"*"
+		setvar $switchboard~message $switchboard~message&"Last hit:*    *"
 		setVar $MAP~displaySector $bot~last_hit
 		gosub :MAP~displaySector
 		setVar $SWITCHBOARD~message $switchboard~message&"*"&$MAP~output
@@ -63,7 +63,7 @@
 			if ($bot~last_fighter_hit = 0)
 				setvar $switchboard~message $switchboard~message&"No fighter hit sector recorded.*"
 			else
-				setvar $switchboard~message $switchboard~message&"Last fighter hit was sector "&$bot~last_fighter_hit&"*"
+				setvar $switchboard~message $switchboard~message&"Last fighter hit:*     *"
 
 				setVar $MAP~displaySector $bot~last_fighter_hit
 				gosub :MAP~displaySector
@@ -76,6 +76,7 @@
 					setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$bot~parms[$j]&": "&$check&"*"
 					add $j 1
 				end
+				setVar $SWITCHBOARD~message $SWITCHBOARD~message&"     *  "
 			end
 		end
 		if ($limp)
@@ -83,7 +84,7 @@
 			if ($bot~last_limpet_hit = 0)
 				setvar $switchboard~message $switchboard~message&"No limpet hit sector recorded.*"
 			else
-				setvar $switchboard~message $switchboard~message&"Last limpet hit was sector "&$bot~last_limpet_hit&"*"
+				setvar $switchboard~message $switchboard~message&"Last limpet hit:*     *"
 
 				setVar $MAP~displaySector $bot~last_limpet_hit
 				gosub :MAP~displaySector
@@ -96,6 +97,7 @@
 					setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$bot~parms[$j]&": "&$check&"*"
 					add $j 1
 				end
+				setVar $SWITCHBOARD~message $SWITCHBOARD~message&"     *  "
 			end
 		end
 		if ($armid)
@@ -103,7 +105,7 @@
 			if ($bot~last_armid_hit = 0)
 				setvar $switchboard~message $switchboard~message&"No armid hit sector recorded.*"
 			else
-				setvar $switchboard~message $switchboard~message&"Last armid hit was sector "&$bot~last_armid_hit&"*"
+				setvar $switchboard~message $switchboard~message&"Last armid hit:*      *"
 			
 				setVar $MAP~displaySector $bot~last_armid_hit
 				gosub :MAP~displaySector
@@ -116,6 +118,8 @@
 					setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$bot~parms[$j]&": "&$check&"*"
 					add $j 1
 				end
+				setVar $SWITCHBOARD~message $SWITCHBOARD~message&"     *  "
+
 
 			end
 		end
