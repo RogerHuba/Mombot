@@ -560,7 +560,7 @@
 			gosub :player~quikstats
 		end
 		loadGlobal $bot~last_hit
-		echo "*[" $bot~last_hit "] compared to [" $photon~sector "] while current sector is [" $player~current_sector "]*"
+		send "'[" $bot~last_hit "] compared to [" $photon~sector "] while current sector is [" $player~current_sector "]*"
 		if (($photon~sector <> $bot~last_hit) and ($player~current_sector <> $bot~last_hit))
 			setvar $photon~sector $bot~last_hit
 			goto :check_to_fire_photon
