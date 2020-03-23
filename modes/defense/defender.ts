@@ -557,7 +557,7 @@
 		# if last sector hit isn't sector shot and not sector we are currently in, shoot again #
 		########################################################################################
 		if ($photon~success <> true)
-			gosub player~quikstats
+			gosub :player~quikstats
 		end
 		loadGlobal $bot~last_hit
 		if (($photon~sector <> $bot~last_hit) and ($player~current_sector <> $bot~last_hit))
