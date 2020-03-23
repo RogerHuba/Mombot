@@ -557,7 +557,12 @@
 		# if last sector hit isn't sector shot and not sector we are currently in, shoot again #
 		########################################################################################
 		if ($photon~success <> true)
+			setvar $photon~last_sector $photon~sector
+			setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
 			gosub :player~quikstats
+			if ($player~photons <= 0)
+				gosub :check_for_photon_refurb
+			end
 		end
 		gosub :waitbeforecheck
 		loadGlobal $bot~last_hit
@@ -595,18 +600,40 @@
 				gosub :pwarp_direct_and_kill
 			end
 		end
+		gosub :waitbeforecheck
+		loadGlobal $bot~last_hit
+		if ($photon~sector <> $bot~last_hit)
+			setvar $photon~sector $bot~last_hit
+			goto :check_to_fire_photon
+		end
 		if (((($photon~adjacentphoton = true) and ($photon~success = true)) or ($nophoton = true)) and ($holo = true))
 			gosub :doholo
 		end
 
-		setvar $photon~last_sector $photon~sector
-		setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
+		gosub :waitbeforecheck
+		loadGlobal $bot~last_hit
+		if ($photon~sector <> $bot~last_hit)
+			setvar $photon~sector $bot~last_hit
+			goto :check_to_fire_photon
+		end
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
 			goto :head_home
 		end
+		gosub :waitbeforecheck
+		loadGlobal $bot~last_hit
+		if ($photon~sector <> $bot~last_hit)
+			setvar $photon~sector $bot~last_hit
+			goto :check_to_fire_photon
+		end
 		if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
 			gosub :doMines
+		end
+		gosub :waitbeforecheck
+		loadGlobal $bot~last_hit
+		if ($photon~sector <> $bot~last_hit)
+			setvar $photon~sector $bot~last_hit
+			goto :check_to_fire_photon
 		end
 		if ($noescape <> true)
 			gosub :navigate~navigate_away
