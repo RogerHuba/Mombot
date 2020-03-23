@@ -560,9 +560,7 @@
 			setvar $photon~last_sector $photon~sector
 			setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
 			gosub :player~quikstats
-			if ($player~photons <= 0)
-				gosub :check_for_photon_refurb
-			end
+			gosub :check_for_photon_refurb
 		end
 		gosub :waitbeforecheck
 		loadGlobal $bot~last_hit
