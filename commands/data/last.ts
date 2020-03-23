@@ -39,41 +39,89 @@
 
 	loadGlobal $bot~last_hit
 	if ($bot~last_hit = 0)
-		setvar $switchboard~message "There is no memory in this bot of any sector hits.*"
+		setvar $switchboard~message "There is no record of any sector hits.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 	setvar $switchboard~message ""
 	if ($hit)
 		setvar $switchboard~message $switchboard~message&"Last hit of any kind was sector "&$bot~last_hit&"*"
+		setVar $MAP~displaySector $bot~last_hit
+		gosub :MAP~displaySector
+		setVar $SWITCHBOARD~message $switchboard~message&"*"&$MAP~output
+		listSectorParameters $bot~last_hit $bot~parms
+		setvar $j 1
+		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"     *  "
+		while ($j <= $bot~parms)
+			getSectorParameter $i $bot~parms[$j] $check
+			setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$bot~parms[$j]&": "&$check&"*"
+			add $j 1
+		end
 	else
 		if ($fig)
 			loadGlobal $bot~last_fighter_hit
-			setvar $switchboard~message $switchboard~message&"Last fighter hit was sector "&$bot~last_fighter_hit&"*"
+			if ($bot~last_fighter_hit = 0)
+				setvar $switchboard~message $switchboard~message&"No fighter hit sector recorded.*"
+			else
+				setvar $switchboard~message $switchboard~message&"Last fighter hit was sector "&$bot~last_fighter_hit&"*"
+
+				setVar $MAP~displaySector $bot~last_fighter_hit
+				gosub :MAP~displaySector
+				setVar $SWITCHBOARD~message $switchboard~message&"*"&$MAP~output
+				listSectorParameters $bot~last_fighter_hit $bot~parms
+				setvar $j 1
+				setVar $SWITCHBOARD~message $SWITCHBOARD~message&"     *  "
+				while ($j <= $bot~parms)
+					getSectorParameter $i $bot~parms[$j] $check
+					setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$bot~parms[$j]&": "&$check&"*"
+					add $j 1
+				end
+			end
 		end
 		if ($limp)
 			loadGlobal $bot~last_limpet_hit
-			setvar $switchboard~message $switchboard~message&"Last limpet hit was sector "&$bot~last_limpet_hit&"*"
+			if ($bot~last_limpet_hit = 0)
+				setvar $switchboard~message $switchboard~message&"No limpet hit sector recorded.*"
+			else
+				setvar $switchboard~message $switchboard~message&"Last limpet hit was sector "&$bot~last_limpet_hit&"*"
+
+				setVar $MAP~displaySector $bot~last_limpet_hit
+				gosub :MAP~displaySector
+				setVar $SWITCHBOARD~message $switchboard~message&"*"&$MAP~output
+				listSectorParameters $bot~last_limpet_hit $bot~parms
+				setvar $j 1
+				setVar $SWITCHBOARD~message $SWITCHBOARD~message&"     *  "
+				while ($j <= $bot~parms)
+					getSectorParameter $i $bot~parms[$j] $check
+					setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$bot~parms[$j]&": "&$check&"*"
+					add $j 1
+				end
+			end
 		end
 		if ($armid)
 			loadGlobal $bot~last_armid_hit
-			setvar $switchboard~message $switchboard~message&"Last armid hit was sector "&$bot~last_armid_hit&"*"
+			if ($bot~last_armid_hit = 0)
+				setvar $switchboard~message $switchboard~message&"No armid hit sector recorded.*"
+			else
+				setvar $switchboard~message $switchboard~message&"Last armid hit was sector "&$bot~last_armid_hit&"*"
+			
+				setVar $MAP~displaySector $bot~last_armid_hit
+				gosub :MAP~displaySector
+				setVar $SWITCHBOARD~message $switchboard~message&"*"&$MAP~output
+				listSectorParameters $bot~last_armid_hit $bot~parms
+				setvar $j 1
+				setVar $SWITCHBOARD~message $SWITCHBOARD~message&"     *  "
+				while ($j <= $bot~parms)
+					getSectorParameter $i $bot~parms[$j] $check
+					setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$bot~parms[$j]&": "&$check&"*"
+					add $j 1
+				end
+
+			end
 		end
 	end
 
 
-
-	setVar $MAP~displaySector $bot~last_hit
-	gosub :MAP~displaySector
-	setVar $SWITCHBOARD~message $switchboard~message&"*"&$MAP~output
-	listSectorParameters $bot~last_hit $bot~parms
-	setvar $j 1
-	setVar $SWITCHBOARD~message $SWITCHBOARD~message&"     *  "
-	while ($j <= $bot~parms)
-		getSectorParameter $i $bot~parms[$j] $check
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"    "&$bot~parms[$j]&": "&$check&"*"
-		add $j 1
-	end
 
 	gosub :SWITCHBOARD~switchboard
 halt
