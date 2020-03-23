@@ -559,7 +559,7 @@
 		#if ($photon~success <> true)
 			gosub :player~quikstats
 		#end
-		setdelaytrigger waithere :checklasthit 100
+		setdelaytrigger waithere :checklasthit 50
 		pause
 		:checklasthit
 		loadGlobal $bot~last_hit
