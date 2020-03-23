@@ -66,7 +66,7 @@
 	setVar $MAP~displaySector $bot~last_hit
 	gosub :MAP~displaySector
 	setVar $SWITCHBOARD~message $switchboard~message&"*"&$MAP~output
-	listSectorParameters $i $bot~parms
+	listSectorParameters $bot~last_hit $bot~parms
 	setvar $j 1
 	setVar $SWITCHBOARD~message $SWITCHBOARD~message&"     *  "
 	while ($j <= $bot~parms)
