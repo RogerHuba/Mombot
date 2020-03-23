@@ -556,9 +556,9 @@
 		########################################################################################
 		# if last sector hit isn't sector shot and not sector we are currently in, shoot again #
 		########################################################################################
-		if ($photon~success <> true)
+		#if ($photon~success <> true)
 			gosub :player~quikstats
-		end
+		#end
 		loadGlobal $bot~last_hit
 		send "'[" $bot~last_hit "] compared to [" $photon~sector "] while current sector is [" $player~current_sector "]*"
 		if (($photon~sector <> $bot~last_hit) and ($player~current_sector <> $bot~last_hit))
