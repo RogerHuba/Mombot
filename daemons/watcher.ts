@@ -291,8 +291,6 @@ pause
 	#Deployed Fighters Report Sector 8920: Mind's Imperial StarShip entered sector.
 	getText CURRENTLINE&" [XX][XX][XX]" $temp "Deployed Fighters Report Sector " ": "
 	if ($temp <> "")
-		setvar $killing~last_fighter_attack CURRENTLINE
-		saveGlobal $killing~last_fighter_attack
 		setvar $fighit $temp
 		isNumber $test $fighit 
 		if ($test = TRUE)
