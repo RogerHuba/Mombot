@@ -45,7 +45,7 @@
 	end
 	setvar $switchboard~message ""
 	if ($hit)
-		setvar $switchboard~message $switchboard~message&"Last hit:*"
+		setvar $switchboard~message $switchboard~message&"    *Last hit:*"
 		setVar $MAP~displaySector $bot~last_hit
 		gosub :MAP~displaySector
 		setVar $SWITCHBOARD~message $switchboard~message&"*"&$MAP~output
@@ -64,7 +64,7 @@
 			if ($bot~last_fighter_hit = 0)
 				setvar $switchboard~message $switchboard~message&"No fighter hit sector recorded.*"
 			else
-				setvar $switchboard~message $switchboard~message&"Last fighter hit:*"
+				setvar $switchboard~message $switchboard~message&"   *Last fighter hit:*"
 
 				setVar $MAP~displaySector $bot~last_fighter_hit
 				gosub :MAP~displaySector
@@ -85,7 +85,7 @@
 			if ($bot~last_limpet_hit = 0)
 				setvar $switchboard~message $switchboard~message&"No limpet hit sector recorded.*"
 			else
-				setvar $switchboard~message $switchboard~message&"Last limpet hit:*"
+				setvar $switchboard~message $switchboard~message&"    *Last limpet hit:*"
 
 				setVar $MAP~displaySector $bot~last_limpet_hit
 				gosub :MAP~displaySector
@@ -106,7 +106,7 @@
 			if ($bot~last_armid_hit = 0)
 				setvar $switchboard~message $switchboard~message&"No armid hit sector recorded.*"
 			else
-				setvar $switchboard~message $switchboard~message&"Last armid hit:*"
+				setvar $switchboard~message $switchboard~message&"   *Last armid hit:*"
 			
 				setVar $MAP~displaySector $bot~last_armid_hit
 				gosub :MAP~displaySector
