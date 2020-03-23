@@ -559,11 +559,11 @@
 		#if ($photon~success <> true)
 			gosub :player~quikstats
 		#end
-		setdelaytrigger waithere :checklasthit 10
+		setdelaytrigger waithere :checklasthit 5
 		pause
 		:checklasthit
 		loadGlobal $bot~last_hit
-		send "'[" $bot~last_hit "] compared to [" $photon~sector "] while current sector is [" $player~current_sector "]*"
+		#send "'[" $bot~last_hit "] compared to [" $photon~sector "] while current sector is [" $player~current_sector "]*"
 		if (($photon~sector <> $bot~last_hit) and ($player~current_sector <> $bot~last_hit))
 			setvar $photon~sector $bot~last_hit
 			goto :check_to_fire_photon
