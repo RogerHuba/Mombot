@@ -29,26 +29,22 @@ end
 setVar $continue TRUE
 while (($continue = TRUE))
 		send "p" $bot~parm1 "* y "
-	gosub :player~quikstats
-		setvar $bot~command "movefig"
+		gosub :player~quikstats
 		setVar $BOT~user_command_line " movefig p "
 		setVar $BOT~parm1 "p"
-		saveVar $BOT~parm1
-		setVar $BOT~parm2 ""
-		saveVar $BOT~parm2
-		saveVar $BOT~command
-		saveVar $BOT~user_command_line
-		load "scripts\mombot\modes\resource\movefig.cts"
-		setEventTrigger		moveended		:moveended "SCRIPT STOPPED" "scripts\mombot\modes\resource\movefig.cts"
-		pause
-		:moveended
+		gosub :move
 
 		send "p" $map~home_sector "* y "
 		gosub :player~quikstats
-
-		setvar $bot~command "movefig"
 		setVar $BOT~user_command_line " movefig s "
 		setVar $BOT~parm1 "s"
+		gosub :move
+
+end
+
+:move
+
+		setvar $bot~command "movefig"
 		saveVar $BOT~parm1
 		setVar $BOT~parm2 ""
 		saveVar $BOT~parm2
@@ -58,8 +54,7 @@ while (($continue = TRUE))
 		setEventTrigger		moveended		:moveended "SCRIPT STOPPED" "scripts\mombot\modes\resource\movefig.cts"
 		pause
 		:moveended
-
-end
+return
 
 	halt
 
