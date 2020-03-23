@@ -2,6 +2,7 @@ logging off
 
 gosub :BOT~loadVars
 loadVar $MAP~STARDOCK
+loadVar $MAP~home_Sector
 loadVar $planet~planet
 setVar $total 0
 setVar $desired 0
@@ -31,7 +32,7 @@ while (($continue = TRUE))
 	gosub :player~quikstats
 		setvar $bot~command "movefig"
 		setVar $BOT~user_command_line " movefig p "
-		setVar $BOT~parm1 "s"
+		setVar $BOT~parm1 "p"
 		saveVar $BOT~parm1
 		setVar $BOT~parm2 ""
 		saveVar $BOT~parm2
@@ -43,6 +44,7 @@ while (($continue = TRUE))
 		:moveended
 
 		send "p" $map~home_sector "* y "
+		gosub :player~quikstats
 
 		setvar $bot~command "movefig"
 		setVar $BOT~user_command_line " movefig s "
