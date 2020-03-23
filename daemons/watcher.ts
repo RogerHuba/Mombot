@@ -290,7 +290,7 @@ pause
 	#Deployed Fighters Report Sector 8920: Mind's Imperial StarShip entered sector.
 	getText $line&" [XX][XX][XX]" $temp "Deployed Fighters Report Sector " ": "
 	getwordpos $line $pos " entered sector."
-	if ($pos > 0 )
+	if ($pos > 0)
 		setvar $killing~last_fighter_attack $line
 		saveGlobal $killing~last_fighter_attack
 	end
