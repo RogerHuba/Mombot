@@ -7,7 +7,11 @@ loadVar $MAP~stardock
 loadvar $bot~subspace
 loadvar $bot~bot_password
 loadvar $bot~bot_name
-
+loadGlobal $killing~last_fighter_attack
+if ($killing~last_fighter_attack = 0)
+	setvar $killing~last_fighter_attack ""
+	saveGlobal $killing~last_fighter_attack
+end
 setSectorParameter 1 "MSLSEC" TRUE
 setSectorParameter 2 "MSLSEC" TRUE
 setSectorParameter 3 "MSLSEC" TRUE
@@ -197,6 +201,8 @@ pause
 		isNumber $test $fig_hit 
 		if (($test = TRUE) AND ($fig_number <> "0"))
 			if (($fig_hit <= SECTORS) AND ($fig_hit > 0))
+				setvar $killing~last_fighter_attack CURRENTLINE
+				saveGlobal $killing~last_fighter_attack
 				setVar $target $fig_hit
 				setvar $bot~last_fighter_hit $fig_hit
 				setvar $bot~last_hit $fig_hit
@@ -285,6 +291,8 @@ pause
 	#Deployed Fighters Report Sector 8920: Mind's Imperial StarShip entered sector.
 	getText CURRENTLINE&" [XX][XX][XX]" $temp "Deployed Fighters Report Sector " ": "
 	if ($temp <> "")
+		setvar $killing~last_fighter_attack CURRENTLINE
+		saveGlobal $killing~last_fighter_attack
 		setvar $fighit $temp
 		isNumber $test $fighit 
 		if ($test = TRUE)

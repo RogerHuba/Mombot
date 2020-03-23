@@ -92,9 +92,13 @@ return
 	###################################
 	if ($player~current_sector = $sector)
 		gosub :htorp
-	end
-	if ($density = true)
-		gosub :densityDrop
+	else
+		###################################################
+		# don't do density if you are in sector with them #
+		###################################################
+		if ($density = true)
+			gosub :densityDrop
+		end
 	end
 	return
 
@@ -124,7 +128,7 @@ return
 	# the idea is to set the sector cannon to kill the type of ship that is hitting grid last. #
 	############################################################################################
 
-	setvar $killing~last_fighter_attack CURRENTLINE
+	loadGlobal $killing~last_fighter_attack
 
 	#############################
 	# Torp only on sector entry #
@@ -147,18 +151,18 @@ return
 		goto :fire_adjacent
 	end
 
-	setVar $i 1
-	while (SECTOR.WARPS[$sector][$i] > 0)
-		getwordpos $adjacent_to_last_attack_sectors $pos " "&SECTOR.WARPS[$sector][$i]&" "
-		if ($pos > 0)
-			setvar $found true
-			setvar $surround true
-			echo "*[Surround DETECTED]*"
-			setvar $sector SECTOR.WARPS[$sector][$i]
-			return
-		end
-		add $i 1
-	end
+#	setVar $i 1
+#	while (SECTOR.WARPS[$sector][$i] > 0)
+#		getwordpos $adjacent_to_last_attack_sectors $pos " "&SECTOR.WARPS[$sector][$i]&" "
+#		if ($pos > 0)
+#			setvar $found true
+#			setvar $surround true
+#			echo "*[Surround DETECTED]*"
+#			setvar $sector SECTOR.WARPS[$sector][$i]
+#			return
+#		end
+#		add $i 1
+#	end
 
 	getwordpos CURRENTLINE $posretreat " retreated."
 	getwordpos CURRENTLINE $posdestroyed " DESTROYED "

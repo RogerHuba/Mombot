@@ -63,7 +63,7 @@
 	setVar $PLAYER~save TRUE
 	gosub :combat~init 
 
-	setvar $killing~last_fighter_attack ""
+	loadGlobal $killing~last_fighter_attack
 	
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	if (($MAP~stardock = 0) OR ($MAP~stardock = ""))
@@ -536,49 +536,55 @@
 	killalltriggers
 
 	if ($photon~found = true)
-		if ($photon~adjacent <> true)
-			if ($photon~retreatfighter <> true)
-				if (($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
-					goto :can_not_fire
-				end
-				getsectorparameter $photon~sector "BUBBLE" $isBubble
-				getsectorparameter $photon~sector "FARM" $isFarm
-				if (($isBubble = true) or ($isFarm = true))
-					setvar $switchboard~message "Can not fire into bubble or farm sector "&$photon~sector&"!*"
-					gosub :switchboard~switchboard
-					goto :can_not_fire
-				end
-				gosub :photon~photon
-			else
-				gosub :photon~retreatphoton
+		if ($photon~retreatfighter = true)
+			gosub :photon~retreatphoton
+		else
+			if (($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
+				goto :can_not_fire
 			end
-			killalltriggers
+			getsectorparameter $photon~sector "BUBBLE" $isBubble
+			getsectorparameter $photon~sector "FARM" $isFarm
+			if (($isBubble = true) or ($isFarm = true))
+				setvar $switchboard~message "Can not fire into bubble or farm sector "&$photon~sector&"!*"
+				gosub :switchboard~switchboard
+				goto :can_not_fire
+			end
+			gosub :photon~photon
 		end
+		killalltriggers
 		:done_firing
-		#############################################
-		# holoscan sector to see if victim is there #
-		#############################################
+		########################################################################################
+		# if last sector hit isn't sector shot and not sector we are currently in, shoot again #
+		########################################################################################
+		if ($photon~success <> true)
+			gosub player~quikstats
+		end
 		loadGlobal $bot~last_hit
+		if (($photon~sector <> $bot~last_hit) and ($player~current_sector <> $bot~last_hit))
+			setvar $photon~sector $bot~last_hit
+			goto :check_to_fire_photon
+		end
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
 			goto :head_home
 		end
-		if (($photon~sector > 10) and ($photon~sector = $bot~last_hit))
-			if ($killing~slingshot = true)
-				gosub :killing~slingshot
-			elseif ($killing~holokill = true)
+		#############################################
+		# holoscan sector to see if victim is there #
+		#############################################
+		if ($killing~slingshot = true)
+			gosub :killing~slingshot
+		elseif ($killing~holokill = true)
+			gosub :killing~doholokill
+			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+				gosub :pwarp_direct_and_kill
+			end
+			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
 				gosub :killing~doholokill
-				if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
-					gosub :pwarp_direct_and_kill
-				end
-				if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
-					gosub :killing~doholokill
-					gosub :pwarp_direct_and_kill
-				end
-				if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
-					gosub :killing~doholokill
-					gosub :pwarp_direct_and_kill
-				end
+				gosub :pwarp_direct_and_kill
+			end
+			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+				gosub :killing~doholokill
+				gosub :pwarp_direct_and_kill
 			end
 		end
 		if (((($photon~adjacentphoton = true) and ($photon~success = true)) or ($nophoton = true)) and ($holo = true))
@@ -608,6 +614,7 @@
 		####################
 		gosub :player~quikstats
 		gosub :check_for_photon_refurb
+		loadGlobal $killing~last_fighter_attack
 		if ($killing~last_fighter_attack <> "")
 			gosub :killing~set_the_cannon
 		end

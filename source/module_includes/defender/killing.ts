@@ -85,6 +85,7 @@
 return
 
 :set_the_cannon
+	loadGlobal $last_fighter_attack
 	getText $last_fighter_attack $ship_type "'s "  " entered sector."
 
 	##############################################################
