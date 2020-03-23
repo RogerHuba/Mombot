@@ -201,8 +201,6 @@ pause
 		isNumber $test $fig_hit 
 		if (($test = TRUE) AND ($fig_number <> "0"))
 			if (($fig_hit <= SECTORS) AND ($fig_hit > 0))
-				setvar $killing~last_fighter_attack CURRENTLINE
-				saveGlobal $killing~last_fighter_attack
 				setVar $target $fig_hit
 				setvar $bot~last_fighter_hit $fig_hit
 				setvar $bot~last_hit $fig_hit
@@ -290,6 +288,11 @@ pause
 	end
 	#Deployed Fighters Report Sector 8920: Mind's Imperial StarShip entered sector.
 	getText CURRENTLINE&" [XX][XX][XX]" $temp "Deployed Fighters Report Sector " ": "
+	getwordpos CURRENTLINE $pos " entered sector."
+	if ($pos > 0 )
+		setvar $killing~last_fighter_attack CURRENTLINE
+		saveGlobal $killing~last_fighter_attack
+	end
 	if ($temp <> "")
 		setvar $fighit $temp
 		isNumber $test $fighit 
