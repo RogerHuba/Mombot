@@ -510,6 +510,10 @@
 					halt
 				end
 			end
+			loadGlobal $killing~last_fighter_attack
+			if ($killing~last_fighter_attack <> "")
+				gosub :killing~set_the_cannon
+			end
 		goto :processing
 
 	halt
