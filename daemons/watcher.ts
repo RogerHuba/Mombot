@@ -281,16 +281,17 @@ pause
 
 
 :fightersave
-	cutText CURRENTLINE&"     " $spoof 1 2 
-	cutText CURRENTLINE&"     " $spoof2 1 1 
+	setvar $line CURRENTLINE
+	cutText $line&"     " $spoof 1 2 
+	cutText $line&"     " $spoof2 1 1 
 	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
 		goto :endfightersave
 	end
 	#Deployed Fighters Report Sector 8920: Mind's Imperial StarShip entered sector.
-	getText CURRENTLINE&" [XX][XX][XX]" $temp "Deployed Fighters Report Sector " ": "
-	getwordpos CURRENTLINE $pos " entered sector."
+	getText $line&" [XX][XX][XX]" $temp "Deployed Fighters Report Sector " ": "
+	getwordpos $line $pos " entered sector."
 	if ($pos > 0 )
-		setvar $killing~last_fighter_attack CURRENTLINE
+		setvar $killing~last_fighter_attack $line
 		saveGlobal $killing~last_fighter_attack
 	end
 	if ($temp <> "")
