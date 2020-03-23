@@ -556,12 +556,10 @@
 		########################################################################################
 		# if last sector hit isn't sector shot and not sector we are currently in, shoot again #
 		########################################################################################
-		#if ($photon~success <> true)
+		if ($photon~success <> true)
 			gosub :player~quikstats
-		#end
-		setdelaytrigger waithere :checklasthit 5
-		pause
-		:checklasthit
+		end
+		gosub :waitbeforecheck
 		loadGlobal $bot~last_hit
 		#send "'[" $bot~last_hit "] compared to [" $photon~sector "] while current sector is [" $player~current_sector "]*"
 		if (($photon~sector <> $bot~last_hit) and ($player~current_sector <> $bot~last_hit))
@@ -571,6 +569,12 @@
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
 			goto :head_home
+		end
+		gosub :waitbeforecheck
+		loadGlobal $bot~last_hit
+		if ($photon~sector <> $bot~last_hit)
+			setvar $photon~sector $bot~last_hit
+			goto :check_to_fire_photon
 		end
 		#############################################
 		# holoscan sector to see if victim is there #
@@ -788,6 +792,11 @@ return
 		end
 return
 
+:waitbeforecheck
+	setdelaytrigger waithere :checklasthit 5
+	pause
+	:checklasthit
+return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
