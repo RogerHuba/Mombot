@@ -1,5 +1,6 @@
 :xenter
 	gosub :PLAYER~quikstats
+	loadvar $game~game_menu_prompt
 	isNumber $test $bot~parm1
 	if ($test = FALSE)
 		setVar $bot~parm1 1
@@ -35,14 +36,17 @@
 	while ($i <= $bot~parm1)
 		killtrigger 1
 		killtrigger 2
+		killtrigger 3
 		send $exit_mac
 		settexttrigger 1 :pickgame "Selection (? for menu)"
 		settexttrigger 2 :enter_choice "Enter your choice:"
+		settexttrigger 3 :pickgame $game~game_menu_prompt
 		pause
 		:enter_choice
 
 		killtrigger 1
 		killtrigger 2
+		killtrigger 3
 		send $exit_enter
 		waitOn #179
 
@@ -74,6 +78,7 @@
 	goto :bot~wait_for_command
 	:pickgame
 		killtrigger 2
+		killtrigger 3
 		send $BOT~letter&"  *  "
 		waiton "[Pause]"
 		send " * "
