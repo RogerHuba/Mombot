@@ -89,7 +89,7 @@
 		end
 		goto :stoppingPoint
 	end
-	if (($passive = true) and ($player~fighters < $enemy_fighters))
+	if (($sector~passive = true) and ($player~fighters < $enemy_fighters))
 		setvar $switchboard~message "*Enemy has too many fighters to attack auto ("&$enemy_fighters&").*" 
 		gosub :bot~echo
 	else
