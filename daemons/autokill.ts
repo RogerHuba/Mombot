@@ -19,8 +19,17 @@
 	end
 	gosub :player~quikstats
 :again
+	killtrigger 10
 	killtrigger 1
-	settexttrigger 1 :start_scan "Sector  : "
+	killtrigger 2
+	killtrigger 3
+	killtrigger 4
+	settexttrigger 10 :start_scan "Sector  : "
+	setTextTrigger 1 :pausing "Planet command (?="
+	setTextTrigger 2 :pausing "Computer command ["
+	setTextTrigger 3 :pausing "Corporate command ["
+	setTextTrigger 4 :pausing "Citadel command ("
+
 	pause
 		:start_scan
 
@@ -45,6 +54,23 @@
 		end
 	end
 	goto :again
+
+
+
+:pausing
+	killtrigger 10
+	killtrigger 1
+	killtrigger 2
+	killtrigger 3
+	killtrigger 4
+	echo ANSI_6 "*[" ANSI_14  "Autokill paused. To restart, re-enter Command Prompt" ANSI_6 "]*" ANSI_7
+	setTextTrigger 1 :restarting "Command ["
+	pause
+	:restarting
+		gosub :killtriggers
+		echo ANSI_6 "*[" ANSI_14 "Autokill restarted" ANSI_6 "]*" ANSI_7
+		gosub :player~quikstats
+		goto :again
 
 
 
