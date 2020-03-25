@@ -12,6 +12,7 @@
 		send "s"
 	else
 		if ($moving)
+			waiton "Sector  : "&$player~moveIntoSector
 		else
 			if ($player~fedspace = true)
 				send "*"
