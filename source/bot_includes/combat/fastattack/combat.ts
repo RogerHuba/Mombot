@@ -80,8 +80,10 @@
 			end
 		end
 	else
-		setvar $switchboard~message "*You have no valid targets.*" 
-		gosub :bot~echo
+		if ($sector~passive <> true)
+			setvar $switchboard~message "*You have no valid targets.*" 
+			gosub :bot~echo
+		end
 		goto :stoppingPoint
 	end
 	send $attackString&"* "
