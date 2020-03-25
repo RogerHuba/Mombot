@@ -12,6 +12,7 @@
 		send "s"
 	else
 		if ($moving)
+		else
 			if ($player~fedspace = true)
 				send "*"
 			else
