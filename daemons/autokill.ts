@@ -27,6 +27,7 @@
 
 	setvar $player~isFound false
 	setvar $sector~passive true
+	loadvar $player~fighters
 	goSub :SECTOR~getSectorData
 	goSub :combat~fastAttack
 	if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
