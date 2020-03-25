@@ -24,4 +24,32 @@
 		end
 	end
 	send $result
+	loadVar $SHIP~SHIP_MAX_ATTACK
+	loadVar $SHIP~SHIP_FIGHTERS_MAX
+	loadVar $SHIP~SHIP_OFFENSIVE_ODDS
+	loadvar $bot~autokill
+	if ($bot~autokill)
+		if ($SHIP~SHIP_MAX_ATTACK <= 0)
+			gosub :SHIP~getShipStats
+		end
+		setvar $player~isFound false
+		setvar $sector~moving true
+		goSub :SECTOR~getSectorData
+		goSub :combat~fastAttack
+		if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
+			if ($player~isFound)
+				load "scripts\mombot\commands\general\refurb.cts"
+				setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
+				pause
+				:refurbended
+				goSub :SECTOR~getSectorData
+				goSub :combat~fastAttack
+			end
+		end
+	end
 return
+
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\ship\getshipstats\ship"
+

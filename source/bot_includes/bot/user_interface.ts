@@ -358,15 +358,14 @@ return
 						getSectorParameter SECTOR.WARPS[CURRENTSECTOR][$sector] "FIGSEC" $isFigged
 						if ($isFigged)
 							setVar $BOT~user_command_line "p "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" scan"
-				goto :runUserCommandLine
-						else
-				
-				if (($BOT~pgrid_bot <> "") and ($BOT~pgrid_bot <> 0))
-					send "'" & $BOT~pgrid_bot & " pgrid "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" d:" & SECTOR.DENSITY[SECTOR.WARPS[CURRENTSECTOR][$sector]] &" "&$BOT~pgrid_end_command "**"
-				else
-					setVar $BOT~user_command_line "pgrid "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" "&$BOT~pgrid_end_command
-					goto :runUserCommandLine
-				end
+							goto :runUserCommandLine
+						else				
+							if (($BOT~pgrid_bot <> "") and ($BOT~pgrid_bot <> 0))
+								send "'" & $BOT~pgrid_bot & " pgrid "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" d:" & SECTOR.DENSITY[SECTOR.WARPS[CURRENTSECTOR][$sector]] &" "&$BOT~pgrid_end_command "**"
+							else
+								setVar $BOT~user_command_line "pgrid "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" "&$BOT~pgrid_end_command
+								goto :runUserCommandLine
+							end
 						end
 						
 					elseif ($PLAYER~CURRENT_PROMPT = "Command")

@@ -11,10 +11,12 @@
 	if ($PLAYER~startingLocation = "Citadel")
 		send "s"
 	else
-		if ($player~fedspace = true)
-			send "*"
-		else
-			send "*"
+		if ($moving)
+			if ($player~fedspace = true)
+				send "*"
+			else
+				send "*"
+			end
 		end
 	end
 	setVar $sectorData ""
