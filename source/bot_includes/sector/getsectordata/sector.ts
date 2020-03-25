@@ -27,7 +27,7 @@
 		setVar $line CURRENTANSILINE
 		setVar $line $STARTLINE&$line&$ENDLINE
 		setVar $sectorData $sectorData&$line
-		getWordPos $line $pos "Sector  : "
+		getWordPos $line $pos "Sector  [33m: "
 		if ($pos > 0)
 			goto :startover
 		end
