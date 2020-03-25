@@ -8,19 +8,36 @@
 	setVar $BOT~script_title "Autokill"
 	gosub :BOT~banner
 
-	setvar $sector~passive true
+	setvar $furb true
+	loadVar $SHIP~SHIP_MAX_ATTACK
+	loadVar $SHIP~SHIP_FIGHTERS_MAX
+	loadVar $SHIP~SHIP_OFFENSIVE_ODDS
+	if ($SHIP~SHIP_MAX_ATTACK <= 0)
+		gosub :SHIP~getShipStats
+	end
+
 :again
 	killtrigger 1
 	settexttrigger 1 :start_scan "Sector  : "
 	pause
 		:start_scan
-		gosub :sector~getSectorData
-		if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-			gosub :combat~fastAttack
-			goto :again
+
+
+	setvar $player~isFound false
+	setvar $sector~passive true
+	goSub :SECTOR~getSectorData
+	goSub :combat~fastAttack
+	if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
+		if ($player~isFound)
+			load "scripts\mombot\commands\general\refurb.cts"
+			setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
+			pause
+			:refurbended
+			setvar $sector~passive false
+			goSub :SECTOR~getSectorData
+			goSub :combat~fastAttack
 		end
 	end
-
 	goto :again
 
 
