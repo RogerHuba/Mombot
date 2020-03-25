@@ -56,6 +56,7 @@
 	end
 	if ($player~isFound = TRUE)
 		setVar $attackString ""
+		setvar $starting_fighters $player~fighters
 		while ($player~fighters > 0)
 			if ($player~fighters < $SHIP~SHIP_MAX_ATTACK)
 				if ($player~shotgun)
@@ -89,7 +90,8 @@
 		end
 		goto :stoppingPoint
 	end
-	if (($sector~passive = true) and ($player~fighters < $enemy_fighters))
+	if (($sector~passive = true) and ($starting_fighters < $enemy_fighters))
+		setvar $player~fighters $starting_fighters
 		setvar $switchboard~message "*Enemy has too many fighters to attack auto ("&$enemy_fighters&").*" 
 		gosub :bot~echo
 	else
