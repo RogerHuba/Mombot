@@ -29,7 +29,7 @@
 		setVar $sectorData $sectorData&$line
 		getWordPos $line $pos "Sector  [33m: "
 		if ($pos > 0)
-			goto :startover
+			setVar $sectorData ""
 		end
 		getWordPos $line $pos "Warps to Sector(s) "
 		if ($pos > 0)
