@@ -9,7 +9,7 @@
 	killalltriggers
 
 	if ($passive)
-		
+
 	else
 		if ($PLAYER~startingLocation = "Citadel")
 			send "s"
@@ -29,6 +29,8 @@
 		setVar $sectorData $sectorData&$line
 		getWordPos $line $pos "Sector  [33m: "
 		if ($pos > 0)
+			getText $line $tempSector "Sector  [33m: [36m" " [0;32min" 
+			setvar $player~current_sector $tempSector
 			setVar $sectorData ""
 		end
 		getWordPos $line $pos "Warps to Sector(s) "

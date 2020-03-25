@@ -29,7 +29,7 @@
 	setvar $sector~passive true
 	goSub :SECTOR~getSectorData
 	goSub :combat~fastAttack
-	if (((currentsector = 1) or (currentsector = $map~stardock)) and ($furb = true))
+	if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
 		if ($player~isFound)
 			load "scripts\mombot\commands\general\refurb.cts"
 			setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
