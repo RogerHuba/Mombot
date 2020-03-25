@@ -23,10 +23,6 @@
 			setVar $Result $result&"  H  1  Z  "&$surroundMine&"*  Z C  *  "
 		end
 	end
-	send $result
-	loadVar $SHIP~SHIP_MAX_ATTACK
-	loadVar $SHIP~SHIP_FIGHTERS_MAX
-	loadVar $SHIP~SHIP_OFFENSIVE_ODDS
 	loadvar $bot~autokill
 	if ($bot~autokill)
 		if ($SHIP~SHIP_MAX_ATTACK <= 0)
@@ -34,6 +30,7 @@
 		end
 		setvar $player~isFound false
 		setvar $sector~moving true
+		send $result
 		goSub :SECTOR~getSectorData
 		goSub :combat~fastAttack
 		if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
@@ -46,6 +43,8 @@
 				goSub :combat~fastAttack
 			end
 		end
+	else
+		send $result
 	end
 return
 
