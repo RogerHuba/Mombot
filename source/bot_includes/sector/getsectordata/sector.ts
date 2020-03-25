@@ -21,11 +21,16 @@
 			end
 		end
 	end
+	:startover
 	setVar $sectorData ""
 	:sectorsline_cit_kill
 		setVar $line CURRENTANSILINE
 		setVar $line $STARTLINE&$line&$ENDLINE
 		setVar $sectorData $sectorData&$line
+		getWordPos $line $pos "Sector  : "
+		if ($pos > 0)
+			goto :startover
+		end
 		getWordPos $line $pos "Warps to Sector(s) "
 		if ($pos > 0)
 			goto :gotSectorData
