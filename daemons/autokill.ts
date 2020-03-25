@@ -17,7 +17,7 @@
 	if ($SHIP~SHIP_MAX_ATTACK <= 0)
 		gosub :SHIP~getShipStats
 	end
-
+	gosub :player~quikstats
 :again
 	killtrigger 1
 	settexttrigger 1 :start_scan "Sector  : "
@@ -28,6 +28,9 @@
 	setvar $player~isFound false
 	setvar $sector~passive true
 	loadvar $player~fighters
+	if ($player~fighters = 0)
+		gosub :player~quikstats
+	end
 	goSub :SECTOR~getSectorData
 	goSub :combat~fastAttack
 	if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
