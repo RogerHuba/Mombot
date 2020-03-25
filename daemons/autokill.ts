@@ -67,7 +67,6 @@
 	setTextTrigger 1 :restarting "Command ["
 	pause
 	:restarting
-		gosub :killtriggers
 		echo ANSI_6 "*[" ANSI_14 "Autokill restarted" ANSI_6 "]*" ANSI_7
 		gosub :player~quikstats
 		goto :again
