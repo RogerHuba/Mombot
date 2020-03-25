@@ -42,13 +42,16 @@
 				setVar $targetString $targetString&"* "
 			else
 				setVar $player~isFound TRUE
+				setvar $enemy_fighters $player~traders[$c][4]
 				setVar $targetString $targetString&"zy z"
 			end
 			add $c 1
 		end
 	else
-		setvar $switchboard~message "*You have no targets.*" 
-		gosub :bot~echo
+		if ($sector~passive <> true)
+			setvar $switchboard~message "*You have no targets.*" 
+			gosub :bot~echo
+		end
 		goto :stoppingPoint
 	end
 	if ($player~isFound = TRUE)
@@ -86,7 +89,12 @@
 		end
 		goto :stoppingPoint
 	end
-	send $attackString&"* "
-	#gosub :player~quikstats
+	if (($passive = true) and ($player~fighters < $enemy_fighters))
+		setvar $switchboard~message "*Enemy has too many fighters to attack auto ("&$enemy_fighters&").*" 
+		gosub :bot~echo
+	else
+		send $attackString&"* "
+		#gosub :player~quikstats
+	end
 	:stoppingPoint
 return
