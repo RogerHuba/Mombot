@@ -8,6 +8,8 @@
 	setVar $BOT~script_title "Autokill"
 	gosub :BOT~banner
 
+	gosub :combat~init 
+
 	setvar $furb true
 	loadVar $SHIP~SHIP_MAX_ATTACK
 	loadVar $SHIP~SHIP_FIGHTERS_MAX
