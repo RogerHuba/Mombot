@@ -8,11 +8,11 @@
 	
 	killalltriggers
 
-	if ($PLAYER~startingLocation = "Citadel")
-		send "s"
+	if ($passive)
+		
 	else
-		if ($moving)
-			waiton "Sector  : "&$player~moveIntoSector
+		if ($PLAYER~startingLocation = "Citadel")
+			send "s"
 		else
 			if ($player~fedspace = true)
 				send "*"
