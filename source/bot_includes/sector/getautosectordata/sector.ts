@@ -47,7 +47,7 @@
 		killtrigger nomines2
 		killtrigger mines
 
-		setvar $s 7
+		setvar $s $adjcount
 		while ($s > 0)
 			setvar $holotargetfound false
 			setvar $sectortargetfound false
@@ -81,7 +81,7 @@
 				if ($player~isFound)
 					echo "*[if found = true " $targetSector "]*"
 				end
-				if ($s = 7)
+				if ($s = $adjcount)
 					setvar $sectortargetfound true
 				else
 					setvar $holotargetfound true
