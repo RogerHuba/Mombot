@@ -4,27 +4,35 @@ loadVar $game~port_max
 loadVar $game~ptradesetting
 loadVar $game~MAX_PLANETS_IN_GAME
 loadVar $bot~Folder
+loadVar $BOT~LIMP_FILE 		
+loadVar $BOT~ARMID_FILE 
 
 # ORE
 
 setVar $BOT~help[1]  $BOT~tab&"       Explores the universe looking for Moo Ports "
 setVar $BOT~help[2]  $BOT~tab&"       "
-setVar $BOT~help[3]  $BOT~tab&" mooexp [turnsstop] [maxplanets] {primary} {bad/all} "
+setVar $BOT~help[3]  $BOT~tab&" mooexp [turnsstop/cashstop] [maxplanets] {primary} {bad/all} "
 setVar $BOT~help[4]  $BOT~tab&"                      "
 setVar $BOT~help[5]  $BOT~tab&" Options:"
-setVar $BOT~help[6]  $BOT~tab&"    [turnsstop]  STOP when you get to this few turns"
-setVar $BOT~help[7]  $BOT~tab&"    [maxplanets] Max planets b4 blasting and replacing."
-setVar $BOT~help[8]  $BOT~tab&"	   {f/o/e}      Highest value product available defaults"
-setVar $BOT~help[9]  $BOT~tab&"                to equipment"
-setVar $BOT~help[10]  $BOT~tab&"    {bad/all}    Clean bad/all planets post trading. default none."
-setVar $BOT~help[11]  $BOT~tab&"    {guard}       Ensures corp planet at SD to invoke Guardian"
-setVar $BOT~help[12]  $BOT~tab&"    {ephag}       Default is NEG but set to use EP Haggle"
-setVar $BOT~help[13]  $BOT~tab&"    {furb}       Safe Furb - Corp mate runs moofurb"
-setVar $BOT~help[14] $BOT~tab&"    "
-setVar $BOT~help[15] $BOT~tab&"    Auto refurbs - requires fed safe if not using furb"
-setVar $BOT~help[16] $BOT~tab&"    Stores sectors to go back to when script reruns."
-setVar $BOT~help[17] $BOT~tab&"    AUTOCLEANUP if planets above 90%"
-setVar $BOT~help[18] $BOT~tab&"    mooexp [turns] [mooship1] furb ice"
+setVar $BOT~help[6]  $BOT~tab&"    [turnsstop]  <= 60000 stop at these turns"
+setVar $BOT~help[7]  $BOT~tab&"    [cashstop]   > 60000 stop at this cash amount"
+setVar $BOT~help[8]  $BOT~tab&"    [maxplanets] Max planets b4 blasting and replacing."
+setVar $BOT~help[9]  $BOT~tab&"	   {f/o/e}      Highest value product available defaults"
+setVar $BOT~help[10]  $BOT~tab&"                to equipment"
+setVar $BOT~help[11]  $BOT~tab&"    {bad/all}    Clean bad/all planets post trading. default none."
+setVar $BOT~help[12]  $BOT~tab&"    {guard}       Ensures corp planet at SD to invoke Guardian"
+setVar $BOT~help[13]  $BOT~tab&"    {ephag}       Default is NEG but set to use EP Haggle"
+setVar $BOT~help[14]  $BOT~tab&"    {furb}       Safe Furb - Corp mate runs moofurb"
+setVar $BOT~help[15]  $BOT~tab&"    {secure}     Drop/furb mines/limpets"
+setVar $BOT~help[16]  $BOT~tab&"    "
+setVar $BOT~help[17] $BOT~tab&"    "
+setVar $BOT~help[18] $BOT~tab&"    Auto refurbs - requires fed safe if not using furb"
+setVar $BOT~help[19] $BOT~tab&"    Stores sectors to go back to when script reruns."
+setVar $BOT~help[20] $BOT~tab&"    AUTOCLEANUP if planets above 90%"
+setVar $BOT~help[21] $BOT~tab&"    Start from citadel to auto cash dump"
+setVar $BOT~help[22] $BOT~tab&"    "
+setVar $BOT~help[23] $BOT~tab&"    mooexp [turns] [mooship1] furb ice"
+setVar $BOT~help[24] $BOT~tab&"    Make sure >update"
 
 gosub :bot~helpfile
 
@@ -46,9 +54,40 @@ if ($player~photons > 0)
 	halt
 end
 
+
+if ($game~ptradesetting = 0) or ($game~MAX_PLANETS_IN_GAME = 0)
+	setVar $SWITCHBOARD~message "No planet trade/planets in game settings >refresh >update.*"
+	gosub :SWITCHBOARD~switchboard
+	halt
+end
+setVar $dropCashCit FALSE
+setVar $dropCashSector 0
+setvar $dropCashPlanet 0
+setVAr $dropCashTotal 0
+
 setVar $startingLocation $PLAYER~CURRENT_PROMPT
-if ($startingLocation <> "Command")
+if ($startingLocation = "Citadel")
+	send "qtnt1*"
+	goSub :PLANET~getPlanetInfo
+	send "c"
+	setVar $dropCashCit TRUE
+	setVar $dropCashSector $player~CURRENT_SECTOR
+	setVar $dropCashPlanet $planet~planet
+	if ($planet~citadel = 0)
+		setVar $SWITCHBOARD~message "Planet must have at least a level 1 citadel.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	gosub :player~quikstats
+	send "q q "
+elseif ($startingLocation <> "Command")
 	setVar $SWITCHBOARD~message "must be started from Command prompt.*"
+	gosub :SWITCHBOARD~switchboard
+	halt
+end
+
+if ($PLAYER~PLANET_SCANNER <> "Yes")
+	setVar $SWITCHBOARD~message "Ship needs planet scanners*"
 	gosub :SWITCHBOARD~switchboard
 	halt
 end
@@ -85,20 +124,29 @@ setVar $halt_turns $bot~parm1
 isNumber $number $halt_turns
 
 if ($number <> 1)
-	setvar $switchboard~message "Please select what turns to halt at.*"
+	setvar $switchboard~message "First parm should be stop turns or stop credits.*"
 	gosub :switchboard~switchboard
 	halt
 
 end
 
 if ($halt_turns <= 0)
-	setvar $switchboard~message "Halt turns must be greater than 0.*"
+	setvar $switchboard~message "First parm should be greater than zero.*"
 	gosub :switchboard~switchboard
 	halt
 else
-	setvar $switchboard~message "We will stop when we reach " & $halt_turns & " turns.*"
-	gosub :switchboard~switchboard
+	if ($halt_turns <= 60000)
+		setvar $switchboard~message "We will stop when we reach " & $halt_turns & " turns.*"
+		gosub :switchboard~switchboard
+		setVar $cashTarget 0
+	else
+		setVar $cashTarget $halt_turns
+		setVar $halt_turns 50
+		setvar $switchboard~message "We will stop when we reach " & $halt_turns & " turns or " & $cashTarget & " credits.*"
+		gosub :switchboard~switchboard
+	end
 end
+
 
 
 # it will make up to this many planets in sector before blasting them
@@ -123,13 +171,22 @@ else
 	gosub :switchboard~switchboard
 end
 
-getWordPos $bot~user_command_line $pos "figs"
+setVar $furbfigsQuant 0
+
+getWordPos $bot~user_command_line $pos "figs:"
 if ($pos > 0)
 	setVar $furbfigs TRUE
-	setvar $switchboard~message "We are restocking fighters.*"
+	setVar $cline $bot~user_command_line & " "
+	getText $cline $furbfigsQuant "figs:" " "
+	setvar $switchboard~message "We are restocking fighters up " & $furbfigsQuant & ".*"
+else
+	getWordPos $bot~user_command_line $pos "figs"
+	if ($pos > 0)
+		setVar $furbfigs TRUE
+		setvar $switchboard~message "We are restocking fighters.*"
 
+	end
 end
-
 
 setVar $userCleanup 0
 gosub :switchboard~switchboard
@@ -166,6 +223,7 @@ else
 	setvar $switchboard~message "Using internal NEG for haggle.*"
 end
 gosub :switchboard~switchboard
+
 
 
 setVar $iceFurb FALSE
@@ -209,6 +267,16 @@ else
 	setVar $deleteData FALSE
 end
 
+setVar $secure FALSE
+getWordPos $bot~user_command_line $pos "secure"
+if ($pos > 0)
+	setVar $secure TRUE
+	setvar $switchboard~message "Securing sectors with limps and armids.*"
+	loadVar $GAME~ARMID_COST
+	loadVar $GAME~LIMPET_COST
+end
+gosub :switchboard~switchboard
+
 
 
 # Primary product 1 - fuel, 2 - org, 3 - fuel
@@ -231,8 +299,39 @@ if ($pos > 0)
 	setVar $PrimaryProduct 3
 end
 
+
 gosub :SWITCHBOARD~switchboard
 
+setVar $allLimps 0
+setVar $allArmids 0
+
+
+fileExists $limpFileChk $BOT~LIMP_FILE
+fileExists $armidFileChk $BOT~ARMID_FILE
+if ($limpFileChk = 1) and ($armidFileChk = 1)
+	readToArray $BOT~LIMP_FILE $allLimps
+	readToArray $BOT~ARMID_FILE $allArmids
+
+
+else
+
+	setVar $BOT~command "update"
+	setVar $BOT~user_command_line ""
+	setVar $BOT~parm1 ""
+	saveVar $BOT~parm1
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	load "scripts\mombot\commands\data\update.cts"
+	setEventTrigger        limpchkend        :limpchkend "SCRIPT STOPPED" "scripts\mombot\commands\data\update.cts"
+	pause
+	:limpchkend
+		killalltriggers
+
+	readToArray $BOT~LIMP_FILE $allLimps
+	readToArray $BOT~ARMID_FILE $allArmids
+end
+
+gosub :SHIP~getShipStats
 
 setVar $stat_turnsUsed 0 
 setVar $stat_figsdown 0
@@ -416,6 +515,10 @@ end
 
 setvar $switchboard~message "Pause for effect....*"
 gosub :switchboard~switchboard
+if ($useEp = 1)
+	send "'" $BOT~BOT_NAME " ephaggle planet*"
+end
+
 setDelayTrigger delay :startPause 3000
 pause
 :startPause
@@ -593,6 +696,35 @@ return
 	# 8 - BBB
 
 	setVar $cport PORT.CLASS[$portToCheck]
+	setVar $prodPerc PORT.PERCENTEQUIP[$portToCheck]
+	if ($prodPerc >= $tradingMinProduct)
+		if ($cport = 4)
+			if (PORT.EQUIP[$portToCheck] > 1800)
+				setVar $portCheckedOk 1
+			end
+		elseif (PORT.BUYEQUIP[$portToCheck] = 1)
+			setVar $portCheckedOk 1
+		end
+	end
+	
+
+	
+return
+
+:searchForTradingPort_old
+# TradeType 1: XBS/XSB	
+
+	# 0 - zzz
+	# 1 - BBS
+	# 2 - BSB
+	# 3 - SBB
+	# 4 - SSB
+	# 5 - SBS
+	# 6 - BSS
+	# 7 - SSS
+	# 8 - BBB
+
+	setVar $cport PORT.CLASS[$portToCheck]
 	
 	if ($PrimaryProduct = 1)
 		if (($cport = 1) or ($cport = 2) or ($cport = 6) or ($cport = 8)) 
@@ -622,10 +754,21 @@ return
 return
 
 
-
+:headHomeAndDump
+	setVar $player~warpto $dropCashSector
+	gosub :player~twarp
+	send "l" $dropCashPlanet "*c"
+	goSub :player~quikstats
+	send "tt" ($player~credits - 500000) "*"
+	setVar $dropCashTotal ($dropCashTotal + ($player~credits - 500000))
+	send "q q "
+	waitfor "Command [TL"
+	gosub :player~quikstats
+return
 
 :restock
 
+	
 	if ($player~corpfurb = true)
 		if ($ice = 1)
 			gosub :restockice
@@ -634,6 +777,21 @@ return
 		end
 	else
 		gosub :player~quikstats
+	
+		if ($cashTarget > 0)
+			if (($player~credits + $dropCashTotal)> $cashTarget)
+			
+				setVar $SWITCHBOARD~message "Cash target has been reached.*"
+				gosub :SWITCHBOARD~switchboard
+				if ($dropCashCit = TRUE)
+					goSub :headHomeAndDump
+				end
+				goSub :updateStats
+				halt
+			end
+		end
+		
+		setVar $dropCashThisTrip 0
 		setVar $prestockcredits $player~credits
 		stripText $precredits ","
 
@@ -642,7 +800,7 @@ return
 		gosub :player~quikstats
 		setVar $poststockcredits $player~credits
 		stripText $poststockcredits ","
-		setVar $stat_dollarsspent ($precredits - $poststockcredits)
+		setVar $stat_dollarsspent ($precredits - ($poststockcredits + $dropCashThisTrip))
 	end
 
 
@@ -698,7 +856,7 @@ return
 	add $stat_refurbs 1
 	send "d"
 	setVar $returnSpot CURRENTSECTOR
-	
+echo "#RETURNSEC:" $returnSpot "*"
 	setVar $restockMakePlanet 0
 	if ($useGuard = true)
 		
@@ -724,27 +882,40 @@ return
 
 		end
 	end 
+	
+	send "nq"
+	setTextLineTrigger stargateCheck :stargateCheck "Class 9 (Special) (StarDock)"
+	setDelayTrigger nostargateCheck :nostargateCheck 3000
+	pause
+	:nostargateCheck
+		killalltriggers
+		setVar $SWITCHBOARD~message "Stardock is gone!! Halting..*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	:stargateCheck
+		killalltriggers
 	send "m" $stardock "*y"
 	waitfor "Locating beam pinpointed, TransWarp"
 	send "y  "
 	
 	send "p   sh"
-	
-		send "a"
-		setTextTrigger shipCheckBuyAtomics :shipCheckBuyAtomics "How many Atomic Detonators do you want"
-		pause
-		:shipCheckBuyAtomics
-			killalltriggers
-			getWord CURRENTLINE $player~atomicssAvail 9
-			stripText $player~atomicssAvail ")"
-			if ($player~atomicssAvail = 0)
-				echo "*### we have a problem, no Atomics purchasable waiting for next"
-				#waitfor "next@"
-				send "*"
-			else
-				send  "*a" $player~atomicssAvail "*"
-			end
-			
+
+		if ($player~credits > 300000)
+			send "a"
+			setTextTrigger shipCheckBuyAtomics :shipCheckBuyAtomics "How many Atomic Detonators do you want"
+			pause
+			:shipCheckBuyAtomics
+				killalltriggers
+				getWord CURRENTLINE $player~atomicssAvail 9
+				stripText $player~atomicssAvail ")"
+				if ($player~atomicssAvail = 0)
+					echo "*### we have a problem, no Atomics purchasable waiting for next"
+					#waitfor "next@"
+					send "*"
+				else
+					send  "*a" $player~atomicssAvail "*"
+				end
+		end
 
 		send "t"
 		setTextTrigger shipCheckBuyTorps :shipCheckBuyTorps "How many Genesis Torpedoes do you want"
@@ -758,15 +929,101 @@ return
 				waitfor "next@"
 			end
 			send $TorpssAvail "*"
-		
+
+			if ($secure)
+				#loadVar $GAME~ARMID_COST
+				#loadVar $GAME~LIMPET_COST
+
+				# just going to buy up to 100 of each - and when we are below 50 - to avoid slow down
+				setTextLineTrigger cashLeft :cashLeft "You have "
+				pause
+				:cashLeft
+					killalltriggers
+					getWord CURRENTLINE $cashOnHand 3
+					stripText $cashOnHand ","
+					if ($cashOnHand > 1000000)
+						setVar $cashOnHand ($cashOnHand - 1000000)
+						setPrecision 1
+						setVar $limpCash ($cashOnHand * 0.8)
+						setVar $armidCash ($cashOnHand * 0.2)
+						setPrecision 0
+						if ($GAME~ARMID_COST = 0)
+							send "m0*"
+							setTextLineTrigger armidCost :armidCost "damage.  These cost"
+							pause
+							:armidCost
+								killalltriggers
+								getWord CURRENTLINE $acost 4
+								STRIPTEXT $acost ","
+								setVar $GAME~ARMID_COST $acost
+
+							send "l0*"
+							setTextLineTrigger limpCost :limpCost "credits each."
+							pause
+							:armidCost
+								killalltriggers
+								getWord CURRENTLINE $lcost 3
+								STRIPTEXT $lcost ","
+								setVar $GAME~LIMPET_COST $lcost
+						end
+
+						if ($PLAYER~LIMPETS < 50)
+							setVar $limpsNeeded (100 - $PLAYER~LIMPETS)
+							setVar $buyLimpQuant (($limpCash / $GAME~LIMPET_COST) - 1)
+							if ($buyLimpQuant > $limpsNeeded)
+								setVar $buyLimpQuant $limpsNeeded
+							end
+							send "l" $buyLimpQuant "*"
+						end
+
+						if ($PLAYER~ARMIDS < 50)
+							setVar $minesNeeded (100 - $PLAYER~ARMIDS)
+							setVar $buyMineQuant (($armidCash / $GAME~ARMID_COST) - 1)
+							if ($buyMineQuant > $minesNeeded)
+								setVar $buyMineQuant $minesNeeded
+							end
+							send "m" $buyMineQuant "*"
+						end
+
+					end
+			end
 		
 			gosub :player~quikstats
 			send "qsp"
+			setVar $checkQuik FALSE
 
+			if ($player~TOTAL_HOLDS < $SHIP~SHIP_MAX_HOLDS)
+				setTextLineTrigger refurbHoldPrice :refurbHoldPrice "credits / next hold"
+			end
+			:moreRefurbing
 			setTextTrigger refurbFigPricet :refurbFigPricet "credits per fighter"
-			:checkShields
 			setTextTrigger refurbShields :refurbShields "Shield Points"
 			pause
+			:refurbHoldPrice
+				killalltriggers
+				if ($player~credits > 500000)
+					getWord CURRENTLINE $holdsForSale 10
+					send "a" $holdsForSale "*"
+					setTextLineTrigger holdsCost :holdsCost "more holds is"
+					pause
+					:holdsCost
+					killalltriggers
+					getWord CURRENTLINE $holdsCost 8
+					STRIPTEXT $holdsCost ","
+					setVar $afterBuy ($player~credits - $holdsCost)
+					if ($afterBuy < 200000)
+						setVar $holdsForSale ($holdsForSale/2)
+						send "na" $holdsForSale "*y"
+					else
+						send "y"
+					end
+					send "q"
+
+					gosub :player~quikstats
+					send "p"
+				end
+				
+				goto :moreRefurbing
 			:refurbFigPricet
 				killalltriggers
 				if ($furbfigs = TRUE)
@@ -779,9 +1036,22 @@ return
 					if ($figsToBuy > $canBuy)
 						setVar $figsToBuy $canBuy
 					end
-					send "b" $figsToBuy "*"
+					if ($furbfigsQuant > 0)
+						if ($player~FIGHTERS < $furbfigsQuant)
+							setVar $maxRequired ($furbfigsQuant - $player~FIGHTERS)
+							if ($maxRequired < $figsToBuy)
+								setVar $figsToBuy $maxRequired
+							end
+							if ($figsToBuy > 0)
+								send "b" $figsToBuy "*" 
+							end
+						end
+					else
+						send "b" $figsToBuy "*"
+					end
+					setVar $checkQuik TRUE
 				end
-				goto :checkShields
+				goto :moreRefurbing
 			:refurbShields
 				killalltriggers
 				getWord CURRENTLINE $shieldPrice 5
@@ -795,7 +1065,10 @@ return
 				end
 				send "c" $player~shieldsToBuy "*"
 			
-			
+			if ($checkQuik = TRUE)
+				goSUb :player~quikstats
+				setVar $checkQuik FALSE
+			end 
 	
 	if ($player~corpCashDump = TRUE)
 
@@ -820,7 +1093,20 @@ return
 			send "t  c  y  q   z   t" $dumpcash "*  *  *  "
 		end
 	end
-	send "m  " $returnSpot  "*   y   y  "
+
+	setVar $doingCitDrop FALSE
+	if ($dropCashCit = TRUE) and ($player~credits > 5000000)
+		getSectorParameter $dropCashSector "FIGSEC" $hasFig
+		if ($hasFig = 1)
+			send "m  " $dropCashSector  "*   y   y  "
+			setVar $doingCitDrop TRUE
+		else
+			send "'Drop Cash Sector Fig GonE?!?*"
+			send "m  " $returnSpot  "*   y   y  "
+		end
+	else
+		send "m  " $returnSpot  "*   y   y  "
+	end
 	setTextLineTrigger restockBack1 :restockBack1 "<Set NavPoint>"
 	setTextLineTrigger restockBack2 :restockBack2  "Systems Ready, shall we engag"
 	pause
@@ -833,7 +1119,20 @@ return
 
 		:restockBack2
 			killalltriggers
-	
+	if ($doingCitDrop = TRUE)
+		setVar $doingCitDrop FALSE
+		send "l" $dropCashPlanet "*c"
+		goSub :player~quikstats
+		send "tt" ($player~credits - 500000) "*"
+		setVar $dropCashThisTrip ($player~credits - 500000)
+		setVar $dropCashTotal ($dropCashTotal + ($player~credits - 500000))
+		send "q q "
+		waitfor "Command [TL"
+		gosub :player~quikstats
+		setVar $player~warpto $returnSpot
+		gosub :player~twarp
+		gosub :player~quikstats
+	end
 return
 
 :checkCorpAtDock
@@ -998,6 +1297,7 @@ return
 			setVar $tempGridSector $maxWarpsSector
 			setVar $getFuturePortOnly 1
 			goSub :getFutureDest
+
 			if ($gridSector = 0)
 				setVar $gridSector $tempGridSector
 			else
@@ -1015,20 +1315,17 @@ return
 		if ($futureDestsAdded > 0)
 
 			goSub :getFutureDest
+
 			if ($gridSector = 0)
+				setvar $switchboard~message "Out of options, try figs and CIM Warps update*"
+				gosub :switchboard~switchboard
 				
-				echo "*######################################"
-				echo "*##  NO where to go too...  #"
-				echo "*##  This is a day 1 - no ztm explorer  #"
-				echo "*##  Re position and start again#"
 				halt
 			end
 
 		else
-			echo "*######################################"
-			echo "*##  NO where to go too...  #"
-			echo "*##  This is a day 1 - no ztm explorer  #"
-			echo "*##  Re position and start again#"
+			setvar $switchboard~message "Out of options, try figs and CIM Warps update*"
+			gosub :switchboard~switchboard
 			halt
 		end
 	end
@@ -1129,7 +1426,11 @@ return
 
 		setVar $checkSector $futureDestinations[$maxWarpsGoodPortSector][0]
 		getSectorParameter $checkSector "FIGSEC" $hasFig
-		if ($hasFig = 1)
+
+		setVar $portExists 0
+		setVar $checkPortSector $maxWarpsGoodPortSector
+		goSub :checkPortExits 
+		if ($hasFig = 1) and ($portExists = 1)
 			setVar $gridSector $futureDestinations[$maxWarpsGoodPortSector][0]
 			setVar $futureDestinations[$maxWarpsGoodPortSector] 0
 			setVar $gridSectorPostTwarp $maxWarpsGoodPortSector
@@ -1146,7 +1447,11 @@ return
 		# check we have a fig at the jump point
 		setVar $checkSector $futureDestinations[$maxWarpsSector][0]
 		getSectorParameter $checkSector "FIGSEC" $hasFig
-		if ($hasFig = 1)
+		setVar $portExists 0
+		setVar $checkPortSector $maxWarpsSector
+		goSub :checkPortExits 
+
+		if ($hasFig = 1) and ($portExists = 1)
 			setVar $gridSector $futureDestinations[$maxWarpsSector][0]
 			setVar $futureDestinations[$maxWarpsSector] 0
 			setVar $gridSectorPostTwarp $maxWarpsSector
@@ -1163,6 +1468,22 @@ return
 	
 return
 
+:checkPortExits 
+	send "cr" $checkPortSector "*q"
+	waitfor "Computer activate"
+	setTextLineTrigger portexistsy :portexistsy "Commerce report for"
+	setTextLineTrigger portexistsno :portexistsno "I have no information about a port in that sector"
+	setTextLineTrigger portexistsno2 :portexistsno2 "u have never visted sector"
+	pause
+	:portexistsy
+		setVar $portExists 1
+
+	:portexistsno
+	:portexistsno2
+		killtrigger portexistsno
+		killtrigger portexistsno2
+		killtrigger portexistsy
+return
 
 :setVoidSectors
 
@@ -1214,7 +1535,16 @@ return
 
 :checkDanger
 	# Density check will be stoped by own figs, so we assume explored is safe for now
-		
+echo "DENS: " $dSector " DEN:" $nDensity[$dIndex] "*"
+	if ($allLimps[$dSector] > 0)
+		subtract $nDensity[$dIndex] (2 * $allLimps[$dSector])
+		setVar $nAnom[$dIndex] 0
+	end
+
+	if ($allArmids[$dSector] > 0)
+		subtract $nDensity[$dIndex] (10 * $allArmids[$dSector])
+	end	
+echo "DENS: " $dSector " DEN:" $nDensity[$dIndex] "*"
 	if (($nDensity[$dIndex] = 0) or (($nDensity[$dIndex] = 100) and (PORT.EXISTS[$dSector] = 1)))
 		setVar $danger 0
 		#echo "* ## Sector has safe density: " $dSector
@@ -1401,6 +1731,19 @@ return
 		setVar $PLAYER~moveIntoSector $gridSector
 		gosub :PLAYER~moveIntoSector
 	end
+	if ($secure)
+	
+		if ($player~ARMIDS >= 3)
+			send "h 13*c "
+			setVar $allArmids[$gridSector] 3
+		end
+
+		if ($player~LIMPETS >= 2)
+			send "h 22* c "
+			setVar $allLimps[$gridSector] 2
+		end
+		
+	end
 	add $stat_figsdown 1
 	add $stat_moves 1
 return
@@ -1496,7 +1839,8 @@ return
 				add $freshSectorsi 1
 				setVar $freshSectors[$freshSectorsi] $scanSector			
 			end
-			
+			stripText $secDensity ","
+
 			add $deni 1
 			setVar $nDensity[$deni] $secDensity
 			setVar $nSector[$deni] $scanSector
@@ -2189,7 +2533,7 @@ return
 			
 			setvar $switchboard~message "Ep Haggle timed out on Haggle*"
 			gosub :switchboard~switchboard
-			
+			send "*"
 		
 		:sellempty2
 			killalltriggers
@@ -2309,3 +2653,4 @@ include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\player\moveintosector\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\planet\planetneg\planet"
+include "source\bot_includes\ship\getshipstats\ship"
