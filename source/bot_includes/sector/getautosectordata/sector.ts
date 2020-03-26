@@ -76,7 +76,7 @@
 				echo "*Number of real traders: " $realTraderCount " in sector " $player~current_sector "*"
 				while (($c <= $realTraderCount) AND ($player~isFound = FALSE))
 					if (($player~traders[$c][1]) = ($player~CORP))
-					elseif (($player~fedspace = true) AND ($player~traders[$c][2] = TRUE))
+					elseif (((($player~current_sector <= 10) or ($player~current_sector = $map~stardock) or ($player~current_sector = stardock))) AND ($player~traders[$c][2] = TRUE))
 						echo "*" $player~traders[$c] " is fed safe and we cannot attack in fedspace*"
 					elseif (($PLAYER~targetingShip <> false) and ($player~traders[$c][3] <> true))
 					else
