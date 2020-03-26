@@ -54,14 +54,12 @@
 		killtrigger nomines2
 		killtrigger mines
 
-		setvar $s $adjcount
-		while ($s > 0)
+		setvar $sindex $adjcount
+		while ($sindex > 0)
 			setvar $holotargetfound false
 			setvar $sectortargetfound false
-			setvar $sectorData $adjacent[$s]
-			setvar $targetSector $adjacent_sector[$s]
-			echo "*checking sector " $targetsector " count: " $adjcount "*"
-			echo "*[" $s "]*"
+			setvar $sectorData $adjacent[$sindex]
+			setvar $targetSector $adjacent_sector[$sindex]
 			if (($sectorData <> "") and ($sectorData <> "0"))
 				getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 				if ($beaconPos > 0)
@@ -96,7 +94,7 @@
 					add $c 1
 				end
 				if ($player~isFound)
-					if (($adjcount = 1) or ($s = $adjcount))
+					if (($adjcount = 1) or ($sindex = $adjcount))
 						setvar $sectortargetfound true
 					else
 						setvar $holotargetfound true
@@ -104,8 +102,7 @@
 					goto :done_scanning
 				end
 			end
-			subtract $s 1
-			echo "*[" $s " at the end]*"
+			subtract $sindex 1
 
 		end
 		:done_scanning
