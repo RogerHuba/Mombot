@@ -57,6 +57,7 @@
 		end
 	elseif ($sector~holotargetfound)
 		goSub :combat~passiveHolokill
+		gosub :switchboard~switchboard
 	end
 	
 	goto :again
