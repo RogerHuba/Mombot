@@ -63,33 +63,31 @@
 				goSub :getTraders
 				goSub :getEmptyShips
 				goSub :getFakeTraders
-				if ($realTraderCount > $corpieCount)
-					echo "*[found traders in sector " $targetSector "]*"
-					setVar $c 1
-					setvar $player~isFound false
-					while (($c <= $realTraderCount) AND ($player~isFound = FALSE))
-						if (($player~traders[$c][1]) = ($player~CORP))
-						elseif (($player~fedspace = true) AND ($player~traders[$c][2] = TRUE))
-						elseif (($PLAYER~targetingShip <> false) and ($player~traders[$c][3] <> true))
-						else
-							setvar $enemy_fighters $player~traders[$c][4]
-							if ($player~fighters > $enemy_fighters)
-								setVar $player~isFound TRUE
-							end
-						end
-						add $c 1
-					end
-					if ($player~isFound)
-						echo "*[if found = true " $targetSector "]*"
-					end
-					if ($s = 7)
-						setvar $sectortargetfound true
+				echo "*[Real trader count " $realTraderCount "]*"
+				setVar $c 1
+				setvar $player~isFound false
+				while (($c <= $realTraderCount) AND ($player~isFound = FALSE))
+					if (($player~traders[$c][1]) = ($player~CORP))
+					elseif (($player~fedspace = true) AND ($player~traders[$c][2] = TRUE))
+					elseif (($PLAYER~targetingShip <> false) and ($player~traders[$c][3] <> true))
 					else
-						setvar $holotargetfound true
+						setvar $enemy_fighters $player~traders[$c][4]
+						if ($player~fighters > $enemy_fighters)
+							setVar $player~isFound TRUE
+						end
 					end
-					if ($player~isFound)
-						goto :done_scanning
-					end
+					add $c 1
+				end
+				if ($player~isFound)
+					echo "*[if found = true " $targetSector "]*"
+				end
+				if ($s = 7)
+					setvar $sectortargetfound true
+				else
+					setvar $holotargetfound true
+				end
+				if ($player~isFound)
+					goto :done_scanning
 				end
 			end
 			subtract $s 1
