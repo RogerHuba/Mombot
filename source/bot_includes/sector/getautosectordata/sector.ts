@@ -61,6 +61,7 @@
 			setvar $sectorData $adjacent[$s]
 			setvar $targetSector $adjacent_sector[$s]
 			echo "*checking sector " $targetsector " count: " $adjcount "*"
+			echo "*" $sectorData "*"
 			if (($sectorData <> "") and ($sectorData <> "0"))
 				getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 				if ($beaconPos > 0)
