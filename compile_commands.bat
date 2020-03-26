@@ -1,4 +1,4 @@
-for /r %%n in (*update.ts) do call :checkit "%%n" 
+for /r %%n in (*last.ts) do call :checkit "%%n" 
 goto end
 
 :checkit

@@ -1,15 +1,8 @@
 :run
-:holo
+:call
 	setVar $BOT~command "call"
-	if ($capture)
-		setvar $bot~parm1 "cap"
-		setVar $BOT~user_command_line " call  cap"
-	elseif ($kill)
-		setvar $bot~parm1 "kill"
-		setVar $BOT~user_command_line " call kill "
-	else
-		setVar $BOT~user_command_line " call"
-	end
+	setvar $bot~parm1 ""
+	setVar $BOT~user_command_line " call  "
 	setvar $bot~parm2 ""
 	setvar $bot~parm3 ""
 	setvar $bot~parm4 ""
@@ -27,4 +20,16 @@
 	setEventTrigger        callend1        :callend1 "SCRIPT STOPPED" "scripts\mombot\commands\defense\call.cts"
 	pause
 	:callend1
+
+
+	gosub :player~quikstats
+	if ($player~current_prompt <> "Citadel")
+		setvar $switchboard~message "Not on planet even after call saveme.  I'm in real trouble.  Will try again in 15 seconds.*"
+		gosub :switchboard~switchboard
+
+		killalltriggers
+		setDelayTrigger	   1 :call	15000
+		pause
+	end
+	
 return

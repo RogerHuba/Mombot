@@ -96,6 +96,9 @@
 	
 	if ($cim)
 		gosub :cim~update
+		if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
+			gosub :PLANET~landingsub
+		end
 	else
 		gosub :PLAYER~turnOffAnsi
 		if ($all or $fighter)

@@ -1,38 +1,48 @@
 :photon
-	gosub :killtriggers
+	killalltriggers
 	setvar $success false
 	setVar $adjsec 0
-	setVar $i 1
-	getwordpos $adjacent_sectors $pos " "&$sector&" "
-	if ($pos > 0)
-		goto :fire_adjacent
-	else
-		while (SECTOR.WARPSIN[$sector][$i] > 0)
-			setVar $tempAdj SECTOR.WARPSIN[$sector][$i]
-			getSectorParameter $tempAdj "FIGSEC" $isFigged
-			if ($isFigged)
-				setVar $adjsec $tempAdj
-				if ($adjacentphoton = true)
-					goto :fire_photon
-				else
-					if ($density = true)
-						send "p" $adjsec "*  y  "
-						gosub :densityDrop
-					else
-						send "p" $adjsec "*  y  p" $sector "*  y  "
-					end
-					return
-				end
-			end
-			add $i 1
-		end
-		setvar $switchboard~message "No Adjacent fig found!*"
-		gosub :switchboard~switchboard
+	loadGlobal $bot~last_hit
+	if ($bot~last_hit > 0)
+		setvar $sector $bot~last_hit
 	end
-	return
+	setVar $i 1
+	while (SECTOR.WARPSIN[$sector][$i] > 0)
+		setVar $tempAdj SECTOR.WARPSIN[$sector][$i]
+		getSectorParameter $tempAdj "FIGSEC" $isFigged
+		if ($isFigged)
+			setVar $adjsec $tempAdj
+			if ($adjacentphoton = true)
+				goto :fire_photon
+			else
+				if ($density = true)
+					send "p" $adjsec "*  y  "
+					gosub :densityDrop
+				else
+					send "p" $adjsec "*  y  p" $sector "*  y  "
+				end
+				return
+			end
+		end
+		add $i 1
+	end
+	setvar $switchboard~message "No Adjacent fig found!*"
+	gosub :switchboard~switchboard
+return
 :fire_adjacent
-	send " c  p  y  " $sector "**qp" $sector "*  y  "
-	goto :triggers
+	killalltriggers
+	if ($adjacentphoton = true)
+		send " c  p  y  " $sector "**qp" $sector "*  y  "
+		goto :triggers
+	else
+		if ($density = true)
+			gosub :densityDrop
+		else
+			send " p" $sector "*  y  "
+		end
+		return
+	end
+	
 :fire_photon
 	send "p" $adjsec "*  y  c  p  y  " $sector "**qp" $sector "*  y  "
 
@@ -82,9 +92,13 @@
 	###################################
 	if ($player~current_sector = $sector)
 		gosub :htorp
-	end
-	if ($density = true)
-		gosub :densityDrop
+	else
+		###################################################
+		# don't do density if you are in sector with them #
+		###################################################
+		if ($density = true)
+			gosub :densityDrop
+		end
 	end
 	return
 
@@ -100,6 +114,8 @@ return
 
 :fighter_spoof
 	setvar $found false
+	setvar $adjacent false
+	setvar $surround false
 	getWord CURRENTLINE $spoof_test 1
 	getWord CURRENTANSILINE $ansi_spoof_test 1
 	getWordPos $ansi_spoof_test $ansi_spoof_pos #27 & "[1;33m"
@@ -107,9 +123,46 @@ return
 	     return
 	end
 
+	############################################################################################
+	# saving fighter line to look up ship for quasar hits                                      #
+	# the idea is to set the sector cannon to kill the type of ship that is hitting grid last. #
+	############################################################################################
+
+	loadGlobal $killing~last_fighter_attack
+
 	#############################
 	# Torp only on sector entry #
 	#############################
+
+	# Get the sector number
+	getWord CURRENTLINE $sector 5
+	stripText $sector ":"
+	isNumber $result $sector
+	if ($result < 1)
+		return
+	end
+	if (($sector > SECTORS) OR ($sector <= 10))
+		 return
+	end
+	getwordpos $adjacent_sectors $pos " "&$sector&" "
+	if ($pos > 0)
+		setvar $found true
+		setvar $adjacent true
+		goto :fire_adjacent
+	end
+
+#	setVar $i 1
+#	while (SECTOR.WARPS[$sector][$i] > 0)
+#		getwordpos $adjacent_to_last_attack_sectors $pos " "&SECTOR.WARPS[$sector][$i]&" "
+#		if ($pos > 0)
+#			setvar $found true
+#			setvar $surround true
+#			echo "*[Surround DETECTED]*"
+#			setvar $sector SECTOR.WARPS[$sector][$i]
+#			return
+#		end
+#		add $i 1
+#	end
 
 	getwordpos CURRENTLINE $posretreat " retreated."
 	getwordpos CURRENTLINE $posdestroyed " DESTROYED "
@@ -135,44 +188,39 @@ return
 		end
 	end
 
-	# Get the sector number
-	getWord CURRENTLINE $sector 5
-	stripText $sector ":"
-	isNumber $result $sector
-	if ($result < 1)
-		return
-	end
-	if (($sector > SECTORS) OR ($sector <= 10))
-		 return
-	end
-
-	############################################################################################
-	# saving fighter line to look up ship for quasar hits                                      #
-	# the idea is to set the sector cannon to kill the type of ship that is hitting grid last. #
-	############################################################################################
-
-	setvar $killing~last_fighter_attack CURRENTLINE
 	setvar $found true
 return
 
 :limpet_spoof
 	setvar $found false
+	setvar $adjacent false
 	cutText CURRENTLINE&"      " $ck 1 6
 	if ($ck <> "Limpet")
 		return
 	end
 	getWord CURRENTLINE $sector 4
+	getwordpos $adjacent_sectors $pos " "&$sector&" "
 	setvar $found true
+	if ($pos > 0)
+		setvar $adjacent true
+		goto :fire_adjacent
+	end
 return
 
 :armid_spoof
 	setvar $found false
+	setvar $adjacent false
 	cutText CURRENTLINE&"    " $ck 1 4
 	if ($ck <> "Your")
 		return
 	end
 	getWord CURRENTLINE $sector 4
+	getwordpos $adjacent_sectors $pos " "&$sector&" "
 	setvar $found true
+	if ($pos > 0)
+		setvar $adjacent true
+		goto :fire_adjacent
+	end
 return
 
 :densityDrop
@@ -192,12 +240,20 @@ return
 	setdelaytrigger        densitytime        :densitytime  120000
 	pause
 	:densitytime
-		killalltriggers
+		killtrigger densityended
 		stop "scripts\mombot\modes\offense\density.cts"
-		gosub :player~quikstats
-		gosub :planet~landingsub
 	:densityended
-		killalltriggers
+		killtrigger densitytime
+		gosub :player~quikstats
+		if ($player~current_prompt <> "Citadel")
+			send " q q q * l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			gosub :player~quikstats
+			if ($player~current_prompt <> "Citadel")		
+				setvar $switchboard~message "Not at correct prompt after density!  Maybe planet is gone?  Check please!*"
+				gosub :switchboard~switchboard
+				gosub :navigate~callsaveme
+			end
+		end
 return
 
 

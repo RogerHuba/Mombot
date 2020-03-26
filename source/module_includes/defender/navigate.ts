@@ -32,8 +32,8 @@
 				setvar $issecure true
 				while (SECTOR.WARPSIN[$focus][$i] > 0)
 					setVar $tempAdj SECTOR.WARPSIN[$focus][$i]
-					getSectorParameter $tempAdj "FIGSEC" $isFigged
-					if ($isFigged <> true)
+					getSectorParameter $tempAdj "FIGSEC" $isSecureFigged
+					if ($isSecureFigged <> true)
 						setvar $issecure false
 					end
 					add $i 1
@@ -118,7 +118,17 @@ return
 			if ((((($isFigged = true) and ($isLimped = true)) and ($isMsl <> true)) or ($isBubble = true)) and (sector.navhaz[$focus] <= 0))
 				setVar $nearfig $focus
 				gosub :pwarp_away
-				send "s* "
+				send "s"
+				settexttrigger nomines :nomines "Citadel command (?=help)" 
+				settexttrigger mines :mines "Mined Sector: Do you wish to Avoid this sector in the future? (Y/N)"
+				pause
+
+				:mines
+				send "* "
+				:nomines
+				killtrigger nomines
+				killtrigger mines
+				
 				if (sector.navhaz[$nearfig] > 0)
 					########################################
 					# don't restock where there is nav haz #
@@ -162,4 +172,120 @@ return
 		gosub :SWITCHBOARD~switchboard
 	end
 	halt
+return
+
+:runaway_if_needed
+	if ((($sector~realTraderCount = $sector~corpieCount) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1)) or ($player~current_sector = $map~home_sector))
+		#############################################
+		# do nothing if there is no enemy in sector #
+		#############################################
+
+		if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
+			gosub :doMines
+		end
+	else
+		setVar $containsShieldedPlanet FALSE
+		setVar $shieldedPlanetCount 0
+		setVar $i 1
+		while ($i <= SECTOR.PLANETCOUNT[$player~current_sector])
+			getWord SECTOR.PLANETS[$player~current_sector][$i] $test 1
+			if ($test = "<<<<")
+				setVar $containsShieldedPlanet TRUE
+				add $shieldedPlanetCount 1
+			end
+			add $i 1
+		end
+		if (SECTOR.PLANETCOUNT[$player~current_sector] < 1)
+			#################################################
+			# call saveme if there are no planets in sector #
+			#################################################
+			gosub :call
+		end
+		################################################
+		#  TODO                                        #
+		#for logic later to avoid only shielded planets#
+	    ################################################
+
+		:runaway_again
+		gosub :navigate~navigate_away
+		####################################################################
+		# after navigating away, check for enemies in sector, just in case #
+		####################################################################
+		gosub :killing~scan_for_targets
+		if (SECTOR.PLANETCOUNT[$player~current_sector] > 1)
+			setSectorParameter $player~current_sector "FIGSEC" false
+			goto :runaway_again
+		end
+		gosub :player~quikstats
+		if ($player~current_prompt <> "Citadel")
+			setvar $switchboard~message "Wrong prompt!  Something has gone wrong during runaway.*"
+			gosub :switchboard~switchboard
+			gosub :call
+		end
+		if ($call~starting_ship_type <> $player~ship_type)
+			setvar $switchboard~message "I've been podded, but I am still on the planet.  Heading home and halting..*"
+			gosub :switchboard~switchboard
+			send "p"&$map~home_sector&"* y "
+			halt
+		end
+	end
+
+return
+
+
+:callsaveme
+	gosub :call
+	gosub :killing~scan_for_targets
+	gosub :runaway_if_needed
+return
+
+
+:call
+:callagain
+	setVar $BOT~command "call"
+	setvar $bot~parm1 ""
+	setVar $BOT~user_command_line " call  "
+	setvar $bot~parm2 ""
+	setvar $bot~parm3 ""
+	setvar $bot~parm4 ""
+	setvar $bot~parm5 ""
+	setvar $bot~parm6 ""
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	savevar $bot~parm1
+	savevar $bot~parm2
+	savevar $bot~parm3
+	savevar $bot~parm4
+	savevar $bot~parm5
+	savevar $bot~parm6
+	load "scripts\mombot\commands\defense\call.cts"
+	setEventTrigger        callend1        :callend1 "SCRIPT STOPPED" "scripts\mombot\commands\defense\call.cts"
+	pause
+	:callend1
+
+
+	gosub :player~quikstats
+	if ($player~current_prompt <> "Citadel")
+		setvar $switchboard~message "Not on planet even after call saveme.  I'm in real trouble.  Will try again in 15 seconds.*"
+		gosub :switchboard~switchboard
+
+		killalltriggers
+		setDelayTrigger	   1 :callagain	15000
+		pause
+	end
+	
+	if ($starting_ship_type <> $player~ship_type)
+		setvar $switchboard~message "Looks like I've been podded after saveme!  Heading back home, and shutting down.*"
+		gosub :switchboard~switchboard
+		send "p"&$map~home_sector&"* y "
+		halt
+	end
+
+	gosub :planet~getplanetinfo
+	if ($starting_planet <> $planet~planet)
+		setvar $switchboard~message "Looks like I'm on a different planet than I started with.  Make sure the other one is picked up.  Will continue on my defender mission, though.*"
+		gosub :switchboard~switchboard
+
+		setvar $starting_planet $planet~planet		
+	end
 return

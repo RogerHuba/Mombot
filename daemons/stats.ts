@@ -332,6 +332,11 @@ goto :start_over
 
 
 :update_window
+    loadVar $MAP~stardock
+    loadVar $MAP~backdoor
+    loadVar $MAP~rylos
+    loadVar $MAP~alpha_centauri
+
     setVar $contents ""
     setVar $contents $contents&"----------------------------------*"
     setVar $contents $contents&"      Game : "&GAMENAME&"*"
@@ -402,10 +407,6 @@ goto :start_over
     setVar $contents $contents&"----------------------------------*"
     setwindowcontents COMS $contents
 
-    saveVar $MAP~stardock
-    saveVar $MAP~backdoor
-    saveVar $MAP~rylos
-    saveVar $MAP~alpha_centauri
     saveVar $PLAYER~unlimitedGame
     saveVar $PLAYER~CREDITS
     saveVar $PLAYER~FIGHTERS

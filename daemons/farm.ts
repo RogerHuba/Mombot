@@ -18,8 +18,8 @@
 	setVar $BOT~help[5]  $BOT~tab&"       [f o e] - will strip fuel, organics, equipment off planets"
 	setVar $BOT~help[6]  $BOT~tab&"        [cash] - will grab cash off planets"
 	setVar $BOT~help[7]  $BOT~tab&"        [warp] - will warp planets to sell product"
-	setVar $BOT~help[8] $BOT~tab&"        [half] - only sell half of port capacity when warping"
-	setVar $BOT~help[9] $BOT~tab&"      [shield] - will ensure 200 Shields on shielded planets"
+	setVar $BOT~help[8]  $BOT~tab&"        [half] - only sell half of port capacity when warping"
+	setVar $BOT~help[9]  $BOT~tab&"      [shield] - will ensure 200 Shields on shielded planets"
 	setVar $BOT~help[10] $BOT~tab&"        [colo] - will colonize planets with avaliable fuel"
 	setVar $BOT~help[11] $BOT~tab&"        [coln] - will balance colonists on planets"
 	setVar $BOT~help[12] $BOT~tab&"     [upgrade] - will upgrade all planets "
@@ -883,7 +883,7 @@ return
 							end
 						end
 						if ($barricade = TRUE)
-							if (($planet~planet_FUEL > 50000) AND ($planet~planet_CITADEL >= 4))
+							if (($planet~planet_FUEL > 10000) AND ($planet~planet_CITADEL >= 4))
 								send "c  "
 								setVar $player~warpto $home
 								gosub :pwarp
@@ -1044,7 +1044,7 @@ return
 								   send "qq* l " & #8 & $planet~planets[$j] & "* c gt200*"
 							end
 						end
-						if (($warp = TRUE) and ($planet~planet_CITADEL > 3) and ($planet~planet_FUEL > 50000) and (($planet~planet_ORGANICS > 50000) or ($planet~planet_EQUIPMENT > 50000)))
+						if (($warp = TRUE) and ($planet~planet_CITADEL > 3) and ($planet~planet_FUEL > 10000) and (($planet~planet_ORGANICS > 50000) or ($planet~planet_EQUIPMENT > 50000)))
 							send "qq* l " & #8 & $planet~planets[$j] & "* c "
 							gosub :merch
 							send "d"
@@ -1868,9 +1868,9 @@ return
 		loadvar $game~port_max
 		setvar $half_port_max $game~port_max
 		divide $half_port_max 2
-		setVar $bot~user_command_line " merch "&$half_port_max&" o e skipcim half silent"
+		setVar $bot~user_command_line " merch "&$half_port_max&" o e buyfuel skipcim half silent"
 	else
-		setVar $bot~user_command_line " merch 10000 o e skipcim silent"
+		setVar $bot~user_command_line " merch 10000 o e skipcim buyfuel silent"
 	end
 	setVar $bot~parm1 "10000"
 	saveVar $bot~parm1

@@ -42,6 +42,14 @@ return
 	loadvar $bot~mode
 	loadvar $in_kill_routine
 	setVar $alive_count 0
+	loadvar $map~home_sector
+	loadvar $map~rylos
+	loadvar $map~alpha_centauri
+	loadvar $map~stardock
+	loadvar $map~backdoor 
+	loadvar $bot~safe_ship
+	loadvar $bot~bot_turn_limit
+	loadvar $bot~pgrid_bot
 	if ($MAP~stardock <= 0)
 		setVar $MAP~stardock STARDOCK
 		saveVar $MAP~stardock
@@ -54,14 +62,6 @@ return
 		setVar $MAP~alpha_centauri ALPHACENTAURI
 		saveVar $MAP~alpha_centauri
 	end
-	loadvar $map~home_sector
-	loadvar $map~rylos
-	loadvar $map~alpha_centauri
-	loadvar $map~stardock
-	loadvar $map~backdoor 
-	loadvar $bot~safe_ship
-	loadvar $bot~bot_turn_limit
-	loadvar $bot~pgrid_bot
 
 	setVar $SWITCHBOARD~self_command FALSE
 	setVar $scrubonly FALSE

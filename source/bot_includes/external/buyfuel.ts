@@ -1,7 +1,7 @@
 :run
 :buyfuel
 	setVar $BOT~command "buy"
-	setVar $BOT~user_command_line " buy f s silent"
+	setVar $BOT~user_command_line " buy f s silent override"
 	setVar $BOT~parm1 "f"
 	setVar $BOT~parm2 "s"
 	setVar $BOT~parm3 ""

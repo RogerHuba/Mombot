@@ -14,6 +14,8 @@
 	loadvar $game~armid_cost
 	loadvar $game~photon_cost
 	loadvar $game~DISRUPTOR_COST
+	loadvar $bot~username
+	lowercase $bot~username
 
 	setvar $check_history false
 	setarray $fire_history sectors
@@ -27,27 +29,30 @@
 
 	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f} {l} {a} {auto} {holo} {mines} {extern:11pm}  "
 	setVar $BOT~help[2]  $BOT~tab&"             "
-	setVar $BOT~help[3]  $BOT~tab&"        {f} - Photon fighter hits "
-	setVar $BOT~help[4]  $BOT~tab&"        {l} - Photon limpet hits "
-	setVar $BOT~help[5]  $BOT~tab&"        {a} - Photon armid hits "
-	setVar $BOT~help[6]  $BOT~tab&"     {holo} - holoscan on ss after photon "
-	setVar $BOT~help[7]  $BOT~tab&"   {secure} - will only escape to limped sectors "
-	setVar $BOT~help[8]  $BOT~tab&"   {extern} - stops defender 5 minutes before extern "
-	setVar $BOT~help[9]  $BOT~tab&"              as defined by local system time "
-	setVar $BOT~help[10] $BOT~tab&"  {density} - density photon option"
-	setVar $BOT~help[11] $BOT~tab&" {adjacent} - adjacent photon option (default)"
-	setVar $BOT~help[12] $BOT~tab&" {holokill} - holokill if possible"
-	setVar $BOT~help[13] $BOT~tab&"{slingshot} - will pgrid holokill"
-	setVar $BOT~help[14] $BOT~tab&" {nophoton} - will not fire photon"
-	setVar $BOT~help[15] $BOT~tab&" {noescape} - will not retreat from attack sector"
-	setVar $BOT~help[16] $BOT~tab&"     {auto} - Will reset cannon damages automatically"
-	setVar $BOT~help[17] $BOT~tab&"  {capture} - capture instead of kill "
-	setVar $BOT~help[18] $BOT~tab&"    {mines} - auto deploy mines as you go "
-	setVar $BOT~help[19] $BOT~tab&"           "
-	setVar $BOT~help[20] $BOT~tab&"        Examples: "
-	setVar $BOT~help[21] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[22] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[23] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[3]  $BOT~tab&"         {f} - Photon fighter hits "
+	setVar $BOT~help[4]  $BOT~tab&"         {l} - Photon limpet hits "
+	setVar $BOT~help[5]  $BOT~tab&"         {a} - Photon armid hits "
+	setVar $BOT~help[6]  $BOT~tab&"      {holo} - holoscan on ss after photon "
+	setVar $BOT~help[7]  $BOT~tab&"    {secure} - will only escape to limped sectors "
+	setVar $BOT~help[8]  $BOT~tab&"    {extern} - stops defender 5 minutes before extern "
+	setVar $BOT~help[9]  $BOT~tab&"               as defined by local system time "
+	setVar $BOT~help[10] $BOT~tab&"   {density} - density photon option"
+	setVar $BOT~help[11] $BOT~tab&"  {adjacent} - adjacent photon option (default)"
+	setVar $BOT~help[12] $BOT~tab&"  {holokill} - holokill if possible"
+	setVar $BOT~help[13] $BOT~tab&" {slingshot} - will pgrid holokill"
+	setVar $BOT~help[14] $BOT~tab&"  {nophoton} - will not fire photon"
+	setVar $BOT~help[15] $BOT~tab&"  {noescape} - will not retreat from attack sector"
+	setVar $BOT~help[16] $BOT~tab&"      {auto} - Will reset cannon damages automatically"
+	setVar $BOT~help[17] $BOT~tab&"   {capture} - capture instead of kill "
+	setVar $BOT~help[18] $BOT~tab&"     {mines} - auto deploy mines as you go "
+	setVar $BOT~help[19] $BOT~tab&"{saveme:bot} - auto deploy mines as you go "
+	setVar $BOT~help[20] $BOT~tab&"    {switch} - will switch into saveme bots ship before kill "
+	setVar $BOT~help[21] $BOT~tab&"           "
+	setVar $BOT~help[22] $BOT~tab&"        Examples: "
+	setVar $BOT~help[23] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[24] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[25] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[26] $BOT~tab&"             >defender secure saveme:hunt"
 
 	gosub :bot~helpfile
 
@@ -58,7 +63,7 @@
 	setVar $PLAYER~save TRUE
 	gosub :combat~init 
 
-	setvar $killing~last_fighter_attack ""
+	loadGlobal $killing~last_fighter_attack
 	
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	if (($MAP~stardock = 0) OR ($MAP~stardock = ""))
@@ -105,9 +110,9 @@
 
 	getwordpos " "&$bot~user_command_line&" " $pos " auto "
 	if ($pos > 0)
-		setvar $auto true
+		setvar $killing~auto true
 	else
-		setvar $auto false
+		setvar $killing~auto false
 	end
 
 	getwordpos " "&$bot~user_command_line&" " $pos " holo "
@@ -144,6 +149,13 @@
 		setvar $photon~density true
 	else
 		setvar $photon~density false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " switch "
+	if ($pos > 0)
+		setvar $killing~switch true
+	else
+		setvar $killing~switch false
 	end
 
 	if ($photon~density = true)
@@ -187,6 +199,26 @@
 		setvar $restock~deploymines false
 	end
 
+	getWordPos " "&$bot~user_command_line&" " $pos " saveme:"
+	setvar $saveme false
+	setvar $saveme_bot ""
+	if ($pos > 0)
+		setvar $saveme true
+		getText $bot~user_command_line&" " $saveme_bot "saveme:" " "
+		if ($saveme_bot = 0)
+			setVar $SWITCHBOARD~message "Saveme bot is not defined.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
+
+	if (($killing~switch) and ($saveme <> true))
+		setVar $SWITCHBOARD~message "Switch ships option doesn't work without saveme bot defined.*"	
+		gosub :switchboard~switchboard
+		halt
+	end
+
+
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
 		setvar $fighter true
 		setvar $armid true
@@ -198,6 +230,8 @@
 	send "q"
 	gosub :PLANET~getPlanetInfo	
 	send "t*t1* c "
+
+	setvar $call~starting_planet $planet~planet
 
 
 	#######################################################################################################
@@ -212,7 +246,12 @@
     end
 
     gosub :SHIP~getShipStats
-    gosub :player~quikstats
+	gosub :player~quikstats
+
+	setvar $call~starting_ship_type $player~ship_type
+	setvar $call~starting_ship_max_attack $ship~SHIP_MAX_ATTACK
+	setvar $call~starting_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
+
 
 	gosub :check_for_photon_refurb
 
@@ -233,7 +272,35 @@
 		killtrigger 2
 		savevar $game~hasAliens
 
+	if ($saveme)
+		send "'" $saveme_bot " unlock*"
+		waiton "- Ship has been unlocked!"
 
+		send "'" $saveme_bot " saveme on " #34 $bot~username #34 "*"
+		setTextLineTrigger 1 :savemeready "- Saveme - Running from planet "&$planet~planet&" for "&$bot~username&"."
+		setdelaytrigger 2 :savemefailed 3000
+		pause
+
+		:savemefailed
+			killtrigger 1
+			setvar $switchboard~message "Saveme bot isn't available or on wrong planet.  Please check and fix before running again.*"
+			gosub :switchboard~switchboard
+			halt
+		:savemeready
+			killtrigger 2
+			setvar $switchboard~message "Saveme bot activated and unlocked for possible switching of ships.*"
+			gosub :switchboard~switchboard
+
+		if ($killing~switch)
+			send " e y "
+	    	gosub :SHIP~getShipStats
+			setvar $killing~switch_ship_type $player~ship_type
+			setvar $killing~switch_ship_max_attack $ship~SHIP_MAX_ATTACK
+			setvar $killing~switch_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
+			send " e y "
+	    end
+	    gosub :SHIP~getShipStats
+	end
 
 	setVar $message "'*  {"&$bot~bot_name&"} - "&$script_ver&" Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	if ($fighter)
@@ -251,49 +318,46 @@
 	else
 		setVar $message $message&"*                   On Armid Hit: No"
 	end
-	if ($photon~adjacentphoton)
-		setVar $message $message&"*                Adjacent Photon: Yes"
-	else
-		setVar $message $message&"*                Adjacent Photon: No"
-	end
-	if ($photon~density)
-		setVar $message $message&"*   Density Photon Attack Sector: Yes"
-	else 
-		setVar $message $message&"*   Density Photon Attack Sector: No"
-	end
-	if ($killing~holokill)
-		setVar $message $message&"*                       Holokill: Yes"
-	else
-		setVar $message $message&"*                       Holokill: No"
-	end
-	if ($killing~slingshot)
-		setVar $message $message&"*                      Slingshot: Yes"
-	else
-		setVar $message $message&"*                      Slingshot: No"
-	end
-	if ($holo)
-		setVar $message $message&"*                    Holo Report: Yes"
-	else
-		setVar $message $message&"*                    Holo Report: No"
-	end
-	if ($auto)
-		setVar $message $message&"*                   Cannon Reset: Yes"
-	else
-		setVar $message $message&"*                   Cannon Reset: No"
-	end
-	if ($killing~capture)
-		setVar $message $message&"*              Capture, not kill: Yes"
-	else
-		setVar $message $message&"*              Capture, not kill: No"
-	end
-	if ($restock~deploymines)
-		setVar $message $message&"*                   Deploy mines: Yes"
-	else
-		setVar $message $message&"*                   Deploy mines: No"
+	if ($saveme)
+		setVar $message $message&"*                     Saveme bot: "&$saveme_bot
 	end
 	setVar $message $message&"*                    Home Sector: "&$map~home_sector
 	format $planet~planet_fighters $formatted_fighters NUMBER
-	setVar $message $message&"*        Auto Kill: Enabled With "&$formatted_fighters&" Fighters"
+	setVar $message $message&"*                      Auto Kill: "&$formatted_fighters&" Fighters"
+		setVar $message $message&"*                          "
+		setVar $message $message&"*                        Modes"
+		setVar $message $message&"*                       -------"
+	if ($photon~adjacentphoton)
+		setVar $message $message&"*                   Adjacent Photon"
+	end
+	if ($photon~density)
+		setVar $message $message&"*                   Density Photon"
+	end
+	if ($killing~holokill)
+		if ($killing~capture)
+			setVar $message $message&"*                   Holocap"
+		else
+			setVar $message $message&"*                   Holokill"
+		end
+	end
+	if ($killing~slingshot)
+		setVar $message $message&"*                   Slingshot"
+	end
+	if ($killing~switch)
+		setVar $message $message&"*                   Switch ships"
+	end
+	if ($holo)
+		setVar $message $message&"*                   Holo Report"
+	end
+	if ($killing~auto)
+		setVar $message $message&"*                   Cannon Reset"
+	end
+	if ($killing~capture)
+		setVar $message $message&"*                   Capture"
+	end
+	if ($restock~deploymines)
+		setVar $message $message&"*                   Deploy mines"
+	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	send $message
 
@@ -311,36 +375,58 @@
 
 	:processing
 		gosub :killtriggers
+		setTextTrigger 1 :pausing "Planet command (?="
+		setTextTrigger 2 :pausing "Computer command ["
+		setTextTrigger 3 :pausing "Corporate command ["
+		setTextTrigger 4 :pausing "Transfer To or From the Treasury (T/F)"
+		setTextTrigger 5 :pausing "Qcannon Control Type :"
+		setTextTrigger 6 :pausing "Beam to what sector? (U=Upgrade"
+
+		setTextLineTrigger 7  :scan "warps into the sector."
+		setTextLineTrigger 8  :scan " lifts off from"
+		setTextLineTrigger 9  :scan "Limpet mine in "&$player~current_sector
+		setTextLineTrigger 10 :scan "Deployed Fighters Report Sector "&$player~current_sector&":"
+		setTextLineTrigger 11 :scan "Quasar Cannon on"
+		setTextLineTrigger 12 :scan "Shipboard Computers The Interdictor Generator on"
+		setTextLineTrigger 13 :scan " is powering up weapons systems!"
+		settextlinetrigger 14 :scan " launches a wave of fighters at the "
+		settextlinetrigger 15 :scan	" launches a Genesis Torpedo into the sector!"
+		settextlinetrigger 16 :scan " appears from the planetary rubble."
+		setTextLineTrigger 17 :scan " exits the game."
+		setTextLineTrigger 18 :scan " enters the game."
+		setDelayTrigger	   19 :announce	1200000
+		setDelayTrigger	   20 :head_home_timeout 3600000
+		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
+		
+
+		#############################################################################################
+		# Check for adjacent sectors in current location, for faster shooting if they come adjacent #
+		#############################################################################################
+		setarray $photon~adjacent 6
+		setVar $i 1
+		setvar $photon~adjacent_sectors " "
+		while (SECTOR.WARPS[$player~current_sector][$i] > 0)
+			setvar $photon~adjacent_sectors " "&$photon~adjacent_sectors&SECTOR.WARPS[$player~current_sector][$i]&" "
+			add $i 1
+		end
+		if ($photon~sector > 0)
+			setVar $i 1
+			setvar $photon~adjacent_to_last_attack_sectors " "
+			while (SECTOR.WARPS[$photon~sector][$i] > 0)
+				setvar $photon~adjacent_to_last_attack_sectors " "&$photon~adjacent_to_last_attack_sectors&SECTOR.WARPS[$photon~sector][$i]&" "
+				add $i 1
+			end
+		end
+
 		if ($limpet)
-			setTextTrigger 1 :attackSectorLimpet "Limpet mine in "
+			setTextTrigger 21 :attackSectorLimpet "Limpet mine in "
 		end
 		if ($armid)
-			setTextTrigger 2 :attackSectorMine "Your mines in "
+			setTextTrigger 22 :attackSectorMine "Your mines in "
 		end
 		if ($fighter)
-			setTextTrigger 3 :attackSectorFighter "Deployed Fighters "
+			setTextTrigger 23 :attackSectorFighter "Deployed Fighters "
 		end
-		setTextTrigger 4 :pausing "Planet command (?="
-		setTextTrigger 5 :pausing "Computer command ["
-		setTextTrigger 6 :pausing "Corporate command ["
-		setTextTrigger 7 :pausing "Transfer To or From the Treasury (T/F)"
-		setTextTrigger 8 :pausing "Qcannon Control Type :"
-		setTextTrigger 9 :pausing "Beam to what sector? (U=Upgrade"
-
-		setTextLineTrigger 10 :scan "warps into the sector."
-		setTextLineTrigger 11 :scan " lifts off from"
-		setTextLineTrigger 12 :scan "Limpet mine in "&$player~current_sector
-		setTextLineTrigger 13 :scan "Deployed Fighters Report Sector "&$player~current_sector&":"
-		setTextLineTrigger 14 :scan "Quasar Cannon on"
-		setTextLineTrigger 15 :scan "Shipboard Computers The Interdictor Generator on"
-		setTextLineTrigger 16 :scan " is powering up weapons systems!"
-		settextlinetrigger 17 :scan " launches a wave of fighters at the "
-		settextlinetrigger 18 :scan	" launches a Genesis Torpedo into the sector!"
-		settextlinetrigger 19 :scan " appears from the planetary rubble."
-		setTextLineTrigger 20 :scan " exits the game."
-		setTextLineTrigger 21 :scan " enters the game."
-		setDelayTrigger	   22 :announce	1200000
-		setDelayTrigger	   23 :head_home_timeout 3600000
 		pause
 			
 
@@ -353,47 +439,83 @@
 			setvar $description $description&"Density "
 		end
 		if ($killing~holokill)
-			setvar $description $description&"Holokill "
+			if ($killing~capture)
+				setvar $description $description&"Holocap "
+			else
+				setvar $description $description&"Holokill "
+			end
+		end
+		if ($killing~switch)
+			setvar $description $description&"Switch "
 		end
 		if ($killing~slingshot)
 			setvar $description $description&"Slingshot "
+		end
+		if ($killing~capture)
+			setvar $description $description&"Capture "
+		end
+		if ($navigate~securePwarp)
+			setvar $description $description&"Secure "
+		end
+		if ($saveme)
+			setvar $description $description&"Saveme:"&$saveme_bot&" "
 		end
 		trim $description
 		if ($description <> "")
 			setvar $description " ("&$description&")"
 		end
 		setvar $switchboard~message $script_ver&$description&" is online and ready to fire.*"
-
 		gosub :switchboard~switchboard
-		setDelayTrigger	   22 :announce	1200000
+
+		setDelayTrigger	   19 :announce	1200000
 		pause		
 
-		:head_home_timeout 
+		:head_home_timeout
+			gosub :killtriggers
 			if ($player~current_sector <> $map~home_sector)
 				setvar $switchboard~message "No activity in an hour, so heading home.*"
 				gosub :switchboard~switchboard
+			else
+				goto :processing
 			end
 		:head_home 
-		gosub :player~quikstats
-		echo ansi_2&"*Checking status after inactivity..*"
-		if ($player~current_sector <> $map~home_sector)
-			gosub :navigate~navigate_to_limp
-			gosub :killing~scan_for_targets
-			gosub :restock~refurb_photons
-			send "p"&$map~home_sector&"*y "
-		end
-		setvar $movefig~planetorsector "p"
-		gosub :movefig~run
-
-		send "q"
-		gosub :PLANET~getPlanetInfo	
-		send "t*t1* c "
-		if ($planet~planet_fighters < 10000)
-			setvar $switchboard~message "Even after grabbing figs from sector, not enough fighters.  Shutting down..*"
-			gosub :switchboard~switchboard
-			halt
-		end
-
+			gosub :killtriggers
+			gosub :player~quikstats
+			echo ansi_2&"*Checking status after inactivity..*"
+			if ($player~current_sector <> $map~home_sector)
+				gosub :navigate~navigate_to_limp
+				gosub :killing~scan_for_targets
+				if ($killing~error = true)
+					goto :head_home
+				end
+				gosub :navigate~runaway_if_needed
+				gosub :restock~refurb_photons
+				send "p"&$map~home_sector&"*y "
+			end
+			if ($player~current_prompt = "Citadel")
+				send "q"
+				gosub :PLANET~getPlanetInfo	
+				send "t*t1* c "
+				if (($planet~PLANET_FIGHTERS_MAX - $planet~planet_fighters) > ($ship~SHIP_FIGHTERS_MAX))
+					setvar $movefig~planetorsector "p"
+					gosub :movefig~run
+				end
+			end
+			gosub :player~quikstats
+			if ($player~current_prompt = "Citadel")		
+				send "q"
+				gosub :PLANET~getPlanetInfo	
+				send "t*t1* c "
+				if ($planet~planet_fighters < $ship~SHIP_FIGHTERS_MAX)
+					setvar $switchboard~message "Even after grabbing figs from sector, not enough fighters.  Shutting down..*"
+					gosub :switchboard~switchboard
+					halt
+				end
+			end
+			loadGlobal $killing~last_fighter_attack
+			if ($killing~last_fighter_attack <> "")
+				gosub :killing~set_the_cannon
+			end
 		goto :processing
 
 	halt
@@ -402,6 +524,7 @@
 #################################################################
 # Photon routines - fire photon, move away, restock, set cannon #
 #################################################################
+
 
 :attackSectorLimpet
 	gosub :photon~limpet_spoof
@@ -416,9 +539,12 @@
 
 
 :check_to_fire_photon
-	gosub :killtriggers
+	killalltriggers
+
 	if ($photon~found = true)
-		if ($photon~retreatfighter <> true)
+		if ($photon~retreatfighter = true)
+			gosub :photon~retreatphoton
+		else
 			if (($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
 				goto :can_not_fire
 			end
@@ -430,26 +556,35 @@
 				goto :can_not_fire
 			end
 			gosub :photon~photon
-		else
-			gosub :photon~retreatphoton
 		end
-		if ($limpet)
-			setTextTrigger 1 :attackSectorLimpet "Limpet mine in "
+		killalltriggers
+		:done_firing
+		########################################################################################
+		# if last sector hit isn't sector shot and not sector we are currently in, shoot again #
+		########################################################################################
+		if ($photon~success <> true)
+			setvar $photon~last_sector $photon~sector
+			setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
+			gosub :player~quikstats
+			gosub :check_for_photon_refurb
 		end
-		if ($armid)
-			setTextTrigger 2 :attackSectorMine "Your mines in "
+		gosub :waitbeforecheck
+		loadGlobal $bot~last_hit
+		#send "'[" $bot~last_hit "] compared to [" $photon~sector "] while current sector is [" $player~current_sector "]*"
+		if (($photon~sector <> $bot~last_hit) and ($player~current_sector <> $bot~last_hit))
+			setvar $photon~sector $bot~last_hit
+			goto :check_to_fire_photon
 		end
-		if ($fighter)
-			setTextTrigger 3 :attackSectorFighter "Deployed Fighters "
+		gosub :killing~scan_for_targets
+		if ($killing~error = true)
+			goto :head_home
 		end
-		setDelayTrigger wait :done_waiting_for_hits 300
-		pause
-
-		:done_waiting_for_hits
-			killtrigger 1
-			killtrigger 2
-			killtrigger 3
-
+		gosub :waitbeforecheck
+		loadGlobal $bot~last_hit
+		if ($photon~sector <> $bot~last_hit)
+			setvar $photon~sector $bot~last_hit
+			goto :check_to_fire_photon
+		end
 		#############################################
 		# holoscan sector to see if victim is there #
 		#############################################
@@ -457,21 +592,52 @@
 			gosub :killing~slingshot
 		elseif ($killing~holokill = true)
 			gosub :killing~doholokill
-			gosub :killing~doholokill
-			gosub :killing~doholokill
+			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+				gosub :pwarp_direct_and_kill
+			end
+			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+				gosub :killing~doholokill
+				gosub :pwarp_direct_and_kill
+			end
+			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+				gosub :killing~doholokill
+				gosub :pwarp_direct_and_kill
+			end
+		end
+		gosub :waitbeforecheck
+		loadGlobal $bot~last_hit
+		if ($photon~sector <> $bot~last_hit)
+			setvar $photon~sector $bot~last_hit
+			goto :check_to_fire_photon
 		end
 		if (((($photon~adjacentphoton = true) and ($photon~success = true)) or ($nophoton = true)) and ($holo = true))
 			gosub :doholo
 		end
 
-		setvar $photon~last_sector $photon~sector
-		setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
+		gosub :waitbeforecheck
+		loadGlobal $bot~last_hit
+		if ($photon~sector <> $bot~last_hit)
+			setvar $photon~sector $bot~last_hit
+			goto :check_to_fire_photon
+		end
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
 			goto :head_home
 		end
+		gosub :waitbeforecheck
+		loadGlobal $bot~last_hit
+		if ($photon~sector <> $bot~last_hit)
+			setvar $photon~sector $bot~last_hit
+			goto :check_to_fire_photon
+		end
 		if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
 			gosub :doMines
+		end
+		gosub :waitbeforecheck
+		loadGlobal $bot~last_hit
+		if ($photon~sector <> $bot~last_hit)
+			setvar $photon~sector $bot~last_hit
+			goto :check_to_fire_photon
 		end
 		if ($noescape <> true)
 			gosub :navigate~navigate_away
@@ -480,14 +646,15 @@
 			if ($killing~error = true)
 				goto :head_home
 			end
-			gosub :runaway
+			gosub :navigate~runaway_if_needed
 		end
 		####################
 		# check for refurb #
 		####################
 		gosub :player~quikstats
 		gosub :check_for_photon_refurb
-		if (($killing~last_fighter_attack <> "") and ($auto = true))
+		loadGlobal $killing~last_fighter_attack
+		if ($killing~last_fighter_attack <> "")
 			gosub :killing~set_the_cannon
 		end
 
@@ -511,17 +678,7 @@
 		if ($killing~error = true)
 			goto :head_home
 		end
-		gosub :runaway
-	end
-	#############################################################################################
-	# Check for adjacent sectors in current location, for faster shooting if they come adjacent #
-	#############################################################################################
-	setVar $i 1
-	setvar $photon~adjacent_sectors " "
-	while (SECTOR.WARPS[$player~current_sector][$i] > 0)
-		setVar $tempAdj SECTOR.WARPS[$player~current_sector][$i]
-		setvar $photon~adjacent_sectors $photon~adjacent_sectors&" "&$tempAdj&" "
-		add $i 1
+		gosub :navigate~runaway_if_needed
 	end
 
 	goto :processing
@@ -532,7 +689,7 @@
 ############################################################################################
 
 :scan
-	gosub :killtriggers
+	killalltriggers
 	gosub :killing~checkForVictims
 	if ($killing~error = true)
 		goto :head_home
@@ -543,7 +700,7 @@
 	# they could be sitting above in defender ship                 #
 	################################################################
 
-	gosub :runaway
+	gosub :navigate~runaway_if_needed
 	goto :processing
 
 
@@ -564,13 +721,22 @@
 
 
 
+
 :killtriggers
-	setvar $i 1
-	while ($i <= 23)
-		killtrigger ""&$i&""
-		add $i 1
-	end
-	killtrigger wait
+	killalltriggers
+#	setvar $i 1
+#	while ($i <= 23)
+#		killtrigger ""&$i&""
+#		add $i 1
+#	end
+#	setvar $i 1
+#	while ($i <= 6)
+#		killtrigger "adjf"&$i&""
+#		killtrigger "adjl"&$i&""
+#		killtrigger "adja"&$i&""
+#		add $i 1
+#	end
+#	killtrigger wait
 return
 
 
@@ -589,87 +755,78 @@ return
 return
 
 :doMines
-	setVar $BOT~command "mines"
-	setVar $BOT~user_command_line " 3"
-	setvar $bot~parm1 "3"
+	setVar $BOT~command "deploy"
+	setVar $BOT~user_command_line " mines 3"
+	setvar $bot~parm1 "mines"
+	setvar $bot~parm2 "3"
 
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
 	saveVar $bot~parm1 
 
-	load "scripts\mombot\commands\grid\mines.cts"
-	setEventTrigger        minesend        :minesend "SCRIPT STOPPED" "scripts\mombot\commands\grid\mines.cts"
+	load "scripts\mombot\commands\grid\deploy.cts"
+	setEventTrigger        minesend        :minesend "SCRIPT STOPPED" "scripts\mombot\commands\grid\deploy.cts"
+	setdelaytrigger        minetime        :minetime  10000
 	pause
-	:minesend
+
+	:minetime
 		killtrigger minesend
+		stop "scripts\mombot\commands\grid\deploy.cts"
+		gosub :player~quikstats
+	:minesend
+		killtrigger minetime
+		gosub :player~quikstats
+		if ($player~current_prompt <> "Citadel")
+			send " q q q * l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			gosub :player~quikstats
+			if ($player~current_prompt <> "Citadel")
+				setvar $switchboard~message "Not at correct prompt after mine deploy!  Maybe planet is gone?  Check please!*"
+				gosub :switchboard~switchboard
+				gosub :navigate~callsaveme
+			end
+		end
+
 return
 
 :check_for_photon_refurb
 	if (($player~photons <= 0) and ($nophoton <> true))
 		gosub :navigate~navigate_to_limp
 		gosub :killing~scan_for_targets
-		if ($sector~realTraderCount = $sector~corpieCount)
-			#############################################
-			# do nothing if there is no enemy in sector #
-			#############################################
-		else
-			gosub :navigate~navigate_away
-			####################################################################
-			# after navigating away, check for enemies in sector, just in case #
-			####################################################################
-			gosub :killing~scan_for_targets
+		if ($killing~error = true)
+			goto :head_home
 		end
+		gosub :navigate~runaway_if_needed
 		gosub :restock~refurb_photons
 	end
 return
 
-
-:runaway
-
-	if ($player~current_sector <> $map~home_sector)	
-		if (($sector~realTraderCount = $sector~corpieCount) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1))
-			#############################################
-			# do nothing if there is no enemy in sector #
-			#############################################
-
-			if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
-				gosub :doMines
-			end
-		else
-			setVar $containsShieldedPlanet FALSE
-			setVar $shieldedPlanetCount 0
-			setVar $i 1
-			while ($i <= SECTOR.PLANETCOUNT[$player~current_sector])
-				getWord SECTOR.PLANETS[$player~current_sector][$i] $test 1
-				if ($test = "<<<<")
-					setVar $containsShieldedPlanet TRUE
-					add $shieldedPlanetCount 1
-				end
-				add $i 1
-			end
-			if (SECTOR.PLANETCOUNT[$player~current_sector] < 1)
-				#################################################
-				# call saveme if there are no planets in sector #
-				#################################################
-				gosub :call~run
-			end
-			################################################
-			#  TODO                                        #
-			#for logic later to avoid only shielded planets#
-		    ################################################
-
-			:runaway_again
-			gosub :navigate~navigate_away
-			####################################################################
-			# after navigating away, check for enemies in sector, just in case #
-			####################################################################
-			gosub :killing~scan_for_targets
-			if (SECTOR.PLANETCOUNT[$player~current_sector] > 1)
-				setSectorParameter $player~current_sector "FIGSEC" false
-				goto :runaway_again
-			end
+:pwarp_direct_and_kill
+	setTextTrigger 1 :jumped "All Systems Ready, shall we engage? Yes"
+	settexttrigger 2 :no_jump "Your own fighters must be in the destination to make a safe jump"
+	settexttrigger 3 :jumped "You are already in that sector!"
+	send "p" $photon~sector "*y   "
+	pause
+	:no_jump
+		killtrigger 1
+		killtrigger 2
+		killtrigger 3
+		setvar $pwarp_success false
+		return
+	:jumped
+		killtrigger 1
+		killtrigger 2
+		killtrigger 3
+		setvar $pwarp_success true
+		gosub :killing~scan_for_targets
+		if ($killing~error = true)
+			goto :head_home
 		end
-	end	
+return
+
+:waitbeforecheck
+	setdelaytrigger waithere :checklasthit 5
+	pause
+	:checklasthit
 return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
@@ -693,5 +850,5 @@ include "source\module_includes\defender\photon"
 include "source\module_includes\defender\restock"
 include "source\module_includes\defender\killing"
 include "source\bot_includes\external\htorp"
-include "source\bot_includes\external\call"
+include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\external\movefig"

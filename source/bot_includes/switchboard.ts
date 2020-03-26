@@ -5,6 +5,9 @@
 
 :switchboard
 
+	if (($message = "0") or ($message = ""))
+		return
+	end
 	setvar $discord_ignore "-- "
 	# length of discord string above # 
 	setvar $discord_ignore_length 3
@@ -32,19 +35,19 @@
 		setvar $communication_starter "`"
 		if ($nodiscord)
 			setVar $MSG_Header_SS_1     ($communication_starter&$discord_ignore&"Fedspace output - ")
-			setVar $MSG_Header_SS_2     ($communication_starter&"*"&$discord_ignore&"Fedspace output - *")
+			setVar $MSG_Header_SS_2     ($communication_starter&"*"&$discord_ignore&"Fedspace output - * ")
 		else
 			setVar $MSG_Header_SS_1     ($communication_starter&"Fedspace output - ")
-			setVar $MSG_Header_SS_2     ($communication_starter&"*Fedspace output - *")
+			setVar $MSG_Header_SS_2     ($communication_starter&"*Fedspace output - * ")
 		end
 	else
 		setvar $communication_starter "'"
 		if ($nodiscord)
 			setVar $MSG_Header_SS_1     ($communication_starter&$discord_ignore&"["&$bot~mode&"] {"&$bot_name&"} - ")
-			setVar $MSG_Header_SS_2     ($communication_starter&"*"&$discord_ignore&"["&$bot~mode&"] {"&$bot_name&"} - *")
+			setVar $MSG_Header_SS_2     ($communication_starter&"*"&$discord_ignore&"["&$bot~mode&"] {"&$bot_name&"} - * ")
 		else
 			setVar $MSG_Header_SS_1     ($communication_starter&"["&$bot~mode&"] {"&$bot_name&"} - ")
-			setVar $MSG_Header_SS_2     ($communication_starter&"*["&$bot~mode&"] {"&$bot_name&"} - *")
+			setVar $MSG_Header_SS_2     ($communication_starter&"*["&$bot~mode&"] {"&$bot_name&"} - * ")
 		end	
 	end
 	setVar $MSG_Header_Echo     (ANSI_9 & "{"&ANSI_14&$bot_name&ANSI_9&"} " & ANSI_15)

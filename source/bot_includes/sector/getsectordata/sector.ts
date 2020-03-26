@@ -8,20 +8,30 @@
 	
 	killalltriggers
 
-	if ($PLAYER~startingLocation = "Citadel")
-		send "s* "
+	if ($passive)
+
 	else
-		if ($player~fedspace = true)
-			send "*"
+		if ($PLAYER~startingLocation = "Citadel")
+			send "s"
 		else
-			send "** "
+			if ($player~fedspace = true)
+				send "*"
+			else
+				send "*"
+			end
 		end
 	end
+	:startover
 	setVar $sectorData ""
 	:sectorsline_cit_kill
 		setVar $line CURRENTANSILINE
 		setVar $line $STARTLINE&$line&$ENDLINE
 		setVar $sectorData $sectorData&$line
+		getWordPos $line $pos "Sector  [33m: "
+		if ($pos > 0)
+			getText $line $tempSector "Sector  [33m: [36m" " [0;32min" 
+			setvar $player~current_sector $tempSector
+		end
 		getWordPos $line $pos "Warps to Sector(s) "
 		if ($pos > 0)
 			goto :gotSectorData
@@ -30,6 +40,18 @@
 		end
 		pause
 	:gotSectorData
+		settexttrigger nomines :nomines "Citadel command (?=help)" 
+		settexttrigger nomines2 :nomines "Command ["
+		settexttrigger mines :mines "Mined Sector: Do you wish to Avoid this sector in the future? (Y/N)"
+		pause
+
+		:mines
+		send "* "
+		:nomines
+		killtrigger nomines
+		killtrigger nomines2
+		killtrigger mines
+
 		getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 		if ($beaconPos > 0)
 			setVar $containsBeacon TRUE

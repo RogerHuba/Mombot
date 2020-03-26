@@ -92,7 +92,7 @@
 		end
 		setVar $c 1
 		setVar $player~isFound FALSE
-		while (($c <= $SECTOR~emptyShipCount) AND (($player~isFound = FALSE) or ($player~fedspace <> true)))
+		while (($c <= $SECTOR~emptyShipCount) AND ($player~isFound = FALSE) and ($player~fedspace <> true))
 			if (($player~emptyships[$c] = $player~CORP) OR ($player~emptyships[$c] = $player~TRADER_NAME))
 				setVar $targetString $targetString&"* " 
 			else
@@ -130,6 +130,7 @@
 				setTextTrigger  foundcaptarget  :foundcaptarget  "(Y/N) [N]? Y"
 				setTextTrigger checkcaptarget :checkcaptarget "Yes"
 				setTextLineTrigger noctarget    :nocappingtargets "Do you want instructions (Y/N) [N]?"
+				#echo "*[" $targetString "]*"
 				send $targetString
 				pause
 				pause

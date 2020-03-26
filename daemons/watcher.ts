@@ -7,7 +7,11 @@ loadVar $MAP~stardock
 loadvar $bot~subspace
 loadvar $bot~bot_password
 loadvar $bot~bot_name
-
+loadGlobal $killing~last_fighter_attack
+if ($killing~last_fighter_attack = 0)
+	setvar $killing~last_fighter_attack ""
+	saveGlobal $killing~last_fighter_attack
+end
 setSectorParameter 1 "MSLSEC" TRUE
 setSectorParameter 2 "MSLSEC" TRUE
 setSectorParameter 3 "MSLSEC" TRUE
@@ -26,6 +30,9 @@ end
 
 setTextLineTrigger  federase        :fedEraseFig        "The Federation We destroyed your Corp's "
 setTextLineTrigger  fighterserase       :eraseFig       " of your fighters in sector "
+setTextLineTrigger  fightersave 	:fightersave "Deployed Fighters "
+settextlinetrigger  limpsave		:limpsave	"Limpet mine in "
+setTextLineTrigger 	armidsave 		:armidsave "Your mines in "
 setTextLineTrigger  warpfigerase        :eraseWarpFig       "You do not have any fighters in Sector "
 setTextLineTrigger  pgridadd    :pgridadd   "Successfully P-gridded into sector "
 setTextLineTrigger  pgridxportadd    :pgridxportadd   "Successfully P-gridded w/xport into sector "
@@ -195,6 +202,10 @@ pause
 		if (($test = TRUE) AND ($fig_number <> "0"))
 			if (($fig_hit <= SECTORS) AND ($fig_hit > 0))
 				setVar $target $fig_hit
+				setvar $bot~last_fighter_hit $fig_hit
+				setvar $bot~last_hit $fig_hit
+				saveGlobal $bot~last_fighter_hit
+				saveGlobal $bot~last_hit
 				gosub :removefigfromdata
 			end
 		end
@@ -219,6 +230,84 @@ pause
 		end
 	end
 	setTextLineTrigger      warpfigerase        :eraseWarpFig       "You do not have any fighters in Sector "
+	pause
+:limpsave
+	cutText CURRENTLINE&"     " $spoof 1 2 
+	cutText CURRENTLINE&"     " $spoof2 1 1 
+	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
+		goto :endSaveLimp
+	end
+	getText CURRENTLINE&" [XX][XX][XX]" $temp "Limpet mine in " " activated"
+	if ($temp <> "")
+		setvar $limp_hit $temp
+		isNumber $test $limp_hit 
+		if ($test = TRUE)
+			if (($limp_hit <= SECTORS) AND ($limp_hit > 0))
+				setvar $bot~last_limpet_hit $limp_hit
+				setvar $bot~last_hit $limp_hit
+				saveGlobal $bot~last_hit
+				saveGlobal $bot~last_limpet_hit
+			end
+		end
+	end
+:endSaveLimp
+	settextlinetrigger  limpsave		:limpsave	"Limpet mine in "
+	pause
+
+:armidsave
+	cutText CURRENTLINE&"     " $spoof 1 2 
+	cutText CURRENTLINE&"     " $spoof2 1 1 
+	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
+		goto :endSaveArmid
+	end
+	#Your mines in 4441 did 628 damage to Mind
+	getText CURRENTLINE&" [XX][XX][XX]" $temp "Your mines in " " did "
+	if ($temp <> "")
+		setvar $mine_hit $temp
+		isNumber $test $mine_hit 
+		if ($test = TRUE)
+			if (($mine_hit <= SECTORS) AND ($mine_hit > 0))
+				setvar $bot~last_armid_hit $mine_hit
+				setvar $bot~last_hit $mine_hit
+				saveGlobal $bot~last_hit
+				saveGlobal $bot~last_armid_hit
+			end
+		end
+	end
+:endSaveArmid
+	setTextLineTrigger 	armidsave 		:armidsave "Your mines in "
+	pause
+
+
+
+:fightersave
+	setvar $line CURRENTLINE
+	cutText $line&"     " $spoof 1 2 
+	cutText $line&"     " $spoof2 1 1 
+	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
+		goto :endfightersave
+	end
+	#Deployed Fighters Report Sector 8920: Mind's Imperial StarShip entered sector.
+	getText $line&" [XX][XX][XX]" $temp "Deployed Fighters Report Sector " ": "
+	getwordpos $line $pos " entered sector."
+	if ($pos > 0)
+		setvar $killing~last_fighter_attack $line
+		saveGlobal $killing~last_fighter_attack
+	end
+	if ($temp <> "")
+		setvar $fighit $temp
+		isNumber $test $fighit 
+		if ($test = TRUE)
+			if (($fighit <= SECTORS) AND ($fighit > 0))
+				setvar $bot~last_fighter_hit $fighit
+				setvar $bot~last_hit $fighit
+				saveGlobal $bot~last_hit
+				saveGlobal $bot~last_fighter_hit
+			end
+		end
+	end
+:endfightersave
+	setTextLineTrigger  fightersave 	:fightersave "Deployed Fighters "
 	pause
 
 :erasebusts

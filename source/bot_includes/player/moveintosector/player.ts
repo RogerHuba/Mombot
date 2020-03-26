@@ -25,3 +25,8 @@
 	end
 	send $result
 return
+
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\ship\getshipstats\ship"
+

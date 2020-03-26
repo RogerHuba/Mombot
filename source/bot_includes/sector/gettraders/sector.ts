@@ -17,7 +17,7 @@
 			setVar $j 1
 			setVar $isFound FALSE
 			#only check for fed safe if you are in fed sector
-			if ((currentsector <= 10) or (currentsector = STARDOCK))
+			if (($player~current_sector <= 10) or ($player~current_sector = STARDOCK))
 				while (($j < $player~ranksLength) AND ($isFound = FALSE))
 					getWordPos $temp $pos $player~ranks[$j]    
 					if ($pos > 0)
@@ -47,6 +47,8 @@
 				else
 					setVar $tempCorp 99999
 				end 
+				getText $temp $number_of_fighters " w/ [1;33m" "[0;32m ftrs"
+				stripText $number_of_fighters ","
 				replaceText $temp "[0;34m" "[34m"
 				getWordPos $temp $pos "[34m"
 				cutText $temp $temp 1 $pos
@@ -54,6 +56,7 @@
 				lowercase $temp
 				setVar $player~traders[($realTraderCount+1)] $temp
 				setVar $player~traders[($realTraderCount+1)][1] $tempCorp
+				setVar $player~traders[($realTraderCount+1)][4] $number_of_fighters
 				if ($tempCorp = $player~CORP)
 					add $corpieCount 1
 				end

@@ -15,9 +15,11 @@
 			end
 		end
 	else
+		send "q m***c "
 		gosub :player~quikstats
 		if ($player~fighters <= 0)
 			send "'{" $SWITCHBOARD~bot_name "} - Out of fighters, shutting down "&$BOT~command&".*"
+			setvar $killing~error true
 			return
 		end
 	end
@@ -112,7 +114,7 @@
 				end
 				subtract $count 1			
 			end
-			send "q "&$attackString&" c "
+			send " q "&$attackString&" c "
 		end
 	else	
 		setvar $switchboard~message ANSI_12&"*You have no valid targets.*"&ANSI_7

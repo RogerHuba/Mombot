@@ -1,26 +1,42 @@
 :checkForVictims
-	gosub :killtriggers
 	getWord CURRENTLINE $test 1
+	setvar $error false
 	if (($test = "P") OR ($test = "F") OR ($test = "R") OR ($test = ">"))
 		echo ANSI_14 "*spoof attempt!*"
 		return
 	end	
 
 :scan_for_targets
+	killalltriggers
+	if ($switch)
+		setvar $combat~switch true
+		setvar $SHIP~SHIP_MAX_ATTACK $switch_ship_max_attack
+		setvar $SHIP~SHIP_OFFENSIVE_ODDS $switch_ship_offensive_odds
+	else
+		setvar $combat~switch false
+	end
 	setvar $error false
 	gosub :player~quikstats
-	if ($player~fighters < 1000)
-		setvar $error true
-		setvar $switchboard~message "We don't have enough fighters - time to get out of here.*"
-		gosub :switchboard~switchboard
-		return
-	end
 	setvar $player~startinglocation $player~current_prompt
 	if ($player~startinglocation <> "Citadel")
 		#########################################
 		# Something has gone wrong, call saveme #
 		#########################################
-		gosub :callsaveme
+		gosub :navigate~call
+	end
+	if ($call~starting_ship_type <> $player~ship_type)
+		setvar $switchboard~message "I've been podded, but I am still on the planet.  Switching into ship on planet if possible.*"
+		gosub :switchboard~switchboard
+		send "e y "
+		gosub :ship~getshipstats
+		gosub :player~quikstats
+		setvar $call~starting_ship_type $player~ship_type
+		setvar $call~starting_ship_max_attack $ship~SHIP_MAX_ATTACK 
+		setvar $call~starting_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
+		setvar $switch false
+		#####################################################################
+		# setting switch to false so we don't switch into a pod by accident #
+		#####################################################################
 	end
 	gosub :sector~getSectorData
 	setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
@@ -30,24 +46,46 @@
 	else
 		setvar $player~override false
 	end
-	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+	if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
+		if ($switch)
+			send " e y " 
+		end
 		if ($capture = true)
 			gosub :combat~fastCapture
-			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			send " l " $PLANET~PLANET " * n n * j m * * * j c *  "
 			gosub :player~quikstats
 		else
 			gosub :combat~fastCitadelAttack
 		end
+		if ($switch)
+			send " e y " 
+			setvar $player~ship_type $call~starting_ship_type 
+			setvar $ship~SHIP_MAX_ATTACK $call~starting_ship_max_attack
+			setvar $ship~SHIP_OFFENSIVE_ODDS $call~starting_ship_offensive_odds 
+		end
+		if ($error)
+			return
+		end
 		goto :scan_for_targets
-	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
+	elseif ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE)))
+		if ($switch)
+			send " e y " 
+		end
 		gosub :combat~fastCapture
 		send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+		if ($switch)
+			send " e y "
+			setvar $player~ship_type $call~starting_ship_type 
+			setvar $ship~SHIP_MAX_ATTACK $call~starting_ship_max_attack
+			setvar $ship~SHIP_OFFENSIVE_ODDS $call~starting_ship_offensive_odds 
+		end
 		gosub :player~quikstats
 		goto :scan_for_targets
 	end
 return
 
 :set_the_cannon
+	loadGlobal $last_fighter_attack
 	getText $last_fighter_attack $ship_type "'s "  " entered sector."
 
 	##############################################################
@@ -78,24 +116,59 @@ return
 	
 			setVar $quasar_damage ($ship~shipList[$i][5]+$ship~shipList[$i][1]+10000)
 
-			setVar $percentToSet (((3*$quasar_damage)*100)/$PLANET~PLANET_FUEL)
-			if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $quasar_damage)
-				add $percentToSet 1
-			end
-			if ($percentToSet > 100)
-				setVar $percentToSet 100
+			if ($auto)
+
+				setVar $percentToSet (((3*$quasar_damage)*100)/$PLANET~PLANET_FUEL)
+				if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $quasar_damage)
+					add $percentToSet 1
+				end
+				if ($percentToSet > 100)
+					setVar $percentToSet 100
+				end
+
+				###############################################################
+				# don't bother setting if percentage is the same as last time #
+				###############################################################
+
+				if ($last_percentage <> $percentToSet)
+					setvar $last_percentage $percentToSet
+					send "l s "&$percentToSet&"* "
+				end
+				setvar $cannon_damage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3)
+				setvar $switchboard~message "Sector cannon set to "&$cannon_damage&" damage.*"
 			end
 
-			###############################################################
-			# don't bother setting if percentage is the same as last time #
-			###############################################################
-
-			if ($last_percentage <> $percentToSet)
-				setvar $last_percentage $percentToSet
-				send "l s "&$percentToSet&"* "
+			#######################################################
+			# always set atmos cannon for defense against landers #
+			#######################################################
+			if ($game~mbbs)
+				setVar $atmos_percentToSet ((($quasar_damage/2)*100)/$planet~PLANET_FUEL)
+				if (((($planet~PLANET_FUEL * $atmos_percentToSet) / 100)*2) < $cannonDamage)
+					add $atmos_percentToSet 1
+				end
+			else
+				setVar $atmos_percentToSet (((2*$quasar_damage)*100)/$planet~PLANET_FUEL)
+				if (((($planet~PLANET_FUEL * $atmos_percentToSet) / 100)/2) < $cannonDamage)
+					add $atmos_percentToSet 1
+				end
 			end
-			setvar $cannon_damage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3)
-			setvar $switchboard~message "Sector cannon set to "&$cannon_damage&" damage.*"
+			############################################################
+			# No point using all the fuel if it won't kill them anyway #
+			############################################################
+			if ($atmos_percentToSet > 100)
+				setVar $atmos_percentToSet 1
+			end
+			if ($last_atmos_percentage <> $atmos_percentToSet)
+				setvar $last_atmos_percentage $atmos_percentToSet
+				send "l a "&$atmos_percentToSet&"* "
+			end
+
+			if ($game~mbbs)
+				setvar $cannon_damage ((($planet~planet_FUEL * $atmos_percentToSet) / 100)*2)
+			else
+				setvar $cannon_damage ((($planet~planet_FUEL * $atmos_percentToSet) / 100)/2)             
+			end
+			setvar $switchboard~message $switchboard~message&"Atmos cannon set to "&$cannon_damage&" damage.*"
 			gosub :switchboard~switchboard
 			return
 		end
@@ -108,12 +181,19 @@ return
 :doHoloKill
 	gosub :player~quikstats
 	setvar $before_holo_kill_sector $player~current_sector
+	if ($switch)
+		setvar $combat~switch true
+		setvar $SHIP~SHIP_MAX_ATTACK $switch_ship_max_attack
+		setvar $SHIP~SHIP_OFFENSIVE_ODDS $switch_ship_offensive_odds
+	else
+		setvar $combat~switch false
+	end
 	if ($capture)
 		gosub :combat~holocap		
 	else
 		gosub :combat~holokill
 	end
-	if ($player~current_sector <> $before_holo_kill_sector)
+	if (($player~current_sector <> $before_holo_kill_sector) and ($player~current_prompt <> "Citadel"))
 		setVar $PLAYER~WARPTO $before_holo_kill_sector
 		gosub :PLAYER~twarp
 		if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
@@ -123,11 +203,15 @@ return
 			#########################################
 			# Something has gone wrong, call saveme #
 			#########################################
-			gosub :callsaveme
-			halt
+			gosub :navigate~call
 		else 
 			gosub :switchboard~switchboard
 			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+		end
+	else
+		if ($switch)
+			setvar $ship~SHIP_MAX_ATTACK $call~starting_ship_max_attack
+			setvar $ship~SHIP_OFFENSIVE_ODDS $call~starting_ship_offensive_odds 
 		end
 	end
 return
@@ -137,11 +221,3 @@ return
 	killalltriggers
 return
 
-:callsaveme
-	if ($capture)
-		setvar $call~capture true
-	else
-		setvar $call~kill true
-	end
-	gosub :call~run
-return
