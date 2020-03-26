@@ -33,13 +33,12 @@
 			setVar $figowner SECTOR.FIGS.OWNER[$test_sector]
 			if (($test_sector <> $MAP~stardock) AND ($test_sector > 10) AND ($safePlanets = TRUE) and ((SECTOR.FIGS.QUANTITY[$test_sector] < ($too_many_fighters*2)) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
 				setVar $killsector $test_sector
-				goto :holo_kill_killem
 			else
 				setVar $SWITCHBOARD~message "Cannot holokill - check for planets or too many figs?*"
 				return
 			end
-
-			setvar $title "Holokill"
+			
+			setvar $title "Auto Holokill"
 			if ($noavoid <> true)
 				send "'{" $SWITCHBOARD~bot_name "} - " $title " - Attacking sector "  $test_sector " -> (" $sector~enemy_name ").*   c v 0 * y n "  $test_sector  " *  q  "
 			end
