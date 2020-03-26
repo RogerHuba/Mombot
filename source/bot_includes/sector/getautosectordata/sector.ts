@@ -80,6 +80,7 @@
 						echo "*" $player~traders[$c] " is fed safe and we cannot attack in fedspace*"
 					elseif (($PLAYER~targetingShip <> false) and ($player~traders[$c][3] <> true))
 					else
+						echo "*Fighters on " $player~traders[$c] "'s ship:" $player~traders[$c][4] "*"
 						setvar $enemy_fighters $player~traders[$c][4]
 						if ($player~fighters > $enemy_fighters)
 							setvar $enemy_name $player~traders[$c]
