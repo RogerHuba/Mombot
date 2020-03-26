@@ -74,6 +74,7 @@
 				while (($c <= $realTraderCount) AND ($player~isFound = FALSE))
 					if (($player~traders[$c][1]) = ($player~CORP))
 					elseif (($player~fedspace = true) AND ($player~traders[$c][2] = TRUE))
+						echo "*" $player~traders[$c] " is fed safe and we cannot attack in fedspace*"
 					elseif (($PLAYER~targetingShip <> false) and ($player~traders[$c][3] <> true))
 					else
 						setvar $enemy_fighters $player~traders[$c][4]
