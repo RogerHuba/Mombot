@@ -89,10 +89,10 @@
 					add $c 1
 				end
 				if ($player~isFound)
-					if ($s = $adjcount)
-						setvar $sectortargetfound true
+					if (($adjcount = 1) or ($s = $adjcount))
+						#setvar $sectortargetfound true
 					else
-						setvar $holotargetfound true
+						#setvar $holotargetfound true
 					end
 					goto :done_scanning
 				end
