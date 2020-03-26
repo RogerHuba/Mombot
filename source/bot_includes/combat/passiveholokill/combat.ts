@@ -9,7 +9,7 @@
 	setvar $too_many_fighters (($ship~SHIP_OFFENSIVE_ODDS * $SHIP~SHIP_MAX_ATTACK))
 	divide $too_many_fighters 12
 
-		setVar $hkill_start_sector $player~current_sector
+		setVar $hkill_start_sector $sector~starting_sector
 		setVar $killsector 0
 			setVar $test_sector $sector~targetSector
 			setVar $safePlanets TRUE
