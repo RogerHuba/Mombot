@@ -17,7 +17,7 @@
 			setVar $j 1
 			setVar $isFound FALSE
 			#only check for fed safe if you are in fed sector
-			if (($player~current_sector <= 10) or ($player~current_sector = STARDOCK))
+			if (($player~current_sector <= 10) or ($player~current_sector = $map~stardock) or ($player~current_sector = stardock))
 				while (($j < $player~ranksLength) AND ($isFound = FALSE))
 					getWordPos $temp $pos $player~ranks[$j]    
 					if ($pos > 0)
