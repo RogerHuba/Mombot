@@ -54,6 +54,7 @@
 			setvar $sectorData $adjacent[$s]
 			setvar $targetSector $adjacent_sector[$s]
 			if (($sectorData <> "") and ($sectorData <> "0"))
+				echo "* " $sectorData " *"
 				getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 				if ($beaconPos > 0)
 					setVar $containsBeacon TRUE
