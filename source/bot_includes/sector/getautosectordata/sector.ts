@@ -84,14 +84,11 @@
 					add $c 1
 				end
 				if ($player~isFound)
-					echo "*[if found = true " $targetSector "]*"
-				end
-				if ($s = $adjcount)
-					setvar $sectortargetfound true
-				else
-					setvar $holotargetfound true
-				end
-				if ($player~isFound)
+					if ($s = $adjcount)
+						setvar $sectortargetfound true
+					else
+						setvar $holotargetfound true
+					end
 					goto :done_scanning
 				end
 			end
