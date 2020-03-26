@@ -31,7 +31,6 @@
 		if ($pos > 0)
 			getText $line $tempSector "Sector  [33m: [36m" " [0;32min" 
 			setvar $player~current_sector $tempSector
-			setVar $sectorData $line
 		end
 		getWordPos $line $pos "Warps to Sector(s) "
 		if ($pos > 0)

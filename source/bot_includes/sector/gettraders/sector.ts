@@ -40,7 +40,6 @@
 			getWordPos $temp $pos3 #27&"[0m      "&#27&"[32m     in "&#27
 			#echo "*["&$temp&"]"&$pos3&"*"
 			if (($pos > 0) AND ($pos2 <= 0))
-				send "'adding real trader*"
 				getWordPos $temp $pos "[[1;36m"
 				if ($pos > 0)
 					getText $temp $tempCorp "[[1;36m" "[0;34m]"

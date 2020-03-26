@@ -23,7 +23,7 @@
 			getText $line $tempSector "Sector  [33m: [36m" " [0;32min" 
 			setvar $player~current_sector $tempSector
 			add $adjcount 1
-			setvar $adjacent[$adjcount] $sectorData
+			setvar $adjacent[$adjcount] $sectorData&"[0m[1;32mWarps to Sector(s) "
 			setvar $adjacent_sector[$adjcount] $tempSector
 			setVar $sectorData $line
 		end
@@ -54,7 +54,6 @@
 			setvar $sectorData $adjacent[$s]
 			setvar $targetSector $adjacent_sector[$s]
 			if (($sectorData <> "") and ($sectorData <> "0"))
-				echo "* " $sectorData " *"
 				getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 				if ($beaconPos > 0)
 					setVar $containsBeacon TRUE
