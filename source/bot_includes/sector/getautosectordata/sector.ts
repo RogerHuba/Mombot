@@ -73,14 +73,15 @@
 				goSub :getFakeTraders
 				setVar $c 1
 				setvar $player~isFound false
-				echo "*Number of real traders: " $realTraderCount " in sector " $player~current_sector "*"
+				#echo "*Number of real traders: " $realTraderCount " in sector " $player~current_sector "*"
 				while (($c <= $realTraderCount) AND ($player~isFound = FALSE))
 					if (($player~traders[$c][1]) = ($player~CORP))
+						#ignore
 					elseif (((($player~current_sector <= 10) or ($player~current_sector = $map~stardock) or ($player~current_sector = stardock))) AND ($player~traders[$c][2] = TRUE))
-						echo "*" $player~traders[$c] " is fed safe and we cannot attack in fedspace*"
+						#ignore
 					elseif (($PLAYER~targetingShip <> false) and ($player~traders[$c][3] <> true))
+						#ignore
 					else
-						echo "*Fighters on " $player~traders[$c] "'s ship:" $player~traders[$c][4] "*"
 						setvar $enemy_fighters $player~traders[$c][4]
 						if ($player~fighters > $enemy_fighters)
 							setvar $enemy_name $player~traders[$c]
