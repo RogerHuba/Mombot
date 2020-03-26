@@ -64,6 +64,7 @@
 				goSub :getEmptyShips
 				goSub :getFakeTraders
 				if ($realTraderCount > $corpieCount)
+					echo "*[found traders in sector " $targetSector "]*"
 					setVar $c 1
 					setvar $player~isFound false
 					while (($c <= $realTraderCount) AND ($player~isFound = FALSE))
@@ -78,7 +79,9 @@
 						end
 						add $c 1
 					end
-
+					if ($player~isFound)
+						echo "*[if found = true " $targetSector "]*"
+					end
 					if ($s = 7)
 						setvar $sectortargetfound true
 					else
