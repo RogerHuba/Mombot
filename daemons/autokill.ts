@@ -42,12 +42,12 @@
 	end
 	goSub :SECTOR~getAutoSectorData
 	if ($sector~sectortargetfound)
-		goSub :combat~fastAttack
+		#goSub :combat~fastAttack
 	elseif ($sector~holotargetfound)
-		goSub :combat~passiveHolokill
+		#goSub :combat~passiveHolokill
 	end
 	
-
+	gosub :player~quikstats
 	if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
 		if ($player~isFound)
 			load "scripts\mombot\commands\general\refurb.cts"

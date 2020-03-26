@@ -34,6 +34,8 @@
 		end
 		getWordPos $line $pos "Warps to Sector(s) "
 		if ($pos > 0)
+			setvar $adjacent[$adjcount] $sectorData
+			setvar $adjacent_sector[$adjcount] $tempSector
 			goto :gotAutoSectorData
 		else
 			setTextLineTrigger getLine :auto_sectorsline_cit_kill
@@ -90,9 +92,9 @@
 				end
 				if ($player~isFound)
 					if (($adjcount = 1) or ($s = $adjcount))
-						#setvar $sectortargetfound true
+						setvar $sectortargetfound true
 					else
-						#setvar $holotargetfound true
+						setvar $holotargetfound true
 					end
 					goto :done_scanning
 				end
