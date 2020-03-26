@@ -40,8 +40,14 @@
 	if ($player~fighters = 0)
 		gosub :player~quikstats
 	end
-	goSub :SECTOR~getSectorData
-	goSub :combat~fastAttack
+	goSub :SECTOR~getAutoSectorData
+	if ($sector~sectortargetfound)
+		goSub :combat~fastAttack
+	elseif ($sector~holotargetfound)
+		goSub :combat~passiveHolokill
+	end
+	
+
 	if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
 		if ($player~isFound)
 			load "scripts\mombot\commands\general\refurb.cts"
@@ -81,7 +87,7 @@ include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\ship\getshipstats\ship"
-include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\sector\getautosectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
