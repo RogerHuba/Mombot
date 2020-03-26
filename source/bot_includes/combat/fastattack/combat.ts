@@ -48,10 +48,10 @@
 			add $c 1
 		end
 	else
-		if ($sector~passive <> true)
+		#if ($sector~passive <> true)
 			setvar $switchboard~message "*You have no targets.*" 
 			gosub :bot~echo
-		end
+		#end
 		goto :stoppingPoint
 	end
 	if ($player~isFound = TRUE)
@@ -84,10 +84,10 @@
 			end
 		end
 	else
-		if ($sector~passive <> true)
+		#if ($sector~passive <> true)
 			setvar $switchboard~message "*You have no valid targets.*" 
 			gosub :bot~echo
-		end
+		#end
 		goto :stoppingPoint
 	end
 	if (($sector~passive = true) and ($starting_fighters < $enemy_fighters))
