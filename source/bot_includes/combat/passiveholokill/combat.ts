@@ -38,7 +38,7 @@
 
 			setvar $title "Holokill"
 			if ($noavoid <> true)
-				send "'{" $SWITCHBOARD~bot_name "} - " $title " - Attacking sector "  $test_sector " -> (" $enemy_name ").*   c v 0 * y n "  $test_sector  " *  q  "
+				send "'{" $SWITCHBOARD~bot_name "} - " $title " - Attacking sector "  $test_sector " -> (" $sector~enemy_name ").*   c v 0 * y n "  $test_sector  " *  q  "
 			end
 			send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  f  z  1  *  z  c  d  *   "
 			if ($player~surround_before_hkill = TRUE)
@@ -56,7 +56,7 @@
 			if ($holocapture)
 				gosub :fastCapture
 			else
-				#goSub :fastAttack
+				goSub :fastAttack
 			end		
 			send "m "  $hkill_start_sector  " *  *  z  a  99999  *  z  a  99999  *  R  *   "
 			gosub :player~quikstats
