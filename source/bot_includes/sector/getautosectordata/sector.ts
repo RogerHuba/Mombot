@@ -86,6 +86,7 @@
 						setvar $enemy_fighters $player~traders[$c][4]
 						if ($player~fighters > $enemy_fighters)
 							setvar $enemy_name $player~traders[$c]
+							echo "*found " $enemy_name "*"
 							setVar $player~isFound TRUE
 						else
 							echo "*Too many fighters on " $player~traders[$c] "'s ship to attack.*"
