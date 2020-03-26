@@ -37,23 +37,18 @@
 				setVar $SWITCHBOARD~message "Cannot holokill - check for planets or too many figs?*"
 				return
 			end
-			
-			setvar $title "Auto Holokill"
-			if ($noavoid <> true)
-				send "'{" $SWITCHBOARD~bot_name "} - " $title " - Attacking sector "  $test_sector " -> (" $sector~enemy_name ").*   c v 0 * y n "  $test_sector  " *  q  "
-			end
-			send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  * "
+			send "c v 0 * y n "  $test_sector  " *  q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  * "
 			if ($player~surround_before_hkill = TRUE)
 				gosub :player~quikstats
 				gosub :grid~surround
 				setVar $insurround_before_hkill FALSE
 				gosub :player~quikstats
 			end
-			gosub  :player~quikstats
-			if ($player~current_prompt <> "Command")
-				setVar $SWITCHBOARD~message "Wrong prompt for holokill kill.*"
-				return
-			end
+			#gosub  :player~quikstats
+			#if ($player~current_prompt <> "Command")
+			#	setVar $SWITCHBOARD~message "Wrong prompt for holokill kill.*"
+			#	return
+			#end
 			setvar $PLAYER~startingLocation "Command"
 			if ($holocapture)
 				gosub :fastCapture
@@ -71,7 +66,8 @@
 				gosub :player~quikstats
 				setVar $SWITCHBOARD~message "After save me, resetting.*"
 			else
-				setVar $SWITCHBOARD~message "Attack made and back in original sector!*"
+				setvar $switchboard~message "Auto holokill attacked "&$sector~enemy_name&" in sector "&$test_sector&".*"
+				setVar $SWITCHBOARD~message $switchboard~message&"Attack made and back in original sector!*"
 			end
 	return
 
