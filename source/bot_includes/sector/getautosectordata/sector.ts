@@ -23,7 +23,7 @@
 			getText $line $tempSector "Sector  [33m: [36m" " [0;32min" 
 			setvar $player~current_sector $tempSector
 			add $adjcount 1
-			setvar $adjacent[$adjcount] $sectorData&"[0m[1;32mWarps to Sector(s) "
+			setvar $adjacent[$adjcount] $sectorData&$STARTLINE&"[0m[1;32mWarps to Sector(s) "&$ENDLINE
 			setvar $adjacent_sector[$adjcount] $tempSector
 			setVar $sectorData $line
 		end
