@@ -58,6 +58,8 @@
 		savevar $ship_max_attack
 		pause
 	:shiptransportrange
+		getText CURRENTLINE $SHIP_MAX_HOLDS "Maximum Holds:" "Transport Range:"
+		stripText $SHIP_MAX_HOLDS " "
 		getText CURRENTLINE $SHIP_XPORT_RANGE "Transport Range:" "Photon Missiles:"
 		stripText $SHIP_XPORT_RANGE " "
 
