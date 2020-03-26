@@ -14,8 +14,8 @@
 	killalltriggers
 	:startover
 	setVar $sectorData ""
+	setvar $first true
 	:auto_sectorsline_cit_kill
-		setvar $first true
 		setVar $line CURRENTANSILINE
 		setVar $line $STARTLINE&$line&$ENDLINE
 		setVar $sectorData $sectorData&$line
