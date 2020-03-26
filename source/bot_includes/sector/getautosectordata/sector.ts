@@ -65,10 +65,10 @@
 				else
 					setVar $containsBeacon FALSE
 				end
+				setvar $player~current_sector $targetSector
 				goSub :getTraders
 				goSub :getEmptyShips
 				goSub :getFakeTraders
-				echo "*[Real trader count " $realTraderCount "]*"
 				setVar $c 1
 				setvar $player~isFound false
 				while (($c <= $realTraderCount) AND ($player~isFound = FALSE))
