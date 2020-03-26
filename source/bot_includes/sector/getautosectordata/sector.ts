@@ -8,24 +8,29 @@
 	
 	setarray $adjacent 7
 	setarray $adjacent_sector 7
-	setvar $adjcount 0
+	setvar $adjcount 1
 
 	
 	killalltriggers
 	:startover
 	setVar $sectorData ""
 	:auto_sectorsline_cit_kill
+		setvar $first true
 		setVar $line CURRENTANSILINE
 		setVar $line $STARTLINE&$line&$ENDLINE
 		setVar $sectorData $sectorData&$line
 		getWordPos $line $pos "Sector  [33m: "
 		if ($pos > 0)
-			getText $line $tempSector "Sector  [33m: [36m" " [0;32min" 
-			setvar $player~current_sector $tempSector
-			add $adjcount 1
-			setvar $adjacent[$adjcount] $sectorData&$STARTLINE&"[0m[1;32mWarps to Sector(s) "&$ENDLINE
-			setvar $adjacent_sector[$adjcount] $tempSector
-			setVar $sectorData $line
+			if ($first)
+				setvar $first false				
+				getText $line $tempSector "Sector  [33m: [36m" " [0;32min" 
+			else
+				setvar $adjacent[$adjcount] $sectorData&$STARTLINE&"[0m[1;32mWarps to Sector(s) "&$ENDLINE
+				setvar $adjacent_sector[$adjcount] $tempSector
+				add $adjcount 1
+				getText $line $tempSector "Sector  [33m: [36m" " [0;32min" 
+				setVar $sectorData $line				
+			end
 		end
 		getWordPos $line $pos "Warps to Sector(s) "
 		if ($pos > 0)
