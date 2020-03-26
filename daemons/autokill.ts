@@ -43,22 +43,22 @@
 	goSub :SECTOR~getAutoSectorData
 	if ($sector~sectortargetfound)
 		goSub :combat~fastAttack
+		gosub :player~quikstats
+		if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
+			if ($player~isFound)
+				load "scripts\mombot\commands\general\refurb.cts"
+				setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
+				pause
+				:refurbended
+				setvar $sector~passive false
+				goSub :SECTOR~getSectorData
+				goSub :combat~fastAttack
+			end
+		end
 	elseif ($sector~holotargetfound)
 		goSub :combat~passiveHolokill
 	end
 	
-	gosub :player~quikstats
-	if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
-		if ($player~isFound)
-			load "scripts\mombot\commands\general\refurb.cts"
-			setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
-			pause
-			:refurbended
-			setvar $sector~passive false
-			goSub :SECTOR~getSectorData
-			goSub :combat~fastAttack
-		end
-	end
 	goto :again
 
 
