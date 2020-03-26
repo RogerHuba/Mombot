@@ -58,7 +58,11 @@
 			else
 				goSub :fastAttack
 			end		
-			send "  f  z  1  *  z  c  d  *   m "  $hkill_start_sector  " *  *  z  a  99999  *  z  a  99999  *  R  *   "
+			if (($hkill_start_sector <= 10) or ($hkill_start_sector = $map~stardock) or ($hkill_start_sector = stardock))
+				send "  f  z  1  *  z  c  d  *   m "  $hkill_start_sector  " *   "
+			else
+				send "  f  z  1  *  z  c  d  *   m "  $hkill_start_sector  " *  *  z  a  99999  *  z  a  99999  *  R  *   "
+			end
 			gosub :player~quikstats
 			if ($player~current_sector <> $hkill_start_sector)
 				gosub :callsaveme
