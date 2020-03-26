@@ -48,7 +48,7 @@
 		killtrigger mines
 
 		setvar $s 7
-		while ($s <= $adjcount)
+		while ($s > 0)
 			setvar $holotargetfound false
 			setvar $sectortargetfound false
 			setvar $sectorData $adjacent[$s]
