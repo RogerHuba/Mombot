@@ -78,6 +78,7 @@
 					else
 						setvar $enemy_fighters $player~traders[$c][4]
 						if ($player~fighters > $enemy_fighters)
+							setvar $enemy_name $player~traders[$c]
 							setVar $player~isFound TRUE
 						end
 					end
