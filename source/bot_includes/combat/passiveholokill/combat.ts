@@ -56,7 +56,7 @@
 			if ($holocapture)
 				gosub :fastCapture
 			else
-				goSub :fastAttack
+				#goSub :fastAttack
 			end		
 			send "m "  $hkill_start_sector  " *  *  z  a  99999  *  z  a  99999  *  R  *   "
 			gosub :player~quikstats
