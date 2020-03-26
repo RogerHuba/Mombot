@@ -14,6 +14,9 @@
 	loadVar $SHIP~SHIP_MAX_ATTACK
 	loadVar $SHIP~SHIP_FIGHTERS_MAX
 	loadVar $SHIP~SHIP_OFFENSIVE_ODDS
+	loadvar $player~surroundAvoidAllPlanets
+	loadvar $player~surroundAvoidShieldedOnly
+	
 	if ($SHIP~SHIP_MAX_ATTACK <= 0)
 		gosub :SHIP~getShipStats
 	end
