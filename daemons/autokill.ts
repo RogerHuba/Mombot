@@ -14,6 +14,9 @@
 	loadVar $SHIP~SHIP_MAX_ATTACK
 	loadVar $SHIP~SHIP_FIGHTERS_MAX
 	loadVar $SHIP~SHIP_OFFENSIVE_ODDS
+	loadvar $player~surroundAvoidAllPlanets
+	loadvar $player~surroundAvoidShieldedOnly
+	
 	if ($SHIP~SHIP_MAX_ATTACK <= 0)
 		gosub :SHIP~getShipStats
 	end
@@ -43,22 +46,23 @@
 	goSub :SECTOR~getAutoSectorData
 	if ($sector~sectortargetfound)
 		goSub :combat~fastAttack
+		gosub :player~quikstats
+		if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
+			if ($player~isFound)
+				load "scripts\mombot\commands\general\refurb.cts"
+				setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
+				pause
+				:refurbended
+				setvar $sector~passive false
+				goSub :SECTOR~getSectorData
+				goSub :combat~fastAttack
+			end
+		end
 	elseif ($sector~holotargetfound)
 		goSub :combat~passiveHolokill
+		gosub :switchboard~switchboard
 	end
 	
-
-	if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
-		if ($player~isFound)
-			load "scripts\mombot\commands\general\refurb.cts"
-			setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
-			pause
-			:refurbended
-			setvar $sector~passive false
-			goSub :SECTOR~getSectorData
-			goSub :combat~fastAttack
-		end
-	end
 	goto :again
 
 
@@ -88,6 +92,7 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\sector\getautosectordata\sector"
+include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastattack\combat"
 include "source\bot_includes\combat\passiveHolokill\combat"

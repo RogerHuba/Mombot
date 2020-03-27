@@ -581,9 +581,16 @@
 		end
 		gosub :waitbeforecheck
 		loadGlobal $bot~last_hit
-		if ($photon~sector <> $bot~last_hit)
+		echo "*[" $bot~last_hit  "][" $photon~sector "]*"
+		if (($photon~sector <> $bot~last_hit) and ($bot~last_hit <> 0) and ($player~current_sector <> $bot~last_hit))
 			setvar $photon~sector $bot~last_hit
 			goto :check_to_fire_photon
+		end
+		if ($player~current_sector = $bot~last_hit)
+			gosub :killing~scan_for_targets
+			if ($killing~error = true)
+				goto :head_home
+			end			
 		end
 		#############################################
 		# holoscan sector to see if victim is there #

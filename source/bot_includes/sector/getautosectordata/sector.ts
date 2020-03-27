@@ -34,30 +34,32 @@
 		end
 		getWordPos $line $pos "Warps to Sector(s) "
 		if ($pos > 0)
+			setvar $adjacent[$adjcount] $sectorData
+			setvar $adjacent_sector[$adjcount] $tempSector
 			goto :gotAutoSectorData
 		else
 			setTextLineTrigger getLine :auto_sectorsline_cit_kill
 		end
 		pause
 	:gotAutoSectorData
-		settexttrigger nomines :nomines "Citadel command (?=help)" 
-		settexttrigger nomines2 :nomines "Command ["
-		settexttrigger mines :mines "Mined Sector: Do you wish to Avoid this sector in the future? (Y/N)"
+		settexttrigger nomines :nominesauto "Citadel command (?=help)" 
+		settexttrigger nomines2 :nominesauto "Command ["
+		settexttrigger mines :minesauto "Mined Sector: Do you wish to Avoid this sector in the future? (Y/N)"
 		pause
 
-		:mines
+		:minesauto
 		send "* "
-		:nomines
+		:nominesauto
 		killtrigger nomines
 		killtrigger nomines2
 		killtrigger mines
 
-		setvar $s $adjcount
-		while ($s > 0)
+		setvar $sindex $adjcount
+		while ($sindex > 0)
 			setvar $holotargetfound false
 			setvar $sectortargetfound false
-			setvar $sectorData $adjacent[$s]
-			setvar $targetSector $adjacent_sector[$s]
+			setvar $sectorData $adjacent[$sindex]
+			setvar $targetSector $adjacent_sector[$sindex]
 			if (($sectorData <> "") and ($sectorData <> "0"))
 				getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 				if ($beaconPos > 0)
@@ -66,25 +68,35 @@
 					setVar $containsBeacon FALSE
 				end
 				setvar $player~current_sector $targetSector
+				if ($sindex = $adjcount)
+					setvar $starting_sector $targetSector
+				end
 				goSub :getTraders
 				goSub :getEmptyShips
 				goSub :getFakeTraders
 				setVar $c 1
 				setvar $player~isFound false
+				#echo "*Number of real traders: " $realTraderCount " in sector " $player~current_sector "*"
 				while (($c <= $realTraderCount) AND ($player~isFound = FALSE))
 					if (($player~traders[$c][1]) = ($player~CORP))
-					elseif (($player~fedspace = true) AND ($player~traders[$c][2] = TRUE))
+						#ignore
+					elseif (((($player~current_sector <= 10) or ($player~current_sector = $map~stardock) or ($player~current_sector = stardock))) AND ($player~traders[$c][2] = TRUE))
+						#ignore
 					elseif (($PLAYER~targetingShip <> false) and ($player~traders[$c][3] <> true))
+						#ignore
 					else
 						setvar $enemy_fighters $player~traders[$c][4]
 						if ($player~fighters > $enemy_fighters)
+							setvar $enemy_name $player~traders[$c]
 							setVar $player~isFound TRUE
+						else
+							echo "*Too many fighters on " $player~traders[$c] "'s ship to attack.*"
 						end
 					end
 					add $c 1
 				end
 				if ($player~isFound)
-					if ($s = $adjcount)
+					if (($adjcount = 1) or ($sindex = $adjcount))
 						setvar $sectortargetfound true
 					else
 						setvar $holotargetfound true
@@ -92,7 +104,8 @@
 					goto :done_scanning
 				end
 			end
-			subtract $s 1
+			subtract $sindex 1
+
 		end
 		:done_scanning
 return

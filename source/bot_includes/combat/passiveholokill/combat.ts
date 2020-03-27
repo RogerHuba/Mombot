@@ -9,7 +9,7 @@
 	setvar $too_many_fighters (($ship~SHIP_OFFENSIVE_ODDS * $SHIP~SHIP_MAX_ATTACK))
 	divide $too_many_fighters 12
 
-		setVar $hkill_start_sector $player~current_sector
+		setVar $hkill_start_sector $sector~starting_sector
 		setVar $killsector 0
 			setVar $test_sector $sector~targetSector
 			setVar $safePlanets TRUE
@@ -31,41 +31,43 @@
 				end
 			end
 			setVar $figowner SECTOR.FIGS.OWNER[$test_sector]
-			if (($test_sector <> $MAP~stardock) AND ($test_sector > 10) AND (SECTOR.TRADERCOUNT[$test_sector] > 0) AND ($containsEnemyTrader = TRUE) AND ($safePlanets = TRUE) and ((SECTOR.FIGS.QUANTITY[$test_sector] < ($too_many_fighters*2)) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
+			if (($test_sector <> $MAP~stardock) AND ($test_sector > 10) AND ($safePlanets = TRUE) and ((SECTOR.FIGS.QUANTITY[$test_sector] < ($too_many_fighters*2)) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
 				setVar $killsector $test_sector
-				goto :holo_kill_killem
+			else
+				setVar $SWITCHBOARD~message "Cannot holokill - check for planets or too many figs?*"
+				return
 			end
-
-			setvar $title "Holokill"
-			if ($noavoid <> true)
-				send "'{" $SWITCHBOARD~bot_name "} - " $title " - Attacking sector "  $test_sector  ".*   c v 0 * y n "  $test_sector  " *  q  "
-			end
-			send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  f  z  1  *  z  c  d  *   "
+			send "c v 0 * y n "  $test_sector  " *  q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  * "
 			if ($player~surround_before_hkill = TRUE)
 				gosub :player~quikstats
 				gosub :grid~surround
 				setVar $insurround_before_hkill FALSE
 				gosub :player~quikstats
 			end
-			gosub  :player~quikstats
-			if ($player~current_prompt <> "Command")
-				setVar $SWITCHBOARD~message "Wrong prompt for holokill kill.*"
-				return
-			end
+			#gosub  :player~quikstats
+			#if ($player~current_prompt <> "Command")
+			#	setVar $SWITCHBOARD~message "Wrong prompt for holokill kill.*"
+			#	return
+			#end
 			setvar $PLAYER~startingLocation "Command"
 			if ($holocapture)
 				gosub :fastCapture
 			else
 				goSub :fastAttack
 			end		
-			send "m "  $hkill_start_sector  " *  *  z  a  99999  *  z  a  99999  *  R  *   "
+			if (($hkill_start_sector <= 10) or ($hkill_start_sector = $map~stardock) or ($hkill_start_sector = stardock))
+				send "  f  z  1  *  z  c  d  *   m "  $hkill_start_sector  " *   "
+			else
+				send "  f  z  1  *  z  c  d  *   m "  $hkill_start_sector  " *  *  z  a  99999  *  z  a  99999  *  R  *   "
+			end
 			gosub :player~quikstats
 			if ($player~current_sector <> $hkill_start_sector)
 				gosub :callsaveme
 				gosub :player~quikstats
 				setVar $SWITCHBOARD~message "After save me, resetting.*"
 			else
-				setVar $SWITCHBOARD~message "Attack made and back in original sector!*"
+				setvar $switchboard~message "Auto holokill attacked "&$sector~enemy_name&" in sector "&$test_sector&".*"
+				setVar $SWITCHBOARD~message $switchboard~message&"Attack made and back in original sector!*"
 			end
 	return
 
