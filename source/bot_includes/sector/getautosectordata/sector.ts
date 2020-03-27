@@ -19,10 +19,8 @@
 		setVar $line CURRENTANSILINE
 		setVar $line $STARTLINE&$line&$ENDLINE
 		setVar $sectorData $sectorData&$line
-		echo "*[" $sectorData  "]*"
 		getWordPos $line $pos "Sector  [33m: "
 		if ($pos > 0)
-			echo "*inside sector*"
 			if ($first)
 				setvar $first false				
 				getText $line $tempSector "Sector  [33m: [36m" " [0;32min" 
@@ -38,21 +36,20 @@
 		if ($pos > 0)
 			setvar $adjacent[$adjcount] $sectorData
 			setvar $adjacent_sector[$adjcount] $tempSector
-			echo "*DONE WITH AUTO SECTOR DATA*"
 			goto :gotAutoSectorData
 		else
 			setTextLineTrigger getLine :auto_sectorsline_cit_kill
 		end
 		pause
 	:gotAutoSectorData
-		settexttrigger nomines :nomines "Citadel command (?=help)" 
-		settexttrigger nomines2 :nomines "Command ["
-		settexttrigger mines :mines "Mined Sector: Do you wish to Avoid this sector in the future? (Y/N)"
+		settexttrigger nomines :nominesauto "Citadel command (?=help)" 
+		settexttrigger nomines2 :nominesauto "Command ["
+		settexttrigger mines :minesauto "Mined Sector: Do you wish to Avoid this sector in the future? (Y/N)"
 		pause
 
-		:mines
+		:minesauto
 		send "* "
-		:nomines
+		:nominesauto
 		killtrigger nomines
 		killtrigger nomines2
 		killtrigger mines
