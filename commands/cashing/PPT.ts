@@ -29,7 +29,7 @@ gosub :BOT~loadVars
 	setVar $BOT~help[12] $BOT~tab&"                   - Defaults to 30% (p:30)"
 	setVar $BOT~help[13] $BOT~tab&"    {k:x}         k:5 - Keep this many holds of equipment at end of run. "
 	setVar $BOT~help[14] $BOT~tab&"                   Used so we can test port MCICs as we travel."
-	setVar $BOT~help[15] $BOT~tab&"    ore:x          Keep this amoutn of ore post trade."
+	setVar $BOT~help[15] $BOT~tab&"    ore:x          Keep this amount of ore to keep post trade."
 	setVar $BOT~help[16] $BOT~tab&"    twarp          Indicate we are PPTing between isolated ports."
 	
 	gosub :bot~helpfile
@@ -118,7 +118,7 @@ gosub :BOT~loadVars
 	end
 	
 	gosub :player~quikstats
-
+	
 	getWordPos $bot~user_command_line $pos "twarp"
 	if ($pos > 0)
 		setVar $twarp 1
@@ -414,18 +414,25 @@ gosub :BOT~loadVars
 	setVar $prod1 0
 	setVar $prod2 0
 	setVar $report 0
+	setVar $reportFuelCheck $player~ORE_HOLDS
 	setVar $port1Ok 1
 	setVar $port2Ok 1
 
 	if ($skip_first = 0)
 	# Trade first sector
+		# Skipore - if we buy ore, and re-trade, we don't want tobuy again
+		setVar $skipore 0
 		:firstTradeStart
 		goSub :portandtrade
 		if ($report)
 			setVar $report 0
+			goSub :checkReportFuel
 			goto :firstTradeStart
 		end
+		gosub :player~quikstats
 	end
+
+	
 	
 	# check we have a fig here
 	setVar $chkFtrSector $sec1.INDEX
@@ -444,14 +451,18 @@ gosub :BOT~loadVars
 	
 
 	while ($test = 1)
+		setVar $skipore 0
 		:loopTrade2
 		if (($finishore > 0) and (($port1Ok = 0) and ($port2Ok = 0)))
 			setVar $buyore $finishore
+			gosub :player~quikstats
+			setVar $reportFuelCheck $player~ORE_HOLDS
 		end
 
 		goSub :portandtrade
 		if ($report)
 			setVar $report 0
+			goSub :checkReportFuel
 			goto :loopTrade2
 		end
 		gosub :player~quikstats
@@ -475,13 +486,17 @@ gosub :BOT~loadVars
 		goSub :moveToSector
 
 		setVar $currentLocation 2
+		setVar $skipore 0
 		:loopTrade1
 		if (($finishore > 0) and (($port1Ok = 0) and ($port2Ok = 0)))
 			setVar $buyore $finishore
+			gosub :player~quikstats
+			setVar $reportFuelCheck $player~ORE_HOLDS
 		end
 		goSub :portandtrade
 		if ($report)
 			setVar $report 0
+			goSub :checkReportFuel
 			goto :loopTrade1
 		end
 		gosub :player~quikstats
@@ -523,7 +538,7 @@ halt
 		setVar $PLAYER~warpto $moveTo
 		gosub :PLAYER~twarp	
 		if ($PLAYER~twarpSuccess = FALSE)
-			setVar $SWITCHBOARD~message "Failed to TWARP to: " & $PLAYER~warpto &  " .*"
+			setVar $SWITCHBOARD~message "Failed to TWARP to: " & $PLAYER~warpto &  " - POTENIAL ISSUE!.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
@@ -588,9 +603,14 @@ return
 		killalltriggers
 		setVar $PLAYER~multiplier 95
 		setVar $tradeGood 4
-		if (($tradingType = 2) or ($twarp = 1) or ($buyore > 0))
+		# $skipore = 1 - means we traded it previously and we are retrading and need to skip
+		if ($skipore = 0)
+			if (($tradingType = 2) or ($twarp = 1) or ($buyore > 0))
 
-			gosub :doTrade
+				gosub :doTrade
+			else
+				gosub :noTrade
+			end
 		else
 			gosub :noTrade
 		end
@@ -780,7 +800,16 @@ return
 return
 
 
-
+:checkReportFuel
+	if ($buyore > 0)
+		gosub :player~quikstats
+echo "ReportFuelCheck: " $reportFuelCheck " $playerholds " $player~ORE_HOLDS " *"
+		if ($reportFuelCheck <> $player~ORE_HOLDS)
+			setVar $buyore 0
+			setVar $skipore 1
+		end
+	end
+return
 
 
 :chkFtr
@@ -1095,6 +1124,11 @@ return
 halt
 
 #INCLUDES:
-include "source\module_includes\bot"
-include "source\bot_includes\player"
-include "source\bot_includes\switchboard"
+
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\moveintosector\player"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\player\starthaggle\player"
