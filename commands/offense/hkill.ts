@@ -33,6 +33,7 @@
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\combat\holokill\combat"
 include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\module_includes\bot\checkstartingprompt\bot"
