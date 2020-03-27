@@ -55,6 +55,7 @@
 		killtrigger mines
 
 		setvar $sindex $adjcount
+		echo "*" $adjcount "*"
 		while ($sindex > 0)
 			setvar $holotargetfound false
 			setvar $sectortargetfound false
