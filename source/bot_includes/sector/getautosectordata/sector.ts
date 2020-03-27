@@ -37,6 +37,7 @@
 			setvar $adjacent[$adjcount] $sectorData
 			setvar $adjacent_sector[$adjcount] $tempSector
 			goto :gotAutoSectorData
+			echo "*DONE WITH AUTO SECTOR DATA*"
 		else
 			setTextLineTrigger getLine :auto_sectorsline_cit_kill
 		end
@@ -78,7 +79,7 @@
 				goSub :getFakeTraders
 				setVar $c 1
 				setvar $player~isFound false
-				#echo "*Number of real traders: " $realTraderCount " in sector " $player~current_sector "*"
+				echo "*Number of real traders: " $realTraderCount " in sector " $player~current_sector "*"
 				while (($c <= $realTraderCount) AND ($player~isFound = FALSE))
 					if (($player~traders[$c][1]) = ($player~CORP))
 						#ignore
