@@ -109,7 +109,7 @@
 				gosub :callsaveme
 				setVar $SWITCHBOARD~message "After save me, resetting.*"
 			else
-				setVar $SWITCHBOARD~message  $title&" - Attacking sector"&$test_sector&".*"
+				setVar $SWITCHBOARD~message  $title&" - Attacking sector "&$test_sector&".*"
 				setVar $SWITCHBOARD~message $SWITCHBOARD~message&"Attack made and back in original sector!*"
 			end
 		else
@@ -149,8 +149,8 @@
 				gosub :player~quikstats
 				setVar $SWITCHBOARD~message "After save me, resetting.*"
 			else
-				setVar $SWITCHBOARD~message  $title&" - Attacking sector"&$test_sector&".*"
-				setVar $SWITCHBOARD~message $SWITCHBOARD~message&"Attack made and back in original sector!*"
+				setvar $switchboard~message "Holokill attacked "&$sector~enemy_name&" in sector "&$test_sector&".*"
+				setVar $SWITCHBOARD~message $switchboard~message&"Attack made and back in original sector!*"
 			end
 
 		end
