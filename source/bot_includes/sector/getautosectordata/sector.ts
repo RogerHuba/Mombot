@@ -17,7 +17,6 @@
 	setvar $first true
 	:auto_sectorsline_cit_kill
 		setVar $line CURRENTANSILINE
-		echo "*" $line "*"
 		setVar $line $STARTLINE&$line&$ENDLINE
 		setVar $sectorData $sectorData&$line
 		getWordPos $line $pos "Sector  [33m: "
@@ -60,7 +59,7 @@
 			setvar $holotargetfound false
 			setvar $sectortargetfound false
 			setvar $sectorData $adjacent[$sindex]
-			echo "*" $sectorData "*"
+			echo "*[" $sectorData "]*"
 			setvar $targetSector $adjacent_sector[$sindex]
 			if (($sectorData <> "") and ($sectorData <> "0"))
 				getWordPos $sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
