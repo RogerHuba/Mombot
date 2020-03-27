@@ -20,14 +20,16 @@
 
 	setVar $BOT~help[1]  $BOT~tab&"   Looks for BXX ports with a MCIC above requested "
 	setVar $BOT~help[2]  $BOT~tab&"       "
-	setVar $BOT~help[3]  $BOT~tab&"   moolist [PROD] [MCIC] {port}"
+	setVar $BOT~help[3]  $BOT~tab&"   moolist [PROD] [MCIC] {port} {mark:param}"
 	setVar $BOT~help[4]  $BOT~tab&"       "
-	setVar $BOT~help[5]  $BOT~tab&"   [PROD] - f/o/e product to test against"
-	setVar $BOT~help[5]  $BOT~tab&"   [MCIC] - MCIC Min - Positive Value 65 NOT -65"
-	setVar $BOT~help[5]  $BOT~tab&"   {port} - BBB XXB - defaults primary product only"
-	setVar $BOT~help[5]  $BOT~tab&"    Must run FIGS, CIM, MSL and LISTAMTRAK first."
-	setVar $BOT~help[6]  $BOT~tab&"   This will then exclude sectors near MSL from being"
-	setVar $BOT~help[7]  $BOT~tab&"   on our XMas list. "
+	setVar $BOT~help[5]  $BOT~tab&"   [PROD]  - f/o/e product to test against"
+	setVar $BOT~help[5]  $BOT~tab&"   [MCIC]  - MCIC Min - Positive Value 65 NOT -65"
+	setVar $BOT~help[5]  $BOT~tab&"   {port}  - BBB XXB - defaults primary product only"
+	setVar $BOT~help[5]  $BOT~tab&"   {param} - Mark them with a param"
+    setVar $BOT~help[5]  $BOT~tab&"             Ready Ports: PARAMrdy"
+    setVar $BOT~help[5]  $BOT~tab&"             Unsecured  : PARAMsec"
+	setVar $BOT~help[6]  $BOT~tab&"    Must run FIGS, CIM, MSL and LISTAMTRAK first."
+	setVar $BOT~help[7]  $BOT~tab&"    ZTM is also essential to get all incomings."
 	setVar $BOT~help[9]  $BOT~tab&"       "
 	setVar $BOT~help[10]  $BOT~tab&"   MCIC from Planet Neg Param ORE-MCIC or Ephaggle FUEL-"
 	setVar $BOT~help[11]  $BOT~tab&"   "
@@ -125,7 +127,41 @@
             halt
         end
     end
+
+    setVar $markParam ""
+    setVar $markParamGood ""
+    setVar $markParamSec ""
+    setVar $markmsg ""
+
+    getWordPos $bot~user_command_line $pos "mark:"
+    if ($pos > 0)
+       
+        setVar $cline $bot~user_command_line & " "
+        getText $cline $markParam "mark:" " "
+        uppercase $markParam 
+        getLength $markParam $psize
+        if ($psize > 7)
+            setVar $SWITCHBOARD~message "Param can only be up to 7 chars.*"
+            gosub :SWITCHBOARD~switchboard
+            halt
+        end
+        setVar $markParamGood $markParam & "RDY"
+        setVar $markParamSec $markParam & "SEC"
+        setvar $markmsg "We are marking sectors with: " & $markParam & "RDY and " & $markParam & "SEC.*"
+        
+        setVar $i 1
+        while ($i <= SECTORS)
+            setSectorParameter $i $markParamGood ""
+            setSectorParameter $i $markParamSec ""
+            add $i 1
+        end
+    end
+
+
 	setVar $SWITCHBOARD~message "Searching for ports (" & $portFilter & ") with a MCIC below " & $find_mcic_value & " *"
+    if ($markmsg <> "")
+        setVar $SWITCHBOARD~message $SWITCHBOARD~message & $markmsg & "*"
+    end
 
     
 
@@ -319,6 +355,9 @@
 echo "*#" $i " g:" $goodport " $d:" $danger " Pr:" $portReportDanger " " SECTOR.EXPLORED[$i]
 
 				if (($goodport = 1) and ($danger = 0))
+                    if ($markParam <> "")
+                        setSectorParameter $i $markParamGood 1
+                    end
 					add $readyi 1
 					if ($readyi > 1)
 						setVar $ready $ready & ", " & $i
@@ -331,6 +370,9 @@ echo "*#" $i " g:" $goodport " $d:" $danger " Pr:" $portReportDanger " " SECTOR.
 					end
 				elseif (($goodport = 1) and ($portReportDanger = 0))
 					add $readyPorti 1
+                     if ($markParam <> "")
+                        setSectorParameter $i $markParamSec 1
+                    end
 					if ($readyPorti > 1)
 						setVar $readyPort $readyPort & ", " & $i
 						if ($readyPorti > 9)
@@ -340,6 +382,10 @@ echo "*#" $i " g:" $goodport " $d:" $danger " Pr:" $portReportDanger " " SECTOR.
 					else
 						setVar $readyPort $readyPort & $i
 					end
+                elseif (($goodport = 1) and ($danger = 1))
+                     if ($markParam <> "")
+                        setSectorParameter $i $markParamSec 1
+                    end
 				end
 			else
 				setVar $goodport 0
