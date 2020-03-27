@@ -40,29 +40,33 @@
 		setVar $safePlanets TRUE
 		setVar $containsShieldedPlanet FALSE
 		setvar $containsEnemyTrader FALSE
-		if (SECTOR.PLANETCOUNT[$test_sector] > 0)
-			setVar $p 1
-			while ($p <= SECTOR.PLANETCOUNT[$test_sector])
-				getWord SECTOR.PLANETS[$test_sector][$p] $test 1
-				if ($test = "<<<<")
-					setVar $containsShieldedPlanet TRUE
+		if ($sector~holotargetfound)
+			if (SECTOR.PLANETCOUNT[$test_sector] > 0)
+				setVar $p 1
+				while ($p <= SECTOR.PLANETCOUNT[$test_sector])
+					getWord SECTOR.PLANETS[$test_sector][$p] $test 1
+					if ($test = "<<<<")
+						setVar $containsShieldedPlanet TRUE
+					end
+					add $p 1
 				end
-				add $p 1
+				if ($player~surroundAvoidAllPlanets)
+					setVar $safePlanets FALSE
+				elseif (($containsShieldedPlanet) AND ($player~surroundAvoidShieldedOnly))
+					setVar $safePlanets FALSE
+				end
 			end
-			if ($player~surroundAvoidAllPlanets)
-				setVar $safePlanets FALSE
-			elseif (($containsShieldedPlanet) AND ($player~surroundAvoidShieldedOnly))
-				setVar $safePlanets FALSE
+			setVar $figowner SECTOR.FIGS.OWNER[$test_sector]
+			if (($test_sector <> $MAP~stardock) AND ($test_sector > 10) AND ($safePlanets = TRUE) and ((SECTOR.FIGS.QUANTITY[$test_sector] < ($too_many_fighters*2)) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
+				setVar $killsector $test_sector
+			else
+				setVar $SWITCHBOARD~message "Cannot holokill - check for planets or too many figs?*"
+				return
 			end
-		end
-		setVar $figowner SECTOR.FIGS.OWNER[$test_sector]
-		if (($test_sector <> $MAP~stardock) AND ($test_sector > 10) AND ($safePlanets = TRUE) and ((SECTOR.FIGS.QUANTITY[$test_sector] < ($too_many_fighters*2)) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
-			setVar $killsector $test_sector
 		else
-			setVar $SWITCHBOARD~message "Cannot holokill - check for planets or too many figs?*"
+			setVar $SWITCHBOARD~message "No targets found adjacent.*"
 			return
 		end
-
 :holo_kill_killem
 		if ($slingshot)
 			setvar $title "Slingshot Holokill"
