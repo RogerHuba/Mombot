@@ -27,7 +27,7 @@
 		send " *  "
 		return
 :holo_kill_scandone
-		killalltriggers
+		waiton "Sector  : "
 		gosub :sector~getAutoSectorData
 
 :holo_kill_get_prompt
