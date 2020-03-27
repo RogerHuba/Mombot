@@ -54,6 +54,10 @@
 				cutText $temp $temp 1 $pos
 				stripText $temp ""
 				lowercase $temp
+				stripText $temp "[36m"
+				stripText $temp "[31m"
+				stripText $temp "36m"
+				stripText $temp "31m"
 				setVar $player~traders[($realTraderCount+1)] $temp
 				setVar $player~traders[($realTraderCount+1)][1] $tempCorp
 				setVar $player~traders[($realTraderCount+1)][4] $number_of_fighters
