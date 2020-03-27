@@ -17,6 +17,7 @@
 	setvar $first true
 	:auto_sectorsline_cit_kill
 		setVar $line CURRENTANSILINE
+		echo "*" $line "*"
 		setVar $line $STARTLINE&$line&$ENDLINE
 		setVar $sectorData $sectorData&$line
 		getWordPos $line $pos "Sector  [33m: "
