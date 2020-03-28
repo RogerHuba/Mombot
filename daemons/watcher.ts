@@ -189,19 +189,21 @@ pause
 	setTextLineTrigger  federase        :fedEraseFig        "The Federation We destroyed "
 	pause
 :eraseFig
-	cutText CURRENTLINE&"     " $spoof 1 2 
-	cutText CURRENTLINE&"     " $spoof2 1 1 
+	setvar $line CURRENTLINE
+	setvar $ansi_line CURRENTANSILINE
+	cutText $line&"     " $spoof 1 2 
+	cutText $line&"     " $spoof2 1 1 
 	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
 		goto :endEraseFig
 	end
-	getText CURRENTLINE&" [XX][XX][XX]" $temp " destroyed " " [XX][XX][XX]"
+	getText $line&" [XX][XX][XX]" $temp " destroyed " " [XX][XX][XX]"
 	if ($temp <> "")
 		getWord $temp $fig_hit 7
 		getWord $temp $fig_number 1
 		isNumber $test $fig_hit 
 		if (($test = TRUE) AND ($fig_number <> "0"))
 			if (($fig_hit <= SECTORS) AND ($fig_hit > 0))
-				getText CURRENTANSILINE $alien_check ": " "'s"
+				getText $ansi_line $alien_check ": " "'s"
 				getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 				setVar $target $fig_hit
 				if ($pos <= 0)
