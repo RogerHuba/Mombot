@@ -63,7 +63,7 @@
 	setVar $PLAYER~save TRUE
 	gosub :combat~init 
 
-	loadGlobal $killing~last_fighter_attack
+	loadGlobal $bot~last_fighter_attack
 	
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	if (($MAP~stardock = 0) OR ($MAP~stardock = ""))
@@ -512,8 +512,8 @@
 					halt
 				end
 			end
-			loadGlobal $killing~last_fighter_attack
-			if ($killing~last_fighter_attack <> "")
+			loadGlobal $bot~last_fighter_attack
+			if ($bot~last_fighter_attack <> "")
 				gosub :killing~set_the_cannon
 			end
 		goto :processing
@@ -568,24 +568,12 @@
 			gosub :player~quikstats
 			gosub :check_for_photon_refurb
 		end
-		gosub :waitbeforecheck
-		loadGlobal $bot~last_hit
-		#send "'[" $bot~last_hit "] compared to [" $photon~sector "] while current sector is [" $player~current_sector "]*"
-		if (($photon~sector <> $bot~last_hit) and ($player~current_sector <> $bot~last_hit))
-			setvar $photon~sector $bot~last_hit
-			goto :check_to_fire_photon
-		end
+		gosub :check_for_target_change
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
 			goto :head_home
 		end
-		gosub :waitbeforecheck
-		loadGlobal $bot~last_hit
-		#echo "*[" $bot~last_hit  "][" $photon~sector "]*"
-		if (($photon~sector <> $bot~last_hit) and ($bot~last_hit <> 0) and ($player~current_sector <> $bot~last_hit))
-			setvar $photon~sector $bot~last_hit
-			goto :check_to_fire_photon
-		end
+		gosub :check_for_target_change
 		if ($player~current_sector = $bot~last_hit)
 			gosub :killing~scan_for_targets
 			if ($killing~error = true)
@@ -611,41 +599,21 @@
 				gosub :pwarp_direct_and_kill
 			end
 		end
-		gosub :waitbeforecheck
-		loadGlobal $bot~last_hit
-		if ($photon~sector <> $bot~last_hit)
-			setvar $photon~sector $bot~last_hit
-			goto :check_to_fire_photon
-		end
+		gosub :check_for_target_change
 		if (((($photon~adjacentphoton = true) and ($photon~success = true)) or ($nophoton = true)) and ($holo = true))
 			gosub :doholo
 		end
 
-		gosub :waitbeforecheck
-		loadGlobal $bot~last_hit
-		if ($photon~sector <> $bot~last_hit)
-			setvar $photon~sector $bot~last_hit
-			goto :check_to_fire_photon
-		end
+		gosub :check_for_target_change
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
 			goto :head_home
 		end
-		gosub :waitbeforecheck
-		loadGlobal $bot~last_hit
-		if ($photon~sector <> $bot~last_hit)
-			setvar $photon~sector $bot~last_hit
-			goto :check_to_fire_photon
-		end
+		gosub :check_for_target_change
 		if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
 			gosub :doMines
 		end
-		gosub :waitbeforecheck
-		loadGlobal $bot~last_hit
-		if ($photon~sector <> $bot~last_hit)
-			setvar $photon~sector $bot~last_hit
-			goto :check_to_fire_photon
-		end
+		gosub :check_for_target_change
 		if ($noescape <> true)
 			gosub :navigate~navigate_away
 			gosub :player~quikstats
@@ -660,8 +628,8 @@
 		####################
 		gosub :player~quikstats
 		gosub :check_for_photon_refurb
-		loadGlobal $killing~last_fighter_attack
-		if ($killing~last_fighter_attack <> "")
+		loadGlobal $bot~last_fighter_attack
+		if ($bot~last_fighter_attack <> "")
 			gosub :killing~set_the_cannon
 		end
 
@@ -835,6 +803,25 @@ return
 	pause
 	:checklasthit
 return
+
+:check_for_target_change
+	gosub :waitbeforecheck
+	loadGlobal $bot~last_hit
+	if (($photon~sector <> $bot~last_hit) and ($bot~last_hit <> 0) and ($player~current_sector <> $bot~last_hit))
+		loadGlobal $bot~last_hit_type
+		if ($bot~last_hit_type = "fighter")
+			goto :attackSectorFighter
+		elseif ($bot~last_hit_type = "armid")
+			goto :attackSectorMine
+		else
+			goto :attackSectorLimpet
+		end
+		setvar $photon~sector $bot~last_hit
+		goto :check_to_fire_photon
+	end
+return
+
+
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"

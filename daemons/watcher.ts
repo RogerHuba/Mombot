@@ -7,10 +7,10 @@ loadVar $MAP~stardock
 loadvar $bot~subspace
 loadvar $bot~bot_password
 loadvar $bot~bot_name
-loadGlobal $killing~last_fighter_attack
-if ($killing~last_fighter_attack = 0)
-	setvar $killing~last_fighter_attack ""
-	saveGlobal $killing~last_fighter_attack
+loadGlobal $bot~last_fighter_attack
+if ($bot~last_fighter_attack = 0)
+	setvar $bot~last_fighter_attack ""
+	saveGlobal $bot~last_fighter_attack
 end
 setSectorParameter 1 "MSLSEC" TRUE
 setSectorParameter 2 "MSLSEC" TRUE
@@ -236,17 +236,22 @@ pause
 	setTextLineTrigger      warpfigerase        :eraseWarpFig       "You do not have any fighters in Sector "
 	pause
 :limpsave
-	cutText CURRENTLINE&"     " $spoof 1 2 
-	cutText CURRENTLINE&"     " $spoof2 1 1 
+	setvar $line CURRENTLINE
+	cutText $line&"     " $spoof 1 2 
+	cutText $line&"     " $spoof2 1 1 
 	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
 		goto :endSaveLimp
 	end
-	getText CURRENTLINE&" [XX][XX][XX]" $temp "Limpet mine in " " activated"
+	getText $line&" [XX][XX][XX]" $temp "Limpet mine in " " activated"
 	if ($temp <> "")
 		setvar $limp_hit $temp
 		isNumber $test $limp_hit 
 		if ($test = TRUE)
 			if (($limp_hit <= SECTORS) AND ($limp_hit > 0))
+				setvar $bot~last_limpet_attack $line
+				saveGlobal $bot~last_limpet_attack
+				setvar $bot~last_hit_type "limpet"
+				saveGlobal $bot~last_hit_type
 				setvar $bot~last_limpet_hit $limp_hit
 				setvar $bot~last_hit $limp_hit
 				saveGlobal $bot~last_hit
@@ -259,18 +264,23 @@ pause
 	pause
 
 :armidsave
-	cutText CURRENTLINE&"     " $spoof 1 2 
-	cutText CURRENTLINE&"     " $spoof2 1 1 
+	setvar $line CURRENTLINE
+	cutText $line&"     " $spoof 1 2 
+	cutText $line&"     " $spoof2 1 1 
 	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
 		goto :endSaveArmid
 	end
 	#Your mines in 4441 did 628 damage to Mind
-	getText CURRENTLINE&" [XX][XX][XX]" $temp "Your mines in " " did "
+	getText $line&" [XX][XX][XX]" $temp "Your mines in " " did "
 	if ($temp <> "")
 		setvar $mine_hit $temp
 		isNumber $test $mine_hit 
 		if ($test = TRUE)
 			if (($mine_hit <= SECTORS) AND ($mine_hit > 0))
+				setvar $bot~last_armid_attack $line
+				saveGlobal $bot~last_armid_attack
+				setvar $bot~last_hit_type "armid"
+				saveGlobal $bot~last_hit_type
 				setvar $bot~last_armid_hit $mine_hit
 				setvar $bot~last_hit $mine_hit
 				saveGlobal $bot~last_hit
@@ -299,18 +309,19 @@ pause
 	end
 	#Deployed Fighters Report Sector 8920: Mind's Imperial StarShip entered sector.
 	getText $line&" [XX][XX][XX]" $temp "Deployed Fighters Report Sector " ": "
-	getwordpos $line $pos " entered sector."
-	if ($pos > 0)
-		setvar $killing~last_fighter_attack $line
-		saveGlobal $killing~last_fighter_attack
-		setvar $killing~ansi_last_fighter_attack $ansi_line
-		saveGlobal $killing~ansi_last_fighter_attack
-	end
 	if ($temp <> "")
 		setvar $fighit $temp
 		isNumber $test $fighit 
 		if ($test = TRUE)
 			if (($fighit <= SECTORS) AND ($fighit > 0))
+				setvar $bot~last_hit_type "fighter"
+				saveGlobal $bot~last_hit_type
+				setvar $bot~last_fighter_attack $line
+				saveGlobal $bot~last_fighter_attack
+				setvar $bot~ansi_last_fighter_attack $ansi_line
+				saveGlobal $bot~ansi_last_fighter_attack
+				setvar $bot~last_hit_type "fighter"
+				saveGlobal $bot~last_hit_type
 				setvar $bot~last_fighter_hit $fighit
 				setvar $bot~last_hit $fighit
 				saveGlobal $bot~last_hit
