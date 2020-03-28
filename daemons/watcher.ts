@@ -322,8 +322,6 @@ pause
 				saveGlobal $bot~last_fighter_attack
 				setvar $bot~ansi_last_fighter_attack $ansi_line
 				saveGlobal $bot~ansi_last_fighter_attack
-				setvar $bot~last_hit_type "fighter"
-				saveGlobal $bot~last_hit_type
 				setvar $bot~last_fighter_hit $fighit
 				setvar $bot~last_hit $fighit
 				saveGlobal $bot~last_hit

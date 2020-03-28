@@ -809,12 +809,12 @@ return
 	loadGlobal $bot~last_hit
 	if (($photon~sector <> $bot~last_hit) and ($bot~last_hit <> 0) and ($player~current_sector <> $bot~last_hit))
 		loadGlobal $bot~last_hit_type
-		if ($bot~last_hit_type = "fighter")
-			goto :attackSectorFighter
+		if ($bot~last_hit_type = "limpet")
+			goto :attackSectorLimpet
 		elseif ($bot~last_hit_type = "armid")
 			goto :attackSectorMine
 		else
-			goto :attackSectorLimpet
+			goto :attackSectorFighter
 		end
 		setvar $photon~sector $bot~last_hit
 		goto :check_to_fire_photon
