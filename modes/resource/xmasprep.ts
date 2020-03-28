@@ -72,7 +72,7 @@ while ($sector <> "done")
 			add $totalSectors 1
 			setVar $Sectors[$totalSectors] $sector
 			setVar $AllSectors[$totalSectors] $sector
-#echo "*# Added SEctor to list: " $sector
+echo "*# Added SEctor to list: " $sector
 		end
 
 	end
@@ -109,7 +109,7 @@ if ($player~ore_holds < 100)
 	halt
 end
 
-send "'" $SWITCHBOARD~bot_name " epman stop*"
+send "'" $SWITCHBOARD~bot_name " stop ephaggle*"
 setDelayTrigger delay :wait 3000
 pause
 :wait
@@ -195,7 +195,7 @@ while ($i <= $pathi)
 	setVar $upgradeSector 0
 	while ($y <= $totalSectors)
 
-#echo " *  $gotoSector:"  $gotoSector " $sectors[$y]:"  $sectors[$y]
+echo " *  $gotoSector:"  $gotoSector " $sectors[$y]:"  $sectors[$y]
 		if ($gotoSector = $sectors[$y])
 			setVar $upgradeSector 1
 			setVar $y 9999
@@ -220,15 +220,29 @@ while ($i <= $pathi)
 	goSub :player~quikstats
 	
 	if ($upgradeSector = 1)
-		send "o1"
-		setTextTrigger upgrade1 :upgrade1 "How many units do you want to invest?"
+
+		setVar $BOT~command "port"
+		setVar $BOT~user_command_line " port upgrade b silent "
+		setVar $BOT~parm1 "upgrade"
+		setVar $BOT~parm2 ""
+		setVar $BOT~parm3 ""
+		setVar $BOT~parm4 ""
+		setVar $BOT~parm5 ""
+		setVar $BOT~parm6 ""
+		saveVar $BOT~parm1
+		saveVar $BOT~parm2
+		saveVar $BOT~parm3
+		saveVar $BOT~parm4
+		saveVar $BOT~parm5
+		saveVar $BOT~parm6
+		saveVar $BOT~command
+		saveVar $BOT~user_command_line
+		load "scripts\mombot\commands\grid\port.cts"
+		setEventTrigger		portended		:portended "SCRIPT STOPPED" "scripts\mombot\commands\grid\port.cts"
 		pause
-		:upgrade1
-			killalltriggers
-			getWord CURRENTLINE $ore 9
-			striptext $ore "("
-			send $ore "* q *"
-			setSectorParameter $gotoSector "MOOPORT" "1"
+		:portended
+		
+		setSectorParameter $gotoSector "MOOPORT" "1"
 
 	end
 

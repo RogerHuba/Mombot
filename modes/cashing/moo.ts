@@ -122,6 +122,9 @@ else
 	end
 end
 
+#
+setVar $fireSlot 1
+#setVar $preferredPlanetSlot 13
 
 # 
 # Primary product 1 - fuel, 2 - org, 3 - fuel
@@ -219,6 +222,11 @@ else
 end
 gosub :SWITCHBOARD~switchboard
 	
+if ($game~ptradesetting = 0) or ($game~MAX_PLANETS_IN_GAME = 0)
+	setVar $SWITCHBOARD~message "No planet trade/planets in game settings >refresh >update.*"
+	gosub :SWITCHBOARD~switchboard
+	halt
+end
 
 getWordPos $bot~user_command_line $pos "guard"
 if ($pos > 0)
@@ -253,6 +261,17 @@ end
 gosub :switchboard~switchboard
 
 
+gosub :switchboard~switchboard
+if ($useEp = 1)
+	send "'" $BOT~BOT_NAME " ephaggle planet*"
+	setDelayTrigger epHagDel :epHagDel 1500
+	
+else
+	send "'" $BOT~BOT_NAME " stop ephaggle*" 
+	setDelayTrigger epHagDel :epHagDel 1500
+end
+:epHagDel
+	killalltriggers
 
 setVar $userCleanup 0
 gosub :switchboard~switchboard
@@ -291,6 +310,11 @@ else
 end
 gosub :switchboard~switchboard
 
+if ($PLAYER~PLANET_SCANNER <> "Yes")
+	setVar $SWITCHBOARD~message "Ship needs planet scanners*"
+	gosub :SWITCHBOARD~switchboard
+	halt
+end
 
 setVar $stat_dollarsgross 0
 setVar $stat_dollarsnet 0
@@ -587,6 +611,9 @@ halt
 
 :createAndSell
 
+	if ($fireSlot = 1)
+		setVar $preferredPlanetSlot 13
+	end
 	setVar $planet~planetsInSector 0
 	setVar $planet~planets 0
 	setVar $planet~planeti 1
@@ -611,13 +638,46 @@ halt
 	while ($go = 1)
 		# ENSURE PREFERRED SLOT IS FREE 
 		if ($planet~planetsInSectorCHK >= $preferredPlanetSlot)
-			setVar $checkNewPlanet 0
-			goSub :reCheckPlanets
-			setVar $shipBlastPlanet $planet~planets[$preferredPlanetSlot]
-			gosub :blastPlanet
-			setVar $checkNewPlanet 0
-			goSub :reCheckPlanets
-			setVar $planet~planetsInSectorCHK $planet~planetsInSector
+			if ($fireSlot = 1)
+				# till I work out complete logic - this will have to do - assuming we started from less than 13 planets
+				if ($preferredPlanetSlot = 13)
+					setVar $checkNewPlanet 0
+					goSub :reCheckPlanets
+					setVar $shipBlastPlanet $planet~planets[13]
+					gosub :blastPlanet
+				
+					goSub :reCheckPlanets
+					setVar $shipBlastPlanet $planet~planets[12]
+					gosub :blastPlanet
+					
+					goSub :reCheckPlanets
+					setVar $shipBlastPlanet $planet~planets[11]
+					gosub :blastPlanet
+
+					goSub :reCheckPlanets
+					setVar $shipBlastPlanet $planet~planets[10]
+					gosub :blastPlanet
+					setVar $preferredPlanetSlot 10
+					goSub :reCheckPlanets
+					setVar $planet~planetsInSectorCHK $planet~planetsInSector
+				else
+					setVar $checkNewPlanet 0
+					goSub :reCheckPlanets
+					setVar $shipBlastPlanet $planet~planets[$preferredPlanetSlot]
+					gosub :blastPlanet
+					setVar $checkNewPlanet 0
+					goSub :reCheckPlanets
+					setVar $planet~planetsInSectorCHK $planet~planetsInSector
+				end
+			else
+				setVar $checkNewPlanet 0
+				goSub :reCheckPlanets
+				setVar $shipBlastPlanet $planet~planets[$preferredPlanetSlot]
+				gosub :blastPlanet
+				setVar $checkNewPlanet 0
+				goSub :reCheckPlanets
+				setVar $planet~planetsInSectorCHK $planet~planetsInSector
+			end
 		end
 		
 		# CREATE A PLANET
@@ -1346,7 +1406,7 @@ return
 			
 			setvar $switchboard~message "Ep Haggle timed out on Haggle*"
 			gosub :switchboard~switchboard
-			
+			send "*"
 		
 		:sellempty2
 			killalltriggers
