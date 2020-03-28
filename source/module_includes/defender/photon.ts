@@ -116,10 +116,10 @@ return
 	setvar $found false
 	setvar $adjacent false
 	setvar $surround false
-	loadGlobal $killing~ansi_last_fighter_attack
+	loadGlobal $bot~ansi_last_fighter_attack
 	loadGlobal $bot~last_fighter_attack
 	getWord $bot~last_fighter_attack $spoof_test 1
-	getWord $killing~ansi_last_fighter_attack $ansi_spoof_test 1
+	getWord $bot~ansi_last_fighter_attack $ansi_spoof_test 1
 	getWordPos $ansi_spoof_test $ansi_spoof_pos #27 & "[1;33m"
 	if ($spoof_test <> "Deployed") OR ($ansi_spoof_pos <= 0)
 	     return
@@ -168,7 +168,7 @@ return
 	###############################################
 
 	if ($game~hasAliens = true)
-		getText $killing~ansi_last_fighter_attack $alien_check ": " "'s"
+		getText $bot~ansi_last_fighter_attack $alien_check ": " "'s"
 		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 		if ($pos > 0)
 		     return
