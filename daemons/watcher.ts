@@ -203,8 +203,8 @@ pause
 			if (($fig_hit <= SECTORS) AND ($fig_hit > 0))
 				getText CURRENTANSILINE $alien_check ": " "'s"
 				getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+				setVar $target $fig_hit
 				if ($pos <= 0)
-					setVar $target $fig_hit
 					setvar $bot~last_fighter_hit $fig_hit
 					setvar $bot~last_hit $fig_hit
 					saveGlobal $bot~last_fighter_hit
