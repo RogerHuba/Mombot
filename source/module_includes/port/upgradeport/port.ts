@@ -20,6 +20,29 @@
 	if ($pos > 0)
 		setVar $doEqu TRUE
 	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " a "
+	if ($pos > 0)
+		setVar $doFuel TRUE
+		setVar $doOrg TRUE
+		setVar $doEqu TRUE
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " b "
+	if ($pos > 0)
+		if (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 1)
+			setVar $doFuel TRUE
+		end
+		if (PORT.BUYORG[$PLAYER~CURRENT_SECTOR] = 1)
+			setVar $doOrg TRUE
+		end
+		if (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 1)
+			setVar $doEqu TRUE
+		end
+		
+	end
+
+
 	getWordPos " "&$bot~user_command_line&" " $pos " noexp "
 	if ($pos > 0)
 		setVar $no_exp TRUE
@@ -52,7 +75,7 @@
 	end
 
 	if (($doFuel <> TRUE) and ($doOrg <> TRUE) and ($doEqu <> TRUE))
-		setvar $switchboard~message "Must choose f, o, or e to upgrade.*"
+		setvar $switchboard~message "Must choose f, o, e, a(ll) or b(uy prods) to upgrade.*"
 		gosub :switchboard~switchboard
 		halt
 	end

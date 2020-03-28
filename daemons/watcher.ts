@@ -287,6 +287,11 @@ pause
 	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
 		goto :endfightersave
 	end
+	getText CURRENTANSILINE $alien_check ": " "'s"
+	getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+	if ($pos > 0)
+		goto :endfightersave
+	end
 	#Deployed Fighters Report Sector 8920: Mind's Imperial StarShip entered sector.
 	getText $line&" [XX][XX][XX]" $temp "Deployed Fighters Report Sector " ": "
 	getwordpos $line $pos " entered sector."

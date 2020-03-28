@@ -581,7 +581,7 @@
 		end
 		gosub :waitbeforecheck
 		loadGlobal $bot~last_hit
-		echo "*[" $bot~last_hit  "][" $photon~sector "]*"
+		#echo "*[" $bot~last_hit  "][" $photon~sector "]*"
 		if (($photon~sector <> $bot~last_hit) and ($bot~last_hit <> 0) and ($player~current_sector <> $bot~last_hit))
 			setvar $photon~sector $bot~last_hit
 			goto :check_to_fire_photon

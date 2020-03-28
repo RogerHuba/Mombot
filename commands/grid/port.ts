@@ -11,13 +11,15 @@
 	setVar $BOT~help[8]   $BOT~tab&"     port destroy "
 	setVar $BOT~help[9]   $BOT~tab&"       - blow up port in sector if possible"
 	setVar $BOT~help[10]  $BOT~tab&"      "
-	setVar $BOT~help[11]  $BOT~tab&"     port upgrade {f} {o} {e} {noexp}"
+	setVar $BOT~help[11]  $BOT~tab&"     port upgrade {f} {o} {e} {a} {b} {noexp}"
 	setVar $BOT~help[12]  $BOT~tab&"       - upgrade port if possible, using treasury if available"
 	setVar $BOT~help[13]  $BOT~tab&"             {f} - upgrade fuel"
 	setVar $BOT~help[14]  $BOT~tab&"             {o} - upgrade organics"
 	setVar $BOT~help[15]  $BOT~tab&"             {e} - upgrade equipment"
-	setVar $BOT~help[16]  $BOT~tab&"         {noexp} - upgrade without experience increase"
-	setVar $BOT~help[16]  $BOT~tab&"                   default: s/b/b upgraded"
+	setVar $BOT~help[16]  $BOT~tab&"             {a} - upgrade all products"
+	setVar $BOT~help[17]  $BOT~tab&"             {b} - upgrade products that port buys"
+	setVar $BOT~help[18]  $BOT~tab&"         {noexp} - upgrade without experience increase"
+	setVar $BOT~help[19]  $BOT~tab&"                   default: s/b/b upgraded"
 	gosub :bot~helpfile
 
 
