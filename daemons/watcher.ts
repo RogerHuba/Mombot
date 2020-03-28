@@ -286,12 +286,13 @@ pause
 
 :fightersave
 	setvar $line CURRENTLINE
+	setvar $ansi_line CURRENTANSILINE
 	cutText $line&"     " $spoof 1 2 
 	cutText $line&"     " $spoof2 1 1 
 	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
 		goto :endfightersave
 	end
-	getText CURRENTANSILINE $alien_check ": " "'s"
+	getText $ansi_line $alien_check ": " "'s"
 	getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 	if ($pos > 0)
 		goto :endfightersave
@@ -302,6 +303,8 @@ pause
 	if ($pos > 0)
 		setvar $killing~last_fighter_attack $line
 		saveGlobal $killing~last_fighter_attack
+		setvar $killing~ansi_last_fighter_attack $ansi_line
+		saveGlobal $killing~ansi_last_fighter_attack
 	end
 	if ($temp <> "")
 		setvar $fighit $temp
