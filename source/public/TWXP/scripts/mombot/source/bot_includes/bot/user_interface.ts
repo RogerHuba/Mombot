@@ -358,15 +358,14 @@ return
 						getSectorParameter SECTOR.WARPS[CURRENTSECTOR][$sector] "FIGSEC" $isFigged
 						if ($isFigged)
 							setVar $BOT~user_command_line "p "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" scan"
-				goto :runUserCommandLine
-						else
-				
-				if (($BOT~pgrid_bot <> "") and ($BOT~pgrid_bot <> 0))
-					send "'" & $BOT~pgrid_bot & " pgrid "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" d:" & SECTOR.DENSITY[SECTOR.WARPS[CURRENTSECTOR][$sector]] &" "&$BOT~pgrid_end_command "**"
-				else
-					setVar $BOT~user_command_line "pgrid "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" "&$BOT~pgrid_end_command
-					goto :runUserCommandLine
-				end
+							goto :runUserCommandLine
+						else				
+							if (($BOT~pgrid_bot <> "") and ($BOT~pgrid_bot <> 0))
+								send "'" & $BOT~pgrid_bot & " pgrid "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" d:" & SECTOR.DENSITY[SECTOR.WARPS[CURRENTSECTOR][$sector]] &" "&$BOT~pgrid_end_command "**"
+							else
+								setVar $BOT~user_command_line "pgrid "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" "&$BOT~pgrid_end_command
+								goto :runUserCommandLine
+							end
 						end
 						
 					elseif ($PLAYER~CURRENT_PROMPT = "Command")
@@ -576,6 +575,20 @@ return
 	if ($BOT~command = "?")
 		setVar $BOT~command "help"
 	end
+	setvar $update_list " limps figs armids cim "
+	getwordpos $update_list $pos " "&$bot~command&" "
+	if ($pos > 0)
+		setvar $bot~parms[8] $bot~command
+		setVar $BOT~command "update"
+	end
+	setvar $deploy_list " lay put place limp mine armid plimp mines climp cmine pmine topoff mines fig "
+	getwordpos $deploy_list $pos " "&$bot~command&" "
+	if ($pos > 0)
+		if (($bot~command <> "lay") or ($bot~command <> "put") or ($bot~command <> "place"))
+			setvar $bot~parms[8] $bot~command
+		end
+		setVar $BOT~command "deploy"
+	end
 	if ($BOT~command = "build") or ($BOT~command = "create")
 		setVar $BOT~command $bot~parms[1]
 		setvar $bot~parms[1] "create"
@@ -627,7 +640,7 @@ return
 		setvar $bot~parms[1] $bot~command
 		setVar $BOT~command "find"
 	end
-
+	setvar $bot~user_command_line $bot~parms[1]&" "&$bot~parms[2]&" "&$bot~parms[3]&" "&$bot~parms[4]&" "&$bot~parms[5]&" "&$bot~parms[6]&" "&$bot~parms[7]&" "&$bot~parms[8]&" "
 	setVar $i 1
 	while ($i <= $BOT~parmS)
 		if ($BOT~parmS[$i] = "s")
@@ -766,7 +779,9 @@ return
 
 :load_the_module
 	gosub :MAIN~module_vars
-	if ($currentCategory = "Modes") 
+	getWordPos " "&$BOT~user_command_line&" " $helpCheck " help "
+	getWordPos " "&$BOT~user_command_line&" " $helpCheck2 " ? "
+	if (($currentCategory = "Modes") and (($helpCheck <= 0) and ($helpCheck2 <= 0)))
 		stop $BOT~LAST_LOADED_MODULE
 		setVar $BOT~LAST_LOADED_MODULE "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
 		setVar $BOT~mode $formatted_command
