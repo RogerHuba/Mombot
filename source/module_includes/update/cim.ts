@@ -25,7 +25,7 @@
 		send "^iq"
 		setvar $switchboard~message "Warp Data CIM Complete*"
 		gosub :switchboard~switchboard
-		halt
+		return
 	else
 		send "^rq"
 	end
@@ -137,7 +137,7 @@
 	elseif ($startingLocation = "Citadel")
 		send "xt"
 	else 
-		halt
+		return
 	end
 	send "-----" $bot~bot_name "-----*"
 	send "Upped Ports: (At least "&$upgradeLimit&" product level)*"
@@ -175,10 +175,10 @@
 		elseif ($startingLocation = "Citadel")
 			send "xt"
 		else
-			halt
+			return
 		end
 	else
-			halt
+			return
 		
 	end
 	send "Ports with MCIC at least -60/-65 :*"
