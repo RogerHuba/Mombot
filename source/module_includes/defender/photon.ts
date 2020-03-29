@@ -116,8 +116,10 @@ return
 	setvar $found false
 	setvar $adjacent false
 	setvar $surround false
-	getWord CURRENTLINE $spoof_test 1
-	getWord CURRENTANSILINE $ansi_spoof_test 1
+	loadGlobal $bot~ansi_last_fighter_attack
+	loadGlobal $bot~last_fighter_attack
+	getWord $bot~last_fighter_attack $spoof_test 1
+	getWord $bot~ansi_last_fighter_attack $ansi_spoof_test 1
 	getWordPos $ansi_spoof_test $ansi_spoof_pos #27 & "[1;33m"
 	if ($spoof_test <> "Deployed") OR ($ansi_spoof_pos <= 0)
 	     return
@@ -128,14 +130,12 @@ return
 	# the idea is to set the sector cannon to kill the type of ship that is hitting grid last. #
 	############################################################################################
 
-	loadGlobal $killing~last_fighter_attack
-
 	#############################
 	# Torp only on sector entry #
 	#############################
 
 	# Get the sector number
-	getWord CURRENTLINE $sector 5
+	getWord $bot~last_fighter_attack $sector 5
 	stripText $sector ":"
 	isNumber $result $sector
 	if ($result < 1)
@@ -151,22 +151,9 @@ return
 		goto :fire_adjacent
 	end
 
-#	setVar $i 1
-#	while (SECTOR.WARPS[$sector][$i] > 0)
-#		getwordpos $adjacent_to_last_attack_sectors $pos " "&SECTOR.WARPS[$sector][$i]&" "
-#		if ($pos > 0)
-#			setvar $found true
-#			setvar $surround true
-#			echo "*[Surround DETECTED]*"
-#			setvar $sector SECTOR.WARPS[$sector][$i]
-#			return
-#		end
-#		add $i 1
-#	end
-
-	getwordpos CURRENTLINE $posretreat " retreated."
-	getwordpos CURRENTLINE $posdestroyed " DESTROYED "
-	getWordPos CURRENTLINE $pos "entered sector."
+	getwordpos $bot~last_fighter_attack $posretreat " retreated."
+	getwordpos $bot~last_fighter_attack $posdestroyed " DESTROYED "
+	getWordPos $bot~last_fighter_attack $pos "entered sector."
 	setvar $retreatfighter false
 	if (($pos < 1) and ($posretreat < 1) and ($posdestroyed < 1))
 		return
@@ -181,7 +168,7 @@ return
 	###############################################
 
 	if ($game~hasAliens = true)
-		getText CURRENTANSILINE $alien_check ": " "'s"
+		getText $bot~ansi_last_fighter_attack $alien_check ": " "'s"
 		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 		if ($pos > 0)
 		     return
@@ -194,11 +181,12 @@ return
 :limpet_spoof
 	setvar $found false
 	setvar $adjacent false
-	cutText CURRENTLINE&"      " $ck 1 6
+	loadGlobal $bot~last_limpet_attack
+	cutText $bot~last_limpet_attack&"      " $ck 1 6
 	if ($ck <> "Limpet")
 		return
 	end
-	getWord CURRENTLINE $sector 4
+	getWord $bot~last_limpet_attack $sector 4
 	getwordpos $adjacent_sectors $pos " "&$sector&" "
 	setvar $found true
 	if ($pos > 0)
@@ -210,11 +198,12 @@ return
 :armid_spoof
 	setvar $found false
 	setvar $adjacent false
-	cutText CURRENTLINE&"    " $ck 1 4
+	loadGlobal $bot~last_armid_attack
+	cutText $bot~last_armid_attack&"    " $ck 1 4
 	if ($ck <> "Your")
 		return
 	end
-	getWord CURRENTLINE $sector 4
+	getWord $bot~last_armid_attack $sector 4
 	getwordpos $adjacent_sectors $pos " "&$sector&" "
 	setvar $found true
 	if ($pos > 0)

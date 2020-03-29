@@ -13,7 +13,7 @@ end
 			stripText $help[$i] #13
 			stripText $help[$i] "`"
 			stripText $help[$i] "'"
-			replaceText $help[$i] "=" "-"
+			#replaceText $help[$i] "=" "-"
 			if ($help[$i] <> $help_line)
 				goto :write_new_help_file
 			end
@@ -47,7 +47,7 @@ end
 			stripText $help[$i] #13
 			stripText $help[$i] "`"
 			stripText $help[$i] "'"
-			replaceText $help[$i] "=" "-"
+			#replaceText $help[$i] "=" "-"
 			if ($help[$i] = "0")
 				goto :done_help_file
 			end
