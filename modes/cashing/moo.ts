@@ -51,6 +51,9 @@ setVar $BOT~help[20] $BOT~tab&"      param      - Sectors with this param i.e. m
 setVar $BOT~help[21] $BOT~tab&"      everything - Anything that buys the primary prod with a fig"
 setVar $BOT~help[22] $BOT~tab&"      file       - One sector per line, file must end in .txt"
 setVar $BOT~help[23] $BOT~tab&"      sector     - One sector >Moo sector {maxplanets} {sector}"
+setVar $BOT~help[23] $BOT~tab&"      "
+setVar $BOT~help[23] $BOT~tab&"  FIRE TOURNAMENT"
+setVar $BOT~help[23] $BOT~tab&"       moo [mode] fire {figs} {ephag} {safe/paranoid}"
 
 gosub :bot~helpfile
 
@@ -94,7 +97,25 @@ else
 	
 end
 
-
+if ($bot~parm2 = "fire")
+	setVar $preferredPlanetSlot 10
+	setVar $fireSlot 1
+	setVar $PrimaryProduct 3
+	setVar $userCleanup 3
+	
+	send "ctq"
+	setTextLineTrigger timeAM :timeAM " AM "
+	setTextLineTrigger timePM :timePM " PM "
+	pause
+	:timeAM
+		killAllTriggers
+	
+		setVar $userCleanup 0
+		goto :fireitup
+	:timePM
+		killAllTriggers
+	goto :fireitup
+end
 
 # it will make up to this many planets in sector before blasting them
 # however will leave when port empty
@@ -121,9 +142,9 @@ else
 		halt
 	end
 end
-
+ 
 #
-setVar $fireSlot 1
+
 #setVar $preferredPlanetSlot 13
 
 # 
@@ -174,6 +195,7 @@ end
 # param - trades sectors with param - next command line var is param
 # everything - travels to any port buying the primary product matching our security level
 # file - next command line var is param
+:fireitup
 
 setVar $modestring $bot~parm1
 setVar $mode 0
@@ -273,20 +295,23 @@ end
 :epHagDel
 	killalltriggers
 
-setVar $userCleanup 0
-gosub :switchboard~switchboard
-getWordPos $bot~user_command_line $pos "all"
-if ($pos > 0)
-	setVar $userCleanup 2
-	setvar $switchboard~message "We are blowing ALL planets post trade.*"
-else
-	getWordPos $bot~user_command_line $pos "bad"
+if ($fireSlot = 0)
+	setVar $userCleanup 0
+	gosub :switchboard~switchboard
+	getWordPos $bot~user_command_line $pos "all"
 	if ($pos > 0)
-		setVar $userCleanup 1
-		setvar $switchboard~message "We are just blowing dud planets.*"
+		setVar $userCleanup 2
+		setvar $switchboard~message "We are blowing ALL planets post trade.*"
+	else
+		getWordPos $bot~user_command_line $pos "bad"
+		if ($pos > 0)
+			setVar $userCleanup 1
+			setvar $switchboard~message "We are just blowing dud planets.*"
+		end
 	end
+	setVar $cleanup $userCleanup
 end
-setVar $cleanup $userCleanup
+
 gosub :switchboard~switchboard
 
 # Requires SAFE
@@ -768,7 +793,7 @@ halt
 			if ($planet~planets[$i] <> $tradePlanet)
 				add $planet~planetsToBlow 1
 				add $figsRequired (100 * $planet~planetsToBlow)
-			elseif ($cleanup = 2)
+			elseif ($cleanup = 2) or ($cleanup = 3)
 				add $planet~planetsToBlow 1
 				add $figsRequired ($figsRequired * $planet~planetsToBlow)
 			end 
@@ -788,6 +813,10 @@ halt
 			
 
 		end
+		if ($cleanup = 3)
+			# FIRE HARDCODE
+			subtract $planet~planetsInSector 3
+		end
 		setVar $i 1
 		while ($i <= $planet~planetsInSector)
 			
@@ -796,7 +825,7 @@ halt
 				
 				setVar $shipBlastPlanet $planet~planets[$i]
 				gosub :blastPlanet
-			elseif ($cleanup = 2)
+			elseif ($cleanup = 2) or ($cleanup = 3)
 				setVar $shipBlastPlanet $tradePlanet
 				gosub :blastPlanet
 			end 
