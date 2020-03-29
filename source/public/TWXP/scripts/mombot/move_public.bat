@@ -35,6 +35,8 @@ copy "..\..\..\..\..\commands\data\avoids.*" "commands\data\avoids.*"
 copy "..\..\..\..\..\commands\data\getvar.*" "commands\data\getvar.*"
 copy "..\..\..\..\..\commands\data\setvar.*" "commands\data\setvar.*"
 copy "..\..\..\..\..\commands\data\ping.*" "commands\data\ping.*"
+copy "..\..\..\..\..\commands\data\select.*" "commands\data\select.*"
+copy "..\..\..\..\..\commands\data\history.*" "commands\data\history.*"
 copy "..\..\..\..\..\commands\general\pwarp.*" "commands\general\pwarp.*"
 copy "..\..\..\..\..\commands\general\photon.*" "commands\general\photon.*"
 copy "..\..\..\..\..\commands\general\reboot.*" "commands\general\reboot.*"
@@ -94,5 +96,7 @@ xcopy "..\..\..\..\..\source\bot_includes\map" "source\bot_includes\map" /E
 xcopy "..\..\..\..\..\source\bot_includes\ship" "source\bot_includes\ship" /E
 xcopy "..\..\..\..\..\source\bot_includes\game" "source\bot_includes\game" /E
 xcopy "..\..\..\..\..\source\module_includes\bot" "source\module_includes\bot" /E
+xcopy "..\..\..\..\..\source\module_includes\deploy" "source\module_includes\deploy" /E
+xcopy "..\..\..\..\..\source\module_includes\update" "source\module_includes\update" /E
 timeout 20
 
