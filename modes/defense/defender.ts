@@ -427,7 +427,7 @@
 		setTextLineTrigger 18 :scan " enters the game."
 		setDelayTrigger	   19 :announce	1200000
 		setDelayTrigger	   20 :head_home_timeout 3600000
-		setdelaytrigger    21 :sentinel 30000
+		setdelaytrigger    25 :sentinel 30000
 		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
 		
 
