@@ -430,7 +430,14 @@
 		setTextLineTrigger 18 :scan " enters the game."
 		setDelayTrigger	   19 :announce	1200000
 		setDelayTrigger	   20 :head_home_timeout 3600000
-		setdelaytrigger    25 :sentinel $sentinel_cycle
+		if (($photon~found))
+			#########################################
+			# wait longer if grid is hit by players #
+			#########################################
+			setdelaytrigger    25 :sentinel 120000
+		else
+			setdelaytrigger    25 :sentinel $sentinel_cycle
+		end
 		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
 		
 
@@ -684,7 +691,7 @@
 				gosub :switchboard~switchboard
 			end
 		end
-		if (($photon~alien <> true) and ($photon~spoof <> true))
+		if ($photon~found)
 			gosub :killing~scan_for_targets
 			if ($killing~error = true)
 				goto :head_home
