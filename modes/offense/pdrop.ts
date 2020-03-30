@@ -342,26 +342,30 @@ reqRecording
 				goSub :getSectorLocation
 				goto :startTargeting
 		:attackSectorMine
+			killtrigger fig
+			killtrigger limp
 			gosub :validateMineHit
 			if ($isValid <> TRUE)
 				goto :startTargeting
 			end
 			goto :getDropSector
-			
 		:attackSectorLimpet
+			killtrigger armid
+			killtrigger fig
 			gosub :validateLimpetHit
 			if ($isValid <> TRUE)
 				goto :startTargeting
 			end
 			goto :getDropSector
-		
 		:attackSectorFighter
+			killtrigger armid
+			killtrigger limp
 			gosub :validateFighterHit
 			if ($isValid <> TRUE)
 				goto :startTargeting
 			end
-			
 		:getDropSector
+
 			if ($dropDescription = "Direct")
 				setvar $send "p "&$dropSector&"* y "
 				if ($fastkill = true)
@@ -462,6 +466,7 @@ reqRecording
 					goto :startTargeting
 			
 			end
+
 		goto :startTargeting
 	
 
@@ -684,7 +689,7 @@ return
 
 :getSectorLocation
 	send "/"
-	waitOn "Sect "
+	waitfor "Sect "
 	getWord CURRENTLINE $temp 2
 	stripText $temp "Turns"
 	stripText $temp " "
