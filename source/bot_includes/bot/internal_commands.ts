@@ -21,12 +21,12 @@
 			lowercase $tempUsername
 			lowerCase $user_name
 			while ($i <= $BOT~corpycount)
-			setVar $tempCorpy $BOT~corpy[$i]
-			lowerCase $tempCorpy
-			if ($tempCorpy = $tempUsername)
-				return
-			end
-			add $i 1
+				setVar $tempCorpy $BOT~corpy[$i]
+				lowerCase $tempCorpy
+				if ($tempCorpy = $tempUsername)
+					return
+				end
+				add $i 1
 			end
 			add $BOT~corpycount 1
 			setVar $BOT~corpy[$BOT~corpycount] $user_name

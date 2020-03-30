@@ -19,7 +19,7 @@
 					send "p" $adjsec "*  y  "
 					gosub :densityDrop
 				else
-					send "p" $adjsec "*  y  p" $sector "*  y  "
+					send "p" $adjsec "*  y   p" $sector "*  y  "
 				end
 				return
 			end
@@ -44,6 +44,9 @@ return
 	end
 	
 :fire_photon
+	###############################
+	# always try to drop directly #
+	###############################
 	send "p" $adjsec "*  y  c  p  y  " $sector "**qp" $sector "*  y  "
 
 	:triggers
@@ -83,7 +86,23 @@ return
 
 :photon_gotem
 	gosub :killtriggers
-	setvar $switchboard~message "Photon Fired - Sector => " & $sector & "!*"
+	if ($shooting_count > 1)
+		setvar $photon_shot $shooting_count
+		send "  c  "
+		while ($photon_shot > 1)
+			################################
+			# this only runs on multishoot #
+			################################
+			send " p  y  " $sector "**"
+			subtract $photon_shot 1
+		end
+		send "q  "
+	end
+
+	setvar $switchboard~message "Photon fired - sector => " & $sector & "!*"
+	if ($shooting_count > 1)
+		setvar $switchboard~message $shooting_count&" photons fired - sector => " & $sector & "!*"
+	end
 	gosub :switchboard~switchboard
 	gosub :player~quikstats
 	setvar $success true
@@ -121,8 +140,10 @@ return
 	getWord $bot~last_fighter_attack $spoof_test 1
 	getWord $bot~ansi_last_fighter_attack $ansi_spoof_test 1
 	getWordPos $ansi_spoof_test $ansi_spoof_pos #27 & "[1;33m"
+	setvar $spoof false
 	if ($spoof_test <> "Deployed") OR ($ansi_spoof_pos <= 0)
-	     return
+		setvar $spoof true
+		return
 	end
 
 	############################################################################################
@@ -168,10 +189,12 @@ return
 	###############################################
 
 	if ($game~hasAliens = true)
+		setvar $alien false
 		getText $bot~ansi_last_fighter_attack $alien_check ": " "'s"
 		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 		if ($pos > 0)
-		     return
+			setvar $alien true
+			return
 		end
 	end
 
@@ -183,7 +206,9 @@ return
 	setvar $adjacent false
 	loadGlobal $bot~last_limpet_attack
 	cutText $bot~last_limpet_attack&"      " $ck 1 6
+	setvar $spoof false
 	if ($ck <> "Limpet")
+		setvar $spoof true
 		return
 	end
 	getWord $bot~last_limpet_attack $sector 4
@@ -199,9 +224,22 @@ return
 	setvar $found false
 	setvar $adjacent false
 	loadGlobal $bot~last_armid_attack
+	loadGlobal $bot~ansi_last_armid_attack
 	cutText $bot~last_armid_attack&"    " $ck 1 4
+	setvar $spoof false
 	if ($ck <> "Your")
+		setvar $spoof true
 		return
+	end
+	if ($game~hasAliens = true)
+		#[K[32mYour mines in [1;33m8174[0;32m did [1;33m14[0;32m damage to #[1;36m[33mFerrengi[36m Nik
+		setvar $alien false
+		getText $bot~ansi_last_armid_attack&"[xx][xx][xx]" $alien_check " damage to " "[xx][xx][xx]"
+		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+		if ($pos > 0)
+			setvar $alien true
+			return
+		end
 	end
 	getWord $bot~last_armid_attack $sector 4
 	getwordpos $adjacent_sectors $pos " "&$sector&" "

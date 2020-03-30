@@ -9,9 +9,13 @@
 		setVar $armidCashNeeded 0
 	end
 	if ($killing~holokill)
-		setVar $photonCashNeeded (1*$game~photon_cost)
+		setVar $photonCashNeeded ($photon~shooting_count*$game~photon_cost)
 	else
-		setVar $photonCashNeeded (5*$game~photon_cost)
+		if ($photon~shooting_count > 5)
+			setVar $photonCashNeeded ($photon~shooting_count*$game~photon_cost)
+		else
+			setVar $photonCashNeeded (5*$game~photon_cost)
+		end
 	end
 	if ($deploydisruptors = true)
 		setVar $disruptorCashNeeded (10*$game~DISRUPTOR_COST)
@@ -167,7 +171,7 @@
 			setVar $warpto $RED_adj
 			gosub :DoTwarp
 		else
-			send " m " & $MAP~stardock & "*  *  P  S G Y G Q "
+			send "q q *  m " & $MAP~stardock & "*  *  P  S G Y G Q "
 		end
 		if ($msg = "")
 			waitfor "You leave the Galactic Bank."
@@ -179,14 +183,22 @@
 		end
 		gosub :PLAYER~quikstats
 
+		setVar $_Disrupt ""
+		setVar $_Limps ""
+		setVar $_Mines ""
+
 		if ($deploymines = true)
 			setVar $_Limps "Max"
 			setVar $_Mines "Max"
 		end
-		if ($killing~holokill)
-			setVar $_Photon "1"
+		if ($photon~shooting_count = 0)
+			setVar $_Photon ""
 		else
-			setVar $_Photon "Max"
+			if ($killing~holokill)
+				setVar $_Photon $photon~shooting_count
+			else
+				setVar $_Photon "Max"
+			end
 		end
 		if ($deploydisruptors = true)
 			setVar $_Disrupt "Max"

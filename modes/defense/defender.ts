@@ -16,6 +16,13 @@
 	loadvar $game~DISRUPTOR_COST
 	loadvar $bot~username
 	lowercase $bot~username
+	loadvar $game~MULTIPLE_PHOTONS
+	loadvar $bot~folder
+
+
+	setVar $sentinel_cycle 20000
+	setvar $sentinel~CheckCLVDetail 1
+	setVar $sentinel~logfile $bot~folder&"/sentinel"&$year & $month & $day & ".log"
 
 	setvar $check_history false
 	setarray $fire_history sectors
@@ -45,14 +52,15 @@
 	setVar $BOT~help[16] $BOT~tab&"      {auto} - Will reset cannon damages automatically"
 	setVar $BOT~help[17] $BOT~tab&"   {capture} - capture instead of kill "
 	setVar $BOT~help[18] $BOT~tab&"     {mines} - auto deploy mines as you go "
-	setVar $BOT~help[19] $BOT~tab&"{saveme:bot} - auto deploy mines as you go "
-	setVar $BOT~help[20] $BOT~tab&"    {switch} - will switch into saveme bots ship before kill "
-	setVar $BOT~help[21] $BOT~tab&"           "
-	setVar $BOT~help[22] $BOT~tab&"        Examples: "
-	setVar $BOT~help[23] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[24] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[25] $BOT~tab&"             >defender f density adjacent secure"
-	setVar $BOT~help[26] $BOT~tab&"             >defender secure saveme:hunt"
+	setVar $BOT~help[19] $BOT~tab&"{saveme:bot} - define saveme bot for your planet "
+	setVar $BOT~help[20] $BOT~tab&"   {multi:#} - how many photons to shoot (multi photon games) "
+	setVar $BOT~help[21] $BOT~tab&"    {switch} - will switch into saveme bots ship before kill "
+	setVar $BOT~help[22] $BOT~tab&"           "
+	setVar $BOT~help[23] $BOT~tab&"        Examples: "
+	setVar $BOT~help[24] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[25] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[26] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[27] $BOT~tab&"             >defender secure saveme:hunt"
 
 	gosub :bot~helpfile
 
@@ -169,15 +177,6 @@
 		setvar $photon~adjacentphoton true
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " nophoton "
-	if ($pos > 0)
-		setvar $nophoton true
-		setvar $photon~adjacentphoton false
-		setvar $photon~density false
-	else
-		setvar $nophoton false
-	end
-
 	getwordpos " "&$bot~user_command_line&" " $pos " noescape "
 	if ($pos > 0)
 		setvar $noescape true
@@ -197,6 +196,38 @@
 		setvar $restock~deploymines true
 	else
 		setvar $restock~deploymines false
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " multi:"
+	setvar $photon~multi false
+	setvar $photon~shooting_count 1
+	if ($pos > 0)
+		if ($game~MULTIPLE_PHOTONS <> "True")
+			setVar $SWITCHBOARD~message "This game doesn't support multiple photons.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+		setvar $photon~multi true
+		getText $bot~user_command_line&" " $photon~shooting_count "multi:" " "
+		isNumber $test $photon~shooting_count
+		if ($test <> true)
+			setVar $SWITCHBOARD~message "Number of photons to shoot should be a number.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+		if ($photon~multi_count = 0)
+			setvar $photon~shooting_count 3
+		end
+	else
+		getwordpos " "&$bot~user_command_line&" " $pos " nophoton "
+		if ($pos > 0)
+			setvar $nophoton true
+			setvar $photon~adjacentphoton false
+			setvar $photon~density false
+			setvar $photon~shooting_count 0
+		else
+			setvar $nophoton false
+		end
 	end
 
 	getWordPos " "&$bot~user_command_line&" " $pos " saveme:"
@@ -302,7 +333,9 @@
 	    gosub :SHIP~getShipStats
 	end
 
-	setVar $message "'*  {"&$bot~bot_name&"} - "&$script_ver&" Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+	gosub :sentinel~checkcorp
+
+	setVar $message $script_ver&" Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	if ($fighter)
 		setVar $message $message&"*                 On Fighter Hit: Yes"
 	else
@@ -359,10 +392,15 @@
 		setVar $message $message&"*                   Deploy mines"
 	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
-	send $message
+	setvar $switchboard~message $message
+	gosub :switchboard~switchboard
 
-	if (($killing~holokill = true) and ($player~photons > 1))
-		setvar $switchboard~message "Holokill with more than one photon is not advised.  Be careful.*"
+	if (($killing~holokill = true) and ($player~photons > $photon~shooting_count))
+		if ($photon~shooting_count > 1)
+			setvar $switchboard~message "Holokill with more than "&$photon~shooting_count&" photons is not advised.  Be careful.*"
+		else
+			setvar $switchboard~message "Holokill with more than "&$photon~shooting_count&" photon is not advised.  Be careful.*"
+		end
 		gosub :switchboard~switchboard
 	elseif (($killing~holokill = true) and ($nophoton = true) and ($player~photons > 0))
 		setvar $switchboard~message "You are running holokill with a photon, with photon mode off.  Could be a recipe for disaster.  Be careful out there.*"
@@ -374,7 +412,7 @@
 	###########################################
 
 	:processing
-		gosub :killtriggers
+		killalltriggers
 		setTextTrigger 1 :pausing "Planet command (?="
 		setTextTrigger 2 :pausing "Computer command ["
 		setTextTrigger 3 :pausing "Corporate command ["
@@ -396,6 +434,14 @@
 		setTextLineTrigger 18 :scan " enters the game."
 		setDelayTrigger	   19 :announce	1200000
 		setDelayTrigger	   20 :head_home_timeout 3600000
+		if (($photon~found))
+			#########################################
+			# wait longer if grid is hit by players #
+			#########################################
+			setdelaytrigger    25 :sentinel 120000
+		else
+			setdelaytrigger    25 :sentinel $sentinel_cycle
+		end
 		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
 		
 
@@ -539,9 +585,9 @@
 
 
 :check_to_fire_photon
-	killalltriggers
 
 	if ($photon~found = true)
+		killalltriggers
 		if ($photon~retreatfighter = true)
 			gosub :photon~retreatphoton
 		else
@@ -634,26 +680,19 @@
 		end
 
 	else
-		:can_not_fire
-		if ($photon~found = true)
-			if ($fire_history[$photon~sector] > 5)
-				setvar $switchboard~message "Fired more than 5 times into sector "&$photon~sector&".  That's too many.  Restart script if you want to keep photoning.*"
-				gosub :switchboard~switchboard
-			end
-			if ($photon~last_sector = $photon~sector)
-				setvar $switchboard~message "Can't fire into sector "&$photon~sector&" twice.*"
-				gosub :switchboard~switchboard
-			end
-			if ($photon~sector = $map~home_sector)
-				setvar $switchboard~message "Can not fire into home sector.*"
-				gosub :switchboard~switchboard
-			end
+		if ($limpet)
+			killtrigger 21
+			setTextTrigger 21 :attackSectorLimpet "Limpet mine in "
 		end
-		gosub :killing~scan_for_targets
-		if ($killing~error = true)
-			goto :head_home
+		if ($armid)
+			killtrigger 22
+			setTextTrigger 22 :attackSectorMine "Your mines in "
 		end
-		gosub :navigate~runaway_if_needed
+		if ($fighter)
+			killtrigger 23
+			setTextTrigger 23 :attackSectorFighter "Deployed Fighters "
+		end
+		pause
 	end
 
 	goto :processing
@@ -664,6 +703,14 @@
 ############################################################################################
 
 :scan
+	setvar $i 1
+	while ($i <= $sentinel~corp_count)
+		getwordpos CURRENTLINE $pos $sentinel~corp_members[$i]&" "
+		if ($pos > 0)
+			goto :processing
+		end
+		add $i 1
+	end
 	killalltriggers
 	gosub :killing~checkForVictims
 	if ($killing~error = true)
@@ -687,11 +734,18 @@
 	gosub :killtriggers
 	echo ANSI_6 "*[" ANSI_14 $script_ver " paused. To restart, re-enter Citadel Prompt" ANSI_6 "]*" ANSI_7
 	setTextTrigger 1 :restarting "Citadel command ("
+	settextlinetrigger 2 :fixpassword "Enter a new password (up to 10 chars) : OKIE: MSTS"
 	pause
 	:restarting
-		gosub :killtriggers
+		killtrigger 2
 		echo ANSI_6 "*[" ANSI_14 $script_ver " restarted" ANSI_6 "]*" ANSI_7
 		gosub :player~quikstats
+		goto :processing
+	:fixpassword
+		killtrigger 1
+		send "c q  "
+		setvar $switchboard~message "Connection from remote server messing up password.  Fixing..*"
+		gosub :switchboard~switchboard
 		goto :processing
 
 
@@ -764,7 +818,7 @@ return
 return
 
 :check_for_photon_refurb
-	if (($player~photons <= 0) and ($nophoton <> true))
+	if (($player~photons <= $photon~shooting_count) and ($nophoton <> true))
 		gosub :navigate~navigate_to_limp
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
@@ -772,6 +826,10 @@ return
 		end
 		gosub :navigate~runaway_if_needed
 		gosub :restock~refurb_photons
+		if ($player~photons < $photon~shooting_count)
+			setvar $switchboard~message "This ship does not have enough to photons to shoot "&$photon~shooting_count&" times.  Either out of money or this ship doesn't hold that many.*"
+			gosub :switchboard~switchboard
+		end
 	end
 return
 
@@ -821,6 +879,33 @@ return
 	end
 return
 
+:sentinel
+	killalltriggers
+	gosub :sentinel~activate
+	goto :processing
+
+
+:can_not_fire
+	if ($photon~found = true)
+		if ($fire_history[$photon~sector] > 5)
+			setvar $switchboard~message "Fired more than 5 times into sector "&$photon~sector&".  That's too many.  Restart script if you want to keep photoning.*"
+			gosub :switchboard~switchboard
+		end
+		if ($photon~last_sector = $photon~sector)
+			setvar $switchboard~message "Can't fire into sector "&$photon~sector&" twice.*"
+			gosub :switchboard~switchboard
+		end
+		if ($photon~sector = $map~home_sector)
+			setvar $switchboard~message "Can not fire into home sector.*"
+			gosub :switchboard~switchboard
+		end
+	end
+	gosub :killing~scan_for_targets
+	if ($killing~error = true)
+		goto :head_home
+	end
+	gosub :navigate~runaway_if_needed
+	goto :processing
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
@@ -843,6 +928,7 @@ include "source\module_includes\defender\navigate"
 include "source\module_includes\defender\photon"
 include "source\module_includes\defender\restock"
 include "source\module_includes\defender\killing"
+include "source\module_includes\defender\sentinel"
 include "source\bot_includes\external\htorp"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\external\movefig"
