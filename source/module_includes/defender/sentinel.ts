@@ -1,10 +1,23 @@
 :activate
 	setvar $switchboard~message ""
 	send "clvq"
+	gosub :checkcorp
 	gosub :CheckCLV
 	gosub :CheckOnline
-	gosub :checkcorp
 	gosub :switchboard~switchboard
+	setvar $i 1
+	if ($corp_count > 0)
+		echo "*   Name                                Sector*" 
+		while ($i <= $corp_count)
+			setvar $name $corp_members[$i]
+			getlength $name $name_length
+			if ($name_length < 30)
+				padRight $name (30-$name_length)
+			end
+			echo "*  " $name                          " | " $corp_members[$i][1]
+			add $i 1
+		end
+	end
 return
 
 :checkcorp
