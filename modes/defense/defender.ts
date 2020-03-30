@@ -860,6 +860,7 @@ return
 return
 
 :sentinel
+	killalltriggers
 	gosub :sentinel~activate
 	goto :processing
 
