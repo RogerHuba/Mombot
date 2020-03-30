@@ -284,7 +284,7 @@ return
 		end
   
 	if ($Found = 0) and ($CheckOnlineInit = 1)
-		setvar $switchboard~message $switchboard~message&"ONLINEUPDATE: " $Player " has entered the game*"
+		setvar $switchboard~message $switchboard~message&"ONLINEUPDATE: "&$Player&" has entered the game*"
 	end
   
 	setVar $Players[$Count] $Player
@@ -313,7 +313,7 @@ return
     end
     
 	if ($Found = 0)
-		setvar $switchboard~message $switchboard~message&"ONLINEUPDATE: " $LastPlayers[$Count] " has left the game*"
+		setvar $switchboard~message $switchboard~message&"ONLINEUPDATE: "&$LastPlayers[$Count]&" has left the game*"
 	end
     
     add $Count 1
