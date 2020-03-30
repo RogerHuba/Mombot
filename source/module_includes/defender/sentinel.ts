@@ -6,9 +6,8 @@
 	gosub :switchboard~switchboard
 	setvar $i 1
 	if ($corp_count > 0)
-		echo "[1;44m                               Who's Playing                                 [0m"
-		echo ansi_14 "*                 Corp Info                   " 
-		echo "*   Name                           Sector" ansi_7 "*------------------------------------------" 
+		echo ansi_14 "*                 Corp Info                   " ansi_15
+		echo "[1;44m              Name                           Sector                    [0m"
 		while ($i <= $corp_count)
 			setvar $name $corp_members[$i]
 			padRight $name 30
