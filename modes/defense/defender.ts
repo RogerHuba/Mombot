@@ -20,7 +20,8 @@
 	loadvar $bot~folder
 
 
-	setVar $sentinel_CycleTime 30000
+	setVar $sentinel_cycle 30000
+	setvar $sentinel~CheckCLVDetail 1
 	setVar $sentinel~logfile $bot~folder&"/sentinel"&$year & $month & $day & ".log"
 
 	setvar $check_history false
@@ -405,7 +406,7 @@
 	###########################################
 
 	:processing
-		gosub :killtriggers
+		killalltriggers
 		setTextTrigger 1 :pausing "Planet command (?="
 		setTextTrigger 2 :pausing "Computer command ["
 		setTextTrigger 3 :pausing "Corporate command ["
@@ -427,7 +428,7 @@
 		setTextLineTrigger 18 :scan " enters the game."
 		setDelayTrigger	   19 :announce	1200000
 		setDelayTrigger	   20 :head_home_timeout 3600000
-		setdelaytrigger    25 :sentinel 30000
+		setdelaytrigger    25 :sentinel $sentinel_cycle
 		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
 		
 
