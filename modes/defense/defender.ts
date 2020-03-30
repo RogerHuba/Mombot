@@ -675,7 +675,7 @@
 				gosub :switchboard~switchboard
 			end
 		end
-		if ($photon~alien <> true)
+		if (($photon~alien <> true) and ($photon~spoof <> true))
 			gosub :killing~scan_for_targets
 			if ($killing~error = true)
 				goto :head_home

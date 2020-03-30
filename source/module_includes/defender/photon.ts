@@ -86,18 +86,16 @@ return
 
 :photon_gotem
 	gosub :killtriggers
-	setvar $photon_shot $shooting_count
-	if ($photon_shot > 1)
+	if ($shooting_count > 1)
+		setvar $photon_shot $shooting_count
 		send "  c  "
-	end
-	while ($photon_shot > 1)
-		################################
-		# this only runs on multishoot #
-		################################
-		send " p  y  " $sector "**"
-		subtract $photon_shot 1
-	end
-	if ($photon_shot > 1)
+		while ($photon_shot > 1)
+			################################
+			# this only runs on multishoot #
+			################################
+			send " p  y  " $sector "**"
+			subtract $photon_shot 1
+		end
 		send "q  "
 	end
 
@@ -142,8 +140,10 @@ return
 	getWord $bot~last_fighter_attack $spoof_test 1
 	getWord $bot~ansi_last_fighter_attack $ansi_spoof_test 1
 	getWordPos $ansi_spoof_test $ansi_spoof_pos #27 & "[1;33m"
+	setvar $spoof false
 	if ($spoof_test <> "Deployed") OR ($ansi_spoof_pos <= 0)
-	     return
+		setvar $spoof true
+		return
 	end
 
 	############################################################################################
@@ -206,7 +206,9 @@ return
 	setvar $adjacent false
 	loadGlobal $bot~last_limpet_attack
 	cutText $bot~last_limpet_attack&"      " $ck 1 6
+	setvar $spoof false
 	if ($ck <> "Limpet")
+		setvar $spoof true
 		return
 	end
 	getWord $bot~last_limpet_attack $sector 4
@@ -224,7 +226,9 @@ return
 	loadGlobal $bot~last_armid_attack
 	loadGlobal $bot~ansi_last_armid_attack
 	cutText $bot~last_armid_attack&"    " $ck 1 4
+	setvar $spoof false
 	if ($ck <> "Your")
+		setvar $spoof true
 		return
 	end
 	if ($game~hasAliens = true)
