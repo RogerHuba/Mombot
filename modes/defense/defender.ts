@@ -20,7 +20,7 @@
 	loadvar $bot~folder
 
 
-	setVar $sentinel_cycle 30000
+	setVar $sentinel_cycle 20000
 	setvar $sentinel~CheckCLVDetail 1
 	setVar $sentinel~logfile $bot~folder&"/sentinel"&$year & $month & $day & ".log"
 
@@ -400,6 +400,8 @@
 		setvar $switchboard~message "You are running holokill with a photon, with photon mode off.  Could be a recipe for disaster.  Be careful out there.*"
 		gosub :switchboard~switchboard
 	end
+
+	goto :sentinel
 
 	###########################################
 	# Main information processor for defender #
