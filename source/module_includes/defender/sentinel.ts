@@ -15,20 +15,21 @@ return
 	waiton "------------------------------------------------------------------------------"
 	
 	:ta_again
-		setTextLineTrigger taline :tacheck
+		setTextLineTrigger taline :ta_check
 		pause
 
-		getwordpos CURRENTLINE $pos "P indicates Trader is on a planet in that sector"
-		if ($pos > 0)
-			goto :done_ta
-		end
-		setvar $line CURRENTLINE
-		cutText $line $name 1 30
-		replacetext $line $name ""
-		trim $name
-		add $corp_count 1
-		setvar $corp_members[$corp_count] $name
-		getword $line $corp_members[$corp_count] 1
+		:ta_check
+			getwordpos CURRENTLINE $pos "P indicates Trader is on a planet in that sector"
+			if ($pos > 0)
+				goto :done_ta
+			end
+			setvar $line CURRENTLINE
+			cutText $line $name 1 30
+			replacetext $line $name ""
+			trim $name
+			add $corp_count 1
+			setvar $corp_members[$corp_count] $name
+			getword $line $corp_members[$corp_count] 1
 		goto :ta_again
 
 	:done_ta
