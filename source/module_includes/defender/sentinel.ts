@@ -33,6 +33,7 @@ return
 		goto :ta_again
 
 	:done_ta
+	waiton "Citadel command ("
 return
 
 :checkclv
