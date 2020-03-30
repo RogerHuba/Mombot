@@ -333,6 +333,8 @@
 	    gosub :SHIP~getShipStats
 	end
 
+	gosub :sentinel~checkcorp
+
 	setVar $message $script_ver&" Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	if ($fighter)
 		setVar $message $message&"*                 On Fighter Hit: Yes"
@@ -701,6 +703,14 @@
 ############################################################################################
 
 :scan
+	setvar $i 1
+	while ($i <= $sentinel~corp_count)
+		getwordpos CURRENTLINE $pos $sentinel~corp_members[$i]&" "
+		if ($pos > 0)
+			goto :processing
+		end
+		add $i
+	end
 	killalltriggers
 	gosub :killing~checkForVictims
 	if ($killing~error = true)

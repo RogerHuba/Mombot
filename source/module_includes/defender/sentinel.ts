@@ -3,10 +3,36 @@
 	send "clvq"
 	gosub :CheckCLV
 	gosub :CheckOnline
+	gosub :checkcorp
 	gosub :switchboard~switchboard
 return
 
+:checkcorp
+	setarray $corp_members 10 1
+	setvar $corp_count 0
+	send "xaq "
+	waiton "    Corp Member Name                   Sector  Fighters Shields Mines  Credits"
+	waiton "------------------------------------------------------------------------------"
+	
+	:ta_again
+		setTextLineTrigger taline :tacheck
+		pause
 
+		getwordpos CURRENTLINE $pos "P indicates Trader is on a planet in that sector"
+		if ($pos > 0)
+			goto :done_ta
+		end
+		setvar $line CURRENTLINE
+		cutText $line $name 1 30
+		replacetext $line $name ""
+		trim $name
+		add $corp_count 1
+		setvar $corp_members[$corp_count] $name
+		getword $line $corp_members[$corp_count] 1
+		goto :ta_again
+
+	:done_ta
+return
 
 :checkclv
 	getDate $date
