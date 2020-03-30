@@ -16,6 +16,7 @@
 	loadvar $game~DISRUPTOR_COST
 	loadvar $bot~username
 	lowercase $bot~username
+	loadvar $game~MULTIPLE_PHOTONS
 
 	setvar $check_history false
 	setarray $fire_history sectors
@@ -302,7 +303,7 @@
 	    gosub :SHIP~getShipStats
 	end
 
-	setVar $message "'*  {"&$bot~bot_name&"} - "&$script_ver&" Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+	setVar $message $script_ver&" Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	if ($fighter)
 		setVar $message $message&"*                 On Fighter Hit: Yes"
 	else
@@ -359,7 +360,8 @@
 		setVar $message $message&"*                   Deploy mines"
 	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
-	send $message
+	setvar $switchboard~message $message
+	gosub :switchboard~switchboard
 
 	if (($killing~holokill = true) and ($player~photons > 1))
 		setvar $switchboard~message "Holokill with more than one photon is not advised.  Be careful.*"

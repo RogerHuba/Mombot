@@ -199,9 +199,17 @@ return
 	setvar $found false
 	setvar $adjacent false
 	loadGlobal $bot~last_armid_attack
+	loadGlobal $bot~ansi_last_armid_attack
 	cutText $bot~last_armid_attack&"    " $ck 1 4
 	if ($ck <> "Your")
 		return
+	end
+	if ($game~hasAliens = true)
+		getText $bot~ansi_last_armid_attack $alien_check ": " "'s"
+		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+		if ($pos > 0)
+		     return
+		end
 	end
 	getWord $bot~last_armid_attack $sector 4
 	getwordpos $adjacent_sectors $pos " "&$sector&" "
