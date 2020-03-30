@@ -1,6 +1,5 @@
 :activate
 	setvar $switchboard~message ""
-	send "clvq"
 	gosub :checkcorp
 	gosub :CheckCLV
 	gosub :CheckOnline
@@ -61,6 +60,7 @@ return
 
 	setVar $CLVFigsHit 0
 
+	send "clvq"
 	setTextLineTrigger CLVBeginCheck :CLVBeginCheck "--- ---------------------"
 	pause
 
