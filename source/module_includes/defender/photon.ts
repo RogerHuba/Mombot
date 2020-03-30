@@ -19,7 +19,7 @@
 					send "p" $adjsec "*  y  "
 					gosub :densityDrop
 				else
-					send "p" $adjsec "*  y  p" $sector "*  y  "
+					send "p" $adjsec "*  y   p" $sector "*  y  "
 				end
 				return
 			end
@@ -44,6 +44,9 @@ return
 	end
 	
 :fire_photon
+	###############################
+	# always try to drop directly #
+	###############################
 	send "p" $adjsec "*  y  c  p  y  " $sector "**qp" $sector "*  y  "
 
 	:triggers
@@ -83,7 +86,25 @@ return
 
 :photon_gotem
 	gosub :killtriggers
-	setvar $switchboard~message "Photon Fired - Sector => " & $sector & "!*"
+	setvar $photon_shot $shooting_count
+	if ($photon_shot > 1)
+		send "  c  "
+	end
+	while ($photon_shot > 1)
+		################################
+		# this only runs on multishoot #
+		################################
+		send " p  y  " $sector "**"
+		subtract $photon_shot 1
+	end
+	if ($photon_shot > 1)
+		send "q  "
+	end
+
+	setvar $switchboard~message "Photon fired - sector => " & $sector & "!*"
+	if ($shooting_count > 1)
+		setvar $switchboard~message $shooting_count&" photons fired - sector => " & $sector & "!*"
+	end
 	gosub :switchboard~switchboard
 	gosub :player~quikstats
 	setvar $success true

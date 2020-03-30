@@ -170,15 +170,6 @@
 		setvar $photon~adjacentphoton true
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " nophoton "
-	if ($pos > 0)
-		setvar $nophoton true
-		setvar $photon~adjacentphoton false
-		setvar $photon~density false
-	else
-		setvar $nophoton false
-	end
-
 	getwordpos " "&$bot~user_command_line&" " $pos " noescape "
 	if ($pos > 0)
 		setvar $noescape true
@@ -198,6 +189,38 @@
 		setvar $restock~deploymines true
 	else
 		setvar $restock~deploymines false
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " multi:"
+	setvar $photon~multi false
+	setvar $photon~shooting_count 1
+	if ($pos > 0)
+		if ($game~MULTIPLE_PHOTONS <> "Yes")
+			setVar $SWITCHBOARD~message "This game doesn't support multiple photons.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+		setvar $photon~multi true
+		getText $bot~user_command_line&" " $photon~shooting_count "multi:" " "
+		isNumber $test $photon~shooting_count
+		if ($test <> true)
+			setVar $SWITCHBOARD~message "Number of photons to shoot should be a number.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+		if ($photon~multi_count = 0)
+			setvar $photon~shooting_count 3
+		end
+	else
+		getwordpos " "&$bot~user_command_line&" " $pos " nophoton "
+		if ($pos > 0)
+			setvar $nophoton true
+			setvar $photon~adjacentphoton false
+			setvar $photon~density false
+			setvar $photon~shooting_count 0
+		else
+			setvar $nophoton false
+		end
 	end
 
 	getWordPos " "&$bot~user_command_line&" " $pos " saveme:"
