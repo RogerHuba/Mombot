@@ -17,6 +17,11 @@
 	loadvar $bot~username
 	lowercase $bot~username
 	loadvar $game~MULTIPLE_PHOTONS
+	loadvar $bot~folder
+
+
+	setVar $sentinel_CycleTime 30000
+	setVar $sentinel~logfile $bot~folder&"/sentinel"&$year & $month & $day & ".log"
 
 	setvar $check_history false
 	setarray $fire_history sectors
@@ -422,6 +427,7 @@
 		setTextLineTrigger 18 :scan " enters the game."
 		setDelayTrigger	   19 :announce	1200000
 		setDelayTrigger	   20 :head_home_timeout 3600000
+		setdelaytrigger    21 :sentinel 30000
 		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
 		
 
@@ -792,7 +798,7 @@ return
 return
 
 :check_for_photon_refurb
-	if (($player~photons <= 0) and ($nophoton <> true))
+	if (($player~photons <= $photon~shooting_count) and ($nophoton <> true))
 		gosub :navigate~navigate_to_limp
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
@@ -800,6 +806,10 @@ return
 		end
 		gosub :navigate~runaway_if_needed
 		gosub :restock~refurb_photons
+		if ($player~photons < $photon~shooting_count)
+			setvar $switchboard~message "This ship does not have enough to photons to shoot "&$photon~shooting_count&" times.  Either out of money or this ship doesn't hold that many.*"
+			gosub :switchboard~switchboard
+		end
 	end
 return
 
@@ -849,6 +859,9 @@ return
 	end
 return
 
+:sentinel
+	gosub :sentinel~activate
+	goto :processing
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
@@ -871,6 +884,7 @@ include "source\module_includes\defender\navigate"
 include "source\module_includes\defender\photon"
 include "source\module_includes\defender\restock"
 include "source\module_includes\defender\killing"
+include "source\module_includes\defender\sentinel"
 include "source\bot_includes\external\htorp"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\external\movefig"
