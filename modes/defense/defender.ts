@@ -393,8 +393,12 @@
 	setvar $switchboard~message $message
 	gosub :switchboard~switchboard
 
-	if (($killing~holokill = true) and ($player~photons > 1))
-		setvar $switchboard~message "Holokill with more than one photon is not advised.  Be careful.*"
+	if (($killing~holokill = true) and ($player~photons > $photon~shooting_count))
+		if ($photon~shooting_count > 1)
+			setvar $switchboard~message "Holokill with more than "&$photon~shooting_count&" photons is not advised.  Be careful.*"
+		else
+			setvar $switchboard~message "Holokill with more than "&$photon~shooting_count&" photon is not advised.  Be careful.*"
+		end
 		gosub :switchboard~switchboard
 	elseif (($killing~holokill = true) and ($nophoton = true) and ($player~photons > 0))
 		setvar $switchboard~message "You are running holokill with a photon, with photon mode off.  Could be a recipe for disaster.  Be careful out there.*"
@@ -720,11 +724,18 @@
 	gosub :killtriggers
 	echo ANSI_6 "*[" ANSI_14 $script_ver " paused. To restart, re-enter Citadel Prompt" ANSI_6 "]*" ANSI_7
 	setTextTrigger 1 :restarting "Citadel command ("
+	settextlinetrigger 2 :fixpassword "Enter a new password (up to 10 chars) : OKIE: MSTS"
 	pause
 	:restarting
-		gosub :killtriggers
+		killtrigger 2
 		echo ANSI_6 "*[" ANSI_14 $script_ver " restarted" ANSI_6 "]*" ANSI_7
 		gosub :player~quikstats
+		goto :processing
+	:fixpassword
+		killtrigger 1
+		send "c q  "
+		setvar $switchboard~message "Connection from remote server messing up password.  Fixing..*"
+		gosub :switchboard~switchboard
 		goto :processing
 
 
