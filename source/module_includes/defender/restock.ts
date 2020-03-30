@@ -171,7 +171,7 @@
 			setVar $warpto $RED_adj
 			gosub :DoTwarp
 		else
-			send " m " & $MAP~stardock & "*  *  P  S G Y G Q "
+			send "q q *  m " & $MAP~stardock & "*  *  P  S G Y G Q "
 		end
 		if ($msg = "")
 			waitfor "You leave the Galactic Bank."
