@@ -1,4 +1,5 @@
 :activate
+	setvar $switchboard~message ""
 	send "clvq"
 	gosub :CheckCLV
 	gosub :CheckOnline
@@ -81,7 +82,6 @@ return
 				else
 					setVar $CLVClr $CLVRawName
 				end
-				setvar $switchboard~message ""
 				if ($CLVInit = 0)
 					# first check pass, don't report - just save stuff
 					setVar $CLV[$CLVCount] $CLVPlayer
