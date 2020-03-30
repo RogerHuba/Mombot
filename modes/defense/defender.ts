@@ -401,8 +401,6 @@
 		gosub :switchboard~switchboard
 	end
 
-	goto :sentinel
-
 	###########################################
 	# Main information processor for defender #
 	###########################################
@@ -581,9 +579,9 @@
 
 
 :check_to_fire_photon
-	killalltriggers
 
 	if ($photon~found = true)
+		killalltriggers
 		if ($photon~retreatfighter = true)
 			gosub :photon~retreatphoton
 		else
@@ -676,28 +674,19 @@
 		end
 
 	else
-		:can_not_fire
-		if ($photon~found = true)
-			if ($fire_history[$photon~sector] > 5)
-				setvar $switchboard~message "Fired more than 5 times into sector "&$photon~sector&".  That's too many.  Restart script if you want to keep photoning.*"
-				gosub :switchboard~switchboard
-			end
-			if ($photon~last_sector = $photon~sector)
-				setvar $switchboard~message "Can't fire into sector "&$photon~sector&" twice.*"
-				gosub :switchboard~switchboard
-			end
-			if ($photon~sector = $map~home_sector)
-				setvar $switchboard~message "Can not fire into home sector.*"
-				gosub :switchboard~switchboard
-			end
+		if ($limpet)
+			killtrigger 21
+			setTextTrigger 21 :attackSectorLimpet "Limpet mine in "
 		end
-		if ($photon~found)
-			gosub :killing~scan_for_targets
-			if ($killing~error = true)
-				goto :head_home
-			end
-			gosub :navigate~runaway_if_needed
+		if ($armid)
+			killtrigger 22
+			setTextTrigger 22 :attackSectorMine "Your mines in "
 		end
+		if ($fighter)
+			killtrigger 23
+			setTextTrigger 23 :attackSectorFighter "Deployed Fighters "
+		end
+		pause
 	end
 
 	goto :processing
@@ -872,6 +861,29 @@ return
 :sentinel
 	killalltriggers
 	gosub :sentinel~activate
+	goto :processing
+
+
+:can_not_fire
+	if ($photon~found = true)
+		if ($fire_history[$photon~sector] > 5)
+			setvar $switchboard~message "Fired more than 5 times into sector "&$photon~sector&".  That's too many.  Restart script if you want to keep photoning.*"
+			gosub :switchboard~switchboard
+		end
+		if ($photon~last_sector = $photon~sector)
+			setvar $switchboard~message "Can't fire into sector "&$photon~sector&" twice.*"
+			gosub :switchboard~switchboard
+		end
+		if ($photon~sector = $map~home_sector)
+			setvar $switchboard~message "Can not fire into home sector.*"
+			gosub :switchboard~switchboard
+		end
+	end
+	gosub :killing~scan_for_targets
+	if ($killing~error = true)
+		goto :head_home
+	end
+	gosub :navigate~runaway_if_needed
 	goto :processing
 
 #INCLUDES:
