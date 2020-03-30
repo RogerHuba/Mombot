@@ -6,14 +6,15 @@
 	gosub :switchboard~switchboard
 	setvar $i 1
 	if ($corp_count > 0)
-		echo "*   Name                                Sector*------------------------------------------" 
+		echo ansi_14 "*                 Corp Info                   " 
+		echo "*   Name                           Sector" ansi_15 "*------------------------------------------" 
 		while ($i <= $corp_count)
 			setvar $name $corp_members[$i]
 			padRight $name 30
-			echo "*  " $name                          " | " $corp_members[$i][1]
+			echo ansi_4 "*  " $name                          " | " $corp_members[$i][1]
 			add $i 1
 		end
-		echo "**"
+		echo "**" ansi_15
 	end
 return
 
