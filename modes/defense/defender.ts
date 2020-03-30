@@ -709,7 +709,7 @@
 		if ($pos > 0)
 			goto :processing
 		end
-		add $i
+		add $i 1
 	end
 	killalltriggers
 	gosub :killing~checkForVictims
