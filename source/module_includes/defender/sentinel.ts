@@ -9,10 +9,7 @@
 		echo "*   Name                                Sector*" 
 		while ($i <= $corp_count)
 			setvar $name $corp_members[$i]
-			getlength $name $name_length
-			if ($name_length < 30)
-				padRight $name (30-$name_length)
-			end
+			padRight $name 30
 			echo "*  " $name                          " | " $corp_members[$i][1]
 			add $i 1
 		end
