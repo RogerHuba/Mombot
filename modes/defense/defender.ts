@@ -46,14 +46,15 @@
 	setVar $BOT~help[16] $BOT~tab&"      {auto} - Will reset cannon damages automatically"
 	setVar $BOT~help[17] $BOT~tab&"   {capture} - capture instead of kill "
 	setVar $BOT~help[18] $BOT~tab&"     {mines} - auto deploy mines as you go "
-	setVar $BOT~help[19] $BOT~tab&"{saveme:bot} - auto deploy mines as you go "
-	setVar $BOT~help[20] $BOT~tab&"    {switch} - will switch into saveme bots ship before kill "
-	setVar $BOT~help[21] $BOT~tab&"           "
-	setVar $BOT~help[22] $BOT~tab&"        Examples: "
-	setVar $BOT~help[23] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[24] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[25] $BOT~tab&"             >defender f density adjacent secure"
-	setVar $BOT~help[26] $BOT~tab&"             >defender secure saveme:hunt"
+	setVar $BOT~help[19] $BOT~tab&"{saveme:bot} - define saveme bot for your planet "
+	setVar $BOT~help[20] $BOT~tab&"   {multi:#} - how many photons to shoot (multi photon games) "
+	setVar $BOT~help[21] $BOT~tab&"    {switch} - will switch into saveme bots ship before kill "
+	setVar $BOT~help[22] $BOT~tab&"           "
+	setVar $BOT~help[23] $BOT~tab&"        Examples: "
+	setVar $BOT~help[24] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[25] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[26] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[27] $BOT~tab&"             >defender secure saveme:hunt"
 
 	gosub :bot~helpfile
 
@@ -674,11 +675,13 @@
 				gosub :switchboard~switchboard
 			end
 		end
-		gosub :killing~scan_for_targets
-		if ($killing~error = true)
-			goto :head_home
+		if ($photon~alien <> true)
+			gosub :killing~scan_for_targets
+			if ($killing~error = true)
+				goto :head_home
+			end
+			gosub :navigate~runaway_if_needed
 		end
-		gosub :navigate~runaway_if_needed
 	end
 
 	goto :processing

@@ -189,10 +189,12 @@ return
 	###############################################
 
 	if ($game~hasAliens = true)
+		setvar $alien false
 		getText $bot~ansi_last_fighter_attack $alien_check ": " "'s"
 		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 		if ($pos > 0)
-		     return
+			setvar $alien true
+			return
 		end
 	end
 
@@ -227,10 +229,12 @@ return
 	end
 	if ($game~hasAliens = true)
 		#[K[32mYour mines in [1;33m8174[0;32m did [1;33m14[0;32m damage to #[1;36m[33mFerrengi[36m Nik
+		setvar $alien false
 		getText $bot~ansi_last_armid_attack&"[xx][xx][xx]" $alien_check " damage to " "[xx][xx][xx]"
 		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 		if ($pos > 0)
-		     return
+			setvar $alien true
+			return
 		end
 	end
 	getWord $bot~last_armid_attack $sector 4
