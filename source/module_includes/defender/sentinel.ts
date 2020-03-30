@@ -7,7 +7,7 @@
 	setvar $i 1
 	if ($corp_count > 0)
 		echo ansi_14 "*                 Corp Info                   " ansi_15
-		echo "*[1;44m  Name                           Sector                    [0m"
+		echo "*[1;44m  Name                             Sector         [0m"
 		while ($i <= $corp_count)
 			setvar $name $corp_members[$i]
 			padRight $name 30
