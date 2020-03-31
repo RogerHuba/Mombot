@@ -16,15 +16,15 @@
 		end
 		echo "**" ansi_15
 	end
-	echo "*[1;44m  Defender Activity  [0m"
+	echo "*[1;44m     Defender Activity     [0m"
 	if ($photon~shot > 0)
-		echo "*  Last sector shot at: " $photon~last_sector
-		echo "*  Sectors fired into: " $photon~shot " times"
+		echo ansi_6 "*  Last shot at sector " ansi_15 $photon~last_sector ansi_15
+		echo ansi_6 "*  Photon attacks launched " ansi_15 $photon~shot ansi_6 " times"
 	else
-		echo "*  No photons fired yet."
+		echo ansi_6 "*  No photons fired yet."
 	end
 	if ($killing~holokill)
-		echo "*  Holokills attempted " $combat~holokill_count " times "
+		echo ansi_6 "*  Holokills attempted " ansi_15 $combat~holokill_count ansi_6 " times "
 	end
 	echo "**" ansi_15
 return
