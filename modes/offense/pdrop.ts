@@ -24,6 +24,7 @@ reqRecording
 	setVar $BOT~help[12]  $BOT~tab&" [defender] - sets and lifts IG capable defender"
 	setVar $BOT~help[13]  $BOT~tab&"  [perfect] - Only drops adjacent when it is only option"
 	setVar $BOT~help[14]  $BOT~tab&"  [density] - Drops adjacent, runs density photon"
+	setVar $BOT~help[15]  $BOT~tab&"     [lock] - Locks on sector then halts"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Dropper"
@@ -161,6 +162,12 @@ reqRecording
 		setVar $perfect TRUE
 	else
 		setVar $perfect FALSE
+	end
+	getWordPos $bot~user_command_line $pos "lock"
+	if ($pos > 0)
+		setVar $lock TRUE
+	else
+		setVar $lock FALSE
 	end
 
 	getWordPos $bot~user_command_line $pos "density"
@@ -367,9 +374,15 @@ reqRecording
 		:getDropSector
 
 			if ($dropDescription = "Direct")
-				setvar $send "p "&$dropSector&"* y "
-				if ($fastkill = true)
-					setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
+				if ($lock = true)
+					setvar $send "p "&$dropSector&"*"
+					send $send
+					goto :doLock
+				else
+					setvar $send "p "&$dropSector&"* y "
+					if ($fastkill = true)
+						setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
+					end
 				end
 				send $send
 				if ($defender = 1)
@@ -527,7 +540,13 @@ return
 		end
 		:planetDrop
 			setVar $gotoSector $targetSectors[$randomTarget]
-			gosub :dopwarp
+			if ($lock = true)
+				send "p "&$gotoSector&"*"
+				setVar $dropSector $gotoSector
+				goto :doLock
+			else
+				gosub :dopwarp
+			end
 	end
 	
 return
@@ -563,7 +582,24 @@ return
 		goSub :getSectorLocation
 
 return
-
+:doLock
+	killalltriggers
+	setTextLineTrigger doLockNo :doLockNo "You do not have any fighters in Sector "
+	setTextLineTrigger doLockYes :doLockYes "Locating beam pinpointed, TransWarp Locked"
+	setTextLineTrigger doLockYesAlreadyThere :doLockYesAlreadyThere "You are already in that sector!"
+	pause
+	:doLockNo
+		killalltriggers
+		goto :startTargeting
+	:doLockYesAlreadyThere
+		goto :startTargeting
+		killalltriggers
+	:doLockYes
+		setvar $switchboard~message "We have a PLock on " & $dropSector & ", halting..*"
+		gosub :switchboard~switchboard
+		killalltriggers
+		halt	
+return
 :clearScreen
 	echo #27 & "[2J"
 return
