@@ -413,6 +413,7 @@
 
 	:processing
 		killalltriggers
+		setvar $photon~found false
 		setTextTrigger 1 :pausing "Planet command (?="
 		setTextTrigger 2 :pausing "Computer command ["
 		setTextTrigger 3 :pausing "Corporate command ["
