@@ -7,7 +7,7 @@
 	setvar $i 1
 	if ($corp_count > 0)
 		echo ansi_14 "*                 Corp Info                   " ansi_15
-		echo "*[1;44m  Name                             Sector         [0m"
+		echo "*[1;44m  Name                             Sector  [0m"
 		while ($i <= $corp_count)
 			setvar $name $corp_members[$i]
 			padRight $name 30
@@ -16,6 +16,17 @@
 		end
 		echo "**" ansi_15
 	end
+	echo "*[1;44m  Defender Activity  [0m"
+	if ($photon~shot > 0)
+		echo "*  Last sector shot at: " $photon~last_sector
+		echo "*  Sectors fired into: " $photon~shot " times"
+	else
+		echo "*  No photons fired yet."
+	end
+	if ($killing~holokill)
+		echo "*  Holokills attempted " $combat~holokill_count " times "
+	end
+	echo "**" ansi_15
 return
 
 :checkcorp

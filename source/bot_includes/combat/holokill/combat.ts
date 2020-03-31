@@ -67,6 +67,7 @@
 			return
 		end
 :holo_kill_killem
+		add $holokill_count 1
 		if ($slingshot)
 			setvar $title "Slingshot Holokill"
 		else

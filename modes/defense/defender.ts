@@ -32,6 +32,7 @@
 	setVar $ALIEN_ANSI    #27 & "[1;36m" & #27 & "["
 	setVar $START_FIG_HIT_OWNER ":"
 	setVar $END_FIG_HIT_OWNER "'s"
+	setvar $photon~shot 0
 
 
 	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f} {l} {a} {auto} {holo} {mines} {extern:11pm}  "

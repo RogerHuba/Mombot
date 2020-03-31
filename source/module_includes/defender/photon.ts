@@ -106,6 +106,7 @@ return
 	gosub :switchboard~switchboard
 	gosub :player~quikstats
 	setvar $success true
+	add $shot 1
 	###################################
 	# if direct drop worked, do htorp #
 	###################################
