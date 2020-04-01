@@ -123,13 +123,13 @@ return
 					end
 				end
 
-				setVar $CLVRawName $CLVPlayer & " [" & $CLVCorp[$CLVPlayer] & "]"
+				setVar $CLVRawName $CLVPlayer & "[" & $CLVCorp[$CLVPlayer] & "]"
 
 				if ($Colour = "1")
 					if ($CLVAlign[$CLVPlayer] < 0)
-						setVar $CLVClr #3 & "4" & $CLVPlayer & #3 & "6 [" & $CLVCorp[$CLVPlayer] & "]"
+						setVar $CLVClr #3 & "4" & $CLVPlayer & #3 & "6[" & $CLVCorp[$CLVPlayer] & "]"
 					else
-						setVar $CLVClr #3 & "12" & $CLVPlayer & #3 & "6 [" & $CLVCorp[$CLVPlayer] & "]"
+						setVar $CLVClr #3 & "12" & $CLVPlayer & #3 & "6[" & $CLVCorp[$CLVPlayer] & "]"
 					end
 				else
 					setVar $CLVClr $CLVRawName
