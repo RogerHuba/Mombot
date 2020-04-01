@@ -18,7 +18,7 @@
 		end
 		echo "**" ansi_15
 	end
-	echo "*[1;44m     Defender Activity     [0m"
+	echo "*[1;44m        Defender Activity        [0m"
 	if ($photon~shot > 0)
 		echo ansi_6 "*  Last shot at sector " ansi_15 $photon~last_sector ansi_15
 		echo ansi_6 "*  Photon attacks launched " ansi_15 $photon~shot ansi_6 " times"
