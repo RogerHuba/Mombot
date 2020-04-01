@@ -7,6 +7,7 @@
 		gosub :switchboard~switchboard
 	end
 	setvar $i 1
+	echo "**"
 	if ($corp_count > 0)
 		echo ansi_14 "*                 Corp Info                   " ansi_15
 		echo "*[1;44m  Name                             Sector  [0m"
