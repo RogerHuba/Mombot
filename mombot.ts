@@ -8,6 +8,8 @@ reqRecording
 
 setVar $bot~major_version   "3"
 setVar $bot~minor_version   "5beta"
+setvar $bot~default_bot_directory "mombot"
+
 savevar $bot~major_version
 savevar $bot~minor_version
 

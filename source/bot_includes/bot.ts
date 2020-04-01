@@ -291,9 +291,11 @@ return
 		read $mombot_folder_config $mombot_directory 1
 	else
 		delete $mombot_folder_config
-		setvar $mombot_directory "mombot"
+		setvar $mombot_directory $bot~default_bot_directory
 		write $mombot_folder_config $mombot_directory
 	end
+
+	savevar $mombot_directory
 
 	setvar $folder "scripts/"&$mombot_directory&"/games/"&GAMENAME
 	makedir $folder
