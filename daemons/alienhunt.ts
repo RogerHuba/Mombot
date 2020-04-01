@@ -527,7 +527,7 @@ return
 					setVar $BOT~parm1 $MAP~home_sector
 					gosub :moveship~run
 					send "s*  "
-					gosub player~quikstats
+					gosub :player~quikstats
 					setVar $emptyShips SECTOR.SHIPCOUNT[currentsector]
 				end
 				if ($emptyships > 0)
