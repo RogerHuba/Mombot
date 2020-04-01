@@ -301,19 +301,19 @@ return
 		end
 		if ($targetsFound = TRUE)
 			send "'"&$SWITCHBOARD~bot_name&" xenter silent*"
-			setEventTrigger		xenterended		:xenterended "SCRIPT STOPPED" "scripts\MomBot\Modes\General\xenter.cts"
+			setEventTrigger		xenterended		:xenterended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\Modes\General\xenter.cts"
 			pause
 			:xenterended
 			send "s"
 			send "'"&$SWITCHBOARD~bot_name&" moveship s silent*"
-			setEventTrigger		moveshipended2		:moveshipended "SCRIPT STOPPED" "scripts\MomBot\Modes\Resource\moveship.cts"
+			setEventTrigger		moveshipended2		:moveshipended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\Modes\Resource\moveship.cts"
 			pause
 			:moveshipended
 
 			gosub :PLAYER~quikstats
 			if ($startingSector <> $PLAYER~CURRENT_SECTOR)
 				send "'"&$SWITCHBOARD~bot_name&" mow "&$startSector&" 1*"
-				setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\MomBot\Modes\Grid\mow.cts"
+				setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\Modes\Grid\mow.cts"
 				pause
 				:mowended
 				gosub :PLANET~landingSub

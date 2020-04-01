@@ -385,8 +385,8 @@
 				saveVar $bot~parm1
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
-				load "scripts\mombot\commands\general\dep.cts"
-				setEventTrigger		depended		:depended "SCRIPT STOPPED" "scripts\mombot\commands\general\dep.cts"				
+				load "scripts\"&$bot~mombot_directory&"\commands\general\dep.cts"
+				setEventTrigger		depended		:depended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\dep.cts"				
 				pause
 				:depended
 

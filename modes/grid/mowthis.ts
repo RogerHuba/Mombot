@@ -452,13 +452,13 @@ send "qq"
 
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
-				load "scripts\mombot\commands\grid\port.cts"
-				setEventTrigger        killended        :killended "SCRIPT STOPPED" "scripts\mombot\commands\grid\port.cts"
+				load "scripts\"&$bot~mombot_directory&"\commands\grid\port.cts"
+				setEventTrigger        killended        :killended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\port.cts"
 				setdelaytrigger	killwait :killwait 5000
 				pause
 				:killwait
 					
-					stop "scripts\mombot\commands\grid\port.cts"
+					stop "scripts\"&$bot~mombot_directory&"\commands\grid\port.cts"
 					
 				:killended
 					killalltriggers

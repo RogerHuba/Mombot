@@ -1087,8 +1087,8 @@ return
 			saveVar $BOT~parm2
 			saveVar $BOT~command
 			saveVar $BOT~user_command_line
-			load "scripts\mombot\commands\grid\xenter.cts"
-			setEventTrigger		xenterdone		:xenterdone "SCRIPT STOPPED" "scripts\mombot\commands\grid\xenter.cts"
+			load "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
+			setEventTrigger		xenterdone		:xenterdone "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
 			pause
 			:xenterdone
 
@@ -1118,8 +1118,8 @@ return
 			saveVar $BOT~parm2
 			saveVar $BOT~command
 			saveVar $BOT~user_command_line
-			load "scripts\mombot\commands\grid\xenter.cts"
-			setEventTrigger		xenterdone2		:xenterdone2 "SCRIPT STOPPED" "scripts\mombot\commands\grid\xenter.cts"
+			load "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
+			setEventTrigger		xenterdone2		:xenterdone2 "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
 			pause
 			:xenterdone2
 

@@ -55,8 +55,8 @@ while (($continue = TRUE))
 		saveVar $BOT~parm2
 		saveVar $BOT~command
 		saveVar $BOT~user_command_line
-		load "scripts\mombot\modes\resource\movefig.cts"
-		setEventTrigger		moveended		:moveended "SCRIPT STOPPED" "scripts\mombot\modes\resource\movefig.cts"
+		load "scripts\"&$bot~mombot_directory&"\modes\resource\movefig.cts"
+		setEventTrigger		moveended		:moveended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\movefig.cts"
 		pause
 		:moveended
 
@@ -71,8 +71,8 @@ setVar $BOT~parm1 ""
 saveVar $BOT~parm1
 saveVar $BOT~command
 saveVar $BOT~user_command_line
-load "scripts\mombot\commands\general\dep.cts"
-setEventTrigger		depended		:depended "SCRIPT STOPPED" "scripts\mombot\commands\general\dep.cts"
+load "scripts\"&$bot~mombot_directory&"\commands\general\dep.cts"
+setEventTrigger		depended		:depended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\dep.cts"
 pause
 :depended
 	setvar $switchboard~message $total&" fighters purchased and added to sector.*"

@@ -582,7 +582,7 @@ return
 	                    end
 	                    if ($movefig = TRUE)
 							send "'"&$SWITCHBOARD~bot_name&" movefig s*"
-							setEventTrigger		movefigended		:movefigended "SCRIPT STOPPED" "scripts\MomBot\Modes\Resource\movefig.cts"
+							setEventTrigger		movefigended		:movefigended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\Modes\Resource\movefig.cts"
 							pause
 							:movefigended	                    
 	                    end
@@ -725,7 +725,7 @@ return
 							gosub :setWindow
 							killalltriggers
 							send "'"&$SWITCHBOARD~bot_name&" strip "&$planets[$j]&" "&$options&" turbo*"
-							setEventTrigger		stripended		:stripended "SCRIPT STOPPED" "scripts\MomBot\Modes\Resource\strip.cts"
+							setEventTrigger		stripended		:stripended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\Modes\Resource\strip.cts"
 							pause
 							:stripended
 							send "q q * "
@@ -796,7 +796,7 @@ RETURN
     gosub :setWindow
     killalltriggers
 	send "'"&$SWITCHBOARD~bot_name&" massupgrade*"
-	setEventTrigger		upgradeended		:upgradeended "SCRIPT STOPPED" "scripts\MomBot\Modes\Resource\massupgrade.cts"
+	setEventTrigger		upgradeended		:upgradeended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\Modes\Resource\massupgrade.cts"
 	pause
 	:upgradeended
 return
@@ -917,7 +917,7 @@ return
 			:Landed
 		        killAllTriggers
 				send "'"&$SWITCHBOARD~bot_name&" strip "&$landing&" f o e silent*"
-				setEventTrigger		stripended		:stripended "SCRIPT STOPPED" "scripts\MomBot\Modes\Resource\strip.cts"
+				setEventTrigger		stripended		:stripended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\Modes\Resource\strip.cts"
 				pause
 				:stripended
 		end
@@ -1410,7 +1410,7 @@ return
     send "qq* l " & #8 & $planetToFill & "*m n t * q l " & #8 & $planets[$j] & "* c"
     waitfor "Planet command (?"
     send "'" & $SWITCHBOARD~bot_name & " colo s 50*"
-	setEventTrigger		coloended		:coloended "SCRIPT STOPPED" "scripts\MomBot\Modes\Resource\colo.cts"
+	setEventTrigger		coloended		:coloended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\Modes\Resource\colo.cts"
 	pause
 	:coloended
          send "qq* "
@@ -1418,7 +1418,7 @@ return
 
 :merch
 	send "'"&$SWITCHBOARD~bot_name&" merch 10000 o e skipcim*"
-	setEventTrigger		merchended		:merchended "SCRIPT STOPPED" "scripts\MomBot\Modes\Cashing\merch.cts"
+	setEventTrigger		merchended		:merchended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\Modes\Cashing\merch.cts"
 	pause
 	:merchended
 return

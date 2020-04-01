@@ -26,8 +26,8 @@
 	saveVar $BOT~parm6
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\grid\port.cts"
-	setEventTrigger		portended		:portended "SCRIPT STOPPED" "scripts\mombot\commands\grid\port.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\grid\port.cts"
+	setEventTrigger		portended		:portended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\port.cts"
 	pause
 	:portended
 return

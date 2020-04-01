@@ -931,8 +931,8 @@ return
 	saveVar $BOT~parm2
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\modes\grid\mow.cts"
-	setEventTrigger		goCrazyMow1		:goCrazyMow1 "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+	load "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
+	setEventTrigger		goCrazyMow1		:goCrazyMow1 "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
 	pause
 	:goCrazyMow1
 	killalltriggers
@@ -955,8 +955,8 @@ return
 		saveVar $BOT~parm2
 		saveVar $BOT~command
 		saveVar $BOT~user_command_line
-		load "scripts\mombot\modes\grid\mow.cts"
-		setEventTrigger		goCrazyonein		:goCrazyonein "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+		load "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
+		setEventTrigger		goCrazyonein		:goCrazyonein "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
 		pause
 		:goCrazyonein
 			halt

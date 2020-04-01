@@ -289,8 +289,8 @@ return
 				saveVar $BOT~parm1
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
-				load "scripts\mombot\commands\grid\surround.cts"
-				setEventTrigger		surroundended		:surroundended "SCRIPT STOPPED" "scripts\mombot\commands\grid\surround.cts"
+				load "scripts\"&$bot~mombot_directory&"\commands\grid\surround.cts"
+				setEventTrigger		surroundended		:surroundended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\surround.cts"
 				pause
 				:surroundended
 				
@@ -741,8 +741,8 @@ return
 		setVar $j 1
 		while ($j <= 7)
 			if ($i = 3)
-				fileExists $doesExist "scripts\mombot\"&$BOT~CATAGORIES[$i]&"\"&$BOT~command&".cts"
-				fileExists $doesExistHidden "scripts\mombot\"&$BOT~CATAGORIES[$i]&"\_"&$BOT~command&".cts"
+				fileExists $doesExist "scripts\"&$bot~mombot_directory&"\"&$BOT~CATAGORIES[$i]&"\"&$BOT~command&".cts"
+				fileExists $doesExistHidden "scripts\"&$bot~mombot_directory&"\"&$BOT~CATAGORIES[$i]&"\_"&$BOT~command&".cts"
 				if (($doesExist) OR ($doesExistHidden))
 					setVar $currentCategory $BOT~CATAGORIES[$i]
 					if ($doesExistHidden)
@@ -754,8 +754,8 @@ return
 					return
 				end
 			else
-				fileExists $doesExist "scripts\mombot\"&$BOT~CATAGORIES[$i]&"\"&$BOT~TYPES[$j]&"\"&$BOT~command&".cts"
-				fileExists $doesExistHidden "scripts\mombot\"&$BOT~CATAGORIES[$i]&"\"&$BOT~TYPES[$j]&"\_"&$BOT~command&".cts"
+				fileExists $doesExist "scripts\"&$bot~mombot_directory&"\"&$BOT~CATAGORIES[$i]&"\"&$BOT~TYPES[$j]&"\"&$BOT~command&".cts"
+				fileExists $doesExistHidden "scripts\"&$bot~mombot_directory&"\"&$BOT~CATAGORIES[$i]&"\"&$BOT~TYPES[$j]&"\_"&$BOT~command&".cts"
 				if (($doesExist) OR ($doesExistHidden))
 					setVar $currentCategory $BOT~CATAGORIES[$i]
 					if ($doesExistHidden)
@@ -783,13 +783,13 @@ return
 	getWordPos " "&$BOT~user_command_line&" " $helpCheck2 " ? "
 	if (($currentCategory = "Modes") and (($helpCheck <= 0) and ($helpCheck2 <= 0)))
 		stop $BOT~LAST_LOADED_MODULE
-		setVar $BOT~LAST_LOADED_MODULE "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
+		setVar $BOT~LAST_LOADED_MODULE "scripts\"&$bot~mombot_directory&"\"&$BOT~ModuleCategory&$BOT~command&".cts"
 		setVar $BOT~mode $formatted_command
 		savevar $bot~mode
 	end
 
-	stop "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"
-	load "scripts\mombot\"&$BOT~ModuleCategory&$BOT~command&".cts"  
+	stop "scripts\"&$bot~mombot_directory&"\"&$BOT~ModuleCategory&$BOT~command&".cts"
+	load "scripts\"&$bot~mombot_directory&"\"&$BOT~ModuleCategory&$BOT~command&".cts"  
 return
 #============================ END COMMAND PROCESSING/EXTERNAL MODULE RUNNING =======================
 #============================== HOTKEY CONTROL ==============================

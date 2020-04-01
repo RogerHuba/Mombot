@@ -17,12 +17,12 @@ loadVar $rylos
 loadVar $alpha_centauri
 loadVar $command
 
-fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
+fileExists $doesHelpFileExist "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt"
 if ($doesHelpFileExist <> TRUE)
-	write "scripts\mombot\help\"&$command&".txt" "- "&$command&"                                              " 
-	write "scripts\mombot\help\"&$command&".txt" "                                                            " 
-	write "scripts\mombot\help\"&$command&".txt" "    Fills all empty ships with fighters from sector.        " 
-	write "scripts\mombot\help\"&$command&".txt" "                                                            " 
+	write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "- "&$command&"                                              " 
+	write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "                                                            " 
+	write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    Fills all empty ships with fighters from sector.        " 
+	write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "                                                            " 
 
 	send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 end

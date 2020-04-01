@@ -791,8 +791,8 @@ return
 	
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\data\holo.cts"
-	setEventTrigger        holoend1        :holoend1 "SCRIPT STOPPED" "scripts\mombot\commands\data\holo.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\data\holo.cts"
+	setEventTrigger        holoend1        :holoend1 "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\data\holo.cts"
 	pause
 	:holoend1
 		killtrigger holoend1
@@ -808,14 +808,14 @@ return
 	saveVar $BOT~user_command_line
 	saveVar $bot~parm1 
 
-	load "scripts\mombot\commands\grid\deploy.cts"
-	setEventTrigger        minesend        :minesend "SCRIPT STOPPED" "scripts\mombot\commands\grid\deploy.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
+	setEventTrigger        minesend        :minesend "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
 	setdelaytrigger        minetime        :minetime  10000
 	pause
 
 	:minetime
 		killtrigger minesend
-		stop "scripts\mombot\commands\grid\deploy.cts"
+		stop "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
 		gosub :player~quikstats
 	:minesend
 		killtrigger minetime

@@ -28,9 +28,9 @@
 				end
 				add $i 1
 			end
-			fileExists $doesExist "scripts\mombot\help\"&$BOT~parm1&".txt"
+			fileExists $doesExist "scripts\"&$bot~mombot_directory&"\help\"&$BOT~parm1&".txt"
 			if ($doesExist)
-				readToArray "scripts\mombot\help\"&$BOT~parm1&".txt" $bot~help
+				readToArray "scripts\"&$bot~mombot_directory&"\help\"&$BOT~parm1&".txt" $bot~help
 				gosub :bot~displayhelp
 
 			else
@@ -63,8 +63,8 @@
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&" *"
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"  ---------------------------------------------------------------*"
 	else
-		getFileList $commandList "scripts\mombot\commands\"&$BOT~parm1&"\*.cts"
-		getFileList $modeList "scripts\mombot\modes\"&$BOT~parm1&"\*.cts"
+		getFileList $commandList "scripts\"&$bot~mombot_directory&"\commands\"&$BOT~parm1&"\*.cts"
+		getFileList $modeList "scripts\"&$bot~mombot_directory&"\modes\"&$BOT~parm1&"\*.cts"
 		setVar $maxStringLength 34
 		setVar $paddingDashes "                                 "
 		upperCase $BOT~parm1
@@ -79,7 +79,7 @@
 			setVar $i 1
 			while ($i <= $commandList)
 				setVar $tempCommand $commandList[$i]&"###"
-				stripText $tempCommand "scripts\mombot\commands\"&$BOT~parm1&"\"
+				stripText $tempCommand "scripts\"&$bot~mombot_directory&"\commands\"&$BOT~parm1&"\"
 				stripText $tempCommand ".cts###"
 				upperCase $tempCommand
 				cutText $tempCommand&" " $hidden 1 1
@@ -107,7 +107,7 @@
 			setVar $i 1
 			while ($i <= $modelist)
 				setVar $tempCommand $modelist[$i]&"###"
-				stripText $tempCommand "scripts\mombot\modes\"&$BOT~parm1&"\"
+				stripText $tempCommand "scripts\"&$bot~mombot_directory&"\modes\"&$BOT~parm1&"\"
 				stripText $tempCommand ".cts###"
 				upperCase $tempCommand
 				cutText $tempCommand&" " $hidden 1 1
@@ -202,19 +202,19 @@ return
 		echo ansi_13 "                            Version: "&$BOT~major_version&"."&$BOT~minor_version&"*"
 		echo ansi_13 "                  [OFFENSE]|[DEFENSE]|[DATA]|[CASHING]*"
 	echo ansi_13 "                      [RESOURCE]|[GRID]|[GENERAL]    *"
-	fileExists $exists1 "scripts/mombot/hotkeys.cfg"
-	fileExists $exists2 "scripts/mombot/custom_keys.cfg"
-	fileExists $exists3 "scripts/mombot/custom_commands.cfg"
+	fileExists $exists1 "scripts/"&$bot~mombot_directory&"/hotkeys.cfg"
+	fileExists $exists2 "scripts/"&$bot~mombot_directory&"/custom_keys.cfg"
+	fileExists $exists3 "scripts/"&$bot~mombot_directory&"/custom_commands.cfg"
 	if ($exists1 AND $exists2 AND $exists3)
 		echo ansi_13 "  ----------------------------- "&ANSI_14&"Hot Keys"&ANSI_13&" -----------------------------*"
-		readToArray "scripts/mombot/hotkeys.cfg" $bot~hotkeys
-		readToArray "scripts/mombot/custom_keys.cfg" $bot~custom_keys
-		readToArray "scripts/mombot/custom_commands.cfg" $bot~custom_commands
+		readToArray "scripts/"&$bot~mombot_directory&"/hotkeys.cfg" $bot~hotkeys
+		readToArray "scripts/"&$bot~mombot_directory&"/custom_keys.cfg" $bot~custom_keys
+		readToArray "scripts/"&$bot~mombot_directory&"/custom_commands.cfg" $bot~custom_commands
 		gosub :MENUS~echoHotKeys
 	end
 	
 	echo ansi_13 "  ----------------------------- "&ANSI_14&"Daemons"&ANSI_13&" ------------------------------*"
-	getFileList $daemonList "scripts\mombot\daemons\*.cts"
+	getFileList $daemonList "scripts\"&$bot~mombot_directory&"\daemons\*.cts"
 	if ($daemonList > 0)
 		setVar $paddingDashes "                                 "
 		setVar $currentList ""
@@ -222,7 +222,7 @@ return
 		setVar $i 1
 		while ($i <= $daemonList)
 			setVar $tempCommand $daemonList[$i]&"###"
-			stripText $tempCommand "scripts\mombot\daemons\"&$BOT~parm1&"\"
+			stripText $tempCommand "scripts\"&$bot~mombot_directory&"\daemons\"&$BOT~parm1&"\"
 			stripText $tempCommand ".cts###"
 			setVar $currentList $currentList&" "&$tempCommand&" "
 			add $i 1

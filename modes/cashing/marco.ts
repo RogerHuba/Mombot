@@ -272,7 +272,7 @@ while ($loopi <= $portPairsi)
 	end
 
 	if ($PLAYER~Turns < $halt_turns)
-		stop "scripts\mombot\commands\cashing\ppt.cts"
+		stop "scripts\"&$bot~mombot_directory&"\commands\cashing\ppt.cts"
 		setVar $SWITCHBOARD~message "Turns are low, halting!*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -501,11 +501,11 @@ return
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
 
-	load "scripts\mombot\commands\cashing\ppt.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\cashing\ppt.cts"
 	:backpptwait
 	setTextLineTrigger        pptPauseForCash        :pptPauseForCash "[atm:" & $SWITCHBOARD~BOT_NAME & "]"
 	setTextLineTrigger        pptMove        :pptMove "<Move>"
-	setEventTrigger        pptended        :pptended "SCRIPT STOPPED" "scripts\mombot\commands\cashing\ppt.cts"
+	setEventTrigger        pptended        :pptended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\cashing\ppt.cts"
 	pause
 	:pptPauseForCash
 			killalltriggers
@@ -515,7 +515,7 @@ return
 	:pptMove
 		killalltriggers
 		if ($PLAYER~Turns < $halt_turns)
-			stop "scripts\mombot\commands\cashing\ppt.cts"
+			stop "scripts\"&$bot~mombot_directory&"\commands\cashing\ppt.cts"
 			setVar $SWITCHBOARD~message "Turns are low, halting!*"
 			gosub :SWITCHBOARD~switchboard
 			halt

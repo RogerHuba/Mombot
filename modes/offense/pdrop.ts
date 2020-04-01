@@ -942,8 +942,8 @@ return
 	saveVar $BOT~parm2
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\modes\offense\density.cts"
-	setEventTrigger        densityended        :densityended "SCRIPT STOPPED" "scripts\mombot\modes\offense\density.cts"
+	load "scripts\"&$bot~mombot_directory&"\modes\offense\density.cts"
+	setEventTrigger        densityended        :densityended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\offense\density.cts"
 	pause
 	:densityended
 		killalltriggers

@@ -1407,8 +1407,8 @@ goto :trapPhotonTriggers
 	
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\data\holo.cts"
-	setEventTrigger        holoend1        :holoend1 "SCRIPT STOPPED" "scripts\mombot\commands\data\holo.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\data\holo.cts"
+	setEventTrigger        holoend1        :holoend1 "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\data\holo.cts"
 	pause
 	:holoend1
 		killalltriggers

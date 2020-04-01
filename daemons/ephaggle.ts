@@ -28,7 +28,7 @@ gosub :bot~helpfile
 
 
 setvar $MAXPTRADE 0
-setvar $folder "scripts/mombot/games/"&GAMENAME
+setvar $folder "scripts/"&$bot~mombot_directory&"/games/"&GAMENAME
 setvar $MCICFILENAME $folder&"/mcic.csv"
 setvar $HAHTOGGLE "Off"
 setvar $WPTOGGLE "Off"

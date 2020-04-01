@@ -197,7 +197,7 @@ return
 		pause
 		:wait2
 
-		load "scripts\mombot\ephaggle"
+		load "scripts\"&$bot~mombot_directory&"\ephaggle"
 		
 		setDelayTrigger delay :wait 1500
 		pause

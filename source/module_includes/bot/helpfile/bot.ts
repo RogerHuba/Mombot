@@ -3,7 +3,7 @@ setvar $only_help false
 if (($parm1 = "help") or ($parm1 = "?"))
 	setvar $only_help true
 end
-	setVar $help_file "scripts\mombot\help\"&$command&".txt"
+	setVar $help_file "scripts\"&$mombot_directory&"\help\"&$command&".txt"
 	fileExists $doesHelpFileExist $help_file
 	if ($doesHelpFileExist)
 		setVar $i 1 

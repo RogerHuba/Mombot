@@ -81,12 +81,12 @@ gosub :BOT~loadVars
 	setvar $switchboard~message "Checking EPHaggle...*"
 		gosub :switchboard~switchboard
 	
-	stop "scripts\mombot\daemons\ephaggle.cts"
+	stop "scripts\"&$bot~mombot_directory&"\daemons\ephaggle.cts"
 	setDelayTrigger del1 :del1 500
 	pause
 	:del1
 		killtrigger del1
-	load "scripts\mombot\daemons\ephaggle.cts"
+	load "scripts\"&$bot~mombot_directory&"\daemons\ephaggle.cts"
 	setDelayTrigger del2 :del2 2000
 	pause
 	:del2

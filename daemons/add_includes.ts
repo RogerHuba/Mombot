@@ -23,18 +23,18 @@ end
 	setvar $i 1
 	getword $directories $directory $i "JUNK"
 	while ($directory <> "JUNK")
-		setvar $folder "scripts\mombot\commands\"&$directory&"\"
+		setvar $folder "scripts\"&$bot~mombot_directory&"\commands\"&$directory&"\"
 		getFileList $scriptList $folder&$filter&".ts"
 		gosub :reconfigure_scripts
 
-		setvar $folder "scripts\mombot\modes\"&$directory&"\"
+		setvar $folder "scripts\"&$bot~mombot_directory&"\modes\"&$directory&"\"
 		getFileList $scriptList $folder&$filter&".ts"
 		gosub :reconfigure_scripts
 
 		add $i 1
 		getword $directories $directory $i "JUNK"
 	end
-	setvar $folder "scripts\mombot\daemons\"
+	setvar $folder "scripts\"&$bot~mombot_directory&"\daemons\"
 	getFileList $scriptList $folder&$filter&".ts"
 	gosub :reconfigure_scripts
 
@@ -53,7 +53,7 @@ halt
 		getwordpos $doublecheck2 $command_pos2 " "&$include&"~"&$command&" "
 	end
 	if (($pos > 0) and ($pos2 <= 0))
-		fileExists $includeExists "scripts\mombot\"&$prepath&$include&".ts"
+		fileExists $includeExists "scripts\"&$bot~mombot_directory&"\"&$prepath&$include&".ts"
 		if ($includeExists)
 			add $paths 1
 			setvar $paths[$paths] $prepath&$include
@@ -100,7 +100,7 @@ return
 							setvar $command ""
 							setvar $prepath "source\module_includes\"
 							gosub :check_for_include
-							getDirList $includeList "scripts\mombot\"&$prepath&$include&"\????????????????????????????????"
+							getDirList $includeList "scripts\"&$bot~mombot_directory&"\"&$prepath&$include&"\????????????????????????????????"
 							setvar $m 1
 							while ($m <= $includeList)
 								setvar $command $includeList[$m]
@@ -116,7 +116,7 @@ return
 							setvar $command ""
 							setvar $prepath "source\bot_includes\"
 							gosub :check_for_include
-							getDirList $includeList "scripts\mombot\"&$prepath&$include&"\??????????????????????????????????"
+							getDirList $includeList "scripts\"&$bot~mombot_directory&"\"&$prepath&$include&"\??????????????????????????????????"
 							setvar $m 1
 							while ($m <= $includeList)
 								setvar $command $includeList[$m]
@@ -132,7 +132,7 @@ return
 							setvar $command ""
 							setvar $prepath "source\bot_includes\bot\"
 							gosub :check_for_include
-							getDirList $includeList "scripts\mombot\"&$prepath&$include&"\???????????????????????????????????"
+							getDirList $includeList "scripts\"&$bot~mombot_directory&"\"&$prepath&$include&"\???????????????????????????????????"
 							setvar $m 1
 							while ($m <= $includeList)
 								setvar $command $includeList[$m]

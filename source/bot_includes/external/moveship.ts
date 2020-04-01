@@ -16,8 +16,8 @@
 	saveVar $BOT~parm6 
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\modes\resource\moveship.cts"
-	setEventTrigger		moveshipended		:movehomeshipended "SCRIPT STOPPED" "scripts\mombot\modes\resource\moveship.cts"
+	load "scripts\"&$bot~mombot_directory&"\modes\resource\moveship.cts"
+	setEventTrigger		moveshipended		:movehomeshipended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\moveship.cts"
 	pause
 	:movehomeshipended
 return

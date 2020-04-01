@@ -86,8 +86,8 @@
 		saveVar $BOT~parm1
 		saveVar $BOT~command
 		saveVar $BOT~user_command_line
-		load "scripts\mombot\commands\general\topoff.cts"
-		setEventTrigger		topoffdone		:topoffdone "SCRIPT STOPPED" "scripts\mombot\commands\general\topoff.cts"
+		load "scripts\"&$bot~mombot_directory&"\commands\general\topoff.cts"
+		setEventTrigger		topoffdone		:topoffdone "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\topoff.cts"
 		pause
 		:topoffdone
 

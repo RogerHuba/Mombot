@@ -11,21 +11,21 @@
 	loadVar $command
 	setArray $shipList 200
 
-	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\mombot\help\"&$command&".txt" "- "&$command&" [on/off] {"&#34&"player name"&#34&"|corp#} {sg} {dt} {empty} {smart} {override}" 
-		write "scripts\mombot\help\"&$command&".txt" "   - Citadel Killer destroys enemy ships from planet citadel."
-		write "scripts\mombot\help\"&$command&".txt" "   "
-		write "scripts\mombot\help\"&$command&".txt" "   - {"&#34&"player name"&#34&"}   = Player to target, name must be"
-		write "scripts\mombot\help\"&$command&".txt" "                         surrounded by double quotes"
-		write "scripts\mombot\help\"&$command&".txt" "   - {corp#}           = Corporation number to target"
-		write "scripts\mombot\help\"&$command&".txt" "   - {sg}              = Shotgun mode, fires waves at"
-		write "scripts\mombot\help\"&$command&".txt" "                         first three possible targets"
-		write "scripts\mombot\help\"&$command&".txt" "   - {dt}              = Doubletap mode, fires two waves"
-		write "scripts\mombot\help\"&$command&".txt" "                         before refurbing"
-		write "scripts\mombot\help\"&$command&".txt" "   - {empty}           = Will capture empty ships in sector."
-		write "scripts\mombot\help\"&$command&".txt" "   - {smart}           = Notices changes in ship type/target"
-		write "scripts\mombot\help\"&$command&".txt" "   - {override}        = Overrides safety on attacking defender bonus ships"
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "- "&$command&" [on/off] {"&#34&"player name"&#34&"|corp#} {sg} {dt} {empty} {smart} {override}" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - Citadel Killer destroys enemy ships from planet citadel."
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   "
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - {"&#34&"player name"&#34&"}   = Player to target, name must be"
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "                         surrounded by double quotes"
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - {corp#}           = Corporation number to target"
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - {sg}              = Shotgun mode, fires waves at"
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "                         first three possible targets"
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - {dt}              = Doubletap mode, fires two waves"
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "                         before refurbing"
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - {empty}           = Will capture empty ships in sector."
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - {smart}           = Notices changes in ship type/target"
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - {override}        = Overrides safety on attacking defender bonus ships"
 		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 	end
 

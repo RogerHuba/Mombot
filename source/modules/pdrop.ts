@@ -29,15 +29,15 @@
 	loadVar $rylos
 	loadVar $alpha_centauri
 	loadVar $command
-	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\mombot\help\"&$command&".txt" "- "&$command&" [on/off]{delay}{drop type}{trigger}{return}{kill}" 
-		write "scripts\mombot\help\"&$command&".txt" "    - [delay]     = delay before dropping in milliseconds       " 
-		write "scripts\mombot\help\"&$command&".txt" "    - [drop type] = [d]irect, [a]djacent, [da] direct, then adjacent, or [s]urround" 
-		write "scripts\mombot\help\"&$command&".txt" "    - [delay]     = delay before dropping in milliseconds       " 
-		write "scripts\mombot\help\"&$command&".txt" "    - [trigger]   = [f]igs, [fm] figs/mines, [m]ines, [uf] No-Fig Mines" 
-		write "scripts\mombot\help\"&$command&".txt" "    - [return]    = will return planet home after 10 seconds" 
-		write "scripts\mombot\help\"&$command&".txt" "    - [kill]      = checks sector for enemy, and kills if possible" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "- "&$command&" [on/off]{delay}{drop type}{trigger}{return}{kill}" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    - [delay]     = delay before dropping in milliseconds       " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    - [drop type] = [d]irect, [a]djacent, [da] direct, then adjacent, or [s]urround" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    - [delay]     = delay before dropping in milliseconds       " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    - [trigger]   = [f]igs, [fm] figs/mines, [m]ines, [uf] No-Fig Mines" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    - [return]    = will return planet home after 10 seconds" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    - [kill]      = checks sector for enemy, and kills if possible" 
 		send "'{" $bot_name "} - Writing help file for "&$command&" in Help directory.*"
 	end
 	getWord $user_command_line $parm1 1

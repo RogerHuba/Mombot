@@ -8,8 +8,8 @@
 	saveVar $BOT~parm1
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\grid\pgrid.cts"
-	setEventTrigger		pgriddone		:pgriddone "SCRIPT STOPPED" "scripts\mombot\commands\grid\pgrid.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\grid\pgrid.cts"
+	setEventTrigger		pgriddone		:pgriddone "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\pgrid.cts"
 	pause
 	:pgriddone
 return

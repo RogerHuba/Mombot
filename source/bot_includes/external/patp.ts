@@ -24,8 +24,8 @@
 	saveVar $bot~parm3
 	saveVar $BOT~command
 	saveVar $bot~user_command_line
-	load "scripts\mombot\modes\resource\patp.cts"
-	setEventTrigger		patpended		:patpended "SCRIPT STOPPED" "scripts\mombot\modes\resource\patp.cts"
+	load "scripts\"&$bot~mombot_directory&"\modes\resource\patp.cts"
+	setEventTrigger		patpended		:patpended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\patp.cts"
 	pause
 	:patpended
 return

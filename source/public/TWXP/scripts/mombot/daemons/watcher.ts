@@ -622,7 +622,7 @@ if ($pos > 0)
 				setdelaytrigger waitforreboot :okaynow 3000
 				pause
 				:okaynow
-				load "scripts\mombot\"&$scripts[$i]
+				load "scripts\"&$bot~mombot_directory&"\"&$scripts[$i]
 				setvar $rebooted true
 			end
 			stop $scripts[$i]
@@ -672,7 +672,7 @@ pause
 	setdelaytrigger okaynowemergency :okaynowemergency 3000
 	pause
 	:okaynowemergency
-	load "scripts\mombot\"&$boot_this
+	load "scripts\"&$bot~mombot_directory&"\"&$boot_this
 	setTextLineTrigger  emergency_reboot      :emergency_reboot "<EMERGENCY REBOOT>"&$bot~bot_password
 	pause
 
@@ -698,7 +698,7 @@ pause
 		end
 		if ($FOUND = FALSE)
 			ECHO "**"&ansi_2&"["&ansi_4&"No mombot is running, automatically booting up mombot."&ansi_2&"]**"
-			load "scripts\mombot\mombot.cts"
+			load "scripts\"&$bot~mombot_directory&"\mombot.cts"
 		end
 		setdelaytrigger		checkifbotalive       :checkifbotalive 60000
 		pause

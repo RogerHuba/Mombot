@@ -31,7 +31,7 @@
 	setdelaytrigger waitforreboot :okaynow 3000
 	pause
 	:okaynow
-	load "scripts\mombot\"&$boot_this
+	load "scripts\"&$bot~mombot_directory&"\"&$boot_this
 	halt
 
 

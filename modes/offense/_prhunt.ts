@@ -791,8 +791,8 @@ return
 				saveVar $bot~parm1
 				saveVar $BOT~command
 				saveVar $bot~user_command_line
-				load "scripts\mombot\commands\grid\pgrid.cts"
-				setEventTrigger        pgridended        :pgridended "SCRIPT STOPPED" "scripts\mombot\commands\grid\pgrid.cts"
+				load "scripts\"&$bot~mombot_directory&"\commands\grid\pgrid.cts"
+				setEventTrigger        pgridended        :pgridended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\pgrid.cts"
 				pause
 				:pgridended
 					killalltriggers
@@ -830,8 +830,8 @@ return
 	
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\data\holo.cts"
-	setEventTrigger        holoend1        :holoend1 "SCRIPT STOPPED" "scripts\mombot\commands\data\holo.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\data\holo.cts"
+	setEventTrigger        holoend1        :holoend1 "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\data\holo.cts"
 	pause
 	:holoend1
 		killalltriggers
@@ -1516,8 +1516,8 @@ return
 
 	saveVar $BOT~command
 	saveVar $bot~user_command_line
-	load "scripts\mombot\commands\offense\kill.cts"
-	setEventTrigger        killended        :killended "SCRIPT STOPPED" "scripts\mombot\commands\offense\kill.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\offense\kill.cts"
+	setEventTrigger        killended        :killended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\offense\kill.cts"
 	pause
 	:killended
 		killalltriggers

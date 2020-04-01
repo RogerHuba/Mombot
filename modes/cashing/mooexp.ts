@@ -321,8 +321,8 @@ else
 	saveVar $BOT~parm1
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\data\update.cts"
-	setEventTrigger        limpchkend        :limpchkend "SCRIPT STOPPED" "scripts\mombot\commands\data\update.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\data\update.cts"
+	setEventTrigger        limpchkend        :limpchkend "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\data\update.cts"
 	pause
 	:limpchkend
 		killalltriggers

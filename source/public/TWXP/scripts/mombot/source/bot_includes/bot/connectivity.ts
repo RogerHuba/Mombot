@@ -284,8 +284,8 @@ return
 	:closed
 		killalltriggers
 		if (CONNECTED <> TRUE)
-			load "scripts\mombot\commands\general\relog.cts"
-			setEventTrigger		1		:relogended	"SCRIPT STOPPED" "scripts\mombot\commands\general\relog.cts"
+			load "scripts\"&$bot~mombot_directory&"\commands\general\relog.cts"
+			setEventTrigger		1		:relogended	"SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\relog.cts"
 			pause
 			:relogended
 			goto :try_again
@@ -442,13 +442,13 @@ return
 			setVar $menus~start_mow_option ""
 			saveVar $menus~start_mow_option
 			if ($menus~fmowToDock = true)
-				load "scripts\mombot\modes\grid\fmow.cts"
-				setEventTrigger		1		:fmowended	"SCRIPT STOPPED" "scripts\mombot\modes\grid\fmow.cts"
+				load "scripts\"&$bot~mombot_directory&"\modes\grid\fmow.cts"
+				setEventTrigger		1		:fmowended	"SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\grid\fmow.cts"
 				pause
 				:fmowended
 			else
-				load "scripts\mombot\modes\grid\mow.cts"
-				setEventTrigger		1		:mowended	"SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+				load "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
+				setEventTrigger		1		:mowended	"SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
 				pause
 				:mowended
 			end

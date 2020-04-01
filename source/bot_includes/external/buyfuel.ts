@@ -16,8 +16,8 @@
 	saveVar $BOT~parm6 
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\resource\buy.cts"
-	setEventTrigger		buyended		:buyended "SCRIPT STOPPED" "scripts\mombot\commands\resource\buy.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\resource\buy.cts"
+	setEventTrigger		buyended		:buyended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\resource\buy.cts"
 	pause
 	:buyended
 return

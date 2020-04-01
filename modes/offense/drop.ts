@@ -755,8 +755,8 @@ return
 		saveVar $BOT~parm1
 		saveVar $BOT~command
 		saveVar $BOT~user_command_line
-		load "scripts\mombot\commands\offense\htorp.cts"
-		setEventTrigger		htorpdone		:htorpdone "SCRIPT STOPPED" "scripts\mombot\commands\offense\htorp.cts"
+		load "scripts\"&$bot~mombot_directory&"\commands\offense\htorp.cts"
+		setEventTrigger		htorpdone		:htorpdone "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\offense\htorp.cts"
 		pause
 		:htorpdone
 	end
