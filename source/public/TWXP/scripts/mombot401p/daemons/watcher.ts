@@ -267,6 +267,7 @@ pause
 
 :armidsave
 	setvar $line CURRENTLINE
+	setvar $ansi_line CURRENTANSILINE
 	cutText $line&"     " $spoof 1 2 
 	cutText $line&"     " $spoof2 1 1 
 	if (($spoof = "R ") OR ($spoof = "F ") OR ($spoof = "P ") OR ($spoof2 = "'") OR ($spoof2 = "`"))
@@ -280,7 +281,9 @@ pause
 		if ($test = TRUE)
 			if (($mine_hit <= SECTORS) AND ($mine_hit > 0))
 				setvar $bot~last_armid_attack $line
+				setvar $bot~ansi_last_armid_attack $ansi_line
 				saveGlobal $bot~last_armid_attack
+				saveGlobal $bot~ansi_last_armid_attack
 				setvar $bot~last_hit_type "armid"
 				saveGlobal $bot~last_hit_type
 				setvar $bot~last_armid_hit $mine_hit
