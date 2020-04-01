@@ -833,7 +833,7 @@ return
 return
 
 :check_for_photon_refurb
-	if (($player~photons <= $photon~shooting_count) and ($nophoton <> true))
+	if (($player~photons < $photon~shooting_count) and ($nophoton <> true))
 		gosub :navigate~navigate_to_limp
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
