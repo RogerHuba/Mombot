@@ -56,12 +56,13 @@
 	setVar $BOT~help[19] $BOT~tab&"{saveme:bot} - define saveme bot for your planet "
 	setVar $BOT~help[20] $BOT~tab&"   {multi:#} - how many photons to shoot (multi photon games) "
 	setVar $BOT~help[21] $BOT~tab&"    {switch} - will switch into saveme bots ship before kill "
-	setVar $BOT~help[22] $BOT~tab&"           "
-	setVar $BOT~help[23] $BOT~tab&"        Examples: "
-	setVar $BOT~help[24] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[25] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[26] $BOT~tab&"             >defender f density adjacent secure"
-	setVar $BOT~help[27] $BOT~tab&"             >defender secure saveme:hunt"
+	setVar $BOT~help[22] $BOT~tab&"  {sentinel} - turns on sentinel mode "
+	setVar $BOT~help[23] $BOT~tab&"           "
+	setVar $BOT~help[24] $BOT~tab&"        Examples: "
+	setVar $BOT~help[25] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[26] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[27] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[28] $BOT~tab&"             >defender secure saveme:hunt"
 
 	gosub :bot~helpfile
 
@@ -151,6 +152,13 @@
 		setvar $navigate~securePwarp true
 	else
 		setvar $navigate~securePwarp false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " sentinel "
+	if ($pos > 0)
+		setvar $sentinel~broadcast true
+	else
+		setvar $sentinel~broadcast false
 	end
 
 	getwordpos " "&$bot~user_command_line&" " $pos " density "
@@ -392,6 +400,9 @@
 	if ($restock~deploymines)
 		setVar $message $message&"*                   Deploy mines"
 	end
+	if ($sentinel~broadcast)
+		setVar $message $message&"*                   Sentinel mode on"
+	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	setvar $switchboard~message $message
 	gosub :switchboard~switchboard
@@ -560,6 +571,7 @@
 					halt
 				end
 			end
+			gosub :waitbeforecheck
 			loadGlobal $bot~last_fighter_attack
 			if ($bot~last_fighter_attack <> "")
 				gosub :killing~set_the_cannon
@@ -676,6 +688,7 @@
 		####################
 		gosub :player~quikstats
 		gosub :check_for_photon_refurb
+		gosub :waitbeforecheck
 		loadGlobal $bot~last_fighter_attack
 		if ($bot~last_fighter_attack <> "")
 			gosub :killing~set_the_cannon

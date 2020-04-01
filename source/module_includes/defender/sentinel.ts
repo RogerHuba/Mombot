@@ -1,9 +1,11 @@
 :activate
-	setvar $switchboard~message ""
 	gosub :checkcorp
-	gosub :CheckCLV
-	gosub :CheckOnline
-	gosub :switchboard~switchboard
+	if ($broadcast)
+		setvar $switchboard~message ""
+		gosub :CheckCLV
+		gosub :CheckOnline
+		gosub :switchboard~switchboard
+	end
 	setvar $i 1
 	if ($corp_count > 0)
 		echo ansi_14 "*                 Corp Info                   " ansi_15
@@ -62,7 +64,6 @@ return
 	getDate $date
 	getTime $time
 	setVar $date $date & " "
-	setvar $broadcast true
 
 	if ($CheckCLVPod = "0")
 		setVar $CheckCLVPod #42 & #42 & #42 & " Escape Pod " & #42 & #42 & #42
