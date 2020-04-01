@@ -132,14 +132,14 @@
 		setvar $holo false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " holokill "
+	getwordpos " "&$bot~user_command_line&" " $pos " holokill"
 	if ($pos > 0)
 		setvar $killing~holokill true
 	else
 		setvar $killing~holokill false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " slingshot "
+	getwordpos " "&$bot~user_command_line&" " $pos " sling"
 	if ($pos > 0)
 		setvar $killing~slingshot true
 		setvar $killing~holokill false
@@ -147,28 +147,28 @@
 		setvar $killing~slingshot false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " secure "
+	getwordpos " "&$bot~user_command_line&" " $pos " sec"
 	if ($pos > 0)
 		setvar $navigate~securePwarp true
 	else
 		setvar $navigate~securePwarp false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " sentinel "
+	getwordpos " "&$bot~user_command_line&" " $pos " sent"
 	if ($pos > 0)
 		setvar $sentinel~broadcast true
 	else
 		setvar $sentinel~broadcast false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " density "
+	getwordpos " "&$bot~user_command_line&" " $pos " den"
 	if ($pos > 0)
 		setvar $photon~density true
 	else
 		setvar $photon~density false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " switch "
+	getwordpos " "&$bot~user_command_line&" " $pos " swit"
 	if ($pos > 0)
 		setvar $killing~switch true
 	else
@@ -193,14 +193,14 @@
 		setvar $noescape false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " capture "
+	getwordpos " "&$bot~user_command_line&" " $pos " cap"
 	if ($pos > 0)
 		setvar $killing~capture true
 	else
 		setvar $killing~capture false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " mines "
+	getwordpos " "&$bot~user_command_line&" " $pos " mine"
 	if ($pos > 0)
 		setvar $restock~deploymines true
 	else
