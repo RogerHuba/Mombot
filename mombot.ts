@@ -6,8 +6,8 @@ reqRecording
 # Description           : Allows Corpies to use you while AFK and a Self Helper
 # Credits           : Oz, Zentock, SupG, Dynarri, Cherokee, Alexio, Xide, Phx, Rincrast, Voltron, Traitor, Parrothead, PSI, Elder Prophet
 
-setVar $bot~major_version   "3"
-setVar $bot~minor_version   "5beta"
+setVar $bot~major_version   "4"
+setVar $bot~minor_version   "2beta"
 setvar $bot~default_bot_directory "mombot"
 
 savevar $bot~major_version
