@@ -72,7 +72,7 @@ while ($sector <> "done")
 			add $totalSectors 1
 			setVar $Sectors[$totalSectors] $sector
 			setVar $AllSectors[$totalSectors] $sector
-echo "*# Added SEctor to list: " $sector
+#echo "*# Added SEctor to list: " $sector
 		end
 
 	end
@@ -195,7 +195,7 @@ while ($i <= $pathi)
 	setVar $upgradeSector 0
 	while ($y <= $totalSectors)
 
-echo " *  $gotoSector:"  $gotoSector " $sectors[$y]:"  $sectors[$y]
+#echo " *  $gotoSector:"  $gotoSector " $sectors[$y]:"  $sectors[$y]
 		if ($gotoSector = $sectors[$y])
 			setVar $upgradeSector 1
 			setVar $y 9999
