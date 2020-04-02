@@ -251,7 +251,7 @@ return
 	if ($monname = "")
 		setVar $monname "mombot.cts"
 	end
-	load "scripts\Mombot\mombot.cts"
+	load "scripts\"&$bot~mombot_directory&"\mombot.cts"
 	halt
 return
 

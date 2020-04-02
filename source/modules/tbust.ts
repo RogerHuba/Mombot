@@ -18,19 +18,19 @@ loadvar $command
 #add prompt checking at start to start from anywhere on sd
 gosub :quikstats
 :load
-	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\mombot\help\"&$command&".txt" "- tbust [Experience] {safe} {2fer} {max} {override} {delay} {makered}" 
-		write "scripts\mombot\help\"&$command&".txt" "  Traitors Planet Buster Modified for M()M Bot Use " 
-		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
-		write "scripts\mombot\help\"&$command&".txt" "   - [Experience]   = Desired Experience" 
-		write "scripts\mombot\help\"&$command&".txt" "   - [safe]         = Create and Destroy one at a time" 
-		write "scripts\mombot\help\"&$command&".txt" "   - [2fer]         = Create and Destroy two at a time" 
-		write "scripts\mombot\help\"&$command&".txt" "   - [max]          = Create and Destroy the max amount" 
-		write "scripts\mombot\help\"&$command&".txt" "   - [override]     = Override Turns low Limit" 
-		write "scripts\mombot\help\"&$command&".txt" "   - [delay]        = Random delay for each bust" 
-		write "scripts\mombot\help\"&$command&".txt" "   - [bank]         = Corpie will pass credits through bank" 
-		write "scripts\mombot\help\"&$command&".txt" "   - [red]          = Will Attempt negative align"
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "- tbust [Experience] {safe} {2fer} {max} {override} {delay} {makered}" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "  Traitors Planet Buster Modified for M()M Bot Use " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "                                                            " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - [Experience]   = Desired Experience" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - [safe]         = Create and Destroy one at a time" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - [2fer]         = Create and Destroy two at a time" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - [max]          = Create and Destroy the max amount" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - [override]     = Override Turns low Limit" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - [delay]        = Random delay for each bust" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - [bank]         = Corpie will pass credits through bank" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "   - [red]          = Will Attempt negative align"
 		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 	end
         if ($TOTAL_HOLDS < 10)

@@ -121,8 +121,8 @@ loadVar $bot_name
 	goto :settriggers
 
 # ======================     END PLOCK (PLOCK) SUBROUTINE     ==========================
-include "C:\__TWX_\scripts\MomBot\botIncludes\targeting.ts"
-include "C:\__TWX_\scripts\MomBot\botIncludes\quikstats.ts"
-include "C:\__TWX_\scripts\MomBot\botIncludes\shipstats.ts"
-include "C:\__TWX_\scripts\MomBot\botIncludes\planetinfo.ts"
+include "C:\__TWX_\scripts\"&$bot~mombot_directory&"\botIncludes\targeting.ts"
+include "C:\__TWX_\scripts\"&$bot~mombot_directory&"\botIncludes\quikstats.ts"
+include "C:\__TWX_\scripts\"&$bot~mombot_directory&"\botIncludes\shipstats.ts"
+include "C:\__TWX_\scripts\"&$bot~mombot_directory&"\botIncludes\planetinfo.ts"
 

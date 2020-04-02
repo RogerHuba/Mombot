@@ -666,8 +666,8 @@
 				saveVar $BOT~parm1
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
-				load "scripts\mombot\modes\resource\mover.cts"
-				setEventTrigger		dumpended		:dumpendedbuild "SCRIPT STOPPED" "scripts\mombot\modes\resource\mover.cts"
+				load "scripts\"&$bot~mombot_directory&"\modes\resource\mover.cts"
+				setEventTrigger		dumpended		:dumpendedbuild "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\mover.cts"
 				pause
 				:dumpendedbuild	       
 
@@ -806,8 +806,8 @@ return
 						if ($armageddon = TRUE)
 							setVar $BOT~user_command_line "s silent"
 							saveVar $BOT~user_command_line
-							setEventTrigger		1		:movefigarmended "SCRIPT STOPPED" "scripts\momBot\modes\resource\movefig.cts"
-							load "scripts\mombot\modes\resource\movefig.cts"
+							setEventTrigger		1		:movefigarmended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\movefig.cts"
+							load "scripts\"&$bot~mombot_directory&"\modes\resource\movefig.cts"
 							pause
 							:movefigarmended	                    
 
@@ -900,8 +900,8 @@ return
 						if ($movefig = TRUE)
 							setVar $BOT~user_command_line "s silent"
 							saveVar $BOT~user_command_line
-							setEventTrigger		movefigended		:movefigended "SCRIPT STOPPED" "scripts\mombot\modes\resource\movefig.cts"
-							load "scripts\mombot\modes\resource\movefig.cts"
+							setEventTrigger		movefigended		:movefigended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\movefig.cts"
+							load "scripts\"&$bot~mombot_directory&"\modes\resource\movefig.cts"
 							pause
 							:movefigended	                    
 						end
@@ -1088,8 +1088,8 @@ return
 							saveVar $BOT~parm2
 							saveVar $BOT~command
 							saveVar $BOT~user_command_line
-							load "scripts\mombot\modes\resource\mover.cts"
-							setEventTrigger		stripended		:stripended "SCRIPT STOPPED" "scripts\mombot\modes\resource\mover.cts"
+							load "scripts\"&$bot~mombot_directory&"\modes\resource\mover.cts"
+							setEventTrigger		stripended		:stripended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\mover.cts"
 							pause
 							:stripended
 							send "q "
@@ -1176,8 +1176,8 @@ RETURN
 	saveVar $BOT~parm1
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\modes\resource\massupgrade.cts"
-	setEventTrigger		upgradeended		:upgradeended "SCRIPT STOPPED" "scripts\mombot\modes\resource\massupgrade.cts"
+	load "scripts\"&$bot~mombot_directory&"\modes\resource\massupgrade.cts"
+	setEventTrigger		upgradeended		:upgradeended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\massupgrade.cts"
 	pause
 	:upgradeended
 return
@@ -1320,8 +1320,8 @@ return
 				saveVar $BOT~parm2
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
-				load "scripts\mombot\modes\resource\mover.cts"
-				setEventTrigger		stripended		:stripendedbuild "SCRIPT STOPPED" "scripts\mombot\modes\resource\mover.cts"
+				load "scripts\"&$bot~mombot_directory&"\modes\resource\mover.cts"
+				setEventTrigger		stripended		:stripendedbuild "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\mover.cts"
 				pause
 				:stripendedbuild
 		end
@@ -1855,8 +1855,8 @@ return
 	saveVar $BOT~parm2
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\modes\resource\colo.cts"
-	setEventTrigger		coloended		:coloended "SCRIPT STOPPED" "scripts\mombot\modes\resource\colo.cts"
+	load "scripts\"&$bot~mombot_directory&"\modes\resource\colo.cts"
+	setEventTrigger		coloended		:coloended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\colo.cts"
 	pause
 	:coloended
 		 send "qq* "
@@ -1876,8 +1876,8 @@ return
 	saveVar $bot~parm1
 	saveVar $BOT~command
 	saveVar $bot~user_command_line
-	load "scripts\mombot\modes\cashing\merch.cts"
-	setEventTrigger		merchended		:merchended "SCRIPT STOPPED" "scripts\mombot\modes\cashing\merch.cts"
+	load "scripts\"&$bot~mombot_directory&"\modes\cashing\merch.cts"
+	setEventTrigger		merchended		:merchended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\cashing\merch.cts"
 	pause
 	:merchended
 return

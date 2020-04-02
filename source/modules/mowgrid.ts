@@ -16,17 +16,17 @@
 	loadVar $rylos
 	loadVar $alpha_centauri
 	loadVar $command
-	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\mombot\help\"&$command&".txt" "- "&$command&" {min_targets (per mow)} {notwarp} {alarm}    " 
-		write "scripts\mombot\help\"&$command&".txt" "    Mows to figged sectprs in an attempt to grid.           " 
-		write "scripts\mombot\help\"&$command&".txt" "    Does not do so safely.                                  " 
-		write "scripts\mombot\help\"&$command&".txt" "    {min_targets} - How many unfigged sectors must be in mow"
-		write "scripts\mombot\help\"&$command&".txt" "    to qualifiy for gridding. (Default: 5)                  " 
-		write "scripts\mombot\help\"&$command&".txt" "                                           " 
-		write "scripts\mombot\help\"&$command&".txt" "    {notwarp} - Don't twarp near closest unfigged sector" 
-		write "scripts\mombot\help\"&$command&".txt" "                                   " 
-		write "scripts\mombot\help\"&$command&".txt" "    {alarm} - activates alarm                               " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "- "&$command&" {min_targets (per mow)} {notwarp} {alarm}    " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    Mows to figged sectprs in an attempt to grid.           " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    Does not do so safely.                                  " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    {min_targets} - How many unfigged sectors must be in mow"
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    to qualifiy for gridding. (Default: 5)                  " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "                                           " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    {notwarp} - Don't twarp near closest unfigged sector" 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "                                   " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    {alarm} - activates alarm                               " 
 		send "'{" $bot_name "} - Writing help file for this command in Help directory.*"
 	end
 	window mowWindow 1200 350 "Mowgrid Status" ontop 

@@ -51,11 +51,7 @@
 	if ((currentalignment < 1000) AND ($WeAreAdjDock = FALSE))
 		setVar $RED_adj 0
 		gosub :FindJumpSector
-		if ($RED_adj <> 0)
-			setvar $switchboard~message "Jump Sector Found - Using Sector "&$RED_adj&"*"
-			gosub :switchboard~switchboard
-			send "*"
-		else
+		if ($RED_adj = 0)
 			waitfor "Command [TL="
 			setvar $switchboard~message "Cannot Find Jump Sector Adjacent Dock*"
 			gosub :switchboard~switchboard

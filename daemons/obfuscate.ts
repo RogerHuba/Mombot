@@ -26,18 +26,18 @@ end
 	setvar $i 1
 	getword $directories $directory $i "JUNK"
 	while ($directory <> "JUNK")
-		setvar $folder "scripts\mombot\commands\"&$directory&"\"
+		setvar $folder "scripts\"&$bot~mombot_directory&"\commands\"&$directory&"\"
 		getFileList $scriptList $folder&$filter&".ts"
 		gosub :reconfigure_scripts
 
-		setvar $folder "scripts\mombot\modes\"&$directory&"\"
+		setvar $folder "scripts\"&$bot~mombot_directory&"\modes\"&$directory&"\"
 		getFileList $scriptList $folder&$filter&".ts"
 		gosub :reconfigure_scripts
 
 		add $i 1
 		getword $directories $directory $i "JUNK"
 	end
-	setvar $folder "scripts\mombot\daemons\"
+	setvar $folder "scripts\"&$bot~mombot_directory&"\daemons\"
 	getFileList $scriptList $folder&$filter&".ts"
 	gosub :reconfigure_scripts
 

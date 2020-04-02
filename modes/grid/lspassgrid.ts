@@ -527,8 +527,8 @@
 						
 						saveVar $BOT~command
 						saveVar $BOT~user_command_line
-						load "scripts\mombot\modes\resource\lsd.cts"
-						setEventTrigger        moveended        :moveended "SCRIPT STOPPED" "scripts\mombot\modes\resource\lsd.cts"
+						load "scripts\"&$bot~mombot_directory&"\modes\resource\lsd.cts"
+						setEventTrigger        moveended        :moveended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\lsd.cts"
 						pause
 						:moveended
 							killalltriggers

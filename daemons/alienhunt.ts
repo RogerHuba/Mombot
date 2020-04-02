@@ -526,25 +526,30 @@ return
 					setVar $BOT~user_command_line " moveship h silent "&#34&$filterships&#34
 					setVar $BOT~parm1 $MAP~home_sector
 					gosub :moveship~run
+					send "s*  "
+					gosub :player~quikstats
+					setVar $emptyShips SECTOR.SHIPCOUNT[currentsector]
 				end
-				if ($sell)
-					if ($home = true)
-						setVar $BOT~user_command_line " moveship "&$homesector&" silent"
-						setVar $BOT~parm1 $homesector
+				if ($emptyships > 0)
+					if ($sell)
+						if ($home = true)
+							setVar $BOT~user_command_line " moveship "&$homesector&" silent"
+							setVar $BOT~parm1 $homesector
+						else
+							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
+							setVar $BOT~parm1 $MAP~stardock
+						end
 					else
-						setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
-						setVar $BOT~parm1 $MAP~stardock
+							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" silent"
+							setVar $BOT~parm1 $MAP~stardock						
 					end
-				else
-						setVar $BOT~user_command_line " moveship "&$MAP~stardock&" silent"
-						setVar $BOT~parm1 $MAP~stardock						
-				end
-				gosub :moveship~run
-				if ($startingSector <> currentsector)
-					setvar $mow~destination $startingSector
-					setvar $mow~deploy "1"
-					gosub :mow~run
-					gosub :PLANET~landingSub
+					gosub :moveship~run
+					if ($startingSector <> currentsector)
+						setvar $mow~destination $startingSector
+						setvar $mow~deploy "1"
+						gosub :mow~run
+						gosub :PLANET~landingSub
+					end
 				end
 				gosub :PLAYER~currentprompt
 				if ($player~current_prompt = "Command")

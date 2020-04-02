@@ -1,13 +1,16 @@
 :activate
-	setvar $switchboard~message ""
 	gosub :checkcorp
-	gosub :CheckCLV
-	gosub :CheckOnline
-	gosub :switchboard~switchboard
+	if ($broadcast)
+		setvar $switchboard~message ""
+		gosub :CheckCLV
+		gosub :CheckOnline
+		gosub :switchboard~switchboard
+	end
 	setvar $i 1
+	echo "**"
 	if ($corp_count > 0)
 		echo ansi_14 "*                 Corp Info                   " ansi_15
-		echo "*[1;44m  Name                             Sector         [0m"
+		echo "*[1;44m  Name                             Sector  [0m"
 		while ($i <= $corp_count)
 			setvar $name $corp_members[$i]
 			padRight $name 30
@@ -16,6 +19,17 @@
 		end
 		echo "**" ansi_15
 	end
+	echo "*[1;44m        Defender Activity        [0m"
+	if ($photon~shot > 0)
+		echo ansi_6 "*  Last shot at sector " ansi_15 $photon~last_sector ansi_15
+		echo ansi_6 "*  Photon attacks launched " ansi_15 $photon~shot ansi_6 " times"
+	else
+		echo ansi_6 "*  No photons fired yet."
+	end
+	if ($killing~holokill)
+		echo ansi_6 "*  Holokills attempted " ansi_15 $combat~holokill_count ansi_6 " times "
+	end
+	echo "**" ansi_15
 return
 
 :checkcorp
@@ -51,7 +65,6 @@ return
 	getDate $date
 	getTime $time
 	setVar $date $date & " "
-	setvar $broadcast true
 
 	if ($CheckCLVPod = "0")
 		setVar $CheckCLVPod #42 & #42 & #42 & " Escape Pod " & #42 & #42 & #42
@@ -111,13 +124,13 @@ return
 					end
 				end
 
-				setVar $CLVRawName $CLVPlayer & "(" & $CLVCorp[$CLVPlayer] & ")"
+				setVar $CLVRawName $CLVPlayer & "[" & $CLVCorp[$CLVPlayer] & "]"
 
 				if ($Colour = "1")
 					if ($CLVAlign[$CLVPlayer] < 0)
-						setVar $CLVClr #3 & "4" & $CLVPlayer & #3 & "6(" & $CLVCorp[$CLVPlayer] & ")"
+						setVar $CLVClr #3 & "4" & $CLVPlayer & #3 & "6[" & $CLVCorp[$CLVPlayer] & "]"
 					else
-						setVar $CLVClr #3 & "12" & $CLVPlayer & #3 & "6(" & $CLVCorp[$CLVPlayer] & ")"
+						setVar $CLVClr #3 & "12" & $CLVPlayer & #3 & "6[" & $CLVCorp[$CLVPlayer] & "]"
 					end
 				else
 					setVar $CLVClr $CLVRawName

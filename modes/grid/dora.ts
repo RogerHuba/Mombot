@@ -241,8 +241,8 @@ if ($limpchk = false)
 	
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\data\limps.cts"
-	setEventTrigger        limpchkend        :limpchkend "SCRIPT STOPPED" "scripts\mombot\commands\data\limps.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\data\limps.cts"
+	setEventTrigger        limpchkend        :limpchkend "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\data\limps.cts"
 	pause
 	:limpchkend
 		killalltriggers
@@ -262,8 +262,8 @@ if ($armidchk = false)
 	
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\data\armids.cts"
-	setEventTrigger        armidchkended        :armidchkended "SCRIPT STOPPED" "scripts\mombot\commands\data\armids.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\data\armids.cts"
+	setEventTrigger        armidchkended        :armidchkended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\data\armids.cts"
 	pause
 	:armidchkended
 		killalltriggers
@@ -982,11 +982,11 @@ return
 			saveVar $BOT~command
 			saveVar $BOT~user_command_line
 	
-			load "scripts\mombot\commands\cashing\ppt.cts"
+			load "scripts\"&$bot~mombot_directory&"\commands\cashing\ppt.cts"
 			:backpptwait
 			setTextLineTrigger        pptPauseForCash        :pptPauseForCash "[atm:" & $SWITCHBOARD~BOT_NAME & "]"
 			setTextLineTrigger        pptMove        :pptMove "<Move>"
-			setEventTrigger        pptended        :pptended "SCRIPT STOPPED" "scripts\mombot\commands\cashing\ppt.cts"
+			setEventTrigger        pptended        :pptended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\cashing\ppt.cts"
 			pause
 			:pptPauseForCash
 				killalltriggers
@@ -1049,10 +1049,10 @@ return
 	
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\cashing\trade.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\cashing\trade.cts"
 	:backtradewait
 	setTextLineTrigger        tradePauseForCash        :tradePauseForCash "[atm:" & $SWITCHBOARD~BOT_NAME & "]"
-	setEventTrigger        tradeended        :tradeended "SCRIPT STOPPED" "scripts\mombot\commands\cashing\trade.cts"
+	setEventTrigger        tradeended        :tradeended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\cashing\trade.cts"
 	pause
 	:tradePauseForCash
 		killalltriggers

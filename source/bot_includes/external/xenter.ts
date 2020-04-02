@@ -16,8 +16,8 @@
 	saveVar $BOT~parm6 
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\grid\xenter.cts"
-	setEventTrigger		xenterended		:xenterended "SCRIPT STOPPED" "scripts\mombot\commands\grid\xenter.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
+	setEventTrigger		xenterended		:xenterended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
 	pause
 	:xenterended
 return

@@ -43,12 +43,12 @@
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	getSectorParameter SECTORS "MINESEC" $isArmided
 	getSectorParameter SECTORS "LIMPSEC" $isLimped
-	fileExists $doesHelpFileExist "scripts\mombot\help\"&$command&".txt"
+	fileExists $doesHelpFileExist "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)
-		write "scripts\mombot\help\"&$command&".txt" "- limpshovel {bwarp}                                                     " 
-		write "scripts\mombot\help\"&$command&".txt" "  Limpet reorganizer. Dumps limpets to borders of grid or near base if no border available. " 
-		write "scripts\mombot\help\"&$command&".txt" "                                                            " 
-		write "scripts\mombot\help\"&$command&".txt" "    [bwarp] - Will use planetary transporter to hit sectors. Default is twarp.                                                          " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "- limpshovel {bwarp}                                                     " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "  Limpet reorganizer. Dumps limpets to borders of grid or near base if no border available. " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "                                                            " 
+		write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "    [bwarp] - Will use planetary transporter to hit sectors. Default is twarp.                                                          " 
 		send "'{" $switchboard~bot_name "} - Writing help file for this command in Help directory.*"
 	end
 
@@ -565,9 +565,7 @@ return
 	if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE))
 		setVar $RED_adj 0
 		gosub :player~findjumpsector
-		if ($RED_adj <> 0)
-			send ("'{"&$switchboard~bot_name&"} - Jump Sector Found - Using Sector "&$RED_adj&"**")
-		else
+		if ($RED_adj = 0)
 			waitfor "Command [TL="
 			send "'{" & $switchboard~bot_name & "} - Cannot Find Jump Sector Adjacent Dock**"
 			halt

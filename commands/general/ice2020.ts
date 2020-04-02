@@ -350,8 +350,8 @@ halt
     saveVar $BOT~parm3
     saveVar $BOT~command
     saveVar $BOT~user_command_line
-    load "scripts\mombot\modes\cashing\tbust.cts"
-    setEventTrigger		xbustTbustEnd		:xbustTbustEnd "SCRIPT STOPPED" "scripts\mombot\modes\cashing\tbust.cts"
+    load "scripts\"&$bot~mombot_directory&"\modes\cashing\tbust.cts"
+    setEventTrigger		xbustTbustEnd		:xbustTbustEnd "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\cashing\tbust.cts"
     pause
     :xbustTbustEnd
     killalltriggers
@@ -528,8 +528,8 @@ return
         saveVar $BOT~parm1
         saveVar $BOT~command
         saveVar $BOT~user_command_line
-        load "scripts\mombot\modes\grid\mow.cts"
-        setEventTrigger		mowterraended		:mowterraended "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+        load "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
+        setEventTrigger		mowterraended		:mowterraended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
         pause
         :mowterraended
         killalltriggers
@@ -541,8 +541,8 @@ return
             
             saveVar $BOT~command
             saveVar $BOT~user_command_line
-            load "scripts\mombot\commands\general\scrub.cts"
-            #setEventTrigger		scrubfinished		:scrubfinished "SCRIPT STOPPED" "scripts\mombot\commands\general\scrub.cts"
+            load "scripts\"&$bot~mombot_directory&"\commands\general\scrub.cts"
+            #setEventTrigger		scrubfinished		:scrubfinished "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\scrub.cts"
         setTextLineTrigger scrubfailpause :scrubfailpause "Limpet exists, but not enough cash to get scrubbed."
         setTextLineTrigger scrublimp :scrublimp "Limpet scrubbed off of hull."
         setTextLineTrigger scrubnolimptet :scrubnolimptet "No limpet on my ship."
@@ -590,8 +590,8 @@ return
 				saveVar $BOT~parm1
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
-				load "scripts\mombot\modes\grid\mow.cts"
-				setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+				load "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
+				setEventTrigger		mowended		:mowended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
 				pause
 				:mowended
 					
@@ -796,8 +796,8 @@ return
     saveVar $BOT~parm1
     saveVar $BOT~command
     saveVar $BOT~user_command_line
-    load "scripts\mombot\commands\data\figs.cts"
-    setEventTrigger		figsrun		:figsrun "SCRIPT STOPPED" "scripts\mombot\commands\data\figs.cts"
+    load "scripts\"&$bot~mombot_directory&"\commands\data\figs.cts"
+    setEventTrigger		figsrun		:figsrun "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\data\figs.cts"
     pause
     :figsrun
         killalltriggers
@@ -811,8 +811,8 @@ return
     saveVar $BOT~parm2
     saveVar $BOT~command
     saveVar $BOT~user_command_line
-    load "scripts\mombot\modes\cashing\marco.cts"
-    setEventTrigger		marcorun		:marcorun "SCRIPT STOPPED" "scripts\mombot\modes\cashing\marco.cts"
+    load "scripts\"&$bot~mombot_directory&"\modes\cashing\marco.cts"
+    setEventTrigger		marcorun		:marcorun "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\cashing\marco.cts"
     pause
     :marcorun
         killalltriggers
@@ -1629,8 +1629,8 @@ return
     saveVar $BOT~parm2
     saveVar $BOT~command
     saveVar $BOT~user_command_line
-    load "scripts\mombot\modes\data\findbb.cts"
-    setEventTrigger		findbbCrazy		:findbbCrazy "SCRIPT STOPPED" "scripts\mombot\modes\data\findbb.cts"
+    load "scripts\"&$bot~mombot_directory&"\modes\data\findbb.cts"
+    setEventTrigger		findbbCrazy		:findbbCrazy "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\data\findbb.cts"
     pause
     :findbbCrazy
         killalltriggers
@@ -1651,8 +1651,8 @@ return
     saveVar $BOT~parm2
     saveVar $BOT~command
     saveVar $BOT~user_command_line
-    load "scripts\mombot\modes\data\findbb.cts"
-    setEventTrigger		findbbNormal		:findbbNormal "SCRIPT STOPPED" "scripts\mombot\modes\data\findbb.cts"
+    load "scripts\"&$bot~mombot_directory&"\modes\data\findbb.cts"
+    setEventTrigger		findbbNormal		:findbbNormal "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\data\findbb.cts"
     pause
     :findbbNormal
         killalltriggers
@@ -1755,8 +1755,8 @@ echo  "TARGET" $totalDone ": " $shortestTarget "*"
             saveVar $BOT~parm2
             saveVar $BOT~command
             saveVar $BOT~user_command_line
-            load "scripts\mombot\modes\grid\mow.cts"
-            setEventTrigger		mowCrazyEnd		:mowCrazyEnd "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+            load "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
+            setEventTrigger		mowCrazyEnd		:mowCrazyEnd "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
             pause
             :mowCrazyEnd
             killalltriggers
@@ -1803,8 +1803,8 @@ echo  "TARGET" $totalDone ": " $shortestTarget "*"
     saveVar $BOT~parm2
     saveVar $BOT~command
     saveVar $BOT~user_command_line
-    load "scripts\mombot\modes\grid\mow.cts"
-    setEventTrigger		mowCrazyEnd2		:mowCrazyEnd2 "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+    load "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
+    setEventTrigger		mowCrazyEnd2		:mowCrazyEnd2 "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
     pause
     :mowCrazyEnd2
     send "f1*cd"
@@ -1923,8 +1923,8 @@ return
     saveVar $BOT~parm2
     saveVar $BOT~command
     saveVar $BOT~user_command_line
-    load "scripts\mombot\modes\grid\mow.cts"
-    setEventTrigger		mowSDEnded		:mowSDEnded "SCRIPT STOPPED" "scripts\mombot\modes\grid\mow.cts"
+    load "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
+    setEventTrigger		mowSDEnded		:mowSDEnded "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
     pause
     :mowSDEnded
     killalltriggers
@@ -1993,9 +1993,9 @@ return
                 saveVar $BOT~parm2
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
-				load "scripts\mombot\modes\grid\fmow.cts"
+				load "scripts\"&$bot~mombot_directory&"\modes\grid\fmow.cts"
 				:waitAgainFuelMow
-                setEventTrigger		fmmowended		:fmmowended "SCRIPT STOPPED" "scripts\mombot\modes\grid\fmow.cts"
+                setEventTrigger		fmmowended		:fmmowended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\grid\fmow.cts"
                 setTextLineTrigger fMowGotPort :fMowGotPort "How many holds of"
 				pause
                 :fMowGotPort

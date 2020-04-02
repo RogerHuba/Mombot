@@ -16,8 +16,8 @@
 	savevar $bot~parm4
 	savevar $bot~parm5
 	savevar $bot~parm6
-	load "scripts\mombot\commands\defense\call.cts"
-	setEventTrigger        callend1        :callend1 "SCRIPT STOPPED" "scripts\mombot\commands\defense\call.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts"
+	setEventTrigger        callend1        :callend1 "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts"
 	pause
 	:callend1
 

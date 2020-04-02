@@ -20,7 +20,7 @@
 	setVar $grid_armids 3
 	setVar $refurb TRUE
 	loadvar $bot~command
-	setvar $folder "scripts/mombot/games/"&GAMENAME
+	setvar $folder "scripts/"&$bot~mombot_directory&"/games/"&GAMENAME
 	setVar $GRIDDER_FILE 		$folder&"/gridder.targets"
 	setVar $MASTER_EDGE_FILE 	$folder&"/edge_sectors.targets"
 	setVar $UNEXPLORED_FILE     $folder&"/unexplored.targets"
@@ -1037,9 +1037,7 @@ return
 		setVar $player~RED_adj 0
 		setvar $player~target $map~stardock
 		gosub :player~findjumpsector
-		if ($player~RED_adj <> 0)
-			send ("'{"&$bot~bot_name&"} - Jump Sector Found - Using Sector "&$player~RED_adj&"**")
-		else
+		if ($player~RED_adj = 0)
 			waitfor "Command [TL="
 			send "'{" & $bot~bot_name & "} - Cannot Find Jump Sector Adjacent Dock**"
 			halt

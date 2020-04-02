@@ -21,8 +21,8 @@
 	savevar $bot~parm4
 	savevar $bot~parm5
 	savevar $bot~parm6
-	load "scripts\mombot\commands\general\scrub.cts"
-	setEventTrigger        holoend1        :holoend1 "SCRIPT STOPPED" "scripts\mombot\commands\general\scrub.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\general\scrub.cts"
+	setEventTrigger        holoend1        :holoend1 "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\scrub.cts"
 	pause
 	:holoend1
 return

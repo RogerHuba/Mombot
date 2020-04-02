@@ -32,6 +32,7 @@
 	setVar $ALIEN_ANSI    #27 & "[1;36m" & #27 & "["
 	setVar $START_FIG_HIT_OWNER ":"
 	setVar $END_FIG_HIT_OWNER "'s"
+	setvar $photon~shot 0
 
 
 	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f} {l} {a} {auto} {holo} {mines} {extern:11pm}  "
@@ -55,12 +56,13 @@
 	setVar $BOT~help[19] $BOT~tab&"{saveme:bot} - define saveme bot for your planet "
 	setVar $BOT~help[20] $BOT~tab&"   {multi:#} - how many photons to shoot (multi photon games) "
 	setVar $BOT~help[21] $BOT~tab&"    {switch} - will switch into saveme bots ship before kill "
-	setVar $BOT~help[22] $BOT~tab&"           "
-	setVar $BOT~help[23] $BOT~tab&"        Examples: "
-	setVar $BOT~help[24] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[25] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[26] $BOT~tab&"             >defender f density adjacent secure"
-	setVar $BOT~help[27] $BOT~tab&"             >defender secure saveme:hunt"
+	setVar $BOT~help[22] $BOT~tab&"  {sentinel} - turns on sentinel mode "
+	setVar $BOT~help[23] $BOT~tab&"           "
+	setVar $BOT~help[24] $BOT~tab&"        Examples: "
+	setVar $BOT~help[25] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[26] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[27] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[28] $BOT~tab&"             >defender secure saveme:hunt"
 
 	gosub :bot~helpfile
 
@@ -130,14 +132,14 @@
 		setvar $holo false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " holokill "
+	getwordpos " "&$bot~user_command_line&" " $pos " holokill"
 	if ($pos > 0)
 		setvar $killing~holokill true
 	else
 		setvar $killing~holokill false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " slingshot "
+	getwordpos " "&$bot~user_command_line&" " $pos " sling"
 	if ($pos > 0)
 		setvar $killing~slingshot true
 		setvar $killing~holokill false
@@ -145,21 +147,28 @@
 		setvar $killing~slingshot false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " secure "
+	getwordpos " "&$bot~user_command_line&" " $pos " sec"
 	if ($pos > 0)
 		setvar $navigate~securePwarp true
 	else
 		setvar $navigate~securePwarp false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " density "
+	getwordpos " "&$bot~user_command_line&" " $pos " sent"
+	if ($pos > 0)
+		setvar $sentinel~broadcast true
+	else
+		setvar $sentinel~broadcast false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " den"
 	if ($pos > 0)
 		setvar $photon~density true
 	else
 		setvar $photon~density false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " switch "
+	getwordpos " "&$bot~user_command_line&" " $pos " swit"
 	if ($pos > 0)
 		setvar $killing~switch true
 	else
@@ -184,14 +193,14 @@
 		setvar $noescape false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " capture "
+	getwordpos " "&$bot~user_command_line&" " $pos " cap"
 	if ($pos > 0)
 		setvar $killing~capture true
 	else
 		setvar $killing~capture false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " mines "
+	getwordpos " "&$bot~user_command_line&" " $pos " mine"
 	if ($pos > 0)
 		setvar $restock~deploymines true
 	else
@@ -391,6 +400,9 @@
 	if ($restock~deploymines)
 		setVar $message $message&"*                   Deploy mines"
 	end
+	if ($sentinel~broadcast)
+		setVar $message $message&"*                   Sentinel mode on"
+	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	setvar $switchboard~message $message
 	gosub :switchboard~switchboard
@@ -559,6 +571,7 @@
 					halt
 				end
 			end
+			gosub :waitbeforecheck
 			loadGlobal $bot~last_fighter_attack
 			if ($bot~last_fighter_attack <> "")
 				gosub :killing~set_the_cannon
@@ -675,6 +688,7 @@
 		####################
 		gosub :player~quikstats
 		gosub :check_for_photon_refurb
+		gosub :waitbeforecheck
 		loadGlobal $bot~last_fighter_attack
 		if ($bot~last_fighter_attack <> "")
 			gosub :killing~set_the_cannon
@@ -777,8 +791,8 @@ return
 	
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\data\holo.cts"
-	setEventTrigger        holoend1        :holoend1 "SCRIPT STOPPED" "scripts\mombot\commands\data\holo.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\data\holo.cts"
+	setEventTrigger        holoend1        :holoend1 "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\data\holo.cts"
 	pause
 	:holoend1
 		killtrigger holoend1
@@ -794,14 +808,14 @@ return
 	saveVar $BOT~user_command_line
 	saveVar $bot~parm1 
 
-	load "scripts\mombot\commands\grid\deploy.cts"
-	setEventTrigger        minesend        :minesend "SCRIPT STOPPED" "scripts\mombot\commands\grid\deploy.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
+	setEventTrigger        minesend        :minesend "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
 	setdelaytrigger        minetime        :minetime  10000
 	pause
 
 	:minetime
 		killtrigger minesend
-		stop "scripts\mombot\commands\grid\deploy.cts"
+		stop "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
 		gosub :player~quikstats
 	:minesend
 		killtrigger minetime
@@ -819,7 +833,7 @@ return
 return
 
 :check_for_photon_refurb
-	if (($player~photons <= $photon~shooting_count) and ($nophoton <> true))
+	if (($player~photons < $photon~shooting_count) and ($nophoton <> true))
 		gosub :navigate~navigate_to_limp
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)

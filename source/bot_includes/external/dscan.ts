@@ -16,8 +16,8 @@
 	saveVar $BOT~parm6 
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\data\dscan.cts"
-	setEventTrigger		dscandone		:dscandone "SCRIPT STOPPED" "scripts\mombot\commands\data\dscan.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\data\dscan.cts"
+	setEventTrigger		dscandone		:dscandone "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\data\dscan.cts"
 	pause
 	:dscandone
 return

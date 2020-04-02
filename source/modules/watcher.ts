@@ -365,7 +365,7 @@ if ($pos > 0)
 		getWordPos "<><><>"&$scripts[$i] $pos "<><><>mombot"
 		if ($pos > 0)
 			if ($rebooted = FALSE)
-				load "scripts\mombot\"&$scripts[$i]
+				load "scripts\"&$bot~mombot_directory&"\"&$scripts[$i]
 			end
 			stop $scripts[$i]
 			setVar $found TRUE
@@ -374,7 +374,7 @@ if ($pos > 0)
 	end
 	if ($FOUND = FALSE)
 		echo "No mombot script found, so attempting to start default.**"
-		load "scripts\mombot\mombot.cts"
+		load "scripts\"&$bot~mombot_directory&"\mombot.cts"
 	end
 end
 

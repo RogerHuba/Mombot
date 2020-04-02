@@ -310,13 +310,13 @@ setVar $moveFigMacro ""
 							saveVar $BOT~parm2
 							saveVar $BOT~command
 							saveVar $BOT~user_command_line
-							load "scripts\mombot\modes\offense\foton.cts"
-							setEventTrigger        fotonended        :fotonended "SCRIPT STOPPED" "scripts\mombot\modes\offense\foton.cts"
+							load "scripts\"&$bot~mombot_directory&"\modes\offense\foton.cts"
+							setEventTrigger        fotonended        :fotonended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\offense\foton.cts"
 							setdelaytrigger	fotonwait :fotonwait 5000
 							pause
 							:fotonwait
 								
-								stop "scripts\mombot\modes\offense\foton.cts"
+								stop "scripts\"&$bot~mombot_directory&"\modes\offense\foton.cts"
 								goto :ldrop_return_home
 							:fotonended
 								killalltriggers
@@ -491,8 +491,8 @@ setVar $moveFigMacro ""
 				saveVar $BOT~parm2
 				saveVar $BOT~command
 				saveVar $BOT~user_command_line
-				load "scripts\mombot\modes\resource\movefig.cts"
-				setEventTrigger        moveended        :moveended "SCRIPT STOPPED" "scripts\mombot\modes\resource\movefig.cts"
+				load "scripts\"&$bot~mombot_directory&"\modes\resource\movefig.cts"
+				setEventTrigger        moveended        :moveended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\movefig.cts"
 				pause
 				:moveended
 					killalltriggers
@@ -551,8 +551,8 @@ return
 		saveVar $BOT~parm1
 		saveVar $BOT~command
 		saveVar $BOT~user_command_line
-		load "scripts\mombot\commands\offense\htorp.cts"
-		setEventTrigger		htorpdone		:htorpdone "SCRIPT STOPPED" "scripts\mombot\commands\offense\htorp.cts"
+		load "scripts\"&$bot~mombot_directory&"\commands\offense\htorp.cts"
+		setEventTrigger		htorpdone		:htorpdone "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\offense\htorp.cts"
 		pause
 		:htorpdone
 	end

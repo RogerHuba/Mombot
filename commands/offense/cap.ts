@@ -40,11 +40,11 @@ logging off
 				saveVar $BOT~user_command_line
 				setvar $bot~mode "Citcap"
 				savevar $bot~mode
-				load "scripts\mombot\modes\offense\citcap.cts"
+				load "scripts\"&$bot~mombot_directory&"\modes\offense\citcap.cts"
 			else
 				setvar $bot~mode "General"
 				savevar $bot~mode
-				stop "scripts\mombot\modes\offense\citcap.cts"
+				stop "scripts\"&$bot~mombot_directory&"\modes\offense\citcap.cts"
 				setVar $SWITCHBOARD~message "Citcap off.*" 
 				gosub :SWITCHBOARD~switchboard
 			end

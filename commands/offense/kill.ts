@@ -42,11 +42,11 @@ logging off
 					saveVar $BOT~user_command_line
 					setvar $bot~mode "Citkill"
 					savevar $bot~mode
-					load "scripts\mombot\modes\offense\citkill.cts"
+					load "scripts\"&$bot~mombot_directory&"\modes\offense\citkill.cts"
 				else
 					setvar $bot~mode "General"
 					savevar $bot~mode
-					stop "scripts\mombot\modes\offense\citkill.cts"
+					stop "scripts\"&$bot~mombot_directory&"\modes\offense\citkill.cts"
 					setVar $SWITCHBOARD~message "Citkill off.*" 
 					gosub :SWITCHBOARD~switchboard
 				end
@@ -67,8 +67,8 @@ logging off
 		goSub :combat~fastAttack
 		if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
 			if ($player~isFound)
-				load "scripts\mombot\commands\general\refurb.cts"
-				setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
+				load "scripts\"&$bot~mombot_directory&"\commands\general\refurb.cts"
+				setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\refurb.cts"
 				pause
 				:refurbended
 				goSub :SECTOR~getSectorData

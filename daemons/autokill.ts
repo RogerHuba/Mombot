@@ -49,8 +49,8 @@
 		gosub :player~quikstats
 		if ((($player~current_sector = 1) or ($player~current_sector = $map~stardock)) and ($furb = true))
 			if ($player~isFound)
-				load "scripts\mombot\commands\general\refurb.cts"
-				setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\mombot\commands\general\refurb.cts"
+				load "scripts\"&$bot~mombot_directory&"\commands\general\refurb.cts"
+				setEventTrigger		1		:refurbended	"SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\refurb.cts"
 				pause
 				:refurbended
 				setvar $sector~passive false

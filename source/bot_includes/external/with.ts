@@ -22,8 +22,8 @@
 	saveVar $BOT~parm6
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\mombot\commands\general\with.cts"
-	setEventTrigger		withended		:withended "SCRIPT STOPPED" "scripts\mombot\commands\general\with.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\general\with.cts"
+	setEventTrigger		withended		:withended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\with.cts"
 	pause
 	:withended
 return

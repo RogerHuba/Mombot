@@ -851,8 +851,8 @@ if ($beam <> "")
 		saveVar $BOT~parm5
 		saveVar $BOT~command
 		saveVar $BOT~user_command_line
-		load "scripts\mombot\modes\data\beam.cts"
-		setEventTrigger		beamdone		:beamdone "SCRIPT STOPPED" "scripts\mombot\modes\data\beam.cts"
+		load "scripts\"&$bot~mombot_directory&"\modes\data\beam.cts"
+		setEventTrigger		beamdone		:beamdone "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\data\beam.cts"
 		pause
 		:beamdone
 end
