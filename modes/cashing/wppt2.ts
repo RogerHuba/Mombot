@@ -30,6 +30,9 @@
 		if (($player~unlimitedGame = FALSE) AND ($player~turns <= $bot~bot_turn_limit))
 			goto :endSST
 		end
+		if ($player~genesis <= 0)
+			gosub :refurb
+		end
 		setvar $needNewPortPair true
 		gosub :findPPTPorts
 		setVar $busted FALSE
@@ -232,6 +235,11 @@
 			setvar $port1 $COURSE[$j]
 			setvar $isUsedUp $usedPorts[$COURSE[$j]] 
 
+			if ((PORT.BUYFUEL[$COURSE[$j]]) and ($isUsedUp <> true))
+				#send "* cr*q"
+				#waitOn "What sector is the port in? ["
+				gosub :createAndSell
+			end
 			if (($current_port_class > 0) and ($current_port_class < 7) and ($isUsedUp <> true))
 				send "* cr*q"
 				waitOn "What sector is the port in? ["
@@ -496,7 +504,7 @@ return
   return
 
 :refurb
-
+	setvar $refurbPort $map~stardock
 	if ($FURBING <> 0)
 		setVar $mowIntoSector $FURBING
 		setVar $refurbPort $FURBING
@@ -578,6 +586,13 @@ return
 				send $buy & "*"
 				waitfor "<Hardware Emporium>"
 			end
+			send "T"
+			waitfor "How many Genesis Torpedoes do you want"
+			getText CURRENTLINE $Buy "(Max" ") ["
+			striptext $buy " "
+			send $buy & "*"
+			waitfor "<Hardware Emporium>"
+
 			send "/"
 			waitfor #179 & "Figs"
 			getText CURRENTLINE $player~credits (#179 & "Creds") (#179 & "Figs")
@@ -821,7 +836,7 @@ return
 	loadVar $map~alpha_centauri
 	loadVar $bot~subspace
 	loadVar $bot~safe_ship
-	setVar $CASH_TO_HOLD_ONTO 1000000
+	setVar $CASH_TO_HOLD_ONTO 100000
 
 
 
@@ -977,6 +992,432 @@ return
 	setvar $switchboard~message "World PPT Powering Up!*"
 	gosub :switchboard~switchboard
 goto :GoGo
+
+
+
+:createAndSell
+	goSub :createPlanetsSub
+
+	if ($inMakePlanet = 1)
+		return
+	end
+	:portStartTrade
+	
+	setVar $tradePlanet $shipBlastPlanet
+	setVar $tradeOre 0
+	setVar $tradeOrg 0
+	setVar $tradeEquip 0
+	gosub :planetTrade
+
+	if ($inMakePlanet = 12)
+		goto :endMakingPlanets
+	end 
+	 :sellDonePort
+	send "cr*q"
+	waitfor "<Computer deactivated>"
+return
+
+:createPlanetsSub
+
+	
+		
+		## Planet Creation
+		:startPlanetCreation
+		
+		setVar $planet~planetToBang 0
+		setVar $planet~planetsInSector 0
+		setVar $planet~planets 0
+		setVar $planet~planeti 1
+
+		setVar $planet~planetsCreated 0
+		send "lq*"
+		setVar $startLogging 0
+
+		:checkPlanetsInSector
+			setTextLineTrigger checkPlanetsInSectorNoPlanet :checkPlanetsInSectorNoPlanet "There isn't a planet in this sector."
+			setTextLineTrigger checkPlanetsInSectorStart :checkPlanetsInSectorStart "------------------------------------------------------------------------------"
+			setTextLineTrigger checkPlanetsInSectorPlanet :checkPlanetsInSectorPlanet "<"
+			setTextTrigger checkPlanetsInSectorFinish :checkPlanetsInSectorFinish "Land on which planet"
+			pause
+			:checkPlanetsInSectorStart
+				killAllTriggers
+	
+				setVar $startLogging 1
+				goto :checkPlanetsInSector
+			:checkPlanetsInSectorNoPlanet
+				killAllTriggers
+				goto :checkPlaneysFinishWait
+			:checkPlanetsInSectorPlanet
+				killAllTriggers 
+		
+				if ($startLogging = 1)
+			
+			
+					getWord CURRENTLINE $cPlanetNum 1
+
+					if ($cPlanetNum = "Land")
+						goto :checkPlanetsInSectorFinish
+					elseif ($cPlanetNum = "<")
+						getWord CURRENTLINE $cPlanetNum 2
+						stripText $cPlanetNum ">"
+					else
+						stripText $cPlanetNum ">"
+						stripText $cPlanetNum "<"
+					end
+					add $planet~planetsInSector 1
+	
+					setVar $planet~planets[$planet~planeti] $cPlanetNum
+					add $planet~planeti 1
+				end
+				
+				goto :checkPlanetsInSector
+
+			:checkPlanetsInSectorFinish
+				killAllTriggers
+				
+
+		:checkPlaneysFinishWait
+		waitfor "Command ["
+
+		setVar $inMakePlanet 0
+		setVar $go 1
+		#while ($planet~planetsInSector < $planet~planetsInSectorReq)
+		while ($go = 1)
+			:startMakingPlanets
+			
+			if ($planet~planetsInSector > 0)
+				setVar $planet~planets 0
+				setVar $planet~planeti 1
+
+				#Update Planet Numbers
+				send "lq*"
+				setVar $startLogging 0
+				:updatePlanetsInSector
+				setTextLineTrigger updatePlanetsInSectorNoPlanet :updatePlanetsInSectorNoPlanet "There isn't a planet in this sector."
+				setTextLineTrigger updatePlanetsInSectorStart :updatePlanetsInSectorStart "------------------------------------------------------------------------------"
+				setTextLineTrigger updatePlanetsInSectorPlanet :updatePlanetsInSectorPlanet "<"
+				setTextTrigger updatePlanetsInSectorFinish :updatePlanetsInSectorFinish "Land on which planet"
+				pause
+				:updatePlanetsInSectorStart
+					killAllTriggers
+					setVar $startLogging 1
+					goto :updatePlanetsInSector
+				:updatePlanetsInSectorNoPlanet
+					killAllTriggers
+					goto :updatePlanetsFinishWait
+				:updatePlanetsInSectorPlanet
+					killAllTriggers 
+					
+					if ($startLogging = 1)
+			
+						getWord CURRENTLINE $cPlanetNum 1
+						if ($cPlanetNum = "Land")
+							goto :updatePlanetsInSectorFinish
+						elseif ($cPlanetNum = "<")
+							getWord CURRENTLINE $cPlanetNum 2
+							stripText $cPlanetNum ">"
+						else
+							stripText $cPlanetNum ">"
+							stripText $cPlanetNum "<"
+						end
+						#add $planet~planetsInSector 1
+						setVar $planet~planets[$planet~planeti] $cPlanetNum
+						add $planet~planeti 1
+					end
+					goto :updatePlanetsInSector
+
+				:updatePlanetsInSectorFinish
+					killAllTriggers
+			end
+			
+			
+			:updatePlanetsFinishWait
+			setVar $goodPlanet 0
+			send "uyn.*p"
+			:buildPlanet
+			setTextLineTrigger buildPlanet1 :buildPlanet1 "You don't have any Genesis Torpedoes to launch!"
+			setTextLineTrigger buildPlanet2 :buildPlanet2 "For building this planet you receive"
+			
+			pause
+
+			:buildPlanet1
+				killAllTriggers
+				send "*"
+				gosub :restock
+				
+				goto :updatePlanetsFinishWait
+				
+			:buildPlanet2
+				killAllTriggers
+				add $stat_torps 1
+
+			:makePlanet
+						
+			setTextLineTrigger makePlanet1 :makePlanet1 $setVarPlanetType1
+			setTextLineTrigger makePlanet2 :makePlanet2 $setVarPlanetType2
+			setTextLineTrigger makePlanet3 :makePlanet3 $setVarPlanetType3
+			setTextLineTrigger makePlanet4 :makePlanet4 $setVarPlanetType4
+			setTextLineTrigger makePlanet5 :makePlanet5 $setVarPlanetType5
+			#setTextLineTrigger markGoodPlanet :markGoodPlanet "hat do you want to name this planet?"
+			setTextLineTrigger makePlanetDone :makePlanetDone "Should this be a (C)orporate planet or (P)ersonal planet?"
+			pause
+			
+			:makePlanet1
+			:makePlanet2
+			:makePlanet3
+			:makePlanet4
+			:makePlanet5
+			#:markGoodPlanet
+		
+				killAllTriggers
+				setVar $goodPlanet 1
+				goto :makePlanetDone
+			:makePlanetDone 
+				killAllTriggers
+			add $planet~planetsInSector 1
+		
+			if ($goodPlanet = 1)
+				setVar $inMakePlanet 1
+				send "lq*"
+				setVar $planet~planetCheck 0
+				setVar $planet~planetChecki 1
+				setVar $newPlanet 0
+				setVar $startLogging 0
+
+				:goodPlanetCheck
+				setTextLineTrigger goodPlanetCheckPlanet :goodPlanetCheckPlanet "<"
+				setTextTrigger goodPlanetCheckFinish :goodPlanetCheckFinish "Land on which planet"
+				setTextLineTrigger goodPlanetCheckstart :goodPlanetCheckstart "------------------------------------------------------------------------------"
+				pause
+				:goodPlanetCheckstart
+					killAllTriggers
+					setVar $startLogging 1
+					goto :goodPlanetCheck
+				:goodPlanetCheckPlanet
+					killAllTriggers 
+					if ($startLogging = 1)
+
+			
+						getWord CURRENTLINE $cPlanetNum 1
+						if ($cPlanetNum = "Land")
+							goto :goodPlanetCheckFinish
+						elseif ($cPlanetNum = "<")
+							getWord CURRENTLINE $cPlanetNum 2
+							stripText $cPlanetNum ">"
+						else
+							stripText $cPlanetNum ">"
+							stripText $cPlanetNum "<"
+						end
+						
+						setVar $planet~planetCheck[$planet~planetChecki] $cPlanetNum
+						add $planet~planetChecki 1
+		
+					end
+					
+					goto :goodPlanetCheck
+				:goodPlanetCheckFinish
+					killAllTriggers
+			#loop through and see which planet isn't in the existing list
+
+				setVar $i 1
+				while ($i < $planet~planetChecki)
+					setVar $y 1
+					setVar $found 0
+					
+					while ($y < $planet~planetsInSector)
+						
+						if ($planet~planetCheck[$i] = $planet~planets[$y])
+							setVar $found 1
+						end 
+						add $y 1
+					end
+					if ($found = 0)
+						setVar $newPlanet $planet~planetCheck[$i]
+					end 
+					add $i 1
+				end
+				
+				if ($newPlanet > 0)
+					setVar $shipBlastPlanet $newPlanet
+				else
+					setVar $newPlanet $shipBlastPlanet
+				end
+				
+		
+			
+				gosub :portStartTrade
+				setVar $fuelPerc PORT.PERCENTFUEL[CURRENTSECTOR]
+	
+				if ($fuelPerc < $tradingMinFuel)
+
+					return
+				end
+
+			end
+			:endMakingPlanets
+			
+
+			setVar $planet~planetsCreated 1
+		end
+
+		
+return
+
+:planetTrade
+	
+	if ($useEp = TRUE)
+		goSub :planetTrade_ep
+	else
+		goSub :planetTrade_ck
+	end
+
+return
+
+:planetTrade_ck
+###
+# requires: tradePlanet
+# requires: amount? or 0 for all
+	gosub :player~quikstats
+	
+	
+	setvar $_ck_pnego_current_sector $player~CURRENT_SECTOR
+	saveVar $_ck_pnego_current_sector 
+
+if ($unlimited = 1)
+	setVar $PLAYER~TURNS 999
+end
+	setvar $_ck_pnego_turns $player~TURNS
+	saveVar $_ck_pnego_turns 
+
+	stripText $player~credits ","
+	setvar $_ck_pnego_credits $player~credits
+	saveVar $_ck_pnego_credits 
+	
+	stripText $player~EXPERIENCE ","
+	setvar $_ck_pnego_exp $player~EXPERIENCE
+	saveVar $_ck_pnego_exp 
+
+	:tradePlanetLandAgain
+
+	send "l" $tradePlanet "*"
+	
+	setvar $_ck_pnego_planet $tradePlanet
+	saveVar $_ck_pnego_planet 
+
+	setTextLineTrigger tradePlanetLand1 :tradePlanetLand1 "That planet is not in this sector."
+	setTextLineTrigger tradePlanetLand2 :tradePlanetLand2 "ding sequence engaged"
+	pause
+	:tradePlanetLand1
+		killAllTriggers
+		send "q*"
+		waitfor "Command ["
+		setVar $newPlanetMade 0
+		goSub :reCheckPlanets
+		if ($newPlanetMade = 0)
+			setVar $tradePlanet $planet~planets[$planet~planetsInSectorReq]
+		else
+			setVar $tradePlanet $newPlanetMade
+		end
+		goto :tradePlanetLandAgain
+	:tradePlanetLand2
+		killAllTriggers
+	Waitfor "-------  ---------  ---------  ---------  ---------  ---------  ---------"
+	if ($player~ore_holds < $minOre)
+		send "tnt1*"
+		waitfor "free cargo holds."
+		send "d"
+		Waitfor "-------  ---------  ---------  ---------  ---------  ---------  ---------"
+	end
+
+
+	setTextLineTrigger tradePlanetLand3 :tradePlanetLand3 "Fuel Ore"
+	setTextLineTrigger tradePlanetLand4 :tradePlanetLand4 "Organics"
+	setTextLineTrigger tradePlanetLand5 :tradePlanetLand5 "Equipment"
+	setTextTrigger tradePlanetLand6 :tradePlanetLand6 "Planet command ("
+	pause
+		:tradePlanetLand3
+			killTrigger :tradePlanetLand3
+			getWord CURRENTLINE $availOre 6
+			striptext $availOre ","
+			setvar $_ck_pnego_planetfuel $availOre
+			saveVar $_ck_pnego_planetfuel 
+			if ($availOre = 0)
+				setVar $tradeOre "-1"
+			end
+		
+			pause
+		:tradePlanetLand4
+			killTrigger :tradePlanetLand4
+			getWord CURRENTLINE $availOrg 5
+			striptext $availOrg ","
+			setvar $_ck_pnego_planetorg $availOrg
+			saveVar $_ck_pnego_planetorg 
+			if ($availOrg = 0)
+				setVar $tradeOrg "-1"
+			end
+			pause
+		:tradePlanetLand5
+			killTrigger :tradePlanetLand5
+			getWord CURRENTLINE $availEquip 5
+			striptext $availEquip ","
+			setvar $_ck_pnego_planetequip $availEquip
+			saveVar $_ck_pnego_planetequip 
+			if ($availEquip = 0)
+				setVar $tradeEquip "-1"
+			end
+			pause
+		:tradePlanetLand6
+			killAllTriggers
+			if ($tradeOre = 0)
+				setVar $tradeOre $availOre
+			end
+			if ($tradeOrg = 0)
+				setVar $tradeOrg $availOrg
+			end
+			if ($tradeEquip = 0)
+				setVar $tradeEquip $availEquip
+			end
+			
+			setVar $planet~_ck_pnego_fueltosell $tradeOre
+			setVar $planet~_ck_pnego_orgtosell $tradeOrg
+			setVar $planet~_ck_pnego_equiptosell $tradeEquip
+			
+			
+		
+
+		
+		gosub :player~quikstats
+		setVar $precredits $player~credits
+		stripText $precredits ","
+
+
+		gosub :planet~planetNeg
+		#setvar $switchboard~message $planet~exit_message&"*"
+		#gosub :switchboard~switchboard
+			
+			
+		gosub :player~quikstats
+		stripText $player~credits ","
+		setVar $player~creditsNow $player~credits
+		if ($player~creditsNow = $precredits)
+			echo "*################*##############"
+			echo "*#### NEG FAILED, SELLING AT COST!"
+			echo "*###############################"
+
+	
+	
+			send "q p n" $tradePlanet "* * * l" $tradePlanet "*"
+			waitfor "Land on which planet"
+			gosub :player~quikstats
+			stripText $player~credits ","
+			setVar $player~creditsNow $player~credits
+		end
+		subtract $player~creditsNow $_ck_pnego_credits
+		add $stat_dollarsgross $player~creditsNow
+		
+		send "q"
+
+return
 
 
 #INCLUDES:
