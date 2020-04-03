@@ -220,6 +220,7 @@
 		:tryNewRouteShip1
 		setVar $destination 0
 		while ($destination = 0)
+			send "  sh"
 			gosub :getRandomCourse
 			gosub :player~quikstats
 		end
