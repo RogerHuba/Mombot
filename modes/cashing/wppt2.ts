@@ -23,6 +23,20 @@
 
 	setvar $player~save true
 
+
+	# Trading Min Fuel - we'll stop using a port when we get here
+	setVar $tradingMinFuel 40
+
+	# try and grab fuel at this
+	setVar $minOre 120
+	
+	setArray $explored SECTORS
+	setArray $portReported SECTORS
+	setArray $portBlocked SECTORS
+	setArray $futureDestinations SECTORS
+	setVar $futureDestsAdded 0
+	setVar $futurePortsAdded 0
+
 	goto :Starting
 	
 
@@ -241,8 +255,6 @@
 			if ((PORT.BUYFUEL[$COURSE[$j]]) and ($isUsedUp <> true) and (PORT.FUEL[$COURSE[$j]] > 100))
 				gosub :createAndSell
 				setvar $usedPorts[$COURSE[$j]] true
-				send "* cr*q"
-				waitOn "What sector is the port in? ["
 			end
 			if (($current_port_class > 0) and ($current_port_class < 7) and ($isUsedUp <> true))
 				send "* cr*q"
