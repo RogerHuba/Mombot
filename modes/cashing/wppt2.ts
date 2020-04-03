@@ -1020,6 +1020,8 @@ return
 			setTextTrigger checkPlanetsInSectorFinish :checkPlanetsInSectorFinish "Land on which planet"
 			
 			settextlinetrigger noplanetscanner :checkPlanetsInSectorPlanetnoscanner "Planet #"
+			setTextTrigger checkPlanetsInSectorFinishnoscanner :checkPlanetsInSectorFinish "Blasting off from "
+
 			pause
 			:checkPlanetsInSectorStart
 				killAllTriggers
