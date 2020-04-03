@@ -605,6 +605,7 @@ return
 		else
 			setVar $figsToBuy 0
 			setVar $player~shieldsToBuy 0
+			setvar $holdsToBuy 0
 		end
 			send "a "&$holdsToBuy&"* y b "&$figsToBuy&"* c "&$player~shieldsToBuy&"* q q h "
 			waitfor "<Hardware Emporium>"
