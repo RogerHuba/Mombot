@@ -246,7 +246,7 @@
 
 					setvar $pair_found false
 					if ($current_port_class = 1)
-						if (($neighbor_port_class >= 1) and ($neighbor_port_class <= 4))
+						if (($neighbor_port_class >= 2) and ($neighbor_port_class <= 4))
 							setvar $pair_found true
 						end 
 					end
