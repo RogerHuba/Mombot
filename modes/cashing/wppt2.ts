@@ -1583,10 +1583,6 @@ return
 	setVar $que[1] $player~current_sector
 	setVar $checked[$player~current_sector] 1
 	setvar $a 1
-	while (SECTOR.WARPS[$player~current_sector][$a] > 0)
-		setVar $checked[SECTOR.WARPS[$player~current_sector][$a]] 1	
-		add $a 1
-	end
 	:try_again
 	while ($bottom <= $top)
 		# Now, pull out the next sector in the queue, and make it our focus
