@@ -288,13 +288,21 @@
 						end
 						add $p 1
 					end
+					setVar $figOwner  SECTOR.FIGS.OWNER[$checkingNeighbor]
+					setVar $mineOwner SECTOR.MINES.OWNER[$checkingNeighbor]
+					setVar $limpOwner SECTOR.LIMPETS.OWNER[$checkingNeighbor]
+					setVar $figCount  SECTOR.FIGS.QUANTITY[$checkingNeighbor]
+					if (($figCount > $safeFighterLevel) AND (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
+						echo "*Avoiding too many enemy fighters*"
+						goto :tryNewRouteShip1
+					end
 					if ((PORT.BUYFUEL[$checkingNeighbor]) and ($isUsedUp <> true) and (PORT.FUEL[$checkingNeighbor] > 1000) and ($player~genesis > 0))
 						setVar $moveIntoSector $checkingNeighbor
 						gosub :moveIntoSector
 						send "* cr*q"
 						waitOn "What sector is the port in? ["
 						gosub :createAndSell
-						return
+						goto :tryNewRouteShip1
 					end
 					add $k 1
 				end
