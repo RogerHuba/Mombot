@@ -250,16 +250,20 @@
 
 			setvar $current_port_class PORT.CLASS[$COURSE[$j]]
 			setvar $port1 $COURSE[$j]
-			setvar $isUsedUp $usedPorts[$COURSE[$j]] 
 
 			if ((PORT.BUYFUEL[$COURSE[$j]]) and ($isUsedUp <> true) and (PORT.FUEL[$COURSE[$j]] > 100))
 				gosub :createAndSell
 				setvar $usedPorts[$COURSE[$j]] true
 			end
+			:checkagainport
+			setvar $isUsedUp $usedPorts[$COURSE[$j]] 
 			if (($current_port_class > 0) and ($current_port_class < 7) and ($isUsedUp <> true))
 				send "* cr*q"
 				waitOn "What sector is the port in? ["
-
+				if ((PORT.FUEL[$COURSE[$j]] < $player~total_holds) or (PORT.ORG[$COURSE[$j]] < $player~total_holds) or (PORT.EQUIP[$COURSE[$j]] < $player~total_holds))
+					setvar $usedPorts[$COURSE[$j]] true
+					goto :checkagainport
+				end
 				setVar $k 1
 				setVar $isFound FALSE
 				while ((SECTOR.WARPS[$COURSE[$j]][$k] > 0) AND ($isFound = FALSE))
