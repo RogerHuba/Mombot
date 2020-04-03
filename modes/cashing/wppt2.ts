@@ -993,7 +993,7 @@ return
 			setTextLineTrigger checkPlanetsInSectorPlanet :checkPlanetsInSectorPlanet "<"
 			setTextTrigger checkPlanetsInSectorFinish :checkPlanetsInSectorFinish "Land on which planet"
 			
-			settextlinetrigger noplanetscanner :checkplanetsinsectorfinish "Planet #"
+			settextlinetrigger noplanetscanner :checkPlanetsInSectorPlanetnoscanner "Planet #"
 			pause
 			:checkPlanetsInSectorStart
 				killAllTriggers
@@ -1003,6 +1003,10 @@ return
 			:checkPlanetsInSectorNoPlanet
 				killAllTriggers
 				goto :checkPlaneysFinishWait
+			:checkPlanetsInSectorPlanetnoscanner
+				getWord CURRENTLINE $cPlanetNum 2
+				stripText $cPlanetNum "#"
+
 			:checkPlanetsInSectorPlanet
 				killAllTriggers 
 		
@@ -1053,7 +1057,7 @@ return
 				setTextLineTrigger updatePlanetsInSectorStart :updatePlanetsInSectorStart "-----------------------------------------------"
 				setTextLineTrigger updatePlanetsInSectorPlanet :updatePlanetsInSectorPlanet "<"
 				setTextTrigger updatePlanetsInSectorFinish :updatePlanetsInSectorFinish "Land on which planet"
-				settextlinetrigger updatePlanetsInSectorFinishnoscanner :updatePlanetsInSectorFinish "Planet #"
+				settextlinetrigger updatePlanetsInSectorPlanetnoscanner :updatePlanetsInSectorPlanetnoscanner "Planet #"
 				pause
 				:updatePlanetsInSectorStart
 					killAllTriggers
@@ -1062,6 +1066,9 @@ return
 				:updatePlanetsInSectorNoPlanet
 					killAllTriggers
 					goto :updatePlanetsFinishWait
+				:updatePlanetsInSectorPlanetnoscanner
+					getWord CURRENTLINE $cPlanetNum 2
+					stripText $cPlanetNum "#"
 				:updatePlanetsInSectorPlanet
 					killAllTriggers 
 					
@@ -1148,16 +1155,20 @@ return
 				setVar $startLogging 0
 
 				gosub :player~quikstats
-				
+
 				:goodPlanetCheck
 				setTextLineTrigger goodPlanetCheckPlanet :goodPlanetCheckPlanet "<"
 				setTextTrigger goodPlanetCheckFinish :goodPlanetCheckFinish "Land on which planet"
 				setTextLineTrigger goodPlanetCheckstart :goodPlanetCheckstart "-----------------------------------------------"
+				settextlinetrigger goodPlanetCheckstartnoscanner :goodPlanetCheckPlanetnoscanner "Planet #"
 				pause
 				:goodPlanetCheckstart
 					killAllTriggers
 					setVar $startLogging 1
 					goto :goodPlanetCheck
+				:goodPlanetCheckPlanetnoscanner
+					getWord CURRENTLINE $cPlanetNum 2
+					stripText $cPlanetNum "#"
 				:goodPlanetCheckPlanet
 					killAllTriggers 
 					if ($startLogging = 1)
