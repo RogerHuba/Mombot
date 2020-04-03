@@ -545,7 +545,7 @@ return
 	setvar $refurbPort $map~stardock
 
 	setvar $twarp_refurb_success false
-	if ($player~twarp_type <> "No")
+	if (($player~twarp_type <> "No") and ($player~current_sector <> $map~stardock))
 		gosub :twarprefurb
 		gosub :player~quikstats
 
