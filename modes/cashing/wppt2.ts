@@ -989,7 +989,7 @@ return
 
 		:checkPlanetsInSector
 			setTextLineTrigger checkPlanetsInSectorNoPlanet :checkPlanetsInSectorNoPlanet "There isn't a planet in this sector."
-			setTextLineTrigger checkPlanetsInSectorStart :checkPlanetsInSectorStart "------------------------------------------------------------------------------"
+			setTextLineTrigger checkPlanetsInSectorStart :checkPlanetsInSectorStart "-----------------------------------------------"
 			setTextLineTrigger checkPlanetsInSectorPlanet :checkPlanetsInSectorPlanet "<"
 			setTextTrigger checkPlanetsInSectorFinish :checkPlanetsInSectorFinish "Land on which planet"
 			
@@ -1050,7 +1050,7 @@ return
 				setVar $startLogging 0
 				:updatePlanetsInSector
 				setTextLineTrigger updatePlanetsInSectorNoPlanet :updatePlanetsInSectorNoPlanet "There isn't a planet in this sector."
-				setTextLineTrigger updatePlanetsInSectorStart :updatePlanetsInSectorStart "------------------------------------------------------------------------------"
+				setTextLineTrigger updatePlanetsInSectorStart :updatePlanetsInSectorStart "-----------------------------------------------"
 				setTextLineTrigger updatePlanetsInSectorPlanet :updatePlanetsInSectorPlanet "<"
 				setTextTrigger updatePlanetsInSectorFinish :updatePlanetsInSectorFinish "Land on which planet"
 				settextlinetrigger updatePlanetsInSectorFinishnoscanner :updatePlanetsInSectorFinish "Planet #"
@@ -1147,7 +1147,7 @@ return
 				:goodPlanetCheck
 				setTextLineTrigger goodPlanetCheckPlanet :goodPlanetCheckPlanet "<"
 				setTextTrigger goodPlanetCheckFinish :goodPlanetCheckFinish "Land on which planet"
-				setTextLineTrigger goodPlanetCheckstart :goodPlanetCheckstart "------------------------------------------------------------------------------"
+				setTextLineTrigger goodPlanetCheckstart :goodPlanetCheckstart "-----------------------------------------------"
 				pause
 				:goodPlanetCheckstart
 					killAllTriggers
