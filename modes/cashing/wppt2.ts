@@ -612,9 +612,6 @@ return
 			striptext $player~credits " "
 			stripText $player~credits ","
 			send " Q Q "
-		else
-			send "a "&$holdsToBuy&"* y b "&$figsToBuy&"* c "&$player~shieldsToBuy&"* q q q z n * "
-		end
 
 		setVar $spentCredits ($spentCredits+($beforeFurbCredits-$player~credits))
 		setVar $player~fightersPurchased ($player~fightersPurchased+$figsToBuy)
