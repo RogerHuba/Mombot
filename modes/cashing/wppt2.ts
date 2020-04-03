@@ -662,7 +662,7 @@ return
 	if ($twarp_refurb_success = true)
 		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * *"
 		gosub :PLAYER~quikstats
-		if (currentsector = $MAP~stardock)
+		if (player~current_sector = $MAP~stardock)
 			setvar $switchboard~message "Twarp Error, Should be Hiding on Dock!*"
 			gosub :switchboard~switchboard
 			send "*"
@@ -1253,7 +1253,7 @@ return
 		
 			
 				gosub :portStartTrade
-				setVar $fuelPerc PORT.PERCENTFUEL[CURRENTSECTOR]
+				setVar $fuelPerc PORT.PERCENTFUEL[$player~current_sector]
 	
 				if ($fuelPerc < $tradingMinFuel)
 
@@ -1430,7 +1430,7 @@ return
 
 	# check adj's for Dock.. if present, then we don't need a jump sector.
 	setVar $i 1
-	setVar $START_SECTOR currentsector
+	setVar $START_SECTOR $player~current_sector
 	setVar $WeAreAdjDock FALSE
 	while ($i <= SECTOR.WARPCOUNT[$START_SECTOR])
 		setVar $adj_start SECTOR.WARPS[$START_SECTOR][$i]
