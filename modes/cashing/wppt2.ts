@@ -49,6 +49,8 @@
 		end
 		if ($player~genesis <= 0)
 			gosub :refurb
+			getRnd $mowIntoSector 11 SECTORS
+			gosub :mowIntoSector
 		end
 		setvar $needNewPortPair true
 		gosub :findPPTPorts
@@ -628,8 +630,6 @@ return
 	else
 		send "'Something bad happened on mow, I am probably in big trouble. [Temp error message until saveme implemented]*"
 	end
-	getRnd $mowIntoSector 11 SECTORS
-	gosub :mowIntoSector
 	
 return
 
@@ -1164,7 +1164,11 @@ return
 			:buildPlanet1
 				killAllTriggers
 				send "*"
+				gosub :player~quikstats
+				setvar $startsector $player~current_sector
 				gosub :refurb
+				setvar $mowIntoSector $startsector
+				gosub :mowIntoSector
 				
 				goto :updatePlanetsFinishWait
 				
