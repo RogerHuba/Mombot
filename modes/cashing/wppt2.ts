@@ -266,7 +266,7 @@
 
 			setvar $sector $COURSE[$j]
 			setvar $isUsedUp $usedPorts[$sector] 
-			if ((PORT.BUYFUEL[$sector]) and ($isUsedUp <> true) and (PORT.FUEL[$sector] > 1000) and ($player~genesis > 0))
+			if ((PORT.BUYFUEL[$sector]) and ($isUsedUp <> true) and (PORT.FUEL[$sector] > 1000) and ($player~genesis > 0) and ($nomoo <> true))
 				send "* cr*q"
 				waitOn "What sector is the port in? ["
 				if (PORT.FUEL[$sector] > 1000)
@@ -274,40 +274,40 @@
 				end
 				setvar $usedPorts[$sector] true
 			else
-				
-				setVar $k 1
-				setVar $isFound FALSE
-				while ((SECTOR.WARPS[$sector][$k] > 0) AND ($isFound = FALSE))
-					setVar $checkingNeighbor SECTOR.WARPS[$sector][$k]
-					getSectorParameter $checkingNeighbor "BUSTED" $isBusted
-					setVar $containsShieldedPlanet FALSE
-					setVar $p 1
-					while ($p <= SECTOR.PLANETCOUNT[$checkingNeighbor])
-						getWord SECTOR.PLANETS[$checkingNeighbor][$p] $test 1
-						if ($test = "<<<<")
-							setVar $containsShieldedPlanet TRUE
+				if ($nomoo <> true)
+					setVar $k 1
+					setVar $isFound FALSE
+					while ((SECTOR.WARPS[$sector][$k] > 0) AND ($isFound = FALSE))
+						setVar $checkingNeighbor SECTOR.WARPS[$sector][$k]
+						getSectorParameter $checkingNeighbor "BUSTED" $isBusted
+						setVar $containsShieldedPlanet FALSE
+						setVar $p 1
+						while ($p <= SECTOR.PLANETCOUNT[$checkingNeighbor])
+							getWord SECTOR.PLANETS[$checkingNeighbor][$p] $test 1
+							if ($test = "<<<<")
+								setVar $containsShieldedPlanet TRUE
+							end
+							add $p 1
 						end
-						add $p 1
+						setVar $figOwner  SECTOR.FIGS.OWNER[$checkingNeighbor]
+						setVar $mineOwner SECTOR.MINES.OWNER[$checkingNeighbor]
+						setVar $limpOwner SECTOR.LIMPETS.OWNER[$checkingNeighbor]
+						setVar $figCount  SECTOR.FIGS.QUANTITY[$checkingNeighbor]
+						if (($figCount > $safeFighterLevel) AND (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
+							echo "*Avoiding too many enemy fighters*"
+							goto :tryNewRouteShip1
+						end
+						if ((PORT.BUYFUEL[$checkingNeighbor]) and ($isUsedUp <> true) and (PORT.FUEL[$checkingNeighbor] > 1000) and ($player~genesis > 0))
+							setVar $moveIntoSector $checkingNeighbor
+							gosub :moveIntoSector
+							send "* cr*q"
+							waitOn "What sector is the port in? ["
+							gosub :createAndSell
+							goto :tryNewRouteShip1
+						end
+						add $k 1
 					end
-					setVar $figOwner  SECTOR.FIGS.OWNER[$checkingNeighbor]
-					setVar $mineOwner SECTOR.MINES.OWNER[$checkingNeighbor]
-					setVar $limpOwner SECTOR.LIMPETS.OWNER[$checkingNeighbor]
-					setVar $figCount  SECTOR.FIGS.QUANTITY[$checkingNeighbor]
-					if (($figCount > $safeFighterLevel) AND (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
-						echo "*Avoiding too many enemy fighters*"
-						goto :tryNewRouteShip1
-					end
-					if ((PORT.BUYFUEL[$checkingNeighbor]) and ($isUsedUp <> true) and (PORT.FUEL[$checkingNeighbor] > 1000) and ($player~genesis > 0))
-						setVar $moveIntoSector $checkingNeighbor
-						gosub :moveIntoSector
-						send "* cr*q"
-						waitOn "What sector is the port in? ["
-						gosub :createAndSell
-						goto :tryNewRouteShip1
-					end
-					add $k 1
 				end
-
 
 
 			end
@@ -937,6 +937,13 @@ return
 		setVar $safeFighterLevel 0
 	else
 		setVar $passive FALSE
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " nomoo "
+	if ($pos > 0)
+		setVar $nomoo TRUE
+	else
+		setVar $nomoo FALSE
 	end
 
 	setVar $FURBING $map~stardock
