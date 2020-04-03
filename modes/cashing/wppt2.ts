@@ -428,6 +428,7 @@ return
 	end
 	send $send
 	waitOn "["&$port_sector&"]"
+	setvar $current_sector $port_sector
 return
 
 :getSSTPortInfo
