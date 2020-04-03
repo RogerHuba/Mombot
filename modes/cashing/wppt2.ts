@@ -44,7 +44,7 @@
 
 :GoGo
 
-	if ($player~current_sector = $map~stardock)
+	if (($player~current_sector = $map~stardock) or (($player~scan_type <> "Holo") and ($player~credits > $game~holo_cost)))
 		gosub :refurb
 		getRnd $mowIntoSector 11 SECTORS
 		gosub :mowIntoSector
@@ -625,7 +625,7 @@ return
 				send $buy & "*"
 				waitfor "<Hardware Emporium>"
 			end
-			send "T"
+			send "r h T"
 			waitfor "How many Genesis Torpedoes do you want"
 			getText CURRENTLINE $Buy "(Max" ") ["
 			striptext $buy " "
