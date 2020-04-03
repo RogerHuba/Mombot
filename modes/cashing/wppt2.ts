@@ -264,6 +264,7 @@
 			setvar $port1 $COURSE[$j]
 
 			setvar $sector $COURSE[$j]
+			setvar $isUsedUp $usedPorts[$sector] 
 			if ((PORT.BUYFUEL[$sector]) and ($isUsedUp <> true) and (PORT.FUEL[$sector] > 1000) and ($player~genesis > 0))
 				send "* cr*q"
 				waitOn "What sector is the port in? ["
@@ -271,6 +272,35 @@
 					gosub :createAndSell
 				end
 				setvar $usedPorts[$sector] true
+			else
+				
+				setVar $k 1
+				setVar $isFound FALSE
+				while ((SECTOR.WARPS[$sector][$k] > 0) AND ($isFound = FALSE))
+					setVar $checkingNeighbor SECTOR.WARPS[$sector][$k]
+					getSectorParameter $checkingNeighbor "BUSTED" $isBusted
+					setVar $containsShieldedPlanet FALSE
+					setVar $p 1
+					while ($p <= SECTOR.PLANETCOUNT[$checkingNeighbor])
+						getWord SECTOR.PLANETS[$checkingNeighbor][$p] $test 1
+						if ($test = "<<<<")
+							setVar $containsShieldedPlanet TRUE
+						end
+						add $p 1
+					end
+					if ((PORT.BUYFUEL[$checkingNeighbor]) and ($isUsedUp <> true) and (PORT.FUEL[$checkingNeighbor] > 1000) and ($player~genesis > 0))
+						setVar $moveIntoSector $checkingNeighbor
+						gosub :moveIntoSector
+						send "* cr*q"
+						waitOn "What sector is the port in? ["
+						gosub :createAndSell
+						return
+					end
+					add $k 1
+				end
+
+
+
 			end
 			:checkagainport
 			setvar $isUsedUp $usedPorts[$sector] 
