@@ -49,7 +49,11 @@
 
 :GoGo
 	window cash 300 170 ("World PPT - " & GAMENAME) ONTOP
-	gosub :displayCredits
+	if ($player~current_sector = $map~stardock)
+		getRnd $mowIntoSector 11 SECTORS
+		gosub :mowIntoSector
+		gosub :player~quikstats
+	end
 	while (TRUE)
 		if (($player~unlimitedGame = FALSE) AND ($player~turns <= $bot~bot_turn_limit))
 			goto :endSST
@@ -746,96 +750,12 @@ return
 			#send "l "&$cashDropPlanet &"* m n l "&($player~fighters/2)&"*  c t t "&($player~credits-1000000)&"* qq* "
 			add $cashDeposited ($player~credits-1000000)
 			setVar $player~credits 1000000
-			gosub :displayCredits
 		else
 			send "'Something bad happened on mow, I am probably in big trouble. [Temp error message until saveme implemented]*"
 		end
 	end
 return
-:displayCredits
-	
-	setVar $formattedDepositedCredits ""
-	setVar $spentCredits2 $cashDeposited
-	getLength $spentCredits2 $length
-	while ($length > 3)
-		cutText $spentCredits2 $snippet $length-2 9999
-		cutText $spentCredits2 $spentCredits2 1 $length-3
-		getLength $spentCredits2 $length
-		setVar $formattedDepositedCredits ","&$snippet&$formattedDepositedCredits
-	end
-	setVar $formattedDepositedCredits $spentCredits2&$formattedDepositedCredits
 
-	setVar $formattedOnHandCredits ""
-	setVar $spentCredits2 $player~credits
-	getLength $spentCredits2 $length
-	while ($length > 3)
-		cutText $spentCredits2 $snippet $length-2 9999
-		cutText $spentCredits2 $spentCredits2 1 $length-3
-		getLength $spentCredits2 $length
-		setVar $formattedOnHandCredits ","&$snippet&$formattedOnHandCredits
-	end
-	setVar $formattedOnHandCredits $spentCredits2&$formattedOnHandCredits
-
-	setVar $formattedSpentCredits ""
-	setVar $spentCredits2 $spentCredits
-	getLength $spentCredits2 $length
-	while ($length > 3)
-		cutText $spentCredits2 $snippet $length-2 9999
-		cutText $spentCredits2 $spentCredits2 1 $length-3
-		getLength $spentCredits2 $length
-		setVar $formattedSpentCredits ","&$snippet&$formattedSpentCredits
-	end
-	setVar $formattedSpentCredits $spentCredits2&$formattedSpentCredits
-
-	setVar $formattedFighters ""
-	setVar $spentCredits2 $player~fightersPurchased
-	getLength $spentCredits2 $length
-	while ($length > 3)
-		cutText $spentCredits2 $snippet $length-2 9999
-		cutText $spentCredits2 $spentCredits2 1 $length-3
-		getLength $spentCredits2 $length
-		setVar $formattedFighters ","&$snippet&$formattedFighters
-	end
-	setVar $formattedFighters $spentCredits2&$formattedFighters
-
-	setVar $formattedShields ""
-	setVar $spentCredits2 $player~shieldsPurchased
-	getLength $spentCredits2 $length
-	while ($length > 3)
-		cutText $spentCredits2 $snippet $length-2 9999
-		cutText $spentCredits2 $spentCredits2 1 $length-3
-		getLength $spentCredits2 $length
-		setVar $formattedShields ","&$snippet&$formattedShields
-	end
-	setVar $formattedShields $spentCredits2&$formattedShields
-
-	add $portaverage $cashDeposited
-	add $portaverage $player~credits
-	add $portaverage $spentCredits
-	subtract $portaverage $startcash
-	if ($numberbusted = 0)
-		setvar $numberbusted 1
-	end
-	divide $portaverage $numberbusted
-
-	setVar $formattedPortAverage ""
-	setVar $spentCredits2 $portaverage
-	getLength $spentCredits2 $length
-	while ($length > 3)
-		cutText $spentCredits2 $snippet $length-2 9999
-		cutText $spentCredits2 $spentCredits2 1 $length-3
-		getLength $spentCredits2 $length
-		setVar $formattedPortAverage ","&$snippet&$formattedPortAverage
-	end
-	setVar $formattedPortAverage $spentCredits2&$formattedPortAverage
-
-	setvar $window_content "*    Cash Deposited: "&$formattedDepositedCredits&"*  Busted xxB Ports: "&$numberbusted&"*  Credits per Port: "&$formattedPortAverage&"*   Fighters bought: "&$formattedFighters&"*    Shields bought: "&$formattedShields&"*"
-
-	setWindowContents cash $window_content
-	replacetext $window_content "*" "[][]"
-	savevar $window_content
-
-	return
 
 :endSST
 	killalltriggers
