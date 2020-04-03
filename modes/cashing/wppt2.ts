@@ -387,6 +387,9 @@ return
 	if ($fueltrade <> true) and (PORT.BUYFUEL[$port_sector] <> true)
 		setVar $send $send & "0 * "	
 	else
+		if ($fueltrade = true)
+			setVar $send $send & "* * "
+		end
 		if (PORT.BUYFUEL[$port_sector] <> true)
 			setvar $player~ore_holds $player~total_holds
 		end
@@ -395,6 +398,9 @@ return
 	if ($orgtrade <> true) and (PORT.BUYORG[$port_sector] <> true)
 		setVar $send $send & "0 * "	
 	else
+		if ($orgtrade = true)
+			setVar $send $send & "* * "
+		end
 		if (PORT.BUYORG[$port_sector] <> true)
 			setvar $player~organic_holds $player~total_holds
 		end
@@ -403,12 +409,14 @@ return
 	if ($equiptrade <> true) and (PORT.BUYEQUIP[$port_sector] <> true)
 		setVar $send $send & "0 * "	
 	else
+		if ($equiptrade = true)
+			setVar $send $send & "* * "
+		end
 		if (PORT.BUYEQUIP[$port_sector] <> true)
 			setvar $player~equipment_holds $player~total_holds
 		end
 		subtract $equipAtPort[$port_sector] $player~total_holds
 	end
-	setVar $send $send & "* * "
 return
 
 :ppt_move
