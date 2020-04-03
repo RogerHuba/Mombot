@@ -387,7 +387,7 @@ return
 	if ($fueltrade <> true) and (PORT.BUYFUEL[$port_sector] <> true)
 		setVar $send $send & "0 * "	
 	else
-		if ($fueltrade = true)
+		if ($fueltrade = true) and (PORT.BUYFUEL[$port_sector] <> true)
 			setVar $send $send & "* * "
 		end
 		if (PORT.BUYFUEL[$port_sector] <> true)
@@ -398,7 +398,7 @@ return
 	if ($orgtrade <> true) and (PORT.BUYORG[$port_sector] <> true)
 		setVar $send $send & "0 * "	
 	else
-		if ($orgtrade = true)
+		if ($orgtrade = true) and (PORT.BUYORG[$port_sector] <> true)
 			setVar $send $send & "* * "
 		end
 		if (PORT.BUYORG[$port_sector] <> true)
@@ -409,7 +409,7 @@ return
 	if ($equiptrade <> true) and (PORT.BUYEQUIP[$port_sector] <> true)
 		setVar $send $send & "0 * "	
 	else
-		if ($equiptrade = true)
+		if ($equiptrade = true) and (PORT.BUYEQUIP[$port_sector] <> true)
 			setVar $send $send & "* * "
 		end
 		if (PORT.BUYEQUIP[$port_sector] <> true)
