@@ -120,27 +120,6 @@
 	goto :endSST
 
 
-:checkSSTShips
-	setVar $foundShip2 FALSE
-	killalltriggers
-	send "wn*"
-	setTextLineTrigger other :shipline " "&$player~current_sector&" "
-	setTextLineTrigger noShips :shipDone "You do not own any other ships in this sector!"
-	pause
-
-	:shipline
-		killalltriggers
-		add $shipCount 1
-		getWord CURRENTLINE $tempID 1
-		if ($tempID = $psst_Ship2)
-			setVar $foundShip2 TRUE
-		end
-		setTextLineTrigger other :shipline " "&$player~current_sector&" "
-		setTextLineTrigger noMore :shipDone "Choose which ship to tow "
-		pause
-	:shipDone
-	killalltriggers
-	return
 
 :moveIntoSector
 	setVar $result ""
@@ -397,24 +376,24 @@ return
 	else
 		if (PORT.BUYFUEL[$port_sector] <> true)
 			setvar $player~ore_holds $player~total_holds
-			subtract $fuelAtPort[$port_sector] $player~total_holds
 		end
+		subtract $fuelAtPort[$port_sector] $player~total_holds
 	end
 	if ($orgtrade <> true) and (PORT.BUYORG[$port_sector] <> true)
 		setVar $send $send & "0 * "	
 	else
 		if (PORT.BUYORG[$port_sector] <> true)
 			setvar $player~organic_holds $player~total_holds
-			subtract $orgAtPort[$port_sector] $player~total_holds
 		end
+		subtract $orgAtPort[$port_sector] $player~total_holds
 	end
 	if ($equiptrade <> true) and (PORT.BUYEQUIP[$port_sector] <> true)
 		setVar $send $send & "0 * "	
 	else
 		if (PORT.BUYEQUIP[$port_sector] <> true)
 			setvar $player~equipment_holds $player~total_holds
-			subtract $equipAtPort[$port_sector] $player~total_holds
 		end
+		subtract $equipAtPort[$port_sector] $player~total_holds
 	end
 	setVar $send $send & "* * "
 return
