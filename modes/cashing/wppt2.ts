@@ -659,7 +659,7 @@ return
 	else
 		send "'Something bad happened on refurb, I am probably in big trouble. [Temp error message until saveme implemented]*"
 	end
-	if (($twarp_refurb_success) and ($player~fuel_holds > 50))
+	if ($twarp_refurb_success = true)
 		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * *"
 		gosub :PLAYER~quikstats
 		if (currentsector = $MAP~stardock)
