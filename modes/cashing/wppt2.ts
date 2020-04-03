@@ -1147,6 +1147,8 @@ return
 				setVar $newPlanet 0
 				setVar $startLogging 0
 
+				gosub :player~quikstats
+				
 				:goodPlanetCheck
 				setTextLineTrigger goodPlanetCheckPlanet :goodPlanetCheckPlanet "<"
 				setTextTrigger goodPlanetCheckFinish :goodPlanetCheckFinish "Land on which planet"
