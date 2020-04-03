@@ -96,6 +96,8 @@
 			end
 
 		end
+		setvar $usedPorts[$port1] true
+		setvar $usedPorts[$port2] true
 		send "#"
 		gosub :player~quikstats
 		loadVar $bot~alarm_list
@@ -210,7 +212,9 @@
 
 			setvar $current_port_class PORT.CLASS[$COURSE[$j]]
 			setvar $port1 $COURSE[$j]
-			if (($current_port_class > 0) and ($current_port_class < 7))
+			setvar $isUsedUp $usedPorts[$COURSE[$j]] 
+
+			if (($current_port_class > 0) and ($current_port_class < 7) and ($isUsedUp <> true))
 				send "* cr*q"
 				waitOn "What sector is the port in? ["
 
