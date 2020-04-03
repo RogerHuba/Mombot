@@ -1433,4 +1433,5 @@ include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastattack\combat"
 include "source\bot_includes\combat\passiveHolokill\combat"
 include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\planet\planetneg\planet"
 
