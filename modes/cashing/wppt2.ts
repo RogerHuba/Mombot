@@ -1689,6 +1689,7 @@ return
 				setVar $str "y  *  *  m " & $MAP~stardock & " *  *  p s g y g q "
 				send $str
 			end
+			setvar $twarp_refurb_success true
 		:twarpDone
 			if ($msg <> "")
 				setvar $switchboard~message "Twarp Error - " & $msg & "*"
