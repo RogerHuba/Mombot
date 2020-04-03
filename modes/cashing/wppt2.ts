@@ -581,9 +581,6 @@ return
 			setVar $figsToBuy 0
 			setVar $player~shieldsToBuy 0
 		end
-		if ($FURBING <> $map~stardock)
-			send "a "&$holdsToBuy&"* y b "&$figsToBuy&"* c "&$player~shieldsToBuy&"* q q q z n * "
-		elseif (($FURBING = $map~stardock) AND (($DROPLIMPS) OR ($DROPARMIDS)) AND ($player~credits > ($CASH_TO_HOLD_ONTO + 2000000)))
 			send "a "&$holdsToBuy&"* y b "&$figsToBuy&"* c "&$player~shieldsToBuy&"* q q h "
 			waitfor "<Hardware Emporium>"
 			if ($DROPLIMPS)
