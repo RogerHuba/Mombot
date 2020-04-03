@@ -1053,6 +1053,7 @@ return
 				setTextLineTrigger updatePlanetsInSectorStart :updatePlanetsInSectorStart "------------------------------------------------------------------------------"
 				setTextLineTrigger updatePlanetsInSectorPlanet :updatePlanetsInSectorPlanet "<"
 				setTextTrigger updatePlanetsInSectorFinish :updatePlanetsInSectorFinish "Land on which planet"
+				settextlinetrigger updatePlanetsInSectorFinishnoscanner :updatePlanetsInSectorFinish "Planet #"
 				pause
 				:updatePlanetsInSectorStart
 					killAllTriggers
