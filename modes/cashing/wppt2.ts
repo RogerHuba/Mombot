@@ -43,7 +43,9 @@
 	
 
 :GoGo
+
 	if ($player~current_sector = $map~stardock)
+		gosub :refurb
 		getRnd $mowIntoSector 11 SECTORS
 		gosub :mowIntoSector
 		gosub :player~quikstats
