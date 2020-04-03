@@ -1199,7 +1199,7 @@ return
 			setTextLineTrigger makePlanet2 :makePlanet2 $setVarPlanetType2
 			setTextLineTrigger makePlanet3 :makePlanet3 $setVarPlanetType3
 			setTextLineTrigger makePlanet4 :makePlanet4 $setVarPlanetType4
-			setTextLineTrigger makePlanet4 :makePlanet5 $setVarPlanetType5
+			setTextLineTrigger makePlanet5 :makePlanet5 $setVarPlanetType5
 			#setTextLineTrigger markGoodPlanet :markGoodPlanet "hat do you want to name this planet?"
 			setTextLineTrigger makePlanetDone :makePlanetDone "Should this be a (C)orporate planet or (P)ersonal planet?"
 			pause
