@@ -1683,18 +1683,10 @@ return
 		:twarp_lock
 			KillAlltriggers
 			if (currentalignment >= 1000)
-				if ($furbing)
-					setVar $str "y * * p s g y g q " 
-				else
-					setVar $str "y * *  " 
-				end
+				setVar $str "y * * p s g y g q " 
 				send $str
 			else
-				if ($furbing)
-					setVar $str "y  *  *  m " & $MAP~stardock & " *  *  p s g y g q "
-				else
-					setVar $str "y * *  " 
-				end
+				setVar $str "y  *  *  m " & $MAP~stardock & " *  *  p s g y g q "
 				send $str
 			end
 		:twarpDone
@@ -1804,7 +1796,7 @@ return
 :callSaveMe
 	send "q q q q * '"&$SWITCHBOARD~bot_name&" call*"
 	halt
-	
+
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
