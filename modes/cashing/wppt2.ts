@@ -420,13 +420,14 @@ return
 
 :ppt_move
 	setVar $send $send&"m "&$port_sector&"* "
-	if (($port2 > 10) AND ($port2 <> $map~stardock))
+	if (($port_sector > 10) AND ($port_sector <> $map~stardock))
 		if ($player~fighters > $ship~ship_max_attack)
 			setVar $send $send&"za"&$ship~ship_max_attack&"* * "
 		else
 			setVar $send $send&"za"&$player~fighters&"* * "
 		end
 	end
+	waitOn "["&$port_sector&"]"
 return
 
 :getSSTPortInfo
