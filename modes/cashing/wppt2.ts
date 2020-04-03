@@ -33,6 +33,16 @@
 		setvar $needNewPortPair true
 		gosub :findPPTPorts
 		setVar $busted FALSE
+
+		if ($player~fuel_holds > 0) and (PORT.BUYFUEL[$port1] <> true) and (PORT.BUYFUEL[$port2] <> true)
+			send "j y "
+		end
+		if ($player~organic_holds > 0) and (PORT.BUYORG[$port1] <> true) and (PORT.BUYORG[$port2] <> true)
+			send "j y "
+		end
+		if ($player~equipment_holds > 0) and (PORT.BUYEQUIP[$port1] <> true) and (PORT.BUYEQUIP[$port2] <> true)
+			send "j y "
+		end
 		gosub :player~quikstats
 
 		setvar $fueltrade false
@@ -57,7 +67,6 @@
 				setvar $fueltrade false
 			end
 		end
-
 		setvar $portempty false
 		setvar $current_sector $port2
 		while ($portempty <> true)
