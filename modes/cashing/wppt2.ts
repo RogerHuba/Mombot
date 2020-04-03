@@ -253,8 +253,8 @@
 			setvar $current_port_class PORT.CLASS[$COURSE[$j]]
 			setvar $port1 $COURSE[$j]
 
-			if ((PORT.BUYFUEL[$COURSE[$j]]) and ($isUsedUp <> true) and (PORT.FUEL[$COURSE[$j]] > 100))
-				setvar $sector $COURSE[$j]
+			setvar $sector $COURSE[$j]
+			if ((PORT.BUYFUEL[$sector]) and ($isUsedUp <> true) and (PORT.FUEL[$sector] > 100))
 				send "* cr*q"
 				waitOn "What sector is the port in? ["
 				if (PORT.FUEL[$sector] > 100)
@@ -263,18 +263,18 @@
 				setvar $usedPorts[$sector] true
 			end
 			:checkagainport
-			setvar $isUsedUp $usedPorts[$COURSE[$j]] 
+			setvar $isUsedUp $usedPorts[$sector] 
 			if (($current_port_class > 0) and ($current_port_class < 7) and ($isUsedUp <> true))
 				send "* cr*q"
 				waitOn "What sector is the port in? ["
-				if ((PORT.FUEL[$COURSE[$j]] < $player~total_holds) or (PORT.ORG[$COURSE[$j]] < $player~total_holds) or (PORT.EQUIP[$COURSE[$j]] < $player~total_holds))
-					setvar $usedPorts[$COURSE[$j]] true
+				if ((PORT.FUEL[$sector] < $player~total_holds) or (PORT.ORG[$sector] < $player~total_holds) or (PORT.EQUIP[$sector] < $player~total_holds))
+					setvar $usedPorts[$sector] true
 					goto :checkagainport
 				end
 				setVar $k 1
 				setVar $isFound FALSE
-				while ((SECTOR.WARPS[$COURSE[$j]][$k] > 0) AND ($isFound = FALSE))
-					setVar $checkingNeighbor SECTOR.WARPS[$COURSE[$j]][$k]
+				while ((SECTOR.WARPS[$sector][$k] > 0) AND ($isFound = FALSE))
+					setVar $checkingNeighbor SECTOR.WARPS[$sector][$k]
 					getSectorParameter $checkingNeighbor "BUSTED" $isBusted
 					setVar $containsShieldedPlanet FALSE
 					setVar $p 1
