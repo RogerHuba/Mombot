@@ -1172,7 +1172,6 @@ return
 	setVar $cashDeposited 0
 	goSub :player~quikstats
 	setvar $startcash $player~credits
-	setArray $bustedPorts SECTORS
 	setVar $psst_Ship1 $player~ship_number
 	setVar $startingLocation $player~current_prompt
 	if ($startingLocation = "Citadel")

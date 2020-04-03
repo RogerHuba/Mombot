@@ -37,18 +37,11 @@
 	# try and grab fuel at this
 	setVar $minOre 120
 	
-	setArray $explored SECTORS
-	setArray $portReported SECTORS
-	setArray $portBlocked SECTORS
-	setArray $futureDestinations SECTORS
-	setVar $futureDestsAdded 0
-	setVar $futurePortsAdded 0
 
 	goto :Starting
 	
 
 :GoGo
-	window cash 300 170 ("World PPT - " & GAMENAME) ONTOP
 	if ($player~current_sector = $map~stardock)
 		getRnd $mowIntoSector 11 SECTORS
 		gosub :mowIntoSector
@@ -58,7 +51,7 @@
 		if (($player~unlimitedGame = FALSE) AND ($player~turns <= $bot~bot_turn_limit))
 			goto :endSST
 		end
-		if ($player~genesis <= 0)
+		if (($player~genesis <= 0) and ($player~credits > 500000))
 			gosub :refurb
 			getRnd $mowIntoSector 11 SECTORS
 			gosub :mowIntoSector
@@ -266,7 +259,7 @@
 			setvar $port1 $COURSE[$j]
 
 			setvar $sector $COURSE[$j]
-			if ((PORT.BUYFUEL[$sector]) and ($isUsedUp <> true) and (PORT.FUEL[$sector] > 1000))
+			if ((PORT.BUYFUEL[$sector]) and ($isUsedUp <> true) and (PORT.FUEL[$sector] > 1000) and ($player~genesis > 0))
 				send "* cr*q"
 				waitOn "What sector is the port in? ["
 				if (PORT.FUEL[$sector] > 1000)
