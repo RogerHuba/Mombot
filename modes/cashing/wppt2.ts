@@ -76,7 +76,6 @@
 				setvar $port_sector $port1
 				gosub :ppt_move
 			end
-			send $send
 			if (($fueltrade = true) and (($fuelAtPort[$port1] < $player~total_holds) or ($fuelAtPort[$port2] < $player~total_holds)))
 				setvar $portempty true
 			end
@@ -427,6 +426,7 @@ return
 			setVar $send $send&"za"&$player~fighters&"* * "
 		end
 	end
+	send $send
 	waitOn "["&$port_sector&"]"
 return
 
