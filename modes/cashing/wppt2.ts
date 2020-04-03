@@ -11,6 +11,9 @@
 	loadVar $BOT~botIsDeaf
 	loadVar $BOT~silent_running
 	loadvar $game~steal_factor
+	loadVar $game~port_max
+	loadVar $game~ptradesetting
+	loadvar $bot~$MCIC_FILE
 
 	setVar $BOT~command "wppt2"
 
