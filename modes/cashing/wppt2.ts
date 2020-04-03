@@ -265,7 +265,7 @@
 			if ((PORT.BUYFUEL[$sector]) and ($isUsedUp <> true) and (PORT.FUEL[$sector] > 100))
 				send "* cr*q"
 				waitOn "What sector is the port in? ["
-				if (PORT.FUEL[$sector] > 100)
+				if (PORT.FUEL[$sector] > 1000)
 					gosub :createAndSell
 				end
 				setvar $usedPorts[$sector] true
