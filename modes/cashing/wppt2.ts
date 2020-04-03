@@ -546,6 +546,7 @@ return
 
 	setvar $twarp_refurb_success false
 	if (($player~twarp_type <> "No") and ($player~current_sector <> $map~stardock))
+
 		gosub :twarprefurb
 		gosub :player~quikstats
 
@@ -1509,7 +1510,7 @@ return
 			setvar $switchboard~message "Not Enough ORE In Holds To Make Round Trip.  Needs "&$ore_req&".*"
 			gosub :switchboard~switchboard
 			send "*"
-			halt
+			gosub :getsomefuel
 		end
 
 		if ($PLAYER~TWARP_TYPE = "No")
@@ -1573,6 +1574,56 @@ return
 
 return
 
+
+:getsomefuel
+	gosub :player~quikstats
+	setVar $bottom 1
+	setVar $top 1
+	setArray $checked SECTORS
+	setVar $que[1] $player~current_sector
+	setVar $checked[$player~current_sector] 1
+	setvar $a 1
+	while (SECTOR.WARPS[$player~current_sector][$a] > 0)
+		setVar $checked[SECTOR.WARPS[$player~current_sector][$a]] 1	
+		add $a 1
+	end
+	:try_again
+	while ($bottom <= $top)
+		# Now, pull out the next sector in the queue, and make it our focus
+		setVar $focus $que[$bottom]
+		getsectorparameter $focus "FIGSEC" $isFigged
+
+		if ((PORT.BUYFUEL[$focus] <> true) and (PORT.FUEL[$focus] > $player~total_holds))
+			setVar $mowintosector $focus
+			gosub :mowIntoSector
+			if (((PORT.BUYORG) and ($player~organic_holds > 0)) OR ((PORT.BUYEQUIP) and ($player~equipment_holds > 0)))
+				send "p t * * * * * *"
+			else
+				send "j y p t * * * "
+			end
+			return
+		end
+		# That wasn't it, so let's add all the adjacents to the queue for future testing.
+		setVar $a 1
+		while (SECTOR.WARPS[$focus][$a] > 0)
+			setVar $adjacent SECTOR.WARPS[$focus][$a]
+			# But only add them if they haven't been added previously
+			if ($checked[$adjacent] = 0)
+				# Okay, this one hasn't been checked, so tag it and que it.
+				setVar $checked[$adjacent] 1
+				add $top 1
+				setVar $que[$top] $adjacent
+			end
+			add $a 1
+		end
+		# The adjacents of $focus were all queued, now on to the next one.
+		add $bottom 1
+	end	
+	setVar $SWITCHBOARD~message "Can't find a route to fuel.  Halting*"
+	gosub :SWITCHBOARD~switchboard
+	halt
+
+return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
