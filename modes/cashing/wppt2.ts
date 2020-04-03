@@ -262,7 +262,7 @@
 			setvar $port1 $COURSE[$j]
 
 			setvar $sector $COURSE[$j]
-			if ((PORT.BUYFUEL[$sector]) and ($isUsedUp <> true) and (PORT.FUEL[$sector] > 100))
+			if ((PORT.BUYFUEL[$sector]) and ($isUsedUp <> true) and (PORT.FUEL[$sector] > 1000))
 				send "* cr*q"
 				waitOn "What sector is the port in? ["
 				if (PORT.FUEL[$sector] > 1000)
