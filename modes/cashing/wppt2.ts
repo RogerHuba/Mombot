@@ -15,7 +15,7 @@
 	setVar $BOT~command "wppt2"
 
 	setVar $BOT~help[1]   $BOT~tab&"World Port-Pair-Trade "
-	setVar $BOT~help[2]   $BOT~tab&" - ppt2  "
+	setVar $BOT~help[2]   $BOT~tab&" - wppt2  "
 	gosub :bot~helpfile
 
 	setvar $player~save true
@@ -30,6 +30,7 @@
 		if (($player~unlimitedGame = FALSE) AND ($player~turns <= $bot~bot_turn_limit))
 			goto :endSST
 		end
+		setvar $needNewPortPair true
 		gosub :findPPTPorts
 		setVar $busted FALSE
 		gosub :player~quikstats
