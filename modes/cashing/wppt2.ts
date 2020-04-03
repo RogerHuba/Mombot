@@ -627,7 +627,9 @@ return
 	else
 		send "'Something bad happened on mow, I am probably in big trouble. [Temp error message until saveme implemented]*"
 	end
-
+	getRnd $mowIntoSector 11 SECTORS
+	gosub :mowIntoSector
+	
 return
 
 :safemowIntoSector
