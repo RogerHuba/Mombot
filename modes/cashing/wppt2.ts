@@ -238,10 +238,11 @@
 			setvar $port1 $COURSE[$j]
 			setvar $isUsedUp $usedPorts[$COURSE[$j]] 
 
-			if ((PORT.BUYFUEL[$COURSE[$j]]) and ($isUsedUp <> true))
-				#send "* cr*q"
-				#waitOn "What sector is the port in? ["
+			if ((PORT.BUYFUEL[$COURSE[$j]]) and ($isUsedUp <> true) and (PORT.FUEL[$COURSE[$j]] > 100))
 				gosub :createAndSell
+				setvar $usedPorts[$COURSE[$j]] true
+				send "* cr*q"
+				waitOn "What sector is the port in? ["
 			end
 			if (($current_port_class > 0) and ($current_port_class < 7) and ($isUsedUp <> true))
 				send "* cr*q"
