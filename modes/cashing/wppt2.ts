@@ -54,7 +54,7 @@
 		if (($player~unlimitedGame = FALSE) AND ($player~turns <= $bot~bot_turn_limit))
 			goto :endSST
 		end
-		if (($player~genesis <= 0) and ($player~credits > 500000))
+		if (($player~genesis <= 0) and ($player~credits > $CASH_TO_HOLD_ONTO))
 			gosub :refurb
 			getRnd $mowIntoSector 11 SECTORS
 			gosub :mowIntoSector
@@ -1102,10 +1102,13 @@ return
 				send "*"
 				gosub :player~quikstats
 				setvar $startsector $player~current_sector
-				gosub :refurb
-				setvar $mowIntoSector $startsector
-				gosub :mowIntoSector
-				
+				if (($player~genesis <= 0) and ($player~credits > $CASH_TO_HOLD_ONTO))
+					gosub :refurb
+					setvar $mowIntoSector $startsector
+					gosub :mowIntoSector
+				else
+					return
+				end		
 				goto :updatePlanetsFinishWait
 				
 			:buildPlanet2
