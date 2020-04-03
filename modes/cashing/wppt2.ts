@@ -992,6 +992,8 @@ return
 			setTextLineTrigger checkPlanetsInSectorStart :checkPlanetsInSectorStart "------------------------------------------------------------------------------"
 			setTextLineTrigger checkPlanetsInSectorPlanet :checkPlanetsInSectorPlanet "<"
 			setTextTrigger checkPlanetsInSectorFinish :checkPlanetsInSectorFinish "Land on which planet"
+			
+			settextlinetrigger noplanetscanner :checkplanetsinsectorfinish "Planet #"
 			pause
 			:checkPlanetsInSectorStart
 				killAllTriggers
