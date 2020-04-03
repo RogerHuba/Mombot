@@ -1593,7 +1593,7 @@ return
 			setVar $mowintosector $focus
 			gosub :mowIntoSector
 			if (((PORT.BUYORG[$focus]) and ($player~organic_holds > 0)) OR ((PORT.BUYEQUIP[$focus]) and ($player~equipment_holds > 0)))
-				send "p t * * 0 * 0 * "
+				send "p t * * * * * * "
 			else
 				send "j y p t * * 0 * 0 * "
 			end
