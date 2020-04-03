@@ -1057,6 +1057,8 @@ return
 				setTextLineTrigger updatePlanetsInSectorStart :updatePlanetsInSectorStart "-----------------------------------------------"
 				setTextLineTrigger updatePlanetsInSectorPlanet :updatePlanetsInSectorPlanet "<"
 				setTextTrigger updatePlanetsInSectorFinish :updatePlanetsInSectorFinish "Land on which planet"
+				setTextTrigger updatePlanetsInSectorFinish2 :updatePlanetsInSectorFinish "Blasting off from "
+
 				settextlinetrigger updatePlanetsInSectorPlanetnoscanner :updatePlanetsInSectorPlanetnoscanner "Planet #"
 				pause
 				:updatePlanetsInSectorStart
@@ -1160,6 +1162,8 @@ return
 				setTextLineTrigger goodPlanetCheckPlanet :goodPlanetCheckPlanet "<"
 				setTextTrigger goodPlanetCheckFinish :goodPlanetCheckFinish "Land on which planet"
 				setTextLineTrigger goodPlanetCheckstart :goodPlanetCheckstart "-----------------------------------------------"
+				setTextTrigger goodPlanetCheckFinish2 :goodPlanetCheckFinish "Blasting off from "
+
 				settextlinetrigger goodPlanetCheckstartnoscanner :goodPlanetCheckPlanetnoscanner "Planet #"
 				pause
 				:goodPlanetCheckstart
@@ -1382,8 +1386,7 @@ end
 
 	
 	
-			send "q p n" $tradePlanet "* * * l" $tradePlanet "*"
-			waitfor "Land on which planet"
+			send "q p n" $tradePlanet "* * * l" $tradePlanet "* "
 			gosub :player~quikstats
 			stripText $player~credits ","
 			setVar $player~creditsNow $player~credits
