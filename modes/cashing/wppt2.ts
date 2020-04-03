@@ -4,6 +4,7 @@
 
 	loadVar $GAME~GENESIS_COST
 	loadVar $GAME~ATOMIC_COST
+	loadvar $game~HOLO_COST
 	loadVar $MAP~STARDOCK 
 	loadvar $bot~folder
 	loadvar $game~MAX_PLANETS_PER_SECTOR
@@ -566,7 +567,6 @@ return
 		getWord CURRENTLINE $holdsprice 5
 		getWord CURRENTLINE $holdsToBuy 10
 		setVar $beforeFurbCredits $player~credits
-		setVar $player~credits ($player~credits-($holdsprice * $holdsToBuy))
 		if ($player~credits > $CASH_TO_HOLD_ONTO)
 			if ($refurbFighters)
 				waitOn "B  Fighters        :"
@@ -581,6 +581,12 @@ return
 				getWord CURRENTLINE $player~shieldsToBuy 9
 			else
 				setVar $player~shieldsToBuy 0
+			end
+			if ($holdsToBuy > 0)
+				if (($holdsprice * $holdsToBuy) > ($player~credits-$CASH_TO_HOLD_ONTO))
+					setVar $holdsToBuy (($player~credits-$CASH_TO_HOLD_ONTO)/$holdsprice)
+				end
+				setVar $player~credits ($player~credits-($holdsprice * $holdsToBuy))
 			end
 			if ($figsToBuy > 0)
 				if (($figprice * $figsToBuy) > ($player~credits-$CASH_TO_HOLD_ONTO))
@@ -636,7 +642,7 @@ return
 	else
 		send "'Something bad happened on mow, I am probably in big trouble. [Temp error message until saveme implemented]*"
 	end
-	
+		
 return
 
 :safemowIntoSector
@@ -779,7 +785,6 @@ return
 	loadVar $map~alpha_centauri
 	loadVar $bot~subspace
 	loadVar $bot~safe_ship
-	setVar $CASH_TO_HOLD_ONTO 100000
 
 
 
@@ -832,6 +837,9 @@ return
 		halt
 	end
 	gosub :ship~getshipstats
+
+
+	setVar $CASH_TO_HOLD_ONTO (10000+($GAME~GENESIS_COST*$ship~SHIP_GENESIS_MAX)+$game~holo_cost)
 
 	getWordPos " "&$bot~user_command_line&" " $pos " f "
 	if ($pos > 0)
