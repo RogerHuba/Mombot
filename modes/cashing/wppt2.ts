@@ -1159,7 +1159,7 @@ return
 			:buildPlanet1
 				killAllTriggers
 				send "*"
-				gosub :restock
+				gosub :refurb
 				
 				goto :updatePlanetsFinishWait
 				
