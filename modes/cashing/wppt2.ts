@@ -288,7 +288,7 @@
 						end 
 					end
 
-					if ($pair_found = true) and ($distance = 1) AND ($isBusted <> TRUE) AND ($containsShieldedPlanet = FALSE) AND (($figCount <= $safeFighterLevel) AND (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
+					if (($pair_found = true) and ($distance = 1) AND ($isBusted <> TRUE) AND ($containsShieldedPlanet = FALSE) AND (($figCount <= $safeFighterLevel) AND (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
 						setVar $moveIntoSector $checkingNeighbor
 						gosub :moveIntoSector
 						send "* cr*q"
