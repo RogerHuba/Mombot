@@ -389,6 +389,8 @@ return
 		setvar $player~ore_holds 0
 		setvar $player~organic_holds 0
 		setvar $player~equipment_holds 0
+	else
+		setvar $send $send & "j y p t "
 	end
 	if ($fueltrade <> true) and (PORT.BUYFUEL[$port_sector] <> true)
 		setVar $send $send & "0 * "	
