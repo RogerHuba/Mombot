@@ -470,6 +470,7 @@ return
 		end
 		subtract $equipAtPort[$port_sector] $player~total_holds
 	end
+	setVar $send $send & "* * "
 return
 
 :ppt_move
