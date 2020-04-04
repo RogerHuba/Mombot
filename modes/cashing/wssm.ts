@@ -776,6 +776,7 @@ return
 return
 
 :mowIntoSector
+	killalltriggers
 	setVar $destination $mowIntoSector
 	gosub :getCourse
 	setVar $j 2
