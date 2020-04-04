@@ -252,10 +252,9 @@
 					setvar $neighbor_port_class PORT.CLASS[$checkingNeighbor]
 
 					getDistance $distance $checkingNeighbor $port1
-					if ($distance = "-1")
-						send "cf" & $checkingNeighbor & "*" & $port1 & "*q"
-						waitOn "What is the starting sector"
-						waitOn "Command [TL="
+					if ($distance <= 0)
+						send "^f" & $checkingNeighbor & "*" & $port1 & "*q"
+						waitOn "ENDINTERROG"
 						getDistance $distance $checkingNeighbor $port1
 					end
 					if ((PORT.BUYEQUIP[$checkingNeighbor] = true) and ($distance = 1) AND ($isBusted <> TRUE) AND ($containsShieldedPlanet = FALSE) AND (($figCount <= $safeFighterLevel) AND (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
