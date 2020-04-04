@@ -849,6 +849,8 @@ return
 	end
 	gosub :ship~getshipstats
 
+	cutText $player~alignment $neg_ck 1 1
+
 	stripText $player~alignment "-"
 	if ($player~alignment < 100) and ($neg_ck = "-")
 		setvar $switchboard~message "Need -100 Alignment Minimum to run World SST.*"
