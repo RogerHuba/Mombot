@@ -225,9 +225,7 @@
 				setVar $k 1
 				setVar $isFound FALSE
 				while ((SECTOR.WARPS[$port1][$k] > 0) AND ($isFound = FALSE))
-						echo "*FOUND A FIRST PORT*"
 					setVar $checkingNeighbor SECTOR.WARPS[$port1][$k]
-						echo "*CHECKING SECTOR " $checkingNeighbor "*"
 
 					getSectorParameter $checkingNeighbor "BUSTED" $isBusted
 					setVar $containsShieldedPlanet FALSE
@@ -252,9 +250,7 @@
 						waitOn "Command [TL="
 						getDistance $distance $checkingNeighbor $port1
 					end
-						echo "*CHECKING FOR PORT PAIR*"
-					if (($PORT.BUYEQUIP[$checkingNeighbor] = true) and ($distance = 1) AND ($isBusted <> TRUE) AND ($containsShieldedPlanet = FALSE) AND (($figCount <= $safeFighterLevel) AND (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
-						echo "*FOUND A PORT PAIR*"
+					if ((PORT.BUYEQUIP[$checkingNeighbor] = true) and ($distance = 1) AND ($isBusted <> TRUE) AND ($containsShieldedPlanet = FALSE) AND (($figCount <= $safeFighterLevel) AND (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
 						setVar $moveIntoSector $checkingNeighbor
 						gosub :moveIntoSector
 						send "* cr*q"
@@ -263,7 +259,6 @@
 						setVar $port2 $checkingNeighbor
 						setvar $current_sector $port2
 						setVar $isFound TRUE
-
 						return
 					end
 					add $k 1
