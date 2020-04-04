@@ -214,21 +214,17 @@
 			end
 			gosub :moveIntoSector
 
-			setvar $current_port_class PORT.CLASS[$COURSE[$j]]
 			setvar $port1 $COURSE[$j]
 
-			setvar $sector $COURSE[$j]
-			:checkagainport
-			setvar $isUsedUp $usedPorts[$sector] 
-			getSectorParameter $sector "BUSTED" $isBusted
+			getSectorParameter $port1 "BUSTED" $isBusted
 					
-			if ((PORT.BUYEQUIP[$sector] = true) and ($isBusted <> true))
+			if ((PORT.BUYEQUIP[$port1] = true) and ($isBusted <> true))
 				send "* cr*q"
 				waitOn "What sector is the port in? ["
 				setVar $k 1
 				setVar $isFound FALSE
-				while ((SECTOR.WARPS[$sector][$k] > 0) AND ($isFound = FALSE))
-					setVar $checkingNeighbor SECTOR.WARPS[$sector][$k]
+				while ((SECTOR.WARPS[$port1][$k] > 0) AND ($isFound = FALSE))
+					setVar $checkingNeighbor SECTOR.WARPS[$port1][$k]
 					getSectorParameter $checkingNeighbor "BUSTED" $isBusted
 					setVar $containsShieldedPlanet FALSE
 					setVar $p 1
@@ -252,14 +248,7 @@
 						waitOn "Command [TL="
 						getDistance $distance $checkingNeighbor $port1
 					end
-
-
-
-					setvar $pair_found false
-					if ($PORT.BUYEQUIP[$checkingNeighbor] = true)
-							setvar $pair_found true
-					end
-					if (($pair_found = true) and ($distance = 1) AND ($isBusted <> TRUE) AND ($containsShieldedPlanet = FALSE) AND (($figCount <= $safeFighterLevel) AND (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
+					if (($PORT.BUYEQUIP[$checkingNeighbor] = true) and ($distance = 1) AND ($isBusted <> TRUE) AND ($containsShieldedPlanet = FALSE) AND (($figCount <= $safeFighterLevel) AND (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
 						setVar $moveIntoSector $checkingNeighbor
 						gosub :moveIntoSector
 						send "* cr*q"
@@ -377,10 +366,9 @@ return
 			setVar $send $send & "o 3" & $upgrade & "* * "
 			add $equipAtPort[$port_sector] ($upgrade * 10)
 		end
-			setVar $send $send & "p r * s z 3 " & $steal & "* x    "
+			setVar $send $send & "p r * s z 3 " & $steal & "*  "
 		setVar $ship1Equipment $steal
-		send $send & $psst_Ship2 & "*  * "
-		setVar $inShip1 FALSE
+		send $send 
 		setVar $LastSteal $port_sector
 
 			# calculate experience gain or hold loss
@@ -400,32 +388,20 @@ return
 			:success
 				add $player~experience $stake
 				savevar $player~experience
-				if ($inShip1)
-					setVar $ship2Equipment 1
-					setVar $lastStealRobSector $ship2Sector
-					saveVar $lastStealRobSector
-				else
-					setVar $ship1Equipment 1
-					setVar $lastStealRobSector $port_sector
-					saveVar $lastStealRobSector
-				end
+				setVar $ship1Equipment 1
+				setVar $lastStealRobSector $ship2Sector
+				saveVar $lastStealRobSector
 				goto :continue
 
 			:busted
     		# calculate holds lost and flag this sector as busted
-				subtract $ship2TotalHolds $stake
-				setSectorParameter $ship2Sector "BUSTED" TRUE
-				setVar $lastBustSector $ship2Sector
+				subtract $ship1TotalHolds $stake
+				setSectorParameter $port_sector "BUSTED" TRUE
+				setVar $lastBustSector $port_sector
 				saveVar $lastBustSector
-				setVar $ship2Equipment 0
+				setVar $ship1Equipment 0
 				add $numberbusted 1
 				setVar $busted 1
-				gosub :transport
-				if ($inShip1)
-					setVar $ship1NeedsPort TRUE
-				else
-					setVar $ship2NeedsPort TRUE
-				end
 				if ($QUIET = 0)
 					send "'<"&$bot~subspace&">[Busted:"&$lastBustSector&"]<"&$bot~subspace&">* "
 				end
@@ -933,10 +909,7 @@ return
 	setVar $cashDeposited 0
 	goSub :player~quikstats
 	setvar $startcash $player~credits
-	setArray $usedPorts SECTORS
 	setArray $equipAtPort SECTORS
-	setArray $orgAtPort SECTORS
-	setArray $fuelAtPort SECTORS
 	setVar $psst_Ship1 $player~ship_number
 	setVar $startingLocation $player~current_prompt
 	if ($startingLocation = "Citadel")
