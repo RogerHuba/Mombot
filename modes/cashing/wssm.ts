@@ -107,7 +107,7 @@
 			setVar $minRefurb 255
 		end
 		setVar $minRefurb (($minRefurb * 7) / 8)
-		if ($ship1TotalHolds < $minRefurb)
+		if ($player~total_holds < $minRefurb)
 			gosub :refurb
 		end
 		if (($dropCashAtBase = TRUE) AND ($player~credits > $dropCashLimit))
@@ -349,15 +349,15 @@ return
 	
 		setVar $maxSteal ($player~experience / $game~steal_factor - 1)
 		setVar $send ""
-		if ($ship1Equipment > 0)
+		if ($player~equipment_holds > 0)
 			# sell off existing equipment
 			setVar $send $send & "p t * * 0* 0* "
-			setVar $ship1Equipment 0
-			add $equipAtPort[$port_sector] $ship1Equipment
+			setVar $player~equipment_holds 0
+			add $equipAtPort[$port_sector] $player~equipment_holds
 		end
 		# steal as much as we are able to on this ship
-		if ($ship1TotalHolds < $maxSteal)
-			setVar $steal $ship1TotalHolds
+		if ($player~total_holds < $maxSteal)
+			setVar $steal $player~total_holds
 		else
 			setVar $steal $maxSteal
 		end
@@ -370,7 +370,7 @@ return
 			add $equipAtPort[$port_sector] ($upgrade * 10)
 		end
 			setVar $send $send & "p r * s z 3 " & $steal & "*  "
-		setVar $ship1Equipment $steal
+		setVar $player~equipment_holds $steal
 		send $send 
 		setVar $LastSteal $port_sector
 
@@ -391,18 +391,18 @@ return
 			:success
 				add $player~experience $stake
 				savevar $player~experience
-				setVar $ship1Equipment 1
+				setVar $player~equipment_holds 1
 				setVar $lastStealRobSector $ship2Sector
 				saveVar $lastStealRobSector
 				goto :continue
 
 			:busted
     		# calculate holds lost and flag this sector as busted
-				subtract $ship1TotalHolds $stake
+				subtract $player~total_holds $stake
 				setSectorParameter $port_sector "BUSTED" TRUE
 				setVar $lastBustSector $port_sector
 				saveVar $lastBustSector
-				setVar $ship1Equipment 0
+				setVar $player~equipment_holds 0
 				add $numberbusted 1
 				setVar $busted 1
 				if ($QUIET = 0)
