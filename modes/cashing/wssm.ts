@@ -619,7 +619,8 @@ return
 					setVar $figsToBuy 0
 					setVar $player~shieldsToBuy 0
 				end
-				goto :donenormalfurb
+				send "a "&$holdsToBuy&"* y b "&$figsToBuy&"* c "&$player~shieldsToBuy&"* q q q z n * "
+				return
 			else
 				send "p s g y g q "
 			end
