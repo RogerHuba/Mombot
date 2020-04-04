@@ -376,16 +376,16 @@ return
 			# calculate experience gain or hold loss
 			setVar $stake ($steal - 1) / 11
 
-			waitOn "(R)ob this port, (S)teal product"
 			killtrigger 1
 			killtrigger 2
 			killtrigger 3
 			killtrigger 4			
+			send $send 
+			waitOn "(R)ob this port, (S)teal product"
 			setTextLineTrigger 1 :success "Success!"
 			setTextLineTrigger 2 :busted "Suddenly you're Busted!"
 			setTextLineTrigger 3 :busted "There aren't that many holds of Equipment at this port!"
 			setTextLineTrigger 4 :busted "Do you want instructions (Y/N) [N]?"
-			send $send 
 			pause
 
 			:success
