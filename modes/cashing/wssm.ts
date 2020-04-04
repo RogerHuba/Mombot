@@ -67,11 +67,13 @@
 				gosub :steal
 				setvar $port_sector $port2
 				gosub :ppt_move
+				setvar $current_sector $port2
 			else
 				setvar $port_sector $port2
 				gosub :steal
 				setvar $port_sector $port1
 				gosub :ppt_move
+				setvar $current_sector $port1
 			end
 
 		end
@@ -391,8 +393,8 @@ return
 			:success
 				add $player~experience $stake
 				savevar $player~experience
-				setVar $player~equipment_holds 1
-				setVar $lastStealRobSector $ship2Sector
+				setVar $player~equipment_holds $steal
+				setVar $lastStealRobSector $port_sector
 				saveVar $lastStealRobSector
 				goto :continue
 
