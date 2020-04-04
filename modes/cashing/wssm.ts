@@ -227,6 +227,8 @@
 				while ((SECTOR.WARPS[$port1][$k] > 0) AND ($isFound = FALSE))
 						echo "*FOUND A FIRST PORT*"
 					setVar $checkingNeighbor SECTOR.WARPS[$port1][$k]
+						echo "*CHECKING SECTOR " $checkingNeighbor "*"
+
 					getSectorParameter $checkingNeighbor "BUSTED" $isBusted
 					setVar $containsShieldedPlanet FALSE
 					setVar $p 1
