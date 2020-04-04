@@ -109,7 +109,7 @@
 		setVar $minRefurb (($minRefurb * 5) / 8)
 		if ($player~total_holds < $minRefurb)
 			gosub :refurb
-			setvar $mowIntoSector $startsector
+			getRnd $mowIntoSector 11 SECTORS
 			gosub :mowIntoSector
 		end
 		if (($dropCashAtBase = TRUE) AND ($player~credits > $dropCashLimit))
@@ -222,7 +222,6 @@
 				goto :tryNewRouteShip1
 			end
 			gosub :moveIntoSector
-			killalltriggers
 
 			setvar $port1 $COURSE[$j]
 
@@ -262,7 +261,6 @@
 					if ((PORT.BUYEQUIP[$checkingNeighbor] = true) and ($distance = 1) AND ($isBusted <> TRUE) AND ($containsShieldedPlanet = FALSE) AND (($figCount <= $safeFighterLevel) AND (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
 						setVar $moveIntoSector $checkingNeighbor
 						gosub :moveIntoSector
-						killalltriggers
 						send "* cr*q"
 						waitOn "What sector is the port in? ["
 						setVar $needNewPortPair FALSE
