@@ -371,7 +371,6 @@ return
 		end
 			setVar $send $send & "p r * s z 3 " & $steal & "*  "
 		setVar $player~equipment_holds $steal
-		send $send 
 		setVar $LastSteal $port_sector
 
 			# calculate experience gain or hold loss
@@ -386,6 +385,7 @@ return
 			setTextLineTrigger 2 :busted "Suddenly you're Busted!"
 			setTextLineTrigger 3 :busted "There aren't that many holds of Equipment at this port!"
 			setTextLineTrigger 4 :busted "Do you want instructions (Y/N) [N]?"
+			send $send 
 			pause
 
 			:success
