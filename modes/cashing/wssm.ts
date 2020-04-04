@@ -142,10 +142,15 @@
 				setvar $player~fighters ($player~fighters - 1000)
 			end
 		end
-		setVar $result $result&"f  z  "&$FIG_DROP&"* z  c  d  *  "
+		getRnd $coin 1 100
+		if ($coin < 50)
+			setVar $result $result&"f  z  "&$FIG_DROP&"* z  c  d  *  "
+		else
+			setVar $result $result&"f  z  "&$FIG_DROP&"* z  c  o  *  "
+		end
 	end
 	if ($DROPLIMPS)
-		setVar $result $result&"  H  2  Z  3*  Z C  *  "
+		setVar $result $result&"  H  2  Z  1*  Z C  *  "
 	end
 	if ($DROPARMIDS)
 		setVar $Result $result&"  H  1  Z  3*  Z C  *  "
