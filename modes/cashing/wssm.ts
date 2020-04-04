@@ -648,6 +648,8 @@ return
 			send "*"
 			halt
 		end
+		send "jy*"
+
 	else
 		setvar $twarp_refurb_success false
 		send " Q Q "
@@ -847,8 +849,18 @@ return
 	end
 	gosub :ship~getshipstats
 
+	stripText $player~alignment "-"
+	if ($player~alignment < 100) and ($neg_ck = "-")
+		setvar $switchboard~message "Need -100 Alignment Minimum to run World SST.*"
+		gosub :switchboard~switchboard
+		halt
+	elseif ($neg_ck <> "-")
+		setvar $switchboard~message "Need -100 Alignment Minimum to run World SST.*"
+		gosub :switchboard~switchboard
+		halt
+	end
 
-	setVar $CASH_TO_HOLD_ONTO (10000+($GAME~GENESIS_COST*$ship~SHIP_GENESIS_MAX)+$game~holo_cost)
+	setVar $CASH_TO_HOLD_ONTO (500000+$game~holo_cost)
 
 	getWordPos " "&$bot~user_command_line&" " $pos " f "
 	if ($pos > 0)
@@ -907,6 +919,32 @@ return
 	if (($pos <> 0) AND ($map~stardock <> 0))
 		setVar $FURBING 1
 	end
+
+	setVar $portaverage 1
+	send "jy*"
+	setVar $cashDeposited 0
+	goSub :player~quikstats
+	setvar $startcash $player~credits
+	setVar $Temp ("  " & $bot~user_command_line & "  ")
+	getwordpos $Temp $pos " alpha "
+	if (($pos <> 0) AND ($map~alpha_centauri <> 0))
+		setVar $FURBING $map~alpha_centauri
+	end
+	getWordpos $Temp $pos " rylos "
+	if (($pos <> 0) AND ($map~rylos <> 0))
+		setVar $FURBING $map~rylos
+	end
+	getWordPos $Temp $pos " dock "
+	if (($pos <> 0) AND ($map~stardock <> 0))
+		setVar $FURBING $map~stardock
+	end
+
+	getWordPos $Temp $pos " terra "
+	if (($pos <> 0) AND ($map~stardock <> 0))
+		setVar $FURBING 1
+	end
+
+	send "jy*"
 
 	setVar $portaverage 1
 	setVar $cashDeposited 0
