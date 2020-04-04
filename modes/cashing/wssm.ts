@@ -67,13 +67,11 @@
 				gosub :steal
 				setvar $port_sector $port2
 				gosub :ppt_move
-				setvar $current_sector $port2
 			else
 				setvar $port_sector $port2
 				gosub :steal
 				setvar $port_sector $port1
 				gosub :ppt_move
-				setvar $current_sector $port1
 			end
 
 		end
@@ -178,6 +176,7 @@
 		goSub :combat~passiveHolokill
 		gosub :switchboard~switchboard
 	end
+	setvar $current_sector $moveIntoSector
 	return
 
 :findPPTPorts
@@ -259,7 +258,6 @@
 						waitOn "What sector is the port in? ["
 						setVar $needNewPortPair FALSE
 						setVar $port2 $checkingNeighbor
-						setvar $current_sector $port2
 						setVar $isFound TRUE
 						return
 					end
