@@ -14,6 +14,7 @@ loadVar $bot~parm7
 loadVar $bot~parm8
 loadVar $stardock
 loadvar $command
+loadvar $bot~mombot_directory
 
 #add prompt checking at start to start from anywhere on sd
 gosub :player~quikstats
