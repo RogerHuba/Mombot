@@ -1490,11 +1490,7 @@ return
 	end
 
 	Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
-	if ((currentalignment >= 1000) OR ($WeAreAdjDock))
-		getdistance $dist1 $START_SECTOR $MAP~stardock
-	else
-		getdistance $dist1 $START_SECTOR $RED_adj
-	end
+	getdistance $dist1 $START_SECTOR $MAP~stardock
 
 	if ($dist1 <= 0)
 		setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
