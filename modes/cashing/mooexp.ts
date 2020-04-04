@@ -282,19 +282,19 @@ gosub :switchboard~switchboard
 # Primary product 1 - fuel, 2 - org, 3 - fuel
 setVar $SWITCHBOARD~message "Primary product will be equipment.*"
 setVar $PrimaryProduct 3
-getWordPos $bot~user_command_line $pos "f"
+getWordPos " "&$bot~user_command_line&" " $pos " f "
 if ($pos > 0)
 	setVar $PrimaryProduct 1
 	setVar $SWITCHBOARD~message "Primary product will be equipment.*"
 end
 
-getWordPos $bot~user_command_line $pos "o"
+getWordPos " "&$bot~user_command_line&" " $pos " o "
 if ($pos > 0)
 	setVar $SWITCHBOARD~message "Primary product will be Organics.*"
 	setVar $PrimaryProduct 2
 end
 
-getWordPos $bot~user_command_line $pos "e"
+getWordPos " "&$bot~user_command_line&" " $pos " e "
 if ($pos > 0)
 	setVar $PrimaryProduct 3
 end
