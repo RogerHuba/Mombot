@@ -369,7 +369,7 @@ return
 			setVar $send $send & "o 3" & $upgrade & "* * "
 			add $equipAtPort[$port_sector] ($upgrade * 10)
 		end
-			setVar $send $send & "p r * s z 3 " & $steal & "*  "
+			setVar $send $send & "p r * s z 3 " & $steal & "* "
 		setVar $player~equipment_holds $steal
 		setVar $LastSteal $port_sector
 
