@@ -380,6 +380,28 @@ return
 			killtrigger 2
 			killtrigger 3
 			killtrigger 4			
+			if ($port_sector = $port1)
+				setVar $send $send&"m "&$port2&"* "
+				if (($port2 > 10) AND ($port2 <> $map~stardock))
+					if ($player~fighters > $ship~ship_max_attack)
+						setVar $send $send&"za"&$ship~ship_max_attack&"* * "
+					else
+						setVar $send $send&"za"&$player~fighters&"* * "
+					end
+				end
+			else
+				setVar $send $send&"m "&$port1&"* "
+				if (($port1 > 10) AND ($port1 <> $map~stardock))
+					if ($player~fighters > $ship~ship_max_attack)
+						setVar $send $send&"za"&$ship~ship_max_attack&"* * "
+					else
+						setVar $send $send&"za"&$player~fighters&"* * "
+					end
+				end
+			end
+			send $send
+			waitOn "["&$port_sector&"]"
+			setvar $current_sector $port_sector
 			send $send 
 			waitOn "(R)ob this port, (S)teal product"
 			setTextLineTrigger 1 :success "Success!"
@@ -1467,7 +1489,17 @@ return
 		add $i 1
 	end
 
-	if ((currentalignment < 1000) AND ($WeAreAdjDock = FALSE))
+	setVar $ore_req (($dist1 + $dist2) * 3)
+
+	if ($PLAYER~ORE_HOLDS < $ore_req)
+		setvar $switchboard~message "Not Enough ORE In Holds To Make Round Trip.  Needs "&$ore_req&".*"
+		gosub :switchboard~switchboard
+		send "*"
+		gosub :getsomefuel
+	end
+
+
+	if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE))
 		setVar $RED_adj 0
 		gosub :FindJumpSector
 		if ($RED_adj = 0)
@@ -1479,7 +1511,7 @@ return
 		end
 	end
 
-	if (currentalignment >= 1000)
+	if ($player~alignment >= 1000)
 		if ($WeAreAdjDock)
 			send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
 		else
@@ -1531,14 +1563,6 @@ return
 			halt
 		end
 
-		setVar $ore_req (($dist1 + $dist2) * 3)
-
-		if ($PLAYER~ORE_HOLDS < $ore_req)
-			setvar $switchboard~message "Not Enough ORE In Holds To Make Round Trip.  Needs "&$ore_req&".*"
-			gosub :switchboard~switchboard
-			send "*"
-			gosub :getsomefuel
-		end
 
 		if ($PLAYER~TWARP_TYPE = "No")
 			setvar $switchboard~message "Must Have Twarp 1 or 2*"
@@ -1757,6 +1781,7 @@ return
 		setTextTrigger TwarpLocked			:TwarpLocked "All Systems Ready, shall we engage? "
 		setTextLineTrigger TwarpVoided			:TwarpVoided "Danger Warning Overridden"
 		setTextLineTrigger TwarpAdj			:TwarpAdj "<Set NavPoint>"
+		settextlinetrigger twarpempty	:twarpempty "You do not have enough Fuel Ore to make the jump"
 		pause
 		:TwarpAdj
 		killAllTriggers
