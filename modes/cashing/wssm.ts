@@ -389,6 +389,7 @@ return
 						setVar $send $send&"ja"&$player~fighters&"* * "
 					end
 				end
+				setvar $current_sector $port2
 			else
 				setVar $send $send&"m "&$port1&"* "
 				if (($port1 > 10) AND ($port1 <> $map~stardock))
@@ -398,11 +399,10 @@ return
 						setVar $send $send&"ja"&$player~fighters&"* * "
 					end
 				end
+				setvar $current_sector $port1
+
 			end
 			send $send
-			waitOn "["&$port_sector&"]"
-			setvar $current_sector $port_sector
-			send $send 
 			waitOn "(R)ob this port, (S)teal product"
 			setTextLineTrigger 1 :success "Success!"
 			setTextLineTrigger 2 :busted "Suddenly you're Busted!"
@@ -438,6 +438,7 @@ return
 				if ($QUIET = 0)
 					send "'<"&$bot~subspace&">[Busted:"&$lastBustSector&"]<"&$bot~subspace&">* "
 				end
+			waitOn "["&$port_sector&"]"
 
 			:continue
 return
