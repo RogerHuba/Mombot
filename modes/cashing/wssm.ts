@@ -384,18 +384,18 @@ return
 				setVar $send $send&"m "&$port2&"* "
 				if (($port2 > 10) AND ($port2 <> $map~stardock))
 					if ($player~fighters > $ship~ship_max_attack)
-						setVar $send $send&"za"&$ship~ship_max_attack&"* * "
+						setVar $send $send&"ja"&$ship~ship_max_attack&"* * "
 					else
-						setVar $send $send&"za"&$player~fighters&"* * "
+						setVar $send $send&"ja"&$player~fighters&"* * "
 					end
 				end
 			else
 				setVar $send $send&"m "&$port1&"* "
 				if (($port1 > 10) AND ($port1 <> $map~stardock))
 					if ($player~fighters > $ship~ship_max_attack)
-						setVar $send $send&"za"&$ship~ship_max_attack&"* * "
+						setVar $send $send&"ja"&$ship~ship_max_attack&"* * "
 					else
-						setVar $send $send&"za"&$player~fighters&"* * "
+						setVar $send $send&"ja"&$player~fighters&"* * "
 					end
 				end
 			end
