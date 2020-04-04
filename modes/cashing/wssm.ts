@@ -554,10 +554,10 @@ return
   return
 
 :refurb
-	setvar $refurbPort $map~stardock
 
 	setvar $twarp_refurb_success false
-	if (($player~twarp_type <> "No") and ($player~current_sector <> $map~stardock))
+	setVar $refurbPort $FURBING
+	if (($player~twarp_type <> "No") and ($refurbPort = $map~stardock))
 
 		gosub :twarprefurb
 		gosub :player~quikstats
@@ -583,6 +583,43 @@ return
 		if ($player~current_sector = $refurbPort)
 			if ($FURBING <> $map~stardock)
 				send "p ty"
+				waitOn "A  Cargo holds     :"
+				getWord CURRENTLINE $holdsprice 5
+				getWord CURRENTLINE $holdsToBuy 10
+				setVar $beforeFurbCredits $player~credits
+				setVar $player~credits ($player~credits-($holdsprice * $holdsToBuy))
+				if ($player~credits > $CASH_TO_HOLD_ONTO)
+					if ($refurbFighters)
+						waitOn "B  Fighters        :"
+						getWord CURRENTLINE $figprice 4
+						getWord CURRENTLINE $figsToBuy 8
+					else
+						setVar $figsToBuy 0
+					end
+					if ($refurbShields)
+						waitOn "C  Shield Points   :"
+						getWord CURRENTLINE $shieldprice 5
+						getWord CURRENTLINE $player~shieldsToBuy 9
+					else
+						setVar $player~shieldsToBuy 0
+					end
+					if ($figsToBuy > 0)
+						if (($figprice * $figsToBuy) > ($player~credits-$CASH_TO_HOLD_ONTO))
+							setVar $figsToBuy (($player~credits-$CASH_TO_HOLD_ONTO)/$figprice)
+						end
+						setVar $player~credits ($player~credits-($figprice * $figsToBuy))
+					end
+					if ($player~shieldsToBuy > 0)
+						if (($shieldprice * $player~shieldsToBuy) > ($player~credits-$CASH_TO_HOLD_ONTO))
+							setVar $player~shieldsToBuy (($player~credits-$CASH_TO_HOLD_ONTO)/$shieldprice)
+						end
+						setVar $player~credits ($player~credits-($shieldprice * $player~shieldsToBuy))
+					end
+				else
+					setVar $figsToBuy 0
+					setVar $player~shieldsToBuy 0
+				end
+				goto :donenormalfurb
 			else
 				send "p s g y g q "
 			end
@@ -683,6 +720,7 @@ return
 		send "jy*"
 
 	else
+		:donenormalfurb
 		setvar $twarp_refurb_success false
 		send " Q Q "
 	end	
@@ -959,26 +997,7 @@ return
 	setVar $cashDeposited 0
 	goSub :player~quikstats
 	setvar $startcash $player~credits
-	setVar $Temp ("  " & $bot~user_command_line & "  ")
-	getwordpos $Temp $pos " alpha "
-	if (($pos <> 0) AND ($map~alpha_centauri <> 0))
-		setVar $FURBING $map~alpha_centauri
-	end
-	getWordpos $Temp $pos " rylos "
-	if (($pos <> 0) AND ($map~rylos <> 0))
-		setVar $FURBING $map~rylos
-	end
-	getWordPos $Temp $pos " dock "
-	if (($pos <> 0) AND ($map~stardock <> 0))
-		setVar $FURBING $map~stardock
-	end
 
-	getWordPos $Temp $pos " terra "
-	if (($pos <> 0) AND ($map~stardock <> 0))
-		setVar $FURBING 1
-	end
-
-	send "jy*"
 
 	setVar $portaverage 1
 	setVar $cashDeposited 0
