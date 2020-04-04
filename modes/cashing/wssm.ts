@@ -106,7 +106,7 @@
 		if ($minRefurb > 255)
 			setVar $minRefurb 255
 		end
-		setVar $minRefurb (($minRefurb * 5 / 8)
+		setVar $minRefurb (($minRefurb * 5) / 8)
 		if ($player~total_holds < $minRefurb)
 			gosub :refurb
 			setvar $mowIntoSector $startsector
