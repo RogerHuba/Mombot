@@ -411,6 +411,10 @@ return
 			pause
 
 			:success
+				killtrigger 1
+				killtrigger 2
+				killtrigger 3
+				killtrigger 4			
 				add $player~experience $stake
 				savevar $player~experience
 				setVar $player~equipment_holds $steal
@@ -420,6 +424,10 @@ return
 
 			:busted
     		# calculate holds lost and flag this sector as busted
+				killtrigger 1
+				killtrigger 2
+				killtrigger 3
+				killtrigger 4			
 				subtract $player~total_holds $stake
 				setSectorParameter $port_sector "BUSTED" TRUE
 				setVar $lastBustSector $port_sector
@@ -432,10 +440,6 @@ return
 				end
 
 			:continue
-				killtrigger 1
-				killtrigger 2
-				killtrigger 3
-				killtrigger 4			
 return
 
 
