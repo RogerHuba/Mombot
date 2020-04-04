@@ -285,7 +285,7 @@ setVar $PrimaryProduct 3
 getWordPos " "&$bot~user_command_line&" " $pos " f "
 if ($pos > 0)
 	setVar $PrimaryProduct 1
-	setVar $SWITCHBOARD~message "Primary product will be equipment.*"
+	setVar $SWITCHBOARD~message "Primary product will be fuel ore.*"
 end
 
 getWordPos " "&$bot~user_command_line&" " $pos " o "
@@ -696,17 +696,33 @@ return
 	# 8 - BBB
 
 	setVar $cport PORT.CLASS[$portToCheck]
-	setVar $prodPerc PORT.PERCENTEQUIP[$portToCheck]
-	if ($prodPerc >= $tradingMinProduct)
-		if ($cport = 4)
-			if (PORT.EQUIP[$portToCheck] > 1800)
+	if ($PrimaryProduct = 1)
+		setVar $prodPerc PORT.PERCENTFUEL[$portToCheck]
+		if ($prodPerc >= $tradingMinProduct)
+			if (PORT.BUYFUEL[$portToCheck] = 1)
 				setVar $portCheckedOk 1
 			end
-		elseif (PORT.BUYEQUIP[$portToCheck] = 1)
-			setVar $portCheckedOk 1
 		end
-	end
-	
+	elseif ($PrimaryProduct = 2)
+		setVar $prodPerc PORT.PERCENTORG[$portToCheck]
+		if ($prodPerc >= $tradingMinProduct)
+			if (PORT.BUYORG[$portToCheck] = 1)
+				setVar $portCheckedOk 1
+			end
+		end
+	elseif ($PrimaryProduct = 3)
+		setVar $prodPerc PORT.PERCENTEQUIP[$portToCheck]
+		if ($prodPerc >= $tradingMinProduct)
+			if ($cport = 4)
+				if (PORT.EQUIP[$portToCheck] > 1800)
+					setVar $portCheckedOk 1
+				end
+			elseif (PORT.BUYEQUIP[$portToCheck] = 1)
+				setVar $portCheckedOk 1
+			end
+		end
+	end 
+
 
 	
 return
