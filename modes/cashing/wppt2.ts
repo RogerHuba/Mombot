@@ -346,7 +346,7 @@
 					setvar $neighbor_port_class PORT.CLASS[$checkingNeighbor]
 
 					getDistance $distance $checkingNeighbor $port1
-					if ($dist1 = "-1")
+					if ($distance = "-1")
 						send "cf" & $checkingNeighbor & "*" & $port1 & "*q"
 						waitOn "What is the starting sector"
 						waitOn "Command [TL="
