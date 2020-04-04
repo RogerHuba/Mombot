@@ -106,13 +106,11 @@
 		if ($minRefurb > 255)
 			setVar $minRefurb 255
 		end
-		setVar $minRefurb (($minRefurb * 7) / 8)
+		setVar $minRefurb (($minRefurb * 5 / 8)
 		if ($player~total_holds < $minRefurb)
 			gosub :refurb
-			if ($twarp_refurb_success <> true)
-				setvar $mowIntoSector $startsector
-				gosub :mowIntoSector
-			end
+			setvar $mowIntoSector $startsector
+			gosub :mowIntoSector
 		end
 		if (($dropCashAtBase = TRUE) AND ($player~credits > $dropCashLimit))
 			gosub :dropCashAtBase
