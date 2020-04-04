@@ -464,7 +464,7 @@ return
 return
 
 :ppt_move
-	setVar $send $send&"m "&$port_sector&"* "
+	setVar $send "m "&$port_sector&"* "
 	if (($port_sector > 10) AND ($port_sector <> $map~stardock))
 		if ($player~fighters > $ship~ship_max_attack)
 			setVar $send $send&"za"&$ship~ship_max_attack&"* * "
