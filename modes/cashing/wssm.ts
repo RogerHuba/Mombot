@@ -55,13 +55,6 @@
 		if (($player~unlimitedGame = FALSE) AND ($player~turns <= $bot~bot_turn_limit))
 			goto :endSST
 		end
-		if (($player~genesis <= 0) and ($player~credits > $CASH_TO_HOLD_ONTO))
-			gosub :refurb
-			if ($twarp_refurb_success <> true)
-				getRnd $mowIntoSector 11 SECTORS
-				gosub :mowIntoSector
-			end
-		end
 		setvar $needNewPortPair true
 		gosub :findPPTPorts
 		setVar $busted FALSE
@@ -108,6 +101,14 @@
 				end
 				add $i 1
 			end
+		end
+		setVar $minRefurb ($player~experience / $game~steal_factor - 1)
+		if ($minRefurb > 255)
+			setVar $minRefurb 255
+		end
+		setVar $minRefurb (($minRefurb * 7) / 8)
+		if ($ship1TotalHolds < $minRefurb)
+			gosub :refurb
 		end
 		if (($dropCashAtBase = TRUE) AND ($player~credits > $dropCashLimit))
 			gosub :dropCashAtBase
@@ -257,6 +258,7 @@
 						setVar $port2 $checkingNeighbor
 						setvar $current_sector $port2
 						setVar $isFound TRUE
+						return
 					end
 					add $k 1
 				end
