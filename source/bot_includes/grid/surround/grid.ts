@@ -6,6 +6,7 @@
 	:StartSurround
 		if ($player~surroundPassive)
 			send "s*szh* "
+			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] D"
 		else
 			send "szh* "
 		end
