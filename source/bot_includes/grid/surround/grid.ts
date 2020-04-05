@@ -4,7 +4,11 @@
 #ASSUMES YOU HAVE RUN QUIKSTATS BEFORE RUNNING THIS SUBROUTINE
 :surround
 	:StartSurround
-		send "szh* "
+		if ($player~surroundPassive)
+			send "s*szh* "
+		else
+			send "szh* "
+		end
 		killtrigger surroundsector
 		setTextTrigger surroundsector :continuesurroundsector "[" & $player~current_sector & "]"
 		pause

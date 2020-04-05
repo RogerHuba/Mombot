@@ -118,8 +118,9 @@
 	loadvar $PLAYER~surroundAvoidAllPlanets 
 	loadvar $PLAYER~surroundAvoidShieldedOnly 
 	loadvar $PLAYER~surroundOverwrite 
-	loadvar $PLAYER~surroundPassive   
+
 	loadvar $PLAYER~surroundNormal    
+	setvar $player~surroundPassive true
 
 
 :merchant
