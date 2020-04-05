@@ -119,7 +119,7 @@
 	loadvar $PLAYER~surroundAvoidShieldedOnly 
 	loadvar $PLAYER~surroundOverwrite 
 
-	loadvar $PLAYER~surroundNormal    
+	setvar $PLAYER~surroundNormal false 
 	setvar $player~surroundPassive true
 
 
