@@ -691,12 +691,6 @@ return
 				send $buy & "*"
 				waitfor "<Hardware Emporium>"
 			end
-			send "r h T"
-			waitfor "How many Genesis Torpedoes do you want"
-			getText CURRENTLINE $Buy "(Max" ") ["
-			striptext $buy " "
-			send $buy & "*"
-			waitfor "<Hardware Emporium>"
 
 			send "/"
 			waitfor #179 & "Figs"
