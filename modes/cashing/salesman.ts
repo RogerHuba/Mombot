@@ -235,7 +235,7 @@
 				        		setVar $PLAYER~CREDITS $total_creds_needed
 		    				end
 					end
-					send "q q *O 1 20*O 1 20*O 1 20*O 1 20*O 1 20* *  *CR*Q"
+					send "q q *O15*15*15*15*15*15*15*15*15*15*15*15*15*15*15*15*15*15*15*15**  *CR*Q"
 					gosub :PLAYER~quikstats
 					gosub :PLANET~landOnPlanetEnterCitadel
 				end
