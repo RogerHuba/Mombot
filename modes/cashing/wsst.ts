@@ -1630,6 +1630,90 @@ return
 return
 
 
+:FindJumpSector
+	setVar $i 1
+	setVar $RED_adj 0
+	send "qq*"
+	while (SECTOR.WARPSIN[$MAP~stardock][$i] > 0)
+		setVar $RED_adj SECTOR.WARPSIN[$MAP~stardock][$i]
+		send "m " & $RED_adj & "* y"
+		setTextTrigger TwarpBlind 			:TwarpBlind "Do you want to make this jump blind? "
+		setTextTrigger TwarpLocked			:TwarpLocked "All Systems Ready, shall we engage? "
+		setTextLineTrigger TwarpVoided			:TwarpVoided "Danger Warning Overridden"
+		setTextLineTrigger TwarpAdj			:TwarpAdj "<Set NavPoint>"
+		settextlinetrigger twarpempty	:twarpempty "You do not have enough Fuel Ore to make the jump"
+		pause
+		:TwarpAdj
+		killAllTriggers
+		send " * "
+		return
+
+		:TwarpVoided
+		killAllTriggers
+		send " N N "
+		goto :TryingNextAdj
+
+		:TwarpLocked
+		killAllTriggers
+		send " N "
+
+		goto :SectorLocked
+
+		:TwarpBlind
+		killAllTriggers
+		send " N "
+
+		:twarpempty
+		killAllTriggers
+		
+		:TryingNextAdj
+    	add $i 1
+	end
+
+	:NoAdjsFound
+		setVar $RED_adj 0
+		return
+
+	:SectorLocked
+		return
+
+
+:TurnsRequired
+	send "i"
+	setTextLineTrigger TurnsRequired_TPW	:TurnsRequired_TPW "Turns to Warp  : "
+	pause
+
+	:TurnsRequired_TPW
+	killAllTriggers
+	getWord CURRENTLINE $turnsRequired_TPW 5
+
+	if ($RED_adj > 0)
+		# twarp to jmp sector, then into SD sect, then twarp home
+		setVar $turnsRequired_temp ($turnsRequired_TPW * 3)
+		if ($_Tow > 0)
+			# 2 Turns for exporting into other ship and back again
+			add $turnsRequired_temp_temp 2
+			# 3 Turns for initial Port then x into other ship, port & shop, then x and report
+			#   b4 heading home
+			add $turnsRequired_temp 3
+		else
+			add $turnsRequired_temp 1
+		end
+	else
+		setVar $turnsRequired_temp ($turnsRequired_TPW * 2)
+		# 1 Turn to port at dock
+		add $turnsRequired_temp 1
+	end
+
+	setVar $turnsRequired $turnsRequired_temp
+	return
+
+
+:callSaveMe
+	send "q q q q * '"&$SWITCHBOARD~bot_name&" call*"
+	halt
+	
+
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
