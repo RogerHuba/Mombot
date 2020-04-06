@@ -14,39 +14,39 @@ loadvar $map~backdoor
 	setVar $BOT~help[9] $BOT~tab&"          [e] - equipment"
 	gosub :bot~helpfile
 
-	setVar $BOT~script_title "Product Pimp"
+	setVar $BOT~script_title "product pimp"
 	gosub :BOT~banner
 
 
 		
 :pimp
-	window prodpimp 400 150 "Product Pimp Stats" ONTOP
+	window prodpimp 400 150 "product pimp stats" ONTOP
 	gosub :player~quikstats
-	setVar $startingLocation $player~current_prompt
+	setVar $starting_location $player~current_prompt
 	getRnd $random 1 100000
-	if ($startingLocation <> "Citadel")
-		setVar $SWITCHBOARD~message "You must run Product Pimp from a Citadel prompt.*"
-		gosub :SWITCHBOARD~switchboard
+	if ($starting_location <> "Citadel")
+		setVar $switchboard~message "You must run product pimp from a Citadel prompt.*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	setVar $bot~user_command_line $bot~user_command_line&" "
 	isNumber $test $bot~parm1
 	if ($test)
-		setVar $SWITCHBOARD~message "Invalid arguments for Product Pimp*"
-		gosub :SWITCHBOARD~switchboard
+		setVar $switchboard~message "Invalid arguments for product pimp*"
+		gosub :switchboard~switchboard
 		halt
 	else
 		getWordPos $bot~parm1 $pos #34
 		if ($pos > 0)
-			getText $bot~user_command_line $targetPlanet " "&#34 #34&" "
+			getText " "&$bot~user_command_line&" " $targetPlanet " "&#34 #34&" "
 			if ($targetPlanet <> "")
-				setVar $om_planetname $targetPlanet
+				setVar $pimp_planet_name $targetPlanet
 				stripText $bot~user_command_line " "&#34&$targetPlanet&#34&" "
 			else
-				setVar $om_planetname "M()M Pimp "&$random
+				setVar $pimp_planet_name "M()M Pimp "&$random
 			end
 		else
-			setVar $om_planetname "M()M Pimp "&$random
+			setVar $pimp_planet_name "M()M Pimp "&$random
 		end
 	end
 	setVar $bot~user_command_line " "&$bot~user_command_line&" "
@@ -54,23 +54,23 @@ loadvar $map~backdoor
 	if ($pos > 0)
 		setVar $emptyFuel TRUE
 	else
-		setVar $emptyFuel FALSE
+		setVar $emptyFuel false
 	end
 	getWordPos $bot~user_command_line $pos " o "
 	if ($pos > 0)
 		setVar $emptyOrganics TRUE
 	else
-		setVar $emptyOrganics FALSE
+		setVar $emptyOrganics false
 	end
 	getWordPos $bot~user_command_line $pos " e "
 	if ($pos > 0)
 		setVar $emptyEquipment TRUE
 	else
-		setVar $emptyEquipment FALSE
+		setVar $emptyEquipment false
 	end
-	if (($emptyOrganics = FALSE) AND ($emptyEquipment = FALSE) AND ($emptyFuel = FALSE))
-		setVar $SWITCHBOARD~message "Please pick [f]uel, [o]rganics and/or [e]quipment to harvest.  pimp {"&#34&"planet name"&#34&"} {f} {o} {e} *"
-		gosub :SWITCHBOARD~switchboard
+	if (($emptyOrganics = false) AND ($emptyEquipment = false) AND ($emptyFuel = false))
+		setVar $switchboard~message "Please pick [f]uel, [o]rganics and/or [e]quipment to harvest.  pimp {"&#34&"planet name"&#34&"} {f} {o} {e} *"
+		gosub :switchboard~switchboard
 		halt
 	end
 	
@@ -79,122 +79,122 @@ loadvar $map~backdoor
 	setVar $totalPlanets 0
 	setVar $stripables 0
 
-gosub :player~quikstats
-setVar $startingLocation $player~current_prompt
+	gosub :player~quikstats
+	setVar $starting_location $player~current_prompt
 
-if ($startingLocation = "Citadel")
-    send "Q"
-    gosub :planet~getplanetinfo
-    send "C"
-    waitfor "Citadel command"
-elseif ($startingLocation = "Planet")
-    gosub :planet~getplanetinfo
-    send "Q"
-    send "L " & $planet~planet & "* "
-end
+	if ($starting_location = "Citadel")
+		send "q"
+		gosub :planet~getplanetinfo
+		send "c"
+		waitfor "Citadel command"
+	elseif ($starting_location = "Planet")
+		gosub :planet~getplanetinfo
+		send " q l " $planet~planet "* "
+	end
 
-setVar $target $planet~planet
-setvar $target_cash $planet~citadelcredits
-SetVar $totalfuel $planet~planetfuel
-SetVar $totalorg $planet~planetorg
-SetVar $totalequ $planet~planetequip
-SetVar $totalfuelmax $planet~planetfuelmax
-SetVar $totalorgmax $planet~planetorgmax
-SetVar $totalequmax $planet~planetequipmax
-setVar $om_redsector $map~backdoor
+	setVar $target $planet~planet
+	setvar $target_cash $planet~citadelcredits
+	SetVar $totalfuel $planet~planetfuel
+	SetVar $totalorg $planet~planetorg
+	SetVar $totalequ $planet~planetequip
+	SetVar $totalfuelmax $planet~planetfuelmax
+	SetVar $totalorgmax $planet~planetorgmax
+	SetVar $totalequmax $planet~planetequipmax
+	setVar $om_redsector $map~backdoor
+
 :inac
-killalltriggers
+	killalltriggers
 :myinfo
-    if ($player~unlimitedGame = FALSE)
+    if ($player~unlimitedGame = false)
 		if ($player~turns < $bot~bot_turn_limit)
-			setVar $SWITCHBOARD~message "I have too few turns to pimp product, Script halting.*"
-			gosub :SWITCHBOARD~switchboard
-			HALT
+			setVar $switchboard~message "I have too few turns to pimp product, script halting.*"
+			gosub :switchboard~switchboard
+			halt
 		end
     end
     if (($player~credits + $target_cash) < 1000000)
-		setVar $SWITCHBOARD~message "I have too little cash on hand, Script halting.*"
-		gosub :SWITCHBOARD~switchboard
-		HALT
+		setVar $switchboard~message "I have too little cash on hand, script halting.*"
+		gosub :switchboard~switchboard
+		halt
     end
 
 :myplanetInfo
-    if ($startingLocation = "Citadel")
-        send "Q"
+    if ($starting_location = "Citadel")
+        send "q"
         gosub :planet~getplanetinfo
-        send "C"
+        send "c"
         waitfor "Citadel command"
-    elseif ($startingLocation = "Planet")
+    elseif ($starting_location = "Planet")
         gosub :planet~getplanetinfo
     end
 
     SetVar $totalfuel $planet~planetfuel
 	SetVar $totalorg $planet~planetorg
 	SetVar $totalequ $planet~planetequip
-    if ($startingLocation = "Citadel")
-		send "Q"
+    if ($starting_location = "Citadel")
+		send "q"
     end
 
     #Empty Holds to Planet
     send "m * * * T * L 1*T*L2*T*L3*S*L1*Q j y"
 
-    SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-    SetEventTrigger	Discod2		:Discod     	"Connections have been temporarily disabled."
-    WaitFor "Command [TL"
+    seteventtrigger discod1 	:discod     	"CONNECTION LOST"
+    seteventtrigger	discod2		:discod     	"Connections have been temporarily disabled."
+    waitfor "Command [TL"
 
 
 
 :makePlanet
 	killalltriggers
-    	gosub :setWindows
-        gosub :player~quikstats
+	gosub :set_windows
+	gosub :player~quikstats
 	if (($player~credits < 1000000) AND (($player~genesis <= 0) OR ($player~atomic <= 0)))
 		setVar $cashonhand $target_cash
 		add $cashonhand $player~credits
-		send "l j"&#8&$target&"* c "
+		send "l j" #8 $target "* c "
 		if ($cashonhand > 5000000)
-			send "T T " & $player~credits & "* "
-        		send "T F " & 5000000 & "* "
-        		setVar $player~credits 5000000
+			send "T T " $player~credits "* "
+			send "T F " 5000000 "* "
+			setVar $player~credits 5000000
 		elseif ($cashonhand > 1000000)
-			send "T T " & $player~credits & "* "
-        		send "T F " & $cashonhand & "* "
-        		setVar $player~credits $cashonhand
+			send "T T " $player~credits "* "
+			send "T F " $cashonhand "* "
+			setVar $player~credits $cashonhand
 		else
-			setVar $SWITCHBOARD~message "I have too little cash on hand, Script halting.*"
-			gosub :SWITCHBOARD~switchboard
-	       	HALT
+			setVar $switchboard~message "I have too little cash on hand, script halting.*"
+			gosub :switchboard~switchboard
+			halt
 		end
-		SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-		SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
+		seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
+		seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
 		setTextLineTrigger getcash :gotcash "credits, and the Treasury has "
 		pause
 		:gotcash
- 			getWord CURRENTLINE $target_cash 9
+			getWord CURRENTLINE $target_cash 9
 			striptext $target_cash ","
-		send "qqq* * "
-		gosub :player~quikstats
+			send "qqq* * "
+			gosub :player~quikstats
 	end
 	if ($player~fighters < 1000)
-        	setVar $SWITCHBOARD~message "I have too few fighters on hand, less than 1000.  Script halting.*"
-			gosub :SWITCHBOARD~switchboard
-        	HALT
+		setVar $switchboard~message "I have too few fighters on hand, less than 1000. Script halting.*"
+		gosub :switchboard~switchboard
+		halt
 	end
-	if ($player~unlimitedGame = FALSE)
-		if ($player~turns < $turn_limit)
-			setVar $SWITCHBOARD~message "I have too few turns to pimp product, Script halting.*"
-			gosub :SWITCHBOARD~switchboard
-			HALT
+	if ($player~unlimitedGame = false)
+		if ($player~turns < $bot~bot_turn_limit)
+			setVar $switchboard~message "I have too few turns to pimp product. Script halting.*"
+			gosub :switchboard~switchboard
+			halt
 		end
 	end
 	if (($player~genesis > 0) AND ($player~atomic > 0))
-		send "u y * " & #8 & #8 & $om_planetname&"* p q * "
-		gosub :setWindows
+		send "u y * " #8 #8 $pimp_planet_name "* p q * "
+		gosub :set_windows
 		add $totalPlanets 1
 		killalltriggers
-		SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-		SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
-        	setTextTrigger builtPlanet :findPlanet "For building this planet"
+		seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
+		seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
+		settexttrigger builtPlanet :findPlanet "For building this planet"
 		pause
 	else
 		gosub :restock
@@ -203,99 +203,99 @@ killalltriggers
 
 
 :findplanet
-	KillAllTriggers
-        #Find the planet we just created
-        send "L"
-	SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-	SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
-        setTextLineTrigger GetPlanetNum :GetPlanetNum "> "&$om_planetname
-        Pause
-	Pause
+	killalltriggers
+	#Find the planet we just created
+	send "L"
+	seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
+	seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
+	setTextLineTrigger GetPlanetNum :get_planet_num "> "&$pimp_planet_name
+	pause
+	pause
 
-        :GetPlanetNum
-        setVar $line CURRENTLINE
-        striptext $line "<"
+:get_planet_num
+	setVar $line CURRENTLINE
+	striptext $line "<"
 	getWord $line $planet~planetNum 1
-        stripText $planet~planetNum ">"
-        send $planet~planetNum "*"
-        #check ore
+	stripText $planet~planetNum ">"
+	send $planet~planetNum "*"
+	#check ore
 
 	gosub :planet~getplanetinfo
 
-	IF ((($planet~planetFUEL < $player~total_holds) OR ($emptyFuel = FALSE)) AND (($planet~planetORG < $player~total_holds) OR ($emptyOrganics = FALSE)) AND (($planet~planetEQUIP< $player~total_holds) OR ($emptyEquipment = FALSE)))
+	if ((($planet~planetFUEL < $player~total_holds) OR ($emptyFuel = false)) AND (($planet~planetORG < $player~total_holds) OR ($emptyOrganics = false)) AND (($planet~planetEQUIP< $player~total_holds) OR ($emptyEquipment = false)))
 		#Blow it up :D
-        	If (($fuelcolos = "0") and ($orgcolos = "0") and ($equipcolos = "0"))
-        	    killalltriggers
-		    send "Z D Y "
-	  	    SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-		    SetEventTrigger	Discod2		:Discod     	"Connections have been temporarily disabled."
-        	    setTextTrigger 6 :nodets "You do not have any Atomic Detonators!"
-        	    setTextTrigger 7 :makePlanet "Command [TL="
-        	    pause
-        	end
-        End
+		if (($fuelcolos = "0") and ($orgcolos = "0") and ($equipcolos = "0"))
+			killalltriggers
+			send "z d y "
+			seteventtrigger discod1 	:discod     	"CONNECTION LOST"
+			seteventtrigger	discod2		:discod     	"Connections have been temporarily disabled."
+			settexttrigger 6 :nodets "You do not have any Atomic Detonators!"
+			settexttrigger 7 :makePlanet "Command [TL="
+			pause
+		end
+	end
 	add $stripables 1
-        send "* "
+	send "* "
 	killalltriggers
-	SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-	SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
-	WaitFor "Planet command"
+	seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
+	seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
+	waitfor "Planet command"
 	:tryFuel
-		killAllTriggers
-		SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-		SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
+		killalltriggers
+		seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
+		seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
 		if ($emptyFuel)
-			send "tnt1*q l j"&#8&$target&"* tnl1*q l j"&#8&$planet~planetNum&"* "
-			setTextTrigger fuelSuccess :fuelSuccess "You load the "
-			setTextTrigger fuelEmpty :fuelEmpty "There aren't that many "
-			setTextTrigger fuelFull :fullplanet "They don't have room for that many "
+			send "t*t1*q l j" #8 $target "* t*l1*q l j" #8 $planet~planetNum "* "
+			settexttrigger fuelSuccess :fuelSuccess "You load the "
+			settexttrigger fuelEmpty :fuelEmpty "There aren't that many "
+			settexttrigger fuelFull :fullplanet "They don't have room for that many "
 			pause
 		else
-                        goto :fuelEmpty
-                end
+			goto :fuelEmpty
+		end
 
 	:fuelSuccess
-                add $totalFuel $player~total_holds
-                gosub :setWindows
+		add $totalFuel $player~total_holds
+		gosub :set_windows
 		goto :tryFuel
 	:fuelEmpty
 		killalltriggers
 	:tryOrganics
-		killAllTriggers
+		killalltriggers
 		if ($emptyOrganics)
-			send "tnt2*q l j"&#8&$target&"* tnl2*q l j"&#8&$planet~planetNum&"* "
-			SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-			SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
-			setTextTrigger success :orgSuccess "You load the "
-			setTextTrigger orgEmpty :tryEquipment "There aren't that many "
-			setTextTrigger fullFill :fullplanet "They don't have room for that many "
+			send "t*t2*q l j" #8 $target "* t*l2*q l j" #8 $planet~planetNum "* "
+			seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
+			seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
+			settexttrigger success :orgSuccess "You load the "
+			settexttrigger orgEmpty :tryEquipment "There aren't that many "
+			settexttrigger fullFill :fullplanet "They don't have room for that many "
 			pause
 		else
-		        goto :orgEmpty
-                end
+			goto :orgEmpty
+		end
 
 	:orgSuccess
-                add $totalOrg $player~total_holds
-                gosub :setWindows
+		add $totalOrg $player~total_holds
+		gosub :set_windows
 		goto :tryOrganics
 	:orgEmpty
 		killalltriggers
 	:tryEquipment
-		killAllTriggers
+		killalltriggers
 		if ($emptyEquipment)
-			SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-			SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
-			send "tnt3*q l j"&#8&$target&"* tnl3*q l j"&#8&$planet~planetNum&"* "
-			setTextTrigger success :equSuccess "You load the "
-			setTextTrigger emptyEmpty :emptyPlanet "There aren't that many "
-			setTextTrigger fullFill :fullplanet "They don't have room for that many "
+			seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
+			seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
+			send "t*t3*q l j" #8 $target "* t*l3*q l j" #8 $planet~planetNum "* "
+			settexttrigger success :equSuccess "You load the "
+			settexttrigger emptyEmpty :emptyPlanet "There aren't that many "
+			settexttrigger fullFill :fullplanet "They don't have room for that many "
 			pause
 		else
-		        goto :equEmpty
-                end
+			goto :equEmpty
+		end
 	:equSuccess
-                add $totalEqu $player~total_holds
-                gosub :setWindows
+		add $totalEqu $player~total_holds
+		gosub :set_windows
 		goto :tryEquipment
 	:equEmpty
 		killalltriggers
@@ -304,164 +304,163 @@ killalltriggers
 	:fullPlanet
 		killalltriggers
 		send "qqqqqq* l j"&#8&$target&"* "
-		if ($startingLocation = "Citadel")
+		if ($starting_location = "Citadel")
 			send "c "
 		end
-		setVar $SWITCHBOARD~message " Planet " & $target & " is full, stopping.*"
-		gosub :SWITCHBOARD~switchboard
+		setVar $switchboard~message " Planet " & $target & " is full, stopping.*"
+		gosub :switchboard~switchboard
 		halt
 
 	:emptyPlanet
 		killalltriggers
 		send "@"
-		SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-		SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
-		WaitFor "Average Interval Lag:"
-	         send "Q"
-		WaitFor "Command [TL"
+		seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
+		seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
+		waitfor "Average Interval Lag:"
+		send "Q"
+		waitfor "Command [TL"
 		goto :findplanet
 
 :nodets
 	send "QQ"
-	IF ($player~alignment < 1000)
-		setVar $SWITCHBOARD~message "Alignment less than 1000, can't refurb genesis torps and atomic dets*"
-		gosub :SWITCHBOARD~switchboard
-		HALT
+	if ($player~alignment < 1000)
+		setVar $switchboard~message "Alignment less than 1000, can't refurb genesis torps and atomic dets*"
+		gosub :switchboard~switchboard
+		halt
 	End
 
 	gosub :restock
 	goto  :findplanet
  
 :restock
-KillAllTriggers
-SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
-SetTextLineTrigger sdyes :sdyes "Commerce report for Stargate Alpha I:"
-SetTextLineTrigger sdno1  :sdno  "You have never visted sector"
-SetTextLineTrigger sdno2  :sdno  "I have no information about a port in that sector."
-setDelayTrigger sdno3 :sdno 10000
-#had to add WaitFors b/c AllKeys was bypassing display
-send "C"
-WaitFor "<Computer activated>"
-send "R"
-WaitFor "What sector is the port"
-send $om_sdloc "*"
-
-Pause
-Pause
+	killalltriggers
+	seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
+	seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
+	SetTextLineTrigger sdyes :sdyes "Commerce report for Stargate Alpha I:"
+	SetTextLineTrigger sdno1  :sdno  "You have never visted sector"
+	SetTextLineTrigger sdno2  :sdno  "I have no information about a port in that sector."
+	setDelayTrigger sdno3 :sdno 10000
+	#had to add waitfors b/c AllKeys was bypassing display
+	send "C"
+	waitfor "<Computer activated>"
+	send "R"
+	waitfor "What sector is the port"
+	send $om_sdloc "*"
+	pause
+	pause
 
 :sdno
 	send "q"
-	setVar $SWITCHBOARD~message "SD is not in that sector, or never been visited!! Product Pimp shutting down in starting sector.*"
-	gosub :SWITCHBOARD~switchboard
-	HALT
+	setVar $switchboard~message "SD is not in that sector, or never been visited!! product pimp shutting down in starting sector.*"
+	gosub :switchboard~switchboard
+	halt
 
 :sdyes
 	send "QL " & $target & "* T * T 1 * M * * * Q"
-	WaitFor "Command [TL"
+	waitfor "Command [TL"
 
 if ($om_redsector <> 0) and ($player~alignment < 1000)
         if ($player~unlimitedGame)
-		setVar $SWITCHBOARD~message "Running Product Pimp with unlimited turns and "&$player~credits&" credits left*"
-		gosub :SWITCHBOARD~switchboard
+		setVar $switchboard~message "Running product pimp with unlimited turns and "&$player~credits&" credits left*"
+		gosub :switchboard~switchboard
 	else
-		setVar $SWITCHBOARD~message "Running Product Pimp with "&$player~turns&" turns and "&$player~credits&" credits left*"
-		gosub :SWITCHBOARD~switchboard
+		setVar $switchboard~message "Running product pimp with "&$player~turns&" turns and "&$player~credits&" credits left*"
+		gosub :switchboard~switchboard
 	end
-	KillAlltriggers
-	SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-	SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
-	SetTextTrigger nofig :nofig "Do you want to make this jump blind?"
-	SetTextTrigger ready1 :ready1 "Locating beam pinpointed,"
-        SetTextTrigger nofuel2 :nofuel "You do not have enough Fuel Ore to make the jump"	
+	killalltriggers
+	seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
+	seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
+	settexttrigger nofig :nofig "Do you want to make this jump blind?"
+	settexttrigger ready1 :ready1 "Locating beam pinpointed,"
+        settexttrigger nofuel2 :nofuel "You do not have enough Fuel Ore to make the jump"	
 	send "m" $om_redsector "*y"
-	Pause
-        Pause
+	pause
+        pause
 End
-setVar $SWITCHBOARD~message "Running Product Pimp with "&$player~turns&" turns and "&$player~credits&" credits left*"
-gosub :SWITCHBOARD~switchboard
-SetTextTrigger nofig :nofig "Do you want to make this jump blind?"
-SetTextTrigger ready2 :ready2 "All Systems Ready, shall we engage?"
-SetTextTrigger nofuel1 :nofuel "You do not have enough Fuel Ore to make the jump"	
+setVar $switchboard~message "Running product pimp with "&$player~turns&" turns and "&$player~credits&" credits left*"
+gosub :switchboard~switchboard
+settexttrigger nofig :nofig "Do you want to make this jump blind?"
+settexttrigger ready2 :ready2 "All Systems Ready, shall we engage?"
+settexttrigger nofuel1 :nofuel "You do not have enough Fuel Ore to make the jump"	
 send "nsy"
-Pause
-Pause
+pause
+pause
 
 :nofig
-KillAlltriggers
-send "n"
-setVar $SWITCHBOARD~message "No fig at target sector. Shutting Down*"
-gosub :SWITCHBOARD~switchboard
-HALT
+	killalltriggers
+	send "n"
+	setVar $switchboard~message "No fig at target sector. Shutting Down*"
+	gosub :switchboard~switchboard
+	halt
 
 :nofuel
-KillAlltriggers
-setVar $SWITCHBOARD~message "No fuel for twarp. Shutting Down*"
-gosub :SWITCHBOARD~switchboard
-HALT
+	killalltriggers
+	setVar $switchboard~message "No fuel for twarp. Shutting Down*"
+	gosub :switchboard~switchboard
+	halt
 
 :ready1
-KillAlltriggers
-SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
-SetTextTrigger limpet :limpet "ort official runs up"
-SetTextTrigger buytorps :buytorps "<StarDock> Where to?"
-send "YNS P S"
-Pause
-Pause
+	killalltriggers
+	seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
+	seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
+	settexttrigger limpet :limpet "ort official runs up"
+	settexttrigger buytorps :buytorps "<StarDock> Where to?"
+	send "YNS P S"
+	pause
+	pause
 
 :ready2
-KillAllTriggers
-SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
-SetTextTrigger limpet :limpet "ort official runs up"
-SetTextTrigger buytorps :buytorps "<StarDock> Where to?"
-send "Y PS"
-Pause
-Pause
+	killalltriggers
+	seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
+	seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
+	settexttrigger limpet :limpet "ort official runs up"
+	settexttrigger buytorps :buytorps "<StarDock> Where to?"
+	send "Y PS"
+	pause
+	pause
 
 :limpet
-send "Y"
-Pause
+	send "Y"
+	pause
 
 :buytorps
-KillAlltriggers
-SetEventTrigger 	Discod1 	:Discod     	"CONNECTION LOST"
-SetEventTrigger		Discod2		:Discod     	"Connections have been temporarily disabled."
-SetTextTrigger torps :torps "How many Genesis Torpedoes do you want"
-SetTextTrigger dets  :dets  "How many Atomic Detonators do you want"
-send "HT"
-Pause
-Pause
+	killalltriggers
+	seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
+	seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
+	settexttrigger torps :torps "How many Genesis Torpedoes do you want"
+	settexttrigger dets  :dets  "How many Atomic Detonators do you want"
+	send "HT"
+	pause
+	pause
 
 :torps 
-GetWord CURRENTLINE $numtorps 9
-StripText $numtorps ")"
-send $numtorps & "*"
-send "A"
-Pause
+	GetWord CURRENTLINE $numtorps 9
+	StripText $numtorps ")"
+	send $numtorps & "*"
+	send "A"
+	pause
 
 :dets 
-GetWord CURRENTLINE $numdets 9
-StripText $numdets ")"
-send $numdets & "*"
-send "Q Q M " & $player~current_sector & " * Y"
-SetTextTrigger nofig :nofig "Do you want to make this jump blind?"
-SetTextTrigger ready3 :ready3 "Locating beam pinpointed,"
-SetTextTrigger nofuel :nofuel "You do not have enough Fuel Ore to make the jump"
-Pause
-Pause
+	GetWord CURRENTLINE $numdets 9
+	StripText $numdets ")"
+	send $numdets & "*"
+	send "Q Q M " & $player~current_sector & " * Y"
+	settexttrigger nofig :nofig "Do you want to make this jump blind?"
+	settexttrigger ready3 :ready3 "Locating beam pinpointed,"
+	settexttrigger nofuel :nofuel "You do not have enough Fuel Ore to make the jump"
+	pause
+	pause
 
 :ready3
-send "Y"
-WaitFor "Command [TL"
-send "l "&$target&"* t n l 1* q q * j y * "
-Return
+	send "Y"
+	waitfor "Command [TL"
+	send "l "&$target&"* t n l 1* q q * j y * "
+	Return
 
 
 :planetfull
-    setVar $SWITCHBOARD~message "Planet is full. Script Halting.*"
-	gosub :SWITCHBOARD~switchboard
+    setVar $switchboard~message "Planet is full. script halting.*"
+	gosub :switchboard~switchboard
     send "QQ*"
 
 
@@ -474,7 +473,7 @@ Return
 
 
 
-:setWindows
+:set_windows
 	if ($player~unlimitedGame)
 		setVar $window_content "Planet fuel:  "&$totalfuel&" out of "&$totalfuelmax&"*Planet Org:   "&$totalorg&" out of "&$totalorgmax&"*Planet Equip: "&$totalEqu&" out of "&$totalequmax&"*Cash:         "&$player~credits&"   Genesis Torps:  "&$player~genesis&"*Fighters:     "&$player~fighters&"   Atomic Dets:    "&$player~atomic&"*Turns:     Unlimited*"&$stripables&" out of "&$totalPlanets&" planets have had product on them.*"
 	else
@@ -486,12 +485,12 @@ Return
 return	
 
 
-	:Discod
-	   	setVar $TagLine				"[Product Pimp]"
-		setVar $TagLineB			"[Product Pimp]"
-		killAllTriggers
-	   	Echo "**" & ANSI_14 & $TagLineB & ANSI_15 & " Disconnected **"
-	   	:Disco_Test
+:discod
+	setVar $TagLine				"[product pimp]"
+	setVar $TagLineB			"[product pimp]"
+	killalltriggers
+   	Echo "**" & ANSI_14 & $TagLineB & ANSI_15 & " Disconnected **"
+   	:Disco_Test
 		if (CONNECTED <> TRUE)
 			setDelayTrigger		Emancipate_CPU		:Emancipate_CPU 3000
 			Echo "**" & ANSI_14 & $TagLineB & ANSI_15 & " Auto Land & Resume Initiated - Awaiting Connection!**"
@@ -503,8 +502,8 @@ return
 		setDelayTrigger		WaitingABit		:WaitingABit	3000
 		Echo "**" & ANSI_14 & $TagLineB & ANSI_15 & " Connected - Waiting For Command Prompt!**"
 		pause
-		:WaitingABit
-		killAllTriggers
+	:WaitingABit
+		killalltriggers
 		gosub :player~quikstats
 		if ($player~current_prompt = "Command")
 			send " L Z" & #8 & $target & "*  *  J  C  *  "
@@ -513,41 +512,39 @@ return
 			setDelayTrigger		TestConn	:TestConn		3000
 			pause
 			:TestConn
-				killAllTriggers
-				if (CONNECTED = FALSE)
+				killalltriggers
+				if (CONNECTED = false)
 					goto :Disco_Test
 				else
 					send ("'{" &$switchboard~bot_name& "} - " & $TagLineB & " Problem Detected Unable to Land!*")
 					halt
 				end
 			:NotLanded
-				killAllTriggers
+				killalltriggers
 				send ("'{" &$switchboard~bot_name& "} - Boton Unable To Land, Check my TA.*")
 				send ("'{" & $switchboard~bot_name & "} "&$TagLineB&" - Unable To Land After Reconnect,Check My TA!**")
 				halt
 			:Landed
-				killAllTriggers
+				killalltriggers
 				send ("'{" & $switchboard~bot_name & "} "&$TagLineB&" - Restarting!**")
-		    	waitfor "Message sent on sub-space channel"
+				waitfor "Message sent on sub-space channel"
 				goto :inac
 		elseif ($player~current_prompt = "Planet")
-	   		send ("  q q q q q  * * '" & $TagLineB & " Attempting to Reach Correct Prompt...*")
+				send ("  q q q q q  * * '" & $TagLineB & " Attempting to Reach Correct Prompt...*")
 			setTextLineTrigger	EMQ_COMPLETE		:EMQ_DELAY "Attempting to Reach Correct Prompt..."
 			setDelayTrigger 	EMQ_DELAY		:EMQ_DELAY 3000
 			pause
-			
-			
 		elseif ($player~current_prompt = "Citadel")
 			send ("'{" & $switchboard~bot_name & "} "&$TagLineB&" - Restarting!**")
 			waitfor "Message sent on sub-space channel"
-	   		goto :inac
-	   	else
-	   		send (" p d 0* 0* 0* * *** * c q q q q q z 2 2 c q * z * *** * * '" & $TagLineB & " Attempting to Reach Correct Prompt...*")
+				goto :inac
+			else
+				send (" p d 0* 0* 0* * *** * c q q q q q z 2 2 c q * z * *** * * '" & $TagLineB & " Attempting to Reach Correct Prompt...*")
 			setTextLineTrigger	EMQ_COMPLETE		:EMQ_DELAY "Attempting to Reach Correct Prompt..."
 			setDelayTrigger 	EMQ_DELAY		:EMQ_DELAY 3000
 			pause
 			:EMQ_DELAY
-				killAllTriggers
+				killalltriggers
 				goto :Disco_Test
 		end
 
