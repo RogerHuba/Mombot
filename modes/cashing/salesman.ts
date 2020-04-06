@@ -92,6 +92,13 @@
 		setVar $sellfuel FALSE
 	end
 
+	getWordPos " "&$bot~user_command_line&" " $pos "mines"
+	if ($pos > 0)
+		setVar $mines TRUE
+	else
+		setVar $mines FALSE
+	end
+
 	getWordPos $bot~user_command_line $pos "rob"
 	if ($pos > 0)
 		setVar $do_rob TRUE
@@ -412,6 +419,9 @@
 					gosub :PLAYER~quikstats
 					gosub :PLANET~landOnPlanetEnterCitadel
 				end
+				if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($mines = true))
+					gosub :doMines
+				end
 				if ($do_rob = true)
 					gosub :rob
 				end
@@ -546,6 +556,40 @@
 	end
 	return
 # ============================== END ROB (ROB) SUB ==============================
+
+:doMines
+	setVar $BOT~command "deploy"
+	setVar $BOT~user_command_line " mines 3"
+	setvar $bot~parm1 "mines"
+	setvar $bot~parm2 "2"
+
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	saveVar $bot~parm1 
+
+	load "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
+	setEventTrigger        minesend        :minesend "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
+	setdelaytrigger        minetime        :minetime  10000
+	pause
+
+	:minetime
+		killtrigger minesend
+		stop "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
+		gosub :player~quikstats
+	:minesend
+		killtrigger minetime
+		gosub :player~quikstats
+		if ($player~current_prompt <> "Citadel")
+			send " q q q * l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			gosub :player~quikstats
+			if ($player~current_prompt <> "Citadel")
+				setvar $switchboard~message "Not at correct prompt after mine deploy!  Maybe planet is gone?  Check please!*"
+				gosub :switchboard~switchboard
+				gosub :navigate~callsaveme
+			end
+		end
+
+return
 
 
 #INCLUDES:

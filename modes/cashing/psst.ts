@@ -13,7 +13,7 @@
 			setVar $focus $nearest[$i]
 			getSectorParameter $focus "BUSTED" $isBusted
 			getSectorParameter $focus "FIGSEC" $isFigged
-			if (($isFigged = TRUE) AND ($isBusted <> TRUE) AND ((PORT.class[$focus] <> 0) and (PORT.EXISTS[$focus] = TRUE) AND (PORT.EQUIP[$focus] > 0) AND (PORT.BUYEQUIP[$focus] = TRUE)) AND ($focus <> $ship2Sector) AND ($focus <> $ship1Sector))
+			if (($isFigged = TRUE) AND ($isBusted <> TRUE) AND ((PORT.class[$focus] > 0) and (PORT.EXISTS[$focus] = TRUE) AND (PORT.EQUIP[$focus] > 0) AND (PORT.BUYEQUIP[$focus] = TRUE)) AND ($focus <> $ship2Sector) AND ($focus <> $ship1Sector))
 				# found a fig
 				getDistance $distanceThere $ship2Sector $focus
 				getDistance $distanceBack $focus $ship2Sector
@@ -81,7 +81,7 @@
 			setVar $focus $nearest[$i]
 			getSectorParameter $focus "BUSTED" $isBusted
 			getSectorParameter $focus "FIGSEC" $isFigged
-			if (($isFigged = TRUE) AND ($isBusted <> TRUE) AND ((PORT.class[$focus] <> 0) and (PORT.EXISTS[$focus] = TRUE) AND (PORT.EQUIP[$focus] > 0) AND (PORT.BUYEQUIP[$focus] = TRUE)) AND ($focus <> $ship1Sector) AND ($focus <> $ship2Sector))
+			if (($isFigged = TRUE) AND ($isBusted <> TRUE) AND ((PORT.class[$focus] > 0) and (PORT.EXISTS[$focus] = TRUE) AND (PORT.EQUIP[$focus] > 0) AND (PORT.BUYEQUIP[$focus] = TRUE)) AND ($focus <> $ship1Sector) AND ($focus <> $ship2Sector))
 				getDistance $distanceThere $ship1Sector $focus
 				getDistance $distanceBack $focus $ship1Sector
 				if ($distanceThere < 0)
