@@ -4,7 +4,7 @@ reqRecording
 # Authors           : Mind Dagger / The Bounty Hunter / Lonestar / Hammer
 # Contributions/QA              : Misbehavin / DaCreeper / The Butcher
 # Description           : Allows Corpies to use you while AFK and a Self Helper
-# Credits           : Oz, Zentock, SupG, Dynarri, Cherokee, Alexio, Xide, Phx, Rincrast, Voltron, Traitor, Parrothead, PSI, Elder Prophet
+# Credits           : Oz, Zentock, SupG, Dynarri, Cherokee, Alexio, Xide, Phx, Rincrast, Voltron, Traitor, Parrothead, PSI, Elder Prophet, Caretaker
 
 setVar $bot~major_version   "4"
 setVar $bot~minor_version   "2beta"
