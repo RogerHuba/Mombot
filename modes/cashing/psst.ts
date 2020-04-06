@@ -163,7 +163,7 @@ return
 					setVar $upgrade ($steal - $equipAtPort[$ship1Sector])
 					divide $upgrade 10
 					add $upgrade 4
-					setVar $send $send & "o 3" & $upgrade & "* * "
+					setVar $send $send & "o z3" & $upgrade & "* * "
 					add $equipAtPort[$ship1Sector] ($upgrade * 10)
 				end
  				#setVar $send $send & "p r * s z 3 " & $steal & "* x    "
@@ -190,7 +190,7 @@ return
 					setVar $upgrade ($steal - $equipAtPort[$ship2Sector])
 					divide $upgrade 10
 					add $upgrade 4
-					setVar $send $send & "o 3" & $upgrade & "* * "
+					setVar $send $send & "o z3" & $upgrade & "* * "
 					add $equipAtPort[$ship2Sector] ($upgrade * 10)
 				end
  				setVar $send $send & "p r* s   z3  " & $steal & "*  x    "
