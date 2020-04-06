@@ -159,6 +159,11 @@
 		setVar $SWITCHBOARD~message "Travelling Salesman CIM Port Data Complete - Comms Back On*"
 		gosub :SWITCHBOARD~switchboard
 	end
+	gosub :player~quikstats
+	if ($player~limpets <= 3)
+		gosub :attempt_refurb
+	end
+
 	while (TRUE)
 		:inac
 		if (($PLAYER~unlimitedGame = FALSE) AND ($PLAYER~TURNS <= $BOT~bot_turn_limit))
@@ -422,6 +427,10 @@
 				if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($mines = true))
 					gosub :player~quikstats
 					gosub :doMines
+					gosub :player~quikstats
+					if ($player~limpets <= 3)
+						gosub :attempt_refurb
+					end
 				end
 				if ($do_rob = true)
 					gosub :rob
@@ -591,6 +600,342 @@
 		end
 
 return
+
+:attempt_refurb
+	setVar $limpetCashNeeded ((($maxMines-$player~limpets)*$game~limpet_cost)+$game~limpet_removal_cost)
+	setVar $armidCashNeeded ((($maxMines-$player~armids)*$game~armid_cost))
+	setVar $cashNeeded ($limpetCashNeeded+$armidCashNeeded)
+	setVar $furbing TRUE
+	if ($cashNeeded > $player~credits)
+		send "D" 
+		waitOn "Citadel treasury contains "
+		getWord CURRENTLINE $planet~CITADELCash 4
+		stripText $planet~CITADELCash ","
+		if ($planet~CITADELCash < $cashNeeded)
+			send "'{" & $bot~bot_name & "} - Not enough cash for mine refurbs in treasury or on hand.*"	
+			halt
+		end
+		send "t f "&($cashNeeded-$player~credits)&"* "
+	end
+	# check adj's for Dock.. if present, then we don't need a jump sector.
+	setVar $i 1
+	setVar $START_SECTOR $player~current_sector
+	setVar $WeAreAdjDock FALSE
+	while ($i <= SECTOR.WARPCOUNT[$START_SECTOR])
+		setVar $adj_start SECTOR.WARPS[$START_SECTOR][$i]
+		if ($adj_start = $map~stardock)
+			setVar $WeAreAdjDock TRUE
+		end
+		add $i 1
+	end
+
+	if (($player~alignment < 1000) AND ($WeAreAdjDock = FALSE))
+		setVar $player~RED_adj 0
+		setvar $player~target $map~stardock
+		gosub :player~findjumpsector
+		if ($player~RED_adj = 0)
+			waitfor "Command [TL="
+			send "'{" & $bot~bot_name & "} - Cannot Find Jump Sector Adjacent Dock**"
+			halt
+		end
+	end
+
+	if ($player~alignment >= 1000)
+		if ($WeAreAdjDock)
+			send "^F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
+		else
+			send "^F" & $START_SECTOR & "*" & $map~stardock & "*F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
+		end
+	else
+		if ($WeAreAdjDock)
+			send "^F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
+		else
+			send "^F" & $START_SECTOR & "*" & $player~RED_adj & "*F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
+		end
+	end
+	setTextLineTrigger noJoy :noJoy "*** Error - No route within"
+	setTextTrigger cont :cont "(?="
+	pause
+
+	:noJoy
+		killAllTriggers
+		send "'{" $bot~bot_name "} - Cannot Find Path to StarDock!**"
+		halt
+	:cont
+		killAllTriggers
+		setDelayTrigger Latency_Delay		:Latency_Delay 500
+		pause
+
+		:Latency_Delay
+
+		Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
+		if (($player~alignment >= 1000) OR ($WeAreAdjDock))
+			getdistance $dist1 $START_SECTOR $map~stardock
+		else
+			getdistance $dist1 $START_SECTOR $player~RED_adj
+		end
+
+		if ($dist1 <= 0)
+			send "'{" $bot~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Course to Dock**"
+			halt
+		end
+
+		getdistance $dist2 $map~stardock $START_SECTOR
+		if ($dist2 <= 0)
+			send "'{" $bot~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Return Course From Dock**"
+			halt
+		end
+
+		setVar $ore_req (($dist1 + $dist2) * 3)
+
+		if ($player~ore_holds < $ore_req)
+			send "'{" $bot~bot_name "} - Not Enough ORE In Holds To Make Round Trip**"
+			halt
+		end
+
+		if ($player~twarp_type = "No")
+			send "'{" $bot~bot_name "} - Must Have Twarp 1 or 2**"
+			halt
+		end
+
+		if ($player~unlimitedGame = 0)
+			gosub :TurnsRequired
+			if ($player~turnsRequired > $player~turns)
+				send "'{" $bot~bot_name "} - Not Enough Turns. " & ANSI_12 & $player~turnsRequired & ANSI_15 & ", Required**"
+				halt
+			elseif ($player~turnsRequired <= $player~turns)
+				setVar $tmp ($player~turns - $player~turnsRequired)
+				if ($tmp <= $bot~bot_turn_limit)
+					send "'{" $bot~bot_name "} - Proceeding Will Leave Fewer Than " & $bot~bot_turn_limit & " Turns!**"
+					halt
+				end
+			end
+		end
+
+	send " C R " & $map~stardock & "*Q "
+	setTextLineTrigger itsalive :itsalive "Items     Status  Trading % of max OnBoard"
+	setTextLineTrigger nosoupforme :nosoupforme "I have no information about a port in that sector"
+	pause
+	:nosoupforme
+		killAllTriggers
+		send "'{" $bot~bot_name "} " & $TagLineB & " - StarDock appears to have been Blown Up!**"
+		halt
+	:itsalive
+		killAllTriggers
+		waitfor "(?="
+		setVar $msg ""
+		if (($player~alignment >= 1000) AND ($WeAreAdjDock = FALSE))
+			setVar $player~warpto $map~stardock
+			gosub :DoTwarp
+		elseif (($WeAreAdjDock = FALSE) AND ($player~RED_adj <> 0))
+			setVar $player~warpto $player~RED_adj
+			gosub :DoTwarp
+		else
+			send " m " & $map~stardock & "*  *  P  S G Y G Q "
+		end
+		if ($msg = "")
+			waitfor "You leave the Galactic Bank."
+		else
+			send "'{" $bot~bot_name "} - Unknown Problem Detected. Check TA!**"
+			halt
+		end
+		gosub :player~quikstats
+
+		setVar $_Limps "Max"
+		setVar $_Mines "Max"
+		gosub :DoPurchases
+		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet~planet & "* p  s  s * * c *"
+		gosub :player~quikstats
+		if ($player~current_sector = $map~stardock)
+			send "'{" $bot~bot_name "} - Twarp Error, Should be Hiding on Dock!**"
+			halt
+		end
+		send "q tnt1* c "
+	
+
+return
+
+:DoTwarp
+	setVar $msg ""
+	setvar $paused false
+	setvar $photoned false
+	if ($player~warpto > 0)
+		send "q t * t 1*  q * * mz" & $player~warpto "*"
+		setTextTrigger there        :adj_warp "You are already in that sector!"
+		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $player~warpto & " "
+		setTextTrigger locking      :locking "Do you want to engage the TransWarp drive?"
+		setTextTrigger igd          :twarpIgd "An Interdictor Generator in this sector holds you fast!"
+		setTextTrigger noturns      :twarpPhotoned "Your ship was hit by a Photon and has been disabled"
+		setTextTrigger noroute      :twarpNoRoute "Do you really want to warp there? (Y/N)"
+		pause
+		:adj_warp
+			killAllTriggers
+			send "z*"
+			goto :twarp_adj
+		:locking
+			killAllTriggers
+			send "y"
+			setTextLineTrigger twarp_lock 		:twarp_lock "TransWarp Locked"
+			setTextLineTrigger no_twrp_lock 	:no_twarp_lock "No locating beam found"
+			setTextLineTrigger twarp_adj 		:twarp_adj "<Set NavPoint>"
+			setTextLineTrigger no_fuel 		:itwarpNoFuel "You do not have enough Fuel Ore"
+			pause
+		:twarpNoFuel
+			killAllTriggers
+			setVar $msg "Not enough fuel for T-warp."
+			goto :twarpDone
+
+		:twarp_adj
+			killAllTriggers
+			send " * p s"
+			goto :twarpDone
+
+		:twarpNoRoute
+			killAllTriggers
+			send "n* z* "
+			setVar $msg "No route available!"
+			goto :twarpDone
+
+		:no_twarp_lock
+			killAllTriggers
+			send "n*zn"
+			send "l " & #8 & $planet~planet "*c"
+			setSectorParameter $player~warpto "FIGSEC" FALSE
+			setVar $temp " "&$player~warpto&" "
+			replaceText $database $temp " "
+			subtract $database_count 1
+			goto :select_boomsec
+
+		:twarpIgd
+			killAllTriggers
+			setVar $msg "My ship is being held by Interdictor!"
+			goto :twarpDone
+
+		:twarpPhotoned
+			killAllTriggers
+			setVar $msg "I have been photoned and can not T-warp!"
+			send "l " & #8 & $planet~planet "* j c *   "
+			setvar $photoned true
+			goto :twarpDone
+
+		:itwarpnofuel
+			killAllTriggers
+			setVar $msg "I have no fuel!"
+			send "l " & #8 & $planet~planet "* j c *   "
+			goto :twarpDone
+
+		:twarp_lock
+			KillAlltriggers
+			if ($player~alignment >= 1000)
+				if ($furbing)
+					setVar $str "y * * p s g y g q " 
+				else
+					setVar $str "y * *  " 
+				end
+				send $str
+			else
+				if ($furbing)
+					setVar $str "y  *  *  m " & $map~stardock & " *  *  p s g y g q "
+				else
+					setVar $str "y * *  " 
+				end
+				send $str
+			end
+		:twarpDone
+			if ($msg <> "")
+				send "'{" $bot~bot_name "} Twarp Error - " & $msg & "**"
+				setvar $paused true
+			end
+	end
+	return
+
+:bwarp
+
+	killAllTriggers
+	send "b" $player~warpto "*"
+	setTextTrigger go :go5 "TransWarp Locked"
+	setTextTrigger no :no5 "No locating beam found"
+	goSub :delayTrigger
+	pause
+
+:no5
+	killAllTriggers
+	send "n "
+	waitfor "Transporter shutting down."
+	setVar $FIGHTER_GRID[$player~warpto] 0
+	goto :select_boomsec
+
+:go5
+	killAllTriggers
+	send "y z * "
+	return
+
+
+
+:TurnsRequired
+	send "i"
+	setTextLineTrigger TurnsRequired_TPW	:TurnsRequired_TPW "Turns to Warp  : "
+	pause
+
+	:TurnsRequired_TPW
+	killAllTriggers
+	getWord CURRENTLINE $PLAYER~TURNSRequired_TPW 5
+
+	if ($player~RED_adj > 0)
+		# twarp to jmp sector, then into SD sect, then twarp home
+		setVar $PLAYER~TURNSRequired_temp ($PLAYER~TURNSRequired_TPW * 3)
+		if ($_Tow > 0)
+			# 2 Turns for exporting into other ship and back again
+			add $PLAYER~TURNSRequired_temp 2
+			# 3 Turns for initial Port then x into other ship, port & shop, then x and report
+			#   b4 heading home
+			add $PLAYER~TURNSRequired_temp 3
+		else
+			add $PLAYER~TURNSRequired_temp 1
+		end
+	else
+		setVar $PLAYER~TURNSRequired_temp ($PLAYER~TURNSRequired_TPW * 2)
+		# 1 Turn to port at dock
+		add $PLAYER~TURNSRequired_temp 1
+	end
+
+	setVar $PLAYER~TURNSRequired $PLAYER~TURNSRequired_temp
+	return
+
+
+:callSaveMe
+	send "q q q q * '"&$SWITCHBOARD~bot_name&" call*"
+	halt
+
+:DoPurchases
+	send "h "
+	waitfor "<Hardware Emporium>"
+	#=============================================== PURCHASE LIMPS
+	if ($_Limps  <> "")
+		send "L "
+		waitfor "How many mines do you want"
+		if ($_Limps  = "Max")
+			getText CURRENTLINE $buy "(Max" ")"
+			send $buy & "* "
+		else
+			send $buy $_Limps & "* "
+		end
+		waitfor "<Hardware Emporium>"
+	end
+	#=============================================== PURCHASE ARMIDS
+	if ($_Mines  <> "")
+		send "M "
+		setVar $buy 0
+		waitfor "How many mines do you"
+		if ($_Mines  = "Max")
+			getText CURRENTLINE $buy "(Max" ")"
+			send $buy & "* "
+		else
+			send $_Mines & "* "
+		end
+		waitfor "<Hardware Emporium>"
+	end
+	return
 
 
 #INCLUDES:
