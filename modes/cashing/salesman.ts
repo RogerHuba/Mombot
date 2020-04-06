@@ -427,8 +427,9 @@
 				if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($mines = true))
 					gosub :player~quikstats
 					gosub :doMines
+					send "s* "
 					gosub :player~quikstats
-					if ($player~limpets <= 3)
+					if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] > 0) and ($player~limpets <= 3))
 						gosub :attempt_refurb
 					end
 				end
