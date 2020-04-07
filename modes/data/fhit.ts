@@ -146,7 +146,7 @@ while ($loop = 1)
 # check for corp  - i.e. we won't maek this up in future
 		setVar $player~corp 1
 		setvar $alien false
-		getText $bot~ansi_last_fighter_attack $alien_check ": " "'s"
+		getText currentansiline $alien_check ": " "'s"
 		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 		if ($pos > 0)
 			setvar $alien true
@@ -427,6 +427,8 @@ return
 	end
 	if ($mode = "pdrop")
 		if ($foundSecs[$x][1] <> 0)
+			setdelaytrigger waithere :nowdrop (($avgSec*1000)-500)
+			pause
 			send "p" $foundSecs[$x][1] "*  y  "
 		end
 	end
