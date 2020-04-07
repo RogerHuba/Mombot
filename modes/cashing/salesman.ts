@@ -9,6 +9,9 @@
 	loadVar $bot~folder
 	setVar  $bot~no_credits_file $bot~folder&"/No_Credits.list"
 	savevar $bot~no_credits_file
+	loadvar $game~LIMPET_COST
+	loadvar $game~ARMID_COST
+	loadVar $game~LIMPET_REMOVAL_COST
 
 
 	setVar $BOT~help[1]  $BOT~tab&"Visits all ports in grid and buys fuel"
@@ -603,6 +606,7 @@
 return
 
 :attempt_refurb
+	send  "q t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* t nt 1* c "
 	setVar $limpetCashNeeded ((($maxMines-$player~limpets)*$game~limpet_cost)+$game~limpet_removal_cost)
 	setVar $armidCashNeeded ((($maxMines-$player~armids)*$game~armid_cost))
 	setVar $cashNeeded ($limpetCashNeeded+$armidCashNeeded)
