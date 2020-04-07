@@ -452,7 +452,7 @@ return
 		gosub :player~quikstats
 		if (($foundSecs[$lucky][1] <> $player~current_sector) and ($foundSecs[$x][1] <> 0))
 			send "'About to drop on sector "&$foundSecs[$lucky][1]&" in "&$avgSec&" seconds..*"
-			setdelaytrigger waithere :nowdrop (($avgSec*1000)-500)
+			setdelaytrigger waithere :nowdrop ($avgSec*1000)
 			pause
 			:nowdrop
 			send "p" $foundSecs[$lucky][1] "*  y  "
