@@ -27,7 +27,30 @@
 
 
 gosub :BOT~loadVars
+loadvar $SHIP~cap_file
+loadvar $game~internalAliens
+loadvar $game~internalFerrengi
+loadvar $game~limpet_cost
+loadvar $game~limpet_removal_cost
+loadvar $game~armid_cost
+loadvar $game~photon_cost
+loadvar $game~DISRUPTOR_COST
+loadvar $bot~username
+lowercase $bot~username
+loadvar $game~MULTIPLE_PHOTONS
+loadvar $bot~folder
 
+gosub :combat~init 
+
+fileExists $SHIP~cap_file_chk $SHIP~cap_file
+if ($SHIP~cap_file_chk <> TRUE)
+	gosub :SHIP~getShipCapStats
+else
+	gosub :ship~loadShipInfo
+end
+
+gosub :SHIP~getShipStats
+gosub :player~quikstats
 
 setVar $BOT~help[1]  $BOT~tab&" Track Fig hits and do something useful"
 setVar $BOT~help[2]  $BOT~tab&"        "
@@ -93,6 +116,17 @@ end
 getWordPos $bot~user_command_line $pos "pdrop"
 if ($pos > 0)
 	setVar $mode "pdrop"
+end
+if ($mode = "pdrop")
+	if ($player~current_prompt <> "Citadel")
+		setvar $switchboard~message "Must be in citadel for pdrop mode.*"
+		gosub :switchboard~switchboard
+		halt
+	end
+	send "q"
+	gosub :PLANET~getPlanetInfo	
+	send "t*t1* c "
+	setvar $call~starting_planet $planet~planet
 end
 
 # Average Time Variables - anything outside of this  is probably a re-start or some other issue
@@ -456,9 +490,31 @@ return
 			pause
 			:nowdrop
 			send "p" $foundSecs[$lucky][1] "*  y  "
+			gosub :player~quikstats
+
+			gosub :sector~getSectorData
+			setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
+			if (($planet_count = 1) and ($overide = false))
+				setvar $one_planet true
+				setvar $player~override true
+			else
+				setvar $player~override false
+			end
+			if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
+				if ($switch)
+					send " e y " 
+				end
+				if ($capture = true)
+					gosub :combat~fastCapture
+					send " l " $PLANET~PLANET " * n n * j m * * * j c *  "
+					gosub :player~quikstats
+				else
+					gosub :combat~fastCitadelAttack
+				end
+
+			end
 		end
 	end
-	return
 return
 
 :addClosestSix
@@ -481,3 +537,17 @@ include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\combat\holokill\combat"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"
+include "source\bot_includes\ship\getshipcapstats\ship"
+include "source\bot_includes\ship\loadshipinfo\ship"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\sector\getsectordata\sector"
+
