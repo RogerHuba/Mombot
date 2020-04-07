@@ -300,7 +300,7 @@ end
 			if ($distAvg[$player~corp] = 0)
 				setVar $mindist 1
 			else
-				setVar $mindist $distAvg[$player~corp]
+				setVar $mindist ($distAvg[$player~corp]-1)
 			end
 			
 			if ($dist >= $mindist)
@@ -484,7 +484,7 @@ return
 	getrnd $lucky 1 $foundcount
 	if ($mode = "pdrop")
 		gosub :player~quikstats
-		if (($foundSecs[$lucky][1] <> $player~current_sector) and ($foundSecs[$x][1] <> 0))
+		if (($foundSecs[$lucky][1] <> $player~current_sector) and ($foundSecs[$lucky][1] <> 0))
 			send "'About to drop on sector "&$foundSecs[$lucky][1]&" in "&$avgSec&" seconds..*"
 			setdelaytrigger waithere :nowdrop ($avgSec*1000)
 			pause
