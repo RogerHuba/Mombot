@@ -484,6 +484,9 @@ return
 	getrnd $lucky 1 $foundcount
 	if ($mode = "pdrop")
 		gosub :player~quikstats
+		if ($avgsec = 0)
+			setvar $avgsec 1
+		end
 		if (($foundSecs[$lucky][1] <> $player~current_sector) and ($foundSecs[$lucky][1] <> 0))
 			send "'About to drop on sector "&$foundSecs[$lucky][1]&" in "&$avgSec&" seconds..*"
 			setdelaytrigger waithere :nowdrop ($avgSec*1000)
