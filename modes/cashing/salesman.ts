@@ -427,12 +427,14 @@
 					gosub :PLAYER~quikstats
 					gosub :PLANET~landOnPlanetEnterCitadel
 				end
-				if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($mines = true))
-					gosub :player~quikstats
+				gosub :player~quikstats
+				if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and (($player~limpets >= 3) and ($player~armids <= 3)) and ($mines = true))
 					gosub :doMines
+				end
+				if ($mines)
 					send "s* "
 					gosub :player~quikstats
-					if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] > 0) and ($player~limpets <= 3))
+					if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] > 0) and (($player~limpets <= 5) or ($player~armids <= 5)))
 						gosub :attempt_refurb
 					end
 				end
@@ -607,6 +609,7 @@ return
 
 :attempt_refurb
 	send  "q t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* t nt 1* c "
+	gosub :player~quikstats
 	setVar $limpetCashNeeded ((($maxMines-$player~limpets)*$game~limpet_cost)+$game~limpet_removal_cost)
 	setVar $armidCashNeeded ((($maxMines-$player~armids)*$game~armid_cost))
 	setVar $cashNeeded ($limpetCashNeeded+$armidCashNeeded)
