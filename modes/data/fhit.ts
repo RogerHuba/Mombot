@@ -426,7 +426,7 @@ return
 		add $x 1
 	end
 	if ($mode = "pdrop")
-		if ($foundSecs[$x][1] <> currentsector)
+		if (($foundSecs[$x][1] <> currentsector) and ($foundSecs[$x][1] <> 0))
 			send "'About to drop on sector "&$foundSecs[$x][1]&" in "&$avgSec&" seconds..*"
 			setdelaytrigger waithere :nowdrop (($avgSec*1000)-500)
 			pause
