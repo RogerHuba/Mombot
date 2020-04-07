@@ -426,7 +426,8 @@ return
 		add $x 1
 	end
 	if ($mode = "pdrop")
-		if (($foundSecs[$x][1] <> currentsector) and ($foundSecs[$x][1] <> 0))
+		gosub :player~quikstats
+		if (($foundSecs[$x][1] <> $player~current_sector) and ($foundSecs[$x][1] <> 0))
 			send "'About to drop on sector "&$foundSecs[$x][1]&" in "&$avgSec&" seconds..*"
 			setdelaytrigger waithere :nowdrop (($avgSec*1000)-500)
 			pause
@@ -457,3 +458,4 @@ return
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
