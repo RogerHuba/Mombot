@@ -428,7 +428,7 @@
 					gosub :PLANET~landOnPlanetEnterCitadel
 				end
 				gosub :player~quikstats
-				if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and (($player~limpets >= 3) and ($player~armids <= 3)) and ($mines = true))
+				if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and (($player~limpets >= 3) and ($player~armids >= 3)) and ($mines = true))
 					gosub :doMines
 				end
 				if ($mines)
