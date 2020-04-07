@@ -491,7 +491,7 @@ return
 			:nowdrop
 			send "p" $foundSecs[$lucky][1] "*  y  "
 			gosub :player~quikstats
-
+			setvar $player~startinglocation "Citadel"
 			gosub :sector~getSectorData
 			setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
 			if (($planet_count = 1) and ($overide = false))
