@@ -489,7 +489,10 @@ return
 		end
 		if (($foundSecs[$lucky][1] <> $player~current_sector) and ($foundSecs[$lucky][1] <> 0))
 			send "'About to drop on sector "&$foundSecs[$lucky][1]&" in "&$avgSec&" seconds..*"
+			killalltriggers
 			setdelaytrigger waithere :nowdrop ($avgSec*1000)
+			setTextLineTrigger r1 :r1 "Report Sector "
+			setTextLineTrigger r2 :r2 "Your fighters in sectosr "
 			pause
 			:nowdrop
 			send "p" $foundSecs[$lucky][1] "*  y  "
