@@ -437,7 +437,7 @@ return
 	setvar $memory " "
 	while ($x < $foundcount)
 		setVar $out $out & " " & $foundSecs[$x][1] & "(" &  $foundSecs[$x][2] & ")"
-		setvar $memory $memory&" "$foundSecs[$x][1]&" "
+		setvar $memory $memory&" "&$foundSecs[$x][1]&" "
 		add $x 1
 	end
 	setvar $switchboard~message $out&"**"
