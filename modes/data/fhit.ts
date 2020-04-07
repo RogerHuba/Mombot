@@ -208,6 +208,14 @@ while ($loop = 1)
 		goto :theend
 	:r2
 		killAllTriggers
+		getText currentansiline $alien_check ": " "'s"
+		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+		if ($pos > 0)
+			setvar $alien true
+			setTextLineTrigger r1 :r1 "Report Sector "
+			setTextLineTrigger r2 :r2 "Your fighters in sectosr "
+			pause
+		end
 		getWord CURRENTLINE $sec 5
 		goSub :doReport
 		goto :theend
@@ -217,6 +225,12 @@ end
 
 
 :doReport
+	getwordpos $memory $pos " "&$sec&" "
+	setvar $target_was_predicted false
+	if ($pos > 0)
+		setvar $last_target $sec
+		setvar $target_was_predicted true
+	end
 	setVar $foundcount 1
 	setVar $foundSecs 0
 	setVar $searchs 0
@@ -297,9 +311,9 @@ end
 		if ($searchs > $searchDistance)
 			//echo "* SEARCHES EXPIRED!"
 			
-			setVar $exitMsg "Only found " & $foundcount & " within " & $searchDistance & " sectors; exiting.*"
-			setVar $SWITCHBOARD~message $exitMsg
-			gosub :SWITCHBOARD~switchboard
+			#setVar $exitMsg "Only found " & $foundcount & " within " & $searchDistance & " sectors; exiting.*"
+			#setVar $SWITCHBOARD~message $exitMsg
+			#gosub :SWITCHBOARD~switchboard
 			
 			goSub :sendReport
 			return
@@ -420,12 +434,19 @@ return
 	
 	setVar $out $out & "Predicted: "
 	setVar $x 1
-	
+	setvar $memory " "
 	while ($x < $foundcount)
 		setVar $out $out & " " & $foundSecs[$x][1] & "(" &  $foundSecs[$x][2] & ")"
+		setvar $memory $memory&" "$foundSecs[$x][1]&" "
 		add $x 1
 	end
-	send "'*" $out "**"
+	setvar $switchboard~message $out&"**"
+	gosub :switchboard~switchboard
+	if ($target_was_predicted)
+		setvar $switchboard~message "Sector "&$last_target&" was predicted last time!*"
+		gosub :switchboard~switchboard
+	end
+
 	getrnd $lucky 1 $foundcount
 	if ($mode = "pdrop")
 		gosub :player~quikstats
