@@ -429,6 +429,7 @@ return
 		if ($foundSecs[$x][1] <> 0)
 			send "p" $foundSecs[$x][1] "*  y  "
 		end
+	end
 	send "'*" $out "**"
 	return
 return
