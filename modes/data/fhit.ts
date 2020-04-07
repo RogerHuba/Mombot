@@ -425,17 +425,18 @@ return
 		setVar $out $out & " " & $foundSecs[$x][1] & "(" &  $foundSecs[$x][2] & ")"
 		add $x 1
 	end
+	send "'*" $out "**"
+	getrnd $lucky 1 $foundcount
 	if ($mode = "pdrop")
 		gosub :player~quikstats
-		if (($foundSecs[$x][1] <> $player~current_sector) and ($foundSecs[$x][1] <> 0))
-			send "'About to drop on sector "&$foundSecs[$x][1]&" in "&$avgSec&" seconds..*"
+		if (($foundSecs[$lucky][1] <> $player~current_sector) and ($foundSecs[$x][1] <> 0))
+			send "'About to drop on sector "&$foundSecs[$lucky][1]&" in "&$avgSec&" seconds..*"
 			setdelaytrigger waithere :nowdrop (($avgSec*1000)-500)
 			pause
 			:nowdrop
-			send "p" $foundSecs[$x][1] "*  y  "
+			send "p" $foundSecs[$lucky][1] "*  y  "
 		end
 	end
-	send "'*" $out "**"
 	return
 return
 
