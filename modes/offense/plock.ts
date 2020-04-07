@@ -5,6 +5,32 @@
 #				fix for when interactive subprompts are off.
 #				fixed :plockFinished, sent " n s* ", if the planet is a
 #				level 6, this would have no effect
+
+	gosub :BOT~loadVars
+
+	loadvar $GAME~ptradesetting
+	loadVar $game~goldenabled
+	loadVar $game~mbbs
+	loadVar $game~port_max
+	loadvar $game~rob_factor
+	loadVar $game~production_rate
+	loadVar $bot~folder
+	setVar  $bot~no_credits_file $bot~folder&"/No_Credits.list"
+	savevar $bot~no_credits_file
+	loadvar $game~LIMPET_COST
+	loadvar $game~ARMID_COST
+	loadVar $game~LIMPET_REMOVAL_COST
+
+
+	setVar $BOT~help[1]  $BOT~tab&"plock {sector}"
+	setVar $BOT~help[2]  $BOT~tab&"    "
+	setVar $BOT~help[3]  $BOT~tab&"   Pre-locks with planet onto a sector."
+	gosub :bot~helpfile
+
+	setVar $BOT~script_title "Plock"
+	gosub :BOT~banner
+
+
 goto :Starting
 
 :settriggers
@@ -47,16 +73,7 @@ goto :Starting
 # includes:
 
 :Starting
-loadVar $bot~user_command_line
-loadVar $bot~parm1
-loadVar $bot~parm2
-loadVar $bot~parm3
-loadVar $bot~parm4
-loadVar $bot~parm5
-loadVar $bot~parm6
-loadVar $bot~parm7
-loadVar $bot~parm8
-loadVar $switchboard~bot_name
+
 # ======================     START PRELOCK DROP (PLOCK) SUBROUTINE    ==========================
 :start_plock
 	gosub :player~quikstats

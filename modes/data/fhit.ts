@@ -145,6 +145,15 @@ while ($loop = 1)
 # check for spoof
 # check for corp  - i.e. we won't maek this up in future
 		setVar $player~corp 1
+		setvar $alien false
+		getText $bot~ansi_last_fighter_attack $alien_check ": " "'s"
+		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+		if ($pos > 0)
+			setvar $alien true
+			setTextLineTrigger r1 :r1 "Report Sector "
+			setTextLineTrigger r2 :r2 "Your fighters in sectosr "
+			pause
+		end
 
 		getWord CURRENTLINE $sec 5
 		striptext $sec ":"
@@ -416,6 +425,10 @@ return
 		setVar $out $out & " " & $foundSecs[$x][1] & "(" &  $foundSecs[$x][2] & ")"
 		add $x 1
 	end
+	if ($mode = "pdrop")
+		if ($foundSecs[$x][1] <> 0)
+			send "p" $foundSecs[$x][1] "*  y  "
+		end
 	send "'*" $out "**"
 	return
 return
