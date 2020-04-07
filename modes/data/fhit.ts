@@ -429,6 +429,7 @@ return
 		if ($foundSecs[$x][1] <> 0)
 			setdelaytrigger waithere :nowdrop (($avgSec*1000)-500)
 			pause
+			:nowdrop
 			send "p" $foundSecs[$x][1] "*  y  "
 		end
 	end
