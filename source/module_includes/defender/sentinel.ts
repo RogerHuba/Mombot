@@ -73,7 +73,7 @@ return
 
 	setVar $CLVFigsHit 0
 
-	send "clvq"
+	send "clv"
 	setTextLineTrigger CLVBeginCheck :CLVBeginCheck "--- ---------------------"
 	pause
 
@@ -270,6 +270,7 @@ return
 					end	
 
 					setVar $CLVInit 1
+					send "q "
 					return
 			end
 		end
