@@ -147,6 +147,8 @@
 		gosub :SWITCHBOARD~switchboard
  		halt
 	end
+	gosub :SHIP~getShipStats
+
 	gosub :PLAYER~quikstats
 	setVar $sectorCount 10
 	setVar $totalHolds 0 
@@ -610,8 +612,8 @@ return
 :attempt_refurb
 	send  "q t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* t nt 1* c "
 	gosub :player~quikstats
-	setVar $limpetCashNeeded ((($maxMines-$player~limpets)*$game~limpet_cost)+$game~limpet_removal_cost)
-	setVar $armidCashNeeded ((($maxMines-$player~armids)*$game~armid_cost))
+	setVar $limpetCashNeeded ((($ship~SHIP_MINES_MAX-$player~limpets)*$game~limpet_cost)+$game~limpet_removal_cost)
+	setVar $armidCashNeeded ((($ship~SHIP_MINES_MAX-$player~armids)*$game~armid_cost))
 	setVar $cashNeeded ($limpetCashNeeded+$armidCashNeeded)
 	setVar $furbing TRUE
 	if ($cashNeeded > $player~credits)
@@ -952,6 +954,7 @@ include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\planet\landonplanetentercitadel\planet"
 include "source\bot_includes\planet\planetneg\planet"
 include "source\bot_includes\player\starthaggle\player"

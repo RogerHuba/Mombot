@@ -593,8 +593,8 @@ return
 
 :attemptRefurb
 :attempt_Refurb
-	setVar $limpetCashNeeded ((($maxMines-$player~limpets)*$game~limpet_cost)+$game~limpet_removal_cost)
-	setVar $armidCashNeeded ((($maxMines-$player~armids)*$game~armid_cost))
+	setVar $limpetCashNeeded ((($ship~SHIP_MINES_MAX-$player~limpets)*$game~limpet_cost)+$game~limpet_removal_cost)
+	setVar $armidCashNeeded ((($ship~SHIP_MINES_MAX-$player~armids)*$game~armid_cost))
 	setVar $cashNeeded ($limpetCashNeeded+$armidCashNeeded)
 	setVar $furbing TRUE
 	if ($cashNeeded > $player~credits)
