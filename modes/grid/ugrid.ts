@@ -852,7 +852,8 @@ return
 		end
 	else
 		if ($grid_figs > 0)
-			setVar $mac "f " & $grid_figs & "*cd "
+			#setVar $mac "f " & $grid_figs & "*cd "
+			setVar $mac "f" & $grid_figs & "*cd"
 		end
 		if (($grid_armids > 0) AND ($player~armids > 0))
 			setVar $mac $mac & "h1 z" & $grid_armids & "*zc*"
@@ -865,9 +866,11 @@ return
 
 :assemble_attack_mac
         if ($attackretreat = true)
-        	setVar $attack_mac "* za" & $figs & "* jr * "
+        	#setVar $attack_mac "* za" & $figs & "* jr * "
+        	setVar $attack_mac "*za" & $figs & "*jr*"
         else
-        	setVar $attack_mac "* za" & $figs & "* * "
+        	#setVar $attack_mac "* za" & $figs & "* * "
+			setVar $attack_mac "*za" & $figs & "**"
         end
 return
 
@@ -879,10 +882,10 @@ return
 		else
 			setVar $xport_ship $ship1
 		end
-		setVar $return_mac "x   "&$xport_ship&"*  *  "
+		setVar $return_mac "x "&$xport_ship&"*  *  "
 	end
 	#setVar $return_mac $return_mac&$homesec & "* y y * * "
-	setvar $return_mac $return_mac&"n 1 y y "
+	setvar $return_mac $return_mac&"n1yy "
 return
 
 :assemble_land_mac
