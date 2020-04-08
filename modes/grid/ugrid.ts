@@ -470,14 +470,14 @@ goSub :checkAvoidedSectors
 			setVar $imlimped TRUE
 		end
 		
-		send "cn9qm"
+		send "cn9*qm"
 		gosub :return_triggers
 		setVar $entire_macro $boomsec&$attack_mac&$mac&$return_mac
 		if ($noansi = TRUE)
 			replaceText $entire_macro " " ""
 		end
 		send $entire_macro
-		send "cn9q "
+		send "cn9*q "
         send $land_mac
 		if (($grid_figs > 0) AND (SECTOR.FIGS.QUANTITY[$boomsec] < ($offodd*2)))
 			setSectorParameter $boomsec "FIGSEC" TRUE
