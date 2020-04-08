@@ -154,7 +154,7 @@
 			end
 		end
 
-	send " C R " & $MAP~stardock & "*Q "
+	send " C R " & $MAP~stardock & "*"
 	setTextLineTrigger itsalive :itsalive "Items     Status  Trading % of max OnBoard"
 	setTextLineTrigger nosoupforme :nosoupforme "I have no information about a port in that sector"
 	pause
@@ -162,7 +162,7 @@
 		killAllTriggers
 		setvar $switchboard~message "StarDock appears to have been Blown Up!*"
 		gosub :switchboard~switchboard
-		send "*"
+		send "q*"
 		halt
 	:itsalive
 		killAllTriggers
@@ -175,7 +175,7 @@
 			setVar $warpto $RED_adj
 			gosub :DoTwarp
 		else
-			send "q q *  m " & $MAP~stardock & "*  *  P  S G Y G Q "
+			send "q q q *  m " & $MAP~stardock & "*  *  P  S G Y G Q "
 		end
 		if ($msg = "")
 			waitfor "You leave the Galactic Bank."
