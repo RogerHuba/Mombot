@@ -470,13 +470,14 @@ goSub :checkAvoidedSectors
 			setVar $imlimped TRUE
 		end
 		
-		send "m"
+		send "cn9qm"
 		gosub :return_triggers
 		setVar $entire_macro $boomsec&$attack_mac&$mac&$return_mac
 		if ($noansi = TRUE)
 			replaceText $entire_macro " " ""
 		end
 		send $entire_macro
+		send "cn9q "
         send $land_mac
 		if (($grid_figs > 0) AND (SECTOR.FIGS.QUANTITY[$boomsec] < ($offodd*2)))
 			setSectorParameter $boomsec "FIGSEC" TRUE
@@ -569,7 +570,7 @@ goSub :checkAvoidedSectors
 		setVar $m 1
 		send "^"
 		while ($m < $targetSectors)
-	        	setVar $destination $targetSectors[$m]
+	        setVar $destination $targetSectors[$m]
 			getSectorParameter $destination "FIGSEC"  $isFigged
 			if ($isFigged = "")
 				setVar $isFigged FALSE
@@ -881,7 +882,7 @@ return
 		setVar $return_mac "x   "&$xport_ship&"*  *  "
 	end
 	#setVar $return_mac $return_mac&$homesec & "* y y * * "
-	setvar $return_mac $return_mac&"n1yy"
+	setvar $return_mac $return_mac&"n 1 y y "
 return
 
 :assemble_land_mac
