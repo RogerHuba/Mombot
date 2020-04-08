@@ -78,7 +78,10 @@ return
 	pause
 
 	:CLVBeginCheck
+		killtrigger clvcheck
+		killtrigger doneclv
 		setTextLineTrigger CLVCheck :CLVCheck
+		settexttrigger doneclv "Computer command [" :doneclv
 		pause
 
 	:CLVCheck
@@ -254,6 +257,7 @@ return
 		else
 			getWord CURRENTLINE $CLVTest 1
 			if ($CLVTest = "==--") or ($CLVTest = "Computer")
+				:doneclv
 				setVar $CLVCorp $CLVHighestCorp
 				:CLVNextCorp
 					if ($CLVCorp > 0)
