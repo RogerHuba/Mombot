@@ -1,6 +1,6 @@
 :refurb_photons
 
-
+	killalltriggers
 	if ($deploymines = true)
 		setVar $limpetCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~LIMPETS)*$game~LIMPET_COST))
 		setVar $armidCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~ARMIDS)*$game~ARMID_COST))
