@@ -880,8 +880,8 @@ return
 		end
 		setVar $return_mac "x   "&$xport_ship&"*  *  "
 	end
-	setVar $return_mac $return_mac&$homesec & "* y y * * "
-	#setvar $return_mac $return_mac&"n1yy"
+	#setVar $return_mac $return_mac&$homesec & "* y y * * "
+	setvar $return_mac $return_mac&"n1yy"
 return
 
 :assemble_land_mac
