@@ -8,6 +8,11 @@
 
 :scan_for_targets
 	killalltriggers
+	if ($photon~is_all_keys)
+		send "c n 9 * q "
+	end
+	setvar $photon~is_all_keys false
+
 	if ($switch)
 		setvar $combat~switch true
 		setvar $SHIP~SHIP_MAX_ATTACK $switch_ship_max_attack

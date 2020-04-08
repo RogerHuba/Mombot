@@ -425,6 +425,10 @@
 
 	:processing
 		killalltriggers
+		if ($photon~is_all_keys <> true)
+			send "c n 9 * q "
+		end
+		setvar $photon~is_all_keys true 
 		setvar $photon~found false
 		setTextTrigger 1 :pausing "Planet command (?="
 		setTextTrigger 2 :pausing "Computer command ["
@@ -622,7 +626,7 @@
 		########################################################################################
 		# if last sector hit isn't sector shot and not sector we are currently in, shoot again #
 		########################################################################################
-		if ($photon~success <> true)
+		if ($photon~success = true)
 			setvar $photon~last_sector $photon~sector
 			setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
 			gosub :player~quikstats
