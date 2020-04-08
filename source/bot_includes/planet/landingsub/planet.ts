@@ -4,7 +4,7 @@
 
 :landingSub
 	gosub :killlandingtriggers
-	send "l" $PLANET "*z  n  z  n  *  "
+	send "lz" #8 $PLANET "*"
 	setVar $sucessfulCitadel FALSE
 	setVar $sucessfulPlanet FALSE
 	setTextLineTrigger noplanet :noplanet "There isn't a planet in this sector."
