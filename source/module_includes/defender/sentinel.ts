@@ -80,7 +80,7 @@ return
 	:CLVBeginCheck
 		killtrigger clvcheck
 		killtrigger doneclv
-		settexttrigger doneclv "Computer command [" :doneclv
+		setdelaytrigger doneclv :doneclv 300
 		setTextLineTrigger CLVCheck :CLVCheck
 		pause
 
