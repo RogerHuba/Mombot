@@ -5,10 +5,15 @@
 :surround
 	:StartSurround
 		if ($player~surroundPassive)
-			send "sdszh* "
+			send "sd"
 			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] D"
+			send "szh" 
+			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
+			send "* " 
 		else
-			send "szh* "
+			send "szh" 
+			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
+			send "* " 
 		end
 		killtrigger surroundsector
 		setTextTrigger surroundsector :continuesurroundsector "[" & $player~current_sector & "]"
