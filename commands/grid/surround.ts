@@ -47,9 +47,12 @@
 		echo "*Wrong prompt for surround command.*"
 		halt
 	end
-
+	getTimer $startTicks
 	gosub :grid~surround
-
+	getTimer $stopTicks
+	setVar $durationTicks ($stopTicks - $startTicks)
+	setvar $switchboard~message "Ticks to run surround: "&$durationTicks&"*"
+	gosub :switchboard~switchboard
 		if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
 			gosub :PLANET~landingSub
 		else
