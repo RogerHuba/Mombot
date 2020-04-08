@@ -224,7 +224,7 @@ return
 :DoTwarp
 	setVar $msg ""
 	if ($warpto > 0)
-		send "q q * * mz" & $warpto "*"
+		send "q q q * * mz" & $warpto "*"
 		setTextTrigger there        :adj_warp "You are already in that sector!"
 		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $warpto & " "
 		setTextTrigger locking      :locking "Do you want to engage the TransWarp drive?"
