@@ -60,43 +60,51 @@
 		end
 	end
 
-	if (currentalignment >= 1000)
-		if ($WeAreAdjDock)
-			send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
-		else
-			send "^F" & $START_SECTOR & "*" & $MAP~stardock & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
-		end
+	if ((currentalignment >= 1000) OR ($WeAreAdjDock))
+		getdistance $dist1 $START_SECTOR $MAP~stardock
+		getdistance $dist2 $MAP~stardock $START_SECTOR
 	else
-		if ($WeAreAdjDock)
-			send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
-		else
-			send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
-		end
+		getdistance $dist1 $START_SECTOR $RED_adj
+		getdistance $dist2 $RED_adj $START_SECTOR
 	end
-	setTextLineTrigger noJoy :noJoy "*** Error - No route within"
-	setTextTrigger cont :cont "(?="
-	pause
-
-	:noJoy
-		killAllTriggers
-		setvar $switchboard~message "Cannot Find Path to StarDock!*"
-		gosub :switchboard~switchboard
-		send "*"
-		halt
-	:cont
-		killAllTriggers
-		setDelayTrigger Latency_Delay		:Latency_Delay 500
+	if (($dist1 < 0) or $dist2 < 0)
+		if (currentalignment >= 1000)
+			if ($WeAreAdjDock)
+				send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			else
+				send "^F" & $START_SECTOR & "*" & $MAP~stardock & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			end
+		else
+			if ($WeAreAdjDock)
+				send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			else
+				send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			end
+		end
+		setTextLineTrigger noJoy :noJoy "*** Error - No route within"
+		setTextTrigger cont :cont "(?="
 		pause
 
-		:Latency_Delay
+		:noJoy
+			killAllTriggers
+			setvar $switchboard~message "Cannot Find Path to StarDock!*"
+			gosub :switchboard~switchboard
+			send "*"
+			halt
+		:cont
+			killAllTriggers
+			setDelayTrigger Latency_Delay		:Latency_Delay 500
+			pause
 
-		Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
-		if ((currentalignment >= 1000) OR ($WeAreAdjDock))
-			getdistance $dist1 $START_SECTOR $MAP~stardock
-		else
-			getdistance $dist1 $START_SECTOR $RED_adj
-		end
+			:Latency_Delay
 
+			Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
+			if ((currentalignment >= 1000) OR ($WeAreAdjDock))
+				getdistance $dist1 $START_SECTOR $MAP~stardock
+			else
+				getdistance $dist1 $START_SECTOR $RED_adj
+			end
+	end
 		if ($dist1 <= 0)
 			setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
 			gosub :switchboard~switchboard
