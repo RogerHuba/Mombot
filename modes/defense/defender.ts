@@ -96,6 +96,7 @@
 	end
 	setvar $map~home_sector $player~current_sector
 
+	gosub :player~startCNsettings
 
 	getwordpos " "&$bot~user_command_line&" " $pos " f "
 	if ($pos > 0)
@@ -277,7 +278,7 @@
 	#######################################################################################################
 	# need to add a check here to make sure no nav haz or enemy limpets in starting sector before furbing #
 	#######################################################################################################
-
+    
     fileExists $SHIP~cap_file_chk $SHIP~cap_file
     if ($SHIP~cap_file_chk <> TRUE)
         gosub :SHIP~getShipCapStats
@@ -951,3 +952,4 @@ include "source\module_includes\defender\sentinel"
 include "source\bot_includes\external\htorp"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\external\movefig"
+include "source\bot_includes\player\startcnsettings\player"
