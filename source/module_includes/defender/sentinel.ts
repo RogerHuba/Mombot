@@ -35,7 +35,7 @@ return
 :checkcorp
 	setarray $corp_members 10 1
 	setvar $corp_count 0
-	send "xaq "
+	send "xa"
 	waiton "    Corp Member Name                   Sector  Fighters Shields Mines  Credits"
 	waiton "------------------------------------------------------------------------------"
 	
@@ -58,6 +58,7 @@ return
 		goto :ta_again
 
 	:done_ta
+	send "q"
 	waiton "Citadel command ("
 return
 
