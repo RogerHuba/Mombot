@@ -70,7 +70,7 @@
 
 :pwarp_away
 	send "p" $nearfig "*y"
-	SetTextLineTrigger homelock :foton_home_lock "Locating beam pinpointed"
+	SetTextLineTrigger homelock :foton_home_lock "Planetary TransWarp Drive Engaged!"
 	setTextLineTrigger nohomelock :foton_no_home_lock "Your own fighters must be"
 	setTextLineTrigger home_now :foton_home_lock "You are already in that sector!"
 	pause
