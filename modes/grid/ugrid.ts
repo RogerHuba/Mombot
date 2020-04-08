@@ -470,7 +470,7 @@ goSub :checkAvoidedSectors
 			setVar $imlimped TRUE
 		end
 		
-		send "cn9*qm"
+		send "c n 9*qm"
 		gosub :return_triggers
 		setVar $entire_macro $boomsec&$attack_mac&$mac&$return_mac
 		if ($noansi = TRUE)
