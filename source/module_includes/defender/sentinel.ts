@@ -258,6 +258,7 @@ return
 			getWord CURRENTLINE $CLVTest 1
 			if ($CLVTest = "==--") or ($CLVTest = "Computer")
 				:doneclv
+				killalltriggers
 				setVar $CLVCorp $CLVHighestCorp
 				:CLVNextCorp
 					if ($CLVCorp > 0)
