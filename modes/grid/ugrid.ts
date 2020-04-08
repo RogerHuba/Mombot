@@ -852,7 +852,7 @@ return
 		end
 	else
 		if ($grid_figs > 0)
-			#setVar $mac "f " & $grid_figs & "*cd "
+			setVar $mac "f " & $grid_figs & "*cd "
 			setVar $mac "f" & $grid_figs & "*cd"
 		end
 		if (($grid_armids > 0) AND ($player~armids > 0))
@@ -870,7 +870,7 @@ return
         	setVar $attack_mac "*za" & $figs & "*jr*"
         else
         	#setVar $attack_mac "* za" & $figs & "* * "
-			setVar $attack_mac "*za" & $figs & "**"
+			setVar $attack_mac "* za " & $figs & "* * "
         end
 return
 
