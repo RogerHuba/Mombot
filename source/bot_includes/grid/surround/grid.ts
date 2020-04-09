@@ -99,7 +99,7 @@
 					subtract $player~armids $player~surroundMine
 					#setSectorParameter $ADJ_SEC "MINESEC" TRUE
 				end
-				setVar $surroundString $surroundString&"m z"&$player~current_sector&"* "
+				setVar $surroundString $surroundString&"< "
 				if (($player~current_sector <> $map~stardock) and ($player~current_sector > 10))
 					setVar $surroundString $surroundString&"za z "&$SHIP~SHIP_MAX_ATTACK&"* * "
 				end
