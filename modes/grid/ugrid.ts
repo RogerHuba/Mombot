@@ -285,8 +285,9 @@ goSub :checkAvoidedSectors
 	gosub :player~quikstats
 	setVar $ship1 $player~ship_number
 	setVar $next_ship "2"
+	send "q"
 :restart
-	send "qq"
+	send "q"
 	gosub :planet~getplanetinfo
 	send "c "
 	gosub :findAllTargetSectors
