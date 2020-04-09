@@ -1119,7 +1119,7 @@ return
 			end
 		end
 
-	send " C R " & $map~stardock & "*Q "
+	send " C R " & $map~stardock & "*"
 	setTextLineTrigger itsalive :itsalive "Items     Status  Trading % of max OnBoard"
 	setTextLineTrigger nosoupforme :nosoupforme "I have no information about a port in that sector"
 	pause
@@ -1129,6 +1129,7 @@ return
 		halt
 	:itsalive
 		killAllTriggers
+		send "q "
 		waitfor "(?="
 		setVar $msg ""
 		if (($player~alignment >= 1000) AND ($WeAreAdjDock = FALSE))
