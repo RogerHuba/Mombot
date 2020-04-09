@@ -466,13 +466,7 @@ goSub :checkAvoidedSectors
 		
 		send "m"
 		gosub :return_triggers
-		send $boomsec $attack_mac $mac 
-		setdelaytrigger 1 :go 1000
-		pause
-		:go
-		send $return_mac 
-		pause
-		send $land_mac
+		send $boomsec $attack_mac $mac $return_mac $land_mac
 		if (($grid_figs > 0) AND (SECTOR.FIGS.QUANTITY[$boomsec] < ($offodd*2)))
 			setSectorParameter $boomsec "FIGSEC" TRUE
 		end
@@ -878,8 +872,8 @@ return
 		end
 		setVar $return_mac "x "&$xport_ship&"*  *  "
 	end
-	#setVar $return_mac $return_mac&$homesec & "* y y * * "
-	setvar $return_mac $return_mac&"n 1 y y "
+	setVar $return_mac $return_mac&$homesec & "* y y * * "
+	#setvar $return_mac $return_mac&"n 1 y y "
 return
 
 :assemble_land_mac
