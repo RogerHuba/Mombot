@@ -20,7 +20,7 @@
 	else
 		send " sh"
 	end
-	send "'" rawpacket "*"
+	echo "*[" rawpacket "]*"
 	pause
 :holo_kill_noscanner
 		killalltriggers
