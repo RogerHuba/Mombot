@@ -20,7 +20,6 @@
 	else
 		send " sh"
 	end
-	echo "*[" currentansiline  "]*[" currentline "]*"
 	pause
 :holo_kill_noscanner
 		killalltriggers
