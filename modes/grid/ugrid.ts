@@ -407,8 +407,8 @@ goSub :checkAvoidedSectors
 	send "sd"
 	waitFor "Relative Density Scan"
 	send "sh"
-	waitFor "Long Range Scan"
-	waitFor "[" & $player~warpto & "]"
+	waiton "Warps to Sector(s) :"
+	waiton "[" & $player~warpto & "]"
 	getDistance $distance $player~warpto $boomsec
 	getDistance $distanceback $boomsec $player~warpto 
 	setVar $containsShieldedPlanet FALSE
