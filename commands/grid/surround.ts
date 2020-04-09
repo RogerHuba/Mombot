@@ -51,7 +51,10 @@
 	gosub :grid~surround
 	getTimer $stopTicks
 	setVar $durationTicks ($stopTicks - $startTicks)
-	setvar $switchboard~message "Ticks to run surround: "&$durationTicks&"*"
+	setPrecision 18
+	setVar $seconds ($durationTicks / 2200000000)
+	setPrecision 0
+	setvar $switchboard~message "Ticks to run surround: "&$seconds&"*"
 	gosub :switchboard~switchboard
 		if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
 			gosub :PLANET~landingSub
