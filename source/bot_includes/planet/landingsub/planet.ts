@@ -11,6 +11,7 @@
 	setTextLineTrigger no_land :no_land "since it couldn't possibly stand"
 	setTextLineTrigger planet :planet "Planet #"
 	setTextLineTrigger wrongone :wrong_num "That planet is not in this sector."
+	settextlinetrigger noplanetscanner :displayplanet "<Destroy Planet>"
 	pause
 :noplanet
 	gosub :killlandingtriggers
@@ -22,6 +23,9 @@
 	setVar $SWITCHBOARD~message "This ship cannot land!*"
 	gosub :SWITCHBOARD~switchboard
 	return
+:displayplanet
+	send "*"
+	waiton "Planet #"
 :planet
 	getWord CURRENTLINE $pnum_ck 2
 	stripText $pnum_ck "#"
@@ -76,4 +80,5 @@ return
 	killtrigger nocitallowed
 	killtrigger build_cit
 	killtrigger citnotbuiltyet
+	killtrigger noplanetscanner
 return
