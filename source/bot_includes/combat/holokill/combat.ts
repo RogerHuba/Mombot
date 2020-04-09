@@ -24,14 +24,14 @@
 :holo_kill_noscanner
 		killalltriggers
 		setVar $SWITCHBOARD~message "You don't have a HoloScanner!*"
-		if ($$player~CIT)
+		if ($player~CIT)
 			send "*  l " & $PLANET~PLANET & "* j c * "
 		else
 			send "* "
 		end
 		return
 :holo_kill_scandone
-	if ($$player~CIT)
+	if ($player~CIT)
 		send "*  l " & $PLANET~PLANET & "* j c * "
 	else
 		send "* "
