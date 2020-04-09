@@ -84,7 +84,7 @@
 			else
 				setVar $surroundString $surroundString&" m z "&$adj_sec&"* z a "&$SHIP~SHIP_MAX_ATTACK&"* * "
 				if (($player~surroundFigs > 0) AND ($player~fighters > $player~surroundFigs))
-					setVar $surroundString $surroundString&"f z" & $player~surroundFigs & "*z c "&$deployFig&"*  "
+					setVar $surroundString $surroundString&"f z" & $player~surroundFigs & "*zc"&$deployFig&"*  "
 					subtract $player~fighters $player~surroundFigs
 					setVar $target $ADJ_SEC
 					setSectorParameter $target "FIGSEC" TRUE
@@ -99,8 +99,10 @@
 					subtract $player~armids $player~surroundMine
 					#setSectorParameter $ADJ_SEC "MINESEC" TRUE
 				end
-				setVar $surroundString $surroundString&"m z"&$player~current_sector&"* "
-				setVar $surroundString $surroundString&"za z "&$SHIP~SHIP_MAX_ATTACK&"* * "
+				if (($player~current_sector <> $map~stardock) and ($player~current_sector > 10))
+					setVar $surroundString $surroundString&"m z"&$player~current_sector&"* "
+					setVar $surroundString $surroundString&"za z "&$SHIP~SHIP_MAX_ATTACK&"* * "
+				end
 			end
 			add $i 1
 		end
