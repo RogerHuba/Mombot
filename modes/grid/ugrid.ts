@@ -267,7 +267,7 @@ goSub :checkAvoidedSectors
 :checkShip
 	killAllTriggers
 	gosub :player~quikstats
-	send "c;q"
+	send "c;"
 	waitFor "Offensive Odds:"
 	getWordPos CURRENTLINE $pos "Offensive"
 	cutText CURRENTLINE $oddline $pos 99
@@ -286,7 +286,7 @@ goSub :checkAvoidedSectors
 	setVar $ship1 $player~ship_number
 	setVar $next_ship "2"
 :restart
-	send "q"
+	send "qq"
 	gosub :planet~getplanetinfo
 	send "c "
 	gosub :findAllTargetSectors
