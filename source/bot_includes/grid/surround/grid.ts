@@ -84,7 +84,7 @@
 			else
 				setVar $surroundString $surroundString&" m z "&$adj_sec&"* z a "&$SHIP~SHIP_MAX_ATTACK&"* * "
 				if (($player~surroundFigs > 0) AND ($player~fighters > $player~surroundFigs))
-					setVar $surroundString $surroundString&"f z" & $player~surroundFigs & "*zc"&$deployFig&"*  "
+					setVar $surroundString $surroundString&"f z" & $player~surroundFigs & "*z c "&$deployFig&"*  "
 					subtract $player~fighters $player~surroundFigs
 					setVar $target $ADJ_SEC
 					setSectorParameter $target "FIGSEC" TRUE
