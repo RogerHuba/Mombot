@@ -466,7 +466,8 @@ goSub :checkAvoidedSectors
 		
 		send "m"
 		gosub :return_triggers
-		send $boomsec $attack_mac $mac $return_mac $land_mac
+		send $boomsec $attack_mac $mac $return_mac 
+		send $land_mac
 		if (($grid_figs > 0) AND (SECTOR.FIGS.QUANTITY[$boomsec] < ($offodd*2)))
 			setSectorParameter $boomsec "FIGSEC" TRUE
 		end
