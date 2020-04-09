@@ -1040,6 +1040,7 @@ return
 		setVar $player~RED_adj 0
 		setvar $player~target $map~stardock
 		gosub :player~findjumpsector
+		send "n n "
 		if ($player~RED_adj = 0)
 			waitfor "Command [TL="
 			send "'{" & $bot~bot_name & "} - Cannot Find Jump Sector Adjacent Dock**"
