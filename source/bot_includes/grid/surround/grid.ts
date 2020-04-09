@@ -68,6 +68,7 @@
 				add $yourOwnCount 1
 				if ($yourOwnCount = $totalWarps)
 					setVar $player~surroundOutput $player~surroundOutput&"(Surround) All sectors around are friendly fighters.*"
+					return
 				end
 			elseif (SECTOR.FIGS.QUANTITY[$ADJ_SEC] >= $tempoffodd)
 				setVar $player~surroundOutput $player~surroundOutput&"(Surround) Too many fighters in sector "&$adj_sec&".*"
