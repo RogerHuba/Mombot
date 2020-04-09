@@ -34,7 +34,7 @@
 	getSectorParameter SECTORS "MINESEC" $isArmided
 	getSectorParameter SECTORS "LIMPSEC" $isLimped
 
-	setVar $BOT~help[1] $BOT~tab&"ugrid [targeting] {figs} {armids} {limpets} {safety} {planets} {warp} {refurb} {scrub} {avoid) {aggressive} {clear} {noansi} {ship2:#} "
+	setVar $BOT~help[1] $BOT~tab&"ugrid [targeting] {figs} {armids} {limpets} {safety} {planets} {warp} {refurb} {scrub} {avoid) {aggressive} {clear} {ship2:#} "
 	setVar $BOT~help[2] $BOT~tab&"                "
 	setVar $BOT~help[3] $BOT~tab&"Ultimate gridder. Visits all targeted sectors. "
 	setVar $BOT~help[4] $BOT~tab&"Grid defender "
@@ -110,13 +110,6 @@
 		setVar $targetOrphans TRUE
 	else
 		setVar $targetOrphans FALSE
-	end
-
-	getWordPos $bot~user_command_line $pos "noansi" 
-	if ($pos > 0)
-		setVar $noansi TRUE
-	else
-		setVar $noansi FALSE
 	end
 
 	getWordPos $bot~user_command_line $pos "avoid" 
@@ -411,8 +404,9 @@ goSub :checkAvoidedSectors
 		send $land_mac
 		goto :select_boomsec
 	end
-	send "sdszh*  "
+	send "sd"
 	waitFor "Relative Density Scan"
+	send "sh"
 	waitFor "Long Range Scan"
 	waitFor "[" & $player~warpto & "]"
 	getDistance $distance $player~warpto $boomsec
@@ -470,15 +464,9 @@ goSub :checkAvoidedSectors
 			setVar $imlimped TRUE
 		end
 		
-		send "c n 9 * q m"
+		send "m"
 		gosub :return_triggers
-		setVar $entire_macro $boomsec&$attack_mac&$mac&$return_mac
-		if ($noansi = TRUE)
-			replaceText $entire_macro " " ""
-		end
-		send $entire_macro
-		send "cn9*q "
-        send $land_mac
+		send $boomsec $attack_mac $mac $return_mac $land_mac
 		if (($grid_figs > 0) AND (SECTOR.FIGS.QUANTITY[$boomsec] < ($offodd*2)))
 			setSectorParameter $boomsec "FIGSEC" TRUE
 		end
