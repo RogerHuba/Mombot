@@ -47,23 +47,15 @@
 		echo "*Wrong prompt for surround command.*"
 		halt
 	end
-	getTimer $startTicks
 	gosub :grid~surround
-	getTimer $stopTicks
-	setVar $durationTicks ($stopTicks - $startTicks)
-	setPrecision 18
-	setVar $seconds ($durationTicks / 2200000000)
-	setPrecision 0
-	setvar $switchboard~message "Ticks to run surround: "&$seconds&"*"
+	if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
+		gosub :PLANET~landingSub
+	else
+		gosub :player~quikstats
+	end
+	setvar $switchboard~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
 	gosub :switchboard~switchboard
-		if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
-			gosub :PLANET~landingSub
-		else
-			gosub :player~quikstats
-		end
-		setvar $switchboard~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
-		gosub :switchboard~switchboard
-		echo "*" & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
+	echo "*" & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
 halt
 
 
