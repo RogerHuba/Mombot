@@ -5,7 +5,7 @@
 	while (SECTOR.WARPSIN[$target][$i] > 0)
 		setVar $RED_adj SECTOR.WARPSIN[$target][$i]
 		if ($RED_adj > 10)
-			send "m " & $RED_adj & "* y"
+			send "m " & $RED_adj & "*"
 			setTextTrigger TwarpBlind           :TwarpBlind "Do you want to make this jump blind? "
 			setTextTrigger TwarpLocked          :TwarpLocked "All Systems Ready, shall we engage? "
 			setTextLineTrigger TwarpVoided      :TwarpVoided "Danger Warning Overridden"
@@ -22,6 +22,7 @@
 				goto :TryingNextAdj
 
 			:TwarpLocked
+				send " y"
 				gosub :killfindjumpsectors
 				goto :SectorLocked
 
