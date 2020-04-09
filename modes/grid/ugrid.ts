@@ -1061,7 +1061,7 @@ return
 		end
 	end
 	setTextLineTrigger noJoy :noJoy "*** Error - No route within"
-	setTextTrigger cont :cont "(?="
+	setTextTrigger cont :cont "ENDINTERROG"
 	pause
 
 	:noJoy
