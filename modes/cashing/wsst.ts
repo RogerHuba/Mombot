@@ -1471,8 +1471,8 @@ goto :GoGo
 	setVar $ore_req (($dist1 + $dist2) * 3)
 
 	if ($PLAYER~ORE_HOLDS < $ore_req)
-		setvar $switchboard~message "Not Enough ORE In Holds To Make Round Trip.  Needs "&$ore_req&".*"
-		gosub :switchboard~switchboard
+		#setvar $switchboard~message "Not Enough ORE In Holds To Make Round Trip.  Needs "&$ore_req&".*"
+		#gosub :switchboard~switchboard
 		send "*"
 		gosub :getsomefuel
 	end
