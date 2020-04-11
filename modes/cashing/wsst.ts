@@ -1483,10 +1483,10 @@ goto :GoGo
 		gosub :FindJumpSector
 		if ($RED_adj = 0)
 			waitfor "Command [TL="
-			setvar $switchboard~message "Cannot Find Jump Sector Adjacent Dock*"
-			gosub :switchboard~switchboard
+#			setvar $switchboard~message "Cannot Find Jump Sector Adjacent Dock*"
+#			gosub :switchboard~switchboard
 			send "*"
-			halt
+			return
 		end
 	end
 
