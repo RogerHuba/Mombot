@@ -1596,8 +1596,11 @@ return
 		# Now, pull out the next sector in the queue, and make it our focus
 		setVar $focus $que[$bottom]
 		getsectorparameter $focus "FIGSEC" $isFigged
+		getsectorparameter $focus "BUSTED" $isBusted
 
-		if ((PORT.BUYFUEL[$focus] <> true) and (PORT.FUEL[$focus] > $player~total_holds))
+		send " C R " & $focus & "*Q "
+		gosub :player~quikstats
+		if ((PORT.BUYFUEL[$focus] <> true) and (PORT.FUEL[$focus] > $player~total_holds) and ($isBusted <> true))
 			setVar $mowintosector $focus
 			gosub :mowIntoSector
 			if (((PORT.BUYORG[$focus]) and ($player~organic_holds > 0)) OR ((PORT.BUYEQUIP[$focus]) and ($player~equipment_holds > 0)))
