@@ -37,11 +37,59 @@ goto :Starting
 	killalltriggers
 	setTextLineTrigger	1	:manual			("Planet is now in sector "&$target_sector)
 	setTextTrigger 		2	:plockFinished	("Planetary TransWarp Drive shutting down.")
-	setTextTrigger 		3	:goPlock 		("Report Sector "&$target_sector&": ")
-	setTextTrigger 		4	:goPlock 		("Limpet mine in "&$target_sector&" ")
-	setTextTrigger 		5	:goPlock 		("Your mines in "&$target_sector&" ")
+	setTextTrigger 		3	:goFighterPlock 		("Report Sector "&$target_sector&": ")
+	setTextTrigger 		4	:goLimpetPlock 		("Limpet mine in "&$target_sector&" ")
+	setTextTrigger 		5	:goArmidPlock 		("Your mines in "&$target_sector&" ")
 	setTextTrigger 		6	:goPlock 		("Locator beam lost.")
 	pause
+
+
+:goArmidPlock
+	cutText currentline&"    " $ck 1 4
+	setvar $spoof false
+	if ($ck <> "Your")
+		setTextTrigger 		5	:goArmidPlock 		("Your mines in "&$target_sector&" ")
+		pause
+	end
+	if ($game~hasAliens = true)
+		#[K[32mYour mines in [1;33m8174[0;32m did [1;33m14[0;32m damage to #[1;36m[33mFerrengi[36m Nik
+		setvar $alien false
+		getText $bot~ansi_last_armid_attack&"[xx][xx][xx]" $alien_check " damage to " "[xx][xx][xx]"
+		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+		if ($pos > 0)
+			setTextTrigger 		5	:goArmidPlock 		("Your mines in "&$target_sector&" ")
+			pause
+		end
+	end
+	goto :goplock
+
+:goLimpetPlock
+	cutText currentline&"      " $ck 1 6
+	setvar $spoof false
+	if ($ck <> "Limpet")
+		setTextTrigger 		4	:goLimpetPlock 		("Limpet mine in "&$target_sector&" ")
+		pause
+	end
+	goto :goplock
+:goFighterPlock
+	getWord currentline $spoof_test 1
+	getWord currentansiline $ansi_spoof_test 1
+	getWordPos $ansi_spoof_test $ansi_spoof_pos #27 & "[1;33m"
+	setvar $spoof false
+	if ($spoof_test <> "Deployed") OR ($ansi_spoof_pos <= 0)
+		setTextTrigger 		3	:goFighterPlock 		("Report Sector "&$target_sector&": ")
+		pause
+	end
+	if ($game~hasAliens = true)
+		setvar $alien false
+		getText currentansiline $alien_check ": " "'s"
+		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+		if ($pos > 0)
+			setTextTrigger 		3	:goFighterPlock 		("Report Sector "&$target_sector&": ")
+			pause
+		end
+	end
+
 
 :goPlock
 	killalltriggers
@@ -94,6 +142,22 @@ goto :Starting
 	send "C "
 	setVar $targeting~PLANET $planet~planet
 	gosub :combat~init
+
+	setvar $game~hasAliens false
+
+	send "#/"
+	waiton "Who's Playing"
+	setTextLineTrigger	1	:alien	"are on the move!"
+	setTextTrigger		2	:aliendone (#179 & "Turns")
+	pause
+	:alien
+		setvar $game~hasAliens true
+	:aliendone
+		killtrigger 1
+		killtrigger 2
+		savevar $game~hasAliens
+
+
 	getWordPos " "&$bot~user_command_line&" " $pos " kill "
 	if ($pos > 0)
 		setVar $plockKill TRUE
