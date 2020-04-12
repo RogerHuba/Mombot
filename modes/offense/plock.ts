@@ -22,9 +22,14 @@
 	loadVar $game~LIMPET_REMOVAL_COST
 
 
-	setVar $BOT~help[1]  $BOT~tab&"plock {sector} {kill} {fastkill}"
+	setVar $BOT~help[1]  $BOT~tab&"plock {sector} {kill} {fastkill} {fastdrop}"
 	setVar $BOT~help[2]  $BOT~tab&"    "
 	setVar $BOT~help[3]  $BOT~tab&"   Pre-locks with planet onto a sector."
+	setVar $BOT~help[4]  $BOT~tab&"    "
+	setVar $BOT~help[5]  $BOT~tab&"    Options: "
+	setVar $BOT~help[6]  $BOT~tab&"      {kill} - attempts citkill after landing"
+	setVar $BOT~help[7]  $BOT~tab&"  {fastkill} - macro kill after landing"
+	setVar $BOT~help[8]  $BOT~tab&"  {fastdrop} - deploys fighters after landing"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Plock"
@@ -100,31 +105,26 @@ goto :Starting
 	:continuePlock
 	send "y '{" $switchboard~bot_name "} - PLOCK Launched*"
 	if ($plockKill)
-		if ($fastkill = true)
-			send "q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
-		end
+		gosub :plockkill
 		goto :scanit_again
-		halt
 	else
 		send "s* "
 		halt
 	end
 :plockFinished
 	send "  s*   "
-	send "'{" $switchboard~bot_name "} - PLOCK Sector Cleared*"
+	setvar $switchboard~message "PLOCK Sector Cleared*"
+	gosub :switchboard~switchboard
 	halt
 :manual
 	killAllTriggers
 	if ($plockKill)
-		if ($fastkill = true)
-			send "q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
-		end
+		gosub :plockkill
 		goto :scanit_again
 	else
 		send "s* "
 	end
 	halt
-# includes:
 
 :Starting
 
@@ -169,6 +169,12 @@ goto :Starting
 		setVar $fastkill TRUE
 	else
 		setVar $fastkill FALSE
+	end
+	getWordPos " "&$bot~user_command_line&" " $pos " fastdrop "
+	if ($pos > 0)
+		setVar $fastdrop TRUE
+	else
+		setVar $fastdrop FALSE
 	end
 	setVar $target_sector $bot~parm1
 	isNumber $isnum $target_sector
@@ -308,6 +314,15 @@ goto :Starting
 	goto :main
 
 
+:plockkill
+	if ($fastdrop = true)
+		setVar $send $send&"q q fz200000*z c d * l "&$planet~planet&"*  m  *** c  "
+	end
+	if ($fastkill = true)    
+		setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
+	end
+	send $send
+return
 # ======================     END PLOCK (PLOCK) SUBROUTINE     ==========================
 include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\combat\init\combat"
