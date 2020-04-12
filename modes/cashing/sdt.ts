@@ -15,16 +15,22 @@ reqRecording
 	loadVar $game~ptradesetting
 
 					      
-	setVar $BOT~help[1] $BOT~tab&" sdt {resetlra} [ship1] [ship2] [planet1] [planet2] {resetlra}*"
-	setVar $BOT~help[2] $BOT~tab&"  - Do NOT need to start in Ship 1 or Ship 2."
-	setVar $BOT~help[3] $BOT~tab&"  - First Steal will be from Ship 1."
-	setVar $BOT~help[4] $BOT~tab&"  - Checks last rob and busts from Sec Params"
-	setVar $BOT~help[5] $BOT~tab&"  - {resetlra} will reset last rob sector and exit"
-	setVar $BOT~help[6] $BOT~tab&"  - Will use EP Haggle if running in bot"
-	setVar $BOT~help[7] $BOT~tab&"  - Created by Cherokee"
+	setVar $BOT~help[1]  $BOT~tab&" sdt {resetlra} [ship1] [ship2] [planet1] [planet2]*"
+	setVar $BOT~help[2]  $BOT~tab&"     {swap}*"
+	setVar $BOT~help[3]  $BOT~tab&"    "
+	setVar $BOT~help[4]  $BOT~tab&"    Do NOT need to start in Ship 1 or Ship 2."
+	setVar $BOT~help[5]  $BOT~tab&"    First Steal will be from Ship 1."
+	setVar $BOT~help[6]  $BOT~tab&"    Checks last rob and busts from Sec Params"
+	setVar $BOT~help[7]  $BOT~tab&"     "
+	setVar $BOT~help[8]  $BOT~tab&"    Options: "
+	setVar $BOT~help[9]  $BOT~tab&"     {resetlra} will reset last rob sector and exit"
+	setVar $BOT~help[10] $BOT~tab&"     {swap} will land in citadel and wait for furb"
+	setVar $BOT~help[11] $BOT~tab&"     "
+	setVar $BOT~help[12] $BOT~tab&"    Will use EP Haggle if running in bot"
+	setVar $BOT~help[13] $BOT~tab&"    Created by Cherokee"
 	gosub :bot~helpfile
 
-	setVar $BOT~script_title "SDT - Steal Dump Transport"
+	setVar $BOT~script_title "SDT - Steal Dump Transport 2.1"
 	gosub :BOT~banner
 
 	
@@ -35,13 +41,18 @@ reqRecording
 		halt
 	end
 
-	getWordPos $bot~user_command_line $pos " resetlra"
+	getWordPos " "&$bot~user_command_line&" " $pos " resetlra"
 	if ($pos > 0)
 		setSectorParameter 1 "LRA" 1
 		setVar $SWITCHBOARD~message "Last rob sector reset.*"
 		gosub :switchboard~switchboard
 	end
 
+	getWordPos " "&$bot~user_command_line&" " $pos " swap "
+	setvar $swap false
+	if ($pos > 0)
+		setvar $swap true
+	end
 
     setVar $ckSDTquiet "OFF"
     setVar $beamFurbing "n"

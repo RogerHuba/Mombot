@@ -442,7 +442,7 @@ halt
 
 	
 	if ($bot~parm1 = 0)
-		setVar $SWITCHBOARD~message "Specifiy both Furb and Sit ship.*"
+		setVar $SWITCHBOARD~message "Specify both Furb and Sit ship.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end

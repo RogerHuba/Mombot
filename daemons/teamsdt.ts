@@ -46,14 +46,15 @@
 	setVar $BOT~help[10] $BOT~tab&"    {planetfuel} - will grab fuel from red planets"
 	setVar $BOT~help[11] $BOT~tab&"       {twoship} - will use two ships to cash"
 	setVar $BOT~help[12] $BOT~tab&"           {X:N} - furb ship letter and holds to buy"
-	setVar $BOT~help[13] $BOT~tab&"                 - Uses EP Haggle if running in bot"
-	setVar $BOT~help[14] $BOT~tab&"Usage: "
-	setVar $BOT~help[15] $BOT~tab&"        >teamsdt 3 4 5"
-	setVar $BOT~help[16] $BOT~tab&"        >teamsdt 3 4 5 11 12 13"
-	setVar $BOT~help[17] $BOT~tab&"        >teamsdt 6 7 4 override"
-	setVar $BOT~help[18] $BOT~tab&"Note: "
-	setVar $BOT~help[19] $BOT~tab&"       Planet ids are only necessary when multiple planets exist"
-	setVar $BOT~help[20] $BOT~tab&"       in sector or planet scanners are on ships.   "
+	setVar $BOT~help[13] $BOT~tab&"          {swap} - do swap furb on planets"
+	setVar $BOT~help[14] $BOT~tab&"                 - Uses EP Haggle if running in bot"
+	setVar $BOT~help[15] $BOT~tab&"Usage: "
+	setVar $BOT~help[16] $BOT~tab&"        >teamsdt 3 4 5"
+	setVar $BOT~help[17] $BOT~tab&"        >teamsdt 3 4 5 11 12 13"
+	setVar $BOT~help[18] $BOT~tab&"        >teamsdt 6 7 4 override"
+	setVar $BOT~help[19] $BOT~tab&"Note: "
+	setVar $BOT~help[20] $BOT~tab&"       Planet ids are only necessary when multiple planets exist"
+	setVar $BOT~help[21] $BOT~tab&"       in sector or planet scanners are on ships.   "
 	gosub :bot~helpfile
 
 
@@ -94,6 +95,12 @@
 		
 	end
 	
+	setVar $swap FALSE
+	getWordPos $bot~user_command_line $pos "swap"
+	if ($pos > 0)
+		setVar $swap TRUE
+	end
+
 	setVar $ephaggle 0
 	gosub :player~isEpHaggle
 	IF ($player~isEpHaggle)
@@ -582,15 +589,7 @@
 				gosub :SWITCHBOARD~SWITCHBOARD
 				setVar $SWITCHBOARD~MESSAGE "Fake Busts don't clear ports. .*"
 				gosub :SWITCHBOARD~SWITCHBOARD
-				
-				if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
-					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&"  *"
-				else
-					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&"  *"
-				end
-				settexttrigger nofig :nofig "No fighter down at that ship number, drop a fig."
-				settexttrigger furb1 :furb1 "- Furb delivered"
-				pause
+				goto :deliverfurb				
 				halt
 			:lraship
 				killalltriggers
@@ -656,17 +655,7 @@
 				pause
 
 			:setupfurber
-	
-				killalltriggers
-				if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
-					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&" blow:red"&$red_id&"  *"
-				else
-					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" blow:red"&$red_id&"  *"
-				end
-				
-				settexttrigger nofig :nofig "No fighter down at that ship number, drop a fig."
-				settexttrigger furb1 :furb1 "- Furb delivered"
-				pause
+				goto :deliverfurb
 			
 			:furb1
 	
@@ -757,6 +746,27 @@ return
 	:done
 		killalltriggers
 return
+
+:deliverfurb
+	if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
+		if ($swap)
+			send "'red"&$red_id&" x "&$xport_ship&"*"
+			settexttrigger xport :now_do_xport_furb  "- Xport complete."
+			pause
+			:now_do_xport_furb
+				send "'blue1 xfurb "&$bust_ship&" "&$FURB_HOLDS&" *"
+				waiton "xfurb complete"
+				goto :done
+		else
+			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&"  *"
+		end
+	else
+		send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&"  *"
+	end
+	settexttrigger nofig :nofig "No fighter down at that ship number, drop a fig."
+	settexttrigger furb1 :furb1 "- Furb delivered"
+	pause
+
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
