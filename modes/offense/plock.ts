@@ -22,7 +22,7 @@
 	loadVar $game~LIMPET_REMOVAL_COST
 
 
-	setVar $BOT~help[1]  $BOT~tab&"plock {sector}"
+	setVar $BOT~help[1]  $BOT~tab&"plock {sector} {kill} {fastkill}"
 	setVar $BOT~help[2]  $BOT~tab&"    "
 	setVar $BOT~help[3]  $BOT~tab&"   Pre-locks with planet onto a sector."
 	gosub :bot~helpfile
@@ -92,14 +92,19 @@ goto :Starting
 	send "Q"
 	gosub :planet~getPlanetInfo
 	send "C "
-	getWordPos $bot~user_command_line $pos "kill"
+	setVar $targeting~PLANET $planet~planet
+	gosub :combat~init
+	getWordPos " "&$bot~user_command_line&" " $pos " kill "
 	if ($pos > 0)
 		setVar $plockKill TRUE
-		setVar $targeting~PLANET $planet~planet
-		gosub :combat~init
-
 	else
 		setVar $plockKill FALSE
+	end
+	getWordPos " "&$bot~user_command_line&" " $pos " fastkill "
+	if ($pos > 0)
+		setVar $fastkill TRUE
+	else
+		setVar $fastkill FALSE
 	end
 	setVar $target_sector $bot~parm1
 	isNumber $isnum $target_sector
@@ -127,12 +132,16 @@ goto :Starting
 	end
 
 :planetPrelock
+	setvar $switchboard~message "PLOCK Ready to fire Sector: "&$target_sector
 	if ($plockKill)
-		setvar $switchboard~message "PLOCK Ready to fire Sector: "&$target_sector&", auto kill enabled.*"
-	else
-		setvar $switchboard~message "PLOCK Ready to fire Sector: "&$target_sector&"*"
+		setvar $switchboard~message $switchboard~message ", auto kill enabled."
 	end
+	if ($fastkill)
+		setvar $switchboard~message $switchboard~message " -  fast kill enabled too."
+	end
+	setvar $switchboard~message $switchboard~message "*"
 	gosub :switchboard~switchboard
+	
 	send "p " $target_sector "*"
 	setTextLineTrigger prelockNo :plockNo "You do not have any fighters in Sector " & $target_sector & "."
 	setTextLineTrigger prelockYes :plockYes "Locating beam pinpointed, TransWarp Locked."
