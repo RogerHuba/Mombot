@@ -346,14 +346,11 @@
 					setvar $neighbor_port_class PORT.CLASS[$checkingNeighbor]
 
 					getDistance $distance $checkingNeighbor $port1
-					if ($dist1 = "-1")
-						send "cf" & $checkingNeighbor & "*" & $port1 & "*q"
-						waitOn "What is the starting sector"
-						waitOn "Command [TL="
+					if ($distance <= 0)
+						send "^f" & $checkingNeighbor & "*" & $port1 & "*q"
+						waitOn "ENDINTERROG"
 						getDistance $distance $checkingNeighbor $port1
 					end
-
-
 
 					setvar $pair_found false
 					if ($current_port_class = 1)

@@ -35,7 +35,7 @@ return
 :checkcorp
 	setarray $corp_members 10 1
 	setvar $corp_count 0
-	send "xaq "
+	send "xa"
 	waiton "    Corp Member Name                   Sector  Fighters Shields Mines  Credits"
 	waiton "------------------------------------------------------------------------------"
 	
@@ -58,6 +58,7 @@ return
 		goto :ta_again
 
 	:done_ta
+	send "q"
 	waiton "Citadel command ("
 return
 
@@ -72,11 +73,14 @@ return
 
 	setVar $CLVFigsHit 0
 
-	send "clvq"
+	send "clv"
 	setTextLineTrigger CLVBeginCheck :CLVBeginCheck "--- ---------------------"
 	pause
 
 	:CLVBeginCheck
+		killtrigger clvcheck
+		killtrigger doneclv
+		setdelaytrigger doneclv :doneclv 300
 		setTextLineTrigger CLVCheck :CLVCheck
 		pause
 
@@ -253,6 +257,8 @@ return
 		else
 			getWord CURRENTLINE $CLVTest 1
 			if ($CLVTest = "==--") or ($CLVTest = "Computer")
+				:doneclv
+				killalltriggers
 				setVar $CLVCorp $CLVHighestCorp
 				:CLVNextCorp
 					if ($CLVCorp > 0)
@@ -269,6 +275,7 @@ return
 					end	
 
 					setVar $CLVInit 1
+					send "q "
 					return
 			end
 		end

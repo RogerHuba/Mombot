@@ -17,6 +17,8 @@
 			else
 				if ($density = true)
 					send "p" $adjsec "*  y  "
+					send "c n 9 * q "
+					setvar $photon~is_all_keys false
 					gosub :densityDrop
 				else
 					send "p" $adjsec "*  y   p" $sector "*  y  "
@@ -36,6 +38,8 @@ return
 		goto :triggers
 	else
 		if ($density = true)
+			send "c n 9 * q "
+			setvar $photon~is_all_keys false
 			gosub :densityDrop
 		else
 			send " p" $sector "*  y  "
@@ -47,7 +51,8 @@ return
 	###############################
 	# always try to drop directly #
 	###############################
-	send "p" $adjsec "*  y  c  p  y  " $sector "**qp" $sector "*  y  "
+	send "p" $adjsec "*  y  c  p  y  " $sector "**qp" $sector "*  y  c n 9 * q "
+	setvar $photon~is_all_keys false
 
 	:triggers
 	setTextLineTrigger	1	:photon_missed	      "That is not an adjacent sector"
@@ -195,7 +200,7 @@ return
 		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 		if ($pos > 0)
 			setvar $alien true
-			return
+			#return
 		end
 	end
 

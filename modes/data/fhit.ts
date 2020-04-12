@@ -27,7 +27,30 @@
 
 
 gosub :BOT~loadVars
+loadvar $SHIP~cap_file
+loadvar $game~internalAliens
+loadvar $game~internalFerrengi
+loadvar $game~limpet_cost
+loadvar $game~limpet_removal_cost
+loadvar $game~armid_cost
+loadvar $game~photon_cost
+loadvar $game~DISRUPTOR_COST
+loadvar $bot~username
+lowercase $bot~username
+loadvar $game~MULTIPLE_PHOTONS
+loadvar $bot~folder
 
+gosub :combat~init 
+
+fileExists $SHIP~cap_file_chk $SHIP~cap_file
+if ($SHIP~cap_file_chk <> TRUE)
+	gosub :SHIP~getShipCapStats
+else
+	gosub :ship~loadShipInfo
+end
+
+gosub :SHIP~getShipStats
+gosub :player~quikstats
 
 setVar $BOT~help[1]  $BOT~tab&" Track Fig hits and do something useful"
 setVar $BOT~help[2]  $BOT~tab&"        "
@@ -94,6 +117,17 @@ getWordPos $bot~user_command_line $pos "pdrop"
 if ($pos > 0)
 	setVar $mode "pdrop"
 end
+if ($mode = "pdrop")
+	if ($player~current_prompt <> "Citadel")
+		setvar $switchboard~message "Must be in citadel for pdrop mode.*"
+		gosub :switchboard~switchboard
+		halt
+	end
+	send "q"
+	gosub :PLANET~getPlanetInfo	
+	send "t*t1* c "
+	setvar $call~starting_planet $planet~planet
+end
 
 # Average Time Variables - anything outside of this  is probably a re-start or some other issue
 # Most gridders move at a steady adn random pace.
@@ -145,6 +179,15 @@ while ($loop = 1)
 # check for spoof
 # check for corp  - i.e. we won't maek this up in future
 		setVar $player~corp 1
+		setvar $alien false
+		getText currentansiline $alien_check ": " "'s"
+		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+		if ($pos > 0)
+			setvar $alien true
+			setTextLineTrigger r1 :r1 "Report Sector "
+			setTextLineTrigger r2 :r2 "Your fighters in sectosr "
+			pause
+		end
 
 		getWord CURRENTLINE $sec 5
 		striptext $sec ":"
@@ -199,6 +242,14 @@ while ($loop = 1)
 		goto :theend
 	:r2
 		killAllTriggers
+		getText currentansiline $alien_check ": " "'s"
+		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+		if ($pos > 0)
+			setvar $alien true
+			setTextLineTrigger r1 :r1 "Report Sector "
+			setTextLineTrigger r2 :r2 "Your fighters in sectosr "
+			pause
+		end
 		getWord CURRENTLINE $sec 5
 		goSub :doReport
 		goto :theend
@@ -208,6 +259,12 @@ end
 
 
 :doReport
+	getwordpos $memory $pos " "&$sec&" "
+	setvar $target_was_predicted false
+	if ($pos > 0)
+		setvar $last_target $sec
+		setvar $target_was_predicted true
+	end
 	setVar $foundcount 1
 	setVar $foundSecs 0
 	setVar $searchs 0
@@ -243,7 +300,7 @@ end
 			if ($distAvg[$player~corp] = 0)
 				setVar $mindist 1
 			else
-				setVar $mindist $distAvg[$player~corp]
+				setVar $mindist ($distAvg[$player~corp]-1)
 			end
 			
 			if ($dist >= $mindist)
@@ -288,9 +345,9 @@ end
 		if ($searchs > $searchDistance)
 			//echo "* SEARCHES EXPIRED!"
 			
-			setVar $exitMsg "Only found " & $foundcount & " within " & $searchDistance & " sectors; exiting.*"
-			setVar $SWITCHBOARD~message $exitMsg
-			gosub :SWITCHBOARD~switchboard
+			#setVar $exitMsg "Only found " & $foundcount & " within " & $searchDistance & " sectors; exiting.*"
+			#setVar $SWITCHBOARD~message $exitMsg
+			#gosub :SWITCHBOARD~switchboard
 			
 			goSub :sendReport
 			return
@@ -411,13 +468,59 @@ return
 	
 	setVar $out $out & "Predicted: "
 	setVar $x 1
-	
+	setvar $memory " "
 	while ($x < $foundcount)
 		setVar $out $out & " " & $foundSecs[$x][1] & "(" &  $foundSecs[$x][2] & ")"
+		setvar $memory $memory&" "&$foundSecs[$x][1]&" "
 		add $x 1
 	end
-	send "'*" $out "**"
-	return
+	setvar $switchboard~message $out&"**"
+	gosub :switchboard~switchboard
+	if ($target_was_predicted)
+		setvar $switchboard~message "Sector "&$last_target&" was predicted last time!*"
+		gosub :switchboard~switchboard
+	end
+
+	getrnd $lucky 1 $foundcount
+	if ($mode = "pdrop")
+		gosub :player~quikstats
+		if ($avgsec = 0)
+			setvar $avgsec 1
+		end
+		if (($foundSecs[$lucky][1] <> $player~current_sector) and ($foundSecs[$lucky][1] <> 0))
+			send "'About to drop on sector "&$foundSecs[$lucky][1]&" in "&$avgSec&" seconds..*"
+			killalltriggers
+			setdelaytrigger waithere :nowdrop ($avgSec*1000)
+			setTextLineTrigger r1 :r1 "Report Sector "
+			setTextLineTrigger r2 :r2 "Your fighters in sectosr "
+			pause
+			:nowdrop
+			send "p" $foundSecs[$lucky][1] "*  y  "
+			gosub :player~quikstats
+			setvar $player~startinglocation "Citadel"
+			gosub :sector~getSectorData
+			setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
+			if (($planet_count = 1) and ($overide = false))
+				setvar $one_planet true
+				setvar $player~override true
+			else
+				setvar $player~override false
+			end
+			if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
+				if ($switch)
+					send " e y " 
+				end
+				if ($capture = true)
+					gosub :combat~fastCapture
+					send " l " $PLANET~PLANET " * n n * j m * * * j c *  "
+					gosub :player~quikstats
+				else
+					gosub :combat~fastCitadelAttack
+				end
+
+			end
+		end
+	end
 return
 
 :addClosestSix
@@ -439,3 +542,18 @@ return
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\combat\holokill\combat"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\planet\landingsub\planet"
+include "source\bot_includes\ship\getshipcapstats\ship"
+include "source\bot_includes\ship\loadshipinfo\ship"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\sector\getsectordata\sector"
+

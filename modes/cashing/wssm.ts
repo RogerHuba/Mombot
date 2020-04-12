@@ -252,10 +252,9 @@
 					setvar $neighbor_port_class PORT.CLASS[$checkingNeighbor]
 
 					getDistance $distance $checkingNeighbor $port1
-					if ($dist1 = "-1")
-						send "cf" & $checkingNeighbor & "*" & $port1 & "*q"
-						waitOn "What is the starting sector"
-						waitOn "Command [TL="
+					if ($distance <= 0)
+						send "^f" & $checkingNeighbor & "*" & $port1 & "*q"
+						waitOn "ENDINTERROG"
 						getDistance $distance $checkingNeighbor $port1
 					end
 					if ((PORT.BUYEQUIP[$checkingNeighbor] = true) and ($distance = 1) AND ($isBusted <> TRUE) AND ($containsShieldedPlanet = FALSE) AND (($figCount <= $safeFighterLevel) AND (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
@@ -692,12 +691,6 @@ return
 				send $buy & "*"
 				waitfor "<Hardware Emporium>"
 			end
-			send "r h T"
-			waitfor "How many Genesis Torpedoes do you want"
-			getText CURRENTLINE $Buy "(Max" ") ["
-			striptext $buy " "
-			send $buy & "*"
-			waitfor "<Hardware Emporium>"
 
 			send "/"
 			waitfor #179 & "Figs"

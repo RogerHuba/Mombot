@@ -96,6 +96,7 @@
 	end
 	setvar $map~home_sector $player~current_sector
 
+	gosub :player~startCNsettings
 
 	getwordpos " "&$bot~user_command_line&" " $pos " f "
 	if ($pos > 0)
@@ -277,7 +278,7 @@
 	#######################################################################################################
 	# need to add a check here to make sure no nav haz or enemy limpets in starting sector before furbing #
 	#######################################################################################################
-
+    
     fileExists $SHIP~cap_file_chk $SHIP~cap_file
     if ($SHIP~cap_file_chk <> TRUE)
         gosub :SHIP~getShipCapStats
@@ -425,6 +426,10 @@
 
 	:processing
 		killalltriggers
+		if ($photon~is_all_keys <> true)
+			send "c n 9 * q "
+		end
+		setvar $photon~is_all_keys true 
 		setvar $photon~found false
 		setTextTrigger 1 :pausing "Planet command (?="
 		setTextTrigger 2 :pausing "Computer command ["
@@ -622,7 +627,7 @@
 		########################################################################################
 		# if last sector hit isn't sector shot and not sector we are currently in, shoot again #
 		########################################################################################
-		if ($photon~success <> true)
+		if ($photon~success = true)
 			setvar $photon~last_sector $photon~sector
 			setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
 			gosub :player~quikstats
@@ -947,3 +952,4 @@ include "source\module_includes\defender\sentinel"
 include "source\bot_includes\external\htorp"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\external\movefig"
+include "source\bot_includes\player\startcnsettings\player"

@@ -34,7 +34,7 @@
 	getSectorParameter SECTORS "MINESEC" $isArmided
 	getSectorParameter SECTORS "LIMPSEC" $isLimped
 
-	setVar $BOT~help[1] $BOT~tab&"ugrid [targeting] {figs} {armids} {limpets} {safety} {planets} {warp} {refurb} {scrub} {avoid) {aggressive} {clear} {noansi} {ship2:#} "
+	setVar $BOT~help[1] $BOT~tab&"ugrid [targeting] {figs} {armids} {limpets} {safety} {planets} {warp} {refurb} {scrub} {avoid) {aggressive} {clear} {ship2:#} "
 	setVar $BOT~help[2] $BOT~tab&"                "
 	setVar $BOT~help[3] $BOT~tab&"Ultimate gridder. Visits all targeted sectors. "
 	setVar $BOT~help[4] $BOT~tab&"Grid defender "
@@ -112,13 +112,6 @@
 		setVar $targetOrphans FALSE
 	end
 
-	getWordPos $bot~user_command_line $pos "noansi" 
-	if ($pos > 0)
-		setVar $noansi TRUE
-	else
-		setVar $noansi FALSE
-	end
-
 	getWordPos $bot~user_command_line $pos "avoid" 
 	if ($pos > 0)
 		setVar $grid_avoid TRUE
@@ -142,6 +135,12 @@
 		setVar $grid_warp "bwarp"
 	else
 		setVar $grid_warp "twarp"
+	end	
+	getWordPos $bot~user_command_line $pos "retreat" 
+	if ($pos > 0)
+		setVar $retreat true
+	else
+		setVar $retreat false
 	end	
 	getWordPos $bot~user_command_line $pos "shield" 
 	if ($pos > 0)
@@ -274,7 +273,7 @@ goSub :checkAvoidedSectors
 :checkShip
 	killAllTriggers
 	gosub :player~quikstats
-	send "c;q"
+	send "c;"
 	waitFor "Offensive Odds:"
 	getWordPos CURRENTLINE $pos "Offensive"
 	cutText CURRENTLINE $oddline $pos 99
@@ -292,6 +291,7 @@ goSub :checkAvoidedSectors
 	gosub :player~quikstats
 	setVar $ship1 $player~ship_number
 	setVar $next_ship "2"
+	send "q"
 :restart
 	send "q"
 	gosub :planet~getplanetinfo
@@ -411,10 +411,11 @@ goSub :checkAvoidedSectors
 		send $land_mac
 		goto :select_boomsec
 	end
-	send "sdszh*  "
+	send "sd"
 	waitFor "Relative Density Scan"
-	waitFor "Long Range Scan"
-	waitFor "[" & $player~warpto & "]"
+	send "sh"
+	waiton "Warps to Sector(s) :"
+	waiton "[" & $player~warpto & "]"
 	getDistance $distance $player~warpto $boomsec
 	getDistance $distanceback $boomsec $player~warpto 
 	setVar $containsShieldedPlanet FALSE
@@ -472,12 +473,11 @@ goSub :checkAvoidedSectors
 		
 		send "m"
 		gosub :return_triggers
-		setVar $entire_macro $boomsec&$attack_mac&$mac&$return_mac
-		if ($noansi = TRUE)
-			replaceText $entire_macro " " ""
+		if (($distanceback = 1) and ($retreat))
+			send $boomsec $attack_mac $mac " < * " $return_mac $land_mac
+		else
+			send $boomsec $attack_mac $mac $return_mac $land_mac
 		end
-		send $entire_macro
-        send $land_mac
 		if (($grid_figs > 0) AND (SECTOR.FIGS.QUANTITY[$boomsec] < ($offodd*2)))
 			setSectorParameter $boomsec "FIGSEC" TRUE
 		end
@@ -569,7 +569,7 @@ goSub :checkAvoidedSectors
 		setVar $m 1
 		send "^"
 		while ($m < $targetSectors)
-	        	setVar $destination $targetSectors[$m]
+	        setVar $destination $targetSectors[$m]
 			getSectorParameter $destination "FIGSEC"  $isFigged
 			if ($isFigged = "")
 				setVar $isFigged FALSE
@@ -852,6 +852,7 @@ return
 	else
 		if ($grid_figs > 0)
 			setVar $mac "f " & $grid_figs & "*cd "
+			setVar $mac "f" & $grid_figs & "*cd"
 		end
 		if (($grid_armids > 0) AND ($player~armids > 0))
 			setVar $mac $mac & "h1 z" & $grid_armids & "*zc*"
@@ -864,9 +865,11 @@ return
 
 :assemble_attack_mac
         if ($attackretreat = true)
-        	setVar $attack_mac "* za" & $figs & "* jr * "
+        	#setVar $attack_mac "* za" & $figs & "* jr * "
+        	setVar $attack_mac "*za" & $figs & "*jr*"
         else
-        	setVar $attack_mac "* za" & $figs & "* * "
+        	#setVar $attack_mac "* za" & $figs & "* * "
+			setVar $attack_mac "* za " & $figs & "* * "
         end
 return
 
@@ -878,10 +881,10 @@ return
 		else
 			setVar $xport_ship $ship1
 		end
-		setVar $return_mac "x   "&$xport_ship&"*  *  "
+		setVar $return_mac "x "&$xport_ship&"*  *  "
 	end
 	setVar $return_mac $return_mac&$homesec & "* y y * * "
-	#setvar $return_mac $return_mac&"n1yy"
+	#setvar $return_mac $return_mac&"n 1 y y "
 return
 
 :assemble_land_mac
@@ -1037,6 +1040,7 @@ return
 		setVar $player~RED_adj 0
 		setvar $player~target $map~stardock
 		gosub :player~findjumpsector
+		send "n "
 		if ($player~RED_adj = 0)
 			waitfor "Command [TL="
 			send "'{" & $bot~bot_name & "} - Cannot Find Jump Sector Adjacent Dock**"
@@ -1058,7 +1062,7 @@ return
 		end
 	end
 	setTextLineTrigger noJoy :noJoy "*** Error - No route within"
-	setTextTrigger cont :cont "(?="
+	setTextTrigger cont :cont "ENDINTERROG"
 	pause
 
 	:noJoy
@@ -1116,7 +1120,7 @@ return
 			end
 		end
 
-	send " C R " & $map~stardock & "*Q "
+	send " C R " & $map~stardock & "*"
 	setTextLineTrigger itsalive :itsalive "Items     Status  Trading % of max OnBoard"
 	setTextLineTrigger nosoupforme :nosoupforme "I have no information about a port in that sector"
 	pause
@@ -1126,6 +1130,7 @@ return
 		halt
 	:itsalive
 		killAllTriggers
+		send "q "
 		waitfor "(?="
 		setVar $msg ""
 		if (($player~alignment >= 1000) AND ($WeAreAdjDock = FALSE))

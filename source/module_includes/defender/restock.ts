@@ -1,6 +1,6 @@
 :refurb_photons
 
-
+	killalltriggers
 	if ($deploymines = true)
 		setVar $limpetCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~LIMPETS)*$game~LIMPET_COST))
 		setVar $armidCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~ARMIDS)*$game~ARMID_COST))
@@ -60,43 +60,51 @@
 		end
 	end
 
-	if (currentalignment >= 1000)
-		if ($WeAreAdjDock)
-			send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
-		else
-			send "^F" & $START_SECTOR & "*" & $MAP~stardock & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
-		end
+	if ((currentalignment >= 1000) OR ($WeAreAdjDock))
+		getdistance $dist1 $START_SECTOR $MAP~stardock
+		getdistance $dist2 $MAP~stardock $START_SECTOR
 	else
-		if ($WeAreAdjDock)
-			send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
-		else
-			send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
-		end
+		getdistance $dist1 $START_SECTOR $RED_adj
+		getdistance $dist2 $RED_adj $START_SECTOR
 	end
-	setTextLineTrigger noJoy :noJoy "*** Error - No route within"
-	setTextTrigger cont :cont "(?="
-	pause
-
-	:noJoy
-		killAllTriggers
-		setvar $switchboard~message "Cannot Find Path to StarDock!*"
-		gosub :switchboard~switchboard
-		send "*"
-		halt
-	:cont
-		killAllTriggers
-		setDelayTrigger Latency_Delay		:Latency_Delay 500
+	if (($dist1 < 0) or $dist2 < 0)
+		if (currentalignment >= 1000)
+			if ($WeAreAdjDock)
+				send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			else
+				send "^F" & $START_SECTOR & "*" & $MAP~stardock & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			end
+		else
+			if ($WeAreAdjDock)
+				send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			else
+				send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			end
+		end
+		setTextLineTrigger noJoy :noJoy "*** Error - No route within"
+		setTextTrigger cont :cont "(?="
 		pause
 
-		:Latency_Delay
+		:noJoy
+			killAllTriggers
+			setvar $switchboard~message "Cannot Find Path to StarDock!*"
+			gosub :switchboard~switchboard
+			send "*"
+			halt
+		:cont
+			killAllTriggers
+			setDelayTrigger Latency_Delay		:Latency_Delay 500
+			pause
 
-		Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
-		if ((currentalignment >= 1000) OR ($WeAreAdjDock))
-			getdistance $dist1 $START_SECTOR $MAP~stardock
-		else
-			getdistance $dist1 $START_SECTOR $RED_adj
-		end
+			:Latency_Delay
 
+			Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
+			if ((currentalignment >= 1000) OR ($WeAreAdjDock))
+				getdistance $dist1 $START_SECTOR $MAP~stardock
+			else
+				getdistance $dist1 $START_SECTOR $RED_adj
+			end
+	end
 		if ($dist1 <= 0)
 			setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
 			gosub :switchboard~switchboard
@@ -146,7 +154,7 @@
 			end
 		end
 
-	send " C R " & $MAP~stardock & "*Q "
+	send " C R " & $MAP~stardock & "*"
 	setTextLineTrigger itsalive :itsalive "Items     Status  Trading % of max OnBoard"
 	setTextLineTrigger nosoupforme :nosoupforme "I have no information about a port in that sector"
 	pause
@@ -154,7 +162,7 @@
 		killAllTriggers
 		setvar $switchboard~message "StarDock appears to have been Blown Up!*"
 		gosub :switchboard~switchboard
-		send "*"
+		send "q*"
 		halt
 	:itsalive
 		killAllTriggers
@@ -167,7 +175,7 @@
 			setVar $warpto $RED_adj
 			gosub :DoTwarp
 		else
-			send "q q *  m " & $MAP~stardock & "*  *  P  S G Y G Q "
+			send "q q q *  m " & $MAP~stardock & "*  *  P  S G Y G Q "
 		end
 		if ($msg = "")
 			waitfor "You leave the Galactic Bank."
@@ -216,7 +224,7 @@ return
 :DoTwarp
 	setVar $msg ""
 	if ($warpto > 0)
-		send "q q * * mz" & $warpto "*"
+		send "q q q * * mz" & $warpto "*"
 		setTextTrigger there        :adj_warp "You are already in that sector!"
 		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $warpto & " "
 		setTextTrigger locking      :locking "Do you want to engage the TransWarp drive?"

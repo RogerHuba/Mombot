@@ -11,22 +11,32 @@
 	setvar $too_many_fighters (($ship~SHIP_OFFENSIVE_ODDS * $SHIP~SHIP_MAX_ATTACK))
 	divide $too_many_fighters 12
 
-	setTextLineTrigger noscan1 :holo_kill_noscanner "Handle which mine type, 1 Armid or 2 Limpet"
+	setTextTrigger noscan1 :holo_kill_noscanner "Handle which mine type, 1 Armid or 2 Limpet"
 	setTextLineTrigger noscan2 :holo_kill_noscanner "You don't have a long range scanner."
-	setTextLineTrigger scanned :holo_kill_scandone  "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
+	setTextLineTrigger scanned :holo_kill_scandone  "Warps to Sector(s) : "
 	if ($player~current_prompt = "Citadel")
-		send " q q * sh*  l " & $PLANET~PLANET & "* j c * "
+		send " q q * sh"
 		setVar $player~CIT TRUE
 	else
-		send " sh*"
+		send " sh"
 	end
 	pause
 :holo_kill_noscanner
 		killalltriggers
 		setVar $SWITCHBOARD~message "You don't have a HoloScanner!*"
-		send " *  "
+		if ($player~CIT)
+			send "*  l " & $PLANET~PLANET & "* j c * "
+		else
+			send "* "
+		end
 		return
 :holo_kill_scandone
+	if ($player~CIT)
+		send "*  l " & $PLANET~PLANET & "* j c * "
+	else
+		send "* "
+	end
+
 		gosub :sector~getAutoSectorData
 
 :holo_kill_get_prompt

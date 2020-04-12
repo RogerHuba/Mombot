@@ -13,7 +13,7 @@
 			setVar $focus $nearest[$i]
 			getSectorParameter $focus "BUSTED" $isBusted
 			getSectorParameter $focus "FIGSEC" $isFigged
-			if (($isFigged = TRUE) AND ($isBusted <> TRUE) AND ((PORT.EXISTS[$focus] = TRUE) AND (PORT.EQUIP[$focus] > 0) AND (PORT.BUYEQUIP[$focus] = TRUE)) AND ($focus <> $ship2Sector) AND ($focus <> $ship1Sector))
+			if (($isFigged = TRUE) AND ($isBusted <> TRUE) AND ((PORT.class[$focus] > 0) and (PORT.EXISTS[$focus] = TRUE) AND (PORT.EQUIP[$focus] > 0) AND (PORT.BUYEQUIP[$focus] = TRUE)) AND ($focus <> $ship2Sector) AND ($focus <> $ship1Sector))
 				# found a fig
 				getDistance $distanceThere $ship2Sector $focus
 				getDistance $distanceBack $focus $ship2Sector
@@ -81,7 +81,7 @@
 			setVar $focus $nearest[$i]
 			getSectorParameter $focus "BUSTED" $isBusted
 			getSectorParameter $focus "FIGSEC" $isFigged
-			if (($isFigged = TRUE) AND ($isBusted <> TRUE) AND ((PORT.EXISTS[$focus] = TRUE) AND (PORT.EQUIP[$focus] > 0) AND (PORT.BUYEQUIP[$focus] = TRUE)) AND ($focus <> $ship1Sector) AND ($focus <> $ship2Sector))
+			if (($isFigged = TRUE) AND ($isBusted <> TRUE) AND ((PORT.class[$focus] > 0) and (PORT.EXISTS[$focus] = TRUE) AND (PORT.EQUIP[$focus] > 0) AND (PORT.BUYEQUIP[$focus] = TRUE)) AND ($focus <> $ship1Sector) AND ($focus <> $ship2Sector))
 				getDistance $distanceThere $ship1Sector $focus
 				getDistance $distanceBack $focus $ship1Sector
 				if ($distanceThere < 0)
@@ -163,7 +163,7 @@ return
 					setVar $upgrade ($steal - $equipAtPort[$ship1Sector])
 					divide $upgrade 10
 					add $upgrade 4
-					setVar $send $send & "o 3" & $upgrade & "* * "
+					setVar $send $send & "o z3" & $upgrade & "* * "
 					add $equipAtPort[$ship1Sector] ($upgrade * 10)
 				end
  				#setVar $send $send & "p r * s z 3 " & $steal & "* x    "
@@ -190,7 +190,7 @@ return
 					setVar $upgrade ($steal - $equipAtPort[$ship2Sector])
 					divide $upgrade 10
 					add $upgrade 4
-					setVar $send $send & "o 3" & $upgrade & "* * "
+					setVar $send $send & "o z3" & $upgrade & "* * "
 					add $equipAtPort[$ship2Sector] ($upgrade * 10)
 				end
  				setVar $send $send & "p r* s   z3  " & $steal & "*  x    "

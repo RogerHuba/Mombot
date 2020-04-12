@@ -1016,6 +1016,8 @@ return
 					while ($c <= $monitorTargetsi)
 						if ($monitorTargets[$c] = $targetList[$loopTargeti])
 							setVar $found 1
+							setVar $targetFound $monitorTargets[$c]
+							return
 						end
 						add $c 1
 					end

@@ -4,7 +4,17 @@
 #ASSUMES YOU HAVE RUN QUIKSTATS BEFORE RUNNING THIS SUBROUTINE
 :surround
 	:StartSurround
-		send "szh* "
+		if ($player~surroundPassive)
+			send "sd"
+			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] D"
+			send "szh" 
+			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
+			send "* " 
+		else
+			send "szh" 
+			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
+			send "* " 
+		end
 		killtrigger surroundsector
 		setTextTrigger surroundsector :continuesurroundsector "[" & $player~current_sector & "]"
 		pause
@@ -58,6 +68,7 @@
 				add $yourOwnCount 1
 				if ($yourOwnCount = $totalWarps)
 					setVar $player~surroundOutput $player~surroundOutput&"(Surround) All sectors around are friendly fighters.*"
+					return
 				end
 			elseif (SECTOR.FIGS.QUANTITY[$ADJ_SEC] >= $tempoffodd)
 				setVar $player~surroundOutput $player~surroundOutput&"(Surround) Too many fighters in sector "&$adj_sec&".*"
@@ -89,8 +100,10 @@
 					subtract $player~armids $player~surroundMine
 					#setSectorParameter $ADJ_SEC "MINESEC" TRUE
 				end
-				setVar $surroundString $surroundString&"m z"&$player~current_sector&"* "
-				setVar $surroundString $surroundString&"za z "&$SHIP~SHIP_MAX_ATTACK&"* * "
+				setVar $surroundString $surroundString&"< "
+				if (($player~current_sector <> $map~stardock) and ($player~current_sector > 10))
+					setVar $surroundString $surroundString&"za z "&$SHIP~SHIP_MAX_ATTACK&"* * "
+				end
 			end
 			add $i 1
 		end

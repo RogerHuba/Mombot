@@ -30,30 +30,32 @@
 	getSectorParameter SECTORS "LIMPSEC" $isLimped
 
 
-	setVar $BOT~help[1]  $BOT~tab&"- sgrid {figs} {armids} {limpets} {min_unfigged} {safety} {planets} {warp} {norefurb}" 
-	setVar $BOT~help[2]  $BOT~tab&"  Surround gridder. Visits all targeted sectors and surrounds     " 
-	setVar $BOT~help[3]  $BOT~tab&"  them before twarping back.                                      " 
-	setVar $BOT~help[4]  $BOT~tab&"   - [figs]        = Number of fighters to drop                   " 
-	setVar $BOT~help[5]  $BOT~tab&"                         - Default: 1                             " 
-	setVar $BOT~help[6]  $BOT~tab&"   - [armids]      = Number of armid mines to drop                " 
-	setVar $BOT~help[7]  $BOT~tab&"                         - Default: 3                             " 
-	setVar $BOT~help[8]  $BOT~tab&"   - [limps]       = Number of limpet mines to drop               " 
-	setVar $BOT~help[9]  $BOT~tab&"                         - Default: 3                             " 
-	setVar $BOT~help[10] $BOT~tab&"   - [min_unfigged]= Minimum unfigged sectors needed to surround  " 
-	setVar $BOT~help[11] $BOT~tab&"                         - Default: 3                             " 
-	setVar $BOT~help[12] $BOT~tab&"   - [safety]      = 'ultra', 'safe', and 'none'                  " 
-	setVar $BOT~help[13] $BOT~tab&"              none = Will surround all figged sectors             " 
-	setVar $BOT~help[14] $BOT~tab&"              safe = Will surround sectors that have corp limps   " 
-	setVar $BOT~help[15] $BOT~tab&"             ultra = Like safe, but needs friendly armids too     " 
-	setVar $BOT~help[16] $BOT~tab&"                         - Default: none                          " 
-	setVar $BOT~help[17] $BOT~tab&"   - [planets]     = 'all', 'shielded'                            " 
-	setVar $BOT~help[18] $BOT~tab&"               all = Avoid all planets in target sectors          " 
-	setVar $BOT~help[19] $BOT~tab&"          shielded = Avoid only shielded planets in target sectors" 
-	setVar $BOT~help[20] $BOT~tab&"                         - Default: all                           " 
-	setVar $BOT~help[21] $BOT~tab&"   - [warp]        = 'twarp' or 'bwarp'                           " 
-	setVar $BOT~help[22] $BOT~tab&"                         - Default: twarp                         " 
-	setVar $BOT~help[23] $BOT~tab&"   - [norefurb]    = Turns off auto refurbing of mines at Stardock" 
-	setVar $BOT~help[24] $BOT~tab&"   - [restart]     = Automatically restarts gridding when finished" 
+	setVar $BOT~help[1]  $BOT~tab&"- sgrid {figs} {armids} {limpets} {min_unfigged} " 
+	setVar $BOT~help[2]  $BOT~tab&"-       {safety} {planets} {warp} {norefurb} {passive}" 
+	setVar $BOT~help[3]  $BOT~tab&"  Surround gridder. Visits all targeted sectors and surrounds     " 
+	setVar $BOT~help[4]  $BOT~tab&"  them before twarping back.                                      " 
+	setVar $BOT~help[5]  $BOT~tab&"   - [figs]        - Number of fighters to drop                   " 
+	setVar $BOT~help[6]  $BOT~tab&"                         - Default: 1                             " 
+	setVar $BOT~help[7]  $BOT~tab&"   - [armids]      - Number of armid mines to drop                " 
+	setVar $BOT~help[8]  $BOT~tab&"                         - Default: 3                             " 
+	setVar $BOT~help[9]  $BOT~tab&"   - [limps]       - Number of limpet mines to drop               " 
+	setVar $BOT~help[10] $BOT~tab&"                         - Default: 3                             " 
+	setVar $BOT~help[11] $BOT~tab&"   - [min_unfigged]- Minimum unfigged sectors needed to surround  " 
+	setVar $BOT~help[12] $BOT~tab&"                         - Default: 3                             " 
+	setVar $BOT~help[13] $BOT~tab&"   - [safety]      - 'ultra', 'safe', and 'none'                  " 
+	setVar $BOT~help[14] $BOT~tab&"              none - Will surround all figged sectors             " 
+	setVar $BOT~help[15] $BOT~tab&"              safe - Will surround sectors that have corp limps   " 
+	setVar $BOT~help[16] $BOT~tab&"             ultra - Like safe, but needs friendly armids too     " 
+	setVar $BOT~help[17] $BOT~tab&"                         - Default: none                          " 
+	setVar $BOT~help[18] $BOT~tab&"   - [planets]     - 'all', 'shielded'                            " 
+	setVar $BOT~help[19] $BOT~tab&"               all - Avoid all planets in target sectors          " 
+	setVar $BOT~help[20] $BOT~tab&"          shielded - Avoid only shielded planets in target sectors" 
+	setVar $BOT~help[21] $BOT~tab&"                         - Default: all                           " 
+	setVar $BOT~help[22] $BOT~tab&"   - [warp]        - 'twarp' or 'bwarp'                           " 
+	setVar $BOT~help[23] $BOT~tab&"                         - Default: twarp                         " 
+	setVar $BOT~help[24] $BOT~tab&"   - [passive]     - Passive surround only                        " 
+	setVar $BOT~help[25] $BOT~tab&"   - [norefurb]    - Turns off auto refurbing of mines at Stardock" 
+	setVar $BOT~help[26] $BOT~tab&"   - [restart]     - Automatically restarts gridding when finished" 
 	gosub :bot~helpfile
 
 	getWord $bot~user_command_line $bot~parm1 1 "EMPTY"
@@ -591,8 +593,8 @@ return
 
 :attemptRefurb
 :attempt_Refurb
-	setVar $limpetCashNeeded ((($maxMines-$player~limpets)*$game~limpet_cost)+$game~limpet_removal_cost)
-	setVar $armidCashNeeded ((($maxMines-$player~armids)*$game~armid_cost))
+	setVar $limpetCashNeeded ((($ship~SHIP_MINES_MAX-$player~limpets)*$game~limpet_cost)+$game~limpet_removal_cost)
+	setVar $armidCashNeeded ((($ship~SHIP_MINES_MAX-$player~armids)*$game~armid_cost))
 	setVar $cashNeeded ($limpetCashNeeded+$armidCashNeeded)
 	setVar $furbing TRUE
 	if ($cashNeeded > $player~credits)
