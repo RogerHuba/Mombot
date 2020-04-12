@@ -134,14 +134,14 @@ goto :Starting
 :planetPrelock
 	setvar $switchboard~message "PLOCK Ready to fire Sector: "&$target_sector
 	if ($plockKill)
-		setvar $switchboard~message $switchboard~message ", auto kill enabled."
+		setvar $switchboard~message $switchboard~message&", auto kill enabled."
 	end
 	if ($fastkill)
-		setvar $switchboard~message $switchboard~message " -  fast kill enabled too."
+		setvar $switchboard~message $switchboard~message&" -  fast kill enabled too."
 	end
-	setvar $switchboard~message $switchboard~message "*"
+	setvar $switchboard~message $switchboard~message&"*"
 	gosub :switchboard~switchboard
-	
+
 	send "p " $target_sector "*"
 	setTextLineTrigger prelockNo :plockNo "You do not have any fighters in Sector " & $target_sector & "."
 	setTextLineTrigger prelockYes :plockYes "Locating beam pinpointed, TransWarp Locked."
