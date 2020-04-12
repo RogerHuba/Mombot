@@ -52,7 +52,7 @@ goto :Starting
 	:continuePlock
 	send "y '{" $switchboard~bot_name "} - PLOCK Launched*"
 	if ($plockKill)
-		gosub :targeting~scanitcitkill
+		goto :scanit_cit_kill
 		halt
 	else
 		send "s* "
@@ -65,7 +65,7 @@ goto :Starting
 :manual
 	killAllTriggers
 	if ($plockKill)
-		gosub :targeting~scanitcitkill
+		goto :scanit_cit_kill
 	else
 		send "s* "
 	end
@@ -79,8 +79,9 @@ goto :Starting
 	gosub :player~quikstats
 	setVar $startingLocation $player~CURRENT_PROMPT
 	if ($startingLocation <> "Citadel")
-		send "'{" $switchboard~bot_name "} - You must run Plocker from Citadel prompt.*"
-     		halt
+		setvar $switchboard~message "You must run Plocker from Citadel prompt.*"
+		gosub :switchboard~switchboard
+		halt
 	end
 	send "Q"
 	gosub :planet~getPlanetInfo
@@ -89,7 +90,7 @@ goto :Starting
 	if ($pos > 0)
 		setVar $plockKill TRUE
 		setVar $targeting~PLANET $planet~planet
-		gosub :targeting~initializetargeting
+		gosub :combat~init
 
 	else
 		setVar $plockKill FALSE
@@ -100,11 +101,13 @@ goto :Starting
 		if (($target_sector > 10) and ($target_sector <= SECTORS) and ($target_sector <> STARDOCK))
 			goto :planetPrelock
 		elseif (($target_sector < 10) or ($target_sector >= SECTORS) or ($target_sector = STARDOCK))
-			send "'{" $switchboard~bot_name "} - Not a Valid PLOCK Sector*"
+			setvar $switchboard~message "Not a Valid PLOCK Sector*"
+			gosub :switchboard~switchboard
 			halt
 		end
 	elseif ($isnum <> 1)
-		send "'{" $switchboard~bot_name "} - PLOCK Sector must be a number*"
+		setvar $switchboard~message "PLOCK Sector must be a number*"
+		gosub :switchboard~switchboard
 		halt
 	end
 	isNumber $isnum $bot~parm2
@@ -119,10 +122,11 @@ goto :Starting
 
 :planetPrelock
 	if ($plockKill)
-		send "'{" $switchboard~bot_name "} - PLOCK Ready to fire Sector: " $target_sector ", auto kill enabled.*"
+		setvar $switchboard~message "PLOCK Ready to fire Sector: "&$target_sector&", auto kill enabled.*"
 	else
-		send "'{" $switchboard~bot_name "} - PLOCK Ready to fire Sector: " $target_sector "*"
+		setvar $switchboard~message "PLOCK Ready to fire Sector: "&$target_sector&"*"
 	end
+	gosub :switchboard~switchboard
 	send "p " $target_sector "*"
 	setTextLineTrigger prelockNo :plockNo "You do not have any fighters in Sector " & $target_sector & "."
 	setTextLineTrigger prelockYes :plockYes "Locating beam pinpointed, TransWarp Locked."
@@ -130,12 +134,100 @@ goto :Starting
 	pause
 
 :plockNo
-	send "'{" $switchboard~bot_name "} - You do not have any fighters in that Sector*"
+	setvar $switchboard~message "You do not have any fighters in that Sector*"
+	gosub :switchboard~switchboard
 	halt
 
 
 :plockYes
 	goto :settriggers
+
+
+
+:main
+	killalltriggers
+	gosub :player~quikstats
+	setTextLineTrigger 	limp 	:scanit_cit_kill 	"Limpet mine in "&$player~CURRENT_SECTOR
+	setTextLineTrigger 	warps 	:scanit_cit_kill 	"warps into the sector."
+	setTextLineTrigger 	lifts 	:scanit_cit_kill 	"lifts off from"
+	setTextLineTrigger 	deffig 	:scanit_cit_kill 	"Deployed Fighters Report Sector "&$player~CURRENT_SECTOR
+	setTextLineTrigger 	secgun 	:scanit_cit_kill 	"Quasar Cannon on"
+	setTextLineTrigger 	ig		:scanit_cit_kill 	"Shipboard Computers The Interdictor Generator on"
+	setTextLineTrigger 	power 	:scanit_cit_kill 	"is powering up weapons systems!"
+	settextlinetrigger  wave    :scanit_cit_kill    " launches a wave of fighters at  "
+	settextlinetrigger  planet  :scanit_cit_kill	" launches a Genesis Torpedo into the sector!"
+	settextlinetrigger  atomic  :scanit_cit_kill    " appears from the planetary rubble."
+	setTextLineTrigger 	exits 	:scanit_cit_kill 	"exits the game."
+	setTextLineTrigger 	enters 	:scanit_cit_kill 	"enters the game."
+	setDelayTrigger		delay	:scanit_cit_kill	30000
+	setTextTrigger 		pause 	:pausing 		"Planet command (?="
+	setTextTrigger 		pause2 	:pausing 		"Computer command ["
+	setTextTrigger 		pause3 	:pausing 		"Corporate command ["
+	pause
+
+
+:pausing
+	killAllTriggers
+	echo ANSI_6 "*[" ANSI_14 "Plock Citadel Killer paused. To restart, re-enter citadel prompt" ANSI_6 "]*" ANSI_7
+	setTextTrigger restart :restarting "Citadel command ("
+	pause
+:restarting
+	killAllTriggers
+	echo ANSI_6 "*[" ANSI_14 "Plock Citadel Killer restarted" ANSI_6 "]*" ANSI_7
+	goto :main
+
+:scanit_cit_kill
+	killAllTriggers
+	getWord CURRENTLINE $test 1
+	if (($test = "P") OR ($test = "F") OR ($test = "R") OR ($test = ">"))
+		echo ANSI_14 "*spoof attempt!*"
+		goto :main
+	end	
+:scanit_again
+	killAllTriggers
+	gosub :player~quikstats
+	setvar $planet~planet_count SECTOR.PLANETCOUNT[$player~current_sector]
+	if (($planet~planet_count = 1) and ($overide = false))
+		setvar $one_planet true
+		setvar $player~override true
+	else
+		setvar $player~override $override
+	end
+	gosub :sector~getSectorData
+	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+		goSub :combat~fastCitadelAttack
+		if ($player~fighters <= 0)
+			setvar $switchboard~message "Fighters are gone - halting.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+		goto :scanit_again
+	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
+		setvar $player~startinglocation "Citadel"
+		gosub :combat~fastCapture
+		gosub :player~quikstats
+		if ($player~current_prompt = "Command")
+			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			gosub :player~quikstats
+			if ($player~fighters <= 0)
+				setvar $switchboard~message "Fighters are gone - halting.*"
+				gosub :switchboard~switchboard
+				halt
+			end
+		end
+		goto :scanit_again
+	end
+	goto :halt
+
+:halt
+:final
+	echo ansi_12 "*NO Targets*"
+	if ($sector~defenderShips > 0)
+		setvar $switchboard~message "Enemy defender ship in sector!  Not attacking.  Override if you want to attempt to kill them.*"
+		gosub :switchboard~switchboard
+	end
+	goto :main
+
 
 # ======================     END PLOCK (PLOCK) SUBROUTINE     ==========================
 include "source\module_includes\bot\loadvars\bot"
@@ -150,4 +242,5 @@ include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\fastcapture\combat"
 
