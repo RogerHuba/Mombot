@@ -138,8 +138,12 @@ goto :Starting
 	goto :settriggers
 
 # ======================     END PLOCK (PLOCK) SUBROUTINE     ==========================
-include "source\bot_includes\targeting\scanitcitkill\targeting"
+include "source\module_includes\bot\loadvars\bot"
+include "source\bot_includes\combat\init\combat"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\targeting\scanitcitkill\targeting"
 include "source\bot_includes\targeting\initializetargeting\targeting"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
