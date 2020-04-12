@@ -328,6 +328,9 @@
 #				gosub :SWITCHBOARD~SWITCHBOARD
 #				halt
 #			end
+			if ($blue_sector = 1)
+				setvar $swap true
+			end
 			if (($blue_exp > $MAX_BLUE_EXP) AND ($override = FALSE))
 				setVar $SWITCHBOARD~MESSAGE "blue"&$i&" has too much experience to be fed safe.  Stopping script.  If you want to continue anyway, use the override option.*"
 				gosub :SWITCHBOARD~SWITCHBOARD
@@ -748,18 +751,17 @@ return
 return
 
 :deliverfurb
+	if ($swap)
+		send "'red"&$red_id&" x "&$xport_ship&"*"
+		settexttrigger xport :now_do_xport_furb  "- Xport complete."
+		pause
+		:now_do_xport_furb
+			send "'blue1 xfurb "&$bust_ship&" "&$FURB_HOLDS&" *"
+			waiton "xfurb complete"
+			goto :done
+	end
 	if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
-		if ($swap)
-			send "'red"&$red_id&" x "&$xport_ship&"*"
-			settexttrigger xport :now_do_xport_furb  "- Xport complete."
-			pause
-			:now_do_xport_furb
-				send "'blue1 xfurb "&$bust_ship&" "&$FURB_HOLDS&" *"
-				waiton "xfurb complete"
-				goto :done
-		else
-			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&"  *"
-		end
+		send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&"  *"
 	else
 		send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&"  *"
 	end
