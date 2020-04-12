@@ -24,6 +24,7 @@ setVar $startingLocation $PLAYER~current_prompt
 
 # ----- PTRADE SETTING-----
 setVar $_ck_ptradesetting $GAME~ptradesetting
+setVar $quantityUnknown 0
 
 if ($startingLocation = "Citadel")
 	send "Q"
@@ -248,6 +249,7 @@ pause
 
 
 :sell
+	
 	:resell
 		if ($PLAYER~turns <= 0)
 			send "'I'm out of turns*"
@@ -256,6 +258,19 @@ pause
 		setVar $thisorefailed 0
 		setVar $thisorgfailed 0
 		setVar $thisequfailed 0
+		if ($fueltosell > 0)
+			setVar $attemptore 1
+			setVar $attemptoreconfirmed 0
+		end
+		if ($orgtosell > 0)
+			setVar $attemptorg 1
+			setVar $attemptorgconfirmed 0
+		end
+		if ($equiptosell > 0)
+			setVar $attemptequ 1
+			setVar $attemptequconfirmed 0
+		end
+	
 		send "PN" & $planet & "*"
 		subtract $PLAYER~turns 1
 			:getpercts
@@ -322,10 +337,17 @@ pause
 				killtrigger sellorg
 				killtrigger sellequ
 				killtrigger donewithport
+				if ($quantityUnknown = 1)
+					getword CURRENTLINE $fueltosell 12
+					striptext $fueltosell "["
+					striptext $fueltosell "]"
+					striptext $fueltosell "?"
+				end
 				if (($PLAYER~current_sector.orepercent >= 15) and ($fueltosell > 0))
 					if ($fueltosell > $PLAYER~current_sector.oretrading)
 						setVar $fueltosell $PLAYER~current_sector.oretrading
 					end
+					setVar $attemptoreconfirmed 1
 					setVar $prodtosell "ore"
 					setVar $portbuying $fueltosell
 					gosub :sellhaggle
@@ -338,6 +360,7 @@ pause
 					end
 				else
 					send "0*"
+					setVar $fueltosell 0
 				end
 				goto :sellproduct
 
@@ -346,10 +369,17 @@ pause
 				killtrigger sellorg
 				killtrigger sellequ
 				killtrigger donewithport
+				if ($quantityUnknown = 1)
+					getword CURRENTLINE $orgtosell 11
+					striptext $orgtosell "["
+					striptext $orgtosell "]"
+					striptext $orgtosell "?"
+				end
 				if (($PLAYER~current_sector.orgpercent >= 15) and ($orgtosell > 0))
 					if ($orgtosell > $PLAYER~current_sector.orgtrading)
 						setVar $orgtosell $PLAYER~current_sector.orgtrading
 					end
+					setVar $attemptorgconfirmed 1
 					setVar $prodtosell "org"
 					setVar $portbuying $orgtosell
 					gosub :sellhaggle
@@ -362,6 +392,7 @@ pause
 					end
 				else
 					send "0*"
+					setVar $orgtosell 0
 				end
 				goto :sellproduct
 
@@ -370,10 +401,17 @@ pause
 				killtrigger sellorg
 				killtrigger sellequ
 				killtrigger donewithport
+				if ($quantityUnknown = 1)
+					getword CURRENTLINE $equiptosell 11
+					striptext $equiptosell "["
+					striptext $equiptosell "]"
+					striptext $equiptosell "?"
+				end
 				if (($PLAYER~current_sector.equpercent >= 15) and ($equiptosell > 0))
 					if ($equiptosell > $PLAYER~current_sector.equtrading)
 						setVar $equiptosell $PLAYER~current_sector.equtrading
 					end
+					setVar $attemptequconfirmed 1
 					setVar $prodtosell "equ"
 					setVar $portbuying $equiptosell
 					gosub :sellhaggle
@@ -386,6 +424,7 @@ pause
 					end
 				else
 					send "0*"
+					setVar $equiptosell 0
 				end
 				goto :sellproduct
 
@@ -394,11 +433,25 @@ pause
 				killtrigger sellorg
 				killtrigger sellequ
 				killtrigger donewithport
+
+				if ($attemptore = 1) and ($attemptoreconfirmed = 0)
+					# means we had a setup issue and there was no ore to sell so to stop endless loop we set it to 0
+					setVar $fueltosell 0
+				end
+				if ($attemptorg = 1) and ($attemptorgconfirmed = 0)
+					setVar $orgtosell 0
+				end
+				if ($attemptequ = 1) and ($attemptequconfirmed = 0)
+					setVar $equiptosell 0
+				end
+
 				if (($ore_sell_failures > 1) or ($org_sell_failures > 4) or ($equ_sell_failures > 4))
 					setVar $selloutput $selloutput & "Multiple Haggle Failures - Please cut and paste this haggling session and email to Cherokee*"
 					return
 				elseif (($fueltosell = 0) and ($orgtosell = 0) and ($equiptosell = 0))
-					setvar $exit_message "Nothing to sell here!"
+					if ($attemptoreconfirmed = 0) and ($attemptorgconfirmed = 0) and ($attemptequconfirmed = 0)
+						setvar $exit_message "Nothing to sell here!"
+					end
 					return
 				else
 					goto :resell

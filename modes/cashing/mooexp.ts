@@ -40,10 +40,14 @@ setVar $BOT~script_title "Moo Explorer - Lets bring on the festivities!"
 gosub :BOT~banner
 
 gosub :player~quikstats
+
+
+
+
 setvar $startcredits $player~credits
 setvar $startturns $player~turns
 # try and grab fuel at this
-setVar $minOre 120
+setVar $minOre 160
 if ($player~total_holds < $minOre)
 	setVar $minOre $player~total_holds
 end
@@ -92,6 +96,32 @@ if ($PLAYER~PLANET_SCANNER <> "Yes")
 	halt
 end
 
+
+getWordPos $bot~user_command_line $pos "fire"
+if ($pos > 0)
+
+	getWordPos $bot~user_command_line $pos "bank:"
+	if ($pos > 0)
+		setVar $cline $bot~user_command_line & " "
+		getText $cline $bankToo "bank:" " "
+		setVar $bot~parm5 "bank:" & $bankToo 
+	else
+		setVar $bot~parm5 "bank:bot222" 
+	end
+
+	setVar $bankcash TRUE
+	setVar $doFireUpgrade 1
+	setVar $bot~user_command_line $bot~parm1 & " " & $bot~parm2 & " e secure " & $bot~parm5
+
+	setVar $bot~parm3 "e"
+	setVar $bot~parm4 "secure"
+	
+	setVar $doFireTithe 1
+	setVar $fireTithePerson "bot333"
+
+	setVar $furbfigs TRUE
+
+end
 setVar $ice 0
 getWordPos $bot~user_command_line $pos "ice"
 if ($pos > 0)
@@ -188,6 +218,15 @@ else
 	end
 end
 
+getWordPos $bot~user_command_line $pos "bank:"
+if ($pos > 0)
+	setVar $bankcash TRUE
+	setVar $cline $bot~user_command_line & " "
+	getText $cline $bankToo "bank:" " "
+	setvar $switchboard~message "We are sending our cash to " & $bankToo & ".*"
+
+end
+
 setVar $userCleanup 0
 gosub :switchboard~switchboard
 getWordPos $bot~user_command_line $pos "all"
@@ -230,6 +269,8 @@ setVar $iceFurb FALSE
 setVar $iceShipMoo 0
 setVar $iceShipExplore 0
 
+# $player~corpCashDump <-- i've disabled this because you can be hit by attacks with this
+
 getWordPos $bot~user_command_line $pos "furb"
 if ($pos > 0)
 	setVar $player~corpfurb TRUE
@@ -246,7 +287,7 @@ if ($pos > 0)
 	end
 else
 	setVar $player~corpfurb FALSE
-	setVar $player~corpCashDump TRUE
+	setVar $player~corpCashDump FALSE
 	setvar $switchboard~message "We will furb ourselves.*"
 	if ($player~ALIGNMENT < 1000)
 		setVar $SWITCHBOARD~message "You're just not good enough for this script (alignment).*"
@@ -549,6 +590,9 @@ while ($iSaySo)
 	setVar $firstNext 1
 	
 	gosub :player~quikstats
+	if ($doFireUpgrade = 1) and ($player~credits > 12000000)
+		goSub :fireUpgrade
+	end
 	setvar $player~turnsNow $player~turns
 
 	if ($player~turnsNow < $halt_turns)
@@ -581,6 +625,7 @@ while ($iSaySo)
 	goSub :getNextSector
 
 	if ($gridSectorPostTwarp > 0)
+		
 		setVar $player~warpto $gridSector
 		gosub :player~twarp
 		add $stat_moves 1
@@ -589,6 +634,14 @@ while ($iSaySo)
 		# Need to skip trading at next port as it'll be used
 		# saves wasing time re checking
 		setVar $skipport 1
+		gosub :player~quikstats
+		if ($player~CURRENT_SECTOR <> $gridSector)
+			setVar $SWITCHBOARD~message "We didn't make it to: " & $gridSector &" - manually refuel and type 'go go !' minus spaces once you have fuel and I'll twarp there.!*"
+			gosub :SWITCHBOARD~switchboard
+			waitfor "gogo!"
+			setVar $player~warpto $gridSector
+			gosub :player~twarp
+		end
 
 	else
 		goSub :gridNextSector
@@ -912,10 +965,13 @@ echo "#RETURNSEC:" $returnSpot "*"
 		killalltriggers
 	send "m" $stardock "*y"
 	waitfor "Locating beam pinpointed, TransWarp"
-	send "y  "
-	
-	send "p   sh"
+	send "y  p   sh"
 
+		if ($doFireTithe = 1) and ($player~credits > 1500000)
+			send "qgd500000*"
+			send "t" $fireTithePerson "*500000******qh"
+			subtract $player~credits 500000
+		end
 		if ($player~credits > 300000)
 			send "a"
 			setTextTrigger shipCheckBuyAtomics :shipCheckBuyAtomics "How many Atomic Detonators do you want"
@@ -1005,6 +1061,7 @@ echo "#RETURNSEC:" $returnSpot "*"
 			end
 		
 			gosub :player~quikstats
+			
 			send "qsp"
 			setVar $checkQuik FALSE
 
@@ -1085,18 +1142,87 @@ echo "#RETURNSEC:" $returnSpot "*"
 				goSUb :player~quikstats
 				setVar $checkQuik FALSE
 			end 
-	
-	if ($player~corpCashDump = TRUE)
+			if ($player~credits > 2000000) and ($bankcash = TRUE)
+				goSUb :player~quikstats
+				send "q q g d "
+				setTextTrigger bankdeposit :bankdeposit "How many credits do you want to deposit? ("
+				pause
+				:bankdeposit
+					killalltriggers
+					getWord CURRENTLINE $depMax 9
+					striptext $depMax "("
+					striptext $depMax ")"
+					striptext $depMax ","
+					
+					if ($depMax = $player~credits)
+						setVar $depAmount ($depMax - 500000)
+					else
+						setVar $depAmount $depMax
+					end
+					
+					if ($depAmount > 0)
+						send $depAmount "*"
+					else
+						send "0*"
+					end
+					send "t" $bankToo "*"
+					setTextLineTrigger bankUnknown :bankUnknown "Unknown Trader!"
+					setTextTrigger bankunsure :bankunsure "Do you mean"
+					setTextTrigger bankPersonFound :bankPersonFound "How many credits do you want to transfer?"
+					pause
+					:bankUnknown
+						killalltriggers
+						setVar $SWITCHBOARD~message "Trader to send bank transfer cash not found. I will not try again.*"
+						gosub :SWITCHBOARD~switchboard
+						setVar $bankcash false
+						goto :bankDone
+					:bankunsure
+						killalltriggers
+						:bankunsureagain
+						getText CURRENTLINE $testName "Do you mean " "?"
+						if ($testName <> $previousName)
+							setVar $previousName $testName
+							setVar $SWITCHBOARD~message "Attempting Bank Transfer, Unsure of name, Did you mean: " & $testName &"? (10 secs to answer)*"
+							gosub :SWITCHBOARD~switchboard
+							:giveUpAgain
+							setDelayTrigger getNameGiveup :getNameGiveup 10000
+							setTextTrigger bankunsureagain :bankunsureagain "Do you mean"
+							setTextTrigger bankUnknown :bankUnknown "Unknown Trader!"
+							setTextTrigger bankPersonFound :bankPersonFound "How many credits do you want to transfer?"
+							pause
+						else
+							setTextTrigger bankunsureagain :bankunsureagain "Do you mean"
+							pause
+						end
+						:getNameGiveup
+							killalltriggers
+							send "n"
+							goto :giveUpAgain
+						
+						goto :bankDone
 
-		if ($doDockCashDump = TRUE)
-			goSUb :player~quikstats
-			if ($PLAYER~CREDITS > 1100000)
-				setVar $dumpcash ($PLAYER~CREDITS - 150000)
-			else
-				setVar $doDockCashDump FALSE
+				:bankPersonFound
+					killalltriggers
+					getWord CURRENTLINE $transAmount 9
+					striptext $transAmount "("
+					striptext $transAmount ")"
+					striptext $transAmount ","
+					send $transAmount "*q s p"
+					
+				:bankDone
+					killalltriggers
 			end
-		end
-	end
+			if ($player~corpCashDump = TRUE)
+
+				if ($doDockCashDump = TRUE)
+					goSUb :player~quikstats
+					if ($PLAYER~CREDITS > 1100000)
+						setVar $dumpcash ($PLAYER~CREDITS - 150000)
+					else
+						setVar $doDockCashDump FALSE
+					end
+				end
+			end
 
 	#send "qspb5000*c3000*q"
 	send "qqq    *   "
@@ -1461,6 +1587,13 @@ return
 		end
 	elseif ($getFuturePortOnly = 0)
 		# check we have a fig at the jump point
+echo "DEBug:" $maxWarpsSector "*"
+echo "DEBug:" $maxWarpsSector "*"
+echo "DEBug:" $maxWarpsSector "*"
+echo "DEBug:" $maxWarpsSector "*"
+echo "DEBug:" $maxWarpsSector "*"
+echo "DEBug:" $maxWarpsSector "*"
+
 		setVar $checkSector $futureDestinations[$maxWarpsSector][0]
 		getSectorParameter $checkSector "FIGSEC" $hasFig
 		setVar $portExists 0
@@ -1551,7 +1684,7 @@ return
 
 :checkDanger
 	# Density check will be stoped by own figs, so we assume explored is safe for now
-echo "DENS: " $dSector " DEN:" $nDensity[$dIndex] "*"
+
 	if ($allLimps[$dSector] > 0)
 		subtract $nDensity[$dIndex] (2 * $allLimps[$dSector])
 		setVar $nAnom[$dIndex] 0
@@ -1560,7 +1693,7 @@ echo "DENS: " $dSector " DEN:" $nDensity[$dIndex] "*"
 	if ($allArmids[$dSector] > 0)
 		subtract $nDensity[$dIndex] (10 * $allArmids[$dSector])
 	end	
-echo "DENS: " $dSector " DEN:" $nDensity[$dIndex] "*"
+
 	if (($nDensity[$dIndex] = 0) or (($nDensity[$dIndex] = 100) and (PORT.EXISTS[$dSector] = 1)))
 		setVar $danger 0
 		#echo "* ## Sector has safe density: " $dSector
@@ -1752,11 +1885,13 @@ return
 		if ($player~ARMIDS >= 3)
 			send "h 13*c "
 			setVar $allArmids[$gridSector] 3
+			setSectorParameter $gridSector "MINESEC" 1
 		end
 
 		if ($player~LIMPETS >= 2)
 			send "h 22* c "
 			setVar $allLimps[$gridSector] 2
+			setSectorParameter $gridSector "LIMPSEC" 1
 		end
 		
 	end
@@ -2406,7 +2541,7 @@ return
 	if ($useEp = TRUE)
 		goSub :planetTrade_ep
 	else
-		goSub :planetTrade_ck
+		goSub :planetTrade_ck_test
 	end
 
 	gosub :player~quikstats
@@ -2422,6 +2557,41 @@ return
 	end
 
 
+return
+
+:planetTrade_ck_test
+	setVar $planet~fueltosell 67000
+	setVar $planet~orgtosell 67000
+	setVar $planet~equiptosell 67000
+	setVar $planet~_ck_ptradesetting $GAME~ptradesetting
+	setVar $planet~planet $tradePlanet
+	setVar $planet~quantityUnknown 1
+
+	if ($player~ore_holds < $minOre)
+		send "l" $tradePlanet "* t n t1* * q * "
+		waitfor "Planet command ("
+		waitfor "Command ["
+	end
+
+	goSub :planet~sell
+	if ($planet~exit_message <> 0)
+		send "'" $planet~exit_message "*"
+	end
+	gosub :player~quikstats
+	stripText $player~credits ","
+	setVar $player~creditsNow $player~credits
+	if ($player~creditsNow = $precredits)
+		echo "*################*##############"
+		echo "*#### NEG FAILED, SELLING AT COST!"
+		echo "*###############################"
+
+	
+		send "q q q * * *  p n" $tradePlanet "* * * * * * * l" $tradePlanet "*"
+		waitfor "Land on which planet"
+		gosub :player~quikstats
+		stripText $player~credits ","
+		setVar $player~creditsNow $player~credits
+	end
 return
 
 :planetTrade_ck
@@ -2493,7 +2663,7 @@ echo "*### PLANET FOUND! WE COUNTED WRONG SOMEWHERE"
 		setVar $planet~_ck_pnego_fueltosell $tradeOre
 		setVar $planet~_ck_pnego_orgtosell $tradeOrg
 		setVar $planet~_ck_pnego_equiptosell $tradeEquip
-		
+		:planetNEg
 		gosub :player~quikstats
 		gosub :planet~planetNeg
 send "'" $planet~exit_message "*"
@@ -2659,6 +2829,162 @@ return
 	setVar $preferredPlanetSlot 99
 
 return
+
+:fireUpgrade
+
+	gosub :player~quikstats
+
+	if ($player~CREDITS < 12000000)
+		setVar $SWITCHBOARD~message "We need 12 million dollars to upgrade safely to hells Starship*"
+		gosub :SWITCHBOARD~switchboard
+		return
+	end
+	setVar $originSector CURRENTSECTOR
+	setVar $returnSector CURRENTSECTOR
+	if (PORT.BUYFUEL[CURRENTSECTOR] = 0)
+		# we acn buy fuel and move from here.
+		setVar $foundSafeSector CURRENTSECTOR
+	else
+		getNearestWarps $nearArray CURRENTSECTOR
+		setVar $i 1
+		while ($i <= $nearArray)
+			setVar $focus $nearArray[$i]
+			getSectorParameter $focus "FIGSEC" $isFigged
+			getSectorParameter $focus "LIMPSEC" $isLimp
+			if ($isFigged > 0) and ($isLimp > 0) and (PORT.BUYFUEL[$focus] = 0)
+				setVar $returnSector $focus
+				setVar $foundSafeSector $focus
+				setVar $player~warpto $focus
+				gosub :player~twarp
+				add $stat_moves 1
+				gosub :player~quikstats
+				goto :foundSec
+			end
+			add $i 1
+		end
+	end
+
+	:foundSec
+	if ($foundSafeSector = 0)
+		setVar $SWITCHBOARD~message "Could not find a safe sector upgrade ship.. skipping*"
+		gosub :SWITCHBOARD~switchboard
+		return
+	end
+
+	send "p t * * "
+
+	send "nq"
+	setTextLineTrigger stargateCheck2 :stargateCheck2 "Class 9 (Special) (StarDock)"
+	setDelayTrigger nostargateCheck2 :nostargateCheck2 3000
+	pause
+	:nostargateCheck2
+		killalltriggers
+		setVar $SWITCHBOARD~message "Stardock is gone!! Halting..*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	:stargateCheck2
+		killalltriggers
+	send "m" $stardock "*y"
+	waitfor "Locating beam pinpointed, TransWarp"
+	send "y  p   sh"
+
+
+	if ($player~TWARP_TYPE = 1)
+		send "wu"
+	end
+	if ($player~GENESIS = 0)
+		send "t1*"
+	end
+
+	send "qs"
+
+	# MAKE SURE WE ARE closish, at a secure port - surrounded by limpets, 6+ hops out, at a SXX port - max ore before hand
+	setVar $newShipNum 0
+	setVar $currentShipNum $player~SHIP_NUMBER
+
+	# macro to buy hellship from <shipyards> prompt - "bnyjychellyeah*n*"
+	# scan for ship num and rename
+	send "bnyjychellyeah*n*"
+	waitfor "Do you want to set a password"
+	waitfor "<Shipyards>"
+	send "sq"
+	waitfor "vailable Ships in Orbit"
+	setTextLineTrigger getHellsNum :getHellsNum "hellyeah"
+	pause
+		:getHellsNum
+		getWord CURRENTLINE $newShipNum 1
+		killalltriggers
+
+	# switch ships
+	send "q q x* " $newShipNum  "* q p s s "
+	waitfor "Landing on Federation StarDock"
+	gosub :player~quikstats
+	if ($player~SHIP_NUMBER <> $newShipNum)
+		setVar $SWITCHBOARD~message "Switch ship failed on FIRE Upgrade .*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	# rename ship
+	send "ryHells Yeah " $newShipNum "*y"
+	waitfor "is what you want?"
+
+	# Upgrade the ship
+	send "pa5*yb100*c1000000*qqhrhfyw2c200000*qs"
+	waitfor "You leave the shipyards."
+	waitfor "You walk past row after row o"
+
+	# switch back
+	send "q q x* " $currentShipNum "* q p s s "
+	waitfor "Landing on Federation StarDock"
+
+	# tow and dock
+	send "q q w n " $newShipNum "* p s h "
+	waitfor "Landing on Federation StarDock"
+
+
+	send "qqq    *   m  " $returnSector  "*   y   y  "
+	
+	setTextLineTrigger restockBack3 :restockBack3 "<Set NavPoint>"
+	setTextLineTrigger restockBack4 :restockBack4  "Systems Ready, shall we engag"
+	pause
+		:restockBack3
+			killalltriggers
+			send "q * q * * pss"
+			setVar $SWITCHBOARD~message "Failed to leave dock!! Hopefully on dock..*"
+			gosub :SWITCHBOARD~switchboard
+			halt	
+		:restockBack4
+			killalltriggers
+
+	gosub :player~quikstats
+
+	if ($player~FIGHTERS > 49999)
+		send "uyn.*p * "
+	end
+	send "f" $player~fighters "*cd"
+	send "h1" $player~ARMIDS "*c"
+	send "h2" $player~LIMPETS "*c"
+	send "^q"
+	waitfor "ENDINTERROG"
+
+	send "x " $newShipNum "* q * "
+	send "f1*cdh13*ch23*c^q"
+
+	waitfor "ENDINTERROG"
+
+	send "p t * * "
+	
+	gosub :player~quikstats
+	if ($originSector <> $returnSector)
+		setVar $player~warpto $originSector
+		gosub :player~twarp
+		add $stat_moves 1
+		gosub :player~quikstats
+	end
+	# back to it
+	setVar $doFireUpgrade 0
+
+return	
 
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"

@@ -25,6 +25,7 @@ reqRecording
 	setVar $BOT~help[13]  $BOT~tab&"  [perfect] - Only drops adjacent when it is only option"
 	setVar $BOT~help[14]  $BOT~tab&"  [density] - Drops adjacent, runs density photon"
 	setVar $BOT~help[15]  $BOT~tab&"     [lock] - Locks on sector then halts"
+	setVar $BOT~help[16]  $BOT~tab&" [fastdrop] - Attempts to drop figs in sector"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Dropper"
@@ -148,6 +149,12 @@ reqRecording
 		setVar $fastkill TRUE
 	else
 		setVar $fastkill FALSE
+	end
+	getWordPos $bot~user_command_line $pos "fastdrop"
+	if ($pos > 0)
+		setVar $fastdrop TRUE
+	else
+		setVar $fastdrop FALSE
 	end
 
 	getWordPos $bot~user_command_line $pos "defender"
@@ -380,7 +387,10 @@ reqRecording
 					goto :doLock
 				else
 					setvar $send "p "&$dropSector&"* y "
-					if ($fastkill = true)
+					if ($fastdrop = true)
+						setVar $send $send&"q q fz200000*z c d * l "&$planet~planet&"*  m  *** c  "
+					end
+					if ($fastkill = true)	
 						setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
 					end
 				end

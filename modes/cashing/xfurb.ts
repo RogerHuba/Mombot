@@ -331,8 +331,8 @@ gosub :_START_
 				gosub :SWITCHBOARD~switchboard
 				halt
 			else
-				setVar $SWITCHBOARD~message "Short on holds, buying what they've got.*"
-				gosub :SWITCHBOARD~switchboard
+				#setVar $SWITCHBOARD~message "Short on holds, buying what they've got.*"
+				#gosub :SWITCHBOARD~switchboard
 				send "a" $holdsforsale "*y"
 
 			end
