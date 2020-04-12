@@ -46,14 +46,15 @@
 	setVar $BOT~help[10] $BOT~tab&"    {planetfuel} - will grab fuel from red planets"
 	setVar $BOT~help[11] $BOT~tab&"       {twoship} - will use two ships to cash"
 	setVar $BOT~help[12] $BOT~tab&"           {X:N} - furb ship letter and holds to buy"
-	setVar $BOT~help[13] $BOT~tab&"                 - Uses EP Haggle if running in bot"
-	setVar $BOT~help[14] $BOT~tab&"Usage: "
-	setVar $BOT~help[15] $BOT~tab&"        >teamsdt 3 4 5"
-	setVar $BOT~help[16] $BOT~tab&"        >teamsdt 3 4 5 11 12 13"
-	setVar $BOT~help[17] $BOT~tab&"        >teamsdt 6 7 4 override"
-	setVar $BOT~help[18] $BOT~tab&"Note: "
-	setVar $BOT~help[19] $BOT~tab&"       Planet ids are only necessary when multiple planets exist"
-	setVar $BOT~help[20] $BOT~tab&"       in sector or planet scanners are on ships.   "
+	setVar $BOT~help[13] $BOT~tab&"          {swap} - do swap furb on planets"
+	setVar $BOT~help[14] $BOT~tab&"                 - Uses EP Haggle if running in bot"
+	setVar $BOT~help[15] $BOT~tab&"Usage: "
+	setVar $BOT~help[16] $BOT~tab&"        >teamsdt 3 4 5"
+	setVar $BOT~help[17] $BOT~tab&"        >teamsdt 3 4 5 11 12 13"
+	setVar $BOT~help[18] $BOT~tab&"        >teamsdt 6 7 4 override"
+	setVar $BOT~help[19] $BOT~tab&"Note: "
+	setVar $BOT~help[20] $BOT~tab&"       Planet ids are only necessary when multiple planets exist"
+	setVar $BOT~help[21] $BOT~tab&"       in sector or planet scanners are on ships.   "
 	gosub :bot~helpfile
 
 
@@ -94,6 +95,12 @@
 		
 	end
 	
+	setVar $swap FALSE
+	getWordPos $bot~user_command_line $pos "swap"
+	if ($pos > 0)
+		setVar $swap TRUE
+	end
+
 	setVar $ephaggle 0
 	gosub :player~isEpHaggle
 	IF ($player~isEpHaggle)
@@ -584,7 +591,11 @@
 				gosub :SWITCHBOARD~SWITCHBOARD
 				
 				if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
-					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&"  *"
+					if ($swap)
+						send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&" swap *"
+					else
+						send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&"  *"
+					end
 				else
 					send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&"  *"
 				end
