@@ -24,10 +24,9 @@ reqRecording
 	setVar $BOT~help[7]  $BOT~tab&"     "
 	setVar $BOT~help[8]  $BOT~tab&"    Options: "
 	setVar $BOT~help[9]  $BOT~tab&"     {resetlra} will reset last rob sector and exit"
-	setVar $BOT~help[10] $BOT~tab&"     {swap} will land in citadel and wait for furb"
-	setVar $BOT~help[11] $BOT~tab&"     "
-	setVar $BOT~help[12] $BOT~tab&"    Will use EP Haggle if running in bot"
-	setVar $BOT~help[13] $BOT~tab&"    Created by Cherokee"
+	setVar $BOT~help[10] $BOT~tab&"     "
+	setVar $BOT~help[11] $BOT~tab&"    Will use EP Haggle if running in bot"
+	setVar $BOT~help[12] $BOT~tab&"    Created by Cherokee"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "SDT - Steal Dump Transport 2.1"
