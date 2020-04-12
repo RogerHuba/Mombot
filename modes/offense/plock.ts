@@ -104,8 +104,8 @@ goto :Starting
 	end
 	:continuePlock
 	send "y '{" $switchboard~bot_name "} - PLOCK Launched*"
+	gosub :plockkill
 	if ($plockKill)
-		gosub :plockkill
 		goto :scanit_again
 	else
 		send "s* "
@@ -118,8 +118,8 @@ goto :Starting
 	halt
 :manual
 	killAllTriggers
+	gosub :plockkill
 	if ($plockKill)
-		gosub :plockkill
 		goto :scanit_again
 	else
 		send "s* "
