@@ -323,11 +323,11 @@
 				gosub :SWITCHBOARD~SWITCHBOARD
 				halt
 			end
-			if ($blue_sector <> $MAP~STARDOCK)
-				setVar $SWITCHBOARD~MESSAGE "blue"&$i&" is not at stardock ("&$MAP~STARDOCK&") for furbing.  Stopping script.*"
-				gosub :SWITCHBOARD~SWITCHBOARD
-				halt
-			end
+#			if ($blue_sector <> $MAP~STARDOCK)
+#				setVar $SWITCHBOARD~MESSAGE "blue"&$i&" is not at stardock ("&$MAP~STARDOCK&") for furbing.  Stopping script.*"
+#				gosub :SWITCHBOARD~SWITCHBOARD
+#				halt
+#			end
 			if (($blue_exp > $MAX_BLUE_EXP) AND ($override = FALSE))
 				setVar $SWITCHBOARD~MESSAGE "blue"&$i&" has too much experience to be fed safe.  Stopping script.  If you want to continue anyway, use the override option.*"
 				gosub :SWITCHBOARD~SWITCHBOARD
