@@ -142,7 +142,7 @@ goto :Starting
 	send "C "
 	setVar $targeting~PLANET $planet~planet
 	gosub :combat~init
-
+	gosub :ship~getshipstats
 	setvar $game~hasAliens false
 
 	send "#/"
