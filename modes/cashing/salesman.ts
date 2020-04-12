@@ -165,7 +165,7 @@
 		gosub :SWITCHBOARD~switchboard
 	end
 	gosub :player~quikstats
-	if ($player~limpets <= 3)
+	if (($player~limpets <= 3) and ($mines))
 		gosub :attempt_refurb
 	end
 
