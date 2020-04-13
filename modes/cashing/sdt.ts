@@ -959,6 +959,10 @@ setVar $debugdelay 0
                 #gosub :sell
                 gosub :getInfo
                 gosub :player~quikstats
+                
+                setVar $sendString "L " & $planet~planet[$current_ship] & "*  TNL3*c t t"& ($player~credits-500000)&"*qqq * * "
+                send $sendString
+
                 goto :finish
             :fake
                 killAllTriggers
