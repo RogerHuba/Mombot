@@ -214,7 +214,7 @@ pause
 			if ($SWITCHBOARD~self_command <> TRUE)
 				setVar $SWITCHBOARD~self_command 2
 			end
-			gosub :SWITCHBOARD~switchboard
+			#gosub :SWITCHBOARD~switchboard
 
 			write $output_file $oreselloutput
 		end
@@ -224,7 +224,7 @@ pause
 			if ($SWITCHBOARD~self_command <> TRUE)
 				setVar $SWITCHBOARD~self_command 2
 			end
-			gosub :SWITCHBOARD~switchboard
+			#gosub :SWITCHBOARD~switchboard
 			write $output_file $orgselloutput
 		end
 		if ($equselloutput <> "")
@@ -233,7 +233,7 @@ pause
 			if ($SWITCHBOARD~self_command <> TRUE)
 				setVar $SWITCHBOARD~self_command 2
 			end
-			gosub :SWITCHBOARD~switchboard
+			#gosub :SWITCHBOARD~switchboard
 			write $output_file $equselloutput
 		end
 		setVar $exit_message "Done with port"
