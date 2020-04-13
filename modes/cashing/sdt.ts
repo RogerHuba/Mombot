@@ -85,6 +85,12 @@ reqRecording
        HALT
     END
 
+    getwordpos " "&$bot~user_command_line&" " $pos "noavoid"
+    setvar $noavoid false
+    if ($pos > 0)
+    	setvar $noavoid true
+    end
+    setvar $noavoid true
     if ($GAME~steal_factor = 0)
 	setVar $GAME~steal_factor 21
 	send "'{" $switchboard~bot_name "}No Steal factor!! assuming 21, you need to ensure bot has refreshed!*"
@@ -190,8 +196,12 @@ setVar $debugdelay 0
         send "'{" $switchboard~bot_name "} - Starting with Credits: " & $init_credits & " Exp: " & $init_exp & " Turns: " & $init_turns & ".*"
         send "*"
         waitFor "(?=Help)?"
-        gosub :voidAdjacent
-        setVar $ship[$current_ship].voids "set"
+        loadglobal $ship[$current_ship].voids
+        if ((($ship[$current_ship].voids <> "set") and ($noavoid = true)) or ($noavoid <> true))
+	        gosub :voidAdjacent
+	        setVar $ship[$current_ship].voids "set"
+	        saveglobal $ship[$current_ship].voids
+	    end
         gosub :checkPlanet
         gosub :checkPort
         gosub :checkUpgrade
@@ -213,8 +223,12 @@ setVar $debugdelay 0
         setVar $holds[$current_ship] $holds
         send "*"
         waitFor "(?=Help)?"
-        gosub :voidAdjacent
-        setVar $ship[$current_ship].voids "set"
+        loadglobal $ship[$current_ship].voids
+        if ($ship[$current_ship].voids <> "set")
+	        gosub :voidAdjacent
+	        setVar $ship[$current_ship].voids "set"
+	        saveglobal $ship[$current_ship].voids
+	    end
         gosub :checkPlanet
         gosub :checkPort
         gosub :checkUpgrade
@@ -239,15 +253,17 @@ setVar $debugdelay 0
 
 # ----- FINISH
 :finish
-        gosub :clearadjacent
+		if ($noavoid <> true)
+	        gosub :clearadjacent
+		end
         if ($current_ship = $ship_1)
                setVar $player~current_sector $sector[$ship_2]
         else
                setVar $player~current_sector $sector[$ship_1]
         end
-               if (($ship[$current_ship].voids = "set") and ($player~current_sector <> 0))
-                         gosub :clearadjacent
-               end
+		if (($ship[$current_ship].voids = "set") and ($player~current_sector <> 0) and ($noavoid <> true))
+			gosub :clearadjacent
+		end
         gosub :endCNsettings
         setVar $cash_made $player~credits
         subtract $cash_made $init_credits
@@ -1495,30 +1511,33 @@ setVar $debugdelay 0
 
 
 :clearadjacent
-    echo "*[["&$player~current_sector&"]]*"
-    if ($player~current_sector <= 0)
-       gosub :player~quikstats
-    end
-    if (SECTOR.WARPS[$player~current_sector][1] = 0)
-        send "'{" $switchboard~bot_name "} - This sector has no warps, maybe you need to scan it first*"
-        halt
-    else
-        setVar $voidsect 0
-        :clearvoids
-        add $voidsect 1
-        if ($voidsect < 7)
-            if (SECTOR.WARPS[$player~current_sector][$voidsect] <> 0)
-                send "CV0*YN" & SECTOR.WARPS[$player~current_sector][$voidsect] & "*Q"
-            end
-            goto :clearvoids
-        end
+    if ($noavoid <> true)
+		echo "*[["&$player~current_sector&"]]*"
+		if ($player~current_sector <= 0)
+		   gosub :player~quikstats
+		end
+		if (SECTOR.WARPS[$player~current_sector][1] = 0)
+		    send "'{" $switchboard~bot_name "} - This sector has no warps, maybe you need to scan it first*"
+		    halt
+		else
+		    setVar $voidsect 0
+		    :clearvoids
+		    add $voidsect 1
+		    if ($voidsect < 7)
+		        if (SECTOR.WARPS[$player~current_sector][$voidsect] <> 0)
+		            send "CV0*YN" & SECTOR.WARPS[$player~current_sector][$voidsect] & "*Q"
+		        end
+		        goto :clearvoids
+		    end
 
-        send "'{" $switchboard~bot_name "} - Avoids cleared on all adjacent sectors*"
-        send "/"
-        waitfor " Sect "
-        return
-    end
-
+		    send "'{" $switchboard~bot_name "} - Avoids cleared on all adjacent sectors*"
+		    send "/"
+		    waitfor " Sect "
+		    return
+		end
+		setvar $ship[$current_ship].voids ""
+		saveglobal $ship[$current_ship].voids 
+	end
 :player~quikstats
 
         # ============================ START QUIKSTAT VARIABLES ==========================
@@ -1695,12 +1714,11 @@ return
 
 
 :checkEPHaggle
-    if ($epHaggleFail = 1)
-	gosub :endCNsettings
-	gosub :clearadjacent
-	
-	halt
-    end
+	if ($epHaggleFail = 1)
+		gosub :endCNsettings
+		gosub :clearadjacent
+		halt
+	end
 return
 
 
