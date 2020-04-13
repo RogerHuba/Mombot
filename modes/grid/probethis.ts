@@ -80,6 +80,12 @@
 		setVar $resume_last FALSE
 	end
 
+	# added for fire - but it'll auto check bank for more creds
+	setVar $check_bank FALSE
+	getWordPos $bot~user_command_line $pos "bank"
+	if ($pos > 0)
+		setVar $check_bank TRUE
+	end
 
 	getWordPos $bot~user_command_line $pos "destroy"
 	if ($pos > 0)
@@ -384,10 +390,12 @@ echo "HERE*HERE*HERHE*"
 	if ($report_alpha = 1)
 		setVar $SWITCHBOARD~message "Alpha Found in Sector:" & $map~alpha_centauri & "*"
 		gosub :SWITCHBOARD~switchboard
+		setVar $report_alpha 0
 	end
 	if ($report_rylos = 1)
-		setVar $SWITCHBOARD~message "Alpha Found in Sector:" & $map~rylos & "*"
+		setVar $SWITCHBOARD~message "Rylos Found in Sector:" & $map~rylos & "*"
 		gosub :SWITCHBOARD~switchboard
+		setVar $report_rylos 0
 	end
 	if ($writeFileAtEnd = 1)
 		write $probethis_found $writefileLog
@@ -583,7 +591,7 @@ echo "Fuel to get there and back: " $twarpFuelRequired "*"
 			waitfor "Command ["
 		end
 	else
-		send "ql "&$planet~planet&"* t * l 1 * t * l 2 * t * l 3 * s * l 1 * s * l 2 * s * l 3 * t * t1*m* * * q "
+		send "l"&$planet~planet&"* t * l 1 * t * l 2 * t * l 3 * s * l 1 * s * l 2 * s * l 3 * t * t1*m* * * q "
 		WaitFor "Command [TL"
 	end
 if (($map~backdoor <> 0) and ($player~ALIGNMENT < 1000))
@@ -651,6 +659,12 @@ Pause
 GetWord CURRENTLINE $numtorps 8
 StripText $numtorps ")"
 send $numtorps & "*"
+
+if ($check_bank = TRUE)
+	send "qgw*"
+	waitfor "credits in your account."
+end
+
 if ($dockrestock = 1)
 	send "Q Q "
 	gosub :player~quikstats
@@ -674,7 +688,7 @@ Pause
 	send "Y"
 	WaitFor "Command [TL"
 	if ($startingLocation <> "Command")
-		send "l "&$planet~planet&"* t n l 1* q q * j y * "
+		send "l"&$planet~planet&"* t n l 1* q q * j y * "
 	end
 	gosub :player~quikstats
 Return
