@@ -169,7 +169,15 @@ gosub :_START_
 			
 				getWord CURRENTLINE $cPlanetNum 2
 				stripText $cPlanetNum ">"
-			
+				stripText $cPlanetNum "<"
+				isNumber $test $cPlanetNum
+				if (($test = true) and ($cPlanetNum > 0))
+				else
+					getWord CURRENTLINE $cPlanetNum 1
+					stripText $cPlanetNum ">"
+					stripText $cPlanetNum "<"
+				end
+
 				send "l" $cPlanetNum "*"
 				waitfor "-------  ---------  ---------  ---------  ---------"
 				goto :getplanetdetails
@@ -202,7 +210,7 @@ gosub :_START_
 		:tdone
 		
 		if ($planet~planetfuel > 100)
-			send "t n t 1 *  "
+			send "t n l 2 * t n l 3 * t n t 1 *  "
 			setVar $gotore 1
 		end
 
