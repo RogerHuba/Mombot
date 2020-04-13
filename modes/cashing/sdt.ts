@@ -517,6 +517,8 @@ setVar $debugdelay 0
             setTextTrigger sellfuel :sellfuel "How many units of Fuel Ore"
             setTextTrigger sellorg :sellorg "How many units of Organics"
             setTextTrigger sellequ :sellequ "How many units of Equipment"
+            settexttrigger noequ :noequ "Command ["
+
             pause
             pause
 
@@ -910,6 +912,8 @@ setVar $debugdelay 0
             send "'{" $switchboard~bot_name "} - Ship " & $current_ship & " - " & $portbuying & " EQU haggled for " & $counter & " credits (" & $perunit & " per unit).*"
         end
     else
+    	:noequ
+    	killalltriggers
         send "'{" $switchboard~bot_name "} - There is no equ to sell at this port*"
     end
     
@@ -955,6 +959,10 @@ setVar $debugdelay 0
                 #gosub :sell
                 gosub :getInfo
                 gosub :player~quikstats
+                
+                setVar $sendString "L " & $planet~planet[$current_ship] & "*  TNL3*c t t"& ($player~credits-500000)&"*qqq * * "
+                send $sendString
+
                 goto :finish
             :fake
                 killAllTriggers

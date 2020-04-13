@@ -24,36 +24,36 @@ gosub :_START_
 	killalltriggers
 	
 
-	send "C ZQ "
+#	send "C ZQ "
 
-	waitfor "<Active Ship Scan>"
-	:eachshiploc
-	setTextLineTrigger shiplocx :shiplocf " "&$bustship&" "
-	setTextLineTrigger nofindf :nofindf "Computer command [TL="
-	pause
-	:nofindf
-		send "*"
-		killalltriggers
-		setVar $SWITCHBOARD~message "Can not find ship.*"
-		gosub :SWITCHBOARD~switchboard
-		halt
+#	waitfor "<Active Ship Scan>"
+#	:eachshiploc
+#	setTextLineTrigger shiplocx :shiplocf " "&$bustship&" "
+#	setTextLineTrigger nofindf :nofindf "Computer command [TL="
+#	pause
+#	:nofindf
+#		send "*"
+#		killalltriggers
+#		setVar $SWITCHBOARD~message "Can not find ship.*"
+#		gosub :SWITCHBOARD~switchboard
+#		halt
 		
-	:shiplocf
-		killtrigger shiplocf
-		killtrigger nofindf
+#	:shiplocf
+#		killtrigger shiplocf
+#		killtrigger nofindf
 		
-		getWord CURRENTLINE $isbustship 1
-		getWord CURRENTLINE $bustloc 2
+#		getWord CURRENTLINE $isbustship 1
+#		getWord CURRENTLINE $bustloc 2
 
-		if ($isbustship = $bustship)
+#		if ($isbustship = $bustship)
 			
-			setVar $SWITCHBOARD~message "Ship " & $bustship & " found, transporting.*"
-			gosub :SWITCHBOARD~switchboard
+#			setVar $SWITCHBOARD~message "Ship " & $bustship & " found, transporting.*"
+#			gosub :SWITCHBOARD~switchboard
 			
-			goto :transport
-		else
-			goto :eachshiploc
-		end
+#			goto :transport
+#		else
+#			goto :eachshiploc
+#		end
 
 
 	
@@ -88,7 +88,8 @@ gosub :_START_
 	:xsuccess
 		killalltriggers
 
-
+	gosub :player~quikstats
+	setvar $bustloc $player~current_sector
 	
 	send "tc"
 	setTextTrigger		THERE		:THERE		"Exchange with"
