@@ -689,12 +689,12 @@
 
 			:done
 				killalltriggers
-				send "'Quick Nap before resuming!*"
-				setdelaytrigger naptime :naptime 3000
+				#send "'Quick Nap before resuming!*"
+				setdelaytrigger naptime :naptime 500
 				pause
 				:naptime
 				killalltriggers
-				send "'Wakey Wakey!*"
+				#send "'Wakey Wakey!*"
 
 		end
 halt
