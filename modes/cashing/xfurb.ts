@@ -154,9 +154,8 @@ gosub :_START_
 			killalltriggers
 			goto :checkPlanetsInSector
 		:orestartplannum 
-			killalltriggers
 			setVar $planet~planetnumok 1
-			goto :checkPlanetsInSector
+			pause
 		:orenoplanet
 		:cannotland
 			killAllTriggers
@@ -167,7 +166,11 @@ gosub :_START_
 		:orestartplanetsok
 			killAllTriggers 
 			if ($planet~planetnumok = 1)
-			
+				getwordpos currentline $pos "<"
+				getwordpos currentline $pos2 ">"
+				if (($pos <= 0) or ($pos2 <= 0))
+					goto :checkPlanetsInSector
+				end
 				getWord CURRENTLINE $cPlanetNum 2
 				stripText $cPlanetNum ">"
 				stripText $cPlanetNum "<"
