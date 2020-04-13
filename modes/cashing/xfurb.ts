@@ -351,9 +351,10 @@ gosub :_START_
 	if ($holdsforsale < $furbHolds)
 		if ($PLAYER~CREDITS > 200000)
 			if ($holdsforsale = 0)
-				setVar $SWITCHBOARD~message "No holds for sale, wrong ship?*"
-				gosub :SWITCHBOARD~switchboard
-				halt
+				#setVar $SWITCHBOARD~message "No holds for sale, wrong ship?*"
+				#gosub :SWITCHBOARD~switchboard
+				send "a" $furbHolds "*y"
+
 			else
 				#setVar $SWITCHBOARD~message "Short on holds, buying what they've got.*"
 				#gosub :SWITCHBOARD~switchboard
