@@ -220,15 +220,16 @@ gosub :_START_
 			setVar $trybwarp 0
 		:tdone
 		
-		if ($planet~planetfuel > 100)
 			gosub :player~quikstats
 			if ($player~credits < 10000000)
 				send "t n l 2 * t n l 3 * t n t 1 *  c t f " (10000000-$player~credits) "* q "
 			else
 				send "t n l 2 * t n l 3 * t n t 1 *  "
 			end
-			setVar $gotore 1
-		end
+			gosub :player~quikstats
+			if ($player~ORE_HOLDS = $player~total_holds)
+				setVar $gotore 1
+			end
 
 		if ($trybwarp = 1)
 			send "cb" $furbreturn "*"
