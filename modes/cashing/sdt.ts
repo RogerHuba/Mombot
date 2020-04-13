@@ -521,13 +521,11 @@ setVar $debugdelay 0
             pause
 
             :sellfuel
-                killalltriggers
                 send "0*"
-                goto :sellproduct
+                pause
             :sellorg
-                killalltriggers
                 send "0*"
-                goto :sellproduct
+                pause
             :sellequ
                 killalltriggers
                 send "*"
