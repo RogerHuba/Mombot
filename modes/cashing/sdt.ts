@@ -959,7 +959,7 @@ setVar $debugdelay 0
                 #gosub :sell
                 gosub :getInfo
                 gosub :player~quikstats
-                
+
                 setVar $sendString "L " & $planet~planet[$current_ship] & "*  TNL3*c t t"& ($player~credits-500000)&"*qqq * * "
                 send $sendString
 
@@ -1449,6 +1449,7 @@ setVar $debugdelay 0
         return
         
 :swathoff
+	loadglobal $swathoff
     if ($swathoff = 0)
         setTextTrigger swathison :swathison "Command [TL="
         setDelayTrigger swathisoff :swathisoff 2000
@@ -1458,11 +1459,13 @@ setVar $debugdelay 0
         killalltriggers
         setVar $message "Detected SWATH Autohaggle"
         setVar $swathoff 0
+        saveglobal $swathoff
         return
 
         :swathisoff
         killalltriggers
         setVar $swathoff 1
+        saveglobal $swathoff
     end
     return
     
