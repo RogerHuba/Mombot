@@ -137,8 +137,8 @@ gosub :_START_
 		setTextLineTrigger cannotland :cannotland "ter making your pass through the atmosphere, y"
 		setTextLineTrigger orenoplanet :orenoplanet "There isn't a planet in this sector."
 		setTextLineTrigger oreoneplanet :oreoneplanet "-------  ---------  ---------  ---------  ---------  --"
-		setTextLineTrigger orestartplannum :orestartplannum "and Planet Name"
-		setTextLineTrigger orestartplanetsok :orestartplanetsok "< "
+		setTextLineTrigger orestartplannum :orestartplannum "Registry# and Planet Name"
+		setTextLineTrigger orestartplanetsok :orestartplanetsok "<"
 		pause
 		:blocked
 			killalltriggers
