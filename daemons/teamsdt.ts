@@ -526,9 +526,9 @@
 				setVar $orders[2][2] ""
 			end
 			if ($ephaggle = 0)
-				send "'red"&$orders[1]&" sdt "&$orders[1][1]&" "&$orders[2][1]&" "&$orders[1][2]&" "&$orders[2][2]&"*"
+				send "'red"&$orders[1]&" sdt "&$orders[1][1]&" "&$orders[2][1]&" "&$orders[1][2]&" "&$orders[2][2]&" noavoid*"
 			else
-				send "'red"&$orders[1]&" sdt "&$orders[1][1]&" "&$orders[2][1]&" "&$orders[1][2]&" "&$orders[2][2]&" ep*"
+				send "'red"&$orders[1]&" sdt "&$orders[1][1]&" "&$orders[2][1]&" "&$orders[1][2]&" "&$orders[2][2]&" noavoid ep*"
 			end
 			:repeatorders
 			settextlinetrigger badship :wrong "That is not an available ship, Script Halting."
@@ -604,7 +604,7 @@
 				setVar $ordersrepeat 1
 				setVar $SWITCHBOARD~MESSAGE "Ok, lets serve up the ports oppisite and try again.*"
 				gosub :SWITCHBOARD~SWITCHBOARD
-				send "'red"&$orders[1]&" SDT "&$orders[2][1]&" "&$orders[1][1]&" "&$orders[2][2]&" "&$orders[1][2]&"*"
+				send "'red"&$orders[1]&" SDT "&$orders[2][1]&" "&$orders[1][1]&" "&$orders[2][2]&" "&$orders[1][2]&" noavoid*"
 	
 				goto :repeatorders
 			:waitforredbust
