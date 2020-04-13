@@ -199,7 +199,7 @@ gosub :_START_
 			
 		:oreoneplanet
 			killAllTriggers
-			send "l * "
+			send "l *"
 			goto :getplanetdetails
 
 
@@ -221,7 +221,12 @@ gosub :_START_
 		:tdone
 		
 		if ($planet~planetfuel > 100)
-			send "t n l 2 * t n l 3 * t n t 1 *  "
+			gosub :player~quikstats
+			if ($player~credits < 10000000)
+				send "t n l 2 * t n l 3 * t n t 1 *  c t f " (10000000-$player~credits) "* q "
+			else
+				send "t n l 2 * t n l 3 * t n t 1 *  "
+			end
 			setVar $gotore 1
 		end
 
@@ -250,7 +255,7 @@ gosub :_START_
 				send " q q "
 				goto :checkPlanetsFinishWait
 		else
-			send " q "
+			send " q * "
 		end	
 
 
