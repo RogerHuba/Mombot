@@ -129,6 +129,7 @@ gosub :_START_
 	setVar $trybwarp 0
 
 	setVar $planet~planetnumok 0
+	gosub :player~quikstats
 	send "lq* "
 
 	:checkPlanetsInSector
@@ -171,7 +172,13 @@ gosub :_START_
 				stripText $cPlanetNum ">"
 				stripText $cPlanetNum "<"
 				isNumber $test $cPlanetNum
-				if (($test = true) and ($cPlanetNum > 0))
+				if ($test = true)
+					if ($cPlanetNum > 0)
+					else
+						getWord CURRENTLINE $cPlanetNum 1
+						stripText $cPlanetNum ">"
+						stripText $cPlanetNum "<"					
+					end
 				else
 					getWord CURRENTLINE $cPlanetNum 1
 					stripText $cPlanetNum ">"
