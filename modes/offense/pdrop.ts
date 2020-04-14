@@ -389,7 +389,12 @@ reqRecording
 				else
 					setvar $send "p "&$dropSector&"* y "
 					if ($fastdrop = true)
-						setVar $send $send&"q q fz"&($ship~SHIP_FIGHTERS_MAX-100000)&"*z c d * l "&$planet~planet&"*  m  *** c  "
+						if ($ship~SHIP_FIGHTERS_MAX <= 100000)
+							setvar $figstodrop ($ship~ship_fighters_max/2)
+						else
+							setvar $figstodrop ($ship~SHIP_FIGHTERS_MAX-100000)
+						end
+						setVar $send $send&"q q fz"&$figstodrop&"*z c d * l "&$planet~planet&"*  m  *** c  "
 					end
 					if ($fastkill = true)	
 						setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
