@@ -151,7 +151,7 @@ killalltriggers
 :verifyship   
     gosub :player~quikstats
     IF ($player~ship_number <> $ship_1)
-           send "x  " $ship_1 "*  q z *   "
+           send "x   " $ship_1 "*  q z *   "
     END
     gosub :player~quikstats
     IF ($player~ship_number <> $ship_1)
@@ -1021,33 +1021,40 @@ setVar $debugdelay 0
         send $xportString
         return
     else
-        setVar $xportString "X  " & $current_ship & "*Q"
+        setVar $xportString "X  " & $current_ship & "*  Q"
         send $xportString
-        setTextLineTrigger noxportship :noxportship "That is not an available ship"
-        setTextLineTrigger noxportrange :noxportrange "only has a transport range"
-        setTextLineTrigger noxportpassword :noxportpassword "Enter the password for"
-        setTextLineTrigger xportsuccess :xportsuccess "Security code accepted"
-        pause
-        pause
-        :noxportship
-            killalltriggers
-            gosub :endCNsettings
-            setVar $exit_message "That is not an available ship, Script Halting."
-            goto :exit
-        :noxportrange
-            killalltriggers
-            gosub :endCNsettings
-            setVar $exit_message "Not enough transport range, Script Halting."
-            goto :exit
-        :noxportpassword
-            killalltriggers
-            gosub :endCNsettings
-            setVar $exit_message "Transport ship requires a password, Script Halting."
-            goto :exit
-        :xportsuccess
-            killalltriggers
-            return
-    end
+        gosub :player~quikstats
+
+		if ($player~ship_number <> $current_ship)
+			setVar $exit_message "Cannot Xport to Ship "&$current_ship&".  Check Xport Range.  Halting.*"
+			goto :exit
+		end
+
+#        setTextLineTrigger noxportship :noxportship "That is not an available ship"
+#        setTextLineTrigger noxportrange :noxportrange "only has a transport range"
+#        setTextLineTrigger noxportpassword :noxportpassword "Enter the password for"
+#        setTextLineTrigger xportsuccess :xportsuccess "Security code accepted"
+#        pause
+#        pause
+#        :noxportship
+#            killalltriggers
+#            gosub :endCNsettings
+#            setVar $exit_message "That is not an available ship, Script Halting."
+#            goto :exit
+#        :noxportrange
+#            killalltriggers
+#            gosub :endCNsettings
+#            setVar $exit_message "Not enough transport range, Script Halting."
+#            goto :exit
+#        :noxportpassword
+#            killalltriggers
+#            gosub :endCNsettings
+#            setVar $exit_message "Transport ship requires a password, Script Halting."
+#            goto :exit
+#        :xportsuccess
+#            killalltriggers
+#            return
+#    end
 
 :exit
     if ($exit_message <> 0)
