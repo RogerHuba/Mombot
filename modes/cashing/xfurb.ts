@@ -89,7 +89,7 @@ gosub :_START_
 		killalltriggers
 
 	gosub :player~quikstats
-	setvar $bustloc $player~current_sector
+	#setvar $bustloc $player~current_sector
 	
 	send "tc"
 	setTextTrigger		THERE		:THERE		"Exchange with"
@@ -535,20 +535,25 @@ halt
 	pause
 	:sd
 		setVar $furbloc "S"
+		setvar $bustloc $map~stardock
 		pause
 	:terra
 		setVar $furbloc "T"
+		setvar $bustloc 1
 		pause
 	:alpha
 		setVar $furbloc "A"
+		setvar $bustloc $map~alpha_centauri
 		pause	
 	:rylos	
 		setVar $furbloc "R"
+		setvar $bustloc $map~rylos
 		pause
 	:enddisp
 		killalltriggers
 		if ($furbloc = "")
 			setVar $furbloc "T"			
+			setvar $bustloc 1
 		end
 	
 	
