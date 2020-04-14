@@ -61,7 +61,7 @@ gosub :_START_
 
 	
 
-	if (($furbloc = "A") or ($furbloc = "R"))
+	if (($furbloc = "A") or ($furbloc = "R") or (($furbloc = "T") and ($player~current_sector > 10)))
 		send "x " $bustship " * *"
 	else
 		send "x * " $bustship " * *"
