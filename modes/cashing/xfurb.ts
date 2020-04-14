@@ -557,9 +557,7 @@ halt
 			#gosub :SWITCHBOARD~switchboard
 			#halt
 			killalltriggers
-			setVar $furbloc "T"
-			goto :startdisp
-			
+			setVar $furbloc "T"			
 		end
 	
 	
