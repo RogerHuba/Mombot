@@ -328,7 +328,7 @@
 #				gosub :SWITCHBOARD~SWITCHBOARD
 #				halt
 #			end
-			if ($blue_sector = 1)
+			if ($blue_sector <> $map~stardock)
 				setvar $swap true
 			end
 			if (($blue_exp > $MAX_BLUE_EXP) AND ($override = FALSE))
