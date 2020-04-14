@@ -73,6 +73,7 @@ reqRecording
 		send "'{" $bot~bot_name "} - Please use [on/off] {delay} {drop type} {trigger type} {kill} {return}*"
 		halt
 	end
+	gosub :ship~getshipstats
 	setvar $bot~user_command_line $bot~user_command_line&" "
 	isNumber $test $bot~parm2
 	if ($test)
@@ -388,7 +389,7 @@ reqRecording
 				else
 					setvar $send "p "&$dropSector&"* y "
 					if ($fastdrop = true)
-						setVar $send $send&"q q fz200000*z c d * l "&$planet~planet&"*  m  *** c  "
+						setVar $send $send&"q q fz"&($ship~SHIP_FIGHTERS_MAX-100000)&"*z c d * l "&$planet~planet&"*  m  *** c  "
 					end
 					if ($fastkill = true)	
 						setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
@@ -1111,6 +1112,7 @@ include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
