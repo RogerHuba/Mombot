@@ -1029,7 +1029,7 @@ setVar $debugdelay 0
 			setVar $exit_message "Cannot Xport to Ship "&$current_ship&".  Check Xport Range.  Halting.*"
 			goto :exit
 		end
-
+		return
 #        setTextLineTrigger noxportship :noxportship "That is not an available ship"
 #        setTextLineTrigger noxportrange :noxportrange "only has a transport range"
 #        setTextLineTrigger noxportpassword :noxportpassword "Enter the password for"
