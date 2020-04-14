@@ -89,7 +89,7 @@ gosub :_START_
 		killalltriggers
 
 	gosub :player~quikstats
-	#setvar $bustloc $player~current_sector
+	setvar $bustloc $player~current_sector
 	
 	send "tc"
 	setTextTrigger		THERE		:THERE		"Exchange with"
@@ -535,29 +535,28 @@ halt
 	pause
 	:sd
 		setVar $furbloc "S"
-		setvar $bustloc $map~stardock
+		setvar $furbreturn $map~stardock
 		pause
 	:terra
 		setVar $furbloc "T"
-		setvar $bustloc 1
+		setvar $furbreturn 1
 		pause
 	:alpha
 		setVar $furbloc "A"
-		setvar $bustloc $map~alpha_centauri
+		setvar $furbreturn $map~alpha_centauri
 		pause	
 	:rylos	
 		setVar $furbloc "R"
-		setvar $bustloc $map~rylos
+		setvar $furbreturn $map~rylos
 		pause
 	:enddisp
 		killalltriggers
 		if ($furbloc = "")
 			setVar $furbloc "T"			
-			setvar $bustloc 1
+			setvar $furbreturn 1
 		end
 	
 	
-	setVar $furbreturn $PLAYER~CURRENT_SECTOR
 	
 	if ($PLAYER~unlimitedGame = FALSE) and ($PLAYER~TURNS < 30)
 		setVar $SWITCHBOARD~message "You need at least 30 turns.*"
