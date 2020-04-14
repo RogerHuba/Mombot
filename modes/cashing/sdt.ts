@@ -85,12 +85,11 @@ reqRecording
        HALT
     END
 
-    getwordpos " "&$bot~user_command_line&" " $pos "noavoid"
+    getwordpos " "&$bot~user_command_line&" " $pos " noavoid "
     setvar $noavoid false
     if ($pos > 0)
     	setvar $noavoid true
     end
-    setvar $noavoid true
     if ($GAME~steal_factor = 0)
 	setVar $GAME~steal_factor 21
 	send "'{" $switchboard~bot_name "}No Steal factor!! assuming 21, you need to ensure bot has refreshed!*"

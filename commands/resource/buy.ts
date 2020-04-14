@@ -3,6 +3,7 @@
 #=================================QUIKSTATS================================================
 # ===========================  START SWATH DISABLING SUBROUTINE  =================
 :swathoff
+	loadglobal $swathoff
 	if ($swathoff = FALSE)
 		setTextTrigger swathison :swathison "Command [TL="
 		setDelayTrigger swathisoff :swathisoff 2000
@@ -12,11 +13,13 @@
 		killalltriggers
 		setVar $swathOffMessage "Detected SWATH Autohaggle"
 		setVar $swathoff FALSE
+		saveglobal $swathoff
 		return
 
 		:swathisoff
 		killalltriggers
 		setVar $swathoff TRUE
+		saveglobal $swathoff
 	end
 return
 # ==========================   END SWATH DISABLING SUBROUTINE  =================
