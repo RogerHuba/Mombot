@@ -184,7 +184,7 @@ setVar $debugdelay 0
 		halt
 	end
 	
-        setVar $holds[$current_ship] $holds
+        setVar $holds[$current_ship] $player~total_holds
         setVar $init_credits $player~credits
         setVar $init_exp $player~experience
         setVar $init_turns $player~turns
@@ -216,7 +216,7 @@ setVar $debugdelay 0
 		gosub :clearadjacent
 		halt
 	end
-        setVar $holds[$current_ship] $holds
+        setVar $holds[$current_ship] $player~total_holds
         send "*"
         waitFor "(?=Help)?"
         loadglobal $ship[$current_ship].voids
