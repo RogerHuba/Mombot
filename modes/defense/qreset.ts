@@ -140,7 +140,11 @@
 	gosub :PLAYER~quikstats
 	setVar $SWITCHBOARD~message "Quasar Cannon reset mode enabled.  Planet number(s) ["&$planet~planetMemory&"] are set for a total of "&$totalDamage&". *"
 	gosub :SWITCHBOARD~switchboard
-	setvar $switchboard~message "Atmos cannons attempted to be set to "&$atmos_total&".*"
+	if ($cannonPlanetCount = 1)
+		setvar $switchboard~message "Atmos cannon set to "&$totalAtmosDamage&".*"
+	else
+		setvar $switchboard~message "Atmos cannons attempted to be set to "&$atmos_total&".*"
+	end
 	gosub :SWITCHBOARD~switchboard
 
 	goto :setmultitriggers
