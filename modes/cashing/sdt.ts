@@ -173,7 +173,7 @@ setVar $debugdelay 0
 # ----- SHIP 1 INIT
         setVar $total_revenue[$current_ship] 0
         setVar $equ_sold[$current_ship] 0
-        gosub :player~getInfo
+        gosub :getInfo
         setVar $sector[$current_ship] $player~current_sector
 	
 	# CHECK BUSTED SECTOR
@@ -184,9 +184,9 @@ setVar $debugdelay 0
 		halt
 	end
 	
-        setVar $holds[$current_ship] $player~total_holds
+        setVar $holds[$current_ship] $holds
         setVar $init_credits $player~credits
-        setVar $init_exp $player~experience
+        setVar $init_exp $exp
         setVar $init_turns $player~turns
         setVar $player~turns_used 0
         send "'{" $switchboard~bot_name "} - running ships " & $ship_1 & " / " & $ship_2 "*"
@@ -208,7 +208,7 @@ setVar $debugdelay 0
 # ----- SHIP 2 INIT
         setVar $total_revenue[$current_ship] 0
         setVar $equ_sold[$current_ship] 0
-        gosub :player~getInfo
+        gosub :getInfo
         setVar $sector[$current_ship] $player~current_sector
 	getSectorParameter $player~current_sector "BUSTED" $bustthissec
 	if ($bustthissec = TRUE)
@@ -216,7 +216,7 @@ setVar $debugdelay 0
 		gosub :clearadjacent
 		halt
 	end
-        setVar $holds[$current_ship] $player~total_holds
+        setVar $holds[$current_ship] $holds
         send "*"
         waitFor "(?=Help)?"
         loadglobal $ship[$current_ship].voids
@@ -388,7 +388,7 @@ setVar $debugdelay 0
 # ----- USED WITHIN MAIN PROGRAM LOOP
 :checkUpgrade
 
-    setVar $steal_holds $player~experience
+    setVar $steal_holds $exp
     divide $steal_holds $GAME~steal_factor
     if ($steal_holds < 10)
         setVar $exit_message "You need more experience to SDT!!!"
@@ -551,7 +551,7 @@ setVar $debugdelay 0
         killalltriggers
         getWord CURRENTLINE $offer 5
         striptext $offer ","
-        gosub :player~swathoff
+        gosub :swathoff
         if ($swathoff = 0)
             setVar $exit_message $message
             goto :exit
@@ -961,7 +961,7 @@ setVar $debugdelay 0
                 setSectorParameter $sector[$current_ship] "BUSTED" TRUE
                 send "'<"&$bot~subspace&">[Busted:"&$sector[$current_ship]&"]<"&$bot~subspace&">*"
                 #gosub :sell
-                gosub :player~getInfo
+                gosub :getInfo
                 gosub :player~quikstats
 
                 setVar $sendString "L " & $planet~planet[$current_ship] & "*  TNL3*c t t"& ($player~credits-500000)&"*qqq * * "
@@ -1018,7 +1018,30 @@ setVar $debugdelay 0
 			goto :exit
 		end
 		return
-
+#        setTextLineTrigger noxportship :noxportship "That is not an available ship"
+#        setTextLineTrigger noxportrange :noxportrange "only has a transport range"
+#        setTextLineTrigger noxportpassword :noxportpassword "Enter the password for"
+#        setTextLineTrigger xportsuccess :xportsuccess "Security code accepted"
+#        pause
+#        pause
+#        :noxportship
+#            killalltriggers
+#            gosub :endCNsettings
+#            setVar $exit_message "That is not an available ship, Script Halting."
+#            goto :exit
+#        :noxportrange
+#            killalltriggers
+#            gosub :endCNsettings
+#            setVar $exit_message "Not enough transport range, Script Halting."
+#            goto :exit
+#        :noxportpassword
+#            killalltriggers
+#            gosub :endCNsettings
+#            setVar $exit_message "Transport ship requires a password, Script Halting."
+#            goto :exit
+#        :xportsuccess
+#            killalltriggers
+#            return
     end
 
 :exit
@@ -1027,6 +1050,289 @@ setVar $debugdelay 0
     end
     halt
 
+
+
+
+
+
+# ----- SUB :getInfo
+:getInfo
+    setVar $player~photons 0
+    setVar $player~scan_type "None"
+    setVar $player~twarp_type 0
+    setVar $player~corpstring "[0]"
+    send "I"
+    waitfor "<Info>"
+    :waitForInfo
+        setTextLineTrigger getTraderName :getTraderName "Trader Name    :"
+        setTextLineTrigger getExpAndAlign :getExpAndAlign "Rank and Exp"
+        setTextLineTrigger getCorp :getCorp "Corp           #"
+        setTextLineTrigger getShipType :getShipType "Ship Info      :"
+        setTextLineTrigger getTPW :getTPW "Turns to Warp  :"
+        setTextLineTrigger getSect :getSect "Current Sector :"
+        setTextLineTrigger getTurns :getTurns "Turns left"
+        setTextLineTrigger getHolds :getHolds "Total Holds"
+        setTextLineTrigger getFighters :getFighters "Fighters       :"
+        setTextLineTrigger getShields :getShields "Shield points  :"
+        setTextLineTrigger getPhotons :getPhotons "Photon Missiles:"
+        setTextLineTrigger getScanType :getScanType "LongRange Scan :"
+        setTextLineTrigger getTwarpType1 :getTwarpType1 "  (Type 1 Jump):"
+        setTextLineTrigger getTwarpType2 :getTwarpType2 "  (Type 2 Jump):"
+        setTextLineTrigger getCredits :getCredits "Credits"
+        setTextTrigger getInfoDone :getInfoDone "Command [TL="
+        setTextTrigger getInfoDone2 :getInfoDone "Citadel command"
+        pause
+        pause
+    :getTraderName
+        killAllTriggers
+        setVar $tradername CURRENTLINE
+        stripText $tradername "Trader Name    : "
+        stripText $tradername "3rd Class "
+        stripText $tradername "2nd Class "
+        stripText $tradername "1st Class "
+        stripText $tradername "Nuisance "
+        stripText $tradername "Menace "
+        stripText $tradername "Smuggler Savant "
+        stripText $tradername "Smuggler "
+        stripText $tradername "Robber "
+        stripText $tradername "Private "
+        stripText $tradername "Lance Corporal "
+        stripText $tradername "Corporal "
+        stripText $tradername "Staff Sergeant "
+        stripText $tradername "Gunnery Sergeant "
+        stripText $tradername "1st Sergeant "
+        stripText $tradername "Sergeant Major "
+        stripText $tradername "Sergeant "
+        stripText $tradername "Chief Warrant Officer "
+        stripText $tradername "Warrant Officer "
+        stripText $tradername "Terrorist "
+        stripText $tradername "Infamous Pirate "
+        stripText $tradername "Notorious Pirate "
+        stripText $tradername "Dread Pirate "
+        stripText $tradername "Pirate "
+        stripText $tradername "Galactic Scourge "
+        stripText $tradername "Enemy of the State "
+        stripText $tradername "Enemy of the People "
+        stripText $tradername "Enemy of Humankind "
+        stripText $tradername "Heinous Overlord "
+        stripText $tradername "Prime Evil "
+        stripText $tradername "Ensign "
+        stripText $tradername "Lieutenant J.G. "
+        stripText $tradername "Lieutenant Commander "
+        stripText $tradername "Lieutenant "
+        stripText $tradername "Commander "
+        stripText $tradername "Captain "
+        stripText $tradername "Commodore "
+        stripText $tradername "Rear Admiral "
+        stripText $tradername "Vice Admiral "
+        stripText $tradername "Fleet Admiral "
+        stripText $tradername "Admiral "
+        stripText $tradername "Civilian "
+        stripText $tradername "Annoyance "
+        goto :waitForInfo
+    :getExpAndAlign
+        killAllTriggers
+        getWord CURRENTLINE $exp 5
+        getWord CURRENTLINE $align 7
+        stripText $exp ","
+        stripText $align ","
+        stripText $align "Alignment="
+        goto :waitForInfo
+    :getCorp
+        killAllTriggers
+        getWord CURRENTLINE $player~corp 3
+        stripText $player~corp ","
+        setVar $player~corpstring "[" & $player~corp & "]"
+        goto :waitForInfo
+    :getShipType
+        killAllTriggers
+        getWordPos CURRENTLINE $shiptypeend "Ported="
+        subtract $shiptypeend 18
+        cutText CURRENTLINE $shiptype 18 $shiptypeend
+        goto :waitForInfo
+    :getTPW
+        killAllTriggers
+        getWord CURRENTLINE $tpw 5
+        goto :waitForInfo
+    :getSect
+        killAllTriggers
+        getWord CURRENTLINE $player~current_sector 4
+        goto :waitForInfo
+    :getTurns
+        killAllTriggers
+        getWord CURRENTLINE $player~turns 4
+        if ($player~turns = "Unlimited")
+            setVar $player~turns 65000
+        end
+        goto :waitForInfo
+    :getHolds
+        killAllTriggers
+        setVar $line CURRENTLINE
+        getWord $line $holds 4
+        getWordPos $line $textpos "Ore="
+        if ($textpos <> 0)
+            cutText CURRENTLINE $temp $textpos 100
+            getWord $temp $oreholds 1
+            stripText $oreholds "Ore="
+        else
+            setVar $oreholds 0
+        end
+        getWordPos $line $textpos "Organics="
+        if ($textpos <> 0)
+            cutText CURRENTLINE $temp $textpos 100
+            getWord $temp $orgholds 1
+            stripText $orgholds "Organics="
+        else
+            setVar $orgholds 0
+        end
+        getWordPos $line $textpos "Equipment="
+        if ($textpos <> 0)
+            cutText CURRENTLINE $temp $textpos 100
+            getWord $temp $equholds 1
+            stripText $equholds "Equipment="
+        else
+            setVar $equholds 0
+        end
+        getWordPos $line $textpos "Colonists="
+        if ($textpos <> 0)
+            cutText CURRENTLINE $temp $textpos 100
+            getWord $temp $coloholds 1
+            stripText $coloholds "Colonists="
+        else
+            setVar $coloholds 0
+        end
+        getWordPos $line $textpos "Empty="
+        if ($textpos <> 0)
+            cutText CURRENTLINE $temp $textpos 100
+            getWord $temp $emptyholds 1
+            stripText $emptyholds "Empty="
+        else
+            setVar $emptyholds 0
+        end
+        goto :waitForInfo
+    :getFighters
+        killAllTriggers
+        getWord CURRENTLINE $figs 3
+        stripText $figs ","
+        goto :waitForInfo
+    :getShields
+        killAllTriggers
+        getWord CURRENTLINE $player~shields 4
+        stripText $player~shields ","
+        goto :waitForInfo
+    :getPhotons
+        killAllTriggers
+        getWord CURRENTLINE $player~photons 3
+        goto :waitForInfo
+    :getScanType
+        killAllTriggers
+        getWord CURRENTLINE $player~scan_type 4
+        goto :waitForInfo
+    :getTwarpType1
+        killAllTriggers
+        getWord CURRENTLINE $twarp_1_range 4
+        setVar $player~twarp_type 1
+        goto :waitForInfo
+    :getTwarpType2
+        killAllTriggers
+        getWord CURRENTLINE $twarp_2_range 4
+        setVar $player~twarp_type 2
+        goto :waitForInfo
+    :getCredits
+        killAllTriggers
+        getWord CURRENTLINE $player~credits 3
+        stripText $player~credits ","
+        goto :waitForInfo
+    :getInfoDone
+        killalltriggers
+        return
+
+# ----- SUB :planet~getplanetinfo -----
+:planet~getplanetinfo
+    send "*"
+    setTextLineTrigger planetInfo :planetInfo "Planet #"
+    pause
+
+    :planetinfo
+        killalltriggers
+        setVar $planet~CITADEL 0
+        setVar $planet~CITADELcredits 0
+        getWord CURRENTLINE $planet~planet 2
+        stripText $planet~planet "#"
+        getWord CURRENTLINE $player~current_sector 5
+        stripText $player~current_sector ":"
+        waitfor "2 Build 1   Product    Amount     Amount     Maximum"
+
+        :getPlanetStuff
+            setTextLineTrigger fuelstart :fuelstart "Fuel Ore"
+            setTextLineTrigger orgstart :orgstart "Organics"
+            setTextLineTrigger equipstart :equipstart "Equipment"
+            setTextLineTrigger figstart :figstart "Fighters        N/A"
+            setTextLineTrigger citadelstart :citadelstart "Planet has a level"
+            setTextTrigger planetInfoDone :planetInfoDone "Planet command (?=help)"
+            pause
+
+        :fuelstart
+            killalltriggers
+            getWord CURRENTLINE $planet~planetfuel 6
+            getWord CURRENTLINE $planet~planetfuelmax 8
+            stripText $planet~planetfuel ","
+            stripText $planet~planetfuelmax ","
+            goto :getPlanetStuff
+
+        :orgstart
+            killalltriggers
+            getWord CURRENTLINE $planet~planetorg 5
+            getWord CURRENTLINE $planet~planetorgmax 7
+            stripText $planet~planetorg ","
+            stripText $planet~planetorgmax ","
+            goto :getPlanetStuff
+
+        :equipstart
+            killalltriggers
+            getWord CURRENTLINE $planet~planetequip 5
+            getWord CURRENTLINE $planet~planetequipmax 7
+            stripText $planet~planetequip ","
+            stripText $planet~planetequipmax ","
+            goto :getPlanetStuff
+
+        :figstart
+            killalltriggers
+            getWord CURRENTLINE $planet~planetfig 5
+            getWord CURRENTLINE $planet~planetfigmax 7
+            stripText $planet~planetfig ","
+            stripText $planet~planetfigmax ","
+            goto :getPlanetStuff
+
+        :citadelstart
+            killalltriggers
+            getWord CURRENTLINE $planet~CITADEL 5
+            getWord CURRENTLINE $planet~CITADELcredits 9
+            striptext $planet~CITADELcredits ","
+
+    :planetInfoDone
+        return
+        
+:swathoff
+	loadglobal $swathoff
+    if ($swathoff = 0)
+        setTextTrigger swathison :swathison "Command [TL="
+        setDelayTrigger swathisoff :swathisoff 2000
+        pause
+
+        :swathison
+        killalltriggers
+        setVar $message "Detected SWATH Autohaggle"
+        setVar $swathoff 0
+        saveglobal $swathoff
+        return
+
+        :swathisoff
+        killalltriggers
+        setVar $swathoff 1
+        saveglobal $swathoff
+    end
+    return
     
 :voidadjacent
     send "*"
@@ -1081,6 +1387,179 @@ setVar $debugdelay 0
 		setvar $ship[$current_ship].voids ""
 		saveglobal $ship[$current_ship].voids 
 	end
+:player~quikstats
+
+        # ============================ START QUIKSTAT VARIABLES ==========================
+                setVar $player~current_prompt          "Undefined"
+                setVar $player~psychic_probe           "No"
+                setVar $player~planet_scanner          "No"
+                setVar $player~scan_type               "None"
+                setVar $player~current_sector          0
+                setVar $player~turns                   0
+                setVar $player~credits                 0
+                setVar $player~fighters                0
+                setVar $player~shields                 0
+                setVar $player~total_holds             0
+                setVar $player~ore_holds               0
+                setVar $player~organic_holds           0
+                setVar $player~equipment_holds         0
+                setVar $player~colonist_holds          0
+                setVar $player~photons                 0
+                setVar $player~armids                  0
+                setVar $player~limpets                 0
+                setVar $player~genesis                 0
+                setVar $player~twarp_type              0
+                setVar $player~cloaks                  0
+                setVar $player~beacons                 0
+                setVar $player~atomic                  0
+                setVar $player~corbo                   0
+                setVar $player~eprobes                 0
+                setVar $player~mine_disruptors         0
+                setVar $player~alignment               0
+                setVar $player~experience              0
+                setVar $player~corp                    0
+                setVar $player~ship_number             0
+                setVar $player~turns_PER_WARP          0
+                setVar $COMMAND_PROMPT          "Command"
+                setVar $COMPUTER_PROMPT         "Computer"
+                setVar $planet~CITADEL_PROMPT          "Citadel"
+                setVar $planet~planet_PROMPT           "Planet"
+                setVar $player~corpORATE_PROMPT        "Corporate"
+                setVar $STARDOCK_PROMPT         "<Stardock>"
+                setVar $HARDWARE_PROMPT         "<Hardware"
+                setVar $SHIPYARD_PROMPT         "<Shipyard>"
+                setVar $TERRA_PROMPT            "Terra"
+        # ============================ END QUIKSTAT VARIABLES ==========================
+
+     	setVar $player~current_prompt 		"Undefined"
+	killtrigger noprompt
+	killtrigger prompt1
+	killtrigger prompt2
+	killtrigger prompt3
+	killtrigger prompt4
+	killtrigger statlinetrig
+	killtrigger getLine2
+	setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
+	setTextLineTrigger 	statlinetrig 	:statStart 		#179
+	send #145&"/"
+	pause
+
+	:allPrompts
+		getWord CURRENTLINE $player~current_prompt 1
+		stripText $player~current_prompt #145
+		stripText $player~current_prompt #8
+		#getWord currentansiline $checkPrompt 1
+		#getWord currentline $tempPrompt 1
+		#getWordPos $checkPrompt $pos "[35m"
+		#if ($pos > 0)
+		#	setVar $player~current_prompt $tempPrompt
+		#end
+		setTextLineTrigger 	prompt		:allPrompts	 	#145 & #8
+		pause
+
+	:statStart
+		killtrigger prompt
+		killtrigger prompt2
+		killtrigger prompt3
+		killtrigger prompt4
+		killtrigger noprompt
+		setVar $stats ""
+		setVar $wordy ""
+
+
+	:statsline
+		killtrigger statlinetrig
+		killtrigger getLine2
+		setVar $line2 CURRENTLINE
+		replacetext $line2 #179 " "
+		striptext $line2 ","
+		setVar $stats $stats & $line2
+		getWordPos $line2 $pos "Ship"
+		if ($pos > 0)
+			goto :gotStats
+		else
+			setTextLineTrigger getLine2 :statsline
+			pause
+		end
+
+	:gotStats
+		setVar $stats $stats & " @@@"
+
+		setVar $current_word 0
+		while ($wordy <> "@@@")
+			if ($wordy = "Sect")
+				getWord $stats $player~current_sector   	($current_word + 1)
+			elseif ($wordy = "Turns")
+				getWord $stats $player~turns  			($current_word + 1)
+                if ($PLAYER~unlimitedGame)
+                    setVar $player~turns 65000
+                end
+			elseif ($wordy = "Creds")
+				getWord $stats $player~credits  		($current_word + 1)
+			elseif ($wordy = "Figs")
+				getWord $stats $player~fighters   		($current_word + 1)
+			elseif ($wordy = "Shlds")
+				getWord $stats $player~shields  		($current_word + 1)
+			elseif ($wordy = "Hlds")
+				getWord $stats $player~total_holds   		($current_word + 1)
+			elseif ($wordy = "Ore")
+				getWord $stats $player~ore_holds    		($current_word + 1)
+			elseif ($wordy = "Org")
+				getWord $stats $player~organic_holds    	($current_word + 1)
+			elseif ($wordy = "Equ")
+				getWord $stats $player~equipment_holds    	($current_word + 1)
+			elseif ($wordy = "Col")
+				getWord $stats $player~colonist_holds    	($current_word + 1)
+			elseif ($wordy = "Phot")
+				getWord $stats $player~photons   		($current_word + 1)
+			elseif ($wordy = "Armd")
+				getWord $stats $player~armids   		($current_word + 1)
+			elseif ($wordy = "Lmpt")
+				getWord $stats $player~limpets   		($current_word + 1)
+			elseif ($wordy = "GTorp")
+				getWord $stats $player~genesis  		($current_word + 1)
+			elseif ($wordy = "TWarp")
+				getWord $stats $player~twarp_type  		($current_word + 1)
+			elseif ($wordy = "Clks")
+				getWord $stats $player~cloaks   		($current_word + 1)
+			elseif ($wordy = "Beacns")
+				getWord $stats $player~beacons 		($current_word + 1)
+			elseif ($wordy = "AtmDt")
+				getWord $stats $player~atomic  		($current_word + 1)
+			elseif ($wordy = "Corbo")
+				getWord $stats $player~corbo   		($current_word + 1)
+			elseif ($wordy = "EPrb")
+				getWord $stats $player~eprobes   		($current_word + 1)
+			elseif ($wordy = "MDis")
+				getWord $stats $player~mine_disruptors   	($current_word + 1)
+			elseif ($wordy = "PsPrb")
+				getWord $stats $player~psychic_probe  		($current_word + 1)
+			elseif ($wordy = "PlScn")
+				getWord $stats $player~planet_scanner  	($current_word + 1)
+			elseif ($wordy = "LRS")
+				getWord $stats $player~scan_type    		($current_word + 1)
+			elseif ($wordy = "Aln")
+				getWord $stats $player~alignment    		($current_word + 1)
+			elseif ($wordy = "Exp")
+				getWord $stats $player~experience    		($current_word + 1)
+			elseif ($wordy = "Corp")
+				getWord $stats $player~corp   			($current_word + 1)
+			elseif ($wordy = "Ship")
+				getWord $stats $player~ship_number   		($current_word + 1)
+			end
+			add $current_word 1
+			getWord $stats $wordy $current_word
+		end
+	:doneQuikstats
+		killtrigger prompt1
+		killtrigger prompt2
+		killtrigger prompt3
+		killtrigger prompt4
+		killtrigger statlinetrig
+		killtrigger getLine2
+
+return
+# ============================== END QUICKSTATS SUB==============================
 
 
 :checkEPHaggle
@@ -1097,6 +1576,4 @@ include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\isephaggle\player"
 include "source\bot_includes\player\quikstats\player"
-include "source\bot_includes\player\getinfo\player"
-include "source\bot_includes\player\swathoff\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
