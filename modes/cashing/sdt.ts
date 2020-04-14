@@ -388,7 +388,7 @@ setVar $debugdelay 0
 # ----- USED WITHIN MAIN PROGRAM LOOP
 :checkUpgrade
 
-    setVar $steal_holds $exp
+    setVar $steal_holds $player~experience
     divide $steal_holds $GAME~steal_factor
     if ($steal_holds < 10)
         setVar $exit_message "You need more experience to SDT!!!"
