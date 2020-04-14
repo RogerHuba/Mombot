@@ -3,10 +3,14 @@
 									
 
 	setVar $BOT~help[1] $BOT~tab&"qreset [planet1] [damage1] ... [planetx] [damagex] "
-	setVar $BOT~help[2] $BOT~tab&"  - Sets sector and atmos cannons for planets listed"
+	setVar $BOT~help[2] $BOT~tab&"       {a:damage} "
 	setVar $BOT~help[3] $BOT~tab&"   "
-	setVar $BOT~help[4] $BOT~tab&"qreset [damage]"
-	setVar $BOT~help[5] $BOT~tab&"  - Sets sector and atmos cannon for current planet"
+	setVar $BOT~help[4] $BOT~tab&"   Sets sector and atmos cannons for planets listed"
+	setVar $BOT~help[5] $BOT~tab&"   "
+	setVar $BOT~help[6] $BOT~tab&"  Examples: "
+	setVar $BOT~help[7] $BOT~tab&"      >qreset 100000"
+	setVar $BOT~help[8] $BOT~tab&"      >qreset 10 100000 11 50000 12 25000"
+	setVar $BOT~help[9] $BOT~tab&"      >qreset 10 100000 11 50000 12 25000 a:250000"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Cannon Resetter"
@@ -30,17 +34,33 @@
 	setVar $totalDamage 0
 	setVar $onePlanet FALSE
 
+
+	getWordPos " "&$bot~user_command_line&" " $pos " a:"
+	setvar $atmos_total 0
+	if ($pos > 0)
+		getText $bot~user_command_line&" " $atmos_total "a:" " "
+		isNumber $isnumber $atmos_total
+		if ($isnumber <> true)
+			setVar $SWITCHBOARD~message "Atmosphere cannon amount must be number.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
+
 	setVar $j 0	
 	setVar $temp ""
-	while ($temp <> 0)
+	while ($temp <> "0")
 		add $j 1
 		getWord $bot~user_command_line $temp $j
-		if ($temp <> 0)
-			add $cannonPlanetCount 1
-			setVar $cannonPlanet[$cannonPlanetCount] $temp
-			add $j 1
-			getWord $bot~user_command_line $temp $j
-			setVar $cannonAmount[$cannonPlanetCount] $temp
+		isNumber $isnumber $temp
+		if ($isnumber = true)
+			if ($temp <> "0")
+				add $cannonPlanetCount 1
+				setVar $cannonPlanet[$cannonPlanetCount] $temp
+				add $j 1
+				getWord $bot~user_command_line $temp $j
+				setVar $cannonAmount[$cannonPlanetCount] $temp
+			end
 		end
 	end
 	if ($cannonPlanetCount <= 0)
@@ -143,17 +163,20 @@
                 setVar $percentToSet 100
             end
             add $totalDamage ((($planet~planet_FUEL * $percentToSet) / 100)/3)
-            send "c l s "&$percentToSet&"* "
+            send "c l s " $percentToSet "* "
 
     ## Then set atmos cannons ##
+    		if ($atmos_total <= 0)
+    			setvar $atmos_total $cannon_total
+    		end
             if ($game~mbbs)
-                setVar $percentToSet ((($cannon_total/2)*100)/$planet~planet_FUEL)
-                if (((($planet~planet_FUEL * $percentToSet) / 100)*2) < $cannon_total)
+                setVar $percentToSet ((($atmos_total/2)*100)/$planet~planet_FUEL)
+                if (((($planet~planet_FUEL * $percentToSet) / 100)*2) < $atmos_total)
                     add $percentToSet 1
                 end
             else
-                setVar $percentToSet (((2*$cannon_total)*100)/$planet~planet_FUEL)
-                if (((($planet~planet_FUEL * $percentToSet) / 100)/2) < $cannon_total)
+                setVar $percentToSet (((2*$atmos_total)*100)/$planet~planet_FUEL)
+                if (((($planet~planet_FUEL * $percentToSet) / 100)/2) < $atmos_total)
                     add $percentToSet 1
                 end
             end
@@ -165,7 +188,7 @@
             else
                 setvar $totalAtmosDamage ((($planet~planet_FUEL * $percentToSet) / 100)/2)             
             end
-            send "l a "&$percentToSet&"* "
+            send "l a " $percentToSet "* "
 return
 
 
