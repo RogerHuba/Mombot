@@ -186,7 +186,7 @@ setVar $debugdelay 0
 	
         setVar $holds[$current_ship] $holds
         setVar $init_credits $player~credits
-        setVar $init_exp $exp
+        setVar $init_exp $player~experience
         setVar $init_turns $player~turns
         setVar $player~turns_used 0
         send "'{" $switchboard~bot_name "} - running ships " & $ship_1 & " / " & $ship_2 "*"
