@@ -38,7 +38,7 @@
 	getWordPos " "&$bot~user_command_line&" " $pos " a:"
 	setvar $atmos_total 0
 	if ($pos > 0)
-		getText $bot~user_command_line&" " $atmos_total "a:" " "
+		getText " "&$bot~user_command_line&" " $atmos_total "a:" " "
 		isNumber $isnumber $atmos_total
 		if ($isnumber <> true)
 			setVar $SWITCHBOARD~message "Atmosphere cannon amount must be number.*"
@@ -64,15 +64,13 @@
 		end
 	end
 	if ($cannonPlanetCount <= 0)
-		setVar $SWITCHBOARD~message "No planet numbers entered.*"
-		gosub :SWITCHBOARD~switchboard
-		halt			
+		setvar $cannonPlanetCount 1
 	end
 	if (($cannonPlanetCount = 1) AND ($cannonAmount[$cannonPlanetCount] = 0))
 		#Only run from one planet
 		setVar $onePlanet TRUE
 		setVar $cannon_amount $cannonPlanet[1]
-		setvar $cannon_total $cannonPlanet[1]
+		setvar $cannon_total $atmos_total
 		setVar $planet~planetMemory $planet~planet
 		if ($startingLocation = "Command")
 			setVar $SWITCHBOARD~message "Must be run from citadel if only one planet.*"
