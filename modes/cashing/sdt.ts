@@ -1054,7 +1054,7 @@ setVar $debugdelay 0
 #        :xportsuccess
 #            killalltriggers
 #            return
-#    end
+    end
 
 :exit
     if ($exit_message <> 0)
