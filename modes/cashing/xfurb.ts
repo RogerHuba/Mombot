@@ -553,9 +553,13 @@ halt
 	:enddisp
 		killalltriggers
 		if ($furbloc = "")
-			setVar $SWITCHBOARD~message "Couldn't see a class 0, or in this case class OH Poop.*"
-			gosub :SWITCHBOARD~switchboard
-			halt
+			#setVar $SWITCHBOARD~message "Couldn't see a class 0, or in this case class OH Poop.*"
+			#gosub :SWITCHBOARD~switchboard
+			#halt
+			killalltriggers
+			setVar $furbloc "T"
+			goto :startdisp
+			
 		end
 	
 	
