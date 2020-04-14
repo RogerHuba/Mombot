@@ -116,6 +116,7 @@ reqRecording
         end
 
 logging off
+gosub :startCNsettings
 
     getSectorParameter 1 "LRA" $last_rob_attempt
     send "'{" $switchboard~bot_name "} - last rob attempt: "&$last_rob_attempt&"*"
@@ -181,6 +182,7 @@ setVar $debugdelay 0
 	if ($bustthissec = TRUE)
 		send "'{" $switchboard~bot_name "} - According to my data i've busted here - ending*"
 		gosub :clearadjacent
+		 gosub :endCNsettings
 		halt
 	end
 	
@@ -214,6 +216,7 @@ setVar $debugdelay 0
 	if ($bustthissec = TRUE)
 		send "'{" $switchboard~bot_name "} - According to my data i've busted here - ending*"
 		gosub :clearadjacent
+		 gosub :endCNsettings
 		halt
 	end
         setVar $holds[$current_ship] $holds
@@ -260,6 +263,7 @@ setVar $debugdelay 0
 		if (($ship[$current_ship].voids = "set") and ($player~current_sector <> 0) and ($noavoid <> true))
 			gosub :clearadjacent
 		end
+        gosub :endCNsettings
         setVar $cash_made $player~credits
         subtract $cash_made $init_credits
         setVar $exp_made $exp
@@ -316,6 +320,7 @@ setVar $debugdelay 0
     pause
     :noplanet
         killalltriggers
+        gosub :endCNsettings
         setVar $exit_message "There isn't a planet in this sector."
         goto :exit
     :planetnum
@@ -331,6 +336,7 @@ setVar $debugdelay 0
         :wrongplanet
             killalltriggers
             send "Q*"
+            gosub :endCNsettings
             setVar $exit_message "That planet is not in this sector."
             goto :exit
     :landing
@@ -358,6 +364,7 @@ setVar $debugdelay 0
         killalltriggers
         getText CURRENTLINE $port[$current_ship] ", Class " " ("
         if ($port[$current_ship] <> 2) and ($port[$current_ship] <> 3) and ($port[$current_ship] <> 4) and ($port[$current_ship] <> 8)
+            gosub :endCNsettings
             setVar $exit_message "This is not an equipment buying port, you can't SDT here!"
             goto :exit
         else
@@ -380,6 +387,7 @@ setVar $debugdelay 0
         end
     :noport
         killalltriggers
+        gosub :endCNsettings
         setVar $exit_message "There is no port, you can't SDT here!"
         goto :exit
 
@@ -391,9 +399,11 @@ setVar $debugdelay 0
     setVar $steal_holds $exp
     divide $steal_holds $GAME~steal_factor
     if ($steal_holds < 10)
+        gosub :endCNsettings
         setVar $exit_message "You need more experience to SDT!!!"
         goto :exit
     elseif ($holds[$current_ship] < 10)
+        gosub :endCNsettings
         setVar $exit_message "You need more cargo holds to SDT!!!"
         goto :exit
     end
@@ -435,6 +445,7 @@ setVar $debugdelay 0
                     send "'{" $switchboard~bot_name "} - Not enough credits to upgrade, selling early.*"
                     gosub :sell
                 else
+                    gosub :endCNsettings
                     setVar $exit_message "Not enough credits on hand to upgrade the port."
                     goto :exit
                 end
@@ -973,6 +984,7 @@ setVar $debugdelay 0
                 setSectorParameter $sector[$current_ship] "FAKEBUST" TRUE
                 send "  "
                 send "N  N  *  *"
+                gosub :endCNsettings
                 setVar $exit_message "FAKE Busted in Ship " & $current_ship & ", need a super furb"
                 goto :exit
             :good
@@ -1050,11 +1062,156 @@ setVar $debugdelay 0
     end
     halt
 
+# ----- SUB: Start CN settings -----
+:startCNsettings
+    send "CN"
+
+        SetTextLineTrigger ansi0 :ansi0 "(1) ANSI graphics            - Off"
+        SetTextLineTrigger ansi1 :ansi1 "(1) ANSI graphics            - On"
+        pause
+
+        :ansi0
+            killalltriggers
+            setVar $cn1 0
+            goto :cn1done
+        :ansi1
+            killalltriggers
+            setVar $cn1 1
+        :cn1done
+
+        SetTextLineTrigger anim0 :anim0 "(2) Animation display        - Off"
+        SetTextLineTrigger anim1 :anim1 "(2) Animation display        - On"
+        pause
+
+        :anim0
+            killalltriggers
+            setVar $cn2 0
+            goto :cn2done
+        :anim1
+            killalltriggers
+            setVar $cn2 1
+        :cn2done
+
+        SetTextLineTrigger page0 :page0 "(3) Page on messages         - Off"
+        SetTextLineTrigger page1 :page1 "(3) Page on messages         - On"
+        pause
+
+        :page0
+            killalltriggers
+            setVar $cn3 0
+            goto :cn3done
+        :page1
+            killalltriggers
+            setVar $cn3 1
+        :cn3done
+
+        SetTextLineTrigger silence0 :silence0 "(7) Silence ALL messages     - No"
+        SetTextLineTrigger silence1 :silence1 "(7) Silence ALL messages     - Yes"
+        pause
+
+        :silence0
+            killalltriggers
+            setVar $cn7 0
+            goto :cn7done
+        :silence1
+            killalltriggers
+            setVar $cn7 1
+        :cn7done
+
+        SetTextLineTrigger abortdisplay0 :abortdisplay0 "(9) Abort display on keys    - SPACE"
+        SetTextLineTrigger abortdisplay1 :abortdisplay1 "(9) Abort display on keys    - ALL KEYS"
+        pause
+
+        :abortdisplay0
+            killalltriggers
+            setVar $cn9 0
+            goto :cn9done
+        :abortdisplay1
+            killalltriggers
+            setVar $cn9 1
+        :cn9done
+
+        SetTextLineTrigger messagedisplay0 :messagedisplay0 "(A) Message Display Mode     - Compact"
+        SetTextLineTrigger messagedisplay1 :messagedisplay1 "(A) Message Display Mode     - Long"
+        pause
+
+        :messagedisplay0
+            killalltriggers
+            setVar $cna 0
+            goto :cnadone
+        :messagedisplay1
+            killalltriggers
+            setVar $cna 1
+        :cnadone
+
+        SetTextLineTrigger screenpauses0 :screenpauses0 "(B) Screen Pauses            - No"
+        SetTextLineTrigger screenpauses1 :screenpauses1 "(B) Screen Pauses            - Yes"
+        pause
+
+        :screenpauses0
+            killalltriggers
+            setVar $cnb 0
+            goto :cnbdone
+        :screenpauses1
+            killalltriggers
+            setVar $cnb 1
+        :cnbdone
+
+#        waitfor "Settings command (?=Help)"
+        gosub :sendCNstring
+#        send "?"
+#        waitfor "Settings command (?=Help)"
+        send "QQ"
+        SetTextTrigger subStartCNcontinue1 :subStartCNcontinue "Command [TL="
+        SetTextTrigger subStartCNcontinue2 :subStartCNcontinue "Citadel command (?=help)"
+        pause
+        :subStartCNcontinue
+        killalltriggers
+        return
 
 
 
+# ----- SUB: end CN settings -----
+:endCNsettings
+    send "CN"
+    waitfor "Settings command (?=Help)"
+    gosub :sendCNstring
+    send "?"
+    waitfor "Settings command (?=Help)"
+    send "QQ"
+    SetTextTrigger subEndCNcontinue1 :subEndCNcontinue "Command [TL="
+    SetTextTrigger subEndCNcontinue2 :subEndCNcontinue "Citadel command (?=help)"
+    pause
+    :subEndCNcontinue
+    killalltriggers
+    return
 
 
+# ----- SUB: send CN string -----
+:sendCNstring
+    if ($cn1 = 0)
+        send "1  "
+    end
+    if ($cn2 = 1)
+        send "2  "
+    end
+    if ($cn3 = 1)
+        send "3  "
+    end
+    if ($cn7 = 1)
+        send "7  "
+    end
+    if ($cn9 = 1)
+        send "9  "
+    end
+    if ($cna = 1)
+        send "A  "
+    end
+    if ($cnb = 1)
+        send "B  "
+    end
+    return
+    
 # ----- SUB :getInfo
 :getInfo
     setVar $player~photons 0
@@ -1564,6 +1721,7 @@ return
 
 :checkEPHaggle
 	if ($epHaggleFail = 1)
+		gosub :endCNsettings
 		gosub :clearadjacent
 		halt
 	end
