@@ -534,29 +534,20 @@ halt
 	setTextTrigger enddisp :enddisp "Command ["
 	pause
 	:sd
-		killalltriggers
 		setVar $furbloc "S"
-		goto :startdisp
+		pause
 	:terra
-		killalltriggers
 		setVar $furbloc "T"
-		goto :startdisp
+		pause
 	:alpha
-		killalltriggers
 		setVar $furbloc "A"
-		goto :startdisp
-	
+		pause	
 	:rylos	
-		killalltriggers
 		setVar $furbloc "R"
-		goto :startdisp
+		pause
 	:enddisp
 		killalltriggers
 		if ($furbloc = "")
-			#setVar $SWITCHBOARD~message "Couldn't see a class 0, or in this case class OH Poop.*"
-			#gosub :SWITCHBOARD~switchboard
-			#halt
-			killalltriggers
 			setVar $furbloc "T"			
 		end
 	
