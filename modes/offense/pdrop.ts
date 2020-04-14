@@ -25,7 +25,8 @@ reqRecording
 	setVar $BOT~help[13]  $BOT~tab&"  [perfect] - Only drops adjacent when it is only option"
 	setVar $BOT~help[14]  $BOT~tab&"  [density] - Drops adjacent, runs density photon"
 	setVar $BOT~help[15]  $BOT~tab&"     [lock] - Locks on sector then halts"
-	setVar $BOT~help[16]  $BOT~tab&" [fastdrop] - Attempts to drop figs in sector"
+	setVar $BOT~help[16]  $BOT~tab&"   [figs:n] - drop this many figs to sector on landing"
+	setVar $BOT~help[17]  $BOT~tab&"[offensive] - make figs offensive, default defense."	
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Dropper"
@@ -150,13 +151,23 @@ reqRecording
 	else
 		setVar $fastkill FALSE
 	end
-	getWordPos $bot~user_command_line $pos "fastdrop"
-	if ($pos > 0)
-		setVar $fastdrop TRUE
-	else
-		setVar $fastdrop FALSE
-	end
 
+	
+	getWordPos $bot~user_command_line $pos "figs:"
+	if ($pos > 0)
+		setVar $dropftrs TRUE
+		setVar $cline $bot~user_command_line & " "
+		getText $cline $dropFigQuant "figs:" " "
+
+		getWordPos $bot~user_command_line $pos "offensive"
+		if ($pos > 0)
+			setVar $dropftrsType "o"
+		else
+			setVar $dropftrsType "d"
+		end
+	else
+		setVar $dropftrs FALSE
+	end
 	getWordPos $bot~user_command_line $pos "defender"
 	if ($pos > 0)
 		setVar $defender TRUE
@@ -345,6 +356,14 @@ reqRecording
 		
 		:goHome
 			killAllTriggers
+			
+			if ($dropftrs)
+
+				goSub :retrieveFigs
+					
+			end
+				
+			
 			send "p " $homeSector "*y"
 		
 		:manualPwarp
@@ -387,25 +406,32 @@ reqRecording
 					goto :doLock
 				else
 					setvar $send "p "&$dropSector&"* y "
-					if ($fastdrop = true)
-						setVar $send $send&"q q fz200000*z c d * l "&$planet~planet&"*  m  *** c  "
+					if ($dropftrs = true)
+						killAllTriggers
+						setvar $send $send & $moveFigMacro
 					end
 					if ($fastkill = true)	
 						setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
 					end
 				end
+
 				send $send
+
 				if ($defender = 1)
 					killAllTriggers
 					goSub :liftDefenders
 				end
-				if ($attackOnSight)
 
+				if ($attackOnSight)
 					goSub :checkForVictims
 				end	
 				goSub :getSectorLocation
+
 				if ($player~current_sector <> $dropSector)
 					setSectorParameter $dropSector "FIGSEC" FALSE
+					if ($dropFtrs = true)
+						goSub :retrieveFigs
+					end
 				end
 				if ($defender = 1)
 					if ($player~current_sector <> $dropSector)
@@ -437,6 +463,9 @@ reqRecording
 					goSub :waitforrestart
 					goSub :setdefender
 				end
+				if ($dropFtrs = true)
+					goSub :retrieveFigs
+				end
 			elseif ($dropDescription = "Adjacent, then Direct")			
 				gosub :findAdjacent
 				goSub :attemptDrop
@@ -460,6 +489,9 @@ reqRecording
 					send "'Defender Initiated! send reset command to re-enable PDROP*"
 					goSub :waitforrestart
 					goSub :setdefender
+				end
+				if ($dropFtrs = true)
+					goSub :retrieveFigs
 				end
 			else
 				if ($dropSector <> $player~current_sector)
@@ -555,6 +587,7 @@ return
 				setVar $dropSector $gotoSector
 				goto :doLock
 			else
+
 				gosub :dopwarp
 			end
 	end
@@ -565,6 +598,9 @@ return
 	:planetDrop
 		killAllTriggers
 		setvar $send "p "&$gotoSector&"*y"
+		if ($dropftrs = true)
+			setvar $send $send & $moveFigMacro
+		end
 		if ($fastkill = true)
 			setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
 		end
@@ -577,13 +613,17 @@ return
 		killAllTriggers
 		setVar $targetSectors[$randomTarget] 0
 		setSectorParameter $gotoSector "FIGSEC" FALSE
-		setVar $i 1
-		while ($i <= $targetCount)
-			if ($targetSectors[$i] > 0)
-				setVar $randomTarget $i
-				goto :planetDrop
+		if ($dropFtrs = true)
+			# we can only try once and will retrieve figs once done
+		else
+			setVar $i 1
+			while ($i <= $targetCount)
+				if ($targetSectors[$i] > 0)
+					setVar $randomTarget $i
+					goto :planetDrop
+				end
+				add $i 1
 			end
-			add $i 1
 		end
 		goto :pwarpFinished
 	:pwarpYes
@@ -651,6 +691,37 @@ return
 	send "q"
 	gosub :planet~getPlanetInfo
 	setVar $planet~planetFighters $planet~PLANET_FIGHTERS
+	
+	if ($dropftrs)
+
+		if ($planet~planet_FIGHTERS < $dropFigQuant)
+			setVar $SWITCHBOARD~message "There are only " & $planet~planet_FIGHTERS & " fighters on the planet.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+
+		setVar $SWITCHBOARD~message "Dropping " & $dropFigQuant & " on landing; Cannons not changed.*"
+		gosub :SWITCHBOARD~switchboard
+
+		setVar $moveFigMacro ""
+		setVar $moved 0
+
+		while ($moved < $dropFigQuant)
+			
+			setVar $toMove ($dropFigQuant - $moved)
+
+			if ($toMove >= $maxFigAttack)
+				setVar $thisMove $maxFigAttack
+				setVar $moved ($moved + $thisMove)
+			else
+				setVar $thisMove $toMove
+				setVar $moved $moved + $thisMove
+			end
+
+			setVar $moveFigMacro $moveFigMacro & "q m n t* q fz " & $moved & "* * zc" & $dropftrsType & " * l" & $planet~planet & " *m* t * ccq"
+		end
+
+	end
 	send "c "
 return
 
@@ -1104,6 +1175,23 @@ return
 
 # ============================== END DEFENDER ROUTINES ==============================
 
+:retrieveFigs
+	gosub :player~quikstats
+
+	setVar $BOT~command "movefig"
+	setVar $BOT~user_command_line " movefig p "& $dropFigQuant 
+	setVar $BOT~parm1 $p
+	setVar $BOT~parm2 $dropFigQuant
+	saveVar $BOT~parm1
+	saveVar $BOT~parm2
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	load "scripts\"&$bot~mombot_directory&"\modes\resource\movefig.cts"
+	setEventTrigger        moveended        :moveended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\movefig.cts"
+	pause
+	:moveended
+		killalltriggers
+return
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
