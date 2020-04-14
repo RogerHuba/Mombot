@@ -63,7 +63,7 @@
 	if ($startingLocation = "Citadel")
 		send "q"
 	elseif ($startingLocation <> "Planet")
-		setVar $SWITCHBOARD~message "You must start this script from a planet!* "
+		setVar $SWITCHBOARD~message "You must start this script from a planet!*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
