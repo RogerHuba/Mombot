@@ -319,7 +319,7 @@
 					waiton "Message sent on sub-space channel"
 			halt
 		end
-		if ($planet~planetS_After <> $planet~planetS_Before)
+		if ($planet~planetS_After > $planet~planetS_Before)
 			send "'{" & $switchboard~bot_name & "} -  New Planet in Sector. Halting!*"
 					waiton "Message sent on sub-space channel"
 			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
