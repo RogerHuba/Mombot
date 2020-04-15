@@ -407,6 +407,12 @@
 	if ($killing~capture)
 		setVar $message $message&"*                   Capture"
 	end
+	if ($navigate~securePwarp)
+		setVar $message $message&"*                   Secure"
+	end
+	if ($photon~paranoid)
+		setVar $message $message&"*                   Paranoid"
+	end
 	if ($restock~deploymines)
 		setVar $message $message&"*                   Deploy mines"
 	end
@@ -524,6 +530,9 @@
 		end
 		if ($navigate~securePwarp)
 			setvar $description $description&"Secure "
+		end
+		if ($photon~paranoid)
+			setvar $description $description&"Paranoid "
 		end
 		if ($saveme)
 			setvar $description $description&"Saveme:"&$saveme_bot&" "
