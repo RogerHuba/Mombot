@@ -20,7 +20,7 @@
 	loadvar $bot~folder
 
 
-	setVar $sentinel_cycle 20000
+	setVar $sentinel_cycle 120000
 	setvar $sentinel~CheckCLVDetail 1
 	setVar $sentinel~logfile $bot~folder&"/sentinel"&$year & $month & $day & ".log"
 
@@ -452,12 +452,7 @@
 		setTextLineTrigger 18 :scan " enters the game."
 		setDelayTrigger	   19 :announce	1200000
 		setDelayTrigger	   20 :head_home_timeout 3600000
-		if (($photon~found))
-			#########################################
-			# wait longer if grid is hit by players #
-			#########################################
-			setdelaytrigger    25 :sentinel 120000
-		else
+		if ($sentinel~broadcast)
 			setdelaytrigger    25 :sentinel $sentinel_cycle
 		end
 		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
