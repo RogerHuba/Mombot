@@ -200,7 +200,7 @@ return
 		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 		if ($pos > 0)
 			setvar $alien true
-			#return
+			return
 		end
 	end
 
