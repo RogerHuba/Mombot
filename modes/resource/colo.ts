@@ -319,8 +319,11 @@ goto :Start_Up_Routines
 			:more
 			#KEEP RUNNING
 			
-			send "t * t 1"&$colo_fuel&"* q "
-			
+			if ($BWARP)
+				send "t * t 1"&$colo_fuel&"* c "
+			else
+				send "t * t 1"&$colo_fuel&"* q "
+			end
 			gosub :PLAYER~quikstats
 			killalltriggers
 		end
