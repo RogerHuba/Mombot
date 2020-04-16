@@ -241,6 +241,7 @@ return
 	:try_again
 	gosub :do_relog
 	:GameClosed
+	killalltriggers
 	setTextLineTrigger  1 :closed 		"I'm sorry, but this is a closed game."
 	setTextLineTrigger  2 :closed 		"www.tradewars.com                                   Epic Interactive Strategy"
 	setTextLineTrigger  3 :closed		" day(s) to get back in."
