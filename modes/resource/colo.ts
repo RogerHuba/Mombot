@@ -238,9 +238,9 @@ goto :Start_Up_Routines
 				#There are currently 3417042 colonists ready to leave Terra.
 				:check_colos
 				if ($PLAYER~PLANET_SCANNER = "No")
-					send "  lq "
+					send "  l q "
 				else
-					send "  l  1*q "
+					send "  l  1* q "
 				end
 				waiton " colonists ready to leave Terra."
 				getword currentline $scam_check 1
