@@ -235,7 +235,6 @@ goto :Start_Up_Routines
 			:colo_wait
 				gosub :player~quikstats
 				setvar $empty_holds ($player~total_holds - $player~COLONIST_HOLDS - $player~ore_holds)
-				echo "*[" $empty_holds "]*"
 				#There are currently 3417042 colonists ready to leave Terra.
 				:check_colos
 				if ($PLAYER~PLANET_SCANNER = "No")
@@ -262,7 +261,7 @@ goto :Start_Up_Routines
 				else
 					SetVar $Land_mac "  L  1*  T"&$amount_to_grab&"*   "
 				end
-
+				setvar $empty_holds $empty_holds-$amount_to_grab
 
 				Send $Land_mac
 				setTextLineTrigger	Done	:Done		"The Colonists file aboard your ship"
