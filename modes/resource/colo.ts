@@ -190,9 +190,9 @@ goto :Start_Up_Routines
 
 
 	if ($PLAYER~PLANET_SCANNER = "No")
-		SetVar $Land_mac "  L  T  * *   "
+		SetVar $Land_mac "  L  T  " & $BOT~parm2 & "*   "
 	else
-		SetVar $Land_mac "  L  1*  T  * *   "
+		SetVar $Land_mac "  L  1*  T  " & $BOT~parm2 & "*   "
 	end
 	if ($colo_type = "m")
 	   if ($BOT~parm2 < 1)
@@ -234,7 +234,7 @@ goto :Start_Up_Routines
 
 			:colo_wait
 				gosub :player~quikstats
-				setvar $empty_holds ($player~total_holds - $player~colo_holds - $player~ore_holds)
+				setvar $empty_holds ($player~total_holds - $player~COLONIST_HOLDS - $player~ore_holds)
 				#There are currently 3417042 colonists ready to leave Terra.
 				:check_colos
 				if ($PLAYER~PLANET_SCANNER = "No")
