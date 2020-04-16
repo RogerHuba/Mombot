@@ -47,6 +47,12 @@
 		:continuepassword
 			gosub :relog_freeze_trigger
 			send $BOT~password & "*"
+			settextlinetrigger dead :dead "What do you want to name your ship? (30 letters)"
+			settexttrigger alive :alldone_relog "Command ["
+			pause
+		:dead
+			send "Mind ()ver Matter*y "
+			pause		
 		:alldone_relog
 			killtrigger clearvoids
 			killtrigger novoids
