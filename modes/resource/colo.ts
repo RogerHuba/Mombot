@@ -233,6 +233,8 @@ goto :Start_Up_Routines
 				halt
 
 			:colo_wait
+				gosub :player~quikstats
+				setvar $empty_holds ($player~total_holds - $player~colo_holds - $player~ore_holds)
 				#There are currently 3417042 colonists ready to leave Terra.
 				:check_colos
 				if ($PLAYER~PLANET_SCANNER = "No")
@@ -247,8 +249,17 @@ goto :Start_Up_Routines
 				end
 				getword currentline $colos_on_terra 4
 				if ($colos_on_terra < $colo_min)
-					echo "*[" $colos_on_terra " < " $colo_min "]*"
 					goto :check_colos
+				end
+				if ($colos_on_terra > $empty_holds)
+					setvar $amount_to_grab $empty_holds
+				else
+					setvar $amount_to_grab $colos_on_terra
+				end
+				if ($PLAYER~PLANET_SCANNER = "No")
+					SetVar $Land_mac "  L  T  "&$amount_to_grab&"*   "
+				else
+					SetVar $Land_mac "  L  1*  T  "&$amount_to_grab&"*   "
 				end
 
 
