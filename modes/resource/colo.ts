@@ -190,9 +190,9 @@ goto :Start_Up_Routines
 
 
 	if ($PLAYER~PLANET_SCANNER = "No")
-		SetVar $Land_mac "  L  T  " & $BOT~parm2 & "*   "
+		SetVar $Land_mac "  L  T  * *   "
 	else
-		SetVar $Land_mac "  L  1*  T  " & $BOT~parm2 & "*   "
+		SetVar $Land_mac "  L  1*  T  * *   "
 	end
 	if ($colo_type = "m")
 	   if ($BOT~parm2 < 1)
