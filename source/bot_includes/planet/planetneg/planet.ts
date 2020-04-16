@@ -343,6 +343,7 @@ pause
 					striptext $fueltosell "]"
 					striptext $fueltosell "?"
 				end
+
 				if (($PLAYER~current_sector.orepercent >= 15) and ($fueltosell > 0))
 					if ($fueltosell > $PLAYER~current_sector.oretrading)
 						setVar $fueltosell $PLAYER~current_sector.oretrading
@@ -359,7 +360,7 @@ pause
 						setVar $orehaggle "failed"
 					end
 				else
-					send "0*"
+					send "az0*"
 					setVar $fueltosell 0
 				end
 				goto :sellproduct
@@ -391,7 +392,7 @@ pause
 						setVar $orghaggle "failed"
 					end
 				else
-					send "0*"
+					send "az0*"
 					setVar $orgtosell 0
 				end
 				goto :sellproduct
@@ -423,7 +424,7 @@ pause
 						setVar $equhaggle "failed"
 					end
 				else
-					send "0*"
+					send "az0*"
 					setVar $equiptosell 0
 				end
 				goto :sellproduct
@@ -462,7 +463,7 @@ pause
 
 :sellhaggle
 	setTextLineTrigger sellfirstoffer :sellfirstoffer "We'll buy them for"
-	send $portbuying & "*"
+	send "az" & $portbuying & "*"
 	pause
 
 	:sellfirstoffer
@@ -1159,7 +1160,7 @@ pause
 		divide $counter 10
 		multiply $counter $multiple
 		divide $counter 100
-		send $counter & "*"
+		send "az" & $counter & "*"
 		setVar $midhaggles 0
 	:sellofferloop
 		setTextLineTrigger sellprice :sellprice "We'll buy them for"
@@ -1212,7 +1213,7 @@ pause
 	# I'm wondering if this is a version issue? i.e. between v1 and v2.
 		multiply $counter 98
 		divide $counter 100
-		send $counter & "*"
+		send "az" & $counter & "*"
 		goto :sellofferloop
 	:sellprice
 		killtrigger sellprice 
@@ -1259,7 +1260,7 @@ pause
 				subtract $counter $offer_change
 				subtract $counter 10
 			end
-		send $counter & "*"
+		send "az"& $counter & "*"
 		goto :sellofferloop
 	:sellfinaloffer
 		killtrigger sellprice 
@@ -1329,10 +1330,10 @@ pause
 			divide $offer_change 10
 			subtract $counter $offer_change
 			subtract $counter 10
-			send $counter & "*"
+			send "az" & $counter & "*"
 		else
 			# fail the haggle on purpose
-			send $counter & "*"
+			send "az" & $counter & "*"
 		end
 		goto :sellofferloop
 	:sellnotinterested
