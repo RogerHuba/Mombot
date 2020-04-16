@@ -261,11 +261,10 @@ return
 		waiton "What do you want to name your ship? (30 letters)"
 		if ($menus~landOnTerra = true)		
 			send $BOT~startShipName&"*Y l "
-			goto :done_landing_terra
+			return
 		else
 			send $BOT~startShipName&"*Y "
 		end
-		goto :resumeStartAfterCorpJoin
 	end
 	pause
 	:whosplay
@@ -312,7 +311,7 @@ return
 	killalltriggers
 
 	# Testing this addition - Can we check briefly for our corp before mowing?
-	if (($BOT~isCEO = FALSE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
+	if (($newgame) and ($BOT~isCEO = FALSE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
 		setVar $skipJoin 0
 		setVar $attemps 0
 		gosub :BOT~killthetriggers
