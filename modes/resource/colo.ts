@@ -188,26 +188,6 @@ goto :Start_Up_Routines
 		send "q "
 	end
 
-	if ($colo_type = "m")
-		setVar $colo_min $colo_misc
-		#There are currently 3417042 colonists ready to leave Terra.
-		:check_colos
-		if ($PLAYER~PLANET_SCANNER = "No")
-			send "  lq "
-		else
-			send "  l  1*q "
-		end
-		waiton " colonists ready to leave Terra."
-		getword currentline $scam_check 1
-		if ($scam_check <> "There")
-			goto :check_colos
-		end
-		getword currentline $colos_on_terra 4
-		if ($colos_on_terra < $colo_min)
-			goto :check_colos
-		end
-	end
-
 
 	if ($PLAYER~PLANET_SCANNER = "No")
 		SetVar $Land_mac "  L  T  " & $BOT~parm2 & "*   "
@@ -253,6 +233,24 @@ goto :Start_Up_Routines
 				halt
 
 			:colo_wait
+				#There are currently 3417042 colonists ready to leave Terra.
+				:check_colos
+				if ($PLAYER~PLANET_SCANNER = "No")
+					send "  lq "
+				else
+					send "  l  1*q "
+				end
+				waiton " colonists ready to leave Terra."
+				getword currentline $scam_check 1
+				if ($scam_check <> "There")
+					goto :check_colos
+				end
+				getword currentline $colos_on_terra 4
+				if ($colos_on_terra < $colo_min)
+					goto :check_colos
+				end
+
+
 				Send $Land_mac
 				setTextLineTrigger	Done	:Done		"The Colonists file aboard your ship"
 				setTextLineTrigger	None	:Done		"There aren't that many on Terra!"
