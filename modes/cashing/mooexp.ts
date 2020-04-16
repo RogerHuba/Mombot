@@ -2586,8 +2586,8 @@ return
 		echo "*###############################"
 
 	
-		send "q q q * * *  p n" $tradePlanet "* * * * * * * "
-		waitfor "Land on which planet"
+		send "q q q * * *  p n" $tradePlanet "* * * * * * * ^q"
+		waitfor "ENDINTERROG"
 		gosub :player~quikstats
 		stripText $player~credits ","
 		setVar $player~creditsNow $player~credits
