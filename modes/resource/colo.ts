@@ -246,8 +246,8 @@ goto :Start_Up_Routines
 					goto :check_colos
 				end
 				getword currentline $colos_on_terra 4
-				echo "*[" $colos_on_terra " < " $colo_min "]*"
 				if ($colos_on_terra < $colo_min)
+					echo "*[" $colos_on_terra " < " $colo_min "]*"
 					goto :check_colos
 				end
 
