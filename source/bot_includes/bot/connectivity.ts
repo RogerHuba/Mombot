@@ -256,7 +256,15 @@ return
 		setTextTrigger 9 :newname	"Use (N)ew Name or (B)BS Name"
 		setTextTrigger 10 :noalias	"Choose a name carefully as you will have it for a while!"
 	else
-		send $BOT~password&"***"&$BOT~startShipName&"*Y "
+		send $BOT~password&"*   *   *   "
+		waiton "What do you want to name your ship? (30 letters)"
+		if ($menus~landOnTerra = true)		
+			send $BOT~startShipName&"*Y l "
+			goto :done_landing_terra
+		else
+			send $BOT~startShipName&"*Y "
+		end
+		goto :back_in_game
 	end
 	pause
 	:whosplay
