@@ -46,7 +46,7 @@
 			pause
 		:continuepassword
 			gosub :relog_freeze_trigger
-			send $BOT~password & "* ***********"
+			send $BOT~password & "* **"
 			settextlinetrigger dead :dead "What do you want to name your ship? (30 letters)"
 			settexttrigger alive :alldone_relog "Command ["
 			pause
