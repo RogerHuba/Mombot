@@ -22,6 +22,7 @@ loadVar $game~port_max
 loadVar $game~ptradesetting
 loadvar $MAP~STARDOCK
 loadVar $game~MAX_PLANETS_IN_GAME
+loadVar $GAME~MAX_PLANETS_PER_SECTOR
 loadVar $bot~Folder
 loadVar $BOT~bot_turn_limit
 loadVar $moo_primary_product
@@ -30,30 +31,31 @@ loadVar $moo_preferred_slot
 setVar $BOT~help[1]  $BOT~tab&"       Warps around to ports and sells products from planets"
 setVar $BOT~help[2]  $BOT~tab&"        "
 setVar $BOT~help[3]  $BOT~tab&"       "
-setVar $BOT~help[4]  $BOT~tab&" moo [mode] {maxplanets} {f/o/e} {all/bad}"
-setVar $BOT~help[5]  $BOT~tab&"        {guard} {figs} {ephag} {safe/paranoid}"
+setVar $BOT~help[4]  $BOT~tab&" moo [mode] {maxplanets} {f/o/e} {all/bad/top}"
+setVar $BOT~help[5]  $BOT~tab&"        {guard} {nofigs} {ephag} {safe/paranoid}"
 setVar $BOT~help[6]  $BOT~tab&" Options:"
 setVar $BOT~help[7]  $BOT~tab&"    [mode]       skimpl/upgraded/param/everything/file/sector"
 setVar $BOT~help[8]  $BOT~tab&"    {maxplanets} Max planets b4 blasting and replacing."
 setVar $BOT~help[9]  $BOT~tab&"    {f/o/e}      Primary Product, Equipment by default, set"
 setVar $BOT~help[10] $BOT~tab&"                 once only then no need to call."
-setVar $BOT~help[11] $BOT~tab&"    {bad/all}    Clean bad/all planets post trading. default none."
-setVar $BOT~help[12] $BOT~tab&"    {guard}      Dock corp planet created"
-setVar $BOT~help[13] $BOT~tab&"    {ephag}      Default is NEG but set to use EP Haggle"
-setVar $BOT~help[14] $BOT~tab&"    {safe}       Ports must be surrounded by figs (ZTM!)"
-setVar $BOT~help[15] $BOT~tab&"    {paranoid}   Ports must be surrounded by figs and limpets"
-setVar $BOT~help[16] $BOT~tab&"    "
-setVar $BOT~help[17] $BOT~tab&"    Modes -"
-setVar $BOT~help[18] $BOT~tab&"      skimpl/pl  - Sells off product from personal planet list"
-setVar $BOT~help[19] $BOT~tab&"                 - Skim versions skips making new planets"
-setVar $BOT~help[19] $BOT~tab&"      upgraded   - Visits upgrade ports (10k+) that are ready"
-setVar $BOT~help[20] $BOT~tab&"      param      - Sectors with this param i.e. moo MOOPORTS"
-setVar $BOT~help[21] $BOT~tab&"      everything - Anything that buys the primary prod with a fig"
-setVar $BOT~help[22] $BOT~tab&"      file       - One sector per line, file must end in .txt"
-setVar $BOT~help[23] $BOT~tab&"      sector     - One sector >Moo sector {maxplanets} {sector}"
-setVar $BOT~help[23] $BOT~tab&"      "
-setVar $BOT~help[23] $BOT~tab&"  FIRE TOURNAMENT"
-setVar $BOT~help[23] $BOT~tab&"       moo [mode] fire {figs} {ephag} {safe/paranoid}"
+setVar $BOT~help[11] $BOT~tab&"    {bad/all/top}Clean bad/all planets post trading. default none."
+setVar $BOT~help[12] $BOT~tab&"                 Top leaves max planets per sector"
+setVar $BOT~help[13] $BOT~tab&"    {guard}      Dock corp planet created"
+setVar $BOT~help[14] $BOT~tab&"    {ephag}      Default is NEG but set to use EP Haggle"
+setVar $BOT~help[15] $BOT~tab&"    {safe}       Ports must be surrounded by figs (ZTM!)"
+setVar $BOT~help[16] $BOT~tab&"    {paranoid}   Ports must be surrounded by figs and limpets"
+setVar $BOT~help[17] $BOT~tab&"    "
+setVar $BOT~help[18] $BOT~tab&"    Modes -"
+setVar $BOT~help[19] $BOT~tab&"      skimpl/pl  - Sells off product from personal planet list"
+setVar $BOT~help[20] $BOT~tab&"                 - Skim versions skips making new planets"
+setVar $BOT~help[21] $BOT~tab&"      upgraded   - Visits upgrade ports (10k+) that are ready"
+setVar $BOT~help[22] $BOT~tab&"      param      - Sectors with this param i.e. moo MOOPORTS"
+setVar $BOT~help[23] $BOT~tab&"      everything - Anything that buys the primary prod with a fig"
+setVar $BOT~help[24] $BOT~tab&"      file       - One sector per line, file must end in .txt"
+setVar $BOT~help[25] $BOT~tab&"      sector     - One sector >Moo sector {maxplanets} {sector}"
+setVar $BOT~help[26] $BOT~tab&"      "
+setVar $BOT~help[27] $BOT~tab&"  FIRE TOURNAMENT"
+setVar $BOT~help[28] $BOT~tab&"       moo [mode] fire {figs} {ephag} {safe/paranoid}"
 
 gosub :bot~helpfile
 
@@ -64,8 +66,9 @@ gosub :player~quikstats
 setvar $startturns $player~turns
 
 # try and grab fuel at this
+setvar $startMsg ""
 
-setVar $minOre 120
+setVar $minOre 150
 if ($player~total_holds < $minOre)
 	setVar $minOre $player~total_holds
 end
@@ -74,8 +77,8 @@ end
 
 if ($BOT~bot_turn_limit < 1)
 	setVar $turn_limit 50
-	setvar $switchboard~message "Turn Limit not set in bot - setting to 50.*"
-	gosub :switchboard~switchboard
+	setvar $startMsg $startMsg &  "Turn Limit not set in bot - setting to 50.*"
+	
 else
 	setVar $turn_limit $BOT~bot_turn_limit
 end
@@ -88,18 +91,19 @@ if (($startingLocation <> "Command") and ($startingLocation <> "Citadel"))
 	halt
 else
 	if ($startingLocation = "Command")
-		setVar $SWITCHBOARD~message "Starting from sector level - no planet cash dump or fig top ups!*"
-		gosub :SWITCHBOARD~switchboard
+		setvar $startMsg $startMsg & "Starting from sector level - no planet cash dump or fig top ups!*"
 	else
-		setVar $SWITCHBOARD~message "Starting on planet - will dump cash and top up figs here.*"
-		gosub :SWITCHBOARD~switchboard
+		setvar $startMsg $startMsg & "Starting on planet - will dump cash and top up figs here.*"
 	end
 	
 end
 
+setVar $hazSlots 0
 if ($bot~parm2 = "fire")
+	setvar $startMsg $startMsg & "Using FIRE defaults (slot 10 + 3), Equipment, Top Cleanup*"
 	setVar $preferredPlanetSlot 10
-	setVar $fireSlot 1
+
+	setVar $hazSlots 3
 	setVar $PrimaryProduct 3
 	setVar $userCleanup 3
 	
@@ -115,79 +119,120 @@ if ($bot~parm2 = "fire")
 	:timePM
 		killAllTriggers
 	goto :fireitup
-end
-
-# it will make up to this many planets in sector before blasting them
-# however will leave when port empty
-
-setVar $preferredPlanetSlot $bot~parm2
-isNumber $number $preferredPlanetSlot
-if (($number = 1) and ($preferredPlanetSlot <> 0))
-	if (($preferredPlanetSlot <= 0) or ($preferredPlanetSlot > 20))
-		setvar $switchboard~message "Preferred planet should be from 1 to 20*"
-		gosub :switchboard~switchboard
-		halt
-	else
-		setvar $switchboard~message "We will create a max of " & $preferredPlanetSlot & " planets.*"
-		gosub :switchboard~switchboard
-		setVar $moo_preferred_slot $preferredPlanetSlot
-		SaveVar $moo_preferred_slot 
-	end
+elseif ($bot~parm2 = "star")
+	setvar $startMsg $startMsg & "Using STARTREK defaults (slot 10 + 2), Equipment, Top Cleanup*"
+	setVar $preferredPlanetSlot 10
+	
+	setVar $hazSlots 2
+	setVar $PrimaryProduct 3
+	setVar $userCleanup 3
+	
+	send "ctq"
+	setTextLineTrigger timeAM :timeAM " AM "
+	setTextLineTrigger timePM :timePM " PM "
+	pause
+	:timeAM
+		killAllTriggers
+	
+		setVar $userCleanup 0
+		goto :fireitup
+	:timePM
+		killAllTriggers
+	goto :fireitup
 else
-	if ($moo_preferred_slot > 0)
-		setVar $preferredPlanetSlot $moo_preferred_slot
-	else
-		setvar $switchboard~message "Max Planets is not defined; please start with a # rom 1-20.*"
-		gosub :switchboard~switchboard
-		halt
-	end
-end
- 
-#
+	
 
-#setVar $preferredPlanetSlot 13
+	# it will make up to this many planets in sector before blasting them
+	# however will leave when port empty
+
+	setVar $preferredPlanetSlot $bot~parm2
+	isNumber $number $preferredPlanetSlot
+	if (($number = 1) and ($preferredPlanetSlot <> 0))
+		if (($preferredPlanetSlot <= 0) or ($preferredPlanetSlot > 20))
+			setvar $switchboard~message "Preferred planet should be from 1 to 20*"
+			gosub :switchboard~switchboard
+			halt
+		else
+			setvar $startMsg $startMsg & "We will create a max of " & $preferredPlanetSlot & " planets.*"
+			setVar $moo_preferred_slot $preferredPlanetSlot
+			SaveVar $moo_preferred_slot 
+		end
+	else
+		if ($moo_preferred_slot > 0)
+			setVar $preferredPlanetSlot $moo_preferred_slot
+		else
+			setvar $switchboard~message "Max Planets is not defined; please start with a # rom 1-20.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
+
+end
+
 
 # 
 # Primary product 1 - fuel, 2 - org, 3 - fuel
 # 
 
-setVar $PrimaryProduct 0
 
-# Did they select a new one?
-getWordPos $bot~user_command_line $pos " f"
+setVar $PrimaryProduct 0
+getWordPos " "&$bot~user_command_line&" " $pos " f "
 if ($pos > 0)
 	setVar $PrimaryProduct 1
-	setVar $SWITCHBOARD~message "Primary product will be Fuel.*"
+	setvar $startMsg $startMsg & "Primary product will be fuel ore.*"
 end
 
-getWordPos $bot~user_command_line $pos " o"
+getWordPos " "&$bot~user_command_line&" " $pos " o "
 if ($pos > 0)
-	setVar $SWITCHBOARD~message "Primary product will be Organics.*"
+	setvar $startMsg $startMsg & "Primary product will be Organics.*"
 	setVar $PrimaryProduct 2
 end
 
-getWordPos $bot~user_command_line $pos " e"
+getWordPos " "&$bot~user_command_line&" " $pos " e "
 if ($pos > 0)
-	setVar $SWITCHBOARD~message "Primary product will be Equipment.*"
 	setVar $PrimaryProduct 3
+	setvar $startMsg $startMsg & "Primary product will be Equipment.*"
 end
+
+
 if ($PrimaryProduct = 0)
 	if ($moo_primary_product > 0)
 		setVar $PrimaryProduct $moo_primary_product
 	else
 		setVar $PrimaryProduct 3
-		setVar $SWITCHBOARD~message "Primary product not found - defualt to equip.*"
-		gosub :SWITCHBOARD~switchboard
+		setvar $startMsg $startMsg & "Primary product not found - defualt to equip.*"
+		
 	end
 else
 	# update primary product
 	setVar $moo_primary_product $PrimaryProduct
 	saveVar $moo_primary_product
-	gosub :SWITCHBOARD~switchboard
+	
 end
 
 
 
+
+setVar $userCleanup 0
+gosub :switchboard~switchboard
+getWordPos $bot~user_command_line $pos "all"
+if ($pos > 0)
+	setVar $userCleanup 2
+	setvar $startMsg $startMsg & "We are blowing ALL planets post trade.*"
+else
+	getWordPos $bot~user_command_line $pos "top"
+	if ($pos > 0)
+		setVar $userCleanup 3
+		setvar $startMsg $startMsg & "We are blowing up planets above max planets.*"
+	else
+		getWordPos $bot~user_command_line $pos "bad"
+		if ($pos > 0)
+			setVar $userCleanup 1
+			setvar $startMsg $startMsg & "We are just blowing dud planets.*"
+		end
+	end
+end
+setVar $cleanup $userCleanup
 
 #   skimpl upgraded param (5th) everything file
 # skimpl - goes and sells off excess product
@@ -206,20 +251,20 @@ setVar $sectorfile ""
 
 if ($modestring = "skimpl")
 	setVar $mode 1
-	setVar $SWITCHBOARD~message "Sourcing sectors from personal planet list, Skim Mode.*"
+	setVar $startMsg $startMsg & "Sourcing sectors from personal planet list, Skim Mode.*"
 	setVar $skimMode 1
 elseif ($modestring = "pl")
 	setVar $mode 1
-	setVar $SWITCHBOARD~message "Sourcing sectors from personal planet list.*"
+	setVar $startMsg $startMsg & "Sourcing sectors from personal planet list.*"
 elseif ($modestring = "upgraded")
 	setVar $mode 2
-	setVar $SWITCHBOARD~message "Sourcing sectors from anything upgraded.*"
+	setVar $startMsg $startMsg & "Sourcing sectors from anything upgraded.*"
 elseif ($modestring = "everything")
 	setVar $mode 4
-	setVar $SWITCHBOARD~message "Sourcing sectors from any good port.*"
+	setVar $startMsg $startMsg & "Sourcing sectors from any good port.*"
 elseif ($modestring = "sector")
 	setVar $mode 6
-	setVar $SWITCHBOARD~message "Mooing Single Sector.*"
+	setVar $startMsg $startMsg & "Mooing Single Sector.*"
 	setVar $mooSector $bot~parm3
 	isNumber $number $mooSector
 	if ($number = 1)
@@ -233,17 +278,16 @@ else
 	getWordPos $modestring $pos ".txt"
 	if ($pos > 0)
 		setVar $mode 5
-		setVar $SWITCHBOARD~message "Sourcing sectors from listed in " & $modestring & ".*"
+		setVar $startMsg $startMsg & "Sourcing sectors from listed in " & $modestring & ".*"
 		setVar $sectorfile $modestring
 	else
 		setVar $mode 3
-		setVar $SWITCHBOARD~message "Sourcing sectors with Param: " & $modestring & ".*"
+		setVar $startMsg $startMsg & "Sourcing sectors with Param: " & $modestring & ".*"
 		setVar $searchParam $modestring
 		upperCase $searchParam
 	end
 end
-gosub :SWITCHBOARD~switchboard
-	
+
 if ($game~ptradesetting = 0) or ($game~MAX_PLANETS_IN_GAME = 0)
 	setVar $SWITCHBOARD~message "No planet trade/planets in game settings >refresh >update.*"
 	gosub :SWITCHBOARD~switchboard
@@ -253,37 +297,32 @@ end
 getWordPos $bot~user_command_line $pos "guard"
 if ($pos > 0)
 	setVar $useGuard TRUE
-	setvar $switchboard~message "Creating a corp planet at SD.*"
+	setvar $startMsg $startMsg & "Creating a corp planet at SD.*"
 else
 	setVar $useGuard FALSE
-	setvar $switchboard~message "Not Creating Guardian Planets.*"
+	setvar $startMsg $startMsg & "Not Creating Guardian Planets.*"
 end
 
-gosub :switchboard~switchboard
 
-
-getWordPos $bot~user_command_line $pos "figs"
-	if ($pos > 0)
-	setVar $furbfigs TRUE
-	setvar $switchboard~message "We are restocking fighters.*"
-else
+getWordPos $bot~user_command_line $pos "nofigs"
+if ($pos > 0)
 	setVar $furbfigs FALSE
-	setvar $switchboard~message "We are NOT restocking fighters.*"
+	setvar $startMsg $startMsg & "We are NOT restocking fighters.*"
+else
+	setVar $furbfigs TRUE
+	setvar $startMsg $startMsg & "We are restocking fighters.*"
 end
 
 
 getWordPos $bot~user_command_line $pos "ephag"
 if ($pos > 0)
 	setVar $useEp TRUE
-	setvar $switchboard~message "Using Ep Haggle*"
+	setvar $startMsg $startMsg & "Using Ep Haggle*"
 else
 	setVar $useEp FALSE
-	setvar $switchboard~message "Using internal NEG for haggle.*"
+	setvar $startMsg $startMsg & "Using internal NEG for haggle.*"
 end
-gosub :switchboard~switchboard
 
-
-gosub :switchboard~switchboard
 if ($useEp = 1)
 	send "'" $BOT~BOT_NAME " ephaggle planet*"
 	setDelayTrigger epHagDel :epHagDel 1500
@@ -295,24 +334,7 @@ end
 :epHagDel
 	killalltriggers
 
-if ($fireSlot = 0)
-	setVar $userCleanup 0
-	gosub :switchboard~switchboard
-	getWordPos $bot~user_command_line $pos "all"
-	if ($pos > 0)
-		setVar $userCleanup 2
-		setvar $switchboard~message "We are blowing ALL planets post trade.*"
-	else
-		getWordPos $bot~user_command_line $pos "bad"
-		if ($pos > 0)
-			setVar $userCleanup 1
-			setvar $switchboard~message "We are just blowing dud planets.*"
-		end
-	end
-	setVar $cleanup $userCleanup
-end
 
-gosub :switchboard~switchboard
 
 # Requires SAFE
 
@@ -320,19 +342,20 @@ getWordPos $bot~user_command_line $pos "paranoid"
 if ($pos > 0)
 	setVar $bot~parmanoid TRUE
 	setVar $surroundedSectorsOnly 1
-	setvar $switchboard~message "Incoming Sectors require figs and limpets*"
+	setvar $startMsg $startMsg &"Incoming Sectors require figs and limpets*"
 else
 	setVar $bot~parmanoid FALSE
 	getWordPos $bot~user_command_line $pos "safe"
 	if ($pos > 0)
 		setVar $surroundedSectorsOnly 1
-		setvar $switchboard~message "Incoming Sectors require figs.*"
+		setvar $startMsg $startMsg & "Incoming Sectors require figs.*"
 	else
 		setVar $surroundedSectorsOnly 0
-		setvar $switchboard~message "Loose Cannon Mode Engaged!!!*"
+		setvar $startMsg $startMsg & "Loose Cannon Mode Engaged!!!*"
 	end
 		
 end
+setVar $SWITCHBOARD~message $startMsg
 gosub :switchboard~switchboard
 
 if ($PLAYER~PLANET_SCANNER <> "Yes")
@@ -636,8 +659,10 @@ halt
 
 :createAndSell
 
-	if ($fireSlot = 1)
-		setVar $preferredPlanetSlot 13
+	
+	if ($hazSlots > 0)
+		setVar $hazPlanetNumber ($preferredPlanetSlot + $hazSlots)
+		setVar $preferredPlanetSlot ($preferredPlanetSlot + $hazSlots)
 	end
 	setVar $planet~planetsInSector 0
 	setVar $planet~planets 0
@@ -662,27 +687,42 @@ halt
 
 	while ($go = 1)
 		# ENSURE PREFERRED SLOT IS FREE 
+	echo "hasslots:" $hazSlots " $preferredPlanetSlot" $preferredPlanetSlot "  $hazPlanetNumber " $hazPlanetNumber "*"
 		if ($planet~planetsInSectorCHK >= $preferredPlanetSlot)
-			if ($fireSlot = 1)
-				# till I work out complete logic - this will have to do - assuming we started from less than 13 planets
-				if ($preferredPlanetSlot = 13)
-					setVar $checkNewPlanet 0
-					goSub :reCheckPlanets
-					setVar $shipBlastPlanet $planet~planets[13]
-					gosub :blastPlanet
+			if ($hazSlots > 0)
 				
-					goSub :reCheckPlanets
-					setVar $shipBlastPlanet $planet~planets[12]
-					gosub :blastPlanet
-					
-					goSub :reCheckPlanets
-					setVar $shipBlastPlanet $planet~planets[11]
-					gosub :blastPlanet
+				if ($preferredPlanetSlot = $hazPlanetNumber)
+		
+echo "############### TIME OT BLOW OLDS*"
+echo "############### TIME OT BLOW OLDS*"
+echo "############### TIME OT BLOW OLDS*"
+echo "############### TIME OT BLOW OLDS*"
+echo "############### TIME OT BLOW OLDS*"
+echo "hasslots:" $hazSlots " $preferredPlanetSlot" $preferredPlanetSlot "  $hazPlanetNumber " $hazPlanetNumber "*"
+	
+					# return preferred planets
+					setVar $preferredPlanetSlot ($preferredPlanetSlot - $hazSlots)
+					setVar $slotToBlow $hazPlanetNumber
+					setVar $checkNewPlanet 0
 
-					goSub :reCheckPlanets
-					setVar $shipBlastPlanet $planet~planets[10]
-					gosub :blastPlanet
-					setVar $preferredPlanetSlot 10
+	echo " $slotToBlow " $slotToBlow " *"
+	echo " $preferredPlanetSlot " $preferredPlanetSlot " *"
+	echo " $slotToBlow " $slotToBlow " *"
+	echo " $slotToBlow " $slotToBlow " *"
+				
+					while ($slotToBlow >= $preferredPlanetSlot)
+						goSub :reCheckPlanets
+
+						setVar $shipBlastPlanet $planet~planets[$slotToBlow]
+	echo " $slotToBlow " $slotToBlow " *"
+	echo " $preferredPlanetSlot " $preferredPlanetSlot " *"
+	echo " $shipBlastPlanet " $shipBlastPlanet " *"
+						gosub :blastPlanet
+					
+						subtract $slotToBlow 1
+					end
+					
+					
 					goSub :reCheckPlanets
 					setVar $planet~planetsInSectorCHK $planet~planetsInSector
 				else
@@ -815,7 +855,7 @@ halt
 		end
 		if ($cleanup = 3)
 			# FIRE HARDCODE
-			subtract $planet~planetsInSector 3
+			subtract $planet~planetsInSector $GAME~MAX_PLANETS_PER_SECTOR
 		end
 		setVar $i 1
 		while ($i <= $planet~planetsInSector)
@@ -1218,14 +1258,18 @@ return
 					setVar $player~shieldsToBuy $canBuy
 				end
 				send "c" $player~shieldsToBuy "*"
-			
-
-	send "qqq    *   "
-	if ($restockMakePlanet = 1)
-		send "u   y  n  .  n  *  c * *  "
-	end
-	send "m  " $returnSpot  "*   y   y  "
+		gosub :player~quikstats
+		setVar $postFurbFigs $player~fighters	
+	setVar $exitMacro "qqq    *   "
 	
+	if ($restockMakePlanet = 1)
+		 
+		setVar $exitMacro $exitMacro & "u   y  n  .  n  *  c * *  "
+	end
+	
+	setVar $exitMacro $exitMacro & "m  " & $returnSpot &  "*   y   y  "
+	send $exitMacro
+
 	setTextLineTrigger restockBack1 :restockBack1 "<Set NavPoint>"
 	setTextLineTrigger restockBack2 :restockBack2  "Systems Ready, shall we engag"
 	pause
@@ -1240,6 +1284,15 @@ return
 			killalltriggers
 	
 	gosub :player~quikstats
+	if ($player~fighters < $postFurbFigs)
+		setVar $diff ($postFurbFigs - $player~fighters)
+		setVar $SWITCHBOARD~message "I took fig damage (" & $diff & ") exiting dock!! and I probably don't even know it.*"
+		gosub :SWITCHBOARD~switchboard
+		if ($furbfigs = FALSE)
+			setVar $furbfigs TRUE
+		end
+	end
+		
 	setVar $poststockcredits $player~credits
 	stripText $poststockcredits ","
 	setVar $stat_dollarsspent ($precredits - $poststockcredits)
@@ -1290,7 +1343,7 @@ return
 	if ($useEp = TRUE)
 		goSub :planetTrade_ep
 	else
-		goSub :planetTrade_ck
+		goSub :planetTrade_ck_test
 	end
 
 	gosub :player~quikstats
@@ -1307,6 +1360,45 @@ return
 
 
 return
+
+
+:planetTrade_ck_test
+	setVar $planet~fueltosell 67000
+	setVar $planet~orgtosell 67000
+	setVar $planet~equiptosell 67000
+	setVar $planet~_ck_ptradesetting $GAME~ptradesetting
+	setVar $planet~planet $tradePlanet
+	setVar $planet~quantityUnknown 1
+
+	if ($player~ore_holds < $minOre)
+		send "l" $tradePlanet "* t n t1* * q * "
+		waitfor "Planet command ("
+		waitfor "Command ["
+	end
+	send "|"
+	goSub :planet~sell
+	send "|"
+	if ($planet~exit_message <> 0)
+		send "'" $planet~exit_message "*"
+	end
+	gosub :player~quikstats
+	stripText $player~credits ","
+	setVar $player~creditsNow $player~credits
+	if ($player~creditsNow = $precredits)
+		echo "*################*##############"
+		echo "*#### NEG FAILED, SELLING AT COST!"
+		echo "*###############################"
+
+	
+		send "q q q * * *  p n" $tradePlanet "* * * * * * * "
+		waitfor "Land on which planet"
+		gosub :player~quikstats
+		stripText $player~credits ","
+		setVar $player~creditsNow $player~credits
+	end
+		
+return
+
 
 :planetTrade_ck
 

@@ -2586,7 +2586,7 @@ return
 		echo "*###############################"
 
 	
-		send "q q q * * *  p n" $tradePlanet "* * * * * * * l" $tradePlanet "*"
+		send "q q q * * *  p n" $tradePlanet "* * * * * * * "
 		waitfor "Land on which planet"
 		gosub :player~quikstats
 		stripText $player~credits ","
