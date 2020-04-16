@@ -257,9 +257,9 @@ goto :Start_Up_Routines
 					setvar $amount_to_grab $colos_on_terra
 				end
 				if ($PLAYER~PLANET_SCANNER = "No")
-					SetVar $Land_mac "  L  T  "&$amount_to_grab&"*   "
+					SetVar $Land_mac "  L  T"&$amount_to_grab&"*   "
 				else
-					SetVar $Land_mac "  L  1*  T  "&$amount_to_grab&"*   "
+					SetVar $Land_mac "  L  1*  T"&$amount_to_grab&"*   "
 				end
 
 
