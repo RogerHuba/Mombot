@@ -121,7 +121,7 @@
 					killtrigger goodPlanet2
 					setVar $SWITCHBOARD~message "Planet number "&$cannonPlanet[$i]&" entered not valid. *"
 					gosub :SWITCHBOARD~switchboard
-					halt
+					goto :keepGoingPlanetSet
 				:goodPlanet2
 					killtrigger wrongPlanet2
 					killtrigger badPlanet2

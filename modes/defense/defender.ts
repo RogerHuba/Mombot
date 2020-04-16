@@ -20,7 +20,7 @@
 	loadvar $bot~folder
 
 
-	setVar $sentinel_cycle 20000
+	setVar $sentinel_cycle 120000
 	setvar $sentinel~CheckCLVDetail 1
 	setVar $sentinel~logfile $bot~folder&"/sentinel"&$year & $month & $day & ".log"
 
@@ -42,27 +42,28 @@
 	setVar $BOT~help[5]  $BOT~tab&"         {a} - Photon armid hits "
 	setVar $BOT~help[6]  $BOT~tab&"      {holo} - holoscan on ss after photon "
 	setVar $BOT~help[7]  $BOT~tab&"    {secure} - will only escape to limped sectors "
-	setVar $BOT~help[8]  $BOT~tab&"    {extern} - stops defender 5 minutes before extern "
-	setVar $BOT~help[9]  $BOT~tab&"               as defined by local system time "
-	setVar $BOT~help[10] $BOT~tab&"   {density} - density photon option"
-	setVar $BOT~help[11] $BOT~tab&"  {adjacent} - adjacent photon option (default)"
-	setVar $BOT~help[12] $BOT~tab&"  {holokill} - holokill if possible"
-	setVar $BOT~help[13] $BOT~tab&" {slingshot} - will pgrid holokill"
-	setVar $BOT~help[14] $BOT~tab&"  {nophoton} - will not fire photon"
-	setVar $BOT~help[15] $BOT~tab&"  {noescape} - will not retreat from attack sector"
-	setVar $BOT~help[16] $BOT~tab&"      {auto} - Will reset cannon damages automatically"
-	setVar $BOT~help[17] $BOT~tab&"   {capture} - capture instead of kill "
-	setVar $BOT~help[18] $BOT~tab&"     {mines} - auto deploy mines as you go "
-	setVar $BOT~help[19] $BOT~tab&"{saveme:bot} - define saveme bot for your planet "
-	setVar $BOT~help[20] $BOT~tab&"   {multi:#} - how many photons to shoot (multi photon games) "
-	setVar $BOT~help[21] $BOT~tab&"    {switch} - will switch into saveme bots ship before kill "
-	setVar $BOT~help[22] $BOT~tab&"  {sentinel} - turns on sentinel mode "
-	setVar $BOT~help[23] $BOT~tab&"           "
-	setVar $BOT~help[24] $BOT~tab&"        Examples: "
-	setVar $BOT~help[25] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[26] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[27] $BOT~tab&"             >defender f density adjacent secure"
-	setVar $BOT~help[28] $BOT~tab&"             >defender secure saveme:hunt"
+	setVar $BOT~help[8]  $BOT~tab&"  {paranoid} - will only drop to limped sectors "
+	setVar $BOT~help[9]  $BOT~tab&"    {extern} - stops defender 5 minutes before extern "
+	setVar $BOT~help[10] $BOT~tab&"               as defined by local system time "
+	setVar $BOT~help[11] $BOT~tab&"   {density} - density photon option"
+	setVar $BOT~help[12] $BOT~tab&"  {adjacent} - adjacent photon option (default)"
+	setVar $BOT~help[13] $BOT~tab&"  {holokill} - holokill if possible"
+	setVar $BOT~help[14] $BOT~tab&" {slingshot} - will pgrid holokill"
+	setVar $BOT~help[15] $BOT~tab&"  {nophoton} - will not fire photon"
+	setVar $BOT~help[16] $BOT~tab&"  {noescape} - will not retreat from attack sector"
+	setVar $BOT~help[17] $BOT~tab&"      {auto} - Will reset cannon damages automatically"
+	setVar $BOT~help[18] $BOT~tab&"   {capture} - capture instead of kill "
+	setVar $BOT~help[19] $BOT~tab&"     {mines} - auto deploy mines as you go "
+	setVar $BOT~help[20] $BOT~tab&"{saveme:bot} - define saveme bot for your planet "
+	setVar $BOT~help[21] $BOT~tab&"   {multi:#} - how many photons to shoot (multi photon games) "
+	setVar $BOT~help[22] $BOT~tab&"    {switch} - will switch into saveme bots ship before kill "
+	setVar $BOT~help[23] $BOT~tab&"  {sentinel} - turns on sentinel mode "
+	setVar $BOT~help[24] $BOT~tab&"           "
+	setVar $BOT~help[25] $BOT~tab&"        Examples: "
+	setVar $BOT~help[26] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[27] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[28] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[29] $BOT~tab&"             >defender secure saveme:hunt"
 
 	gosub :bot~helpfile
 
@@ -153,6 +154,14 @@
 		setvar $navigate~securePwarp true
 	else
 		setvar $navigate~securePwarp false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " par"
+	if ($pos > 0)
+		setvar $navigate~securePwarp true
+		setvar $photon~paranoid true
+	else
+		setvar $photon~paranoid false
 	end
 
 	getwordpos " "&$bot~user_command_line&" " $pos " sent"
@@ -398,6 +407,12 @@
 	if ($killing~capture)
 		setVar $message $message&"*                   Capture"
 	end
+	if ($navigate~securePwarp)
+		setVar $message $message&"*                   Secure"
+	end
+	if ($photon~paranoid)
+		setVar $message $message&"*                   Paranoid"
+	end
 	if ($restock~deploymines)
 		setVar $message $message&"*                   Deploy mines"
 	end
@@ -452,12 +467,7 @@
 		setTextLineTrigger 18 :scan " enters the game."
 		setDelayTrigger	   19 :announce	1200000
 		setDelayTrigger	   20 :head_home_timeout 3600000
-		if (($photon~found))
-			#########################################
-			# wait longer if grid is hit by players #
-			#########################################
-			setdelaytrigger    25 :sentinel 120000
-		else
+		if ($sentinel~broadcast)
 			setdelaytrigger    25 :sentinel $sentinel_cycle
 		end
 		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
@@ -520,6 +530,9 @@
 		end
 		if ($navigate~securePwarp)
 			setvar $description $description&"Secure "
+		end
+		if ($photon~paranoid)
+			setvar $description $description&"Paranoid "
 		end
 		if ($saveme)
 			setvar $description $description&"Saveme:"&$saveme_bot&" "

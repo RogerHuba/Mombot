@@ -200,10 +200,15 @@ return
 		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 		if ($pos > 0)
 			setvar $alien true
-			#return
+			return
 		end
 	end
-
+	if ($paranoid)
+		getSectorParameter $sector "LIMPSEC" $isLimped
+		if ($isLimped <> true)
+			return
+		end
+	end
 	setvar $found true
 return
 
@@ -253,6 +258,12 @@ return
 	if ($pos > 0)
 		setvar $adjacent true
 		goto :fire_adjacent
+	end
+	if ($paranoid)
+		getSectorParameter $sector "LIMPSEC" $isLimped
+		if ($isLimped <> true)
+			return
+		end
 	end
 return
 

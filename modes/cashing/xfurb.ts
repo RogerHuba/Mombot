@@ -61,7 +61,7 @@ gosub :_START_
 
 	
 
-	if (($furbloc = "A") or ($furbloc = "R"))
+	if (($furbloc = "A") or ($furbloc = "R") or (($furbloc = "T") and ($player~current_sector > 10)))
 		send "x " $bustship " * *"
 	else
 		send "x * " $bustship " * *"
@@ -534,32 +534,29 @@ halt
 	setTextTrigger enddisp :enddisp "Command ["
 	pause
 	:sd
-		killalltriggers
 		setVar $furbloc "S"
-		goto :startdisp
+		setvar $furbreturn $map~stardock
+		pause
 	:terra
-		killalltriggers
 		setVar $furbloc "T"
-		goto :startdisp
+		setvar $furbreturn 1
+		pause
 	:alpha
-		killalltriggers
 		setVar $furbloc "A"
-		goto :startdisp
-	
+		setvar $furbreturn $map~alpha_centauri
+		pause	
 	:rylos	
-		killalltriggers
 		setVar $furbloc "R"
-		goto :startdisp
+		setvar $furbreturn $map~rylos
+		pause
 	:enddisp
 		killalltriggers
 		if ($furbloc = "")
-			setVar $SWITCHBOARD~message "Couldn't see a class 0, or in this case class OH Poop.*"
-			gosub :SWITCHBOARD~switchboard
-			halt
+			setVar $furbloc "T"			
+			setvar $furbreturn 1
 		end
 	
 	
-	setVar $furbreturn $PLAYER~CURRENT_SECTOR
 	
 	if ($PLAYER~unlimitedGame = FALSE) and ($PLAYER~TURNS < 30)
 		setVar $SWITCHBOARD~message "You need at least 30 turns.*"
