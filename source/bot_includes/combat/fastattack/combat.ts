@@ -88,24 +88,24 @@
 		while ($player~fighters > 0)
 			if ($player~fighters < $SHIP~SHIP_MAX_ATTACK)
 				if ($player~shotgun)
-					setVar $attackString $attackString&$targetShotgun&$refurbString
+					setVar $attackString $attackString&$targetShotgun&$player~refurbString
 				else
 					if ($player~doubletap)
-						setVar $attackString $attackString&$targetString&$player~fighters&"* * "&$targetString&$player~fighters&"* * "&$refurbString
+						setVar $attackString $attackString&$targetString&$player~fighters&"* * "&$targetString&$player~fighters&"* * "&$player~refurbString
 					else
-						setVar $attackString $attackString&$targetString&$player~fighters&"* * "&$refurbString
+						setVar $attackString $attackString&$targetString&$player~fighters&"* * "&$player~refurbString
 					end
 				end
 				setVar $player~fighters 0
 			else
 				if ($player~shotgun)
-					setVar $attackString $attackString&$targetShotgun&$refurbString
+					setVar $attackString $attackString&$targetShotgun&$player~refurbString
 				else
 					if ($player~doubletap)
-						setVar $attackString $attackString&$targetString&$SHIP~SHIP_MAX_ATTACK&"* * "&$targetString&$SHIP~SHIP_MAX_ATTACK&"* * "&$refurbString
+						setVar $attackString $attackString&$targetString&$SHIP~SHIP_MAX_ATTACK&"* * "&$targetString&$SHIP~SHIP_MAX_ATTACK&"* * "&$player~refurbString
 						setVar $player~fighters ($player~fighters - $SHIP~SHIP_MAX_ATTACK)
 					else
-						setVar $attackString $attackString&$targetString&$SHIP~SHIP_MAX_ATTACK&"* * "&$refurbString
+						setVar $attackString $attackString&$targetString&$SHIP~SHIP_MAX_ATTACK&"* * "&$player~refurbString
 					end
 				end
 				setVar $player~fighters ($player~fighters - $SHIP~SHIP_MAX_ATTACK)
