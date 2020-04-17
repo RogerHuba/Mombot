@@ -236,6 +236,9 @@ goto :Start_Up_Routines
 				gosub :player~quikstats
 				setvar $empty_holds ($player~total_holds - ($player~COLONIST_HOLDS + $player~ore_holds))
 				#There are currently 3417042 colonists ready to leave Terra.
+				if ($empty_holds <= 0)
+					goto :grabbed
+				end
 				:check_colos
 				if ($PLAYER~PLANET_SCANNER = "No")
 					send "  l q "
