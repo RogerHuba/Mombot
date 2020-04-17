@@ -26,11 +26,11 @@ end
 			end
 			gosub :PLAYER~quikstats
 			setVar $back $PLAYER~CURRENT_SECTOR
-			setVar $PLAYER~warpto $MAP~stardock
+			setVar $PLAYER~warpto 1
 			gosub :player~twarp
 			gosub  :player~currentPrompt
 			if ($PLAYER~twarpSuccess = TRUE)
-				send "p ss ys *p"
+				send "p ty"
 			else
 				setVar $SWITCHBOARD~message $PLAYER~msg&"*"
 				gosub :SWITCHBOARD~switchboard
