@@ -40,49 +40,6 @@
 		setVar $meatgrind FALSE
 	end
 
-	goto :start_script
-
-	:inac
-		gosub :PLAYER~quikstats
-	:execute
-			setdelaytrigger justwait :okaygo 100
-			pause
-		:okaygo
-		goSub :SECTOR~getSectorData
-		#set player~refurbString to allow fast refurbing if you have a mac#
-		if ($cap)
-			goSub :combat~fastCapture
-		else
-			goSub :combat~fastAttack
-		end
-		if (($player~isFound = true) and ($meatgrind = true))
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-			send $combat~attackString&"* "
-		end
-		goto :execute
-
-
-:start_script
-	:cit_kill
-	killalltriggers
-	gosub :PLAYER~quikstats	
-	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $PLAYER~targetingPerson FALSE
 	if ($pods)
 		setVar $PLAYER~targetingShip "Escape Pod"
@@ -93,6 +50,10 @@
 	setVar $PLAYER~target ""
 	loadvar $ship~ship_fighters_max
 	loadvar $ship~ship_max_attack
+	loadvar $ship~max_shields
+
+	gosub :PLAYER~quikstats	
+	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 
 	if ($bot~parm1 = "off")
 		send "'{" $SWITCHBOARD~bot_name "} - Shutting down dockkill..*"
@@ -142,62 +103,81 @@
 		else
 			setVar $PLAYER~shotgun FALSE
 		end
-		:start_cit_kill
 	end		
-
-:start
 
 	if ($startingLocation = "<StarDock>")
 		send "q "
 	end
-	gosub :SHIP~getShipStats
-
-:warning
-	if (($PLAYER~CURRENT_SECTOR = STARDOCK) AND (PORT.EXISTS[STARDOCK]))
-		setVar $player~refurbString "p s s p "
-	elseif ((($PLAYER~CURRENT_SECTOR = 1) OR (PORT.CLASS[$PLAYER~CURRENT_SECTOR] = 0)) AND (PORT.EXISTS[$PLAYER~CURRENT_SECTOR]))
-		setVar $player~refurbString "p t "
-	else
-		setVar $player~refurbString ""
-		echo "*No known class 0 or 9 port here to refurb at.*"
+	if ($ship~ship_max_attack <= 0)
+		gosub :SHIP~getshipstats
+		savevar $ship~ship_fighters_max
+		savevar $ship~ship_max_attack
+		savevar $ship~max_shields
 	end
-	if ($player~refurbString <> "")
+
+	if ($PLAYER~targetingPerson)
+		setvar $switchboard~message "StarDock Killer Targeting "&$PLAYER~target&" running in sector "&$PLAYER~current_sector&".*"
+	elseif ($PLAYER~targetingCorp)
+		setvar $switchboard~message "StarDock Killer Targeting Corp "&$PLAYER~target&" running in sector "&$PLAYER~current_sector&".*"
+	else
+		setvar $switchboard~message "StarDock Killer running in sector "&$PLAYER~current_sector&".*"
+	end
+	if ($PLAYER~shotgun)
+		setvar $switchboard~message $switchboard~message&"    -  Shotgun mode enabled.*"
+	elseif ($PLAYER~doubletap)
+		setvar $switchboard~message $switchboard~message&"    -  Doubletap mode enabled.*"
+	end
+	gosub :switchboard~switchboard
+
+	if (($player~current_sector = 1) or (port.class[$player~current_sector] = 0) or ($player~current_sector = $map~stardock))
 		if ($PLAYER~CURRENT_SECTOR = STARDOCK)
 			setvar $player~refurbString "p  s  s  p  b  "&$ship~ship_max_attack&"*  b  "&$ship~ship_max_attack&"*  c  "&$ship~max_shields&"*  q q q "
-			send "P  S G Y G Q s p"
-		elseif (($PLAYER~CURRENT_SECTOR = 1) OR (PORT.CLASS[$PLAYER~CURRENT_SECTOR] = 0))
+			if ($startingLocation = "<StarDock>")
+				send "s p"
+			else
+				send "P  S G Y G Q s p"
+			end
+		else
 			setvar $player~refurbString "p  t  b "&$ship~ship_max_attack&"* b "&$ship~ship_max_attack&"* c "&$ship~max_shields&"* q "
 			send "p ty"
-		else
-			echo "*No known class 0 or 9 port here to refurb at.*"
 		end
 		waitOn "B  Fighters        :"
 		getWord CURRENTLINE $figsToBuy 8
 		waitOn "C  Shield Points   :"
 		getWord CURRENTLINE $player~shieldsToBuy 9
+		send "b " $figsToBuy "* c " $player~shieldsToBuy "* "
+		gosub :player~quikstats
 		if ($PLAYER~CURRENT_SECTOR = STARDOCK)
-			setVar $leavestring "b "&$figsToBuy&"* c "&$player~shieldsToBuy&"* q q q "
+			send "q q q "
 		else
-			setVar $leavestring "b "&$figsToBuy&"* c "&$player~shieldsToBuy&"* q "
+			send "q "
 		end
-		send $leavestring
-	end
-	if ($PLAYER~targetingPerson)
-		send "'{" $SWITCHBOARD~bot_name "} - StarDock Killer Targeting "&$PLAYER~target&" running in sector "&$PLAYER~current_sector&".*"
-	elseif ($PLAYER~targetingCorp)
-		send "'{" $SWITCHBOARD~bot_name "} - StarDock Killer Targeting Corp "&$PLAYER~target&" running in sector "&$PLAYER~current_sector&".*"
-	else
-		send "'{" $SWITCHBOARD~bot_name "} - StarDock Killer running in sector "&$PLAYER~current_sector&".*"
-	end
-	if ($PLAYER~shotgun)
-		send "'{" $SWITCHBOARD~bot_name "} - Shotgun mode enabled.*"
-	elseif ($PLAYER~doubletap)
-		send "'{" $SWITCHBOARD~bot_name "} - Doubletap mode enabled.*"
+		goto :execute
 	end
 
-	gosub :PLAYER~quikstats	
 
-	goto :execute
+
+	:inac
+		gosub :PLAYER~quikstats
+	:execute
+		setdelaytrigger justwait :okaygo 50
+		pause
+		:okaygo
+		goSub :SECTOR~getSectorData
+		#set player~refurbString to allow fast refurbing if you have a mac#
+		if ($cap)
+			goSub :combat~fastCapture
+		else
+			goSub :combat~fastAttack
+		end
+		if (($player~isFound = true) and ($meatgrind = true))
+			send $combat~attackString "* " $combat~attackString "* " $combat~attackString "* " $combat~attackString "* " $combat~attackString "* " $combat~attackString "* " $combat~attackString "* " $combat~attackString "* " $combat~attackString "* " $combat~attackString "* " $combat~attackString "* " $combat~attackString "* " $combat~attackString "* " $combat~attackString "* " $combat~attackString "* " $combat~attackString "* "
+		end
+		goto :execute
+
+
+
+
 
 
 :Discod
