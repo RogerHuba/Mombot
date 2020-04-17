@@ -25,9 +25,7 @@
 				waitOn "C  Shield Points   :"
 				getWord CURRENTLINE $shieldsToBuy 9
 
-				if (($figsToBuy > 0) or ($shieldsToBuy > 0))
-					send "b " $figsToBuy "* c " $shieldsToBuy "* "
-				end
+				send "b " $figsToBuy "* c " $shieldsToBuy "* "
 
 				gosub :player~quikstats
 				if ($player~fighters <= 0)
