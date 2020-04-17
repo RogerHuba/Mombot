@@ -97,14 +97,8 @@
 	setVar $startingSector $PLAYER~CURRENT_SECTOR
 	gosub :setwindow
 	send "qjy l "&$planet~planet&"* c"
-	send "c;q"
-	waitFor "Figs Per Attack:"
-	getWord CURRENTLINE $SHIP~maxFigAttack 5
-	if ($reverse)
-		setVar $sectorCount SECTORS
-	else
-		setVar $sectorCount 11
-	end
+	gosub :ship~getshipstats
+
 	setVar $totalHolds 0 
 	setVar $spentCredits 0 
 
@@ -403,5 +397,6 @@ include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\planet\landonplanetentercitadel\planet"
 include "source\bot_includes\player\buy\player"
