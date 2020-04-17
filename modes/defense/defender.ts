@@ -58,12 +58,13 @@
 	setVar $BOT~help[21] $BOT~tab&"   {multi:#} - how many photons to shoot (multi photon games) "
 	setVar $BOT~help[22] $BOT~tab&"    {switch} - will switch into saveme bots ship before kill "
 	setVar $BOT~help[23] $BOT~tab&"  {sentinel} - turns on sentinel mode "
-	setVar $BOT~help[24] $BOT~tab&"           "
-	setVar $BOT~help[25] $BOT~tab&"        Examples: "
-	setVar $BOT~help[26] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[27] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[28] $BOT~tab&"             >defender f density adjacent secure"
-	setVar $BOT~help[29] $BOT~tab&"             >defender secure saveme:hunt"
+	setVar $BOT~help[24] $BOT~tab&"  {defender} - pops a planet during holokill "
+	setVar $BOT~help[25] $BOT~tab&"           "
+	setVar $BOT~help[26] $BOT~tab&"        Examples: "
+	setVar $BOT~help[27] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[28] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[29] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[30] $BOT~tab&"             >defender secure saveme:hunt"
 
 	gosub :bot~helpfile
 
@@ -216,6 +217,19 @@
 	else
 		setvar $restock~deploymines false
 	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " defender "
+	if ($pos > 0)
+		setvar $combat~defender true
+		if ($player~genesis <= 0)
+			setVar $SWITCHBOARD~message "You have to have genesis torps to run defender mode.*"
+			gosub :switchboard~switchboard
+			halt			
+		end
+	else
+		setvar $combat~defender false
+	end
+
 
 	getWordPos " "&$bot~user_command_line&" " $pos " multi:"
 	setvar $photon~multi false
@@ -418,6 +432,9 @@
 	end
 	if ($sentinel~broadcast)
 		setVar $message $message&"*                   Sentinel mode on"
+	end
+	if ($combat~defender)
+		setVar $message $message&"*                   Defender mode on"
 	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	setvar $switchboard~message $message
