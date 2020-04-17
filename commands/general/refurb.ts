@@ -32,9 +32,28 @@ end
 			if ($PLAYER~twarpSuccess = TRUE)
 				send "p ty"
 			else
-				setVar $SWITCHBOARD~message $PLAYER~msg&"*"
-				gosub :SWITCHBOARD~switchboard
-				goto :wait_for_command
+				send " C R " & $map~stardock & "*"
+				setTextLineTrigger 1 :itsalive "Items     Status  Trading % of max OnBoard"
+				setTextLineTrigger 2 :nosoupforme "I have no information about a port in that sector"
+				pause
+				:nosoupforme
+					killtrigger 1
+					setvar $switchboard~message "StarDock appears to have been Blown Up!*"
+					gosub :switchboard~switchboard
+					goto :wait_for_command
+				:itsalive
+					killtrigger 2
+
+				setVar $PLAYER~warpto $map~stardock
+				gosub :player~twarp
+				gosub  :player~currentPrompt
+				if ($PLAYER~twarpSuccess = TRUE)
+					send "P  S G Y G Q s p"
+				else
+					setVar $SWITCHBOARD~message $PLAYER~msg&"*"
+					gosub :SWITCHBOARD~switchboard
+					goto :wait_for_command
+				end
 			end
 		else
 			setVar $SWITCHBOARD~message "No known class 0 or 9 port here to refurb at. Try the seek option.*" 
