@@ -1,4 +1,4 @@
-for /r %%n in (*sdt.ts) do call :checkit "%%n" 
+for /r %%n in (*colo.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
