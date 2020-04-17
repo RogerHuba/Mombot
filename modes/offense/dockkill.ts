@@ -55,6 +55,15 @@
 	gosub :PLAYER~quikstats	
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 
+	loadvar $ship~CAP_FILE	
+	fileExists $CAP_FILE_chk $ship~CAP_FILE
+	if ($CAP_FILE_chk)
+		gosub :ship~loadshipinfo
+	else
+		gosub :ship~getShipCapStats
+		gosub :ship~loadShipInfo
+	end 
+
 	if ($bot~parm1 = "off")
 		send "'{" $SWITCHBOARD~bot_name "} - Shutting down dockkill..*"
 		if ($player~current_sector = STARDOCK)
