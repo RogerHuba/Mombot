@@ -259,12 +259,13 @@ goto :Start_Up_Routines
 				if ($PLAYER~PLANET_SCANNER = "No")
 					SetVar $Land_mac "  L  T"&$amount_to_grab&"*   "
 				else
-					SetVar $Land_mac "  L  1*T"&$amount_to_grab&"*   "
+					SetVar $Land_mac "  L  1*  T"&$amount_to_grab&"*   "
 				end
 
 				Send $Land_mac
 				setTextLineTrigger	Done	:Done		"The Colonists file aboard your ship"
 				setTextLineTrigger	None	:Done		"There aren't that many on Terra!"
+				settextlinetrigger  none2   :Done       "You return to your ship and leave the planet."
 				setTextTrigger		Grabbed	:Grabbed	"([0] empty holds)"
 				pause
 			:Done
