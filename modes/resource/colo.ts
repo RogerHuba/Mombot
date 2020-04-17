@@ -188,12 +188,12 @@ goto :Start_Up_Routines
 		send "q "
 	end
 
+
 	if ($PLAYER~PLANET_SCANNER = "No")
 		SetVar $Land_mac "  L  T  " & $BOT~parm2 & "*   "
 	else
 		SetVar $Land_mac "  L  1*  T  " & $BOT~parm2 & "*   "
 	end
-
 	if ($colo_type = "m")
 	   if ($BOT~parm2 < 1)
 	      setvar $BOT~parm2 1
@@ -233,6 +233,35 @@ goto :Start_Up_Routines
 				halt
 
 			:colo_wait
+				gosub :player~quikstats
+				setvar $empty_holds ($player~total_holds - ($player~COLONIST_HOLDS + $player~ore_holds))
+				#There are currently 3417042 colonists ready to leave Terra.
+				:check_colos
+				if ($PLAYER~PLANET_SCANNER = "No")
+					send "  l q "
+				else
+					send "  l  1* q "
+				end
+				waiton " colonists ready to leave Terra."
+				getword currentline $scam_check 1
+				if ($scam_check <> "There")
+					goto :check_colos
+				end
+				getword currentline $colos_on_terra 4
+				if ($colos_on_terra < $colo_min)
+					goto :check_colos
+				end
+				if ($colos_on_terra > $empty_holds)
+					setvar $amount_to_grab $empty_holds
+				else
+					setvar $amount_to_grab $colos_on_terra
+				end
+				if ($PLAYER~PLANET_SCANNER = "No")
+					SetVar $Land_mac "  L  T"&$amount_to_grab&"*   "
+				else
+					SetVar $Land_mac "  L  1*  T"&$amount_to_grab&"*   "
+				end
+
 				Send $Land_mac
 				setTextLineTrigger	Done	:Done		"The Colonists file aboard your ship"
 				setTextLineTrigger	None	:Done		"There aren't that many on Terra!"
@@ -289,8 +318,11 @@ goto :Start_Up_Routines
 			:more
 			#KEEP RUNNING
 			
-			send "t * t 1"&$colo_fuel&"* q "
-			
+			if ($BWARP)
+				send "t * t 1"&$colo_fuel&"* c "
+			else
+				send "t * t 1"&$colo_fuel&"* q "
+			end
 			gosub :PLAYER~quikstats
 			killalltriggers
 		end

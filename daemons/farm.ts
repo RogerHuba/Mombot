@@ -878,12 +878,12 @@ return
 							lowercase $planet~planet_CLASS
 						end
 						if ($defense = true)
-							if ($planet~planet_CITADEL >= 3)
+							if ($planet~CITADEL >= 3)
 								send "cls0*la100*q "                        	
 							end
 						end
 						if ($barricade = TRUE)
-							if (($planet~planet_FUEL > 10000) AND ($planet~planet_CITADEL >= 4))
+							if (($planet~planet_FUEL > 10000) AND ($planet~CITADEL >= 4))
 								send "c  "
 								setVar $player~warpto $home
 								gosub :pwarp
@@ -1015,21 +1015,23 @@ return
 							end
 						end
 
-						send "qq* l " & #8 & $planet~planets[$j] & "* c "
+						send "qq* l " & #8 & $planet~planets[$j] & "*"
 						gosub :setWindow
-						if (($planet~planet_CITADEL_CREDITS > 0) and ($cash = true))
-							while ($planet~planet_citadel_credits > 0)
-								if ($planet~planet_CITADEL_CREDITS > 999999999) or (($planet~planet_CITADEL_CREDITS +  $PLAYER~CREDITS) > 999999999)
+						gosub :PLANET~getPlanetInfo
+						send "c "
+						if (($planet~CITADEL_CREDITS > 0) and ($cash = true))
+							while ($planet~CITADEL_CREDITS > 0)
+								if ($planet~CITADEL_CREDITS > 999999999) or (($planet~CITADEL_CREDITS +  $PLAYER~CREDITS) > 999999999)
 									setVar $amount_of_cash_to_transfer (999999999 - $PLAYER~CREDITS)
 								else
-									setVar $amount_of_cash_to_transfer ($planet~planet_CITADEL_CREDITS)
+									setVar $amount_of_cash_to_transfer ($planet~CITADEL_CREDITS)
 								end
-								setvar $planet~planet_citadel_credits ($planet~planet_citadel_credits - $amount_of_cash_to_transfer)
+								setvar $planet~CITADEL_CREDITS ($planet~CITADEL_CREDITS - $amount_of_cash_to_transfer)
 								send "t f " & $amount_of_cash_to_transfer & "* qq* l " & #8 & $planet~planetToFill & "* c t t " & $amount_of_cash_to_transfer & "* qq* l " & #8 & $planet~planets[$j] & "* c "
 							end
 							send "qq* "
 						end
-						if (($shield = true) and ($planet~planet_CITADEL > 4) and ($planet~planet_SHIELD_POWER < 200))
+						if (($shield = true) and ($planet~CITADEL > 4) and ($planet~planet_SHIELD_POWER < 200))
 							if ($PLAYER~SHIELDS < 2000)
 									send "qq* l " & #8 & $planet~planetToFill & "*"
 									gosub :PLANET~getPlanetInfo
@@ -1044,7 +1046,7 @@ return
 								   send "qq* l " & #8 & $planet~planets[$j] & "* c gt200*"
 							end
 						end
-						if (($warp = TRUE) and ($planet~planet_CITADEL > 3) and ($planet~planet_FUEL > 10000) and (($planet~planet_ORGANICS > 50000) or ($planet~planet_EQUIPMENT > 50000)))
+						if (($warp = TRUE) and ($planet~CITADEL > 3) and ($planet~planet_FUEL > 10000) and (($planet~planet_ORGANICS > 50000) or ($planet~planet_EQUIPMENT > 50000)))
 							send "qq* l " & #8 & $planet~planets[$j] & "* c "
 							gosub :merch
 							send "d"

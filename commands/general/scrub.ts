@@ -1,19 +1,13 @@
-    gosub :BOT~loadVars
-
-    setVar $BOT~help[1]  $BOT~tab&"scrub - Will attempt to scrub limpet off ship "
-    gosub :bot~helpfile
+gosub :BOT~loadVars
+if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
+	goto :wait_for_command
+end
 
 :scrub
-	setVar $scrubonly TRUE
 	setVar $message ""
-	gosub :PLAYER~quikstats
+	setVar $BOT~validPrompts "Citadel Command"
+	gosub :BOT~checkStartingPrompt
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
-	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
-	if (($startingLocation <> "Command") AND ($startingLocation <> "Citadel"))
-		gosub  :player~currentPrompt
-		setVar $BOT~validPrompts "Citadel Command"
-		gosub :BOT~checkStartingPrompt
-	end
 	if ((CURRENTSECTOR = 1) OR (PORT.CLASS[CURRENTSECTOR] = 0) or (CURRENTSECTOR = $map~rylos) or (CURRENTSECTOR = $map~alpha_centauri))
 		if ($startingLocation = "Citadel")
 			send "q "
@@ -32,20 +26,39 @@
 			end
 			gosub :PLAYER~quikstats
 			setVar $back $PLAYER~CURRENT_SECTOR
-			setVar $PLAYER~warpto $MAP~stardock
+			setVar $PLAYER~warpto 1
 			gosub :player~twarp
 			gosub  :player~currentPrompt
 			if ($PLAYER~twarpSuccess = TRUE)
-				send "p ss ys *p"
+				send "p ty"
 			else
-				setVar $SWITCHBOARD~message $PLAYER~msg&"*"
-				gosub :SWITCHBOARD~switchboard
-				halt
+				send " C R " & $map~stardock & "*"
+				setTextLineTrigger 1 :itsalive "Items     Status  Trading % of max OnBoard"
+				setTextLineTrigger 2 :nosoupforme "I have no information about a port in that sector"
+				pause
+				:nosoupforme
+					killtrigger 1
+					setvar $switchboard~message "StarDock appears to have been Blown Up!*"
+					gosub :switchboard~switchboard
+					goto :wait_for_command
+				:itsalive
+					killtrigger 2
+				send "q "
+				setVar $PLAYER~warpto $map~stardock
+				gosub :player~twarp
+				gosub  :player~currentPrompt
+				if ($PLAYER~twarpSuccess = TRUE)
+					send "P  S G Y G Q s p"
+				else
+					setVar $SWITCHBOARD~message $PLAYER~msg&"*"
+					gosub :SWITCHBOARD~switchboard
+					goto :wait_for_command
+				end
 			end
 		else
 			setVar $SWITCHBOARD~message "No known class 0 or 9 port here to scrub at. Try the seek option.*" 
 			gosub :SWITCHBOARD~switchboard
-			halt
+			goto :wait_for_command
 		end
 	end
 	setVar $message "No limpet on my ship.*"
@@ -61,14 +74,7 @@
 		pause   
 	:buyfighters
 		killalltriggers
-		if ($scrubonly <> TRUE)
-			getWord CURRENTLINE $figsToBuy 8
-			waitOn " credits per point "
-			getWord CURRENTLINE $PLAYER~SHIELDSToBuy 9
-			send "b "&$figsToBuy&"* c "&$PLAYER~SHIELDSToBuy&"* q q q * "
-		else
-			send "b 0* c 0* q q q * "
-		end
+		send "b 0* c 0* q q q * "
 		if ($BOT~parm1 = "seek")
 			gosub :PLAYER~quikstats
 			setVar $PLAYER~warpto $back
@@ -76,7 +82,7 @@
 			if ($PLAYER~twarpSuccess <> TRUE)
 				setVar $SWITCHBOARD~message $PLAYER~msg&"*"
 				gosub :SWITCHBOARD~switchboard
-				halt
+				goto :wait_for_command
 			end
 		 end		
 		if ($startingLocation = "Citadel")
@@ -87,18 +93,20 @@
 			setVar $SWITCHBOARD~message $message
 			gosub :SWITCHBOARD~switchboard
 		end
+
+:wait_for_command
+	setvar $bot~command "scrub"
+	setVar $BOT~help[1]  $BOT~tab&"scrub - gets rid of limpets off of your hull "
+	setVar $BOT~help[2]  $BOT~tab&"    {seek} - attempts to find class 9 or 0 port"
+	gosub :bot~helpfile
 halt
-
-
-
 
 
 # includes:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
-include "source\bot_includes\player\quikstats\player"
-include "source\bot_includes\player\currentprompt\player"
 include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\planet\landingsub\planet"
