@@ -59,7 +59,7 @@ end
 			getWord CURRENTLINE $figsToBuy 8
 			waitOn " credits per point "
 			getWord CURRENTLINE $PLAYER~SHIELDSToBuy 9
-			send "b "&$figsToBuy&"* c "&$PLAYER~SHIELDSToBuy&"* q q q * "
+			send "b "&$figsToBuy&"* c "&$shieldsToBuy&"* q q q * "
 		else
 			send "b 0* c 0* q q q * "
 		end
@@ -77,6 +77,12 @@ end
 			gosub :PLANET~landingSub
 		end
 		gosub :PLAYER~quikstats
+		if ($figstobuy > 0)
+			setvar $message $message&"   - "&$figstobuy&" fighters purchased.*"
+		end
+		if ($shieldstobuy > 0)
+			setvar $message $message&"   - "&$shieldstobuy&" shields purchased.*"
+		end
 		if ($message <> "")
 			setVar $SWITCHBOARD~message $message
 			gosub :SWITCHBOARD~switchboard
