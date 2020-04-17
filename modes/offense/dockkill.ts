@@ -44,7 +44,7 @@
 		setVar $meatgrind FALSE
 	end
 
-	getWordPos $BOT~user_command_line $pos "defender"
+	getWordPos $BOT~user_command_line $pos "def"
 	if ($pos > 0)
 		setVar $combat~defender TRUE
 		if ($player~genesis <= 0)
