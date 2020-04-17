@@ -43,7 +43,7 @@ end
 					goto :wait_for_command
 				:itsalive
 					killtrigger 2
-
+				send "q "
 				setVar $PLAYER~warpto $map~stardock
 				gosub :player~twarp
 				gosub  :player~currentPrompt
