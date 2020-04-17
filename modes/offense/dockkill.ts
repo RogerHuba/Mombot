@@ -105,9 +105,6 @@
 		end
 	end		
 
-	if ($startingLocation = "<StarDock>")
-		send "q "
-	end
 	if ($ship~ship_max_attack <= 0)
 		gosub :SHIP~getshipstats
 		savevar $ship~ship_fighters_max
