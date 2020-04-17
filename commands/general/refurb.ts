@@ -78,9 +78,11 @@ end
 		end
 		gosub :PLAYER~quikstats
 		if ($figstobuy > 0)
+			format $figstobuy $figstobuy NUMBER
 			setvar $message $message&"   - "&$figstobuy&" fighters purchased.*"
 		end
 		if ($shieldstobuy > 0)
+			format $shieldstobuy $shieldstobuy NUMBER
 			setvar $message $message&"   - "&$shieldstobuy&" shields purchased.*"
 		end
 		if ($message <> "")
