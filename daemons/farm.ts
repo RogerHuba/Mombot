@@ -878,12 +878,12 @@ return
 							lowercase $planet~planet_CLASS
 						end
 						if ($defense = true)
-							if ($planet~planet_CITADEL >= 3)
+							if ($planet~CITADEL >= 3)
 								send "cls0*la100*q "                        	
 							end
 						end
 						if ($barricade = TRUE)
-							if (($planet~planet_FUEL > 10000) AND ($planet~planet_CITADEL >= 4))
+							if (($planet~planet_FUEL > 10000) AND ($planet~CITADEL >= 4))
 								send "c  "
 								setVar $player~warpto $home
 								gosub :pwarp
@@ -1031,7 +1031,7 @@ return
 							end
 							send "qq* "
 						end
-						if (($shield = true) and ($planet~planet_CITADEL > 4) and ($planet~planet_SHIELD_POWER < 200))
+						if (($shield = true) and ($planet~CITADEL > 4) and ($planet~planet_SHIELD_POWER < 200))
 							if ($PLAYER~SHIELDS < 2000)
 									send "qq* l " & #8 & $planet~planetToFill & "*"
 									gosub :PLANET~getPlanetInfo
@@ -1046,7 +1046,7 @@ return
 								   send "qq* l " & #8 & $planet~planets[$j] & "* c gt200*"
 							end
 						end
-						if (($warp = TRUE) and ($planet~planet_CITADEL > 3) and ($planet~planet_FUEL > 10000) and (($planet~planet_ORGANICS > 50000) or ($planet~planet_EQUIPMENT > 50000)))
+						if (($warp = TRUE) and ($planet~CITADEL > 3) and ($planet~planet_FUEL > 10000) and (($planet~planet_ORGANICS > 50000) or ($planet~planet_EQUIPMENT > 50000)))
 							send "qq* l " & #8 & $planet~planets[$j] & "* c "
 							gosub :merch
 							send "d"
