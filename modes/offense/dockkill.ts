@@ -144,8 +144,10 @@
 		waitOn "B  Fighters        :"
 		getWord CURRENTLINE $figsToBuy 8
 		waitOn "C  Shield Points   :"
-		getWord CURRENTLINE $player~shieldsToBuy 9
-		send "b " $figsToBuy "* c " $player~shieldsToBuy "* "
+		getWord CURRENTLINE $shieldsToBuy 9
+		if (($figsToBuy > 0) or ($shieldsToBuy > 0))
+			send "b " $figsToBuy "* c " $shieldsToBuy "* "
+		end
 		gosub :player~quikstats
 		if ($PLAYER~CURRENT_SECTOR = STARDOCK)
 			send "q q q "
