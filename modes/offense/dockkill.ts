@@ -20,6 +20,9 @@
 	setVar $SWITCHBOARD~self_command TRUE
 	
 
+	gosub :PLAYER~quikstats	
+	setVar $startingLocation $PLAYER~CURRENT_PROMPT
+
 	getWordPos $BOT~user_command_line $pos "pod"
 	if ($pos > 0)
 		setVar $pods TRUE
@@ -65,8 +68,6 @@
 	loadvar $ship~ship_max_attack
 	loadvar $ship~max_shields
 
-	gosub :PLAYER~quikstats	
-	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 
 	loadvar $ship~CAP_FILE	
 	fileExists $CAP_FILE_chk $ship~CAP_FILE
