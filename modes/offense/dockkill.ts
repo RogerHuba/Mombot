@@ -247,3 +247,6 @@ include "source\bot_includes\combat\fastattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\player\setconnectiontriggers\player"
+include "source\bot_includes\ship\loadshipinfo\ship"
+include "source\bot_includes\ship\getshipcapstats\ship"
+
