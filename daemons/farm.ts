@@ -1019,14 +1019,14 @@ return
 						gosub :setWindow
 						gosub :PLANET~getPlanetInfo
 						send "c "
-						if (($planet~planet_CITADEL_CREDITS > 0) and ($cash = true))
-							while ($planet~planet_citadel_credits > 0)
-								if ($planet~planet_CITADEL_CREDITS > 999999999) or (($planet~planet_CITADEL_CREDITS +  $PLAYER~CREDITS) > 999999999)
+						if (($planet~CITADEL_CREDITS > 0) and ($cash = true))
+							while ($planet~CITADEL_CREDITS > 0)
+								if ($planet~CITADEL_CREDITS > 999999999) or (($planet~CITADEL_CREDITS +  $PLAYER~CREDITS) > 999999999)
 									setVar $amount_of_cash_to_transfer (999999999 - $PLAYER~CREDITS)
 								else
-									setVar $amount_of_cash_to_transfer ($planet~planet_CITADEL_CREDITS)
+									setVar $amount_of_cash_to_transfer ($planet~CITADEL_CREDITS)
 								end
-								setvar $planet~planet_citadel_credits ($planet~planet_citadel_credits - $amount_of_cash_to_transfer)
+								setvar $planet~CITADEL_CREDITS ($planet~CITADEL_CREDITS - $amount_of_cash_to_transfer)
 								send "t f " & $amount_of_cash_to_transfer & "* qq* l " & #8 & $planet~planetToFill & "* c t t " & $amount_of_cash_to_transfer & "* qq* l " & #8 & $planet~planets[$j] & "* c "
 							end
 							send "qq* "
