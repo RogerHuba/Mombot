@@ -1015,8 +1015,10 @@ return
 							end
 						end
 
-						send "qq* l " & #8 & $planet~planets[$j] & "* c "
+						send "qq* l " & #8 & $planet~planets[$j] & "*"
 						gosub :setWindow
+						gosub :PLANET~getPlanetInfo
+						send "c "
 						if (($planet~planet_CITADEL_CREDITS > 0) and ($cash = true))
 							while ($planet~planet_citadel_credits > 0)
 								if ($planet~planet_CITADEL_CREDITS > 999999999) or (($planet~planet_CITADEL_CREDITS +  $PLAYER~CREDITS) > 999999999)
