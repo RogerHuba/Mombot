@@ -1,4 +1,4 @@
-for /r %%n in (*dockkill.ts) do call :checkit "%%n" 
+for /r %%n in (*patp.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
