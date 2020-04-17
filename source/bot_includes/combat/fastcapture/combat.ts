@@ -316,8 +316,9 @@
 				setVar $sendAttack "z"&$cap_points&"*  "
 				if ($player~startingLocation = "Citadel")
 					setvar $sendAttack $sendAttack&$refurbString
+				elseif (($player~refurbString <> "") and ($player~refurbString <> "0"))
+					setvar $sendAttack $sendAttack&$player~refurbString
 				end
-				#echo "*["&$sendAttack&"]*"
 				send $sendAttack
 #				if ($cap_points = 1)
 #					setvar $i 1
