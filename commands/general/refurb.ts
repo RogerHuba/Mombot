@@ -58,7 +58,7 @@ end
 		if ($scrubonly <> TRUE)
 			getWord CURRENTLINE $figsToBuy 8
 			waitOn " credits per point "
-			getWord CURRENTLINE $PLAYER~SHIELDSToBuy 9
+			getWord CURRENTLINE $shieldsToBuy 9
 			send "b "&$figsToBuy&"* c "&$shieldsToBuy&"* q q q * "
 		else
 			send "b 0* c 0* q q q * "
