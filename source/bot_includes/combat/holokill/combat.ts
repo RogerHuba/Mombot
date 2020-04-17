@@ -134,7 +134,7 @@
 				send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  "
 			end
 			if (($player~GENESIS > 0) and ($defender = true))
-				send "u y * .* c "
+				send "u y n.* c "
 			end
 			if ($player~surround_before_hkill = TRUE)
 				gosub :player~quikstats
