@@ -1,21 +1,20 @@
-#
-# - Personal Planet Product - add a planetsWithProducts[sector] - always do the personal lst scan to popualte
-#
-# if we shoot $maxTorpBetweenRefresh torps and get no servible planets, then we need to refresh all planets and start again
-# setVar $maxTorpBetweenRefresh 25
-# setVar $torpPopCount 0
-# Not Implemented - yet?
-# blast Planets above sector max planets afterwards
-# setVar $cleanUpTop 0
-# //if clean up stop is on, it'll blow the amount of plantes in "Cleanup amount"
-# setVar $cleanupStop 0
-# setVar $cleanupAmount 150
-# setVar $cleanupCount 20
-#
-# safetoblow - SHIELDED CHECK - Call Saveme!
-#
+#TO DO
 
+#Blowing Planets: only blow own planets (created today?) - blow all option
+#Add planet names: list of X - make it look random but its not - randomly generate each run
+#	enter sector 	- get list of planet names curently
+#					- exclude from list to use
+#					- create planet, give it name. Thats what we are looking for
+#					- integrate straight to neg
 
+#furbing: Swap ship on planet - have person at base - get them to LSD after swap - can share
+#	or tow in a ship (good for day 1 - add this to mooexp)
+
+#nothing to sell
+# Could integrate checkSafeToBlow and the checkplanetlist routine together - save one waitfor per sector
+# not getting planet names rights on sector lsit
+#   if we need fuel, it needs to find planet name based on plist and grab - then send that straight to neg
+#   check sector initial could also check for citadels etc and abort as required
 gosub :BOT~loadVars
 
 loadVar $game~port_max
@@ -44,7 +43,9 @@ setVar $BOT~help[13] $BOT~tab&"    {guard}      Dock corp planet created"
 setVar $BOT~help[14] $BOT~tab&"    {ephag}      Default is NEG but set to use EP Haggle"
 setVar $BOT~help[15] $BOT~tab&"    {safe}       Ports must be surrounded by figs (ZTM!)"
 setVar $BOT~help[16] $BOT~tab&"    {paranoid}   Ports must be surrounded by figs and limpets"
-setVar $BOT~help[17] $BOT~tab&"    "
+setVar $BOT~help[17] $BOT~tab&"    {efurb:bot}  Bot to exchange ships with at home planet to furb."
+setVar $BOT~help[17] $BOT~tab&"                 bot should start already furbed."
+setVar $BOT~help[17] $BOT~tab&"   "
 setVar $BOT~help[18] $BOT~tab&"    Modes -"
 setVar $BOT~help[19] $BOT~tab&"      skimpl/pl  - Sells off product from personal planet list"
 setVar $BOT~help[20] $BOT~tab&"                 - Skim versions skips making new planets"
@@ -64,6 +65,23 @@ gosub :BOT~banner
 
 gosub :player~quikstats
 setvar $startturns $player~turns
+
+
+
+#array of planetnames
+setArray $neg_planetNames 20
+setArray $neg_planetNamesTaken 20
+setVar $i 1
+while ($i <= 20)
+	getRnd $ran1 10000 999999
+	getRnd $ran2 10000 999999
+	setVar $ranname "m" & $ran1 & $ran2
+	setVar $neg_planetNames[$i]  $ranname
+echo $ranname "*"
+	add $i 1
+end
+
+
 
 # try and grab fuel at this
 setvar $startMsg ""
@@ -134,7 +152,7 @@ elseif ($bot~parm2 = "star")
 	:timeAM
 		killAllTriggers
 	
-		setVar $userCleanup 0
+	#	setVar $userCleanup 0
 		goto :fireitup
 	:timePM
 		killAllTriggers
@@ -314,10 +332,50 @@ else
 end
 
 
+getWordPos $bot~user_command_line $pos "figs:"
+if ($pos > 0)
+	setVar $dropftrs TRUE
+	setVar $cline $bot~user_command_line & " "
+	getText $cline $dropFigQuant "figs:" " "
+
+	getWordPos $bot~user_command_line $pos "offensive"
+	if ($pos > 0)
+		setVar $dropftrsType "o"
+	else
+		setVar $dropftrsType "d"
+	end
+else
+	setVar $dropftrs FALSE
+end
+
+getWordPos $bot~user_command_line $pos "efurb:"
+if ($pos > 0)
+	setVar $efurb TRUE
+	setVar $cline $bot~user_command_line & " "
+	getText $cline $efurbBot "efurb:" " "
+
+	setvar $startMsg $startMsg & "We are exchange furbing with bot:" & $efurbBot &".*"
+	if ($startingLocation <> "Citadel")
+		setVar $SWITCHBOARD~message "Must start eFurb option from a citadel*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	else
+		
+	end
+else
+	setVar $efurb FALSE
+
+end
+
+
 getWordPos $bot~user_command_line $pos "ephag"
 if ($pos > 0)
 	setVar $useEp TRUE
 	setvar $startMsg $startMsg & "Using Ep Haggle*"
+
+	setVar $SWITCHBOARD~message "Using Ep Haggle (DISABLED AT THE MO)*"
+		gosub :SWITCHBOARD~switchboard
+		halt
 else
 	setVar $useEp FALSE
 	setvar $startMsg $startMsg & "Using internal NEG for haggle.*"
@@ -514,6 +572,26 @@ if ($startingLocation = "Citadel")
 	goSub :planet~getPlanetInfo
 	send "c"
 	
+	if ($efurb = TRUE)
+		goSub :verifyOneTrader
+		if ($traderCount <> 1)
+			setVar $SWITCHBOARD~message "Needs to be one other traer in this citadel and it should be the person you are swapping with.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		goSub :verifyTraderPlanet
+		send "'" $efurbBot " d *"
+		waitfor "credits deposited into citadel"
+		send "'" $efurbBot " w 10000000*"
+		waitfor "credits taken from citadel"
+		if ($tradeLocked = 1)
+			send "'" $efurbBot " unlock*"
+			waitfor "Ship has been unlocked!"
+		end
+		
+		send "qc"
+	end
+
 
 	setVar $cashDumpPlanet $planet~planet
 	setVar $cashDumpSector $PLAYER~CURRENT_SECTOR
@@ -526,6 +604,7 @@ if ($startingLocation = "Citadel")
 	setVar $startingFighters $player~FIGHTERS
 	setVar $safeFighters $player~FIGHTERS/2
 	#setVar $safeFighters 50000
+	
 	
 end
 
@@ -565,7 +644,7 @@ end
 
 
 setVar $loopi 1
-    while ($loopi < $sectorsOki)
+while ($loopi < $sectorsOki)
 	setVar $sector $sectorsOk[$loopi]	
 	
 
@@ -659,7 +738,8 @@ halt
 
 :createAndSell
 
-	
+	goSub :resetPlanetsUsed
+
 	if ($hazSlots > 0)
 		setVar $hazPlanetNumber ($preferredPlanetSlot + $hazSlots)
 		setVar $preferredPlanetSlot ($preferredPlanetSlot + $hazSlots)
@@ -669,6 +749,7 @@ halt
 	setVar $planet~planeti 1
 
 	setVar $checkNewPlanet 0
+
 	goSub :reCheckPlanets
 
 	setVar $go 1
@@ -687,48 +768,34 @@ halt
 
 	while ($go = 1)
 		# ENSURE PREFERRED SLOT IS FREE 
-	echo "hasslots:" $hazSlots " $preferredPlanetSlot" $preferredPlanetSlot "  $hazPlanetNumber " $hazPlanetNumber "*"
+
 		if ($planet~planetsInSectorCHK >= $preferredPlanetSlot)
 			if ($hazSlots > 0)
 				
 				if ($preferredPlanetSlot = $hazPlanetNumber)
-		
-echo "############### TIME OT BLOW OLDS*"
-echo "############### TIME OT BLOW OLDS*"
-echo "############### TIME OT BLOW OLDS*"
-echo "############### TIME OT BLOW OLDS*"
-echo "############### TIME OT BLOW OLDS*"
-echo "hasslots:" $hazSlots " $preferredPlanetSlot" $preferredPlanetSlot "  $hazPlanetNumber " $hazPlanetNumber "*"
-	
+
 					# return preferred planets
 					setVar $preferredPlanetSlot ($preferredPlanetSlot - $hazSlots)
 					setVar $slotToBlow $hazPlanetNumber
 					setVar $checkNewPlanet 0
 
-	echo " $slotToBlow " $slotToBlow " *"
-	echo " $preferredPlanetSlot " $preferredPlanetSlot " *"
-	echo " $slotToBlow " $slotToBlow " *"
-	echo " $slotToBlow " $slotToBlow " *"
-				
 					while ($slotToBlow >= $preferredPlanetSlot)
 						goSub :reCheckPlanets
-
+						setVar $removePlanetName $planet~planetNames[$slotToBlow]
+						goSub :removePlanet
 						setVar $shipBlastPlanet $planet~planets[$slotToBlow]
-	echo " $slotToBlow " $slotToBlow " *"
-	echo " $preferredPlanetSlot " $preferredPlanetSlot " *"
-	echo " $shipBlastPlanet " $shipBlastPlanet " *"
 						gosub :blastPlanet
-					
 						subtract $slotToBlow 1
 					end
-					
-					
 					goSub :reCheckPlanets
 					setVar $planet~planetsInSectorCHK $planet~planetsInSector
 				else
 					setVar $checkNewPlanet 0
 					goSub :reCheckPlanets
+					setVar $removePlanetName $planet~planetNames[$preferredPlanetSlot]
+					goSub :removePlanet
 					setVar $shipBlastPlanet $planet~planets[$preferredPlanetSlot]
+					
 					gosub :blastPlanet
 					setVar $checkNewPlanet 0
 					goSub :reCheckPlanets
@@ -737,6 +804,8 @@ echo "hasslots:" $hazSlots " $preferredPlanetSlot" $preferredPlanetSlot "  $hazP
 			else
 				setVar $checkNewPlanet 0
 				goSub :reCheckPlanets
+				setVar $removePlanetName $planet~planetNames[$preferredPlanetSlot]
+				goSub :removePlanet
 				setVar $shipBlastPlanet $planet~planets[$preferredPlanetSlot]
 				gosub :blastPlanet
 				setVar $checkNewPlanet 0
@@ -748,6 +817,7 @@ echo "hasslots:" $hazSlots " $preferredPlanetSlot" $preferredPlanetSlot "  $hazP
 		# CREATE A PLANET
 		setVar $getPlanetSettingsReq 0
 		setVar $goodPlanet 0
+		
 		goSub :makeAPlanet
 		
 		if ($getPlanetSettingsReq > 0)
@@ -757,7 +827,7 @@ echo "hasslots:" $hazSlots " $preferredPlanetSlot" $preferredPlanetSlot "  $hazP
 			setVar $checkPlanet $newPlanetMade
 			goSub :updateMooPlanet
 			if ($goodPlanet = 1)
-				# we going to trade it now
+				# We know planet number from re-checking planets to test it
 				setVar $tradePlanet $newPlanetMade
 			end
 		end
@@ -767,13 +837,14 @@ echo "hasslots:" $hazSlots " $preferredPlanetSlot" $preferredPlanetSlot "  $hazP
 			add $planet~planetsPoppedGood 1
 			# if we just checked the new planet then we can skip this
 			if ($getPlanetSettingsReq = 0)
-				
 				# FIND NEW PLANET NUMBER
 				setVar $newPlanetMade 0
-				setVar $checkNewPlanet 1
-				goSub :reCheckPlanets
-				setVar $checkNewPlanet 0
-				setVar $tradePlanet $newPlanetMade
+			#h	setVar $checkNewPlanet 1
+			#h	goSub :reCheckPlanets
+			#h	setVar $checkNewPlanet 0
+			#h	setVar $tradePlanet $newPlanetMade
+				setVar $tradePlanet $newPlanetName
+
 			end
 	
 			:skipToTrade
@@ -851,7 +922,7 @@ echo "hasslots:" $hazSlots " $preferredPlanetSlot" $preferredPlanetSlot "  $hazP
 			setVar $SWITCHBOARD~message "Warning: Fighters low, can not do cleanup.*"
 			gosub :SWITCHBOARD~switchboard
 			
-
+			halt
 		end
 		if ($cleanup = 3)
 			# FIRE HARDCODE
@@ -882,7 +953,7 @@ return
 
 :reCheckPlanets
 
-	if ($checkNewPlanet = 1)
+	if ($checkNewPlanet = 11)
 
 		setVar $prevPlanetsInSector 0
 		setVar $prevPlanets 0
@@ -930,9 +1001,15 @@ return
 				stripText $cPlanetNum ">"
 				stripText $cPlanetNum "<"
 			end
+			cutText CURRENTLINE $planetname 11 37
 
+			trim $planetname
+			if ($planetname = $newPlanetName)
+				setVar $newPlanetMade $cPlanetNum
+			end
 			add $planet~planetsInSector 1
 			setVar $planet~planets[$planet~planeti] $cPlanetNum
+			setVar $planet~planetNames[$planet~planeti] $planetname
 			
 			add $planet~planeti 1
 		end
@@ -942,7 +1019,7 @@ return
 		killAllTriggers
 		waitfor "Command ["
 
-	if ($checkNewPlanet = 1)
+	if ($checkNewPlanet = 11)
 		setVar $planet~planeti 1
 		while ($planet~planeti <= $planet~planetsInSector)
 			setVar $searchPlanet $planet~planets[$planet~planeti]
@@ -1024,23 +1101,32 @@ return
 :makeAPlanet
 
 	
-	
+	goSub :getPlanetName
 
+	if ($player~GENESIS = 0)
+		goto :buildPlanet1
+	end
 	:updatePlanetsFinishWait
 	setVar $goodPlanet 0
-	send "uyn.*p"
+	if ($planet~planetsInSectorCHK >= $GAME~MAX_PLANETS_PER_SECTOR)
+		send "u y n " $newPlanetName "* z p * "
+	else
+		send "u y " $newPlanetName "* z p * "
+	end
+	
 	:buildPlanet
 	setTextLineTrigger buildPlanet1 :buildPlanet1 "You don't have any Genesis Torpedoes to launch!"
 	setTextLineTrigger buildPlanet2 :buildPlanet2 "For building this planet you receive"
 	pause
 	:buildPlanet1
 		killAllTriggers
-		send "*"
+		#send "*"
 		gosub :restock
 		goto :updatePlanetsFinishWait
 		
 	:buildPlanet2
 		killAllTriggers
+		subTract $player~GENESIS 1
 		add $stat_torps 1
 		add $planet~planetsInSectorCHK 1
 		add $planet~planetsPopped 1
@@ -1156,6 +1242,12 @@ return
 	
 	gosub :player~quikstats
 	
+	if (($player~ore_holds < $minOre) and (PORT.BUYFUEL[CURRENTSECTOR] = 0))
+		send "pt * * * "
+		waitfor "Your offer ["
+	end
+
+
 	setVar $prestockcredits $player~credits
 	stripText $precredits ","
 
@@ -1164,6 +1256,86 @@ return
 
 	setVar $returnSpot CURRENTSECTOR
 
+	add $stat_refurbs 1
+
+	if ($efurb = TRUE)
+		goSub :restock_efurb
+	else
+		goSub :restock_self
+	end
+
+	setVar $poststockcredits $player~credits
+	stripText $poststockcredits ","
+	setVar $stat_dollarsspent ($precredits - $poststockcredits)
+
+
+return
+
+:restock_efurb
+
+	setVar $player~warpto $cashDumpSector
+	gosub :player~twarp
+	
+	setVar $playerShip $player~SHIP_NUMBER
+	send "l" & $cashDumpPlanet&"* t n t 1 * m * * * C"
+	send "TT"
+	waitfor "credits, and the Treasury"
+	setVar $line CURRENTLINE
+	getWord $line $credsmade 3
+	striptext $credsmade ","
+	subtract $credsmade 1000000
+	if ($credsmade >= 1)
+		send $credsmade & "*"
+	else
+		send "*"
+	end
+	send "^q"
+	waitfor ": ENDINTERROG"
+	goSub :verifyOneTrader
+	
+	if ($traderCount <> 1)
+		setVar $SWITCHBOARD~message "Needs to be one other traer in this citadel and it should be the person you are swapping with.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	send "ey n n n * * "
+
+	gosub :player~quikstats
+	
+	if ($player~SHIP_NUMBER = $playerShip)
+		setvar $switchboard~message "Exchange Furb Fail - still in same ship; where's my bot!!!*"
+		gosub :switchboard~switchboard
+		
+		halt
+	end
+	if ($player~GENESIS < 5)
+		setvar $switchboard~message "Exchange Furb Fail - New ship has les than 5 torps*"
+		gosub :switchboard~switchboard
+		halt
+	end
+
+	send "'" $efurbBot " d *"
+	waitfor "credits deposited into citadel"
+	send "'" $efurbBot " w 10000000*"
+	waitfor "credits taken from citadel"
+
+	send "'" $efurbBot " LSD M@0@0@0@0@N@0@0@0@N@0@M@N@0@M@M@0@0@0@0*"
+	
+	send "QQ"
+	waitfor "Blasting off from"
+	
+	setVar $player~warpto $returnSpot
+	gosub :player~twarp
+	gosub :player~quikstats
+	if ($player~CURRENT_SECTOR <> $returnSpot)
+
+		setvar $switchboard~message "We didn't make it back post exchange furb*"
+		gosub :switchboard~switchboard
+		halt
+	end
+return
+
+:restock_self
 	if ($player~FIGHTERS < $safeFighters)
 		
 		setVar $player~warpto $cashDumpSector
@@ -1177,7 +1349,7 @@ return
 	
 	goSub :checkDockThere
 	
-	add $stat_refurbs 1
+	
 	
 	
 	setVar $restockMakePlanet 0
@@ -1293,9 +1465,7 @@ return
 		end
 	end
 		
-	setVar $poststockcredits $player~credits
-	stripText $poststockcredits ","
-	setVar $stat_dollarsspent ($precredits - $poststockcredits)
+	
 return
 
 
@@ -1343,7 +1513,7 @@ return
 	if ($useEp = TRUE)
 		goSub :planetTrade_ep
 	else
-		goSub :planetTrade_ck_test
+		goSub :planetTrade_ck
 	end
 
 	gosub :player~quikstats
@@ -1361,8 +1531,30 @@ return
 
 return
 
-
 :planetTrade_ck_test
+	setVar $planet~fueltosell 67000
+	setVar $planet~orgtosell 67000
+	setVar $planet~equiptosell 67000
+	setVar $planet~_ck_ptradesetting $GAME~ptradesetting
+	setVar $planet~planet "..x."
+	setVar $planet~quantityUnknown 1
+
+	if ($player~ore_holds < $minOre)
+		send "l" $tradePlanet "* t n t1* * q * "
+		waitfor "Planet command ("
+		waitfor "Command ["
+	end
+	
+	goSub :planet~sell
+	
+	if ($planet~exit_message <> 0)
+		send "'" $planet~exit_message "*"
+	end
+	gosub :player~quikstats
+	
+return
+
+:planetTrade_ck
 	setVar $planet~fueltosell 67000
 	setVar $planet~orgtosell 67000
 	setVar $planet~equiptosell 67000
@@ -1371,6 +1563,11 @@ return
 	setVar $planet~quantityUnknown 1
 
 	if ($player~ore_holds < $minOre)
+		isNumber $number $tradePlanet
+		if ($number = 0)
+			goSub :reCheckPlanets
+			setVar $tradePlanet $newPlanetMade
+		end
 		send "l" $tradePlanet "* t n t1* * q * "
 		waitfor "Planet command ("
 		waitfor "Command ["
@@ -1378,8 +1575,11 @@ return
 	send "|"
 	goSub :planet~sell
 	send "|"
+
+	setVar $tradePlanet $planet~planet 
+
 	if ($planet~exit_message <> 0)
-		send "'" $planet~exit_message "*"
+		#send "'" $planet~exit_message "*"
 	end
 	gosub :player~quikstats
 	stripText $player~credits ","
@@ -1400,7 +1600,7 @@ return
 return
 
 
-:planetTrade_ck
+:planetTrade_ck_old
 
 	send "l" $tradePlanet "*"
 	
@@ -1615,7 +1815,7 @@ return
 :blastPlanet
 
 	:blastblastblast
-	send "l" $shipBlastPlanet "*zdy *"
+	send "l " $shipBlastPlanet "* z d y * "
 
 	:blowPlanet
 	setTextLineTrigger blowPlanet1 :blowPlanet1 "You do not have any Atomic Detonators!"
@@ -1660,6 +1860,62 @@ return
 return
 
 
+:checkPlanetNames
+		# get current planets in sector array and mark any off
+	setVar $planet~planeti 1
+	while ($planet~planeti <= $planet~planetsInSector)
+		setVar $searchName $planet~planetNames[$planet~planeti]
+		setVar $searchi 1
+		setVar $found 0
+
+		while ($searchi <= 20)
+			if ($neg_planetNames[$searchi] = $searchName)
+				setVar $found 1
+			end
+			add $searchi 1
+		end
+		if ($found = 1)
+			setVar $neg_planetNamesTaken[$planet~planeti] 1
+		end
+		add $planet~planeti 1
+	end
+return
+
+
+:removePlanet
+	setVar $pii 1
+	while ($pii <= 20)
+		if ($neg_planetNames[$pii] = $removePlanetName)
+			setVar $neg_planetNamesTaken[$pii] 0
+		end
+		add $pii 1
+	end
+return
+
+:getPlanetName
+
+	setVar $pii 1
+	while ($pii <= 20)
+		if ($neg_planetNamesTaken[$pii] = 0)
+			setVar $newPlanetName $neg_planetNames[$pii]
+			setVar $neg_planetNamesTaken[$pii] 1
+			return 
+		end
+		add $pii 1
+	end
+
+	ECHO "ISSUE SHOULD NOT GET HERE - all 20 names taken*"
+	halt
+return
+
+:resetPlanetsUsed
+	setVar $newPlanetName ""
+	setVar $pii 1
+	while ($pii <= 20)
+		setVar $neg_planetNamesTaken[$pii] 0
+		add $pii 1
+	end
+return
 
 :checkCorpPlanet
 
@@ -2143,7 +2399,85 @@ return
 	waitfor "Command ["
 return
 
+:verifyOneTrader
 
+	send "d"
+	setVar $startCount 0
+	setVar $traderCount 0
+	setVar $tradeLocked 0
+
+	setTextLineTrigger v_notraders :v_notraders "There are no other Traders in the Citadel."
+	setTextLineTrigger v_traderheading :v_traderheading "Other Traders Here"
+	setTextLineTrigger v_tradersdone1 :v_tradersdone1 "Citadel treasury"
+	setTextLineTrigger v_tradersdone2 :v_tradersdone2 "means you are locked out of that Ship and cannot use i"
+	setTextLineTrigger v_everything :v_everything ""
+	pause
+	:v_traderheading
+		setVar $startCount 1
+		pause
+
+	
+	:v_tradersdone2
+		setVar $tradeLocked 1
+	:v_tradersdone1
+		killAllTriggers
+		return
+	:v_notraders
+		killAllTriggers
+		return
+	:v_everything
+		if ($startCount= 1)
+			getLength CURRENTLINE $thelen
+			if ($thelen > 20)
+				add $traderCount 1
+			end
+		end
+		setTextLineTrigger v_everything :v_everything ""
+		pause
+
+	return
+return
+
+:verifyTraderPlanet
+	
+    send "'" $efurbBot " qss*"
+    setVar $confirmedPlanet 0
+    
+    settextLineTrigger photonBotName :photonBotName "{" & $efurbBot & "}"
+    setDelayTrigger photonBotNameTimeout :photonBotNameTimeout 3000
+    pause
+        :photonBotNameTimeout
+        killalltriggers
+            setvar $switchboard~message "Couldn't find bot we are trading ships with - exiting*"
+            gosub :SWITCHBOARD~switchboard
+            halt
+        :photonBotName
+        killalltriggers
+
+    setTextLineTrigger qssPlanetLine :qssPlanetLine "Sector   :"
+    setTextTrigger qssDone :qssDone "Bot Mode :General"
+    pause
+    :qssPlanetLine
+        cuttext CURRENTLINE $planetID 62 4
+		trim $planetID
+echo "#"  $planetID "#" $planet~planet "#*"
+        if ($planetID = $planet~planet)
+            setVar $confirmedPlanet 1
+        end
+        pause
+    
+	:qssDone
+		if ($confirmedPlanet = 1)
+			
+		else
+			setvar $switchboard~message "Bot we are trading ships with isn't on our planet.*"
+			gosub :SWITCHBOARD~switchboard
+			 
+			halt
+		end
+
+
+return
 #############################
 
 include "source\module_includes\bot\loadvars\bot"
