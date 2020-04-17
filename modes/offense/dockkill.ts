@@ -128,7 +128,7 @@
 
 	if (($player~current_sector = 1) or (port.class[$player~current_sector] = 0) or ($player~current_sector = $map~stardock))
 		if ($PLAYER~CURRENT_SECTOR = STARDOCK)
-			setvar $player~refurbString "p  s  s  p  b  "&$ship~ship_max_attack&"*  b  "&$ship~ship_max_attack&"*  c  "&$ship~max_shields&"*  q q q "
+			setvar $player~refurbString "P  S G Y G Q s p  b  "&$ship~ship_max_attack&"*  b  "&$ship~ship_max_attack&"*  c  "&$ship~max_shields&"*  q q q "
 			if ($startingLocation = "<StarDock>")
 				send "s p"
 			else
