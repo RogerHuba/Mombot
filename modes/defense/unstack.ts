@@ -145,8 +145,11 @@
 								setVar $focus $que[$bottom]
 								getsectorparameter $focus "FARM" $isFarmSector
 								getsectorparameter $focus "BUBBLE" $isBubbleSector
+								setvar $isTargettedSector false
 								if (($isFarmSector <> true) and ($isBubbleSector <> true))
 									goto :notit
+								else
+									setvar $isTargettedSector true
 								end
 								if (($isTargettedSector = true) and ($planet~CITADELs[$focus] < $game~MAX_PLANETS_PER_SECTOR))
 									killtrigger 1
