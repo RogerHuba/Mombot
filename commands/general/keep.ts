@@ -42,7 +42,7 @@ ELSEIF ($roll < $k)
   setVar $cmd "tf"
 ELSE
 	setvar $switchboard~message "No transaction required*"
-	gosub :switchboard
+	gosub :switchboard~switchboard
 	halt
 END
 
