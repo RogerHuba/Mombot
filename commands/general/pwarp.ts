@@ -54,11 +54,9 @@
 	stripText $planet~planet "#"
 	saveVar $planet~planet
 
-	if ($scan)
-		send "c p" $PLAYER~warpto "*ys"
-	else
-		send "c p" $PLAYER~warpto "*y"
-	end
+
+
+	send "send "c p" $PLAYER~warpto "*"
 
 	setTextLineTrigger pwarp_lock       :pwarp_lock     "Locating beam pinpointed"
 	setTextLineTrigger no_pwarp_lock    :no_pwarp_lock  "Your own fighters must be"
@@ -92,6 +90,7 @@
 		return
 	:pwarp_lock
 		killalltriggers
+		send "y"
 		waitOn "Planet is now in sector"
 		setVar $SWITCHBOARD~message "Planet #"&$planet~planet&" moved to sector "&$PLAYER~warpto&".*"
 		gosub :SWITCHBOARD~switchboard
@@ -104,6 +103,11 @@
 			end
 		end
 		gosub :bot~addfigtodata
+		if ($scan)
+			send "s"
+			waiton "Warps to Sector(s) :"
+			send "* "
+		end
 		return
 	:already
 		killalltriggers
