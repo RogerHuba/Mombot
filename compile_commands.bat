@@ -1,4 +1,4 @@
-for /r %%n in (*scrub.ts) do call :checkit "%%n" 
+for /r %%n in (*keep.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
