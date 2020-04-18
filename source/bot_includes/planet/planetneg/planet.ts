@@ -67,41 +67,29 @@ pause
 	pause
 
 	:portinfo1
-		killtrigger portinfo1
-		killtrigger portinfo2
-		killtrigger portinfo3
-		killtrigger gotCR
 		getWord CURRENTLINE $PLAYER~current_sector.orebuying 3
 		getWord CURRENTLINE $PLAYER~current_sector.oretrading 4
 		getWord CURRENTLINE $PLAYER~current_sector.orepercent 5
 		striptext $PLAYER~current_sector.orepercent "%"
-		goto :foundport
+		pause
 	:portinfo2
-		killtrigger portinfo1
-		killtrigger portinfo2
-		killtrigger portinfo3
-		killtrigger gotCR
 		getWord CURRENTLINE $PLAYER~current_sector.orgbuying 2
 		getWord CURRENTLINE $PLAYER~current_sector.orgtrading 3
 		getWord CURRENTLINE $PLAYER~current_sector.orgpercent 4
 		striptext $PLAYER~current_sector.orgpercent "%"
-		goto :foundport
+		pause
 	:portinfo3
-		killtrigger portinfo1
-		killtrigger portinfo2
-		killtrigger portinfo3
-		killtrigger gotCR
 		getWord CURRENTLINE $PLAYER~current_sector.equbuying 2
 		getWord CURRENTLINE $PLAYER~current_sector.equtrading 3
 		getWord CURRENTLINE $PLAYER~current_sector.equpercent 4
 		striptext $PLAYER~current_sector.equpercent "%"
-		goto :foundport
+		send "Q|"
+		pause
 	:gotCR
 		killtrigger portinfo1
 		killtrigger portinfo2
 		killtrigger portinfo3
 		killtrigger gotCR
-		send "Q|"
 
 
 setDelayTrigger justasec :justasec 500
