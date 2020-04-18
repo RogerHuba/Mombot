@@ -1,7 +1,6 @@
 setVar $includesDir ".\includes"
 
 gosub :BOT~loadVars
-gosub :combat~init 
 
 setVar $BOT~help[1] $BOT~tab&"keep {amount} "
 setVar $BOT~help[2] $BOT~tab&"   Will withdraw or deposit to/from citadel so you"
