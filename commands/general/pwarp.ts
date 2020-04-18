@@ -56,7 +56,7 @@
 
 
 
-	send "send "c p" $PLAYER~warpto "*"
+	send "c p" $PLAYER~warpto "*"
 
 	setTextLineTrigger pwarp_lock       :pwarp_lock     "Locating beam pinpointed"
 	setTextLineTrigger no_pwarp_lock    :no_pwarp_lock  "Your own fighters must be"
