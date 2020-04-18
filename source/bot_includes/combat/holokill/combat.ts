@@ -21,6 +21,7 @@
 		send " sh"
 	end
 	waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
+	gosub :sector~getAutoSectorData
 	pause
 :holo_kill_noscanner
 		killalltriggers
@@ -38,7 +39,6 @@
 		send "* "
 	end
 
-		gosub :sector~getAutoSectorData
 
 :holo_kill_get_prompt
 :holo_kill_get_current_sector
