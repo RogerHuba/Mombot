@@ -267,8 +267,6 @@ pause
 			setVar $findPlanet 1
 		else
 			send "PN" 
-			waiton "Negotiate agreement with which planet"
-			send $planet & "*"
 		end
 		
 		subtract $PLAYER~turns 1
@@ -319,6 +317,9 @@ pause
 					goto :getpercts
 
 				:gotpercts
+					if ($findPlanet <> true)
+						send $planet & "*"
+					end
 					killtrigger orepct
 					killtrigger orgpct
 					killtrigger equpct
