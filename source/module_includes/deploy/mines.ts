@@ -25,15 +25,16 @@
 	setVar $preDeployArmids currentarmids
 	setvar $preDeployLimpets currentlimpets
 	if ($bot~startingLocation = "Citadel")
-		send "s* "
+		send "s"
 		setVar $start_mac "q q "
 		setVar $end_mac "l "&$planet~planet&"* c s* "
 	else
-		send "** "
+		send "*"
 		setVar $start_mac ""
 		setVar $end_mac "** "
 	end
 	waitOn "Warps to Sector(s) :"
+	send "* "
 	setVar $limpetOwner SECTOR.LIMPETS.OWNER[currentsector]
 	setVar $armidOwner SECTOR.MINES.OWNER[currentsector]
 	if ((currentarmids <= 0) AND (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours")))
