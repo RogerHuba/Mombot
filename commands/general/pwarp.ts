@@ -48,15 +48,17 @@
 	gosub :pwarpto
 	goto :wait_for_command
 :pwarpto
-	if ($scan)
-		send "q *c p" $PLAYER~warpto "*ys"
-	else
-		send "q *c p" $PLAYER~warpto "*y"
-	end
+	send "q *"
 	waitOn "Planet #"
 	getWord CURRENTLINE $planet~planet 2
 	stripText $planet~planet "#"
 	saveVar $planet~planet
+
+	if ($scan)
+		send "c p" $PLAYER~warpto "*ys"
+	else
+		send "c p" $PLAYER~warpto "*y"
+	end
 
 	setTextLineTrigger pwarp_lock       :pwarp_lock     "Locating beam pinpointed"
 	setTextLineTrigger no_pwarp_lock    :no_pwarp_lock  "Your own fighters must be"
