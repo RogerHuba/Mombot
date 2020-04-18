@@ -92,7 +92,7 @@ pause
 		killtrigger gotCR
 
 
-setDelayTrigger justasec :justasec 500
+setDelayTrigger justasec :justasec 200
 pause
 :justasec
 
