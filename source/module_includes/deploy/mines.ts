@@ -11,7 +11,7 @@
 	if (($player~current_sector = $map~stardock) OR ($player~current_sector <= 10))
 		setVar $SWITCHBOARD~message "Can't deploy into Fed Space!*"
 		gosub :SWITCHBOARD~switchboard
-		halt
+		return
 	end
 	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
 
@@ -35,25 +35,33 @@
 	end
 	waitOn "Warps to Sector(s) :"
 	send "* "
+	setvar $armid_count SECTOR.MINES.QUANTITY[$player~current_sector]
+	setvar $limpet_count SECTOR.LIMPETS.QUANTITY[$player~current_sector]
 	setVar $limpetOwner SECTOR.LIMPETS.OWNER[$player~current_sector]
 	setVar $armidOwner SECTOR.MINES.OWNER[$player~current_sector]
+
 	if (($player~armids <= 0) AND (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Out of armids!*"
 		gosub :SWITCHBOARD~switchboard
-		halt
+		return
 	elseif ($amount > $player~armids)
 		setVar $amount $player~armids
 	end
 	if (($player~limpets <= 0) AND (($limpetOwner <> "belong to your Corp") AND ($limpetOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Out of limpets!*"
 		gosub :SWITCHBOARD~switchboard
-		halt
+		return
 	elseif ($amount > $player~limpets)
 		setVar $amount $player~limpets
 	end
+	if ((($armidOwner <> "belong to your Corp") OR ($armidOwner <> "yours")) and (($limpetOwner <> "belong to your Corp") OR ($limpetOwner <> "yours")) and ($limpet_count >= $amount) and ($armid_count >= $amount))
+		setVar $SWITCHBOARD~message "Armid and limpet mines already deployed into this sector!*"
+		gosub :SWITCHBOARD~switchboard
+		return
+	end
+
 	send $start_mac "z n h 2 z " $amount "*  z" $mine " * * h 1 z " $amount "*  z " $mine " * * * " $end_mac
 	gosub :PLAYER~quikstats
-	
 	
 	if ((($predeployArmids > $player~armids) AND ($predeployLimpets > $player~limpets)) OR (($predeployLimpets = $player~limpets) AND (($limpetOwner = "belong to your Corp") OR ($limpetOwner = "yours")) AND ($predeployArmids = $player~armids) AND (($armidOwner = "belong to your Corp") OR ($armidOwner = "yours"))))
 		setVar $SWITCHBOARD~message $amount&" Armid and Limpet mines deployed into the sector!*"
