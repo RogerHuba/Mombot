@@ -13,7 +13,7 @@
 	setVar $BUBBLE_LIST $bot~folder&"/bubble.list"
 	setVar $BOT~command "unstack"
 
-	setVar $BOT~help[1]  $BOT~tab&"  Moves overloaded planet automatically" 
+	setVar $BOT~help[1]  $BOT~tab&"  Moves overloaded planets automatically" 
 	setVar $BOT~help[2]  $BOT~tab&"  into FARM or BUBBLE sectors."
 	setVar $BOT~help[3]  $BOT~tab&"       "
 	setVar $BOT~help[4]  $BOT~tab&" unstack {planet#1} {planet#2} ... {planet#x} {restack}"

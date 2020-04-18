@@ -22,7 +22,6 @@
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~current_prompt
 	setVar $BOT~validPrompts "Citadel Command"
-	gosub :BOT~checkStartingPrompt
 	gosub :combat~holo_kill
 	if ($SWITCHBOARD~message <> "")
 		gosub :SWITCHBOARD~switchboard
