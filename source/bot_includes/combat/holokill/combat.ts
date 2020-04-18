@@ -22,7 +22,8 @@
 	end
 	waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
 	gosub :sector~getAutoSectorData
-	pause
+	goto :holo_kill_scandone
+
 :holo_kill_noscanner
 		killalltriggers
 		setVar $SWITCHBOARD~message "You don't have a HoloScanner!*"
