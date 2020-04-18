@@ -13,13 +13,14 @@
 	setVar $BUBBLE_LIST $bot~folder&"/bubble.list"
 	setVar $BOT~command "unstack"
 
-	setVar $BOT~help[1]  $BOT~tab&"Moves overloaded planet automatically into FARM sectors."
-	setVar $BOT~help[2]  $BOT~tab&"       "
-	setVar $BOT~help[3]  $BOT~tab&" unstack {planet#1} {planet#2} ... {planet#x} {restack}"
-	setVar $BOT~help[4]  $BOT~tab&"       "
-	setVar $BOT~help[5]  $BOT~tab&"      Options: "
-	setVar $BOT~help[6]  $BOT~tab&"        {planet#} - will not move listed planets"
-	setVar $BOT~help[7]  $BOT~tab&"        {restack} - restacks last unstacked planets"
+	setVar $BOT~help[1]  $BOT~tab&"  Moves overloaded planet automatically 
+	setVar $BOT~help[2]  $BOT~tab&"  into FARM or BUBBLE sectors."
+	setVar $BOT~help[3]  $BOT~tab&"       "
+	setVar $BOT~help[4]  $BOT~tab&" unstack {planet#1} {planet#2} ... {planet#x} {restack}"
+	setVar $BOT~help[5]  $BOT~tab&"       "
+	setVar $BOT~help[6]  $BOT~tab&"      Options: "
+	setVar $BOT~help[7]  $BOT~tab&"        {planet#} - will not move listed planets"
+	setVar $BOT~help[8]  $BOT~tab&"        {restack} - restacks last unstacked planets"
 	gosub :bot~helpfile
 
 	
@@ -142,10 +143,9 @@
 							while ($bottom <= $top)
 								# Now, pull out the next sector in the que, and make it our focus
 								setVar $focus $que[$bottom]
-								if ($bot~parmameter <> "")
-									getsectorparameter $focus $bot~parmameter $isTargettedSector
-								end
-								if (($bot~parmameter <> "") and ($isTargettedSector <> true))
+								getsectorparameter $focus "FARM" $isFarmSector
+								getsectorparameter $focus "BUBBLE" $isBubbleSector
+								if (($isFarmSector <> true) and ($isBubbleSector <> true))
 									goto :notit
 								end
 								if (($isTargettedSector = true) and ($planet~CITADELs[$focus] < $game~MAX_PLANETS_PER_SECTOR))
