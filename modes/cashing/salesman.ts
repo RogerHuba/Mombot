@@ -187,7 +187,9 @@
 			setVar $focus $que[$bottom]
 			if ($docim = FALSE)
 				if (($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0) AND (SECTOR.EXPLORED[$focus] = "YES"))
-					send "cr"&$focus&"*q"
+					send "cr"&$focus&"*"
+					waiton "Computer command ["
+					send "q "
 					gosub :PLAYER~quikstats
 				end
 			end
@@ -421,7 +423,9 @@
 										
 				send "#"
 				waitOn "                            Who's Playing"
-				send "cr*q"
+				send "cr*"
+				waiton "Computer command ["
+				send "q "
 				gosub :PLAYER~quikstats
 				if ($grid)
 					send "q m* * *  q "
