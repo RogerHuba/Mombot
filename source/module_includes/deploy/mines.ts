@@ -8,7 +8,7 @@
 
 	gosub :PLAYER~QUIKSTATS
 
-	if ((currentsector = $map~stardock) OR (currentsector <= 10))
+	if (($player~current_sector = $map~stardock) OR ($player~current_sector <= 10))
 		setVar $SWITCHBOARD~message "Can't deploy into Fed Space!*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -22,8 +22,8 @@
 		gosub :PLANET~getPlanetInfo
 		send "c "
 	end
-	setVar $preDeployArmids currentarmids
-	setvar $preDeployLimpets currentlimpets
+	setVar $preDeployArmids $player~armids
+	setvar $preDeployLimpets $player~limpets
 	if ($bot~startingLocation = "Citadel")
 		send "s"
 		setVar $start_mac "q q "
@@ -35,53 +35,53 @@
 	end
 	waitOn "Warps to Sector(s) :"
 	send "* "
-	setVar $limpetOwner SECTOR.LIMPETS.OWNER[currentsector]
-	setVar $armidOwner SECTOR.MINES.OWNER[currentsector]
-	if ((currentarmids <= 0) AND (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours")))
+	setVar $limpetOwner SECTOR.LIMPETS.OWNER[$player~current_sector]
+	setVar $armidOwner SECTOR.MINES.OWNER[$player~current_sector]
+	if (($player~armids <= 0) AND (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Out of armids!*"
 		gosub :SWITCHBOARD~switchboard
 		halt
-	elseif ($amount > currentarmids)
-		setVar $amount currentarmids
+	elseif ($amount > $player~armids)
+		setVar $amount $player~armids
 	end
-	if ((currentlimpets <= 0) AND (($limpetOwner <> "belong to your Corp") AND ($limpetOwner <> "yours")))
+	if (($player~limpets <= 0) AND (($limpetOwner <> "belong to your Corp") AND ($limpetOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Out of limpets!*"
 		gosub :SWITCHBOARD~switchboard
 		halt
-	elseif ($amount > currentlimpets)
-		setVar $amount currentlimpets
+	elseif ($amount > $player~limpets)
+		setVar $amount $player~limpets
 	end
 	send $start_mac "z n h 2 z " $amount "*  z" $mine " * * h 1 z " $amount "*  z " $mine " * * * " $end_mac
 	gosub :PLAYER~quikstats
 	
 	
-	if ((($predeployArmids > currentarmids) AND ($predeployLimpets > currentlimpets)) OR (($predeployLimpets = currentlimpets) AND (($limpetOwner = "belong to your Corp") OR ($limpetOwner = "yours")) AND ($predeployArmids = currentarmids) AND (($armidOwner = "belong to your Corp") OR ($armidOwner = "yours"))))
+	if ((($predeployArmids > $player~armids) AND ($predeployLimpets > $player~limpets)) OR (($predeployLimpets = $player~limpets) AND (($limpetOwner = "belong to your Corp") OR ($limpetOwner = "yours")) AND ($predeployArmids = $player~armids) AND (($armidOwner = "belong to your Corp") OR ($armidOwner = "yours"))))
 		setVar $SWITCHBOARD~message $amount&" Armid and Limpet mines deployed into the sector!*"
 		gosub :SWITCHBOARD~switchboard
-		setSectorParameter currentsector "LIMPSEC" TRUE
-		setSectorParameter currentsector "MINESEC" TRUE
-	elseif ($predeployArmids > currentarmids)
-		setVar $SWITCHBOARD~message $amount&" Armid mine(s) deployed into the sector!*"
+		setSectorParameter $player~current_sector "LIMPSEC" TRUE
+		setSectorParameter $player~current_sector "MINESEC" TRUE
+	else
+		if ($predeployArmids > $player~armids)
+			setVar $SWITCHBOARD~message $switchboard~message&$amount&" Armid mine(s) deployed into the sector!*"
+			setSectorParameter $player~current_sector "MINESEC" TRUE
+		end
+		if ($predeployLimpets > $player~limpets)
+			setVar $SWITCHBOARD~message $switchboard~message&$amount&" Limpet mine(s) deployed into the sector!*"
+			setSectorParameter $player~current_sector "LIMPSEC" TRUE
+		end
 		gosub :SWITCHBOARD~switchboard
-		setSectorParameter currentsector "MINESEC" TRUE
-	elseif ($predeployLimpets > currentlimpets)
-		setVar $SWITCHBOARD~message $amount&" Limpet mine(s) deployed into the sector!*"
-		gosub :SWITCHBOARD~switchboard
-		setSectorParameter currentsector "LIMPSEC" TRUE
 	end
-	if ($predeployArmids < currentarmids)
-		setVar $SWITCHBOARD~message (currentarmids-$predeployArmids)&" Armid mines picked up from sector!*"
-		gosub :SWITCHBOARD~switchboard
-	elseif (($predeployArmids = currentarmids) AND (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours")))
+	if ($predeployArmids < $player~armids)
+		setVar $SWITCHBOARD~message ($player~armids-$predeployArmids)&" Armid mines picked up from sector!*"
+	elseif (($predeployArmids = $player~armids) AND (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Enemy armid(s) present in sector, cannot deploy!*"
-		gosub :SWITCHBOARD~switchboard
 	end
-	if ($predeployLimpets < currentlimpets)
-		setVar $SWITCHBOARD~message (currentlimpets-$predeployLimpets)&" Limpet mines picked up from sector!*"
-		gosub :SWITCHBOARD~switchboard
-	elseif (($predeployLimpets = currentlimpets) AND (($limpetOwner <> "belong to your Corp") AND ($limpetOwner <> "yours")))
+	gosub :SWITCHBOARD~switchboard
+	if ($predeployLimpets < $player~limpets)
+		setVar $SWITCHBOARD~message ($player~limpets-$predeployLimpets)&" Limpet mines picked up from sector!*"
+	elseif (($predeployLimpets = $player~limpets) AND (($limpetOwner <> "belong to your Corp") AND ($limpetOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Enemy limpet(s) present in sector, cannot deploy!*"
-		gosub :SWITCHBOARD~switchboard
 	end
+	gosub :SWITCHBOARD~switchboard
 	return
 # ============================== END MINES (ARMID AND LIMP) SUB ==============================
