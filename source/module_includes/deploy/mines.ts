@@ -27,7 +27,7 @@
 	if ($bot~startingLocation = "Citadel")
 		send "s"
 		setVar $start_mac "q q "
-		setVar $end_mac "l "&$planet~planet&"* c s*"
+		setVar $end_mac "l "&$planet~planet&"* c s"
 	else
 		send "*"
 		setVar $start_mac ""
@@ -63,6 +63,7 @@
 	send $start_mac "z n h 2 z " $amount "*  z" $mine " h 1 z " $amount "*  z " $mine $end_mac
 	waiton "Warps to Sector(s) :"
 	gosub :PLAYER~quikstats
+	send "* "
 	
 	if ((($predeployArmids > $player~armids) AND ($predeployLimpets > $player~limpets)) OR (($predeployLimpets = $player~limpets) AND (($limpetOwner = "belong to your Corp") OR ($limpetOwner = "yours")) AND ($predeployArmids = $player~armids) AND (($armidOwner = "belong to your Corp") OR ($armidOwner = "yours"))))
 		setVar $SWITCHBOARD~message $amount&" Armid and Limpet mines deployed into the sector!*"
