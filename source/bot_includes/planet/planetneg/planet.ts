@@ -266,7 +266,9 @@ pause
 			send "PN"
 			setVar $findPlanet 1
 		else
-			send "PN" & $planet & "*"
+			send "PN" 
+			waiton "Negotiate agreement with which planet"
+			send $planet & "*"
 		end
 		
 		subtract $PLAYER~turns 1
