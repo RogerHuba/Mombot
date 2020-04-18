@@ -56,7 +56,6 @@ pause
 	goto :exitneg
 
 :foundport
-	send "Q|"
 	killtrigger foundport
 	killtrigger noport
 	killtrigger noport2
@@ -102,6 +101,7 @@ pause
 		killtrigger portinfo2
 		killtrigger portinfo3
 		killtrigger gotCR
+		send "Q|"
 
 
 setDelayTrigger justasec :justasec 500
