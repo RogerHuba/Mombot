@@ -20,6 +20,7 @@
 	else
 		send " sh"
 	end
+	waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
 	pause
 :holo_kill_noscanner
 		killalltriggers

@@ -7,6 +7,8 @@
 	gosub :bot~helpfile
 
 	loadvar $player~surround_before_hkill
+	loadvar $SHIP~SHIP_MAX_ATTACK
+	loadvar $ship~SHIP_OFFENSIVE_ODDS
 
 	getWordPos $bot~user_command_line $pos "surround"
 	if ($pos > 0)
