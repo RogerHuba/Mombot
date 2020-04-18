@@ -37,7 +37,7 @@ gosub :PLAYER~getInfo
 send "*"
 
 
-send "|CR" & $PLAYER~current_sector & "*Q|"
+send "|CR" & $PLAYER~current_sector & "*"
 
 setTextLineTrigger foundport :foundport "Items     Status  Trading % of max OnBoard"
 setTextLineTrigger noport :noport "I have no information about a port in that sector."
@@ -46,6 +46,7 @@ setTextLineTrigger noport3 :noport "credits / next hold"
 pause
 
 :noport
+	send "Q|"
 	killtrigger foundport
 	killtrigger noport
 	killtrigger noport2
@@ -55,6 +56,7 @@ pause
 	goto :exitneg
 
 :foundport
+	send "Q|"
 	killtrigger foundport
 	killtrigger noport
 	killtrigger noport2
