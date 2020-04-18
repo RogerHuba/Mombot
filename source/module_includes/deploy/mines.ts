@@ -27,11 +27,11 @@
 	if ($bot~startingLocation = "Citadel")
 		send "s"
 		setVar $start_mac "q q "
-		setVar $end_mac "l "&$planet~planet&"* c s* "
+		setVar $end_mac "l "&$planet~planet&"* c s*"
 	else
 		send "*"
 		setVar $start_mac ""
-		setVar $end_mac "** "
+		setVar $end_mac "*"
 	end
 	waitOn "Warps to Sector(s) :"
 	send "* "
@@ -60,7 +60,7 @@
 		return
 	end
 
-	send $start_mac "z n h 2 z " $amount "*  z" $mine " h 1 z " $amount "*  z " $mine " * " $end_mac
+	send $start_mac "z n h 2 z " $amount "*  z" $mine " h 1 z " $amount "*  z " $mine $end_mac
 	gosub :PLAYER~quikstats
 	
 	if ((($predeployArmids > $player~armids) AND ($predeployLimpets > $player~limpets)) OR (($predeployLimpets = $player~limpets) AND (($limpetOwner = "belong to your Corp") OR ($limpetOwner = "yours")) AND ($predeployArmids = $player~armids) AND (($armidOwner = "belong to your Corp") OR ($armidOwner = "yours"))))
