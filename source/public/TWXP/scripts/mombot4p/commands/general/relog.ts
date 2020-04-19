@@ -50,6 +50,14 @@
 			settextlinetrigger dead :dead "What do you want to name your ship? (30 letters)"
 			settexttrigger alive :alldone_relog "Command ["
 			settextlinetrigger avoids :continueavoids "<Scanning for Hazardous Sectors you have marked to Avoid>"
+			settexttrigger messages :continuemessages "[Pause]"
+			settexttrigger delete :continuedelete "[Pause] - Delete messages? (Y/N)"
+			pause
+		:continuedelete
+			send "y  "
+			pause
+		:continuemessages
+			send " "
 			pause
 		:continueavoids
 			send "* * "
