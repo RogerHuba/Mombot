@@ -236,11 +236,14 @@ goto :Start_Up_Routines
 				gosub :player~quikstats
 				setvar $empty_holds ($player~total_holds - ($player~COLONIST_HOLDS + $player~ore_holds))
 				#There are currently 3417042 colonists ready to leave Terra.
+				if ($empty_holds <= 0)
+					goto :grabbed
+				end
 				:check_colos
 				if ($PLAYER~PLANET_SCANNER = "No")
 					send "  l q "
 				else
-					send "  l  1* q "
+					send "  l  1*q "
 				end
 				waiton " colonists ready to leave Terra."
 				getword currentline $scam_check 1
@@ -265,6 +268,7 @@ goto :Start_Up_Routines
 				Send $Land_mac
 				setTextLineTrigger	Done	:Done		"The Colonists file aboard your ship"
 				setTextLineTrigger	None	:Done		"There aren't that many on Terra!"
+				settextlinetrigger  none2   :Done       "You return to your ship and leave the planet."
 				setTextTrigger		Grabbed	:Grabbed	"([0] empty holds)"
 				pause
 			:Done

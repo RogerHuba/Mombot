@@ -37,7 +37,7 @@ gosub :PLAYER~getInfo
 send "*"
 
 
-send "|CR" & $PLAYER~current_sector & "*Q|"
+send "|CR" & $PLAYER~current_sector & "*"
 
 setTextLineTrigger foundport :foundport "Items     Status  Trading % of max OnBoard"
 setTextLineTrigger noport :noport "I have no information about a port in that sector."
@@ -46,6 +46,7 @@ setTextLineTrigger noport3 :noport "credits / next hold"
 pause
 
 :noport
+	send "Q|"
 	killtrigger foundport
 	killtrigger noport
 	killtrigger noport2
@@ -66,35 +67,24 @@ pause
 	pause
 
 	:portinfo1
-		killtrigger portinfo1
-		killtrigger portinfo2
-		killtrigger portinfo3
-		killtrigger gotCR
 		getWord CURRENTLINE $PLAYER~current_sector.orebuying 3
 		getWord CURRENTLINE $PLAYER~current_sector.oretrading 4
 		getWord CURRENTLINE $PLAYER~current_sector.orepercent 5
 		striptext $PLAYER~current_sector.orepercent "%"
-		goto :foundport
+		pause
 	:portinfo2
-		killtrigger portinfo1
-		killtrigger portinfo2
-		killtrigger portinfo3
-		killtrigger gotCR
 		getWord CURRENTLINE $PLAYER~current_sector.orgbuying 2
 		getWord CURRENTLINE $PLAYER~current_sector.orgtrading 3
 		getWord CURRENTLINE $PLAYER~current_sector.orgpercent 4
 		striptext $PLAYER~current_sector.orgpercent "%"
-		goto :foundport
+		pause
 	:portinfo3
-		killtrigger portinfo1
-		killtrigger portinfo2
-		killtrigger portinfo3
-		killtrigger gotCR
 		getWord CURRENTLINE $PLAYER~current_sector.equbuying 2
 		getWord CURRENTLINE $PLAYER~current_sector.equtrading 3
 		getWord CURRENTLINE $PLAYER~current_sector.equpercent 4
 		striptext $PLAYER~current_sector.equpercent "%"
-		goto :foundport
+		send "Q|"
+		pause
 	:gotCR
 		killtrigger portinfo1
 		killtrigger portinfo2
@@ -102,7 +92,7 @@ pause
 		killtrigger gotCR
 
 
-setDelayTrigger justasec :justasec 500
+setDelayTrigger justasec :justasec 200
 pause
 :justasec
 
@@ -276,7 +266,7 @@ pause
 			send "PN"
 			setVar $findPlanet 1
 		else
-			send "PN" & $planet & "*"
+			send "PN" 
 		end
 		
 		subtract $PLAYER~turns 1

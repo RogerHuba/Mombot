@@ -7,6 +7,8 @@
 	gosub :bot~helpfile
 
 	loadvar $player~surround_before_hkill
+	loadvar $SHIP~SHIP_MAX_ATTACK
+	loadvar $ship~SHIP_OFFENSIVE_ODDS
 
 	getWordPos $bot~user_command_line $pos "surround"
 	if ($pos > 0)
@@ -22,7 +24,6 @@
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~current_prompt
 	setVar $BOT~validPrompts "Citadel Command"
-	gosub :BOT~checkStartingPrompt
 	gosub :combat~holo_kill
 	if ($SWITCHBOARD~message <> "")
 		gosub :SWITCHBOARD~switchboard

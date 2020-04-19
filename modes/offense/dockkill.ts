@@ -2,15 +2,16 @@
 		gosub :BOT~loadVars
 									
 
-	setVar $BOT~help[1] $BOT~tab&"Scans for targets and autokills in sector."
-	setVar $BOT~help[2] $BOT~tab&"         "
-	setVar $BOT~help[3] $BOT~tab&"Options: "
-	setVar $BOT~help[4] $BOT~tab&"   {off} - Turns off script "
-	setVar $BOT~help[5] $BOT~tab&"   {pod} - Only shoots pods"
-	setVar $BOT~help[6] $BOT~tab&"  {meat} - meatgrinder mode"
-	setVar $BOT~help[7] $BOT~tab&"   {cap} - capture instead of kill"
-	setVar $BOT~help[8] $BOT~tab&"    {dt} - doubletap mode"
-	setVar $BOT~help[9] $BOT~tab&"    {sg} - shotgun mode"
+	setVar $BOT~help[1]  $BOT~tab&"Scans for targets and autokills in sector."
+	setVar $BOT~help[2]  $BOT~tab&"         "
+	setVar $BOT~help[3]  $BOT~tab&"  Options: "
+	setVar $BOT~help[4]  $BOT~tab&"      {off} - Turns off script "
+	setVar $BOT~help[5]  $BOT~tab&"      {pod} - Only shoots pods"
+	setVar $BOT~help[6]  $BOT~tab&"     {meat} - meatgrinder mode"
+	setVar $BOT~help[7]  $BOT~tab&"      {cap} - capture instead of kill"
+	setVar $BOT~help[8]  $BOT~tab&"       {dt} - doubletap mode"
+	setVar $BOT~help[9]  $BOT~tab&"       {sg} - shotgun mode"
+	setVar $BOT~help[10] $BOT~tab&" {defender} - pops a planet before attacking"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Dock Killer"
@@ -18,6 +19,9 @@
 	gosub :combat~init 
 	setVar $SWITCHBOARD~self_command TRUE
 	
+
+	gosub :PLAYER~quikstats	
+	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 
 	getWordPos $BOT~user_command_line $pos "pod"
 	if ($pos > 0)
@@ -40,6 +44,18 @@
 		setVar $meatgrind FALSE
 	end
 
+	getWordPos $BOT~user_command_line $pos "def"
+	if ($pos > 0)
+		setVar $combat~defender TRUE
+		if ($player~genesis <= 0)
+			setVar $SWITCHBOARD~message "You have to have genesis torps to run defender mode.*"
+			gosub :switchboard~switchboard
+			halt			
+		end
+	else
+		setVar $combat~defender FALSE
+	end
+
 	setVar $PLAYER~targetingPerson FALSE
 	if ($pods)
 		setVar $PLAYER~targetingShip "Escape Pod"
@@ -52,8 +68,6 @@
 	loadvar $ship~ship_max_attack
 	loadvar $ship~max_shields
 
-	gosub :PLAYER~quikstats	
-	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 
 	loadvar $ship~CAP_FILE	
 	fileExists $CAP_FILE_chk $ship~CAP_FILE

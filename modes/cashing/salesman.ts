@@ -187,7 +187,9 @@
 			setVar $focus $que[$bottom]
 			if ($docim = FALSE)
 				if (($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0) AND (SECTOR.EXPLORED[$focus] = "YES"))
-					send "cr"&$focus&"*q"
+					send "cr"&$focus&"*"
+					waiton "Computer command ["
+					send "q "
 					gosub :PLAYER~quikstats
 				end
 			end
@@ -223,13 +225,14 @@
 		:continueOn2
 			if ($NearFig > 0)
 				killAllTriggers
-				send "p"&$NearFig&"*y"
-				setTextLineTrigger warped :emptyPort2 "-=-=-=- Planetary TransWarp Drive Engaged! -=-=-=-"
+				send "p"&$NearFig&"*"
+				setTextLineTrigger warped :emptyPort2 "Locating beam pinpointed, TransWarp Locked."
 				setTextLineTrigger same :emptyPort2 "You are already in that sector!"
 				setTextLineTrigger didnotwarp :noFigAtLocation "Your own fighters must be in the destination to make a safe jump."
 				setTextLineTrigger notEnoughFuel :doneNoFuel2 "You do not have enough Fuel Ore on this planet to make the jump."
 				pause			
 				:emptyPort2
+					send "y "
 					setSectorParameter $NearFig "FIGSEC" TRUE
 
 
@@ -421,7 +424,9 @@
 										
 				send "#"
 				waitOn "                            Who's Playing"
-				send "cr*q"
+				send "cr*"
+				waiton "Computer command ["
+				send "q "
 				gosub :PLAYER~quikstats
 				if ($grid)
 					send "q m* * *  q "

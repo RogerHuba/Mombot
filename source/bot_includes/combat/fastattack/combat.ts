@@ -84,6 +84,11 @@
 	end
 	if ($player~isFound = TRUE)
 		setVar $attackString ""
+		if (($player~GENESIS > 0) and ($defender = true))
+			setVar $attackString "u y n.* c "
+			setvar $player~genesis ($player~genesis-1)
+		end
+
 		setvar $starting_fighters $player~fighters
 		while ($player~fighters > 0)
 			if ($player~fighters < $SHIP~SHIP_MAX_ATTACK)
