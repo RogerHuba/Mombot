@@ -51,7 +51,7 @@
 			settexttrigger avoids :continueavoids "Do you wish to clear some avoids? (Y/N) [N]"
 			settexttrigger messages :continuemessages "[Pause]"
 			settexttrigger delete :continuedelete "[Pause] - Delete messages? (Y/N)"
-			send $BOT~password & "*  *  *  *  *  *  "
+			send $BOT~password & "*  "
 			pause
 		:continuedelete
 			send "y  "
