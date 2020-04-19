@@ -359,6 +359,8 @@ send "'DEBUG: NAN on equtrading:" & $test5 & " equpercent:" $test6 "*"
 							getWord CURRENTLINE $planet 1
 							striptext $planet ">"
 							send $planet "*"
+					else
+						send $planet "*"
 					end
 
 			

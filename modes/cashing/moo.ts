@@ -1,7 +1,5 @@
 #TO DO
-We are buying up to 6000.  You have 6000 on planet m222720946367.
-How many units of Equipment do you want to sell [Script run-time error in 'PLANET': '' is not a number, line 435, cmd 33
-6000]?
+
 #Blowing Planets: only blow own planets (created today?) - blow all option
 #Add planet names: list of X - make it look random but its not - randomly generate each run
 #	enter sector 	- get list of planet names curently
@@ -79,7 +77,6 @@ while ($i <= 20)
 	getRnd $ran2 10000 999999
 	setVar $ranname "m" & $ran1 & $ran2
 	setVar $neg_planetNames[$i]  $ranname
-echo $ranname "*"
 	add $i 1
 end
 
@@ -582,15 +579,14 @@ if ($startingLocation = "Citadel")
 			halt
 		end
 		goSub :verifyTraderPlanet
-		send "'" $efurbBot " d *"
-		waitfor "credits deposited into citadel"
-		send "'" $efurbBot " w 10000000*"
-		waitfor "credits taken from citadel"
+		send "'" $efurbBot " stopall*"
+		waitfor " All non-system scripts and modules killed, and modes reset"
 		if ($tradeLocked = 1)
 			send "'" $efurbBot " unlock*"
 			waitfor "Ship has been unlocked!"
 		end
-		
+		send "'" $efurbBot " moofurb efurb*"
+		waitfor "Furber: waiting for ship trade to trigger."
 		send "qc"
 	end
 
@@ -1316,13 +1312,6 @@ return
 		halt
 	end
 
-	send "'" $efurbBot " d *"
-	waitfor "credits deposited into citadel"
-	send "'" $efurbBot " w 10000000*"
-	waitfor "credits taken from citadel"
-
-	send "'" $efurbBot " LSD M@0@0@0@0@N@0@0@0@N@0@M@N@0@M@M@0@0@0@0*"
-	
 	send "QQ"
 	waitfor "Blasting off from"
 	
@@ -1557,6 +1546,11 @@ return
 return
 
 :planetTrade_ck
+
+echo "tradePlanet:" $tradePlanet "*"
+echo "tradePlanet:" $tradePlanet "*"
+echo "tradePlanet:" $tradePlanet "*"
+
 	setVar $planet~fueltosell 67000
 	setVar $planet~orgtosell 67000
 	setVar $planet~equiptosell 67000
@@ -1574,6 +1568,11 @@ return
 		waitfor "Planet command ("
 		waitfor "Command ["
 	end
+
+	
+echo "planet~planet:" $planet~planet "*"
+echo "planet~planet:" $planet~planet "*"
+echo "planet~planet:" $planet~planet "*"
 	send "|"
 	goSub :planet~sell
 	send "|"
