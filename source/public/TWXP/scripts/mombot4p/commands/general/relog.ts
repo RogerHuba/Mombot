@@ -46,12 +46,12 @@
 			pause
 		:continuepassword
 			gosub :relog_freeze_trigger
-			send $BOT~password & "*  *  *  *  *  *  "
-			settextlinetrigger dead :dead "What do you want to name your ship? (30 letters)"
+			settextlinetrigger dead2 :dead "What do you want to name your ship? (30 letters)"
 			settexttrigger alive :alldone_relog "Command ["
 			settexttrigger avoids :continueavoids "Do you wish to clear some avoids? (Y/N) [N]"
 			settexttrigger messages :continuemessages "[Pause]"
 			settexttrigger delete :continuedelete "[Pause] - Delete messages? (Y/N)"
+			send $BOT~password & "*  *  *  *  *  *  "
 			pause
 		:continuedelete
 			send "y  "
