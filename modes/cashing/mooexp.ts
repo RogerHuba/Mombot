@@ -3,6 +3,7 @@ gosub :BOT~loadVars
 loadVar $game~port_max
 loadVar $game~ptradesetting
 loadVar $game~MAX_PLANETS_IN_GAME
+loadVar $GAME~MAX_PLANETS_PER_SECTOR
 loadVar $bot~Folder
 loadVar $BOT~LIMP_FILE 		
 loadVar $BOT~ARMID_FILE 
@@ -43,6 +44,18 @@ gosub :player~quikstats
 
 
 
+#array of planetnames
+setArray $neg_planetNames 20
+setArray $neg_planetNamesTaken 20
+setVar $i 1
+while ($i <= 20)
+	getRnd $ran1 10000 999999
+	getRnd $ran2 10000 999999
+	setVar $ranname "m" & $ran1 & $ran2
+	setVar $neg_planetNames[$i]  $ranname
+	add $i 1
+end
+
 
 setvar $startcredits $player~credits
 setvar $startturns $player~turns
@@ -59,7 +72,7 @@ if ($player~photons > 0)
 end
 
 
-if ($game~ptradesetting = 0) or ($game~MAX_PLANETS_IN_GAME = 0)
+if ($game~ptradesetting = 0) or ($game~MAX_PLANETS_IN_GAME = 0) or ($GAME~MAX_PLANETS_PER_SECTOR = 0)
 	setVar $SWITCHBOARD~message "No planet trade/planets in game settings >refresh >update.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
@@ -120,7 +133,16 @@ if ($pos > 0)
 	setVar $fireTithePerson "bot333"
 
 	setVar $furbfigs TRUE
-
+	send "i"
+	setTextLineTrigger checkHell :checkHell "Hell's StarShip"
+	setTextLineTrigger checkHellDone :ceckHElldon "Credits        :"
+	pause
+	:checkHell
+		killalltriggers
+		setVar $doFireUpgrade 0
+	:checkHellDone
+		killalltriggers
+	
 end
 setVar $ice 0
 getWordPos $bot~user_command_line $pos "ice"
@@ -1224,15 +1246,17 @@ echo "#RETURNSEC:" $returnSpot "*"
 				end
 			end
 
+	setVar $exitmacro ""
+
 	#send "qspb5000*c3000*q"
-	send "qqq    *   "
+	setVar $exitmacro $exitmacro & "qqq    *   "
 	if ($restockMakePlanet = 1)
-		send "u   y  n  .  n  *  c * *  "
+		setVar $exitmacro $exitmacro &  "u   y  n  .  n  *  c * *  "
 	end
 	
 	if ($player~corpCashDump = TRUE)
 		if ($doDockCashDump = TRUE)
-			send "t  c  y  q   z   t" $dumpcash "*  *  *  "
+			setVar $exitmacro $exitmacro &  "t  c  y  q   z   t" & $dumpcash  & "*  *  *  "
 		end
 	end
 
@@ -1240,15 +1264,16 @@ echo "#RETURNSEC:" $returnSpot "*"
 	if ($dropCashCit = TRUE) and ($player~credits > 5000000)
 		getSectorParameter $dropCashSector "FIGSEC" $hasFig
 		if ($hasFig = 1)
-			send "m  " $dropCashSector  "*   y   y  "
+			setVar $exitmacro $exitmacro &  "m  "  & $dropCashSector   & "*   y   y  "
 			setVar $doingCitDrop TRUE
 		else
 			send "'Drop Cash Sector Fig GonE?!?*"
-			send "m  " $returnSpot  "*   y   y  "
+			setVar $exitmacro $exitmacro &  "m  "  & $returnSpot   &  "*   y   y  "
 		end
 	else
-		send "m  " $returnSpot  "*   y   y  "
+		setVar $exitmacro $exitmacro &  "m  " &  $returnSpot   &  "*   y   y  "
 	end
+	send $exitmacro
 	setTextLineTrigger restockBack1 :restockBack1 "<Set NavPoint>"
 	setTextLineTrigger restockBack2 :restockBack2  "Systems Ready, shall we engag"
 	pause
@@ -2040,12 +2065,14 @@ halt
 		
 			killalltriggers
 			setVar $safeToBlow 0
+			setVar $noPlanetsInSector 0
 			return
 		:checkSafeToBlowCit7
 			killalltriggers
 			setVar $safeToBlow 0
 			return
 		:checkSafeToBlowFinish
+			setVar $noPlanetsInSector 0
 		:checkSafeToBlowNoPlanet
 			killalltriggers
 			return
@@ -2057,12 +2084,15 @@ return
 :createAndSell
 
 
+	goSub :resetPlanetsUsed
 
 	setVar $planet~planetsInSector 0
 	setVar $planet~planets 0
+	setVar $planet~planetNames 0
 	setVar $planet~planeti 1
 	
 	setVar $safeToBlow 1
+	setVar $noPlanetsInSector 1
 	gosub :checkSafeToBlow
 	if ($safeToBlow = 0)
 		echo "*#########################################"
@@ -2074,10 +2104,14 @@ return
 	end
 
 	setVar $checkNewPlanet 0
-	goSub :reCheckPlanets
+	
+	if ($noPlanetsInSector = 0)
+		goSub :reCheckPlanets
+		goSub :checkPlanetNames
+	end
+	
 
 	setVar $go 1
-
 	setVar $planet~planetsInSectorCHK $planet~planetsInSector
 
 	while ($go = 1)
@@ -2085,8 +2119,11 @@ return
 # ENSURE PREFERRED SLOT IS FREE 
 		
 		if ($planet~planetsInSectorCHK >= $preferredPlanetSlot)
+
 			setVar $checkNewPlanet 0
 			goSub :reCheckPlanets
+			setVar $removePlanetName $planet~planetNames[$preferredPlanetSlot]
+			goSub :removePlanet
 			setVar $shipBlastPlanet $planet~planets[$preferredPlanetSlot]
 			gosub :blastPlanet
 			setVar $checkNewPlanet 0
@@ -2106,7 +2143,7 @@ return
 			setVar $checkPlanet $newPlanetMade
 			goSub :updateMooPlanet
 			if ($goodPlanet = 1)
-				# we going to trade it now
+				# We know planet number from re-checking planets to test it
 				setVar $tradePlanet $newPlanetMade
 			end
 		end
@@ -2116,17 +2153,12 @@ return
 
 			# if we just checked the new planet then we can skip this
 			if ($getPlanetSettingsReq = 0)
-				
-				# FIND NEW PLANET NUMBER
-				setVar $newPlanetMade 0
-				setVar $checkNewPlanet 1
-				goSub :reCheckPlanets
 				setVar $checkNewPlanet 0
-				setVar $tradePlanet $newPlanetMade
+				setVar $newPlanetMade 0
+				setVar $tradePlanet $newPlanetName
 			end
 # PLANET TRADE		
-	
-			
+
 			setVar $tradeOre 0
 			setVar $tradeOrg 0
 			setVar $tradeEquip 0
@@ -2271,103 +2303,113 @@ return
 
 
 :makeAPlanet
-		:updatePlanetsFinishWait
-		setVar $goodPlanet 0
-		send "uyn.*p"
-		:buildPlanet
-		setTextLineTrigger buildPlanet1 :buildPlanet1 "You don't have any Genesis Torpedoes to launch!"
-		setTextLineTrigger buildPlanet2 :buildPlanet2 "For building this planet you receive"
-		pause
-		:buildPlanet1
-			killAllTriggers
-			send "*"
-			gosub :restock
-			goto :updatePlanetsFinishWait
-			
-		:buildPlanet2
-			killAllTriggers
-			add $stat_torps 1
-			add $planet~planetsInSectorCHK 1
+	goSub :getPlanetName
+
+	if ($player~GENESIS = 0)
+		goto :buildPlanet1
+	end
+	:updatePlanetsFinishWait
+	setVar $goodPlanet 0
+	if ($planet~planetsInSectorCHK >= $GAME~MAX_PLANETS_PER_SECTOR)
+		send "u y n " $newPlanetName "* z p * "
+	else
+		send "u y " $newPlanetName "* z p * "
+	end
+	:buildPlanet
+	setTextLineTrigger buildPlanet1 :buildPlanet1 "You don't have any Genesis Torpedoes to launch!"
+	setTextLineTrigger buildPlanet2 :buildPlanet2 "For building this planet you receive"
+	pause
+	:buildPlanet1
+		killAllTriggers
+		#send "*"
+		gosub :restock
+		goto :updatePlanetsFinishWait
 		
-			
-			setVar $planet~planetIndexFound 0
-			setVar $t 1
-			while ($t <= $totalGamePlanets)
-				setTextLineTrigger $t :MakePlanetLbl & $t $planet~planetList[$t]
-				add $t 1
+	:buildPlanet2
+		killAllTriggers
+		subTract $player~GENESIS 1
+		add $stat_torps 1
+		add $planet~planetsInSectorCHK 1
+	
+		
+		setVar $planet~planetIndexFound 0
+		setVar $t 1
+		while ($t <= $totalGamePlanets)
+			setTextLineTrigger $t :MakePlanetLbl & $t $planet~planetList[$t]
+			add $t 1
+		end
+		pause
+		:MakePlanetLbl1
+			setVar $planet~planetIndexFound 1
+			goto :endMakePlanetLbls
+		:MakePlanetLbl2
+			setVar $planet~planetIndexFound 2
+			goto :endMakePlanetLbls
+		:MakePlanetLbl3
+			setVar $planet~planetIndexFound 3
+			goto :endMakePlanetLbls
+		:MakePlanetLbl4
+			setVar $planet~planetIndexFound 4
+			goto :endMakePlanetLbls
+		:MakePlanetLbl5
+			setVar $planet~planetIndexFound 5
+			goto :endMakePlanetLbls
+		:MakePlanetLbl6
+			setVar $planet~planetIndexFound 6
+			goto :endMakePlanetLbls
+		:MakePlanetLbl7
+			setVar $planet~planetIndexFound 7
+			goto :endMakePlanetLbls
+		:MakePlanetLbl8
+			setVar $planet~planetIndexFound 8
+			goto :endMakePlanetLbls
+		:MakePlanetLbl9
+			setVar $planet~planetIndexFound 9
+			goto :endMakePlanetLbls
+		:MakePlanetLbl10
+			setVar $planet~planetIndexFound 10
+			goto :endMakePlanetLbls
+		:MakePlanetLbl11
+			setVar $planet~planetIndexFound 11
+			goto :endMakePlanetLbls
+		:MakePlanetLbl12
+			setVar $planet~planetIndexFound 12
+			goto :endMakePlanetLbls
+		:MakePlanetLbl13
+			setVar $planet~planetIndexFound 13
+			goto :endMakePlanetLbls
+		:MakePlanetLbl14
+			setVar $planet~planetIndexFound 14
+			goto :endMakePlanetLbls
+		:MakePlanetLbl15
+			setVar $planet~planetIndexFound 15
+			goto :endMakePlanetLbls
+		:MakePlanetLbl16
+			setVar $planet~planetIndexFound 16
+			goto :endMakePlanetLbls
+		:MakePlanetLbl17
+			setVar $planet~planetIndexFound 17
+			goto :endMakePlanetLbls
+		:MakePlanetLbl18
+			setVar $planet~planetIndexFound 18
+			goto :endMakePlanetLbls
+		:MakePlanetLbl19
+			setVar $planet~planetIndexFound 19
+			goto :endMakePlanetLbls
+		:MakePlanetLbl20
+			setVar $planet~planetIndexFound 20
+			goto :endMakePlanetLbls
+
+		:endMakePlanetLbls
+
+		if ($planet~planetList[$planet~planetIndexFound][1] = 0)
+			setVar $getPlanetSettingsReq $planet~planetIndexFound
+		else
+			if ($planet~planetList[$planet~planetIndexFound][5] = 1)
+				goSub :checkGoodPlanet
 			end
-			pause
-			:MakePlanetLbl1
-				setVar $planet~planetIndexFound 1
-				goto :endMakePlanetLbls
-			:MakePlanetLbl2
-				setVar $planet~planetIndexFound 2
-				goto :endMakePlanetLbls
-			:MakePlanetLbl3
-				setVar $planet~planetIndexFound 3
-				goto :endMakePlanetLbls
-			:MakePlanetLbl4
-				setVar $planet~planetIndexFound 4
-				goto :endMakePlanetLbls
-			:MakePlanetLbl5
-				setVar $planet~planetIndexFound 5
-				goto :endMakePlanetLbls
-			:MakePlanetLbl6
-				setVar $planet~planetIndexFound 6
-				goto :endMakePlanetLbls
-			:MakePlanetLbl7
-				setVar $planet~planetIndexFound 7
-				goto :endMakePlanetLbls
-			:MakePlanetLbl8
-				setVar $planet~planetIndexFound 8
-				goto :endMakePlanetLbls
-			:MakePlanetLbl9
-				setVar $planet~planetIndexFound 9
-				goto :endMakePlanetLbls
-			:MakePlanetLbl10
-				setVar $planet~planetIndexFound 10
-				goto :endMakePlanetLbls
-			:MakePlanetLbl11
-				setVar $planet~planetIndexFound 11
-				goto :endMakePlanetLbls
-			:MakePlanetLbl12
-				setVar $planet~planetIndexFound 12
-				goto :endMakePlanetLbls
-			:MakePlanetLbl13
-				setVar $planet~planetIndexFound 13
-				goto :endMakePlanetLbls
-			:MakePlanetLbl14
-				setVar $planet~planetIndexFound 14
-				goto :endMakePlanetLbls
-			:MakePlanetLbl15
-				setVar $planet~planetIndexFound 15
-				goto :endMakePlanetLbls
-			:MakePlanetLbl16
-				setVar $planet~planetIndexFound 16
-				goto :endMakePlanetLbls
-			:MakePlanetLbl17
-				setVar $planet~planetIndexFound 17
-				goto :endMakePlanetLbls
-			:MakePlanetLbl18
-				setVar $planet~planetIndexFound 18
-				goto :endMakePlanetLbls
-			:MakePlanetLbl19
-				setVar $planet~planetIndexFound 19
-				goto :endMakePlanetLbls
-			:MakePlanetLbl20
-				setVar $planet~planetIndexFound 20
-				goto :endMakePlanetLbls
 
-			:endMakePlanetLbls
-
-			if ($planet~planetList[$planet~planetIndexFound][1] = 0)
-				setVar $getPlanetSettingsReq $planet~planetIndexFound
-			else
-				if ($planet~planetList[$planet~planetIndexFound][5] = 1)
-					goSub :checkGoodPlanet
-				end
-
-			end
+		end
 
 
 			
@@ -2377,7 +2419,7 @@ return
 :blastPlanet
 
 :blastblastblast
-send "l" $shipBlastPlanet "*zdy *"
+send "l " $shipBlastPlanet "* z d y * "
 
 :blowPlanet
 	setTextLineTrigger blowPlanet1 :blowPlanet1 "You do not have any Atomic Detonators!"
@@ -2471,10 +2513,16 @@ return
 				stripText $cPlanetNum ">"
 				stripText $cPlanetNum "<"
 			end
+			cutText CURRENTLINE $planetname 11 37
 
+			trim $planetname
+			if ($planetname = $newPlanetName)
+				setVar $newPlanetMade $cPlanetNum
+			end
 			add $planet~planetsInSector 1
 			setVar $planet~planets[$planet~planeti] $cPlanetNum
-			
+			setVar $planet~planetNames[$planet~planeti] $planetname
+
 			add $planet~planeti 1
 		end
 		goto :reCheckPlanetsT
@@ -2483,7 +2531,7 @@ return
 		killAllTriggers
 		waitfor "Command ["
 
-	if ($checkNewPlanet = 1)
+	if ($checkNewPlanet = 11)
 		setVar $planet~planeti 1
 		while ($planet~planeti <= $planet~planetsInSector)
 			setVar $searchPlanet $planet~planets[$planet~planeti]
@@ -2541,7 +2589,7 @@ return
 	if ($useEp = TRUE)
 		goSub :planetTrade_ep
 	else
-		goSub :planetTrade_ck_test
+		goSub :planetTrade_ck
 	end
 
 	gosub :player~quikstats
@@ -2559,7 +2607,7 @@ return
 
 return
 
-:planetTrade_ck_test
+:planetTrade_ck
 	setVar $planet~fueltosell 67000
 	setVar $planet~orgtosell 67000
 	setVar $planet~equiptosell 67000
@@ -2568,14 +2616,24 @@ return
 	setVar $planet~quantityUnknown 1
 
 	if ($player~ore_holds < $minOre)
+		isNumber $number $tradePlanet
+		if ($number = 0)
+			goSub :reCheckPlanets
+			setVar $tradePlanet $newPlanetMade
+		end
 		send "l" $tradePlanet "* t n t1* * q * "
 		waitfor "Planet command ("
 		waitfor "Command ["
 	end
 
+	send "|"
 	goSub :planet~sell
+	send "|"
+
+	setVar $tradePlanet $planet~planet 
+
 	if ($planet~exit_message <> 0)
-		send "'" $planet~exit_message "*"
+		#send "'" $planet~exit_message "*"
 	end
 	gosub :player~quikstats
 	stripText $player~credits ","
@@ -2592,99 +2650,6 @@ return
 		stripText $player~credits ","
 		setVar $player~creditsNow $player~credits
 	end
-return
-
-:planetTrade_ck
-
-	send "l" $tradePlanet "*"
-	
-	setTextLineTrigger tradePlanetLand1 :tradePlanetLand1 "That planet is not in this sector."
-	setTextLineTrigger tradePlanetLand2 :tradePlanetLand2 "ding sequence engaged"
-	pause
-	:tradePlanetLand1
-		killAllTriggers
-echo "*### PLANET FOUND! WE COUNTED WRONG SOMEWHERE"
-		halt
-		
-		
-	:tradePlanetLand2
-		killAllTriggers
-	Waitfor "-------  ---------  ---------  ---------  ---------  ---------  ---------"
-	if ($player~ore_holds < $minOre)
-		send "tnt1*"
-		waitfor "free cargo holds."
-		send "d"
-		Waitfor "-------  ---------  ---------  ---------  ---------  ---------  ---------"
-	end
-
-
-	setTextLineTrigger tradePlanetLand3 :tradePlanetLand3 "Fuel Ore"
-	setTextLineTrigger tradePlanetLand4 :tradePlanetLand4 "Organics"
-	setTextLineTrigger tradePlanetLand5 :tradePlanetLand5 "Equipment"
-	setTextTrigger tradePlanetLand6 :tradePlanetLand6 "Planet command ("
-	pause
-		:tradePlanetLand3
-			killTrigger :tradePlanetLand3
-			getWord CURRENTLINE $availOre 6
-			striptext $availOre ","
-			if ($availOre = 0)
-				setVar $tradeOre "-1"
-			end
-		
-			pause
-		:tradePlanetLand4
-			killTrigger :tradePlanetLand4
-			getWord CURRENTLINE $availOrg 5
-			striptext $availOrg ","
-			if ($availOrg = 0)
-				setVar $tradeOrg "-1"
-			end
-			pause
-		:tradePlanetLand5
-			killTrigger :tradePlanetLand5
-			getWord CURRENTLINE $availEquip 5
-			striptext $availEquip ","
-			if ($availEquip = 0)
-				setVar $tradeEquip "-1"
-			end
-			pause
-		:tradePlanetLand6
-			killAllTriggers
-			if ($tradeOre = 0)
-				setVar $tradeOre $availOre
-			end
-			if ($tradeOrg = 0)
-				setVar $tradeOrg $availOrg
-			end
-			if ($tradeEquip = 0)
-				setVar $tradeEquip $availEquip
-			end
-			
-		setVar $planet~_ck_pnego_fueltosell $tradeOre
-		setVar $planet~_ck_pnego_orgtosell $tradeOrg
-		setVar $planet~_ck_pnego_equiptosell $tradeEquip
-		:planetNEg
-		gosub :player~quikstats
-		gosub :planet~planetNeg
-send "'" $planet~exit_message "*"
-		gosub :player~quikstats
-		stripText $player~credits ","
-		setVar $player~creditsNow $player~credits
-		if ($player~creditsNow = $precredits)
-			echo "*################*##############"
-			echo "*#### NEG FAILED, SELLING AT COST!"
-			echo "*###############################"
-
-		
-			send "q p n" $tradePlanet "* * * * * * * l" $tradePlanet "*"
-			waitfor "Land on which planet"
-			gosub :player~quikstats
-			stripText $player~credits ","
-			setVar $player~creditsNow $player~credits
-		end
-		
-		send "q"
-
 return
 
 
@@ -2851,7 +2816,7 @@ return
 			setVar $focus $nearArray[$i]
 			getSectorParameter $focus "FIGSEC" $isFigged
 			getSectorParameter $focus "LIMPSEC" $isLimp
-			if ($isFigged > 0) and ($isLimp > 0) and (PORT.BUYFUEL[$focus] = 0)
+			if ($isFigged = TRUE) and ($isLimp = TRUE) and (PORT.BUYFUEL[$focus] = 0)
 				setVar $returnSector $focus
 				setVar $foundSafeSector $focus
 				setVar $player~warpto $focus
@@ -2962,14 +2927,26 @@ return
 		send "uyn.*p * "
 	end
 	send "f" $player~fighters "*cd"
-	send "h1" $player~ARMIDS "*c"
-	send "h2" $player~LIMPETS "*c"
+	if ($player~ARMIDS > 0)
+		send "h1" $player~ARMIDS "*c"
+	end
+
+	if ($player~LIMPETS > 0)
+		send "h2" $player~LIMPETS "*c"
+	end
 	send "^q"
 	waitfor "ENDINTERROG"
 
 	send "x " $newShipNum "* q * "
-	send "f1*cdh13*ch23*c^q"
+	send "f1*cd^q"
 
+	if ($player~ARMIDS > 0)	
+		send "h13*c"
+	end
+
+	if ($player~LIMPETS > 0)
+		send "h23*c"
+	end
 	waitfor "ENDINTERROG"
 
 	send "p t * * "
@@ -2985,6 +2962,64 @@ return
 	setVar $doFireUpgrade 0
 
 return	
+
+:checkPlanetNames
+		# get current planets in sector array and mark any off
+	setVar $planet~planeti 1
+	while ($planet~planeti <= $planet~planetsInSector)
+		setVar $searchName $planet~planetNames[$planet~planeti]
+		setVar $searchi 1
+		setVar $found 0
+
+		while ($searchi <= 20)
+			if ($neg_planetNames[$searchi] = $searchName)
+				setVar $found 1
+			end
+			add $searchi 1
+		end
+		if ($found = 1)
+			setVar $neg_planetNamesTaken[$planet~planeti] 1
+		end
+		add $planet~planeti 1
+	end
+return
+
+
+:removePlanet
+	setVar $pii 1
+	while ($pii <= 20)
+		if ($neg_planetNames[$pii] = $removePlanetName)
+			setVar $neg_planetNamesTaken[$pii] 0
+		end
+		add $pii 1
+	end
+return
+
+:getPlanetName
+
+	setVar $pii 1
+	while ($pii <= 20)
+		if ($neg_planetNamesTaken[$pii] = 0)
+			setVar $newPlanetName $neg_planetNames[$pii]
+			setVar $neg_planetNamesTaken[$pii] 1
+			return 
+		end
+		add $pii 1
+	end
+
+	ECHO "ISSUE SHOULD NOT GET HERE - all 20 names taken*"
+	halt
+return
+
+:resetPlanetsUsed
+	setVar $newPlanetName ""
+	setVar $pii 1
+	while ($pii <= 20)
+		setVar $neg_planetNamesTaken[$pii] 0
+		add $pii 1
+	end
+return
+
 
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
