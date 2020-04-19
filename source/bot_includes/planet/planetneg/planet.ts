@@ -317,8 +317,28 @@ pause
 					goto :getpercts
 
 				:gotpercts
-					if ($findPlanet <> true)
-						send $planet & "*"
+					# We have been getting the occasional not a number error on some of these - so adding error checking
+					isNumber $test1 $PLAYER~current_sector.oretrading 
+					isNumber $test2 $PLAYER~current_sector.orepercent 
+					if ($test1 = 0) or ($test2 = 0)
+send "'DEBUG: NAN on oretrading:" & $test1 & " orepercent:" $test2 "*"
+						setVar $PLAYER~current_sector.orepercent 1
+						setVar $PLAYER~current_sector.oretrading 1
+					end
+					isNumber $test3 $PLAYER~current_sector.orgtrading 
+					isNumber $test4 $PLAYER~current_sector.orgpercent 
+					if ($test3 = 0) or ($test2 = 0)
+send "'DEBUG: NAN on orgtrading:" & $test3 & " orgpercent:" $test4 "*"
+						setVar $PLAYER~current_sector.orgpercent 1
+						setVar $PLAYER~current_sector.orgtrading 1
+					end
+
+					isNumber $test5 $PLAYER~current_sector.equtrading 
+					isNumber $test6 $PLAYER~current_sector.equpercent 
+					if ($test5 = 0) or ($test6 = 0)
+send "'DEBUG: NAN on equtrading:" & $test5 & " equpercent:" $test6 "*"
+						setVar $PLAYER~current_sector.equpercent 1
+						setVar $PLAYER~current_sector.equtrading 1
 					end
 					killtrigger orepct
 					killtrigger orgpct
@@ -361,6 +381,12 @@ pause
 					striptext $fueltosell "?"
 				end
 
+				# DEBUGGING FOR NAN RANDOM ERRORS
+				isNumber $test $fueltosell
+				if ($test = 0)
+					send "'DEBUG: NAN on fueltosell:" & $fueltosell "*"
+					setVar $fueltosell 0
+				end
 				if (($PLAYER~current_sector.orepercent >= 15) and ($fueltosell > 0))
 					if ($fueltosell > $PLAYER~current_sector.oretrading)
 						setVar $fueltosell $PLAYER~current_sector.oretrading
@@ -393,6 +419,12 @@ pause
 					striptext $orgtosell "]"
 					striptext $orgtosell "?"
 				end
+				# DEBUGGING FOR NAN RANDOM ERRORS
+				isNumber $test $orgtosell
+				if ($test = 0)
+					send "'DEBUG: NAN on orgtosell:" & $orgtosell "*"
+					setVar $orgtosell 0
+				end
 				if (($PLAYER~current_sector.orgpercent >= 15) and ($orgtosell > 0))
 					if ($orgtosell > $PLAYER~current_sector.orgtrading)
 						setVar $orgtosell $PLAYER~current_sector.orgtrading
@@ -424,6 +456,12 @@ pause
 					striptext $equiptosell "["
 					striptext $equiptosell "]"
 					striptext $equiptosell "?"
+				end
+				# DEBUGGING FOR NAN RANDOM ERRORS
+				isNumber $test $equiptosell
+				if ($test = 0)
+					send "'DEBUG: NAN on equiptosell:" & $equiptosell "*"
+					setVar $equiptosell 0
 				end
 				if (($PLAYER~current_sector.equpercent >= 15) and ($equiptosell > 0))
 					if ($equiptosell > $PLAYER~current_sector.equtrading)

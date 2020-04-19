@@ -1,5 +1,7 @@
 #TO DO
-
+We are buying up to 6000.  You have 6000 on planet m222720946367.
+How many units of Equipment do you want to sell [Script run-time error in 'PLANET': '' is not a number, line 435, cmd 33
+6000]?
 #Blowing Planets: only blow own planets (created today?) - blow all option
 #Add planet names: list of X - make it look random but its not - randomly generate each run
 #	enter sector 	- get list of planet names curently
@@ -44,19 +46,19 @@ setVar $BOT~help[14] $BOT~tab&"    {ephag}      Default is NEG but set to use EP
 setVar $BOT~help[15] $BOT~tab&"    {safe}       Ports must be surrounded by figs (ZTM!)"
 setVar $BOT~help[16] $BOT~tab&"    {paranoid}   Ports must be surrounded by figs and limpets"
 setVar $BOT~help[17] $BOT~tab&"    {efurb:bot}  Bot to exchange ships with at home planet to furb."
-setVar $BOT~help[17] $BOT~tab&"                 bot should start already furbed."
-setVar $BOT~help[17] $BOT~tab&"   "
-setVar $BOT~help[18] $BOT~tab&"    Modes -"
-setVar $BOT~help[19] $BOT~tab&"      skimpl/pl  - Sells off product from personal planet list"
-setVar $BOT~help[20] $BOT~tab&"                 - Skim versions skips making new planets"
-setVar $BOT~help[21] $BOT~tab&"      upgraded   - Visits upgrade ports (10k+) that are ready"
-setVar $BOT~help[22] $BOT~tab&"      param      - Sectors with this param i.e. moo MOOPORTS"
-setVar $BOT~help[23] $BOT~tab&"      everything - Anything that buys the primary prod with a fig"
-setVar $BOT~help[24] $BOT~tab&"      file       - One sector per line, file must end in .txt"
-setVar $BOT~help[25] $BOT~tab&"      sector     - One sector >Moo sector {maxplanets} {sector}"
-setVar $BOT~help[26] $BOT~tab&"      "
-setVar $BOT~help[27] $BOT~tab&"  FIRE TOURNAMENT"
-setVar $BOT~help[28] $BOT~tab&"       moo [mode] fire {figs} {ephag} {safe/paranoid}"
+setVar $BOT~help[18] $BOT~tab&"                 bot should start already furbed."
+setVar $BOT~help[19] $BOT~tab&"   "
+setVar $BOT~help[20] $BOT~tab&"    Modes -"
+setVar $BOT~help[21] $BOT~tab&"      skimpl/pl  - Sells off product from personal planet list"
+setVar $BOT~help[22] $BOT~tab&"                 - Skim versions skips making new planets"
+setVar $BOT~help[23] $BOT~tab&"      upgraded   - Visits upgrade ports (10k+) that are ready"
+setVar $BOT~help[24] $BOT~tab&"      param      - Sectors with this param i.e. moo MOOPORTS"
+setVar $BOT~help[25] $BOT~tab&"      everything - Anything that buys the primary prod with a fig"
+setVar $BOT~help[26] $BOT~tab&"      file       - One sector per line, file must end in .txt"
+setVar $BOT~help[27] $BOT~tab&"      sector     - One sector >Moo sector {maxplanets} {sector}"
+setVar $BOT~help[28] $BOT~tab&"      "
+setVar $BOT~help[29] $BOT~tab&"  FIRE TOURNAMENT"
+setVar $BOT~help[30] $BOT~tab&"       moo [mode] fire {figs} {ephag} {safe/paranoid}"
 
 gosub :bot~helpfile
 
