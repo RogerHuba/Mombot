@@ -686,7 +686,7 @@ while ($loopi < $sectorsOki)
 		end
 	end
 
-	
+	setVar $noPlanetsInSector 1
 	setVar $safeToBlow 1
 	gosub :checkSafeToBlow
 	if ($safeToBlow = 0)
@@ -737,18 +737,22 @@ halt
 :createAndSell
 
 	goSub :resetPlanetsUsed
-
+	
 	if ($hazSlots > 0)
 		setVar $hazPlanetNumber ($preferredPlanetSlot + $hazSlots)
-		setVar $preferredPlanetSlot ($preferredPlanetSlot + $hazSlots)
+		setVar $workingPlanetSlot ($preferredPlanetSlot + $hazSlots)
 	end
 	setVar $planet~planetsInSector 0
 	setVar $planet~planets 0
+	setVar $planet~planetNames 0
 	setVar $planet~planeti 1
 
 	setVar $checkNewPlanet 0
 
-	goSub :reCheckPlanets
+	if ($noPlanetsInSector = 0)
+		goSub :reCheckPlanets
+		goSub :checkPlanetNames
+	end
 
 	setVar $go 1
 
@@ -767,17 +771,17 @@ halt
 	while ($go = 1)
 		# ENSURE PREFERRED SLOT IS FREE 
 
-		if ($planet~planetsInSectorCHK >= $preferredPlanetSlot)
+		if ($planet~planetsInSectorCHK >= $workingPlanetSlot)
 			if ($hazSlots > 0)
 				
-				if ($preferredPlanetSlot = $hazPlanetNumber)
+				if ($workingPlanetSlot = $hazPlanetNumber)
 
 					# return preferred planets
-					setVar $preferredPlanetSlot ($preferredPlanetSlot - $hazSlots)
+					setVar $workingPlanetSlot ($workingPlanetSlot - $hazSlots)
 					setVar $slotToBlow $hazPlanetNumber
 					setVar $checkNewPlanet 0
 
-					while ($slotToBlow >= $preferredPlanetSlot)
+					while ($slotToBlow >= $workingPlanetSlot)
 						goSub :reCheckPlanets
 						setVar $removePlanetName $planet~planetNames[$slotToBlow]
 						goSub :removePlanet
@@ -790,9 +794,9 @@ halt
 				else
 					setVar $checkNewPlanet 0
 					goSub :reCheckPlanets
-					setVar $removePlanetName $planet~planetNames[$preferredPlanetSlot]
+					setVar $removePlanetName $planet~planetNames[$workingPlanetSlot]
 					goSub :removePlanet
-					setVar $shipBlastPlanet $planet~planets[$preferredPlanetSlot]
+					setVar $shipBlastPlanet $planet~planets[$workingPlanetSlot]
 					
 					gosub :blastPlanet
 					setVar $checkNewPlanet 0
@@ -802,9 +806,9 @@ halt
 			else
 				setVar $checkNewPlanet 0
 				goSub :reCheckPlanets
-				setVar $removePlanetName $planet~planetNames[$preferredPlanetSlot]
+				setVar $removePlanetName $planet~planetNames[$workingPlanetSlot]
 				goSub :removePlanet
-				setVar $shipBlastPlanet $planet~planets[$preferredPlanetSlot]
+				setVar $shipBlastPlanet $planet~planets[$workingPlanetSlot]
 				gosub :blastPlanet
 				setVar $checkNewPlanet 0
 				goSub :reCheckPlanets
@@ -1097,8 +1101,6 @@ return
 
 
 :makeAPlanet
-
-	
 	goSub :getPlanetName
 
 	if ($player~GENESIS = 0)
@@ -1111,7 +1113,6 @@ return
 	else
 		send "u y " $newPlanetName "* z p * "
 	end
-	
 	:buildPlanet
 	setTextLineTrigger buildPlanet1 :buildPlanet1 "You don't have any Genesis Torpedoes to launch!"
 	setTextLineTrigger buildPlanet2 :buildPlanet2 "For building this planet you receive"
@@ -1788,6 +1789,7 @@ return
 		:checkSafeToBlowCit6
 		
 			killalltriggers
+			setVar $noPlanetsInSector 0
 			setVar $safeToBlow 0
 			return
 		:checkSafeToBlowCit7
@@ -1796,6 +1798,7 @@ return
 			setVar $safeToBlow 0
 			return
 		:checkSafeToBlowFinish
+			setVar $noPlanetsInSector 0
 		:checkSafeToBlowNoPlanet
 			killalltriggers
 			return
