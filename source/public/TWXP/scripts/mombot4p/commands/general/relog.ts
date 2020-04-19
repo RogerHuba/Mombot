@@ -61,6 +61,7 @@
 			settexttrigger messages :continuemessages "[Pause]"
 			pause
 		:continueavoids
+			settexttrigger avoids :continueavoids "Do you wish to clear some avoids? (Y/N) [N]"
 			send "* * "
 			pause
 		:dead
