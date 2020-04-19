@@ -150,7 +150,7 @@
 		getWordPos " "&$test_value&" " $posMillions "m "
 		getWordPos " "&$test_value&" " $posThousands "k "
 		getWordPos " "&$test_value&" " $posBillions "b "
-		if (($posMillions > 0) or ($posThousands > 0))
+		if (($posMillions > 0) or ($posThousands > 0) or ($posBillions > 0))
 			replaceText $test_value "m" ""
 			replaceText $test_value "k" ""
 			replaceText $test_value "b" ""
