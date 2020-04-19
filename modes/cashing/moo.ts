@@ -1547,9 +1547,6 @@ return
 
 :planetTrade_ck
 
-echo "tradePlanet:" $tradePlanet "*"
-echo "tradePlanet:" $tradePlanet "*"
-echo "tradePlanet:" $tradePlanet "*"
 
 	setVar $planet~fueltosell 67000
 	setVar $planet~orgtosell 67000
@@ -1569,10 +1566,6 @@ echo "tradePlanet:" $tradePlanet "*"
 		waitfor "Command ["
 	end
 
-	
-echo "planet~planet:" $planet~planet "*"
-echo "planet~planet:" $planet~planet "*"
-echo "planet~planet:" $planet~planet "*"
 	send "|"
 	goSub :planet~sell
 	send "|"
