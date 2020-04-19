@@ -49,6 +49,10 @@
 			send $BOT~password & "* **"
 			settextlinetrigger dead :dead "What do you want to name your ship? (30 letters)"
 			settexttrigger alive :alldone_relog "Command ["
+			settextlinetrigger avoids :continueavoids "<Scanning for Hazardous Sectors you have marked to Avoid>"
+			pause
+		:continueavoids
+			send "* * "
 			pause
 		:dead
 			send "Mind ()ver Matter*y "
