@@ -461,6 +461,11 @@
 		if ($photon~is_all_keys <> true)
 			send "c n 9 * q "
 		end
+		send "q"
+		gosub :PLANET~getPlanetInfo	
+		send "c "
+		waiton "Citadel command ("
+
 		setvar $photon~is_all_keys true 
 		setvar $photon~found false
 		setTextTrigger 1 :pausing "Planet command (?="
@@ -868,6 +873,9 @@ return
 return
 
 :check_for_photon_refurb
+	if ($bot~last_fighter_attack <> "")
+		gosub :killing~set_the_cannon
+	end
 	if (($player~photons < $photon~shooting_count) and ($nophoton <> true))
 		gosub :navigate~navigate_to_limp
 		gosub :killing~scan_for_targets
