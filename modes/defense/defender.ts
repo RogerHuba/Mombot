@@ -463,9 +463,9 @@
 		end
 		send "q"
 		gosub :PLANET~getPlanetInfo	
-		send "t*t1* c "
+		send "c "
 		waiton "Citadel command ("
-		
+
 		setvar $photon~is_all_keys true 
 		setvar $photon~found false
 		setTextTrigger 1 :pausing "Planet command (?="
