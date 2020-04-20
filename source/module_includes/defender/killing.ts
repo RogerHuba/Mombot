@@ -137,7 +137,7 @@ return
 
 				if ($last_percentage <> $percentToSet)
 					setvar $last_percentage $percentToSet
-					send "l s "&$percentToSet&"* "
+					send "l s " $percentToSet "* "
 				end
 				setvar $cannon_damage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3)
 				setvar $switchboard~message "Sector cannon set to "&$cannon_damage&" damage.*"
@@ -165,7 +165,7 @@ return
 			end
 			if ($last_atmos_percentage <> $atmos_percentToSet)
 				setvar $last_atmos_percentage $atmos_percentToSet
-				send "l a "&$atmos_percentToSet&"* "
+				send "l a " $atmos_percentToSet "* "
 			end
 
 			if ($game~mbbs)
