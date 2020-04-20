@@ -461,6 +461,11 @@
 		if ($photon~is_all_keys <> true)
 			send "c n 9 * q "
 		end
+		send "q"
+		gosub :PLANET~getPlanetInfo	
+		send "t*t1* c "
+		waiton "Citadel command ("
+		
 		setvar $photon~is_all_keys true 
 		setvar $photon~found false
 		setTextTrigger 1 :pausing "Planet command (?="
