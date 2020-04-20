@@ -1355,7 +1355,7 @@ return
 
 
 :callSaveMe
-	send "q q q q * '"&$bot~bot_name&" call*"
+	send "q q q q * u y n.* c '"&$bot~bot_name&" call*"
 	halt
 
 :DoPurchases
