@@ -2,18 +2,6 @@
 	gosub :BOT~loadVars
 	loadVar $game~MULTIPLE_PHOTONS
 
-	#  Add "retreat" - i.e. move X distance away
-	# add tripwire - tripwire should set to 1% atmosph - 0% sect - and take planet back somewhere 'safe' for the kill
-	#   attacker macro   l^Ma100^M^Ma200^M      (land qcanshot atshlds qcanshot atfigs 
-	# NEEDS TO CHECK EITHER POSITION OF blasted/destroyed fighters - to ensure no spoofing
-	# Should work from planet prompt - not citadel in general
-	# With no delays - took about 5 waves of figs required to kill attacked
-	#  also the chance the attacker waits for "land" prompt, then attacks
-	#   Then need the attack land sector
-	#   blow planet (attack attack attack attack xport?)
-	#  pod doesnt' stay - so... probably best to move back to a surrounded sector - backup xport
-	
-
 
 	setVar $BOT~help[1]  $BOT~tab&"- foton [on|off|sec] {a|d|p|s|d|t} {towship} {sector} "
 	setVar $BOT~help[2]  $BOT~tab&"                     {return} {den40}"
@@ -39,8 +27,9 @@
 	setVar $BOT~help[22] $BOT~tab&"                 for dock photon"
 	setVar $BOT~help[23] $BOT~tab&"      {self}   - Will pwarp out, photon your current "
 	setVar $BOT~help[24] $BOT~tab&"                 sector, and pwarp back in. "
-	setVar $BOT~help[25] $BOT~tab&"      "
-	setVar $BOT~help[26] $BOT~tab&"       Authors: Mind Dagger and The Bounty Hunter "
+	setVar $BOT~help[25] $BOT~tab&"      {cont}   - Will continue shooting if in density mode."
+	setVar $BOT~help[26] $BOT~tab&"      "
+	setVar $BOT~help[27] $BOT~tab&"       Authors: Mind Dagger and The Bounty Hunter "
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Fast Foton"
@@ -73,6 +62,13 @@ if ($pos > 0)
 	setVar $shipchange 1
 else
 	setVar $shipchange 0
+end
+
+getWordPos " "&$bot~user_command_line&" " $pos " cont "
+if ($pos > 0)
+	setVar $dencontinue 1
+else
+	setVar $dencontinue 0
 end
 
 getWordPos " "&$bot~user_command_line&" " $pos " holo "
@@ -770,8 +766,15 @@ end
 			if (($diff > 39) and ($diff < 495))
 				send "c p y " $adj[$w] "*  Q  "
 				send "'{" $bot~bot_name "} - Foton Missle Fired into sector => " $adj[$w] "*"
-				gosub :player~turnonansi
-				goto :dtorp_end
+				subtract $player~PHOTONS 1
+				if ($dencontinue = 1) and ($player~PHOTONS > 0)
+					send "'{" $bot~bot_name "} - " $player~PHOTONS " left continuing scanning..*"
+					setVar $dens[$w] $density[$w]
+					goto :sublooky
+				else
+					gosub :player~turnonansi
+					goto :dtorp_end
+				end
 			else
 				goto :sublooky
 			end
@@ -779,8 +782,15 @@ end
 		else
 			send "c p y " $adj[$w] "*  Q  "
 			send "'{" $bot~bot_name "} - Foton Missle Fired into sector => " $adj[$w] "*"
-			gosub :player~turnonansi
-			goto :dtorp_end
+			subtract $player~PHOTONS 1
+			if ($dencontinue = 1) and ($player~PHOTONS > 0)
+				send "'{" $bot~bot_name "} - " $player~PHOTONS " left continuing scanning..*"
+				setVar $dens[$w] $density[$w]
+				goto :sublooky
+			else
+				gosub :player~turnonansi
+				goto :dtorp_end
+			end
 		end
 	else
 		goto :sublooky
