@@ -124,17 +124,7 @@ if ($bot~parm2 = "fire")
 	setVar $PrimaryProduct 3
 	setVar $userCleanup 3
 	
-	send "ctq"
-	setTextLineTrigger timeAM :timeAM " AM "
-	setTextLineTrigger timePM :timePM " PM "
-	pause
-	:timeAM
-		killAllTriggers
 	
-		setVar $userCleanup 0
-		goto :fireitup
-	:timePM
-		killAllTriggers
 	goto :fireitup
 elseif ($bot~parm2 = "star")
 	setvar $startMsg $startMsg & "Using STARTREK defaults (slot 10 + 2), Equipment, Top Cleanup*"
@@ -741,6 +731,8 @@ halt
 	if ($hazSlots > 0)
 		setVar $hazPlanetNumber ($preferredPlanetSlot + $hazSlots)
 		setVar $workingPlanetSlot ($preferredPlanetSlot + $hazSlots)
+	else
+		setVar $workingPlanetSlot $preferredPlanetSlot
 	end
 	setVar $planet~planetsInSector 0
 	setVar $planet~planets 0
