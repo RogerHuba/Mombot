@@ -16,29 +16,33 @@
 	gosub :BOT~loadVars
 	loadvar $MAP~STARDOCK
 	loadvar $map~home_sector
+	loadvar $bot~Folder
 
-
-	setVar $BOT~help[1]  $BOT~tab&"   Looks for BXX ports with a MCIC above requested "
+	setVar $BOT~help[1]  $BOT~tab&"   Looks for ports with a MCIC below requested "
 	setVar $BOT~help[2]  $BOT~tab&"       "
-	setVar $BOT~help[3]  $BOT~tab&"   moolist [PROD] [MCIC] {port} {mark:param}"
+	setVar $BOT~help[3]  $BOT~tab&"   moolist [PROD] [MCIC/all] {port} {mark:param}"
 	setVar $BOT~help[4]  $BOT~tab&"       "
-	setVar $BOT~help[5]  $BOT~tab&"   [PROD]  - f/o/e product to test against"
-	setVar $BOT~help[6]  $BOT~tab&"   [MCIC]  - MCIC Min - Positive Value 65 NOT -65"
-	setVar $BOT~help[7]  $BOT~tab&"   {port}  - BBB XXB - defaults primary product only"
-	setVar $BOT~help[8]  $BOT~tab&"   {param} - Mark them with a param"
-    setVar $BOT~help[9]  $BOT~tab&"             Ready Ports: PARAMrdy"
-    setVar $BOT~help[10]  $BOT~tab&"             Unsecured  : PARAMsec"
-	setVar $BOT~help[11]  $BOT~tab&"    Must run FIGS, CIM, MSL and LISTAMTRAK first."
-	setVar $BOT~help[12]  $BOT~tab&"    ZTM is also essential to get all incomings."
-	setVar $BOT~help[13]  $BOT~tab&"       "
-	setVar $BOT~help[14]  $BOT~tab&"   MCIC from Planet Neg Param ORE-MCIC or Ephaggle FUEL-"
-	setVar $BOT~help[15]  $BOT~tab&"   "
-	setVar $BOT~help[16]  $BOT~tab&"   F: Has fighter - Yes/No"
-	setVar $BOT~help[17]  $BOT~tab&"   M: Recorded MCIC Value"
-	setVar $BOT~help[18]  $BOT~tab&"   UP: Does port already have > 3k buy"
-	setVar $BOT~help[19]  $BOT~tab&"   T: Distance to Terra"
-	setVar $BOT~help[20]  $BOT~tab&"   SD: Distance to SD"
-	setVar $BOT~help[21]  $BOT~tab&"   D: Incoming sectors with no fighters "
+	setVar $BOT~help[5]  $BOT~tab&"      [PROD] - f/o/e product to test against"
+	setVar $BOT~help[6]  $BOT~tab&"      [MCIC] - MCIC Min - Positive Value 65 NOT -65"
+	setVar $BOT~help[7]  $BOT~tab&"       [all] - alternatively 'all' is any port."
+	setVar $BOT~help[8]  $BOT~tab&"     {port}  - BBB XXB - defaults primary product only"
+	setVar $BOT~help[9]  $BOT~tab&"{mark:param} - Mark them with a param"
+    setVar $BOT~help[10]  $BOT~tab&"             Ready Ports: PARAMrdy"
+    setVar $BOT~help[11]  $BOT~tab&"             Unsecured  : PARAMsec"
+	setVar $BOT~help[12]  $BOT~tab&"   "
+	setVar $BOT~help[13]  $BOT~tab&"   Must run FIGS, CIM, MSL and LISTAMTRAK first."
+	setVar $BOT~help[14]  $BOT~tab&"   ZTM is also essential to get all incomings."
+	setVar $BOT~help[15]  $BOT~tab&"       "
+	setVar $BOT~help[16]  $BOT~tab&"   MCIC from Planet Neg Param ORE-MCIC or Ephaggle FUEL-"
+	setVar $BOT~help[17]  $BOT~tab&"   "
+	setVar $BOT~help[18]  $BOT~tab&"   F: Has fighter - Yes/No"
+	setVar $BOT~help[19]  $BOT~tab&"   M: Recorded MCIC Value"
+	setVar $BOT~help[20]  $BOT~tab&"   UP: Does port already have > 3k buy"
+	setVar $BOT~help[21]  $BOT~tab&"   T: Distance to Terra"
+	setVar $BOT~help[22]  $BOT~tab&"   SD: Distance to SD"
+	setVar $BOT~help[23]  $BOT~tab&"   D: Incoming sectors with no fighters "
+	setVar $BOT~help[24]  $BOT~tab&"   "
+	setVar $BOT~help[25]  $BOT~tab&"   Results also written to mombot game dir."
 	
 	
 	gosub :bot~helpfile
@@ -49,6 +53,7 @@
 
 	setvar $line $bot~user_command_line
 
+	setVar  $writefile $bot~Folder&"/" & "moolist_results.txt"
 
 	setVar $find_product $bot~parm1
 	setVar $portClassOk 8
@@ -59,72 +64,82 @@
 		halt
 	end
 
+	if ($bot~parm2 = "all")
+		setVar $allmcic 1
+	else
 
-	setVar $find_mcic_value $bot~parm2
-	isNumber $number $find_mcic_value
+		setVar $find_mcic_value $bot~parm2
+		isNumber $number $find_mcic_value
+		if ($number <> 1)
+			setvar $switchboard~message "Please enter a MCIC value i.e. 65 gives 50% of ports for Fuel.**"
+			gosub :switchboard~switchboard
+			halt
+		
+		end
+		if ($find_mcic_value = 0)
+			setVar $SWITCHBOARD~message "Need a min MCIC value i.e. 65 gives 50% of ports for Fuel.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
 
-	if ($number <> 1)
-		setvar $switchboard~message "Please enter a MCIC value i.e. 65 gives 50% of ports for Fuel.**"
-		gosub :switchboard~switchboard
-		halt
-	
 	end
-	
-	if ($find_mcic_value = 0)
-		setVar $SWITCHBOARD~message "Need a min MCIC value i.e. 65 gives 50% of ports for Fuel.*"
-		gosub :SWITCHBOARD~switchboard
-		halt
-	end
-	
-	
+
+
     if ($find_product = "e")
         setVar $portFilter "XXB"
-        if ($find_mcic_value > 65) or ($find_mcic_value < 20)
-            setVar $SWITCHBOARD~message "Equipment MCIC should be between 20 and 65.*"
-            gosub :SWITCHBOARD~switchboard
-            halt
-        end
+		if ($allmcic = 0)
+			if ($find_mcic_value > 65) or ($find_mcic_value < 20)
+				setVar $SWITCHBOARD~message "Equipment MCIC should be between 20 and 65.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
+		end
     end
 	 if ($find_product = "o")
-     setVar $portFilter "XBX"
-        if ($find_mcic_value > 75) or ($find_mcic_value < 30)
-            setVar $SWITCHBOARD~message "Equipment MCIC should be between 30 and 75.*"
-            gosub :SWITCHBOARD~switchboard
-            halt
-        end
+     	setVar $portFilter "XBX"
+	 	if ($allmcic = 0)
+			if ($find_mcic_value > 75) or ($find_mcic_value < 30)
+				setVar $SWITCHBOARD~message "Equipment MCIC should be between 30 and 75.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
+		end
     end
 	 if ($find_product = "f")
         setVar $portFilter "BXX"
-        if ($find_mcic_value > 90) or ($find_mcic_value < 40)
-            setVar $SWITCHBOARD~message "Equipment MCIC should be between 90 and 40.*"
-            gosub :SWITCHBOARD~switchboard
-            halt
-        end
+		if ($allmcic = 0)
+			if ($find_mcic_value > 90) or ($find_mcic_value < 40)
+				setVar $SWITCHBOARD~message "Equipment MCIC should be between 90 and 40.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
+		end
     end
 
     if ($find_mcic_value > 0)
 		setVar $find_mcic_value (0 - $find_mcic_value)
 	end
 
-    if ($bot~parm3 <> "")
-        setVar $portClassOK 0
-        setVar $portFilter $bot~parm3
-        setVar $tword $portFilter
-        uppercase $tword
-        cutText $tword $f 1 1
-        cutText $tword $o 2 1
-        cutText $tword $e 3 1
-        if (($f = "B") or ($f = "X"))
-            if (($o = "B") or ($o = "X"))
-                if (($e = "B") or ($e = "X"))
-                    setVar $portClassOK 1
-                end
-            end
-        end
+    if ($bot~parm3 <> "")        
+        setVar $tword $bot~parm3
+		getLength $tword $len
+		if ($len = 3)
+			uppercase $tword
+			cutText $tword $f 1 1
+			cutText $tword $o 2 1
+			cutText $tword $e 3 1
+			if (($f = "B") or ($f = "X"))
+				if (($o = "B") or ($o = "X"))
+					if (($e = "B") or ($e = "X"))
+						setVar $portFilter $bot~parm3
+					end
+				end
+			end
+		end
         if ($portClassOk = 0)
-            setVar $SWITCHBOARD~message "Port Class Filter should be BBB XXB BXB etc.*"
+            setVar $SWITCHBOARD~message "Using default port filter for product.*"
             gosub :SWITCHBOARD~switchboard
-            halt
+            
         end
     end
 
@@ -157,15 +172,19 @@
         end
     end
 
-
-	setVar $SWITCHBOARD~message "Searching for ports (" & $portFilter & ") with a MCIC below " & $find_mcic_value & " *"
+	if ($allmcic = 1)
+		setVar $SWITCHBOARD~message "Searching for ports (" & $portFilter & ") with any MCIC*"
+	else
+		setVar $SWITCHBOARD~message "Searching for ports (" & $portFilter & ") with a MCIC below " & $find_mcic_value & " *"
+	end
     if ($markmsg <> "")
-        setVar $SWITCHBOARD~message $SWITCHBOARD~message & $markmsg & "*"
+        setVar $SWITCHBOARD~message $SWITCHBOARD~message & $markmsg & ""
     end
 
-    
+    setVar $headMsg $SWITCHBOARD~message
 
 	gosub :SWITCHBOARD~switchboard
+	gosub :player~quikstats
 
     goSub :checkPortRequirements
 
@@ -196,7 +215,7 @@
 	setVar $foundDangerReport 0
 	setVar $portUpgraded 0
 	setVar $foundi 0
-
+	setVar $foundDangerTot 0
 	setVar $ready ""
 	setVar $readyi 0
 
@@ -254,9 +273,11 @@
         end
 		setVar $goodport 1
 
-		if ($mcic <> "")
-           
-			if (($mcic <= $find_mcic_value) and ($mslsec <> true) and ($amtrak  <> true) and ($portClassPass = 1))
+		if (($mcic <> "") or ($allmcic = 1))
+			if ($mcic = "")
+				setVar $mcic 0
+			end
+			if ((($mcic <= $find_mcic_value) or ($allmcic = 1)) and ($mslsec <> true) and ($amtrak  <> true) and ($portClassPass = 1))
 	
 				getDistance $distanceT 1 $i
 				getDistance $distanceSD $MAP~STARDOCK $i
@@ -323,6 +344,9 @@
 					end
 					add $di 1
 				end
+				# $danger   - just means an incoming sector has no figs
+				# 4portReportDanager - means a port is also not reporting or sec has no port
+
 				if ($danger > 0)
 					setVar $foundDangerReport[$foundi] "(" & $danger & ") " & $dangerreport
 					#setVar $goodport 0
@@ -361,14 +385,12 @@ echo "*#" $i " g:" $goodport " $d:" $danger " Pr:" $portReportDanger " " SECTOR.
 					add $readyi 1
 					if ($readyi > 1)
 						setVar $ready $ready & ", " & $i
-						if ($readyi > 9)
-							setVar $ready $ready & "*"
-							setVar $readyi 0
-						end
+						
 					else
 						setVar $ready $ready & $i
 					end
 				elseif (($goodport = 1) and ($portReportDanger = 0))
+	# Sectors may have no figs - but they also have no enemy figs
 					add $readyPorti 1
                      if ($markParam <> "")
                         setSectorParameter $i $markParamSec 1
@@ -383,6 +405,7 @@ echo "*#" $i " g:" $goodport " $d:" $danger " Pr:" $portReportDanger " " SECTOR.
 						setVar $readyPort $readyPort & $i
 					end
                 elseif (($goodport = 1) and ($danger = 1))
+					add $foundDangerTot 1
                      if ($markParam <> "")
                         setSectorParameter $i $markParamSec 1
                     end
@@ -398,28 +421,45 @@ echo "*#" $i " g:" $goodport " $d:" $danger " Pr:" $portReportDanger " " SECTOR.
 	
 	setVar $i 1
 	
-	setVar $SWITCHBOARD~message "  *"
+	setVar $sectors_report "  *"
 
 	while ($i <= $foundi)
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message & "S: " &  $foundSectors[$i] & " F: " & $foundFigged[$i] & " M: " & $foundMCIC[$i]
-		setVar $SWITCHBOARD~message $SWITCHBOARD~message & " UP: " & $portUpgraded[$i] & " T: " & $foundDistTerra[$i]&  " SD: " & $foundDistSD[$i]
-		if (foundDangerReport[$i] <> "")
-			setVar $SWITCHBOARD~message $SWITCHBOARD~message & " d: " & $foundDangerReport[$i] & "*"
+		setVar $sectors_report $sectors_report & "S: " &  $foundSectors[$i] & " F: " & $foundFigged[$i] & " M: " & $foundMCIC[$i]
+		setVar $sectors_report $sectors_report & " UP: " & $portUpgraded[$i] & " T: " & $foundDistTerra[$i]&  " SD: " & $foundDistSD[$i]
+		if ($foundDangerReport[$i] <> "")
+			setVar $sectors_report $sectors_report & " d: " & $foundDangerReport[$i] & "*"
 		end
 		add $i 1
 	end
 
-	setVar $SWITCHBOARD~message $SWITCHBOARD~message & "*"
-	gosub :SWITCHBOARD~switchboard
 
-	setVar $SWITCHBOARD~message "Ready Ports: " & $ready & "**"
-	gosub :SWITCHBOARD~switchboard
-
-	#setVar $SWITCHBOARD~message "Port Report Ready: " & $readyPort & "**"
-	#gosub :SWITCHBOARD~switchboard
+	setVar $sectors_report $sectors_report & "*"
+	
 
 
-	setVar $SWITCHBOARD~message "DID WE DO MSL/LISTAMTRAK? MSL SECS: " & $countMslSec & " AMTRAK SECS: " & $countAmtrak & "*"
+
+	setVar $fullReport ""
+	setVar $fullReport $fullReport & $headMsg & "*"
+	setVar $fullReport $fullReport & "Sectors Surrounded by Our Figs : " & $readyi & "*"
+	setVar $fullReport $fullReport & "Sectors Surrounded by Open Port: " & $readyPorti & "*"
+	setVar $fullReport $fullReport & "Other Matching Sectors         : " & $foundDangerTot & "*"
+	setVar $fullReport $fullReport & "Did you do MSL/LISTAMTRACK?* *"
+	setVar $fullReport $fullReport & "MSL SECS                       : " & $countMslSec & "*"
+	setVar $fullReport $fullReport & "AMTRAK SECS                    : " & $countAmtrak & "*"
+	setVar $fullReport $fullReport & "Full report in mombot game directory* *"
+	setVar $fullReport $fullReport & "Sectors Ready to Upgrade and surrounded by figs: *"
+	setVar $fullReport $fullReport & $ready & "*"
+
+	write $writefile $headMsg 
+	write $writefile $fullReport 
+
+	write $writefile "*SECTOR SURROUNDED BY OPEN PORT REPORTS*"
+	write $writefile $readyPort
+	
+	write $writefile "*SECTOR REPORT*"
+	write $writefile $sectors_report
+
+	setVar $SWITCHBOARD~message $fullReport
 	gosub :SWITCHBOARD~switchboard
 
 
@@ -480,3 +520,4 @@ return
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"

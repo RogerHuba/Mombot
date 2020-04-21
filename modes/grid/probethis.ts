@@ -7,17 +7,17 @@
 	loadvar $map~rylos
 	loadvar $map~alpha_centauri
 
-	setVar $BOT~help[1]  $BOT~tab&"probethis [param] {novoid} {restock} {resume}"
+	setVar $BOT~help[1]  $BOT~tab&"probethis [param/all] {novoid} {restock} {resume} {unexplored}"
 	setVar $BOT~help[2]  $BOT~tab&"     "
 	setVar $BOT~help[3]  $BOT~tab&"Will ether probe all sectors marked with param selected."
 	setVar $BOT~help[4]  $BOT~tab&" 	   {param examples:}"
-	setVar $BOT~help[5]  $BOT~tab&"     	- all"
-	setVar $BOT~help[6]  $BOT~tab&"     	- unexplored "
-	setVar $BOT~help[7]  $BOT~tab&"     	- msl"
-	setVar $BOT~help[8]  $BOT~tab&"     	- bubble"
-	setVar $BOT~help[9]  $BOT~tab&"     	- uppedport (custom from query command)"
+	setVar $BOT~help[5]  $BOT~tab&"     	- all - will just probe everything"
+	setVar $BOT~help[7]  $BOT~tab&"     	- msl - custom param"
+	setVar $BOT~help[8]  $BOT~tab&"     	- bubble - custom param"
+	setVar $BOT~help[9]  $BOT~tab&"     	- uppedport - custom from query command"
 	setVar $BOT~help[10] $BOT~tab&"     {novoid}  - Will not void sectors where probe destroyed"
 	setVar $BOT~help[11] $BOT~tab&"     {restock}  - Will attempt to restock probes even if not at stardock"
+	setVar $BOT~help[12] $BOT~tab&"     {unexplored}  - Will only probe unexplored sectors in param/preset"
 	setVar $BOT~help[12] $BOT~tab&"     {destroy}  - Will broadcast destroyed sector probes on ss"
 	setVar $BOT~help[13] $BOT~tab&"     {ss}  - Will broadcast traders, ships, and planets on ss"
 	setVar $BOT~help[14] $BOT~tab&"     {trader}  - Will broadcast traders on ss"
@@ -150,7 +150,6 @@
 		setvar $unexplored false
 	end
 	if ($resume_last = true)
-echo "HERE*HERE*HERHE*"
 		gosub :resumeTargets
 	else
 		gosub :getTargets
@@ -187,6 +186,9 @@ echo "HERE*HERE*HERHE*"
 
 		:probeAgain
 		if ($player~eprobes <= 0)
+echo $player~credits " " $restock_active "*"
+echo $player~credits " " $restock_active "*"
+echo $player~credits " " $restock_active "*"
 			if (($player~credits > 100000) AND ($restock_active = TRUE))
 				gosub :restock
 			else
@@ -351,13 +353,13 @@ echo "HERE*HERE*HERHE*"
 				setVar $SWITCHBOARD~message "Probe destroyed sector:" & $Last_Entering_Sector & "*"
 				gosub :SWITCHBOARD~switchboard
 			end
-			if ($novoid = FALSE)
+			if ($void_active = TRUE)
 				send "cv" $Last_Entering_Sector "*q"
 			end
 
 			goSub :processEndOfProbe
 
-			if ($Last_Entering_Sector = $destination)
+			if ($Last_Entering_Sector = $destination) or ($void_active = FALSE)
 				write $unreachableFile $destination
 				goto :next
 			else
@@ -473,6 +475,7 @@ return
 return
 
 :getTargets
+
 	setVar $databasecount 0
 	setVar $randomSectors "  "
 	setVar $path_database "  "
@@ -482,7 +485,11 @@ return
 		setSectorParameter $i "PTHISTARGZ" ""
 		getWordPos $path_database $pos " "&$i&" "
 		if ($pos <= 0)
-			getSectorParameter $i $bot~parmAM $isTrue
+			if ($bot~parmAM = "ALL")
+				setVar $isTrue TRUE
+			else
+				getSectorParameter $i $bot~parmAM $isTrue
+			end
 			if (($isTrue = TRUE) and (((SECTOR.EXPLORED[$i] <> "YES") and ($unexplored = true)) or ($unexplored = false)))
 				setVar $randomSectors $randomSectors&" "&$i&"  "
 				setSectorParameter $i "PTHISTARGZ" "1"

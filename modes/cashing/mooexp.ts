@@ -135,7 +135,7 @@ if ($pos > 0)
 	setVar $furbfigs TRUE
 	send "i"
 	setTextLineTrigger checkHell :checkHell "Hell's StarShip"
-	setTextLineTrigger checkHellDone :ceckHElldon "Credits        :"
+	setTextLineTrigger checkHellDone :checkHellDone "Credits        :"
 	pause
 	:checkHell
 		killalltriggers
