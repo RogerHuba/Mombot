@@ -91,13 +91,28 @@ return
 
 :set_the_cannon
 	loadGlobal $bot~last_fighter_attack
-	getText $bot~last_fighter_attack $ship_type "'s "  " entered sector."
+	loadGlobal $bot~ansi_last_fighter_attack
+	setvar $alien false
+	if ($game~hasAliens = true)
+		getText $bot~ansi_last_fighter_attack $alien_check ": " "'s"
+		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+		if ($pos > 0)
+			setvar $alien true
+			setvar $ship_type $last_ship_type
+		end
+	end
+	if ($alien <> true)
+		getText $bot~last_fighter_attack $ship_type "'s "  " entered sector."
+	end
 
 	##############################################################
 	# don't bother setting unless the ship gridding is different #
 	##############################################################
 
 	if ($last_ship_type = $ship_type)
+		if ($quasar_damage > 0)
+			gosub :setcannons
+		end
 		return
 	end
 
@@ -120,65 +135,68 @@ return
 			##############################################################################
 	
 			setVar $quasar_damage ($ship~shipList[$i][5]+$ship~shipList[$i][1]+10000)
-
-			if ($auto)
-
-				setVar $percentToSet (((3*$quasar_damage)*100)/$PLANET~PLANET_FUEL)
-				if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $quasar_damage)
-					add $percentToSet 1
-				end
-				if ($percentToSet > 100)
-					setVar $percentToSet 100
-				end
-
-				###############################################################
-				# don't bother setting if percentage is the same as last time #
-				###############################################################
-
-				if ($last_percentage <> $percentToSet)
-					setvar $last_percentage $percentToSet
-					send "l s " $percentToSet "* "
-				end
-				setvar $cannon_damage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3)
-				setvar $switchboard~message "Sector cannon set to "&$cannon_damage&" damage.*"
-			end
-
-			#######################################################
-			# always set atmos cannon for defense against landers #
-			#######################################################
-			if ($game~mbbs)
-				setVar $atmos_percentToSet ((($quasar_damage/2)*100)/$planet~PLANET_FUEL)
-				if (((($planet~PLANET_FUEL * $atmos_percentToSet) / 100)*2) < $cannonDamage)
-					add $atmos_percentToSet 1
-				end
-			else
-				setVar $atmos_percentToSet (((2*$quasar_damage)*100)/$planet~PLANET_FUEL)
-				if (((($planet~PLANET_FUEL * $atmos_percentToSet) / 100)/2) < $cannonDamage)
-					add $atmos_percentToSet 1
-				end
-			end
-			############################################################
-			# No point using all the fuel if it won't kill them anyway #
-			############################################################
-			if ($atmos_percentToSet > 100)
-				setVar $atmos_percentToSet 1
-			end
-			if ($last_atmos_percentage <> $atmos_percentToSet)
-				setvar $last_atmos_percentage $atmos_percentToSet
-				send "l a " $atmos_percentToSet "* "
-			end
-
-			if ($game~mbbs)
-				setvar $cannon_damage ((($planet~planet_FUEL * $atmos_percentToSet) / 100)*2)
-			else
-				setvar $cannon_damage ((($planet~planet_FUEL * $atmos_percentToSet) / 100)/2)             
-			end
-			setvar $switchboard~message $switchboard~message&"Atmos cannon set to "&$cannon_damage&" damage.*"
+			gosub :setcannons
 			gosub :switchboard~switchboard
 			return
 		end
 		add $i 1
 	end
+return
+
+:setcannons
+	if ($auto)
+
+		setVar $percentToSet (((3*$quasar_damage)*100)/$PLANET~PLANET_FUEL)
+		if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $quasar_damage)
+			add $percentToSet 1
+		end
+		if ($percentToSet > 100)
+			setVar $percentToSet 100
+		end
+
+		###############################################################
+		# don't bother setting if percentage is the same as last time #
+		###############################################################
+
+		if ($last_percentage <> $percentToSet)
+			setvar $last_percentage $percentToSet
+			send "l s " $percentToSet "* "
+		end
+		setvar $cannon_damage ((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3)
+		setvar $switchboard~message "Sector cannon set to "&$cannon_damage&" damage.*"
+	end
+
+	#######################################################
+	# always set atmos cannon for defense against landers #
+	#######################################################
+	if ($game~mbbs)
+		setVar $atmos_percentToSet ((($quasar_damage/2)*100)/$planet~PLANET_FUEL)
+		if (((($planet~PLANET_FUEL * $atmos_percentToSet) / 100)*2) < $cannonDamage)
+			add $atmos_percentToSet 1
+		end
+	else
+		setVar $atmos_percentToSet (((2*$quasar_damage)*100)/$planet~PLANET_FUEL)
+		if (((($planet~PLANET_FUEL * $atmos_percentToSet) / 100)/2) < $cannonDamage)
+			add $atmos_percentToSet 1
+		end
+	end
+	############################################################
+	# No point using all the fuel if it won't kill them anyway #
+	############################################################
+	if ($atmos_percentToSet > 100)
+		setVar $atmos_percentToSet 1
+	end
+	if ($last_atmos_percentage <> $atmos_percentToSet)
+		setvar $last_atmos_percentage $atmos_percentToSet
+		send "l a " $atmos_percentToSet "* "
+	end
+
+	if ($game~mbbs)
+		setvar $cannon_damage ((($planet~planet_FUEL * $atmos_percentToSet) / 100)*2)
+	else
+		setvar $cannon_damage ((($planet~planet_FUEL * $atmos_percentToSet) / 100)/2)             
+	end
+	setvar $switchboard~message $switchboard~message&"Atmos cannon set to "&$cannon_damage&" damage.*"
 return
 
 :slingshot
