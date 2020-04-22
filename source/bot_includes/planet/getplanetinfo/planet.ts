@@ -29,6 +29,12 @@
 	pause
 
 	:planetinfo2
+		isNumber $tst $PLANET
+		if ($tst <> true)
+			setTextLineTrigger planetInfo2 :planetInfo2 "Planet #"
+			pause
+		end
+		
 		setVar $CITADEL 0
 		setVar $SECTOR_CANNON 0
 		setVar $ATMOSPHERE_CANNON 0
