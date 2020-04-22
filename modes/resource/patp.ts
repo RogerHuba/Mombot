@@ -181,13 +181,14 @@
 		:continueOn2
 			if ($NearFig > 0)
 				killAllTriggers
-				send "p"&$NearFig&"*y"
-				setTextLineTrigger warped :emptyPort2 "-=-=-=- Planetary TransWarp Drive Engaged! -=-=-=-"
+				send "p"&$NearFig&"*"
+				setTextLineTrigger warped :emptyPort2 "Locating beam pinpointed, TransWarp Locked."
 				setTextLineTrigger same :emptyPort2 "You are already in that sector!"
 				setTextLineTrigger didnotwarp :noFigAtLocation "Your own fighters must be in the destination to make a safe jump."
 				setTextLineTrigger notEnoughFuel :doneNoFuel2 "You do not have enough Fuel Ore on this planet to make the jump."
 				pause			
 				:emptyPort2
+					send "y "
 					setSectorParameter $NearFig "FIGSEC" TRUE
 
 
@@ -245,7 +246,9 @@
 				gosub :planet~getplanetinfo
 				send "c"
 				gosub :setwindow
-				send "c r*q "
+				send "c r*"
+				waiton "Computer command["
+				send "q "
 				
 				if ($PLAYER~exit_message <> "Normal Exit")
 					setVar $SWITCHBOARD~message $PLAYER~exit_message&"*"
@@ -294,7 +297,9 @@
 					end
 					gosub :planet~getplanetinfo
 					gosub :setwindow
-					send "c r*q "
+					send "c r*"
+					waiton "Computer command["
+					send "q "
 					gosub :landOnPlanetEnterCitadel
 				end
 			end
