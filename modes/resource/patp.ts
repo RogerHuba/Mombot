@@ -247,7 +247,7 @@
 				send "c"
 				gosub :setwindow
 				send "c r*"
-				waiton "Computer command["
+				waiton "Computer command ["
 				send "q "
 				
 				if ($PLAYER~exit_message <> "Normal Exit")
@@ -298,7 +298,7 @@
 					gosub :planet~getplanetinfo
 					gosub :setwindow
 					send "c r*"
-					waiton "Computer command["
+					waiton "Computer command ["
 					send "q "
 					gosub :landOnPlanetEnterCitadel
 				end
