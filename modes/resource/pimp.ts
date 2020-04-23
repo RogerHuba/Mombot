@@ -24,7 +24,7 @@ loadvar $map~backdoor
 	gosub :player~quikstats
 	setVar $starting_location $player~current_prompt
 	getRnd $random 1 100000
-	if ($starting_location <> "Citadel")
+	if ($starting_location <> "Citadel") and ($starting_location <> "Planet")
 		setVar $switchboard~message "You must run product pimp from a Citadel prompt.*"
 		gosub :switchboard~switchboard
 		halt
@@ -37,6 +37,7 @@ loadvar $map~backdoor
 		halt
 	else
 		getWordPos $bot~parm1 $pos #34
+		getWordPos $bot~user_command_line $pos #34
 		if ($pos > 0)
 			getText " "&$bot~user_command_line&" " $targetPlanet " "&#34 #34&" "
 			if ($targetPlanet <> "")
@@ -334,6 +335,27 @@ loadvar $map~backdoor
  
 :restock
 	killalltriggers
+	send "d"
+	setTextLineTrigger 	figprompt 	:figprompt 		"Fighters:"
+	setTextLineTrigger 	nofigprompt :nofigprompt	"Warps to Sector(s) :"
+	pause
+	:nofigprompt
+		killalltriggers
+		setVar $switchboard~message "No fighters here to twarp back to.*"
+		gosub :switchboard~switchboard
+		halt
+	:figprompt
+		killalltriggers
+		getword CURRENTLINE $chkpers 3
+		if ($chkpers <> "(yours)")
+			getword CURRENTLINE $whichcorp 6
+			if ($whichcorp <> "Corp)")
+				setVar $switchboard~message "No fighters here to twarp back to.*"
+				gosub :switchboard~switchboard
+				halt
+			end
+		end
+
 	seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
 	seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
 	SetTextLineTrigger sdyes :sdyes "Commerce report for Stargate Alpha I:"
@@ -444,15 +466,15 @@ pause
 	GetWord CURRENTLINE $numdets 9
 	StripText $numdets ")"
 	send $numdets & "*"
-	send "Q Q M " & $player~current_sector & " * Y"
+	send "Q Q M " & $player~current_sector & " * Y Y "
 	settexttrigger nofig :nofig "Do you want to make this jump blind?"
-	settexttrigger ready3 :ready3 "Locating beam pinpointed,"
+	settexttrigger ready3 :ready3 "All Systems Ready, shall we engage?"
 	settexttrigger nofuel :nofuel "You do not have enough Fuel Ore to make the jump"
 	pause
 	pause
 
 :ready3
-	send "Y"
+	
 	waitfor "Command [TL"
 	send "l "&$target&"* t n l 1* q q * j y * "
 	Return
