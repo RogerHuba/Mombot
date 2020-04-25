@@ -1,4 +1,3 @@
-	logging off
 	#####################################
 	# Main defender configuration setup #
 	#####################################
