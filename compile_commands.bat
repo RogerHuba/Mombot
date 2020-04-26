@@ -1,4 +1,4 @@
-for /r %%n in (*sub.ts) do call :checkit "%%n" 
+for /r %%n in (*setbubble.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
