@@ -82,3 +82,8 @@
 
 		send "'*"&$count&" bubble sectors with door sector of "&$DOOR&": "&$bubble_sectors&"**"
 		halt
+
+#INCLUDES:
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+
