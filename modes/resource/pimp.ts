@@ -20,6 +20,7 @@ loadvar $map~backdoor
 
 		
 :pimp
+
 	window prodpimp 400 150 "product pimp stats" ONTOP
 	gosub :player~quikstats
 	setVar $starting_location $player~current_prompt
@@ -31,25 +32,20 @@ loadvar $map~backdoor
 	end
 	setVar $bot~user_command_line $bot~user_command_line&" "
 	isNumber $test $bot~parm1
-	if ($test)
-		setVar $switchboard~message "Invalid arguments for product pimp*"
-		gosub :switchboard~switchboard
-		halt
-	else
-		getWordPos $bot~parm1 $pos #34
-		getWordPos $bot~user_command_line $pos #34
-		if ($pos > 0)
-			getText " "&$bot~user_command_line&" " $targetPlanet " "&#34 #34&" "
-			if ($targetPlanet <> "")
-				setVar $pimp_planet_name $targetPlanet
-				stripText $bot~user_command_line " "&#34&$targetPlanet&#34&" "
-			else
-				setVar $pimp_planet_name "M()M Pimp "&$random
-			end
+	
+	getWordPos $bot~user_command_line $pos #34
+	if ($pos > 0)
+		getText " "&$bot~user_command_line&" " $targetPlanet " "&#34 #34&" "
+		if ($targetPlanet <> "")
+			setVar $pimp_planet_name $targetPlanet
+			stripText $bot~user_command_line " "&#34&$targetPlanet&#34&" "
 		else
 			setVar $pimp_planet_name "M()M Pimp "&$random
 		end
+	else
+		setVar $pimp_planet_name "M()M Pimp "&$random
 	end
+
 	setVar $bot~user_command_line " "&$bot~user_command_line&" "
 	getWordPos $bot~user_command_line $pos " f "
 	if ($pos > 0)
