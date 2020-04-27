@@ -1,4 +1,3 @@
-	logging off
 	#####################################
 	# Main defender configuration setup #
 	#####################################
@@ -927,14 +926,15 @@ return
 	if (($photon~sector <> $bot~last_hit) and ($bot~last_hit <> 0) and ($player~current_sector <> $bot~last_hit))
 		loadGlobal $bot~last_hit_type
 		if ($bot~last_hit_type = "limpet")
-			goto :attackSectorLimpet
+			gosub :photon~limpet_spoof
 		elseif ($bot~last_hit_type = "armid")
-			goto :attackSectorMine
+			gosub :photon~armid_spoof
 		else
-			goto :attackSectorFighter
+			gosub :photon~fighter_spoof
 		end
-		setvar $photon~sector $bot~last_hit
-		goto :check_to_fire_photon
+		if ($photon~found = true)
+			goto :check_to_fire_photon
+		end
 	end
 return
 
