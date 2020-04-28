@@ -705,6 +705,7 @@ while ($iSaySo)
 			end
 
 			waitfor "gogo!"
+			killalltriggers
 			setVar $player~warpto $gridSector
 			gosub :player~twarp
 		end
