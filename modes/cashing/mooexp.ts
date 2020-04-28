@@ -682,10 +682,26 @@ while ($iSaySo)
 			setVar $SWITCHBOARD~message "We didn't make it to: " & $gridSector &" - manually refuel and type 'go go !' minus spaces once you have fuel and I'll twarp there.!*"
 			gosub :SWITCHBOARD~switchboard
 			if ($kill = true)
+				:scan
+
+				killalltriggers
 				gosub :sector~getsectordata
 				if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
 					gosub :combat~fastattack
+					gosub :player~quikstats
 				end
+				setTextLineTrigger 7  :scan "warps into the sector."
+				setTextLineTrigger 8  :scan " lifts off from"
+				setTextLineTrigger 9  :scan "Limpet mine in "&$player~current_sector
+				setTextLineTrigger 10 :scan "Deployed Fighters Report Sector "&$player~current_sector&":"
+				setTextLineTrigger 11 :scan "Quasar Cannon on"
+				setTextLineTrigger 12 :scan "Shipboard Computers The Interdictor Generator on"
+				setTextLineTrigger 13 :scan " is powering up weapons systems!"
+				settextlinetrigger 14 :scan " launches a wave of fighters at the "
+				settextlinetrigger 15 :scan	" launches a Genesis Torpedo into the sector!"
+				settextlinetrigger 16 :scan " appears from the planetary rubble."
+				setTextLineTrigger 17 :scan " exits the game."
+				setTextLineTrigger 18 :scan " enters the game."
 			end
 
 			waitfor "gogo!"
