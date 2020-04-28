@@ -1935,9 +1935,11 @@ return
 		end
 		
 	end
-	gosub :sector~getsectordata
-	if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
-		gosub :combat~fastattack
+	if ($kill = true)
+		gosub :sector~getsectordata
+		if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
+			gosub :combat~fastattack
+		end
 	end
 	add $stat_figsdown 1
 	add $stat_moves 1
