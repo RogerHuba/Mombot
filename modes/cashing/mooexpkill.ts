@@ -1941,11 +1941,10 @@ return
 
 :holoScan
 if ($kill = true)
-	gosub :player~quikstats
 	setvar $sector~safe_attack_only true
 	setvar $before_holo_kill_sector $player~current_sector
 	gosub :combat~holokill
-	if ($player~current_sector <> $before_holo_kill_sector)
+	if (($sector~holotargetfound = true) and ($player~current_sector <> $before_holo_kill_sector))
 		setVar $PLAYER~WARPTO $before_holo_kill_sector
 		gosub :PLAYER~twarp
 		if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
