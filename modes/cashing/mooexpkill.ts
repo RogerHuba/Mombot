@@ -1941,6 +1941,7 @@ return
 
 :holoScan
 if ($kill = true)
+	gosub :player~quikstats
 	setvar $sector~safe_attack_only true
 	setvar $before_holo_kill_sector $player~current_sector
 	gosub :combat~holokill
