@@ -90,7 +90,7 @@
 						if ($safe_attack_only <> true)
 							setVar $player~isFound TRUE
 						else
-							if (($safe_attack_only = true) and (($player~fighters/2) >= $enemy_fighters))
+							if (($safe_attack_only = true) and ($player~fighters >= $enemy_fighters))
 								setVar $player~isFound TRUE
 							end
 						end
