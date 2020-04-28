@@ -123,7 +123,7 @@ if ($pos > 0)
 		getText $cline $bankToo "bank:" " "
 		setVar $bot~parm5 "bank:" & $bankToo 
 	else
-		setVar $bot~parm5 "bank:bot222" 
+		setVar $bot~parm5 "bank:Amos" 
 	end
 	setVar $fireplanet 1
 	setvar $firePlanetType "Dead Earth"
@@ -136,7 +136,7 @@ if ($pos > 0)
 	setVar $bot~parm4 "secure"
 	
 	setVar $doFireTithe 1
-	setVar $fireTithePerson "bot333"
+	setVar $fireTithePerson "Holden"
 
 	setvar $kill true
 	setVar $furbfigs TRUE
