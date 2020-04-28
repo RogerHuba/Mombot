@@ -71,9 +71,10 @@
 	gosub :player~quikstats
 	gosub :planet~getplanetinfo
 	setVar $sector_figs 0
-	send "q  q  z  n  **   "
+	send "q  q  z  n  *"
 	waiton "Warps to Sector(s) :"
 	waiton "Command [TL"
+	send "*  "
 	gosub :player~quikstats
 	
 	if ($allPlanets = true)
