@@ -582,7 +582,7 @@
 
 :doMines
 	setVar $BOT~command "deploy"
-	setVar $BOT~user_command_line " mines 3"
+	setVar $BOT~user_command_line " mines 3 silent "
 	setvar $bot~parm1 "mines"
 	setvar $bot~parm2 "2"
 
