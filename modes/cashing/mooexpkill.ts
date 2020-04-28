@@ -1495,6 +1495,7 @@ return
 
 			if ($gridSector = 0)
 				gosub :holoScan
+				pause
 				setvar $switchboard~message "Out of options, try figs and CIM Warps update*"
 				gosub :switchboard~switchboard
 		
@@ -1503,6 +1504,7 @@ return
 
 		else
 			gosub :holoScan
+			pause
 			setvar $switchboard~message "Out of options, try figs and CIM Warps update*"
 			gosub :switchboard~switchboard
 			halt
@@ -1954,7 +1956,6 @@ if ($kill = true)
 			setvar $switchboard~message "Could not make it back to starting sector after holokill. - ["&$player~msg&"]*"
 		end
 	end
-	pause
 	gosub :switchboard~switchboard
 else
 	send "sh"
