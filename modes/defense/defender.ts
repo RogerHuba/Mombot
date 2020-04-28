@@ -461,7 +461,7 @@
 			send "c n 9 * q "
 		end
 		send "q"
-		waiton "You leave the citadel and return to your ship."
+		waiton "Citadel command (?=help) Q"
 		gosub :PLANET~getPlanetInfo	
 		send "c "
 		waiton "Citadel command ("
