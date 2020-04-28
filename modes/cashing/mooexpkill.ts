@@ -81,6 +81,7 @@ setvar $dropCashPlanet 0
 setVAr $dropCashTotal 0
 
 setVar $kill TRUE
+setvar $sector~safe_attack_only true
 
 
 setVar $startingLocation $PLAYER~CURRENT_PROMPT
@@ -1947,7 +1948,6 @@ return
 
 :holoScan
 if ($kill = true)
-	setvar $sector~safe_attack_only true
 	setvar $before_holo_kill_sector $player~current_sector
 	gosub :combat~holokill
 	if (($sector~holotargetfound = true) and ($player~current_sector <> $before_holo_kill_sector))
