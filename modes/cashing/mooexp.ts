@@ -659,7 +659,7 @@ while ($iSaySo)
 	setVar $freshSectorsi 0
 
 	setVar $firstNext 0
-
+	:check_again_for_next_sector
 	goSub :getNextSector
 
 	if ($gridSectorPostTwarp > 0)
@@ -674,8 +674,19 @@ while ($iSaySo)
 		setVar $skipport 1
 		gosub :player~quikstats
 		if ($player~CURRENT_SECTOR <> $gridSector)
+			if ($player~ORE_HOLDS > 100)
+				setvar $gridSectorPostTwarp 0
+				goto :check_again_for_next_sector
+			end
 			setVar $SWITCHBOARD~message "We didn't make it to: " & $gridSector &" - manually refuel and type 'go go !' minus spaces once you have fuel and I'll twarp there.!*"
 			gosub :SWITCHBOARD~switchboard
+			if ($kill = true)
+				gosub :sector~getsectordata
+				if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
+					gosub :combat~fastattack
+				end
+			end
+
 			waitfor "gogo!"
 			setVar $player~warpto $gridSector
 			gosub :player~twarp
