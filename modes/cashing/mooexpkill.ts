@@ -1493,13 +1493,15 @@ return
 			goSub :getFutureDest
 
 			if ($gridSector = 0)
+				gosub :holoScan
 				setvar $switchboard~message "Out of options, try figs and CIM Warps update*"
 				gosub :switchboard~switchboard
-				
+		
 				halt
 			end
 
 		else
+			gosub :holoScan
 			setvar $switchboard~message "Out of options, try figs and CIM Warps update*"
 			gosub :switchboard~switchboard
 			halt
