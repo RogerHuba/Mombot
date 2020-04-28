@@ -116,6 +116,8 @@
 						#echo "*["&$shipname&"*][*"&$ship~shipList[$s]&"]*"
 						setVar $isFound TRUE
 						setVar $isDefender $ship~shipList[$s][8]
+						setVar $target_defense_odds $ship~shipList[$s][2]
+						setVar $target_shields $ship~shipList[$s][1]
 					end
 					add $s 1
 				end

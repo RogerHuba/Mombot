@@ -90,8 +90,12 @@
 						if ($safe_attack_only <> true)
 							setVar $player~isFound TRUE
 						else
-							if (($safe_attack_only = true) and ($player~fighters >= $enemy_fighters))
+							# calculate odds of ships - only attack if you can win #
+							setvar $too_many_fighters (($ship~SHIP_OFFENSIVE_ODDS * $player~fighters) < (($enemy_fighters + $target_shields) * $target_defense_odds))
+							if (($safe_attack_only = true) and ($too_many_fighters <> true))
 								setVar $player~isFound TRUE
+							else
+								echo "*Safe mode active - Too many fighters on " $enemy_name ".  Can't attack them and survive.*"
 							end
 						end
 					end

@@ -69,9 +69,22 @@
 			elseif (($PLAYER~targetingShip <> false) and ($player~traders[$c][3] <> true))
 				setVar $targetString $targetString&"* "
 			else
-				setVar $player~isFound TRUE
 				setvar $enemy_fighters $player~traders[$c][4]
-				setVar $targetString $targetString&"zy z"
+				setvar $enemy_name $player~traders[$c]
+				if ($sector~safe_attack_only <> true)
+					setVar $player~isFound TRUE
+				else
+					# calculate odds of ships - only attack if you can win #
+					setvar $too_many_fighters (($ship~SHIP_OFFENSIVE_ODDS * $player~fighters) < (($enemy_fighters + $target_shields) * $target_defense_odds))
+					if (($sector~safe_attack_only = true) and ($too_many_fighters <> true))
+						setVar $player~isFound TRUE
+					else
+						echo "*Safe mode active - Too many fighters on " $enemy_name ".  Can't attack them and survive.*"
+					end
+				end
+				if ($player~isFound = true)
+					setVar $targetString $targetString&"zy z"
+				end
 			end
 			add $c 1
 		end
