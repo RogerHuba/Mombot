@@ -1937,7 +1937,7 @@ return
 	end
 	gosub :sector~getsectordata
 	gosub :combat~fastattack
-	
+
 	add $stat_figsdown 1
 	add $stat_moves 1
 return
@@ -3178,6 +3178,7 @@ include "source\bot_includes\planet\planetneg\planet"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\combat\holokill\combat"
 include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\combat\fastattack\combat"
 
