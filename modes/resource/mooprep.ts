@@ -374,7 +374,7 @@ while ($i <= $pathi)
 	end
 	setVar $player~warpto $gotoSector
 	gosub :player~twarp
-
+	send "d"
 	goSub :player~quikstats
 	
 	if ($player~CURRENT_SECTOR <> $gotoSector)
