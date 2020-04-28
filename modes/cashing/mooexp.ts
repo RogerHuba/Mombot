@@ -42,8 +42,6 @@ gosub :BOT~banner
 
 gosub :player~quikstats
 
-
-
 #array of planetnames
 setArray $neg_planetNames 20
 setArray $neg_planetNamesTaken 20
@@ -121,6 +119,8 @@ if ($pos > 0)
 	else
 		setVar $bot~parm5 "bank:bot222" 
 	end
+	setVar $fireplanet 1
+	setvar $firePlanetType "Dead Earth"
 
 	setVar $bankcash TRUE
 	setVar $doFireUpgrade 1
@@ -143,6 +143,7 @@ if ($pos > 0)
 	:checkHellDone
 		killalltriggers
 	
+
 end
 setVar $ice 0
 getWordPos $bot~user_command_line $pos "ice"
@@ -1406,6 +1407,7 @@ return
 		setVar $nOkToExplore[$i] 0
 		setVar $nOkToTrade[$i] 0
 		
+#echo $nSector[$i] " " $explored[$nSector[$i]] " " $danger "*"
 
 		if (($explored[$nSector[$i]] = 0) and ($danger = 0))
 
@@ -1610,14 +1612,8 @@ return
 				goSub :getFutureDest
 			end
 		end
-	elseif ($getFuturePortOnly = 0)
+	elseif ($getFuturePortOnly = 0) and ($maxWarpsSector <> 0)
 		# check we have a fig at the jump point
-echo "DEBug:" $maxWarpsSector "*"
-echo "DEBug:" $maxWarpsSector "*"
-echo "DEBug:" $maxWarpsSector "*"
-echo "DEBug:" $maxWarpsSector "*"
-echo "DEBug:" $maxWarpsSector "*"
-echo "DEBug:" $maxWarpsSector "*"
 
 		setVar $checkSector $futureDestinations[$maxWarpsSector][0]
 		getSectorParameter $checkSector "FIGSEC" $hasFig
@@ -1672,6 +1668,18 @@ return
 		add $a 1
 	end
 
+	setVar $a 1
+	while ($a <= 10)
+		setVar $explored[$a] 1
+		setVar $y 1
+		while ($y <= SECTOR.WARPCOUNT[$a])
+			# Avoids warps out of Fed (if known)
+			setVar $explored[SECTOR.WARPS[$a][$y]] 1
+			add $y 1
+		end
+		add $a 1
+	end
+	
 	
 
 return
@@ -2147,6 +2155,69 @@ return
 				setVar $tradePlanet $newPlanetMade
 			end
 		end
+
+		# FIRE SPECIFIC Stuff
+		if ($doFirePlanet > 0)
+			setVar $doFirePlanet 0
+			if ($getPlanetSettingsReq = 0)
+				setVar $checkNewPlanet 1
+				goSub :reCheckPlanets
+				setVar $checkNewPlanet 0
+			end
+			send "u y n " $newPlanetName "* z p * * "
+			send "u y n " $newPlanetName "* z p * * "
+			send "u y n " $newPlanetName "* z p * * "
+			send "u y n " $newPlanetName "* z p * * "
+			send "u y n " $newPlanetName "* z p * * "
+
+			send "l" $newPlanetMade "*oc"
+			send "^q"
+			waitfor "ENDINTERROG"
+			setVar $BOT~command "pimp"
+            setVar $BOT~user_command_line #34& "m185380721" &#34& " f "
+            setVar $BOT~parm1 "m185380721"
+            setVar $BOT~parm2 "f"
+            saveVar $BOT~parm1
+            saveVar $BOT~parm2
+            saveVar $BOT~command
+            saveVar $BOT~user_command_line
+            load "scripts\"&$bot~mombot_directory&"\modes\resource\pimp.cts"
+            setEventTrigger		firstPimpEnd		:firstPimpEnd "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\pimp.cts"
+            pause
+            :firstPimpEnd
+            killalltriggers
+				send "^q"
+				waitfor "ENDINTERROG"
+				send "cy"
+				goSub :smallDelay
+				send "cuy"
+				goSub :smallDelay
+				send "uy"
+				goSub :smallDelay
+				send "uy"
+				goSub :smallDelay
+			setVar $BOT~command "pimp"
+            setVar $BOT~user_command_line #34& "m185380721" &#34& " f "
+            setVar $BOT~parm1 "m185380721"
+            setVar $BOT~parm2 "f"
+            saveVar $BOT~parm1
+            saveVar $BOT~parm2
+            saveVar $BOT~command
+            saveVar $BOT~user_command_line
+            load "scripts\"&$bot~mombot_directory&"\modes\resource\pimp.cts"
+            setEventTrigger		secondPimpEnd		:secondPimpEnd "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\pimp.cts"
+            pause
+            :secondPimpEnd
+           	 killalltriggers
+				send "^q"
+				waitfor "ENDINTERROG"
+			send "q q "
+			goSub :smallDelay
+			goSub :player~quikstats
+			setVar $checkNewPlanet 0
+			goSub :reCheckPlanets
+			setVar $planet~planetsInSectorCHK $planet~planetsInSector
+		end
 # DID WE MAKE A GOOD ONE?
 
 		if ($goodPlanet = 1)
@@ -2186,8 +2257,6 @@ return
 	end
 	
 
-	# Sector Clean up
-
 	# if we are above the 90% planets then auto cleanup
 	if ($tradePlanet > $planet~planetSALLOWED)
 		setVar $cleanup 2
@@ -2195,8 +2264,12 @@ return
 		setVar $cleanup $userCleanup
 	end
 
-
 	if ($cleanup > 0)
+
+		if ($planet~planetsInSector = 0)
+			setVar $checkNewPlanet 0
+			goSub :reCheckPlanets
+		end
 		setVar $planet~planetsToBlow 0
 		setVar $figsRequired 0
 		setVar $i 1
@@ -2223,9 +2296,11 @@ return
 			echo "*#########################################"
 			setVar $SWITCHBOARD~message "Warning: Fighters low, can not do cleanup.*"
 			gosub :SWITCHBOARD~switchboard
-			
+			halt
 
 		end
+		echo "planet~planetsInSector " $planet~planetsInSector "*"
+
 		setVar $i 1
 		while ($i <= $planet~planetsInSector)
 			
@@ -2410,7 +2485,19 @@ return
 			end
 
 		end
+		if ($fireplanet = 1) and ($player~credits > 4000000)
+			getWordPos $planet~planetList[$planet~planetIndexFound] $pos "Dead Earth"
+			if ($pos > 0)
+				goSub :fireCheckLevel4Needed
+				if ($levelNeeded = 1)
 
+					add $doFirePlanet 1
+					setVar $fireplanet 0
+				else
+					setVar $fireplanet 0
+				end
+			end
+		end
 
 			
 return
@@ -3020,7 +3107,41 @@ return
 	end
 return
 
+:smallDelay
+echo "STARTING SMALL DELAY*"
+	setDelayTrigger delay :wait 2000
+	pause
+		:wait
+		killalltriggers
+return
 
+:fireCheckLevel4Needed
+
+	setVar $levelNeeded 0
+	setVar $level4Count 0
+
+	send "tlq"
+	waitfor "Corporate Planet Scan"
+	setTextLineTrigger nocorpplanets :nocorpplanets "No Planets claimed"
+	setTextLineTrigger level4ready :level4ready "Dead Earth           Level 4"
+	setTextLineTrigger scancorpplanetsdone :scancorpplanetsdone "Corporate command ["
+	pause
+	:level4ready
+	
+		add $level4Count 1
+		setTextLineTrigger level4ready :level4ready "Dead Earth           Level 4"
+		pause
+
+	:nocorpplanets
+		killalltriggers
+		setVar $levelNeeded 1
+		return
+	:scancorpplanetsdone
+		killalltriggers
+		if ($level4Count < 3)
+			setVar $levelNeeded 1
+		end
+return
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
