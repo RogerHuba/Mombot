@@ -1951,7 +1951,7 @@ if ($kill = true)
 			setvar $switchboard~message "Could not make it back to starting sector after holokill. - ["&$player~msg&"]*"
 		end
 	end
-	if ($switchboard~message <> "No targets found adjacent.")
+	if ($switchboard~message <> "No targets found adjacent.*")
 		gosub :switchboard~switchboard
 	end
 else
