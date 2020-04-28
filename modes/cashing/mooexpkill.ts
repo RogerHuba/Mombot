@@ -80,7 +80,10 @@ setVar $dropCashSector 0
 setvar $dropCashPlanet 0
 setVAr $dropCashTotal 0
 
+# set to false if you don't want to attack while cashing #
 setVar $kill TRUE
+
+# safe_attack_only makes sure holokill and in sector attack only happens when you can win the fight #
 setvar $sector~safe_attack_only true
 
 
