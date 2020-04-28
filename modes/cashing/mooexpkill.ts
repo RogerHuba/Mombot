@@ -80,6 +80,9 @@ setVar $dropCashSector 0
 setvar $dropCashPlanet 0
 setVAr $dropCashTotal 0
 
+setVar $kill TRUE
+
+
 setVar $startingLocation $PLAYER~CURRENT_PROMPT
 if ($startingLocation = "Citadel")
 	send "qtnt1*"
@@ -331,12 +334,6 @@ else
 	setVar $deleteData FALSE
 end
 
-getWordPos $bot~user_command_line $pos "kill"
-if ($pos > 0)
-	setVar $kill TRUE
-else
-	setVar $kill FALSE
-end
 
 setVar $secure FALSE
 getWordPos $bot~user_command_line $pos "secure"
@@ -1495,7 +1492,6 @@ return
 
 			if ($gridSector = 0)
 				gosub :holoScan
-				pause
 				setvar $switchboard~message "Out of options, try figs and CIM Warps update*"
 				gosub :switchboard~switchboard
 		
@@ -1504,7 +1500,6 @@ return
 
 		else
 			gosub :holoScan
-			pause
 			setvar $switchboard~message "Out of options, try figs and CIM Warps update*"
 			gosub :switchboard~switchboard
 			halt
