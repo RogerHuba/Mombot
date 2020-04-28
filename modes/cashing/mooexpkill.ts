@@ -80,8 +80,6 @@ setVar $dropCashSector 0
 setvar $dropCashPlanet 0
 setVAr $dropCashTotal 0
 
-# set to false if you don't want to attack while cashing #
-setVar $kill TRUE
 
 # safe_attack_only makes sure holokill and in sector attack only happens when you can win the fight #
 setvar $sector~safe_attack_only true
@@ -139,6 +137,7 @@ if ($pos > 0)
 	setVar $doFireTithe 1
 	setVar $fireTithePerson "bot333"
 
+	setvar $kill true
 	setVar $furbfigs TRUE
 	send "i"
 	setTextLineTrigger checkHell :checkHell "Hell's StarShip"
@@ -156,6 +155,12 @@ setVar $ice 0
 getWordPos $bot~user_command_line $pos "ice"
 if ($pos > 0)
 	setVar $ice 1
+end
+
+getWordPos " "&$bot~user_command_line&" " $pos "kill"
+if ($pos > 0)
+	# set to false if you don't want to attack while cashing #
+	setVar $kill TRUE
 end
 
 if (($player~TWARP_TYPE <> 1) and ($player~TWARP_TYPE <> 2))
@@ -1712,7 +1717,7 @@ return
 	add $updateCount 1
 	if ($updateCount > 20)
 		setVar $updateCount 1
-		send "'Moo Update - Planets: " $stat_torps " Turns: " $stat_turnsUsed " Net Profit: " $stat_dollarsnet "*"
+		send "'Moo Update - Planets: " $stat_torps " Turns: " $stat_turnsUsed_formatted " Net Profit: " $stat_dollarsnet_formatted "*"
 	end
 return
 
@@ -1722,7 +1727,13 @@ return
 	
 	setVar $stat_turnsUsed ($startturns - $player~turns)
 
-	setvar $stuff "Turns Used: " & $stat_turnsUsed & "*Figs Down: " & $stat_figsdown & "*Ports Traded: " & $stat_trades  & "*Moves Made: " & $stat_moves & "*Gross Cash:" & $stat_dollarsgross & "*Expense:" & $stat_dollarsspent & "*Net Cash:" & $stat_dollarsnet
+
+ 	format $stat_dollarsgross $stat_dollarsgross_formatted NUMBER
+ 	format $stat_dollarsnet $stat_dollarsnet_formatted NUMBER
+ 	format $stat_turnsUsed $stat_turnsUsed_formatted NUMBER
+ 	format $stat_dollarsspent $stat_dollarsspent_formatted NUMBER
+
+ 	setvar $stuff "Turns Used: " & $stat_turnsUsed_formatted & "*Figs Down: " & $stat_figsdown & "*Ports Traded: " & $stat_trades  & "*Moves Made: " & $stat_moves & "*Gross Cash:" & $stat_dollarsgross_formatted & "*Expense:" & $stat_dollarsspent_formatted & "*Net Cash:" & $stat_dollarsnet_formatted
 	setvar $stuff $stuff & "*Refurbs: " & $stat_refurbs & "*Gen Torps: " & $stat_torps & "*Atomics: " & $stat_atomics
 return
 

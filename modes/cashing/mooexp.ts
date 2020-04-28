@@ -15,25 +15,26 @@ setVar $BOT~help[2]  $BOT~tab&"       "
 setVar $BOT~help[3]  $BOT~tab&" mooexp [turnsstop/cashstop] [maxplanets] {primary} {bad/all} "
 setVar $BOT~help[4]  $BOT~tab&"                      "
 setVar $BOT~help[5]  $BOT~tab&" Options:"
-setVar $BOT~help[6]  $BOT~tab&"    [turnsstop]  <= 60000 stop at these turns"
-setVar $BOT~help[7]  $BOT~tab&"    [cashstop]   > 60000 stop at this cash amount"
-setVar $BOT~help[8]  $BOT~tab&"    [maxplanets] Max planets b4 blasting and replacing."
-setVar $BOT~help[9]  $BOT~tab&"	   {f/o/e}      Highest value product available defaults"
-setVar $BOT~help[10]  $BOT~tab&"                to equipment"
-setVar $BOT~help[11]  $BOT~tab&"    {bad/all}    Clean bad/all planets post trading. default none."
-setVar $BOT~help[12]  $BOT~tab&"    {guard}       Ensures corp planet at SD to invoke Guardian"
-setVar $BOT~help[13]  $BOT~tab&"    {ephag}       Default is NEG but set to use EP Haggle"
-setVar $BOT~help[14]  $BOT~tab&"    {furb}       Safe Furb - Corp mate runs moofurb"
-setVar $BOT~help[15]  $BOT~tab&"    {secure}     Drop/furb mines/limpets"
-setVar $BOT~help[16]  $BOT~tab&"    "
+setVar $BOT~help[6]  $BOT~tab&" [turnsstop]    <= 60000 stop at these turns"
+setVar $BOT~help[7]  $BOT~tab&"  [cashstop]    > 60000 stop at this cash amount"
+setVar $BOT~help[8]  $BOT~tab&"[maxplanets]    Max planets b4 blasting and replacing."
+setVar $BOT~help[9]  $BOT~tab&"	    {f/o/e}    Highest value product available defaults"
+setVar $BOT~help[10] $BOT~tab&"                to equipment"
+setVar $BOT~help[11] $BOT~tab&"   {bad/all}    Clean bad/all planets post trading. default none."
+setVar $BOT~help[12] $BOT~tab&"     {guard}    Ensures corp planet at SD to invoke Guardian"
+setVar $BOT~help[13] $BOT~tab&"     {ephag}    Default is NEG but set to use EP Haggle"
+setVar $BOT~help[14] $BOT~tab&"      {furb}    Safe Furb - Corp mate runs moofurb"
+setVar $BOT~help[15] $BOT~tab&"    {secure}    Drop/furb mines/limpets"
+setVar $BOT~help[16] $BOT~tab&"      {kill}    Attempt to kill traders it sees"
 setVar $BOT~help[17] $BOT~tab&"    "
-setVar $BOT~help[18] $BOT~tab&"    Auto refurbs - requires fed safe if not using furb"
-setVar $BOT~help[19] $BOT~tab&"    Stores sectors to go back to when script reruns."
-setVar $BOT~help[20] $BOT~tab&"    AUTOCLEANUP if planets above 90%"
-setVar $BOT~help[21] $BOT~tab&"    Start from citadel to auto cash dump"
-setVar $BOT~help[22] $BOT~tab&"    "
-setVar $BOT~help[23] $BOT~tab&"    mooexp [turns] [mooship1] furb ice"
-setVar $BOT~help[24] $BOT~tab&"    Make sure >update"
+setVar $BOT~help[18] $BOT~tab&"    "
+setVar $BOT~help[19] $BOT~tab&"    Auto refurbs - requires fed safe if not using furb"
+setVar $BOT~help[20] $BOT~tab&"    Stores sectors to go back to when script reruns."
+setVar $BOT~help[21] $BOT~tab&"    AUTOCLEANUP if planets above 90%"
+setVar $BOT~help[22] $BOT~tab&"    Start from citadel to auto cash dump"
+setVar $BOT~help[23] $BOT~tab&"    "
+setVar $BOT~help[24] $BOT~tab&"    mooexp [turns] [mooship1] furb ice"
+setVar $BOT~help[25] $BOT~tab&"    Make sure >update"
 
 gosub :bot~helpfile
 
@@ -79,6 +80,11 @@ setVar $dropCashCit FALSE
 setVar $dropCashSector 0
 setvar $dropCashPlanet 0
 setVAr $dropCashTotal 0
+
+
+# safe_attack_only makes sure holokill and in sector attack only happens when you can win the fight #
+setvar $sector~safe_attack_only true
+
 
 setVar $startingLocation $PLAYER~CURRENT_PROMPT
 if ($startingLocation = "Citadel")
@@ -132,6 +138,7 @@ if ($pos > 0)
 	setVar $doFireTithe 1
 	setVar $fireTithePerson "bot333"
 
+	setvar $kill true
 	setVar $furbfigs TRUE
 	send "i"
 	setTextLineTrigger checkHell :checkHell "Hell's StarShip"
@@ -149,6 +156,12 @@ setVar $ice 0
 getWordPos $bot~user_command_line $pos "ice"
 if ($pos > 0)
 	setVar $ice 1
+end
+
+getWordPos " "&$bot~user_command_line&" " $pos "kill"
+if ($pos > 0)
+	# set to false if you don't want to attack while cashing #
+	setVar $kill TRUE
 end
 
 if (($player~TWARP_TYPE <> 1) and ($player~TWARP_TYPE <> 2))
@@ -331,6 +344,7 @@ else
 	setVar $deleteData FALSE
 end
 
+
 setVar $secure FALSE
 getWordPos $bot~user_command_line $pos "secure"
 if ($pos > 0)
@@ -396,6 +410,7 @@ else
 end
 
 gosub :SHIP~getShipStats
+gosub :combat~init 
 
 setVar $stat_turnsUsed 0 
 setVar $stat_figsdown 0
@@ -1486,13 +1501,15 @@ return
 			goSub :getFutureDest
 
 			if ($gridSector = 0)
+				gosub :holoScan
 				setvar $switchboard~message "Out of options, try figs and CIM Warps update*"
 				gosub :switchboard~switchboard
-				
+		
 				halt
 			end
 
 		else
+			gosub :holoScan
 			setvar $switchboard~message "Out of options, try figs and CIM Warps update*"
 			gosub :switchboard~switchboard
 			halt
@@ -1701,7 +1718,7 @@ return
 	add $updateCount 1
 	if ($updateCount > 20)
 		setVar $updateCount 1
-		send "'Moo Update - Planets: " $stat_torps " Turns: " $stat_turnsUsed " Net Profit: " $stat_dollarsnet "*"
+		send "'Moo Update - Planets: " $stat_torps " Turns: " $stat_turnsUsed_formatted " Net Profit: " $stat_dollarsnet_formatted "*"
 	end
 return
 
@@ -1711,7 +1728,13 @@ return
 	
 	setVar $stat_turnsUsed ($startturns - $player~turns)
 
-	setvar $stuff "Turns Used: " & $stat_turnsUsed & "*Figs Down: " & $stat_figsdown & "*Ports Traded: " & $stat_trades  & "*Moves Made: " & $stat_moves & "*Gross Cash:" & $stat_dollarsgross & "*Expense:" & $stat_dollarsspent & "*Net Cash:" & $stat_dollarsnet
+
+ 	format $stat_dollarsgross $stat_dollarsgross_formatted NUMBER
+ 	format $stat_dollarsnet $stat_dollarsnet_formatted NUMBER
+ 	format $stat_turnsUsed $stat_turnsUsed_formatted NUMBER
+ 	format $stat_dollarsspent $stat_dollarsspent_formatted NUMBER
+
+ 	setvar $stuff "Turns Used: " & $stat_turnsUsed_formatted & "*Figs Down: " & $stat_figsdown & "*Ports Traded: " & $stat_trades  & "*Moves Made: " & $stat_moves & "*Gross Cash:" & $stat_dollarsgross_formatted & "*Expense:" & $stat_dollarsspent_formatted & "*Net Cash:" & $stat_dollarsnet_formatted
 	setvar $stuff $stuff & "*Refurbs: " & $stat_refurbs & "*Gen Torps: " & $stat_torps & "*Atomics: " & $stat_atomics
 return
 
@@ -1769,7 +1792,7 @@ return
 			setVar $danger 1
 		end
 	end
-	if ($danger = 1)
+	if (($danger = 1) and ($kill <> true))
 
 		#echo "*#####################################################"
 		#echo "*# Sector " $nDensity[$dIndex] " shows danger "
@@ -1928,17 +1951,35 @@ return
 		end
 		
 	end
+	if ($kill = true)
+		gosub :sector~getsectordata
+		if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
+			gosub :combat~fastattack
+		end
+	end
 	add $stat_figsdown 1
 	add $stat_moves 1
 return
 
 :holoScan
-	
+if ($kill = true)
+	setvar $before_holo_kill_sector $player~current_sector
+	gosub :combat~holokill
+	if (($sector~holotargetfound = true) and ($player~current_sector <> $before_holo_kill_sector))
+		setVar $PLAYER~WARPTO $before_holo_kill_sector
+		gosub :PLAYER~twarp
+		if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+			setvar $switchboard~message "Could not make it back to starting sector after holokill. - ["&$player~msg&"]*"
+		end
+	end
+	if ($switchboard~message <> "No targets found adjacent.*")
+		gosub :switchboard~switchboard
+	end
+else
 	send "sh"
 	waitfor "Long Range Scan"
 	setVar $hIndex 1
 	setVar $hData ""
-
 	:holoSectorStart
 		setTextLineTrigger holoScanFirstSector :holoScanFirstSector "Sector  :"
 		pause
@@ -1967,6 +2008,7 @@ return
 				goto :holoScanContinue
 			end
 
+end
 return
 
 
@@ -3152,3 +3194,10 @@ include "source\bot_includes\player\moveintosector\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\planet\planetneg\planet"
 include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\combat\holokill\combat"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\combat\fastattack\combat"
+
+
