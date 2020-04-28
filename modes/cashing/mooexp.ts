@@ -3230,7 +3230,7 @@ return
 
 	:done_ta
 	send "q"
-	waiton "Citadel command ("
+	waiton "Command ["
 return
 
 include "source\module_includes\bot\loadvars\bot"
