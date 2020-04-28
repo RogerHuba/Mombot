@@ -233,16 +233,16 @@ setVar $allArmids 0
 
 fileExists $limpchk $BOT~LIMP_FILE
 if ($limpchk = false)
-	setVar $BOT~command "limps"
-	setVar $BOT~user_command_line ""
-	setVar $BOT~parm1 ""
+	setVar $BOT~command "update"
+	setVar $BOT~user_command_line "update"
+	setVar $BOT~parm1 "update"
 	
 	saveVar $BOT~parm1
 	
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
-	load "scripts\"&$bot~mombot_directory&"\commands\data\limps.cts"
-	setEventTrigger        limpchkend        :limpchkend "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\data\limps.cts"
+	load "scripts\"&$bot~mombot_directory&"\commands\data\update.cts"
+	setEventTrigger        limpchkend        :limpchkend "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\data\update.cts"
 	pause
 	:limpchkend
 		killalltriggers
@@ -252,25 +252,6 @@ else
 end
 
 
-fileExists $armidchk $BOT~ARMID_FILE
-if ($armidchk = false)
-	setVar $BOT~command "armids"
-	setVar $BOT~user_command_line ""
-	setVar $BOT~parm1 ""
-	
-	saveVar $BOT~parm1
-	
-	saveVar $BOT~command
-	saveVar $BOT~user_command_line
-	load "scripts\"&$bot~mombot_directory&"\commands\data\armids.cts"
-	setEventTrigger        armidchkended        :armidchkended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\data\armids.cts"
-	pause
-	:armidchkended
-		killalltriggers
-	readToArray $BOT~ARMID_FILE $allLimps
-else
-	readToArray $BOT~ARMID_FILE $allLimps
-end
 
 
 setVar $stat_turnsUsed 0 
