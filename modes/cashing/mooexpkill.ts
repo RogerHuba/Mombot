@@ -3173,5 +3173,7 @@ include "source\bot_includes\planet\planetneg\planet"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\combat\holokill\combat"
 include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\combat\fastattack\combat"
 
 
