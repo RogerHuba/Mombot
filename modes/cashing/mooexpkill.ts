@@ -1935,6 +1935,9 @@ return
 		end
 		
 	end
+	gosub :sector~getsectordata
+	gosub :combat~fastattack
+	
 	add $stat_figsdown 1
 	add $stat_moves 1
 return
