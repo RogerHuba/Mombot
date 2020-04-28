@@ -12,8 +12,13 @@
 			send "* " 
 		else
 			send "szh" 
-			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
-			send "* " 
+			settextlinetrigger surroundscan :donesurroundscan "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
+			settexttrigger surroundscanfail :donesurroundscan "Do you want instructions (Y/N) [N]?"
+			pause
+			:donesurroundscan
+				killtrigger surroundscan
+				killtrigger surroundscanfail
+				send "* " 
 		end
 		killtrigger surroundsector
 		setTextTrigger surroundsector :continuesurroundsector "[" & $player~current_sector & "]"
