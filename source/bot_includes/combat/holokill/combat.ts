@@ -75,7 +75,16 @@
 				return
 			end
 		else
-			setVar $SWITCHBOARD~message "No targets found adjacent.*"
+			if ($sector~sectortargetfound = true)
+				if ($player~cit = true)
+					goSub :fastCitadelAttack
+				else
+					goSub :fastAttack
+				end
+				setVar $SWITCHBOARD~message "Found target in MY sector!*"
+			else
+				setVar $SWITCHBOARD~message "No targets found adjacent.*"
+			end
 			return
 		end
 :holo_kill_killem

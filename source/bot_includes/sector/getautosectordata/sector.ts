@@ -86,9 +86,13 @@
 						#ignore
 					else
 						setvar $enemy_fighters $player~traders[$c][4]
-						if ($player~fighters > $enemy_fighters)
-							setvar $enemy_name $player~traders[$c]
+						setvar $enemy_name $player~traders[$c]
+						if ($safe_attack_only <> true)
 							setVar $player~isFound TRUE
+						else
+							if (($safe_attack_only = true) and ($player~fighters >= $enemy_fighters))
+								setVar $player~isFound TRUE
+							end
 						end
 					end
 					add $c 1
