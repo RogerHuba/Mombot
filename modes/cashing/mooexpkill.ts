@@ -403,6 +403,7 @@ else
 end
 
 gosub :SHIP~getShipStats
+gosub :combat~init 
 
 setVar $stat_turnsUsed 0 
 setVar $stat_figsdown 0
@@ -1951,11 +1952,9 @@ if ($kill)
 		gosub :PLAYER~twarp
 		if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
 			setvar $switchboard~message "Could not make it back to starting sector after holokill. - ["&$player~msg&"]*"
-			gosub :switchboard~switchboard
-		else 
-			gosub :switchboard~switchboard
 		end
 	end
+	gosub :switchboard~switchboard
 else
 	send "sh"
 	waitfor "Long Range Scan"
