@@ -81,7 +81,7 @@
 				else
 					goSub :fastAttack
 				end
-				setVar $SWITCHBOARD~message "Found target in MY sector!*"
+				setVar $SWITCHBOARD~message "Found "&$sector~enemy_name&" in MY sector!  Attacked them.*"
 			else
 				setVar $SWITCHBOARD~message "No targets found adjacent.*"
 			end
