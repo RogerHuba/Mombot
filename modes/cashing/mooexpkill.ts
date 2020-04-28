@@ -1954,6 +1954,7 @@ if ($kill = true)
 			setvar $switchboard~message "Could not make it back to starting sector after holokill. - ["&$player~msg&"]*"
 		end
 	end
+	pause
 	gosub :switchboard~switchboard
 else
 	send "sh"
