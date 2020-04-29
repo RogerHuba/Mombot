@@ -895,7 +895,7 @@ return
 	setTextTrigger 1 :jumped "All Systems Ready, shall we engage? Yes"
 	settexttrigger 2 :no_jump "Your own fighters must be in the destination to make a safe jump"
 	settexttrigger 3 :jumped "You are already in that sector!"
-	send "p" $photon~sector "*y   "
+	send "p" $photon~sector "*"
 	pause
 	:no_jump
 		killtrigger 1
@@ -904,6 +904,7 @@ return
 		setvar $pwarp_success false
 		return
 	:jumped
+		send "y   "
 		killtrigger 1
 		killtrigger 2
 		killtrigger 3
