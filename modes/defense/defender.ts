@@ -523,6 +523,8 @@
 
 		:announce 
 
+		killalltriggers
+		
 		send "q"
 		waiton "Citadel command (?=help) Q"
 		gosub :PLANET~getPlanetInfo	
