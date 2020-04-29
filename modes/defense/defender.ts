@@ -460,11 +460,6 @@
 		if ($photon~is_all_keys <> true)
 			send "c n 9 * q "
 		end
-		send "q"
-		waiton "Citadel command (?=help) Q"
-		gosub :PLANET~getPlanetInfo	
-		send "c "
-		waiton "Citadel command ("
 
 		setvar $photon~is_all_keys true 
 		setvar $photon~found false
@@ -527,6 +522,13 @@
 			
 
 		:announce 
+
+		send "q"
+		waiton "Citadel command (?=help) Q"
+		gosub :PLANET~getPlanetInfo	
+		send "c "
+		waiton "Citadel command ("
+
 		setvar $description ""
 		if ($photon~adjacentphoton)
 			setvar $description $description&"Photon "
