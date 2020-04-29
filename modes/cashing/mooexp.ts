@@ -2235,12 +2235,20 @@ return
 				goSub :reCheckPlanets
 				setVar $checkNewPlanet 0
 			end
+			
+			setVar $prevPlanetName $newPlanetName
+			goSub :getPlanetName
 			send "u y n " $newPlanetName "* z p * * "
+			goSub :getPlanetName
 			send "u y n " $newPlanetName "* z p * * "
+			goSub :getPlanetName
 			send "u y n " $newPlanetName "* z p * * "
+			goSub :getPlanetName
 			send "u y n " $newPlanetName "* z p * * "
+			goSub :getPlanetName
 			send "u y n " $newPlanetName "* z p * * "
 
+			setVar $newPlanetName $prevPlanetName
 			send "l" $newPlanetMade "*oc"
 			send "^q"
 			waitfor "ENDINTERROG"
@@ -2288,6 +2296,7 @@ return
 			setVar $checkNewPlanet 0
 			goSub :reCheckPlanets
 			setVar $planet~planetsInSectorCHK $planet~planetsInSector
+
 		end
 # DID WE MAKE A GOOD ONE?
 
