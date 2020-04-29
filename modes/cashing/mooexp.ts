@@ -136,7 +136,7 @@ if ($pos > 0)
 	setVar $bot~parm4 "secure"
 	
 	setVar $doFireTithe 1
-	setVar $fireTithePerson "Holden"
+	setVar $fireTithePerson "Amos"
 
 	setvar $kill true
 	setVar $furbfigs TRUE
@@ -992,7 +992,7 @@ return
 	add $stat_refurbs 1
 	send "d"
 	setVar $returnSpot CURRENTSECTOR
-echo "#RETURNSEC:" $returnSpot "*"
+
 	setVar $restockMakePlanet 0
 	if ($useGuard = true)
 		
