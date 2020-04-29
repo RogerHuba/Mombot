@@ -569,9 +569,7 @@
 		end
 		setvar $switchboard~message $script_ver&$description&" is online and ready to fire.*"
 		gosub :switchboard~switchboard
-
-		setDelayTrigger	   19 :announce	1200000
-		pause		
+		goto :processing
 
 		:head_home_timeout
 			gosub :killtriggers
