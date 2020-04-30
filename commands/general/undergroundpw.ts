@@ -6,8 +6,12 @@
 	setVar $BOT~help[3]  $BOT~tab&"      "
 	gosub :bot~helpfile
 
-
-	send  #246 #249 "*"
+	setvar $i 1
+	while ($i <= 250)
+		setvar $password $password&#($i)
+		add $i 1
+	end
+	send  $password
 halt
 	
 #INCLUDES:
