@@ -8,32 +8,10 @@
 
 	send  "test" 
 
-	echo "19*"
-    send #19
-	echo "20*"
-    send #20
-	echo "21*"
-    send #21
-	echo "22*"
-    send #22
-	echo "23*"
-    send #23
-	echo "24*"
-    send #24
-	echo "25*"
-    send #25
-	echo "26*"
-    send #26
-	echo "27*"
-    send #27
-	echo "28*"
-    send #28
-	echo "29*"
-    send #29
-	echo "30*"
-    send #30
-	echo "31*"
-    send #31
+	echo "17*"
+    send #17
+	echo "18*"
+    send #18
  
 halt
 	
