@@ -1034,12 +1034,12 @@ return
 	waitfor "Locating beam pinpointed, TransWarp"
 	send "y  p   sh"
 
-		if ($doFireTithe = 1) and ($player~credits > 1500000)
-			send "qgd500000*"
-			send "t" $fireTithePerson "*500000******qh"
-			subtract $player~credits 500000
+		if ($doFireTithe = 1) and ($player~credits > 2000000)
+			send "qgd1000000*"
+			send "t" $fireTithePerson "*1000000******qh"
+			subtract $player~credits 1000000
 		end
-		if ($player~credits > 300000)
+		if ($player~credits > 1500000)
 			send "a"
 			setTextTrigger shipCheckBuyAtomics :shipCheckBuyAtomics "How many Atomic Detonators do you want"
 			pause

@@ -25,7 +25,7 @@ gosub :BOT~banner
 setVar $podpeople[1] "mind"
 setVar $podpeople[2] "kane"
 setVar $podpeople[3] "far"
-setVar $podpeople[4] "hunt"
+setVar $podpeople[4] "skip"
 setVar $podpeoplei 4
 
 setVar $podpeopleok 0
@@ -107,7 +107,19 @@ halt
     gosub :player~quikstats
 	gosub :stripfig
    
-
+    setVar $BOT~command "reboot"
+    setVar $BOT~user_command_line " reboot "
+    setVar $BOT~parm1 ""
+    setVar $BOT~parm2 ""
+    saveVar $BOT~parm1
+    saveVar $BOT~parm2
+    saveVar $BOT~command
+    saveVar $BOT~user_command_line
+    load "scripts\"&$bot~mombot_directory&"\commands\general\reboot.cts"
+    setEventTrigger		rebootdone		:rebootdone "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\reboot.cts"
+    pause
+    :rebootdone
+    killalltriggers
 return
 
 
@@ -198,8 +210,16 @@ return
         if ($podpeople[$podi] = $SWITCHBOARD~bot_name)
             #myturn
             goSub :preppod
-            send "'" $podpeople[2] " mac ajyj1^Majnjyj1^M^M*"
-            waitfor "Macro Complete"
+            :macagain
+            send "'" $podpeople[2] " mac ajyj1^Majnjyj1^M^Majnjnjyj1^M^M*"
+            setTextLineTrigger macrowait :macrowait "Macro Complete"
+            setDelayTrigger macrofail :macrofail 1500
+            pause
+            :macrofail
+                killAllTriggers
+                goto :macagain
+            :macrowait
+                killAllTriggers
             send "'" $podpeople[$podi] " corp join " $corpnum " " $bot~corppassword "*"
             waitfor "I joined the Corporation"
          
@@ -838,9 +858,9 @@ return
 
     #grab figs
     send "cr*q"
-    setTextLineTrigger sec1Figs :sec1Figs "B  Fighters        :"
+    setTextLineTrigger sec1Figs2 :sec1Figs2 "B  Fighters        :"
     pause
-    :sec1Figs
+    :sec1Figs2
         killAllTriggers
         getWord CURRENTLINE $maxfigs 8
         subtract $maxFigs 100
@@ -925,7 +945,7 @@ return
                     killAllTriggers
 
                     gosub :player~quikstats
-                    if ($player~current_sector <> $shortestTarget)
+                    if ($player~current_sector <> $targets[$i])
                         send "'Didn't make mow sector.. going on still*"
                     end
 
