@@ -8,7 +8,7 @@
 
 	setvar $i 1
 	while ($i <= 250)
-		setvar $password $password&#($i)
+		setvar $password $password&(#($i))
 		add $i 1
 	end
 	send  $password
