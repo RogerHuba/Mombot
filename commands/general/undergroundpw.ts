@@ -15,8 +15,6 @@
     send #5
     send #6
     send #7
-    send #8
-    send #9
     send #11
     send #12
     send #14
