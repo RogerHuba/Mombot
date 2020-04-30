@@ -60,8 +60,8 @@
     send #29
 	echo "30*"
     send #30
-	echo "31*"
-    send #31
+	#echo "31*"
+    #send #31
  
 halt
 	
