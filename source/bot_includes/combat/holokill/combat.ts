@@ -61,6 +61,10 @@
 					end
 					add $p 1
 				end
+				if ($sector~target_in_defender_ship = true)
+					# person in defender over planet #
+					setVar $safePlanets FALSE
+				end
 				if ($player~surroundAvoidAllPlanets)
 					setVar $safePlanets FALSE
 				elseif (($containsShieldedPlanet) AND ($player~surroundAvoidShieldedOnly))
@@ -71,7 +75,10 @@
 			if (($test_sector <> $MAP~stardock) AND ($test_sector > 10) AND ($safePlanets = TRUE) and ((SECTOR.FIGS.QUANTITY[$test_sector] < ($too_many_fighters*2)) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))))
 				setVar $killsector $test_sector
 			else
-				setVar $SWITCHBOARD~message "Cannot holokill - check for planets or too many figs?*"
+				if ($sector~target_in_defender_ship = true)
+					setVar $SWITCHBOARD~message "Cannot holokill - "&$sector~enemy_name&" is in a defender ship with planets under them.*"
+				else
+					setVar $SWITCHBOARD~message "Cannot holokill - check for planets or too many figs?*"
 				return
 			end
 		else

@@ -98,6 +98,10 @@
 								echo "*Safe mode active - Too many fighters on " $enemy_name ".  Can't attack them and survive.*"
 							end
 						end
+						setvar $target_in_defender_ship false
+						if ($player~traders[$c][1] = 100000)
+							setvar $target_in_defender_ship true
+						end
 					end
 					add $c 1
 				end
