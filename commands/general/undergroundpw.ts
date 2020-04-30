@@ -6,12 +6,7 @@
 	setVar $BOT~help[3]  $BOT~tab&"      "
 	gosub :bot~helpfile
 
-	send  "test" 
-
-	echo "17*"
-    send #17
-	echo "18*"
-    send #18
+    send #178 #178 #178 #178 #178 #178
  
 halt
 	
