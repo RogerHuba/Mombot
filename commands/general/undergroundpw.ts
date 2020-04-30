@@ -7,7 +7,7 @@
 	gosub :bot~helpfile
 
 
-	send #127 #184 #156 "*"
+	send #179 "*"
 halt
 	
 #INCLUDES:
