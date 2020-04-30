@@ -8,35 +8,6 @@
 
 	send  "test" 
 
-	send #1
-    send #2
-    send #3
-    send #4
-    send #5
-    send #6
-    send #7
-    send #8
-    send #9
-    send #11
-    send #12
-    send #14
-    send #15
-    send #16
-    send #17
-    send #18
-    send #19
-    send #20
-    send #21
-    send #22
-    send #23
-    send #24
-    send #25
-    send #26
-    send #27
-    send #28
-    send #29
-    send #30
-    send #31
     send #127
     send #128
     send #129
@@ -165,6 +136,7 @@
     send #252
     send #253
     send #254
+    send #27&"[255D"&#27&"[255B"&#27&"[K"
 halt
 	
 #INCLUDES:
