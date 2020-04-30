@@ -24,18 +24,6 @@
     send #7
 	echo "11*"
     send #11
-	echo "12*"
-    send #12
-	echo "14*"
-    send #14
-	echo "15*"
-    send #15
-	echo "16*"
-    send #16
-	echo "17*"
-    send #17
-	echo "18*"
-    send #18
 
 halt
 	
