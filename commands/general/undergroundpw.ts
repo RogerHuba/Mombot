@@ -8,16 +8,6 @@
 
 	send  "test" 
 
-	echo "14*"
-    send #14
-	echo "15*"
-    send #15
-	echo "16*"
-    send #16
-	echo "17*"
-    send #17
-	echo "18*"
-    send #18
 	echo "19*"
     send #19
 	echo "20*"
