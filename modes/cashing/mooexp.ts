@@ -2280,12 +2280,6 @@ return
 			send "l" $newPlanetMade "*oc"
 			send "^q"
 			waitfor "ENDINTERROG"
-			gosub :player~quikstats
-			if (($player~current_prompt <> "Planet") and ($player~current_prompt <> "Citadel"))
-				setvar $switchboard~message "Something went wrong - should be at planet prompt.*"
-				gosub :switchboard~switchboard
-				pause
-			end
 			setVar $BOT~command "pimp"
             setVar $BOT~user_command_line #34& "m185380721" &#34& " f "
             setVar $BOT~parm1 "m185380721"
@@ -2298,9 +2292,15 @@ return
             setEventTrigger		firstPimpEnd		:firstPimpEnd "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\pimp.cts"
             pause
             :firstPimpEnd
-            killalltriggers
-				send "^q"
-				waitfor "ENDINTERROG"
+	            killalltriggers
+				gosub :player~quikstats
+				if (($player~current_prompt <> "Planet") and ($player~current_prompt <> "Citadel"))
+					setvar $switchboard~message "Something went wrong - should be at planet prompt.*"
+					gosub :switchboard~switchboard
+					send "l" $newPlanetMade "*oc"
+					send "^q"
+					waitfor "ENDINTERROG"
+				end				
 				send "cy"
 				goSub :smallDelay
 				send "cuy"
@@ -2309,12 +2309,6 @@ return
 				goSub :smallDelay
 				send "uy"
 				goSub :smallDelay
-			gosub :player~quikstats
-			if (($player~current_prompt <> "Planet") and ($player~current_prompt <> "Citadel"))
-				setvar $switchboard~message "Something went wrong - should be at planet prompt.*"
-				gosub :switchboard~switchboard
-				pause
-			end				
 			setVar $BOT~command "pimp"
             setVar $BOT~user_command_line #34& "m185380721" &#34& " f "
             setVar $BOT~parm1 "m185380721"
