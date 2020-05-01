@@ -2627,6 +2627,7 @@ send "l " $shipBlastPlanet "* z d y * "
 	setTextLineTrigger blowPlanet1 :blowPlanet1 "You do not have any Atomic Detonators!"
 	setTextLineTrigger blowPlanet2 :blowPlanet2 "For blowing up this planet you receive"
 	setTextLineTrigger blowPlanet3 :blowPlanet3 "Invalid registry number, landing aborted."
+	settextlinetrigger noplanet    :blowplanet3 "TransWarp Drive shutting down."
 	pause
 	:blowPlanet3
 		killAllTriggers
