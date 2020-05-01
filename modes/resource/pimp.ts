@@ -378,7 +378,7 @@ loadvar $map~backdoor
 	waitfor "Command [TL"
 	send "** "
 	gosub :player~quikstats
-	if (($player~ore_holds < TOTAL_HOLDS) and ((PORT.BUYFUEL[$player~current_sector] <> true) and (PORT.EXISTS[$player~current_sector] = true)))
+	if (($player~ore_holds < $player~TOTAL_HOLDS) and ((PORT.BUYFUEL[$player~current_sector] <> true) and (PORT.EXISTS[$player~current_sector] = true)))
 		send "P T * * * "
 		setVar $SWITCHBOARD~message "Didn't have full fuel for restocking pimp. Buying fuel from port and trying again!*"
 		gosub :SWITCHBOARD~switchboard
