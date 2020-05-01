@@ -60,9 +60,9 @@ setvar $startcredits $player~credits
 setvar $startturns $player~turns
 # try and grab fuel at this
 setVar $minOre 160
-if ($player~total_holds < $minOre)
+#if ($player~total_holds < $minOre)
 	setVar $minOre $player~total_holds
-end
+#end
 
 if ($player~photons > 0)
 	setVar $SWITCHBOARD~message "Yeah Nah, we don't do this with photons.*"
@@ -660,11 +660,12 @@ while ($iSaySo)
 	setVar $freshSectorsi 0
 
 	setVar $firstNext 0
+	setVar $tryTwarpAgainAttemp 0
 	:check_again_for_next_sector
 	goSub :getNextSector
 
 	if ($gridSectorPostTwarp > 0)
-		
+		:trytwarpagain
 		setVar $player~warpto $gridSector
 		gosub :player~twarp
 		add $stat_moves 1
@@ -678,6 +679,14 @@ while ($iSaySo)
 			if ($player~ORE_HOLDS > 100)
 				setvar $gridSectorPostTwarp 0
 				goto :check_again_for_next_sector
+			else
+				if (PORT.EXISTS[$player~CURRENT_SECTOR] = 1) and (PORT.BUYFUEL[$player~CURRENT_SECTOR] = 0) and ($tryTwarpAgainAttemp = 0)
+					send "P T * * * "
+					setVar $tryTwarpAgainAttemp 1
+					setVar $SWITCHBOARD~message "Didn't make it to sector, buying fuel and trying again!*"
+					gosub :SWITCHBOARD~switchboard
+					goto :trytwarpagain
+				end
 			end
 			setVar $SWITCHBOARD~message "We didn't make it to: " & $gridSector &" - manually refuel and type 'go go !' minus spaces once you have fuel and I'll twarp there.!*"
 			gosub :SWITCHBOARD~switchboard
@@ -1030,9 +1039,27 @@ return
 		halt
 	:stargateCheck
 		killalltriggers
-	send "m" $stardock "*y"
-	waitfor "Locating beam pinpointed, TransWarp"
-	send "y  p   sh"
+
+		
+		setVar $i 1
+		setVar $nextdoor 0
+		while ($i <= SECTOR.WARPCOUNT[$player~current_sector])
+			if (SECTOR.WARPS[$player~current_sector][$i] = $stardock)
+				setVar $nextdoor 1
+			end
+			add $i 1
+		end
+
+
+        getSectorParameter $csec "FIGSEC" $hasfig
+		if ($nextdoor = 0)
+			send "m" $stardock "*y"
+			waitfor "Locating beam pinpointed, TransWarp"
+			send "y  p   sh"
+		else
+			send "m" $stardock "* p   sh"
+		end
+		
 
 		if ($doFireTithe = 1) and ($player~credits > 2000000)
 			send "qgd1000000*"
@@ -1160,6 +1187,7 @@ return
 					send "q"
 
 					gosub :player~quikstats
+					setVar $minOre $player~total_holds
 					send "p"
 				end
 				

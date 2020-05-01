@@ -79,7 +79,8 @@
 					setVar $SWITCHBOARD~message "Cannot holokill - "&$sector~enemy_name&" is in a defender ship with planets under them.*"
 				else
 					setVar $SWITCHBOARD~message "Cannot holokill - check for planets or too many figs?*"
-				return
+					return
+				end
 			end
 		else
 			if ($sector~sectortargetfound = true)
