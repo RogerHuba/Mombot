@@ -2284,6 +2284,7 @@ return
 			if (($player~current_prompt <> "Planet") and ($player~current_prompt <> "Citadel"))
 				setvar $switchboard~message "Something went wrong - should be at planet prompt.*"
 				gosub :switchboard~switchboard
+				pause
 			end
 			setVar $BOT~command "pimp"
             setVar $BOT~user_command_line #34& "m185380721" &#34& " f "
