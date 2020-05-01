@@ -376,7 +376,13 @@ loadvar $map~backdoor
 :sdyes
 	send "QL " & $target & "* T * T 1 * M * * * Q"
 	waitfor "Command [TL"
-
+	send "** "
+	gosub :player~quikstats
+	if (($player~ore_holds < TOTAL_HOLDS) and ((PORT.BUYFUEL[$player~current_sector] <> true) and (PORT.EXISTS[$player~current_sector] = true)))
+		send "P T * * * "
+		setVar $SWITCHBOARD~message "Didn't have full fuel for restocking pimp. Buying fuel from port and trying again!*"
+		gosub :SWITCHBOARD~switchboard
+	end
 if ($om_redsector <> 0) and ($player~alignment < 1000)
         if ($player~unlimitedGame)
 		setVar $switchboard~message "Running product pimp with unlimited turns and "&$player~credits&" credits left*"

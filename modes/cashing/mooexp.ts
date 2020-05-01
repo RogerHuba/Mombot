@@ -3153,6 +3153,7 @@ return
 		add $stat_moves 1
 		gosub :player~quikstats
 	end
+	gosub :ship~getshipstats
 	# back to it
 	setVar $doFireUpgrade 0
 
