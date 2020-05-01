@@ -2280,6 +2280,11 @@ return
 			send "l" $newPlanetMade "*oc"
 			send "^q"
 			waitfor "ENDINTERROG"
+			gosub :player~quikstats
+			if (($player~current_prompt <> "Planet") and ($player~current_prompt <> "Citadel"))
+				setvar $switchboard~message "Something went wrong - should be at planet prompt.*"
+				gosub :switchboard~switchboard
+			end
 			setVar $BOT~command "pimp"
             setVar $BOT~user_command_line #34& "m185380721" &#34& " f "
             setVar $BOT~parm1 "m185380721"
