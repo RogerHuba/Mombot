@@ -2404,14 +2404,15 @@ return
 		# little safety margin
 		add $figsRequired ($figsRequired + 101)
 		if ($figsRequired > $player~FIGHTERS)
-				
-			echo "*#########################################"
-			echo "* ### Not enough figs For Clean up, theoritically you could go boom! ###"
-			echo "*#########################################"
-			setVar $SWITCHBOARD~message "Warning: Fighters low, can not do cleanup.*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-
+			gosub :player~quikstats
+			if ($figsRequired > $player~FIGHTERS)
+				echo "*#########################################"
+				echo "* ### Not enough figs For Clean up, theoritically you could go boom! ###"
+				echo "*#########################################"
+				setVar $SWITCHBOARD~message "Warning: Fighters low, can not do cleanup. Need "&$figsRequired&" fighters.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
 		end
 		echo "planet~planetsInSector " $planet~planetsInSector "*"
 
