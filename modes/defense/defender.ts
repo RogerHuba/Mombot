@@ -551,7 +551,12 @@
 		:announce 
 
 		killalltriggers
-		
+		if ($settings~sentinel_cycle > 15000)
+			setvar $settings~sentinel_cycle 15000
+			setvar $switchboard~message "Resetting sentinel to 15 seconds now that the action has stopped for a while.*"
+			gosub :switchboard~switchboard
+		end
+
 		send "q"
 		waiton "Citadel command (?=help) Q"
 		gosub :PLANET~getPlanetInfo	
