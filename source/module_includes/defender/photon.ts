@@ -17,8 +17,10 @@
 			else
 				if ($density = true)
 					send "p" $adjsec "*  y  "
-					send "c n 9 * q "
-					setvar $photon~is_all_keys false
+					if ($mode~allkeys = true)
+						send "c n 9 * q "
+						setvar $photon~is_all_keys false
+					end
 					gosub :densityDrop
 				else
 					send "p" $adjsec "*  y   p" $sector "*  y  "
@@ -33,13 +35,16 @@
 return
 :fire_adjacent
 	killalltriggers
+	setvar $success false
 	if ($adjacentphoton = true)
 		send " c  p  y  " $sector "**qp" $sector "*  y  "
 		goto :triggers
 	else
 		if ($density = true)
-			send "c n 9 * q "
-			setvar $photon~is_all_keys false
+			if ($mode~allkeys = true)
+				send "c n 9 * q "
+				setvar $photon~is_all_keys false
+			end
 			gosub :densityDrop
 		else
 			send " p" $sector "*  y  "
@@ -48,12 +53,16 @@ return
 	end
 	
 :fire_photon
+	setvar $success false
 	###############################
 	# always try to drop directly #
 	###############################
-	send "p" $adjsec "*  y  c  p  y  " $sector "**qp" $sector "*  y  c n 9 * q "
-	setvar $photon~is_all_keys false
-
+	if ($mode~allkeys = true)
+		send "p" $adjsec "*  y  c  p  y  " $sector "**qp" $sector "*  y  c n 9 * q "
+		setvar $photon~is_all_keys false
+	else
+		send "p " $adjsec "*  y  c  p  y  " $sector "* * q p " $sector "*  y  "
+	end
 	:triggers
 	setTextLineTrigger	1	:photon_missed	      "That is not an adjacent sector"
 	setTextLineTrigger	2	:photon_gotem	      "Photon Missile launched into sector"
@@ -303,6 +312,7 @@ return
 
 
 :retreatphoton
+	setvar $success false
 	send "p" $sector "*  y  "
 	gosub :htorp
 return

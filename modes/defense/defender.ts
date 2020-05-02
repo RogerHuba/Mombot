@@ -171,6 +171,13 @@
 		setvar $sentinel~broadcast false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " allkeys "
+	if ($pos > 0)
+		setvar $mode~allkeys true
+	else
+		setvar $mode~allkeys false
+	end
+
 	getwordpos " "&$bot~user_command_line&" " $pos " den"
 	if ($pos > 0)
 		setvar $photon~density true
@@ -457,11 +464,12 @@
 
 	:processing
 		killalltriggers
-		if ($photon~is_all_keys <> true)
-			send "c n 9 * q "
+		if ($mode~allkeys = true)
+			if ($photon~is_all_keys <> true)
+				send "c n 9 * q "
+			end
+			setvar $photon~is_all_keys true 
 		end
-
-		setvar $photon~is_all_keys true 
 		setvar $photon~found false
 		setTextTrigger 1 :pausing "Planet command (?="
 		setTextTrigger 2 :pausing "Computer command ["

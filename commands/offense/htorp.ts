@@ -63,7 +63,7 @@
 				end
 				add $j 1
 			end
-			if (($targetInSector = TRUE) AND ($player~corpMemberInSector = FALSE))
+			if (($targetInSector = TRUE) AND ($player~corpMemberInSector = FALSE) and ($adj_sec > 10) and ($adj_sec <> $map~stardock))
 				send "c p y " $ADJ_SEC "* *q"
 				setvar $switchboard~message "Photon fired into sector " & $ADJ_SEC & "!*"
 				gosub :switchboard~switchboard
