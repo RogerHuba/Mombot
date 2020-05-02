@@ -316,12 +316,31 @@
     end
 
     gosub :SHIP~getShipStats
-	gosub :player~quikstats
 
 	setvar $call~starting_ship_type $player~ship_type
 	setvar $call~starting_ship_max_attack $ship~SHIP_MAX_ATTACK
 	setvar $call~starting_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
 
+
+	setTextTrigger need_ig :ig_was_off "Your Interdictor generator is now OFF"
+	setTextTrigger skip_ig :skipig "is not equipped with an Interdictor Generator"
+	send "q q q q* b"
+	waitOn "Do you wish to change it? (Y/N)"
+	send "*"
+	goto :skipig
+
+	:ig_was_off
+		send "y"
+		setVar $SWITCHBOARD~message "Defender automatically turning on ship IG.*"
+		gosub :SWITCHBOARD~switchboard
+
+	:skipig
+	killalltriggers
+	send "l"&$planet~planet&"*"
+	waitOn "Planet command"
+	send "c "
+
+	gosub :player~quikstats
 
 	gosub :check_for_photon_refurb
 
