@@ -1,4 +1,4 @@
-for /r %%n in (*mooexp.ts) do call :checkit "%%n" 
+for /r %%n in (*moo.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
