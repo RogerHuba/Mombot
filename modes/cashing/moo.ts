@@ -624,7 +624,7 @@ gosub :filterPortsAndReport
 setVar $stat_targets ($sectorsOki - 1)
 
 
-if (($player~ALIGNMENT < 1000) and ($skimMode <> true))
+if (($player~ALIGNMENT < 1000) and ($skimMode <> true) and ($efurb <> true))
 	setVar $SWITCHBOARD~message "MooXmas - You're just not good enough for this script (alignment).*"
 	gosub :SWITCHBOARD~switchboard
 	halt
@@ -1750,7 +1750,9 @@ return
 	add $updateCount 1
 	if ($updateCount > 20)
 		setVar $updateCount 1
-		send "'Moo Update - Planets: " $planet~planetsPoppedGood "/" $planet~planetsPopped " Cash: " $stat_dollarsnet " in " $stat_turnsUsed " Turns*"
+		format $stat_dollarsnet $stat_dollarsnet_formatted NUMBER
+		format $stat_turnsUsed $stat_turnsUsed_formatted NUMBER
+		send "'Moo Update - Planets: " $planet~planetsPoppedGood "/" $planet~planetsPopped " Cash: " $stat_dollarsnet_formatted " in " $stat_turnsUsed_formatted " Turns*"
 	end
 return
 
