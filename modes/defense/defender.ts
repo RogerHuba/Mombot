@@ -19,7 +19,7 @@
 	loadvar $bot~folder
 
 
-	setVar $sentinel_cycle 120000
+	setVar $settings~sentinel_cycle 15000
 	setvar $sentinel~CheckCLVDetail 1
 	setVar $sentinel~logfile $bot~folder&"/sentinel"&$year & $month & $day & ".log"
 
@@ -512,7 +512,7 @@
 		setDelayTrigger	   19 :announce	1200000
 		setDelayTrigger	   20 :head_home_timeout 3600000
 		if ($sentinel~broadcast)
-			setdelaytrigger    25 :sentinel $sentinel_cycle
+			setdelaytrigger    25 :sentinel $settings~sentinel_cycle
 		end
 		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
 		
@@ -670,6 +670,7 @@
 :check_to_fire_photon
 
 	if ($photon~found = true)
+		setvar $settings~sentinel_cycle 180000
 		killalltriggers
 		if ($photon~retreatfighter = true)
 			gosub :photon~retreatphoton
