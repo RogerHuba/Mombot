@@ -668,7 +668,6 @@
 			setvar $photon~last_sector $photon~sector
 			setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
 			gosub :player~quikstats
-			gosub :check_for_photon_refurb
 		end
 		gosub :check_for_target_change
 		gosub :killing~scan_for_targets
@@ -924,19 +923,21 @@ return
 return
 
 :check_for_target_change
-	gosub :waitbeforecheck
-	loadGlobal $bot~last_hit
-	if (($photon~sector <> $bot~last_hit) and ($bot~last_hit <> 0) and ($player~current_sector <> $bot~last_hit))
-		loadGlobal $bot~last_hit_type
-		if ($bot~last_hit_type = "limpet")
-			gosub :photon~limpet_spoof
-		elseif ($bot~last_hit_type = "armid")
-			gosub :photon~armid_spoof
-		else
-			gosub :photon~fighter_spoof
-		end
-		if ($photon~found = true)
-			goto :check_to_fire_photon
+	if ($player~photons > 0)
+		gosub :waitbeforecheck
+		loadGlobal $bot~last_hit
+		if (($photon~sector <> $bot~last_hit) and ($bot~last_hit <> 0) and ($player~current_sector <> $bot~last_hit))
+			loadGlobal $bot~last_hit_type
+			if ($bot~last_hit_type = "limpet")
+				gosub :photon~limpet_spoof
+			elseif ($bot~last_hit_type = "armid")
+				gosub :photon~armid_spoof
+			else
+				gosub :photon~fighter_spoof
+			end
+			if ($photon~found = true)
+				goto :check_to_fire_photon
+			end
 		end
 	end
 return

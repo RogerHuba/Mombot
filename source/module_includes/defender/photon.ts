@@ -83,6 +83,7 @@ return
 	return
 
 :photon_none
+	setvar $player~photons 0
 	gosub :killtriggers
 	setvar $switchboard~message "Ran out of photons.  Need to buy more..*"
 	gosub :switchboard~switchboard
