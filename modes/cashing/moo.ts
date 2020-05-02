@@ -624,7 +624,7 @@ gosub :filterPortsAndReport
 setVar $stat_targets ($sectorsOki - 1)
 
 
-if ($player~ALIGNMENT < 1000)
+if (($player~ALIGNMENT < 1000) and ($skimMode <> true))
 	setVar $SWITCHBOARD~message "MooXmas - You're just not good enough for this script (alignment).*"
 	gosub :SWITCHBOARD~switchboard
 	halt
