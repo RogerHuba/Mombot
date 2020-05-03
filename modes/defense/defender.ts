@@ -19,7 +19,7 @@
 	loadvar $bot~folder
 
 
-	setVar $sentinel_cycle 120000
+	setVar $settings~sentinel_cycle 15000
 	setvar $sentinel~CheckCLVDetail 1
 	setVar $sentinel~logfile $bot~folder&"/sentinel"&$year & $month & $day & ".log"
 
@@ -316,12 +316,31 @@
     end
 
     gosub :SHIP~getShipStats
-	gosub :player~quikstats
 
 	setvar $call~starting_ship_type $player~ship_type
 	setvar $call~starting_ship_max_attack $ship~SHIP_MAX_ATTACK
 	setvar $call~starting_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
 
+
+	setTextTrigger need_ig :ig_was_off "Your Interdictor generator is now OFF"
+	setTextTrigger skip_ig :skipig "is not equipped with an Interdictor Generator"
+	send "q q q q* b"
+	waitOn "Do you wish to change it? (Y/N)"
+	send "*"
+	goto :skipig
+
+	:ig_was_off
+		send "y"
+		setVar $SWITCHBOARD~message "Defender automatically turning on ship IG.*"
+		gosub :SWITCHBOARD~switchboard
+
+	:skipig
+	killalltriggers
+	send "l"&$planet~planet&"*"
+	waitOn "Planet command"
+	send "c "
+
+	gosub :player~quikstats
 
 	gosub :check_for_photon_refurb
 
@@ -493,7 +512,7 @@
 		setDelayTrigger	   19 :announce	1200000
 		setDelayTrigger	   20 :head_home_timeout 3600000
 		if ($sentinel~broadcast)
-			setdelaytrigger    25 :sentinel $sentinel_cycle
+			setdelaytrigger    25 :sentinel $settings~sentinel_cycle
 		end
 		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
 		
@@ -532,7 +551,12 @@
 		:announce 
 
 		killalltriggers
-		
+		if ($settings~sentinel_cycle > 15000)
+			setvar $settings~sentinel_cycle 15000
+			setvar $switchboard~message "Resetting sentinel to 15 seconds now that the action has stopped for a while.*"
+			gosub :switchboard~switchboard
+		end
+
 		send "q"
 		waiton "Citadel command (?=help) Q"
 		gosub :PLANET~getPlanetInfo	
@@ -651,6 +675,7 @@
 :check_to_fire_photon
 
 	if ($photon~found = true)
+		setvar $settings~sentinel_cycle 180000
 		killalltriggers
 		if ($photon~retreatfighter = true)
 			gosub :photon~retreatphoton
