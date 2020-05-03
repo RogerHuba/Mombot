@@ -45,18 +45,19 @@ setVar $BOT~help[15] $BOT~tab&"    {safe}       Ports must be surrounded by figs
 setVar $BOT~help[16] $BOT~tab&"    {paranoid}   Ports must be surrounded by figs and limpets"
 setVar $BOT~help[17] $BOT~tab&"    {efurb:bot}  Bot to exchange ships with at home planet to furb."
 setVar $BOT~help[18] $BOT~tab&"                 bot should start already furbed."
-setVar $BOT~help[19] $BOT~tab&"   "
-setVar $BOT~help[20] $BOT~tab&"    Modes -"
-setVar $BOT~help[21] $BOT~tab&"      skimpl/pl  - Sells off product from personal planet list"
-setVar $BOT~help[22] $BOT~tab&"                 - Skim versions skips making new planets"
-setVar $BOT~help[23] $BOT~tab&"      upgraded   - Visits upgrade ports (10k+) that are ready"
-setVar $BOT~help[24] $BOT~tab&"      param      - Sectors with this param i.e. moo MOOPORTS"
-setVar $BOT~help[25] $BOT~tab&"      everything - Anything that buys the primary prod with a fig"
-setVar $BOT~help[26] $BOT~tab&"      file       - One sector per line, file must end in .txt"
-setVar $BOT~help[27] $BOT~tab&"      sector     - One sector >Moo sector {maxplanets} {sector}"
-setVar $BOT~help[28] $BOT~tab&"      "
-setVar $BOT~help[29] $BOT~tab&"  FIRE TOURNAMENT"
-setVar $BOT~help[30] $BOT~tab&"       moo [mode] fire {figs} {ephag} {safe/paranoid}"
+setVar $BOT~help[19] $BOT~tab&"    {tradeto:n}  Trade to percentage, defaults 15, tradeto:50 = 50%"
+setVar $BOT~help[20] $BOT~tab&"   "
+setVar $BOT~help[21] $BOT~tab&"    Modes -"
+setVar $BOT~help[22] $BOT~tab&"      skimpl/pl  - Sells off product from personal planet list"
+setVar $BOT~help[23] $BOT~tab&"                 - Skim versions skips making new planets"
+setVar $BOT~help[24] $BOT~tab&"      upgraded   - Visits upgrade ports (10k+) that are ready"
+setVar $BOT~help[25] $BOT~tab&"      param      - Sectors with this param i.e. moo MOOPORTS"
+setVar $BOT~help[26] $BOT~tab&"      everything - Anything that buys the primary prod with a fig"
+setVar $BOT~help[27] $BOT~tab&"      file       - One sector per line, file must end in .txt"
+setVar $BOT~help[28] $BOT~tab&"      sector     - One sector >Moo sector {maxplanets} {sector}"
+setVar $BOT~help[29] $BOT~tab&"      "
+setVar $BOT~help[30] $BOT~tab&"  FIRE TOURNAMENT"
+setVar $BOT~help[31] $BOT~tab&"       moo [mode] fire {figs} {ephag} {safe/paranoid}"
 
 gosub :bot~helpfile
 
@@ -80,6 +81,8 @@ while ($i <= 20)
 	add $i 1
 end
 
+# Trading Min - we'll stop using a port when we get here
+setVar $tradingMinProduct 15
 
 
 # try and grab fuel at this
@@ -321,6 +324,33 @@ else
 end
 
 
+
+
+
+setVar $tradingMinProduct 15
+getWordPos $bot~user_command_line $pos "tradeto:"
+if ($pos > 0)
+
+	setVar $cline $bot~user_command_line & " "
+	getText $cline $tradeperc "tradeto:" " "
+
+	isNumber $isit $tradePerc 
+	if ($isit = FALSE)
+		setVar $SWITCHBOARD~message "Trade Percentage should be between 15 and 90.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	else
+		if ($tradePerc < 15) or ($tradePerc > 90)
+			setVar $SWITCHBOARD~message "Trade Percentage should be between 15 and 90.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		else
+			setVar $tradingMinProduct $tradePerc
+			setvar $startMsg $startMsg & "We are trading ports down to " & $tradingMinProduct & "%.*"
+		end
+	end
+end
+
 getWordPos $bot~user_command_line $pos "figs:"
 if ($pos > 0)
 	setVar $dropftrs TRUE
@@ -491,8 +521,6 @@ end
 
 
 
-# Trading Min - we'll stop using a port when we get here
-setVar $tradingMinProduct 15
 
 
 # NEED TO GET THIS FROM GAME  -THen ALLOW SAY 80% used by script
