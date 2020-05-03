@@ -633,6 +633,7 @@ end
 send "v"
 setTextLineTrigger gameplanets :gameplanets "planets exist in the universe,"
 pause
+	:gameplanets
 	killAllTriggers
 	getword CURRENTLINE $vplanets 1
 	STRIPTEXT $vplanets ","
