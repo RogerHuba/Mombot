@@ -630,6 +630,16 @@ if (($player~ALIGNMENT < 1000) and ($skimMode <> true) and ($efurb <> true))
 	halt
 end
 
+send "v"
+setTextLineTrigger gameplanets :gameplanets "planets exist in the universe,"
+pause
+	killAllTriggers
+	getword CURRENTLINE $vplanets 1
+	STRIPTEXT $vplanets ","
+	if ($vplanets > $planet~planetSALLOWED)
+		setVar $userCleanup 2
+	end
+
 
 setVar $loopi 1
 while ($loopi < $sectorsOki)
@@ -889,6 +899,7 @@ halt
 
 
 	if ($cleanup > 0)
+		goSub :reCheckPlanets
 		setVar $planet~planetsToBlow 0
 		setVar $figsRequired 0
 		setVar $i 1
@@ -900,7 +911,7 @@ halt
 				add $figsRequired (100 * $planet~planetsToBlow)
 			elseif ($cleanup = 2) or ($cleanup = 3)
 				add $planet~planetsToBlow 1
-				add $figsRequired ($figsRequired * $planet~planetsToBlow)
+				add $figsRequired ($figsRequired + (100 * $planet~planetsToBlow))
 			end 
 			
 			
@@ -922,6 +933,8 @@ halt
 			# FIRE HARDCODE
 			subtract $planet~planetsInSector $GAME~MAX_PLANETS_PER_SECTOR
 		end
+		echo "$planet~planetsInSector " $planet~planetsInSector "*"
+		echo "$planet~planetsInSector " $planet~planetsInSector "*"
 		setVar $i 1
 		while ($i <= $planet~planetsInSector)
 			
