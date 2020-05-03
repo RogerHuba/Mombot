@@ -33,13 +33,14 @@ setVar $BOT~help[25]  $BOT~tab&"     - Scan 15 tertiary ports 200 times"
 setVar $BOT~help[26]  $BOT~tab&"     "
 setVar $BOT~help[27]  $BOT~tab&" {bwarp} - uses bwarp from citadel prompt"
 setVar $BOT~help[28]  $BOT~tab&" Additional planet (foton/fotonlist/prtargets) Options:"
-setVar $BOT~help[29]  $BOT~tab&" {kill}     - pgrid into sector and attempt kill"
-setVar $BOT~help[30]  $BOT~tab&"              WARNING: Does not check for target or Saveme"
-setVar $BOT~help[31]  $BOT~tab&" {surround} - (optimistically) surrounds sector before kill "
-setVar $BOT~help[32]  $BOT~tab&" {pig}      - Bring a friend to lift and IG during kill cycle"
-setVar $BOT~help[33]  $BOT~tab&" {direct}   - Skip secondary scan"
-setVar $BOT~help[34]  $BOT~tab&" {retrigger}  - Continue photoning until out of photons"
-setVar $BOT~help[35]  $BOT~tab&" {lock:param}  - Locks clais"
+setVar $BOT~help[29]  $BOT~tab&"      {kill} - pgrid into sector and attempt kill"
+setVar $BOT~help[30]  $BOT~tab&"               WARNING: Does not check for target or Saveme"
+setVar $BOT~help[31]  $BOT~tab&"  {surround} - (optimistically) surrounds sector before kill "
+setVar $BOT~help[32]  $BOT~tab&"       {pig} - Bring a friend to lift and IG during kill cycle"
+setVar $BOT~help[33]  $BOT~tab&"    {direct} - Skip secondary scan"
+setVar $BOT~help[34]  $BOT~tab&" {retrigger} - Continue photoning until out of photons"
+setVar $BOT~help[35]  $BOT~tab&"{lock:param} - Locks clais"
+setVar $BOT~help[36]  $BOT~tab&"  {holokill} - holokills after photon "
 
 
 
@@ -91,6 +92,11 @@ if ($pos > 0)
 	setVar $param_lock 1
 end
 
+getWordPos $cline $pos "holokill"
+setvar $holokill false
+if ($pos > 0)
+	setvar $holokill true
+end
 
 getWordPos $cline $pos2 "prtargets"
 getWordPos $cline $pos "fotonlist"
@@ -740,80 +746,84 @@ return
 		
 		goSub :doHolo
 		if ($fotonKill = 1)
-			
-			setTextLineTrigger tphotonOver :tphotonOver "Photon Wave Duration has ended in sector"
-			setDelayTrigger tphotonOver2 :tphotonOver2 (($game~photon_duration * 1000) + 1000)
-			pause
-			:tphotonOver
-			:tphotonOver2
-				killalltriggers
-				setVar $player~moveIntoSector $attacking
-				goSub :player~moveIntoSector
-				
-				
-				if ($fotonSurround = 1)
-					gosub :player~quikstats
-
-					gosub :grid~surround
+			if ($holokill = true)
+				gosub :doholokill
+			else
+				setTextLineTrigger tphotonOver :tphotonOver "Photon Wave Duration has ended in sector"
+				setDelayTrigger tphotonOver2 :tphotonOver2 (($game~photon_duration * 1000) + 1000)
+				pause
+				:tphotonOver
+				:tphotonOver2
+					killalltriggers
+					setVar $player~moveIntoSector $attacking
+					goSub :player~moveIntoSector
 					
-					gosub :shipKill
-					gosub :shipKill
-					gosub :shipKill
+					
+					if ($fotonSurround = 1)
+						gosub :player~quikstats
 
-				else
-					gosub :shipKill
+						gosub :grid~surround
+						
+						gosub :shipKill
+						gosub :shipKill
+						gosub :shipKill
 
-					gosub :shipKill
-					gosub :shipKill
+					else
+						gosub :shipKill
 
-				end
-				
-				
+						gosub :shipKill
+						gosub :shipKill
+
+					end
+					#waitfor success - move home
+					send "m" $homeSector "*y"
+					waitfor "ating beam pinpointed, Tran"
+					send "y"
+			end				
 		end
-		#waitfor success - move home
-		send "m" $homeSector "*y"
-		waitfor "ating beam pinpointed, Tran"
-		send "y"
 	else
 
 		if ($fotonKill = 1)
 			
-			setTextLineTrigger photonOver :photonOver "Photon Wave Duration has ended in sector"
-			setDelayTrigger photonOver2 :photonOver2 (($game~photon_duration * 1000) + 1000)
-			pause
-			:photonOver
-			:photonOver2
-				killalltriggers
-
-				setVar $BOT~command "pgrid " & $attacking
-				setVar $bot~user_command_line " pgrid "& $attacking 
-				setVar $bot~parm1 $attacking
-				saveVar $bot~parm1
-				saveVar $BOT~command
-				saveVar $bot~user_command_line
-				load "scripts\"&$bot~mombot_directory&"\commands\grid\pgrid.cts"
-				setEventTrigger        pgridended        :pgridended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\pgrid.cts"
+			if ($holokill = true)
+				gosub :doholokill
+			else
+				setTextLineTrigger photonOver :photonOver "Photon Wave Duration has ended in sector"
+				setDelayTrigger photonOver2 :photonOver2 (($game~photon_duration * 1000) + 1000)
 				pause
-				:pgridended
+				:photonOver
+				:photonOver2
 					killalltriggers
-				
-				if ($fotonPig = 1)
-					send "'pig lift*"
-				end
-				if ($fotonSurround = 1)
-					gosub :player~quikstats
 
-					send "qq"
-					gosub :grid~surround
-					send "l" $currentPlanet "*c"
-					waitfor "<Enter Citadel>"
-					gosub :targeting~scanitcitkill
-				else
-					gosub :targeting~scanitcitkill
-				end
-				
-				send "p" $homeSector "*y"
+					setVar $BOT~command "pgrid " & $attacking
+					setVar $bot~user_command_line " pgrid "& $attacking 
+					setVar $bot~parm1 $attacking
+					saveVar $bot~parm1
+					saveVar $BOT~command
+					saveVar $bot~user_command_line
+					load "scripts\"&$bot~mombot_directory&"\commands\grid\pgrid.cts"
+					setEventTrigger        pgridended        :pgridended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\pgrid.cts"
+					pause
+					:pgridended
+						killalltriggers
+					
+					if ($fotonPig = 1)
+						send "'pig lift*"
+					end
+					if ($fotonSurround = 1)
+						gosub :player~quikstats
 
+						send "qq"
+						gosub :grid~surround
+						send "l" $currentPlanet "*c"
+						waitfor "<Enter Citadel>"
+						gosub :targeting~scanitcitkill
+					else
+						gosub :targeting~scanitcitkill
+					end
+					
+					send "p" $homeSector "*y"
+			end
 		else
 				
 			goSub :doHolo
@@ -1525,8 +1535,56 @@ return
 		killalltriggers
 return
 
+:doHoloKill
+	gosub :player~quikstats
+	setvar $before_holo_kill_sector $player~current_sector
+	if ($capture)
+		gosub :combat~holocap		
+	else
+		gosub :combat~holokill
+	end
+	if (($player~current_sector <> $before_holo_kill_sector) and ($player~current_prompt <> "Citadel"))
+		setVar $PLAYER~WARPTO $before_holo_kill_sector
+		gosub :PLAYER~twarp
+		if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+			setvar $switchboard~message "Could not make it back to starting sector after holokill. - ["&$player~msg&"]*"
+			gosub :switchboard~switchboard
+			gosub :call
+		else 
+			gosub :switchboard~switchboard
+			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+		end
+	end
+return
+
+:call
+:callagain
+	setVar $BOT~command "call"
+	setvar $bot~parm1 ""
+	setVar $BOT~user_command_line " call  "
+	setvar $bot~parm2 ""
+	setvar $bot~parm3 ""
+	setvar $bot~parm4 ""
+	setvar $bot~parm5 ""
+	setvar $bot~parm6 ""
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	savevar $bot~parm1
+	savevar $bot~parm2
+	savevar $bot~parm3
+	savevar $bot~parm4
+	savevar $bot~parm5
+	savevar $bot~parm6
+	load "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts"
+	setEventTrigger        callend1        :callend1 "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts"
+	pause
+	:callend1
+return
+
+
 include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\combat\holokill\combat"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\ship\loadshipinfo\ship"
@@ -1535,5 +1593,6 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\targeting\initializetargeting\targeting"
 include "source\bot_includes\player\moveintosector\player"
+include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\grid\surround\grid"
 include "source\bot_includes\targeting\scanitcitkill\targeting"

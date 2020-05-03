@@ -122,7 +122,7 @@
 	setvar $photon false
 	if ($pos > 0)
 		setvar $photon true
-		if (CURRENTPHOTONS <= 0)
+		if ($player~photons <= 0)
 			setVar $SWITCHBOARD~message "Without a photon, you can't run photon option.*"
 			goto :dtorp_end
 		end
@@ -166,7 +166,7 @@
 			end
 		end
 
-		if (CURRENTPHOTONS <= 0)
+		if ($player~photons <= 0)
 			setVar $SWITCHBOARD~message "Without a photon, you can't run pel option.*"
 			goto :dtorp_end
 		end
@@ -210,7 +210,7 @@
 	if ((pgrid <> true) and ($kill <> true) and ($killport <> true) and ($photon <> true) and ($pel <> true) and ($holo <> true) and ($call <> true) and ($escape <> true))
 		setvar $photon true
 	end
-	setVar $message "Density Trigger running in sector "&CURRENTSECTOR&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+	setVar $message "Density Trigger running in sector "&$player~current_sector&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	setVar $message $message&"*        On Density Change >= ("&$density_change&" - "&$density_upper_limit&"), I will:"
 	if ($pgrid)
 		setVar $message $message&"*          PGRID to Sector"
@@ -354,7 +354,7 @@
 
 
 :do_action
-	if (($photon = true) and (CURRENTPHOTONS > 0))
+	if (($photon = true) and ($player~photons > 0))
 		if (($startingLocation = "Planet") OR ($startingLocation = "Citadel"))
 			send " c  p  y  " $adj[$w] "**q   l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 		else
@@ -364,7 +364,7 @@
 	gosub :player~quikstats
 
 	# #if we pgrid we want to do a different kill action
-	if (($pgrid = true) and (CURRENTFIGHTERS > 0))
+	if (($pgrid = true) and ($player~fighters > 0))
 
 		if ($player~current_prompt = "Command")
 			gosub :planet~landingsub
@@ -374,7 +374,7 @@
 		if ($killport = true)
 			send "s*"
 			waitfor "Warps to Sector(s)"
-			if (PORT.EXISTS[CURRENTSECTOR] = 1)
+			if (PORT.EXISTS[$player~current_sector] = 1)
 				if ($player~current_prompt = "Citadel")
 					send "q q "
 				end
@@ -418,7 +418,7 @@
 	
 	else
 
-		if (($kill = true) and (CURRENTFIGHTERS > 0))
+		if (($kill = true) and ($player~fighters > 0))
 			gosub :player~quikstats
 			:scanit_again
 			setvar $player~startingLocation $player~current_prompt

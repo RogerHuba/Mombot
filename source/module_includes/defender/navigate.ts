@@ -73,19 +73,24 @@
 	SetTextLineTrigger homelock :foton_home_lock "Planetary TransWarp Drive Engaged!"
 	setTextLineTrigger nohomelock :foton_no_home_lock "Your own fighters must be"
 	setTextLineTrigger home_now :foton_home_lock "You are already in that sector!"
+	settextlinetrigger pwarp_rdy :hit_y "All Systems Ready, shall we engage?"
 	pause
 
 	:foton_no_home_lock
 		killtrigger homelock
 		killtrigger nohomelock
 		killtrigger home_now
+		killtrigger pwarp_rdy
 		setSectorParameter $nearfig "FIGSEC" false
 		goto :try_again
 
+		:hit_y
+			send "y "
         :foton_home_lock
-		killtrigger homelock
-		killtrigger nohomelock
-		killtrigger home_now
+			killtrigger homelock
+			killtrigger nohomelock
+			killtrigger home_now
+			killtrigger pwarp_rdy
 return
 
 

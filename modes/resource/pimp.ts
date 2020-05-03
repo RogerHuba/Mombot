@@ -99,6 +99,12 @@ loadvar $map~backdoor
 	SetVar $totalequmax $planet~planetequipmax
 	setVar $om_redsector $map~backdoor
 
+
+	if ($player~photons > 0)
+		setVar $switchboard~message "You can't have photons while running pimp.  That doesn't make any sense at all.*"
+		gosub :switchboard~switchboard
+		halt
+	end
 :inac
 	killalltriggers
 :myinfo
