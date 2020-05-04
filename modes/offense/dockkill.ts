@@ -189,10 +189,11 @@
 		if (($player~current_sector <= 10) or ($player~current_sector = $map~stardock))
 			setvar $i 1
 			while ($i <= $sector~realTraderCount)
-				setvar $enemy_fighters $player~traders[index][4]
-				if (($player~traders[index][2] = true) and ($enemy_fighters > ($player~fighters/3)))
+				setvar $enemy_fighters $player~traders[$i][4]
+				setvar $enemy_corp $player~traders[$i][2]
+				if (($player~traders[index][2] = true) and ($enemy_fighters > ($player~fighters/3)) and ($enemy_corp <> $player~CORP))
 					setvar $hide true
-					setvar $switchboard~message "Hiding on port, because "&$player~traders[index]&" is in sector, and I can't touch them. Halting.*"
+					setvar $switchboard~message "Hiding on port, because "&$player~traders[$i]&" is in sector, and I can't touch them. Halting.*"
 				end
 				add $i 1
 			end
