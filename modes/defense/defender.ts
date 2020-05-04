@@ -926,7 +926,7 @@ return
 return
 
 :pwarp_direct_and_kill
-	setTextTrigger 1 :jumped "All Systems Ready, shall we engage? Yes"
+	setTextTrigger 1 :jumped "All Systems Ready, shall we engage?"
 	settexttrigger 2 :no_jump "Your own fighters must be in the destination to make a safe jump"
 	settexttrigger 3 :jumped "You are already in that sector!"
 	send "p" $photon~sector "*"
