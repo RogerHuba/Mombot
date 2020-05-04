@@ -192,19 +192,24 @@
 				setvar $enemy_fighters $player~traders[index][4]
 				if (($player~traders[index][2] = true) and ($enemy_fighters > ($player~fighters/3)))
 					setvar $hide true
-					if ($PLAYER~CURRENT_SECTOR = STARDOCK)
-						send "P  S G Y G Q s p"
-					else
-						send "p ty"
-					end
 					setvar $switchboard~message "Hiding on port, because "&$player~traders[index]&" is in sector, and I can't touch them. Halting.*"
-					gosub :switchboard~switchboard
-					halt
 				end
 				add $i 1
 			end
 		end
-
+		if ($player~fighters < $ship~ship_fighters_max)
+			setvar $hide true
+			setvar $switchboard~message "Can't refurb fighters, so I'm halting.*"
+		end
+		if ($hide = true)
+			if ($PLAYER~CURRENT_SECTOR = STARDOCK)
+				send "P  S G Y G Q s p"
+			else
+				send "p ty"
+			end
+			gosub :switchboard~switchboard
+			halt
+		end
 		#set player~refurbString to allow fast refurbing if you have a mac#
 		if ($cap)
 			goSub :combat~fastCapture
