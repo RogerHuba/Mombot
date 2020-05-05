@@ -21,12 +21,13 @@ setVar $BOT~help[2]  $BOT~tab&"        "
 setVar $BOT~help[3]  $BOT~tab&"   [efurb] - Citadel Exchange Furb"
 setVar $BOT~help[4]  $BOT~tab&"   [tfurb] - Tow furb - Send ship required"
 setVar $BOT~help[5]  $BOT~tab&"             >moofurb tfurb 2ndship"
-setVar $BOT~help[6]  $BOT~tab&" [icefurb] - Furber for ICE tournament"
-setVar $BOT~help[7]  $BOT~tab&"        "
-setVar $BOT~help[8]  $BOT~tab&"  {nofigs} - Don't restock fighters"
-setVar $BOT~help[9]  $BOT~tab&"        "
-setVar $BOT~help[10]  $BOT~tab&"        All modees deliver torps/atomics to traders running"
-setVar $BOT~help[11]  $BOT~tab&"        a moo script. You need to be fed safe."
+setVar $BOT~help[6]  $BOT~tab&"   [xfurb] - You xport into ship, furb and xport out"
+setVar $BOT~help[7]  $BOT~tab&" [icefurb] - Furber for ICE tournament"
+setVar $BOT~help[8]  $BOT~tab&"        "
+setVar $BOT~help[9]  $BOT~tab&"  {nofigs} - Don't restock fighters"
+setVar $BOT~help[10]  $BOT~tab&"        "
+setVar $BOT~help[11]  $BOT~tab&"        All modees deliver torps/atomics to traders running"
+setVar $BOT~help[12]  $BOT~tab&"        a moo script. You need to be fed safe."
 
 
 
@@ -77,6 +78,43 @@ if ($modestring = "efurb")
 	setVar $efurbSector $player~CURRENT_SECTOR
 	setVar $startMsg $startMsg & "Exchange Furb Active - Will trigger of ship exchange*"	
 
+elseif ($modestring = "xfurb")
+	
+	if (($player~TWARP_TYPE <> 1) and ($player~TWARP_TYPE <> 2))
+		setVar $SWITCHBOARD~message "We have no t-warp.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+	if ($player~ALIGNMENT < 1000)
+		setVar $SWITCHBOARD~message "You're just not good enough for this script (alignment).*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+	if ($player~photons > 0)
+		setVar $SWITCHBOARD~message "You can't have photons on your ship.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+	if ($startingLocation <> "Citadel")
+		setVar $SWITCHBOARD~message "Must be started from Citadel prompt.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+	setVar $shipTwo $bot~parm2
+	
+	isNumber $test $shipTwo
+	if ($test = 0)
+		setVar $SWITCHBOARD~message "The ship to furb must be a number*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	setVar $ourShip $player~SHIP_NUMBER
+	
+	setVar $startMsg $startMsg & "XFurb command in action.*"	
 elseif ($modestring = "icefurb")
 	if ($player~ore_holds < 70)
 		setVar $SWITCHBOARD~message "Please load up on fuel ore.*"
@@ -196,10 +234,10 @@ if ($pos > 0)
 end
 
 
-
-setVar $SWITCHBOARD~message $startMsg
-gosub :SWITCHBOARD~switchboard	
-	
+if ($modestring <> "xfurb")
+	setVar $SWITCHBOARD~message $startMsg
+	gosub :SWITCHBOARD~switchboard	
+end	
 
 send "cuyq"
 
@@ -211,6 +249,8 @@ if ($modestring  = "efurb")
 
 elseif ($modestring  = "tfurb")
 
+elseif ($modestring = "xfurb")
+	goSub :xfurb_doit
 elseif ($modestring  = "icefurb")
 	goSub :ice_restock
 	goSub :ice_furbloop
@@ -221,6 +261,37 @@ else
 end
 
 halt
+
+:xfurb_doit
+//$ourShip
+	setVar $bwarpok 1
+	send "q"
+	goSub :planet~getPlanetInfo
+	send "q x j " $shipTwo "* q * l" $planet~planet "*"
+	send "t n l2  * * * t n l 3 * *t n t 1 * m n t * * "
+	send "c"
+	gosub :player~quikstats
+	if ($ourShip = $player~SHIP_NUMBER)
+		setVar $SWITCHBOARD~message "Failed to switch ships and furb.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	else
+		setVar $theirship $player~SHIP_NUMBER
+	end
+
+	setVar $efurbPlanet $planet~planet
+	setVar $efurbSector $player~CURRENT_SECTOR
+
+	goSub :efurb_restock
+
+	send "q q x j " $ourShip "* q * l" $planet~planet "* c "
+	gosub :player~quikstats
+	if ($ourShip <> $player~SHIP_NUMBER)
+		setVar $SWITCHBOARD~message "Failed to switch ships after furb.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+return
 
 
 :ice_furbLoop
@@ -462,7 +533,7 @@ return
 		pause
 		:efurb_returnFail
 			killalltriggers
-			setVar $SWITCHBOARD~message "Efurb failed to find the planet on return.. halting*"
+			setVar $SWITCHBOARD~message "Furb failed to find the planet on return.. halting*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		:efurb_returnsuccess
@@ -470,7 +541,7 @@ return
 			return
 	else
 		send "p s h "
-		setVar $SWITCHBOARD~message "Failed to return back from Stardock on eFurb - landing on dock and halting.*"
+		setVar $SWITCHBOARD~message "Failed to return back from Stardock on efurb/xfurb - landing on dock and halting.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
