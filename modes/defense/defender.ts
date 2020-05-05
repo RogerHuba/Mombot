@@ -465,14 +465,15 @@
 	setvar $switchboard~message $message
 	gosub :switchboard~switchboard
 
-	if ($photon~shooting_count = 0)
-		setvar $photon~shooting_count 1
-	end
 	if (($killing~holokill = true) and ($player~photons > $photon~shooting_count))
 		if ($photon~shooting_count > 1)
 			setvar $switchboard~message "Holokill with more than "&$photon~shooting_count&" photons is not advised.  Be careful.*"
 		else
-			setvar $switchboard~message "Holokill with more than "&$photon~shooting_count&" photon is not advised.  Be careful.*"
+			if ($photon~shooting_count = 0)
+				setvar $switchboard~message "Holokill photons is not advised.  Especially since you have photons turned off. Be careful.*"
+			else
+				setvar $switchboard~message "Holokill with more than "&$photon~shooting_count&" photon is not advised.  Be careful.*"
+			end
 		end
 		gosub :switchboard~switchboard
 	elseif (($killing~holokill = true) and ($nophoton = true) and ($player~photons > 0))
