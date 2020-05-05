@@ -296,7 +296,7 @@
 	end
 
 	gosub :PLAYER~getInfo
-	gosub :killtriggers
+	gosub :kill_defender_triggers
 	send "q"
 	gosub :PLANET~getPlanetInfo	
 	send "t*t1* c "
@@ -605,7 +605,7 @@
 		goto :processing
 
 		:head_home_timeout
-			gosub :killtriggers
+			gosub :kill_defender_triggers
 			if ($player~current_sector <> $map~home_sector)
 				setvar $switchboard~message "No activity in an hour, so heading home.*"
 				gosub :switchboard~switchboard
@@ -613,7 +613,7 @@
 				goto :processing
 			end
 		:head_home 
-			gosub :killtriggers
+			gosub :kill_defender_triggers
 			gosub :player~quikstats
 			echo ansi_2&"*Checking status after inactivity..*"
 			if ($player~current_sector <> $map~home_sector)
@@ -821,7 +821,7 @@
 ##############################################
 
 :pausing
-	gosub :killtriggers
+	gosub :kill_defender_triggers
 	echo ANSI_6 "*[" ANSI_14 $script_ver " paused. To restart, re-enter Citadel Prompt" ANSI_6 "]*" ANSI_7
 	setTextTrigger 1 :restarting "Citadel command ("
 	settextlinetrigger 2 :fixpassword "Enter a new password (up to 10 chars) : OKIE: MSTS"
