@@ -32,6 +32,10 @@
 	gosub :PLAYER~quikstats
 	gosub :player~getInfo
 
+	gosub :SHIP~getShipStats
+	gosub :combat~init 
+
+
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
@@ -470,8 +474,18 @@
 						add $i 1
 					end
 					if ($holo = TRUE)
-						send "szh*  "
-						waitFor "Long Range Scan"
+						setvar $before_holo_kill_sector $player~current_sector
+						gosub :combat~holokill
+						if (($sector~holotargetfound = true) and ($player~current_sector <> $before_holo_kill_sector))
+							setVar $PLAYER~WARPTO $before_holo_kill_sector
+							gosub :PLAYER~twarp
+							if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+								setvar $switchboard~message "Could not make it back to starting sector after holokill. - ["&$player~msg&"]*"
+							end
+						end
+						if ($switchboard~message <> "No targets found adjacent.*")
+							gosub :switchboard~switchboard
+						end
 						add $total_turns 1
 					end
 					add $j 1	
@@ -816,3 +830,9 @@ include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\player\isephaggle\player"
 include "source\bot_includes\player\starthaggle\player"
+include "source\bot_includes\combat\holokill\combat"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\combat\fastattack\combat"
+
