@@ -44,7 +44,7 @@ setVar $BOT~help[14] $BOT~tab&"    {ephag}      Default is NEG but set to use EP
 setVar $BOT~help[15] $BOT~tab&"    {safe}       Ports must be surrounded by figs (ZTM!)"
 setVar $BOT~help[16] $BOT~tab&"    {paranoid}   Ports must be surrounded by figs and limpets"
 setVar $BOT~help[17] $BOT~tab&"    {efurb:bot}  Bot to exchange ships with at home planet to furb."
-setVar $BOT~help[18] $BOT~tab&"                 bot should start already furbed."
+setVar $BOT~help[18] $BOT~tab&"    {xfurb:bot:ship} Xport Furb - Furb ship ready above planet."
 setVar $BOT~help[19] $BOT~tab&"    {tradeto:n}  Trade to percentage, defaults 15, tradeto:50 = 50%"
 setVar $BOT~help[20] $BOT~tab&"   "
 setVar $BOT~help[21] $BOT~tab&"    Modes -"
@@ -386,6 +386,39 @@ else
 
 end
 
+setVar $xfurbShip 0
+
+getWordPos $bot~user_command_line $pos "xfurb:"
+if ($pos > 0)
+	setVar $xfurb TRUE
+	setVar $cline $bot~user_command_line & " "
+	getText $cline $xfurbInfo "xfurb:" " "
+
+	replaceText $xfurbInfo ":" " "
+	getWord $xfurbInfo $efurbBot 1
+	getWord $xfurbInfo $xfurbShip 2
+	
+	setvar $startMsg $startMsg & "We are exchange furbing with bot: " & $efurbBot &" and ship " & $xfurbShip & ".*"
+	isNumber $number $xfurbShip
+	if ($number = false) or ($xfurbShip = 0)
+		setVar $SWITCHBOARD~message "XFurb ship must be a number above 0*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+
+	if ($startingLocation <> "Citadel")
+		setVar $SWITCHBOARD~message "Must start xfurb option from a citadel*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	else
+		
+	end
+else
+	setVar $xfurb FALSE
+
+end
+
 
 getWordPos $bot~user_command_line $pos "ephag"
 if ($pos > 0)
@@ -608,6 +641,13 @@ if ($startingLocation = "Citadel")
 		send "qc"
 	end
 
+	if ($xfurb = TRUE)
+		goSub :verifyTraderPlanet
+		send "'" $efurbBot " stopall*"
+		waitfor " All non-system scripts and modules killed, and modes reset"
+	
+		send "qc"
+	end
 
 	setVar $cashDumpPlanet $planet~planet
 	setVar $cashDumpSector $PLAYER~CURRENT_SECTOR
@@ -652,7 +692,7 @@ gosub :filterPortsAndReport
 setVar $stat_targets ($sectorsOki - 1)
 
 
-if (($player~ALIGNMENT < 1000) and ($skimMode <> true) and ($efurb <> true))
+if (($player~ALIGNMENT < 1000) and ($skimMode <> true) and ($efurb <> true) and ($xfurb <> true))
 	setVar $SWITCHBOARD~message "MooXmas - You're just not good enough for this script (alignment).*"
 	gosub :SWITCHBOARD~switchboard
 	halt
@@ -703,6 +743,8 @@ while ($loopi < $sectorsOki)
 			gosub :player~twarp
 			
 			if ($PLAYER~twarpSuccess = FALSE)
+				setVar $SWITCHBOARD~message "Failed to make it to next sector, continuing (could be ore of figs)*"
+				gosub :SWITCHBOARD~switchboard
 				goto :endloop
 			
 			end
@@ -754,6 +796,20 @@ while ($loopi < $sectorsOki)
 		setVar $PLAYER~warpto $cashDumpSector
 		gosub :player~twarp
 		
+	end
+	if ($startingLocation <> "Citadel")
+		send "l" & $cashDumpPlanet&"* t n t 1 * C"
+		send "TT"
+		waitfor "credits, and the Treasury"
+		setVar $line CURRENTLINE
+		getWord $line $credsmade 3
+		striptext $credsmade ","
+		subtract $credsmade 500000
+		if ($credsmade >= 1)
+			send $credsmade & "*"
+		else
+			send "*"
+		end
 	end
 	setvar $switchboard~message "Mooooooooooo Mooooooooooo Done.*"
 	gosub :switchboard~switchboard
@@ -1293,6 +1349,8 @@ return
 
 	if ($efurb = TRUE)
 		goSub :restock_efurb
+	elseif ($xfurb = TRUE)
+		goSub :restock_xfurb
 	else
 		goSub :restock_self
 	end
@@ -1303,6 +1361,63 @@ return
 
 
 return
+
+:restock_xfurb
+
+	setVar $player~warpto $cashDumpSector
+	gosub :player~twarp
+	
+	setVar $playerShip $player~SHIP_NUMBER
+	send "l" & $cashDumpPlanet&"* t n t 1 * m * * * C"
+	send "TT"
+	waitfor "credits, and the Treasury"
+	setVar $line CURRENTLINE
+	getWord $line $credsmade 3
+	striptext $credsmade ","
+	subtract $credsmade 1000000
+	if ($credsmade >= 1)
+		send $credsmade & "*"
+	else
+		send "*"
+	end
+	send "^q"
+	waitfor ": ENDINTERROG"
+	gosub :player~quikstats
+	setVar $cship $player~SHIP_NUMBER
+
+	send "q q x j " $xfurbShip "* q * l" $cashDumpPlanet "* tnt1 * c "
+	gosub :player~quikstats
+	if ($xfurbShip <> $player~SHIP_NUMBER)
+		setVar $SWITCHBOARD~message "Failed to switch ships after furb.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	else
+		send "'" $efurbBot " moofurb xfurb " $cship "*"
+	end
+	setVar $xfurbShip $cship
+
+	gosub :player~quikstats
+
+	if ($player~GENESIS < 5)
+		setvar $switchboard~message "XPort Furb Fail - New ship has les than 5 torps*"
+		gosub :switchboard~switchboard
+		halt
+	end
+
+	send "QQ"
+	waitfor "Blasting off from"
+	
+	setVar $player~warpto $returnSpot
+	gosub :player~twarp
+	gosub :player~quikstats
+	if ($player~CURRENT_SECTOR <> $returnSpot)
+
+		setvar $switchboard~message "We didn't make it back post exchange furb*"
+		gosub :switchboard~switchboard
+		halt
+	end
+return
+
 
 :restock_efurb
 
@@ -1327,7 +1442,7 @@ return
 	goSub :verifyOneTrader
 	
 	if ($traderCount <> 1)
-		setVar $SWITCHBOARD~message "Needs to be one other traer in this citadel and it should be the person you are swapping with.*"
+		setVar $SWITCHBOARD~message "Needs to be one other trader in this citadel and it should be the person you are swapping with.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
