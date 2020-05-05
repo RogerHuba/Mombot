@@ -481,8 +481,10 @@
 	# Main information processor for defender #
 	###########################################
 
+	setDelayTrigger	   announce_trigger :announce	1200000
+
 	:processing
-		killalltriggers
+		gosub :kill_defender_triggers
 		if ($mode~allkeys = true)
 			if ($photon~is_all_keys <> true)
 				send "c n 9 * q "
@@ -509,10 +511,9 @@
 		settextlinetrigger 16 :scan " appears from the planetary rubble."
 		setTextLineTrigger 17 :scan " exits the game."
 		setTextLineTrigger 18 :scan " enters the game."
-		setDelayTrigger	   19 :announce	1200000
-		setDelayTrigger	   20 :head_home_timeout 3600000
+		setDelayTrigger	   19 :head_home_timeout 3600000
 		if ($sentinel~broadcast)
-			setdelaytrigger    25 :sentinel $settings~sentinel_cycle
+			setdelaytrigger    20 :sentinel $settings~sentinel_cycle
 		end
 		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
 		
@@ -800,7 +801,7 @@
 		end
 		add $i 1
 	end
-	killalltriggers
+	gosub :kill_defender_triggers
 	gosub :killing~checkForVictims
 	if ($killing~error = true)
 		goto :head_home
@@ -840,21 +841,13 @@
 
 
 
-:killtriggers
-	killalltriggers
-#	setvar $i 1
-#	while ($i <= 23)
-#		killtrigger ""&$i&""
-#		add $i 1
-#	end
-#	setvar $i 1
-#	while ($i <= 6)
-#		killtrigger "adjf"&$i&""
-#		killtrigger "adjl"&$i&""
-#		killtrigger "adja"&$i&""
-#		add $i 1
-#	end
-#	killtrigger wait
+:kill_defender_triggers
+	setvar $i 1
+	while ($i <= 30)
+		killtrigger ""&$i&""
+		add $i 1
+	end
+	killtrigger wait
 return
 
 
@@ -976,7 +969,7 @@ return
 return
 
 :sentinel
-	killalltriggers
+	gosub :kill_defender_triggers
 	gosub :sentinel~activate
 	goto :processing
 
