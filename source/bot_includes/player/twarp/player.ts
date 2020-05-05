@@ -15,7 +15,8 @@
 		goto :twarpDone
 	end
 	if (($PHOTONS > 0) and ($override <> true))
-		setVar $msg "You can't twarp with photons without override!"
+		setVar $switchboard~message "You can't twarp with photons without override!*"
+		gosub :switchboard~switchboard
 		goto :twarpDone
 	end
 	loadvar $ship~SHIP_MAX_ATTACK
