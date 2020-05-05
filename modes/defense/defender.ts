@@ -296,7 +296,7 @@
 	end
 
 	gosub :PLAYER~getInfo
-	gosub :killtriggers
+	gosub :kill_defender_triggers
 	send "q"
 	gosub :PLANET~getPlanetInfo	
 	send "t*t1* c "
@@ -481,8 +481,10 @@
 	# Main information processor for defender #
 	###########################################
 
+	setDelayTrigger	   announce_trigger :announce	1200000
+
 	:processing
-		killalltriggers
+		gosub :kill_defender_triggers
 		if ($mode~allkeys = true)
 			if ($photon~is_all_keys <> true)
 				send "c n 9 * q "
@@ -509,10 +511,9 @@
 		settextlinetrigger 16 :scan " appears from the planetary rubble."
 		setTextLineTrigger 17 :scan " exits the game."
 		setTextLineTrigger 18 :scan " enters the game."
-		setDelayTrigger	   19 :announce	1200000
-		setDelayTrigger	   20 :head_home_timeout 3600000
+		setDelayTrigger	   19 :head_home_timeout 3600000
 		if ($sentinel~broadcast)
-			setdelaytrigger    25 :sentinel $settings~sentinel_cycle
+			setdelaytrigger    20 :sentinel $settings~sentinel_cycle
 		end
 		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
 		
@@ -601,18 +602,20 @@
 		end
 		setvar $switchboard~message $script_ver&$description&" is online and ready to fire.*"
 		gosub :switchboard~switchboard
+		setDelayTrigger	   announce_trigger :announce	1200000
 		goto :processing
 
 		:head_home_timeout
-			gosub :killtriggers
+			gosub :kill_defender_triggers
 			if ($player~current_sector <> $map~home_sector)
 				setvar $switchboard~message "No activity in an hour, so heading home.*"
 				gosub :switchboard~switchboard
 			else
+				setDelayTrigger	   announce_trigger :announce	1200000
 				goto :processing
 			end
 		:head_home 
-			gosub :killtriggers
+			gosub :kill_defender_triggers
 			gosub :player~quikstats
 			echo ansi_2&"*Checking status after inactivity..*"
 			if ($player~current_sector <> $map~home_sector)
@@ -650,6 +653,8 @@
 			if ($bot~last_fighter_attack <> "")
 				gosub :killing~set_the_cannon
 			end
+
+		setDelayTrigger	   announce_trigger :announce	1200000
 		goto :processing
 
 	halt
@@ -800,7 +805,7 @@
 		end
 		add $i 1
 	end
-	killalltriggers
+	gosub :kill_defender_triggers
 	gosub :killing~checkForVictims
 	if ($killing~error = true)
 		goto :head_home
@@ -820,7 +825,7 @@
 ##############################################
 
 :pausing
-	gosub :killtriggers
+	gosub :kill_defender_triggers
 	echo ANSI_6 "*[" ANSI_14 $script_ver " paused. To restart, re-enter Citadel Prompt" ANSI_6 "]*" ANSI_7
 	setTextTrigger 1 :restarting "Citadel command ("
 	settextlinetrigger 2 :fixpassword "Enter a new password (up to 10 chars) : OKIE: MSTS"
@@ -840,21 +845,13 @@
 
 
 
-:killtriggers
-	killalltriggers
-#	setvar $i 1
-#	while ($i <= 23)
-#		killtrigger ""&$i&""
-#		add $i 1
-#	end
-#	setvar $i 1
-#	while ($i <= 6)
-#		killtrigger "adjf"&$i&""
-#		killtrigger "adjl"&$i&""
-#		killtrigger "adja"&$i&""
-#		add $i 1
-#	end
-#	killtrigger wait
+:kill_defender_triggers
+	setvar $i 1
+	while ($i <= 30)
+		killtrigger ""&$i&""
+		add $i 1
+	end
+	killtrigger wait
 return
 
 
@@ -926,7 +923,7 @@ return
 return
 
 :pwarp_direct_and_kill
-	setTextTrigger 1 :jumped "All Systems Ready, shall we engage? Yes"
+	setTextTrigger 1 :jumped "All Systems Ready, shall we engage?"
 	settexttrigger 2 :no_jump "Your own fighters must be in the destination to make a safe jump"
 	settexttrigger 3 :jumped "You are already in that sector!"
 	send "p" $photon~sector "*"
@@ -976,7 +973,7 @@ return
 return
 
 :sentinel
-	killalltriggers
+	gosub :kill_defender_triggers
 	gosub :sentinel~activate
 	goto :processing
 

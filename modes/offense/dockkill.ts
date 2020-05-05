@@ -186,6 +186,31 @@
 		pause
 		:okaygo
 		goSub :SECTOR~getSectorData
+		if (($player~current_sector <= 10) or ($player~current_sector = $map~stardock))
+			setvar $i 1
+			while ($i <= $sector~realTraderCount)
+				setvar $enemy_fighters $player~traders[$i][4]
+				setvar $enemy_corp $player~traders[$i][2]
+				if (($player~traders[index][2] = true) and (($player~experience > 1000) or ($player~alignment < 0)) and ($enemy_fighters > ($player~fighters/3)) and ($enemy_corp <> $player~CORP))
+					setvar $hide true
+					setvar $switchboard~message "Hiding on port, because "&$player~traders[$i]&" is in sector, and I can't touch them. Halting.*"
+				end
+				add $i 1
+			end
+		end
+		if ($player~fighters < $ship~ship_fighters_max)
+			setvar $hide true
+			setvar $switchboard~message "Can't refurb fighters, so I'm halting.*"
+		end
+		if ($hide = true)
+			if ($PLAYER~CURRENT_SECTOR = STARDOCK)
+				send "P  S G Y G Q s p"
+			else
+				send "p ty"
+			end
+			gosub :switchboard~switchboard
+			halt
+		end
 		#set player~refurbString to allow fast refurbing if you have a mac#
 		if ($cap)
 			goSub :combat~fastCapture

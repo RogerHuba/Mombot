@@ -181,6 +181,16 @@ return
 	if (($sector > SECTORS) OR ($sector <= 10))
 		 return
 	end
+
+# logic for seeing corpies and not firing on personal fighters - needs tweaking #
+#	while ($i <= $sentinel~corp_count)
+#		getwordpos $bot~last_fighter_attack $pos $sentinel~corp_members[$i]&" "
+#		if ($pos > 0)
+#			return
+#		end
+#		add $i 1
+#	end
+
 	getwordpos $adjacent_sectors $pos " "&$sector&" "
 	if ($pos > 0)
 		setvar $found true
