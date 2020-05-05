@@ -477,6 +477,10 @@
 		gosub :switchboard~switchboard
 	end
 
+	# to allow twarp routine with photon #
+	setvar $settings~override true
+
+
 	###########################################
 	# Main information processor for defender #
 	###########################################
