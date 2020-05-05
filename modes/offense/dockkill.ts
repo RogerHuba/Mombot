@@ -191,7 +191,7 @@
 			while ($i <= $sector~realTraderCount)
 				setvar $enemy_fighters $player~traders[$i][4]
 				setvar $enemy_corp $player~traders[$i][2]
-				if (($player~traders[index][2] = true) and ($enemy_fighters > ($player~fighters/3)) and ($enemy_corp <> $player~CORP))
+				if (($player~traders[index][2] = true) and (($player~experience > 1000) or ($player~alignment < 0)) and ($enemy_fighters > ($player~fighters/3)) and ($enemy_corp <> $player~CORP))
 					setvar $hide true
 					setvar $switchboard~message "Hiding on port, because "&$player~traders[$i]&" is in sector, and I can't touch them. Halting.*"
 				end
