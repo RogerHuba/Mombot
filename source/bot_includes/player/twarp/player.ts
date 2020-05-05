@@ -14,7 +14,8 @@
 		setVar $msg "No T-warp drive on this ship!"
 		goto :twarpDone
 	end
-	if (($PHOTONS > 0) and ($override <> true))
+	loadvar $settings~override
+	if (($PHOTONS > 0) and ($settings~override <> true))
 		setVar $switchboard~message "You can't twarp with photons without override!*"
 		gosub :switchboard~switchboard
 		goto :twarpDone
