@@ -602,6 +602,7 @@
 		end
 		setvar $switchboard~message $script_ver&$description&" is online and ready to fire.*"
 		gosub :switchboard~switchboard
+		setDelayTrigger	   announce_trigger :announce	1200000
 		goto :processing
 
 		:head_home_timeout
@@ -610,6 +611,7 @@
 				setvar $switchboard~message "No activity in an hour, so heading home.*"
 				gosub :switchboard~switchboard
 			else
+				setDelayTrigger	   announce_trigger :announce	1200000
 				goto :processing
 			end
 		:head_home 
@@ -651,6 +653,8 @@
 			if ($bot~last_fighter_attack <> "")
 				gosub :killing~set_the_cannon
 			end
+
+		setDelayTrigger	   announce_trigger :announce	1200000
 		goto :processing
 
 	halt
