@@ -988,7 +988,7 @@ return
 		gosub :deployEquipment
 	end
 
-	if ($FAST) OR ($NONSAFE)
+	if ($FAST = true) OR ($NONSAFE = true) or ($bwarp = true)
 		while (($placedLimpet = FALSE) OR ($placedArmid = FALSE))
 			gosub :attemptClearingMines
 		end
