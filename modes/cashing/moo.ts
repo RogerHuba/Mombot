@@ -797,7 +797,7 @@ while ($loopi < $sectorsOki)
 		gosub :player~twarp
 		
 	end
-	if ($startingLocation <> "Citadel")
+	if ($startingLocation = "Citadel")
 		send "l" & $cashDumpPlanet&"* t n t 1 * C"
 		send "TT"
 		waitfor "credits, and the Treasury"
