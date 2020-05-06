@@ -430,6 +430,7 @@ send "qq"
 			add $j 1	
 		end
 		send $result
+		send "d* "
 	end
 	
 	gosub :player~quikstats
