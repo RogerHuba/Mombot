@@ -25,21 +25,16 @@
 	setVar $armidOwner SECTOR.MINES.OWNER[$PLAYER~CURRENT_SECTOR]
 	if (($PLAYER~LIMPETS <= 0) AND (($limpetOwner <> "belong to your Corp") AND ($limpetOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Need limpets to clear this sector*"
-		gosub :SWITCHBOARD~switchboard
 		return 
 	end
 	if (($PLAYER~ARMIDS <= 0) AND (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Need armids to clear this sector*"
-		gosub :SWITCHBOARD~switchboard
 		return
 	end
 	if ((($limpetOwner = "belong to your Corp") or ($limpetOwner = "yours")) and (($armidOwner = "belong to your Corp") or ($armidOwner = "yours")))
 		setVar $SWITCHBOARD~message "Current Sector Already Clear of Enemy Mines!*"
-		gosub :SWITCHBOARD~switchboard
 		return
 	end
-	setvar $switchboard~message "Clearing Current Sector*"
-	gosub :SWITCHBOARD~switchboard
 	send "q qq z n *  "
 	gosub :clear_sector_deployEquipment
 	while (($placedLimpet = FALSE) OR ($placedArmid = FALSE))
@@ -52,7 +47,6 @@
 	setSectorParameter $PLAYER~CURRENT_SECTOR "LIMPSEC" TRUE
 	setSectorParameter $PLAYER~CURRENT_SECTOR "MINESEC" TRUE
 	setvar $switchboard~message "Sector Cleared*"
-	gosub :SWITCHBOARD~switchboard
 		
 	return
 	
