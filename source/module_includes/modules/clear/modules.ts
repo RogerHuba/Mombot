@@ -120,7 +120,7 @@
 		if (($beforeArmids > $PLAYER~ARMIDS) OR (($armidOwner = "belong to your Corp") OR ($armidOwner = "yours")))
 			setVar $placedArmid TRUE
 		end
-		send "l j"&#8&$planet~planet&"* c  
+		send "l j"&#8&$planet~planet&"* c  "
 		return
 return
 
