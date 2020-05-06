@@ -168,6 +168,18 @@
 		end
 	end
 
+	getWordPos $TEMP $pos " cannon:"
+	if ($pos = 0)
+		setVar $cannon false
+	else
+		setvar $cannon true
+		getText $TEMP $cannonDamage " cannon:" " "
+		isNumber $tst $cannonDamage
+		if ($tst = 0)
+			setVar $cannonDamage 450000
+		end
+	end
+
 	getWordPos $TEMP $pos " a:"
 	if ($pos = 0)
 		setVar $grid_armids 0
@@ -522,17 +534,21 @@ return
 		if ($msg = "")
 			waitfor "You leave the Galactic Bank."
 		else
-			if ($photoned = true)
+			if (($photoned = true) and ($PLAYER~unlimitedGame = true))
 				loadvar $game~PHOTON_DURATION
 				send "L Z" & #8 & $planet~planet  & "*  c * "
-				send "'{" $bot~bot_name "} - Waiting for photon to wear off..*"		 
+				setvar $switchboard~message "Waiting for photon to wear off..*"	
+				gosub :switchboard~switchboard	 
 				setDelayTrigger restart_from_photon :attemptRefurb (($game~photon_duration * 60000) + 1000)
 				pause
 
 			else
-				setVar $SWITCHBOARD~message "Unknown Problem Detected. Check TA!*"
+				if ($photoned = true)
+					setVar $SWITCHBOARD~message "I've been photoned, so not getting turns until the top of the hour.*"
+				else
+					setVar $SWITCHBOARD~message "Unknown Problem Detected. Check TA!*"
+				end
 				gosub :SWITCHBOARD~switchboard
-				send "*"
 				halt
 			end
 		end
@@ -964,6 +980,22 @@ return
 
 
 :clearSector
+
+	if ($cannon = true)
+		send "q"
+		gosub :PLANET~getPlanetInfo
+		setVar $percentToSet (((3*$sector_total)*100)/$planet~planet_FUEL)
+		if (((($planet~planet_FUEL * $percentToSet) / 100)/3) < $cannonDamage)
+			add $percentToSet 1
+		end
+		if ($percentToSet > 100)
+			setVar $percentToSet 100
+		end
+
+		send "c *ls"&$percentToSet&"*  "  
+	end
+
+
 	setVar  $LAID_ARMID FALSE
 	setVar	$LAID_LIMP FALSE
 	setVar $beforeSector $PLAYER~CURRENT_SECTOR
