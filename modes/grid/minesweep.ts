@@ -1088,12 +1088,14 @@ return
 		killtrigger 3
 		if ($grid_armids = 0)
 			setVar $_ARMIDS_ " "
+			setVar $placedArmid TRUE
 		else
 			setVar $_ARMIDS_ " h 1 z " & $grid_armids & "* z c * "
 			setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
 		end
 		if ($grid_limpets = 0)
 			setVar $_LIMPS_ " "
+			setVar $placedLimpet TRUE
 		else
 			setVar $_LIMPS_ "h 2 z " & $grid_limpets & "* z c * "
 			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
@@ -1119,9 +1121,11 @@ return
 return
 	:LAID_ARMID
 		setVar $LAID_ARMID TRUE
+		setVar $placedArmid TRUE
 		pause
 	:LAID_LIMP
 		setVar $LAID_LIMP TRUE
+		setVar $placedLimpet TRUE
 		pause
 
 
