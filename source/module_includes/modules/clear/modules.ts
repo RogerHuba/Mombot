@@ -56,6 +56,7 @@
 			gosub :clear_sector_xenter
 			add $i 1
 		end
+		gosub :player~quikstats
 		gosub :clear_sector_deployEquipment
 		return
 	:clear_sector_xenter
@@ -112,9 +113,6 @@
 			setVar $clearMac $clearMac&"h  2  z " & $limpsToDeploy & "*  z c  *   "
 		end
 		send $clearMac
-		killtrigger disconnectcheck
-		setdelaytrigger disconnectcheck :disconnect 10000
-		:backfromdisconnect
 		gosub :PLAYER~quikstats
 		if (($beforeLimpets > $PLAYER~LIMPETS) OR (($limpetOwner = "belong to your Corp") OR ($limpetOwner = "yours")))
 			setVar $placedLimpet TRUE
