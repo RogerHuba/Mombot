@@ -68,16 +68,19 @@
 		if ($player~surroundlimp <= 0)
 			setvar $player~surroundlimp 1
 		end
-
-		if ($PLAYER~ARMIDS < $player~surroundmine)
-			setVar $minesToDeploy $PLAYER~ARMIDS
-		else
-			setVar $minesToDeploy $player~surroundmine
+		if ($minesToDeploy <= 0)
+			if ($PLAYER~ARMIDS < $player~surroundmine)
+				setVar $minesToDeploy $PLAYER~ARMIDS
+			else
+				setVar $minesToDeploy $player~surroundmine
+			end
 		end
-		if ($PLAYER~LIMPETS < $player~surroundlimp)
-			setVar $limpsToDeploy $PLAYER~LIMPETS
-		else
-			setVar $limpsToDeploy $player~surroundlimp
+		if ($limpsToDeploy <= 0)
+			if ($PLAYER~LIMPETS < $player~surroundlimp)
+				setVar $limpsToDeploy $PLAYER~LIMPETS
+			else
+				setVar $limpsToDeploy $player~surroundlimp
+			end
 		end
 		setVar $clearMac ""
 		if (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours"))
