@@ -1026,16 +1026,15 @@ return
 		setvar $bwarp_move  "b"&$player~current_sector&"*"
 		setvar $bwarp_clear "y   l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  j  c  *  "
 		
-		while ($i <= 3)
-			if ($reckless <> true)
+		if ($reckless <> true)
+			while ($i <= 3)
 				killtrigger 1
 				killtrigger 2
 				killtrigger 3
 				setTextTrigger 1 :no_bwarp_lock "Do you want to make this transport blind?"
 				setTextTrigger 2 :bwarp_lock "All Systems Ready, shall we engage?"
 				setTextLineTrigger 3 :bwarpNoFuel "This planet does not have enough Fuel Ore to transport you."
-			end
-			if ($reckless <> true)
+
 				send $bwarp_move
 				pause
 
@@ -1053,12 +1052,13 @@ return
 					halt
 				:bwarp_lock
 					send $bwarp_clear
-			else
-				send $bwarp_move "  " $bwarp_clear
+	
+				add $i 1
 			end
-
-			add $i 1
+		else
+			send $bwarp_move "  " $bwarp_clear $bwarp_move "  " $bwarp_clear $bwarp_move "  " $bwarp_clear
 		end
+
 		killtrigger 1 
 		killtrigger 2
 		killtrigger 3
