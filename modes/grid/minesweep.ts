@@ -1176,10 +1176,9 @@ return
 				setVar $_LIMPS_ "h 2 z " & $grid_limpets & "* z c * "
 			end
 
-			send $_ARMIDS_&$_LIMPS_&" l "&$planet~planet&"*  c  "
+			send "q  q  *  *  h 1 z "&$grid_armids&"* z c * h 2 z "&$grid_limpets&"* z c * l "&$planet~planet&"*  c  "
 			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
 			setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
-			gosub :PLAYER~quikstats
 			waiton "Citadel command"
 		else
 			gosub :player~quikstats
