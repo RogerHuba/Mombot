@@ -1152,6 +1152,8 @@ return
 		setvar $minesToDeploy $grid_armids
 		setvar $limpsToDeploy $grid_limpets
 		gosub :modules~clear
+		setVar $LAID_ARMID TRUE
+		setVar $LAID_LIMP TRUE
 	end
 return
 	:LAID_ARMID
