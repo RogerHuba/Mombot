@@ -1,16 +1,17 @@
 #=================================QUIKSTATS================================================
 :quikstats
 	setVar $CURRENT_PROMPT      "Undefined"
-	killtrigger noprompt
-	killtrigger prompt
-	killtrigger statlinetrig
-	killtrigger getLine2
 	setvar $fedspace false
 	if ($towed = "0")
 		setvar $towed ""
 	end
 	loadvar $unlimitedGame
 	:trypromptagain
+	killtrigger toolongprompt
+	killtrigger noprompt
+	killtrigger prompt
+	killtrigger statlinetrig
+	killtrigger getLine2
 	setTextLineTrigger  prompt      :allPrompts     #145 & #8
 	setTextLineTrigger  statlinetrig    :statStart      #179
 	setdelaytrigger  toolongprompt      :trypromptagain     10000
