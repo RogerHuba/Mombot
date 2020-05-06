@@ -1182,6 +1182,7 @@ return
 			gosub :PLAYER~quikstats
 			waiton "Citadel command"
 		else
+			gosub :player~quikstats
 			setVar $BOT~command "xenter"
 			setVar $BOT~user_command_line " xenter silent"
 			setVar $BOT~parm1 ""
