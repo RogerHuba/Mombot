@@ -200,6 +200,8 @@
 	gosub :PLAYER~getInfo
 	setVar $homesector $PLAYER~CURRENT_SECTOR
 
+	gosub :ship~getshipstats
+	
 	killalltriggers
 	goSub :checkAvoidedSectors
 	send "q"
@@ -300,11 +302,46 @@
 		setVar $HAZ_Before SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
 		setVar $planet~planetS_Before SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
 		if (SECTOR.TRADERCOUNT[$PLAYER~CURRENT_SECTOR] <> 0)
-			send "'{" & $switchboard~bot_name & "} -  Trader Is In Sector. Halting!*"
-					waiton "Message sent on sub-space channel"
-			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
-					waiton "Message sent on sub-space channel"
-			halt
+			if ($kill = true)
+				:scanit_again
+					killAllTriggers
+					gosub :player~quikstats
+					gosub :sector~getSectorData
+					setvar $planet~planet_count SECTOR.PLANETCOUNT[$player~current_sector]
+					if (($planet~planet_count = 1) and ($overide = false))
+						setvar $one_planet true
+						setvar $player~override true
+					else
+						setvar $player~override $override
+					end
+					if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+						goSub :combat~fastCitadelAttack
+						if ($player~fighters <= 0)
+							setvar $switchboard~message "Fighters are gone - halting.*"
+							gosub :switchboard~switchboard
+							halt
+						end
+						goto :scanit_again
+					elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
+						setvar $player~startinglocation "Citadel"
+						gosub :combat~fastCapture
+						gosub :player~quikstats
+						if ($player~current_prompt = "Command")
+							send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+							gosub :player~quikstats
+							if ($player~fighters <= 0)
+								setvar $switchboard~message "Fighters are gone - halting.*"
+								gosub :switchboard~switchboard
+								halt
+							end
+						end
+						goto :scanit_again
+					end
+
+			else
+				setvar $switchboard~message "Trader Is In Sector. Halting!*"
+				send "p" $homesector "*y "
+			end
 		end
 		if ($DISR)
 			gosub :DisRupt
@@ -1421,3 +1458,11 @@ include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\grid\surround\grid"
 include "source\bot_includes\player\findjumpsector\player"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\ship\loadshipinfo\ship"
+include "source\bot_includes\ship\getshipcapstats\ship"
+include "source\bot_includes\ship\getshipstats\ship"
+
