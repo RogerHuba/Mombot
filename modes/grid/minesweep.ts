@@ -1035,8 +1035,8 @@ return
 				setTextTrigger 2 :bwarp_lock "All Systems Ready, shall we engage?"
 				setTextLineTrigger 3 :bwarpNoFuel "This planet does not have enough Fuel Ore to transport you."
 			end
-			send $bwarp_move
 			if ($reckless <> true)
+				send $bwarp_move
 				pause
 
 				:no_bwarp_lock
@@ -1051,9 +1051,12 @@ return
 					setVar $SWITCHBOARD~message "Not enough fuel on the planet! Stopping.*"
 					gosub :SWITCHBOARD~switchboard
 					halt
+				:bwarp_lock
+					send $bwarp_clear
+			else
+				send $bwarp_move "  " $bwarp_clear
 			end
-			:bwarp_lock
-			send $bwarp_clear
+
 			add $i 1
 		end
 		killtrigger 1 
