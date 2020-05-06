@@ -1,4 +1,5 @@
 :clear
+	loadvar $game~game_menu_prompt
 	gosub :PLAYER~QUIKSTATS
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ((currentsector = $map~stardock) or (currentsector <= 10))
