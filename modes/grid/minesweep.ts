@@ -1024,7 +1024,7 @@ return
 	if ($bwarp = true)
 		setVar $i 0
 		setvar $bwarp_move  "b"&$player~current_sector&"*"
-		setvar $bwarp_clear "y   l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  j  c  *  "
+		setvar $bwarp_clear "y   *  l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  j  c  *  "
 		
 		if ($reckless <> true)
 			while ($i <= 3)
