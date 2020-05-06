@@ -310,9 +310,11 @@
 		if ($DISR)
 			gosub :DisRupt
 		end
+		echo "***ENTERING CLEARING SECTOR***"
 		gosub :clearSector
 		send "  sz*    "
 		Waiton "Warps to Sector(s) :"
+		echo "***DONE CLEARING SECTOR***"
 		gosub :PLAYER~quikstats
 		setVar $HAZ_After SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
 		setVar $planet~planetS_After SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
@@ -851,7 +853,7 @@ return
 	while ($i <= $nearest)
 
 		setVar $focus $nearest[$i]
-		echo "***[CHECKING FOR NEXT SECTOR " $FOCUS "]***"
+		#echo "***[CHECKING FOR NEXT SECTOR " $FOCUS "]***"
 		setVar $checked $checked&" "&$PLAYER~CURRENT_SECTOR&" "
 
 		getWordPos $avoidedSectors $pos " "&$focus&" "
@@ -859,9 +861,6 @@ return
 		getSectorParameter $focus "MINESEC" $isArmided
 		getSectorParameter $focus "LIMPSEC" $isLimped
 
-		if ($focus = $player~current_sector)
-			goto :next_poss_targ
-		end
 		if ($border = TRUE)
 			setVar $p 1
 			while (SECTOR.WARPS[$focus][$p] > 0)
