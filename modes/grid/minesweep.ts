@@ -1051,7 +1051,7 @@ return
 		setvar $bwarp_clear "y   *  l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  j  c  *  "
 		
 		if ($reckless <> true)
-			while ($i <= 3)
+			while ($i <= 5)
 				killtrigger 1
 				killtrigger 2
 				killtrigger 3
