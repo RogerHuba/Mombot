@@ -36,7 +36,6 @@
 		setVar $SWITCHBOARD~message "Current Sector Already Clear of Enemy Mines!*"
 		return
 	end
-	send "q qq z n *  "
 	gosub :clear_sector_deployEquipment
 	while (($placedLimpet = FALSE) OR ($placedArmid = FALSE))
 		gosub :clear_sector_attemptClearingMines
@@ -86,6 +85,7 @@
 
 	return
 	:clear_sector_deployEquipment
+		send "q qq z n *  "
 		if ($player~surroundmine <= 0)
 			setvar $player~surroundmine 1
 		end
