@@ -1112,6 +1112,8 @@ return
 		setSectorParameter $PLAYER~CURRENT_SECTOR "LIMPSEC" TRUE
 		setVar $LAID_ARMID TRUE
 		setVar $LAID_LIMP TRUE
+		setVar $placedLimpet TRUE
+		setVar $placedArmid TRUE
 	end
 return
 	:LAID_ARMID
