@@ -1149,64 +1149,9 @@ return
 		waiton "Citadel command"
 
 	else
-		if ($FAST)
-			#send "q  q  q  z   n  *   "
-			setVar $BOT~command "xenter"
-			setVar $BOT~user_command_line " xenter 3 silent "
-			setVar $BOT~parm1 "3"
-			saveVar $BOT~parm1
-			setVar $BOT~parm2 "silent"
-			saveVar $BOT~parm2
-			saveVar $BOT~command
-			saveVar $BOT~user_command_line
-			load "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
-			setEventTrigger		xenterdone		:xenterdone "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
-			pause
-			:xenterdone
-
-
-			if ($grid_armids = 0)
-				setVar $_ARMIDS_ " "
-			else
-				setVar $_ARMIDS_ " h 1 z " & $grid_armids & "* z c * "
-			end
-			if ($grid_limpets = 0)
-				setVar $_LIMPS_ " "
-			else
-				setVar $_LIMPS_ "h 2 z " & $grid_limpets & "* z c * "
-			end
-
-			send "q  q  *  *  h 1 z "&$grid_armids&"* z c * h 2 z "&$grid_limpets&"* z c * l "&$planet~planet&"*  c  "
-			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
-			setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
-			waiton "Citadel command"
-		else
-			gosub :player~quikstats
-			setVar $BOT~command "xenter"
-			setVar $BOT~user_command_line " xenter silent"
-			setVar $BOT~parm1 ""
-			saveVar $BOT~parm1
-			setVar $BOT~parm2 "silent"
-			saveVar $BOT~parm2
-			saveVar $BOT~command
-			saveVar $BOT~user_command_line
-			load "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
-			setEventTrigger		xenterdone2		:xenterdone2 "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
-			pause
-			:xenterdone2
-
-			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
-			setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
-			
-			send "q  q  *  *  h 1 z "&$grid_armids&"* z c * h 2 z "&$grid_limpets&"* z c * l "&$planet~planet&"*  c  "
-			waiton "Citadel command"
-		end
-	end
-	if (($LAID_ARMID <> TRUE) AND ($grid_armids > 0)) OR (($LAID_LIMP <> TRUE) AND ($grid_limpets > 0))
-		goto :attemptClearingMines
-	end
-	setVar $placedLimpet TRUE
-	setVar $placedArmid TRUE
+		setvar $minesToDeploy $grid_armids
+		setvar $limpsToDeploy $grid_limpets
+		gosub :modules~clear
 	return
 	:LAID_ARMID
 		setVar $LAID_ARMID TRUE
@@ -1465,4 +1410,5 @@ include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\ship\loadshipinfo\ship"
 include "source\bot_includes\ship\getshipcapstats\ship"
 include "source\bot_includes\ship\getshipstats\ship"
+include "source\module_includes\modules\clear\modules"
 
