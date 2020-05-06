@@ -1009,6 +1009,7 @@ return
 
 :attemptRefurb
 :attempt_Refurb
+	:attempt_refurb_again
 	setVar $limpetCashNeeded ((($maxMines-$player~limpets)*$game~limpet_cost)+$game~limpet_removal_cost)
 	setVar $armidCashNeeded ((($maxMines-$player~armids)*$game~armid_cost))
 	setVar $cashNeeded ($limpetCashNeeded+$armidCashNeeded)
@@ -1145,8 +1146,17 @@ return
 		if ($msg = "")
 			waitfor "You leave the Galactic Bank."
 		else
-			send "'{" $bot~bot_name "} - Unknown Problem Detected. Check TA!**"
-			halt
+			if ($photoned = true)
+				setvar $switchboard~message "Waiting for photon to wear off..*"
+				gosub :switchboard~switchboard
+				setDelayTrigger restart_from_photon :attempt_refurb_again (($game~photon_duration * 60000) + 1000)
+				pause
+			else
+				setvar $switchboard~message  "Unknown Problem Detected. Check TA!*"
+				gosub :switchboard~switchboard
+				halt
+			end
+
 		end
 		gosub :player~quikstats
 
