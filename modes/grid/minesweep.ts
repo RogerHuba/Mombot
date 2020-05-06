@@ -302,46 +302,7 @@
 		setVar $HAZ_Before SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
 		setVar $planet~planetS_Before SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
 		if (SECTOR.TRADERCOUNT[$PLAYER~CURRENT_SECTOR] <> 0)
-			if ($kill = true)
-				:scanit_again
-					killAllTriggers
-					gosub :player~quikstats
-					gosub :sector~getSectorData
-					setvar $planet~planet_count SECTOR.PLANETCOUNT[$player~current_sector]
-					if (($planet~planet_count = 1) and ($overide = false))
-						setvar $one_planet true
-						setvar $player~override true
-					else
-						setvar $player~override $override
-					end
-					if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-						goSub :combat~fastCitadelAttack
-						if ($player~fighters <= 0)
-							setvar $switchboard~message "Fighters are gone - halting.*"
-							gosub :switchboard~switchboard
-							halt
-						end
-						goto :scanit_again
-					elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
-						setvar $player~startinglocation "Citadel"
-						gosub :combat~fastCapture
-						gosub :player~quikstats
-						if ($player~current_prompt = "Command")
-							send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
-							gosub :player~quikstats
-							if ($player~fighters <= 0)
-								setvar $switchboard~message "Fighters are gone - halting.*"
-								gosub :switchboard~switchboard
-								halt
-							end
-						end
-						goto :scanit_again
-					end
-
-			else
-				setvar $switchboard~message "Trader Is In Sector. Halting!*"
-				send "p" $homesector "*y "
-			end
+			gosub :killthem
 		end
 		if ($DISR)
 			gosub :DisRupt
@@ -353,11 +314,7 @@
 		setVar $HAZ_After SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
 		setVar $planet~planetS_After SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
 		if (SECTOR.TRADERCOUNT[$PLAYER~CURRENT_SECTOR] <> 0)
-			send "'{" & $switchboard~bot_name & "} -  Trader Is In Sector. Halting!*"
-					waiton "Message sent on sub-space channel"
-			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
-					waiton "Message sent on sub-space channel"
-			halt
+			gosub :killthem
 		end
 		if ($HAZ_Before <> $HAZ_After)
 			send "'{" & $switchboard~bot_name & "} -  NavHAZ Changed. Halting!*"
@@ -782,13 +739,19 @@ return
 		send $land_mac
 
 		gosub :PLAYER~quikstats
-		send ("'Unknown Problem Occured, at '"&$PLAYER~CURRENT_PROMPT&"' Prompt!*")
 		if ($player~current_prompt = "Citadel")
 			loadvar $game~PHOTON_DURATION
-			send "'{" $bot~bot_name "} - Waiting for photon to wear off..*"		 
-			setDelayTrigger restart_from_photon2 :DisRupt (($game~photon_duration * 60000) + 1000)
-			pause
-		end		
+			if (($photoned = true) and ($PLAYER~unlimitedGame = true))
+				loadvar $game~PHOTON_DURATION
+				send "L Z" & #8 & $planet~planet  & "*  c * "
+				setvar $switchboard~message "Waiting for photon to wear off..*"	
+				gosub :switchboard~switchboard	 
+				setDelayTrigger restart_from_photon2 :DisRupt (($game~photon_duration * 60000) + 1000)
+				pause
+			end
+		end
+		setvar $switchboard~message "Unknown Problem Occured, at "&$PLAYER~CURRENT_PROMPT&" Prompt!*"
+		gosub :switchboard~switchboard
 		halt
 	:Scan_Complete
 		killAllTriggers
@@ -1152,6 +1115,8 @@ return
 		setvar $minesToDeploy $grid_armids
 		setvar $limpsToDeploy $grid_limpets
 		gosub :modules~clear
+		setSectorParameter $PLAYER~CURRENT_SECTOR "MINESEC" TRUE
+		setSectorParameter $PLAYER~CURRENT_SECTOR "LIMPSEC" TRUE
 		setVar $LAID_ARMID TRUE
 		setVar $LAID_LIMP TRUE
 	end
@@ -1394,6 +1359,48 @@ return
 	waitfor "<Hardware Emporium>"
 	return
 
+:killthem
+	if ($kill = true)
+		:scanit_again
+			killAllTriggers
+			gosub :player~quikstats
+			gosub :sector~getSectorData
+			setvar $planet~planet_count SECTOR.PLANETCOUNT[$player~current_sector]
+			if (($planet~planet_count = 1) and ($overide = false))
+				setvar $one_planet true
+				setvar $player~override true
+			else
+				setvar $player~override $override
+			end
+			if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+				goSub :combat~fastCitadelAttack
+				if ($player~fighters <= 0)
+					setvar $switchboard~message "Fighters are gone - halting.*"
+					gosub :switchboard~switchboard
+					halt
+				end
+				goto :scanit_again
+			elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
+				setvar $player~startinglocation "Citadel"
+				gosub :combat~fastCapture
+				gosub :player~quikstats
+				if ($player~current_prompt = "Command")
+					send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+					gosub :player~quikstats
+					if ($player~fighters <= 0)
+						setvar $switchboard~message "Fighters are gone - halting.*"
+						gosub :switchboard~switchboard
+						halt
+					end
+				end
+				goto :scanit_again
+			end
+
+	else
+		setvar $switchboard~message "Trader Is In Sector. Halting!*"
+		send "p" $homesector "*y "
+	end
+return
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
