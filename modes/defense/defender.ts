@@ -469,13 +469,21 @@
 		if ($photon~shooting_count > 1)
 			setvar $switchboard~message "Holokill with more than "&$photon~shooting_count&" photons is not advised.  Be careful.*"
 		else
-			setvar $switchboard~message "Holokill with more than "&$photon~shooting_count&" photon is not advised.  Be careful.*"
+			if ($photon~shooting_count = 0)
+				setvar $switchboard~message "Holokill photons is not advised.  Especially since you have photons turned off. Be careful.*"
+			else
+				setvar $switchboard~message "Holokill with more than "&$photon~shooting_count&" photon is not advised.  Be careful.*"
+			end
 		end
 		gosub :switchboard~switchboard
 	elseif (($killing~holokill = true) and ($nophoton = true) and ($player~photons > 0))
 		setvar $switchboard~message "You are running holokill with a photon, with photon mode off.  Could be a recipe for disaster.  Be careful out there.*"
 		gosub :switchboard~switchboard
 	end
+
+	# to allow twarp routine with photon #
+	setvar $settings~override true
+
 
 	###########################################
 	# Main information processor for defender #
