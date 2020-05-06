@@ -734,7 +734,7 @@ return
 	pause
 	:Whoa_WuzUp
 		killAllTriggers
-		send ("'Unknown Problem Occured, Attempting to reach Command Prompt!*  P D 0* 0* 0* * *** * C  Q  Q  Q  Q  Q  Z  2  2  C  Q  *  Z  *  ***  *  *  ^Q")
+		send ("'Unknown Problem Occured, Attempting to reach Command Prompt!*  P D 0* 0* 0* * *** * C  Q  Q  Q  Q  Q * Z  2  2  C  Q  *  Z  *  ***  *  *  ^Q")
 		waitfor ": ENDINTERROG"
 		setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  * j m  * * *  t * t 1* c * "
 		send $land_mac
