@@ -40,10 +40,6 @@
 	while (($placedLimpet = FALSE) OR ($placedArmid = FALSE))
 		gosub :clear_sector_attemptClearingMines
 	end
-	if ($startingLocation = "Citadel")
-		setVar $SWITCHBOARD~bot_name $bot~bot_name
-		gosub :PLANET~landingSub
-	end
 	setSectorParameter $PLAYER~CURRENT_SECTOR "LIMPSEC" TRUE
 	setSectorParameter $PLAYER~CURRENT_SECTOR "MINESEC" TRUE
 	setvar $switchboard~message "Sector Cleared*"
@@ -85,7 +81,9 @@
 
 	return
 	:clear_sector_deployEquipment
-		send "q qq z n *  "
+		if ($startingLocation = "Citadel")
+			send "q qq z n *  "
+		end
 		if ($player~surroundmine <= 0)
 			setvar $player~surroundmine 1
 		end
@@ -121,7 +119,9 @@
 		if (($beforeArmids > $PLAYER~ARMIDS) OR (($armidOwner = "belong to your Corp") OR ($armidOwner = "yours")))
 			setVar $placedArmid TRUE
 		end
-		send "l j"&#8&$planet~planet&"* c  "
+		if ($startingLocation = "Citadel")
+			send "l j"&#8&$planet~planet&"* c  "
+		end
 		return
 return
 
