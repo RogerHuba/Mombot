@@ -52,6 +52,7 @@
 			pause
 		end
 	:gotStats
+		killtrigger toolongprompt
 		setVar $stats $stats & " @@@"
 		setVar $current_word 0
 		while ($wordy <> "@@@")
