@@ -1100,6 +1100,7 @@ return
 		send "q  q  "&$_ARMIDS_&$_LIMPS_&" l "&$planet~planet&"*  c  "
 		setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
 		setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
+		pause
 		gosub :PLAYER~quikstats
 		waiton "Citadel command"
 
