@@ -201,7 +201,7 @@
 	setVar $homesector $PLAYER~CURRENT_SECTOR
 
 	gosub :ship~getshipstats
-	
+
 	killalltriggers
 	goSub :checkAvoidedSectors
 	send "q"
@@ -1021,7 +1021,7 @@ return
 	if ($cannon = true)
 		send "q"
 		gosub :PLANET~getPlanetInfo
-		setVar $percentToSet (((3*$sector_total)*100)/$planet~planet_FUEL)
+		setVar $percentToSet (((3*$cannonDamage)*100)/$planet~planet_FUEL)
 		if (((($planet~planet_FUEL * $percentToSet) / 100)/3) < $cannonDamage)
 			add $percentToSet 1
 		end
