@@ -123,9 +123,15 @@
 		return
 return
 
-:disconnect
-	disconnect
-	goto :backfromdisconnect
+:pickgame
+	killtrigger 2
+	killtrigger 3
+	send $BOT~letter&"  *  "
+	waiton "[Pause]"
+	send " * "
+	goto :enter_choice
+
+
 
 include "source\bot_includes\player\quikstats\player"
 include "source\module_includes\bot\checkstartingprompt\bot"
