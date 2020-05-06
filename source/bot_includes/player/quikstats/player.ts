@@ -10,8 +10,10 @@
 		setvar $towed ""
 	end
 	loadvar $unlimitedGame
+	:trypromptagain
 	setTextLineTrigger  prompt      :allPrompts     #145 & #8
 	setTextLineTrigger  statlinetrig    :statStart      #179
+	setdelaytrigger  toolongprompt      :trypromptagain     10000
 	send #145&"/"
 	pause
 	:allPrompts
