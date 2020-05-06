@@ -59,8 +59,30 @@
 		gosub :clear_sector_deployEquipment
 		return
 	:clear_sector_xenter
-		send "q y n * t* * *" $bot~password "*    *    *       za9999*   z*   "
-		return
+		if ($startingLocation = "Command")
+			setvar $exit_mac "q y n * "
+			setvar $exit_enter " t* * *"&$BOT~password&"*    *    *       za9999*   z*   /"
+		else
+			setvar $exit_mac "r   y   * * "
+			setvar $exit_enter " t* * *"&$BOT~password&"*    *    *    m * * *   q  *    *    *     za9999*   z*   f z1* z c d *  l j"&#8&$planet~planet&"* c  /"
+		end
+		killtrigger 1
+		killtrigger 2
+		killtrigger 3
+		send $exit_mac
+		settexttrigger 1 :pickgame "Selection (? for menu)"
+		settexttrigger 2 :enter_choice "Enter your choice:"
+		settexttrigger 3 :pickgame $game~game_menu_prompt
+		pause
+		:enter_choice
+
+		killtrigger 1
+		killtrigger 2
+		killtrigger 3
+		send $exit_enter
+		waitOn #179
+
+	return
 	:clear_sector_deployEquipment
 		if ($player~surroundmine <= 0)
 			setvar $player~surroundmine 1
@@ -90,6 +112,9 @@
 			setVar $clearMac $clearMac&"h  2  z " & $limpsToDeploy & "*  z c  *   "
 		end
 		send $clearMac
+		killtrigger disconnectcheck
+		setdelaytrigger disconnectcheck :disconnect 10000
+		:backfromdisconnect
 		gosub :PLAYER~quikstats
 		if (($beforeLimpets > $PLAYER~LIMPETS) OR (($limpetOwner = "belong to your Corp") OR ($limpetOwner = "yours")))
 			setVar $placedLimpet TRUE
@@ -99,6 +124,10 @@
 		end
 		return
 return
+
+:disconnect
+	disconnect
+	goto :backfromdisconnect
 
 include "source\bot_includes\player\quikstats\player"
 include "source\module_includes\bot\checkstartingprompt\bot"
