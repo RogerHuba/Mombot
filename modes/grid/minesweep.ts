@@ -849,7 +849,9 @@ return
 	setVar $checked ""
 	setVar $i 1
 	while ($i <= $nearest)
+
 		setVar $focus $nearest[$i]
+		echo "***[CHECKING FOR NEXT SECTOR " $FOCUS "]***"
 		setVar $checked $checked&" "&$PLAYER~CURRENT_SECTOR&" "
 
 		getWordPos $avoidedSectors $pos " "&$focus&" "
