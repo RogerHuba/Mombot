@@ -1112,9 +1112,10 @@ return
 		waiton "Citadel command"
 
 	else
-		setvar $minesToDeploy $grid_armids
-		setvar $limpsToDeploy $grid_limpets
+		setvar $modules~minesToDeploy $grid_armids
+		setvar $modules~limpsToDeploy $grid_limpets
 		gosub :modules~clear
+		gosub player~quikstats
 		setSectorParameter $PLAYER~CURRENT_SECTOR "MINESEC" TRUE
 		setSectorParameter $PLAYER~CURRENT_SECTOR "LIMPSEC" TRUE
 		setVar $LAID_ARMID TRUE
