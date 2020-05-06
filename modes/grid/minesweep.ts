@@ -296,11 +296,14 @@
 			end
 		end
 		gosub :findNextTarget
-		gosub :PLAYER~quikstats
 		send "  sz*    "
 		Waiton "Warps to Sector(s) :"
+		gosub :PLAYER~quikstats
 		setVar $HAZ_Before SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
 		setVar $planet~planetS_Before SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
+		if ($planet~planetS_Before = 0)
+			setvar $planet~planetS_Before 1
+		end
 		if (SECTOR.TRADERCOUNT[$PLAYER~CURRENT_SECTOR] <> 0)
 			gosub :killthem
 		end
@@ -308,30 +311,28 @@
 			gosub :DisRupt
 		end
 		gosub :clearSector
-		gosub :PLAYER~quikstats
 		send "  sz*    "
 		Waiton "Warps to Sector(s) :"
+		gosub :PLAYER~quikstats
 		setVar $HAZ_After SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
 		setVar $planet~planetS_After SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
 		if (SECTOR.TRADERCOUNT[$PLAYER~CURRENT_SECTOR] <> 0)
 			gosub :killthem
 		end
 		if ($HAZ_Before <> $HAZ_After)
-			send "'{" & $switchboard~bot_name & "} -  NavHAZ Changed. Halting!*"
-					waiton "Message sent on sub-space channel"
+			setvar $switchboard~message "NavHAZ Changed. Halting!*"
+			gosub :switchboard~switchboard
 			send "'" & $switchboard~bot_name & " holo*"
-					waiton "Sub-space comm-link terminated"
-			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
-					waiton "Message sent on sub-space channel"
+			waiton "Sub-space comm-link terminated"
+			send "p" $homesector "*y "
 			halt
 		end
-#		if ($planet~planetS_After > $planet~planetS_Before)
-#			send "'{" & $switchboard~bot_name & "} -  New Planet in Sector. Halting!*"
-#					waiton "Message sent on sub-space channel"
-#			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
-#					waiton "Message sent on sub-space channel"
-#			halt
-#		end
+		if ($planet~planetS_After > $planet~planetS_Before)
+			setvar $switchboard~message "New Planet in Sector. Halting!*"
+			gosub :switchboard~switchboard
+			send "p" $homesector "*y "
+			halt
+		end
 		if ($passive_surround)
 			setvar $PLAYER~surroundOverwrite FALSE
 			setVar $PLAYER~surroundPassive   TRUE
@@ -855,19 +856,10 @@ return
 		getSectorParameter $focus "FIGSEC" $isFigged
 		getSectorParameter $focus "MINESEC" $isArmided
 		getSectorParameter $focus "LIMPSEC" $isLimped
-		isNumber $tst $isFigged
-		if ($tst = 0)
-			setVar $isFigged FALSE
-		end
-		isNumber $tst $isLimped
-		if ($tst = 0)
-			setVar $isLimped FALSE
-		end
-		isNumber $tst $isArmided
-		if ($tst = 0)
-			setVar $isArmided FALSE
-		end
 
+		if ($focus = $player~current_sector)
+			goto :next_poss_targ
+		end
 		if ($border = TRUE)
 			setVar $p 1
 			while (SECTOR.WARPS[$focus][$p] > 0)
@@ -892,7 +884,7 @@ return
 		end
 
 		:WE_GOT_GAME
-		if ((($isLimped <= 0) OR ($isArmided <= 0)) AND ($isFigged > 0) AND ($pos <= 0))
+		if ((($isLimped <> true) OR ($isArmided <> true)) AND ($isFigged = true) AND ($pos <= 0))
 			getDistance $distanceThere $PLAYER~CURRENT_SECTOR $focus
 			getDistance $distanceBack $focus $PLAYER~CURRENT_SECTOR
 			if ($distanceThere < 0)
@@ -907,8 +899,8 @@ return
 			end
 			if (($distanceThere > 30) AND ($LongJumpLimit <> 0))
 				setVar $SWITCHBOARD~message "Next fighter is over 30 hops away, stopping mine sweeper.*"
-		gosub :SWITCHBOARD~switchboard
-						gosub :goHome
+				gosub :SWITCHBOARD~switchboard
+				gosub :goHome
 				halt
 			else
 				subtract $LongJumpLimit 1
