@@ -59,7 +59,7 @@
 		gosub :clear_sector_deployEquipment
 		return
 	:clear_sector_xenter
-		send "q y n * t* * *" $bot~password "*    *    *       za9999*   z*   * "
+		send "q y n * t* * *" $bot~password "*    *    *       za9999*   z*   "
 		return
 	:clear_sector_deployEquipment
 		if ($player~surroundmine <= 0)
@@ -84,17 +84,13 @@
 		end
 		setVar $clearMac ""
 		if (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours"))
-			setVar $clearMac $clearMac&"h  1  z " & $minesToDeploy & "*  z c  * * "
+			setVar $clearMac $clearMac&"h  1  z " & $minesToDeploy & "*  z c  *  "
 		end
 		if (($limpetOwner <> "belong to your Corp") AND ($limpetOwner <> "yours"))
-			setVar $clearMac $clearMac&"h  2  z " & $limpsToDeploy & "*  z c  * * "
+			setVar $clearMac $clearMac&"h  2  z " & $limpsToDeploy & "*  z c  *   "
 		end
 		send $clearMac
-		:tryagainstats
-		killtrigger waitforstats
-		setdelaytrigger waitforstats :tryagainstats 5000
 		gosub :PLAYER~quikstats
-
 		if (($beforeLimpets > $PLAYER~LIMPETS) OR (($limpetOwner = "belong to your Corp") OR ($limpetOwner = "yours")))
 			setVar $placedLimpet TRUE
 		end
