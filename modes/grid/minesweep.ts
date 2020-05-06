@@ -310,11 +310,9 @@
 		if ($DISR)
 			gosub :DisRupt
 		end
-		echo "***ENTERING CLEARING SECTOR***"
 		gosub :clearSector
 		send "  sz*    "
 		Waiton "Warps to Sector(s) :"
-		echo "***DONE CLEARING SECTOR***"
 		gosub :PLAYER~quikstats
 		setVar $HAZ_After SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
 		setVar $planet~planetS_After SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
@@ -976,6 +974,7 @@ return
 
 	if ($cannon = true)
 		send "q"
+		killalltriggers
 		gosub :PLANET~getPlanetInfo
 		setVar $percentToSet (((3*$cannonDamage)*100)/$planet~planet_FUEL)
 		if (((($planet~planet_FUEL * $percentToSet) / 100)/3) < $cannonDamage)
@@ -1031,7 +1030,7 @@ return
 	if ($PLAYER~CURRENT_PROMPT = "Command")
 		send "l "&$planet~planet&"* m * * * c "
 	end
-	return
+return
 
 :xenter
 	
