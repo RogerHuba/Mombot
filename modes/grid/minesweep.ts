@@ -1150,7 +1150,7 @@ return
 
 	else
 		if ($FAST)
-			send "q  q  q  z   n  *   "
+			#send "q  q  q  z   n  *   "
 			setVar $BOT~command "xenter"
 			setVar $BOT~user_command_line " xenter 3 silent "
 			setVar $BOT~parm1 "3"
