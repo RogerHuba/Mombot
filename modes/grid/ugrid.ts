@@ -1004,10 +1004,12 @@ return
 	getCourse $course $player~current_sector $destination
 	setVar $index 1
 	while ($index <= $course)
-		if (($FIGHTER_GRID[$COURSE[$index]] <= 0) AND ($COURSE[$index] <> $originalDestination))
+		getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
+	
+		if (($isFigged = true) AND ($COURSE[$index] <> $originalDestination))
 			setVar $destination $COURSE[$index]
-                elseif ($COURSE[$index] <> $originalDestination)
-		    	setVar $destination $originalDestination
+		elseif ($COURSE[$index] <> $originalDestination)
+			setVar $destination $originalDestination
 		end
 		add $index 1
 
