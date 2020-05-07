@@ -730,8 +730,17 @@ return
 	end
 	setDelayTrigger		Whoa_WuzUp		:Whoa_WuzUp		4000
 	setTextLineTrigger	Scan_Complete	:Scan_Complete	"Warps to Sector(s)"
-	send (" Q Q S  H* ")
+	settextlinetrigger surroundscan :donesurroundscan "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
+	settexttrigger surroundscanfail :donesurroundscan "Do you want instructions (Y/N) [N]?"
+	send "q q szh" 
 	pause
+
+	:donesurroundscan
+		killtrigger surroundscan
+		killtrigger surroundscanfail
+		send "* " 
+		pause
+		
 	:Whoa_WuzUp
 		killAllTriggers
 		send ("'Unknown Problem Occured, Attempting to reach Command Prompt!*  P D 0* 0* 0* * *** * C  Q  Q  Q  Q  Q * Z  2  2  C  Q  *  Z  *  ***  *  *  ^Q")
