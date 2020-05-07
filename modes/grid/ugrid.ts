@@ -78,9 +78,24 @@
 	        setVar $targetFile $bot~parm1
 		fileexists $test $targetFile
 		if ($test = FALSE)
-		      send "'{" $bot~bot_name "} - Grid target file: [" $targetFile "] does not exist, shutting down..*"
-		      halt
-                else
+			#assume param#
+			setvar $i 1
+			setarray $targetSectors sectors
+			setvar $targetSectors 0
+			while ($i <= SECTORS)
+				getSectorParameter $i $targetFile $isTarget
+				if ($isTarget = true)
+					add $targetSectors 1
+					setvar $targetSectors[$targetSectors] $i
+				end
+				add $i 1
+			end
+			if ($targetSectors = 0)
+				setvar $switchboard~message "Parameter entered not a file or sector param.  Try again.*"
+				gosub :switchboard~switchboard
+				halt
+			end
+		else
 		      readToArray $targetFile $targetSectors
 		end
 	end
