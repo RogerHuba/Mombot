@@ -748,8 +748,8 @@ return
 		setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  * j m  * * *  t * t 1* c * "
 		send $land_mac
 
-		gosub :PLAYER~quikstats
 		:donesurroundscanfail
+		gosub :PLAYER~quikstats
 		loadvar $game~PHOTON_DURATION
 		if ($PLAYER~UnlimitedGame = true)
 			loadvar $game~PHOTON_DURATION
