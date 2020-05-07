@@ -42,7 +42,7 @@
 		settexttrigger 2 :enter_choice_xenter "Enter your choice:"
 		settexttrigger 3 :pickgame $game~game_menu_prompt
 		pause
-		:enter_choice
+		:enter_choice_xenter
 
 		killtrigger 1
 		killtrigger 2
