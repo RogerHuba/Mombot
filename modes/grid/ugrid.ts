@@ -82,6 +82,7 @@
 			setvar $i 1
 			setarray $targetSectors sectors
 			setvar $targetSectors 0
+			uppercase $targetFile
 			while ($i <= SECTORS)
 				getSectorParameter $i $targetFile $isTarget
 				if ($isTarget = true)
