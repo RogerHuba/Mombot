@@ -731,7 +731,7 @@ return
 	setDelayTrigger		Whoa_WuzUp		:Whoa_WuzUp		4000
 	setTextLineTrigger	Scan_Complete	:Scan_Complete	"Warps to Sector(s)"
 	settextlinetrigger surroundscan :donesurroundscan "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
-	settexttrigger surroundscanfail :donesurroundscan "Do you want instructions (Y/N) [N]?"
+	settexttrigger surroundscanfail :donesurroundscanfail "Do you want instructions (Y/N) [N]?"
 	send "q q szh" 
 	pause
 
@@ -740,7 +740,7 @@ return
 		killtrigger surroundscanfail
 		send "* " 
 		pause
-		
+
 	:Whoa_WuzUp
 		killAllTriggers
 		send ("'Unknown Problem Occured, Attempting to reach Command Prompt!*  P D 0* 0* 0* * *** * C  Q  Q  Q  Q  Q * Z  2  2  C  Q  *  Z  *  ***  *  *  ^Q")
@@ -749,16 +749,17 @@ return
 		send $land_mac
 
 		gosub :PLAYER~quikstats
-		if ($player~current_prompt = "Citadel")
+		:donesurroundscanfail
+		loadvar $game~PHOTON_DURATION
+		if ($PLAYER~UnlimitedGame = true)
 			loadvar $game~PHOTON_DURATION
-			if ($PLAYER~unlimitedGame = true)
-				loadvar $game~PHOTON_DURATION
-				send "L Z" & #8 & $planet~planet  & "*  c * "
-				setvar $switchboard~message "Waiting for photon to wear off..*"	
-				gosub :switchboard~switchboard	 
-				setDelayTrigger restart_from_photon2 :DisRupt (($game~photon_duration * 60000) + 1000)
-				pause
+			if ($player~current_prompt <> "Citadel")
+				send "q q q * L Z" & #8 & $planet~planet  & "*  c * "
 			end
+			setvar $switchboard~message "Waiting for photon to wear off..*"	
+			gosub :switchboard~switchboard	 
+			setDelayTrigger restart_from_photon2 :DisRupt (($game~photon_duration * 60000) + 1000)
+			pause
 		end
 		setvar $switchboard~message "Unknown Problem Occured, at "&$PLAYER~CURRENT_PROMPT&" Prompt!*"
 		gosub :switchboard~switchboard
