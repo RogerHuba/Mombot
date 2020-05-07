@@ -742,7 +742,7 @@ return
 		gosub :PLAYER~quikstats
 		if ($player~current_prompt = "Citadel")
 			loadvar $game~PHOTON_DURATION
-			if ($PLAYER~unlimitedGame = true))
+			if ($PLAYER~unlimitedGame = true)
 				loadvar $game~PHOTON_DURATION
 				send "L Z" & #8 & $planet~planet  & "*  c * "
 				setvar $switchboard~message "Waiting for photon to wear off..*"	
