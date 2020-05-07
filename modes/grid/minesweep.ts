@@ -1055,10 +1055,11 @@ return
 				killtrigger 1
 				killtrigger 2
 				killtrigger 3
+				killtrigger 4
 				setTextTrigger 1 :no_bwarp_lock "Do you want to make this transport blind?"
 				setTextTrigger 2 :bwarp_lock "All Systems Ready, shall we engage?"
 				setTextLineTrigger 3 :bwarpNoFuel "This planet does not have enough Fuel Ore to transport you."
-
+				settexttrigger 4 :switchtononbwarp "Your ship was hit by a Photon and has been disabled."
 				send $bwarp_move
 				pause
 
@@ -1107,6 +1108,7 @@ return
 		waiton "Citadel command"
 
 	else
+		:switchtononbwarp
 		setvar $modules~minesToDeploy $grid_armids
 		setvar $modules~limpsToDeploy $grid_limpets
 		gosub :modules~clear
