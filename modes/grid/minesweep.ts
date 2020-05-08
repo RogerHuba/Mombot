@@ -1124,6 +1124,10 @@ return
 		:switchtononbwarp
 		setvar $modules~minesToDeploy $grid_armids
 		setvar $modules~limpsToDeploy $grid_limpets
+		gosub :player~quikstats
+		if ($player~current_prompt = "Qcannon")
+			send "s" $percentToSet "* "
+		end
 		gosub :modules~clear
 		gosub :player~quikstats
 		setSectorParameter $PLAYER~CURRENT_SECTOR "MINESEC" TRUE
