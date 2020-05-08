@@ -1115,7 +1115,7 @@ return
 			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
 		end
 
-		send "q  q  * "&$_ARMIDS_&$_LIMPS_&" * l "&$planet~planet&"*  c  "
+		send "q  q  "&$_ARMIDS_&$_LIMPS_&" l "&$planet~planet&"*  c  "
 		
 		gosub :PLAYER~quikstats
 		waiton "Citadel command"
@@ -1129,7 +1129,6 @@ return
 			send "s" $percentToSet "* "
 			gosub :player~quikstats
 		end
-		send "q q q * "
 		gosub :modules~clear
 		gosub :player~quikstats
 		setSectorParameter $PLAYER~CURRENT_SECTOR "MINESEC" TRUE
