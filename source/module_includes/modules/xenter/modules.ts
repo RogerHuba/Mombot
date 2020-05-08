@@ -39,10 +39,10 @@
 		killtrigger 3
 		send $exit_mac
 		settexttrigger 1 :pickgame "Selection (? for menu)"
-		settexttrigger 2 :enter_choice "Enter your choice:"
+		settexttrigger 2 :enter_choice_xenter "Enter your choice:"
 		settexttrigger 3 :pickgame $game~game_menu_prompt
 		pause
-		:enter_choice
+		:enter_choice_xenter
 
 		killtrigger 1
 		killtrigger 2
@@ -82,7 +82,7 @@
 		send $BOT~letter&"  *  "
 		waiton "[Pause]"
 		send " * "
-		goto :enter_choice
+		goto :enter_choice_xenter
 goto :bot~wait_for_command
 
 include "source\bot_includes\player\quikstats\player"

@@ -1,10 +1,11 @@
 :clear
+	loadvar $game~game_menu_prompt
 	gosub :PLAYER~QUIKSTATS
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ((currentsector = $map~stardock) or (currentsector <= 10))
 		setVar $SWITCHBOARD~message "Can't clear fedspace.*"
 		gosub :SWITCHBOARD~switchboard
-		goto :BOT~wait_for_command
+		return
 	end
 	setVar $bot~validPrompts "Command Citadel"
 	gosub :bot~checkStartingPrompt
@@ -25,36 +26,25 @@
 	setVar $armidOwner SECTOR.MINES.OWNER[$PLAYER~CURRENT_SECTOR]
 	if (($PLAYER~LIMPETS <= 0) AND (($limpetOwner <> "belong to your Corp") AND ($limpetOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Need limpets to clear this sector*"
-		gosub :SWITCHBOARD~switchboard
-		goto :BOT~wait_for_command 
+		return 
 	end
 	if (($PLAYER~ARMIDS <= 0) AND (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours")))
 		setVar $SWITCHBOARD~message "Need armids to clear this sector*"
-		gosub :SWITCHBOARD~switchboard
-		goto :BOT~wait_for_command
+		return
 	end
 	if ((($limpetOwner = "belong to your Corp") or ($limpetOwner = "yours")) and (($armidOwner = "belong to your Corp") or ($armidOwner = "yours")))
 		setVar $SWITCHBOARD~message "Current Sector Already Clear of Enemy Mines!*"
-		gosub :SWITCHBOARD~switchboard
-		goto :BOT~wait_for_command
+		return
 	end
-	setvar $switchboard~message "Clearing Current Sector*"
-	gosub :SWITCHBOARD~switchboard
-	send "q qq z n *  "
 	gosub :clear_sector_deployEquipment
 	while (($placedLimpet = FALSE) OR ($placedArmid = FALSE))
 		gosub :clear_sector_attemptClearingMines
 	end
-	if ($startingLocation = "Citadel")
-		setVar $SWITCHBOARD~bot_name $bot~bot_name
-		gosub :PLANET~landingSub
-	end
 	setSectorParameter $PLAYER~CURRENT_SECTOR "LIMPSEC" TRUE
 	setSectorParameter $PLAYER~CURRENT_SECTOR "MINESEC" TRUE
 	setvar $switchboard~message "Sector Cleared*"
-	gosub :SWITCHBOARD~switchboard
 		
-	goto :BOT~wait_for_command
+	return
 	
 	:clear_sector_attemptClearingMines
 		setVar $i 0
@@ -62,28 +52,57 @@
 			gosub :clear_sector_xenter
 			add $i 1
 		end
+		gosub :player~quikstats
 		gosub :clear_sector_deployEquipment
 		return
 	:clear_sector_xenter
-		send "q y n * t* * *" $bot~password "*    *    *       za9999*   z*   "
-		return
+		if ($startingLocation = "Command")
+			setvar $exit_mac "q y n * "
+			setvar $exit_enter " t* * *"&$BOT~password&"*    *    *       za9999*   z*   /"
+		else
+			setvar $exit_mac "r   y   * * "
+			setvar $exit_enter " t* * *"&$BOT~password&"*    *    *    m * * *   q  *    *    *     za9999*   z*   f z1* z c d *  l j"&#8&$planet~planet&"* c  /"
+		end
+		killtrigger 1
+		killtrigger 2
+		killtrigger 3
+		send $exit_mac
+		settexttrigger 1 :pickgame "Selection (? for menu)"
+		settexttrigger 2 :enter_choice "Enter your choice:"
+		settexttrigger 3 :pickgame $game~game_menu_prompt
+		pause
+		:enter_choice
+
+		killtrigger 1
+		killtrigger 2
+		killtrigger 3
+		send $exit_enter
+		waitOn #179
+
+	return
 	:clear_sector_deployEquipment
+		if ($startingLocation = "Citadel")
+			send "q qq z n *  "
+		end
 		if ($player~surroundmine <= 0)
 			setvar $player~surroundmine 1
 		end
 		if ($player~surroundlimp <= 0)
 			setvar $player~surroundlimp 1
 		end
-
-		if ($PLAYER~ARMIDS < $player~surroundmine)
-			setVar $minesToDeploy $PLAYER~ARMIDS
-		else
-			setVar $minesToDeploy $player~surroundmine
+		if ($minesToDeploy <= 0)
+			if ($PLAYER~ARMIDS < $player~surroundmine)
+				setVar $minesToDeploy $PLAYER~ARMIDS
+			else
+				setVar $minesToDeploy $player~surroundmine
+			end
 		end
-		if ($PLAYER~LIMPETS < $player~surroundlimp)
-			setVar $limpsToDeploy $PLAYER~LIMPETS
-		else
-			setVar $limpsToDeploy $player~surroundlimp
+		if ($limpsToDeploy <= 0)
+			if ($PLAYER~LIMPETS < $player~surroundlimp)
+				setVar $limpsToDeploy $PLAYER~LIMPETS
+			else
+				setVar $limpsToDeploy $player~surroundlimp
+			end
 		end
 		setVar $clearMac ""
 		if (($armidOwner <> "belong to your Corp") AND ($armidOwner <> "yours"))
@@ -100,8 +119,21 @@
 		if (($beforeArmids > $PLAYER~ARMIDS) OR (($armidOwner = "belong to your Corp") OR ($armidOwner = "yours")))
 			setVar $placedArmid TRUE
 		end
+		if ($startingLocation = "Citadel")
+			send "l j"&#8&$planet~planet&"* c  "
+		end
 		return
-goto :BOT~wait_for_command
+return
+
+:pickgame
+	killtrigger 2
+	killtrigger 3
+	send $BOT~letter&"  *  "
+	waiton "[Pause]"
+	send " * "
+	goto :enter_choice
+
+
 
 include "source\bot_includes\player\quikstats\player"
 include "source\module_includes\bot\checkstartingprompt\bot"

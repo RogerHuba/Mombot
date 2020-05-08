@@ -31,7 +31,7 @@
 		add $i 1
 	end
 	setvar $switchboard~message "No Adjacent fig found!*"
-	gosub :switchboard~switchboard
+	#gosub :switchboard~switchboard
 return
 :fire_adjacent
 	killalltriggers

@@ -168,6 +168,18 @@
 		end
 	end
 
+	getWordPos $TEMP $pos " cannon:"
+	if ($pos = 0)
+		setVar $cannon false
+	else
+		setvar $cannon true
+		getText $TEMP $cannonDamage " cannon:" " "
+		isNumber $tst $cannonDamage
+		if ($tst = 0)
+			setVar $cannonDamage 450000
+		end
+	end
+
 	getWordPos $TEMP $pos " a:"
 	if ($pos = 0)
 		setVar $grid_armids 0
@@ -187,6 +199,8 @@
 
 	gosub :PLAYER~getInfo
 	setVar $homesector $PLAYER~CURRENT_SECTOR
+
+	gosub :ship~getshipstats
 
 	killalltriggers
 	goSub :checkAvoidedSectors
@@ -282,50 +296,43 @@
 			end
 		end
 		gosub :findNextTarget
-		gosub :PLAYER~quikstats
 		send "  sz*    "
 		Waiton "Warps to Sector(s) :"
+		gosub :PLAYER~quikstats
 		setVar $HAZ_Before SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
 		setVar $planet~planetS_Before SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
+		if ($planet~planetS_Before = 0)
+			setvar $planet~planetS_Before 1
+		end
 		if (SECTOR.TRADERCOUNT[$PLAYER~CURRENT_SECTOR] <> 0)
-			send "'{" & $switchboard~bot_name & "} -  Trader Is In Sector. Halting!*"
-					waiton "Message sent on sub-space channel"
-			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
-					waiton "Message sent on sub-space channel"
-			halt
+			gosub :killthem
 		end
 		if ($DISR)
 			gosub :DisRupt
 		end
 		gosub :clearSector
-		gosub :PLAYER~quikstats
 		send "  sz*    "
 		Waiton "Warps to Sector(s) :"
+		gosub :PLAYER~quikstats
 		setVar $HAZ_After SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
 		setVar $planet~planetS_After SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
 		if (SECTOR.TRADERCOUNT[$PLAYER~CURRENT_SECTOR] <> 0)
-			send "'{" & $switchboard~bot_name & "} -  Trader Is In Sector. Halting!*"
-					waiton "Message sent on sub-space channel"
-			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
-					waiton "Message sent on sub-space channel"
-			halt
+			gosub :killthem
 		end
 		if ($HAZ_Before <> $HAZ_After)
-			send "'{" & $switchboard~bot_name & "} -  NavHAZ Changed. Halting!*"
-					waiton "Message sent on sub-space channel"
+			setvar $switchboard~message "NavHAZ Changed. Halting!*"
+			gosub :switchboard~switchboard
 			send "'" & $switchboard~bot_name & " holo*"
-					waiton "Sub-space comm-link terminated"
-			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
-					waiton "Message sent on sub-space channel"
+			waiton "Sub-space comm-link terminated"
+			send "p" $homesector "*y "
 			halt
 		end
-#		if ($planet~planetS_After > $planet~planetS_Before)
-#			send "'{" & $switchboard~bot_name & "} -  New Planet in Sector. Halting!*"
-#					waiton "Message sent on sub-space channel"
-#			send "'" & $switchboard~bot_name & " pwarp " & $homesector & "*"
-#					waiton "Message sent on sub-space channel"
-#			halt
-#		end
+		if ($planet~planetS_After > $planet~planetS_Before)
+			setvar $switchboard~message "New Planet in Sector. Halting!*"
+			gosub :switchboard~switchboard
+			send "p" $homesector "*y "
+			halt
+		end
 		if ($passive_surround)
 			setvar $PLAYER~surroundOverwrite FALSE
 			setVar $PLAYER~surroundPassive   TRUE
@@ -522,17 +529,21 @@ return
 		if ($msg = "")
 			waitfor "You leave the Galactic Bank."
 		else
-			if ($photoned = true)
+			if (($photoned = true) and ($PLAYER~unlimitedGame = true))
 				loadvar $game~PHOTON_DURATION
 				send "L Z" & #8 & $planet~planet  & "*  c * "
-				send "'{" $bot~bot_name "} - Waiting for photon to wear off..*"		 
+				setvar $switchboard~message "Waiting for photon to wear off..*"	
+				gosub :switchboard~switchboard	 
 				setDelayTrigger restart_from_photon :attemptRefurb (($game~photon_duration * 60000) + 1000)
 				pause
 
 			else
-				setVar $SWITCHBOARD~message "Unknown Problem Detected. Check TA!*"
+				if ($photoned = true)
+					setVar $SWITCHBOARD~message "I've been photoned, so not getting turns until the top of the hour.*"
+				else
+					setVar $SWITCHBOARD~message "Unknown Problem Detected. Check TA!*"
+				end
 				gosub :SWITCHBOARD~switchboard
-				send "*"
 				halt
 			end
 		end
@@ -719,23 +730,42 @@ return
 	end
 	setDelayTrigger		Whoa_WuzUp		:Whoa_WuzUp		4000
 	setTextLineTrigger	Scan_Complete	:Scan_Complete	"Warps to Sector(s)"
-	send (" Q Q S  H* ")
+	settextlinetrigger surroundscan :donesurroundscan "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
+	settexttrigger surroundscanfail :donesurroundscanfail "Do you want instructions (Y/N) [N]?"
+	send "q q szh" 
 	pause
+
+	:donesurroundscan
+		killtrigger surroundscan
+		killtrigger surroundscanfail
+		send "* " 
+		pause
+
 	:Whoa_WuzUp
 		killAllTriggers
-		send ("'Unknown Problem Occured, Attempting to reach Command Prompt!*  P D 0* 0* 0* * *** * C  Q  Q  Q  Q  Q  Z  2  2  C  Q  *  Z  *  ***  *  *  ^Q")
+		send ("'Unknown Problem Occured, Attempting to reach Command Prompt!*  P D 0* 0* 0* * *** * C  Q  Q  Q  Q  Q * Z  2  2  C  Q  *  Z  *  ***  *  *  ^Q")
 		waitfor ": ENDINTERROG"
 		setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  * j m  * * *  t * t 1* c * "
 		send $land_mac
 
+		:donesurroundscanfail
 		gosub :PLAYER~quikstats
-		send ("'Unknown Problem Occured, at '"&$PLAYER~CURRENT_PROMPT&"' Prompt!*")
-		if ($player~current_prompt = "Citadel")
+		loadvar $game~PHOTON_DURATION
+		if ($PLAYER~UnlimitedGame = true)
 			loadvar $game~PHOTON_DURATION
-			send "'{" $bot~bot_name "} - Waiting for photon to wear off..*"		 
-			setDelayTrigger restart_from_photon2 :DisRupt (($game~photon_duration * 60000) + 1000)
-			pause
-		end		
+			if ($player~current_prompt <> "Citadel")
+				send "q q q * L Z" & #8 & $planet~planet  & "*  c * "
+			end
+			setvar $switchboard~message "Skipping disrupting this sector because I'm photoned.*"	
+			gosub :switchboard~switchboard	 
+			return
+			#setvar $switchboard~message "Waiting for photon to wear off..*"	
+			#gosub :switchboard~switchboard	 
+			#setDelayTrigger restart_from_photon2 :DisRupt #(($game~photon_duration * 60000) + 1000)
+			#pause
+		end
+		setvar $switchboard~message "Unknown Problem Occured, at "&$PLAYER~CURRENT_PROMPT&" Prompt!*"
+		gosub :switchboard~switchboard
 		halt
 	:Scan_Complete
 		killAllTriggers
@@ -832,25 +862,15 @@ return
 	setVar $checked ""
 	setVar $i 1
 	while ($i <= $nearest)
+
 		setVar $focus $nearest[$i]
+		#echo "***[CHECKING FOR NEXT SECTOR " $FOCUS "]***"
 		setVar $checked $checked&" "&$PLAYER~CURRENT_SECTOR&" "
 
 		getWordPos $avoidedSectors $pos " "&$focus&" "
 		getSectorParameter $focus "FIGSEC" $isFigged
 		getSectorParameter $focus "MINESEC" $isArmided
 		getSectorParameter $focus "LIMPSEC" $isLimped
-		isNumber $tst $isFigged
-		if ($tst = 0)
-			setVar $isFigged FALSE
-		end
-		isNumber $tst $isLimped
-		if ($tst = 0)
-			setVar $isLimped FALSE
-		end
-		isNumber $tst $isArmided
-		if ($tst = 0)
-			setVar $isArmided FALSE
-		end
 
 		if ($border = TRUE)
 			setVar $p 1
@@ -876,7 +896,7 @@ return
 		end
 
 		:WE_GOT_GAME
-		if ((($isLimped <= 0) OR ($isArmided <= 0)) AND ($isFigged > 0) AND ($pos <= 0))
+		if ((($isLimped <> true) OR ($isArmided <> true)) AND ($isFigged = true) AND ($pos <= 0))
 			getDistance $distanceThere $PLAYER~CURRENT_SECTOR $focus
 			getDistance $distanceBack $focus $PLAYER~CURRENT_SECTOR
 			if ($distanceThere < 0)
@@ -891,8 +911,8 @@ return
 			end
 			if (($distanceThere > 30) AND ($LongJumpLimit <> 0))
 				setVar $SWITCHBOARD~message "Next fighter is over 30 hops away, stopping mine sweeper.*"
-		gosub :SWITCHBOARD~switchboard
-						gosub :goHome
+				gosub :SWITCHBOARD~switchboard
+				gosub :goHome
 				halt
 			else
 				subtract $LongJumpLimit 1
@@ -964,6 +984,23 @@ return
 
 
 :clearSector
+
+	if ($cannon = true)
+		send "q"
+		killalltriggers
+		gosub :PLANET~getPlanetInfo
+		setVar $percentToSet (((3*$cannonDamage)*100)/$planet~planet_FUEL)
+		if (((($planet~planet_FUEL * $percentToSet) / 100)/3) < $cannonDamage)
+			add $percentToSet 1
+		end
+		if ($percentToSet > 100)
+			setVar $percentToSet 100
+		end
+
+		send "c *ls"&$percentToSet&"*  "  
+	end
+
+
 	setVar  $LAID_ARMID FALSE
 	setVar	$LAID_LIMP FALSE
 	setVar $beforeSector $PLAYER~CURRENT_SECTOR
@@ -988,7 +1025,7 @@ return
 		gosub :deployEquipment
 	end
 
-	if ($FAST) OR ($NONSAFE)
+	if (($placedLimpet = FALSE) OR ($placedArmid = FALSE))
 		while (($placedLimpet = FALSE) OR ($placedArmid = FALSE))
 			gosub :attemptClearingMines
 		end
@@ -1006,7 +1043,7 @@ return
 	if ($PLAYER~CURRENT_PROMPT = "Command")
 		send "l "&$planet~planet&"* m * * * c "
 	end
-	return
+return
 
 :xenter
 	
@@ -1024,19 +1061,19 @@ return
 	if ($bwarp = true)
 		setVar $i 0
 		setvar $bwarp_move  "b"&$player~current_sector&"*"
-		setvar $bwarp_clear "y   l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  j  c  *  "
+		setvar $bwarp_clear "y   *  l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  j  c  *  "
 		
-		while ($i <= 3)
-			if ($reckless <> true)
+		if ($reckless <> true)
+			while ($i <= 5)
 				killtrigger 1
 				killtrigger 2
 				killtrigger 3
+				killtrigger 4
 				setTextTrigger 1 :no_bwarp_lock "Do you want to make this transport blind?"
 				setTextTrigger 2 :bwarp_lock "All Systems Ready, shall we engage?"
 				setTextLineTrigger 3 :bwarpNoFuel "This planet does not have enough Fuel Ore to transport you."
-			end
-			send $bwarp_move
-			if ($reckless <> true)
+				settexttrigger 4 :switchtononbwarp "Your ship was hit by a Photon and has been disabled."
+				send $bwarp_move
 				pause
 
 				:no_bwarp_lock
@@ -1051,96 +1088,63 @@ return
 					setVar $SWITCHBOARD~message "Not enough fuel on the planet! Stopping.*"
 					gosub :SWITCHBOARD~switchboard
 					halt
+				:bwarp_lock
+					send $bwarp_clear
+	
+				add $i 1
 			end
-			:bwarp_lock
-			send $bwarp_clear
-			add $i 1
+		else
+			send $bwarp_move "  " $bwarp_clear $bwarp_move "  " $bwarp_clear $bwarp_move "  " $bwarp_clear $bwarp_move "  " $bwarp_clear $bwarp_move "  " $bwarp_clear
 		end
+
 		killtrigger 1 
 		killtrigger 2
 		killtrigger 3
 		if ($grid_armids = 0)
 			setVar $_ARMIDS_ " "
+			setVar $placedArmid TRUE
 		else
 			setVar $_ARMIDS_ " h 1 z " & $grid_armids & "* z c * "
+			setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
 		end
 		if ($grid_limpets = 0)
 			setVar $_LIMPS_ " "
+			setVar $placedLimpet TRUE
 		else
 			setVar $_LIMPS_ "h 2 z " & $grid_limpets & "* z c * "
+			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
 		end
 
 		send "q  q  "&$_ARMIDS_&$_LIMPS_&" l "&$planet~planet&"*  c  "
-		setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
-		setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
+		
 		gosub :PLAYER~quikstats
 		waiton "Citadel command"
 
 	else
-		if ($FAST)
-			send "q  q  q  z   n  *   "
-			setVar $BOT~command "xenter"
-			setVar $BOT~user_command_line " xenter 3 silent "
-			setVar $BOT~parm1 "3"
-			saveVar $BOT~parm1
-			setVar $BOT~parm2 "silent"
-			saveVar $BOT~parm2
-			saveVar $BOT~command
-			saveVar $BOT~user_command_line
-			load "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
-			setEventTrigger		xenterdone		:xenterdone "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
-			pause
-			:xenterdone
-
-
-			if ($grid_armids = 0)
-				setVar $_ARMIDS_ " "
-			else
-				setVar $_ARMIDS_ " h 1 z " & $grid_armids & "* z c * "
-			end
-			if ($grid_limpets = 0)
-				setVar $_LIMPS_ " "
-			else
-				setVar $_LIMPS_ "h 2 z " & $grid_limpets & "* z c * "
-			end
-
-			send $_ARMIDS_&$_LIMPS_&" l "&$planet~planet&"*  c  "
-			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
-			setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
-			gosub :PLAYER~quikstats
-			waiton "Citadel command"
-		else
-			setVar $BOT~command "xenter"
-			setVar $BOT~user_command_line " xenter silent"
-			setVar $BOT~parm1 ""
-			saveVar $BOT~parm1
-			setVar $BOT~parm2 "silent"
-			saveVar $BOT~parm2
-			saveVar $BOT~command
-			saveVar $BOT~user_command_line
-			load "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
-			setEventTrigger		xenterdone2		:xenterdone2 "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\xenter.cts"
-			pause
-			:xenterdone2
-
-			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
-			setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
-			
-			send "q  q  *  *  h 1 z "&$grid_armids&"* z c * h 2 z "&$grid_limpets&"* z c * l "&$planet~planet&"*  c  "
-			waiton "Citadel command"
+		:switchtononbwarp
+		setvar $modules~minesToDeploy $grid_armids
+		setvar $modules~limpsToDeploy $grid_limpets
+		gosub :player~quikstats
+		if ($player~current_prompt = "Qcannon")
+			send "s" $percentToSet "* "
 		end
+		gosub :modules~clear
+		gosub :player~quikstats
+		setSectorParameter $PLAYER~CURRENT_SECTOR "MINESEC" TRUE
+		setSectorParameter $PLAYER~CURRENT_SECTOR "LIMPSEC" TRUE
+		setVar $LAID_ARMID TRUE
+		setVar $LAID_LIMP TRUE
+		setVar $placedLimpet TRUE
+		setVar $placedArmid TRUE
 	end
-	if (($LAID_ARMID <> TRUE) AND ($grid_armids > 0)) OR (($LAID_LIMP <> TRUE) AND ($grid_limpets > 0))
-		goto :attemptClearingMines
-	end
-	setVar $placedLimpet TRUE
-	setVar $placedArmid TRUE
-	return
+return
 	:LAID_ARMID
 		setVar $LAID_ARMID TRUE
+		setVar $placedArmid TRUE
 		pause
 	:LAID_LIMP
 		setVar $LAID_LIMP TRUE
+		setVar $placedLimpet TRUE
 		pause
 
 
@@ -1374,15 +1378,65 @@ return
 	waitfor "<Hardware Emporium>"
 	return
 
+:killthem
+	if ($kill = true)
+		:scanit_again
+			killAllTriggers
+			gosub :player~quikstats
+			gosub :sector~getSectorData
+			setvar $planet~planet_count SECTOR.PLANETCOUNT[$player~current_sector]
+			if (($planet~planet_count = 1) and ($overide = false))
+				setvar $one_planet true
+				setvar $player~override true
+			else
+				setvar $player~override $override
+			end
+			if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+				goSub :combat~fastCitadelAttack
+				if ($player~fighters <= 0)
+					setvar $switchboard~message "Fighters are gone - halting.*"
+					gosub :switchboard~switchboard
+					halt
+				end
+				goto :scanit_again
+			elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
+				setvar $player~startinglocation "Citadel"
+				gosub :combat~fastCapture
+				gosub :player~quikstats
+				if ($player~current_prompt = "Command")
+					send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+					gosub :player~quikstats
+					if ($player~fighters <= 0)
+						setvar $switchboard~message "Fighters are gone - halting.*"
+						gosub :switchboard~switchboard
+						halt
+					end
+				end
+				goto :scanit_again
+			end
+
+	else
+		setvar $switchboard~message "Trader Is In Sector. Halting!*"
+		send "p" $homesector "*y "
+	end
+return
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\combat\init\combat"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
-include "source\module_includes\modules\xenter\modules"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\grid\surround\grid"
 include "source\bot_includes\player\findjumpsector\player"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\ship\loadshipinfo\ship"
+include "source\bot_includes\ship\getshipcapstats\ship"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\module_includes\modules\clear\modules"
+

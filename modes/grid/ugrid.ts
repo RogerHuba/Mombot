@@ -78,9 +78,25 @@
 	        setVar $targetFile $bot~parm1
 		fileexists $test $targetFile
 		if ($test = FALSE)
-		      send "'{" $bot~bot_name "} - Grid target file: [" $targetFile "] does not exist, shutting down..*"
-		      halt
-                else
+			#assume param#
+			setvar $i 1
+			setarray $targetSectors sectors
+			setvar $targetSectors 0
+			uppercase $targetFile
+			while ($i <= SECTORS)
+				getSectorParameter $i $targetFile $isTarget
+				if ($isTarget = true)
+					add $targetSectors 1
+					setvar $targetSectors[$targetSectors] $i
+				end
+				add $i 1
+			end
+			if ($targetSectors = 0)
+				setvar $switchboard~message "Parameter entered not a file or sector param.  Try again.*"
+				gosub :switchboard~switchboard
+				halt
+			end
+		else
 		      readToArray $targetFile $targetSectors
 		end
 	end
@@ -988,10 +1004,12 @@ return
 	getCourse $course $player~current_sector $destination
 	setVar $index 1
 	while ($index <= $course)
-		if (($FIGHTER_GRID[$COURSE[$index]] <= 0) AND ($COURSE[$index] <> $originalDestination))
+		getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
+	
+		if (($isFigged = true) AND ($COURSE[$index] <> $originalDestination))
 			setVar $destination $COURSE[$index]
-                elseif ($COURSE[$index] <> $originalDestination)
-		    	setVar $destination $originalDestination
+		elseif ($COURSE[$index] <> $originalDestination)
+			setVar $destination $originalDestination
 		end
 		add $index 1
 
@@ -1009,6 +1027,7 @@ return
 
 :attemptRefurb
 :attempt_Refurb
+	:attempt_refurb_again
 	setVar $limpetCashNeeded ((($maxMines-$player~limpets)*$game~limpet_cost)+$game~limpet_removal_cost)
 	setVar $armidCashNeeded ((($maxMines-$player~armids)*$game~armid_cost))
 	setVar $cashNeeded ($limpetCashNeeded+$armidCashNeeded)
@@ -1145,8 +1164,17 @@ return
 		if ($msg = "")
 			waitfor "You leave the Galactic Bank."
 		else
-			send "'{" $bot~bot_name "} - Unknown Problem Detected. Check TA!**"
-			halt
+			if ($photoned = true)
+				setvar $switchboard~message "Waiting for photon to wear off..*"
+				gosub :switchboard~switchboard
+				setDelayTrigger restart_from_photon :attempt_refurb_again (($game~photon_duration * 60000) + 1000)
+				pause
+			else
+				setvar $switchboard~message  "Unknown Problem Detected. Check TA!*"
+				gosub :switchboard~switchboard
+				halt
+			end
+
 		end
 		gosub :player~quikstats
 
