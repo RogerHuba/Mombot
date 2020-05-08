@@ -756,13 +756,7 @@ return
 			if ($player~current_prompt <> "Citadel")
 				send "q q q * L Z" & #8 & $planet~planet  & "*  c * "
 			end
-			setvar $switchboard~message "Skipping disrupting this sector because I'm photoned.*"	
-			gosub :switchboard~switchboard	 
 			return
-			#setvar $switchboard~message "Waiting for photon to wear off..*"	
-			#gosub :switchboard~switchboard	 
-			#setDelayTrigger restart_from_photon2 :DisRupt #(($game~photon_duration * 60000) + 1000)
-			#pause
 		end
 		setvar $switchboard~message "Unknown Problem Occured, at "&$PLAYER~CURRENT_PROMPT&" Prompt!*"
 		gosub :switchboard~switchboard
