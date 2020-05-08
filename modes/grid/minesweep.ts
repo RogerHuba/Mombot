@@ -1126,7 +1126,7 @@ return
 		setvar $modules~limpsToDeploy $grid_limpets
 		gosub :player~quikstats
 		if ($player~current_prompt = "Qcannon")
-			send "s" $percentToSet "* "
+			send "s" $percentToSet "* q q q * "
 			gosub :player~quikstats
 		end
 		gosub :modules~clear
