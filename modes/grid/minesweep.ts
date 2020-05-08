@@ -1127,6 +1127,7 @@ return
 		gosub :player~quikstats
 		if ($player~current_prompt = "Qcannon")
 			send "s" $percentToSet "* "
+			gosub :player~quikstats
 		end
 		gosub :modules~clear
 		gosub :player~quikstats

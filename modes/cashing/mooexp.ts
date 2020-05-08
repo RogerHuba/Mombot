@@ -179,7 +179,7 @@ if ($player~FIGHTERS < 301)
 end
 
 
-if (($player~ore_holds < 100) and ($ice = 0))
+if (($player~ore_holds < $minOre) and ($ice = 0))
 	setVar $SWITCHBOARD~message "MooExp - We need ore in our holds.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
@@ -2395,7 +2395,7 @@ return
 				add $figsRequired (100 * $planet~planetsToBlow)
 			elseif ($cleanup = 2)
 				add $planet~planetsToBlow 1
-				add $figsRequired ($figsRequired * $planet~planetsToBlow)
+				add $figsRequired ($figsRequired + (100 * $planet~planetsToBlow))
 			end 
 			
 			
