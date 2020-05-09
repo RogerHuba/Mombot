@@ -1090,7 +1090,7 @@ return
 			killalltriggers
 			getWord CURRENTLINE $TorpssAvail 9
 			stripText $TorpssAvail ")"
-			if ($TorpssAvail = 0)
+			if ($TorpssAvail = 0) and ($player~GENESIS = 0)
 				echo "*### we have a problem, no Torps purchasable waiting for next"
 				waitfor "next@"
 			end
@@ -2804,7 +2804,7 @@ return
 	
 	if (($player~ore_holds < $minOre) and (PORT.BUYFUEL[CURRENTSECTOR] = 0))
 		send "pt * * * "
-		waitfor "credits and"
+		waitfor "How many holds of Fuel Ore"
 	end
 
 
