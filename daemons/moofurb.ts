@@ -149,7 +149,8 @@ elseif ($modestring = "icefurb")
 	setVar $ourShip $player~SHIP_NUMBER
 elseif ($modestring  = "tfurb")
 	setVar $shipTwo $bot~parm2
-	
+	setVar $ourShip $player~SHIP_NUMBER
+
 	isNumber $test $shipTwo
 	if ($test = 0)
 		setVar $SWITCHBOARD~message "Tow Furb ship not specified >moofurb tfurb 9  where 9 is shipnum of spare ship at dock*"
@@ -187,23 +188,25 @@ elseif ($modestring  = "tfurb")
 		halt
 	end
 	send "w** "
+	
 	setVar $startscan 0
 	setVar $shipFound 0
-	settextlinetrigger cshipfound2nd :cshipfound2nd " " & $2ndship & " "
+	settextlinetrigger cshipfound2nd :cshipfound2nd " " & $shipTwo & " "
 	setTextLineTrigger cshipstartscan :cshipstartscan "Ship  Sect Name"
 	settextlinetrigger cshipnomore :cshipnomore "Choose which ship to tow (Q=Quit)"
 	settextlinetrigger cshipnomore2 :cshipnomore "You do not own any other ships in this sector!"
 	pause
 	:cshipstartscan
 		setVAr $startscan 1
+		pause
 	:cshipfound2nd
 		if ($startscan = 1)
 			getword currentline $shipnumber 1
 			
-			if ($shipnumber = $2ndship)
+			if ($shipnumber = $shipTwo)
 				setVar $shipFound 1
 			else
-				settextlinetrigger cshipfound2nd :cshipfound2nd " " & $2ndship & " "
+				settextlinetrigger cshipfound2nd :cshipfound2nd " " & $shipTwo & " "
 				pause
 			end
 		end
@@ -248,6 +251,8 @@ if ($modestring  = "efurb")
 	goSub :efurb_furbLoop
 
 elseif ($modestring  = "tfurb")
+	goSub :tfurb_restock
+	goSub :tfurb_furbloop
 
 elseif ($modestring = "xfurb")
 	goSub :xfurb_doit
@@ -291,6 +296,21 @@ halt
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
+return
+
+
+:tfurb_furbloop
+	setVar $go 1
+	while ($go = 1)
+		 
+		setVar $SWITCHBOARD~message "Furber: Waiting for instructions*"
+		gosub :SWITCHBOARD~switchboard
+		goSub :player~quikstats
+		goSub :tfurb_WaitingForInst
+		goSub :tfurb_restock
+
+	end
+
 return
 
 
@@ -413,6 +433,16 @@ return
 
 return
 
+:tfurb_restock
+
+	send "x*" $shiptwo "*q"
+	goSub :standard_restock
+	gosub :player~quikstats
+	send "x*" $ourShip "*q * "
+	gosub :player~quikstats
+	send "wn" $shipTwo "*"
+return
+
 :efurb_restock
 
 	goSub :player~quikstats
@@ -440,6 +470,14 @@ return
 		waitfor "] (?=Help)?"
 		gosub :player~twarp
 	end
+
+	goSub :standard_restock
+
+	goSub :efurb_returnandland
+return
+
+:standard_restock
+	
 	send "psh"
 	setTextLineTrigger efurb_limp :efurb_limp "A port official runs up to you as you dock"
 	setTextLineTrigger efurb_hardware :efurb_hardware "Welcome to the Emporium!"
@@ -518,9 +556,8 @@ return
 	gosub :player~quikstats
 	setVar $postFurbFigs $player~fighters	
 	send "qqq    *   "	
-
-	goSub :efurb_returnandland
 return
+
 :efurb_returnandland
 
 	setVar $player~warpto $efurbSector
@@ -546,6 +583,63 @@ return
 		halt
 	end
 return
+
+:tfurb_WaitingForInst
+
+	:topofwait
+	setTextTrigger waitFurb :waitFurb "MooTime@"
+	
+	pause
+	
+	:waitFurb
+		killalltriggers
+		setVar $SWITCHBOARD~message "Roger, gifts on route.*"
+		gosub :SWITCHBOARD~switchboard
+
+		getWordPos CURRENTLINE $xLoc "MooTime@"
+		cutText CURRENTLINE $xmasCommand $xLoc 99
+		getWord $xmasCommand $theirBot 2
+		getWord $xmasCommand $theirMooShip 3
+		getWord $xmasCommand $theirSector 4
+	
+		echo "*# $theirBot" $theirBot
+		echo "*# $theirMooShip" $theirMooShip
+		echo "*# $theirSector" $theirSector
+
+		gosub :tfurb_orderUp
+
+return
+
+:tfurb_orderUp
+
+	setVar $moveSec $theirSector
+	gosub :moveToSector 
+	goSub :player~quikstats
+	if ($player~current_sector <> $theirSector)
+		setVar $SWITCHBOARD~message "Twarp fail on route to Refurb.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+	gosub :getCreds
+	send "'" $theirBot " x " $shiptwo "*"
+	gosub :corpMateSwitchShip
+
+	send "x" $theirMooShip "*q"
+	gosub :switchShip
+
+	setVar $shiptwo $ourship
+	send "wn" $shiptwo "*"
+
+	setVar $ourShip $theirMooShip
+
+	setVar $moveSec $stardock
+	gosub :moveToSector 
+	
+
+
+return
+
 :ice_WaitingForInst
 	
 	# # BOT_NAME - MOOSHIP - EXPLORESHIP CURRENTSECTOR
@@ -646,8 +740,8 @@ return
 
 
 :moveToSector
-		
-		gosub :player~twarpSector
+		setVar $player~warpto $movesec
+		gosub :player~twarp
 
 return
 

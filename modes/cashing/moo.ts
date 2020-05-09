@@ -625,7 +625,7 @@ if ($startingLocation = "Citadel")
 	if ($efurb = TRUE)
 		goSub :verifyOneTrader
 		if ($traderCount <> 1)
-			setVar $SWITCHBOARD~message "Needs to be one other traer in this citadel and it should be the person you are swapping with.*"
+			setVar $SWITCHBOARD~message "Needs to be one other trader in this citadel and it should be the person you are swapping with.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end

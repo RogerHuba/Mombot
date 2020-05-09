@@ -23,10 +23,10 @@ setVar $BOT~help[10] $BOT~tab&"                to equipment"
 setVar $BOT~help[11] $BOT~tab&"   {bad/all}    Clean bad/all planets post trading. default none."
 setVar $BOT~help[12] $BOT~tab&"     {guard}    Ensures corp planet at SD to invoke Guardian"
 setVar $BOT~help[13] $BOT~tab&"     {ephag}    Default is NEG but set to use EP Haggle"
-setVar $BOT~help[14] $BOT~tab&"      {furb}    Safe Furb - Corp mate runs moofurb"
+setVar $BOT~help[14] $BOT~tab&"      {furb}    Safe Furb - Corpy runs >moofurb tfurb Ship"
 setVar $BOT~help[15] $BOT~tab&"    {secure}    Drop/furb mines/limpets"
 setVar $BOT~help[16] $BOT~tab&"      {kill}    Attempt to kill traders it sees"
-setVar $BOT~help[17] $BOT~tab&"    "
+setVar $BOT~help[17] $BOT~tab&" {efurb:bot}    Exchange furb with {bot} waiting on right planet."
 setVar $BOT~help[18] $BOT~tab&"    "
 setVar $BOT~help[19] $BOT~tab&"    Auto refurbs - requires fed safe if not using furb"
 setVar $BOT~help[20] $BOT~tab&"    Stores sectors to go back to when script reruns."
@@ -336,6 +336,25 @@ end
 gosub :switchboard~switchboard
 
 
+setVar $eFurb 0
+setVar $eFurbBot 0
+setVar $eFurbPlanet 0
+setVar $eFurbSector 0
+
+
+getWordPos $bot~user_command_line $pos "efurb:"
+if ($pos > 0)
+	setVar $eFurb TRUE
+	setVar $cline $bot~user_command_line & " "
+	getText $cline $eFurbBot "efurb:" " "
+
+	setVar $player~corpfurb TRUE
+	setVar $SWITCHBOARD~message "We are exchange furbing with bot: " & $efurbBot &"*"
+	gosub :SWITCHBOARD~switchboard
+else
+	setVar $xfurb FALSE
+
+end
 
 getWordPos $bot~user_command_line $pos "deldata"
 if ($pos > 0)
@@ -592,6 +611,22 @@ if ($figlchk = 1)
 
 	
 end
+
+if ($eFurb = TRUE)
+	goSub :getEfurbDetails
+	
+	send "'" $efurbBot " stopall*"
+	waitfor " All non-system scripts and modules killed, and modes reset"
+
+	send "'" $efurbBot " unlock*"
+	waitfor "Ship has been unlocked!"
+	
+	send "'" $efurbBot " moofurb efurb*"
+	waitfor "Furber: waiting for ship trade to trigger."
+	
+end
+
+
 
 setvar $switchboard~message "Pause for effect....*"
 gosub :switchboard~switchboard
@@ -915,8 +950,11 @@ return
 
 	
 	if ($player~corpfurb = true)
+
 		if ($ice = 1)
 			gosub :restockice
+		elseif ($efurb = TRUE)
+			goSub :restockEFurb
 		else
 			gosub :restockcorp
 		end
@@ -974,22 +1012,83 @@ return
 	gosub :player~quikstats
 return
 
+:restockEFurb
+
+	setVar $returnSpot $player~current_sector
+
+	setVar $player~warpto $efurbSector
+	gosub :player~twarp
+	
+	setVar $playerShip $player~SHIP_NUMBER
+	send "l" & $eFurbPlanet &"* t n t 1 * m * * * C"
+	send "TT"
+	waitfor "credits, and the Treasury"
+	setVar $line CURRENTLINE
+	getWord $line $credsmade 3
+	striptext $credsmade ","
+	subtract $credsmade 1000000
+	if ($credsmade >= 1)
+		send $credsmade & "*"
+	else
+		send "*"
+	end
+	send "^q"
+	waitfor ": ENDINTERROG"
+	setVar $traderCount 0
+	goSub :verifyOneTrader
+	if ($traderCount <> 1)
+		setVar $SWITCHBOARD~message "Needs to be one other trader in this citadel and it should be the person you are swapping with.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	
+	send "ey n n n * * "
+
+	gosub :player~quikstats
+	
+	if ($player~SHIP_NUMBER = $playerShip)
+		setvar $switchboard~message "Exchange Furb Fail - still in same ship; where's my bot!!!*"
+		gosub :switchboard~switchboard
+		
+		halt
+	end
+	if ($player~GENESIS < 5)
+		setvar $switchboard~message "Exchange Furb Fail - New ship has les than 5 torps*"
+		gosub :switchboard~switchboard
+		halt
+	end
+
+	send "QQ"
+	waitfor "Blasting off from"
+	
+	setVar $player~warpto $returnSpot
+	gosub :player~twarp
+	gosub :player~quikstats
+	if ($player~CURRENT_SECTOR <> $returnSpot)
+
+		setvar $switchboard~message "We didn't make it back post exchange furb*"
+		gosub :switchboard~switchboard
+		halt
+	end
+return
+
+
 :restockcorp
 	
 	gosub :player~quikstats
 
-	:pickupTryAgain
+	:pickupTryAgain2
 	send "'MooTime@ " $SWITCHBOARD~bot_name " " $player~SHIP_NUMBER " " CURRENTSECTOR "*"
 	
 	
-	setTextLineTrigger pickupok :pickupok "Roger, gifts on route"
-	setDelayTrigger pickupTimeOut :pickupTimeOut 4000
+	setTextLineTrigger pickupok2 :pickupok2 "Roger, gifts on route"
+	setDelayTrigger pickupTimeOut2 :pickupTimeOut2 4000
 	pause
-	:pickupTimeOut
+	:pickupTimeOut2
 		killalltriggers
-		goto :pickupTryAgain
+		goto :pickupTryAgain2
 
-	:pickupok
+	:pickupok2
 		killalltriggers
 	
 	waitfor "Xport complete."
@@ -3294,6 +3393,77 @@ return
 	:done_ta
 	send "q"
 	waiton "Command ["
+return
+
+
+:getEfurbDetails
+	
+    send "'" $efurbBot " qss*"
+    setVar $confirmedPlanet 0
+    
+    settextLineTrigger photonBotName :photonBotName "{" & $efurbBot & "}"
+    setDelayTrigger photonBotNameTimeout :photonBotNameTimeout 3000
+    pause
+        :photonBotNameTimeout
+        killalltriggers
+            setvar $switchboard~message "Couldn't find bot we are trading ships with - exiting*"
+            gosub :SWITCHBOARD~switchboard
+            halt
+        :photonBotName
+        killalltriggers
+
+    setTextLineTrigger qssPlanetLine :qssPlanetLine "Sector   :"
+    setTextTrigger qssDone :qssDone "Bot Mode :General"
+    pause
+    :qssPlanetLine
+		getText CURRENTLINE $eFurbSector "Sector   :" "Ship ID"
+		trim $eFurbSector
+        cuttext CURRENTLINE $eFurbPlanet 62 4
+		trim $eFurbPlanet
+
+        pause
+    
+	:qssDone
+	
+return
+
+:verifyOneTrader
+
+	send "d"
+	setVar $startCount 0
+	setVar $traderCount 0
+	setVar $tradeLocked 0
+
+	setTextLineTrigger v_notraders :v_notraders "There are no other Traders in the Citadel."
+	setTextLineTrigger v_traderheading :v_traderheading "Other Traders Here"
+	setTextLineTrigger v_tradersdone1 :v_tradersdone1 "Citadel treasury"
+	setTextLineTrigger v_tradersdone2 :v_tradersdone2 "means you are locked out of that Ship and cannot use i"
+	setTextLineTrigger v_everything :v_everything ""
+	pause
+	:v_traderheading
+		setVar $startCount 1
+		pause
+
+	
+	:v_tradersdone2
+		setVar $tradeLocked 1
+	:v_tradersdone1
+		killAllTriggers
+		return
+	:v_notraders
+		killAllTriggers
+		return
+	:v_everything
+		if ($startCount= 1)
+			getLength CURRENTLINE $thelen
+			if ($thelen > 20)
+				add $traderCount 1
+			end
+		end
+		setTextLineTrigger v_everything :v_everything ""
+		pause
+
+	return
 return
 
 include "source\module_includes\bot\loadvars\bot"
