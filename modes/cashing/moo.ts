@@ -46,18 +46,19 @@ setVar $BOT~help[16] $BOT~tab&"    {paranoid}   Ports must be surrounded by figs
 setVar $BOT~help[17] $BOT~tab&"    {efurb:bot}  Bot to exchange ships with at home planet to furb."
 setVar $BOT~help[18] $BOT~tab&"    {xfurb:bot:ship} Xport Furb - Furb ship ready above planet."
 setVar $BOT~help[19] $BOT~tab&"    {tradeto:n}  Trade to percentage, defaults 15, tradeto:50 = 50%"
-setVar $BOT~help[20] $BOT~tab&"   "
-setVar $BOT~help[21] $BOT~tab&"    Modes -"
-setVar $BOT~help[22] $BOT~tab&"      skimpl/pl  - Sells off product from personal planet list"
-setVar $BOT~help[23] $BOT~tab&"                 - Skim versions skips making new planets"
-setVar $BOT~help[24] $BOT~tab&"      upgraded   - Visits upgrade ports (10k+) that are ready"
-setVar $BOT~help[25] $BOT~tab&"      param      - Sectors with this param i.e. moo MOOPORTS"
-setVar $BOT~help[26] $BOT~tab&"      everything - Anything that buys the primary prod with a fig"
-setVar $BOT~help[27] $BOT~tab&"      file       - One sector per line, file must end in .txt"
-setVar $BOT~help[28] $BOT~tab&"      sector     - One sector >Moo sector {maxplanets} {sector}"
-setVar $BOT~help[29] $BOT~tab&"      "
-setVar $BOT~help[30] $BOT~tab&"  FIRE TOURNAMENT"
-setVar $BOT~help[31] $BOT~tab&"       moo [mode] fire {figs} {ephag} {safe/paranoid}"
+setVar $BOT~help[20] $BOT~tab&"    {Secutre}    Drop mines and Armids"
+setVar $BOT~help[21] $BOT~tab&"   "
+setVar $BOT~help[22] $BOT~tab&"    Modes -"
+setVar $BOT~help[23] $BOT~tab&"      skimpl/pl  - Sells off product from personal planet list"
+setVar $BOT~help[24] $BOT~tab&"                 - Skim versions skips making new planets"
+setVar $BOT~help[25] $BOT~tab&"      upgraded   - Visits upgrade ports (10k+) that are ready"
+setVar $BOT~help[26] $BOT~tab&"      param      - Sectors with this param i.e. moo MOOPORTS"
+setVar $BOT~help[27] $BOT~tab&"      everything - Anything that buys the primary prod with a fig"
+setVar $BOT~help[28] $BOT~tab&"      file       - One sector per line, file must end in .txt"
+setVar $BOT~help[29] $BOT~tab&"      sector     - One sector >Moo sector {maxplanets} {sector}"
+setVar $BOT~help[30] $BOT~tab&"      "
+setVar $BOT~help[31] $BOT~tab&"  FIRE TOURNAMENT"
+setVar $BOT~help[32] $BOT~tab&"       moo [mode] fire {figs} {ephag} {safe/paranoid}"
 
 gosub :bot~helpfile
 
@@ -220,7 +221,13 @@ else
 	
 end
 
-
+getWordPos $bot~user_command_line $pos "secure"
+if ($pos > 0)
+	setVar $mines TRUE
+	setvar $startMsg $startMsg & "We are dropping limpets and mines.*"
+else
+	setVar $mines FALSE
+end
 
 
 setVar $userCleanup 0
@@ -754,6 +761,18 @@ while ($loopi < $sectorsOki)
 		if ($sector <> CURRENTSECTOR)
 			setVar $PLAYER~warpto $sector
 			gosub :player~twarp
+		end
+	end
+
+	if ($mines = true)
+		if ($player~ARMIDS >= 3)
+			send "h 13*c "
+			setSectorParameter $sector "MINESEC" 1
+		end
+
+		if ($player~LIMPETS >= 2)
+			send "h 22* c "
+			setSectorParameter $sector "LIMPSEC" 1
 		end
 	end
 
@@ -1536,6 +1555,33 @@ return
 				send  "*a" $player~atomicssAvail "*"
 			end
 		
+		if ($mines = TRUE)
+			if ($player~limpets < 100)
+				send "l"
+				setTextTrigger doBuyLimps :doBuyLimps "How many mines do you want"
+				pause
+				:doBuyLimps
+					getWord CURRENTLINE $limps 8
+					stripText $limps ")"
+					if ($limps > 50)
+						setVar $limps 50
+					end
+					send $limps "*"
+			end
+			if ($player~ARMIDS < 100)
+				send "m"
+				setTextTrigger doBuyArmids :doBuyArmids "How many mines do you want"
+				pause
+				:doBuyArmids
+					getWord CURRENTLINE $armids 8
+					stripText $armids ")"
+					if ($armids > 50)
+						setVar $armids 50
+					end
+					send $armids "*"
+			end
+			
+		end
 		
 		gosub :player~quikstats
 			send "qsp"
