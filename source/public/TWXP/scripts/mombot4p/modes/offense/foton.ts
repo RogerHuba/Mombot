@@ -1,14 +1,5 @@
-loadVar $user_command_line
-loadVar $parm1
-loadVar $parm2
-loadVar $parm3
-loadVar $parm4
-loadVar $parm5
-loadVar $parm6
-loadVar $parm7
-loadVar $parm8
-loadVar $bot_name
-loadVar $command
+gosub :BOT~loadVars
+loadVar $game~MULTIPLE_PHOTONS
 loadvar $bot~mombot_directory
 
 loadVar $MULTIPLE_PHOTONS
@@ -25,31 +16,31 @@ if ($doesHelpFileExist <> TRUE)
 	write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "                                                "
 	write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "      Authors: Mind Dagger and The Bounty Hunter "
 
-	send "'{" $bot_name "} - Writing help file for "&$command&" in Help directory.*"
+	send "'{" $bot~bot_name "} - Writing help file for "&$command&" in Help directory.*"
 end
 
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	if ($isFigged = "")
-		send "'{" $bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
+		send "'{" $bot~bot_name "} - It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
 		halt
 	end
 
-getWord $user_command_line $parm1 1
-getWord $user_command_line $parm2 2
-getWord $user_command_line $parm3 3
-getWord $user_command_line $parm4 4
-getWord $user_command_line $parm5 5
-getWord $user_command_line $parm6 6
-getWord $user_command_line $parm7 7
-getWord $user_command_line $parm8 8
-getWordPos " "&$user_command_line&" " $pos " return "
+getWord $bot~user_command_line $bot~parm1 1
+getWord $bot~user_command_line $bot~parm2 2
+getWord $bot~user_command_line $bot~parm3 3
+getWord $bot~user_command_line $bot~parm4 4
+getWord $bot~user_command_line $bot~parm5 5
+getWord $bot~user_command_line $bot~parm6 6
+getWord $bot~user_command_line $bot~parm7 7
+getWord $bot~user_command_line $bot~parm8 8
+getWordPos " "&$bot~user_command_line&" " $pos " return "
 if ($pos > 0)
 	setVar $auto_return TRUE
 else
 	setVar $auto_return FALSE
 end
 
-getWordPos " "&$user_command_line&" " $pos " holo "
+getWordPos " "&$bot~user_command_line&" " $pos " holo "
 if ($pos > 0)
 	setVar $holo 1
 else
@@ -59,24 +50,24 @@ end
 :foton_check
 	gosub :quikstats
 	setVar $startingLocation $CURRENT_PROMPT
-	if ($parm2 = "d")
+	if ($bot~parm2 = "d")
                 goto :start_dtorp
-        elseif ($parm2 = "a")
+        elseif ($bot~parm2 = "a")
                 goto :adjphoton
-        elseif ($parm2 = "s")
+        elseif ($bot~parm2 = "s")
                 goto :surround_foton
-        elseif (($parm2 = "p") or ($parm2 = ""))
+        elseif (($bot~parm2 = "p") or ($bot~parm2 = ""))
                 goto :foton
         elseif ($isnum = 1)
-		if (($parm2 > 10) and ($parm2 <= SECTORS) and ($parm2 <> STARDOCK))
+		if (($bot~parm2 > 10) and ($bot~parm2 <= SECTORS) and ($bot~parm2 <> STARDOCK))
 			gosub :quikstats
                         goto :foton_launch
-		elseif (($parm2 < 10) or ($parm2 >= SECTORS) or ($parm2 = STARDOCK))
-			send "'{" $bot_name "} - Not a Valid FOTON Sector*"
+		elseif (($bot~parm2 < 10) or ($bot~parm2 >= SECTORS) or ($bot~parm2 = STARDOCK))
+			send "'{" $bot~bot_name "} - Not a Valid FOTON Sector*"
 			halt
 		end
 	else
-        	send "'{" $bot_name "} - Please use foton [on/off] {a/d/p/s} {return} format*"
+        	send "'{" $bot~bot_name "} - Please use foton [on/off] {a/d/p/s} {return} format*"
         	halt
         end
 # ============================== END FOTON CHECK SUB ==============================
@@ -120,20 +111,20 @@ end
 	gosub :quikstats
 	setVar $startingLocation $CURRENT_PROMPT
 	if ($startingLocation <> "Citadel") and ($startingLocation <> "Command")
-		send "'{" $bot_name "} - Must start at Citadel or Command prompt*"
+		send "'{" $bot~bot_name "} - Must start at Citadel or Command prompt*"
 		halt
 	end
-	if ($parm1 <> "on") and ($parm1 <> "off") and ($parm1 <> "reset")
-		send "'{" $bot_name "} - Please use - foton [on/off/reset] format*"
+	if ($bot~parm1 <> "on") and ($bot~parm1 <> "off") and ($bot~parm1 <> "reset")
+		send "'{" $bot~bot_name "} - Please use - foton [on/off/reset] format*"
 		halt
 	end
-	if ($parm1 = "on")
+	if ($bot~parm1 = "on")
 		goto :load_photon
-	elseif ($parm1 = "reset")
-		send "'{" $bot_name "} - Adjacent Foton - Resetting Sector*"
+	elseif ($bot~parm1 = "reset")
+		send "'{" $bot~bot_name "} - Adjacent Foton - Resetting Sector*"
 		goto :load_photon
 	else
-		send "'{" $bot_name "} - Please use - foton [on/off/reset] {a/d/s/p} format*"
+		send "'{" $bot~bot_name "} - Please use - foton [on/off/reset] {a/d/s/p} format*"
 		halt
 	end
 
@@ -141,7 +132,7 @@ end
 
 :load_photon
 	if ($startingLocation <> "Citadel") and ($startingLocation <> "Command")
-		send "'{" $bot_name "} - Must start at Citadel or Command prompt*"
+		send "'{" $bot~bot_name "} - Must start at Citadel or Command prompt*"
 		halt
 	end
 	if ($startingLocation = "Citadel")
@@ -155,16 +146,16 @@ end
 	end
 	gosub :quikstats
 	if ($PHOTONS = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		setVar $mode "General"
 		halt
 	end
 	if ($CURRENT_SECTOR <> $psec) and ($psec <> 0)
-		send "'{" $bot_name "} - Resetting Adjacent Photon to Sector " $CURRENT_SECTOR "*"
+		send "'{" $bot~bot_name "} - Resetting Adjacent Photon to Sector " $CURRENT_SECTOR "*"
 		setVar $psec $CURRENT_SECTOR
 	end
 	setVar $psec $CURRENT_SECTOR
-		send "'{" $bot_name "} - Adjacent Foton Running in Sector " $psec " - " $PHOTONS " Photon(s) Aboard!*"
+		send "'{" $bot~bot_name "} - Adjacent Foton Running in Sector " $psec " - " $PHOTONS " Photon(s) Aboard!*"
 	setVar $pwarps SECTOR.WARPCOUNT[$psec]
 	goto :setAdjacentTriggers
 
@@ -186,13 +177,13 @@ end
 	if ($spoof <> "Deployed") and ($spoof <> "Limpet")
 		goto :setAdjacentTriggers
 	end
-	send "'{" $bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][1] "*"
+	send "'{" $bot~bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][1] "*"
     if ($holo)
     	gosub :doholo
     end
 	subtract $photons 1
 	if ($photons = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		setVar $mode "General"
 		halt
 	end
@@ -218,13 +209,13 @@ end
 
 :shot2
 	killtrigger missed
-	send "'{" $bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][2] "*"
+	send "'{" $bot~bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][2] "*"
     if ($holo)
     	gosub :doholo
     end
 	subtract $photons 1
 	if ($photons = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		halt
 	end
 	goto :setAdjacentTriggers
@@ -247,13 +238,13 @@ end
 
 :shot3
 	killtrigger missed
-        send "'{" $bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][3] "*"
+        send "'{" $bot~bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][3] "*"
     if ($holo)
     	gosub :doholo
     end
 	subtract $photons 1
 	if ($photons = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		halt
 	end
 	goto :setAdjacentTriggers
@@ -276,13 +267,13 @@ end
 
 :shot4
 	killtrigger missed
-	send "'{" $bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][4] "*"
+	send "'{" $bot~bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][4] "*"
     if ($holo)
     	gosub :doholo
     end
 	subtract $photons 1
 	if ($photons = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		halt
 	end
 	goto :setAdjacentTriggers
@@ -305,13 +296,13 @@ end
 
 :shot5
 	killtrigger missed
-	send "'{" $bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][5] "*"
+	send "'{" $bot~bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][5] "*"
     if ($holo)
     	gosub :doholo
     end
 	subtract $photons 1
 	if ($photons = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		halt
 	end
 	goto :setAdjacentTriggers
@@ -334,13 +325,13 @@ end
 
 :shot6
 	killtrigger missed
-	send "'{" $bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][6] "*"
+	send "'{" $bot~bot_name "} - Adjacent Foton Fired -> Sector " SECTOR.WARPS[$psec][6] "*"
     if ($holo)
     	gosub :doholo
     end
 	subtract $photons 1
 	if ($photons = 0)
-		send "'{" $bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
+		send "'{" $bot~bot_name "} - Out of Fotons - Adjacent Foton Deactivated*"
 		halt
 	end
 	goto :setAdjacentTriggers
@@ -370,7 +361,7 @@ end
 		send "q"
 		goto :checkndtorps
 	else
-		send "'{" $bot_name "} - Must be run from Command, Planet, Citadel, or Stardock Prompt.*"
+		send "'{" $bot~bot_name "} - Must be run from Command, Planet, Citadel, or Stardock Prompt.*"
 		halt
 	end
 
@@ -389,11 +380,11 @@ end
 	goto :check_dens
 
 :feds
-	send "'{" $bot_name "} - Can't launch from fedspace*"
+	send "'{" $bot~bot_name "} - Can't launch from fedspace*"
 	halt
 
 :hmmtorps
-	send "'{" $bot_name "} - No Fotons*"
+	send "'{" $bot~bot_name "} - No Fotons*"
 	halt
 
 :check_dens
@@ -432,7 +423,7 @@ end
 		goto :alldone
 	elseif ($density[$w] <> $dens[$w])
 		send "c p y " $adj[$w] "*  Q  "
-		send "'{" $bot_name "} - Foton Missle Fired into sector => " $adj[$w] "*"
+		send "'{" $bot~bot_name "} - Foton Missle Fired into sector => " $adj[$w] "*"
 		gosub :turnOnAnsi
 		goto :dtorp_end
 	else
@@ -442,7 +433,7 @@ end
 :firechk
 	add $mm 1
 	if ($mm = 150)
-		send "'{" $bot_name "} - WARNING  Density Foton Running at My TA!!!*"
+		send "'{" $bot~bot_name "} - WARNING  Density Foton Running at My TA!!!*"
 		setVar $mm 0
 	end
 	setVar $y 0
@@ -455,7 +446,7 @@ end
 	killtrigger getsec
 	killtrigger alldone
 	setTextOutTrigger manual_stop :manual_stop "-"
-	setTextLineTrigger dtop_dtorp :manual_stop $bot_name & " foton off"
+	setTextLineTrigger dtop_dtorp :manual_stop $bot~bot_name & " foton off"
 	setTextLineTrigger getSec :looksec "Sector"
 	setTextTrigger allDone :donelook "Command [TL="
 	pause
@@ -483,7 +474,7 @@ end
 	killtrigger dtop_dtorp
 	killtrigger getSec
 	killtrigger allDone
-	send "'{" $bot_name "} - Density Foton Stoped . . *"
+	send "'{" $bot~bot_name "} - Density Foton Stoped . . *"
 	gosub :turnOnAnsi
 
 :dtorp_end
@@ -502,7 +493,7 @@ end
 	if ($startingLocation = "Citadel")
 		goto :foton_start
 	else
-		send "'{" $bot_name "} - Must Start at Citadel.*"
+		send "'{" $bot~bot_name "} - Must Start at Citadel.*"
 		halt
 	end
 
@@ -523,9 +514,9 @@ end
 
 :foton_go
 	if ($auto_return)
-		send "'{" $bot_name "} - Foton Running From Planet " & $PLANET & " w/ Return Home enabled. " & $PHOTONS &" Photons armed and ready.*"
+		send "'{" $bot~bot_name "} - Foton Running From Planet " & $PLANET & " w/ Return Home enabled. " & $PHOTONS &" Photons armed and ready.*"
 	else
-		send "'{" $bot_name "} - Foton Running From Planet " & $PLANET & ", " & $PHOTONS &" Photons armed and ready.*"
+		send "'{" $bot~bot_name "} - Foton Running From Planet " & $PLANET & ", " & $PHOTONS &" Photons armed and ready.*"
 	end
 	goto :planetPhotonTriggers
 
@@ -606,7 +597,7 @@ end
 
 :foton_wrong2
 	killtrigger gotem
-	send "'{" $bot_name "} - Foton Missed! Resetting!*"
+	send "'{" $bot~bot_name "} - Foton Missed! Resetting!*"
 	if ($auto_return)
 		gosub :foton_go_home
 	end
@@ -614,7 +605,7 @@ end
 
 :foton_wrong
 	killtrigger gotem
-	send "'{" $bot_name "} - Foton Missed! Resetting!*"
+	send "'{" $bot~bot_name "} - Foton Missed! Resetting!*"
 	setSectorParameter $adjsec "FIGSEC" FALSE
 	if ($auto_return)
 		gosub :foton_go_home
@@ -623,7 +614,7 @@ end
 
 :foton_gotem
 	killtrigger wrong
-	send "'{" $bot_name "} - Foton Fired - Sector => " $sector "!*"
+	send "'{" $bot~bot_name "} - Foton Fired - Sector => " $sector "!*"
 	if ($auto_return)
 		gosub :foton_go_home
 	end
@@ -649,7 +640,7 @@ end
 		killtrigger homelock
 		killtrigger nohomelock
 		killtrigger home_now
-		send "'{" $bot_name "} - PWarp Lock To Home Failed.*"
+		send "'{" $bot~bot_name "} - PWarp Lock To Home Failed.*"
 
         :foton_home_lock
 		killtrigger homelock
@@ -744,7 +735,7 @@ return
 #return
 
 :foton_out_of_fotons
-	send "'{" $bot_name "} - No photon missles, Foton mode shutting down.*"
+	send "'{" $bot~bot_name "} - No photon missles, Foton mode shutting down.*"
 	halt
 
 :surround_foton
@@ -753,7 +744,7 @@ return
 	if ($startingLocation = "Citadel")
 		goto :surround_foton_start
 	else
-		send "'{" $bot_name "} - Must Start at Citadel.*"
+		send "'{" $bot~bot_name "} - Must Start at Citadel.*"
 		halt
 	end
 
@@ -774,9 +765,9 @@ return
 
 :surround_foton_go
 	if ($auto_return)
-		send "'{" $bot_name "} - Surround Foton Running From Planet " & $PLANET & " w/ Return Home enabled. " & $PHOTONS &" Photons armed and ready.*"
+		send "'{" $bot~bot_name "} - Surround Foton Running From Planet " & $PLANET & " w/ Return Home enabled. " & $PHOTONS &" Photons armed and ready.*"
 	else
-		send "'{" $bot_name "} - Surround Foton Running From Planet " & $PLANET & ", " & $PHOTONS &" Photons armed and ready.*"
+		send "'{" $bot~bot_name "} - Surround Foton Running From Planet " & $PLANET & ", " & $PHOTONS &" Photons armed and ready.*"
 	end
 	goto :surroundPhotonTriggers
 
@@ -868,7 +859,7 @@ goto :surroundPhotonTriggers
 	if ($targetCount > 0)
 		goto :trySurroundFotonAgain
 	end
-	send "'{" $bot_name "} - Foton Missed! Resetting!*"
+	send "'{" $bot~bot_name "} - Foton Missed! Resetting!*"
 	setSectorParameter $gotoSector "FIGSEC" FALSE
 	if ($auto_return)
 		gosub :foton_go_home
@@ -881,7 +872,7 @@ goto :surroundPhotonTriggers
 	if ($targetCount > 0)
 		goto :trySurroundFotonAgain
 	end
-	send "'{" $bot_name "} - Foton Missed! Resetting!*"
+	send "'{" $bot~bot_name "} - Foton Missed! Resetting!*"
 	if ($auto_return)
 		gosub :foton_go_home
 	end
@@ -890,7 +881,7 @@ goto :surroundPhotonTriggers
 :surround_foton_gotem
 	killtrigger s_wrong
 	killtrigger s_fed
-	send "'{" $bot_name "} - Foton Fired - Sector => " $retreatSector "!*"
+	send "'{" $bot~bot_name "} - Foton Fired - Sector => " $retreatSector "!*"
 	if ($auto_return)
 		gosub :foton_go_home
 	end
@@ -916,12 +907,12 @@ goto :surroundPhotonTriggers
 
 :foton_launch_wrong
 	killtrigger launch_gotem
-	send "'{" $bot_name "} - That is not an adjacent sector!*"
+	send "'{" $bot~bot_name "} - That is not an adjacent sector!*"
         HALT
 
 :foton_launch_gotem
 	killtrigger wrong
-	send "'{" $bot_name "} - Foton Fired - Sector => " $parm2 "!*"
+	send "'{" $bot~bot_name "} - Foton Fired - Sector => " $bot~parm2 "!*"
     if ($holo)
     	gosub :doholo
     end
@@ -1454,14 +1445,14 @@ return
 	killtrigger no_land
 	killtrigger planet
 	killtrigger wrongone
-	send "'{" $bot_name "} - No Planet in Sector!*"
+	send "'{" $bot~bot_name "} - No Planet in Sector!*"
 	return
 
 :no_land
 	killtrigger noplanet
 	killtrigger planet
 	killtrigger wrongone
-	send "'{" $bot_name "} - This ship cannot land!*"
+	send "'{" $bot~bot_name "} - This ship cannot land!*"
 	return
 
 :planet
@@ -1483,7 +1474,7 @@ return
 
 :wrong_num
 	killtrigger planet
-	send "**'{" $bot_name "} - Incorrect Planet Number*"
+	send "**'{" $bot~bot_name "} - Incorrect Planet Number*"
 	return
 
 :planet_prompt
@@ -1551,3 +1542,15 @@ return
 	:holoend1
 		killalltriggers
 return
+
+#INCLUDES:
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\banner\bot"
+include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\player\turnoffansi\player"
+include "source\bot_includes\player\turnonansi\player"
+include "source\bot_includes\planet\landingsub\planet"
+include "source\bot_includes\player\twarp\player"
+
