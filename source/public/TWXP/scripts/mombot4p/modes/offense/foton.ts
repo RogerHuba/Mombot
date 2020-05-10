@@ -20,6 +20,7 @@ if ($doesHelpFileExist <> TRUE)
 	write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "      {p}lanet   - standard planet warp photon script"
 	write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "      {s}urround - attempts to foton retreat sector"
 	write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "                                                "
+	write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "      {holo}     - Holoscan after firing"
 	write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "      {return}   - Returns Planet Home after Pwarp"
 	write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "                                                "
 	write "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt" "      Authors: Mind Dagger and The Bounty Hunter "
