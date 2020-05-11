@@ -653,7 +653,7 @@ end
 	while (SECTOR.WARPS[$Sector][$i] > 0)
 		getSectorParameter SECTOR.WARPS[$Sector][$i] "FIGSEC" $isFigged
 		if ($isFigged)
-			setVar $adjsec $tempAdj
+			setVar $adjsec SECTOR.WARPS[$Sector][$i]
 			return
 		end
 		add $i 1
@@ -708,7 +708,7 @@ return
 	getText CURRENTANSILINE $alien_check ": " "'s"
 	getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 	if ($pos > 0)
-	     goto :planetPhotonTriggers
+		goto :planetPhotonTriggers
 	end
 
 	# Get the sector number
