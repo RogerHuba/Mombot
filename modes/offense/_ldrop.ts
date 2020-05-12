@@ -55,6 +55,14 @@ else
 	setVar $dropftrs FALSE
 end
 
+getWordPos $bot~user_command_line $pos "avoid:"
+if ($pos > 0)
+	setVar $cline $bot~user_command_line & " "
+	getText $cline $avoid_sector "avoid:" " "
+else
+	setVar $dropftrs FALSE
+end
+
 getWordPos $bot~user_command_line $pos "plock"
 if ($pos > 0)
 	setVar $plock TRUE
@@ -512,7 +520,7 @@ setVar $moveFigMacro ""
 		while (SECTOR.WARPS[$dropSector[$i]][$s] > 0)
 			setVar $checkSector SECTOR.WARPS[$dropSector[$i]][$s]
 			getSectorParameter $checkSector "FIGSEC" $isFigged
-			if ($isFigged)
+			if (($isFigged = true) and ($checksector <> $avoid_sector))
 				setVar $adjsec $checkSector
 				return
 			end

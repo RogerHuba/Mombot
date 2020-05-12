@@ -1292,8 +1292,14 @@ return
 	send "b" $player~warpto "*"
 	setTextTrigger go :go5 "TransWarp Locked"
 	setTextTrigger no :no5 "No locating beam found"
+	settexttrigger no2 :no52 "Your ship was hit by a Photon and has been disabled."
 	goSub :delayTrigger
 	pause
+
+:no52
+	killAllTriggers
+	setvar $photoned true
+	return
 
 :no5
 	killAllTriggers
