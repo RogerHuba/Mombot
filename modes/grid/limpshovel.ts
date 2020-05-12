@@ -1,5 +1,5 @@
-	logging off
 	reqRecording
+	gosub :BOT~loadVars
 	goto :load_script
 	
 
@@ -903,3 +903,6 @@ return
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\player\findjumpsector\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+
