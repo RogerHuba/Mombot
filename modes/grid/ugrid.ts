@@ -158,6 +158,12 @@
 	else
 		setVar $retreat false
 	end	
+	getWordPos $bot~user_command_line $pos "double" 
+	if ($pos > 0)
+		setVar $double true
+	else
+		setVar $double false
+	end	
 	getWordPos $bot~user_command_line $pos "shield" 
 	if ($pos > 0)
 		setVar $avoidShieldedOnly TRUE
@@ -490,9 +496,19 @@ goSub :checkAvoidedSectors
 		send "m"
 		gosub :return_triggers
 		if (($distanceback = 1) and ($retreat))
-			send $boomsec $attack_mac $mac " < * " $return_mac $land_mac
+			if ((SECTOR.FIGS.QUANTITY[$boomsec] <= 0) or ($double <> true))
+				send $boomsec $attack_mac $mac " < * " $return_mac $land_mac
+			else
+				send $boomsec $attack_mac " < * " $return_mac $land_mac
+				goto :hittingsec
+			end
 		else
-			send $boomsec $attack_mac $mac $return_mac $land_mac
+			if ((SECTOR.FIGS.QUANTITY[$boomsec] <= 0) or ($double <> true))
+				send $boomsec $attack_mac $mac $return_mac $land_mac
+			else
+				send $boomsec $attack_mac $return_mac $land_mac
+				goto :hittingsec
+			end
 		end
 		if (($grid_figs > 0) AND (SECTOR.FIGS.QUANTITY[$boomsec] < ($offodd*2)))
 			setSectorParameter $boomsec "FIGSEC" TRUE
