@@ -579,10 +579,9 @@ end
 			goSub :getFiringSolutions
 			
 			if ($fsi = 0)
-				setVar $SWITCHBOARD~message "No firing solutions? Halting.. *"
+				setVar $SWITCHBOARD~message "No firing solutions? Resetting and starting again *"
 				gosub :SWITCHBOARD~switchboard
-				send "q"
-				halt
+				goto :restart1
 
 			end
 
