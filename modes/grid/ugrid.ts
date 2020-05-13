@@ -429,9 +429,8 @@ goSub :checkAvoidedSectors
 	end
 	send "sd"
 	waitFor "Relative Density Scan"
-	send "sh"
-	waiton "Warps to Sector(s) :"
-	waiton "[" & $player~warpto & "]"
+	gosub :combat~holoscan
+	#waiton "[" & $player~warpto & "]"
 	getDistance $distance $player~warpto $boomsec
 	getDistance $distanceback $boomsec $player~warpto 
 	setVar $containsShieldedPlanet FALSE
@@ -1389,7 +1388,7 @@ return
 
 
 :callSaveMe
-	send "q q q q * u y n.* c '"&$bot~bot_name&" call*"
+	send "'"&$bot~bot_name&" call kill* q q q q * u y n.* c "
 	halt
 
 :DoPurchases
@@ -1434,3 +1433,4 @@ include "source\bot_includes\player\quikstats\player"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\player\findjumpsector\player"
+include "source\bot_includes\combat\holoscan\combat"
