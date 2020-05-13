@@ -15,6 +15,7 @@
 	loadVar $backdoor
 	loadVar $rylos
 	loadVar $alpha_centauri
+	loadvar $bot~mombot_directory
 	loadVar $command
 	fileExists $doesHelpFileExist "scripts\"&$bot~mombot_directory&"\help\"&$command&".txt"
 	if ($doesHelpFileExist <> TRUE)

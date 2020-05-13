@@ -320,12 +320,17 @@
 			gosub :killthem
 		end
 		if ($HAZ_Before <> $HAZ_After)
-			setvar $switchboard~message "NavHAZ Changed. Halting!*"
-			gosub :switchboard~switchboard
-			send "'" & $switchboard~bot_name & " holo*"
-			waiton "Sub-space comm-link terminated"
-			send "p" $homesector "*y "
-			halt
+			setvar $player~current_prompt "Citadel"
+			gosub :combat~holoscan
+			if ($cannon = true)
+				setvar $switchboard~message "NavHAZ Changed. Attempting to kill, and continuing.  Should reset cannon damage automatically.*"
+				gosub :switchboard~switchboard			
+			else
+				setvar $switchboard~message "NavHAZ Changed. Halting!*"
+				gosub :switchboard~switchboard
+				send "p" $homesector "*y "
+				halt
+			end
 		end
 		if ($planet~planetS_After > $planet~planetS_Before)
 			setvar $switchboard~message "New Planet in Sector. Halting!*"
@@ -345,7 +350,8 @@
 			loadVar $PLAYER~surroundAvoidAllPlanets 
 			loadVar $PLAYER~surroundAvoidShieldedOnly
 			
-			send "q q szh* s*/ "
+			gosub :combat~holoscan
+			send " s*/ "
 
 
 			gosub :grid~surround
@@ -1434,4 +1440,5 @@ include "source\bot_includes\ship\loadshipinfo\ship"
 include "source\bot_includes\ship\getshipcapstats\ship"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\module_includes\modules\clear\modules"
+include "source\bot_includes\combat\holoscan\combat"
 

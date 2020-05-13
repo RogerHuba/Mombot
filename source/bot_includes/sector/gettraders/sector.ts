@@ -108,6 +108,9 @@
 				striptext $shipname ""
 				striptext $shipname "["
 
+				if ($ship~shipCounter <= 0)
+					gosub :ship~loadShipInfo
+				end
 				while (($isFound = FALSE) AND ($s < $ship~shipCounter))
 					striptext $ship~shipList[$s] "["
 					getwordpos $shipname $pos $ship~shipList[$s]
@@ -142,3 +145,5 @@
 		setVar $defenderShips 0
 	end
 return
+
+include "source\bot_includes\ship\loadShipInfo\ship"

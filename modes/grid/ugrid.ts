@@ -158,6 +158,12 @@
 	else
 		setVar $retreat false
 	end	
+	getWordPos $bot~user_command_line $pos "double" 
+	if ($pos > 0)
+		setVar $double true
+	else
+		setVar $double false
+	end	
 	getWordPos $bot~user_command_line $pos "shield" 
 	if ($pos > 0)
 		setVar $avoidShieldedOnly TRUE
@@ -287,6 +293,9 @@ goSub :checkAvoidedSectors
 
 
 :checkShip
+	gosub :SHIP~getShipStats
+	gosub :combat~init 
+
 	killAllTriggers
 	gosub :player~quikstats
 	send "c;"
@@ -389,6 +398,7 @@ goSub :checkAvoidedSectors
 	KillAllTriggers
 	replaceText $database " "&$player~warpto&" " " "
 	subtract $databaseCount 1
+:clearitagain
 	setVar $furbing FALSE
 	if ($grid_warp = "twarp")
 		gosub :doTwarp
@@ -401,7 +411,7 @@ goSub :checkAvoidedSectors
 	if ($photoned = true)
 		setvar $switchboard~message "Waiting for photon to wear off..*"
 		gosub :switchboard~switchboard
-		setDelayTrigger restart_from_photon :clearit (($game~photon_duration * 60000) + 1000)
+		setDelayTrigger restart_from_photon :clearitagain (($game~photon_duration * 60000) + 1000)
 		pause
 	end
 
@@ -427,11 +437,11 @@ goSub :checkAvoidedSectors
 		send $land_mac
 		goto :select_boomsec
 	end
+	setvar $player~current_prompt "Command"
 	send "sd"
 	waitFor "Relative Density Scan"
-	send "sh"
-	waiton "Warps to Sector(s) :"
-	waiton "[" & $player~warpto & "]"
+	gosub :combat~holoscan
+	#waiton "[" & $player~warpto & "]"
 	getDistance $distance $player~warpto $boomsec
 	getDistance $distanceback $boomsec $player~warpto 
 	setVar $containsShieldedPlanet FALSE
@@ -490,9 +500,19 @@ goSub :checkAvoidedSectors
 		send "m"
 		gosub :return_triggers
 		if (($distanceback = 1) and ($retreat))
-			send $boomsec $attack_mac $mac " < * " $return_mac $land_mac
+			if ((SECTOR.FIGS.QUANTITY[$boomsec] <= 0) or ($double <> true))
+				send $boomsec $attack_mac $mac " < * " $return_mac $land_mac
+			else
+				send $boomsec $attack_mac " < * " $return_mac $land_mac
+				goto :clearitagain
+			end
 		else
-			send $boomsec $attack_mac $mac $return_mac $land_mac
+			if ((SECTOR.FIGS.QUANTITY[$boomsec] <= 0) or ($double <> true))
+				send $boomsec $attack_mac $mac $return_mac $land_mac
+			else
+				send $boomsec $attack_mac $return_mac $land_mac
+				goto :clearitagain
+			end
 		end
 		if (($grid_figs > 0) AND (SECTOR.FIGS.QUANTITY[$boomsec] < ($offodd*2)))
 			setSectorParameter $boomsec "FIGSEC" TRUE
@@ -1389,7 +1409,7 @@ return
 
 
 :callSaveMe
-	send "q q q q * u y n.* c '"&$bot~bot_name&" call*"
+	send "'"&$bot~bot_name&" call kill* q q q q * u y n.* c "
 	halt
 
 :DoPurchases
@@ -1434,3 +1454,7 @@ include "source\bot_includes\player\quikstats\player"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\player\findjumpsector\player"
+include "source\bot_includes\combat\holoscan\combat"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\combat\init\combat"
+

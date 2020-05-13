@@ -127,7 +127,7 @@
 			end
 			send "m * * * c "
 			if ($holocapture)
-				gosub :combat~fastCapture
+				gosub :fastCapture
 				send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 				gosub :player~quikstats
 			else
@@ -163,7 +163,7 @@
 			end
 		
 			if ($holocapture)
-				gosub :combat~fastCapture
+				gosub :fastCapture
 			else
 				goSub :fastAttack
 			end		
@@ -217,3 +217,6 @@ include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\sector\getautosectordata\sector"
 include "source\bot_includes\grid\surround\grid"
 include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\combat\fastcitadelattack\combat"
