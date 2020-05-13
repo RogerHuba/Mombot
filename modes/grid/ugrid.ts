@@ -293,6 +293,9 @@ goSub :checkAvoidedSectors
 
 
 :checkShip
+	gosub :SHIP~getShipStats
+	gosub :combat~init 
+
 	killAllTriggers
 	gosub :player~quikstats
 	send "c;"
@@ -1452,3 +1455,6 @@ include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\player\findjumpsector\player"
 include "source\bot_includes\combat\holoscan\combat"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\combat\init\combat"
+
