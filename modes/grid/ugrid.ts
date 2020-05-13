@@ -395,6 +395,7 @@ goSub :checkAvoidedSectors
 	KillAllTriggers
 	replaceText $database " "&$player~warpto&" " " "
 	subtract $databaseCount 1
+:clearitagain
 	setVar $furbing FALSE
 	if ($grid_warp = "twarp")
 		gosub :doTwarp
@@ -407,7 +408,7 @@ goSub :checkAvoidedSectors
 	if ($photoned = true)
 		setvar $switchboard~message "Waiting for photon to wear off..*"
 		gosub :switchboard~switchboard
-		setDelayTrigger restart_from_photon :clearit (($game~photon_duration * 60000) + 1000)
+		setDelayTrigger restart_from_photon :clearitagain (($game~photon_duration * 60000) + 1000)
 		pause
 	end
 
@@ -500,14 +501,14 @@ goSub :checkAvoidedSectors
 				send $boomsec $attack_mac $mac " < * " $return_mac $land_mac
 			else
 				send $boomsec $attack_mac " < * " $return_mac $land_mac
-				goto :clearit
+				goto :clearitagain
 			end
 		else
 			if ((SECTOR.FIGS.QUANTITY[$boomsec] <= 0) or ($double <> true))
 				send $boomsec $attack_mac $mac $return_mac $land_mac
 			else
 				send $boomsec $attack_mac $return_mac $land_mac
-				goto :clearit
+				goto :clearitagain
 			end
 		end
 		if (($grid_figs > 0) AND (SECTOR.FIGS.QUANTITY[$boomsec] < ($offodd*2)))
