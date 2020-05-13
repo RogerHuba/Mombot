@@ -427,6 +427,7 @@ goSub :checkAvoidedSectors
 		send $land_mac
 		goto :select_boomsec
 	end
+	setvar $player~current_prompt "Command"
 	send "sd"
 	waitFor "Relative Density Scan"
 	gosub :combat~holoscan
