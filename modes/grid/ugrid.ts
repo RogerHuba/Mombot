@@ -500,14 +500,14 @@ goSub :checkAvoidedSectors
 				send $boomsec $attack_mac $mac " < * " $return_mac $land_mac
 			else
 				send $boomsec $attack_mac " < * " $return_mac $land_mac
-				goto :hittingsec
+				goto :clearit
 			end
 		else
 			if ((SECTOR.FIGS.QUANTITY[$boomsec] <= 0) or ($double <> true))
 				send $boomsec $attack_mac $mac $return_mac $land_mac
 			else
 				send $boomsec $attack_mac $return_mac $land_mac
-				goto :hittingsec
+				goto :clearit
 			end
 		end
 		if (($grid_figs > 0) AND (SECTOR.FIGS.QUANTITY[$boomsec] < ($offodd*2)))
