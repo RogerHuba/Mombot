@@ -441,6 +441,9 @@ goSub :checkAvoidedSectors
 	send "sd"
 	waitFor "Relative Density Scan"
 	gosub :combat~holoscan
+	if ($combat~error = true)
+
+	end
 	#waiton "[" & $player~warpto & "]"
 	getDistance $distance $player~warpto $boomsec
 	getDistance $distanceback $boomsec $player~warpto 
@@ -932,12 +935,19 @@ return
 :return_triggers
 	setTextTrigger incit :incit "To which Sector"
 	setTextTrigger igd :igd "An Interdictor Generator in this sector holds you fast!"
-	setTextTrigger noturns :igd "Your ship was hit by a Photon and has been disabled"
+	setTextTrigger noturns :noturns "Your ship was hit by a Photon and has been disabled"
 	goSub :delayTrigger
 	pause
 :incit
 	killAllTriggers
 	return
+:noturns
+	gosub :player~quikstats
+	if ($player~current_sector = $homesec)
+		send $land_mac
+		setvar $photoned true
+		goto :clearitagain
+	end
 :igd
 	goto :callSaveMe
 

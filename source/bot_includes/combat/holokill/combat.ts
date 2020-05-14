@@ -3,6 +3,7 @@
 :holokill
 :holo_kill
 :holo_kill_kill_check
+	setvar $error false
 	if ($SHIP~SHIP_MAX_ATTACK <= 0)
 		gosub :ship~getshipstats
 	end
@@ -32,6 +33,7 @@
 		else
 			send "* "
 		end
+		setvar $error true
 		return
 :holo_kill_scandone
 	if ($player~CIT)
