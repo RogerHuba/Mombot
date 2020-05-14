@@ -421,9 +421,8 @@ return
 
 	if (($PLAYER~ALIGNMENT  < 1000) AND ($WeAreAdjDock = FALSE))
 		setVar $RED_adj 0
-		setvar $player~target $map~stardock
-		gosub :player~findjumpsector
-		if ($player~RED_adj = 0)
+		gosub :findjumpsector
+		if ($RED_adj = 0)
 			waitfor "Command [TL="
 			setVar $SWITCHBOARD~message "Cannot Find Jump Sector Adjacent Dock**"
 			gosub :SWITCHBOARD~switchboard
@@ -442,7 +441,7 @@ return
 		if ($WeAreAdjDock)
 			send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
 		else
-			send "^F" & $START_SECTOR & "*" & $player~RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
 		end
 	end
 	setTextLineTrigger noJoy :noJoy "*** Error - No route within"
@@ -464,7 +463,7 @@ return
 		if (($PLAYER~ALIGNMENT  >= 1000) OR ($WeAreAdjDock))
 			getdistance $dist1 $START_SECTOR $MAP~stardock
 		else
-			getdistance $dist1 $START_SECTOR $player~RED_adj
+			getdistance $dist1 $START_SECTOR $RED_adj
 		end
 
 		if ($dist1 <= 0)
@@ -527,8 +526,8 @@ return
 		if (($PLAYER~ALIGNMENT  >= 1000) AND ($WeAreAdjDock = FALSE))
 			setVar $TwarpTo $MAP~stardock
 			gosub :DoTwarp
-		elseif (($WeAreAdjDock = FALSE) AND ($player~RED_adj <> 0))
-			setVar $TwarpTo $player~RED_adj
+		elseif (($WeAreAdjDock = FALSE) AND ($RED_adj <> 0))
+			setVar $TwarpTo $RED_adj
 			gosub :DoTwarp
 		else
 			send " m " & $MAP~stardock & "*  *  P  S G Y G Q "
@@ -1268,6 +1267,49 @@ return
 
 
 
+
+:FindJumpSector
+	setVar $i 1
+	setVar $RED_adj 0
+	send "qq*"
+		while (SECTOR.WARPSIN[$MAP~stardock][$i] > 0)
+		setVar $RED_adj SECTOR.WARPSIN[$MAP~stardock][$i]
+		send "m " & $RED_adj & "* y"
+		setTextTrigger TwarpBlind 			:TwarpBlind "Do you want to make this jump blind? "
+		setTextTrigger TwarpLocked			:TwarpLocked "All Systems Ready, shall we engage? "
+		setTextLineTrigger TwarpVoided			:TwarpVoided "Danger Warning Overridden"
+		setTextLineTrigger TwarpAdj			:TwarpAdj "<Set NavPoint>"
+		pause
+		:TwarpAdj
+		killAllTriggers
+		send " * "
+		return
+
+		:TwarpVoided
+		killAllTriggers
+		send " N N "
+		goto :TryingNextAdj
+
+		:TwarpLocked
+		killAllTriggers
+		send " N "
+
+		goto :SectorLocked
+
+		:TwarpBlind
+		killAllTriggers
+		send " N "
+
+		:TryingNextAdj
+    	add $i 1
+	end
+
+	:NoAdjsFound
+		setVar $RED_adj 0
+		return
+
+	:SectorLocked
+		return
 
 
 :TurnsRequired
