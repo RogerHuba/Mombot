@@ -1017,8 +1017,6 @@ halt
 				add $planet~planetsToBlow 1
 				add $figsRequired ($figsRequired + (100 * $planet~planetsToBlow))
 			end 
-			
-			
 			add $i 1
 		end
 		# little safety margin
@@ -1033,13 +1031,17 @@ halt
 			
 			halt
 		end
+		setVar $i 1
+
+
 		if ($cleanup = 3)
 			# FIRE HARDCODE
-			subtract $planet~planetsInSector $GAME~MAX_PLANETS_PER_SECTOR
+			#subtract $planet~planetsInSector $GAME~MAX_PLANETS_PER_SECTOR
+			setVar $i ($GAME~MAX_PLANETS_PER_SECTOR + 1)
 		end
 		echo "$planet~planetsInSector " $planet~planetsInSector "*"
 		echo "$planet~planetsInSector " $planet~planetsInSector "*"
-		setVar $i 1
+		
 		while ($i <= $planet~planetsInSector)
 			
 				
