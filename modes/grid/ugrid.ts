@@ -503,14 +503,14 @@ goSub :checkAvoidedSectors
 		send "m"
 		gosub :return_triggers
 		if (($distanceback = 1) and ($retreat))
-			if ((SECTOR.FIGS.QUANTITY[$boomsec] <= 0) or ($double <> true))
+			if ((($figCount <= 0) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))) or ($double <> true))
 				send $boomsec $attack_mac $mac " < * " $return_mac $land_mac
 			else
 				send $boomsec $attack_mac " < * " $return_mac $land_mac
 				goto :clearitagain
 			end
 		else
-			if ((SECTOR.FIGS.QUANTITY[$boomsec] <= 0) or ($double <> true))
+			if ((($figCount <= 0) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))) or ($double <> true))
 				send $boomsec $attack_mac $mac $return_mac $land_mac
 			else
 				send $boomsec $attack_mac $return_mac $land_mac
@@ -520,10 +520,6 @@ goSub :checkAvoidedSectors
 		if (($grid_figs > 0) AND (SECTOR.FIGS.QUANTITY[$boomsec] < ($offodd*2)))
 			setSectorParameter $boomsec "FIGSEC" TRUE
 		end
-        #gosub :player~quikstats
-		#if (($player~TWARP = "No") OR ($player~current_sector <> $homesec))
-		#	goto :callSaveMe
-		#end
 		setVar $output ""
 		if (SECTOR.PLANETCOUNT[$boomsec] > 0)
 			setVar $i 1
