@@ -705,6 +705,7 @@ if (($player~ALIGNMENT < 1000) and ($skimMode <> true) and ($efurb <> true) and 
 	halt
 end
 
+setVar $wasCleanupTop 0
 send "v"
 setTextLineTrigger gameplanets :gameplanets "planets exist in the universe,"
 pause
@@ -713,7 +714,10 @@ pause
 	getword CURRENTLINE $vplanets 1
 	STRIPTEXT $vplanets ","
 	if ($vplanets > $planet~planetSALLOWED)
-		setVar $userCleanup 2
+		if ($cleanup = 3)
+			setVar $wasCleanupTop 1
+		end
+		setVar $cleanup 2
 	end
 
 
@@ -854,9 +858,11 @@ halt
 	setVar $planet~planeti 1
 
 	setVar $checkNewPlanet 0
+	setVar $initPlanets 0
 
 	if ($noPlanetsInSector = 0)
 		goSub :reCheckPlanets
+		setVar $initPlanets $planet~planetsInSector
 		goSub :checkPlanetNames
 	end
 
@@ -996,6 +1002,10 @@ halt
 
 	# if we are above the 90% planets then auto cleanup
 	if ($tradePlanet > $planet~planetSALLOWED)
+		if ($cleanup = 3) 
+// initPlanets
+			setVar $wasCleanupTop 1
+		end
 		setVar $cleanup 2
 	else
 		setVar $cleanup $userCleanup
@@ -1038,6 +1048,8 @@ halt
 			# FIRE HARDCODE
 			#subtract $planet~planetsInSector $GAME~MAX_PLANETS_PER_SECTOR
 			setVar $i ($GAME~MAX_PLANETS_PER_SECTOR + 1)
+		elseif ($wasCleanupTop = 1)
+			setVar $i ($initPlanets + 1)
 		end
 		echo "$planet~planetsInSector " $planet~planetsInSector "*"
 		echo "$planet~planetsInSector " $planet~planetsInSector "*"
