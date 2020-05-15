@@ -421,7 +421,7 @@ return
 
 	if (($PLAYER~ALIGNMENT  < 1000) AND ($WeAreAdjDock = FALSE))
 		setVar $RED_adj 0
-		gosub :player~findjumpsector
+		gosub :findjumpsector
 		if ($RED_adj = 0)
 			waitfor "Command [TL="
 			setVar $SWITCHBOARD~message "Cannot Find Jump Sector Adjacent Dock**"
