@@ -22,7 +22,12 @@ gosub :BOT~loadVars
 
 	gosub :player~quikstats
 
-	
+		
+	if ($player~photons > 0)
+		setVar $SWITCHBOARD~message "Yeah Nah, we don't do this with photons.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation <> "Command")
 		setVar $SWITCHBOARD~message "Must start at command prompt.*"
