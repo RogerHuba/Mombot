@@ -192,6 +192,13 @@
 		setvar $killing~switch false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " aliens "
+	if ($pos > 0)
+		setvar $aliens~hunt true
+	else
+		setvar $aliens~hunt false
+	end
+
 	if ($photon~density = true)
 		getwordpos " "&$bot~user_command_line&" " $pos " adj"
 		if ($pos > 0)
@@ -679,10 +686,16 @@
 
 :attackSectorMine
 	gosub :photon~armid_spoof
+	if (($photon~aliens = true) and ($aliens~hunt = true))
+		gosub :aliens~hunt
+	end
 	goto :check_to_fire_photon
 
 :attackSectorFighter
 	gosub :photon~fighter_spoof
+	if (($photon~aliens = true) and ($aliens~hunt = true))
+		gosub :aliens~hunt
+	end
 
 
 :check_to_fire_photon
@@ -960,6 +973,7 @@ return
 	:checklasthit
 return
 
+:main~check_for_target_change
 :check_for_target_change
 	if ($player~photons > 0)
 		gosub :waitbeforecheck
