@@ -205,7 +205,7 @@
 					goto :nocappingtargets
 				end
 				if ($isSameTarget)
-					#goto :send_attack
+					goto :send_attack
 				end
 			:ship_type
 				setVar $type_count 0
@@ -265,7 +265,7 @@
 				setTextTrigger nocombat :cap_it "How many fighters do you wish to use"
 				setTextLineTrigger notarget :nocappingtargets "Do you want instructions (Y/N) [N]?"
 				setTextLineTrigger notarget2 :nocappingtargets "'s unmanned"
-				#setTextLineTrigger theyattacked :theyattacked "Shipboard Computers "
+				setTextLineTrigger theyattacked :theyattacked "Shipboard Computers "
 				#Shipboard Computers Vulcan Larlet destroyed 980 shield points and 0 fighters.
 				#Shipboard Computers The Interdictor Generator on Platinum Talon prevented Larlet from escaping on 05/17/48 #at 12:11:16 AM
 				pause
