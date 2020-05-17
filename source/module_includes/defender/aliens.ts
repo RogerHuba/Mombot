@@ -62,6 +62,7 @@ return
 			gosub :dosurround
 			setvar $pwarp~destination $photon~sector
 			gosub :pwarp~run
+			gosub :attackandmoveship
 			gosub :check_surrounding_sectors
 			return
 		:pwarpConfirmed
