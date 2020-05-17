@@ -121,13 +121,13 @@ return
 
 
 :dosurround
-	send "q "
-	gosub :PLANET~getPlanetInfo
-	send "q "
 	if ($main~saveme = true)
 		send "ey"
 		gosub :ship~getshipstats
 	end
+	send "q "
+	gosub :PLANET~getPlanetInfo
+	send "q "
 	gosub :grid~surround
 	send "l "&$planet~planet&"* m*** c "
 	if ($main~saveme = true)
