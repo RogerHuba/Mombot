@@ -256,9 +256,7 @@
 				else
 					getText $cap_ship_info $ship_fighters " (" ") (Y/N)"
 				end
-				echo "**before["  $ship_fighters "]**"
-				getText $ship_fighters $ship_fighters "-" ")"
-				echo "**after["  $ship_fighters "]**"
+				getText $ship_fighters&"ENDOFLINE" $ship_fighters "-" "ENDOFLINE"
 				stripText $ship_fighters ","
 
 				setVar $ship_shield_percent 0
