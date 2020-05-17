@@ -205,6 +205,9 @@ return
 							setVar $BOT~user_command_line " moveship "&$map~home_sector&" silent"
 							setVar $BOT~parm1 $map~home_sector
 					end
+					if ($main~saveme = true)
+						send "ey"
+					end
 					gosub :moveship~run
 					if ($startingSector <> $player~current_sector)
 						setvar $switchboard~message "Can't twarp back to the planet!  Probably sector fig killed by an alien.*"
@@ -215,6 +218,9 @@ return
 				gosub :PLAYER~currentprompt
 				if ($player~current_prompt = "Command")
 					gosub :PLANET~landingSub
+				end
+				if ($main~saveme = true)
+					send "ey"
 				end
 			end
 		end
