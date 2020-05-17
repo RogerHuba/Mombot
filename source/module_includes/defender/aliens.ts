@@ -188,14 +188,10 @@ return
 			if ($emptyShips > 0)
 				loadVar $MAP~stardock
 				if ($emptyships > 0)
-					if ($sell)
-						if ($home = true)
-							setVar $BOT~user_command_line " moveship "&$map~home_sector&" silent"
-							setVar $BOT~parm1 $map~home_sector
-						else
-							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
+					gosub :player~quikstats
+					if (($player~alignment > 0) and ($player~experience < 1000))
+							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" silent"
 							setVar $BOT~parm1 $MAP~stardock
-						end
 					else
 							setVar $BOT~user_command_line " moveship "&$map~home_sector&" silent"
 							setVar $BOT~parm1 $map~home_sector
