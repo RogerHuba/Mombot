@@ -3,6 +3,7 @@
 	setVar $player~isFound FALSE
 	setVar $targetIsAlien FALSE
 	setVar $stillShields FALSE
+	setVar $ship_fighters 0
 
 	loadvar $ship~SHIP_MAX_ATTACK
 	loadvar $SHIP~SHIP_OFFENSIVE_ODDS
