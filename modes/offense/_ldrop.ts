@@ -466,31 +466,13 @@ setVar $moveFigMacro ""
 		end
 
 		if ($kill)
-			echo "### KILL IT*"
-			echo "### KILL IT*"
-			echo "### KILL IT*"
-			echo "### KILL IT*"
-			gosub :targeting~scanitcitkill
-			echo "### done IT*"
-			echo "### done IT*"
-			echo "### done IT*"
-			echo "### done IT*"
-
+			gosub :checkforvictims
 		else
 			send "s* "
 		end
-				echo "### holo IT*"
-				echo "### holo IT*"
-				echo "### holo IT*"
-
 		gosub :holooptions
 		if ($return)
 			if ($dropftrs)
-							echo "### grab figs IT*"
-							echo "### grab figs IT*"
-							echo "### grab figs IT*"
-							echo "### grab figs IT*"
-
 				setVar $BOT~command "movefig"
 				setVar $BOT~user_command_line " movefig p "& $dropFigQuant 
 				setVar $BOT~parm1 $p
