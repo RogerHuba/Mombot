@@ -41,6 +41,9 @@ return
 :validateFighterHit
 	:go_to_drop_sector
 		killAllTriggers
+		if ($photon~sector = 0)
+			setvar $photon~sector $player~current_sector
+		end
 		if ($photon~sector <> $player~current_sector)
 			send "*ls0* la0*  p " $photon~sector "*y"
 			setTextLineTrigger pwarpNotOk :pwarpTryAdjacent "You do not have any fighters in Sector "
