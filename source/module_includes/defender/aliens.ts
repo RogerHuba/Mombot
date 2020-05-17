@@ -163,10 +163,12 @@ return
 				setVar $targetsFound TRUE
 				if ($main~saveme = true)
 					send "ey"
+					gosub :ship~getshipstats
 				end
 				goSub :combat~fastCapture
 				if ($main~saveme = true)
 					send "ey"
+					gosub :ship~getshipstats
 				end
 			end
 		end
