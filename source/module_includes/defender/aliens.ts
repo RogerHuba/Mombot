@@ -10,7 +10,7 @@
 	setvar $player~surroundPassive false
 	setVar $PLAYER~onlyAliens TRUE
 	setVar $PLAYER~cappingAliens TRUE
-	setVar $PLAYER~defenderCapping false
+	setVar $PLAYER~defenderCapping true
 	setVar $PLAYER~surroundAvoidShieldedOnly TRUE
 
 
