@@ -250,8 +250,10 @@
 				killtrigger nocombat
 				killtrigger theyattacked
 				killtrigger wrongtarget
-				getText $cap_ship_info $ship_fighters $SHIP~shipList[$type_count] "(Y/N)"
-				if (($ship_fighters = "") or ($ship_fighters = "0"))
+				getText $cap_ship_info $cap_info $SHIP~shipList[$type_count] "(Y/N)"
+				if ($cap_info <> "")
+					getText $cap_info $ship_fighters " (" ") (Y/N)"
+				else
 					getText $cap_ship_info $ship_fighters " (" ") (Y/N)"
 				end
 				getText $ship_fighters $ship_fighters "-" ")"
