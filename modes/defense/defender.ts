@@ -192,7 +192,7 @@
 		setvar $killing~switch false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " aliens "
+	getwordpos " "&$bot~user_command_line&" " $pos " alien"
 	if ($pos > 0)
 		setvar $aliens~hunt true
 	else
