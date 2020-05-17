@@ -208,7 +208,7 @@ return
 				loadVar $MAP~stardock
 				if ($emptyships > 0)
 					gosub :player~quikstats
-					if (($player~alignment > 0) and ($player~experience < 1000))
+					if ($player~alignment > 1000)
 							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" silent"
 							setVar $BOT~parm1 $MAP~stardock
 					else
