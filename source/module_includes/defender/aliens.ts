@@ -166,15 +166,15 @@ return
 					gosub :ship~getshipstats
 				end
 				goSub :combat~fastCapture
-				if ($main~saveme = true)
-					send "ey"
-					gosub :ship~getshipstats
-				end
 			end
 		end
 		gosub :PLAYER~currentprompt
 		if ($player~current_prompt = "Command")
 			gosub :PLANET~landingSub
+		end
+		if ($main~saveme = true)
+			send "ey"
+			gosub :ship~getshipstats
 		end
 		send "q m*** c "
 		gosub :PLAYER~quikstats
