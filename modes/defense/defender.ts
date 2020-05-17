@@ -688,6 +688,8 @@
 	gosub :photon~armid_spoof
 	if (($photon~alien = true) and ($aliens~hunt = true))
 		gosub :aliens~hunt
+		gosub :check_for_target_change
+		gosub :navigate~navigate_away
 	end
 	goto :check_to_fire_photon
 
@@ -695,6 +697,8 @@
 	gosub :photon~fighter_spoof
 	if (($photon~alien = true) and ($aliens~hunt = true))
 		gosub :aliens~hunt
+		gosub :check_for_target_change
+		gosub :navigate~navigate_away
 	end
 
 
