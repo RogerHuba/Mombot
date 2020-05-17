@@ -189,14 +189,6 @@ return
 			setVar $emptyShips SECTOR.SHIPCOUNT[currentsector]
 			if ($emptyShips > 0)
 				loadVar $MAP~stardock
-				if ($filterships <> "")
-					setVar $BOT~user_command_line " moveship h silent "&#34&$filterships&#34
-					setVar $BOT~parm1 $MAP~home_sector
-					gosub :moveship~run
-					send "s*  "
-					gosub :player~quikstats
-					setVar $emptyShips SECTOR.SHIPCOUNT[currentsector]
-				end
 				if ($emptyships > 0)
 					if ($sell)
 						if ($home = true)
