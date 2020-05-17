@@ -256,10 +256,11 @@
 				else
 					getText $cap_ship_info $ship_fighters " (" ") (Y/N)"
 				end
+				echo "**before["  $ship_fighters "]**"
 				getText $ship_fighters $ship_fighters "-" ")"
+				echo "**after["  $ship_fighters "]**"
 				stripText $ship_fighters ","
 
-				echo "**["  $ship_fighters "]**"
 				setVar $ship_shield_percent 0
 				setVar $shieldpoints 0
 				setTextLineTrigger combat :combat_scan "Combat scanners show enemy shields at"
