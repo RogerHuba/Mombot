@@ -124,8 +124,16 @@ return
 	send "q "
 	gosub :PLANET~getPlanetInfo
 	send "q "
+	if ($main~saveme = true)
+		send "ey"
+		gosub :ship~getshipstats
+	end
 	gosub :grid~surround
 	send "l "&$planet~planet&"* m*** c "
+	if ($main~saveme = true)
+		send "ey"
+		gosub :ship~getshipstats
+	end
 	setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
 	gosub :SWITCHBOARD~switchboard
 	setvar $switchboard~message "* " & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
