@@ -25,7 +25,7 @@
 	gosub :main~check_for_target_change
 	gosub :attackandmoveship
 	gosub :main~check_for_target_change
-	
+
 	setVar $percentToSet (((3*$sector_total)*100)/$planet~planet_FUEL)
 	if (((($planet~planet_FUEL * $percentToSet) / 100)/3) < $cannonDamage)
 		add $percentToSet 1
@@ -57,16 +57,16 @@ return
 			gosub :findAdjacent
 			gosub :attemptDrop
 			gosub :dosurround
-			setvar $pwarp~destination $dropSector
+			setvar $pwarp~destination $photon~sector
 			gosub :pwarp~run
 			setVar $index 1
-			setVar $checkSector SECTOR.WARPS[$dropSector][$index]
+			setVar $checkSector SECTOR.WARPS[$photon~sector][$index]
 			while ($checkSector > 0)
 				setvar $pwarp~destination $checksector
 				gosub :pwarp~run
 				gosub :attackandmoveship
 				add $index 1
-				setVar $checkSector SECTOR.WARPS[$dropSector][$index]
+				setVar $checkSector SECTOR.WARPS[$photon~sector][$index]
 			end
 			return
 		:pwarpConfirmed
@@ -84,20 +84,20 @@ return
 				gosub :pwarp~run
 				gosub :attackandmoveship
 				add $index 1
-				setVar $checkSector SECTOR.WARPS[$dropSector][$index]
+				setVar $checkSector SECTOR.WARPS[$photon~sector][$index]
 			end
 return
 :findAdjacent
-	getSectorParameter $dropSector "FIGSEC" $isFigged
+	getSectorParameter $photon~sector "FIGSEC" $isFigged
 	setVar $i 1
-	setVar $checkSector SECTOR.WARPS[$dropSector][$i]
+	setVar $checkSector SECTOR.WARPS[$photon~sector][$i]
 	setArray $targetSectors 6
 	setVar $targetCount 0
 	while ($checkSector > 0)
 		add $targetCount 1
 		setVar $targetSectors[$targetCount] $checkSector
 		add $i 1
-		setVar $checkSector SECTOR.WARPS[$dropSector][$i]
+		setVar $checkSector SECTOR.WARPS[$photon~sector][$i]
 	end
 	if ($targetCount <= 0)
 		setvar $switchboard~message " No Targets..*"
