@@ -192,14 +192,14 @@ return
 				if ($emptyships > 0)
 					if ($sell)
 						if ($home = true)
-							setVar $BOT~user_command_line " moveship "&$homesector&" silent"
+							setVar $BOT~user_command_line " moveship "&$map~home_sector&" silent"
 							setVar $BOT~parm1 $homesector
 						else
 							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
 							setVar $BOT~parm1 $MAP~stardock
 						end
 					else
-							setVar $BOT~user_command_line " moveship "&$homesector&" silent"
+							setVar $BOT~user_command_line " moveship "&$map~home_sector&" silent"
 							setVar $BOT~parm1 $homesector
 					end
 					gosub :moveship~run
