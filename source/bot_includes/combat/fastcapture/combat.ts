@@ -157,6 +157,7 @@
 				end
 				setVar $thisTarget CURRENTANSILINE
 				getWord $cap_ship_info $attack_prompt 1
+				#Attack Nikpor's *** Vulcan Pod *** (125,000-5,161) (Y/N) [N]? Yes
 				if ($attack_prompt <> "Attack")
 					killalltriggers
 					return
@@ -249,7 +250,7 @@
 				killtrigger theyattacked
 				killtrigger wrongtarget
 				getText $cap_ship_info $ship_fighters $SHIP~shipList[$type_count] "(Y/N)"
-				if ($ship_fighters = "")
+				if (($ship_fighters = "") or ($ship_fighters = "0"))
 					getText $cap_ship_info $ship_fighters " (" ") (Y/N)"
 				end
 				getText $ship_fighters $ship_fighters "-" ")"
