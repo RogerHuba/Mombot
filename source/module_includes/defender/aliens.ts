@@ -92,8 +92,11 @@ return
 	setArray $targetSectors 6
 	setVar $targetCount 0
 	while ($checkSector > 0)
-		add $targetCount 1
-		setVar $targetSectors[$targetCount] $checkSector
+		getSectorParameter $checkSector "FIGSEC" $isFigged
+		if ($isFigged = true)
+			add $targetCount 1
+			setVar $targetSectors[$targetCount] $checkSector
+		end
 		add $i 1
 		setVar $checkSector SECTOR.WARPS[$photon~sector][$i]
 	end
