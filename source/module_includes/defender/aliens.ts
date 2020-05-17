@@ -75,20 +75,20 @@ return
 :check_surrounding_sectors
 	gosub :player~quikstats
 	setVar $index 1
-	setVar $checkSector SECTOR.WARPS[$player~current_sector][$index]
+	setVar $checkSector SECTOR.WARPSIN[$player~current_sector][$index]
 	while ($checkSector > 0)
 		setvar $pwarp~destination $checksector
 		gosub :pwarp~run
 		gosub :attackandmoveship
 		add $index 1
-		setVar $checkSector SECTOR.WARPS[$player~current_sector][$index]
+		setVar $checkSector SECTOR.WARPSIN[$player~current_sector][$index]
 	end
 return
 
 :findAdjacent
 	getSectorParameter $photon~sector "FIGSEC" $isFigged
 	setVar $i 1
-	setVar $checkSector SECTOR.WARPS[$photon~sector][$i]
+	setVar $checkSector SECTOR.WARPSIN[$photon~sector][$i]
 	setArray $targetSectors 6
 	setVar $targetCount 0
 	while ($checkSector > 0)
@@ -98,7 +98,7 @@ return
 			setVar $targetSectors[$targetCount] $checkSector
 		end
 		add $i 1
-		setVar $checkSector SECTOR.WARPS[$photon~sector][$i]
+		setVar $checkSector SECTOR.WARPSIN[$photon~sector][$i]
 	end
 	if ($targetCount <= 0)
 		setvar $switchboard~message " No Targets..*"
