@@ -40,6 +40,7 @@
 		end
 		pause
 	:gotSectorData
+		killtrigger getline
 		settexttrigger nomines :nomines "Citadel command (?=help)" 
 		settexttrigger nomines2 :nomines "Command ["
 		settexttrigger mines :mines "Mined Sector: Do you wish to Avoid this sector in the future? (Y/N)"
