@@ -10,7 +10,7 @@
 	setvar $player~surroundPassive true
 	setVar $PLAYER~onlyAliens TRUE
 	setVar $PLAYER~cappingAliens TRUE
-	setVar $PLAYER~defenderCapping TRUE
+	setVar $PLAYER~defenderCapping false
 	setVar $PLAYER~surroundAvoidShieldedOnly TRUE
 
 
@@ -196,14 +196,14 @@ return
 					if ($sell)
 						if ($home = true)
 							setVar $BOT~user_command_line " moveship "&$map~home_sector&" silent"
-							setVar $BOT~parm1 $homesector
+							setVar $BOT~parm1 $map~home_sector
 						else
 							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
 							setVar $BOT~parm1 $MAP~stardock
 						end
 					else
 							setVar $BOT~user_command_line " moveship "&$map~home_sector&" silent"
-							setVar $BOT~parm1 $homesector
+							setVar $BOT~parm1 $map~home_sector
 					end
 					gosub :moveship~run
 					if ($startingSector <> $player~current_sector)
