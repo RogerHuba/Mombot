@@ -261,6 +261,8 @@
 				setTextLineTrigger notarget :nocappingtargets "Do you want instructions (Y/N) [N]?"
 				setTextLineTrigger notarget2 :nocappingtargets "'s unmanned"
 				setTextLineTrigger theyattacked :theyattacked "Shipboard Computers "
+				#Shipboard Computers Vulcan Larlet destroyed 980 shield points and 0 fighters.
+				#Shipboard Computers The Interdictor Generator on Platinum Talon prevented Larlet from escaping on 05/17/48 #at 12:11:16 AM
 				pause
 				pause
 
@@ -272,6 +274,11 @@
 				pause
 				pause
 			:theyattacked
+				getwordpos currentline $pos " The Interdictor Generator on "
+				if ($pos > 0)
+					setTextLineTrigger theyattacked :theyattacked "Shipboard Computers "
+					pause
+				end
 				setvar $switchboard~message "*They attacked me, switching to 1 fighter attacks.*"
 				gosub :bot~echo
 				setVar $ship_fighters 1
