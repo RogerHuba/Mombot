@@ -686,14 +686,14 @@
 
 :attackSectorMine
 	gosub :photon~armid_spoof
-	if (($photon~aliens = true) and ($aliens~hunt = true))
+	if (($photon~alien = true) and ($aliens~hunt = true))
 		gosub :aliens~hunt
 	end
 	goto :check_to_fire_photon
 
 :attackSectorFighter
 	gosub :photon~fighter_spoof
-	if (($photon~aliens = true) and ($aliens~hunt = true))
+	if (($photon~alien = true) and ($aliens~hunt = true))
 		gosub :aliens~hunt
 	end
 
