@@ -205,7 +205,7 @@
 					goto :nocappingtargets
 				end
 				if ($isSameTarget)
-					goto :send_attack
+					#goto :send_attack
 				end
 			:ship_type
 				setVar $type_count 0

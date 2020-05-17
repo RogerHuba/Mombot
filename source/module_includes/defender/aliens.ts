@@ -108,12 +108,15 @@ return
 
 return
 :attemptDrop
-	
-	if ($targetCount > 0)
-		getRnd $randomTarget 1 $targetCount
-		setVar $gotoSector $targetSectors[$randomTarget]
-		setvar $pwarp~destination $gotoSector
+	setvar $p 1
+	while ($p <= $targetCount)
+		setVar $pwarp~destination $targetSectors[$p]
 		gosub :pwarp~run
+		gosub :player~quikstats
+		if ($player~current_sector = $pwarp~destination)
+			return
+		end
+		add $p 1
 	end
 	
 return
