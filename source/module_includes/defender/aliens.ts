@@ -161,7 +161,13 @@ return
 			end
 			if ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
 				setVar $targetsFound TRUE
+				if ($main~saveme = true)
+					send "ey"
+				end
 				goSub :combat~fastCapture
+				if ($main~saveme = true)
+					send "ey"
+				end
 			end
 		end
 		gosub :PLAYER~currentprompt

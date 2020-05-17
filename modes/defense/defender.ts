@@ -277,19 +277,19 @@
 	end
 
 	getWordPos " "&$bot~user_command_line&" " $pos " saveme:"
-	setvar $saveme false
-	setvar $saveme_bot ""
+	setvar $main~saveme false
+	setvar $main~saveme_bot ""
 	if ($pos > 0)
-		setvar $saveme true
-		getText $bot~user_command_line&" " $saveme_bot "saveme:" " "
-		if ($saveme_bot = 0)
+		setvar $main~saveme true
+		getText $bot~user_command_line&" " $main~saveme_bot "saveme:" " "
+		if ($main~saveme_bot = 0)
 			setVar $SWITCHBOARD~message "Saveme bot is not defined.*"
 			gosub :switchboard~switchboard
 			halt
 		end
 	end
 
-	if (($killing~switch) and ($saveme <> true))
+	if (($killing~switch) and ($main~saveme <> true))
 		setVar $SWITCHBOARD~message "Switch ships option doesn't work without saveme bot defined.*"	
 		gosub :switchboard~switchboard
 		halt
@@ -368,11 +368,11 @@
 		killtrigger 2
 		savevar $game~hasAliens
 
-	if ($saveme)
-		send "'" $saveme_bot " unlock*"
+	if ($main~saveme)
+		send "'" $main~saveme_bot " unlock*"
 		waiton "- Ship has been unlocked!"
 
-		send "'" $saveme_bot " saveme on " #34 $bot~username #34 "*"
+		send "'" $main~saveme_bot " saveme on " #34 $bot~username #34 "*"
 		setTextLineTrigger 1 :savemeready "- Saveme - Running from planet "&$planet~planet&" for "&$bot~username&"."
 		setdelaytrigger 2 :savemefailed 3000
 		pause
@@ -416,8 +416,8 @@
 	else
 		setVar $message $message&"*                   On Armid Hit: No"
 	end
-	if ($saveme)
-		setVar $message $message&"*                     Saveme bot: "&$saveme_bot
+	if ($main~saveme)
+		setVar $message $message&"*                     Saveme bot: "&$main~saveme_bot
 	end
 	setVar $message $message&"*                    Home Sector: "&$map~home_sector
 	format $planet~planet_fighters $formatted_fighters NUMBER
@@ -608,8 +608,8 @@
 		if ($photon~paranoid)
 			setvar $description $description&"Paranoid "
 		end
-		if ($saveme)
-			setvar $description $description&"Saveme:"&$saveme_bot&" "
+		if ($main~saveme)
+			setvar $description $description&"Saveme:"&$main~saveme_bot&" "
 		end
 		trim $description
 		if ($description <> "")
@@ -686,11 +686,6 @@
 
 :attackSectorMine
 	gosub :photon~armid_spoof
-	if (($photon~alien = true) and ($aliens~hunt = true))
-		gosub :aliens~hunt
-		gosub :check_for_target_change
-		gosub :navigate~navigate_away
-	end
 	goto :check_to_fire_photon
 
 :attackSectorFighter
