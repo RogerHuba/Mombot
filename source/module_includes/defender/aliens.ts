@@ -62,34 +62,29 @@ return
 			gosub :dosurround
 			setvar $pwarp~destination $photon~sector
 			gosub :pwarp~run
-			setVar $index 1
-			setVar $checkSector SECTOR.WARPS[$photon~sector][$index]
-			while ($checkSector > 0)
-				setvar $pwarp~destination $checksector
-				gosub :pwarp~run
-				gosub :attackandmoveship
-				add $index 1
-				setVar $checkSector SECTOR.WARPS[$photon~sector][$index]
-			end
+			gosub :check_surrounding_sectors
 			return
 		:pwarpConfirmed
 			killalltriggers
 			gosub :player~quikstats
 			gosub :dosurround
 			gosub :attackandmoveship
-			if ($photon~sector <= 0)
-				setvar $photon~sector $player~current_sector
-			end
-			setVar $index 1
-			setVar $checkSector SECTOR.WARPS[$photon~sector][$index]
-			while ($checkSector > 0)
-				setvar $pwarp~destination $checksector
-				gosub :pwarp~run
-				gosub :attackandmoveship
-				add $index 1
-				setVar $checkSector SECTOR.WARPS[$photon~sector][$index]
-			end
+			gosub :check_surrounding_sectors
 return
+
+:check_surrounding_sectors
+	gosub :player~quikstats
+	setVar $index 1
+	setVar $checkSector SECTOR.WARPS[$player~current_sector][$index]
+	while ($checkSector > 0)
+		setvar $pwarp~destination $checksector
+		gosub :pwarp~run
+		gosub :attackandmoveship
+		add $index 1
+		setVar $checkSector SECTOR.WARPS[$player~current_sector][$index]
+	end
+return
+
 :findAdjacent
 	getSectorParameter $photon~sector "FIGSEC" $isFigged
 	setVar $i 1
@@ -105,7 +100,7 @@ return
 	if ($targetCount <= 0)
 		setvar $switchboard~message " No Targets..*"
 		gosub :bot~echo 
-		setVar $targetSectors[1] $CURRENT_LOCATION
+		setVar $targetSectors[1] $player~current_sector
 	end
 
 return
