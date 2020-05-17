@@ -7,7 +7,7 @@
 	if ($PLAYER~surroundFigs <= 0)
 		setvar $PLAYER~surroundFigs 1
 	end
-	setvar $player~surroundPassive true
+	setvar $player~surroundPassive false
 	setVar $PLAYER~onlyAliens TRUE
 	setVar $PLAYER~cappingAliens TRUE
 	setVar $PLAYER~defenderCapping false
@@ -122,9 +122,6 @@ return
 
 
 :dosurround
-	if ($player~surroundPassive = true)
-		gosub :dscan~run		
-	end
 	send "q "
 	gosub :PLANET~getPlanetInfo
 	send "q "
@@ -183,8 +180,8 @@ return
 
 			send "s*  "
 			waiton "Warps to Sector(s) : "
-			setVar $figowner SECTOR.FIGS.OWNER[currentsector]
-			setVar $figCount SECTOR.FIGS.QUANTITY[currentsector]
+			setVar $figowner SECTOR.FIGS.OWNER[$player~current_sector]
+			setVar $figCount SECTOR.FIGS.QUANTITY[$player~current_sector]
 
 			if (($figcount <= 0) or (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
 				gosub :xenter~run
