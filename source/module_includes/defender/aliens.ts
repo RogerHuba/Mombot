@@ -178,12 +178,14 @@ return
 		if ($player~current_prompt = "Command")
 			gosub :PLANET~landingSub
 		end
-		if ($main~saveme = true)
-			send "ey"
-			gosub :ship~getshipstats
-		end
 		send "q m*** c "
 		gosub :PLAYER~quikstats
+		if ($player~photons <= 0)
+			if ($main~saveme = true)
+				send "ey"
+				gosub :ship~getshipstats
+			end
+		end
 		setVar $startingSector $PLAYER~CURRENT_SECTOR
 		if (($PLAYER~SHIELDS < $SHIP~SHIP_SHIELD_MAX) and ($planet~planet_shields > 360))
 			setVar $player~shields_needed ($SHIP~SHIP_SHIELD_MAX - $PLAYER~SHIELDS)
