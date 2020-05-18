@@ -794,6 +794,10 @@
 		end
 
 	else
+		if (($photon~alien = true) and ($aliens~hunt = true))	
+			goto :processing
+		end
+
 		if ($limpet)
 			killtrigger 21
 			setTextTrigger 21 :attackSectorLimpet "Limpet mine in "
