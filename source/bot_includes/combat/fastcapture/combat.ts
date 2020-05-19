@@ -336,20 +336,20 @@
 					setvar $sendAttack $sendAttack&$player~refurbString
 				end
 				send $sendAttack
-#				if ($cap_points = 1)
-#					setvar $i 1
-#					setvar $burst ""
-#					while ($i <= 3)
-#						setvar $burst $burst&" "&$targetString&$sendAttack
-#						setVar $player~fighters ($player~fighters-$cap_points)
-#						add $i 1
-#					end
-#					send $burst
-#					setdelaytrigger littleslower :donelittleslower 100
-#					pause
-#					:donelittleslower
-#					gosub :player~quikstats
-#				end
+				if ($cap_points = 1)
+					setvar $i 1
+					setvar $burst ""
+					while ($i <= 3)
+						setvar $burst $burst&" "&$targetString&$sendAttack
+						setVar $player~fighters ($player~fighters-$cap_points)
+						add $i 1
+					end
+					send $burst
+					setdelaytrigger littleslower :donelittleslower 50
+					pause
+					:donelittleslower
+					gosub :player~quikstats
+				end
 		:keepcapping
 		end
 	end

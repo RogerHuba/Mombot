@@ -32,7 +32,10 @@
 				setVar $sectorData $line				
 			end
 		end
-		getWordPos $line $pos "Warps to Sector(s) "
+		getword $line $check 1			
+		if ($check <> "Warps")
+			getWordPos $line $pos "Warps to Sector(s) "
+		end		
 		if ($pos > 0)
 			setvar $adjacent[$adjcount] $sectorData
 			setvar $adjacent_sector[$adjcount] $tempSector
