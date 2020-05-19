@@ -304,13 +304,13 @@
 				#echo "*Cap Points: ["&$cap_points&"]*"
 				if ((($player~defenderCapping = TRUE) AND ($unmanned <> true)) AND ($targetIsAlien = TRUE))
 					if ($stillShields = TRUE)
-						if ($ship_fighters > 1000)
+						if ($ship_fighters > 500)
 							 setVar $cap_points (($shieldPoints / $own_odds) + ($cap_points/100))
 						else
 							setVar $cap_points ($shieldPoints+1)
 						end
 					else
-						if ($ship_fighters > 1000)
+						if ($ship_fighters > 500)
 							 setVar $cap_points (($cap_points / $own_odds) - ($cap_points/70))
 						else
 							setVar $cap_points 1
