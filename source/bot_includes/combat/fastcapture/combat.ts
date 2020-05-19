@@ -345,7 +345,7 @@
 						add $i 1
 					end
 					send $burst
-					setdelaytrigger littleslower :donelittleslower 50
+					setdelaytrigger littleslower :donelittleslower 10
 					pause
 					:donelittleslower
 					gosub :player~quikstats
