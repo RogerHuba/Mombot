@@ -296,8 +296,7 @@
 			end
 		end
 		gosub :findNextTarget
-		send "  sz*    "
-		Waiton "Warps to Sector(s) :"
+		gosub :displaySector		
 		gosub :PLAYER~quikstats
 		setVar $HAZ_Before SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
 		setVar $planet~planetS_Before SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
@@ -311,8 +310,7 @@
 			gosub :DisRupt
 		end
 		gosub :clearSector
-		send "  sz*    "
-		Waiton "Warps to Sector(s) :"
+		gosub :displaySector
 		gosub :PLAYER~quikstats
 		setVar $HAZ_After SECTOR.NAVHAZ[$PLAYER~CURRENT_SECTOR]
 		setVar $planet~planetS_After SECTOR.PLANETCOUNT[$PLAYER~CURRENT_SECTOR]
@@ -1009,9 +1007,7 @@ return
 	setVar $placedLimpet FALSE
 	setVar $placedArmid FALSE
 
-	send "   sz*    "
-
-	waitOn "Warps to Sector(s) :"
+	gosub :displaySector
 	setVar $limpetOwner SECTOR.LIMPETS.OWNER[$PLAYER~CURRENT_SECTOR]
 	setVar $armidOwner SECTOR.MINES.OWNER[$PLAYER~CURRENT_SECTOR]
 	if ((($limpetOwner = "belong to your Corp") OR ($limpetOwner = "yours")))
@@ -1422,6 +1418,17 @@ return
 	end
 return
 
+:displaySector
+		send "  sz*    "
+		setTextLineTrigger	1	:check_scan	"Warps to Sector(s)"
+		pause
+		:check_scan
+		getword currentline $word 1
+		if ($word <> "Warps")
+			setTextLineTrigger	1	:check_scan	"Warps to Sector(s)"
+			pause
+		end
+return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\bot_includes\combat\init\combat"
