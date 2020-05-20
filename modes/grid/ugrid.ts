@@ -1205,7 +1205,7 @@ return
 	setvar $paused false
 	setvar $photoned false
 	if ($player~warpto > 0)
-		if ($furbing = true)
+		if ($player~warpto = $map~stardock)
 			send "mz" & $player~warpto "*"
 		else
 			send "q  q  mz" & $player~warpto "*"
