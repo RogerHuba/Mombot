@@ -359,11 +359,10 @@ goSub :checkAvoidedSectors
 
 	if ((($player~limpets < $grid_limpets) OR ($player~armids < $grid_armids)) OR (($imlimped = TRUE) AND ($autoClean = TRUE)))
 		if ($refurb)
-			setvar $window_content "    Auto Refurbing.. *"
-			gosub :setwindow
 			gosub :attempt_refurb
 		else
-			echo ANSI_12 "*You must stock up on mines before continuing." ANSI_7
+			setvar $switchboard~message "You must stock up on mines before continuing.*"
+			gosub :switchboard~switchboard
 			halt
 		end
 		gosub :player~quikstats
