@@ -1188,9 +1188,10 @@ return
 			setVar $_Mines "Max"
 			gosub :DoPurchases
 		end
-		send "Q Q Q Q *  M  " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet~planet & "* p  s  s * * c *"
+		send "Q Q Q Q * " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet~planet & "* c *"
 		gosub :player~quikstats
 		if ($player~current_sector = $map~stardock)
+			send " q p  s  s * * "
 			setvar $switchboard~message "Twarp Error, Should be Hiding on Dock!*"
 			gosub :switchboard~switchboard
 			halt
