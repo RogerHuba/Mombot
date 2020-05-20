@@ -1064,7 +1064,8 @@ return
 		getWord CURRENTLINE $planet~CITADELCash 4
 		stripText $planet~CITADELCash ","
 		if ($planet~CITADELCash < $cashNeeded)
-			send "'{" & $bot~bot_name & "} - Not enough cash for mine refurbs in treasury or on hand.*"	
+			setvar $switchboard~message "Not enough cash for mine refurbs in treasury or on hand.*"	
+			gosub :switchboard~switchboard
 			halt
 		end
 		send "t f "&($cashNeeded-$player~credits)&"* "
@@ -1088,40 +1089,12 @@ return
 		send "n "
 		if ($player~RED_adj = 0)
 			waitfor "Command [TL="
-			send "'{" & $bot~bot_name & "} - Cannot Find Jump Sector Adjacent Dock**"
+			setvar $switchboard~message "Cannot Find Jump Sector Adjacent Dock*"
+			gosub :switchboard~switchboard
 			halt
 		end
 	end
 
-	if ($player~alignment >= 1000)
-		if ($WeAreAdjDock)
-			send "^F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
-		else
-			send "^F" & $START_SECTOR & "*" & $map~stardock & "*F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
-		end
-	else
-		if ($WeAreAdjDock)
-			send "^F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
-		else
-			send "^F" & $START_SECTOR & "*" & $player~RED_adj & "*F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
-		end
-	end
-	setTextLineTrigger noJoy :noJoy "*** Error - No route within"
-	setTextTrigger cont :cont "ENDINTERROG"
-	pause
-
-	:noJoy
-		killAllTriggers
-		send "'{" $bot~bot_name "} - Cannot Find Path to StarDock!**"
-		halt
-	:cont
-		killAllTriggers
-		setDelayTrigger Latency_Delay		:Latency_Delay 500
-		pause
-
-		:Latency_Delay
-
-		Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
 		if (($player~alignment >= 1000) OR ($WeAreAdjDock))
 			getdistance $dist1 $START_SECTOR $map~stardock
 		else
@@ -1129,37 +1102,43 @@ return
 		end
 
 		if ($dist1 <= 0)
-			send "'{" $bot~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Course to Dock**"
+			setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
+			gosub :switchboard~switchboard
 			halt
 		end
 
 		getdistance $dist2 $map~stardock $START_SECTOR
 		if ($dist2 <= 0)
-			send "'{" $bot~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Return Course From Dock**"
+			setvar $switchboard~message "Insufficient Warp Data Plotting Return Course From Dock*"
+			gosub :switchboard~switchboard
 			halt
 		end
 
 		setVar $ore_req (($dist1 + $dist2) * 3)
 
 		if ($player~ore_holds < $ore_req)
-			send "'{" $bot~bot_name "} - Not Enough ORE In Holds To Make Round Trip**"
+			setvar $switchboard~message "Not Enough ORE In Holds To Make Round Trip*"
+			gosub :switchboard~switchboard
 			halt
 		end
 
 		if ($player~twarp_type = "No")
-			send "'{" $bot~bot_name "} - Must Have Twarp 1 or 2**"
+			setvar $switchboard~message "Must Have Twarp 1 or 2*"
+			gosub :switchboard~switchboard
 			halt
 		end
 
-		if ($player~unlimitedGame = 0)
+		if ($player~unlimitedGame <> true)
 			gosub :TurnsRequired
 			if ($player~turnsRequired > $player~turns)
-				send "'{" $bot~bot_name "} - Not Enough Turns. " & ANSI_12 & $player~turnsRequired & ANSI_15 & ", Required**"
+				setvar $switchboard~message "Not Enough Turns. " & $player~turnsRequired & ", Required*"
+				gosub :switchboard~switchboard
 				halt
 			elseif ($player~turnsRequired <= $player~turns)
 				setVar $tmp ($player~turns - $player~turnsRequired)
 				if ($tmp <= $bot~bot_turn_limit)
-					send "'{" $bot~bot_name "} - Proceeding Will Leave Fewer Than " & $bot~bot_turn_limit & " Turns!**"
+					setvar $switchboard~message "Proceeding Will Leave Fewer Than " & $bot~bot_turn_limit & " Turns!*"
+					gosub :switchboard~switchboard
 					halt
 				end
 			end
@@ -1171,7 +1150,8 @@ return
 	pause
 	:nosoupforme
 		killAllTriggers
-		send "'{" $bot~bot_name "} " & $TagLineB & " - StarDock appears to have been Blown Up!**"
+		setvar $switchboard~message "StarDock appears to have been Blown Up!**"
+		gosub :switchboard~switchboard
 		halt
 	:itsalive
 		killAllTriggers
@@ -1210,7 +1190,8 @@ return
 		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet~planet & "* p  s  s * * c *"
 		gosub :player~quikstats
 		if ($player~current_sector = $map~stardock)
-			send "'{" $bot~bot_name "} - Twarp Error, Should be Hiding on Dock!**"
+			setvar $switchboard~message "Twarp Error, Should be Hiding on Dock!*"
+			gosub :switchboard~switchboard
 			halt
 		end
 		send "q tnt1* c "
