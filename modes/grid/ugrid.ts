@@ -1157,6 +1157,7 @@ return
 		send "q "
 		waitfor "(?="
 		setVar $msg ""
+		setvar $furbing true
 		if (($player~alignment >= 1000) AND ($WeAreAdjDock = FALSE))
 			setVar $player~warpto $map~stardock
 			gosub :DoTwarp
