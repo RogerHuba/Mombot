@@ -1182,11 +1182,12 @@ return
 
 		end
 		gosub :player~quikstats
-
-		setVar $_Limps "Max"
-		setVar $_Mines "Max"
-		gosub :DoPurchases
-		send "Q Q Q Q Z N M " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet~planet & "* p  s  s * * c *"
+		if (($maxMines > $player~limpets) or ($maxMines > $player~armids))
+			setVar $_Limps "Max"
+			setVar $_Mines "Max"
+			gosub :DoPurchases
+		end
+		send "Q Q Q Q *  M  " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet~planet & "* p  s  s * * c *"
 		gosub :player~quikstats
 		if ($player~current_sector = $map~stardock)
 			setvar $switchboard~message "Twarp Error, Should be Hiding on Dock!*"
