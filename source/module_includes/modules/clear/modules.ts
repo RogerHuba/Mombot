@@ -111,7 +111,7 @@
 			setvar $player~surroundlimp 3
 		end
 		setvar $grid_armids $player~surroundmine
-		servar $grid_limpets $player~surroundlimp
+		setvar $grid_limpets $player~surroundlimp
 		if ($grid_armids = 0)
 			setVar $_ARMIDS_ " "
 			setVar $placedArmid TRUE
