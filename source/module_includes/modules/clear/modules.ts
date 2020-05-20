@@ -104,6 +104,14 @@
 		killtrigger 1 
 		killtrigger 2
 		killtrigger 3
+		if ($player~surroundmine <= 0)
+			setvar $player~surroundmine 3
+		end
+		if ($player~surroundlimp <= 0)
+			setvar $player~surroundlimp 3
+		end
+		setvar $grid_armids $player~surroundmine
+		servar $grid_limpets $player~surroundlimp
 		if ($grid_armids = 0)
 			setVar $_ARMIDS_ " "
 			setVar $placedArmid TRUE
@@ -193,10 +201,10 @@ return
 			send "q qq z n *  "
 		end
 		if ($player~surroundmine <= 0)
-			setvar $player~surroundmine 1
+			setvar $player~surroundmine 3
 		end
 		if ($player~surroundlimp <= 0)
-			setvar $player~surroundlimp 1
+			setvar $player~surroundlimp 3
 		end
 		if ($minesToDeploy <= 0)
 			if ($PLAYER~ARMIDS < $player~surroundmine)
