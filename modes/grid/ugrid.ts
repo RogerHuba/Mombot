@@ -1143,7 +1143,7 @@ return
 			end
 		end
 
-	send " C R " & $map~stardock & "*"
+	send " C R " & $map~stardock & "*q "
 	setTextLineTrigger itsalive :itsalive "Items     Status  Trading % of max OnBoard"
 	setTextLineTrigger nosoupforme :nosoupforme "I have no information about a port in that sector"
 	pause
@@ -1205,7 +1205,7 @@ return
 	setvar $photoned false
 	if ($player~warpto > 0)
 		if ($furbing = true)
-			send "q  mz" & $player~warpto "*"
+			send "mz" & $player~warpto "*"
 		else
 			send "q  q  mz" & $player~warpto "*"
 		end
