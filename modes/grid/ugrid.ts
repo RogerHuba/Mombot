@@ -1188,7 +1188,7 @@ return
 			setVar $_Mines "Max"
 			gosub :DoPurchases
 		end
-		send "Q Q Q Q * " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet~planet & "* c *"
+		send "Q Q Q Q * " & $START_SECTOR & "* Y  Y  Y  * L Z" & #8 & $planet~planet & "* c "
 		gosub :player~quikstats
 		if ($player~current_sector = $map~stardock)
 			send " q p  s  s * * "
