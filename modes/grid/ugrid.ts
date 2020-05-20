@@ -1206,9 +1206,10 @@ return
 	setvar $photoned false
 	if ($player~warpto > 0)
 		if ($player~warpto = $map~stardock)
-			echo "**[" $player~warpto "][" $map~stardock "]**"
+			echo "**1[" $player~warpto "][" $map~stardock "]**"
 			send "mz" & $player~warpto "*"
 		else
+			echo "**2[" $player~warpto "][" $map~stardock "]**"
 			send "q  q  mz" & $player~warpto "*"
 		end
 		setTextTrigger there        :adj_warp "You are already in that sector!"
