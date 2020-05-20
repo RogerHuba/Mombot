@@ -91,11 +91,11 @@
 		setVar $REFURB TRUE
 	end
 
-	getWordPos $TEMP $pos " bwarp "
-	if ($pos = 0)
-		setVar $bwarp FALSE
-	else
+	getWordPos " "&$bot~user_command_line&" " $pos " bwarp "
+	if ($pos > 0)
 		setVar $bwarp TRUE
+	else
+		setVar $bwarp false
 	end
 
 	getWordPos $TEMP $pos " reckless "

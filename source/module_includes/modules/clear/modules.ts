@@ -10,13 +10,22 @@
 	setVar $bot~validPrompts "Command Citadel"
 	gosub :bot~checkStartingPrompt
 
+	setvar $bwarp false
 	if ($startingLocation = "Citadel")
 		send "q"
 		gosub :PLANET~getPlanetInfo
 		send "c  s*"
+		if (($planet~planet_TRANSPORT >= 1) and ($player~unlimitedGame = true))
+			setvar $bwarp true
+		end
 	else
 		send "*"
 	end
+	getWordPos " "&$bot~user_command_line&" " $pos " bwarp "
+	if ($pos > 0)
+		setVar $bwarp TRUE
+	end
+
 	setVar $beforeLimpets $PLAYER~LIMPETS
 	setVar $beforeArmids  $PLAYER~ARMIDS
 	setVar $placedLimpet FALSE
@@ -36,9 +45,9 @@
 		setVar $SWITCHBOARD~message "Current Sector Already Clear of Enemy Mines!*"
 		return
 	end
-	gosub :clear_sector_deployEquipment
+	gosub :attemptClearingMines
 	while (($placedLimpet = FALSE) OR ($placedArmid = FALSE))
-		gosub :clear_sector_attemptClearingMines
+		gosub :attemptClearingMines
 	end
 	setSectorParameter $PLAYER~CURRENT_SECTOR "LIMPSEC" TRUE
 	setSectorParameter $PLAYER~CURRENT_SECTOR "MINESEC" TRUE
@@ -46,6 +55,105 @@
 		
 	return
 	
+
+	:attemptClearingMines
+	killtrigger LAID_LIMP
+	killtrigger LAID_ARMID
+	setVar $LAID_ARMID $placedArmid
+	setVar $LAID_LIMP $placedLimpet
+
+	if ($bwarp = true)
+		setVar $i 0
+		setvar $bwarp_move  "b"&$player~current_sector&"*"
+		setvar $bwarp_clear "y   *  l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  j  c  *  "
+		
+		if ($reckless <> true)
+			while ($i <= 5)
+				killtrigger 1
+				killtrigger 2
+				killtrigger 3
+				killtrigger 4
+				setTextTrigger 1 :no_bwarp_lock "Do you want to make this transport blind?"
+				setTextTrigger 2 :bwarp_lock "All Systems Ready, shall we engage?"
+				setTextLineTrigger 3 :bwarpNoFuel "This planet does not have enough Fuel Ore to transport you."
+				settexttrigger 4 :switchtononbwarp "Your ship was hit by a Photon and has been disabled."
+				send $bwarp_move
+				pause
+
+				:no_bwarp_lock
+					killalltriggers
+					send "n "
+					setVar $SWITCHBOARD~message "Fighter is gone from sector!  Stopping, check for enemies!*"
+					gosub :SWITCHBOARD~switchboard
+					halt
+
+				:bwarpNofuel
+					killalltriggers
+					setVar $SWITCHBOARD~message "Not enough fuel on the planet! Stopping.*"
+					gosub :SWITCHBOARD~switchboard
+					halt
+				:bwarp_lock
+					send $bwarp_clear
+	
+				add $i 1
+			end
+		else
+			send $bwarp_move "  " $bwarp_clear $bwarp_move "  " $bwarp_clear $bwarp_move "  " $bwarp_clear $bwarp_move "  " $bwarp_clear $bwarp_move "  " $bwarp_clear
+		end
+
+		killtrigger 1 
+		killtrigger 2
+		killtrigger 3
+		if ($grid_armids = 0)
+			setVar $_ARMIDS_ " "
+			setVar $placedArmid TRUE
+		else
+			setVar $_ARMIDS_ " h 1 z " & $grid_armids & "* z c * "
+			setTextLineTrigger	LAID_ARMID	:LAID_ARMID	"Armid mine(s) on board."
+		end
+		if ($grid_limpets = 0)
+			setVar $_LIMPS_ " "
+			setVar $placedLimpet TRUE
+		else
+			setVar $_LIMPS_ "h 2 z " & $grid_limpets & "* z c * "
+			setTextLineTrigger	LAID_LIMP	:LAID_LIMP	"Limpet mine(s) on board."
+		end
+
+		send "q  q  "&$_ARMIDS_&$_LIMPS_&" l "&$planet~planet&"*  c  "
+		
+		gosub :PLAYER~quikstats
+		waiton "Citadel command"
+
+	else
+		:switchtononbwarp
+		setvar $modules~minesToDeploy $grid_armids
+		setvar $modules~limpsToDeploy $grid_limpets
+		gosub :player~quikstats
+		if ($player~current_prompt = "Qcannon")
+			send "s" $percentToSet "* "
+			gosub :player~quikstats
+		end
+		gosub :clear_sector_attemptClearingMines
+		gosub :player~quikstats
+		setSectorParameter $PLAYER~CURRENT_SECTOR "MINESEC" TRUE
+		setSectorParameter $PLAYER~CURRENT_SECTOR "LIMPSEC" TRUE
+		setVar $LAID_ARMID TRUE
+		setVar $LAID_LIMP TRUE
+		setVar $placedLimpet TRUE
+		setVar $placedArmid TRUE
+	end
+return
+	:LAID_ARMID
+		setVar $LAID_ARMID TRUE
+		setVar $placedArmid TRUE
+		pause
+	:LAID_LIMP
+		setVar $LAID_LIMP TRUE
+		setVar $placedLimpet TRUE
+		pause
+
+
+
 	:clear_sector_attemptClearingMines
 		setVar $i 0
 		while ($i < 10)
