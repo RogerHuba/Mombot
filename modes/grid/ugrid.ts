@@ -1143,7 +1143,7 @@ return
 			end
 		end
 
-	send " C R " & $map~stardock & "*q "
+	send " C R " & $map~stardock & "*"
 	setTextLineTrigger itsalive :itsalive "Items     Status  Trading % of max OnBoard"
 	setTextLineTrigger nosoupforme :nosoupforme "I have no information about a port in that sector"
 	pause
