@@ -54,6 +54,7 @@
 		setVar $containsShieldedPlanet FALSE
 		setvar $containsEnemyTrader FALSE
 		if ($sector~holotargetfound)
+			gosub :player~quikstats
 			if (SECTOR.PLANETCOUNT[$test_sector] > 0)
 				setVar $p 1
 				while ($p <= SECTOR.PLANETCOUNT[$test_sector])
