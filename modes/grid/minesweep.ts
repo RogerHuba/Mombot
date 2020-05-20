@@ -1420,11 +1420,13 @@ return
 
 :displaySector
 		send "  sz*    "
+		killtrigger 1
 		setTextLineTrigger	1	:check_scan	"Warps to Sector(s)"
 		pause
 		:check_scan
 		getword currentline $word 1
 		if ($word <> "Warps")
+			killtrigger 1
 			setTextLineTrigger	1	:check_scan	"Warps to Sector(s)"
 			pause
 		end
