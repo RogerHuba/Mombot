@@ -180,6 +180,10 @@ goto :BOT~wait_for_command
 goto :BOT~wait_for_command
 #=========================== END PHOTON HOTKEY =======================================
 
+:clear
+	setVar $BOT~user_command_line "clear "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
+	goto :USER_INTERFACE~runUserCommandLine
+
 :kit
 	setVar $BOT~user_command_line "macro_kit"
 	goto :USER_INTERFACE~runUserCommandLine
