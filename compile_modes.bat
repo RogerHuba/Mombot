@@ -1,4 +1,4 @@
-for /r %%n in (*minesweep.ts) do call :checkit "%%n" 
+for /r %%n in (*ugrid.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
