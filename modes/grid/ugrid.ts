@@ -1204,7 +1204,7 @@ return
 	setvar $paused false
 	setvar $photoned false
 	if ($player~warpto > 0)
-		send "q t * t 1*  q * * mz" & $player~warpto "*"
+		send "q t * t 1*  q   *   mz" & $player~warpto "*"
 		setTextTrigger there        :adj_warp "You are already in that sector!"
 		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $player~warpto & " "
 		setTextTrigger locking      :locking "Do you want to engage the TransWarp drive?"
