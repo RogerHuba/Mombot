@@ -1206,6 +1206,7 @@ return
 	setvar $photoned false
 	if ($player~warpto > 0)
 		if ($player~warpto = $map~stardock)
+			echo "**[" $player~warpto "][" $map~stardock "]**"
 			send "mz" & $player~warpto "*"
 		else
 			send "q  q  mz" & $player~warpto "*"
