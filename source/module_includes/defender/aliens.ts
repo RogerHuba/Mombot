@@ -7,7 +7,7 @@
 	if ($PLAYER~surroundFigs <= 0)
 		setvar $PLAYER~surroundFigs 1
 	end
-	setvar $player~surroundPassive false
+	setvar $player~surroundPassive true
 	setVar $PLAYER~onlyAliens TRUE
 	setVar $PLAYER~cappingAliens TRUE
 	setVar $PLAYER~defenderCapping true
