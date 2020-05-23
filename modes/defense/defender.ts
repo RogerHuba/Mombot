@@ -999,7 +999,6 @@ return
 return
 
 :main~check_for_target_change
-	send " ls"&$planet~SECTOR_CANNON&"* la"&$planet~ATMOSPHERE_CANNON&"*"  
 :check_for_target_change
 	if ($player~photons > 0)
 		gosub :waitbeforecheck
@@ -1014,6 +1013,9 @@ return
 				gosub :photon~fighter_spoof
 			end
 			if ($photon~found = true)
+				if ($aliens~hunt = true)
+					send " ls"&$planet~SECTOR_CANNON&"* la"&$planet~ATMOSPHERE_CANNON&"*"  
+				end
 				goto :check_to_fire_photon
 			end
 		end
