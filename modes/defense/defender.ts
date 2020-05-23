@@ -713,6 +713,7 @@
 	gosub :photon~fighter_spoof
 	if (($photon~alien = true) and ($aliens~hunt = true))
 		gosub :aliens~hunt
+		send " *ls"&$planet~SECTOR_CANNON&"* la"&$planet~ATMOSPHERE_CANNON&"*"  
 		gosub :check_for_target_change
 		gosub :navigate~navigate_away
 	end

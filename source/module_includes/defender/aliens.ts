@@ -1,7 +1,4 @@
 :hunt
-	setvar $starting_sector_cannon $planet~SECTOR_CANNON
-	setvar $starting_atmos_cannon $planet~ATMOSPHERE_CANNON
-
 	loadvar $PLAYER~surroundFigs 
 	if ($PLAYER~surroundFigs <= 0)
 		setvar $PLAYER~surroundFigs 1
@@ -19,15 +16,14 @@
 	gosub :validateFighterHit
 	gosub :main~check_for_target_change
 	gosub :attackandmoveship
+	if ($targetsFound = true)
+		return
+	end
 	gosub :main~check_for_target_change
 	gosub :dosurround
 	gosub :main~check_for_target_change
 	gosub :attackandmoveship
 	gosub :main~check_for_target_change
-
-
-	send " *ls"&$starting_sector_cannon&"* la"&$starting_atmos_cannon&"*"  
-
 return
 
 :validateFighterHit
@@ -117,20 +113,13 @@ return
 		send "ey"
 		gosub :ship~getshipstats
 	end
-	send "q "
-	gosub :PLANET~getPlanetInfo
-	send "q "
+	send "q q "
 	gosub :grid~surround
 	send "l "&$planet~planet&"* m*** c "
 	if ($main~saveme = true)
 		send "ey"
 		gosub :ship~getshipstats
 	end
-	setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
-	gosub :SWITCHBOARD~switchboard
-	setvar $switchboard~message "* " & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
-	gosub :bot~echo
-
 return
 
 :attackandmoveship
@@ -164,6 +153,7 @@ return
 					gosub :ship~getshipstats
 				end
 				goSub :combat~fastCapture
+
 			end
 		end
 		gosub :PLAYER~currentprompt
