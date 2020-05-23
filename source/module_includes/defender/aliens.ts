@@ -212,14 +212,14 @@ return
 				end
 				if ($emptyships > 0)
 					if ($sell)
-						setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silemt"
+						setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
 						setVar $BOT~parm1 $MAP~stardock
 					else
 						if ($player~alignment > 1000)
 								setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
 								setVar $BOT~parm1 $MAP~stardock
 						else
-								setVar $BOT~user_command_line " moveship "&$map~home_sector&" "
+								setVar $BOT~user_command_line " moveship "&$map~home_sector&" silent "
 								setVar $BOT~parm1 $map~home_sector
 						end
 					end
@@ -231,7 +231,7 @@ return
 							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
 							setVar $BOT~parm1 $MAP~stardock
 					else
-							setVar $BOT~user_command_line " moveship "&$map~home_sector&" "
+							setVar $BOT~user_command_line " moveship "&$map~home_sector&" silent "
 							setVar $BOT~parm1 $map~home_sector
 					end
 					gosub :domoveship
