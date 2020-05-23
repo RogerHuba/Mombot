@@ -198,31 +198,39 @@ return
 			setVar $emptyShips SECTOR.SHIPCOUNT[currentsector]
 			if ($emptyShips > 0)
 				loadVar $MAP~stardock
+				if ($main~saveme = true)
+					send "ey"
+				end
+				if ($filterships <> "")
+					setVar $BOT~user_command_line " moveship "&$map~home_sector&" "&#34&$filterships&#34
+					setVar $BOT~parm1 $MAP~home_sector
+					gosub :domoveship
+				end
+				if ($emptyships > 0)
+					if ($sell)
+						setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep "
+						setVar $BOT~parm1 $MAP~stardock
+					else
+						if ($player~alignment > 1000)
+								setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep "
+								setVar $BOT~parm1 $MAP~stardock
+						else
+								setVar $BOT~user_command_line " moveship "&$map~home_sector&" "
+								setVar $BOT~parm1 $map~home_sector
+						end
+					end
+					gosub :domoveship
+				end
 				if ($emptyships > 0)
 					gosub :player~quikstats
 					if ($player~alignment > 1000)
-							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" "
+							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep "
 							setVar $BOT~parm1 $MAP~stardock
 					else
 							setVar $BOT~user_command_line " moveship "&$map~home_sector&" "
 							setVar $BOT~parm1 $map~home_sector
 					end
-					if ($main~saveme = true)
-						send "ey"
-					end
-					gosub :moveship~run
-					if ($startingSector <> $player~current_sector)
-						setvar $switchboard~message "Can't twarp back to the planet!  Probably sector fig killed by an alien.  Doing a mow!*"
-						gosub :switchboard~switchboard
-						setvar $destination $startingSector
-						gosub :getcourse
-						gosub :mow
-						gosub :player~quikstats
-						if ($startingSector <> $player~current_sector)
-							setvar $switchboard~message "Mow failed, I need help!*"
-							gosub :switchboard~switchboard
-						end
-					end
+					gosub :domoveship
 				end
 				gosub :PLAYER~currentprompt
 				if ($player~current_prompt = "Command")
@@ -380,7 +388,25 @@ return
 		send "d* "
 return
 
+:domoveship
+	gosub :moveship~run
+	send "s*  "
+	gosub :player~quikstats
+	setVar $emptyShips SECTOR.SHIPCOUNT[$player~current_sector]
 
+	if ($startingSector <> $player~current_sector)
+		setvar $switchboard~message "Can't twarp back to the planet!  Probably sector fig killed by an alien.  Doing a mow!*"
+		gosub :switchboard~switchboard
+		setvar $destination $startingSector
+		gosub :getcourse
+		gosub :mow
+		gosub :player~quikstats
+		if ($startingSector <> $player~current_sector)
+			setvar $switchboard~message "Mow failed, I need help!*"
+			gosub :switchboard~switchboard
+		end
+	end
+return
 #INCLUDES:
 include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\grid\surround\grid"

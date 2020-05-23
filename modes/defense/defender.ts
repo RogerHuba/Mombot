@@ -243,6 +243,27 @@
 		setvar $combat~defender false
 	end
 
+	setvar $aliens~filterships ""
+	getWordPos $bot~user_command_line $pos #34
+	if ($pos > 0)
+		getText $bot~user_command_line $aliens~filterships #34 #34
+		if ($aliens~filterships = false)
+			setVar $SWITCHBOARD~message "Invalid ship filter entered.*"
+			gosub :SWITCHBOARD~switchboard
+			halt			
+		else
+			setVar $SWITCHBOARD~message "Moving all ships matching: ["&$aliens~filterships&"], and bringing them home.*"
+			gosub :SWITCHBOARD~switchboard
+		end
+	end
+
+	getwordpos $bot~user_command_line $pos "sell"
+	if ($pos > 0)
+		setvar $aliens~sell true
+	else
+		setvar $aliens~sell false
+	end
+
 
 	getWordPos " "&$bot~user_command_line&" " $pos " multi:"
 	setvar $photon~multi false
