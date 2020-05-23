@@ -26,6 +26,7 @@
 			getsectorparameter $focus "LIMPSEC" $isLimped
 			getsectorparameter $focus "BUBBLE" $isBubble
 			getsectorparameter $focus "MSLSEC" $isMsl
+			getsectorparameter $focus "ALIENS" $isAlienSpace
 
 			setVar $i 1
 			if ($islimped = true)
@@ -42,7 +43,7 @@
 				setvar $issecure false
 			end
 
-			if (((($issecure = true) and ($securePwarp = true)) or ($securePwarp = false)) and ($isFigged = true) and ($isBubble <> true) and ($isMsl <> true) and ($focus <> $player~current_sector))
+			if (((($issecure = true) and ($securePwarp = true)) or ($securePwarp = false)) and ($isFigged = true) and ($isBubble <> true) and ($isMsl <> true) and ($isAlienSpace <> true) and ($focus <> $player~current_sector))
 				setVar $nearfig $focus
 				goto :pwarp_away
 			end
