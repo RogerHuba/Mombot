@@ -201,10 +201,10 @@ return
 				if ($emptyships > 0)
 					gosub :player~quikstats
 					if ($player~alignment > 1000)
-							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" silent"
+							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" "
 							setVar $BOT~parm1 $MAP~stardock
 					else
-							setVar $BOT~user_command_line " moveship "&$map~home_sector&" silent"
+							setVar $BOT~user_command_line " moveship "&$map~home_sector&" "
 							setVar $BOT~parm1 $map~home_sector
 					end
 					if ($main~saveme = true)
@@ -212,9 +212,16 @@ return
 					end
 					gosub :moveship~run
 					if ($startingSector <> $player~current_sector)
-						setvar $switchboard~message "Can't twarp back to the planet!  Probably sector fig killed by an alien.*"
+						setvar $switchboard~message "Can't twarp back to the planet!  Probably sector fig killed by an alien.  Doing a mow!*"
 						gosub :switchboard~switchboard
-						halt
+						setvar $destination $startingSector
+						gosub :getcourse
+						gosub :mow
+						gosub :player~quikstats
+						if ($startingSector <> $player~current_sector)
+							setvar $switchboard~message "Mow failed, I need help!*"
+							gosub :switchboard~switchboard
+						end
 					end
 				end
 				gosub :PLAYER~currentprompt
@@ -228,6 +235,154 @@ return
 		end
 return
 
+:getCourse
+	killalltriggers
+	setArray $COURSE 80
+	setVar $sectors ""
+	setTextLineTrigger sectorlinetrig :sectorsline " > "
+	send "^f*"&$destination&"**q"
+	pause
+
+
+:sectorsline
+	killAllTriggers
+	setVar $line CURRENTLINE
+	replacetext $line ">" " "
+	striptext $line "("
+	striptext $line ")"
+	setVar $line $line&" "
+	getWordPos $line $pos "So what's the point?"
+	getWordPos $line $pos2 ": ENDINTERROG"
+	if (($pos > 0) OR ($pos2 > 0))
+		goto :noPath
+	end
+	getWordPos $line $pos " sector "
+	getWordPos $line $pos2 "TO"
+	if (($pos <= 0) AND ($pos2 <= 0))
+		setVar $sectors $sectors & " " & $line
+	end
+	getWordPos $line $pos " "&$destination&" "
+	getWordPos $line $pos2 "("&$destination&")"
+	getWordPos $line $pos3 "TO"
+	if ((($pos > 0) OR ($pos2 > 0)) AND ($pos3 <= 0))
+		goto :gotSectors
+	else
+		setTextLineTrigger sectorlinetrig :sectorsline " > "
+		setTextLineTrigger sectorlinetrig2 :sectorsline " "&$destination&" "
+		setTextLineTrigger sectorlinetrig3 :sectorsline " "&$destination
+		setTextLineTrigger sectorlinetrig4 :sectorsline "("&$destination&")"
+		setTextLineTrigger donePath :sectorsline "So what's the point?"
+		setTextLineTrigger donePath2 :sectorsline ": ENDINTERROG"
+	end
+	pause
+
+:gotSectors
+	killAllTriggers
+	setVar $sectors $sectors&" :::"
+	setVar $courseLength 0
+	setVar $index 1
+	setVar $valid FALSE
+	:keepGoing
+	getWord $sectors $COURSE[$index] $index
+	while ($COURSE[$index] <> ":::")
+		add $courseLength 1
+		add $index 1
+		getWord $sectors $COURSE[$index] $index
+		if ($COURSE[$index] <> ":::")
+			setvar $checkedPorts[$COURSE[$index]] true
+			setVar $valid TRUE
+		end
+	end
+	if ($valid)
+		setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "&$destination&"*"
+	else
+		setVar $windowData "Sectors Figged: "&$count&" out of "&SECTORS&"*Current Target: "&$destination&"*"
+	end
+	setWindowContents mowWindow $windowData
+						
+:noPath
+	killAllTriggers
+	return
+
+:mow
+	gosub :player~quikstats
+	if ($maxFigAttack2 > $player~fighters)
+		setVar $maxFigAttack2 9999
+	end
+
+	setVar $result ""		
+
+	if ($no_twarp = FALSE)
+		setVar $j 4
+		setVar $closestFiggedSector 0	
+		while ($j <= $courseLength)
+
+			getSectorParameter $COURSE[$j] "FIGSEC" $isFigged
+	
+			if ($isFigged = 1)
+				setVar $closestFiggedSector $COURSE[$j]
+				setVar $index $j
+			end
+			add $j 1	
+		end
+		if ($closestFiggedSector > 0)
+			setVar $PLAYER~warpto $closestFiggedSector
+			gosub :player~twarp
+			gosub  :player~currentPrompt
+			if ($PLAYER~twarpSuccess = TRUE)
+				setVar $j ($index + 1)
+			else
+				setVar $j 3
+			end
+			goto :mowfromhere
+		end
+		
+		
+	end
+
+	setVar $j 3
+	:mowfromhere
+
+
+	setVar $tempj $j
+	while ($tempj <= $courseLength)
+		setvar $sector $COURSE[$tempj]
+		if ($sector <> 1)
+			if ((PORT.EXISTS[$sector] = TRUE) AND (PORT.CLASS[$sector] > 0) AND (((PORT.FUEL[$sector] > 0) AND (PORT.BUYFUEL[$sector] = FALSE))))
+				setvar $fuelsector $sector
+			end
+		end
+		add $tempj 1	
+	end
+	
+	# main mow routine
+		while ($j <= $courseLength)
+
+			setVar $result $result&"m  "&$COURSE[$j]&"* "
+			if (($COURSE[$j] > 10) AND ($COURSE[$j] <> STARDOCK))
+				setVar $result $result&"za"&$maxFigAttack2&"* z * "	
+			end
+			if (($COURSE[$j] > 10) AND ($COURSE[$j] <> STARDOCK) AND ($j > 2))
+				if ($figsToDrop > 0)
+					setVar $result $result&"f "&$figsToDrop&"* c d "
+					setSectorParameter $COURSE[$j] "FIGSEC" TRUE
+				else
+					setVar $result $result&"f "&$figsToDrop&"*"
+					setSectorParameter $COURSE[$j] "FIGSEC" FALSE
+				end
+			end
+			setvar $result $result&"zr* "
+			if ($course[$j] = $fuelsector)
+				setvar $result $result&" p   t   *   *  "
+			end
+			if ($do_density = TRUE)
+				setvar $result $result&"s d"
+			end 
+			add $j 1	
+		end
+		send $result
+		send "d* "
+	end
 
 
 
