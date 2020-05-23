@@ -115,12 +115,13 @@ return
 			getsectorparameter $focus "LIMPSEC" $isLimped
 			getsectorparameter $focus "BUBBLE" $isBubble
 			getsectorparameter $focus "MSLSEC" $isMsl
+			getsectorparameter $focus "ALIENS" $isAlienSpace
 
 			###############################################################
 			# if it's our bubble, the assumption is the sectors are clean #
 			###############################################################
 
-			if ((((($isFigged = true) and ($isLimped = true)) and ($isMsl <> true)) or ($isBubble = true)) and (sector.navhaz[$focus] <= 0))
+			if ((((($isFigged = true) and ($isLimped = true)) and ($isAlienSpace <> true) and ($isMsl <> true)) or ($isBubble = true)) and (sector.navhaz[$focus] <= 0))
 				setVar $nearfig $focus
 				gosub :pwarp_away
 				send "s"
