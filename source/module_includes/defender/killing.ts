@@ -87,6 +87,11 @@
 		gosub :player~quikstats
 		goto :scan_for_targets
 	end
+	getSectorParameter $player~current_sector "BUBBLE" $isBubble
+	if (($sector~containsBeacon = true) and ($isBubble <> true))
+		send "q q a y l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+	end
+
 return
 
 :set_the_cannon
