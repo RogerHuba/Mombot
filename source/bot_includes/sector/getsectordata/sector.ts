@@ -32,13 +32,9 @@
 			getText $line $tempSector "Sector  [33m: [36m" " [0;32min" 
 			setvar $player~current_sector $tempSector
 		end
+		getWordPos $line $pos "Warps to Sector(s) "
 		getword $line $check 1			
-		if ($check = "Warps")
-			getWordPos $line $pos "Warps to Sector(s) "
-		else
-			setvar $pos 0
-		end
-		if ($pos > 0)
+		if (($pos > 0) and ($check = "Warps"))
 			goto :gotSectorData
 		else
 			setTextLineTrigger getLine :sectorsline_cit_kill
