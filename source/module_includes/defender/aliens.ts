@@ -145,7 +145,7 @@ return
 			gosub :PLAYER~currentprompt
 			setvar $player~startingLocation $player~current_prompt
 			if ($player~current_prompt = "Command")
-				send "l "&$planet~planet&"* m*** c "
+				gosub :PLANET~landingSub		
 				gosub :PLAYER~currentprompt
 				setvar $player~startingLocation $player~current_prompt
 			end
@@ -167,7 +167,7 @@ return
 		end
 		gosub :PLAYER~currentprompt
 		if ($player~current_prompt = "Command")
-			send "l "&$planet~planet&"* m*** c "
+			gosub :PLANET~landingSub		
 		end
 		getSectorParameter $player~current_sector "BUBBLE" $isBubble
 		if (($sector~containsBeacon = true) and ($isBubble <> true))
