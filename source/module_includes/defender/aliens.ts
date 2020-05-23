@@ -51,6 +51,9 @@ return
 			setvar $pwarp~destination $photon~sector
 			gosub :pwarp~run
 			gosub :attackandmoveship
+			if ($targetsFound = true)
+				return
+			end
 			gosub :check_surrounding_sectors
 			return
 		:pwarpConfirmed
@@ -58,6 +61,9 @@ return
 			gosub :player~quikstats
 			gosub :dosurround
 			gosub :attackandmoveship
+			if ($targetsFound = true)
+				return
+			end
 			gosub :check_surrounding_sectors
 return
 
@@ -69,6 +75,9 @@ return
 		setvar $pwarp~destination $checksector
 		gosub :pwarp~run
 		gosub :attackandmoveship
+		if ($targetsFound = true)
+			return
+		end
 		add $index 1
 		setVar $checkSector SECTOR.WARPSIN[$player~current_sector][$index]
 	end
