@@ -33,7 +33,7 @@
 			setvar $player~current_sector $tempSector
 		end
 		getWordPos $line $pos "Warps to Sector(s) "
-		getword $line $check 1			
+		getword currentline $check 1			
 		if (($pos > 0) and ($check = "Warps"))
 			goto :gotSectorData
 		else
