@@ -306,13 +306,14 @@ return
 
 :mow
 	gosub :player~quikstats
-	if ($maxFigAttack2 > $player~fighters)
+	if ($ship~SHIP_MAX_ATTACK > $player~fighters)
 		setVar $maxFigAttack2 9999
+	else
+		setvar $maxFigAttack2 $ship~SHIP_MAX_ATTACK
 	end
 
 	setVar $result ""		
 
-	if ($no_twarp = FALSE)
 		setVar $j 4
 		setVar $closestFiggedSector 0	
 		while ($j <= $courseLength)
@@ -337,9 +338,7 @@ return
 			goto :mowfromhere
 		end
 		
-		
-	end
-
+	
 	setVar $j 3
 	:mowfromhere
 
@@ -375,15 +374,11 @@ return
 			if ($course[$j] = $fuelsector)
 				setvar $result $result&" p   t   *   *  "
 			end
-			if ($do_density = TRUE)
-				setvar $result $result&"s d"
-			end 
 			add $j 1	
 		end
 		send $result
 		send "d* "
-	end
-
+return
 
 
 #INCLUDES:
