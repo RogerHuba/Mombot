@@ -171,7 +171,7 @@ return
 		end
 		getSectorParameter $player~current_sector "BUBBLE" $isBubble
 		if (($sector~containsBeacon = true) and ($isBubble <> true))
-			send "q q a y l "&$planet~planet&"* m*** c "
+			send "q q a y * * * * * * * l "&$planet~planet&"* m*** c "
 		else
 			send "q m*** c "
 		end

@@ -89,7 +89,7 @@
 	end
 	getSectorParameter $player~current_sector "BUBBLE" $isBubble
 	if (($sector~containsBeacon = true) and ($isBubble <> true))
-		send "q q a y l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+		send "q q a y * * * * * * * * * * * * l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 	end
 
 return
