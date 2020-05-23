@@ -132,11 +132,11 @@ return
 		setVar $SECTOR~federalCount 0
 		setvar $SECTOR~fakeTraderCount 1
 		setVar $targetsFound FALSE
-		while ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
+		while (($SECTOR~fakeTraderCount > $SECTOR~federalCount) or ($SECTOR~realTraderCount > $SECTOR~corpieCount))
 			gosub :PLAYER~currentprompt
 			setvar $player~startingLocation $player~current_prompt
 			if ($player~current_prompt = "Command")
-				gosub :PLANET~landingSub		
+				send "l "&$planet~planet&"* m*** c "
 				gosub :PLAYER~currentprompt
 				setvar $player~startingLocation $player~current_prompt
 			end
@@ -158,9 +158,14 @@ return
 		end
 		gosub :PLAYER~currentprompt
 		if ($player~current_prompt = "Command")
-			gosub :PLANET~landingSub
+			send "l "&$planet~planet&"* m*** c "
 		end
-		send "q m*** c "
+		getSectorParameter $player~current_sector "BUBBLE" $isBubble
+		if (($sector~containsBeacon = true) and ($isBubble <> true))
+			send "q q a y l "&$planet~planet&"* m*** c "
+		else
+			send "q m*** c "
+		end
 		gosub :PLAYER~quikstats
 		if ($player~photons <= 0)
 			if ($main~saveme = true)
