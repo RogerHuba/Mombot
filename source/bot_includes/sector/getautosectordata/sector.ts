@@ -32,16 +32,14 @@
 				setVar $sectorData $line				
 			end
 		end
-		getword $line $check 1			
-		if ($check <> "Warps")
-			getWordPos $line $pos "Warps to Sector(s) "
-		end		
-		if ($pos > 0)
+		getWordPos $line $pos "Warps to Sector(s) "
+		getword currentline $check 1			
+		if (($pos > 0) and ($check = "Warps"))
 			setvar $adjacent[$adjcount] $sectorData
 			setvar $adjacent_sector[$adjcount] $tempSector
 			goto :gotAutoSectorData
 		else
-			setTextLineTrigger getLine :auto_sectorsline_cit_kill
+			setTextLineTrigger getLine :sectorsline_cit_kill
 		end
 		pause
 	:gotAutoSectorData
