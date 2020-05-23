@@ -713,7 +713,7 @@
 	gosub :photon~fighter_spoof
 	if (($photon~alien = true) and ($aliens~hunt = true))
 		gosub :aliens~hunt
-		send " *ls"&$planet~SECTOR_CANNON&"* la"&$planet~ATMOSPHERE_CANNON&"*"  
+		send " ls"&$planet~SECTOR_CANNON&"* la"&$planet~ATMOSPHERE_CANNON&"*"  
 		gosub :check_for_target_change
 		gosub :navigate~navigate_away
 	end
@@ -999,6 +999,7 @@ return
 return
 
 :main~check_for_target_change
+	send " ls"&$planet~SECTOR_CANNON&"* la"&$planet~ATMOSPHERE_CANNON&"*"  
 :check_for_target_change
 	if ($player~photons > 0)
 		gosub :waitbeforecheck
