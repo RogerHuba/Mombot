@@ -80,9 +80,11 @@ return
 
 :photon_missed
 	gosub :killtriggers
-	setvar $switchboard~message "Didn't make it to sector "&$adjsec&". Resetting!*"
-	gosub :switchboard~switchboard
-	setSectorParameter $adjsec "FIGSEC" FALSE
+	if ($adjsec > 0)
+		setvar $switchboard~message "Didn't make it to sector "&$adjsec&". Resetting!*"
+		gosub :switchboard~switchboard
+		setSectorParameter $adjsec "FIGSEC" FALSE
+	end
 	return
 
 :photon_overheated

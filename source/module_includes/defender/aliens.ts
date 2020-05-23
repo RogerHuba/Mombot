@@ -1,7 +1,6 @@
 :hunt
 	setvar $starting_sector_cannon $planet~SECTOR_CANNON
 	setvar $starting_atmos_cannon $planet~ATMOSPHERE_CANNON
-	setvar $sector_total ((($planet~planet_FUEL * $starting_sector_cannon) / 100)/3)
 
 	loadvar $PLAYER~surroundFigs 
 	if ($PLAYER~surroundFigs <= 0)
@@ -26,15 +25,8 @@
 	gosub :attackandmoveship
 	gosub :main~check_for_target_change
 
-	setVar $percentToSet (((3*$sector_total)*100)/$planet~planet_FUEL)
-	if (((($planet~planet_FUEL * $percentToSet) / 100)/3) < $cannonDamage)
-		add $percentToSet 1
-	end
-	if ($percentToSet > 100)
-		setVar $percentToSet 100
-	end
 
-	send " *ls"&$percentToSet&"* la"&$starting_atmos_cannon&"*"  
+	send " *ls"&$starting_sector_cannon&"* la"&$starting_atmos_cannon&"*"  
 
 return
 

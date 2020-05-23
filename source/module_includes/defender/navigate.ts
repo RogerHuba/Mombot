@@ -186,7 +186,7 @@ return
 		#############################################
 
 		if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
-			gosub :doMines
+			gosub :main~doMines
 		end
 	else
 		setVar $containsShieldedPlanet FALSE
