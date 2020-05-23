@@ -206,17 +206,17 @@ return
 					send "ey"
 				end
 				if ($filterships <> "")
-					setVar $BOT~user_command_line " moveship "&$map~home_sector&" "&#34&$filterships&#34
+					setVar $BOT~user_command_line " moveship "&$map~home_sector&" "&#34&$filterships&#34&" silent"
 					setVar $BOT~parm1 $MAP~home_sector
 					gosub :domoveship
 				end
 				if ($emptyships > 0)
 					if ($sell)
-						setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep "
+						setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silemt"
 						setVar $BOT~parm1 $MAP~stardock
 					else
 						if ($player~alignment > 1000)
-								setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep "
+								setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
 								setVar $BOT~parm1 $MAP~stardock
 						else
 								setVar $BOT~user_command_line " moveship "&$map~home_sector&" "
@@ -228,7 +228,7 @@ return
 				if ($emptyships > 0)
 					gosub :player~quikstats
 					if ($player~alignment > 1000)
-							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep "
+							setVar $BOT~user_command_line " moveship "&$MAP~stardock&" sell dep silent"
 							setVar $BOT~parm1 $MAP~stardock
 					else
 							setVar $BOT~user_command_line " moveship "&$map~home_sector&" "
@@ -394,6 +394,7 @@ return
 
 :domoveship
 	gosub :moveship~run
+	setvar $switchboard~isSilent false
 	send "s*  "
 	gosub :player~quikstats
 	setVar $emptyShips SECTOR.SHIPCOUNT[$player~current_sector]
