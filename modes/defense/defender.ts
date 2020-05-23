@@ -199,6 +199,20 @@
 		setvar $aliens~hunt false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " patp "
+	if ($pos > 0)
+		setvar $patp true
+	else
+		setvar $patp false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " buyfig "
+	if ($pos > 0)
+		setvar $buyfig true
+	else
+		setvar $buyfig false
+	end
+
 	if ($photon~density = true)
 		getwordpos " "&$bot~user_command_line&" " $pos " adj"
 		if ($pos > 0)
@@ -521,6 +535,19 @@
 
 	:processing
 		gosub :kill_defender_triggers
+		if ($planet~planet_fighters < ($planet~planet_fighters_max/3))
+			if ($buyfig = true)
+				gosub :with~run
+				gosub :buyfig~run
+				gosub :dep~run
+			end
+		end
+		if (($patp = true) and ($planet~planet_fuel < ($planet~planet_fuel_max/3)))
+			setvar $patp~minimum 1000
+			setvar $patp~upgrade true
+			gosub :patp~run
+		end
+
 		if ($mode~allkeys = true)
 			if ($photon~is_all_keys <> true)
 				send "c n 9 * q "
@@ -1077,3 +1104,10 @@ include "source\bot_includes\external\htorp"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\external\movefig"
 include "source\bot_includes\player\startcnsettings\player"
+include "source\bot_includes\external\patp"
+include "source\bot_includes\player\buy\player"
+include "source\bot_includes\external\buyfig"
+include "source\bot_includes\external\buyshield"
+include "source\bot_includes\external\dep"
+include "source\bot_includes\external\with"
+
