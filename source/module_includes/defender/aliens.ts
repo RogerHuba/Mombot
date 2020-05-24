@@ -123,6 +123,7 @@ return
 		gosub :ship~getshipstats
 	end
 	send "q q "
+	gosub :player~quikstats
 	gosub :grid~surround
 	send "l "&$planet~planet&"* m*** c "
 	if ($main~saveme = true)
