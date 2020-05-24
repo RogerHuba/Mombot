@@ -5,8 +5,13 @@
 :surround
 	:StartSurround
 		if ($player~surroundPassive)
-			send "sd"
-			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] D"
+			send "szd"
+			settextlinetrigger surroundscanden :donesurroundscanden "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] D"
+			settexttrigger surroundscanfailden :donesurroundscan "Do you want instructions (Y/N) [N]?"
+			pause
+			:donesurroundscanden
+				killtrigger surroundscanden
+				killtrigger surroundscanfailden
 			send "szh" 
 			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
 			send "* " 
