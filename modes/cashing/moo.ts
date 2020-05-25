@@ -732,21 +732,27 @@ while ($loopi < $sectorsOki)
 		   
 		    setVar $player~warpto $cashDumpSector
 		    gosub :player~twarp
-		   
-		    send "l" & $cashDumpPlanet&"* t n t 1 * C"
-		    send "TT"
-		    waitfor "credits, and the Treasury"
-		    setVar $line CURRENTLINE
-		    getWord $line $credsmade 3
-		    striptext $credsmade ","
-		    subtract $credsmade 1000000
-		    if ($credsmade >= 1)
-		       send $credsmade & "*"
-		       send "QQ"
-		    else
-		       send "*QQ"
-		    end
-		    waitfor "Blasting off from"
+		   	gosub :player~quikstats
+			if ($player~CURRENT_SECTOR = $cashDumpSector)
+				
+				send "l" & $cashDumpPlanet&"* t n t 1 * C"
+				send "TT"
+				waitfor "credits, and the Treasury"
+				setVar $line CURRENTLINE
+				getWord $line $credsmade 3
+				striptext $credsmade ","
+				subtract $credsmade 1000000
+				if ($credsmade >= 1)
+				send $credsmade & "*"
+				send "QQ"
+				else
+				send "*QQ"
+				end
+				waitfor "Blasting off from"
+			else
+				setVar $SWITCHBOARD~message "Failed to make it to cash dump sector - will continue on and try again next lap*"
+				gosub :SWITCHBOARD~switchboard
+			end
 		end
 
 		if ($sector <> CURRENTSECTOR)
