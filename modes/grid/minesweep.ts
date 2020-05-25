@@ -1377,6 +1377,7 @@ return
 
 :killthem
 	setvar $kill true
+	setvar $PLAYER~startingLocation "Citadel"
 	if ($kill = true)
 		:scanit_again
 			killAllTriggers
