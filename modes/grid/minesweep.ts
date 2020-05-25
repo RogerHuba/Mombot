@@ -1376,6 +1376,7 @@ return
 	return
 
 :killthem
+	setvar $kill true
 	if ($kill = true)
 		:scanit_again
 			killAllTriggers
@@ -1411,6 +1412,10 @@ return
 				end
 				goto :scanit_again
 			end
+			getSectorParameter $player~current_sector "BUBBLE" $isBubble
+			if (($sector~containsBeacon = true) and ($isBubble <> true))
+				send "q q a y * * * * * * * * * * * * l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			end
 
 	else
 		setvar $switchboard~message "Trader Is In Sector. Halting!*"
@@ -1419,17 +1424,7 @@ return
 return
 
 :displaySector
-		send "  sz*    "
-		killtrigger 1
-		setTextLineTrigger	1	:check_scan	"Warps to Sector(s)"
-		pause
-		:check_scan
-		getword currentline $word 1
-		if ($word <> "Warps")
-			killtrigger 1
-			setTextLineTrigger	1	:check_scan	"Warps to Sector(s)"
-			pause
-		end
+	gosub :killthem
 return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
