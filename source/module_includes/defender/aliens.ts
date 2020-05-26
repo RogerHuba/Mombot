@@ -87,7 +87,7 @@ return
 	getSectorParameter $photon~sector "FIGSEC" $isFigged
 	setVar $i 1
 	setVar $checkSector SECTOR.WARPSIN[$photon~sector][$i]
-	setArray $targetSectors 6
+	setArray $targetSectors 7
 	setVar $targetCount 0
 	while ($checkSector > 0)
 		add $targetCount 1
