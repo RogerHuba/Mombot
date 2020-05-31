@@ -622,7 +622,7 @@
 		end
 
 		send "q"
-		waiton "Citadel command (?=help) Q"
+		gosub :player~quikstats
 		gosub :PLANET~getPlanetInfo	
 		send "c "
 		waiton "Citadel command ("
