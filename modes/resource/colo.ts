@@ -14,7 +14,7 @@ gosub :BOT~loadVars
         setVar $BOT~help[10]  $BOT~tab&"    red   = jump sector - sector next to terra (can place planet there too)"
         setVar $BOT~help[11]  $BOT~tab&"     speed port   = same as speed but uses port for ore"
         setVar $BOT~help[12] $BOT~tab&"   - [misc]  = cycles/min colos/delay"
-        setVar $BOT~help[13] $BOT~tab&"   - [t/b]   = [t]warp/[b]warp  (defy"
+        setVar $BOT~help[13] $BOT~tab&"   - [t/b]   = [t]warp/[b]warp  (default is [t]warp)"
         setVar $BOT~help[14] $BOT~tab&"   - [f]   = Bwarp [S] Mode Only - Pick up fuel every 2nd trip"
         setVar $BOT~help[15] $BOT~tab&"   - [c:x]   = [c]amo holds (example: c:3 adds 3 holds extra fuel)"
         gosub :bot~helpfile
