@@ -537,12 +537,14 @@
 		gosub :kill_defender_triggers
 		if ($planet~planet_fighters < ($planet~planet_fighters_max/3))
 			if ($buyfig = true)
+				killalltriggers
 				gosub :with~run
 				gosub :buyfig~run
 				gosub :dep~run
 			end
 		end
 		if (($patp = true) and ($planet~planet_fuel < ($planet~planet_fuel_max/3)))
+			killalltriggers
 			setvar $patp~minimum 1000
 			setvar $patp~upgrade true
 			gosub :patp~run
