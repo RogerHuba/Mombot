@@ -206,7 +206,7 @@
 				setVar $result $result&"m  "&$PLAYER~mowCourse[$j]&"*   "
 				if (($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock))
 					if ($pay = true)
-						setVar $result $result&"zpa  "&$mow_SHIP_MAX_ATTACK&"* *  y  "
+						setVar $result $result&"zp y  za  "&$mow_SHIP_MAX_ATTACK&"* *  "
 					else
 						setVar $result $result&"za  "&$mow_SHIP_MAX_ATTACK&"* *  "
 					end
