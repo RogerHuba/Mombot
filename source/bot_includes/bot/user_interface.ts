@@ -208,7 +208,11 @@ return
 		if (($character = ">") AND ($BOT~charCount <= 0))
 			:cleargridprompt
 			loadvar $planet~planet
+			gosub :BOT~bigdelay_killthetriggers
 			gosub :PLAYER~quikstats
+			setTextOutTrigger       text                    :getCharacter
+			setDelayTrigger         keepalive               :CONNECTIVITY~keepalive           30000
+			settexttrigger          reecho                  :reEcho
 			setDelayTrigger     griddelay               :grid_menu_continue           30
 			pause
 			:grid_menu_continue

@@ -291,7 +291,7 @@ return
 		read $mombot_folder_config $mombot_directory 1
 	else
 		delete $mombot_folder_config
-		setvar $mombot_directory $bot~default_bot_directory
+		setvar $mombot_directory $default_bot_directory
 		write $mombot_folder_config $mombot_directory
 	end
 
