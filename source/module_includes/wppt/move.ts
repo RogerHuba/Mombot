@@ -265,7 +265,8 @@
   end
 
   # send extra stuff
-  if ($paidToll <> true) and ($ExtraSend <> "") and ($CurSector > 10) and (PORT.CLASS[$CurSector] < 9)
+  setVar $figCount SECTOR.FIGS.QUANTITY[$CurSector]
+  if ($paidToll <> true) and ($figCount <= 0) and ($ExtraSend <> "") and ($CurSector > 10) and (PORT.CLASS[$CurSector] < 9)
     send $ExtraSend
   end
 
