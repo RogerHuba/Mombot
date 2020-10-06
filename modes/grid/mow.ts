@@ -143,6 +143,12 @@
 		else
 			setVar $are_we_docking FALSE
 		end
+		getWordPos " "&$bot~user_command_line&" " $pos " pay "
+		if ($pos > 0)
+			setVar $pay TRUE
+		else
+			setVar $pay FALSE
+		end
 		getWordPos " "&$bot~user_command_line&" " $pos " personal "
 		if ($pos > 0)
 			setVar $personal TRUE
@@ -199,7 +205,11 @@
 			if ($PLAYER~mowCourse[$j] <> $PLAYER~CURRENT_SECTOR)
 				setVar $result $result&"m  "&$PLAYER~mowCourse[$j]&"*   "
 				if (($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock))
-					setVar $result $result&"za  "&$mow_SHIP_MAX_ATTACK&"* *  "
+					if ($pay = true)
+						setVar $result $result&"zpa  "&$mow_SHIP_MAX_ATTACK&"* *  y  "
+					else
+						setVar $result $result&"za  "&$mow_SHIP_MAX_ATTACK&"* *  "
+					end
 				end
 				if ((($figsToDrop > 0) or ($hoover = true)) AND ($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
 					if ($hoover = true)
