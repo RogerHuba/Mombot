@@ -76,9 +76,11 @@
     pause
     
     :TollFigs
+    setvar $paidToll false
     if ($attack = 3)
       # pay tolls like a nice person
       send "py"
+      setvar $paidToll true
     else
       # destroy!
       send "a9999*"
@@ -263,7 +265,7 @@
   end
 
   # send extra stuff
-  if ($ExtraSend <> "") and ($CurSector > 10) and (PORT.CLASS[$CurSector] < 9)
+  if ($paidToll <> true) and ($ExtraSend <> "") and ($CurSector > 10) and (PORT.CLASS[$CurSector] < 9)
     send $ExtraSend
   end
 
