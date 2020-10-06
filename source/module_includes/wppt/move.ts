@@ -76,8 +76,13 @@
     pause
     
     :TollFigs
+    if ($attack = 3)
+      # pay tolls like a nice person
+      send "py"
+    else
       # destroy!
       send "a9999*"
+    end
     pause
     
     :Figs
