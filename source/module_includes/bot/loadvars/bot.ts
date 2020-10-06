@@ -32,8 +32,18 @@
 	loadVar $mombot_directory
 	loadVar $game~photon_duration
 	loadvar $settings~override
-
-
+	loadvar $PLAYER~dropOffensive FALSE
+	loadvar $PLAYER~dropToll TRUE
+	if ($player~dropOffensive = true)
+		setvar $player~fighter_deploy_type "o"
+	else
+		if ($player~dropToll = true)
+			setvar $player~fighter_deploy_type "t"
+		else
+			setvar $player~fighter_deploy_type "d"
+		end
+	end
+	savevar $player~fighter_deploy_type
 
 	setArray $help 60
 	setVar $help 60

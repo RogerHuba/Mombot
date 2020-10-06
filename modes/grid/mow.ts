@@ -217,15 +217,15 @@
 					else
 						if ($personal = true)
 							if ($pay = true)
-								setVar $result $result&"f z"&$figsToDrop&" * z p d * "
+								setVar $result $result&"f z"&$figsToDrop&" * z p "&$player~fighter_deploy_type&" * "
 							else
-								setVar $result $result&"f "&$figsToDrop&" * p d "
+								setVar $result $result&"f "&$figsToDrop&" * p "&$player~fighter_deploy_type&" "
 							end
 						else
 							if ($pay = true)
-								setVar $result $result&"f z"&$figsToDrop&" * z c d * "
+								setVar $result $result&"f z"&$figsToDrop&" * z c "&$player~fighter_deploy_type&" * "
 							else
-								setVar $result $result&"f "&$figsToDrop&" * c d "
+								setVar $result $result&"f "&$figsToDrop&" * c "&$player~fighter_deploy_type&" "
 							end
 						end
 						setVar $target $PLAYER~mowCourse[$j]
@@ -233,7 +233,7 @@
 					end
 				end
 				if (($j >= $PLAYER~courseLength) AND ($mow_saveme = TRUE) AND ($figstoDrop = 0))
-					setVar $result $result&"f 1 * c d "
+					setVar $result $result&"f 1 * c "&$player~fighter_deploy_type&" "
 					setVar $target $PLAYER~mowCourse[$j]
 					gosub :player~addfigtodata
 				end
