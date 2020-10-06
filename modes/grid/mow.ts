@@ -216,9 +216,17 @@
 						setVar $result $result&"f * "
 					else
 						if ($personal = true)
-							setVar $result $result&"f "&$figsToDrop&" * p d "
+							if ($pay = true)
+								setVar $result $result&"f z"&$figsToDrop&" * z p d * "
+							else
+								setVar $result $result&"f "&$figsToDrop&" * p d "
+							end
 						else
-							setVar $result $result&"f "&$figsToDrop&" * c d "
+							if ($pay = true)
+								setVar $result $result&"f z"&$figsToDrop&" * z c d * "
+							else
+								setVar $result $result&"f "&$figsToDrop&" * c d "
+							end
 						end
 						setVar $target $PLAYER~mowCourse[$j]
 						gosub :player~addfigtodata
