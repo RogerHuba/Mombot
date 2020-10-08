@@ -160,7 +160,7 @@
 			setVar $doholo TRUE
 			echo $PLAYER~SCAN_TYPE 
 			if ($PLAYER~SCAN_TYPE <> "Holo")
-				send "'{" $SWITCHBOARD~bot_name "} - You need holo scanners!*"
+				send "'{" $SWITCHBOARD~bot_name "} - You need a holo scanner!*"
 				halt
 			end
 		else

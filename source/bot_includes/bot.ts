@@ -100,7 +100,7 @@ return
 	end
 	setEventTrigger     relog                   :CONNECTIVITY~keepalive           "CONNECTION LOST"
 	setTextTrigger      online_watch            :CONNECTIVITY~online_watch             "Your session will be terminated in "
-	setDelayTrigger     keepalive               :CONNECTIVITY~keepalive                30000
+	setDelayTrigger     keepalive               :CONNECTIVITY~keepalive                10000
 	pause
 	pause
 
@@ -273,6 +273,19 @@ return
 	loadVar $command_prompt_extras
 	loadVar $silent_running
 	loadvar $autoattack
+	loadvar $PLAYER~dropOffensive
+	loadvar $PLAYER~dropToll
+	if ($player~dropOffensive = true)
+		setvar $player~fighter_deploy_type "o"
+	else
+		if ($player~dropToll = true)
+			setvar $player~fighter_deploy_type "t"
+		else
+			setvar $player~fighter_deploy_type "d"
+		end
+	end
+	savevar $player~fighter_deploy_type
+
 
 return
 :load_bot
