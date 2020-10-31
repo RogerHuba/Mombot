@@ -761,9 +761,9 @@ return
 			goto :done
 	end
 	if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
-		send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&"  *"
+		send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&" blow:red"&$red_id&" *"
 	else
-		send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&"  *"
+		send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" blow:red"&$red_id&" *"
 	end
 	settexttrigger nofig :nofig "No fighter down at that ship number, drop a fig."
 	settexttrigger furb1 :furb1 "- Furb delivered"
