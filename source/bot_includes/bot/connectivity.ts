@@ -37,7 +37,7 @@
 	setvar $last_prompt_seen CURRENTLINE
 	send #27
 	killtrigger keepalive
-	setDelayTrigger     keepalive               :keepalive           30000
+	setDelayTrigger     keepalive               :keepalive           20000
 	pause
 #=================================== END KEEP ALIVE ==========================================
 
@@ -52,7 +52,10 @@
 			goto :internal_commands~relog_attempt
 		end
 	end
+	killtrigger keepalive
+	killtrigger online_watch
 	setTextTrigger      online_watch            :online_watch              "Your session will be terminated in "
+	setDelayTrigger     keepalive               :keepalive           20000
 	send #27
 	pause
 

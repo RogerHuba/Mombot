@@ -96,9 +96,12 @@
 					halt
 				end
 			end
+			loadvar $relog_message
 			if (($relog_message <> "") and ($relog_message <> "0"))
 				setvar $switchboard~message $relog_message
 				gosub :switchboard~switchboard
+				setvar $relog_message ""
+				savevar $relog_message
 			end
 			loadVar $planet~planet
 			if (($planet~planet <> 0) AND ($PLAYER~CURRENT_SECTOR <> 1) AND ($PLAYER~CURRENT_SECTOR <> $MAP~stardock))

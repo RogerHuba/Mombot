@@ -21,6 +21,7 @@ return
 return
 :unfreezebot
 	echo "*Bot timed out, unfreezing..*"
+	setDeafClients false
 	send "'{" $SWITCHBOARD~bot_name "} - Bot frozen for over 100 seconds, resetting...*"
 	goto :wait_for_command
 #==================================== END KILL TRIGGERS ======================================
@@ -41,6 +42,14 @@ return
 	loadvar $bot~mode
 	loadvar $in_kill_routine
 	setVar $alive_count 0
+	loadvar $map~home_sector
+	loadvar $map~rylos
+	loadvar $map~alpha_centauri
+	loadvar $map~stardock
+	loadvar $map~backdoor 
+	loadvar $bot~safe_ship
+	loadvar $bot~bot_turn_limit
+	loadvar $bot~pgrid_bot
 	if ($MAP~stardock <= 0)
 		setVar $MAP~stardock STARDOCK
 		saveVar $MAP~stardock
@@ -53,14 +62,6 @@ return
 		setVar $MAP~alpha_centauri ALPHACENTAURI
 		saveVar $MAP~alpha_centauri
 	end
-	loadvar $map~home_sector
-	loadvar $map~rylos
-	loadvar $map~alpha_centauri
-	loadvar $map~stardock
-	loadvar $map~backdoor 
-	loadvar $bot~safe_ship
-	loadvar $bot~bot_turn_limit
-	loadvar $bot~pgrid_bot
 
 	setVar $SWITCHBOARD~self_command FALSE
 	setVar $scrubonly FALSE
@@ -70,10 +71,10 @@ return
 	SetTextOutTrigger   UpArrow2    :USER_INTERFACE~User_Access    #27&"[A"
 	SetTextOutTrigger   DownArrow2  :USER_INTERFACE~User_Access    #27&"[B"
 	SetTextOutTrigger   Tabkey      :USER_INTERFACE~Hotkey_Access  #9
-	SetTextOutTrigger   RightArrow  :USER_INTERFACE~Hotkey_Access  #27&"[D"
-	SetTextOutTrigger   RightArrow2 :USER_INTERFACE~Hotkey_Access  #31
-	SetTextOutTrigger   LeftArrow   :USER_INTERFACE~Hotkey_Access  #27&"[C"
-	SetTextOutTrigger   LeftArrow2  :USER_INTERFACE~Hotkey_Access  #30
+#	SetTextOutTrigger   RightArrow  :USER_INTERFACE~Hotkey_Access  #27&"[D"
+#	SetTextOutTrigger   RightArrow2 :USER_INTERFACE~Hotkey_Access  #31
+#	SetTextOutTrigger   LeftArrow   :USER_INTERFACE~Hotkey_Access  #27&"[C"
+#	SetTextOutTrigger   LeftArrow2  :USER_INTERFACE~Hotkey_Access  #30
 
 	setVar $USER_INTERFACE~authorization 0
 	setVar $USER_INTERFACE~logged 0
@@ -89,9 +90,17 @@ return
 		setTextLineTrigger  own_command_all         :USER_INTERFACE~check_routing_all     "all"
 		setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "You have a corporate memo from "
 	end
+	if (($mode = "General") and ($autoattack = true) and ($in_kill_routine <> true)) 
+		setTextLineTrigger 	1 	:INTERNAL_COMMANDS~autokill 	"warps into the sector."
+		setTextLineTrigger 	2 	:INTERNAL_COMMANDS~autokill 	"lifts off from"
+		setTextLineTrigger 	3 	:INTERNAL_COMMANDS~autokill 	"is powering up weapons systems!"
+		setTextLineTrigger 	4 	:INTERNAL_COMMANDS~autokill 	"enters the game."
+		setTextLineTrigger 	5 	:INTERNAL_COMMANDS~autokill 	"blasts off from the "
+		setTextLineTrigger 	6 	:INTERNAL_COMMANDS~autokill 	"Scanners detect a wormhole opening in this sector!"
+	end
 	setEventTrigger     relog                   :CONNECTIVITY~keepalive           "CONNECTION LOST"
 	setTextTrigger      online_watch            :CONNECTIVITY~online_watch             "Your session will be terminated in "
-	setDelayTrigger     keepalive               :CONNECTIVITY~keepalive                30000
+	setDelayTrigger keepalive   :CONNECTIVITY~keepalive  20000
 	pause
 	pause
 
@@ -156,6 +165,7 @@ return
 	saveVar $PLAYER~surroundPassive
 	saveVar $PLAYER~surroundNormal
 	saveVar $username
+	savevar $servername
 	saveVar $letter
 	saveVar $PLAYER~defenderCapping
 	saveVar $PLAYER~offenseCapping
@@ -247,6 +257,7 @@ return
 	loadVar $PLAYER~surroundPassive
 	loadVar $PLAYER~surroundNormal
 	loadVar $username
+	loadvar $servername
 	loadVar $letter
 	loadVar $PLAYER~defenderCapping
 	loadVar $bot_turn_limit
@@ -262,6 +273,19 @@ return
 	loadVar $command_prompt_extras
 	loadVar $silent_running
 	loadvar $autoattack
+	loadvar $PLAYER~dropOffensive
+	loadvar $PLAYER~dropToll
+	if ($player~dropOffensive = true)
+		setvar $player~fighter_deploy_type "o"
+	else
+		if ($player~dropToll = true)
+			setvar $player~fighter_deploy_type "t"
+		else
+			setvar $player~fighter_deploy_type "d"
+		end
+	end
+	savevar $player~fighter_deploy_type
+
 
 return
 :load_bot
@@ -274,7 +298,7 @@ return
 	loadvar $major_version
 	loadvar $minor_version
 
-	setVar  $mombot_folder_config "scripts/mombot"&$major_version&"_"&$minor_version&".cfg"
+	setVar  $mombot_folder_config	"scripts/mombot"&$major_version&"_"&$minor_version&".cfg"
 	fileExists $folder_config_exists $mombot_folder_config
 	if ($folder_config_exists)
 		read $mombot_folder_config $mombot_directory 1
@@ -289,7 +313,6 @@ return
 	makedir "scripts/"&$mombot_directory&"/games"
 	setvar $folder "scripts/"&$mombot_directory&"/games/"&GAMENAME
 	makedir $folder
-
 
 	setvar $hotkeys_file         "scripts/"&$mombot_directory&"/hotkeys.cfg"
 	setvar $custom_keys_file     "scripts/"&$mombot_directory&"/custom_keys.cfg"
@@ -399,12 +422,12 @@ return
 	setArray $INTERNALCOMMANDLISTS 7
 	setVar $internalCommandLists[1]  " stopall stop listall reset emq bot relog tow refresh login logoff unlock lift with dep callin about cn extern twarp bwarp pwarp relog help switchbot "
 	setVar $internalCommandLists[2]  " " 
-	setVar $internalCommandLists[3]  " "
-	setVar $internalCommandLists[4]  " "
-	setVar $internalCommandLists[5]  "  "
+	setVar $internalCommandLists[3]  " hkill kill htorp "
+	setVar $internalCommandLists[4]  " refurb scrub "
+	setVar $internalCommandLists[5]  " surround exit xenter mow "
 	setVar $internalCommandLists[6]  " "
-	setVar $internalCommandLists[7]  " storeship setvar getvar "
-	setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx l m t b p port x shipstore w d "
+	setVar $internalCommandLists[7]  " find pscan sector storeship setvar getvar "
+	setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow l m t b p port x shipstore w d finder xenter status pinfo holotorp"
 	setVar $internalCommandList     $internalCommandLists[1]&$internalCommandLists[2]&$internalCommandLists[3]&$internalCommandLists[4]&$internalCommandLists[5]&$internalCommandLists[6]&$internalCommandLists[7]
 	setArray $TYPES 7
 	setVar $TYPES[1] "General"
@@ -439,6 +462,7 @@ return
 	setVar $END_FIG_HIT_OWNER "'s"
 # ================================END STANDARD GAME TEXT VARIABLES=================
 # ============================== START FILE VARIABLES ==============================
+
 	setVar  $gconfig_file           $folder&"/bot.cfg"
 	setVar  $CK_FIG_FILE            $folder&"/_ck_" & GAMENAME & ".figs"
 	setVar  $FIG_FILE               $folder&"/fighters.cfg"
