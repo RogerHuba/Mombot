@@ -72,7 +72,9 @@ copy "..\..\..\..\..\commands\cashing\rob.*" "commands\cashing\rob.*"
 copy "..\..\..\..\..\commands\cashing\ppt.*" "commands\cashing\ppt.*"
 copy "..\..\..\..\..\commands\grid\clear.*" "commands\grid\clear.*"
 copy "..\..\..\..\..\commands\grid\xenter.*" "commands\grid\xenter.*"
-copy "..\..\..\..\..\commands\grid\xenter.*" "commands\grid\exit.*"
+copy "..\..\..\..\..\modes\offense\citkill.*" "modes\offense\citkill.*"
+copy "..\..\..\..\..\modes\offense\citcap.*" "modes\offense\citcap.*"
+copy "..\..\..\..\..\modes\offense\foton.*" "modes\offense\foton.*"
 copy "..\..\..\..\..\commands\grid\pgrid.*" "commands\grid\pgrid.*"
 copy "..\..\..\..\..\commands\grid\climp.*" "commands\grid\climp.*"
 copy "..\..\..\..\..\commands\grid\cmine.*" "commands\grid\cmine.*"
@@ -88,17 +90,11 @@ copy "..\..\..\..\..\startups\viewscreen.*" "startups\viewscreen.*"
 copy "..\..\..\..\..\startups\watcher.*" "startups\watcher.*"
 copy "..\..\..\..\..\startups\chat.*" "startups\chat.*"
 copy "..\..\..\..\..\startups\viewscreen.*" "startups\viewscreen.*"
-copy "..\..\..\..\..\source\bot_includes\bot\connectivity.ts" "source\bot_includes\bot\connectivity.ts"
-copy "..\..\..\..\..\source\bot_includes\bot\listener.ts" "source\bot_includes\bot\listener.ts"
-copy "..\..\..\..\..\source\bot_includes\bot\user_interface.ts" "source\bot_includes\bot\user_interface.ts"
-copy "..\..\..\..\..\source\bot_includes\bot\menus.ts" "source\bot_includes\bot\menus.ts"
-xcopy "..\..\..\..\..\source\bot_includes\player" "source\bot_includes\player" /E
-xcopy "..\..\..\..\..\source\bot_includes\planet" "source\bot_includes\planet" /E
-xcopy "..\..\..\..\..\source\bot_includes\map" "source\bot_includes\map" /E
-xcopy "..\..\..\..\..\source\bot_includes\ship" "source\bot_includes\ship" /E
-xcopy "..\..\..\..\..\source\bot_includes\game" "source\bot_includes\game" /E
+copy "..\..\..\..\..\source\bot_includes\bot\.*" "source\bot_includes\bot\.*"
+xcopy "..\..\..\..\..\source\bot_includes\*" "source\bot_includes\*" /E
 xcopy "..\..\..\..\..\source\module_includes\bot" "source\module_includes\bot" /E
 xcopy "..\..\..\..\..\source\module_includes\deploy" "source\module_includes\deploy" /E
 xcopy "..\..\..\..\..\source\module_includes\update" "source\module_includes\update" /E
+xcopy "..\..\..\..\..\source\module_includes\modules\*" "source\module_includes\modules\*" /E
 timeout 20
 

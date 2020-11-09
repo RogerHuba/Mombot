@@ -738,6 +738,7 @@ return
 	:msgs_on_again
 	killtrigger onMSGS_ON
 	killtrigger onMSGS_OFF
+	killtrigger silentdelay
 	setTextTrigger onMSGS_ON  :onMSGS_ON "Displaying all messages."
 	setTextTrigger onMSGS_OFF :onMSGS_OFF "Silencing all messages."
 	send "|"
