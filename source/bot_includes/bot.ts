@@ -100,7 +100,7 @@ return
 	end
 	setEventTrigger     relog                   :CONNECTIVITY~keepalive           "CONNECTION LOST"
 	setTextTrigger      online_watch            :CONNECTIVITY~online_watch             "Your session will be terminated in "
-	setDelayTrigger     keepalive               :CONNECTIVITY~keepalive                10000
+	setDelayTrigger     keepalive               :CONNECTIVITY~keepalive                60000
 	pause
 	pause
 

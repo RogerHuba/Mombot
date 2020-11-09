@@ -22,7 +22,7 @@
 	# if the last line hasn't changed for the last two keep alive checks #
 	if ($last_prompt_seen = CURRENTLINE)
 		# at server game menu for some reason #
-		if ((CURRENTLINE = $game~game_menu_prompt) or (CURRENTLINE = "[Pause] - [Press Space or Enter to continue]") or (CURRENTLINE = "Enter your choice: ") or (CURRENTLINE = "Selection (? for menu): "))
+		if (((CURRENTLINE = $game~game_menu_prompt) and ($game~game_menu_prompt <> "") and ($game~game_menu_prompt <> "0")) or (CURRENTLINE = "[Pause] - [Press Space or Enter to continue]") or (CURRENTLINE = "Enter your choice: ") or (CURRENTLINE = "Selection (? for menu): "))
 			if ($relogging <> true)
 				setvar $relog_message "Stuck on baffling prompt: ["&CURRENTLINE&"], so I relogged.*"
 				savevar $relog_message
