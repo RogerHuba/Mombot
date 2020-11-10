@@ -1018,10 +1018,10 @@ return
         if (($triggerDescription = "Unfigged Mines") AND ($isFigged = TRUE))
                 return
         else
-		if (($perfect =TRUE) and (SECTOR.WARPCOUNT[$dropSector] <> 2))
-			echo "*Not a perfect firing solution"
-			return
-		end
+			if (($perfect =TRUE) and (SECTOR.WARPCOUNT[$dropSector] <> 2))
+				echo "*Not a perfect firing solution"
+				return
+			end
                 setVar $i 1
                 setVar $checkSector SECTOR.WARPS[$dropSector][$i]
                 setArray $targetSectors 6
@@ -1046,10 +1046,10 @@ return
 
 
 :findDeadend
-        getSectorParameter $dropSector "FIGSEC" $isFigged
-        if (($triggerDescription = "Unfigged Mines") AND ($isFigged = TRUE))
-                return
-        else
+    getSectorParameter $dropSector "FIGSEC" $isFigged
+    if (($triggerDescription = "Unfigged Mines") AND ($isFigged = TRUE))
+            return
+    else
    
 		getNearestWarps $nearest $dropSector
 		setVar $i 1
@@ -1067,6 +1067,7 @@ return
 		end
         echo "No Targets..*"
         setVar $targetSectors[1] $CURRENT_LOCATION
+    end
 return
 
 
