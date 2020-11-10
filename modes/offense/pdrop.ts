@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 reqRecording
 # Mind Over Matter Planet Drop
 # Author: Mind Dagger
@@ -15,19 +14,20 @@ reqRecording
 	setVar $BOT~help[2]   $BOT~tab&"      "
 	setVar $BOT~help[3]   $BOT~tab&"    [delay] - delay before dropping in milliseconds"
 	setVar $BOT~help[4]   $BOT~tab&"[drop type] - [d]irect, [a]djacent, [s]urround, "
-	setvar $BOT~help[5]   $BOT~tab&"              or [da] direct, then adjacent"
-	setVar $BOT~help[6]   $BOT~tab&"    [delay] - delay before dropping in milliseconds"
-	setVar $BOT~help[7]   $BOT~tab&"  [trigger] - [f]igs, [fm] figs or mines,  "
-	setVar $BOT~help[8]   $BOT~tab&"              [m]ines, [uf] No-Fig Mines"
-	setVar $BOT~help[9]   $BOT~tab&"   [return] - will return planet home after 10 seconds"
-	setVar $BOT~help[10]  $BOT~tab&"     [kill] - checks for enemy, and kills if possible"
-	setVar $BOT~help[11]  $BOT~tab&" [fastkill] - does kill mac without checking"
-	setVar $BOT~help[12]  $BOT~tab&" [defender] - sets and lifts IG capable defender"
-	setVar $BOT~help[13]  $BOT~tab&"  [perfect] - Only drops adjacent when it is only option"
-	setVar $BOT~help[14]  $BOT~tab&"  [density] - Drops adjacent, runs density photon"
-	setVar $BOT~help[15]  $BOT~tab&"     [lock] - Locks on sector then halts"
-	setVar $BOT~help[16]  $BOT~tab&"   [figs:n] - drop this many figs to sector on landing"
-	setVar $BOT~help[17]  $BOT~tab&"[offensive] - make figs offensive, default defense."	
+	setvar $BOT~help[5]   $BOT~tab&"              [da] direct, then adjacent,"
+	setvar $BOT~help[6]   $BOT~tab&"              or [de] dead end drop"
+	setVar $BOT~help[7]   $BOT~tab&"    [delay] - delay before dropping in milliseconds"
+	setVar $BOT~help[8]   $BOT~tab&"  [trigger] - [f]igs, [fm] figs or mines,  "
+	setVar $BOT~help[9]   $BOT~tab&"              [m]ines, [uf] No-Fig Mines"
+	setVar $BOT~help[10]   $BOT~tab&"   [return] - will return planet home after 10 seconds"
+	setVar $BOT~help[11]  $BOT~tab&"     [kill] - checks for enemy, and kills if possible"
+	setVar $BOT~help[12]  $BOT~tab&" [fastkill] - does kill mac without checking"
+	setVar $BOT~help[13]  $BOT~tab&" [defender] - sets and lifts IG capable defender"
+	setVar $BOT~help[14]  $BOT~tab&"  [perfect] - Only drops adjacent when it is only option"
+	setVar $BOT~help[15]  $BOT~tab&"  [density] - Drops adjacent, runs density photon"
+	setVar $BOT~help[16]  $BOT~tab&"     [lock] - Locks on sector then halts"
+	setVar $BOT~help[17]  $BOT~tab&"   [figs:n] - drop this many figs to sector on landing"
+	setVar $BOT~help[18]  $BOT~tab&"[offensive] - make figs offensive, default defense."	
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Dropper"
@@ -76,7 +76,7 @@ reqRecording
 		halt
 	end
 	gosub :ship~getshipstats
-	setvar $bot~user_command_line $bot~user_command_line&" "
+	setvar $bot~user_command_line " "&$bot~user_command_line&" "
 	isNumber $test $bot~parm2
 	if ($test)
 		setVar $dropDelay $bot~parm2
