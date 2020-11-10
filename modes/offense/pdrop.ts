@@ -198,7 +198,9 @@ reqRecording
 	getWordPos $bot~user_command_line $pos "density"
 	if ($pos > 0)
 		setVar $density TRUE
-		setVar $dropDescription "Adjacent"
+		if ($dropDescription = "Direct")
+			setVar $dropDescription "Adjacent"
+		end
 		if ($Player~Photons < 1)
 			setVar $SWITCHBOARD~message "No Photons on Board!!*"
 			gosub :SWITCHBOARD~switchboard
