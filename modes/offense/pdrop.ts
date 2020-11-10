@@ -28,6 +28,8 @@ reqRecording
 	setVar $BOT~help[16]  $BOT~tab&"     [lock] - Locks on sector then halts"
 	setVar $BOT~help[17]  $BOT~tab&"   [figs:n] - drop this many figs to sector on landing"
 	setVar $BOT~help[18]  $BOT~tab&"[offensive] - make figs offensive, default defense."	
+	setVar $BOT~help[19]  $BOT~tab&"  [twohops] - for deadend drop, will make sure de is"	
+	setVar $BOT~help[20]  $BOT~tab&"              2 or more hops away"	
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Dropper"
@@ -193,6 +195,13 @@ reqRecording
 		setVar $lock TRUE
 	else
 		setVar $lock FALSE
+	end
+
+	getWordPos $bot~user_command_line $pos "twohops"
+	if ($pos > 0)
+		setVar $twohops TRUE
+	else
+		setVar $twohops FALSE
 	end
 
 	getWordPos $bot~user_command_line $pos "density"
@@ -1060,8 +1069,16 @@ return
 		while ($i <= $nearest)
 			setVar $focus $nearest[$i]
 			getSectorParameter $focus "FIGSEC" $isFigged
+			if ($twohops = true)
+				getDistance $distance $dropSector $focus
+				if ($distance <= 0)
+					send "^f"&$dropSector&"*"&$focus&"*q"
+					waitOn "ENDINTERROG"
+					getDistance $distance $dropSector $focus
+				end
+			end			
 
- 			if (($isFigged = TRUE) AND (SECTOR.WARPCOUNT[$focus] = 1))
+ 			if (($isFigged = TRUE) AND (SECTOR.WARPCOUNT[$focus] = 1)) AND ((($twohops = true) and ($distance >= 2)) OR ($twohops <> true))
 				#found dead end with fighter!
                 setVar $targetSectors[$targetCount] $focus
 				return
