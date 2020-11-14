@@ -1,7 +1,7 @@
     reqRecording
 	loadvar $BOT~bot_name
 	loadVar $BOT~unlimitedGame
-	loadVar $BOT~stardock
+	loadVar $map~stardock
 	loadVar $BOT~BOT_TURN_LIMIT
 	loadVar $bot~user_command_line
 	loadVar $LSD_Order
@@ -31,7 +31,7 @@
 		halt
 	end
 
-	if (($player~twarp_type = "No") and ($player~current_sector <> $bot~stardock))
+	if (($player~twarp_type = "No") and ($player~current_sector <> $map~stardock))
 		send "'{" $BOT~bot_name "} " & $TagLineB & " - Must have at least Twarp Type 1!**"
 		halt
 	end
@@ -315,12 +315,12 @@
 
 	gosub :player~quikstats
 
-	if ($bot~stardock <= 0)
+	if ($map~stardock <= 0)
 		send "'{" $BOT~bot_name "} " & $TagLineB & " - Cannot Find Dock!**"
 		halt
 	end
 
-	if (SECTOR.EXPLORED[$bot~stardock] <> "YES")
+	if (SECTOR.EXPLORED[$map~stardock] <> "YES")
 		send "'{" $BOT~bot_name "} " & $TagLineB & " - Have Not Visited StarDock!**"
 		halt
 	end
@@ -377,7 +377,7 @@
 	end
 
 	if ($location = "Citadel")
-		send " C  V  0*  Y  N" & $START_SECTOR & "* V  0*  Y  N" & $bot~stardock & "*  U  Y  Q  Q  DS  N  L  1* S  N  L  2*  S  N  L  3*  T  N  L  2*  T  N  L  3*  T  N  T  1*  *  Q *  w  n  * "
+		send " C  V  0*  Y  N" & $START_SECTOR & "* V  0*  Y  N" & $map~stardock & "*  U  Y  Q  Q  DS  N  L  1* S  N  L  2*  S  N  L  3*  T  N  L  2*  T  N  L  3*  T  N  T  1*  *  Q *  w  n  * "
 		setTextLineTrigger pnum :pnum "Planet #"
 		pause
 		:pnum
@@ -385,7 +385,7 @@
 		getWord CURRENTLINE $planet~planet 2
 		stripText $planet~planet "#"
 	elseif ($location = "Command")
-		send " C  V  0*  Y  N" & $START_SECTOR & "* V  0*  Y  N" & $bot~stardock & "* U Y Q *  w  n  * "
+		send " C  V  0*  Y  N" & $START_SECTOR & "* V  0*  Y  N" & $map~stardock & "* U Y Q *  w  n  * "
 	end
 
 	gosub :player~quikstats
@@ -405,14 +405,14 @@
 		end
 	end
 
-	if (($player~total_holds <> $player~ore_holds) and ($player~current_sector <> $bot~stardock))
+	if (($player~total_holds <> $player~ore_holds) and ($player~current_sector <> $map~stardock))
 		send "'{" $BOT~bot_name "} " & $TagLineB & " - Please Restart with Full Ore in Holds!!**"
 		halt
 	end
 
 :start
 	setVar $locationDock 0
-	if ($player~current_sector <> $bot~stardock)
+	if ($player~current_sector <> $map~stardock)
 		setVar $figcnt SECTOR.FIGS.QUANTITY[$START_SECTOR]
 		setVar $figowner SECTOR.FIGS.OWNER[$START_SECTOR]
 		if (($figcnt = 0) OR (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
@@ -453,7 +453,7 @@
 				setVar $WeAreAdjDock FALSE
 				while ($i <= SECTOR.WARPCOUNT[$START_SECTOR])
 					setVar $adj_start SECTOR.WARPS[$START_SECTOR][$i]
-					if ($adj_start = $bot~stardock)
+					if ($adj_start = $map~stardock)
 						setVar $WeAreAdjDock TRUE
 					end
 					add $i 1
@@ -473,15 +473,15 @@
 
 				if ($player~alignment >= 1000)
 					if ($WeAreAdjDock)
-						send "^F" & $bot~stardock & "*" & $START_SECTOR & "*Q/ "
+						send "^F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
 					else
-						send "^F" & $START_SECTOR & "*" & $bot~stardock & "*F" & $bot~stardock & "*" & $START_SECTOR & "*Q/ "
+						send "^F" & $START_SECTOR & "*" & $map~stardock & "*F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
 					end
 				else
 					if ($WeAreAdjDock)
-						send "^F" & $bot~stardock & "*" & $START_SECTOR & "*Q/ "
+						send "^F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
 					else
-						send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & $bot~stardock & "*" & $START_SECTOR & "*Q/ "
+						send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & $map~stardock & "*" & $START_SECTOR & "*Q/ "
 					end
 				end
 				setTextLineTrigger noJoy :noJoy "*** Error - No route within"
@@ -501,7 +501,7 @@
 
 				Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
 					if (($player~alignment >= 1000) OR ($WeAreAdjDock))
-						getdistance $dist1 $START_SECTOR $bot~stardock
+						getdistance $dist1 $START_SECTOR $map~stardock
 					else
 						getdistance $dist1 $START_SECTOR $RED_adj
 					end
@@ -511,7 +511,7 @@
 						halt
 					end
 
-					getdistance $dist2 $bot~stardock $START_SECTOR
+					getdistance $dist2 $map~stardock $START_SECTOR
 					if ($dist2 <= 0)
 						send "'{" $BOT~bot_name "} " & $TagLineB & " - Insufficient Warp Data Plotting Return Course From Dock**"
 						halt
@@ -552,7 +552,7 @@
 				end
 			end
 
-			send " C R " & $bot~stardock & "*Q "
+			send " C R " & $map~stardock & "*Q "
 			setTextLineTrigger itsalive :itsalive "Items     Status  Trading % of max OnBoard"
 			setTextLineTrigger nosoupforme :nosoupforme "I have no information about a port in that sector"
 			pause
@@ -567,13 +567,13 @@
 				if ($locationDock = 1)
 					send "P  S G Y G Q "
 				elseif (($player~alignment >= 1000) AND ($WeAreAdjDock = FALSE))
-					setVar $TwarpTo $bot~stardock
+					setVar $TwarpTo $map~stardock
 					gosub :DoTwarp
 				elseif (($WeAreAdjDock = FALSE) AND ($RED_adj <> 0))
 					setVar $TwarpTo $RED_adj
 					gosub :DoTwarp
 				else
-					send " m " & $bot~stardock & "*  *  P  S G Y G Q "
+					send " m " & $map~stardock & "*  *  P  S G Y G Q "
 				end
 				if ($msg = "")
 					waitfor "You leave the Galactic Bank."
@@ -655,7 +655,7 @@
 		gosub :player~quikstats
 
 		waitfor "(?="
-		if (($player~current_sector = $bot~stardock) and ($locationDock = 0))
+		if (($player~current_sector = $map~stardock) and ($locationDock = 0))
 			send "'{" $BOT~bot_name "} " & $TagLineB & " - Twarp Error, Should be Hiding on Dock!**"
 			halt
 		end
@@ -1183,7 +1183,7 @@
 			if ($player~alignment >= 1000)
 				send "y * * p s g y g q "
 			else
-				send "y  *  *  m " & $bot~stardock & " *  *  p s g y g q "
+				send "y  *  *  m " & $map~stardock & " *  *  p s g y g q "
 			end
 		:twarpDone
 			if ($msg <> "")
@@ -1193,16 +1193,16 @@
 	return
 
 :DoShipTowedCheck
-	if ($bot~stardock < 10)
-		setVar $SellingShip $_Tow & "     " & $bot~stardock
-	elseif ($bot~stardock < 100)
-		setVar $SellingShip $_Tow & "    " & $bot~stardock
-	elseif ($bot~stardock < 1000)
-		setVar $SellingShip $_Tow & "   " & $bot~stardock
-	elseif ($bot~stardock < 10000)
-		setVar $SellingShip $_Tow & "  " & $bot~stardock
+	if ($map~stardock < 10)
+		setVar $SellingShip $_Tow & "     " & $map~stardock
+	elseif ($map~stardock < 100)
+		setVar $SellingShip $_Tow & "    " & $map~stardock
+	elseif ($map~stardock < 1000)
+		setVar $SellingShip $_Tow & "   " & $map~stardock
+	elseif ($map~stardock < 10000)
+		setVar $SellingShip $_Tow & "  " & $map~stardock
 	else
-		setVar $SellingShip $_Tow & " " & $bot~stardock
+		setVar $SellingShip $_Tow & " " & $map~stardock
 	end
 
 	send "S S"
@@ -1303,8 +1303,8 @@
 	setVar $i 1
 	setVar $RED_adj 0
 
-	while (SECTOR.WARPSIN[$bot~stardock][$i] > 0)
-		setVar $RED_adj SECTOR.WARPSIN[$bot~stardock][$i]
+	while (SECTOR.WARPSIN[$map~stardock][$i] > 0)
+		setVar $RED_adj SECTOR.WARPSIN[$map~stardock][$i]
 		send "m " & $RED_adj & "* y"
 		setTextTrigger TwarpBlind 			:TwarpBlind "Do you want to make this jump blind? "
 		setTextTrigger TwarpLocked			:TwarpLocked "All Systems Ready, shall we engage? "
@@ -1489,7 +1489,7 @@
 		getRnd $RegistryNumber 100000 999999
 		send "LSDREG#" & $RegistryNumber & "*N * S"
 		setTextLineTrigger PurchasedFailed 		:PurchasedFailed "You do not own any other ships orbiting the Stardock!"
-		setTextLineTrigger GetNewShipNumber		:GetNewShipNumber " " & $bot~stardock & " " & "LSDREG#" & $RegistryNumber
+		setTextLineTrigger GetNewShipNumber		:GetNewShipNumber " " & $map~stardock & " " & "LSDREG#" & $RegistryNumber
 		setTextTrigger GotNewShipNumber			:GotNewShipNumber "Choose which ship to sell "
 		pause
 
@@ -1512,7 +1512,7 @@
 		killTrigger GetNewShipNumber
 		killTrigger PurchasedFailed
 		setVar $CURLINE CURRENTLINE
-		getWordPos $CURLINE $pos " " & $bot~stardock
+		getWordPos $CURLINE $pos " " & $map~stardock
 		if ($pos = 0)
 			send " Q "
 			waitfor "<StarDock> Where to?"
