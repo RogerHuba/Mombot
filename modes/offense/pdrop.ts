@@ -377,7 +377,7 @@ reqRecording
     		#setTextLineTrigger scriptcheck2 :answer "Script?"
     		setVar $isManual FALSE
 		if ($attackOnSight)
-			setTextLineTrigger 	limp 	:scan 	"Limpet mine in "&$player~CURRENT_SECTOR
+			setTextLineTrigger 	limp2 	:scan 	"Limpet mine in "&$player~CURRENT_SECTOR
 			setTextLineTrigger 	warps 	:scan 	"warps into the sector."
 			setTextLineTrigger 	lifts 	:scan 	"lifts off from"
 			setTextLineTrigger 	deffig 	:scan 	"Deployed Fighters Report Sector "&$player~CURRENT_SECTOR
