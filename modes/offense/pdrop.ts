@@ -26,10 +26,14 @@ reqRecording
 	setVar $BOT~help[14]  $BOT~tab&"  [perfect] - Only drops adjacent when it is only option"
 	setVar $BOT~help[15]  $BOT~tab&"  [density] - Drops adjacent, runs density photon"
 	setVar $BOT~help[16]  $BOT~tab&"     [lock] - Locks on sector then halts"
-	setVar $BOT~help[17]  $BOT~tab&"   [figs:n] - drop this many figs to sector on landing"
-	setVar $BOT~help[18]  $BOT~tab&"[offensive] - make figs offensive, default defense."	
-	setVar $BOT~help[19]  $BOT~tab&"  [twohops] - for deadend drop, will make sure de is"	
-	setVar $BOT~help[20]  $BOT~tab&"              2 or more hops away"	
+	setVar $BOT~help[17]  $BOT~tab&" [plockt:n] - How long plock holds till retrigger (ms)."
+	setVar $BOT~help[18]  $BOT~tab&"              If not specified it keeps waiting"	
+	setVar $BOT~help[19]  $BOT~tab&"   [figs:n] - drop this many figs to sector on landing"
+	setVar $BOT~help[20]  $BOT~tab&"[offensive] - make figs offensive, default defense."	
+	setVar $BOT~help[21]  $BOT~tab&"  [twohops] - for deadend drop, will make sure de is"	
+	setVar $BOT~help[22]  $BOT~tab&"              2 or more hops away"	
+	setVar $BOT~help[23]  $BOT~tab&"[retrigger] - Keep hunting for targets"	
+		
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Dropper"
@@ -154,6 +158,14 @@ reqRecording
 	end
 	setVar $randomAttack TRUE
 
+	getWordPos $bot~user_command_line $pos "cap"
+	if ($pos > 0)
+		setVar $capture TRUE
+		setVar $attackOnSight TRUE
+	else
+		setVar $capture FALSE
+	end
+
 	getWordPos $bot~user_command_line $pos "fastkill"
 	if ($pos > 0)
 		setVar $fastkill TRUE
@@ -161,7 +173,14 @@ reqRecording
 		setVar $fastkill FALSE
 	end
 
-	
+	getWordPos $bot~user_command_line $pos "retrigger"
+	if ($pos > 0)
+		setVar $retrigger TRUE
+	else
+		setVar $retrigger FALSE
+	end
+
+	setVar $dropftrsType "d"
 	getWordPos $bot~user_command_line $pos "figs:"
 	if ($pos > 0)
 		setVar $dropftrs TRUE
@@ -177,6 +196,17 @@ reqRecording
 	else
 		setVar $dropftrs FALSE
 	end
+
+	getWordPos $bot~user_command_line $pos "plockt:"
+	if ($pos > 0)
+		
+		setVar $cline $bot~user_command_line & " "
+		getText $cline $plockTimer "plockt:" " "
+	else
+		setVar $plockTimer 0
+	end
+		
+
 	getWordPos $bot~user_command_line $pos "defender"
 	if ($pos > 0)
 		setVar $defender TRUE
@@ -244,7 +274,7 @@ reqRecording
 	
 
 	gosub :planetStats
-	
+
 	setVar $message "'*  {"&$bot~bot_name&"} - Planet Dropper Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*        Drop Type: "&$dropDescription&" On "&$triggerDescription
 	if ($targetingPerson)
 		setVar $message $message&"*        Targeting: (Player) "&$target
@@ -261,15 +291,25 @@ reqRecording
 	if ($dropDelay > 0)
 		setVar $message $message&"*       Drop Delay: "&$dropDelay&" ms"
 	end
+	if ($lock)
+		setVar $message $message&"*       Plock Mode: Enabled"
+	end 
 	if ($attackOnSight)
 		format $planet~planet_fighters $formatted_fighters NUMBER
-		setVar $message $message&"*        Auto Kill: Enabled With "&$formatted_fighters&" Fighters"
+		if ($capture)
+			setVar $message $message&"*         Auto Cap: Enabled With "&$formatted_fighters&" Fighters"		
+		else
+			setVar $message $message&"*        Auto Kill: Enabled With "&$formatted_fighters&" Fighters"
+		end
 	end
 	if ($fastkill)
 		setVar $message $message&"*        Fast Kill: Will attempt kill macro at every pdrop attempt"
 	end
 	if ($returnHome)
 		setVar $message $message&"*      Return Home: Enabled With "&$returnHomeDelay&" Second Delay"
+	end
+	if ($retrigger)
+		setVar $message $message&"*        ReTrigger: We will keep firing whether we hit or miss."
 	end
 	
 	if ($defender = 1)
@@ -337,8 +377,19 @@ reqRecording
     		#setTextLineTrigger scriptcheck2 :answer "Script?"
     		setVar $isManual FALSE
 		if ($attackOnSight)
-			setTextLineTrigger warps :scan "warps into the sector."
-			setTextLineTrigger lifts :scan "lifts off from"
+			setTextLineTrigger 	limp 	:scan 	"Limpet mine in "&$player~CURRENT_SECTOR
+			setTextLineTrigger 	warps 	:scan 	"warps into the sector."
+			setTextLineTrigger 	lifts 	:scan 	"lifts off from"
+			setTextLineTrigger 	deffig 	:scan 	"Deployed Fighters Report Sector "&$player~CURRENT_SECTOR
+			setTextLineTrigger 	secgun 	:scan 	"Quasar Cannon on"
+			setTextLineTrigger 	ig		:scan 	"Shipboard Computers The Interdictor Generator on"
+			setTextLineTrigger 	power 	:scan 	"is powering up weapons systems!"
+			settextlinetrigger  wave    :scan    " launches a wave of fighters at  "
+			settextlinetrigger  planet  :scan	" launches a Genesis Torpedo into the sector!"
+			settextlinetrigger  atomic  :scan    " appears from the planetary rubble."
+			setTextLineTrigger 	exits 	:scan 	"exits the game."
+			setTextLineTrigger 	enters 	:scan 	"enters the game."
+			setDelayTrigger		delay	:scan	30000
 		end
 		pause
 			
@@ -486,8 +537,11 @@ reqRecording
 					goSub :waitforrestart
 					goSub :setdefender
 				end
+
+
 				if ($dropFtrs = true)
 					goSub :retrieveFigs
+					
 				end
 			elseif ($dropDescription = "Adjacent, then Direct")			
 				gosub :findAdjacent
@@ -620,7 +674,7 @@ return
 	
 	if ($targetCount > 0)
 		getRnd $randomTarget 1 $targetCount
-		if ($dropDelay > 0)
+		if ($dropDelay > 0) and ($lock = false)
 			killAllTriggers
 			setDelayTrigger delay :planetDrop $dropDelay
 			pause
@@ -690,9 +744,12 @@ return
 		goto :startTargeting
 		killalltriggers
 	:doLockYes
-		setvar $switchboard~message "We have a PLock on " & $dropSector & ", halting..*"
+		setvar $switchboard~message "We have a PLock on " & $dropSector & ", setting kill triggers!*"
 		gosub :switchboard~switchboard
 		killalltriggers
+		goto :setplocktriggers
+		killalltriggers
+		goto :startTargeting
 		halt	
 return
 :clearScreen
@@ -770,6 +827,57 @@ return
 	send "c "
 return
 
+:retrieveFigs
+	gosub :player~quikstats
+	send " s*  "
+	setVar $figOwner SECTOR.FIGS.OWNER[$player~current_sector]
+	setVar $figQuant SECTOR.FIGS.QUANTITY[$player~current_sector]
+	
+	waitfor "<Scan Sector>"
+	waitfor "Citadel treasury contains"
+	
+
+	if ($figQuant <> 0) AND (($figOwner = "belong to your Corp") or ($figOwner = "yours"))
+		
+		setVar $retFigMacro ""
+		setVar $moved 0
+		setVar $sectorQuant $figQuant
+		if ($dropFigQuant > $figQuant)
+			setVar $retQuant $figQuant
+		else
+			setVar $retQuant $dropFigQuant
+		end
+		while ($moved < $retQuant)
+			
+			setVar $toMove ($retQuant - $moved)
+
+			if ($toMove >= $ship~SHIP_FIGHTERS_MAX)
+				setVar $thisMove $ship~SHIP_FIGHTERS_MAX
+				setVar $moved ($moved + $thisMove)
+				setVar $sectorQuant ($sectorQuant - $thisMove)
+			else
+				setVar $thisMove $toMove
+				setVar $moved $moved + $thisMove
+				setVar $sectorQuant ($sectorQuant - $thisMove)
+				
+			end
+			
+			if ($sectorQuant = 0)
+				
+				setVar $retFigMacro $retFigMacro & "q m n l* q fz 1* * zc" & $dropftrsType & " * l" & $planet~planet & " *m* t * ccq"
+
+			else
+				setVar $retFigMacro $retFigMacro & "q m n l* q fz " & $sectorQuant & "* * zc" & $dropftrsType & " * l" & $planet~planet & " *m* t * ccq"
+			end
+
+		end
+
+	end
+
+	send $retFigMacro
+	
+return
+
 :warning
 	send "#"
 return
@@ -818,11 +926,16 @@ return
 
 :checkForVictims
 	gosub :player~quikstats
+	send " s*  "
 	:scanit_again
 	setvar $player~startingLocation $player~current_prompt
 	gosub :sector~getSectorData
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-		goSub :combat~fastCitadelAttack
+		if ($capture)
+			gosub :combat~fastCapture
+		else
+			goSub :combat~fastCitadelAttack
+		end
 		goto :scanit_again
 	elseif (($sector~emptyShipCount > $sector~myShipCount))
 		gosub :combat~fastCapture
@@ -1256,15 +1369,32 @@ return
 
 # ============================== END DEFENDER ROUTINES ==============================
 
-:retrieveFigs
+:retrieveFigs_old
 	gosub :player~quikstats
 
+	#send "'"&$SWITCHBOARD~bot_name&" movefig p*"
+	#setEventTrigger		movefigended		:movefigended "SCRIPT STOPPED" #"scripts\"&$bot~mombot_directory&"\Modes\Resource\movefig.cts"
+	#pause
+	#:movefigended	             
+
 	setVar $BOT~command "movefig"
-	setVar $BOT~user_command_line " movefig p "& $dropFigQuant 
-	setVar $BOT~parm1 $p
+	setVar $BOT~user_command_line " movefig p "& $dropFigQuant &" "
+	setVar $BOT~parm1 "p"
 	setVar $BOT~parm2 $dropFigQuant
+	setVar $BOT~parm3 ""
+	setVar $BOT~parm4 ""
+	setVar $BOT~parm5 ""
+	setVar $BOT~parm6 ""
+	setVar $BOT~parm7 ""
+	setVar $BOT~parm8 ""
 	saveVar $BOT~parm1
 	saveVar $BOT~parm2
+	saveVar $BOT~parm3
+	saveVar $BOT~parm4
+	saveVar $BOT~parm5
+	saveVar $BOT~parm6
+	saveVar $BOT~parm7
+	saveVar $BOT~parm8
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
 	load "scripts\"&$bot~mombot_directory&"\modes\resource\movefig.cts"
@@ -1272,8 +1402,121 @@ return
 	pause
 	:moveended
 		killalltriggers
+
+
+
 return
 
+##### PLOCK TEMP
+
+
+:setplocktriggers
+	killalltriggers
+	setTextLineTrigger	1	:manual			("Planet is now in sector "&$dropSector)
+	setTextTrigger 		2	:plockFinished	("Planetary TransWarp Drive shutting down.")
+	setTextTrigger 		3	:goFighterPlock 		("Report Sector "&$dropSector&": ")
+	setTextTrigger 		4	:goLimpetPlock 		("Limpet mine in "&$dropSector&" ")
+	setTextTrigger 		5	:goArmidPlock 		("Your mines in "&$dropSector&" ")
+	setTextTrigger 		6	:goPlock 		("Locator beam lost.")
+	if ($plockTimer > 0)
+		setDelayTrigger 		7	:plockTimerExp 		$plockTimer
+	end
+	pause
+
+:plockTimerExp
+	killalltriggers
+	send "n '{" $switchboard~bot_name "} - PLOCK Timed Out, Resetting*"
+	return
+:goArmidPlock
+	cutText currentline&"    " $ck 1 4
+	setvar $spoof false
+	if ($ck <> "Your")
+		setTextTrigger 		5	:goArmidPlock 		("Your mines in "&$dropSector&" ")
+		pause
+	end
+	if ($game~hasAliens = true)
+		#[K[32mYour mines in [1;33m8174[0;32m did [1;33m14[0;32m damage to #[1;36m[33mFerrengi[36m Nik
+		setvar $alien false
+		getText $bot~ansi_last_armid_attack&"[xx][xx][xx]" $alien_check " damage to " "[xx][xx][xx]"
+		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+		if ($pos > 0)
+			setTextTrigger 		5	:goArmidPlock 		("Your mines in "&$dropSector&" ")
+			pause
+		end
+	end
+	goto :goplock
+
+:goLimpetPlock
+	cutText currentline&"      " $ck 1 6
+	setvar $spoof false
+	if ($ck <> "Limpet")
+		setTextTrigger 		4	:goLimpetPlock 		("Limpet mine in "&$dropSector&" ")
+		pause
+	end
+	goto :goplock
+:goFighterPlock
+	getWord currentline $spoof_test 1
+	getWord currentansiline $ansi_spoof_test 1
+	getWordPos $ansi_spoof_test $ansi_spoof_pos #27 & "[1;33m"
+	setvar $spoof false
+	if ($spoof_test <> "Deployed") OR ($ansi_spoof_pos <= 0)
+		setTextTrigger 		3	:goFighterPlock 		("Report Sector "&$dropSector&": ")
+		pause
+	end
+	if ($game~hasAliens = true)
+		setvar $alien false
+		getText currentansiline $alien_check ": " "'s"
+		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
+		if ($pos > 0)
+			setTextTrigger 		3	:goFighterPlock 		("Report Sector "&$dropSector&": ")
+			pause
+		end
+	end
+
+
+:goPlock
+:manual
+	killalltriggers
+	if ($dropDelay > 0)
+		setdelaytrigger plockdelay :continuePlock $dropDelay
+		pause
+	end
+	:continuePlock
+	send "y '{" $switchboard~bot_name "} - PLOCK Launched*"
+	if ($dropftrs = true)
+		setvar $send $send & $moveFigMacro
+	end
+	if ($fastkill = true)
+		setvar $send "q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
+		send $send
+	end
+
+	if ($defender = 1)
+		killAllTriggers
+		goSub :liftDefenders
+	end
+	gosub :getSectorLocation
+	if ($attackOnSight)
+		goSub :checkForVictims
+	end
+	if ($defender = 1)
+		send "'Defender Initiated! send reset command to re-enable PDROP*"
+		goSub :waitforrestart
+		goSub :setdefender
+	end
+	if ($dropFtrs = true)
+		goSub :retrieveFigs
+	end
+	send "  s*   "
+	return
+:plockFinished
+	send "  s*   "
+	setvar $switchboard~message "PLOCK Sector Cleared*"
+	gosub :switchboard~switchboard
+	return
+
+
+#####
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
@@ -1285,4 +1528,3 @@ include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\planet\getplanetinfo\planet"
-
