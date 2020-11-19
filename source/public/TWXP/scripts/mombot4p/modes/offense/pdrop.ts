@@ -103,7 +103,12 @@ reqRecording
 					if ($pos > 0)
 						setVar $dropDescription "Adjacent, then Direct"
 					else
-						setVar $dropDescription "Direct"
+						getWordPos $bot~user_command_line $pos " de "
+						if ($pos > 0)
+							setVar $dropDescription "Deadend Drop"
+						else
+							setVar $dropDescription "Direct"
+						end
 					end
 				end
 			end
@@ -408,11 +413,6 @@ reqRecording
 					goto :doLock
 				else
 					setvar $send "p "&$dropSector&"* y "
-<<<<<<< HEAD
-					if ($dropftrs = true)
-						killAllTriggers
-						setvar $send $send & $moveFigMacro
-=======
 					if ($fastdrop = true)
 						if ($ship~SHIP_FIGHTERS_MAX <= 100000)
 							setvar $figstodrop ($ship~ship_fighters_max/2)
@@ -420,7 +420,6 @@ reqRecording
 							setvar $figstodrop ($ship~SHIP_FIGHTERS_MAX-100000)
 						end
 						setVar $send $send&"q q fz"&$figstodrop&"*z c d * l "&$planet~planet&"*  m  *** c  "
->>>>>>> 8826175e9559d1cb128443ba5e706fe4da2e06b0
 					end
 					if ($fastkill = true)	
 						setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
@@ -498,6 +497,28 @@ reqRecording
 					goSub :checkForVictims
 				end
 				if ($defender = 1) and ($gotoSector > 0)
+					send "'Defender Initiated! send reset command to re-enable PDROP*"
+					goSub :waitforrestart
+					goSub :setdefender
+				end
+				if ($dropFtrs = true)
+					goSub :retrieveFigs
+				end
+			elseif ($dropDescription = "Deadend Drop")
+				gosub :findDeadend
+				goSub :attemptDrop
+				if ($density = 1)
+					goSub :densityDrop
+				end
+				if ($defender = 1)
+					killAllTriggers
+					goSub :liftDefenders
+				end
+				gosub :getSectorLocation
+				if ($attackOnSight)
+					goSub :checkForVictims
+				end
+				if ($defender = 1)
 					send "'Defender Initiated! send reset command to re-enable PDROP*"
 					goSub :waitforrestart
 					goSub :setdefender
@@ -1021,6 +1042,33 @@ return
         end
 
 return
+
+
+
+:findDeadend
+        getSectorParameter $dropSector "FIGSEC" $isFigged
+        if (($triggerDescription = "Unfigged Mines") AND ($isFigged = TRUE))
+                return
+        else
+   
+		getNearestWarps $nearest $dropSector
+		setVar $i 1
+        setVar $targetCount 1
+		while ($i <= $nearest)
+			setVar $focus $nearest[$i]
+			getSectorParameter $focus "FIGSEC" $isFigged
+
+ 			if (($isFigged = TRUE) AND (SECTOR.WARPCOUNT[$focus] = 1))
+				#found dead end with fighter!
+                setVar $targetSectors[$targetCount] $focus
+				return
+			end
+			add $i 1
+		end
+        echo "No Targets..*"
+        setVar $targetSectors[1] $CURRENT_LOCATION
+return
+
 
 # ============================== DENSITY PHOTON =========================
 :densityDrop
