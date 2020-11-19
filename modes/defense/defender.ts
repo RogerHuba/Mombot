@@ -409,7 +409,7 @@
 
 		send "'" $main~saveme_bot " saveme on " #34 $bot~username #34 "*"
 		setTextLineTrigger 1 :savemeready "- Saveme - Running from planet "&$planet~planet&" for "&$bot~username&"."
-		setdelaytrigger 2 :savemefailed 3000
+		setdelaytrigger 2 :savemefailed 10000
 		pause
 
 		:savemefailed
