@@ -289,7 +289,7 @@ return
 	end
 return
 
-:densityDrop
+:densityDrop_old
 
 	waitfor "Citadel command"
 	
@@ -321,6 +321,126 @@ return
 			end
 		end
 return
+
+:densityDrop
+	waitfor "Citadel command"
+	send "q m * * * q  * * "
+	send "fz 3500* * zco * "
+	setVar $checks 0
+
+	:check_dens
+		
+		
+
+		setVar $mm 0
+		setVar $i 1
+		send "sz*"
+		waiton "Relative Density Scan"
+
+	:dtorp_Start
+		killTrigger alldone
+		setvar $attack_sector_found false
+		setTextLineTrigger getSec :getSec "Sector"
+		setTextTrigger allDone :allDone "Command [TL="
+		pause
+
+	:getSec
+		getText CURRENTLINE $temp "Sector" "==>"
+		stripText $temp "("
+		stripText $temp ")"
+		stripText $temp " "
+		setvar $adj[$i] $temp
+
+		getText CURRENTLINE $Dens[$i] "==>" "Warps :"
+		stripText $dens[$i] ","
+		stripText $dens[$i] " "
+		add $i 1
+		setTextLineTrigger getSec :getSec "Sector"
+		pause
+	:allDone
+		killTrigger getSec
+		if ($checks > 40)
+			goto :manual_stop
+		end
+		gosub :firechk
+
+	:letslook
+		setVar $w 0
+
+	:sublooky
+		add $w 1
+		if ($w > $i)
+			goto :alldone
+		elseif ($density[$w] <> $dens[$w])
+			setVar $diff ($density[$w] - $dens[$w])
+			if ($diff <> 0)
+				gosub :do_action
+				goto :dtorp_end
+			else
+				goto :sublooky
+			end
+		else
+			goto :sublooky
+		end
+
+	:firechk
+		setVar $y 1
+		send "sz*"
+		waiton "Relative Density Scan"
+		add $checks 1
+	:looky
+		
+		killtrigger dtop_dtorp
+		killtrigger getsec
+		killtrigger alldone
+		killtrigger donelook
+		killtrigger manual_stop
+		setTextLineTrigger dtop_dtorp :manual_stop $bot~bot_name & " foton off"
+		setTextLineTrigger getSec :looksec "Sector"
+		setTextTrigger donelook :donelook "Command [TL="
+		
+		pause
+
+	:looksec
+		getText CURRENTLINE $temp "Sector" "==>"
+		stripText $temp "("
+		stripText $temp ")"
+		stripText $temp " "
+		
+		setvar $adjsec[$y] $temp
+		getText CURRENTLINE $Density[$y] "==>" "Warps :"
+		stripText $density[$y] ","
+		stripText $density[$y] " "
+		add $y 1
+		setTextLineTrigger getSec :looksec "Sector"
+		pause
+
+	:donelook
+		killtrigger getSec
+		return
+
+	:dtorp_end
+		killalltriggers
+		setvar $switchboard~message "Foton Missle Fired into sector => " & $adj[$w] & "*"
+		gosub :switchboard~switchboard
+		gosub :player~quikstats
+		if ($Player~Photons < 1)
+			setVar $SWITCHBOARD~message "No Photons on Board - Exiting!!*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+
+
+		return
+	:do_action
+		send " c  p  y  " $adj[$w] "**q   l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+		return
+
+	:manual_stop
+	:densitywait
+		killalltriggers
+		send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+		return
 
 
 :retreatphoton
