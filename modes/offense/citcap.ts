@@ -165,7 +165,7 @@
 		end
 		gosub :sector~getSectorData
 		setvar $player~startinglocation "Citadel"
-		if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)) or ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))))
+		if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)) or ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))) or (($SECTOR~fakeTraderCount > $SECTOR~federalCount) and ($PLAYER~cappingAliens = TRUE)))
 			gosub :combat~fastCapture
 			gosub :player~quikstats
 			if ($player~current_prompt = "Command")
