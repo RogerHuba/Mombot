@@ -440,6 +440,7 @@ goSub :checkAvoidedSectors
 	send "sd"
 	waitFor "Relative Density Scan"
 	gosub :combat~holoscan
+	killalltriggers
 	if ($combat~error = true)
 
 	end

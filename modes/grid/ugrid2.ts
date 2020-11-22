@@ -74,7 +74,18 @@
 	setVar $BOT~help[37] $BOT~tab&"                     to make it look like planet gridding  "
 	gosub :bot~helpfile
 
-
+	
+	setAvoid $map~stardock
+	setAvoid 1
+	setAvoid 2
+	setAvoid 3
+	setAvoid 4
+	setAvoid 5
+	setAvoid 6
+	setAvoid 8
+	setAvoid 7
+	setAvoid 9
+	setAvoid 10
 
 	
 	getWord $bot~user_command_line $bot~parm1 1 "EMPTY"
@@ -351,7 +362,7 @@ goSub :checkAvoidedSectors
 	setVar $ship1_location $homesec
 	setVar $next_ship "2"
 	send "q"
-	if ($safeXport)
+	if ($safeXport = true)
 		isNumber $test $ship2
 		if ($test)
 			if ($ship1 = $ship2)
@@ -481,15 +492,11 @@ goSub :checkAvoidedSectors
 	if ($player~warpto = 0)
 		
 		gosub :player~quikstats
-		if ($safeXport = 1)
-			setvar $switchboard~message "Database Cleared - Halting..*"
-			gosub :switchboard~switchboard
-			halt
-		else
-			setvar $switchboard~message "Database Cleared - Recalculating and Restarting...*"
-			gosub :switchboard~switchboard
-			goto :restart
-		end
+		
+		setvar $switchboard~message "Database Cleared - Recalculating and Restarting...*"
+		gosub :switchboard~switchboard
+		goto :restart
+	
 	else
 		getDistance $distance $move[$player~warpto] $player~warpto
 		if ($distance <= 0)
@@ -516,7 +523,7 @@ goSub :checkAvoidedSectors
 		end
 	
 		if ($player~warpto = $map~stardock) or ($move[$player~warpto] = $map~stardock) or ($player~warpto < 11) or ($move[$player~warpto] < 11)
-			setvar $switchboard~message "Trying to grid to Stardock? No thanks! Deleting.*"
+			setvar $switchboard~message "Trying to grid to Stardock? not thanks! deleting*"
 			gosub :switchboard~switchboard
 			KillAllTriggers
 			replaceText $database " "&$player~warpto&" " " "
@@ -577,6 +584,7 @@ goSub :checkAvoidedSectors
 	send "sd"
 	waitFor "Relative Density Scan"
 	gosub :combat~holoscan
+	killalltriggers
 	if ($combat~error = true)
 
 	end
@@ -816,7 +824,7 @@ goSub :checkAvoidedSectors
 				setVar $perc (($m * 100) / SECTORS)
 				echo "*"
 				echo #27 "["&($perc / 2)&"C"
-				echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
+				echo ANSI_14 "�" ANSI_15 " " $perc "%" #27 & "[1A   "
 			end
 			add $m 1
 		end
@@ -867,7 +875,7 @@ goSub :checkAvoidedSectors
 				setVar $perc (($targetSectorCount * 100) / SECTORS)
 				echo "*"
 				echo #27 "["&($perc / 2)&"C"
-				echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
+				echo ANSI_14 "�" ANSI_15 " " $perc "%" #27 & "[1A   "
 			end
 		end
 
@@ -947,7 +955,7 @@ goSub :checkAvoidedSectors
 				setVar $perc (($targetSectorCount * 100) / SECTORS)
 				echo "*"
 				echo #27 "["&($perc / 2)&"C"
-				echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
+				echo ANSI_14 "�" ANSI_15 " " $perc "%" #27 & "[1A   "
 			end
 			add $targetSectorCount 1
 		end
@@ -1003,7 +1011,7 @@ goSub :checkAvoidedSectors
 				setVar $perc (($targetSectorCount * 100) / SECTORS)
 				echo "*"
 				echo #27 "["&($perc / 2)&"C"
-				echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
+				echo ANSI_14 "�" ANSI_15 " " $perc "%" #27 & "[1A   "
 			end
 			add $targetSectorCount 1
 
@@ -1013,8 +1021,10 @@ goSub :checkAvoidedSectors
 	if ($databaseCount <= 0)
 		setvar $switchboard~message "Visited every sector possible. Refresh fighters and update warp data to verify..*"
 		gosub :switchboard~switchboard
-
-		if ($refurb)
+		if ($xport_grid)
+			gosub :player~quikstats
+			gosub :xportCleanupNoTargets
+		elseif ($refurb)
 			gosub :attempt_refurb
 			gosub :player~quikstats
 			if ($map~home_sector <> "0")
@@ -1068,6 +1078,22 @@ return
 			setVar $attack_mac "* za " & $figs & "* * "
         end
 return
+
+:xportCleanupNoTargets
+	# different end point
+	goSub :assemble_mac
+	if ($player~ship_number = $ship1)
+		setVar $xport_ship $ship2
+	else
+		setVar $xport_ship $ship1
+	end		
+
+	setVar $return_mac "q q * * x "&$xport_ship&"*  *  " & $mac &  $homesec & "* y y * * " & $land_mac
+
+	send $return_mac 
+	setvar $switchboard~message "We are done, ships back here safe and sound.*"	
+	gosub :switchboard~switchboard
+halt
 
 :xportCleanup
 	goSub :assemble_mac
@@ -1207,20 +1233,8 @@ return
 #GETCOURSE SUB ###################################################################################################
 :getCourses
 	killalltriggers
-	setavoid $map~stardock
-	setavoid 1
-	setavoid 2
-	setavoid 3
-	setavoid 4
-	setavoid 5
-	setavoid 6
-	setavoid 7
-	setavoid 8
-	setavoid 9
-	setavoid 10
-	
 	getCourse $course $player~current_sector $destination 
-	if ($course = "-1")
+	if ($path = "-1")
 		send "/"
 		waitOn #179
 		echo ANSI_14 "Updating database...*" ANSI_7
@@ -1230,7 +1244,7 @@ return
 	end
 	setVar $index 1
 	setvar $new_target $destination
-	echo "PreposedDest:" $destination "*"
+echo "PreposedDest:" $destination "*"
 	while ($index <= $course)
 		getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
 	
@@ -1250,7 +1264,6 @@ echo "new:" $destination "*"
 echo "new:" $destination "*"
 :noPath
 	killAllTriggers
-	clearallavoids
 	return
 
 #END GETCOURSE SUB ###################################################################################################
