@@ -649,6 +649,7 @@ goSub :checkAvoidedSectors
 		if (($distanceback = 1) and ($retreat = true))
 			if ((($figCount <= 0) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))) or ($double <> true))
 				send $boomsec $attack_mac $mac " < * " $return_mac $land_mac
+				send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
 			else
 				send $boomsec $attack_mac " < * " $return_mac $land_mac
 				goto :clearitagain
@@ -680,9 +681,11 @@ goSub :checkAvoidedSectors
 					
 				else
 					send $boomsec $attack_mac $mac $return_mac $land_mac
+					send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
 				end
 			else
 				send $boomsec $attack_mac $return_mac $land_mac
+				send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
 				goto :clearitagain
 			end
 		end
