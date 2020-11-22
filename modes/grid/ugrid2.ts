@@ -1237,7 +1237,8 @@ return
 :getCourses
 	killalltriggers
 	getCourse $course $player~current_sector $destination 
-	if ($path = "-1")
+
+	if ($course = "-1")
 		send "/"
 		waitOn #179
 		echo ANSI_14 "Updating database...*" ANSI_7
@@ -1245,20 +1246,17 @@ return
 		waitOn "ENDINTERROG"
 		getCourse $course $player~current_sector $destination 
 	end
-	setVar $index 1
+	//Start one sector before the original target - then look for nearest figged sector
+	setVar $index ($course-1)
 	setvar $new_target $destination
-echo "PreposedDest:" $destination "*"
-	while ($index <= $course)
+	echo "PreposedDest:" $destination "*"
+	while ($index >= 1)
 		getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
-	
-		if (($isFigged = true) and ($index <> $course))
-			setvar $indexPlus1 $index+1
-			getSectorParameter $COURSE[$indexPlus1] "FIGSEC" $isNextFigged
-			if ($isNextFigged <> true)
-				setVar $new_target $COURSE[$indexPlus1]
-			end
+		if ($isFigged = true)
+			setvar $indexPlusOne ($index+1)
+			setVar $new_target $COURSE[$indexPlusOne]
 		end
-		add $index 1
+		subtract $index 1
 	end
 	setvar $destination $new_target
 echo "new:" $destination "*"
