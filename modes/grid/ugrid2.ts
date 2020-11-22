@@ -69,10 +69,11 @@
 	setVar $BOT~help[32] $BOT~tab&"   - [clear]       = Clears internal list of avoided sectors.      "
 	setVar $BOT~help[33] $BOT~tab&"   - [ship2:#]     = Second xport ship number     "
 	setVar $BOT~help[34] $BOT~tab&"   - [orphan]      = targets only orphan sectors   "
-	setVar $BOT~help[35] $BOT~tab&"   - [xdanger]     = For unlimited games with photons   "
+	setVar $BOT~help[35] $BOT~tab&"   - [xdanger]     = For unlimited games using ship xport "
 	setVar $BOT~help[36] $BOT~tab&"   - [xslow]       = Will put in a long pause between sectors   "
 	setVar $BOT~help[37] $BOT~tab&"                     to make it look like planet gridding  "
 	gosub :bot~helpfile
+
 
 
 	
@@ -94,6 +95,7 @@
 				if ($isTarget = true)
 					add $targetSectors 1
 					setvar $targetSectors[$targetSectors] $i
+
 				end
 				add $i 1
 			end
@@ -106,6 +108,7 @@
 		      readToArray $targetFile $targetSectors
 		end
 	end
+
 	getWord $bot~user_command_line $bot~parm2 2 "EMPTY"
 	getWord $bot~user_command_line $bot~parm3 3 "EMPTY"
 	getWord $bot~user_command_line $bot~parm4 4 "EMPTY"
@@ -326,6 +329,12 @@ goSub :checkAvoidedSectors
 	getText $oddline $offodd "Odds:" ":1"
 	stripText $offodd " "
 	stripText $offodd "."
+	waitfor "Turns Per Warp:"
+	getText CURRENTLINE $turnsperwarp "Turns Per Warp:" "Defensive Odds:"
+	stripText $turnsperwarp " "
+	if ($xport_grid)
+		setVar $minTurns ((2 * $turnsPerWarp) + 16)
+	end
 	waitFor "Mine Max:"
 	getText CURRENTLINE $maxMines "Mine Max:" "B"
 	stripText $maxMines " "
@@ -345,7 +354,11 @@ goSub :checkAvoidedSectors
 	if ($safeXport)
 		isNumber $test $ship2
 		if ($test)
-			
+			if ($ship1 = $ship2)
+				setvar $switchboard~message "Ship1 = Ship2 = Ship Happens!*"
+				gosub :switchboard~switchboard
+				halt
+			end
 			setVar $xportShipFound FALSE
 			send "czq"
 			waitfor "-----------------------------------------------------------------------------"
@@ -361,10 +374,6 @@ goSub :checkAvoidedSectors
 					if ($maybeship = $ship2)
 						getWord CURRENTLINE $ship2_location 2
 						setVar $xportShipFound true
-echo "FFFOUNNDD" $ship2_location "*"
-echo "FFFOUNNDD" $ship2_location "*"
-echo "FFFOUNNDD" $ship2_location "*"
-
 						goto :shipsDone
 					end
 				else
@@ -409,7 +418,7 @@ echo "FFFOUNNDD" $ship2_location "*"
 :select_boomsec
 	killAllTriggers
 	gosub :player~quikstats
-
+	
 	if ($xport_grid)
 		if ($boomsec > 0)
 			if ($player~ship_number = $ship1)
@@ -418,11 +427,7 @@ echo "FFFOUNNDD" $ship2_location "*"
 				setVar $ship2_location $boomsec
 			end
 		end
-				echo "# SHIp1 Loc:" $ship1_location "*"
-				echo "# SHIp1 Loc:" $ship1_location "*"
-				echo "# SHIp2 Loc:" $ship2_location "*"
-				echo "# SHIp2 Loc:" $ship2_location "*"
-		
+
 	end
 
 	gosub :assemble_return_mac
@@ -494,20 +499,13 @@ echo "FFFOUNNDD" $ship2_location "*"
 		end
 		
 		if ($safeXport)
-		echo "Ship1: " $ship1 " Ship1 Loc:" $ship1_location  "*"
-		echo "Ship2: " $ship2 " Ship2 Loc:" $ship2_location  "*"
-		echo "$xport_range: " $xport_range "*"
-	echo "$player~warpto: " $player~warpto "*"
-
+	
 			if ($xport_ship = $ship1)
 				getDistance $xport_dist $player~warpto $ship1_location
 			else
 				getDistance $xport_dist $player~warpto $ship2_location
 			end
 			if (($xport_dist <= 0) or ($xport_dist > $xport_range))
-
-			echo "$xport_range: " $xport_range "*"
-
 				setvar $switchboard~message "Return Xport to far - moving to next target*"
 				gosub :switchboard~switchboard
 				KillAllTriggers
@@ -516,6 +514,18 @@ echo "FFFOUNNDD" $ship2_location "*"
 				goto :continueOn
 			end
 		end
+	
+		if ($player~warpto = $map~stardock) or ($player~warpto = $move[$player~warpto]) or ($player~warpto < 11) or ($player~warpto < $move[$player~warpto])
+			setvar $switchboard~message "Trying to grid to Stardock? not thanks! deleing*"
+			gosub :switchboard~switchboard
+			KillAllTriggers
+			replaceText $database " "&$player~warpto&" " " "
+			subtract $databaseCount 1
+			goto :continueOn
+		end
+		
+		
+
 	end
 
 :clearit
@@ -544,6 +554,7 @@ echo "FFFOUNNDD" $ship2_location "*"
 :hittingsec
 	KillAllTriggers
 	setVar $boomsec $move[$player~warpto]
+	
 	getSectorParameter $boomsec "FIGSEC"  $isFigged
 	getSectorParameter $boomsec "MINESEC" $isArmided
 	getSectorParameter $boomsec "LIMPSEC" $isLimped
@@ -638,8 +649,18 @@ echo "FFFOUNNDD" $ship2_location "*"
 
 			if ((($figCount <= 0) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))) or ($double <> true))
 				if (($xport_grid) and ($safeXport))
+					
+					if ($xport_grid)
+						
+						if ($player~turns <= $minTurns)
+							goSub :xportCleanup
+						end
+						
+					end
+					
 					send $boomsec $attack_mac $return_mac $mac $land_mac
 					send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
+					
 					if ($xSlow)
 						getRnd $delaytime 3000 6000
 						setDelayTrigger longPause :longPause $delaytime
@@ -647,6 +668,8 @@ echo "FFFOUNNDD" $ship2_location "*"
 						:longPause
 							killtrigger longPause
 					end
+
+					
 				else
 					send $boomsec $attack_mac $mac $return_mac $land_mac
 				end
@@ -793,7 +816,7 @@ echo "FFFOUNNDD" $ship2_location "*"
 				setVar $perc (($m * 100) / SECTORS)
 				echo "*"
 				echo #27 "["&($perc / 2)&"C"
-				echo ANSI_14 "�" ANSI_15 " " $perc "%" #27 & "[1A   "
+				echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
 			end
 			add $m 1
 		end
@@ -844,7 +867,7 @@ echo "FFFOUNNDD" $ship2_location "*"
 				setVar $perc (($targetSectorCount * 100) / SECTORS)
 				echo "*"
 				echo #27 "["&($perc / 2)&"C"
-				echo ANSI_14 "�" ANSI_15 " " $perc "%" #27 & "[1A   "
+				echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
 			end
 		end
 
@@ -924,7 +947,7 @@ echo "FFFOUNNDD" $ship2_location "*"
 				setVar $perc (($targetSectorCount * 100) / SECTORS)
 				echo "*"
 				echo #27 "["&($perc / 2)&"C"
-				echo ANSI_14 "�" ANSI_15 " " $perc "%" #27 & "[1A   "
+				echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
 			end
 			add $targetSectorCount 1
 		end
@@ -980,7 +1003,7 @@ echo "FFFOUNNDD" $ship2_location "*"
 				setVar $perc (($targetSectorCount * 100) / SECTORS)
 				echo "*"
 				echo #27 "["&($perc / 2)&"C"
-				echo ANSI_14 "�" ANSI_15 " " $perc "%" #27 & "[1A   "
+				echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
 			end
 			add $targetSectorCount 1
 
@@ -1046,15 +1069,36 @@ return
         end
 return
 
+:xportCleanup
+	goSub :assemble_mac
+	if ($player~ship_number = $ship1)
+		setVar $xport_ship $ship2
+	else
+		setVar $xport_ship $ship1
+	end		
+
+
+	setVar $return_mac $homesec & "* y y * * " & $land_mac & "q q * * x "&$xport_ship&"*  *  " & $mac &  $homesec & "* y y * * " & $land_mac
+
+	send $return_mac 
+	setvar $switchboard~message "We are done, ships back here safe and sound.*"	
+	gosub :switchboard~switchboard
+halt
+
+
 :assemble_return_mac
 	setVar $return_mac ""
 	if ($xport_grid)
+		goSub :assemble_mac
+
 		if ($player~ship_number = $ship1)
 			setVar $xport_ship $ship2
 		else
 			setVar $xport_ship $ship1
 		end
-		setVar $return_mac "x "&$xport_ship&"*  *  "
+		setVar $return_mac "x "&$xport_ship&"*  *  sd" & $mac
+		setVar $mac ""
+
 	end
 	setVar $return_mac $return_mac&$homesec & "* y y * * "
 	#setvar $return_mac $return_mac&"n 1 y y "
@@ -1163,8 +1207,20 @@ return
 #GETCOURSE SUB ###################################################################################################
 :getCourses
 	killalltriggers
+	setavoid $map~stardock
+	setavoid 1
+	setavoid 2
+	setavoid 3
+	setavoid 4
+	setavoid 5
+	setavoid 6
+	setavoid 7
+	setavoid 8
+	setavoid 9
+	setavoid 10
+	
 	getCourse $course $player~current_sector $destination 
-	if ($path = "-1")
+	if ($course = "-1")
 		send "/"
 		waitOn #179
 		echo ANSI_14 "Updating database...*" ANSI_7
@@ -1174,18 +1230,24 @@ return
 	end
 	setVar $index 1
 	setvar $new_target $destination
+	echo "PreposedDest:" $destination "*"
 	while ($index <= $course)
 		getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
 	
 		if (($isFigged = true) and ($index <> $course))
-			getSectorParameter $COURSE[$index+1] "FIGSEC" $isNextFigged
+			setvar $indexPlus1 $index+1
+			getSectorParameter $COURSE[$indexPlus1] "FIGSEC" $isNextFigged
 			if ($isNextFigged <> true)
-				setVar $new_target $COURSE[$index+1]
+				setVar $new_target $COURSE[$indexPlus1]
 			end
 		end
 		add $index 1
 	end
 	setvar $destination $new_target
+echo "new:" $destination "*"
+echo "new:" $destination "*"
+echo "new:" $destination "*"
+echo "new:" $destination "*"
 :noPath
 	killAllTriggers
 	return
@@ -1547,7 +1609,11 @@ return
 
 
 :callSaveMe
-	send "'"&$bot~bot_name&" call kill* q q q q * u y n.* c "
+	if ($xport_grid)
+		send "'"&$bot~bot_name&" call* q q q q * u y n.* c "
+	else
+		send "'"&$bot~bot_name&" call kill* q q q q * u y n.* c "
+	end
 	halt
 
 :DoPurchases
