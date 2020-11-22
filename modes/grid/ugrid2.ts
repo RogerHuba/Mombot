@@ -1255,14 +1255,15 @@ return
 		if ($isFigged = true)
 			setvar $indexPlusOne ($index+1)
 			setVar $new_target $COURSE[$indexPlusOne]
+			setvar $destination $new_target
+			echo "new:" $destination "*"
+			echo "new:" $destination "*"
+			echo "new:" $destination "*"
+			echo "new:" $destination "*"
+			return
 		end
 		subtract $index 1
 	end
-	setvar $destination $new_target
-echo "new:" $destination "*"
-echo "new:" $destination "*"
-echo "new:" $destination "*"
-echo "new:" $destination "*"
 :noPath
 	killAllTriggers
 	return
