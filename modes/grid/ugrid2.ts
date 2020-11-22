@@ -505,7 +505,7 @@ goSub :checkAvoidedSectors
 			getDistance $distance $move[$player~warpto] $player~warpto
 		end
 		
-		if ($safeXport)
+		if ($safeXport = true)
 	
 			if ($xport_ship = $ship1)
 				getDistance $xport_dist $player~warpto $ship1_location
