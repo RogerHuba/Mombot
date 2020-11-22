@@ -646,7 +646,7 @@ goSub :checkAvoidedSectors
 		
 		send "m"
 		gosub :return_triggers
-		if (($distanceback = 1) and ($retreat))
+		if (($distanceback = 1) and ($retreat = true))
 			if ((($figCount <= 0) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))) or ($double <> true))
 				send $boomsec $attack_mac $mac " < * " $return_mac $land_mac
 			else
@@ -656,9 +656,9 @@ goSub :checkAvoidedSectors
 		else
 
 			if ((($figCount <= 0) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))) or ($double <> true))
-				if (($xport_grid) and ($safeXport))
+				if (($xport_grid = true) and ($safeXport = true))
 					
-					if ($xport_grid)
+					if ($xport_grid = true)
 						
 						if ($player~turns <= $minTurns)
 							goSub :xportCleanup
@@ -669,7 +669,7 @@ goSub :checkAvoidedSectors
 					send $boomsec $attack_mac $return_mac $mac $land_mac
 					send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
 					
-					if ($xSlow)
+					if ($xSlow = true)
 						getRnd $delaytime 3000 6000
 						setDelayTrigger longPause :longPause $delaytime
 						pause
