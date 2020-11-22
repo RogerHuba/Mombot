@@ -515,8 +515,8 @@ goSub :checkAvoidedSectors
 			end
 		end
 	
-		if ($player~warpto = $map~stardock) or ($player~warpto = $move[$player~warpto]) or ($player~warpto < 11) or ($player~warpto < $move[$player~warpto])
-			setvar $switchboard~message "Trying to grid to Stardock? not thanks! deleing*"
+		if ($player~warpto = $map~stardock) or ($move[$player~warpto] = $map~stardock) or ($player~warpto < 11) or ($move[$player~warpto] < 11)
+			setvar $switchboard~message "Trying to grid to Stardock? No thanks! Deleting.*"
 			gosub :switchboard~switchboard
 			KillAllTriggers
 			replaceText $database " "&$player~warpto&" " " "
@@ -1250,6 +1250,7 @@ echo "new:" $destination "*"
 echo "new:" $destination "*"
 :noPath
 	killAllTriggers
+	clearallavoids
 	return
 
 #END GETCOURSE SUB ###################################################################################################
