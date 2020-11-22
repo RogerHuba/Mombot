@@ -39,7 +39,7 @@
 			setvar $adjacent_sector[$adjcount] $tempSector
 			goto :gotAutoSectorData
 		else
-			setTextLineTrigger getLine :sectorsline_cit_kill
+			setTextLineTrigger getLine :auto_sectorsline_cit_kill
 		end
 		pause
 	:gotAutoSectorData
