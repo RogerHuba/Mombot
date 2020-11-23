@@ -224,7 +224,7 @@ setVar $moveFigMacro ""
 		end
 		waitfor "Activated  Limpet  Scan"
 		settextlinetrigger corp_limp  :ldrop_corp_limp "Corporate"
-		settextlinetrigger pers_limp :ldrop_pers_limp "Personal "
+		#settextlinetrigger pers_limp :ldrop_pers_limp "Personal "
 		settextlinetrigger no_limp :ldrop_no_limp "No Active Limpet"
 		settexttrigger lets_move :ldrop_re_scan "Command [TL="
 		pause
