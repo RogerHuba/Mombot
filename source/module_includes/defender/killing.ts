@@ -29,15 +29,15 @@
 		#########################################
 		gosub :navigate~call
 	end
-	if ($call~starting_ship_type <> $player~ship_type)
+	if ($navigate~starting_ship_type <> $player~ship_type)
 		setvar $switchboard~message "I've been podded, but I am still on the planet.  Switching into ship on planet if possible.*"
 		gosub :switchboard~switchboard
 		send "e y "
 		gosub :ship~getshipstats
 		gosub :player~quikstats
-		setvar $call~starting_ship_type $player~ship_type
-		setvar $call~starting_ship_max_attack $ship~SHIP_MAX_ATTACK 
-		setvar $call~starting_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
+		setvar $navigate~starting_ship_type $player~ship_type
+		setvar $navigate~starting_ship_max_attack $ship~SHIP_MAX_ATTACK 
+		setvar $navigate~starting_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
 		setvar $switch false
 		#####################################################################
 		# setting switch to false so we don't switch into a pod by accident #
@@ -51,6 +51,8 @@
 	else
 		setvar $player~override false
 	end
+	savevar $ship~SHIP_MAX_ATTACK
+	savevar $SHIP~SHIP_OFFENSIVE_ODDS
 	if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
 		if ($switch)
 			send " e y " 
@@ -64,9 +66,9 @@
 		end
 		if ($switch)
 			send " e y " 
-			setvar $player~ship_type $call~starting_ship_type 
-			setvar $ship~SHIP_MAX_ATTACK $call~starting_ship_max_attack
-			setvar $ship~SHIP_OFFENSIVE_ODDS $call~starting_ship_offensive_odds 
+			setvar $player~ship_type $navigate~starting_ship_type 
+			setvar $ship~SHIP_MAX_ATTACK $navigate~starting_ship_max_attack
+			setvar $ship~SHIP_OFFENSIVE_ODDS $navigate~starting_ship_offensive_odds 
 		end
 		if ($error)
 			return
@@ -80,9 +82,9 @@
 		send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 		if ($switch)
 			send " e y "
-			setvar $player~ship_type $call~starting_ship_type 
-			setvar $ship~SHIP_MAX_ATTACK $call~starting_ship_max_attack
-			setvar $ship~SHIP_OFFENSIVE_ODDS $call~starting_ship_offensive_odds 
+			setvar $player~ship_type $navigate~starting_ship_type 
+			setvar $ship~SHIP_MAX_ATTACK $navigate~starting_ship_max_attack
+			setvar $ship~SHIP_OFFENSIVE_ODDS $navigate~starting_ship_offensive_odds 
 		end
 		gosub :player~quikstats
 		goto :scan_for_targets
@@ -238,8 +240,8 @@ return
 		end
 	else
 		if ($switch)
-			setvar $ship~SHIP_MAX_ATTACK $call~starting_ship_max_attack
-			setvar $ship~SHIP_OFFENSIVE_ODDS $call~starting_ship_offensive_odds 
+			setvar $ship~SHIP_MAX_ATTACK $navigate~starting_ship_max_attack
+			setvar $ship~SHIP_OFFENSIVE_ODDS $navigate~starting_ship_offensive_odds 
 		end
 	end
 return
