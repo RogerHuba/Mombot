@@ -1236,8 +1236,7 @@ return
 #GETCOURSE SUB ###################################################################################################
 :getCourses
 	killalltriggers
-	getCourse $course $player~current_sector $destination 
-
+	
 	if ($course = "-1")
 		send "/"
 		waitOn #179
@@ -1249,39 +1248,32 @@ return
 
 	# Find the closest figged sector
 	getNearestWarps $nearArray $destination 
+	setvar $new_target $destination
 	setVar $i 1
 	while ($i <= $nearArray)
-		setVar $focus $nearArray[$i]
 		getSectorParameter $nearArray[$i] "FIGSEC" $isFigged
 		if ($isFigged = true)
-			setvar $destination $nearArray[$i]
-			echo "new:" $destination "*"
-			echo "new:" $destination "*"
-			echo "new:" $destination "*"
-			echo "new:" $destination "*"			
+			getCourse $course $nearArray[$i] $destination 
+			setVar $index 1
+			while ($index <= $course)
+				getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
+				if ($isFigged <> true)
+					setVar $new_target $COURSE[$index]
+					setvar $destination $new_target
+					echo "new:" $destination "*"
+					echo "new:" $destination "*"
+					echo "new:" $destination "*"
+					echo "new:" $destination "*"			
+					return
+				end
+				add $index 1
+			end
 			return
 		end
 		add $i 1
 	end
 	
 	//Start one sector before the original target - then look for nearest figged sector
-//	setVar $index ($course-1)
-//	setvar $new_target $destination
-//	echo "PreposedDest:" $destination "*"
-//	while ($index >= 1)
-//		getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
-//		if ($isFigged = true)
-//			setvar $indexPlusOne ($index+1)
-//			setVar $new_target $COURSE[$indexPlusOne]
-//			setvar $destination $new_target
-//			echo "new:" $destination "*"
-//			echo "new:" $destination "*"
-//			echo "new:" $destination "*"
-//			echo "new:" $destination "*"
-//			return
-//		end
-//		subtract $index 1
-//	end
 :noPath
 	killAllTriggers
 	return
