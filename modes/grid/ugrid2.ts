@@ -882,7 +882,7 @@ goSub :checkAvoidedSectors
 			end
 		end
 
-	elseif ($targetOrphans)
+	elseif ($targetOrphans = true)
 		while ($targetSectorCount < SECTORS)
 			getWordPos $avoidedSectorsUgrid $pos " "&$targetSectorCount&" "
 			getSectorParameter $targetSectorCount "FIGSEC"  $isFigged
@@ -1024,10 +1024,10 @@ goSub :checkAvoidedSectors
 	if ($databaseCount <= 0)
 		setvar $switchboard~message "Visited every sector possible. Refresh fighters and update warp data to verify..*"
 		gosub :switchboard~switchboard
-		if ($xport_grid)
+		if ($xport_grid = true)
 			gosub :player~quikstats
 			gosub :xportCleanupNoTargets
-		elseif ($refurb)
+		elseif ($refurb = true)
 			gosub :attempt_refurb
 			gosub :player~quikstats
 			if ($map~home_sector <> "0")
@@ -1237,14 +1237,6 @@ return
 :getCourses
 	killalltriggers
 	
-	if ($course = "-1")
-		send "/"
-		waitOn #179
-		echo ANSI_14 "Updating database...*" ANSI_7
-		send "^f"&$player~current_sector&"*"&$destination&"**q"
-		waitOn "ENDINTERROG"
-		getCourse $course $player~current_sector $destination 
-	end
 
 	# Find the closest figged sector
 	getNearestWarps $nearArray $destination 
@@ -1254,6 +1246,14 @@ return
 		getSectorParameter $nearArray[$i] "FIGSEC" $isFigged
 		if ($isFigged = true)
 			getCourse $course $nearArray[$i] $destination 
+			if ($course = "-1")
+				send "/"
+				waitOn #179
+				echo ANSI_14 "Updating database...*" ANSI_7
+				send "^f"&$player~current_sector&"*"&$destination&"**q"
+				waitOn "ENDINTERROG"
+				getCourse $course $player~current_sector $destination 
+			end
 			setVar $index 1
 			while ($index <= $course)
 				getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
