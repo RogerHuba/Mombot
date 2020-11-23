@@ -1268,7 +1268,6 @@ return
 				end
 				add $index 1
 			end
-			return
 		end
 		add $i 1
 	end
