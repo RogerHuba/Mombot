@@ -1248,7 +1248,7 @@ return
 	end
 
 	# Find the closest figged sector
-	getNearestWarps $nearArray CURRENTSECTOR
+	getNearestWarps $nearArray $destination 
 	setVar $i 1
 	while ($i <= $nearArray)
 		setVar $focus $nearArray[$i]
