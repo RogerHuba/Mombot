@@ -1,4 +1,4 @@
-for /r %%n in (*ugrid2.ts) do call :checkit "%%n" 
+for /r %%n in (*defender.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
