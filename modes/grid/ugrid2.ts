@@ -1250,7 +1250,7 @@ return
 				echo ANSI_14 "Updating database...*" ANSI_7
 				send "^f"&$player~current_sector&"*"&$destination&"**q"
 				waitOn "ENDINTERROG"
-				getCourse $course $player~current_sector $destination 
+				getCourse $course $nearArray[$i] $destination 
 			end
 			setVar $index 1
 			while ($index <= $course)
@@ -1262,6 +1262,12 @@ return
 					echo "new:" $destination "*"
 					echo "new:" $destination "*"
 					echo "new:" $destination "*"			
+					setvar $j 1
+					while ($j <= $course)
+						echo " " & $course[$j] & " > "
+						add $j 1
+					end
+					echo "**"
 					return
 				end
 				add $index 1
