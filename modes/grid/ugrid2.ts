@@ -430,7 +430,7 @@ goSub :checkAvoidedSectors
 	killAllTriggers
 	gosub :player~quikstats
 	
-	if ($xport_grid)
+	if ($xport_grid = true)
 		if ($boomsec > 0)
 			if ($player~ship_number = $ship1)
 				setVar $ship1_location $boomsec
@@ -774,7 +774,6 @@ goSub :checkAvoidedSectors
 	setVar $perc 0
 	if ($gridTargets)
 		setVar $m 1
-		send "^"
 		while ($m < $targetSectors)
 	        setVar $destination $targetSectors[$m]
 			gosub :getCourses
@@ -831,8 +830,7 @@ goSub :checkAvoidedSectors
 			end
 			add $m 1
 		end
-		send "q "
-
+		
 	elseif ($gridExistingOnly)
 		while ($targetSectorCount < SECTORS)
 			add $targetSectorCount 1
