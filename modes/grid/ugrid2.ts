@@ -1242,35 +1242,49 @@ return
 	setVar $i 1
 	while ($i <= $nearArray)
 		getSectorParameter $nearArray[$i] "FIGSEC" $isFigged
+
 		if ($isFigged = true)
 			getCourse $course $nearArray[$i] $destination 
 			if ($course = "-1")
 				send "/"
 				waitOn #179
 				echo ANSI_14 "Updating database...*" ANSI_7
-				send "^f"&$player~current_sector&"*"&$destination&"**q"
+				send "^f"&$nearArray[$i]&"*"&$destination&"**q"
 				waitOn "ENDINTERROG"
 				getCourse $course $nearArray[$i] $destination 
 			end
-			setVar $index 1
-			while ($index <= $course)
-				getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
-				if ($isFigged <> true)
-					setVar $new_target $COURSE[$index]
-					setvar $destination $new_target
-					echo "new:" $destination "*"
-					echo "new:" $destination "*"
-					echo "new:" $destination "*"
-					echo "new:" $destination "*"			
-					setvar $j 1
-					while ($j <= $course)
-						echo " " & $course[$j] & " > "
-						add $j 1
+			getCourse $courseback $destination $nearArray[$i]
+			if ($courseback = "-1")
+				send "/"
+				waitOn #179
+				echo ANSI_14 "Updating database...*" ANSI_7
+				send "^f"&$destination&"*"&$nearArray[$i]&"**q"
+				waitOn "ENDINTERROG"
+				getCourse $course $destination $nearArray[$i]
+			end
+			getdistance $distance1 $nearArray[$i] $destination
+			getdistance $distance2 $destination $nearArray[$i]
+			if ($distance1 = $distance2)
+				setVar $index 1
+				while ($index <= $course)
+					getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
+					if ($isFigged <> true)
+						setVar $new_target $COURSE[$index]
+						setvar $destination $new_target
+						echo "new:" $destination "*"
+						echo "new:" $destination "*"
+						echo "new:" $destination "*"
+						echo "new:" $destination "*"			
+						setvar $j 1
+						while ($j <= $course)
+							echo " " & $course[$j] & " > "
+							add $j 1
+						end
+						echo "**"
+						return
 					end
-					echo "**"
-					return
+					add $index 1
 				end
-				add $index 1
 			end
 		end
 		add $i 1
