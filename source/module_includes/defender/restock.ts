@@ -56,7 +56,8 @@
 			setvar $switchboard~message "Cannot Find Jump Sector Adjacent Dock*"
 			gosub :switchboard~switchboard
 			send "*"
-			halt
+			send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+			return
 		end
 	end
 
@@ -90,7 +91,8 @@
 			setvar $switchboard~message "Cannot Find Path to StarDock!*"
 			gosub :switchboard~switchboard
 			send "*"
-			halt
+			send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+			return
 		:cont
 			killAllTriggers
 			setDelayTrigger Latency_Delay		:Latency_Delay 500
@@ -109,7 +111,8 @@
 			setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
 			gosub :switchboard~switchboard
 			send "*"
-			halt
+			send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+			return
 		end
 
 		getdistance $dist2 $MAP~stardock $START_SECTOR
@@ -117,7 +120,8 @@
 			setvar $switchboard~message "Insufficient Warp Data Plotting Return Course From Dock*"
 			gosub :switchboard~switchboard
 			send "*"
-			halt
+			send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+			return
 		end
 
 		setVar $ore_req (($dist1 + $dist2) * 3)
@@ -129,7 +133,9 @@
 				setvar $switchboard~message "Not Enough ORE In Holds To Make Round Trip.  Needs "&$ore_req&".*"
 				gosub :switchboard~switchboard
 				send "*"
-				halt
+				send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+				return
+
 			end
 		end
 
@@ -137,7 +143,8 @@
 			setvar $switchboard~message "Must Have Twarp 1 or 2*"
 			gosub :switchboard~switchboard
 			send "*"
-			halt
+			send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+			return
 		end
 
 		if ($PLAYER~unlimitedGame = 0)
@@ -146,14 +153,16 @@
 				setvar $switchboard~message "Not Enough Turns. "&$turnsRequired&", Required*"
 				gosub :switchboard~switchboard
 				send "*"
-				halt
+				send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+				return
 			elseif ($turnsRequired <= currentturns)
 				setVar $tmp (currentturns - $turnsRequired)
 				if ($tmp <= $bot~bot_turn_limit)
 					setvar $switchboard~message "Proceeding Will Leave Fewer Than " & $bot~bot_turn_limit & " Turns!*"
 					gosub :switchboard~switchboard
 					send "*"
-					halt
+					send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+					return
 				end
 			end
 		end
@@ -167,7 +176,8 @@
 		setvar $switchboard~message "StarDock appears to have been Blown Up!*"
 		gosub :switchboard~switchboard
 		send "q*"
-		halt
+		send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+		return
 	:itsalive
 		killAllTriggers
 		waitfor "(?="
