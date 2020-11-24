@@ -59,9 +59,11 @@ setVar $BOT~help[4]  $BOT~tab&" "
 setVar $BOT~help[5]  $BOT~tab&"   {numresults} - How many hits do you want back."
 setVar $BOT~help[6]  $BOT~tab&"   "
 setVar $BOT~help[7]  $BOT~tab&"   {report} - just report data to subspace; default."
-setVar $BOT~help[8]  $BOT~tab&"   {figs:n} - attempt planet dorp and drop figs on "
-setVar $BOT~help[9]  $BOT~tab&"            - predicted sector "
-setVar $BOT~help[10]  $BOT~tab&"   {pdrop}  - attempt planet drop on predicted sector"
+setVar $BOT~help[8]  $BOT~tab&"   {pdrop}  - attempt planet drop on predicted sector"
+setVar $BOT~help[9]  $BOT~tab&"   {figs:n} - attempt planet drop and drop figs on "
+setVar $BOT~help[10]  $BOT~tab&"            - predicted sector (PDROP MODE)"
+setVar $BOT~help[11]  $BOT~tab&"{offensive} - Send offensive messages to Fed space, or"
+setVar $BOT~help[12]  $BOT~tab&"              make figs offensive, who knows?"
 
 
 gosub :bot~helpfile
@@ -72,8 +74,8 @@ gosub :BOT~banner
 
 setVar $targetsToFind 20
 setVar $searchDistance 2000
-
-
+gosub :player~quikstats
+	
 if ($bot~parm1 = "on")
 	setvar $switchboard~message "Fig Hit ON.*"
 	gosub :switchboard~switchboard
@@ -98,24 +100,10 @@ end
 setVar $mode "report"
 
 
-getWordPos $bot~user_command_line $pos "figs:"
-if ($pos > 0)
-	setVar $mode "figs"
-	setVar $cline $bot~user_command_line & " "
-	getText $cline $dropFigQuant "figs:" " "
-
-	getWordPos $bot~user_command_line $pos "offensive"
-	if ($pos > 0)
-		setVar $dropftrsType "o"
-	else
-		setVar $dropftrsType "d"
-	end
-	
-end
-
 getWordPos $bot~user_command_line $pos "pdrop"
 if ($pos > 0)
 	setVar $mode "pdrop"
+
 end
 if ($mode = "pdrop")
 	if ($player~current_prompt <> "Citadel")
@@ -123,16 +111,76 @@ if ($mode = "pdrop")
 		gosub :switchboard~switchboard
 		halt
 	end
+	gosub :ship~getshipstats
 	send "q"
 	gosub :PLANET~getPlanetInfo	
-	send "t*t1* c "
+	send " m * * * *c "
 	setvar $call~starting_planet $planet~planet
+
+	
+	if ($planet~PLANET_FUEL < 10000)
+		setvar $switchboard~message "Need more than 10k ore, you won't get far.*"
+		gosub :switchboard~switchboard
+		halt
+	end
+	setVar $pdropMsg "Planet Drop Mode"
+		
+	getWordPos $bot~user_command_line $pos "figs:"
+	if ($pos > 0)
+		setVar $dropftrs TRUE
+		setVar $cline $bot~user_command_line & " "
+		getText $cline $dropFigQuant "figs:" " "
+
+		getWordPos $bot~user_command_line $pos "offensive"
+		if ($pos > 0)
+			setVar $dropftrsType "o"
+		else
+			setVar $dropftrsType "d"
+		end
+		send "c;q"
+		waitFor "Figs Per Attack:"
+		getWord CURRENTLINE $maxFigAttack 5
+
+		setVar $moveFigMacro ""
+		setVar $moved 0
+
+		while ($moved < $dropFigQuant)
+			
+			setVar $toMove ($dropFigQuant - $moved)
+
+			if ($toMove >= $maxFigAttack)
+				setVar $thisMove $maxFigAttack
+				setVar $moved ($moved + $thisMove)
+			else
+				setVar $thisMove $toMove
+				setVar $moved $moved + $thisMove
+			end
+
+			setVar $moveFigMacro $moveFigMacro & "q m n t* q fz " & $moved & "* * zc" & $dropftrsType & " * l" & $planet~planet & " *m* t * ccq"
+		end
+
+		setVar $pdropMsg $pdropMsg & " - Deploying " & $dropFigQuant & " " & $dropftrsType & " Figs.*"
+		
+		if ($planet~PLANET_FIGHTERS < $dropFigQuant)
+			setvar $switchboard~message "You have less figs than required for the drop.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	else
+		setVar $pdropMsg $pdropMsg & "*"
+	end
+	setvar $switchboard~message $pdropMsg
+	gosub :switchboard~switchboard
 end
 
 # Average Time Variables - anything outside of this  is probably a re-start or some other issue
 # Most gridders move at a steady adn random pace.
 
-setVar $minTime 2
+:resetTimes
+
+killAllTriggers
+
+setVar $minTime 0
 setvar $maxTime 20
 
 # INIT CORP ARRAYS - THIS WILL BECOME A CLV READER EVENTUALLY
@@ -152,7 +200,7 @@ setVar $PREV_TARGET_AVG_I[1] 0
 setVar $minReqForAvgLock 3
 setVar $avgsLocked 0
 
-
+setVar $seconds 0
 
 setVar $loop  1
 setVar $findSecs 3
@@ -171,6 +219,7 @@ while ($loop = 1)
 	
 	setTextLineTrigger r1 :r1 "Report Sector "
 	setTextLineTrigger r2 :r2 "Your fighters in sectosr "
+	setDelayTrigger  reset :resetTimes ($maxTime * 1000)
 	pause
 
 	:r1
@@ -186,6 +235,7 @@ while ($loop = 1)
 			setvar $alien true
 			setTextLineTrigger r1 :r1 "Report Sector "
 			setTextLineTrigger r2 :r2 "Your fighters in sectosr "
+			setDelayTrigger  reset :resetTimes ($maxTime * 1000)
 			pause
 		end
 
@@ -248,6 +298,7 @@ while ($loop = 1)
 			setvar $alien true
 			setTextLineTrigger r1 :r1 "Report Sector "
 			setTextLineTrigger r2 :r2 "Your fighters in sectosr "
+			setDelayTrigger  reset :resetTimes ($maxTime * 1000)
 			pause
 		end
 		getWord CURRENTLINE $sec 5
@@ -456,7 +507,7 @@ return
 	setPrecision 1
 	setVar $avgSec ($timingAvgHits[$player~corp] / 2100000000)
 	setPrecision 0
-
+	
 	if ($PREV_TARGET_FOUND[$player~corp] = 1)
 		setVar $prevtargetinfo "Sector found in previous list at : " & $prevTargetReporti & "*"
 	else
@@ -469,58 +520,99 @@ return
 	setVar $out $out & "Predicted: "
 	setVar $x 1
 	setvar $memory " "
+	setVar $drophere ""
 	while ($x < $foundcount)
 		setVar $out $out & " " & $foundSecs[$x][1] & "(" &  $foundSecs[$x][2] & ")"
 		setvar $memory $memory&" "&$foundSecs[$x][1]&" "
+echo "#" $foundSecs[$x][1] " " $foundSecs[$x][2] " " $distAvg[$player~corp] " #"
+
+		if ($foundSecs[$x][2] >= $distAvg[$player~corp]) and ($drophere = "")
+			setVar $drophere $foundSecs[$x][1]
+			echo "'drop here:" $drophere "*"
+		end 
 		add $x 1
 	end
 	setvar $switchboard~message $out&"**"
+	
+
+	getrnd $lucky 1 $foundcount
+	if ($mode = "pdrop")
+		gosub :player~quikstats
+		
+		if ($avgSec > 0.0) or ($seconds > 0.0)
+			
+			gosub :getTime
+			setVar $time " "&$hour & ":" & $minute & ":" & $second & ":" & $msec & "  "
+			send "'" $time "*"
+			setPrecision 1
+			if ($avgSec = 0.0)
+				setVar $shootTime ($seconds - 0.2)
+			else
+				setVar $shootTime ($avgSec - 0.2)
+			end
+			
+			if (($drophere <> $player~current_sector) and ($drophere <> 0))
+				send "'About to drop on sector "&$drophere&" in "&$shootTime&" seconds Dist: " $distAvg[$player~corp] "..*"
+				killalltriggers
+				setdelaytrigger waithere :nowdrop ($shootTime*1000)
+				setPrecision 0
+				pause
+
+				
+				:nowdrop
+				send "p" $drophere "*  y  "
+				if ($dropftrs = TRUE)
+					send $moveFigMacro
+				end
+
+				
+				gosub :player~quikstats
+				setvar $player~startinglocation "Citadel"
+				gosub :sector~getSectorData
+				setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
+				if (($planet_count = 1) and ($overide = false))
+					setvar $one_planet true
+					setvar $player~override true
+				else
+					setvar $player~override false
+				end
+				if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
+					if ($switch)
+						send " e y " 
+					end
+					#if ($capture = true)
+						gosub :combat~fastCapture
+						send " l " $PLANET~PLANET " * n n * j m * * * j c *  "
+						gosub :player~quikstats
+					#else
+					#	gosub :combat~fastCitadelAttack
+					#end
+
+				end
+				
+				gosub :getTime
+				setVar $time " "&$hour & ":" & $minute & ":" & $second & ":" & $msec & "  "
+				send "'" $time "*"
+				setdelaytrigger waithere2 :nowdrop2 2000
+				setPrecision 0
+				pause
+				:nowdrop2
+					if ($dropftrs = true)
+						goSub :retrieveFigs
+					end
+				goto :resetTimes
+			end
+			setPrecision 0
+		else
+			send "'avg seconds to low, waiting..*"
+		end
+	end
 	gosub :switchboard~switchboard
 	if ($target_was_predicted)
 		setvar $switchboard~message "Sector "&$last_target&" was predicted last time!*"
 		gosub :switchboard~switchboard
 	end
 
-	getrnd $lucky 1 $foundcount
-	if ($mode = "pdrop")
-		gosub :player~quikstats
-		if ($avgsec = 0)
-			setvar $avgsec 1
-		end
-		if (($foundSecs[$lucky][1] <> $player~current_sector) and ($foundSecs[$lucky][1] <> 0))
-			send "'About to drop on sector "&$foundSecs[$lucky][1]&" in "&$avgSec&" seconds..*"
-			killalltriggers
-			setdelaytrigger waithere :nowdrop ($avgSec*1000)
-			setTextLineTrigger r1 :r1 "Report Sector "
-			setTextLineTrigger r2 :r2 "Your fighters in sectosr "
-			pause
-			:nowdrop
-			send "p" $foundSecs[$lucky][1] "*  y  "
-			gosub :player~quikstats
-			setvar $player~startinglocation "Citadel"
-			gosub :sector~getSectorData
-			setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
-			if (($planet_count = 1) and ($overide = false))
-				setvar $one_planet true
-				setvar $player~override true
-			else
-				setvar $player~override false
-			end
-			if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
-				if ($switch)
-					send " e y " 
-				end
-				if ($capture = true)
-					gosub :combat~fastCapture
-					send " l " $PLANET~PLANET " * n n * j m * * * j c *  "
-					gosub :player~quikstats
-				else
-					gosub :combat~fastCitadelAttack
-				end
-
-			end
-		end
-	end
 return
 
 :addClosestSix
@@ -537,6 +629,84 @@ return
 	end
 	
 	setVar $out $out & "*"
+return
+
+# ----====[Get the date and time ]====----
+# creates a unique number timestamp
+# if time/date is 10:50:00am 9/15/05 then output = 20050915105000
+# if time/date is 5:33:22pm 9/15/05 then output = 20050915173322
+:getTime
+getTime $dateTime "yyyymmddhhnnsszzz am/pm"
+getword $dateTime $amPMcheck 2
+getword $dateTime $finalTime 1
+cuttext $finalTime $12check 9 2
+if ($amPMcheck = "pm")
+	if ($12check <> 12)
+		add $finalTime 120000000
+	end
+end
+cuttext $finalTime $year 1 4
+cuttext $finalTime $month 5 2
+cuttext $finalTime $day 7 2
+cuttext $finalTime $hour 9 2
+cuttext $finalTime $minute 11 2
+cuttext $finalTime $second 13 2
+cuttext $finalTime $msec 15 3
+# echo ANSI_10 "*" $finalTime
+# echo ANSI_10 "**" $month "/" $day "/" $year " - " $hour ":" $minute ":" $second
+# echo ANSI_10 "*Date: " DATE " Time: " TIME "*"
+return
+
+
+:retrieveFigs
+	gosub :player~quikstats
+	send " s*  "
+	setVar $figOwner SECTOR.FIGS.OWNER[$player~current_sector]
+	setVar $figQuant SECTOR.FIGS.QUANTITY[$player~current_sector]
+	
+	waitfor "<Scan Sector>"
+	waitfor "Citadel treasury contains"
+	
+
+	if ($figQuant <> 0) AND (($figOwner = "belong to your Corp") or ($figOwner = "yours"))
+		
+		setVar $retFigMacro ""
+		setVar $moved 0
+		setVar $sectorQuant $figQuant
+		if ($dropFigQuant > $figQuant)
+			setVar $retQuant $figQuant
+		else
+			setVar $retQuant $dropFigQuant
+		end
+		while ($moved < $retQuant)
+			
+			setVar $toMove ($retQuant - $moved)
+
+			if ($toMove >= $ship~SHIP_FIGHTERS_MAX)
+				setVar $thisMove $ship~SHIP_FIGHTERS_MAX
+				setVar $moved ($moved + $thisMove)
+				setVar $sectorQuant ($sectorQuant - $thisMove)
+			else
+				setVar $thisMove $toMove
+				setVar $moved $moved + $thisMove
+				setVar $sectorQuant ($sectorQuant - $thisMove)
+				
+			end
+			
+			if ($sectorQuant = 0)
+				
+				setVar $retFigMacro $retFigMacro & "q m n l* q fz 1* * zc" & $dropftrsType & " * l" & $planet~planet & " *m* t * ccq"
+
+			else
+				setVar $retFigMacro $retFigMacro & "q m n l* q fz " & $sectorQuant & "* * zc" & $dropftrsType & " * l" & $planet~planet & " *m* t * ccq"
+			end
+
+		end
+
+	end
+
+	send $retFigMacro
+	
 return
 
 include "source\module_includes\bot\loadvars\bot"
