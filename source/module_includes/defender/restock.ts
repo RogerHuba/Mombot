@@ -42,42 +42,12 @@
 		:shipline
 			setVar $line CURRENTLINE
 			getWordPos $line $pos "Choose which ship to tow (Q=Quit)"
-			getWord $line $temp 2
+			getWord $line $temp 1
 			isNumber $result $temp
-			getLength $line $length
-			if ($length > 52)
-				cuttext $line $shiptype 54 999
-			end
-			lowercase $shiptype
 			if (($result = TRUE))
 				if ($temp > 0)
-					##########################################################################################
-					# leaving this in, in case we want to add a ship type option to only grab a certain ship #
-					##########################################################################################
-					if ($filterships <> "")
-						setvar $i 1
-
-						while ($i <= $shiptypes)
-							setvar $testship $shiptypes[$i]
-							trim $testship
-							getwordpos $shiptype $filterpos $testship
-							if ($filterpos > 0)
-								setvar $shipfound true
-							end
-							add $i 1
-						end
-						if ($shipfound = true)
-							getwordpos $grabbed $checkpos " "&$temp&" "
-							if ($checkpos <= 0)
-								add $shipCount 1
-								setVar $refurbShips[$shipCount] $temp
-								setvar $grabbed $grabbed&" "&$temp&" "
-							end
-						end
-					else
-						add $shipCount 1
-						setVar $refurbShips[$shipCount] $temp
-					end
+					add $shipCount 1
+					setVar $refurbShips[$shipCount] $temp
 				end
 			end
 			if ($pos > 0)
@@ -134,6 +104,8 @@
 				setvar $navigate~starting_ship_type $player~ship_type
 				setvar $navigate~starting_ship_max_attack $ship~SHIP_MAX_ATTACK
 				setvar $navigate~starting_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
+
+				gosub :navigate~:navigate_away
 
 				setvar $switchboard~message "Grabbed refurb ship number "&$refurb_ship&" with "&$player~photons&" photons aboard.*"
 				gosub :switchboard~switchboard
