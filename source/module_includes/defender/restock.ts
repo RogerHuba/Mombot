@@ -31,7 +31,7 @@
 		:tryshipscan
 
 			send "q q q * |w*"
-			setTextLineTrigger statlinetrig :shipline "-----------------------------"
+			setTextLineTrigger statlinetrig :shipline "--<  Available Ships in Sector >--"
 			settextlinetrigger enter :enter "[Pause]"
 			setTextTrigger doneships :gotShips "Choose which ship to tow (Q=Quit)"
 			pause
@@ -116,6 +116,7 @@
 				gosub :player~quikstats
 				setvar $switchboard~message "Can not find furb ship in sector "&$player~current_sector&".  Please buy some more and restart me.*"
 				gosub :switchboard~switchboard
+				send " l "&$planet~planet&"*  m***  c "
 				return
 			end
 
