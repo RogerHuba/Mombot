@@ -53,6 +53,7 @@
 	end
 	savevar $ship~SHIP_MAX_ATTACK
 	savevar $SHIP~SHIP_OFFENSIVE_ODDS
+	setvar $capEmptyShips true
 	if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
 		if ($switch)
 			send " e y " 
@@ -87,8 +88,17 @@
 			setvar $ship~SHIP_OFFENSIVE_ODDS $navigate~starting_ship_offensive_odds 
 		end
 		gosub :player~quikstats
+
+		setvar $switchboard~message "I just attempted to capture some empty ships in sector "&$player~current_sector&".  Someone might want to come clean them up.*"
+		gosub :switchboard~switchboard
+
 		goto :scan_for_targets
 	end
+	
+	#########################################################
+	# some weird code to kill beacons outside of our bubble #
+	#########################################################
+
 	getSectorParameter $player~current_sector "BUBBLE" $isBubble
 	if (($sector~containsBeacon = true) and ($isBubble <> true))
 		send "q q a y * * * * * * * * * * * * l " $PLANET~PLANET " * n n * j m * * * j c  *  "
