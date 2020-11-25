@@ -128,11 +128,11 @@ return
 	# if direct drop worked, do htorp #
 	###################################
 	if ($player~current_sector = $sector)
-			// if you make it to direct drop, mulch them.  Could be dangerous for corbo traps, though.
+			## if you make it to direct drop, mulch them.  Could be dangerous for corbo traps, though.
 
 			send "q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
 
-			//then holo torp in case they retreat
+			## then holo torp in case they retreat
 		gosub :htorp
 	else
 		###################################################
