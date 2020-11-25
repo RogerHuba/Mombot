@@ -93,7 +93,7 @@
 			:foundMissles
 				killtrigger doneMissles
 				setvar $furb_ship $refurbShips[$i]
-				send "x  "&$furb_ship&"*  l "&$planet~planet&"*  m***  c "
+				send "x  "&$furb_ship&"*  *  l "&$planet~planet&"*  m***  c "
 				gosub :player~quikstats
 				gosub :ship~getshipstats
 
