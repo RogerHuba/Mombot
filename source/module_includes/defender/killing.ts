@@ -117,9 +117,9 @@ return
 	##############################################################
 
 	if ($last_ship_type = $ship_type)
-		if ($quasar_damage > 0)
+#		if ($quasar_damage > 0)
 			gosub :setcannons
-		end
+#		end
 		return
 	end
 
@@ -151,7 +151,7 @@ return
 return
 
 :setcannons
-	if ($auto)
+	if ($auto = true)
 
 		setVar $percentToSet (((3*$quasar_damage)*100)/$PLANET~PLANET_FUEL)
 		if (((($PLANET~PLANET_FUEL * $percentToSet) / 100)/3) < $quasar_damage)

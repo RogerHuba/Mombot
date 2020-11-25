@@ -10,7 +10,7 @@
 	while (SECTOR.WARPSIN[$sector][$i] > 0)
 		setVar $tempAdj SECTOR.WARPSIN[$sector][$i]
 		getSectorParameter $tempAdj "FIGSEC" $isFigged
-		if ($isFigged)
+		if ($isFigged = true)
 			setVar $adjsec $tempAdj
 			if ($adjacentphoton = true)
 				goto :fire_photon
