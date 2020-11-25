@@ -446,9 +446,65 @@ return
 :retreatphoton
 	setvar $success false
 	send "p" $sector "*  y  "
+	setvar $player~current_sector $sector
 	gosub :htorp
 return
 
 :htorp
-	gosub :htorp~run
+	send "q szh* l " & $planet~planet & "* c "
+	setTextLineTrigger checkForHolo :continueCheckHolo "Select (H)olo Scan or (D)ensity Scan or (Q)uit?"
+	setTextLineTrigger checkForDens :photonedhtorp "Relative Density Scan"  
+	pause
+	:continueCheckHolo
+		setTextTrigger htorpsector :continuehtorpsector "[" & $PLAYER~CURRENT_SECTOR & "]"
+		pause
+	:continuehtorpsector
+	if ($PLAYER~PHOTONS <= 0)
+		echo ANSI_14 & "*No Photons on hand.**" & ANSI_7
+		return
+	end
+	setVar $i 1
+	while (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] > 0)
+		setVar $adj_sec SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i]
+		if (SECTOR.TRADERCOUNT[$ADJ_SEC] > 0)
+			setVar $targetInSector FALSE
+			setVar $player~corpMemberInSector FALSE
+			setVar $j 1
+			while (SECTOR.TRADERS[$ADJ_SEC][$j] <> 0)
+				setVar $tempTarget SECTOR.TRADERS[$ADJ_SEC][$j]
+				getLength $tempTarget $targetLength
+				if ($targetLength >= 4)
+					cutText $tempTarget $targetCorp ($targetLength-4) 999
+					getText $targetCorp $targetCorp "[" "]"
+					if ($targetCorp <> $PLAYER~CORP)
+						setVar $targetInSector TRUE
+					end
+					if ($targetCorp = $PLAYER~CORP)
+						setVar $player~corpMemberInSector TRUE
+					end
+				end
+				add $j 1
+			end
+			if (($targetInSector = TRUE) AND ($player~corpMemberInSector = FALSE) and ($adj_sec > 10) and ($adj_sec <> $map~stardock))
+				send "c p y " $ADJ_SEC "* *q"
+				setvar $switchboard~message "Photon fired into sector " & $ADJ_SEC & "!*"
+				gosub :switchboard~switchboard
+				return
+			end
+		end
+		add $i 1
+	end
+	if ($PLAYER~startingLocation = "Citadel")
+		setTextTrigger waitforcit :continuewaitforcit "Citadel command (?=help)"
+		pause
+		:continuewaitforcit
+	end
+	echo ANSI_14 & "*No valid targets**" & ANSI_7
+	return
+
+	:photonedHtorp
+		setvar $switchboard~message "I have no holographic scanner, perhaps I was photoned?*"
+		gosub :switchboard~switchboard
+	return
+
 return
