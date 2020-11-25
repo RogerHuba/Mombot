@@ -56,7 +56,7 @@
 					##########################################################################################
 					if ($filterships <> "")
 						setvar $i 1
-						setvar $shipfound false
+
 						while ($i <= $shiptypes)
 							setvar $testship $shiptypes[$i]
 							trim $testship
@@ -94,13 +94,6 @@
 			killtrigger enter
 			killtrigger doneships
 			send "*|"
-			if ($startingLocation <> "Command")
-				send "l "&$planet~planet&"* c    "
-			else
-				if ($fuelInSector = true)
-					send " p t * * 0 * * 0 * * 0 * * "
-				end
-			end
 
 			setVar $i 1
 			setvar $furb_ship 0
@@ -120,6 +113,7 @@
 			end
 
 			if ($furb_ship <= 0)
+				gosub :player~quikstats
 				setvar $switchboard~message "Can not find furb ship in sector "&$player~current_sector&".  Please buy some more and restart me.*"
 				gosub :switchboard~switchboard
 				return
