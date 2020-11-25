@@ -311,6 +311,19 @@
 		end
 	end
 
+	getWordPos " "&$bot~user_command_line&" " $pos " furbsec:"
+	setvar $main~saveme false
+	setvar $main~saveme_bot ""
+	if ($pos > 0)
+		setvar $restock~refurb_in_sector true
+		getText $bot~user_command_line&" " $restock~refurb_sector "furbsec:" " "
+		if ($restock~refurb_sector = 0)
+			setVar $SWITCHBOARD~message "Refurb sector is not valid.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
+
 	getWordPos " "&$bot~user_command_line&" " $pos " saveme:"
 	setvar $main~saveme false
 	setvar $main~saveme_bot ""
@@ -318,7 +331,7 @@
 		setvar $main~saveme true
 		getText $bot~user_command_line&" " $main~saveme_bot "saveme:" " "
 		if ($main~saveme_bot = 0)
-			setVar $SWITCHBOARD~message "Saveme bot is not defined.*"
+			setVar $SWITCHBOARD~message "Saveme bot is not valid.*"
 			gosub :switchboard~switchboard
 			halt
 		end
@@ -502,6 +515,9 @@
 	end
 	if ($combat~defender)
 		setVar $message $message&"*                   Defender mode on"
+	end
+	if ($restock~refurb_in_sector = true)
+		setVar $message $message&"*                   Refurbing in sector "&$restock~refurb_sector
 	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	setvar $switchboard~message $message

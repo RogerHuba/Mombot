@@ -1,9 +1,149 @@
 :refurb_photons
 	killalltriggers
 	if ($refurb_sector > 0)
-		//TODO
-		//add logic to pwarp to refurb sector and find ship with mines/photons to replace empty
+		
+		:pwarp_refurb
+			send "p" $refurb_sector "*y"
+			SetTextLineTrigger homelock :home_lock "Planetary TransWarp Drive Engaged!"
+			setTextLineTrigger nohomelock :no_home_lock "Your own fighters must be"
+			setTextLineTrigger home_now :home_lock "You are already in that sector!"
+			settextlinetrigger pwarp_rdy :hit_y "All Systems Ready, shall we engage?"
+			pause
 
+			:no_home_lock
+				killtrigger homelock
+				killtrigger nohomelock
+				killtrigger home_now
+				killtrigger pwarp_rdy
+				setSectorParameter $refurb_sector "FIGSEC" false
+				setvar $switchboard~message "No fig down in refurb sector!  That's not good.  Skipping refurb for now.  Either place fig down, or restart me with new refurb sector.*"
+				gosub :switchboard~switchboard
+				return
+
+				:hit_y
+					send "y "
+		        :home_lock
+					killtrigger homelock
+					killtrigger nohomelock
+					killtrigger home_now
+					killtrigger pwarp_rdy
+
+		:tryshipscan
+
+			send "q q q * |w*"
+			setTextLineTrigger statlinetrig :shipline "-----------------------------"
+			settextlinetrigger enter :enter "[Pause]"
+			setTextTrigger doneships :gotShips "Choose which ship to tow (Q=Quit)"
+			pause
+			:enter
+				send "*"
+				settextlinetrigger enter :enter "[Pause]"
+				pause
+		:shipline
+			setVar $line CURRENTLINE
+			getWordPos $line $pos "Choose which ship to tow (Q=Quit)"
+			getWord $line $temp 2
+			isNumber $result $temp
+			getLength $line $length
+			if ($length > 52)
+				cuttext $line $shiptype 54 999
+			end
+			lowercase $shiptype
+			if (($result = TRUE))
+				if ($temp > 0)
+					##########################################################################################
+					# leaving this in, in case we want to add a ship type option to only grab a certain ship #
+					##########################################################################################
+					if ($filterships <> "")
+						setvar $i 1
+						setvar $shipfound false
+						while ($i <= $shiptypes)
+							setvar $testship $shiptypes[$i]
+							trim $testship
+							getwordpos $shiptype $filterpos $testship
+							if ($filterpos > 0)
+								setvar $shipfound true
+							end
+							add $i 1
+						end
+						if ($shipfound = true)
+							getwordpos $grabbed $checkpos " "&$temp&" "
+							if ($checkpos <= 0)
+								add $shipCount 1
+								setVar $refurbShips[$shipCount] $temp
+								setvar $grabbed $grabbed&" "&$temp&" "
+							end
+						end
+					else
+						add $shipCount 1
+						setVar $refurbShips[$shipCount] $temp
+					end
+				end
+			end
+			if ($pos > 0)
+				goto :gotShips
+			else
+				setTextLineTrigger getLine :shipline
+				pause
+			end
+
+
+		:gotShips
+			killtrigger getline
+			killtrigger statlinetrig
+			killtrigger enter
+			killtrigger doneships
+			send "*|"
+			if ($startingLocation <> "Command")
+				send "l "&$planet~planet&"* c    "
+			else
+				if ($fuelInSector = true)
+					send " p t * * 0 * * 0 * * 0 * * "
+				end
+			end
+
+			setVar $i 1
+			setvar $furb_ship 0
+			while ($i <= $shipCount)
+				if ($refurbShips[$i] > 0)
+					send "x  i "&$refurbShips[$i]&"**  * "
+					waiton "Ship Name      : "
+					setTextLineTrigger doneMissles :keepLooking "[Pause]"
+					settextlinetrigger hasMissles :foundMissles "Photon Missiles: "
+					pause
+
+					:doneLooking
+						killtrigger doneMissles
+						killtrigger hasMissles
+				end
+				add $i 1
+			end
+
+			if ($furb_ship <= 0)
+				setvar $switchboard~message "Can not find furb ship in sector "&$player~current_sector&".  Please buy some more and restart me.*"
+				gosub :switchboard~switchboard
+				return
+			end
+
+			:foundMissles
+				killtrigger doneMissles
+				setvar $furb_ship $refurbShips[$i]
+				send "x  "&furb_ship&"*  l "&$planet~planet&"*  m***  c "
+				gosub :player~quikstats
+				gosub :ship~getshipstats
+
+				###################################################################
+				# set starting ship variables so switch ship doesn't get confused #
+				###################################################################
+				
+				setvar $navigate~starting_ship_type $player~ship_type
+				setvar $navigate~starting_ship_max_attack $ship~SHIP_MAX_ATTACK
+				setvar $navigate~starting_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
+
+				setvar $switchboard~message "Grabbed refurb ship number "&$refurb_ship&" with "&$player~photons&" photons aboard.*"
+				gosub :switchboard~switchboard
+
+		return
 	else
 		if ($deploymines = true)
 			setVar $limpetCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~LIMPETS)*$game~LIMPET_COST))
