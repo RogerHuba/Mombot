@@ -75,7 +75,7 @@
 					settextlinetrigger hasMissles :foundMissles "Photon Missiles: "
 					pause
 
-					:doneLooking
+					:keepLooking
 						killtrigger doneMissles
 						killtrigger hasMissles
 				end
