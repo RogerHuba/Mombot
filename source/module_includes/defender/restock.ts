@@ -93,7 +93,7 @@
 			:foundMissles
 				killtrigger doneMissles
 				setvar $furb_ship $refurbShips[$i]
-				send "x  "&furb_ship&"*  l "&$planet~planet&"*  m***  c "
+				send "x  "&$furb_ship&"*  l "&$planet~planet&"*  m***  c "
 				gosub :player~quikstats
 				gosub :ship~getshipstats
 
@@ -105,7 +105,7 @@
 				setvar $navigate~starting_ship_max_attack $ship~SHIP_MAX_ATTACK
 				setvar $navigate~starting_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
 
-				gosub :navigate~:navigate_away
+				gosub :navigate~navigate_away
 
 				setvar $switchboard~message "Grabbed refurb ship number "&$refurb_ship&" with "&$player~photons&" photons aboard.*"
 				gosub :switchboard~switchboard
