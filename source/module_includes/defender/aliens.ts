@@ -413,16 +413,3 @@ return
 		end
 	end
 return
-#INCLUDES:
-include "source\bot_includes\player\currentprompt\player"
-include "source\bot_includes\grid\surround\grid"
-include "source\bot_includes\planet\landingsub\planet"
-include "source\bot_includes\planet\landonplanetentercitadel\planet"
-include "source\bot_includes\player\buy\player"
-include "source\bot_includes\external\dscan"
-include "source\bot_includes\external\moveship"
-include "source\bot_includes\external\xenter"
-include "source\bot_includes\external\mow"
-include "source\bot_includes\external\max"
-include "source\bot_includes\external\pwarp"
-include "source\bot_includes\external\scrub"
