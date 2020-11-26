@@ -21,7 +21,6 @@
 			end
 		end
 	end
-	:startover
 	setVar $sectorData ""
 	:sectorsline_cit_kill
 		setVar $line CURRENTANSILINE
