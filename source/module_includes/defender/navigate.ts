@@ -108,7 +108,7 @@ return
 		setArray $checked SECTORS
 		setVar $que[1] $player~current_sector
 		setVar $checked[$player~current_sector] 0
-		:try_again
+		:try_again_limp
 		while ($bottom <= $top)
 			# Now, pull out the next sector in the queue, and make it our focus
 			setVar $focus $que[$bottom]
@@ -140,7 +140,7 @@ return
 					########################################
 					# don't restock where there is nav haz #
 					########################################
-					goto :try_again
+					goto :try_again_limp
 				else
 					return
 				end
