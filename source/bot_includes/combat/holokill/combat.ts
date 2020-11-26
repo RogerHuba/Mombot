@@ -219,5 +219,3 @@ return
 include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\sector\getautosectordata\sector"
 include "source\bot_includes\grid\surround\grid"
-include "source\bot_includes\combat\fastcapture\combat"
-include "source\bot_includes\combat\fastattack\combat"
