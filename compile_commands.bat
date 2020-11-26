@@ -1,4 +1,4 @@
-for /r %%n in (*mega.ts) do call :checkit "%%n" 
+for /r %%n in (*dressup.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
