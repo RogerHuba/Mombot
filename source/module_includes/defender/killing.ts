@@ -161,6 +161,7 @@ return
 return
 
 :setcannons
+	setvar $switchboard~message "" 
 	if ($auto = true)
 
 		setVar $percentToSet (((3*$quasar_damage)*100)/$PLANET~PLANET_FUEL)
@@ -213,7 +214,12 @@ return
 	else
 		setvar $cannon_damage ((($planet~planet_FUEL * $atmos_percentToSet) / 100)/2)             
 	end
-	setvar $switchboard~message $switchboard~message&"Atmos cannon set to "&$cannon_damage&" damage.*"
+	if ($last_atmos_percentage <> $atmos_percentToSet)
+		setvar $switchboard~message $switchboard~message&"Atmos cannon set to "&$cannon_damage&" damage.*"
+	end
+	if ($switchboard~message <> "")
+		gosub :switchboard~switchboard
+	end
 return
 
 :slingshot

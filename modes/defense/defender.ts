@@ -995,6 +995,7 @@ return
 return
 
 :check_for_photon_refurb
+	loadGlobal $bot~last_fighter_attack
 	if ($bot~last_fighter_attack <> "")
 		gosub :killing~set_the_cannon
 	end
