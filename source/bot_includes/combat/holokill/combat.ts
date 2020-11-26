@@ -216,6 +216,3 @@
 	:callend1
 return
 
-include "source\bot_includes\player\currentprompt\player"
-include "source\bot_includes\sector\getautosectordata\sector"
-include "source\bot_includes\grid\surround\grid"
