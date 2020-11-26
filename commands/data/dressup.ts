@@ -9,3 +9,4 @@ AddQuickText "Headle" "Genera"
 AddQuickText "Igor" "Ohmz"
 AddQuickText "Bigfoot" "Sando"
 AddQuickText "Bigfoo" "Sando"
+clearQuickText 
