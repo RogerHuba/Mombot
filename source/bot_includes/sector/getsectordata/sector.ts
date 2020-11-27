@@ -65,7 +65,3 @@
 		goSub :getFakeTraders
 return
 
-
-include "source\bot_includes\sector\getemptyships\sector"
-include "source\bot_includes\sector\getfaketraders\sector"
-include "source\bot_includes\sector\gettraders\sector"

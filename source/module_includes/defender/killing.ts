@@ -43,7 +43,8 @@
 		# setting switch to false so we don't switch into a pod by accident #
 		#####################################################################
 	end
-	gosub :sector~getAutoSectorData
+
+	gosub :sector~getSectorData
 	setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
 	if (($planet_count = 1) and ($overide = false))
 		setvar $one_planet true
