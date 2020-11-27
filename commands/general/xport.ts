@@ -1,13 +1,9 @@
 	gosub :BOT~loadVars
 	loadVar $bot~safe_ship
 
-	setVar $BOT~help[1]  $BOT~tab&"xport [ship number | list]"
-	setVar $BOT~help[2]  $BOT~tab&"      "
-	setVar $BOT~help[3]  $BOT~tab&"  xports into ship or display xport list "
-	setVar $BOT~help[4]  $BOT~tab&"      "
-	setVar $BOT~help[5]  $BOT~tab&"    {ship number}  ship number to tow"
-	setVar $BOT~help[6]  $BOT~tab&"           {list}  list all xport ships in range"
-	gosub :bot~helpfile
+if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
+	goto :wait_for_command
+end
 
 if ($bot~parm1 = "list")
 	goto :xlist
@@ -109,8 +105,13 @@ end
 #============================== END XPORT (XPORT) SUB ==============================
 
 :wait_for_command
-	setVar $BOT~help[1] $BOT~tab&"xport [ship number] [password] "
-	setVar $BOT~help[2] $BOT~tab&"  - Attempts to xport into another ship"
+	setVar $BOT~help[1]  $BOT~tab&"xport [ship number | list] [password]"
+	setVar $BOT~help[2]  $BOT~tab&"      "
+	setVar $BOT~help[3]  $BOT~tab&"  xports into ship or display xport list "
+	setVar $BOT~help[4]  $BOT~tab&"      "
+	setVar $BOT~help[5]  $BOT~tab&"    {ship number}  ship number to tow"
+	setVar $BOT~help[6]  $BOT~tab&"           {list}  list all xport ships in range"
+	setVar $BOT~help[7]  $BOT~tab&"       {password}  if ship has password"
 	gosub :bot~helpfile
 halt
 
