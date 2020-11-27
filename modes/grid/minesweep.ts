@@ -1478,4 +1478,7 @@ include "source\bot_includes\ship\getshipcapstats\ship"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\module_includes\modules\clear\modules"
 include "source\bot_includes\combat\holoscan\combat"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\planet\landingsub\planet"
+
 
