@@ -131,7 +131,7 @@ halt
 	send $scan_macro
 	waiton " has a transport range of "
 	add $idx 1
-	setVar $scan_array[$idx]currentline
+	setVar $scan_array[$idx] currentline
 	gettext currentline $ship_range " has a transport range of " "hops."
 
 	waitOn "Ship  Sect Name                  Fighters Shields Hops Type"
