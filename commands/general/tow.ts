@@ -82,11 +82,9 @@ halt
 
 :slist
 	setVar $scan_macro "w** * "
-	goto :start_scan
-:start_scan
 	gosub :PLAYER~quikstats
 	setArray $scan_array 1000
-	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
+	setVar $player~startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $bot~validPrompts "Citadel Command"
 	gosub :bot~checkStartingPrompt
 	if ($PLAYER~startingLocation = "Citadel")
@@ -101,7 +99,7 @@ halt
 
 	setTextTrigger end_of_line4 :end_of_lines "<I> Ship details"
 	add $idx 1
-	setVar $scan_array[$idx] "                   --<  Available Ships in Sector >--"
+	setVar $scan_array[$idx] "                 --<  Available Ship Scan  >--"
 	add $idx 1
 	setVar $scan_array[$idx] "Ship  Sect Name                  Fighters Shields Hops Type"
 	add $idx 1
