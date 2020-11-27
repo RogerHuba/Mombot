@@ -1,14 +1,12 @@
 gosub :BOT~loadVars
 
 	setVar $BOT~help[1]  $BOT~tab&"tow [ship number | list]"
-	setVar $BOT~help[2]  $BOT~tab&"  Tow ships and display tow list"
-	setVar $BOT~help[3]  $BOT~tab&"    {ship number}  ship number to tow"
-	setVar $BOT~help[4]  $BOT~tab&"           {list}  list all tow ships in sector"
+	setVar $BOT~help[2]  $BOT~tab&"      "
+	setVar $BOT~help[3]  $BOT~tab&"  Tow ships or display tow list"
+	setVar $BOT~help[4]  $BOT~tab&"      "
+	setVar $BOT~help[5]  $BOT~tab&"    {ship number}  ship number to tow"
+	setVar $BOT~help[6]  $BOT~tab&"           {list}  list all tow ships in sector"
 	gosub :bot~helpfile
-
-if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
-	goto :wait_for_command
-end
 
 if ($bot~parm1 = "list")
 	goto :tow_list
