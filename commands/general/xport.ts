@@ -130,10 +130,22 @@ halt
 	end
 	setVar $idx 0
 	send $scan_macro
-	waiton " has a transport range of "
-	add $idx 1
-	setVar $scan_array[$idx] currentline
-	gettext currentline $ship_range " has a transport range of " "hops."
+	setTextLineTrigger no_range  :no_range " can only beam intrasector."
+	setTextLineTrigger range :range " has a transport range of "
+	pause
+
+	:no_range
+		killtrigger range
+		setvar $ship_range 0
+		goto :done_range
+		
+	:range
+		killtrigger no_range
+		gettext currentline $ship_range " has a transport range of " "hops."
+
+	:done_range
+		add $idx 1
+		setVar $scan_array[$idx] currentline
 
 	waitOn "Ship  Sect Name                  Fighters Shields Hops Type"
 	waitOn "--------------------------------------------------------------------------"
