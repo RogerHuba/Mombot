@@ -122,7 +122,7 @@ halt
 		end
 		getLength $current_line $length
 		if ($length > 70)
-			cutText $current_line $current_line 1 70
+			cutText $current_line $current_line 1 65
 		end
 		if ($current_line <> "")
 			add $idx 1
@@ -142,7 +142,7 @@ halt
 	setvar $i 1
 	while ($i <= $idx)
 		if ($scan_array[$i] <> "0")
-				setvar $switchboard~message $switchboard~message & $scan_array[$i] & "*"
+			setvar $switchboard~message $switchboard~message & $scan_array[$i] & "*"
 		end
 		add $i 1
 	end
