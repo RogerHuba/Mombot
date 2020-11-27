@@ -163,7 +163,7 @@ halt
 			cutText $current_line $current_line 1 70
 		end
 		if ($current_line <> "")
-			cutText $current_line $range 60 3
+			cutText $current_line $range 52 3
 			trim $range
 			if ($range <= $ship_range)
 				add $idx 1
