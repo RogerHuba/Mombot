@@ -6,7 +6,7 @@
 	setVar $MIN_RED_EXP 0
 	setVar $MIN_RED_ALIGNMENT "-100"
 
-	setArray $BOTS $MAX_BOTS 3
+	setArray $BOTS $MAX_BOTS 4
 	setArray $CURRENT_SHIP $MAX_BOTS
 	setArray $ORIGINAL_SHIP $MAX_BOTS
 
@@ -138,6 +138,8 @@
 				gettext currentline $BOTS[$i][3] "{" "} - You are logged into this bot." 
 				setVar $SWITCHBOARD~MESSAGE "Bot name captured as: "&$BOTS[$i][3]&"*"
 				gosub :SWITCHBOARD~SWITCHBOARD
+				# set flag for full holds #
+				setvar $BOTS[$i][4] true
 			end
 			add $i 1
 	end

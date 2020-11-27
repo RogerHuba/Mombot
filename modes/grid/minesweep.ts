@@ -15,7 +15,7 @@
 	setVar $grid_armids 4
 	setVar $refurb FALSE
 	setVar $LongJumpLimit	5
-	setVar $VERSION 	"1.0.5"
+	setVar $VERSION 	"1.0.9"
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	getSectorParameter SECTORS "MINESEC" $isArmided
 	getSectorParameter SECTORS "LIMPSEC" $isLimped
@@ -26,21 +26,25 @@
 
 	setVar $BOT~help[1]  $BOT~tab&"Visits sectors in list and clears limps and armids."
 	setVar $BOT~help[2]  $BOT~tab&"         "
-	setVar $BOT~help[3]  $BOT~tab&"[furb]    - Will Attempt to buy Mines and/or Disruptors"
-	setVar $BOT~help[4]  $BOT~tab&"[disr]    - Will HoloScan and attempt to disrupt all mines"
-	setVar $BOT~help[5]  $BOT~tab&"[border]  - Only will put mines on the edge of your grid,"
+	setVar $BOT~help[3]  $BOT~tab&"    [furb]  Will Attempt to buy Mines and/or Disruptors"
+	setVar $BOT~help[4]  $BOT~tab&"    [disr]  Will HoloScan and attempt to disrupt all mines"
+	setVar $BOT~help[5]  $BOT~tab&"  [border]  Only will put mines on the edge of your grid,"
 	setVar $BOT~help[6]  $BOT~tab&"            otherwise it will only target 'safe' sectors. "
-	setVar $BOT~help[7]  $BOT~tab&"[safe]    - Will do repeated Exit/Enters until all Enemy"
+	setVar $BOT~help[7]  $BOT~tab&"    [safe]  Will do repeated Exit/Enters until all Enemy"
 	setVar $BOT~help[8]  $BOT~tab&"            mines are gone slow but safe"
-	setVar $BOT~help[9]  $BOT~tab&"[fast]    - Will do a rapid fire of exit enters, this isn't"
+	setVar $BOT~help[9]  $BOT~tab&"    [fast]  Will do a rapid fire of exit enters, this isn't"
 	setVar $BOT~help[10] $BOT~tab&"            safe as you'll will be sitting in sector."
-	setVar $BOT~help[11] $BOT~tab&"[A:1]     - Specify Number of Armid Mines to Deploy"
-	setVar $BOT~help[12] $BOT~tab&"[L:1]     - Specify Number of Limpet Mines to Deploy"
-	setVar $BOT~help[13] $BOT~tab&"[ps]      - Do passive surround to grid safely"
+	setVar $BOT~help[11] $BOT~tab&"     [A:1]  Specify Number of Armid Mines to Deploy"
+	setVar $BOT~help[12] $BOT~tab&"     [L:1]  Specify Number of Limpet Mines to Deploy"
+	setVar $BOT~help[13] $BOT~tab&"      [ps]  Do passive surround to grid safely"
 	setVar $BOT~help[14] $BOT~tab&"            Limps, Armids, Fig, and planet avoidance "
 	setVar $BOT~help[15] $BOT~tab&"            controlled by bot surround menu"
-	setVar $BOT~help[16] $BOT~tab&"[bwarp]   - bwarp clearing"
-	setVar $BOT~help[17] $BOT~tab&"[reckless]- bwarp recklessly, with no safeties"
+	setVar $BOT~help[16] $BOT~tab&"   [bwarp]  bwarp clearing"
+	setVar $BOT~help[17] $BOT~tab&"[reckless]  bwarp recklessly, with no safeties"
+	setVar $BOT~help[18] $BOT~tab&" [param:x]  enter sector param to target - will only"
+	setVar $BOT~help[19] $BOT~tab&"            clear those" 
+
+
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Mine Sweeper"
@@ -195,6 +199,29 @@
 				setVar $grid_armids 0
 			end
 		end
+	end
+
+	getWordPos $TEMP $pos "param:"
+	if ($pos <= 0)
+		setVar $param ""
+	else
+		getText $TEMP $param "param:" " "
+		setvar $i 1
+		setvar $targetSectors 0
+		uppercase $param
+		while ($i <= SECTORS)
+			getSectorParameter $i $param $isTarget
+			if ($isTarget = true)
+				add $targetSectors 1
+			end
+			add $i 1
+		end
+		if ($targetSectors = 0)
+			setvar $switchboard~message "Parameter entered not a valid sector param.  Try again.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+
 	end
 
 	gosub :PLAYER~getInfo
@@ -894,6 +921,12 @@ return
 		end
 
 		:WE_GOT_GAME
+		if ($param <> "")
+			getSectorParameter $focus $param $isTarget
+			if ($isTarget <> true)
+				goto :NEXT_POSS_TARG		
+			end
+		end
 		if ((($isLimped <> true) OR ($isArmided <> true)) AND ($isFigged = true) AND ($pos <= 0))
 			getDistance $distanceThere $PLAYER~CURRENT_SECTOR $focus
 			getDistance $distanceBack $focus $PLAYER~CURRENT_SECTOR
