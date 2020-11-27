@@ -122,7 +122,7 @@ halt
 		end
 		getLength $current_line $length
 		if ($length > 70)
-			cutText $current_line $current_line 1 65
+			cutText $current_line $current_line 1 70
 		end
 		if ($current_line <> "")
 			add $idx 1
