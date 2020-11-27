@@ -95,14 +95,13 @@ halt
 		send " q "
 	end
 	setVar $idx 0
-	setTextLineTrigger noscanner_1 :no_scanner_available1 "You don't have a long range scanner."
 	send $scan_macro
 	waitOn "Ship  Sect Name                  Fighters Shields Hops Type"
 	waitOn "--------------------------------------------------------------------------"
 
 	setTextTrigger end_of_line4 :end_of_lines "<I> Ship details"
 	add $idx 1
-	setVar $scan_array[$idx] "                 --<  Available Ship Scan  >--"
+	setVar $scan_array[$idx] "                   --<  Available Ships in Sector >--"
 	add $idx 1
 	setVar $scan_array[$idx] "Ship  Sect Name                  Fighters Shields Hops Type"
 	add $idx 1
