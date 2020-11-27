@@ -16,6 +16,3 @@
 		gosub :switchboard~switchboard
 	end
 return
-
-include "source\bot_includes\combat\holokill\combat"
-include "source\bot_includes\player\twarp\player"

@@ -1480,5 +1480,7 @@ include "source\module_includes\modules\clear\modules"
 include "source\bot_includes\combat\holoscan\combat"
 include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\planet\landingsub\planet"
+include "source\bot_includes\combat\holokill\combat"
+include "source\bot_includes\player\twarp\player"
 
 
