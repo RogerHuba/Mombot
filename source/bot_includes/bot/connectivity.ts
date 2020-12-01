@@ -407,12 +407,6 @@ return
 
 	end
 
-	if (($menus~command_to_issue <> "") and ($menus~command_to_issue <> "0"))
-		setVar $BOT~user_command_line $menus~command_to_issue
-		setVar $menus~command_to_issue ""
-		saveVar $menus~command_to_issue
-		goto :USER_INTERFACE~runUserCommandLine
-	end
 return
 
 :moving
@@ -485,6 +479,13 @@ return
 				end
 			end
 		end
+
+	if (($menus~command_to_issue <> "") and ($menus~command_to_issue <> "0"))
+		setVar $BOT~user_command_line $menus~command_to_issue
+		setVar $menus~command_to_issue ""
+		saveVar $menus~command_to_issue
+		goto :USER_INTERFACE~runUserCommandLine
+	end
 
 return
 

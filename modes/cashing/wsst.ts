@@ -181,13 +181,16 @@
 		setVar $Result $result&"  H  1  Z  3*  Z C  *  "
 	end
 	send $result
-	#waitOn "["&$moveIntoSector&"]"
-	#if (($dropFigs) AND ($moveIntoSector > 10) AND ($moveIntoSector <> $map~stardock) AND ($j > 2))
-	#	waitOn "<Drop/Take Fighters>"
-	#end
-	send "  sdsh"
+	send "  s*sh"
 	waitOn "Long Range Scan"
-	waiton "Warps to Sector(s) :"
+	goSub :SECTOR~getAutoSectorData
+	if ($sector~sectortargetfound)
+		goSub :combat~fastAttack
+		gosub :player~quikstats
+	elseif ($sector~holotargetfound)
+		goSub :combat~passiveHolokill
+		gosub :switchboard~switchboard
+	end
 	return
 
 :findSSTPorts
@@ -1818,3 +1821,6 @@ include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\sector\getautosectordata\sector"
+include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\combat\passiveHolokill\combat"
