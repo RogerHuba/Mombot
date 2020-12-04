@@ -27,26 +27,29 @@
 
 
 	send "q q q q* b"
-	waitOn "Do you wish to change it? (Y/N)"
-	send "*"
-	goto :skipig
-
-	:ig_was_off
+	settextlinetrigger ignone		:ignone "not equipped with an Interdictor"
+	settextlinetrigger igyes	:igyes "Your Interdictor generator is now ON"
+	settextlinetrigger igno		:igno "Your Interdictor generator is now OFF"
+	pause
+	:igno
 		send "y"
 		setVar $SWITCHBOARD~message "Turning on ship IG.*"
 		gosub :SWITCHBOARD~switchboard
+	
+	:igyes
+		send "*"
 
-	:skipig
+	:ignone
 	killalltriggers
+
 	send "l"&$planet~planet&"*  c  "
 	waitOn "Citadel command"
 	gosub :SHIP~getShipStats
 	savevar $planet~planet
 	setVar $enter_attack_mac "*    *  n z  a z " & ($SHIP~SHIP_MAX_ATTACK-1) & "9999" & "* *  "
 	setVar $deploy_fig_mac "j r * f z 1 * z c d * "
-
-	send "'Slingshot pulled back and ready!*"
-
+	:slingreset
+		send "'Slingshot pulled back and ready!*"
 
 		:startTargetingAdjacent
 			killAllTriggers
@@ -75,6 +78,20 @@
 			
 		:getDropSectorAdjacent
 			stripText $dropSector ":"
+			setvar $w 1
+			echo "#" $dropSector "#"
+			while ($w <= SECTOR.WARPINCOUNT[$dropSector])
+				getSectorParameter SECTOR.WARPSIN[$dropSector][$w] "FIGSEC" $isFigged
+
+				if ($isFigged = TRUE)
+					setVar $adjSector SECTOR.WARPSIN[$dropSector][$w]
+					goto :donew
+				end
+				add $w 1
+			end
+			send "'NO TARGET FOUND**"
+			goto :slingreset
+			:donew
 			send $front_attack_mac&SECTOR.WARPS[$dropSector][1]&$mid_attack_mac&$dropSector&$enter_attack_mac&"'"&$dropSector&"=saveme*"&$deploy_fig_mac 
 			setVar $i 0
 			while ($i < 10)
@@ -85,14 +102,14 @@
 			if (($player~current_sector <> $dropSector))
 				if ($player~current_sector = $startingSector)
 					send "'No fig at pwarp location, no attempt made. Restart when ready.*"
-				elseif ($player~current_sector = SECTOR.WARPS[$dropSector][1])
+				elseif ($player~current_sector = SECTOR.WARPSIN[$dropSector][$w])
 					send "'Possible SPLATTER on a planet, check for pod.*"
 				else
 					send "'Didn't make it, not sure what happened. Check ship and restart*"
 				end
 				halt
 			end
-			send "m * * * c "
+			#send "m * * * c "
 			killalltriggers
 			gosub :checkForVictimsFromCitadel
 		halt

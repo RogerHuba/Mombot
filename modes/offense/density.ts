@@ -15,8 +15,8 @@
 	setVar $BOT~help[11]  $BOT~tab&"          {holo} - holoscan sector and broadcast"
 	setVar $BOT~help[12]  $BOT~tab&"         {pgrid} - pgrid in to sector"
 	setVar $BOT~help[13]  $BOT~tab&"          {call} - calls saveme"
-	setVar $BOT~help[14]  $BOT~tab&"           {pel} - photon, enter, land"
-	setVar $BOT~help[15]  $BOT~tab&"         {pel:#} - pel with planet number"
+	setVar $BOT~help[14]  $BOT~tab&"      {pel} - photon, enter, land"
+	setVar $BOT~help[15]  $BOT~tab&"    {pel} - pel with planet number"
 	setVar $BOT~help[16]  $BOT~tab&" {density:value} - only react to density changes of this "
 	setVar $BOT~help[17]  $BOT~tab&"                   value or higher. Default is 40."
 	setVar $BOT~help[18]  $BOT~tab&"      {killport} - Blows port with macro"
@@ -101,6 +101,26 @@
 			goto :dtorp_end
 		end
 	end
+
+	
+	getWordPos " "&$bot~user_command_line&" " $pos2 " xport:"
+	setvar $xport false
+	if ($pos2 > 0)
+		setvar $xport true
+		getWordPos $bot~user_command_line $pos "xport:"
+		if ($pos > 0)
+			getText $bot~user_command_line&" " $xport_ship "xport:" " "
+			isNumber $test $xport_ship
+			if ($test <> true)
+				setVar $SWITCHBOARD~message "xport ship should be a number.*"
+				goto :dtorp_end
+			end
+		end
+		if ($xport_ship = 0)
+			setVar $SWITCHBOARD~message "xport ship is not defined.*"
+			goto :dtorp_end
+		end
+	end
 	
 	getWordPos " "&$bot~user_command_line&" " $pos " attack:"
 	setvar $attack false
@@ -113,7 +133,7 @@
 			goto :dtorp_end
 		end
 		if ($attack_sector = 0)
-			setVar $SWITCHBOARD~message "Escape sector is not defined.*"
+			setVar $SWITCHBOARD~message "Attack sector is not defined.*"
 			goto :dtorp_end
 		end
 	end
@@ -235,6 +255,7 @@
 	if ($call)
 		setVar $message $message&"*          Call Saveme"
 	end
+	
 	if ($escape)
 		setVar $message $message&"*          Escape to Sector "&$escape_sector
 	end
@@ -515,7 +536,6 @@ include "source\bot_includes\external\pel"
 include "source\bot_includes\external\holo"
 include "source\bot_includes\external\call"
 include "source\bot_includes\external\pgrid"
-include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\combat\fastattack\combat"
 include "source\bot_includes\combat\holokill\combat"
 include "source\bot_includes\ship\getshipstats\ship"

@@ -33,6 +33,7 @@ reqRecording
 	setVar $BOT~help[21]  $BOT~tab&"  [twohops] - for deadend drop, will make sure de is"	
 	setVar $BOT~help[22]  $BOT~tab&"              2 or more hops away"	
 	setVar $BOT~help[23]  $BOT~tab&"[retrigger] - Keep hunting for targets"	
+	setVar $BOT~help[24]  $BOT~tab&" [densityx] - Density < 40 for xport in and deploy"
 		
 	gosub :bot~helpfile
 
@@ -248,6 +249,15 @@ reqRecording
 	else
 		setVar $density FALSE
 	end
+	
+	getWordPos $bot~user_command_line $pos "densityx"
+	if ($pos > 0)
+		setVar $densityx TRUE
+	else
+		setVar $densityx FALSE
+	end
+
+
 
 	setVar $randomAttack TRUE
 
@@ -320,6 +330,9 @@ reqRecording
 	end
 	if ($density = 1)
 		setVar $message $message&"*          Density: Dropping in next door with density foton."
+	end
+	if ($density = 1) and ($densityx = 1)
+		setVar $message $message&"*          Density: Only shooting from 1 to 39."
 	end
 	
 	if ($randomAttack)
@@ -701,7 +714,7 @@ return
 return
 
 :dopwarp
-	:planetDrop
+	:planetDrop2
 		killAllTriggers
 		setvar $send "p "&$gotoSector&"*y"
 		if ($dropftrs = true)
@@ -726,7 +739,8 @@ return
 			while ($i <= $targetCount)
 				if ($targetSectors[$i] > 0)
 					setVar $randomTarget $i
-					goto :planetDrop
+					setVar $gotoSector $targetSectors[$randomTarget]
+					goto :planetDrop2
 				end
 				add $i 1
 			end
@@ -918,17 +932,6 @@ return
 	echo ANSI_6 "[" ANSI_14 $script_ver " waiting for targets.." ANSI_6 "]*" ANSI_7
 return
 
-:scanit_again
-	killAllTriggers
-	gosub :sector~getSectorData
-	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-		goSub :combat~fastCitadelAttack
-		goto :scanit_again
-	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
-		gosub :combat~fastCapture
-		goto :scanit_again
-	end
-	goto :halt
 
 
 :checkForVictims
@@ -1312,8 +1315,17 @@ return
 		elseif ($density[$w] <> $dens[$w])
 			setVar $diff ($density[$w] - $dens[$w])
 			if ($diff <> 0)
-				gosub :do_action
-				goto :dtorp_end
+				if ($densityx = TRUE)
+					if ($diff > 1) and ($diff < 40)
+						gosub :do_action
+						goto :dtorp_end
+					else
+						goto :sublooky
+					end
+				else
+					gosub :do_action
+					goto :dtorp_end
+				end
 			else
 				goto :sublooky
 			end
