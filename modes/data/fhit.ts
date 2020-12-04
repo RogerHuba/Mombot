@@ -140,7 +140,8 @@ if ($mode = "pdrop")
 		send "c;q"
 		waitFor "Figs Per Attack:"
 		getWord CURRENTLINE $maxFigAttack 5
-
+		
+		setVar $maxFigAttack 20000
 		setVar $moveFigMacro ""
 		setVar $moved 0
 
@@ -543,7 +544,7 @@ echo "#" $foundSecs[$x][1] " " $foundSecs[$x][2] " " $distAvg[$player~corp] " #"
 			
 			gosub :getTime
 			setVar $time " "&$hour & ":" & $minute & ":" & $second & ":" & $msec & "  "
-			send "'" $time "*"
+			echo  "#" $time "#*"
 			setPrecision 1
 			if ($avgSec = 0.0)
 				setVar $shootTime ($seconds - 0.2)
@@ -561,42 +562,23 @@ echo "#" $foundSecs[$x][1] " " $foundSecs[$x][2] " " $distAvg[$player~corp] " #"
 				
 				:nowdrop
 				send "p" $drophere "*  y  "
+				gosub :getTime
+				setVar $time " "&$hour & ":" & $minute & ":" & $second & ":" & $msec & "  "
+				echo  "#" $time "#*"
+
 				if ($dropftrs = TRUE)
 					send $moveFigMacro
 				end
-
 				
-				gosub :player~quikstats
-				setvar $player~startinglocation "Citadel"
-				gosub :sector~getSectorData
-				setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
-				if (($planet_count = 1) and ($overide = false))
-					setvar $one_planet true
-					setvar $player~override true
-				else
-					setvar $player~override false
-				end
-				if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
-					if ($switch)
-						send " e y " 
-					end
-					#if ($capture = true)
-						gosub :combat~fastCapture
-						send " l " $PLANET~PLANET " * n n * j m * * * j c *  "
-						gosub :player~quikstats
-					#else
-					#	gosub :combat~fastCitadelAttack
-					#end
-
-				end
-				
+				goSub :checkForVictims
 				gosub :getTime
 				setVar $time " "&$hour & ":" & $minute & ":" & $second & ":" & $msec & "  "
-				send "'" $time "*"
+				echo  "#" $time "#*"
 				setdelaytrigger waithere2 :nowdrop2 2000
 				setPrecision 0
 				pause
 				:nowdrop2
+					goSub :checkForVictims
 					if ($dropftrs = true)
 						goSub :retrieveFigs
 					end
@@ -615,6 +597,40 @@ echo "#" $foundSecs[$x][1] " " $foundSecs[$x][2] " " $distAvg[$player~corp] " #"
 
 return
 
+
+:scanit_again
+	killAllTriggers
+	gosub :sector~getSectorData
+	send "*"
+	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+		goSub :combat~fastCapture
+		goto :scanit_again
+	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
+		gosub :combat~fastCapture
+		goto :scanit_again
+	end
+	goto :halt
+
+
+
+:checkForVictims
+	gosub :player~quikstats
+	send " s*  * "
+	:scanit_again
+	setvar $player~startingLocation $player~current_prompt
+	gosub :sector~getSectorData
+	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+		if ($capture)
+			gosub :combat~fastCapture
+		else
+			goSub :combat~fastCapture
+		end
+		goto :scanit_again
+	elseif (($sector~emptyShipCount > $sector~myShipCount))
+		gosub :combat~fastCapture
+		goto :scanit_again
+	end
+return	
 :addClosestSix
 
 	setVar $out $out & "*Nearest Six: "
@@ -660,7 +676,7 @@ return
 
 :retrieveFigs
 	gosub :player~quikstats
-	send " s*  "
+	send " s*  * "
 	setVar $figOwner SECTOR.FIGS.OWNER[$player~current_sector]
 	setVar $figQuant SECTOR.FIGS.QUANTITY[$player~current_sector]
 	
