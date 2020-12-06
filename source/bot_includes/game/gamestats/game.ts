@@ -533,10 +533,13 @@ return
 		getWord CURRENTLINE $check3 ($delayWord + 2)
 		stripText $check3 ")"
 		if ($check3 = "s")
-			setVar $delay ($q * 1000)
+			setVar $delay ($check2 * 1000)
 		else
 			setVar $delay $check2
 		end
+	elseif ($check1 = "None")
+		# Powerup Delay=None
+		setVar $delay 0
 	else
 		# Normal Quarter Third Half Double
 		setVar $delay $check1
