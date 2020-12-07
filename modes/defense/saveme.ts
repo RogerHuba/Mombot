@@ -294,7 +294,6 @@ pause
 		setvar $switchboard~message "*Save Me - Running from planet " & $planet~planet & "*---Command List---*" & $bot~bot_name & " Deploy Mines*" & $bot~bot_name & " Personal Limp*----End of List---** "
 		gosub :switchboard~message
 	end
-	waitOn "----End of List---"
 	goto :Settriggers
 
 :authenticateannounce
