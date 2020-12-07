@@ -283,7 +283,7 @@
 	setvar $photon~multi false
 	setvar $photon~shooting_count 1
 	if ($pos > 0)
-		if ($game~MULTIPLE_PHOTONS <> "True")
+		if ($game~MULTIPLE_PHOTONS <> TRUE)
 			setVar $SWITCHBOARD~message "This game doesn't support multiple photons.*"
 			gosub :switchboard~switchboard
 			halt
