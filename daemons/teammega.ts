@@ -6,16 +6,21 @@
 	setVar $MIN_RED_EXP 0
 	setVar $MIN_RED_ALIGNMENT "-100"
 
-	setArray $BOTS $MAX_BOTS 4
+	setArray $BOTS $MAX_BOTS 3
 	setArray $CURRENT_SHIP $MAX_BOTS
 	setArray $ORIGINAL_SHIP $MAX_BOTS
 
 
 	setVar $BOT~help[1] $BOT~tab&"Buydown and mega with multiple bots"
 	setVar $BOT~help[2] $BOT~tab&""
-	setVar $BOT~help[3] $BOT~tab&"teammega {minproduct}"
+	setVar $BOT~help[3] $BOT~tab&"teammega {minproduct} {stopturns}"
 	setVar $BOT~help[4] $BOT~tab&""
-	setVar $BOT~help[5] $BOT~tab&"minproduct - default: 30000"
+	setVar $BOT~help[5] $BOT~tab&"minproduct - default: 30000 100"
+	setVar $BOT~help[6] $BOT~tab&""
+	setVar $BOT~help[7] $BOT~tab&"Bots Buying: callin megabuy1 megabuy2"
+	setVar $BOT~help[8] $BOT~tab&"Bots Robbing: callin megarob1"
+	setVar $BOT~help[9] $BOT~tab&""
+	setVar $BOT~help[10] $BOT~tab&"Buying bots can be any alignment"
 	gosub :bot~helpfile
 
 
@@ -42,6 +47,20 @@
 	else
 		setvar $minimumProduct 30000
 	end
+
+	isNumber $test $bot~parm2
+	if ($test)
+		if ($test > 0)
+			setvar $stopTurns $bot~parm2
+		else
+			setvar $stopTurns 100
+		end
+	else
+		setvar $stopTurns 100
+	end
+	setVar $SWITCHBOARD~MESSAGE "Using ports with minimum " & $minimumProduct & " and stopping at roughly " & $stopTurns & " turns.*"
+	gosub :SWITCHBOARD~SWITCHBOARD
+
 
 	send "'"&$SWITCHBOARD~BOT_NAME&" login*"
 	waitOn "Corporate command "
@@ -76,18 +95,77 @@
 	
 	setVar $i 1
 	setVar $roll_call_done FALSE
-	setVar $red_count 0
 	setVar $blue_count 0
 	setvar $current_robber 0
 	setvar $backup_robber 0
 	while (($i <= $MAX_BOTS) AND ($roll_call_done = FALSE))
-		send "'mega"&$i&" callout*"
+		send "'megabuy"&$i&" callout*"
+		setDelayTrigger    3 :doneblue 3000
+		setTextLineTrigger 2 :foundblue "Team: megabuy"&$i&" " 
+		pause
+
+		:toomanyblue	
+			setVar $SWITCHBOARD~MESSAGE "Too many bots responding to megabuy"&$i&".  Please fix bot teams so each blue is unique.*"
+			gosub :SWITCHBOARD~SWITCHBOARD
+			halt
+
+		:foundblue
+			getWordPos CURRENTLINE $pos "Team: "
+			cutText CURRENTLINE $line $pos 9999
+			getWord $line $sector 4
+			getWord $line $exp 6
+			getWord $line $align 8
+			getWord $line $credits 10
+			getWord $line $ship 12
+			getWord $line $turns 14
+
+			if (($turns < $stopTurns) AND ($PLAYER~UNLIMITED_GAME <> TRUE))
+				setVar $SWITCHBOARD~MESSAGE "megabuy"&$i&" does not have enough turns for buydowns.  Replace them with someone with turns.*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+				halt
+			end			
+			getWordPos $align $pos "-"
+			setVar $BOTS[$i] $i
+			
+			add $blue_count 1
+			
+			setVar $BOTS[$i][1] $turns
+			setVar $CURRENT_SHIP[$i] $ship
+			setVar $ORIGINAL_SHIP[$i] $ship
+			killtrigger 1
+			setTextLineTrigger 1 :toomanyblue "} - Team: megabuy"&$i&" " 
+			pause
+		:doneblue
+			killtrigger 1
+			if ($BOTS[$i] = 0)
+				setVar $roll_call_done TRUE
+			else
+				send "'megabuy"&$i&"*"
+				waiton "} - You are logged into this bot. "
+				# bot name #
+				gettext currentline $BOTS[$i][3] "{" "} - You are logged into this bot." 
+				setVar $SWITCHBOARD~MESSAGE "Bot name captured as: "&$BOTS[$i][3]&"*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+			end
+			add $i 1
+	end
+	
+	gosub :killthetriggers
+	
+	subtract $i 1
+	setVar $roll_call_done FALSE
+	setVar $red_count 0
+	setvar $current_robber 0
+	setvar $backup_robber 0
+	while (($i <= $MAX_BOTS) AND ($roll_call_done = FALSE))
+		setVar $calloutId ($i - $blue_count)
+		send "'megarob"&$calloutId&" callout*"
 		setDelayTrigger    3 :donered 3000
-		setTextLineTrigger 2 :foundred "Team: mega"&$i&" " 
+		setTextLineTrigger 2 :foundred "Team: megarob"&$calloutId&" " 
 		pause
 
 		:toomanyred	
-			setVar $SWITCHBOARD~MESSAGE "Too many bots responding to mega"&$i&".  Please fix bot teams so each red is unique.*"
+			setVar $SWITCHBOARD~MESSAGE "Too many bots responding to megarob"&$calloutId&".  Please fix bot teams so each red is unique.*"
 			gosub :SWITCHBOARD~SWITCHBOARD
 			halt
 
@@ -102,7 +180,7 @@
 			getWord $line $turns 14
 
 			if (($turns < 10) AND ($PLAYER~UNLIMITED_GAME <> TRUE))
-				setVar $SWITCHBOARD~MESSAGE "mega"&$i&" does not have enough turns for stealing or buydowns.  Replace them with someone with turns.*"
+				setVar $SWITCHBOARD~MESSAGE "megarob"&$calloutId&" does not have enough turns for stealing.  Replace them with someone with turns.*"
 				gosub :SWITCHBOARD~SWITCHBOARD
 				halt
 			end			
@@ -116,36 +194,48 @@
 					setvar $backup_robber $current_robber
 				end
 				setvar $current_robber $BOTS[$i]
-				setVar $SWITCHBOARD~MESSAGE "Found potential mega robber!*"
-				gosub :SWITCHBOARD~SWITCHBOARD
+				if ($align > $MIN_RED_ALIGNMENT)
+					setVar $SWITCHBOARD~MESSAGE "megarob"&$calloutId&" needs alignment lower then " & $MIN_RED_ALIGNMENT & ".*"
+					gosub :SWITCHBOARD~SWITCHBOARD
+					halt
+				else
+					setVar $SWITCHBOARD~MESSAGE "Found potential megarob robber!*"
+					gosub :SWITCHBOARD~SWITCHBOARD
+				end
 			else
-				add $blue_count 1
+				setVar $SWITCHBOARD~MESSAGE "megarob"&$calloutId&" has wrong alignment for megarob.*"
+				gosub :SWITCHBOARD~SWITCHBOARD
+				halt
 			end
 			setVar $BOTS[$i][1] $turns
 			setVar $CURRENT_SHIP[$i] $ship
 			setVar $ORIGINAL_SHIP[$i] $ship
 			killtrigger 1
-			setTextLineTrigger 1 :toomanyred "} - Team: mega"&$i&" " 
+			setTextLineTrigger 1 :toomanyred "} - Team: megarob"&$calloutId&" " 
 			pause
 		:donered
 			killtrigger 1
 			if ($BOTS[$i] = 0)
 				setVar $roll_call_done TRUE
 			else
-				send "'mega"&$i&"*"
+				send "'megarob"&$calloutId&"*"
 				waiton "} - You are logged into this bot. "
 				# bot name #
 				gettext currentline $BOTS[$i][3] "{" "} - You are logged into this bot." 
 				setVar $SWITCHBOARD~MESSAGE "Bot name captured as: "&$BOTS[$i][3]&"*"
 				gosub :SWITCHBOARD~SWITCHBOARD
-				# set flag for full holds #
-				setvar $BOTS[$i][4] true
 			end
 			add $i 1
 	end
 
 	if ($red_count < 1)
-		setVar $SWITCHBOARD~MESSAGE "Found "&$red_count&" reds. Need at least one red.  Make sure all bots callin as mega1, mega2, etc.*"
+		setVar $SWITCHBOARD~MESSAGE "Found "&$red_count&" reds. Need at least one red.  Make sure all bots callin as megarob1, megarob2, etc.*"
+		gosub :SWITCHBOARD~SWITCHBOARD
+		halt
+	end
+
+	if ($blue_count < 1)
+		setVar $SWITCHBOARD~MESSAGE "Found "&$blue_count&" buying bots. Need at least one megabuy.  Make sure all bots callin as megabuy1, megabuy2, etc.*"
 		gosub :SWITCHBOARD~SWITCHBOARD
 		halt
 	end
@@ -222,8 +312,15 @@ halt
 
 :checkin
 	killtrigger 1
-	send "'mega"&$check&" callout*"
-	setTextLineTrigger 1 :foundtrader "Team: mega"&$check&" " 
+	if ($BOTS[$check][2] = TRUE)
+		setVar $e_id ($check - $blue_count)
+		send "'megarob"& $e_id &" callout*"
+		setTextLineTrigger 1 :foundtrader "Team: megarob"&$e_id&" " 
+	else
+		send "'megabuy"&$check&" callout*"
+		setTextLineTrigger 1 :foundtrader "Team: megabuy"&$check&" " 
+	end
+	
 	pause
 
 	:foundtrader
@@ -393,13 +490,15 @@ return
 	killtrigger 1
 return
 
+
 :findbestcandidates
 	setvar $i 1
 	setvar $highest_turns 0
 	setvar $current_trader 0 
 	while ($i <= $MAX_BOTS)
-		# pick the bot with highest turn who is not the designated robber #
-		if (($BOTS[$i][1] > $highest_turns) and ($current_robber <> $BOTS[$i]))
+		# pick the bot with highest turn who is not the designated robber/a robber and has more than
+		# stop turns  stop_turns - minus half a port
+		if (($BOTS[$i][1] > $highest_turns) and (($BOTS[$i][1] -65) > $stopTurns) and ($current_robber <> $BOTS[$i]) and ($BOTS[$i][2] = false))
 			setvar $current_trader $BOTS[$i] 
 			setvar $highest_turns $BOTS[$i][1]
 		end
@@ -411,6 +510,9 @@ return
 		halt
 	end
 return
+
+
+
 
 :grabplanetstats
 	send "q"

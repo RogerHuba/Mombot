@@ -4,6 +4,7 @@
 
 :load_script
 	loadVar $bot~bot_name
+	loadVar $bot~subspace
 	loadVar $bot~command
 	setvar $SWITCHBOARD~bot_name $bot~bot_name
 	loadVar $avoidedSectorsUgrid
@@ -68,8 +69,26 @@
 	setVar $BOT~help[32] $BOT~tab&"   - [clear]       = Clears internal list of avoided sectors.      "
 	setVar $BOT~help[33] $BOT~tab&"   - [ship2:#]     = Second xport ship number     "
 	setVar $BOT~help[34] $BOT~tab&"   - [orphan]      = targets only orphan sectors   "
+	setVar $BOT~help[35] $BOT~tab&"   - [xdanger]     = For unlimited games using ship xport "
+	setVar $BOT~help[36] $BOT~tab&"   - [xslow]       = Will put in a long pause between sectors   "
+	setVar $BOT~help[37] $BOT~tab&"                     to make it look like planet gridding  "
+	setVar $BOT~help[38] $BOT~tab&"   - [noholo]       = Only holos when density above 499/New Secs"
 	gosub :bot~helpfile
 
+	
+	setAvoid $map~stardock
+	setAvoid 1
+	setAvoid 2
+	setAvoid 3
+	setAvoid 4
+	setAvoid 5
+	setAvoid 6
+	setAvoid 8
+	setAvoid 7
+	setAvoid 9
+	setAvoid 10
+
+	
 	getWord $bot~user_command_line $bot~parm1 1 "EMPTY"
 	if (($bot~parm1 = "auto") OR ($bot~parm1 = "EMPTY"))
 	
@@ -88,6 +107,7 @@
 				if ($isTarget = true)
 					add $targetSectors 1
 					setvar $targetSectors[$targetSectors] $i
+
 				end
 				add $i 1
 			end
@@ -100,6 +120,7 @@
 		      readToArray $targetFile $targetSectors
 		end
 	end
+
 	getWord $bot~user_command_line $bot~parm2 2 "EMPTY"
 	getWord $bot~user_command_line $bot~parm3 3 "EMPTY"
 	getWord $bot~user_command_line $bot~parm4 4 "EMPTY"
@@ -182,12 +203,27 @@
 		setVar $avoidedSectorsUgrid ""
 	end
 	
+	setVar $safeXport ""
 	getWordPos $bot~user_command_line $pos "ship2:" 
 	if ($pos > 0)
 		getText " "&$bot~user_command_line&" " $ship2 "ship2:" " "
 		setVar $xport_grid TRUE
-	end
+		setVar $safeXport 1
+		getWordPos $bot~user_command_line $pos "xdanger" 
+		if ($pos > 0)
+			setVar $safeXport ""
+		end
 
+		setVar $xSlow FALSE
+		getWordPos $bot~user_command_line $pos "xslow" 
+		if ($pos > 0)
+			setVar $xSlow TRUE
+			
+		end
+
+	end
+	
+	
 
 	getWordPos $bot~user_command_line $pos "none" 
 	if ($pos > 0)
@@ -210,6 +246,13 @@
 		setVar $avoid TRUE
 	else
 		setVar $passive FALSE
+	end
+	
+	getWordPos $bot~user_command_line $pos "noholo" 
+	if ($pos > 0)
+		setVar $noholo TRUE
+	else
+		setVar $noholo FALSE
 	end
 	
 
@@ -272,8 +315,8 @@ goSub :checkAvoidedSectors
 	setvar $switchboard~message "Clearing messages for possible exit/enter later*"
 	gosub :switchboard~switchboard
 	gosub :xenter
-	gosub :xenter
-	gosub :xenter
+	#gosub :xenter
+	#gosub :xenter
 	send "y1"&$player~current_sector&"** "
 	gosub :landOnPlanetEnterCitadel
 	setVar $limpetBefore $player~limpets
@@ -305,6 +348,12 @@ goSub :checkAvoidedSectors
 	getText $oddline $offodd "Odds:" ":1"
 	stripText $offodd " "
 	stripText $offodd "."
+	waitfor "Turns Per Warp:"
+	getText CURRENTLINE $turnsperwarp "Turns Per Warp:" "Defensive Odds:"
+	stripText $turnsperwarp " "
+	if ($xport_grid)
+		setVar $minTurns ((2 * $turnsPerWarp) + 16)
+	end
 	waitFor "Mine Max:"
 	getText CURRENTLINE $maxMines "Mine Max:" "B"
 	stripText $maxMines " "
@@ -313,22 +362,93 @@ goSub :checkAvoidedSectors
 	multiply $offodd $figs
 	divide $offodd 12
 	setVar $max_figs $player~fighters
+	waitFor "Transport Range:"
+	getWord CURRENTLINE $xport_range 6
+
 	gosub :player~quikstats
 	setVar $ship1 $player~ship_number
+	setVar $ship1_location $homesec
 	setVar $next_ship "2"
 	send "q"
+	if ($safeXport = true)
+		isNumber $test $ship2
+		if ($test)
+			if ($ship1 = $ship2)
+				setvar $switchboard~message "Ship1 = Ship2 = Ship Happens!*"
+				gosub :switchboard~switchboard
+				halt
+			end
+			setVar $xportShipFound FALSE
+			send "czq"
+			waitfor "-----------------------------------------------------------------------------"
+			:shipsagain
+			setTextTrigger shipsDone :shipsDone "Computer command ["
+			setTextLineTrigger shipFound :shipFound ""
+			pause
+				:shipFound
+				killalltriggers
+				getWord CURRENTLINE $maybeship 1
+				isNumber $test $maybeship
+				if ($test)
+					if ($maybeship = $ship2)
+						getWord CURRENTLINE $ship2_location 2
+						setVar $xportShipFound true
+						goto :shipsDone
+					end
+				else
+					if ($maybeship = "Computer")
+						goto :shipsDone
+					end
+					
+				end
+				goto :shipsagain
+			:shipsDone
+				killalltriggers
+		
+			if ($xportShipFound = FALSE)
+				setVar $SWITCHBOARD~message "Could not find xport ship in shipscan*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			else
+				
+			end
+		else
+			setVar $SWITCHBOARD~message "Invalid xport ship entered*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end     
+	end
+	
 :restart
 	send "q"
 	gosub :planet~getplanetinfo
 	send "c "
 	gosub :findAllTargetSectors
+	
+	# inits Mac and puts in deploy
 	gosub :assemble_mac
+	# Ship Xport and Twarp home
 	gosub :assemble_return_mac
+	# attack sector figs on enter
 	gosub :assemble_attack_mac
+	# land, take figs/fuel etc
 	gosub :assemble_land_mac
+
 :select_boomsec
 	killAllTriggers
 	gosub :player~quikstats
+	
+	if ($xport_grid)
+		if ($boomsec > 0)
+			if ($player~ship_number = $ship1)
+				setVar $ship1_location $boomsec
+			else
+				setVar $ship2_location $boomsec
+			end
+		end
+
+	end
+
 	gosub :assemble_return_mac
 	if (($player~TWARP = "No") OR ($player~current_sector <> $homesec))
 			goto :callSaveMe
@@ -378,10 +498,13 @@ goSub :checkAvoidedSectors
 	gosub :setwindow
 	
 	if ($player~warpto = 0)
+		
+		gosub :player~quikstats
+		
 		setvar $switchboard~message "Database Cleared - Recalculating and Restarting...*"
 		gosub :switchboard~switchboard
-		gosub :player~quikstats
 		goto :restart
+	
 	else
 		getDistance $distance $move[$player~warpto] $player~warpto
 		if ($distance <= 0)
@@ -390,6 +513,34 @@ goSub :checkAvoidedSectors
 			getDistance $distance $move[$player~warpto] $player~warpto
 		end
 		
+		if ($safeXport = true)
+	
+			if ($xport_ship = $ship1)
+				getDistance $xport_dist $player~warpto $ship1_location
+			else
+				getDistance $xport_dist $player~warpto $ship2_location
+			end
+			if (($xport_dist <= 0) or ($xport_dist > $xport_range))
+				setvar $switchboard~message "Return Xport to far - moving to next target*"
+				gosub :switchboard~switchboard
+				KillAllTriggers
+				replaceText $database " "&$player~warpto&" " " "
+				subtract $databaseCount 1
+				goto :continueOn
+			end
+		end
+	
+		if ($player~warpto = $map~stardock) or ($move[$player~warpto] = $map~stardock) or ($player~warpto < 11) or ($move[$player~warpto] < 11)
+			setvar $switchboard~message "Trying to grid to Stardock? not thanks! deleting*"
+			gosub :switchboard~switchboard
+			KillAllTriggers
+			replaceText $database " "&$player~warpto&" " " "
+			subtract $databaseCount 1
+			goto :continueOn
+		end
+		
+		
+
 	end
 
 :clearit
@@ -418,6 +569,7 @@ goSub :checkAvoidedSectors
 :hittingsec
 	KillAllTriggers
 	setVar $boomsec $move[$player~warpto]
+	
 	getSectorParameter $boomsec "FIGSEC"  $isFigged
 	getSectorParameter $boomsec "MINESEC" $isArmided
 	getSectorParameter $boomsec "LIMPSEC" $isLimped
@@ -431,15 +583,28 @@ goSub :checkAvoidedSectors
 		setVar $isArmided FALSE
 	end
 	setVar $imlimped FALSE
-    if ($gridExistingOnly)
+	if ($gridExistingOnly)
 		send $mac&$return_mac
 		send $land_mac
 		goto :select_boomsec
 	end
 	setvar $player~current_prompt "Command"
-	send "sd"
-	waitFor "Relative Density Scan"
-	gosub :combat~holoscan
+	# First Density SCan - reset vars
+	setVar $nReport 0
+	setVar $nReporti 0
+	setVar $newSectors 0
+	setVar $doHolo 0
+	goSub :densityScan
+
+# land sector density scan/check
+	if ($noHolo = 1)
+		if ($doHolo = 1) or ($newSectors = 1)
+			gosub :combat~holoscan
+		end
+	else
+		gosub :combat~holoscan
+	end
+
 	killalltriggers
 	if ($combat~error = true)
 
@@ -502,18 +667,53 @@ goSub :checkAvoidedSectors
 		
 		send "m"
 		gosub :return_triggers
-		if (($distanceback = 1) and ($retreat))
+		if (($distanceback = 1) and ($retreat = true))
 			if ((($figCount <= 0) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))) or ($double <> true))
 				send $boomsec $attack_mac $mac " < * " $return_mac $land_mac
+				send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
 			else
 				send $boomsec $attack_mac " < * " $return_mac $land_mac
 				goto :clearitagain
 			end
 		else
+
 			if ((($figCount <= 0) OR (($figOwner = "belong to your Corp") OR ($figOwner = "yours"))) or ($double <> true))
-				send $boomsec $attack_mac $mac $return_mac $land_mac
+				if (($xport_grid = true) and ($safeXport = true))
+					
+					if ($xport_grid = true)
+						if ($player~turns <= $minTurns)
+							goSub :xportCleanup
+						end
+					end
+					
+					send $boomsec $attack_mac $return_mac $mac $land_mac
+					send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
+					goSub :densityScan
+
+					if ($nReporti > 0)
+						setVar $nn 1
+						while ($nn <= $nReporti)
+							setvar $switchboard~message $nReport[$nn]
+							gosub :switchboard~switchboard
+							add $nn 1
+						end
+					end
+					if ($xSlow = true)
+						getRnd $delaytime 3000 6000
+						setDelayTrigger longPause :longPause $delaytime
+						pause
+						:longPause
+							killtrigger longPause
+					end
+
+					
+				else
+					send $boomsec $attack_mac $mac $return_mac $land_mac
+					send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
+				end
 			else
 				send $boomsec $attack_mac $return_mac $land_mac
+				send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
 				goto :clearitagain
 			end
 		end
@@ -602,14 +802,14 @@ goSub :checkAvoidedSectors
 	setVar $perc 0
 	if ($gridTargets)
 		setVar $m 1
-		send "^"
+		#send "^"
 		while ($m < $targetSectors)
 	        setVar $destination $targetSectors[$m]
+			gosub :getCourses
 			getSectorParameter $destination "FIGSEC"  $isFigged
 			if ($isFigged = "")
 				setVar $isFigged FALSE
 			end
-			gosub :getCourses
 			getWordPos $avoidedSectorsUgrid $pos " "&$destination&" "
 			stripText $destination " "
 			if (($pos <= 0) AND (($isFigged <= 0) OR ($gridExistingOnly = TRUE)))
@@ -655,11 +855,11 @@ goSub :checkAvoidedSectors
 				setVar $perc (($m * 100) / SECTORS)
 				echo "*"
 				echo #27 "["&($perc / 2)&"C"
-				echo ANSI_14 "°" ANSI_15 " " $perc "%" #27 & "[1A   "
+				echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
 			end
 			add $m 1
 		end
-		send "q "
+		#send "q "
 
 	elseif ($gridExistingOnly)
 		while ($targetSectorCount < SECTORS)
@@ -706,7 +906,7 @@ goSub :checkAvoidedSectors
 				setVar $perc (($targetSectorCount * 100) / SECTORS)
 				echo "*"
 				echo #27 "["&($perc / 2)&"C"
-				echo ANSI_14 "°" ANSI_15 " " $perc "%" #27 & "[1A   "
+				echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
 			end
 		end
 
@@ -786,7 +986,7 @@ goSub :checkAvoidedSectors
 				setVar $perc (($targetSectorCount * 100) / SECTORS)
 				echo "*"
 				echo #27 "["&($perc / 2)&"C"
-				echo ANSI_14 "°" ANSI_15 " " $perc "%" #27 & "[1A   "
+				echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
 			end
 			add $targetSectorCount 1
 		end
@@ -842,7 +1042,7 @@ goSub :checkAvoidedSectors
 				setVar $perc (($targetSectorCount * 100) / SECTORS)
 				echo "*"
 				echo #27 "["&($perc / 2)&"C"
-				echo ANSI_14 "°" ANSI_15 " " $perc "%" #27 & "[1A   "
+				echo ANSI_14 "ï¿½" ANSI_15 " " $perc "%" #27 & "[1A   "
 			end
 			add $targetSectorCount 1
 
@@ -852,8 +1052,10 @@ goSub :checkAvoidedSectors
 	if ($databaseCount <= 0)
 		setvar $switchboard~message "Visited every sector possible. Refresh fighters and update warp data to verify..*"
 		gosub :switchboard~switchboard
-
-		if ($refurb)
+		if ($xport_grid)
+			gosub :player~quikstats
+			gosub :xportCleanupNoTargets
+		elseif ($refurb)
 			gosub :attempt_refurb
 			gosub :player~quikstats
 			if ($map~home_sector <> "0")
@@ -908,15 +1110,52 @@ return
         end
 return
 
+:xportCleanupNoTargets
+	# different end point
+	goSub :assemble_mac
+	if ($player~ship_number = $ship1)
+		setVar $xport_ship $ship2
+	else
+		setVar $xport_ship $ship1
+	end		
+
+	setVar $return_mac "q q * * x "&$xport_ship&"*  *  " & $mac &  $homesec & "* y y * * " & $land_mac
+
+	send $return_mac 
+	setvar $switchboard~message "We are done, ships back here safe and sound.*"	
+	gosub :switchboard~switchboard
+halt
+
+:xportCleanup
+	goSub :assemble_mac
+	if ($player~ship_number = $ship1)
+		setVar $xport_ship $ship2
+	else
+		setVar $xport_ship $ship1
+	end		
+
+
+	setVar $return_mac $homesec & "* y y * * " & $land_mac & "q q * * x "&$xport_ship&"*  *  " & $mac &  $homesec & "* y y * * " & $land_mac
+
+	send $return_mac 
+	setvar $switchboard~message "We are done, ships back here safe and sound.*"	
+	gosub :switchboard~switchboard
+halt
+
+
 :assemble_return_mac
 	setVar $return_mac ""
 	if ($xport_grid)
+		goSub :assemble_mac
+
 		if ($player~ship_number = $ship1)
 			setVar $xport_ship $ship2
 		else
 			setVar $xport_ship $ship1
 		end
-		setVar $return_mac "x "&$xport_ship&"*  *  "
+		setVar $return_mac "x "&$xport_ship&"*  *  sd" & $mac
+		setVar $mac ""
+# xxxx
 	end
 	setVar $return_mac $return_mac&$homesec & "* y y * * "
 	#setvar $return_mac $return_mac&"n 1 y y "
@@ -1025,23 +1264,63 @@ return
 #GETCOURSE SUB ###################################################################################################
 :getCourses
 	killalltriggers
-	setVar $originalDestination $destination
-	send "f*"&$destination&"*"
-	getCourse $course $player~current_sector $destination
-	setVar $index 1
-	while ($index <= $course)
-		getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
 	
-		if (($isFigged = true) AND ($COURSE[$index] <> $originalDestination))
-			setVar $destination $COURSE[$index]
-		elseif ($COURSE[$index] <> $originalDestination)
-			setVar $destination $originalDestination
+
+	# Find the closest figged sector
+	getNearestWarps $nearArray $destination 
+	setvar $new_target $destination
+	setVar $i 1
+	while ($i <= $nearArray)
+		getSectorParameter $nearArray[$i] "FIGSEC" $isFigged
+
+		if ($isFigged = true)
+			getCourse $course $nearArray[$i] $destination 
+			if ($course = "-1")
+				send "/"
+				waitOn #179
+				echo ANSI_14 "Updating database...*" ANSI_7
+				send "^f"&$nearArray[$i]&"*"&$destination&"**q"
+				waitOn "ENDINTERROG"
+				getCourse $course $nearArray[$i] $destination 
+			end
+			getCourse $courseback $destination $nearArray[$i]
+			if ($courseback = "-1")
+				send "/"
+				waitOn #179
+				echo ANSI_14 "Updating database...*" ANSI_7
+				send "^f"&$destination&"*"&$nearArray[$i]&"**q"
+				waitOn "ENDINTERROG"
+				getCourse $course $destination $nearArray[$i]
+			end
+			getdistance $distance1 $nearArray[$i] $destination
+			getdistance $distance2 $destination $nearArray[$i]
+			if ($distance1 = $distance2)
+				setVar $index 1
+				while ($index <= $course)
+					getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
+					if ($isFigged <> true)
+						setVar $new_target $COURSE[$index]
+						setvar $destination $new_target
+						echo "new:" $destination "*"
+						echo "new:" $destination "*"
+						echo "new:" $destination "*"
+						echo "new:" $destination "*"			
+						setvar $j 1
+						while ($j <= $course)
+							echo " " & $course[$j] & " > "
+							add $j 1
+						end
+						echo "**"
+						return
+					end
+					add $index 1
+				end
+			end
 		end
-		add $index 1
-
-
+		add $i 1
 	end
-
+	
+	//Start one sector before the original target - then look for nearest figged sector
 :noPath
 	killAllTriggers
 	return
@@ -1403,7 +1682,11 @@ return
 
 
 :callSaveMe
-	send "'"&$bot~bot_name&" call kill* q q q q * u y n.* c "
+	if ($xport_grid)
+		send "'"&$bot~bot_name&" call* q q q q * u y n.* c "
+	else
+		send "'"&$bot~bot_name&" call kill* q q q q * u y n.* c "
+	end
 	halt
 
 :DoPurchases
@@ -1440,6 +1723,95 @@ return
 	replacetext $window_content "*" "[][]"
 	savevar $window_content
 return
+
+:densityScan
+	send "sd"
+	waitfor "Relative Density Scan"
+
+	setVar $deni 0
+	setVar $nDensity 0
+	setVar $nSector 0
+	setVar $nWarps 0
+	setVar $nHaz 0
+	setVar $nAnom 0
+	setVar $nNew 0
+	
+		setDelayTrigger densityDelay :densityDelay 1000
+	:densityScanning
+		setTextLineTrigger densityScanLine :densityScanLine "Sector"
+		setTextTrigger densityScanEnd :densityScanEnd "Help)?"
+		
+		pause
+	
+		:densityScanLine
+	
+			KillTrigger densityScanLine
+			KillTrigger densityScanEnd
+			
+			getWord CURRENTLINE $scanSector 2
+			if ($scanSector = "(")
+				getWord CURRENTLINE $scanSector 3
+				getWord CURRENTLINE $secDensity 5
+				getWord CURRENTLINE $secWarps 8
+				getWord CURRENTLINE $nHaz 11
+				getWord CURRENTLINE $scanAnom 14
+			else
+				getWord CURRENTLINE $secDensity 4
+				getWord CURRENTLINE $secWarps 7
+				getWord CURRENTLINE $nHaz 10
+				getWord CURRENTLINE $scanAnom 13
+			end
+			
+			stripText $nHaz "%"
+			
+			getLength $scanSector $len
+			stripText $scanSector ")"
+			stripText $scanSector "("
+			getLength $scanSector $len2
+			
+			stripText $secDensity ","
+
+			add $deni 1
+			if ($len2 < $len)
+				setVar $newSectors 1
+			end
+			
+			STRIPTEXT $secDensity ","			
+		
+			if ($scanAnom = "Yes")
+				setVar $nAnom[$deni] 1
+			end
+
+			if (($secDensity = 0) or ($secDensity = 100) or  ($secDensity = 5) or ($secDensity = 105)) and ($nAnom[$deni] = 0)
+			
+			else
+				getSectorParameter $scanSector "FIGSEC"  $isFigged
+				if ($isFigged = FALSE) or ($isFigged = "")
+					add $nReporti 1
+					setVar $nReport[$nReporti] "Density Alert - Sec: " & $scanSector & " Density: " & $secDensity & " Anom:" & $scanAnom & " *"
+					if ($secDensity > 499)
+						setVar $doHolo 1
+					end
+				end
+
+			end
+			goto :densityScanning
+		:densityDelay
+			echo "Density time out?*"
+			echo "Density time out?*"
+			echo "Density time out?*"
+			echo "Density time out?*"
+			echo "Density time out?*"
+			echo "Density time out?*"
+		:densityScanEnd
+			KillTrigger densityScanLine
+			KillTrigger densityScanEnd
+			KillTrigger densityDelay
+	return
+
+
+
+halt
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"

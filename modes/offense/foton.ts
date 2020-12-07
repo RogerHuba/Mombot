@@ -28,8 +28,10 @@
 	setVar $BOT~help[23] $BOT~tab&"      {self}   - Will pwarp out, photon your current "
 	setVar $BOT~help[24] $BOT~tab&"                 sector, and pwarp back in. "
 	setVar $BOT~help[25] $BOT~tab&"      {cont}   - Will continue shooting if in density mode."
-	setVar $BOT~help[26] $BOT~tab&"      "
-	setVar $BOT~help[27] $BOT~tab&"       Authors: Mind Dagger and The Bounty Hunter "
+	setVar $BOT~help[26] $BOT~tab&" {delwalk:n}   - Delay walk will delay the shot for this many MS."
+	setVar $BOT~help[27] $BOT~tab&"                 Then add another 100ms to subsequent hit."
+	setVar $BOT~help[28] $BOT~tab&"      "
+	setVar $BOT~help[29] $BOT~tab&"       Authors: Mind Dagger and The Bounty Hunter "
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Fast Foton"
@@ -90,6 +92,16 @@ if ($pos > 0)
 	setVar $self 1
 else
 	setVar $self 0
+end
+
+setVar $delaywalk 0
+getWordPos $bot~user_command_line $pos "delwalk:"
+if ($pos > 0)
+	
+	setVar $cline $bot~user_command_line & " "
+	getText $cline $delaywalk "delwalk:" " "
+else
+	setVar $delaywalk 0
 end
 
 # ============================== START FOTON CHECK SUB ==============================
@@ -903,6 +915,12 @@ end
 :foton_pwp_go
 	killalltriggers
 	gosub :foton_get_adj
+	if ($delaywalk > 0)
+		setDelayTrigger delaywalkTrigger :delaywalkTrigger $delaywalk
+		pause
+			:delaywalkTrigger
+			add $delaywalk 100
+	end
 	send "p" $adjsec "*y c p y " $sector "**q"
 	setTextLineTrigger	wrong	:foton_wrong	"That is not an adjacent sector"
 	setTextLineTrigger	gotem	:foton_gotem	"Photon Missile launched into sector"
@@ -1172,7 +1190,7 @@ end
 	end
 goto :surroundPhotonTriggers
 
-:surround_foton_wrong
+:surround_foton_fed
 	killtrigger s_gotem
 	killtrigger s_wrong
 	if ($targetCount > 0)
@@ -1346,7 +1364,7 @@ goto :surroundPhotonTriggers
 	end
 goto :trapPhotonTriggers
 
-:trap_foton_wrong
+:trap_foton_fed
 	killtrigger s_gotem
 	killtrigger s_wrong
 	

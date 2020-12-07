@@ -10,15 +10,19 @@
 	setVar $BOT~help[8]   $BOT~tab&"         defaults to first in list.    " 
 	setVar $BOT~help[9]   $BOT~tab&"         Assumes you have enought fighters.    " 
 	setVar $BOT~help[10]   $BOT~tab&"        Would be quicker if we could switch ships   " 
+	setVar $BOT~help[11]   $BOT~tab&"            "
+	setVar $BOT~help[12]   $BOT~tab&"- shatter [firephoton] [sector] "
+	setVar $BOT~help[13]   $BOT~tab&"    Used to make photon bot shoot on the second for"
+	setVar $BOT~help[14]   $BOT~tab&"    invasion mode"
 	
-	
+
 	gosub :bot~helpfile
 	
 	gosub :player~quikstats
 	setVar $startingLocation $player~CURRENT_PROMPT
 	if ($startingLocation <> "Citadel")
 		setvar $switchboard~message "Must start from Citadel*"
-        gosub :SWITCHBOARD~switchboard
+		gosub :SWITCHBOARD~switchboard
 		halt
 	end
     
@@ -27,6 +31,32 @@
         gosub :SWITCHBOARD~switchboard
 		halt
     end
+	
+  if ($bot~parm1 = "firephoton")
+        if ($bot~parm2 <> "")
+		isNumber $test $bot~parm2
+		if ($test)
+		    if ($startingLocation <> "Citadel")
+			if ($startingLocation = "Planet")
+				send "c"
+			else
+				setvar $switchboard~message "Wrong prompt! Send to Citadel: " & $startingLocation & "*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
+		    end
+		    setVar $photonSector $bot~parm2
+		    goSub :fireTimedPhoton
+		else
+		    setvar $switchboard~message "Need a sector to photon*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+	    end
+    end
+    
+
+
     setVar $photonBot $bot~parm1
 
     if ($bot~parm2 <> "")
@@ -37,7 +67,36 @@
             setVar $victimPlanet 0
         end
     end
-    send "'Victimplanet:" $victimPlanet "*"
+
+	setVar $rbot 0
+	getWordPos $bot~user_command_line $pos "rbot"
+	if ($pos > 0)
+		setVar $rbot 1
+		replaceText $bot~user_command_line " rbot " " "
+		replaceText $bot~user_command_line " rbot" " "
+		setvar $switchboard~message "Using rbot to retreat from planet shields and moth pre-shatter.*"
+		gosub :SWITCHBOARD~switchboard
+		send "'rbot callout*"
+		setTextLineTrigger rbotcallout :rbotcallout "Team: rbot Sec"
+		setDelayTrigger rbotcallouttimeout :rbotcallouttimeout 5000
+		    pause
+			:rbotcallouttimeout
+			killalltriggers
+			    setvar $switchboard~message "Couldn't find Retreat Bot - exiting*"
+			    gosub :SWITCHBOARD~switchboard
+			    halt
+			:rbotcallout
+			killalltriggers
+	end
+
+
+	if ($player~PHOTONS > 0)
+		setvar $switchboard~message "Sorry the other guys carries the photons, not us.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+    #send "'Victimplanet:" $victimPlanet "*"
 	gosub :SHIP~getShipStats
 	if ($ship~SHIP_OFFENSIVE_ODDS = 0)
 		setvar $switchboard~message "We didn't get offensive odds - aborting.*"
@@ -65,7 +124,7 @@
     setVar $confirmedPhoton 0
     
     settextLineTrigger photonBotName :photonBotName "{" & $photonBot & "}"
-    setDelayTrigger photonBotNameTimeout :photonBotNameTimeout 3000
+    setDelayTrigger photonBotNameTimeout :photonBotNameTimeout 5000
     pause
         :photonBotNameTimeout
         killalltriggers
@@ -80,7 +139,10 @@
     setTextTrigger qssDone :qssDone "Bot Mode :General"
     pause
     :qssPlanetLine
+
         cuttext CURRENTLINE $planetID 62 4
+	stripText $planetID " "
+	
         if ($planetID = $planet~planet)
             setVar $confirmedPlanet 1
         end
@@ -88,7 +150,8 @@
     :qssPhotonsLine
         killalltriggers
         cuttext CURRENTLINE $qssPhotons 23 3
-		stripText $qssPhotons " "
+	stripText $qssPhotons " "
+	
         if ($qssPhotons > 0)
             setVar $confirmedPhoton 1
         end
@@ -106,13 +169,10 @@
 		end
 
 	setVar $attack100Amount 0
-	#$ship~SHIP_OFFENSIVE_ODDS
-	#$ship~SHIP_FIGHTERS_MAX
-send "'" $ship~SHIP_OFFENSIVE_ODDS " " $ship~SHIP_FIGHTERS_MAX "*"
 	
 	setPrecision 1
 	setVar $figsFor100 ((100 * 20)/$ship~SHIP_OFFENSIVE_ODDS)
-	send "'we need to kill 100:" $figsFor100 "*"
+	
 	setVar $figsFor100 ($figsFor100 * 10)
 	setPrecision 0
 	#round it
@@ -122,7 +182,7 @@ send "'" $ship~SHIP_OFFENSIVE_ODDS " " $ship~SHIP_FIGHTERS_MAX "*"
 		setVar $figsFor100 $ship~SHIP_MAX_ATTACK
 	end
 	setVar $attack100Amount $figsFor100
-	send "'we need to kill 100:" $figsFor100 "*"
+	#send "'we need to kill 100:" $figsFor100 "*"
 
 	if ($victimPlanet = 0)
 		goSub :getTargetPlanet
@@ -146,6 +206,9 @@ send "'" $ship~SHIP_OFFENSIVE_ODDS " " $ship~SHIP_FIGHTERS_MAX "*"
 		setTextLineTrigger countPlanetUnsh2 :countPlanetUnsh2 "          ("
 		setTextLineTrigger countPlanetShield2 :countPlanetShield2 "          <<<<"
 		setTextLineTrigger countPlanetsEnd :countPlanetsEnd "Warps to Sector(s) :"
+		setTextLineTrigger countPlanetsEnd2 :countPlanetsEnd2 "Ships   :"
+		setTextLineTrigger countPlanetsEnd3 :countPlanetsEnd3 "Traders :"
+		
 		pause
 		:countPlanetsStart
 			killalltriggers
@@ -173,7 +236,9 @@ send "'" $ship~SHIP_OFFENSIVE_ODDS " " $ship~SHIP_FIGHTERS_MAX "*"
 			end
 			goto :countPlanetsKeepGoing
 			
-		:countPlanetsEnd 
+		:countPlanetsEnd
+		:countPlanetsEnd2
+		:countPlanetsEnd3
 			killalltriggers
 
 			send "'Found " $planetsPresent "*"
@@ -275,6 +340,17 @@ send "'" $ship~SHIP_OFFENSIVE_ODDS " " $ship~SHIP_FIGHTERS_MAX "*"
 		setVar $attackString $attackString & "z a" & $attack100Amount & "*"
 		# Then let's bug out and land - hopefully
 		setVar $attackString $attackString & "* * q q q q r * l j"&#8&$ourplanet&"* j c * ^q "
+
+		if ($rbot = 1)
+	# rbot r * l10* * * r l11* * mnt* q 
+			setvar $rbotString "r ^M  l "&$targetplanet&"^M ^M  ^M  ^M "
+			send "'rbot mac " $rbotString "*"
+			setDelayTrigger rbotattack :rbotattack 250
+			pause
+			:rbotattack 
+				killtrigger rbotattack
+		end
+
 		send $attackString 
 
 		goSub :firstLandAction
@@ -442,6 +518,47 @@ send "'" $ship~SHIP_OFFENSIVE_ODDS " " $ship~SHIP_FIGHTERS_MAX "*"
 :callsaveme
 	send "'"&CURRENTSECTOR&"=saveme*q q q q * '"&$switchboard~bot_name&" call*"
 return
+
+##### PHOTON BOT FOR INVASIONS
+
+:fireTimedPhoton
+
+	send "  t"
+	waitfor ", 2"
+	getWord CURRENTLINE $initTime 1
+	:Photon_Attack_Timer
+		send "  t"
+		waitfor ", 2"
+		getWord CURRENTLINE $currentTime 1
+		waitfor "Computer"
+		if ($initTime <> $currentTime)
+			send "cpy" $photonSector "q"
+			setTextLineTrigger	wrong	:foton_wrong	"That is not an adjacent sector"
+			setTextLineTrigger	gotem	:foton_gotem	"Photon Missile launched into sector"
+			setTextLineTrigger	wrong2	:foton_wrong2	"The Feds do not permit Photon Torpedos"
+			pause
+
+		:foton_wrong2
+			killalltriggers
+			setvar $switchboard~message "Can not shoot into fed, or have planets, so what the?*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		:foton_wrong
+			killalltriggers
+			setvar $switchboard~message "Sector not next door - fail!*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		:foton_gotem
+			# we done
+			halt
+		else
+			goto :Photon_Attack_Timer
+		end
+
+halt	
+
+
+#### 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"

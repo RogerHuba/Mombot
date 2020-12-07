@@ -40,6 +40,7 @@
 	setVar $BOT~help[31]  $BOT~tab&"                  minimum count of planets/traders/ships"
 	setVar $BOT~help[32]  $BOT~tab&"      {limit:n} - limit query results to first n found "
 	setVar $BOT~help[33]  $BOT~tab&" {beam:botname} - Beam to bot name  "
+	setVar $BOT~help[34]  $BOT~tab&"   {origin:sec} - Specify which sector to use for DIST "
 	# ham select ports ore-mcic<-70
 	gosub :bot~helpfile
 
@@ -66,12 +67,32 @@ setvar $original_query $bot~user_command_line
 
 
 getWordPos $bot~user_command_line $pos "dist"
+setvar $origin CURRENTSECTOR
+
 if ($pos > 0)
 	setVar $dist 1
 	replaceText $bot~user_command_line " dist " " "
 	replaceText $bot~user_command_line " dist" " "
 
+	getWordPos $bot~user_command_line $pos "origin:"
+	if ($pos > 0)
+		getText $bot~user_command_line $origin "origin:" " "
+		if ($origin = "")
+			setVar $bot~user_command_line $bot~user_command_line & " "
+			getText $bot~user_command_line $origin "origin:" " "
+		end
+		isNumber $test $origin
+		
+	
+		if ($test = FALSE)
+			
+			setVar $SWITCHBOARD~message "Origin should be a number.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
 end
+
 
 getWordPos $bot~user_command_line $pos "warps:"
 if ($pos > 0)
@@ -179,7 +200,7 @@ while ($word <> "@@@###@@@")
 			setvar $mincount 1
 		end
 	end
-
+	
 	getWordPos $word $pos "beam:"
 	if ($pos > 0)
 		replaceText $word "beam:" ""
@@ -686,7 +707,7 @@ setVar $sortedDistance 0
 setVar $distances 0
 if ($dist = 1)
 	# Measures distance from this point of origin
-	getAllCourses $courses CURRENTSECTOR
+	getAllCourses $courses $origin
 	setVar $y 1
 	while ($y <= $sectorResultsi)
 		setVar $distances[$y] $courses[$sectorResults[$y]]
@@ -727,7 +748,7 @@ elseif ($doroute = 1)
 		add $y 1
 	end
 
-	setVar $routeCurrent CURRENTSECTOR
+	setVar $routeCurrent $origin
 	setVar $route 0
 	setVar $routei 0
 

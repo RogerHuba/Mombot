@@ -532,7 +532,7 @@ return
 	else
 		setVar $qss[20] "No"
 		end
-	if ($GAME~PHOTONS_ENABLED = TRUE)
+	if ($GAME~PHOTONS_ENABLED)
 		if ($GAME~MULTIPLE_PHOTONS = TRUE)
 			setVar $qss[21] "Yes"
 		else

@@ -17,6 +17,8 @@ loadVar $BOT~LIMP_FILE
 loadVar $BOT~ARMID_FILE 
 loadvar $bot~bot_turn_limit
 loadvar $BOT~BOT_NAME
+loadVar $PLAYER~unlimitedGame
+
 
 setVar $BOT~help[1]  $BOT~tab&"       Marco Polo - Trade Route for PPTing"
 setVar $BOT~help[2]  $BOT~tab&"       "
@@ -101,17 +103,24 @@ end
 
 if ($bot~parm1 = "trade")
 	setVar $mode "trade"
-	isNumber $test $bot~parm2
-	if ($test)
-		setvar $switchboard~message "We will stop when we reach " & $bot~parm2 & " turns.*"
-		gosub :switchboard~switchboard
+	if ($player~unlimitedGame = FALSE)
+		isNumber $test $bot~parm2
+		if ($test)
+			setvar $switchboard~message "We will stop when we reach " & $bot~parm2 & " turns.*"
+			gosub :switchboard~switchboard
+		else
+			setvar $switchboard~message "Halt turns must be greater than 0.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+		setVar $halt_turns $bot~parm2
 	else
-		setvar $switchboard~message "Halt turns must be greater than 0.*"
+		setVar $halt_turns 0
+		setvar $switchboard~message "Unlimited game - we break for no one!*"
 		gosub :switchboard~switchboard
-		halt
 	end
 
-	setVar $halt_turns $bot~parm2
+	
 
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation <> "Command")
@@ -271,7 +280,7 @@ while ($loopi <= $portPairsi)
 		goto :nextLoop
 	end
 
-	if ($PLAYER~Turns < $halt_turns)
+	if ($PLAYER~Turns < $halt_turns) AND ($player~unlimitedGame = FALSE)
 		stop "scripts\"&$bot~mombot_directory&"\commands\cashing\ppt.cts"
 		setVar $SWITCHBOARD~message "Turns are low, halting!*"
 		gosub :SWITCHBOARD~switchboard
@@ -514,7 +523,7 @@ return
 			goto :backpptwait
 	:pptMove
 		killalltriggers
-		if ($PLAYER~Turns < $halt_turns)
+		if ($PLAYER~Turns < $halt_turns)  AND ($player~unlimitedGame = FALSE)
 			stop "scripts\"&$bot~mombot_directory&"\commands\cashing\ppt.cts"
 			setVar $SWITCHBOARD~message "Turns are low, halting!*"
 			gosub :SWITCHBOARD~switchboard
@@ -759,9 +768,10 @@ return
 
 
 include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+
 include "source\bot_includes\player\quikstats\player"
-include "source\bot_includes\switchboard"
 include "source\bot_includes\player\moveintosector\player"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\player\isephaggle\player"
-include "source\module_includes\bot\helpfile\bot"
+
