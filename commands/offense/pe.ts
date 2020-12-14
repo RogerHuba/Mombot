@@ -3,7 +3,14 @@
 	setVar $BOT~help[1] $BOT~tab&"PE - Photon, Enter "
 	setVar $BOT~help[2] $BOT~tab&"     Launch a Photon into an Adjacent Sector and immedately Enters."
 	setVar $BOT~help[3] $BOT~tab&"     "
-	setVar $BOT~help[4] $BOT~tab&"     pe [Sector] "
+	setVar $BOT~help[4] $BOT~tab&"     pe [Sector] {tow:n} {mass} {ret:n} {meatgrinder}"
+	setVar $BOT~help[5] $BOT~tab&"     "
+	setVar $BOT~help[6] $BOT~tab&"{tow:n}     Tow a ship in"
+	setVar $BOT~help[7] $BOT~tab&"{mass}      Does not fire but waits for another person to shoot"
+	setVar $BOT~help[8] $BOT~tab&"{retrigger} No mass retrigger on this command"
+	setVar $BOT~help[9] $BOT~tab&"{meatgrinder} Photon in and start grinding! "
+	setVar $BOT~help[10] $BOT~tab&"{ret:[n]}     Will attempt to move and trigger interdictor"
+	setVar $BOT~help[11] $BOT~tab&"{mac:nnn}   run some random macro at end - BUGGY STILL"
 
 	gosub :bot~helpfile
 
