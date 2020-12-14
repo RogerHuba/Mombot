@@ -46,8 +46,8 @@ setVar $BOT~help[16] $BOT~tab&"    {paranoid}   Ports must be surrounded by figs
 setVar $BOT~help[17] $BOT~tab&"    {efurb:bot}  Bot to exchange ships with at home planet to furb."
 setVar $BOT~help[18] $BOT~tab&"    {xfurb:bot:ship} Xport Furb - Furb ship ready above planet."
 setVar $BOT~help[19] $BOT~tab&"    {tradeto:n}  Trade to percentage, defaults 15, tradeto:50 = 50%"
-setVar $BOT~help[20] $BOT~tab&"    {Secutre}    Drop mines and Armids"
-setVar $BOT~help[21] $BOT~tab&"   "
+setVar $BOT~help[20] $BOT~tab&"    {Secure}     Drop mines and Armids"
+setVar $BOT~help[21] $BOT~tab&"    {onestock}   Works port till empty, restocks, moves to next"
 setVar $BOT~help[22] $BOT~tab&"    Modes -"
 setVar $BOT~help[23] $BOT~tab&"      skimpl/pl  - Sells off product from personal planet list"
 setVar $BOT~help[24] $BOT~tab&"                 - Skim versions skips making new planets"
@@ -227,6 +227,14 @@ if ($pos > 0)
 	setvar $startMsg $startMsg & "We are dropping limpets and mines.*"
 else
 	setVar $mines FALSE
+end
+
+getWordPos $bot~user_command_line $pos "onestock"
+if ($pos > 0)
+	setVar $restockMoveOn TRUE
+	setvar $startMsg $startMsg & "We will restock at and move to next port.*"
+else
+	setVar $restockMoveOn FALSE
 end
 
 
@@ -725,7 +733,7 @@ setVar $loopi 1
 while ($loopi < $sectorsOki)
 	setVar $sector $sectorsOk[$loopi]	
 	
-
+	setVar $returnSpotSafe 0
 	if ($dumpCashOnPlanet > 0)
 		gosub :player~quikstats
 		if ($player~CREDITS > $dumpCashOnPlanet)
@@ -755,22 +763,37 @@ while ($loopi < $sectorsOki)
 			end
 		end
 
-		if ($sector <> CURRENTSECTOR)
-			setVar $PLAYER~warpto $sector
-			gosub :player~twarp
-			
-			if ($PLAYER~twarpSuccess = FALSE)
-				setVar $SWITCHBOARD~message "Failed to make it to next sector, continuing (could be ore of figs)*"
-				gosub :SWITCHBOARD~switchboard
-				goto :endloop
-			
+		if ($restockMoveOn = TRUE) and ($loopi > 1)
+			# Assumption is we finsihed with port at same time we ran out of "goods"
+			goSub :restockMoveOnRestock
+			if ($returnSpotSafe = 0)
+				goTo :theEndNextSector
+			end
+		else
+			if ($sector <> CURRENTSECTOR)
+				setVar $PLAYER~warpto $sector
+				gosub :player~twarp
+				
+				if ($PLAYER~twarpSuccess = FALSE)
+					setVar $SWITCHBOARD~message "Failed to make it to next sector, continuing (could be ore of figs)*"
+					gosub :SWITCHBOARD~switchboard
+					goto :endloop
+				
+				end
 			end
 		end
-		
 	else
-		if ($sector <> CURRENTSECTOR)
-			setVar $PLAYER~warpto $sector
-			gosub :player~twarp
+		if ($restockMoveOn = TRUE) and ($loopi > 1)
+			# Assumption is we finsihed with port at same time we ran out of "goods"
+			goSub :restockMoveOnRestock
+			if ($returnSpotSafe = 0)
+				goTo :theEndNextSector
+			end
+		else
+			if ($sector <> CURRENTSECTOR)
+				setVar $PLAYER~warpto $sector
+				gosub :player~twarp
+			end
 		end
 	end
 
@@ -813,11 +836,12 @@ while ($loopi < $sectorsOki)
 		goto :goHomeandhalt
 		
 	end
+	
 	goSub :updateStats
 	:endloop
 	add $loopi 1
 	
-    end
+end
 
 :goHomeandhalt
 	if ($cashDumpSector > 0)
@@ -999,7 +1023,11 @@ halt
 			end
 
 		end
-				
+
+		if ($restockMoveOnGo = 1)
+			setVar $restockMoveOnGo 0
+			setVar $go 0
+		end		
 
 	end
 	
@@ -1249,9 +1277,14 @@ return
 	:buildPlanet1
 		killAllTriggers
 		#send "*"
-		gosub :restock
-		goto :updatePlanetsFinishWait
-		
+		if ($restockMoveOn = TRUE)
+			setVar $restockMoveOnGo 1
+			return
+		else
+			gosub :restock
+			goto :updatePlanetsFinishWait
+		end
+
 	:buildPlanet2
 		killAllTriggers
 		subTract $player~GENESIS 1
@@ -1365,6 +1398,74 @@ return
 
 
 return
+
+:restockMoveOnRestock
+
+	gosub :player~quikstats
+	
+	if (($player~ore_holds < $minOre) and (PORT.BUYFUEL[CURRENTSECTOR] = 0))
+		send "pt * * * "
+		waitfor "Your offer ["
+	end
+
+	setVar $prestockcredits $player~credits
+	stripText $precredits ","
+	
+	send "d"
+	waitfor "Warps to Sector(s) :"
+	setVar $returnSpotSafe 0
+	
+
+	setVar $foundAdj 0
+	setVar $adj 1
+	while ($adj <= SECTOR.WARPCOUNT[CURRENTSECTOR])
+		if (SECTOR.WARPS[CURRENTSECTOR][$adj] = $sector)
+			send "sh"
+			waitfor "Select (H)olo Scan"
+			waitfor "Command ["
+			getSectorParameter $sector "FIGSEC" $isFigged
+			setVar $foundAdj 1
+			if ($isFigged = 1)
+				setVar $returnSpotSafe 1
+			end
+		end
+		add $adj 1
+	end
+	
+	if ($returnSpotSafe = 0) and ($foundAdj = 1)
+		return
+	elseif ($returnSpotSafe = 0)
+		send "m" $sector "*yn"
+		setTextLineTrigger returnSafeCheckYes :returnSafeCheckYes "Locating beam pinpointed, TransWarp"
+		setTextLineTrigger returnSafeCheckNo :returnSafeCheckNo "Do you want to make this jump blind?"
+		pause
+		:returnSafeCheckNo
+			killalltriggers
+			return
+		:returnSafeCheckYes
+			killalltriggers
+			setVar $returnSpotSafe 1
+	end
+	setVar $returnSpot $sector
+
+	add $stat_refurbs 1
+
+	#same logic applys to all furbing?
+	if ($efurb = TRUE)
+		goSub :restock_efurb
+	elseif ($xfurb = TRUE)
+		goSub :restock_xfurb
+	else
+		goSub :restock_self
+	end
+
+	setVar $poststockcredits $player~credits
+	stripText $poststockcredits ","
+	setVar $stat_dollarsspent ($precredits - $poststockcredits)
+
+
+return
+
 
 :restock
 	

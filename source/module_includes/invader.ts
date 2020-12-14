@@ -16,9 +16,13 @@
 #
 #  fill citadel i.e. PE fill (drop ore/figs off) bwarp out
 #   
+# IF in ship X and we are planning on xporting to X, just alert and end! we can check some of the stuff
 #
-
+#
+# PE PED PEL PELK PEX PXE PXED PXEDX PXEL PXELK PXEX 
+#
 :check_invade_macro_params
+	LOADVAR $GAME~LATENCY
 	killalltriggers
 	setArray $scan_array 1000
 	gosub :PLAYER~quikstats
@@ -34,12 +38,16 @@
 
 	#IS THIS MASS ACTION?
 	setVar $massRetrigger FALSE
+	setVar $massAttackOneDone FALSE
 	getWordPos $bot~user_command_line $pos "mass"
 	if ($pos > 0)
 		setVar $massWait TRUE
-		getWordPos $bot~user_command_line $pos "mass"
-		if ($pos > 0)
-			setVar $massRetrigger TRUE
+### STILL NEED TO TEST PXEDX 
+		if ($bot~command = "pxex") or ($bot~command = "pxedx") 
+			getWordPos $bot~user_command_line $pos "retrigger"
+			if ($pos > 0)
+				setVar $massRetrigger TRUE
+			end
 		end
 	else
 		setVar $massWait FALSE
@@ -75,6 +83,7 @@
 	end
 
 	#VALIDATION OF XPORT SHIP
+	# # PE PED PEL PELK PEX PXE PXED PXEDX PXEL PXELK PXEX 
 	isNumber $test $bot~parm2
 	if ((($test = FALSE) or ($bot~parm2 = 0)) AND ($bot~command <> "pe") AND ($bot~command <> "ped"))
 		setVar $SWITCHBOARD~message "Parameter 2 invalid*"
@@ -82,6 +91,15 @@
 		halt
 	end
 
+	cutText $bot~command $twoLetters 1 2
+
+	if ($twoLetters = "px")
+		if ($PLAYER~SHIP_NUMBER = $bot~parm2)
+			setVar $SWITCHBOARD~message "Your currently in your export ship, Photon XPort will not work.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+	end
 
 	if (($bot~command = "pxex") or ($bot~command = "pxedx") or ($bot~command = "pedx") or ($bot~command = "pex"))
 		# Return Retreat - returns a moment later to drain sector cannon
@@ -109,11 +127,14 @@
 		end
 
 		setVar $xkill FALSE
-		getWordPos $bot~user_command_line $pos "xkill:"
+		getWordPos $bot~user_command_line $pos "xkill"
 		if ($pos > 0)
 			setVar $xkill TRUE
 			setVar $cline $bot~user_command_line & " "
-			getText $cline $xkillFigs "xkill:" " "
+			getText $cline $xkillWords "xkill" " "
+			replaceText $xkillWords ":" " "
+			getWord $xkillWords $xkillFigs 1 10000
+			getWord $xkillWords $xkillWaves 2 10
 			
 		end
 	end
@@ -433,8 +454,14 @@ return
 			setVar $shipOurSector $bot~parm2
 		end
 		setVar $sloc $PLAYER~startingLocation
+			
+		waitfor "Average Interval Lag:"
 		
-		getRnd $delaytime 360 450
+		# wait roughly 2 latencys for the citkill person to lift and start attacking ship
+		setVar $delmin (2 * $GAME~LATENCY)
+		setVar $delmax ($delmin + 70)
+
+		getRnd $delaytime $delmin $delmax
 		setDelayTrigger shortpause4 :shortpause4 $delaytime
 		pause
 		:shortpause4
@@ -445,49 +472,71 @@ return
 		else
 			setVar $xmac ""
 		end
-		setVar $xmac $xmac & "x   "&$shipEnemySector&"*  q  q  z  n"
-		send $xmac
-		
-		gosub :PLAYER~quikstats
-		if ($PLAYER~CURRENT_SECTOR <> $bot~parm1)
-			if ($PLAYER~startingLocation = "Citadel")
-				setVar $rrmac $rrmac &  "LT" & #8 & #8 & $PLANET~PLANET&" * c"
-			end
-			setVar $SWITCHBOARD~message "We are not in the attack sector!! UH OH!!*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		else
-			setVar $PLAYER~startingLocation "Command ["
-			gosub :sector~getSectorData
-			setVar $waves 10
-			setVar $attackMac ""
-			
-			echo "#" $sector~emptyShipCount "#*"
-			setVar $nnnn ""
-			setVar $n 1
-			while ($n <= $sector~emptyShipCount)
-				setVar $nnnn $nnnn & "n "
-				add $n 1
-			end
-			
-			setVar $n 1
-			while ($n <=10)
-				setVar $attackMac $attackMac & "z n q z n a " & $nnnn & " y y " & $xkillFigs & "* * "
-				add $n 1
-			end
-			
-			
-			#xport back to photon ship
-			setVar $attackMac $attackMac & "x   "& $shipOurSector &"*  q  q  z  n"
 
-			echo $attackMac
-			if ($sloc = "Citadel")
-				# Land
-				setVar $attackMac $attackMac &  "LT" & #8 & #8 & $PLANET~PLANET&" * c"
-			end
+		setVar $xmac $xmac & "x   "&$shipEnemySector&"*  q  q  z  n"
+
+		send $xmac
+		if ($massAttackOneDone = TRUE) and ($massRetrigger = TRUE)
 			send $attackMac
+		else
+			
+			gosub :PLAYER~quikstats
+			if ($PLAYER~CURRENT_SECTOR <> $bot~parm1)
+				if ($PLAYER~startingLocation = "Citadel")
+					setVar $rrmac $rrmac &  "LT" & #8 & #8 & $PLANET~PLANET&" * c"
+				end
+				setVar $SWITCHBOARD~message "We are not in the attack sector!! UH OH!!*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			else
+				setVar $PLAYER~startingLocation "Command ["
+				gosub :sector~getSectorData
+				setVar $waves 10
+				setVar $attackMac ""
+				setVar $isFound FALSE
+				setVar $nnnn ""
+
+				if (($sector~emptyShipCount + $sector~fakeTraderCount + $sector~realTraderCount) > 0)
+					setVar $i 0
+					while ($i < ($sector~emptyShipCount + $sector~fakeTraderCount))
+						setVar $nnnn $nnnn & "n "
+						add $i 1
+					end
+					setVar $c 1
+					while (($c <= $sector~realTraderCount) AND ($isFound = FALSE))
+						if ((($CURRENT_SECTOR <= 10) OR ($CURRENT_SECTOR = STARDOCK)) AND $player~TRADERS[$c][2] = TRUE)
+							setVar $nnnn $nnnn &"n "
+						elseif (($player~TRADERS[$c][1] = $PLAYER~CORP) OR ($player~TRADERS[$c][1] = 100000))
+							setVar $nnnn $nnnn &"n "	
+						else
+							setVar $isFound TRUE	
+						end
+						add $c 1
+					end
+				
+				else
+					echo ANSI_12 "*You have no targets.*" ANSI_7
+					return
+				end
+				
+				setVar $n 1
+				while ($n <= $xkillWaves)
+					setVar $attackMac $attackMac & "z n q z n a " & $nnnn & " y y " & $xkillFigs & "* * "
+					add $n 1
+				end
+				#xport back to photon ship
+				setVar $attackMac $attackMac & "x   "& $shipOurSector &"*  q  q  z  n"
+
+				echo $attackMac
+				if ($sloc = "Citadel")
+					# Land
+					setVar $attackMac $attackMac &  "LT" & #8 & #8 & $PLANET~PLANET&" * c"
+				end
+				setVar $attackMac $attackMac & "@"
+				send $attackMac
+				setVar $PLAYER~startingLocation $sloc
+			end
 		end
-		
 		
 	end
 
@@ -508,6 +557,8 @@ return
 	if ($meatgrinder = TRUE)
 		goSub :meatgrinder
 	end
+	# if it's not a massattack it'll just exit out.. so ok to set this
+	setVar $massAttackOneDone TRUE
 
 	#OUTPUT THE RESULTS OF THE DAMAGE IF REQUESTED
 	if ($speed = FALSE)

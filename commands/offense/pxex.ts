@@ -15,8 +15,9 @@
 	setVar $BOT~help[12] $BOT~tab&"            Additional Options after main macro done - small delay added "
 	setVar $BOT~help[13] $BOT~tab&"{rr:[n]}    xport back to ShipNum and attempt to retreat n times "
 	setVar $BOT~help[14] $BOT~tab&"{dl:pnum}   xport back to ShipNum and land on planet n."
-	setVar $BOT~help[15] $BOT~tab&"{xkill:n}   xport back after a delay and attempt to kill citkill person."
-	setVar $BOT~help[16] $BOT~tab&"            n is number of figs to shoot. Best with tow:n"
+	setVar $BOT~help[15] $BOT~tab&"{xkill:n:w} xport back after a delay and attempt to kill citkill person."
+	setVar $BOT~help[16] $BOT~tab&"            Optional - n is number of figs to shoot (def:10000) "
+	setVar $BOT~help[16] $BOT~tab&"            Optional - w is number waves (def:10).  Best with tow:n"
 	setVar $BOT~help[17] $BOT~tab&"{mac:nnn}   run some random macro at end - BUGGY STILL"
 	
 		gosub :bot~helpfile

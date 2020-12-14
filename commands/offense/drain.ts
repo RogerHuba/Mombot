@@ -185,8 +185,8 @@ return
                 stripText $rawID ">"
                 stripText $rawID "<"
                 stripText $rawID " "
-                send "'multiple planets here now, trying to land on" $rawID "*"
-                send $rawID "*"
+                send "'trying to land on " $rawID "*"
+                send $rawID "*z*"
                 setTextLineTrigger landBlocked2 :landBlocked2 "blocks your attempt to enter orbit"
                 setTextTrigger landOneAgain2 :landOneAgain2 "Option? (A,I,R,?):?"
                 pause
