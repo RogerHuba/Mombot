@@ -1863,7 +1863,7 @@ return
 return
 
 :planetTrade_ck
-
+  
 
 	setVar $planet~fueltosell 67000
 	setVar $planet~orgtosell 67000
