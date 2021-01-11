@@ -120,7 +120,7 @@ return
 		end
 	end
 	if ($alien <> true)
-		getText $bot~last_fighter_attack $ship_type "'s "  " entered sector."
+		getText $bot~last_fighter_attack&" entered sector." $ship_type "'s "  " entered sector."
 	end
 
 	##############################################################
