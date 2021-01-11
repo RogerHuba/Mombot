@@ -127,12 +127,12 @@ return
 	# don't bother setting unless the ship gridding is different #
 	##############################################################
 
-	if ($last_ship_type = $ship_type)
+#	if ($last_ship_type = $ship_type)
 #		if ($quasar_damage > 0)
-			gosub :setcannons
+#			gosub :setcannons
 #		end
-		return
-	end
+#		return
+#	end
 
 	####################################################
 	# checking to see if ship is in stored ship array  #

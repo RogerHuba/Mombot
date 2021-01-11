@@ -691,7 +691,18 @@
 			setvar $description " ("&$description&")"
 		end
 		setvar $switchboard~message $script_ver&$description&" is online and ready to fire.*"
+		setvar $switchboard~message $switchboard~message&"*        Defender Activity        *"
+		if ($photon~shot > 0)
+			setvar $switchboard~message $switchboard~message&"  Last shot at sector "&$photon~last_sector&"*"
+			setvar $switchboard~message $switchboard~message&"  Photon attacks launched "&$photon~shot&" times*"
+		else
+			setvar $switchboard~message $switchboard~message&"  No photons fired yet.*"
+		end
+		if ($killing~holokill)
+			setvar $switchboard~message $switchboard~message&"*  Holokills attempted "&$combat~holokill_count&" times *"
+		end
 		gosub :switchboard~switchboard
+
 		setDelayTrigger	   announce_trigger :announce	1200000
 		goto :processing
 
