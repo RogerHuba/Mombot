@@ -204,18 +204,16 @@ return
 		setVar $atmos_percentToSet 1
 	end
 	if ($last_atmos_percentage <> $atmos_percentToSet)
+		if ($game~mbbs = true)
+			setvar $cannon_damage ((($planet~planet_FUEL * $atmos_percentToSet) / 100)*2)
+		else
+			setvar $cannon_damage ((($planet~planet_FUEL * $atmos_percentToSet) / 100)/2)             
+		end
+		setvar $switchboard~message $switchboard~message&"Atmos cannon set to "&$cannon_damage&" damage.*"
 		setvar $last_atmos_percentage $atmos_percentToSet
 		send "l a " $atmos_percentToSet "* "
 	end
 
-	if ($game~mbbs = true)
-		setvar $cannon_damage ((($planet~planet_FUEL * $atmos_percentToSet) / 100)*2)
-	else
-		setvar $cannon_damage ((($planet~planet_FUEL * $atmos_percentToSet) / 100)/2)             
-	end
-	if ($last_atmos_percentage <> $atmos_percentToSet)
-		setvar $switchboard~message $switchboard~message&"Atmos cannon set to "&$cannon_damage&" damage.*"
-	end
 	if ($switchboard~message <> "")
 		gosub :switchboard~switchboard
 	end
