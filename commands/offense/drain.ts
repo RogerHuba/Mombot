@@ -1,14 +1,15 @@
 gosub :BOT~loadVars
 
-	setVar $BOT~help[1]   $BOT~tab&"- drain {lll} {it n} {evac ship}" 
-	setVar $BOT~help[2]   $BOT~tab&"    Utility Script for Draining Cannons" 
+	setVar $BOT~help[1]   $BOT~tab&"- drain {lll} [it {n} {p} {speed}] [evac {ship}]" 
+	setVar $BOT~help[2]   $BOT~tab&"  Utility Script for Draining Cannons" 
 	setVar $BOT~help[3]   $BOT~tab&"    " 
-	setVar $BOT~help[4]   $BOT~tab&"    lll  la la lannnddd  - Sends L alot, no scanners! "
-	setVar $BOT~help[5]   $BOT~tab&"    it   >drain it     - Lifts once and lands quickly" 
-	setVar $BOT~help[6]   $BOT~tab&"         >drain it {n} - Lifts n times with short pause between" 
-	setVar $BOT~help[6]   $BOT~tab&"         >drain it {n} speed - Lifts n times no pauses" 
-	setVar $BOT~help[7]   $BOT~tab&"    evac ship    "  
-	setVar $BOT~help[8]   $BOT~tab&"         >drain evac 23 - Lifts and attempts to xport to ship 23 " 
+	setVar $BOT~help[4]   $BOT~tab&"  lll  la la lannnddd    - Sends L alot, no scanners! "
+	setVar $BOT~help[5]   $BOT~tab&"  it   >drain it         - Lifts once and lands quickly" 
+	setVar $BOT~help[6]   $BOT~tab&"       >drain it {n} {p} - Lifts {n} times with short pause between" 
+	setVar $BOT~help[7]   $BOT~tab&"                         - planet {p}" 
+    setVar $BOT~help[8]   $BOT~tab&"                         - {speed} - Lifts n times no pauses" 
+	setVar $BOT~help[9]   $BOT~tab&"    evac ship    "  
+	setVar $BOT~help[10]   $BOT~tab&"         >drain evac 23 - Lifts and attempts to xport to ship 23 " 
 	
 
 	gosub :bot~helpfile
@@ -27,28 +28,7 @@ gosub :BOT~loadVars
 
 
     halt
-	gosub :player~quikstats
-	setVar $startingLocation $player~CURRENT_PROMPT
-	if ($startingLocation <> "Citadel")
-		setvar $switchboard~message "Must start from Citadet*"
-        gosub :SWITCHBOARD~switchboard
-		halt
-	end
-    
-    if ($bot~parm1 = "")
-        setvar $switchboard~message "Must supply a photon bot*"
-        gosub :SWITCHBOARD~switchboard
-    end
-    setVar $photonBot $bot~parm1
-
-    if ($$bot~parm2 <> "")
-        isNumber $test $bot~parm2
-        if ($test)
-            setVar $victimPlanet $bot~parm2
-        else
-            setVar $victimPlanet 0
-        end
-    end
+	
 
 :evac
     if ($$bot~parm2 <> "")
@@ -89,21 +69,46 @@ return
         end
     end
 
-    setVar $speed 0
-    if ($bot~parm3  = "speed")
-        setVar $speed 1
-
+    setVar $targetP 0
+    if ($bot~parm3 <> "")
+        isNumber $test $bot~parm3
+        if ($test)
+            setVar $targetP $bot~parm3
+        end
     end
+
+    setVar $speed 0
+    getWordPos $bot~user_command_line $pos "speed"
+    if ($pos > 0)
+        setVar $speed 1
+    end
+  
     gosub :player~quikstats
     setVar $hitPoints ($player~fighters + $player~shields)
     setVar $startSector $player~CURRENT_SECTOR
 	setVar $startingLocation $player~CURRENT_PROMPT
 
+    if ($player~PLANET_SCANNER = "Yes") and ($targetP = 0)
+        send "r"
+        goSub :getPlanetNumber
+        if ($drainItTimes = 1)
+            goto :drainItEnd
+        else
+            subtract $drainItTimes 1
+        end
+    end
+    
+
     setTextLineTrigger failedToLand :failedToland "Do you want instructions (Y/N) [N]?"
     setTextTrigger landedGoodOrBad :landedGoodOrBad "Planet command (?=help) [D]"
     setVar $i 1
     while ($i <= $drainItTimes)
-        send "r l * z *"
+        if ($player~PLANET_SCANNER = "Yes")
+            send "r LT" & #8 & #8 & $targetP & "* z *"
+        else
+            send "r l * z *"
+        end
+
         if ($i <> $drainItTimes)
             if ($speed = 0)
                 setDelayTrigger smallDelay :smallDelay 125
@@ -135,6 +140,7 @@ return
     
     halt
 
+    :getPlanetNumber
     :failedToland
         killalltriggers
         
@@ -185,8 +191,8 @@ return
                 stripText $rawID ">"
                 stripText $rawID "<"
                 stripText $rawID " "
-                send "'multiple planets here now, trying to land on" $rawID "*"
-                send $rawID "*"
+                send "'trying to land on " $rawID "*"
+                send $rawID "*z*"
                 setTextLineTrigger landBlocked2 :landBlocked2 "blocks your attempt to enter orbit"
                 setTextTrigger landOneAgain2 :landOneAgain2 "Option? (A,I,R,?):?"
                 pause
@@ -200,8 +206,10 @@ return
                         send "'Attempted to land, in different sector, assume in pod!*"
                         halt
                     else
+                    
+                        setVar $targetP $rawID
                         send "'made it back onto planet*"
-                        halt
+                        return
                     end
 
     halt

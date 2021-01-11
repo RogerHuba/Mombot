@@ -206,12 +206,24 @@ return
 			#################################################
 			# call saveme if there are no planets in sector #
 			#################################################
+			setvar $switchboard~message "It appears there are no planets in sector with me.  Calling saveme.*"
+			gosub :switchboard~switchboard
 			gosub :call
 		end
-		################################################
-		#  TODO                                        #
-		#for logic later to avoid only shielded planets#
-	    ################################################
+
+		######################################################################
+		# Only run from shielded planets - might want to make this an option #
+		######################################################################
+		if ($shieldedPlanetCount <= 1)
+			return
+		end
+		###########################################
+		# Don't run if you are in a bubble sector #
+		###########################################
+		getsectorparameter $focus "BUBBLE" $isBubble
+		if ($isBubble = TRUE)
+			return
+		end
 
 		:runaway_again
 		gosub :navigate~navigate_away

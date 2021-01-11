@@ -60,9 +60,9 @@ setvar $startcredits $player~credits
 setvar $startturns $player~turns
 # try and grab fuel at this
 setVar $minOre 160
-#if ($player~total_holds < $minOre)
+if ($player~total_holds < $minOre)
 	setVar $minOre $player~total_holds
-#end
+end
 
 if ($player~photons > 0)
 	setVar $SWITCHBOARD~message "Yeah Nah, we don't do this with photons.*"
@@ -152,6 +152,40 @@ if ($pos > 0)
 	
 
 end
+
+
+getWordPos $bot~user_command_line $pos "xmas"
+if ($pos > 0)
+
+	
+	setVar $fireplanet 0
+	setvar $firePlanetType "Dead Earth"
+
+	setVar $minOre 120
+	setVar $doFireUpgrade 0
+	# mooexp 100 10 
+	setVar $bot~user_command_line $bot~parm1 & " " & $bot~parm2 & " f sxfurb " 
+
+	setVar $bot~parm3 "f"
+	setVar $bot~parm4 "sxfurb"
+
+
+	setvar $kill FALSE
+	setvar $sxfurb TRUE
+	setVar $furbfigs TRUE
+	send "i"
+	# WILL BEOCME XMAS UPGRADE
+	setTextLineTrigger checkHell :checkHell "Hell's StarShip"
+	setTextLineTrigger checkHellDone :checkHellDone "Credits        :"
+	pause
+	:checkHell
+		killalltriggers
+		setVar $doFireUpgrade 0
+	:checkHellDone
+		killalltriggers
+	
+	
+end
 setVar $ice 0
 getWordPos $bot~user_command_line $pos "ice"
 if ($pos > 0)
@@ -179,7 +213,7 @@ if ($player~FIGHTERS < 301)
 end
 
 
-if (($player~ore_holds < $minOre) and ($ice = 0))
+if (($player~ore_holds < $minOre) and ($ice = 0) and ($sxfurb = 0))
 	setVar $SWITCHBOARD~message "MooExp - We need ore in our holds.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
@@ -301,6 +335,10 @@ gosub :switchboard~switchboard
 
 
 
+
+
+
+setVar $sxFurb FALSE
 setVar $iceFurb FALSE
 setVar $iceShipMoo 0
 setVar $iceShipExplore 0
@@ -308,7 +346,18 @@ setVar $iceShipExplore 0
 # $player~corpCashDump <-- i've disabled this because you can be hit by attacks with this
 
 getWordPos $bot~user_command_line $pos "furb"
-if ($pos > 0)
+getWordPos $bot~user_command_line $pos2 "sxfurb"
+if ($pos2 > 0)
+
+	setVar $player~corpfurb TRUE
+	setvar $switchboard~message "Using Corp Furbing - SXFurb.*"
+	setVar $useGuard FALSE
+	setVar $furbfigs FALSE
+	setVar $player~corpCashDump FALSE
+	setVar $sxFurb TRUE
+	
+elseif ($pos > 0) 
+	
 	setVar $player~corpfurb TRUE
 	setvar $switchboard~message "Using Corp Furbing.*"
 	setVar $useGuard FALSE
@@ -333,6 +382,9 @@ else
 
 
 end
+
+
+
 gosub :switchboard~switchboard
 
 
@@ -955,12 +1007,20 @@ return
 			gosub :restockice
 		elseif ($efurb = TRUE)
 			goSub :restockEFurb
+		elseif ($sxFurb = TRUE)
+			if (($player~Experience < 950) and ($player~ALIGNMENT >= 1000))
+				setVar $player~corpCashDump TRUE
+				goto :sxFurbSkip
+			else
+				setVar $player~corpCashDump FALSE
+				goSub :restocksxfurb
+			end
 		else
 			gosub :restockcorp
 		end
 	else
 		gosub :player~quikstats
-	
+		:sxFurbSkip
 		if ($cashTarget > 0)
 			if (($player~credits + $dropCashTotal)> $cashTarget)
 			
@@ -988,6 +1048,32 @@ return
 
 
 return
+
+
+:restocksxfurb
+	
+	# BOT_NAME - MOOSHIP - EXPLORESHIP CURRENTSECTOR
+	gosub :player~quikstats
+
+	:pickupTryAgain
+	send "'MooTime@ " $SWITCHBOARD~bot_name " " $player~SHIP_NUMBER " " CURRENTSECTOR "*"
+	
+	
+	setTextLineTrigger pickupok :pickupok "Roger " & $SWITCHBOARD~bot_name & ", gifts on route"
+	setDelayTrigger pickupTimeOut :pickupTimeOut 1000
+	pause
+	:pickupTimeOut
+		killalltriggers
+		goto :pickupTryAgain
+
+	:pickupok
+		killalltriggers
+	
+	waitfor "Security code accepted, engaging transporter control."
+	gosub :player~quikstats
+return
+
+
 
 :restockice
 	
@@ -1225,7 +1311,7 @@ return
 							send "l0*"
 							setTextLineTrigger limpCost :limpCost "credits each."
 							pause
-							:armidCost
+							:limpCost
 								killalltriggers
 								getWord CURRENTLINE $lcost 3
 								STRIPTEXT $lcost ","
@@ -1286,7 +1372,11 @@ return
 					send "q"
 
 					gosub :player~quikstats
-					setVar $minOre $player~total_holds
+					
+					if ($minOre < 160)
+
+						setVar $minOre $player~total_holds
+					end
 					send "p"
 				end
 				
@@ -1976,6 +2066,141 @@ return
 #echo "*### START FRESH SECTOR Scanning"
 		gosub :holoScan
 		setVar $di 1
+		setVar $scans 0
+		setVar $mac "c"
+		#send "c"
+		
+		
+		while ($di <= $freshSectorsi)
+			#send "f" $freshSectors[$di] "*" CURRENTSECTOR "*"
+			if (PORT.EXISTS[$freshSectors[$di]])
+				if (($PrimaryProduct = 1) and (PORT.BUYFUEL[$freshSectors[$di]] = TRUE))
+					add $scans 1
+					setVar $mac $mac & "r" & $freshSectors[$di] & "*"
+				elseif (($PrimaryProduct = 2) and (PORT.BUYORG[$freshSectors[$di]] = TRUE))
+					add $scans 1
+					setVar $mac $mac & "r" & $freshSectors[$di] & "*"
+				elseif (($PrimaryProduct = 3) and (PORT.BUYEQUIP[$freshSectors[$di]] = TRUE))
+					add $scans 1
+					setVar $mac $mac & "r" & $freshSectors[$di] & "*"
+				end	
+				
+			end
+			add $di 1
+		end
+		if ($scans > 0)
+			send $mac
+			waitfor "<Computer activated>"
+		else
+			goto :skipScan
+		end
+		setVar $di 0
+		
+		:reporting
+		setTextLineTrigger getNextSectorReport :getNextSectorReport "Commerce report for"
+		setTextLineTrigger getNextSectorNoReport :getNextSectorNoReport "have no information about a port in that se"
+		pause
+		:getNextSectorReport
+			killAllTriggers
+			add $di 1
+			setVar $portReported[$freshSectors[$di]] 1
+			if ($di >= $scans)
+				goto :finishReporting
+			else
+				goto :reporting
+			end
+
+		:getNextSectorNoReport
+			killAllTriggers
+			add $di 1
+			setVar $portReported[$freshSectors[$di]] 1
+			setVar $portBlocked[$freshSectors[$di]] 1
+			if ($di >= $freshSectorsi)
+				goto :finishReporting
+			else
+				goto :reporting
+			end
+		
+		:finishReporting
+
+		send "q"
+		waitfor "<Computer deactivated>"	
+	end
+	:skipScan
+	#setArray $explored SECTORS
+	#setArray $portReported SECTORS
+	#setArray $portBlocked SECTORS
+	
+
+	setVar $reportsGatheredi 0
+	setVar $reportsGathered 0
+
+
+	setVar $di 1
+	
+	setVar $mac "c"
+	while ($di <= $deni)
+		
+		if ($portReported[$nSector[$di]] = 0)
+			if ((($PrimaryProduct = 1) and (PORT.BUYFUEL[$nSector[$di]] = TRUE)) or (($PrimaryProduct = 2) and (PORT.BUYORG[$nSector[$di]] = TRUE)) or (($PrimaryProduct = 3) and (PORT.BUYEQUIP[$nSector[$di]] = TRUE)))
+				setVar $mac $mac & "r" & $nSector[$di] & "*"
+				add $reportsGatheredi 1
+				setVar $reportsGathered[$di] $nSector[$di]
+			end
+		end
+
+		add $di 1
+	end
+	
+	
+	if ($reportsGatheredi > 0)
+		send $mac
+		send "q"
+		waitfor "<Computer activated>"
+		setVar $di 0
+			
+		:startReport2
+		add $di 1
+		setTextLineTrigger getNextSectorReport2 :getNextSectorReport2 "Commerce report for"
+		setTextLineTrigger getNextSectorNoReport2 :getNextSectorNoReport2 "have no information about a port in that se"
+		pause
+
+		:getNextSectorReport2
+			killAllTriggers
+			setVar $portReported[$nSector[$di]] 1
+			
+			if ($di >= $reportsGatheredi)
+				goto :endReport2
+			else
+				goto :startReport2
+			end
+		:getNextSectorNoReport2
+			killAllTriggers
+			setVar $portReported[$nSector[$di]] 1
+			setVar $portBlocked[$nSector[$di]] 1
+			
+			if ($di >= $reportsGatheredi)
+				goto :endReport2
+			else
+				goto :startReport2
+			end
+		:endReport2
+		
+		waitfor "<Computer deactivated>"
+	end
+	
+	
+	
+return
+
+:scanSectors_old
+	
+	goSub :densityScan
+
+	if ($freshSectorsi > 0)
+#echo "*### START FRESH SECTOR Scanning"
+		gosub :holoScan
+		setVar $di 1
 		send "c"
 		waitfor "<Computer activated>"
 		
@@ -2299,14 +2524,17 @@ return
 	
 	setVar $safeToBlow 1
 	setVar $noPlanetsInSector 1
-	gosub :checkSafeToBlow
-	if ($safeToBlow = 0)
-		echo "*#########################################"
-		echo "* ### CITADELS DETECTED SKIPPING BOOMS ###"
-		echo "*#########################################"
-		setVar $SWITCHBOARD~message "Warning: Citadel in sector, skipping.*"
-		gosub :SWITCHBOARD~switchboard
-		return
+
+	if (SECTOR.PLANETCOUNT[$player~current_sector] > 0)
+		gosub :checkSafeToBlow
+		if ($safeToBlow = 0)
+			echo "*#########################################"
+			echo "* ### CITADELS DETECTED SKIPPING BOOMS ###"
+			echo "*#########################################"
+			setVar $SWITCHBOARD~message "Warning: Citadel in sector, skipping.*"
+			gosub :SWITCHBOARD~switchboard
+			return
+		end
 	end
 
 	setVar $checkNewPlanet 0
@@ -2882,7 +3110,7 @@ return
 
 
 :planetTrade
-	
+	  
 	
 	gosub :player~quikstats
 	setVar $precredits $player~credits

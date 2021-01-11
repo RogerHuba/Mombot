@@ -598,19 +598,6 @@ echo "#" $foundSecs[$x][1] " " $foundSecs[$x][2] " " $distAvg[$player~corp] " #"
 return
 
 
-:scanit_again
-	killAllTriggers
-	gosub :sector~getSectorData
-	send "*"
-	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
-		goSub :combat~fastCapture
-		goto :scanit_again
-	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
-		gosub :combat~fastCapture
-		goto :scanit_again
-	end
-	goto :halt
-
 
 
 :checkForVictims
@@ -623,7 +610,7 @@ return
 		if ($capture)
 			gosub :combat~fastCapture
 		else
-			goSub :combat~fastCapture
+			goSub :combat~fastCitadelAttack
 		end
 		goto :scanit_again
 	elseif (($sector~emptyShipCount > $sector~myShipCount))
@@ -731,7 +718,6 @@ include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\combat\holokill\combat"
-include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
