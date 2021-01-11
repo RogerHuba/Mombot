@@ -356,6 +356,15 @@
 	gosub :PLANET~getPlanetInfo	
 	send "t*t1* c "
 
+	####################################################################################################
+	# If atmosphere cannon isn't set, set it to 1% so make sure we can tell if someone lands on planet #
+	####################################################################################################
+	if ($planet~ATMOSPHERE_CANNON <= 0)
+		send "l a1* "
+		setVar $SWITCHBOARD~message "Defender automatically setting atmosphere canonon to 1% from 0%.*"
+		gosub :SWITCHBOARD~switchboard
+	end
+	
 	setvar $navigate~starting_planet $planet~planet
 
 
@@ -639,8 +648,8 @@
 			gosub :switchboard~switchboard
 		end
 
-		send "q"
 		gosub :player~quikstats
+		send "q "
 		gosub :PLANET~getPlanetInfo	
 		send "c "
 		waiton "Citadel command ("
@@ -710,9 +719,9 @@
 				send "p"&$map~home_sector&"*y "
 			end
 			if ($player~current_prompt = "Citadel")
-				send "q"
+				send "q "
 				gosub :PLANET~getPlanetInfo	
-				send "t*t1* c "
+				send "t * t 1* c  "
 				if (($planet~PLANET_FIGHTERS_MAX - $planet~planet_fighters) > ($ship~SHIP_FIGHTERS_MAX))
 					setvar $movefig~planetorsector "p"
 					gosub :movefig~run
@@ -720,7 +729,7 @@
 			end
 			gosub :player~quikstats
 			if ($player~current_prompt = "Citadel")		
-				send "q"
+				send "q "
 				gosub :PLANET~getPlanetInfo	
 				send "t*t1* c "
 				if ($planet~planet_fighters < $ship~SHIP_FIGHTERS_MAX)
