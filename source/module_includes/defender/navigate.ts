@@ -220,7 +220,7 @@ return
 		###########################################
 		# Don't run if you are in a bubble sector #
 		###########################################
-		getsectorparameter $focus "BUBBLE" $isBubble
+		getsectorparameter $player~current_sector "BUBBLE" $isBubble
 		if ($isBubble = TRUE)
 			return
 		end
