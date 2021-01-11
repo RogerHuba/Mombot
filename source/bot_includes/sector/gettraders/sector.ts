@@ -145,3 +145,4 @@
 		setVar $defenderShips 0
 	end
 return
+include "source\bot_includes\ship\loadshipinfo\ship"

@@ -572,6 +572,7 @@ goto :BOT~wait_for_command
 		gosub :PLANET~getPlanetInfo
 		send "q"
 	end
+
 	gosub :PLAYER~getInfo
 	gosub :GAME~gamestats
 	
