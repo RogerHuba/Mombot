@@ -127,12 +127,10 @@ return
 	# don't bother setting unless the ship gridding is different #
 	##############################################################
 
-#	if ($last_ship_type = $ship_type)
-#		if ($quasar_damage > 0)
-#			gosub :setcannons
-#		end
-#		return
-#	end
+	if ($last_ship_type = $ship_type)
+		gosub :setcannons
+		return
+	end
 
 	####################################################
 	# checking to see if ship is in stored ship array  #
@@ -188,14 +186,14 @@ return
 	#######################################################
 	# always set atmos cannon for defense against landers #
 	#######################################################
-	if ($game~mbbs)
+	if ($game~mbbs = true)
 		setVar $atmos_percentToSet ((($quasar_damage/2)*100)/$planet~PLANET_FUEL)
-		if (((($planet~PLANET_FUEL * $atmos_percentToSet) / 100)*2) < $cannonDamage)
+		if (((($planet~PLANET_FUEL * $atmos_percentToSet) / 100)*2) < $quasar_damage)
 			add $atmos_percentToSet 1
 		end
 	else
 		setVar $atmos_percentToSet (((2*$quasar_damage)*100)/$planet~PLANET_FUEL)
-		if (((($planet~PLANET_FUEL * $atmos_percentToSet) / 100)/2) < $cannonDamage)
+		if (((($planet~PLANET_FUEL * $atmos_percentToSet) / 100)/2) < $quasar_damage)
 			add $atmos_percentToSet 1
 		end
 	end
@@ -210,7 +208,7 @@ return
 		send "l a " $atmos_percentToSet "* "
 	end
 
-	if ($game~mbbs)
+	if ($game~mbbs = true)
 		setvar $cannon_damage ((($planet~planet_FUEL * $atmos_percentToSet) / 100)*2)
 	else
 		setvar $cannon_damage ((($planet~planet_FUEL * $atmos_percentToSet) / 100)/2)             
