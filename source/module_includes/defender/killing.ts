@@ -278,7 +278,7 @@ return
 			killtrigger 2
 			return
 		else
-			setTextLineTrigger	1	:switchcheck	"Trade with "
+			setTextTrigger	1	:switchcheck	"Trade with "
 			send "*"
 			pause
 		end
