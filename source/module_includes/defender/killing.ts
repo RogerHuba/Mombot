@@ -32,7 +32,7 @@
 	if ($navigate~starting_ship_type <> $player~ship_type)
 		setvar $switchboard~message "I've been podded, but I am still on the planet.  Switching into ship on planet if possible.*"
 		gosub :switchboard~switchboard
-		send "e y "
+		gosub :switchships
 		gosub :ship~getshipstats
 		gosub :player~quikstats
 		setvar $navigate~starting_ship_type $player~ship_type
@@ -57,7 +57,9 @@
 	setvar $capEmptyShips true
 	if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
 		if ($switch)
-			send " e y " 
+			gosub :switchships
+			setvar $SHIP~SHIP_MAX_ATTACK $switch_ship_max_attack
+			setvar $SHIP~SHIP_OFFENSIVE_ODDS $switch_ship_offensive_odds
 		end
 		if ($capture = true)
 			gosub :combat~fastCapture
@@ -67,7 +69,7 @@
 			gosub :combat~fastCitadelAttack
 		end
 		if ($switch)
-			send " e y " 
+			gosub :switchships
 			setvar $player~ship_type $navigate~starting_ship_type 
 			setvar $ship~SHIP_MAX_ATTACK $navigate~starting_ship_max_attack
 			setvar $ship~SHIP_OFFENSIVE_ODDS $navigate~starting_ship_offensive_odds 
@@ -78,12 +80,14 @@
 		goto :scan_for_targets
 	elseif ((($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE)))
 		if ($switch)
-			send " e y " 
+			gosub :switchships
+			setvar $SHIP~SHIP_MAX_ATTACK $switch_ship_max_attack
+			setvar $SHIP~SHIP_OFFENSIVE_ODDS $switch_ship_offensive_odds
 		end
 		gosub :combat~fastCapture
 		send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 		if ($switch)
-			send " e y "
+			gosub :switchships
 			setvar $player~ship_type $navigate~starting_ship_type 
 			setvar $ship~SHIP_MAX_ATTACK $navigate~starting_ship_max_attack
 			setvar $ship~SHIP_OFFENSIVE_ODDS $navigate~starting_ship_offensive_odds 
@@ -259,6 +263,29 @@ return
 	end
 return
 
+:switchships 
+	killtrigger 1
+	killtrigger 2
+	setTextLineTrigger	1	:switchcheck	"Trade with "
+	setTextTrigger		2	:switchdone 	"Citadel treasury contains "
+	send " e"
+	pause
+
+	:switchcheck
+		getwordpos CURRENTLINE $pos "Trade with "&$main~saveme_user
+		if ($pos > 0)
+			send "y * * * * * * "
+			killtrigger 2
+			return
+		else
+			setTextLineTrigger	1	:switchcheck	"Trade with "
+			send "*"
+			pause
+		end
+	:switchdone
+		killtrigger 1
+		killtrigger 2
+return
 
 :killtriggers
 	killalltriggers
