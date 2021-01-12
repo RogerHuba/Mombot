@@ -264,6 +264,7 @@ return
 return
 
 :switchships 
+	setvar $foundSwitchShip false
 	killtrigger 1
 	killtrigger 2
 	setTextTrigger	1	:switchcheck	"Trade with "
@@ -272,16 +273,19 @@ return
 	pause
 
 	:switchcheck
-		getwordpos CURRENTLINE $pos "Trade with "&$main~saveme_user
-		if ($pos > 0)
-			send "y * * * * * * "
-			killtrigger 2
-			return
-		else
-			setTextTrigger	1	:switchcheck	"Trade with "
+		if ($foundSwitchShip = true)
 			send "*"
-			pause
+		else
+			getwordpos CURRENTLINE $pos "Trade with "&$main~saveme_user
+			if ($pos > 0)
+				setvar $foundSwitchShip true
+				send "y"
+			else
+				send "*"
+			end		
 		end
+		setTextTrigger	1	:switchcheck	"Trade with "
+		pause
 	:switchdone
 		killtrigger 1
 		killtrigger 2
