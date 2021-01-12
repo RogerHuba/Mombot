@@ -427,7 +427,6 @@
 
 	if ($main~saveme)
 		send "'" $main~saveme_bot " unlock*"
-		waiton " exits the game."
 		waiton " enters the game."
 		getText "[[START]]"&CURRENTLINE $main~saveme_user "[[START]]" " enters the game."
 		waiton "- Ship has been unlocked!"
