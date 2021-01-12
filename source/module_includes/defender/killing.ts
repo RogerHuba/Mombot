@@ -266,8 +266,8 @@ return
 :switchships 
 	killtrigger 1
 	killtrigger 2
-	setTextLineTrigger	1	:switchcheck	"Trade with "
-	setTextTrigger		2	:switchdone 	"Citadel treasury contains "
+	setTextTrigger	1	:switchcheck	"Trade with "
+	setTextTrigger	2	:switchdone 	"Citadel treasury contains "
 	send " e"
 	pause
 
