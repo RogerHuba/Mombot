@@ -198,12 +198,20 @@ return
 #		add $i 1
 #	end
 
+	#########################################
+	# ignore fighter hits in current sector #
+	#########################################
+	if ($sector = $player~current_sector)
+		return
+	end
+
 	getwordpos $adjacent_sectors $pos " "&$sector&" "
 	if ($pos > 0)
 		setvar $found true
 		setvar $adjacent true
 		goto :fire_adjacent
 	end
+
 
 	getwordpos $bot~last_fighter_attack $posretreat " retreated."
 	getwordpos $bot~last_fighter_attack $posdestroyed " DESTROYED "

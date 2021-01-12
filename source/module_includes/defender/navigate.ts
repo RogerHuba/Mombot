@@ -182,6 +182,14 @@ return
 return
 
 :runaway_if_needed
+	###################################################
+	# Don't run if you are in a bubble or farm sector #
+	###################################################
+	getsectorparameter $player~current_sector "BUBBLE" $isBubble
+	getsectorparameter $player~current_sector "FARM" $isFarm
+	if (($isBubble = TRUE) OR ($isFarm = TRUE))
+		return
+	end
 	if ((($sector~realTraderCount = $sector~corpieCount) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1)) or ($player~current_sector = $map~home_sector))
 		#############################################
 		# do nothing if there is no enemy in sector #
@@ -215,13 +223,6 @@ return
 		# Only run from shielded planets - might want to make this an option #
 		######################################################################
 		if ($shieldedPlanetCount <= 1)
-			return
-		end
-		###########################################
-		# Don't run if you are in a bubble sector #
-		###########################################
-		getsectorparameter $player~current_sector "BUBBLE" $isBubble
-		if ($isBubble = TRUE)
 			return
 		end
 

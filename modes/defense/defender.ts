@@ -25,6 +25,8 @@
 
 	setvar $check_history false
 	setarray $fire_history sectors
+	setarray $friendly_sectors sectors
+
 
 	setVar $START_FIG_HIT "Deployed Fighters Report Sector "
 	setVar $END_FIG_HIT   ":"
@@ -86,6 +88,18 @@
 		setVar $SWITCHBOARD~message "It appears no grid data is available.  Run a fighter grid checker that uses the sector parameter FIGSEC. (Try figs command)*"
 		gosub :SWITCHBOARD~switchboard
 		halt
+	end
+
+	setVar $SWITCHBOARD~message "Loading farm and bubble sectors so I don't fire on them.*"
+	gosub :SWITCHBOARD~switchboard
+	setvar $i 1
+	while ($i <= sectors)
+		getsectorparameter $i "BUBBLE" $isBubble
+		getsectorparameter $i "FARM" $isFarm
+		if (($isFarm = true) OR ($isBubble = true))
+			setvar $friendly_sector[$i] true
+		end
+		add $i 1
 	end
 
 	gosub :PLAYER~quikstats
@@ -795,14 +809,7 @@
 		if ($photon~retreatfighter = true)
 			gosub :photon~retreatphoton
 		else
-			if (($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
-				goto :can_not_fire
-			end
-			getsectorparameter $photon~sector "BUBBLE" $isBubble
-			getsectorparameter $photon~sector "FARM" $isFarm
-			if (($isBubble = true) or ($isFarm = true))
-				setvar $switchboard~message "Can not fire into bubble or farm sector "&$photon~sector&"!*"
-				gosub :switchboard~switchboard
+			if (($friendly_sectors[$photon~sector] = true) or ($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
 				goto :can_not_fire
 			end
 			gosub :photon~photon
@@ -1100,16 +1107,16 @@ return
 :can_not_fire
 	if ($photon~found = true)
 		if ($fire_history[$photon~sector] > 5)
-			setvar $switchboard~message "Fired more than 5 times into sector "&$photon~sector&".  That's too many.  Restart script if you want to keep photoning.*"
-			gosub :switchboard~switchboard
+			echo "*Fired more than 5 times into sector "&$photon~sector&".  That's too many.  Restart script if you want to keep photoning.*"
 		end
 		if ($photon~last_sector = $photon~sector)
-			setvar $switchboard~message "Can't fire into sector "&$photon~sector&" twice.*"
-			gosub :switchboard~switchboard
+			echo "*Can't fire into sector "&$photon~sector&" twice.*"
 		end
 		if ($photon~sector = $map~home_sector)
-			setvar $switchboard~message "Can not fire into home sector.*"
-			gosub :switchboard~switchboard
+			echo "*Can not fire into home sector.*"
+		end
+		if ($friendly_sectors[$photon~sector] = true)
+			echo "*Can not fire into bubble or farm sector "&$photon~sector&"!*"
 		end
 	end
 	gosub :killing~scan_for_targets
