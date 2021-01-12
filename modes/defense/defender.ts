@@ -427,6 +427,9 @@
 
 	if ($main~saveme)
 		send "'" $main~saveme_bot " unlock*"
+		waiton " exits the game."
+		waiton " enters the game."
+		getText "[[START]]"&CURRENTLINE $main~saveme_user "[[START]]" " enters the game."
 		waiton "- Ship has been unlocked!"
 
 		send "'" $main~saveme_bot " saveme on " #34 $bot~username #34 "*"
@@ -445,12 +448,12 @@
 			gosub :switchboard~switchboard
 
 		if ($killing~switch)
-			send " e y "
+			gosub :killing~switchships
 	    	gosub :SHIP~getShipStats
 			setvar $killing~switch_ship_type $player~ship_type
 			setvar $killing~switch_ship_max_attack $ship~SHIP_MAX_ATTACK
 			setvar $killing~switch_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
-			send " e y "
+			gosub :killing~switchships
 	    end
 	    gosub :SHIP~getShipStats
 	end
