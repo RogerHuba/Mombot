@@ -92,7 +92,6 @@
 	end
 
 
-	gosub :refresh_sectors
 
 
 	gosub :PLAYER~quikstats
@@ -560,6 +559,9 @@
 	# to allow twarp routine with photon #
 	setvar $settings~override true
 
+	setvar $switchboard~message "Preloading sector data..  Please wait a couple seconds.*"
+	gosub :switchboard~switchboard
+	gosub :refresh_sectors
 
 	###########################################
 	# Main information processor for defender #
