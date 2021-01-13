@@ -410,10 +410,10 @@
 	waitOn "Planet command"
 	send "c "
 
-	gosub :player~quikstats
-
 	setvar $switchboard~message "Preloading sector data..  Please wait a couple seconds.*"
 	gosub :switchboard~switchboard
+	gosub :player~quikstats
+
 	gosub :refresh_sectors
 
 	gosub :check_for_photon_refurb
