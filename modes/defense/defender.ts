@@ -576,7 +576,7 @@
 			setvar $j 1
 			setvar $foundSector false
 			while ((SECTOR.WARPSIN[$i][$j] > 0) and ($foundSector = false))
-				setVar $tempAdj SECTOR.WARPSIN[$sector][$j]
+				setVar $tempAdj SECTOR.WARPSIN[$i][$j]
 				getSectorParameter $tempAdj "FIGSEC" $isFigged
 				if ($isFigged = true)
 					setvar $main~attack_sectors[$i] $tempAdj
