@@ -1134,6 +1134,10 @@ return
 			else
 				setvar $friendly_sector[$i] false
 			end
+			if (($i = $map~stardock) OR ($i <= 10))
+				setvar $friendly_sector[$i] true
+				setSectorParameter $i "FIGSEC" false
+			end
 			setvar $foundSector false
 			setvar $main~attack_sectors[$i] 0
 			setvar $j 1
