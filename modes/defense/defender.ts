@@ -566,30 +566,6 @@
 	setDelayTrigger	   announce_trigger :announce	1200000
 
 	:processing
-		setvar $i 1
-		while ($i <= sectors)
-			getsectorparameter $i "BUBBLE" $isBubble
-			getsectorparameter $i "FARM" $isFarm
-			if (($isFarm = true) OR ($isBubble = true))
-				setvar $friendly_sector[$i] true
-			else
-				setvar $friendly_sector[$i] false
-			end
-			setvar $foundSector false
-			setvar $main~attack_sectors[$i] 0
-			setvar $j 1
-			while ((SECTOR.WARPSIN[$i][$j] > 0) and ($foundSector = false))
-				setVar $tempAdj SECTOR.WARPSIN[$i][$j]
-				getSectorParameter $tempAdj "FIGSEC" $isFigged
-				if ($isFigged = true)
-					setvar $main~attack_sectors[$i] $tempAdj
-					setvar $foundSector true
-				end
-				add $j 1
-			end
-			add $i 1
-		end
-
 		gosub :kill_defender_triggers
 		if ($planet~planet_fighters < ($planet~planet_fighters_max/3))
 			if ($buyfig = true)
@@ -734,6 +710,30 @@
 			setvar $switchboard~message $switchboard~message&"*  Holokills attempted "&$combat~holokill_count&" times *"
 		end
 		gosub :switchboard~switchboard
+
+		setvar $i 1
+		while ($i <= sectors)
+			getsectorparameter $i "BUBBLE" $isBubble
+			getsectorparameter $i "FARM" $isFarm
+			if (($isFarm = true) OR ($isBubble = true))
+				setvar $friendly_sector[$i] true
+			else
+				setvar $friendly_sector[$i] false
+			end
+			setvar $foundSector false
+			setvar $main~attack_sectors[$i] 0
+			setvar $j 1
+			while ((SECTOR.WARPSIN[$i][$j] > 0) and ($foundSector = false))
+				setVar $tempAdj SECTOR.WARPSIN[$i][$j]
+				getSectorParameter $tempAdj "FIGSEC" $isFigged
+				if ($isFigged = true)
+					setvar $main~attack_sectors[$i] $tempAdj
+					setvar $foundSector true
+				end
+				add $j 1
+			end
+			add $i 1
+		end
 
 		setDelayTrigger	   announce_trigger :announce	1200000
 		goto :processing
