@@ -25,7 +25,7 @@
 
 	setvar $check_history false
 	setarray $fire_history sectors
-	setarray $friendly_sectors sectors
+	setarray $main~friendly_sectors sectors
 	setarray $main~attack_sectors sectors
 
 
@@ -806,7 +806,7 @@
 		if ($photon~retreatfighter = true)
 			gosub :photon~retreatphoton
 		else
-			if (($friendly_sectors[$photon~sector] = true) or ($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
+			if (($main~friendly_sectors[$photon~sector] = true) or ($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
 				goto :can_not_fire
 			end
 			gosub :photon~photon
@@ -1112,7 +1112,7 @@ return
 		if ($photon~sector = $map~home_sector)
 			echo "*Can not fire into home sector.*"
 		end
-		if ($friendly_sectors[$photon~sector] = true)
+		if ($main~friendly_sectors[$photon~sector] = true)
 			echo "*Can not fire into bubble or farm sector "&$photon~sector&"!*"
 		end
 	end

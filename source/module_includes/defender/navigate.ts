@@ -24,7 +24,7 @@
 			setVar $focus $que[$bottom]
 			getsectorparameter $focus "FIGSEC" $isFigged
 			getsectorparameter $focus "LIMPSEC" $isLimped
-			getsectorparameter $focus "BUBBLE" $isBubble
+			setvar $isBubble $main~friendly_sectors[$focus]
 			getsectorparameter $focus "MSLSEC" $isMsl
 			getsectorparameter $focus "ALIENS" $isAlienSpace
 
@@ -114,7 +114,7 @@ return
 			setVar $focus $que[$bottom]
 			getsectorparameter $focus "FIGSEC" $isFigged
 			getsectorparameter $focus "LIMPSEC" $isLimped
-			getsectorparameter $focus "BUBBLE" $isBubble
+			setvar $isBubble $main~friendly_sectors[$focus]
 			getsectorparameter $focus "MSLSEC" $isMsl
 			getsectorparameter $focus "ALIENS" $isAlienSpace
 
@@ -185,9 +185,7 @@ return
 	###################################################
 	# Don't run if you are in a bubble or farm sector #
 	###################################################
-	getsectorparameter $player~current_sector "BUBBLE" $isBubble
-	getsectorparameter $player~current_sector "FARM" $isFarm
-	if (($isBubble = TRUE) OR ($isFarm = TRUE))
+	if ($main~friendly_sectors[$player~current_sector] = true)
 		return
 	end
 	if ((($sector~realTraderCount = $sector~corpieCount) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1)) or ($player~current_sector = $map~home_sector))

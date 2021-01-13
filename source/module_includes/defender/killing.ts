@@ -104,8 +104,7 @@
 	# some weird code to kill beacons outside of our bubble #
 	#########################################################
 
-	getSectorParameter $player~current_sector "BUBBLE" $isBubble
-	if (($sector~containsBeacon = true) and ($isBubble <> true))
+	if (($sector~containsBeacon = true) and ($main~friendly_sectors[$player~current_sector] <> true))
 		send "q q a y * * * * * * * * * * * * l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 	end
 

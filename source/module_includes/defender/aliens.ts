@@ -170,7 +170,7 @@ return
 		if ($player~current_prompt = "Command")
 			gosub :PLANET~landingSub		
 		end
-		getSectorParameter $player~current_sector "BUBBLE" $isBubble
+		setvar $isBubble $main~friendly_sectors[$focus]
 		if (($sector~containsBeacon = true) and ($isBubble <> true))
 			send "q q a y * * * * * * * l "&$planet~planet&"* m*** c "
 		else
