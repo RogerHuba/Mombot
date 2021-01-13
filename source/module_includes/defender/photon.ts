@@ -236,7 +236,7 @@ return
 			return
 		end
 	end
-	if ($paranoid)
+	if ($paranoid = true)
 		getSectorParameter $sector "LIMPSEC" $isLimped
 		if ($isLimped <> true)
 			return
@@ -292,7 +292,7 @@ return
 		setvar $adjacent true
 		goto :fire_adjacent
 	end
-	if ($paranoid)
+	if ($paranoid = true)
 		getSectorParameter $sector "LIMPSEC" $isLimped
 		if ($isLimped <> true)
 			return
