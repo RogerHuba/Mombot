@@ -6,29 +6,23 @@
 	if ($bot~last_hit > 0)
 		setvar $sector $bot~last_hit
 	end
-	setVar $i 1
-	while (SECTOR.WARPSIN[$sector][$i] > 0)
-		setVar $tempAdj SECTOR.WARPSIN[$sector][$i]
-		getSectorParameter $tempAdj "FIGSEC" $isFigged
-		if ($isFigged = true)
-			setVar $adjsec $tempAdj
-			if ($adjacentphoton = true)
-				goto :fire_photon
-			else
-				if ($density = true)
-					send "p" $adjsec "*  y  "
-					if ($mode~allkeys = true)
-						send "c n 9 * q "
-						setvar $photon~is_all_keys false
-					end
-					gosub :densityDrop
-				else
-					send "p" $adjsec "*  y   p" $sector "*  y  "
+	setVar $adjsec $main~attack_sectors[$sector]
+	if ($adjsec > 0)
+		if ($adjacentphoton = true)
+			goto :fire_photon
+		else
+			if ($density = true)
+				send "p" $adjsec "*  y  "
+				if ($mode~allkeys = true)
+					send "c n 9 * q "
+					setvar $photon~is_all_keys false
 				end
-				return
+				gosub :densityDrop
+			else
+				send "p" $adjsec "*  y   p" $sector "*  y  "
 			end
+			return
 		end
-		add $i 1
 	end
 	setvar $switchboard~message "No Adjacent fig found!*"
 	#gosub :switchboard~switchboard
