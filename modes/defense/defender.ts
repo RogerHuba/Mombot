@@ -572,9 +572,12 @@
 			getsectorparameter $i "FARM" $isFarm
 			if (($isFarm = true) OR ($isBubble = true))
 				setvar $friendly_sector[$i] true
+			else
+				setvar $friendly_sector[$i] false
 			end
-			setvar $j 1
 			setvar $foundSector false
+			setvar $main~attack_sectors[$i] 0
+			setvar $j 1
 			while ((SECTOR.WARPSIN[$i][$j] > 0) and ($foundSector = false))
 				setVar $tempAdj SECTOR.WARPSIN[$i][$j]
 				getSectorParameter $tempAdj "FIGSEC" $isFigged
