@@ -222,7 +222,7 @@ goto :_START_
 		setvar $switchboard~message "Reloader "&$VERSION&" Active - Using Planet "&$planet~planet&".*"
 	end
 	gosub :switchboard~switchboard
-	setvar $switchboard~message "Will reload when I get below "&$threshold&" ship fighters.*"
+	setvar $switchboard~message "Will reload when I get damaged more than "&$threshold&" fighters and shields.*"
 	gosub :switchboard~switchboard
 	if ($topoff = true)
 		setvar $switchboard~message "Will topoff from sector figs before using planet.*"
