@@ -85,6 +85,9 @@ goto :_START_
 	if ($replace_fig)
 		setTextLineTrigger 4 :replace_fig " of your fighters in sector "&$player~current_sector
 	end
+	if ($player~fighters < $ship~SHIP_FIGHTERS_MAX)
+		setDelayTrigger delay :reload 30000 
+	end
 	pause
 
 :replace_fig
@@ -119,10 +122,6 @@ goto :_START_
 	goto :settriggers
 :sub_reload
 	getWord CURRENTANSILINE $ck 1
-	getWord CURRENTLINE $ck2 4
-	getWord CURRENTLINE $ck3 5
-	getWord CURRENTLINE $ck4 6
-	getWord CURRENTLINE $ck5 7
 	if ($ck <> "[K[1A[1;33mShipboard")
 		echo "spoof"
 		setTextLineTrigger 1 :sub_reload "Shipboard Computers"
@@ -162,6 +161,11 @@ goto :_START_
 	end
 
 :reload
+	killtrigger 1
+	killtrigger 2
+	killtrigger 3
+	killtrigger 4
+	killtrigger delay
 	if ($topoff = true)
 		gosub :topoff
 	else
