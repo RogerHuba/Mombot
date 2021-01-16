@@ -77,6 +77,8 @@ goto :_START_
 	killtrigger 2
 	killtrigger 3
 	killtrigger 4
+	killtrigger delay
+
 	setTextLineTrigger 1 :sub_reload "Shipboard Computers"
 	setTextLineTrigger 2 :landed		"{"&$bot~bot_name&"} - In Cit - Planet"
 	if ($ig = true)
@@ -86,7 +88,8 @@ goto :_START_
 		setTextLineTrigger 4 :replace_fig " of your fighters in sector "&$player~current_sector
 	end
 	if ($player~fighters < $ship~SHIP_FIGHTERS_MAX)
-		setDelayTrigger delay :reload 30000 
+		getrnd $random_delay 30000 100000
+		setDelayTrigger delay :reload $random_delay 
 	end
 	pause
 
