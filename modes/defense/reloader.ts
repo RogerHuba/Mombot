@@ -179,12 +179,8 @@ goto :_START_
 			gosub :player~quikstats
 			if ($player~fighters < $ship~ship_fighters_max)
 				setvar $topoff false
-				goto :reload
 			end
 		end
-		setvar $switchboard~message "Planet Too Low On Fighters. Reloader Shutting Down*"
-		gosub :switchboard~switchboard
-		halt
 	end
 	goto :settriggers
 
