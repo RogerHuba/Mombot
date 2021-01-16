@@ -77,6 +77,8 @@ goto :_START_
 	killtrigger 2
 	killtrigger 3
 	killtrigger 4
+	killtrigger delay
+
 	setTextLineTrigger 1 :sub_reload "Shipboard Computers"
 	setTextLineTrigger 2 :landed		"{"&$bot~bot_name&"} - In Cit - Planet"
 	if ($ig = true)
@@ -84,6 +86,10 @@ goto :_START_
 	end
 	if ($replace_fig)
 		setTextLineTrigger 4 :replace_fig " of your fighters in sector "&$player~current_sector
+	end
+	if ($player~fighters < $ship~SHIP_FIGHTERS_MAX)
+		getrnd $random_delay 30000 100000
+		setDelayTrigger delay :reload $random_delay 
 	end
 	pause
 
@@ -119,10 +125,6 @@ goto :_START_
 	goto :settriggers
 :sub_reload
 	getWord CURRENTANSILINE $ck 1
-	getWord CURRENTLINE $ck2 4
-	getWord CURRENTLINE $ck3 5
-	getWord CURRENTLINE $ck4 6
-	getWord CURRENTLINE $ck5 7
 	if ($ck <> "[K[1A[1;33mShipboard")
 		echo "spoof"
 		setTextLineTrigger 1 :sub_reload "Shipboard Computers"
@@ -162,6 +164,11 @@ goto :_START_
 	end
 
 :reload
+	killtrigger 1
+	killtrigger 2
+	killtrigger 3
+	killtrigger 4
+	killtrigger delay
 	if ($topoff = true)
 		gosub :topoff
 	else
@@ -175,12 +182,8 @@ goto :_START_
 			gosub :player~quikstats
 			if ($player~fighters < $ship~ship_fighters_max)
 				setvar $topoff false
-				goto :reload
 			end
 		end
-		setvar $switchboard~message "Planet Too Low On Fighters. Reloader Shutting Down*"
-		gosub :switchboard~switchboard
-		halt
 	end
 	goto :settriggers
 
@@ -222,7 +225,7 @@ goto :_START_
 		setvar $switchboard~message "Reloader "&$VERSION&" Active - Using Planet "&$planet~planet&".*"
 	end
 	gosub :switchboard~switchboard
-	setvar $switchboard~message "Will reload when I get below "&$threshold&" ship fighters.*"
+	setvar $switchboard~message "Will reload when I get damaged more than "&$threshold&" fighters and shields.*"
 	gosub :switchboard~switchboard
 	if ($topoff = true)
 		setvar $switchboard~message "Will topoff from sector figs before using planet.*"
