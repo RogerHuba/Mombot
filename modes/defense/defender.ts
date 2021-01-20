@@ -360,7 +360,7 @@
 	gosub :kill_defender_triggers
 	send "q"
 	gosub :PLANET~getPlanetInfo	
-	send "t*t1* c "
+	send "t*t1* c x t Login**q "
 
 	####################################################################################################
 	# If atmosphere cannon isn't set, set it to 1% so make sure we can tell if someone lands on planet #
@@ -1027,6 +1027,10 @@ return
 		gosub :killing~set_the_cannon
 	end
 	if (($player~photons < $photon~shooting_count) and ($nophoton <> true))
+		if (($player~turns <= 0) && ($player~unlimitedGame <> true))
+			setvar $switchboard~message "No turns to refurb photons.  Skipping - might need to wait for top of the hour.*"
+			gosub :switchboard~switchboard
+		end
 		gosub :navigate~navigate_to_limp
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
