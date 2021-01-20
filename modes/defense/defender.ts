@@ -1027,7 +1027,7 @@ return
 		gosub :killing~set_the_cannon
 	end
 	if (($player~photons < $photon~shooting_count) and ($nophoton <> true))
-		if (($player~turns <= 0) && ($player~unlimitedGame <> true))
+		if (($player~turns <= 0) and ($player~unlimitedGame <> true))
 			setvar $switchboard~message "No turns to refurb photons.  Skipping - might need to wait for top of the hour.*"
 			gosub :switchboard~switchboard
 		end
