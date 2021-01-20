@@ -34,7 +34,8 @@
 				while (SECTOR.WARPSIN[$focus][$i] > 0)
 					setVar $tempAdj SECTOR.WARPSIN[$focus][$i]
 					getSectorParameter $tempAdj "FIGSEC" $isSecureFigged
-					if ($isSecureFigged <> true)
+					getsectorparameter $tempAdj "MSLSEC" $isMsl
+					if (($isSecureFigged <> true) OR ($isMsl = true))
 						setvar $issecure false
 					end
 					add $i 1
@@ -114,15 +115,29 @@ return
 			setVar $focus $que[$bottom]
 			getsectorparameter $focus "FIGSEC" $isFigged
 			getsectorparameter $focus "LIMPSEC" $isLimped
-			setvar $isBubble $main~friendly_sectors[$focus]
-			getsectorparameter $focus "MSLSEC" $isMsl
-			getsectorparameter $focus "ALIENS" $isAlienSpace
 
 			###############################################################
 			# if it's our bubble, the assumption is the sectors are clean #
 			###############################################################
+			setvar $isBubble $main~friendly_sectors[$focus]
+			getsectorparameter $focus "MSLSEC" $isMsl
+			getsectorparameter $focus "ALIENS" $isAlienSpace
 
-			if ((((($isFigged = true) and ($isLimped = true)) and ($isAlienSpace <> true) and ($isMsl <> true)) or ($isBubble = true)) and (sector.navhaz[$focus] <= 0))
+
+			###########################################################################
+			# Make sure limp sector is surrounded by our fighters and not next to MSL #
+			###########################################################################
+			setvar $issecure true
+			while (SECTOR.WARPSIN[$focus][$i] > 0)
+				setVar $tempAdj SECTOR.WARPSIN[$focus][$i]
+				getSectorParameter $tempAdj "FIGSEC" $isSecureFigged
+				getsectorparameter $tempAdj "MSLSEC" $isMsl
+				if (($isSecureFigged <> true) OR ($isMsl = true))
+					setvar $issecure false
+				end
+				add $i 1
+			end
+			if ((((($isFigged = true) and ($isLimped = true)) and ($issecure = true) and ($isAlienSpace <> true) and ($isMsl <> true)) or ($isBubble = true)) and (sector.navhaz[$focus] <= 0))
 				setVar $nearfig $focus
 				gosub :pwarp_away
 				send "s"
