@@ -28,6 +28,7 @@
 		gosub :player~checkcorp
 		setvar $i 1
 		while ($i <= $player~corp_count)
+			send "'comparing " $player~corp_members[$i] " with " $who_called_me "*"
 			getwordpos $player~corp_members[$i] $pos $who_called_me
 			if ($pos > 0)
 				setvar $bot~parm1 $player~corp_members[$i][1]
