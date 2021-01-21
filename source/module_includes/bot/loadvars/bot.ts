@@ -24,6 +24,7 @@
 	loadVar $silent_running
 	loadVar $botIsDeaf
 	loadvar $switchboard~self_command
+	loadvar $bot~command_caller
 	loadvar $planet~planet
 	loadVar $password
 	loadvar $letter

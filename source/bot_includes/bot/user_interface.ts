@@ -44,6 +44,8 @@
 			getLength $BOT~command&" " $BOT~commandLength
 			cutText $BOT~user_command_line $BOT~user_command_line $BOT~commandLength+1 9999
 			gosub :getParameters
+			setvar $bot~command_caller "self"
+			savevar $bot~command_caller
 			goto :command_processing
 		else
 			goto :BOT~wait_for_command
@@ -931,6 +933,8 @@ goto :BOT~wait_for_command
 		stripText $name " "
 		lowerCase $name
 		if ($user_name = $name)
+			setvar $bot~command_caller $user_name
+			savevar $bot~command_caller
 			setVar $authorization 1
 			return
 		end

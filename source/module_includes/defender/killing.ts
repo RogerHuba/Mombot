@@ -225,6 +225,7 @@ return
 :slingshot
 	setvar $combat~slingshot true
 :doHoloKill
+	setvar $holokill_stuck false
 	gosub :player~quikstats
 	setvar $before_holo_kill_sector $player~current_sector
 	if ($switch)
@@ -250,6 +251,7 @@ return
 			# Something has gone wrong, call saveme #
 			#########################################
 			gosub :navigate~call
+			setvar $holokill_stuck true
 		else 
 			gosub :switchboard~switchboard
 			send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
