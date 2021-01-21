@@ -18,6 +18,17 @@
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $bot~validPrompts "Citadel"
 	gosub :bot~checkstartingprompt
+	if ($bot~parm1 = "me")
+		setvar $who_called_me $bot~command_caller
+		gosub :player~checkcorp
+		setvar $i 1
+		while ($i <= $player~corp_count)
+			getwordpos $corp_members[$i] $pos $who_called_me
+			if ($pos > 0)
+				setvar $bot~parm1 $corp_members[$i][1]
+			end
+		end
+	end
 	isNumber $test $bot~parm1
 	if (($test = FALSE) OR ($bot~parm1 = ""))
 		setVar $SWITCHBOARD~message "Sector must be entered as a number between 11-"&SECTORS&"*"

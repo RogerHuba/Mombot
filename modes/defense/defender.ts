@@ -852,16 +852,32 @@
 			gosub :killing~slingshot
 		elseif ($killing~holokill = true)
 			gosub :killing~doholokill
-			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
-				gosub :pwarp_direct_and_kill
-			end
-			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
-				gosub :killing~doholokill
-				gosub :pwarp_direct_and_kill
-			end
-			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
-				gosub :killing~doholokill
-				gosub :pwarp_direct_and_kill
+			if ($killing~holokill_stuck <> true)
+				if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+					gosub :pwarp_direct_and_kill
+				end
+				if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+					gosub :killing~doholokill
+					gosub :pwarp_direct_and_kill
+				end
+				if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+					gosub :killing~doholokill
+					gosub :pwarp_direct_and_kill
+				end
+			else
+				send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+				gosub :player~quikstats
+				if ($player~current_prompt = "Command")
+					# Stuck in sector probably without planet #
+					# TODO #
+					# Need to add logic to xport out of ship, and twarp to planet sector and land. #
+					# twarp or mow to $killing~before_holo_kill_sector so we don't lose planet     #
+				else
+					if ($player~current_sector <> $killing~before_holo_kill_sector)
+						gosub :killing~scan_for_targets
+					end
+				end
+
 			end
 		end
 		gosub :check_for_target_change
