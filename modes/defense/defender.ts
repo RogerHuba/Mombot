@@ -364,7 +364,7 @@
 	gosub :kill_defender_triggers
 
 	gosub :checkShipForDefenderStatus
-	if ($isDefender = true)
+	if (($isDefender = true) and ($player~genesis > 0))
 		setVar $SWITCHBOARD~message "In a ship with defender odds so automatically turning on defender option.*"
 		gosub :SWITCHBOARD~switchboard
 		setvar $combat~defender true

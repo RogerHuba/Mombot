@@ -112,12 +112,16 @@
 
 		return
 	else
+		setVar $genesisCashNeeded 0 
+		setVar $limpetCashNeeded 0
+		setVar $armidCashNeeded 0
+		setVar $disruptorCashNeeded 0
+		if ($combat~defender = true)
+			setVar $genesisCashNeeded ((($SHIP~SHIP_GENESIS_MAX-$PLAYER~genesis)*$game~genesis_cost))
+		end
 		if ($deploymines = true)
 			setVar $limpetCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~LIMPETS)*$game~LIMPET_COST))
 			setVar $armidCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~ARMIDS)*$game~ARMID_COST))
-		else
-			setVar $limpetCashNeeded 0
-			setVar $armidCashNeeded 0
 		end
 		if ($killing~holokill)
 			setVar $photonCashNeeded ($photon~shooting_count*$game~photon_cost)
@@ -130,10 +134,8 @@
 		end
 		if ($deploydisruptors = true)
 			setVar $disruptorCashNeeded (10*$game~DISRUPTOR_COST)
-		else
-			setVar $disruptorCashNeeded 0
 		end
-		setVar $cashNeeded ($photonCashNeeded+$limpetCashNeeded+$armidCashNeeded+$disruptorCashNeeded+$game~LIMPET_REMOVAL_COST)
+		setVar $cashNeeded ($photonCashNeeded+$limpetCashNeeded+$armidCashNeeded+$disruptorCashNeeded+$genesisCashNeeded+$game~LIMPET_REMOVAL_COST)
 		setVar $furbing TRUE
 		if ($cashNeeded > currentcredits)
 			send "D" 
@@ -316,6 +318,9 @@
 			setVar $_Limps ""
 			setVar $_Mines ""
 
+			if ($combat~defender = true)
+				setVar $_Genesis "Max"
+			end
 			if ($deploymines = true)
 				setVar $_Limps "Max"
 				setVar $_Mines "Max"
@@ -531,6 +536,18 @@ return
 :DoPurchases
 	send "|h "
 	waitfor "<Hardware Emporium>"
+	#=============================================== PURCHASE GENESIS
+	if ($_Genesis  <> "")
+		send "T "
+		waitfor "How many Genesis Torpedoes do you want"
+		if ($_Genesis  = "Max")
+			getText CURRENTLINE $buy "(Max" ")"
+			send $buy & "* "
+		else
+			send $buy $_Genesis & "* "
+		end
+		waitfor "<Hardware Emporium>"
+	end
 	#=============================================== PURCHASE LIMPS
 	if ($_Limps  <> "")
 		send "L "
