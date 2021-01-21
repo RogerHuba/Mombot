@@ -29,7 +29,7 @@
 	end
 	if ($bot~parm1 = "me")
 		if ($bot~command_caller = "self")
-			setVar $SWITCHBOARD~message "I don't think you need to pwarp to yourself.*"
+			setVar $SWITCHBOARD~message "I don't think you need to mow to yourself.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
