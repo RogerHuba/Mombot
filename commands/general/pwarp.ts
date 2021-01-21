@@ -23,9 +23,9 @@
 		gosub :player~checkcorp
 		setvar $i 1
 		while ($i <= $player~corp_count)
-			getwordpos $corp_members[$i] $pos $who_called_me
+			getwordpos $player~corp_members[$i] $pos $who_called_me
 			if ($pos > 0)
-				setvar $bot~parm1 $corp_members[$i][1]
+				setvar $bot~parm1 $player~corp_members[$i][1]
 			end
 			add $i 1
 		end
