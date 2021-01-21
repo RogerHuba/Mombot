@@ -1210,8 +1210,9 @@ return
 		end
 		while (($isFound = FALSE) AND ($s < $ship~shipCounter))
 			striptext $ship~shipList[$s] "["
+			trim $ship~shipList[$s]
 			getwordpos $ship~shipList[$s] $pos $shipname
-			send "'"&$shipname&"]["&$ship~shipList[$s]&"*"
+			send "'["&$shipname&"]["&$ship~shipList[$s]&"]*"
 			if ($pos > 0)
 				#echo "*["&$shipname&"*][*"&$ship~shipList[$s]&"]*"
 				setVar $isFound TRUE
