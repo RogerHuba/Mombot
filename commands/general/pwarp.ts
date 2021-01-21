@@ -34,6 +34,7 @@
 			end
 			add $i 1
 		end
+		send "'I'm seeing " $bot~parm1 " as the sector to pwarp to*"
 	end
 	isNumber $test $bot~parm1
 	if (($test = FALSE) OR ($bot~parm1 = ""))
