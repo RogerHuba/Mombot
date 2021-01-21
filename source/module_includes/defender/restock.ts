@@ -317,7 +317,8 @@
 			setVar $_Disrupt ""
 			setVar $_Limps ""
 			setVar $_Mines ""
-
+			setVar $_Genesis ""
+			
 			if ($combat~defender = true)
 				setVar $_Genesis "Max"
 			end
