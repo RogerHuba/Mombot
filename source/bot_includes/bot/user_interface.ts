@@ -935,7 +935,7 @@ goto :BOT~wait_for_command
 		stripText $name " "
 		lowerCase $name
 		if ($user_name = $name)
-			setvar $bot~command_caller $name
+			setvar $bot~command_caller $unstripped_name
 			savevar $bot~command_caller
 			setVar $authorization 1
 			return
