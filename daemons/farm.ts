@@ -323,6 +323,13 @@
 		setVar $merch FALSE
 	end
 
+	getWordPos $bot~user_command_line $pos "neg"
+	if ($pos > 0)
+		setVar $neg TRUE
+	else
+		setVar $neg FALSE
+	end
+
 	getWordPos $bot~user_command_line $pos "cim"
 	if ($pos > 0)
 		setVar $skipcim TRUE
@@ -445,7 +452,7 @@
 
 	gosub :BOT~banner
 
-	if (($get_figs = FALSE) and ($strip = FALSE) and ($warp = FALSE) and ($port = FALSE) and ($upgrade = FALSE) and ($colo = FALSE) and ($cash = FALSE) and ($shield = FALSE) and ($build = FALSE) and ($colonize = FALSE) and ($colo = FALSE) and ($bot~parm1 <> "") and ($defense = FALSE) and ($balance = FALSE) and ($barricade = FALSE) and ($armageddon = FALSE))
+	if (($get_figs = FALSE) and ($strip = FALSE) and ($neg = FALSE) and ($warp = FALSE) and ($port = FALSE) and ($upgrade = FALSE) and ($colo = FALSE) and ($cash = FALSE) and ($shield = FALSE) and ($build = FALSE) and ($colonize = FALSE) and ($colo = FALSE) and ($bot~parm1 <> "") and ($defense = FALSE) and ($balance = FALSE) and ($barricade = FALSE) and ($armageddon = FALSE))
 		setVar $SWITCHBOARD~message "What's the point?*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -1062,6 +1069,23 @@ return
 								send "t f " & $planet~CITADELCash & "* qq* l " & #8 & $planet~planetToFill & "* c t t " & $planet~CITADELCash & "* "
 							end
 						end
+						if ($neg = true)
+							send "qq* l " & #8 & $planet~planets[$j] & "* c "
+							gosub :merch
+							send "d"
+							waitOn "Citadel treasury contains "
+							getWord CURRENTLINE $planet~CITADELCash 4
+							stripText $planet~CITADELCash ","
+							if ($planet~CITADELCash > 0)
+								if ($planet~CITADELCash > 999999999) or (($planet~CITADELCash +  $PLAYER~CREDITS) > 999999999)
+									setVar $planet~CITADELCash (999999999 - $PLAYER~CREDITS)
+								else
+									setVar $planet~CITADELCash ($planet~CITADELCash + $PLAYER~CREDITS)
+								end
+								send "t f " & $planet~CITADELCash & "* qq* l " & #8 & $planet~planetToFill & "* c t t " & $planet~CITADELCash & "* "
+							end
+						end
+
 						send "qq* * "
 
 						if ($strip = true)
@@ -1904,6 +1928,21 @@ return
 		setVar $success TRUE
 	return
 
+:neg
+	setVar $BOT~command "neg"
+	setVar $bot~user_command_line " neg o e silent"
+
+	setVar $bot~parm1 "o"
+	saveVar $bot~parm1
+	setVar $bot~parm2 "e"
+	saveVar $bot~parm2
+	saveVar $BOT~command
+	saveVar $bot~user_command_line
+	load "scripts\"&$bot~mombot_directory&"\commands\cashing\neg.cts"
+	setEventTrigger		negended		:negended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\cashing\neg.cts"
+	pause
+	:negended
+return
 
 
 :fillplanetstats
