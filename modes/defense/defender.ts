@@ -18,6 +18,10 @@
 	loadvar $game~MULTIPLE_PHOTONS
 	loadvar $bot~folder
 
+	###################################
+	# sets smart behavior for citkill #
+	###################################
+	setvar $player~smart true
 
 	setVar $settings~sentinel_cycle 15000
 	setvar $sentinel~CheckCLVDetail 1
@@ -358,6 +362,14 @@
 
 	gosub :PLAYER~getInfo
 	gosub :kill_defender_triggers
+
+	gosub :checkShipForDefenderStatus
+	if ($isDefender = true)
+		setVar $SWITCHBOARD~message "In a ship with defender odds so automatically turning on defender option.*"
+		gosub :SWITCHBOARD~switchboard
+		setvar $combat~defender true
+	end
+
 	send "q"
 	gosub :PLANET~getPlanetInfo	
 	send "t*t1* c x t Login**q "
@@ -1158,6 +1170,56 @@ return
 		end
 return
 
+:checkShipForDefenderStatus
+		setvar $shipname $player~SHIP_TYPE_LONG
+		setVar $isFound FALSE
+		setVar $s 1
+		setVar $isDefender FALSE
+		replacetext $shipname ";" "m"
+		striptext $shipname "30m"
+		striptext $shipname "31m"
+		striptext $shipname "32m"
+		striptext $shipname "33m"
+		striptext $shipname "34m"
+		striptext $shipname "35m"
+		striptext $shipname "36m"
+		striptext $shipname "37m"
+		striptext $shipname "38m"
+		striptext $shipname "39m"
+		striptext $shipname "40m"
+		striptext $shipname "41m"
+		striptext $shipname "42m"
+		striptext $shipname "43m"
+		striptext $shipname "44m"
+		striptext $shipname "45m"
+		striptext $shipname "46m"
+		striptext $shipname "47m"
+		striptext $shipname "[0;30;47m"
+		striptext $shipname "[32;40m"
+		striptext $shipname "[0;"
+		striptext $shipname "[1;"
+		striptext $shipname "[0m"
+		striptext $shipname "[1m"
+		striptext $shipname #13
+		striptext $shipname #27
+		striptext $shipname ""
+		striptext $shipname "["
+
+		if ($ship~shipCounter <= 0)
+			gosub :ship~loadShipInfo
+		end
+		while (($isFound = FALSE) AND ($s < $ship~shipCounter))
+			striptext $ship~shipList[$s] "["
+			getwordpos $ship~shipList[$s] $pos $shipname
+			send "'"&$shipname&"]["&$ship~shipList[$s]&"*"
+			if ($pos > 0)
+				#echo "*["&$shipname&"*][*"&$ship~shipList[$s]&"]*"
+				setVar $isFound TRUE
+				setVar $isDefender $ship~shipList[$s][8]
+			end
+			add $s 1
+		end
+return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
