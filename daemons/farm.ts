@@ -1070,20 +1070,12 @@ return
 							end
 						end
 						if ($neg = true)
-							send "qq* l " & #8 & $planet~planets[$j] & "* c "
-							gosub :merch
-							send "d"
-							waitOn "Citadel treasury contains "
-							getWord CURRENTLINE $planet~CITADELCash 4
-							stripText $planet~CITADELCash ","
-							if ($planet~CITADELCash > 0)
-								if ($planet~CITADELCash > 999999999) or (($planet~CITADELCash +  $PLAYER~CREDITS) > 999999999)
-									setVar $planet~CITADELCash (999999999 - $PLAYER~CREDITS)
-								else
-									setVar $planet~CITADELCash ($planet~CITADELCash + $PLAYER~CREDITS)
-								end
-								send "t f " & $planet~CITADELCash & "* qq* l " & #8 & $planet~planetToFill & "* c t t " & $planet~CITADELCash & "* "
+							if ($planet~CITADEL > 0)
+								send "qq* l " & #8 & $planet~planets[$j] & "* c "
+							else
+								send "qq* l " & #8 & $planet~planets[$j] & "*"							
 							end
+							gosub :neg
 						end
 
 						send "qq* * "
