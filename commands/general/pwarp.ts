@@ -29,15 +29,15 @@
 		setvar $i 1
 		while ($i <= $player~corp_count)
 			lowercase $player~corp_members[$i]
-			send "'comparing " $player~corp_members[$i] " with " $who_called_me "*"
 			getwordpos $player~corp_members[$i] $pos $who_called_me
 			if ($pos > 0)
 				setvar $bot~parm1 $player~corp_members[$i][1]
+				goto :go_after_me
 			end
 			add $i 1
 		end
-		send "'I'm seeing " $bot~parm1 " as the sector to pwarp to*"
 	end
+	:go_after_me
 	isNumber $test $bot~parm1
 	if (($test = FALSE) OR ($bot~parm1 = ""))
 		setVar $SWITCHBOARD~message "Sector must be entered as a number between 11-"&SECTORS&"*"

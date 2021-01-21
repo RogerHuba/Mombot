@@ -27,6 +27,26 @@
 	if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
 		goto :wait_for_command
 	end
+	if ($bot~parm1 = "me")
+		if ($bot~command_caller = "self")
+			setVar $SWITCHBOARD~message "I don't think you need to pwarp to yourself.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		setvar $who_called_me $bot~command_caller
+		gosub :player~checkcorp
+		setvar $i 1
+		while ($i <= $player~corp_count)
+			lowercase $player~corp_members[$i]
+			getwordpos $player~corp_members[$i] $pos $who_called_me
+			if ($pos > 0)
+				setvar $bot~parm1 $player~corp_members[$i][1]
+				goto :go_after_me
+			end
+			add $i 1
+		end
+	end
+	:go_after_me
 
 	gosub :PLAYER~quikstats
 	setVar $homeSector $PLAYER~CURRENT_SECTOR
@@ -532,3 +552,4 @@ include "source\bot_includes\player\getcourse\player"
 include "source\bot_includes\player\addfigtodata\player"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\player\checkcorp\player"
