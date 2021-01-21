@@ -124,6 +124,7 @@
 :User_Access
 	gosub :BOT~bigdelay_killthetriggers
 	gosub :selfCommandPrompt
+	setvar $bot~command_caller "self"
 	lowercase $BOT~user_command_line
 	if ($BOT~user_command_line = "")
 		echo CURRENTANSILINE
