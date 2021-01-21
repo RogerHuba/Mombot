@@ -931,10 +931,11 @@ goto :BOT~wait_for_command
 	lowerCase $user_name
 	while ($i <= $BOT~corpycount)
 		cutText $BOT~corpy[$i] $name 1 6
+		setvar $unstripped_name $name
 		stripText $name " "
 		lowerCase $name
 		if ($user_name = $name)
-			setvar $bot~command_caller $user_name
+			setvar $bot~command_caller $name
 			savevar $bot~command_caller
 			setVar $authorization 1
 			return
