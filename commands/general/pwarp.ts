@@ -27,6 +27,7 @@
 			if ($pos > 0)
 				setvar $bot~parm1 $corp_members[$i][1]
 			end
+			add $i 1
 		end
 	end
 	isNumber $test $bot~parm1
