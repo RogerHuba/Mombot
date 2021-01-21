@@ -26,6 +26,7 @@
 			add $corp_count 1
 			setvar $corp_members[$corp_count] $name
 			getword $line $corp_members[$corp_count][1] 1
+			replacetext $corp_members[$corp_count][1] "P" ""
 		goto :ta_again
 
 	:done_ta
