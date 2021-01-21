@@ -10,7 +10,7 @@ end
 :b
 	if ($bot~parm1 = "me")
 		if ($bot~command_caller = "self")
-			setVar $SWITCHBOARD~message "I don't think you need to pwarp to yourself.*"
+			setVar $SWITCHBOARD~message "I don't think you need to bwarp to yourself.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
