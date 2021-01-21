@@ -19,6 +19,11 @@
 	setVar $bot~validPrompts "Citadel"
 	gosub :bot~checkstartingprompt
 	if ($bot~parm1 = "me")
+		if ($bot~command_caller = "self")
+			setVar $SWITCHBOARD~message "I don't think you need to pwarp to yourself.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
 		setvar $who_called_me $bot~command_caller
 		gosub :player~checkcorp
 		setvar $i 1
