@@ -532,7 +532,7 @@ return
 	else
 		setVar $qss[20] "No"
 		end
-	if ($GAME~PHOTONS_ENABLED)
+	if ($GAME~PHOTONS_ENABLED = TRUE)
 		if ($GAME~MULTIPLE_PHOTONS = TRUE)
 			setVar $qss[21] "Yes"
 		else
@@ -1288,6 +1288,8 @@ return
 		setVar $qss[13] "Xport to ship"
 	elseif ($landOnTerra)
 		setVar $qss[13] "Land on Terra"
+	elseif ($landOnStardock)
+		setVar $qss[13] "Land on Stardock"
 	else
 		setVar $qss[13] "Nothing"
 	end
@@ -1439,21 +1441,35 @@ return
 				setvar $xportToShip false
 				setVar $mowToOther FALSE
 				setVar $landOnTerra false
+				setVar $landOnStardock false
 				setVar $mowDestination ""
-				setvar $do_nothing false
+				setvar $do_nothing TRUE
 				setVar $fmowToDock FALSE
-			elseif (($BOT~mowToDock = false) and ($mowToAlpha = false) and ($fmowToDock = false) and ($mowToRylos = false) and ($mowToOther = false) and ($xportToShip = false) and ($landOnTerra = false))
+			elseif (($BOT~mowToDock = false) and ($mowToAlpha = false) and ($fmowToDock = false) and ($mowToRylos = false) and ($mowToOther = false) and ($xportToShip = false) and ($landOnTerra = false) and ($landOnStardock = false))
 				setVar $qss[12] "Land on Terra"
-				setvar $do_nothing true
+				setvar $do_nothing FALSE
 				setvar $BOT~mowToDock FALSE
 				setVar $mowToAlpha false
 				setVar $mowToRylos FALSE
 				setVar $mowToOther FALSE
 				setvar $xportToShip false
 				setVar $landOnTerra true
+				setVar $landOnStardock false
 				setVar $mowDestination ""	
 				setVar $fmowToDock FALSE	
 			elseif ($landOnTerra)
+				setVar $qss[12] "Land on Stardock"
+				setvar $BOT~mowToDock FALSE
+				setVar $mowToAlpha FALSE
+				setVar $mowToRylos FALSE
+				setVar $mowToOther FALSE
+				setvar $xportToShip false
+				setVar $landOnTerra false
+				setVar $landOnStardock true
+				setVar $mowDestination ""
+				setvar $do_nothing false
+				setVar $fmowToDock FALSE
+			elseif ($landOnStardock)
 				setVar $qss[12] "Mow To Custom TA"
 				setvar $BOT~mowToDock FALSE
 				setVar $mowToAlpha FALSE
@@ -1461,6 +1477,7 @@ return
 				setVar $mowToOther TRUE
 				setvar $xportToShip false
 				setVar $landOnTerra false
+				setVar $landOnStardock false
 				setVar $mowDestination ""
 				setvar $do_nothing false
 				setVar $fmowToDock FALSE
@@ -1472,6 +1489,7 @@ return
 				setvar $xportToShip false
 				setVar $mowToOther FALSE
 				setVar $landOnTerra false
+				setVar $landOnStardock false
 				setvar $do_nothing false
 				setVar $fmowToDock FALSE
 				setVar $mowDestination $MAP~stardock
@@ -1483,6 +1501,7 @@ return
 				setvar $xportToShip false
 				setVar $mowToOther FALSE
 				setVar $landOnTerra false
+				setVar $landOnStardock false
 				setvar $do_nothing false
 				setVar $fmowToDock TRUE
 				setVar $mowDestination $MAP~stardock
@@ -1493,6 +1512,7 @@ return
 				setVar $mowToRylos FALSE
 				setVar $mowToOther FALSE
 				setVar $landOnTerra false
+				setVar $landOnStardock false
 				setVar $bot~mowToDock  FALSE
 				setVar $mowDestination ""
 				setvar $do_nothing false
@@ -1505,6 +1525,7 @@ return
 			savevar $mowToOther 
 			savevar $bot~mowToDock  
 			savevar $landOnTerra
+			savevar $landOnStardock
 			savevar $do_nothing
 		elseif ($chosen_option = "M")
 
