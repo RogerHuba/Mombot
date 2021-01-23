@@ -514,6 +514,39 @@
 		setVar $top 1
 		setVar $que[1] $player~current_sector
 :tryAgain
+
+		setVar $IDX 11
+		while ($IDX <= SECTORS)
+			setvar $isFarmFound false
+			getsectorparameter $IDX $bot~parameter $isFarmTarget
+			if ($isFarmTarget = true)
+				if ($balance)
+					if ($TLPlanets[$focus] > $game~MAX_PLANETS_PER_SECTOR)
+						setvar $isFarmFound true
+					end
+				else
+					if ($amtrak)
+						getSectorParameter $focus "AMTRAK" $BUBBLE
+					elseif ($allplanets)
+						getWordPos $tl_planets $pos " "&$focus&" "
+						if ($pos > 0)
+							setVar $isFarmFound TRUE
+						end
+					else
+						setvar $isFarmFound true
+					end
+				end
+			end
+			if ($isFarmFound = TRUE)
+				setVar $bubble_sectors $bubble_sectors&" "&$IDX 
+				add $count 1
+			end
+			add $IDX 1
+		end
+		send "'Farm found "&$count&" "&$bot~parameter&" sectors to do farming on."*"
+		if ($count <= 0)
+			halt
+		end
 		setVar $PLAYER~save TRUE
 		gosub :player~quikstats
 		setVar $checked[$player~current_sector] 1
