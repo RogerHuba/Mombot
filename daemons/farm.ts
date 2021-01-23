@@ -64,7 +64,7 @@
 
 	setvar $portname "Mind ()ver Matter"
 	setvar $planet~planetnamedoor "DOOR GUN"
-	setvar $bot~parmameter "FARM"
+	setvar $bot~parameter "FARM"
 	setvar $name_the_planet "Mind ()ver Matter"
 	setVar $j 1
 	setvar $status_message "Initializing"
@@ -301,13 +301,14 @@
 		getWordPos " "&$bot~user_command_line&" " $pos " farm:"
 		setvar $use_bubble true
 		if ($pos > 0)
-			getText $bot~user_command_line&" " $bot~parmameter "farm:" " "
-			if ($bot~parmameter = 0)
+			getText $bot~user_command_line&" " $bot~parameter "farm:" " "
+			if ($bot~parameter = 0)
 				setVar $SWITCHBOARD~message "Farm parameter is not valid.*"
 				gosub :switchboard~switchboard
 				halt
 			else
-				setVar $SWITCHBOARD~message "Farming all sectors marked as "&$bot~parmameter&".*"
+				uppercase $bot~parameter
+				setVar $SWITCHBOARD~message "Farming all sectors marked as "&$bot~parameter&".*"
 				gosub :switchboard~switchboard			
 			end
 		end
@@ -418,14 +419,14 @@
 	if ($pos > 0)
 		setVar $IDX 11
 		while ($IDX <= SECTORS)
-			getsectorparameter $IDX $bot~parmameter $test
+			getsectorparameter $IDX $bot~parameter $test
 			if ($test = TRUE)
 				setVar $bubble_sectors $bubble_sectors&" "&$IDX 
 				add $count 1
 			end
 			add $IDX 1
 		end
-		send "'*"&$count&" "&$bot~parmameter&" sectors: "&$bubble_sectors&"**"
+		send "'*"&$count&" "&$bot~parameter&" sectors: "&$bubble_sectors&"**"
 		halt
 	end
 
@@ -434,8 +435,8 @@
 		isNumber $test $bot~parm2
 		if ($test)
 			if (($bot~parm2 > 10) AND ($bot~parm2 <= SECTORS) AND ($bot~parm2 <> STARDOCK))
-				setSectorParameter $bot~parm2 $bot~parmameter TRUE
-				setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector added as "&$bot~parmameter&" Sector.*"
+				setSectorParameter $bot~parm2 $bot~parameter TRUE
+				setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector added as "&$bot~parameter&" Sector.*"
 				gosub :SWITCHBOARD~switchboard
 			end
 		else
@@ -451,8 +452,8 @@
 		isNumber $test $bot~parm2
 		if ($test)
 			if (($bot~parm2 > 10) AND ($bot~parm2 <= SECTORS) AND ($bot~parm2 <> STARDOCK))
-				setSectorParameter $bot~parm2 $bot~parmameter FALSE
-				setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector removed from "&$bot~parmameter&" Sector Parameters.*"
+				setSectorParameter $bot~parm2 $bot~parameter FALSE
+				setVar $SWITCHBOARD~message "" & $bot~parm2 & " Sector removed from "&$bot~parameter&" Sector Parameters.*"
 				gosub :SWITCHBOARD~switchboard
 			end
 		else
@@ -522,7 +523,7 @@
 			setVar $focus $que[$bottom]
 			loadVar $BOT~botIsDeaf
 			loadVar $BOT~silent_running
-			getSectorParameter $focus $bot~parmameter $isFarmTarget
+			getSectorParameter $focus $bot~parameter $isFarmTarget
 			if ($where_planets = true)
 				if ($TLPlanets[$focus] <= 0)
 					goto :notit
@@ -534,7 +535,7 @@
 			if ($isFarmTarget = true)
 				if ($balance)
 					if ($TLPlanets[$focus] > $game~MAX_PLANETS_PER_SECTOR)
-						setvar $isFound true
+						setvar $isFarmFound true
 					end
 				else
 					if ($amtrak)
@@ -542,10 +543,10 @@
 					elseif ($allplanets)
 						getWordPos $tl_planets $pos " "&$focus&" "
 						if ($pos > 0)
-							setVar $isFound TRUE
+							setVar $isFarmFound TRUE
 						end
 					else
-						setvar $isFound true
+						setvar $isFarmFound true
 					end
 				end
 
@@ -554,13 +555,13 @@
 			#########################################################
 			# Found a farm target - do the farming for that sector! #
 			#########################################################
-			if (($isFound = TRUE) and ($focus <> $player~current_sector))
+			if (($isFarmFound = TRUE) and ($focus <> $player~current_sector))
 				setvar $farmsector $focus
 				gosub :move_the_planet
 			end
 			:notit
 			setVar $nearfig 0
-			setvar $isFound false
+			setvar $isFarmFound false
 
 			# That wasn't it, so let's add all the adjacents to the que for future testing.
 			setVar $a 1
@@ -1843,7 +1844,7 @@ return
 							if (($planet~planet_FUEL >= 5000) and ($planet~CITADEL >= 4))
 								setvar $k 11
 								while ($k <= SECTORS)
-									getSectorParameter $k $bot~parmameter $isTargettedSector
+									getSectorParameter $k $bot~parameter $isTargettedSector
 									if (($isTargettedSector = true) and ($TLPlanets[$k] < $game~MAX_PLANETS_PER_SECTOR))
 										killtrigger 1
 										killtrigger 2
