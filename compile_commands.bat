@@ -1,4 +1,4 @@
-for /r %%n in (*pwarp.ts) do call :checkit "%%n" 
+for /r %%n in (*neg.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
