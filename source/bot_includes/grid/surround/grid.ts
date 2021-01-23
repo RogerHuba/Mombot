@@ -126,4 +126,5 @@
 		send $surroundString
 return
 
+include "source\bot_includes\ship\getshipstats\ship"
 
