@@ -8,6 +8,27 @@ end
 # ======================     START BWARP SUBROUTINES     =================
 :Bwarp
 :b
+	if ($bot~parm1 = "me")
+		if ($bot~command_caller = "self")
+			setVar $SWITCHBOARD~message "I don't think you need to bwarp to yourself.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		setvar $who_called_me $bot~command_caller
+		gosub :player~checkcorp
+		setvar $i 1
+		while ($i <= $player~corp_count)
+			lowercase $player~corp_members[$i]
+			getwordpos $player~corp_members[$i] $pos $who_called_me
+			if ($pos > 0)
+				setvar $bot~parm1 $player~corp_members[$i][1]
+				goto :go_after_me
+			end
+			add $i 1
+		end
+	end
+	:go_after_me
+
 	killalltriggers
 	if ($bot~parm1 <> $PLAYER~CURRENT_SECTOR)
 		gosub  :player~currentPrompt
@@ -80,3 +101,5 @@ include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\player\quikstats\player"
 include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\player\bwarp\player"
+include "source\bot_includes\player\checkcorp\player"
+
