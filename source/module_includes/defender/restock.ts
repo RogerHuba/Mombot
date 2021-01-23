@@ -154,7 +154,7 @@
 		setVar $START_SECTOR currentsector
 		setVar $WeAreAdjDock FALSE
 		while ($i <= SECTOR.WARPCOUNT[$START_SECTOR])
-			setVar $adj_start SECTOR.WARPS[$START_SECTOR][$i]
+			setVar $adj_start SECTOR.WARPSIN[$START_SECTOR][$i]
 			if ($adj_start = $MAP~stardock)
 				setVar $WeAreAdjDock TRUE
 			end
@@ -163,7 +163,8 @@
 
 		if ((currentalignment < 1000) AND ($WeAreAdjDock = FALSE))
 			setVar $RED_adj 0
-			gosub :FindJumpSector
+			setvar $player~target $map~stardock
+			gosub :player~FindJumpSector
 			if ($RED_adj = 0)
 				waitfor "Command [TL="
 				setvar $switchboard~message "Cannot Find Jump Sector Adjacent Dock*"
@@ -454,49 +455,6 @@ return
 	killAllTriggers
 	send "y z * "
 	return
-
-:FindJumpSector
-	setVar $i 1
-	setVar $RED_adj 0
-	send "qq*"
-	while (SECTOR.WARPSIN[$MAP~stardock][$i] > 0)
-		setVar $RED_adj SECTOR.WARPSIN[$MAP~stardock][$i]
-		send "m " & $RED_adj & "* y"
-		setTextTrigger TwarpBlind 			:TwarpBlind "Do you want to make this jump blind? "
-		setTextTrigger TwarpLocked			:TwarpLocked "All Systems Ready, shall we engage? "
-		setTextLineTrigger TwarpVoided			:TwarpVoided "Danger Warning Overridden"
-		setTextLineTrigger TwarpAdj			:TwarpAdj "<Set NavPoint>"
-		pause
-		:TwarpAdj
-		killAllTriggers
-		send " * "
-		return
-
-		:TwarpVoided
-		killAllTriggers
-		send " N N "
-		goto :TryingNextAdj
-
-		:TwarpLocked
-		killAllTriggers
-		send " N "
-
-		goto :SectorLocked
-
-		:TwarpBlind
-		killAllTriggers
-		send " N "
-
-		:TryingNextAdj
-    	add $i 1
-	end
-
-	:NoAdjsFound
-		setVar $RED_adj 0
-		return
-
-	:SectorLocked
-		return
 
 
 :TurnsRequired
