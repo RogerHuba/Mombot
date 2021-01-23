@@ -515,14 +515,14 @@
 		setVar $que[1] $player~current_sector
 :tryAgain
 
-		setVar $IDX 11
-		while ($IDX <= SECTORS)
+		setVar $focus 11
+		while ($focus <= SECTORS)
 			gosub :checkForFarmTarget
 			if ($isFarmFound = TRUE)
-				setVar $bubble_sectors $bubble_sectors&" "&$IDX 
+				setVar $bubble_sectors $bubble_sectors&" "&$focus 
 				add $count 1
 			end
-			add $IDX 1
+			add $focus 1
 		end
 		setvar $switchboard~message "Farm found "&$count&" "&$bot~parameter&" sectors to do farming on.*"
 		gosub :switchboard~switchboard
