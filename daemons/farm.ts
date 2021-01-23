@@ -13,7 +13,7 @@
 
 	setVar $BOT~help[1]  $BOT~tab&"Farms sectors marked with FARM parameters.  "
 	setVar $BOT~help[2]  $BOT~tab&"       "
-	setVar $BOT~help[3]  $BOT~tab&"Farm Options: "
+	setVar $BOT~help[3]  $BOT~tab&"  Options: "
 	setVar $BOT~help[4]  $BOT~tab&"    [farm:xxx] - uses xxx sectors as farm sectors"
 	setVar $BOT~help[5]  $BOT~tab&"       [f o e] - will strip fuel, org, equip off planets"
 	setVar $BOT~help[6]  $BOT~tab&"        [cash] - will grab cash off planets"
