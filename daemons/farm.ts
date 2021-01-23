@@ -53,11 +53,13 @@
 	setVar $BOT~help[40] $BOT~tab&"   {setbubble} plus [bubble door]  "
 	setVar $BOT~help[41] $BOT~tab&"               - sets all BUBBLE sectors"
 	setVar $BOT~help[42] $BOT~tab&"                         "
-	setVar $BOT~help[43] $BOT~tab&"        {list} - Lists all FARM sectors"
-	setVar $BOT~help[44] $BOT~tab&" {list bubble} - Lists all BUBBLE sectors"
+	setVar $BOT~help[43] $BOT~tab&"        {list} - Lists all farm sectors"
 	setVar $BOT~help[45] $BOT~tab&"        "
 	setVar $BOT~help[46] $BOT~tab&"       {remove} plus [sector number]"
 	setVar $BOT~help[47] $BOT~tab&"               - Removes FARM and BUBBLE marked sector"
+	setVar $BOT~help[48] $BOT~tab&"    Examples:  "
+	setVar $BOT~help[49] $BOT~tab&"              >farm neg half figs"
+	setVar $BOT~help[50] $BOT~tab&"              >farm o e merch"
 	gosub :bot~helpfile
 
 
