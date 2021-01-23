@@ -7,7 +7,7 @@
 		setVar $RED_adj SECTOR.BACKDOORS[$target][$k]
 		gosub :test_red_sector
 		if ($foundSector = true)
-			goto :sector_locked
+			goto :SectorLocked
 		end
 		add $k 1
 	end
@@ -17,7 +17,7 @@
 		setVar $RED_adj SECTOR.WARPSIN[$target][$i]
 		gosub :test_red_sector
 		if ($foundSector = true)
-			goto :sector_locked
+			goto :SectorLocked
 		end
     	add $i 1
 	end
