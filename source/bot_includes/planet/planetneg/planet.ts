@@ -450,7 +450,6 @@ send "'DEBUG: NAN on equtrading:" & $test5 & " equpercent:" $test6 "*"
 
 			:sellequ
 
-				send "'[" $equiptosell "]*"
 				killtrigger sellfuel
 				killtrigger sellorg
 				killtrigger sellequ
