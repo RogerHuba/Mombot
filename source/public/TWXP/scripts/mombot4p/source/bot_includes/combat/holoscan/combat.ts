@@ -4,6 +4,7 @@
 	
 	setvar $before_holo_kill_sector $player~current_sector
 	gosub :combat~holokill
+	killalltriggers
 	if (($sector~holotargetfound = true) and ($player~current_sector <> $before_holo_kill_sector))
 		setVar $PLAYER~WARPTO $before_holo_kill_sector
 		gosub :PLAYER~twarp
@@ -15,6 +16,3 @@
 		gosub :switchboard~switchboard
 	end
 return
-
-include "source\bot_includes\combat\holokill\combat"
-include "source\bot_includes\player\twarp\player"
