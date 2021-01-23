@@ -546,9 +546,7 @@
 				setvar $farmsector $focus
 				gosub :move_the_planet
 			end
-			:notit
 			setVar $nearfig 0
-			setvar $isFarmFound false
 
 			# That wasn't it, so let's add all the adjacents to the que for future testing.
 			setVar $a 1
@@ -633,7 +631,7 @@ return
 	getSectorParameter $focus $bot~parameter $isFarmTarget
 	if ($where_planets = true)
 		if ($TLPlanets[$focus] <= 0)
-			goto :notit
+			goto :not_farm_sector
 		end
 	end
 	#########################################################################
@@ -657,6 +655,8 @@ return
 			end
 		end
 	end
+	:not_farm_sector
+
 return
 
 :stripallplanets
