@@ -162,10 +162,10 @@
 		end
 
 		if ((currentalignment < 1000) AND ($WeAreAdjDock = FALSE))
-			setVar $RED_adj 0
+			setVar $player~RED_adj 0
 			setvar $player~target $map~stardock
 			gosub :player~FindJumpSector
-			if ($RED_adj = 0)
+			if ($player~RED_adj = 0)
 				waitfor "Command [TL="
 				setvar $switchboard~message "Cannot Find Jump Sector Adjacent Dock*"
 				gosub :switchboard~switchboard
@@ -179,8 +179,8 @@
 			getdistance $dist1 $START_SECTOR $MAP~stardock
 			getdistance $dist2 $MAP~stardock $START_SECTOR
 		else
-			getdistance $dist1 $START_SECTOR $RED_adj
-			getdistance $dist2 $RED_adj $START_SECTOR
+			getdistance $dist1 $START_SECTOR $player~RED_adj
+			getdistance $dist2 $player~RED_adj $START_SECTOR
 		end
 		if (($dist1 < 0) or $dist2 < 0)
 			if (currentalignment >= 1000)
@@ -193,7 +193,7 @@
 				if ($WeAreAdjDock)
 					send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
 				else
-					send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+					send "^F" & $START_SECTOR & "*" & $player~RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
 				end
 			end
 			setTextLineTrigger noJoy :noJoy "*** Error - No route within"
@@ -218,7 +218,7 @@
 				if ((currentalignment >= 1000) OR ($WeAreAdjDock))
 					getdistance $dist1 $START_SECTOR $MAP~stardock
 				else
-					getdistance $dist1 $START_SECTOR $RED_adj
+					getdistance $dist1 $START_SECTOR $player~RED_adj
 				end
 		end
 			if ($dist1 <= 0)
@@ -299,8 +299,8 @@
 			if ((currentalignment >= 1000) AND ($WeAreAdjDock = FALSE))
 				setVar $warpto $MAP~stardock
 				gosub :DoTwarp
-			elseif (($WeAreAdjDock = FALSE) AND ($RED_adj <> 0))
-				setVar $warpto $RED_adj
+			elseif (($WeAreAdjDock = FALSE) AND ($player~RED_adj <> 0))
+				setVar $warpto $player~RED_adj
 				gosub :DoTwarp
 			else
 				send "q q q *  m " & $MAP~stardock & "*  *  P  S G Y G Q "
@@ -466,7 +466,7 @@ return
 	killAllTriggers
 	getWord CURRENTLINE $turnsRequired_TPW 5
 
-	if ($RED_adj > 0)
+	if ($player~RED_adj > 0)
 		# twarp to jmp sector, then into SD sect, then twarp home
 		setVar $turnsRequired_temp ($turnsRequired_TPW * 3)
 		if ($_Tow > 0)
