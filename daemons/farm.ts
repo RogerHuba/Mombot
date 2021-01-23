@@ -517,74 +517,28 @@
 
 		setVar $IDX 11
 		while ($IDX <= SECTORS)
-			setvar $isFarmFound false
-			getsectorparameter $IDX $bot~parameter $isFarmTarget
-			if ($isFarmTarget = true)
-				if ($balance)
-					if ($TLPlanets[$focus] > $game~MAX_PLANETS_PER_SECTOR)
-						setvar $isFarmFound true
-					end
-				else
-					if ($amtrak)
-						getSectorParameter $focus "AMTRAK" $BUBBLE
-					elseif ($allplanets)
-						getWordPos $tl_planets $pos " "&$focus&" "
-						if ($pos > 0)
-							setVar $isFarmFound TRUE
-						end
-					else
-						setvar $isFarmFound true
-					end
-				end
-			end
+			gosub :checkForFarmTarget
 			if ($isFarmFound = TRUE)
 				setVar $bubble_sectors $bubble_sectors&" "&$IDX 
 				add $count 1
 			end
 			add $IDX 1
 		end
-		send "'Farm found "&$count&" "&$bot~parameter&" sectors to do farming on.*"
+		setvar $switchboard~message "Farm found "&$count&" "&$bot~parameter&" sectors to do farming on.*"
+		gosub :switchboard~switchboard
 		if ($count <= 0)
 			halt
 		end
+		setvar $switchboard~message "Finding nearest farm sector...  please hold..*"
+		gosub :switchboard~switchboard
 		setVar $PLAYER~save TRUE
 		gosub :player~quikstats
 		setVar $checked[$player~current_sector] 1
 		while ($bottom <= $top)
-			setvar $isFarmFound false
-
 			setVar $focus $que[$bottom]
 			loadVar $BOT~botIsDeaf
 			loadVar $BOT~silent_running
-			getSectorParameter $focus $bot~parameter $isFarmTarget
-			if ($where_planets = true)
-				if ($TLPlanets[$focus] <= 0)
-					goto :notit
-				end
-			end
-			#########################################################################
-			# If farm target is true, we need to check if other options are as well #
-			#########################################################################
-			if ($isFarmTarget = true)
-				if ($balance)
-					if ($TLPlanets[$focus] > $game~MAX_PLANETS_PER_SECTOR)
-						setvar $isFarmFound true
-					end
-				else
-					if ($amtrak)
-						getSectorParameter $focus "AMTRAK" $BUBBLE
-					elseif ($allplanets)
-						getWordPos $tl_planets $pos " "&$focus&" "
-						if ($pos > 0)
-							setVar $isFarmFound TRUE
-						end
-					else
-						setvar $isFarmFound true
-					end
-				end
-
-			end
-
+			gosub :checkForFarmTarget
 			#########################################################
 			# Found a farm target - do the farming for that sector! #
 			#########################################################
@@ -671,6 +625,38 @@
 	send "@"
 	waitOn "Average Interval Lag:"
 
+return
+
+
+:checkForFarmTarget
+	setvar $isFarmTarget false
+	getSectorParameter $focus $bot~parameter $isFarmTarget
+	if ($where_planets = true)
+		if ($TLPlanets[$focus] <= 0)
+			goto :notit
+		end
+	end
+	#########################################################################
+	# If farm target is true, we need to check if other options are as well #
+	#########################################################################
+	if ($isFarmTarget = true)
+		if ($balance)
+			if ($TLPlanets[$focus] > $game~MAX_PLANETS_PER_SECTOR)
+				setvar $isFarmFound true
+			end
+		else
+			if ($amtrak)
+				getSectorParameter $focus "AMTRAK" $BUBBLE
+			elseif ($allplanets)
+				getWordPos $tl_planets $pos " "&$focus&" "
+				if ($pos > 0)
+					setVar $isFarmFound TRUE
+				end
+			else
+				setvar $isFarmFound true
+			end
+		end
+	end
 return
 
 :stripallplanets
