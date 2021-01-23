@@ -462,7 +462,7 @@ return
 return
 
 :htorp
-	send "q szh* l " & $planet~planet & "* c "
+	send "q q q * szh* l " & $planet~planet & "* c "
 	setTextLineTrigger checkForHolo :continueCheckHolo "Select (H)olo Scan or (D)ensity Scan or (Q)uit?"
 	setTextLineTrigger checkForDens :photonedhtorp "Relative Density Scan"  
 	pause
