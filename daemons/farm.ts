@@ -517,49 +517,50 @@
 		gosub :player~quikstats
 		setVar $checked[$player~current_sector] 1
 		while ($bottom <= $top)
-			# Now, pull out the next sector in the que, and make it our focus
-			setVar $focus $que[$bottom]
-			
+			setvar $isFarmFound false
 
+			setVar $focus $que[$bottom]
 			loadVar $BOT~botIsDeaf
 			loadVar $BOT~silent_running
+			getSectorParameter $focus $bot~parmameter $isFarmTarget
 			if ($where_planets = true)
-				if ($planet~CITADELs[$focus] <= 0)
+				if ($TLPlanets[$focus] <= 0)
 					goto :notit
 				end
 			end
-			if ($balance)
-				if ($planet~CITADELs[$focus] > $game~MAX_PLANETS_PER_SECTOR)
-					getSectorParameter $focus $bot~parmameter $BUBBLE
-				else
-					setvar $bubble false
-				end
-			else
-				if ($amtrak)
-					getSectorParameter $focus "AMTRAK" $BUBBLE
-				elseif ($allplanets)
-					getWordPos $tl_planets $pos " "&$focus&" "
-					if ($pos > 0)
-						setVar $BUBBLE TRUE
-					else
-						setVar $BUBBLE FALSE
+			#########################################################################
+			# If farm target is true, we need to check if other options are as well #
+			#########################################################################
+			if ($isFarmTarget = true)
+				if ($balance)
+					if ($TLPlanets[$focus] > $game~MAX_PLANETS_PER_SECTOR)
+						setvar $isFound true
 					end
 				else
-					getSectorParameter $focus $bot~parmameter $BUBBLE
+					if ($amtrak)
+						getSectorParameter $focus "AMTRAK" $BUBBLE
+					elseif ($allplanets)
+						getWordPos $tl_planets $pos " "&$focus&" "
+						if ($pos > 0)
+							setVar $isFound TRUE
+						end
+					else
+						setvar $isFound true
+					end
 				end
+
 			end
 
-
-			if (($BUBBLE = TRUE) and ($focus <> $player~current_sector))
+			#########################################################
+			# Found a farm target - do the farming for that sector! #
+			#########################################################
+			if (($isFound = TRUE) and ($focus <> $player~current_sector))
 				setvar $farmsector $focus
-				goto :move_the_planet
-			else
-				goto :notit
+				gosub :move_the_planet
 			end
-
-
 			:notit
 			setVar $nearfig 0
+			setvar $isFound false
 
 			# That wasn't it, so let's add all the adjacents to the que for future testing.
 			setVar $a 1
@@ -580,167 +581,7 @@
 		goto :end
 		halt
 
-		:move_the_planet
-			send "p "& $focus &"  *ys* "
-			settextlinetrigger warp_it :warp_it "All Systems Ready, shall we engage?"
-			settextlinetrigger no_warp :no_warp "You do not have any fighters in Sector"
-			setTextLineTrigger alreadythere :warp_it "You are already in that sector!"
-			pause
 
-		:no_warp
-			killalltriggers
-			goto :tryAgain
-
-		:warp_it
-			killalltriggers
-			setvar $player~current_sector $focus
-			gosub :setWindow
-			if ($WARP)
-				  send "tt"
-				  waitfor "How much to transfer?"
-				  send $PLAYER~CREDITS&"*"
-				  waitfor "Citadel treasury contains"
-			end
-
-			send "q"
-			gosub :PLANET~getPlanetInfo
-			gosub :fillplanetstats
-
-			send "m*** q* "
-			gosub :count_planets
-			if ($build = TRUE)
-				gosub :buildplanets
-			end
-			gosub :setWindow
-
-			gosub :count_planets
-			if (($port) OR ($build))
-				gosub :check_ports
-			end
-			if ($balance = true)
-				if ($planet~CITADELs[$farmsector] > $game~MAX_PLANETS_PER_SECTOR)
-					setVar $j 1
-					setvar $planet~planets_to_move ($planet~CITADELs[$farmsector] - $game~MAX_PLANETS_PER_SECTOR)
-					setvar $planet~planets_moved 0 
-					while ($j <= $planet~planetCount)
-						if ($planet~planetToFill <> $planet~planets[$j])
-							send "l " & #8 & $planet~planets[$j] & "* "
-							gosub :PLANET~getPlanetInfo
-							if (($planet~planet_FUEL >= 5000) and ($planet~CITADEL >= 4))
-								setvar $k 11
-								while ($k <= SECTORS)
-									getSectorParameter $k $bot~parmameter $isTargettedSector
-									if (($isTargettedSector = true) and ($planet~CITADELs[$k] < $game~MAX_PLANETS_PER_SECTOR))
-										killtrigger 1
-										killtrigger 2
-										killtrigger 3
-										send "c p "& $k &"  *ys* "
-										settextlinetrigger 1 :warp_it_balance "All Systems Ready, shall we engage?"
-										settextlinetrigger 2 :no_warp_balance "You do not have any fighters in Sector"
-										setTextLineTrigger 3 :warp_it_balance "You are already in that sector!"
-										pause			
-
-										:warp_it_balance
-											setvar $planet~CITADELs[$k] ($planet~CITADELs[$k] + 1)
-											setvar $planet~CITADELs[$farmsector] ($planet~CITADELs[$farmsector] - 1)
-											setvar $player~startinglocation "Citadel"
-											setVar $PLAYER~warpto $farmsector
-											gosub :player~quikstats
-											gosub :player~twarp
-											gosub  :player~currentPrompt
-											if ($PLAYER~twarpSuccess <> TRUE)
-												setvar $switchboard~message "Twarp failed during planet balancing. "&$player~msg&" Halting!*"
-												gosub :switchboard~switchboard
-												halt
-											end
-											add $planet~planets_moved 1
-											if ($planet~planets_moved >= $planet~planets_to_move)
-												goto :done_moving_planets
-											end
-
-										:no_warp_balance					
-											killtrigger 1
-											killtrigger 2
-											killtrigger 3
-											goto :done_moving_this_planet
-									end
-									add $k 1
-								end
-							end
-							:done_moving_this_planet
-							send "qq* "
-						end
-						add $j 1
-					end
-				end
-			end
-			:done_moving_planets
-			if ($balance = true)
-				gosub :count_planets
-			end
-			if ($armageddon = TRUE)
-				setVar $BOT~command "mover"
-				setVar $BOT~user_command_line "dump all fc oc ec turbo silent"
-				setVar $BOT~parm1 "dump"
-				saveVar $BOT~parm1
-				saveVar $BOT~command
-				saveVar $BOT~user_command_line
-				load "scripts\"&$bot~mombot_directory&"\modes\resource\mover.cts"
-				setEventTrigger		dumpended		:dumpendedbuild "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\mover.cts"
-				pause
-				:dumpendedbuild	       
-
-				if (PORT.EXISTS[$farmSector] = TRUE)
-					if ($PLAYER~FIGHTERS > $SHIP~SHIP_MAX_ATTACK)
-						send "p"
-						setTextTrigger 1 :portAlreadyGone "Captain! Are you sure you want to port here?"
-						setTextTrigger 2 :continueDestroy "<A> Attack this Port"
-						pause
-						:continueDestroy
-						killtrigger 1
-						killtrigger 2
-						killtrigger 3
-						killtrigger 4
-						send " a y "&$SHIP~SHIP_MAX_ATTACK&"*l "&$planet~planetToFill&"* m * * * q "
-						setTextTrigger 1 :keepDestroying "Incoming laser barrage from"
-						setTextTrigger 2 :doneDestroying "You destroyed the Star Port!"
-						pause
-						:doneDestroying
-						:portAlreadyGone
-							send "*   "
-							killtrigger 1
-							killtrigger 2
-							killtrigger 3
-							killtrigger 4
-					else
-						setVar $SWITCHBOARD~message "Not enough fighters.  Better reload before the armageddon can continue.*"
-						gosub :SWITCHBOARD~switchboard
-						halt
-					end
-				end
-
-
-			end
-			if (($strip) or ($colo) or ($upgrade) or ($cash) or ($warp) or ($shield) or ($colonize) or ($figs) or ($defense) or ($movefig) or ($barricade) or ($armageddon))
-				gosub :stripallplanets
-			end
-			if ($silent <> TRUE)
-				setVar $SWITCHBOARD~message "Completed All Farming/Building/Port Actions Sector: "&$farmSector&".*"
-				gosub :SWITCHBOARD~switchboard
-			end
-			send "qq* l " & #8 & $planet~planetToFill & "* "
-			gosub :PLANET~getPlanetInfo
-			gosub :fillplanetstats
-			send "c"
-			:next_farm_sector
-			if ($strip = TRUE)
-				if ((($get_org = TRUE) AND ($planet~planet_ORGANICS > ($planet~planet_ORGANICS_MAX-1000))) AND (($get_equ = TRUE) AND ($planet~planet_EQUIPMENT > ($planet~planet_EQUIPMENT_MAX - 1000))))
-					setVar $planet~planetIsFull TRUE
-					goto :end
-				end
-			end
-
-	goto :tryAgain
 
 :count_planets
 	send "qq*  |l"
@@ -772,7 +613,7 @@
 
 :get_tl_list
 	setVar $sectorCount 0
-	setarray $planet~CITADELs sectors
+	setarray $TLPlanets sectors
 	killalltriggers
 	setTextLineTrigger sectorGrabber :sector_planet_line "Class "
 	setTextLineTrigger sectorbeDone :sector_done "======   ============"
@@ -786,8 +627,8 @@
 	:sector_planet_line
 		killalltriggers
 		getWord CURRENTLINE $testsector 1
-		setvar $planet~CITADEL_count $planet~CITADELs[$testsector]
-		setvar $planet~CITADELs[$testsector] ($planet~CITADEL_count + 1)
+		setvar $TLPlanetCount $TLPlanets[$testsector]
+		setvar $TLPlanets[$testsector] ($TLPlanetCount + 1)
 		setVar $tl_planets $tl_planets&" "&$testsector
 		setTextLineTrigger getLine2 :sector_planet_line "Class"
 		setTextLineTrigger getEnd :sector_done "======   ============"
@@ -1953,6 +1794,166 @@ return
 	:negended
 return
 
+:move_the_planet
+			send "p "& $focus &"  *ys* "
+			settextlinetrigger warp_it :warp_it "All Systems Ready, shall we engage?"
+			settextlinetrigger no_warp :no_warp "You do not have any fighters in Sector"
+			setTextLineTrigger alreadythere :warp_it "You are already in that sector!"
+			pause
+
+		:no_warp
+			killalltriggers
+			goto :tryAgain
+
+		:warp_it
+			killalltriggers
+			setvar $player~current_sector $focus
+			gosub :setWindow
+			if ($WARP)
+				  send "tt"
+				  waitfor "How much to transfer?"
+				  send $PLAYER~CREDITS&"*"
+				  waitfor "Citadel treasury contains"
+			end
+
+			send "q"
+			gosub :PLANET~getPlanetInfo
+			gosub :fillplanetstats
+
+			send "m*** q* "
+			gosub :count_planets
+			if ($build = TRUE)
+				gosub :buildplanets
+			end
+			gosub :setWindow
+
+			gosub :count_planets
+			if (($port) OR ($build))
+				gosub :check_ports
+			end
+			if ($balance = true)
+				if ($TLPlanets[$farmsector] > $game~MAX_PLANETS_PER_SECTOR)
+					setVar $j 1
+					setvar $planet~planets_to_move ($TLPlanets[$farmsector] - $game~MAX_PLANETS_PER_SECTOR)
+					setvar $planet~planets_moved 0 
+					while ($j <= $planet~planetCount)
+						if ($planet~planetToFill <> $planet~planets[$j])
+							send "l " & #8 & $planet~planets[$j] & "* "
+							gosub :PLANET~getPlanetInfo
+							if (($planet~planet_FUEL >= 5000) and ($planet~CITADEL >= 4))
+								setvar $k 11
+								while ($k <= SECTORS)
+									getSectorParameter $k $bot~parmameter $isTargettedSector
+									if (($isTargettedSector = true) and ($TLPlanets[$k] < $game~MAX_PLANETS_PER_SECTOR))
+										killtrigger 1
+										killtrigger 2
+										killtrigger 3
+										send "c p "& $k &"  *ys* "
+										settextlinetrigger 1 :warp_it_balance "All Systems Ready, shall we engage?"
+										settextlinetrigger 2 :no_warp_balance "You do not have any fighters in Sector"
+										setTextLineTrigger 3 :warp_it_balance "You are already in that sector!"
+										pause			
+
+										:warp_it_balance
+											setvar $TLPlanets[$k] ($TLPlanets[$k] + 1)
+											setvar $TLPlanets[$farmsector] ($TLPlanets[$farmsector] - 1)
+											setvar $player~startinglocation "Citadel"
+											setVar $PLAYER~warpto $farmsector
+											gosub :player~quikstats
+											gosub :player~twarp
+											gosub  :player~currentPrompt
+											if ($PLAYER~twarpSuccess <> TRUE)
+												setvar $switchboard~message "Twarp failed during planet balancing. "&$player~msg&" Halting!*"
+												gosub :switchboard~switchboard
+												halt
+											end
+											add $planet~planets_moved 1
+											if ($planet~planets_moved >= $planet~planets_to_move)
+												goto :done_moving_planets
+											end
+
+										:no_warp_balance					
+											killtrigger 1
+											killtrigger 2
+											killtrigger 3
+											goto :done_moving_this_planet
+									end
+									add $k 1
+								end
+							end
+							:done_moving_this_planet
+							send "qq* "
+						end
+						add $j 1
+					end
+				end
+			end
+			:done_moving_planets
+			if ($balance = true)
+				gosub :count_planets
+			end
+			if ($armageddon = TRUE)
+				setVar $BOT~command "mover"
+				setVar $BOT~user_command_line "dump all fc oc ec turbo silent"
+				setVar $BOT~parm1 "dump"
+				saveVar $BOT~parm1
+				saveVar $BOT~command
+				saveVar $BOT~user_command_line
+				load "scripts\"&$bot~mombot_directory&"\modes\resource\mover.cts"
+				setEventTrigger		dumpended		:dumpendedbuild "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\resource\mover.cts"
+				pause
+				:dumpendedbuild	       
+
+				if (PORT.EXISTS[$farmSector] = TRUE)
+					if ($PLAYER~FIGHTERS > $SHIP~SHIP_MAX_ATTACK)
+						send "p"
+						setTextTrigger 1 :portAlreadyGone "Captain! Are you sure you want to port here?"
+						setTextTrigger 2 :continueDestroy "<A> Attack this Port"
+						pause
+						:continueDestroy
+						killtrigger 1
+						killtrigger 2
+						killtrigger 3
+						killtrigger 4
+						send " a y "&$SHIP~SHIP_MAX_ATTACK&"*l "&$planet~planetToFill&"* m * * * q "
+						setTextTrigger 1 :keepDestroying "Incoming laser barrage from"
+						setTextTrigger 2 :doneDestroying "You destroyed the Star Port!"
+						pause
+						:doneDestroying
+						:portAlreadyGone
+							send "*   "
+							killtrigger 1
+							killtrigger 2
+							killtrigger 3
+							killtrigger 4
+					else
+						setVar $SWITCHBOARD~message "Not enough fighters.  Better reload before the armageddon can continue.*"
+						gosub :SWITCHBOARD~switchboard
+						halt
+					end
+				end
+
+
+			end
+			if (($strip) or ($colo) or ($upgrade) or ($cash) or ($warp) or ($shield) or ($colonize) or ($figs) or ($defense) or ($movefig) or ($barricade) or ($armageddon))
+				gosub :stripallplanets
+			end
+			if ($silent <> TRUE)
+				setVar $SWITCHBOARD~message "Completed All Farming/Building/Port Actions Sector: "&$farmSector&".*"
+				gosub :SWITCHBOARD~switchboard
+			end
+			send "qq* l " & #8 & $planet~planetToFill & "* "
+			gosub :PLANET~getPlanetInfo
+			gosub :fillplanetstats
+			send "c"
+			:next_farm_sector
+			if ($strip = TRUE)
+				if ((($get_org = TRUE) AND ($planet~planet_ORGANICS > ($planet~planet_ORGANICS_MAX-1000))) AND (($get_equ = TRUE) AND ($planet~planet_EQUIPMENT > ($planet~planet_EQUIPMENT_MAX - 1000))))
+					setVar $planet~planetIsFull TRUE
+					goto :end
+				end
+			end
+return
 
 :fillplanetstats
 	setVar $planet~planetToFill $planet~planet
