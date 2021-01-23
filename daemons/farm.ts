@@ -37,7 +37,7 @@
 	setVar $BOT~help[24] $BOT~tab&"      [amtrak] - uses amtrak sectors as farm sectors"
 	setVar $BOT~help[25] $BOT~tab&"  [allplanets] - uses tl sectors as farm sectors"
 	setVar $BOT~help[26] $BOT~tab&"     [planets] - only visits sectors with planets"
-	setVar $BOT~help[27] $BOT~tab&"      [bubble] - uses BUBBLE sectors as farm sectors"
+	setVar $BOT~help[27] $BOT~tab&"    [farm:xxx] - uses xxx sectors as farm sectors"
 	setVar $BOT~help[28] $BOT~tab&"     [balance] - balance planets throughout bubble or farm"
 	setVar $BOT~help[29] $BOT~tab&"     [movefig] - moves all fighters from planet to sector"
 	setVar $BOT~help[30] $BOT~tab&"   [barricade] - moves all fighters from planets to home"
@@ -296,10 +296,21 @@
 	else
 		setVar $build FALSE
 	end
-	getWordPos $bot~user_command_line $pos "bubble"
+	getWordPos $bot~user_command_line $pos "farm:"
 	if ($pos > 0)
+		getWordPos " "&$bot~user_command_line&" " $pos " farm:"
 		setvar $use_bubble true
-		setVar $bot~parmameter "BUBBLE"
+		if ($pos > 0)
+			getText $bot~user_command_line&" " $bot~parmameter "farm:" " "
+			if ($bot~parmameter = 0)
+				setVar $SWITCHBOARD~message "Farm parameter is not valid.*"
+				gosub :switchboard~switchboard
+				halt
+			else
+				setVar $SWITCHBOARD~message "Farming all sectors marked as "&$bot~parmameter&".*"
+				gosub :switchboard~switchboard			
+			end
+		end
 	else
 		setvar $use_bubble false
 	end
