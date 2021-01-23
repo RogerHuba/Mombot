@@ -543,7 +543,7 @@
 			end
 			add $IDX 1
 		end
-		send "'Farm found "&$count&" "&$bot~parameter&" sectors to do farming on."*"
+		send "'Farm found "&$count&" "&$bot~parameter&" sectors to do farming on.*"
 		if ($count <= 0)
 			halt
 		end
