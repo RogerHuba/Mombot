@@ -58,8 +58,9 @@
 	setVar $BOT~help[45] $BOT~tab&"       {remove} plus [sector number]"
 	setVar $BOT~help[46] $BOT~tab&"               - Removes FARM and BUBBLE marked sector"
 	setVar $BOT~help[47] $BOT~tab&"    Examples:  "
-	setVar $BOT~help[48] $BOT~tab&"              >farm neg half figs"
-	setVar $BOT~help[49] $BOT~tab&"              >farm o e merch"
+	setVar $BOT~help[48] $BOT~tab&"              >farm neg half figs farm:bubble"
+	setVar $BOT~help[49] $BOT~tab&"              >farm o e merch farm:targets"
+	setVar $BOT~help[50] $BOT~tab&"              >farm o e figs warp"
 	gosub :bot~helpfile
 
 
