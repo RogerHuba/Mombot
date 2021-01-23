@@ -1922,8 +1922,13 @@ return
 	return
 
 :neg
+
 	setVar $BOT~command "neg"
-	setVar $bot~user_command_line " neg o e silent"
+	if ($half = true)
+		setVar $bot~user_command_line " neg o e half silent"
+	else
+		setVar $bot~user_command_line " neg o e silent"
+	end
 
 	setVar $bot~parm1 "o"
 	saveVar $bot~parm1
