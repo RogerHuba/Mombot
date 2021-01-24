@@ -96,11 +96,12 @@ end
 								end
 								getText $rest_of_string $option "{" "}"
 								while ($option <> "0")
+									send "'["&$option&"]*"
 									###########################################
 									# remove the option found from the string #
 									###########################################
 									getwordpos $rest_of_string $pos "}"
-									send "'"&$rest_of_string&"*"
+									send "'{"&$rest_of_string&"}*"
 									cuttext $rest_of_string&"     " $rest_of_string ($pos+1) 9999
 
 									replacetext $option "{" ""
