@@ -66,6 +66,7 @@ end
 			halt
 		end
 		:self_menu
+			setvar $i 1
 			if (($switchboard~self_command <> false) and (($bot~parm1 = "!") or ($bot~parm1 = "menu")))
 				setarray $fields 100 5
 				setvar $field_count 0
