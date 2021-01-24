@@ -29,7 +29,7 @@
 	if ($killing~holokill)
 		echo ansi_6 "*  Planet holokills attempted " ansi_15 $combat~holokill_count ansi_6 " times "
 	end
-	if ($prhunter~prhunter = true)
+	if ($prhunter~activate = true)
 		echo ansi_6 "*  PR Hunter holokills attempted "&$prhunter~total_victims&" times *"
 	end
 	echo "**" ansi_15
