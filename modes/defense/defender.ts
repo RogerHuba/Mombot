@@ -187,6 +187,7 @@
 	else
 		setvar $prhunter~prhunter false
 	end
+	
 
 	getwordpos " "&$bot~user_command_line&" " $pos " allkeys "
 	if ($pos > 0)
