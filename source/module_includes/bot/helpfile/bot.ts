@@ -97,8 +97,8 @@ end
 								getwordpos $rest_of_string $pos "}"
 								cuttext $rest_of_string $rest_of_string $pos 9999
 
-								replacetext $option "{"
-								replacetext $option "}"
+								replacetext $option "{" ""
+								replacetext $option "}" ""
 								getwordpos $option $pos "|"
 								
 								add $field_count 1
@@ -142,8 +142,8 @@ end
 								##################################################
 
 								getWord $help[$i] $option 1
-								replacetext $option "{"
-								replacetext $option "}"
+								replacetext $option "{" ""
+								replacetext $option "}" ""
 								trim $option 
 								getwordpos $help[$i] $pos "}"
 								cuttext $help[$i] $help[$i] $pos 9999
