@@ -535,6 +535,7 @@
 		setvar $switchboard~message "Finding nearest farm sector...  please hold..*"
 		gosub :switchboard~switchboard
 		setVar $PLAYER~save TRUE
+		setVar $focus 11
 		gosub :player~quikstats
 		setVar $checked[$player~current_sector] 1
 		while ($bottom <= $top)
