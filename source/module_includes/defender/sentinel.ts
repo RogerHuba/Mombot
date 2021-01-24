@@ -301,7 +301,6 @@ setVar $count 1
 
 return
 
-
 :CheckOnline
 	# sys_check
 
