@@ -157,7 +157,7 @@ end
 										setvar $k 1
 										while ($k <= $options)
 											trim $options[$k]
-											if ($options[$k] == $option)
+											if ($options[$k] = $option)
 												setvar $fields[$j][3] $help[$i]
 											end
 											add $k 1
