@@ -183,9 +183,9 @@
 
 	getwordpos " "&$bot~user_command_line&" " $pos " prhunt"
 	if ($pos > 0)
-		setvar $prhunter true
+		setvar $prhunter~prhunter true
 	else
-		setvar $prhunter false
+		setvar $prhunter~prhunter false
 	end
 
 	getwordpos " "&$bot~user_command_line&" " $pos " allkeys "
@@ -556,7 +556,7 @@
 	if ($combat~defender)
 		setVar $message $message&"*                   Defender mode on"
 	end
-	if ($prhunter)
+	if ($prhunter~prhunter)
 		setVar $message $message&"*                   PR Hunter mode on"
 	end
 	if ($restock~refurb_in_sector = true)
@@ -673,7 +673,7 @@
 		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
 		
 
-		if ($prhunter = true)
+		if ($prhunter~prhunter = true)
 			#################################################################################################
 			# For searching and destroying passive gridders covering ports - expecting message from >prhunt #
 			# R Minotaur PORT GONE: 19806 class: BBS                                                        #
@@ -724,7 +724,7 @@
 		if ($navigate~securePwarp)
 			setvar $description $description&"Secure "
 		end
-		if ($prhunter)
+		if ($prhunter~prhunter)
 			setvar $description $description&"PR Hunter "
 		end
 		if ($photon~paranoid)
@@ -749,7 +749,7 @@
 		if ($killing~holokill)
 			setvar $switchboard~message $switchboard~message&"*  Planet holokills attempted "&$combat~holokill_count&" times *"
 		end
-		if ($prhunter = true)
+		if ($prhunter~prhunter = true)
 			setvar $switchboard~message $switchboard~message&"*  PR Hunter holokills attempted "&$prhunter~total_victims&" times *"
 		end
 		gosub :switchboard~switchboard
