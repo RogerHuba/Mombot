@@ -606,31 +606,6 @@
 			setvar $photon~is_all_keys true 
 		end
 		setvar $photon~found false
-		setTextTrigger 1 :pausing "Planet command (?="
-		setTextTrigger 2 :pausing "Computer command ["
-		setTextTrigger 3 :pausing "Corporate command ["
-		setTextTrigger 4 :pausing "Transfer To or From the Treasury (T/F)"
-		setTextTrigger 5 :pausing "Qcannon Control Type :"
-		setTextTrigger 6 :pausing "Beam to what sector? (U=Upgrade"
-
-		setTextLineTrigger 7  :scan "warps into the sector."
-		setTextLineTrigger 8  :scan " lifts off from"
-		setTextLineTrigger 9  :scan "Limpet mine in "&$player~current_sector
-		setTextLineTrigger 10 :scan "Deployed Fighters Report Sector "&$player~current_sector&":"
-		setTextLineTrigger 11 :scan "Quasar Cannon on"
-		setTextLineTrigger 12 :scan "Shipboard Computers The Interdictor Generator on"
-		setTextLineTrigger 13 :scan " is powering up weapons systems!"
-		settextlinetrigger 14 :scan " launches a wave of fighters at the "
-		settextlinetrigger 15 :scan	" launches a Genesis Torpedo into the sector!"
-		settextlinetrigger 16 :scan " appears from the planetary rubble."
-		setTextLineTrigger 17 :scan " exits the game."
-		setTextLineTrigger 18 :scan " enters the game."
-		setDelayTrigger	   19 :head_home_timeout 3600000
-		if ($sentinel~broadcast)
-			setdelaytrigger    20 :sentinel $settings~sentinel_cycle
-		end
-		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
-		
 
 		#############################################################################################
 		# Check for adjacent sectors in current location, for faster shooting if they come adjacent #
@@ -659,6 +634,41 @@
 		end
 		if ($fighter)
 			setTextTrigger 23 :attackSectorFighter "Deployed Fighters "
+		end
+
+
+		setTextTrigger 1 :pausing "Planet command (?="
+		setTextTrigger 2 :pausing "Computer command ["
+		setTextTrigger 3 :pausing "Corporate command ["
+		setTextTrigger 4 :pausing "Transfer To or From the Treasury (T/F)"
+		setTextTrigger 5 :pausing "Qcannon Control Type :"
+		setTextTrigger 6 :pausing "Beam to what sector? (U=Upgrade"
+
+		setTextLineTrigger 7  :scan "warps into the sector."
+		setTextLineTrigger 8  :scan " lifts off from"
+		setTextLineTrigger 9  :scan "Limpet mine in "&$player~current_sector
+		setTextLineTrigger 10 :scan "Deployed Fighters Report Sector "&$player~current_sector&":"
+		setTextLineTrigger 11 :scan "Quasar Cannon on"
+		setTextLineTrigger 12 :scan "Shipboard Computers The Interdictor Generator on"
+		setTextLineTrigger 13 :scan " is powering up weapons systems!"
+		settextlinetrigger 14 :scan " launches a wave of fighters at the "
+		settextlinetrigger 15 :scan	" launches a Genesis Torpedo into the sector!"
+		settextlinetrigger 16 :scan " appears from the planetary rubble."
+		setTextLineTrigger 17 :scan " exits the game."
+		setTextLineTrigger 18 :scan " enters the game."
+		setDelayTrigger	   19 :head_home_timeout 3600000
+		if ($sentinel~broadcast)
+			setdelaytrigger    20 :sentinel $settings~sentinel_cycle
+		end
+		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
+		
+
+		if ($prhunter = true)
+			#################################################################################################
+			# For searching and destroying passive gridders covering ports - expecting message from >prhunt #
+			# R Minotaur PORT GONE: 19806 class: BBS                                                        #
+			#################################################################################################
+			setTextLineTrigger 25 :validate_prhunt " PORT GONE: "
 		end
 		pause
 			
@@ -786,6 +796,17 @@
 
 	halt
 
+:validate_prhunt
+	getWord currentline $is_subspace_message 1
+	getText currentline $prhunter~sector "PORT GONE:" " class: "
+	isNumber $isNumber $prhunter~sector
+	if (($is_subspace_message <> "R") or ($isNumber <> true))
+		setTextLineTrigger 25 :validate_prhunt " PORT GONE: "
+		pause
+	end
+	gosub :prhunter~hunt
+
+goto :processing
 
 #################################################################
 # Photon routines - fire photon, move away, restock, set cannon #
@@ -1245,6 +1266,7 @@ include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\combat\holokill\combat"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\player\getcourse\player"
 include "source\bot_includes\player\findjumpsector\player"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
@@ -1260,6 +1282,7 @@ include "source\module_includes\defender\restock"
 include "source\module_includes\defender\killing"
 include "source\module_includes\defender\aliens"
 include "source\module_includes\defender\sentinel"
+include "source\module_includes\defender\prhunter"
 include "source\bot_includes\external\htorp"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\external\movefig"
