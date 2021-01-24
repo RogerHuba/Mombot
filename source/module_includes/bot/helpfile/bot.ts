@@ -185,7 +185,6 @@ end
 					end
 					add $i 1
 				end
-				openMenu BOT_MENU_SYSTEM FALSE
 
 				addMenu "" "BuyDown" "BuyDown Settings" "." "" "Main" FALSE
 				addMenu "BuyDown" "Product" "Product" "P" :Menu_Product "" FALSE
@@ -193,6 +192,7 @@ end
 				addMenu "BuyDown" "Quantity" "Quantity" "U" :Menu_Quantity "" FALSE
 				addMenu "BuyDown" "Haggle" "Haggling" "H" :Menu_HaggleFactor "" FALSE
 				addMenu "BuyDown" "GO" "GO!" "G" :Menu_Go "" TRUE
+				openMenu "BuyDown" FALSE
 
 			end
 return
