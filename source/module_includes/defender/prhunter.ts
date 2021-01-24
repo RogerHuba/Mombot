@@ -1,5 +1,7 @@
+setvar $total_victims 0
+
 :hunt
-    setvar $total_victims 0
+    setvar $total_run_victims 0
     killalltriggers
     ########################################
     # $sector passed in from defender main #
@@ -111,7 +113,7 @@
             end
             gosub :scan_and_kill_if_possible
             gosub :back_to_hunting_planet
-            setvar $switchboard~message "Made it all the way to the missing port.  Heading back now.  I found "&$total_victims&" along the way.*"
+            setvar $switchboard~message "Made it all the way to the missing port.  Heading back now.  I found "&$total_run_victims&" along the way.*"
             gosub :switchboard~switchboard
 return
 
@@ -138,6 +140,7 @@ return
     gosub :combat~holokill
     if ($sector~holotargetfound = true)
         add $total_victims 1
+        add $total_run_victims 1
     end
     if (($sector~holotargetfound = true) and ($player~current_sector <> $before_holo_kill_sector))
         setVar $PLAYER~WARPTO $before_holo_kill_sector

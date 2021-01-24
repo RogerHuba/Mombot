@@ -747,7 +747,10 @@
 			setvar $switchboard~message $switchboard~message&"  No photons fired.*"
 		end
 		if ($killing~holokill)
-			setvar $switchboard~message $switchboard~message&"*  Holokills attempted "&$combat~holokill_count&" times *"
+			setvar $switchboard~message $switchboard~message&"*  Planet holokills attempted "&$combat~holokill_count&" times *"
+		end
+		if ($prhunter = true)
+			setvar $switchboard~message $switchboard~message&"*  PR Hunter holokills attempted "&$prhunter~total_victims&" times *"
 		end
 		gosub :switchboard~switchboard
 		gosub :refresh_sectors
