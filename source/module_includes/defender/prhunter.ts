@@ -1,4 +1,6 @@
-setvar $total_victims 0
+:initialize
+    setvar $total_victims 0
+return
 
 :hunt
     setvar $total_run_victims 0
