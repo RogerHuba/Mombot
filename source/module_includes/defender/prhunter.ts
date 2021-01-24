@@ -72,11 +72,14 @@ return
             end
 
             setVar $j 3
-            setVar $result "q q q * "
+            send "q q q * "
             setVar $isSafe TRUE
             while (($j <= $PLAYER~courseLength) AND ($isSafe))
                 setVar $nextSafeSector $PLAYER~mowCourse[$j]
                 gosub :scan_and_kill_if_possible
+                if ($killing_error = true)
+                    return
+                end
                 setVar $safeDensityValue 0
                 if (PORT.EXISTS[$nextSafeSector] = TRUE)
                     add $safeDensityValue 100
@@ -114,6 +117,9 @@ return
                 add $j 1
             end
             gosub :scan_and_kill_if_possible
+            if ($killing_error = true)
+                return
+            end
             gosub :back_to_hunting_planet
             setvar $switchboard~message "Made it all the way to the missing port.  Heading back now.  I found "&$total_run_victims&" along the way.*"
             gosub :switchboard~switchboard
@@ -139,17 +145,30 @@ return
 
 :scan_and_kill_if_possible
     setvar $before_holo_kill_sector $player~current_sector
+    setvar $killing_error false
     gosub :combat~holokill
     if ($sector~holotargetfound = true)
         add $total_victims 1
         add $total_run_victims 1
     end
     if (($sector~holotargetfound = true) and ($player~current_sector <> $before_holo_kill_sector))
-        setVar $PLAYER~WARPTO $before_holo_kill_sector
+        setVar $PLAYER~WARPTO $hunting_start
         gosub :PLAYER~twarp
         if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+			send "*"
+            gosub :player~quikstats
+			setVar $figowner SECTOR.FIGS.OWNER[$player~current_sector]
+			setVar $figCount SECTOR.FIGS.QUANTITY[$player~current_sector]
+
+			if (($figcount > 0) and (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
+				gosub :xenter~run
+			end		
+
             setvar $switchboard~message "Could not make it back to starting sector after holokill. - ["&$player~msg&"]*"
+            setvar $killing_error true
             gosub :navigate~call
+        else
+            send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
         end
     end
     if ($switchboard~message <> "No targets found adjacent.*")
