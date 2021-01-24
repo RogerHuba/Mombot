@@ -3,7 +3,7 @@ setvar $only_help false
 if (($parm1 = "help") or ($parm1 = "?"))
 	setvar $only_help true
 end
-if (($bot~self_command = true) and (($bot~parm1 = "!") and ($bot~parm1 = "menu")))
+if (($bot~self_command = true) and (($bot~parm1 = "!") or ($bot~parm1 = "menu")))
 	goto :self_menu
 end
 	setVar $help_file "scripts\"&$mombot_directory&"\help\"&$command&".txt"
@@ -66,7 +66,7 @@ end
 			halt
 		end
 		:self_menu
-			if (($bot~self_command = true) and (($bot~parm1 = "!") and ($bot~parm1 = "menu")))
+			if (($bot~self_command = true) and (($bot~parm1 = "!") or ($bot~parm1 = "menu")))
 				setarray $fields 100 5
 				setvar $field_count 0
 				setvar $isDone false
