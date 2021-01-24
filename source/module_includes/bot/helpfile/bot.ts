@@ -192,7 +192,7 @@ end
 				addMenu "BuyDown" "Quantity" "Quantity" "U" :Menu_Quantity "" FALSE
 				addMenu "BuyDown" "Haggle" "Haggling" "H" :Menu_HaggleFactor "" FALSE
 				addMenu "BuyDown" "GO" "GO!" "G" :Menu_Go "" TRUE
-				openMenu "BuyDown" FALSE
+				openMenu "BuyDown" true
 
 			end
 return
