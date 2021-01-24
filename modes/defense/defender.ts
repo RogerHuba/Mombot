@@ -181,6 +181,13 @@
 		setvar $sentinel~broadcast false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos " prhunt"
+	if ($pos > 0)
+		setvar $prhunter true
+	else
+		setvar $prhunter false
+	end
+
 	getwordpos " "&$bot~user_command_line&" " $pos " allkeys "
 	if ($pos > 0)
 		setvar $mode~allkeys true
@@ -549,6 +556,9 @@
 	if ($combat~defender)
 		setVar $message $message&"*                   Defender mode on"
 	end
+	if ($prhunter)
+		setVar $message $message&"*                   PR Hunter mode on"
+	end
 	if ($restock~refurb_in_sector = true)
 		setVar $message $message&"*                   Refurbing in sector "&$restock~refurb_sector
 	end
@@ -713,6 +723,9 @@
 		end
 		if ($navigate~securePwarp)
 			setvar $description $description&"Secure "
+		end
+		if ($prhunter)
+			setvar $description $description&"PR Hunter "
 		end
 		if ($photon~paranoid)
 			setvar $description $description&"Paranoid "
