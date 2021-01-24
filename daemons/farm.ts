@@ -632,6 +632,7 @@ return
 
 :checkForFarmTarget
 	setvar $isFarmTarget false
+	setvar $isFarmFound false
 	getSectorParameter $focus $bot~parameter $isFarmTarget
 	if ($where_planets = true)
 		if ($TLPlanets[$focus] <= 0)
