@@ -74,6 +74,7 @@ return
             setVar $j 3
             send "q q q * "
             setVar $isSafe TRUE
+            setvar $player~current_prompt "Command"
             while (($j <= $PLAYER~courseLength) AND ($isSafe))
                 setVar $nextSafeSector $PLAYER~mowCourse[$j]
                 gosub :scan_and_kill_if_possible
