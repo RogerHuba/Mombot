@@ -932,7 +932,7 @@ return
 							end
 						end
 						if (($warp = TRUE) and ($planet~CITADEL > 3) and ($planet~planet_FUEL > 10000) and (($planet~planet_ORGANICS > 50000) or ($planet~planet_EQUIPMENT > 50000)))
-							send "qq* l " & #8 & $planet~planets[$j] & "* c "
+							gosub :land_on_farm_planet
 							gosub :merch
 							send "d"
 							waitOn "Citadel treasury contains "
@@ -948,18 +948,14 @@ return
 							end
 						end
 						if ($neg = true)
-							if ($planet~CITADEL > 0)
-								send "qq* l " & #8 & $planet~planets[$j] & "* c "
-							else
-								send "qq* l " & #8 & $planet~planets[$j] & "*"							
-							end
+							gosub :land_on_farm_planet
 							gosub :neg
 						end
 
 						send "qq* * "
 
 						if ($strip = true)
-							send "l " & #8 & $planet~planetToFill & "* c "
+							gosub :land_on_farm_planet
 							setVar $options ""
 							if ($get_fuel)
 								setVar $options $options&" f "
@@ -1059,8 +1055,16 @@ return
 		end
 				add $j 1
 	end
-	send "qq* l " & #8 & $planet~planetToFill & "*  c"
+	gosub :land_on_farm_planet
 RETURN
+
+:land_on_farm_planet
+	if ($planet~CITADEL > 0)
+		send "qq* l " & #8 & $planet~planets[$j] & "* c "
+	else
+		send "qq* l " & #8 & $planet~planets[$j] & "*"							
+	end
+return
 
 :upgrade_planets
 	setvar $status_message "Upgrading Planet(s)"
