@@ -18,7 +18,7 @@ return
 		setVar $top 1
 		setArray $checked SECTORS
 		setVar $que[1] $hunt_sector
-		setVar $checked[$hunt_sector] 1
+		#setVar $checked[$hunt_sector] 1
 
 		:tryAgain2
 		while ($bottom <= $top)
