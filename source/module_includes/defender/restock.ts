@@ -330,7 +330,7 @@
 			if ($photon~shooting_count = 0)
 				setVar $_Photon ""
 			else
-				if ($killing~holokill)
+				if (($killing~holokill = true) and ($prhunter~activate <> true))
 					setVar $_Photon $photon~shooting_count
 				else
 					setVar $_Photon "Max"

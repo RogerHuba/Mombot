@@ -98,18 +98,34 @@ return
                 if ($densitySafe <> TRUE)
                     setVar $minesSafe ((SECTOR.MINES.QUANTITY[$nextSafeSector] <= 0) OR (((SECTOR.MINES.OWNER[$nextSafeSector] = "yours") OR (SECTOR.MINES.OWNER[$nextSafeSector] = "belong to your Corp"))))
                     setVar $figsSafe  ((SECTOR.FIGS.QUANTITY[$nextSafeSector] <= 0) OR (((SECTOR.FIGS.OWNER[$nextSafeSector] = "yours") OR (SECTOR.FIGS.OWNER[$nextSafeSector] = "belong to your Corp"))))
+                    #########################################
+                    # for now, only avoids shielded planets #
+                    #########################################
                     setVar $planet~planetSafe ((SECTOR.PLANETCOUNT[$nextSafeSector] <= 0) OR (($nextSafeSector = $MAP~stardock) OR ($nextSafeSector <= 10)))
+                    setvar $containsShieldedPlanet false
+                    if (SECTOR.PLANETCOUNT[$test_sector] > 0)
+                        setVar $p 1
+                        while ($p <= SECTOR.PLANETCOUNT[$nextSafeSector])
+                            getWord SECTOR.PLANETS[$nextSafeSector][$p] $test 1
+                            if ($test = "<<<<")
+                                setVar $containsShieldedPlanet TRUE
+                            end
+                            add $p 1
+                        end
+                    end
                     setVar $navHazSafe (SECTOR.NAVHAZ[$nextSafeSector] <= 0)
                     setVar $player~limpetsSafe (SECTOR.ANOMALY[$nextSafeSector] = FALSE) OR ((((SECTOR.LIMPETS.OWNER[$nextSafeSector] = "yours") OR (SECTOR.LIMPETS.OWNER[$nextSafeSector] = "belong to your Corp"))))
                 end
-                if ($densitySafe OR ($player~limpetsSafe AND $figsSafe AND $minesSafe AND $navHazSafe AND $planet~planetSafe))
+                setvar $photoning_in false
+                if (($densitySafe = true) OR (($player~limpetsSafe = true) AND ($figsSafe = true) AND ($minesSafe = true) AND ($navHazSafe = true) AND ($containsShieldedPlanet = false)))
                         send "m "&$PLAYER~mowCourse[$j]&"* "
                         setvar $player~current_sector $PLAYER~mowCourse[$j]
                 else
-                    if (($player~limpetsSafe AND $minesSafe AND $navHazSafe AND $planet~planetSafe) and ($player~photons > 0))
+                    if ((($player~limpetsSafe AND $navHazSafe AND $planet~planetSafe) and ($player~photons > 0)))
                         send "c p y "&$player~mowCourse[$j]&"* y q  m "&$PLAYER~mowCourse[$j]&"* "
                         setvar $player~current_sector $PLAYER~mowCourse[$j]
                         setvar $player~photons ($player~photons-1)
+                        setvar $photoning_in true
                     else
                         setvar $switchboard~message "Can't go any further passively.  Heading back.*"
                         gosub :switchboard~switchboard
@@ -117,7 +133,7 @@ return
                         return
                     end
                 end
-                if (($figsToDrop > 0) AND ($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
+                if (($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
                     send "f 1 * c d "
                     setVar $target $PLAYER~mowCourse[$j]
                     gosub :player~addfigtodata
@@ -157,8 +173,15 @@ return
         send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "    
     end
     gosub :navigate~runaway_if_needed
-    setvar $scrub~seek true
-    gosub :scrub~run
+    gosub :restock~refurb_photons
+    ####################################################
+    # if refurbing from sector, we still need to scrub #
+    ####################################################
+    if ($restock~refurb_sector > 0)
+        setvar $scrub~seek true
+        gosub :scrub~run
+    end
+
 return
 
 :scan_and_kill_if_possible
