@@ -134,9 +134,13 @@ return
                     end
                 end
                 if (($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
-                    send "f 1 * c d "
-                    setVar $target $PLAYER~mowCourse[$j]
-                    gosub :player~addfigtodata
+                    if ($photoning_in = true)
+                        send "h 2 1* c "
+                    else
+                        send "f 1 * c d "
+                        setVar $target $PLAYER~mowCourse[$j]
+                        gosub :player~addfigtodata
+                    end
                 end
                 add $j 1
             end
