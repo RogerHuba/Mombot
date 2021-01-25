@@ -106,10 +106,16 @@ return
                         send "m "&$PLAYER~mowCourse[$j]&"* "
                         setvar $player~current_sector $PLAYER~mowCourse[$j]
                 else
-                    setvar $switchboard~message "Can't go any further passively.  Heading back.*"
-                    gosub :switchboard~switchboard
-                    gosub :back_to_hunting_planet
-                    return
+                    if (($player~limpetsSafe AND $minesSafe AND $navHazSafe AND $planet~planetSafe) and ($player~photons > 0))
+                        send "c p y "&$player~mowCourse[$j]&"* y q  m "&$PLAYER~mowCourse[$j]&"* "
+                        setvar $player~current_sector $PLAYER~mowCourse[$j]
+                        setvar $player~photons ($player~photons-1)
+                    else
+                        setvar $switchboard~message "Can't go any further passively.  Heading back.*"
+                        gosub :switchboard~switchboard
+                        gosub :back_to_hunting_planet
+                        return
+                    end
                 end
                 if (($figsToDrop > 0) AND ($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
                     send "f 1 * c d "
@@ -129,27 +135,30 @@ return
 
 :back_to_hunting_planet
     gosub :player~quikstats
-    if ($player~current_sector = $hunting_start)
-        ############################
-        # already at planet sector #
-        ############################
-        return
-    end
-    setvar $player~warpto $hunting_start
-    gosub :player~twarp
-    if ($player~twarpSuccess <> true)
-        setvar $switchboard~message "I can't twarp back! - "&$player~msg&".*"
-        gosub :switchboard~switchboard
-        gosub :navigate~call
-        return
-    else
-        send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+    if ($player~current_sector <> $hunting_start)
+        setvar $player~warpto $hunting_start
+        gosub :player~twarp
+        if ($player~twarpSuccess <> true)
+            setvar $switchboard~message "I can't twarp back! - "&$player~msg&".*"
+            gosub :switchboard~switchboard
+			send "*"
+            gosub :player~quikstats
+			setVar $figowner SECTOR.FIGS.OWNER[$player~current_sector]
+			setVar $figCount SECTOR.FIGS.QUANTITY[$player~current_sector]
+
+			if (($figcount > 0) and (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
+				gosub :xenter~run
+			end		
+            gosub :navigate~call
+        end
     end
     gosub :player~quikstats
+    if ($player~current_prompt = "Command")
+        send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "    
+    end
     gosub :navigate~runaway_if_needed
     setvar $scrub~seek true
     gosub :scrub~run
-
 return
 
 :scan_and_kill_if_possible
