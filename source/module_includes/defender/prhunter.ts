@@ -24,7 +24,7 @@ return
 		while ($bottom <= $top)
 			# Now, pull out the next sector in the que, and make it our focus
 			setVar $focus $que[$bottom]
-			getsectorparameter $focus "figsec" $isGoodSector
+			getsectorparameter $focus "FIGSEC" $isGoodSector
             if ($isGoodSector = true)
 				setVar $nearfig $focus
 				goto :start_the_hunt
