@@ -109,6 +109,7 @@ return
                     setvar $switchboard~message "Can't go any further passively.  Heading back.*"
                     gosub :switchboard~switchboard
                     gosub :back_to_hunting_planet
+                    return
                 end
                 if (($figsToDrop > 0) AND ($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
                     send "f 1 * c d "
@@ -122,11 +123,18 @@ return
                 return
             end
             gosub :back_to_hunting_planet
-            setvar $switchboard~message "Made it all the way to the missing port.  Heading back now.  I found "&$total_run_victims&" along the way.*"
+            setvar $switchboard~message "Made it all the way to the missing port.  Heading back now.  I found "&$total_run_victims&" victims along the way.*"
             gosub :switchboard~switchboard
 return
 
 :back_to_hunting_planet
+    gosub :player~quikstats
+    if ($player~current_sector = $hunting_start)
+        ############################
+        # already at planet sector #
+        ############################
+        return
+    end
     setvar $player~warpto $hunting_start
     gosub :player~twarp
     if ($player~twarpSuccess <> true)
