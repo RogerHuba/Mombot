@@ -55,6 +55,9 @@
 		setvar $containsEnemyTrader FALSE
 		if ($sector~holotargetfound)
 			gosub :player~quikstats
+			if ($player~photons > 0)
+				send "c  p  y  " $sector "* * q "
+			end
 			if (SECTOR.PLANETCOUNT[$test_sector] > 0)
 				setVar $p 1
 				while ($p <= SECTOR.PLANETCOUNT[$test_sector])
