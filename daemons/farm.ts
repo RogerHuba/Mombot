@@ -959,7 +959,7 @@ return
 						send "qq* * "
 
 						if ($strip = true)
-							gosub :land_on_farm_planet
+							send " qq* l " & #8 & $planet~planetToFill & "*"
 							setVar $options ""
 							if ($get_fuel)
 								setVar $options $options&" f "
