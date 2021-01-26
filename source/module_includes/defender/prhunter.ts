@@ -103,7 +103,7 @@ return
                     #########################################
                     setVar $planet~planetSafe ((SECTOR.PLANETCOUNT[$nextSafeSector] <= 0) OR (($nextSafeSector = $MAP~stardock) OR ($nextSafeSector <= 10)))
                     setvar $containsShieldedPlanet false
-                    if (SECTOR.PLANETCOUNT[$test_sector] > 0)
+                    if (SECTOR.PLANETCOUNT[$nextSafeSector] > 0)
                         setVar $p 1
                         while ($p <= SECTOR.PLANETCOUNT[$nextSafeSector])
                             getWord SECTOR.PLANETS[$nextSafeSector][$p] $test 1
