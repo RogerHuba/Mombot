@@ -49,6 +49,8 @@
 		setvar $replace_fig false
 	end
 
+	setarray $planets 100 2
+
 	send "\"
 	setTextLineTrigger flee_off :flee_off "Online Auto Flee is disabled."
 	setTextLineTrigger flee_on :flee_on "Online Auto Flee is enabled."
@@ -78,6 +80,7 @@ goto :_START_
 	killtrigger 3
 	killtrigger 4
 	killtrigger delay
+
 
 	setTextLineTrigger 1 :sub_reload "Shipboard Computers"
 	setTextLineTrigger 2 :landed		"{"&$bot~bot_name&"} - In Cit - Planet"
@@ -172,7 +175,8 @@ goto :_START_
 	if ($topoff = true)
 		gosub :topoff
 	else
-		send "l " $planet~planet "*  m  *  *  *  q "
+		send "l " $planet~planet "*  m  *  *  *  q l* "
+		gosub :land_and_check
 	end
 	setVar $loss 0
 	gosub :player~quikstats
@@ -198,7 +202,12 @@ goto :_START_
 			gosub :switchboard~switchboard
 			halt
 		else
+			send "l* "
+			gosub :land_and_check
+
 			setvar $switchboard~message "Attempting to use planet "&$planet~planet&".*"
+			gosub :switchboard~switchboard
+
 			setvar $planet~land_and_lift true
 			gosub :planet~landingsub 
 			if ($planet~sucessfulPlanet <> true)
@@ -338,7 +347,63 @@ halt
 return
 
 
+:land_and_check
+	waitOn "Registry# and Planet Name"
+	setVar $planet_count 0
+	setTextLineTrigger 1 :planetline "   <"
+	setTextLineTrigger 2 :done "Land on which planet "
+	setTextLineTrigger 3 :done "You can create one with a Genesis Torpedo."
+	pause
+	:planetline
+		killtrigger 1
+		killtrigger 2
+		getWordPos CURRENTLINE $pos "<<<< SHIELDED"
+		if ($pos <= 0)
+			setVar $line CURRENTLINE
+			replacetext $line "<" " "
+			replacetext $line ">" " "
+			striptext $line ","
+			getText CURRENTLINE&"[ENDOFLINE]" $string "Level " "[ENDOFLINE]" 
+			getword $string $planet_fighters 3
+			replacetext $planet_fighters "T" "000"
+			replacetext $planet_fighters "M" "000000"
+			if ($planet_fighters > 0)
+				add $planet_count 1
+				setvar $planets[$planet_count][1] $planet_fighters
+				getWord $line $planets[$planet_count] 1
+			end
+		end
+		setTextLineTrigger 1 :planetline "   <"
+		setTextLineTrigger 2 :done "Land on which planet "
+		pause
+	:done
+		killalltriggers
 
+	setvar $i 1
+	setvar $target_planet 0
+	setvar $max_fighters 0
+	while ($i <= $planet_count)
+		if ($planets[$i][1] > $max_fighters)
+			setvar $max_fighters $planets[$i][1]
+			setvar $target_planet $planets[$i]
+		end
+		add $i 1
+	end
+	setvar $planet~planet $target_planet
+	#<Atmospheric maneuvering system engaged>
+	#Registry# and Planet Name                    Citadel RLvl Fighters QCanRLvl Cls
+	#-------------------------------------------------------------------------------
+	#   <   6> Pirate Ship                        Level 5   0%    305T      1%    H
+	#          Owned by: Sandy Pants [2]
+	#   <   7> .                                  Level 6  13%     31T     10%    K
+	#          Owned by: Sandy Pants [2]
+	#   <   8> Good Time                          Level 5 100%     17T      0%    O
+	#          Owned by: Sandy Pants [2]
+	#   <  15> Death                              Level 5 100%       0      1%    U
+	#          Owned by: Sandy Pants [2]
+	#   <  39> Legion                             Level 4   0%     41T      0%    K
+	#          Owned by: Sandy Pants [2]
+return
 
 
 #INCLUDES:
