@@ -728,6 +728,8 @@ return
 
 
 							goto :doneWithThisPlanet
+							
+
 						end
 						setVar $i 1
 						setVar $foundPlanet FALSE
@@ -903,7 +905,9 @@ return
 						send "qq* l " & #8 & $planet~planets[$j] & "*"
 						gosub :setWindow
 						gosub :PLANET~getPlanetInfo
-						send "c "
+						if ($planet~CITADEL > 0)
+							send "c "
+						end
 						if (($planet~CITADEL_CREDITS > 0) and ($cash = true))
 							while ($planet~CITADEL_CREDITS > 0)
 								if ($planet~CITADEL_CREDITS > 999999999) or (($planet~CITADEL_CREDITS +  $PLAYER~CREDITS) > 999999999)
