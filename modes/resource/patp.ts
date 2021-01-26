@@ -64,17 +64,6 @@
 			end
 		end
 	end
-	if ($minimumFuel <= 0)
-		setvar $switchboard~message "Minimum Port Product must be greater than 0.*"
-		gosub :switchboard~switchboard
-		halt
-	end
-
-	if ($number <> 1)
-		setVar $SWITCHBOARD~message "Minimum Port Fuel entered is not a number!*"
-		gosub :SWITCHBOARD~switchboard
-		halt
-	end
 	if ($minimumFuel <  0)
 		setVar $SWITCHBOARD~message "Minimum Port Fuel must be greater than or equal to 0.*"
 		gosub :SWITCHBOARD~switchboard
