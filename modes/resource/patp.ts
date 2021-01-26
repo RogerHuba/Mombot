@@ -56,7 +56,7 @@
 		uppercase $bot~parmameter
 		setVar $minimumFuel $bot~parm2
 		isNumber $number $minimumFuel
-		if ($number <> true)
+		if (($number <> true) OR ($minimumfuel <= 0))
 			setvar $minimumfuel 1000
 		end
 	end
