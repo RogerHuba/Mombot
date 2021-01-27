@@ -442,7 +442,7 @@ return
 	end
 	echo "*[1;44m        Sentinel Activity        [0m"
 	echo "**" ansi_15
-return
+goto :settriggers
 
 :checkcorp
 	setarray $corp_members 10 1
@@ -471,7 +471,6 @@ return
 
 	:done_ta
 	send "q"
-	waiton "Citadel command ("
 return
 
 :checkclv
