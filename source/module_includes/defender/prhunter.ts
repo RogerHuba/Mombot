@@ -170,7 +170,7 @@ return
 			if (($figcount > 0) and (($figOwner <> "belong to your Corp") AND ($figOwner <> "yours")))
 				gosub :xenter~run
 			end		
-            gosub :navigate~call
+            gosub :navigate~callsaveme
         end
     end
     gosub :player~quikstats
@@ -212,7 +212,7 @@ return
 
             setvar $switchboard~message "Could not make it back to starting sector after holokill. - ["&$player~msg&"]*"
             setvar $killing_error true
-            gosub :navigate~call
+            gosub :navigate~callsaveme
         else
             send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
         end

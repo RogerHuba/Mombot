@@ -820,7 +820,7 @@
 	getText currentline $prhunter~sector "PORT GONE:" " class: "
 	isNumber $isNumber $prhunter~sector
 	# TEMP FOR DEBUG ONLY - VALIDATION NEEDS TO BE HERE NORMALLY #
-	setvar $is_subspace_message "R"
+	# setvar $is_subspace_message "R"
 	# DELETE THIS LINE ABOVE #
 
 	if (($is_subspace_message <> "R") or ($isNumber <> true))
@@ -828,6 +828,9 @@
 		pause
 	end
 	gosub :prhunter~hunt
+	gosub :killing~scan_for_targets
+	gosub :navigate~runaway_if_needed
+	gosub :restock~refurb_photons
 
 goto :processing
 
