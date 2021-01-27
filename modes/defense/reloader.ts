@@ -102,7 +102,7 @@ goto :_START_
 		setDelayTrigger delay :reload $random_delay 
 	end
 	if ($sentinel)
-		setdelaytrigger    20 :sentinel $settings~sentinel_cycle
+		setdelaytrigger    20 :sentinel 15000
 	end	
 
 	pause
