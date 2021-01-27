@@ -1,4 +1,3 @@
-	logging off
 	gosub :BOT~loadVars
 
 	setVar $BOT~help[1]  $BOT~tab&"reloader {fig minimum} {ig} {topoff} {fig} {noland} {sentinel}"
@@ -18,6 +17,9 @@
 	setVar $BOT~script_title "Reloader"
 	gosub :BOT~banner
 
+
+	setvar $CheckCLVDetail 1
+	setVar $logfile $bot~folder&"/sentinel"&$year & $month & $day & ".log"
 
 	gosub :player~quikstats
 	loadvar $planet~planet
@@ -82,11 +84,7 @@ setvar $version "1.7"
 goto :_START_
 
 :settriggers
-	killtrigger 1
-	killtrigger 2
-	killtrigger 3
-	killtrigger 4
-	killtrigger delay
+	gosub :killreloadtriggers
 
 
 	setTextLineTrigger 1 :sub_reload "Shipboard Computers"
@@ -104,8 +102,23 @@ goto :_START_
 	if ($sentinel)
 		setdelaytrigger    20 :sentinel 15000
 	end	
+	setTextTrigger pause1 :pausing "Planet command (?="
+	setTextTrigger pause2 :pausing "Computer command ["
+	setTextTrigger pause3 :pausing "Corporate command ["
 
 	pause
+
+:pausing
+	gosub :killreloadtriggers
+	echo ANSI_6 "*[" ANSI_14 "Reloader paused. To restart, re-enter Command Prompt" ANSI_6 "]*" ANSI_7
+	setTextTrigger 1 :restarting "Command [TL"
+	pause
+	:restarting
+		killtrigger 2
+		echo ANSI_6 "*[" ANSI_14 "Reloader restarted" ANSI_6 "]*" ANSI_7
+		gosub :player~quikstats
+		goto :settriggers
+
 
 :replace_fig
 	setvar $sentinel false
@@ -116,18 +129,14 @@ goto :_START_
 		setTextLineTrigger 4 :replace_fig " of your fighters in sector "&$player~current_sector
 		pause
 	end
-	killtrigger 1
-	killtrigger 2
-	killtrigger 3
+	gosub :killreloadtriggers
 	gosub :topoff
 	add $loss 1
 	goto :settriggers
 
 
 :landed
-	killtrigger 1
-	killtrigger 3
-	killtrigger 4
+	gosub :killreloadtriggers
 	send " q  q  q  q  q  z  n  ** "
 	waiton "Warps to Sector(s) :"
 	waiton "Command [TL"
@@ -153,9 +162,7 @@ goto :_START_
 		setTextLineTrigger 1 :sub_reload "Shipboard Computers"
 		pause
 	end
-	killtrigger 2
-	killtrigger 3
-	killtrigger 4
+	gosub :killreloadtriggers
 	While ($reloaderCheck <> 0)
 		SetVar $PreviousreloaderLine $reloaderLine
 		CutText $PreviousreloaderLine $reloaderLine ($reloaderCheck + 10) 999
@@ -180,11 +187,7 @@ goto :_START_
 	end
 
 :reload
-	killtrigger 1
-	killtrigger 2
-	killtrigger 3
-	killtrigger 4
-	killtrigger delay
+	gosub :killreloadtriggers
 	if ($topoff = true)
 		gosub :topoff
 	else
@@ -206,6 +209,16 @@ goto :_START_
 
 :_START_
 
+:killreloadtriggers
+	killtrigger 1
+	killtrigger 2
+	killtrigger 3
+	killtrigger 4
+	killtrigger delay
+	killtrigger pause1
+	killtrigger pause2
+	killtrigger pause3
+return
 # ============================== RELOADER (RELOAD) ==============================
 :reloader
 	setVar $startingLocation $player~current_prompt
