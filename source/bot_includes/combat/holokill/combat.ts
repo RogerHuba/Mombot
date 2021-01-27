@@ -55,9 +55,13 @@
 		setvar $containsEnemyTrader FALSE
 		if ($sector~holotargetfound)
 			gosub :player~quikstats
-#			if ($player~photons > 0)
-#				send "c  p  y  " $sector "* * q "
-#			end
+			if (($player~photons > 0) and (($photon_only = true) or ($photon_and_kill = true)))
+				send "c  p  y  " $test_sector "* * q "
+				if ($photon_only = true)
+					setVar $SWITCHBOARD~message "Photoned "&$sector~enemy_name&" in sector "&$test_Sector&"!  In photon only mode right now.*"
+					return
+				end
+			end
 			if (SECTOR.PLANETCOUNT[$test_sector] > 0)
 				setVar $p 1
 				while ($p <= SECTOR.PLANETCOUNT[$test_sector])
@@ -83,6 +87,7 @@
 			else
 				if ($sector~target_in_defender_ship = true)
 					setVar $SWITCHBOARD~message "Cannot holokill - "&$sector~enemy_name&" is in a defender ship with planets under them.*"
+					return
 				else
 					setVar $SWITCHBOARD~message "Cannot holokill - check for planets or too many figs?*"
 					return

@@ -136,6 +136,7 @@ return
                 if (($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
                     if ($photoning_in = true)
                         send "h 2 1* c "
+                        waiton "Handle which mine type, 1 Armid or 2 Limpet"
                     else
                         send "f 1 * c d "
                         setVar $target $PLAYER~mowCourse[$j]
@@ -192,6 +193,21 @@ return
 :scan_and_kill_if_possible
     setvar $before_holo_kill_sector $player~current_sector
     setvar $killing_error false
+
+    ################################################################
+    # Only photon if you have photons left when finding target     #
+    # TODO: add kill option after photoning if you have zero after #
+    # shooting, but need to wait for photon wave to finish         #
+    ################################################################
+    setvar $combat~photon_only false
+    setvar $combat~photon_and_kill false
+    if ($player~photons > 0)
+        #if ($player~photons > 1)
+            setvar $combat~photon_only true
+        #else
+        #    setvar $combat~photon_and_kill true
+        #end
+    end
     gosub :combat~holokill
     if ($sector~holotargetfound = true)
         add $total_victims 1
