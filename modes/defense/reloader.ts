@@ -207,8 +207,6 @@ goto :_START_
 	end
 	goto :settriggers
 
-:_START_
-
 :killreloadtriggers
 	killtrigger 1
 	killtrigger 2
@@ -219,6 +217,9 @@ goto :_START_
 	killtrigger pause2
 	killtrigger pause3
 return
+
+:_START_
+
 # ============================== RELOADER (RELOAD) ==============================
 :reloader
 	setVar $startingLocation $player~current_prompt
