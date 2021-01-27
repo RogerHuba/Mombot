@@ -436,6 +436,7 @@ return
 
 :sentinel
 	gosub :checkcorp
+	setvar $broadcast true
 	if ($broadcast)
 		setvar $switchboard~message ""
 		gosub :CheckCLV
