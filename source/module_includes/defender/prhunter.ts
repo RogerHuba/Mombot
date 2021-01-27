@@ -211,7 +211,7 @@ return
     #########################################################
     # call planet in immediately when seeing target to kill #
     #########################################################
-    setvar $combat~slingshot = true
+    setvar $combat~slingshot true
     gosub :combat~holokill
     if ($sector~holotargetfound = true)
         add $total_victims 1
