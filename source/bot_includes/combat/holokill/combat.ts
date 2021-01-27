@@ -153,10 +153,10 @@
 				if ($switch)
 					send " e y q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  "
 				else
-					send " q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  "
+					send " q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *   "
 				end
 			else
-				send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  "
+				send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *   "
 			end
 			if (($player~GENESIS > 0) and ($defender = true))
 				send "u y n.* c "
@@ -168,6 +168,9 @@
 				gosub :player~quikstats
 			end
 		
+			# setting these so kill scripts don't think they are in citadel #
+			setvar $player~startingLocation "Command"
+			setvar $player~current_prompt "Command"
 			if ($holocapture)
 				gosub :fastCapture
 			else

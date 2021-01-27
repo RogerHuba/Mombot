@@ -874,6 +874,7 @@ goto :processing
 		if ($photon~success = true)
 			setvar $photon~last_sector $photon~sector
 			setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
+		else
 			gosub :player~quikstats
 		end
 		gosub :check_for_target_change

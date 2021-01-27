@@ -21,8 +21,11 @@
 		setvar $combat~switch false
 	end
 	setvar $error false
-	gosub :player~quikstats
 	setvar $player~startinglocation $player~current_prompt
+	if ($player~startingLocation <> "Citadel")
+		gosub :player~quikstats
+		setvar $player~startinglocation $player~current_prompt
+	end
 	if ($player~startinglocation <> "Citadel")
 		#########################################
 		# Something has gone wrong, call saveme #
@@ -92,7 +95,6 @@
 			setvar $ship~SHIP_MAX_ATTACK $navigate~starting_ship_max_attack
 			setvar $ship~SHIP_OFFENSIVE_ODDS $navigate~starting_ship_offensive_odds 
 		end
-		gosub :player~quikstats
 
 		setvar $switchboard~message "I just attempted to capture some empty ships in sector "&$player~current_sector&".  Someone might want to come clean them up.*"
 		gosub :switchboard~switchboard
