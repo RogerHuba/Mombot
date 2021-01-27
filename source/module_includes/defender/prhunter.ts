@@ -140,6 +140,7 @@ return
                         send "f 1 * c d "
                         setVar $target $PLAYER~mowCourse[$j]
                         gosub :player~addfigtodata
+                        send "'<"&$bot~subspace&">[Figged:"&$target&"]<"&$bot~subspace&">* "
                     end
                 end
                 add $j 1

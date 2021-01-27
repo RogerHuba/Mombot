@@ -13,6 +13,7 @@
 	loadvar $game~armid_cost
 	loadvar $game~photon_cost
 	loadvar $game~DISRUPTOR_COST
+	loadvar $bot~subspace
 	loadvar $bot~username
 	lowercase $bot~username
 	loadvar $game~MULTIPLE_PHOTONS
