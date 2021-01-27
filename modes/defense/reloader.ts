@@ -212,6 +212,7 @@ goto :_START_
 	killtrigger 2
 	killtrigger 3
 	killtrigger 4
+	killtrigger 20
 	killtrigger delay
 	killtrigger pause1
 	killtrigger pause2
