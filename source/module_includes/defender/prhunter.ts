@@ -208,11 +208,16 @@ return
         #    setvar $combat~photon_and_kill true
         #end
     end
+    #########################################################
+    # call planet in immediately when seeing target to kill #
+    #########################################################
+    setvar $combat~slingshot = true
     gosub :combat~holokill
     if ($sector~holotargetfound = true)
         add $total_victims 1
         add $total_run_victims 1
     end
+    gosub :player~quikstats
     if (($sector~holotargetfound = true) and ($player~current_sector <> $before_holo_kill_sector))
         setVar $PLAYER~WARPTO $hunting_start
         gosub :PLAYER~twarp

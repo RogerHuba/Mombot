@@ -137,6 +137,8 @@
 				return
 			end
 			send "m * * * c "
+			setvar $player~startingLocation "Citadel"
+			setvar $player~current_prompt "Citadel"
 			if ($holocapture)
 				gosub :fastCapture
 				send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
