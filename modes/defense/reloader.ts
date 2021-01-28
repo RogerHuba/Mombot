@@ -435,6 +435,7 @@ return
 
 
 :sentinel
+	killalltriggers
 	gosub :checkcorp
 	setvar $broadcast true
 	if ($broadcast)
