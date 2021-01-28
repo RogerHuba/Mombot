@@ -90,7 +90,7 @@ goto :_START_
 	setTextLineTrigger 1 :sub_reload "Shipboard Computers"
 	setTextLineTrigger 2 :landed		"{"&$bot~bot_name&"} - In Cit - Planet"
 	if ($ig = true)
-		setTextLineTrigger 3 :ig_turn_it_on " damaging your ship."
+		setTextLineTrigger 3 :ig_turn_it_on_damage " damaging your ship."
 	end
 	if ($replace_fig)
 		setTextLineTrigger 4 :replace_fig " of your fighters in sector "&$player~current_sector
@@ -277,8 +277,9 @@ return
 
 halt
 
+:ig_turn_it_on_damage
+	setvar $sentinel false
 :ig_turn_it_on
-		setvar $sentinel false
 		getWord CURRENTLINE $test 1
 		if ($test = "F") or ($test = "R") or ($test = "P")
 			setTextLineTrigger 3 :ig_turn_it_on " damaging your ship."
