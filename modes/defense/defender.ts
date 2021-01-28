@@ -1046,6 +1046,7 @@ goto :processing
 		add $i 1
 	end
 	killtrigger wait
+	killtrigger announce_trigger
 return
 
 
