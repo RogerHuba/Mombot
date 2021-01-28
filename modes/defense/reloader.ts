@@ -80,7 +80,7 @@
 	end
 
 
-setvar $version "1.7"
+setvar $version "1.75"
 goto :_START_
 
 :settriggers
