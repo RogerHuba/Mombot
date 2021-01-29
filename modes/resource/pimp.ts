@@ -337,6 +337,7 @@ loadvar $map~backdoor
  
 :restock
 	killalltriggers
+	setvar $planet~planet $target
 	send "d"
 	setTextLineTrigger 	figprompt 	:figprompt 		"Fighters:"
 	setTextLineTrigger 	nofigprompt :nofigprompt	"Warps to Sector(s) :"
