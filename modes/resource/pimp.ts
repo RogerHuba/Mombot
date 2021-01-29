@@ -566,6 +566,109 @@ loadvar $map~backdoor
     halt
 
 
+:DoTwarp
+	setVar $msg ""
+	if ($warpto > 0)
+		send "q q q * * mz" & $warpto "*"
+		setTextTrigger there        :adj_warp "You are already in that sector!"
+		setTextLineTrigger adj_warp :adj_warp "Sector  : " & $warpto & " "
+		setTextTrigger locking      :locking "Do you want to engage the TransWarp drive?"
+		setTextTrigger igd          :twarpIgd "An Interdictor Generator in this sector holds you fast!"
+		setTextTrigger noturns      :twarpPhotoned "Your ship was hit by a Photon and has been disabled"
+		setTextTrigger noroute      :twarpNoRoute "Do you really want to warp there? (Y/N)"
+		pause
+		:adj_warp
+			killAllTriggers
+			send "z*"
+			goto :twarp_adj
+		:locking
+			killAllTriggers
+			send "y"
+			setTextLineTrigger twarp_lock 		:twarp_lock "TransWarp Locked"
+			setTextLineTrigger no_twrp_lock 	:no_twarp_lock "No locating beam found"
+			setTextLineTrigger twarp_adj 		:twarp_adj "<Set NavPoint>"
+			setTextLineTrigger no_fuel 		:itwarpNoFuel "You do not have enough Fuel Ore"
+			pause
+		:twarpNoFuel
+			killAllTriggers
+			setVar $msg "Not enough fuel for T-warp."
+			goto :twarpDone
+
+		:twarp_adj
+			killAllTriggers
+			send " * p s"
+			goto :twarpDone
+
+		:twarpNoRoute
+			killAllTriggers
+			send "n* z* "
+			setVar $msg "No route available!"
+			goto :twarpDone
+
+		:no_twarp_lock
+			killAllTriggers
+			send "n*zn"
+			send "l " & #8 & $PLANET~PLANET "*c"
+			setSectorParameter $warpto "FIGSEC" FALSE
+			setvar $msg "no twarp lock"
+			return
+
+		:twarpIgd
+			killAllTriggers
+			setVar $msg "My ship is being held by Interdictor!"
+			goto :twarpDone
+
+		:twarpPhotoned
+			killAllTriggers
+			setVar $msg "I have been photoned and can not T-warp!"
+			goto :twarpDone
+
+		:twarp_lock
+			KillAlltriggers
+			if (currentalignment >= 1000)
+				if ($furbing)
+					setVar $str "y * * p s g y g q " 
+				else
+					setVar $str "y * *  " 
+				end
+				send $str
+			else
+				if ($furbing)
+					setVar $str "y  *  *  m " & $MAP~stardock & " *  *  p s g y g q "
+				else
+					setVar $str "y * *  " 
+				end
+				send $str
+			end
+		:twarpDone
+			if ($msg <> "")
+				setvar $switchboard~message "Twarp Error - " & $msg & "*"
+				gosub :switchboard~switchboard
+				send "*"
+			end
+	end
+	return
+
+:bwarp
+
+	killAllTriggers
+	send "b" $warpto "*"
+	setTextTrigger go :go5 "TransWarp Locked"
+	setTextTrigger no :no5 "No locating beam found"
+	goSub :delayTrigger
+	pause
+
+:no5
+	killAllTriggers
+	send "n "
+	waitfor "Transporter shutting down."
+	return
+
+:go5
+	killAllTriggers
+	send "y z * "
+	return
+
 
 :TurnsRequired
 	send "i"
