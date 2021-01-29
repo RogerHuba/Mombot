@@ -117,6 +117,8 @@
     send "q q q * "
 
     setVar $j 3
+    setvar $switchboard~message ""
+
     while (($j <= $PLAYER~courseLength) AND ($isSafe))
         setVar $nextSafeSector $PLAYER~mowCourse[$j]
         gosub :scan_and_kill_if_possible
@@ -169,8 +171,7 @@
                     setvar $player~photons ($player~photons-1)
                     setvar $photoning_in true
                 else
-                    setvar $switchboard~message "Can't go any further passively.*"
-                    gosub :switchboard~switchboard
+                    setvar $switchboard~message $switchboard~message&"Can't go any further passively. *"
                     setvar $isSafe false
                 end
             end        
@@ -189,13 +190,14 @@
         end
         add $j 1
     end
-    gosub :scan_and_kill_if_possible
-    if ($killing_error = true)
-        if ($nosaveme <> true)
-            gosub :callsaveme
+    if ($isSafe <> true)
+        gosub :scan_and_kill_if_possible
+        if ($killing_error = true)
+            if ($nosaveme <> true)
+                gosub :callsaveme
+            end
         end
     end
-
 
     setVar $docking_instructions ""
     if ($are_we_docking)
@@ -210,7 +212,7 @@
         end
     end
     gosub :PLAYER~quikstats
-    setvar $switchboard~message "Hunt completed.*"
+    setvar $switchboard~message $switchboard~message&"Hunt completed.*"
     gosub :switchboard~switchboard
 halt
 
