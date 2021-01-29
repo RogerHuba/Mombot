@@ -626,18 +626,10 @@ loadvar $map~backdoor
 		:twarp_lock
 			KillAlltriggers
 			if (currentalignment >= 1000)
-				if ($furbing)
-					setVar $str "y * * p s g y g q " 
-				else
-					setVar $str "y * *  " 
-				end
+				setVar $str "y * * p s g y g q " 
 				send $str
 			else
-				if ($furbing)
-					setVar $str "y  *  *  m " & $MAP~stardock & " *  *  p s g y g q "
-				else
-					setVar $str "y * *  " 
-				end
+				setVar $str "y  *  *  m " & $MAP~stardock & " *  *  p s g y g q "
 				send $str
 			end
 		:twarpDone
