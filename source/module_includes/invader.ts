@@ -139,6 +139,22 @@
 		end
 	end
 
+	
+	if (($bot~command = "pe") or ($bot~command = "ped"))
+		
+		getWordPos $bot~user_command_line $pos "ret:"
+		if ($pos > 0)
+			setVar $retreat TRUE
+			setVar $cline $bot~user_command_line & " "
+			getText $cline $retreatn "ret:" " "
+			goSub :retreatMac
+		else
+			setVar $retreat FALSE
+		end
+		
+		
+	end
+
 	if ($bot~command = "pxelk") or ($bot~command = "pelk")
 		setVar $fullsend FALSE
 		getWordPos $bot~user_command_line $pos "kkkk"
@@ -390,8 +406,10 @@ return
 
 				goto :photonWaitAgain
 			else
-				
-				getRnd $delaytime 260 330
+				// We want to make sure other person get's in and we don't time it perfectly to get shot 
+				setVar $delmin ($GAME~LATENCY + 30)
+				setVar $delmax ($delmin + 70)
+				getRnd $delaytime $delmin $delmax
 				setDelayTrigger masspause :masspause $delaytime
 				pause
 				:masspause
@@ -417,6 +435,9 @@ return
 	end
 	setVar $donewaiting FALSE
 
+	if ($retreat = TRUE)
+		send $rmac
+	end 
 	# Go back in, retreat n times, drain cannon
 	if ($returnRetreat = TRUE)
 		if ($donewaiting = FALSE)
@@ -444,7 +465,11 @@ return
 	# go back and try and kill some on citkill
 	if ($xkill = TRUE)
 		if ($xkillFigs = 0)
-			setVar $xkillFigs 10000
+			if ($SHIP~SHIP_MAX_ATTACK > 0)
+				setVar $xkillFigs $SHIP~SHIP_MAX_ATTACK
+			else
+				setVar $xkillFigs 10000
+			end
 		end
 		if ($bot~command = "pxex") or ($bot~command = "pxedx")
 			setVar $shipEnemySector $bot~parm2
@@ -604,6 +629,16 @@ return
 	
 return
 
+:retreatMac
+
+		setVar $rmac ""
+		setVar $rri 1
+		while ($rri <= $retreatn)
+			setVar $rmac $rmac &" m 0* * "
+			add $rri 1
+		end
+
+return
 :returnRetreatMac
 
 	if ($PLAYER~startingLocation = "Citadel")

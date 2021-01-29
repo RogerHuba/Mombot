@@ -106,11 +106,12 @@ if ($pos > 0)
 end
 
 
+
 gosub :SWITCHBOARD~switchboard
 
 
 
-setVar $bubblesToFind 10
+setVar $bubblesToFind 8
 
 setVar $bubbleDoors 0
 setVar $bubbleDoorsCount 0
@@ -124,7 +125,7 @@ setVar $tunnelEnds 0
 setVar $tunnelsi 0
 
 setVar $cSector 11
-setVar $maxChecks 200
+setVar $maxChecks 400
 setVar $checkCounter 1
 setVar $go 1
 
@@ -277,15 +278,17 @@ echo "Entering DO PLOTS*"
 				setVar $foundBubble 0
 				goSub :checkBubble
 				if ($foundBubble = 0)
-					goSub :checkTunnel
+				//	goSub :checkTunnel
 					if ($foundBubble = 0)
 						echo "*#######################################################"
 						echo "*######## NO SOLUTION FOR:  " $cSector " ###############"
 						echo "*#######################################################"
 					else
-						if ($goCrazy = 1)
-							goSub :goCrazy
-						end
+						
+					end
+				else
+					if ($goCrazy = 1)
+						goSub :goCrazy
 					end
 				end
 				setVar $x 1
@@ -602,7 +605,7 @@ return
 	setVar $stopLookingAt ($coursei - 4)
 	
 	
-	setVar $y 5
+	setVar $y 3
 	setVar $lastPlot ($coursei - 1)
 
 	while ($y < $coursei)
@@ -630,7 +633,7 @@ return
 			goto :waitLapBub
 		:checkplotblockBub
 			killalltriggers
-			setVar $bubbleDoorAt ($totalRec + 5)
+			setVar $bubbleDoorAt ($totalRec + 3)
 			
 			echo "*############# FOUND DOOR " $course[$bubbleDoorAt] " #############"
 			setVar $msg "[Found Big Bubble] Door: " & $course[$bubbleDoorAt] & " Internal Sec:" & $course[$lastPlot] & "*"
@@ -924,8 +927,8 @@ return
 	waitfor "Computer deactivated>"
 	
 	setVar $BOT~command "mow"
-	setVar $BOT~user_command_line " mow " & $tunnelDoors1[$tunnelsi] & " 0 "
-	setVar $BOT~parm1 $tunnelDoors1[$tunnelsi]
+	setVar $BOT~user_command_line " mow " & $bubbleDoors[$bubblei] & " 0 "
+	setVar $BOT~parm1 $bubbleDoors[$bubblei]
 	setVar $BOT~parm2 "0"
 	saveVar $BOT~parm1
 	saveVar $BOT~parm2
@@ -938,7 +941,7 @@ return
 	killalltriggers
 
 	send "f1*cd"
-	send "cf*" $tunnelEnds[$tunnelsi] "*q"
+	send "cf*" $bubbleEnds[$bubblei] "*q"
 	waitfor "The shortest path"
 	setTextLineTrigger goCrazy1in :goCrazy1in " > "
 	pause

@@ -673,10 +673,7 @@ return
                 pause
             :towdone2
                 killAllTriggers
-                goSub :joincorp 
-echo "$xportship" $xportship "*"
-echo "$xportship" $xportship "*"
-echo "$xportship" $xportship "*"
+
 
                 setTextLineTrigger crazyloc :crazyloc "crazyStuffDone"
                 pause
@@ -692,7 +689,7 @@ echo "$xportship" $xportship "*"
                 send "tt.**qtfyf1500*q"
                 gosub :getCreds
                 setVar $ourShip $player~SHIP_NUMBER
-                send "x " $xportship "*"
+                send "x " $xportship "*q"
                 waitfor "Security code accepted"
                 send "'" $theirBot " x " $ourShip "*"
            

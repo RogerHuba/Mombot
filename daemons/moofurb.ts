@@ -115,6 +115,73 @@ elseif ($modestring = "xfurb")
 	setVar $ourShip $player~SHIP_NUMBER
 	
 	setVar $startMsg $startMsg & "XFurb command in action.*"	
+
+elseif ($modestring = "sxfurb")
+
+	
+	if ($startingLocation <> "Command")
+		setVar $SWITCHBOARD~message "Must be started from Command prompt.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+	if ($player~ALIGNMENT < 1000)
+		setVar $SWITCHBOARD~message "You're just not good enough for this script (alignment).*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+	if (CURRENTSECTOR <> $stardock)
+		setVar $SWITCHBOARD~message "Please start at StarDock.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+	setVar $ourShip $player~SHIP_NUMBER
+	
+	setVar $shipTwo $bot~parm2
+	
+	isNumber $test $shipTwo
+	if ($test = 0)
+		setVar $SWITCHBOARD~message "The ship to furb must be a number*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+	send "w** "
+	
+	setVar $startscan 0
+	setVar $shipFound 0
+	settextlinetrigger sxship2found2nd :sxship2found2nd " " & $shipTwo & " "
+	setTextLineTrigger sxship2startscan :sxship2startscan "Ship  Sect Name"
+	settextlinetrigger sxship2nomore :sxship2nomore "Choose which ship to tow (Q=Quit)"
+	settextlinetrigger sxship2nomore2 :sxship2nomore "You do not own any other ships in this sector!"
+	pause
+	:sxship2startscan
+		setVAr $startscan 1
+		pause
+	:sxship2found2nd
+		if ($startscan = 1)
+			getword currentline $shipnumber 1
+			
+			if ($shipnumber = $shipTwo)
+				setVar $shipFound 1
+			else
+				settextlinetrigger sxship2found2nd :sxship2found2nd " " & $shipTwo & " "
+				pause
+			end
+		end
+	:sxship2nomore
+		killalltriggers
+
+		if ($shipFound = 0)
+			setVar $SWITCHBOARD~message "Could not find your second ship.*"
+			gosub :switchboard~switchboard
+			HALT
+		end
+		
+
+	setVar $startMsg $startMsg & "SXFurb Command In Action.*"	
 elseif ($modestring = "icefurb")
 	if ($player~ore_holds < 70)
 		setVar $SWITCHBOARD~message "Please load up on fuel ore.*"
@@ -228,6 +295,7 @@ else
 end
 
 
+
 setVar $restockFigs 1
 getWordPos $bot~user_command_line $pos "nofigs"
 if ($pos > 0)
@@ -243,7 +311,7 @@ if ($modestring <> "xfurb")
 end	
 
 send "cuyq"
-
+send "tt1*** "
 setVar $startCreds $player~CREDITS
 setVar $startTruns $player~TURNS
 
@@ -259,6 +327,9 @@ elseif ($modestring = "xfurb")
 elseif ($modestring  = "icefurb")
 	goSub :ice_restock
 	goSub :ice_furbloop
+elseif ($modestring  = "sxfurb")
+	goSub :sxfurb_restock
+	goSub :sxfurb_furbloop
 else
 	setVar $SWITCHBOARD~message "No furb mode specified.. halting*"
 	gosub :SWITCHBOARD~switchboard
@@ -329,6 +400,19 @@ return
 return
 
 
+:sxfurb_furbLoop
+	setVar $go 1
+	while ($go = 1)
+		 
+		setVar $SWITCHBOARD~message "Furber: Waiting for instructions*"
+		gosub :SWITCHBOARD~switchboard
+		goSub :player~quikstats
+		goSub :sxfurb_WaitingForInst
+		
+
+	end
+
+return
 
 :efurb_furbLoop
 	
@@ -435,7 +519,7 @@ return
 
 :tfurb_restock
 
-	send "x*" $shiptwo "*q"
+	send "x*" $shiptwo "*q * "
 	goSub :standard_restock
 	gosub :player~quikstats
 	send "x*" $ourShip "*q * "
@@ -586,12 +670,12 @@ return
 
 :tfurb_WaitingForInst
 
-	:topofwait
-	setTextTrigger waitFurb :waitFurb "MooTime@"
+	
+	setTextTrigger waitTFurb :waitTFurb "MooTime@"
 	
 	pause
 	
-	:waitFurb
+	:waitTFurb
 		killalltriggers
 		setVar $SWITCHBOARD~message "Roger, gifts on route.*"
 		gosub :SWITCHBOARD~switchboard
@@ -644,12 +728,12 @@ return
 	
 	# # BOT_NAME - MOOSHIP - EXPLORESHIP CURRENTSECTOR
 
-	:topofwait
-	setTextTrigger waitFurb :waitFurb "MooTime@"
+
+	setTextTrigger waitIceFurb :waitIceFurb "MooTime@"
 	
 	pause
 	
-	:waitFurb
+	:waitIceFurb
 		killalltriggers
 		setVar $SWITCHBOARD~message "Roger, gifts on route.*"
 		gosub :SWITCHBOARD~switchboard
@@ -690,7 +774,7 @@ return
 	
 	setVar $moveSec $stardock
 	gosub :moveToSector 
-	gosub :restock
+	gosub :ice_restock
 	gosub :report
 	setVar $ourship $theirMooShip
 return
@@ -698,6 +782,97 @@ return
 
 
 
+
+:sxfurb_WaitingForInst
+	
+	# # BOT_NAME - MOOSHIP CURRENTSECTOR
+
+
+	setTextTrigger waitSXFurb :waitSXFurb "MooTime@"
+	
+	pause
+	
+	:waitSXFurb
+		killalltriggers
+		
+
+		getWordPos CURRENTLINE $xLoc "MooTime@"
+		cutText CURRENTLINE $xmasCommand $xLoc 99
+		getWord $xmasCommand $theirBot 2
+		getWord $xmasCommand $theirMooShip 3
+		#getWord $xmasCommand $theirExpShip 4
+		getWord $xmasCommand $theirSector 4
+		setVar $SWITCHBOARD~message "Roger "  &  $theirBot & ", gifts on route.*"
+		gosub :SWITCHBOARD~switchboard
+		echo "*# $theirBot" $theirBot
+		echo "*# $theirMooShip" $theirMooShip
+		echo "*# $theirSector" $theirSector
+
+		gosub :SX_orderUp
+return
+
+:SX_orderup
+	setVar $moveSec $theirSector
+	gosub :moveToSector 
+	goSub :player~quikstats
+	if ($player~current_sector <> $theirSector)
+		setVar $SWITCHBOARD~message "Twarp fail on route to Refurb.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+	gosub :getCreds
+	send "x " $shipTwo "*q"
+	gosub :switchShip
+	
+	send "'" $theirBot " x " $ourship "*"
+	gosub :corpMateSwitchShip
+
+	send "x*" $theirMooShip "*q"
+	gosub :switchShip
+	
+	setVar $moveSec $stardock
+	gosub :moveToSector 
+	gosub :sxfurb_restock
+	gosub :report
+	setVar $ourship $theirMooShip
+return
+
+:sxfurb_restock
+
+	send "psht"
+	add $player~turnsused 1
+	setTextTrigger sxshipCheckBuyTorps :sxshipCheckBuyTorps "How many Genesis Torpedoes do you want"
+	pause
+	:sxshipCheckBuyTorps
+		killalltriggers
+		getWord CURRENTLINE $TorpssAvail 9
+		stripText $TorpssAvail ")"
+		add $torpsbought $TorpssAvail
+		send $TorpssAvail "*"
+
+			
+	send "q"
+	gosub :player~quikstats
+	if (($player~SHIELDS < 1000) or ($player~FIGHTERS < 1000))
+		
+		send "sp"
+		
+		setTextTrigger sxrefurbFigPricet :sxrefurbFigPricet "credits per fighter"
+		pause
+		:sxrefurbFigPricet
+			killalltriggers
+			setVar $buyfigs (1000 - $player~FIGHTERS)
+			setVar $buyshields (1000 - $player~SHIELDS)
+			
+			send "b" $buyfigs "*"
+			send "c" $buyshields "*"
+				
+		send "qq"
+	end
+	
+	send "q"
+	waitfor "rn to your ship and blast off from the StarDo"
+return
 
 
 
