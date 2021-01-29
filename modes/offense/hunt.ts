@@ -212,6 +212,10 @@
         end
     end
     gosub :PLAYER~quikstats
+    getwordpos $switchboard~message $pos "No targets found"
+    if ($pos > 0)
+        setvar $switchboard~message ""
+    end
     setvar $switchboard~message $switchboard~message&"Hunt completed.*"
     gosub :switchboard~switchboard
 halt
