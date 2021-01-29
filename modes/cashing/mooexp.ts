@@ -985,6 +985,37 @@ return
 	end 
 return
 
+:shipObfu
+	# will come from obship:n
+	setVar $obShipLetter "b"
+
+	setVar $minShips 35
+	setVar $maxShips 45
+
+	setVar $ourShipsInOrbit 0
+	setVar $ourShipsInOrbitNums 0
+	
+	send "s"
+	waitfor "Ship  Sect Name                  Fighters"
+	:obShipsAgain
+	setTextLineTrigger obNoShips :obNoShips "You do not own any other ships orbiting the Stardock!"
+	setTextLineTrigger obShip :obShip " " & CURRENTSECTOR & " "
+	setTextLineTrigger obShipsDone :obShipsDone "Choose which ship to sell (Q=Quit)"
+	pause
+	:obShip
+		getWord $CURRENTLINE $obShipNum 1 
+		getWord $CURRENTLINE $obShipName 3
+		if ($obShipName = "MooShip")
+			add $ourShipsInOrbit 1
+			setVar $ourShipsInOrbitNums[$ourShipsInOrbit] $obShipNum
+		end
+	:obNoShips
+	:obShipsDone
+		killalltriggers
+
+	
+	#send "bny" $obShipLetter "ycMooShip*n*"
+return
 
 :headHomeAndDump
 	setVar $player~warpto $dropCashSector
@@ -2115,7 +2146,7 @@ return
 			add $di 1
 			setVar $portReported[$freshSectors[$di]] 1
 			setVar $portBlocked[$freshSectors[$di]] 1
-			if ($di >= $freshSectorsi)
+			if ($di >= $scans)
 				goto :finishReporting
 			else
 				goto :reporting
@@ -3172,7 +3203,7 @@ return
 		echo "*################*##############"
 		echo "*#### NEG FAILED, SELLING AT COST!"
 		echo "*###############################"
-
+		send "'debug port fail: " CURRENTSECTOR "*"
 	
 		send "q q q * * *  p n" $tradePlanet "* * * * * * * ^q"
 		waitfor "ENDINTERROG"

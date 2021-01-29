@@ -39,6 +39,8 @@
 	setVar  $probethis_found     $bot~Folder&"/" & $datefile & ".txt"
 
 	
+	
+
 	if ($bot~parm1 <> "")
 		setVar $bot~parmAM $bot~parm1
 		upperCase $bot~parmAM
@@ -152,7 +154,11 @@
 	if ($resume_last = true)
 		gosub :resumeTargets
 	else
-		gosub :getTargets
+		if ($bot~parmAM = "SMART")
+			goSub :getSmartTargeting
+		else
+			gosub :getTargets
+		end
 	end
 	
 
@@ -474,6 +480,69 @@ return
 	end
 return
 
+:getSmartTargeting
+	clearAllAvoids
+	setArray $doneSecs SECTORS
+	setVar $databasecount 0
+	setVar $randomSectors "  "
+	setVar $path_database "  "
+	# get number of targets equalling what is in holds
+	
+	setVar $qualSectorsRequired 10000
+
+	setVar $i 1
+	while ($i <= SECTORS)
+		setSectorParameter $i "PTHISTARGZ" ""
+		add $i 1
+	end
+	
+	getNearestWarps $nearArray 1
+	setVar $i $nearArray
+	echo "NearArraySize:"  $i "*"
+
+	while ($i > 1)
+		setVar $focus $nearArray[$i]
+		
+		setVar $qual FALSE
+		goSub :qualifySmartSector
+		if ($qual = TRUE)
+			add $qualSectors 1
+			echo $focus " has qualified*"
+			setVar $randomSectors $randomSectors&" "&$focus&"  "
+			setSectorParameter $focus "PTHISTARGZ" "1"
+			add $databasecount 1
+			if ($qualSectors >= $qualSectorsRequired)
+
+				return
+			end
+		end
+		subtract $i 1
+	end
+return
+
+:qualifySmartSector
+
+	getCourse $course CURRENTSECTOR $focus
+	setVar $y 1
+	setVar $goodTargets 0
+	
+	while ($y <= $course)
+		if ((SECTOR.EXPLORED[$course[$y]] <> "YES") and ($doneSecs[$course[$y]] = 0))
+			add $goodTargets 1
+		end
+		add $y 1
+	end
+	if ($goodTargets > 4)
+		setVar $qual TRUE
+		setVar $y 1
+
+		while ($y <= $course)
+			setVar $doneSecs[$course[$y]] 1
+			add $y 1
+		end
+	end
+return
+
 :getTargets
 
 	setVar $databasecount 0
@@ -574,9 +643,6 @@ Pause
 					stripText $sdfrom "("
 					stripText $sdToo "("
 					setVar $twarpFuelRequired (($sdfrom + $sdToo) * 3)
-echo "Fuel to get there and back: " $twarpFuelRequired "*"
-echo "Fuel to get there and back: " $twarpFuelRequired "*"
-echo "Fuel to get there and back: " $twarpFuelRequired "*"
 
 		end
 

@@ -11,7 +11,7 @@
 	setVar $BOT~help[2]   $BOT~tab&"       {unexplored | sector | ports} "
 	setVar $BOT~help[3]   $BOT~tab&"       {BBB | XXB | SSX etc} {count:n} "
 	setVar $BOT~help[4]   $BOT~tab&"       {mark:PARAM} {dist | route} "
-	setVar $BOT~help[5]   $BOT~tab&"       {warps:n} {beam:botname} {limit:n}"
+	setVar $BOT~help[5]   $BOT~tab&"       {warps:n} {beam:botname} {limit:n} {from:n} {to:n}"
 	setVar $BOT~help[6]   $BOT~tab&"       "
 	setVar $BOT~help[7]   $BOT~tab&"     Searches TWX database for known info."
 	setVar $BOT~help[8]   $BOT~tab&"      "
@@ -41,6 +41,10 @@
 	setVar $BOT~help[32]  $BOT~tab&"      {limit:n} - limit query results to first n found "
 	setVar $BOT~help[33]  $BOT~tab&" {beam:botname} - Beam to bot name  "
 	setVar $BOT~help[34]  $BOT~tab&"   {origin:sec} - Specify which sector to use for DIST "
+	setVar $BOT~help[35]  $BOT~tab&"     {backdoor} - Result must include a backdoor "
+	setVar $BOT~help[36]  $BOT~tab&"      {from:n} - Lowest sector number to include "
+	setVar $BOT~help[37]  $BOT~tab&"        {to:n} - Highest sector number to include "
+
 	# ham select ports ore-mcic<-70
 	gosub :bot~helpfile
 
@@ -59,12 +63,56 @@ setVar $portClassWanted 0
 #final filter of search results 0 - none, 1 - secure (figs surrounded) 2- PAranoid (Figs + Limps)
 setVar $securityLevel 0
 setVar $warps 0
-setvar $limit sectors
+
 
 setvar $i 1
 
 setvar $original_query $bot~user_command_line
 
+setVar $searchFrom 1
+setVar $searchTo SECTORS
+
+
+
+getWordPos $bot~user_command_line $pos "from:"
+if ($pos > 0)
+	getText $bot~user_command_line $from "from:" " "
+	if ($from = "")
+		setVar $bot~user_command_line $bot~user_command_line & " "
+		getText $bot~user_command_line $from "from:" " "
+	end
+	isNumber $test $from
+	if ($test = FALSE)
+		
+		setVar $SWITCHBOARD~message "From Sector should be a number.*"
+		gosub :switchboard~switchboard
+		halt
+	else
+		setVar $searchFrom $from
+	end
+end
+
+
+
+getWordPos $bot~user_command_line $pos "to:"
+if ($pos > 0)
+	getText $bot~user_command_line $to "to:" " "
+	if ($to = "")
+		setVar $bot~user_command_line $bot~user_command_line & " "
+		getText $bot~user_command_line $to "to:" " "
+	end
+	isNumber $test $to
+	if ($test = FALSE)
+		
+		setVar $SWITCHBOARD~message "To Sector should be a number.*"
+		gosub :switchboard~switchboard
+		halt
+	else
+		setVar $searchTo $to
+	end
+end
+
+setvar $limit (($searchTo - $searchFrom) + 1)
 
 getWordPos $bot~user_command_line $pos "dist"
 setvar $origin CURRENTSECTOR
@@ -123,6 +171,14 @@ if ($pos > 0)
 
 end
 
+
+setvar $backdoor false
+getWordPos " "&$bot~user_command_line&" " $pos " backdoor "
+if ($pos > 0)
+	setvar $backdoor true
+	replaceText $bot~user_command_line " backdoor " " "
+	replaceText $bot~user_command_line " backdoor" " "
+end
 
 getWordPos " "&$bot~user_command_line&" " $pos " ppt "
 if ($pos > 0)
@@ -271,8 +327,8 @@ setVar $sectorResults 0
 setVar $sectorResultsi 0
 setvar $count 0
 setvar $done false
-setvar $i 1
-while (($i <= SECTORS) and ($done <> true))
+setvar $i $searchFrom
+while (($i <= $searchTo) and ($done <> true))
 	setvar $j 1
 	setvar $skip false
 	if ((($warps > 0) and (SECTOR.WARPCOUNT[$i] = $warps)) or ($warps = 0))
@@ -448,6 +504,11 @@ while (($i <= SECTORS) and ($done <> true))
 		end
 	else
 		setVar $skip true
+	end
+	if ($backdoor = true)
+		if (SECTOR.BACKDOORCOUNT[$i] = 0)
+			setVar $skip true
+		end
 	end
 	if ($skip <> true)
 		if (($bot~parm1 = "planet") or ($bot~parm1 = "planets"))

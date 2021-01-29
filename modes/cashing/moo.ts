@@ -89,7 +89,7 @@ setVar $tradingMinProduct 15
 # try and grab fuel at this
 setvar $startMsg ""
 
-setVar $minOre 150
+setVar $minOre 120
 if ($player~total_holds < $minOre)
 	setVar $minOre $player~total_holds
 end
@@ -191,6 +191,7 @@ getWordPos " "&$bot~user_command_line&" " $pos " f "
 if ($pos > 0)
 	setVar $PrimaryProduct 1
 	setvar $startMsg $startMsg & "Primary product will be fuel ore.*"
+	setVar $minOre 90
 end
 
 getWordPos " "&$bot~user_command_line&" " $pos " o "
@@ -232,7 +233,7 @@ end
 getWordPos $bot~user_command_line $pos "onestock"
 if ($pos > 0)
 	setVar $restockMoveOn TRUE
-	setvar $startMsg $startMsg & "We will restock at and move to next port.*"
+	setvar $startMsg $startMsg & "We will restock at end and move to next port.*"
 else
 	setVar $restockMoveOn FALSE
 end
