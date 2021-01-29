@@ -325,17 +325,12 @@ loadvar $map~backdoor
 		goto :findplanet
 
 :nodets
-	send "QQ"
-	if ($player~alignment < 1000)
-		setVar $switchboard~message "Alignment less than 1000, can't refurb genesis torps and atomic dets*"
-		gosub :switchboard~switchboard
-		halt
-	End
-
+	send "QQ* "
 	gosub :restock
 	goto  :findplanet
  
 :restock
+	pause
 	killalltriggers
 	setvar $planet~planet $target
 	send "d"
