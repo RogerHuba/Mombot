@@ -330,9 +330,9 @@ loadvar $map~backdoor
 	goto  :findplanet
  
 :restock
-	pause
 	killalltriggers
 	setvar $planet~planet $target
+	gosub :player~quikstats
 	send "d"
 	setTextLineTrigger 	figprompt 	:figprompt 		"Fighters:"
 	setTextLineTrigger 	nofigprompt :nofigprompt	"Warps to Sector(s) :"
