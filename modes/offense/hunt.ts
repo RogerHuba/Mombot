@@ -171,7 +171,7 @@
                     setvar $player~photons ($player~photons-1)
                     setvar $photoning_in true
                 else
-                    setvar $switchboard~message "Can't go any further passively. *"
+                    setvar $switchboard~message "Can't go any further passively. Can't make it into sector "&$PLAYER~mowCourse[$j]&".*"
                     setvar $isSafe false
                 end
             end        
