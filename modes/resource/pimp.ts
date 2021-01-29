@@ -358,100 +358,172 @@ loadvar $map~backdoor
 			end
 		end
 
-	seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
-	seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
-	SetTextLineTrigger sdyes :sdyes "Commerce report for Stargate Alpha I:"
-	SetTextLineTrigger sdno1  :sdno  "You have never visted sector"
-	SetTextLineTrigger sdno2  :sdno  "I have no information about a port in that sector."
-	setDelayTrigger sdno3 :sdno 10000
-	#had to add waitfors b/c AllKeys was bypassing display
-	send "C"
-	waitfor "<Computer activated>"
-	send "R"
-	waitfor "What sector is the port"
-	send $om_sdloc "*"
-	pause
-	pause
 
-:sdno
-	send "q"
-	setVar $switchboard~message "SD is not in that sector, or never been visited!! product pimp shutting down in starting sector.*"
-	gosub :switchboard~switchboard
-	halt
+		# check adj's for Dock.. if present, then we don't need a jump sector.
+		setVar $i 1
+		setVar $START_SECTOR currentsector
+		setVar $WeAreAdjDock FALSE
+		while ($i <= SECTOR.WARPCOUNT[$START_SECTOR])
+			setVar $adj_start SECTOR.WARPSIN[$START_SECTOR][$i]
+			if ($adj_start = $MAP~stardock)
+				setVar $WeAreAdjDock TRUE
+			end
+			add $i 1
+		end
 
-:sdyes
-	send "QL " & $target & "* T * T 1 * M * * * Q"
-	waitfor "Command [TL"
-	send "** "
-	gosub :player~quikstats
-	if (($player~ore_holds < $player~TOTAL_HOLDS) and ((PORT.BUYFUEL[$player~current_sector] <> true) and (PORT.EXISTS[$player~current_sector] = true)))
-		send "P T * * * "
-		setVar $SWITCHBOARD~message "Didn't have full fuel for restocking pimp. Buying fuel from port and trying again!*"
-		gosub :SWITCHBOARD~switchboard
-	end
-if ($om_redsector <> 0) and ($player~alignment < 1000)
-        if ($player~unlimitedGame)
-		setVar $switchboard~message "Running product pimp with unlimited turns and "&$player~credits&" credits left*"
-		gosub :switchboard~switchboard
-	else
-		setVar $switchboard~message "Running product pimp with "&$player~turns&" turns and "&$player~credits&" credits left*"
-		gosub :switchboard~switchboard
-	end
-	killalltriggers
-	seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
-	seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
-	settexttrigger nofig :nofig "Do you want to make this jump blind?"
-	settexttrigger ready1 :ready1 "Locating beam pinpointed,"
-        settexttrigger nofuel2 :nofuel "You do not have enough Fuel Ore to make the jump"	
-	send "m" $om_redsector "*y"
-	pause
-        pause
-End
-setVar $switchboard~message "Running product pimp with "&$player~turns&" turns and "&$player~credits&" credits left*"
-gosub :switchboard~switchboard
-settexttrigger nofig :nofig "Do you want to make this jump blind?"
-settexttrigger ready2 :ready2 "All Systems Ready, shall we engage?"
-settexttrigger nofuel1 :nofuel "You do not have enough Fuel Ore to make the jump"	
-send "nsy"
-pause
-pause
+		if ((currentalignment < 1000) AND ($WeAreAdjDock = FALSE))
+			setVar $player~RED_adj 0
+			setvar $player~target $map~stardock
+			gosub :player~FindJumpSector
+			if ($player~RED_adj = 0)
+				waitfor "Command [TL="
+				setvar $switchboard~message "Cannot Find Jump Sector Adjacent Dock*"
+				gosub :switchboard~switchboard
+				send "*"
+				send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+				return
+			end
+		end
 
-:nofig
-	killalltriggers
-	send "n"
-	setVar $switchboard~message "No fig at target sector. Shutting Down*"
-	gosub :switchboard~switchboard
-	halt
+		if ((currentalignment >= 1000) OR ($WeAreAdjDock))
+			getdistance $dist1 $START_SECTOR $MAP~stardock
+			getdistance $dist2 $MAP~stardock $START_SECTOR
+		else
+			getdistance $dist1 $START_SECTOR $player~RED_adj
+			getdistance $dist2 $player~RED_adj $START_SECTOR
+		end
+		if (($dist1 < 0) or $dist2 < 0)
+			if (currentalignment >= 1000)
+				if ($WeAreAdjDock)
+					send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+				else
+					send "^F" & $START_SECTOR & "*" & $MAP~stardock & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+				end
+			else
+				if ($WeAreAdjDock)
+					send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+				else
+					send "^F" & $START_SECTOR & "*" & $player~RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+				end
+			end
+			setTextLineTrigger noJoy :noJoy "*** Error - No route within"
+			setTextTrigger cont :cont "(?="
+			pause
 
-:nofuel
-	killalltriggers
-	setVar $switchboard~message "No fuel for twarp. Shutting Down*"
-	gosub :switchboard~switchboard
-	halt
+			:noJoy
+				killAllTriggers
+				setvar $switchboard~message "Cannot Find Path to StarDock!*"
+				gosub :switchboard~switchboard
+				send "*"
+				send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+				return
+			:cont
+				killAllTriggers
+				setDelayTrigger Latency_Delay		:Latency_Delay 500
+				pause
 
-:ready1
-	killalltriggers
-	seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
-	seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
-	settexttrigger limpet :limpet "ort official runs up"
-	settexttrigger buytorps :buytorps "<StarDock> Where to?"
-	send "YNS P S"
-	pause
-	pause
+				:Latency_Delay
 
-:ready2
-	killalltriggers
-	seteventtrigger 	discod1 	:discod     	"CONNECTION LOST"
-	seteventtrigger		discod2		:discod     	"Connections have been temporarily disabled."
-	settexttrigger limpet :limpet "ort official runs up"
-	settexttrigger buytorps :buytorps "<StarDock> Where to?"
-	send "Y PS"
-	pause
-	pause
+				Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
+				if ((currentalignment >= 1000) OR ($WeAreAdjDock))
+					getdistance $dist1 $START_SECTOR $MAP~stardock
+				else
+					getdistance $dist1 $START_SECTOR $player~RED_adj
+				end
+		end
+			if ($dist1 <= 0)
+				setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
+				gosub :switchboard~switchboard
+				send "*"
+				send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+				return
+			end
 
-:limpet
-	send "Y"
-	pause
+			getdistance $dist2 $MAP~stardock $START_SECTOR
+			if ($dist2 <= 0)
+				setvar $switchboard~message "Insufficient Warp Data Plotting Return Course From Dock*"
+				gosub :switchboard~switchboard
+				send "*"
+				send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+				return
+			end
+
+			setVar $ore_req (($dist1 + $dist2) * 3)
+
+			if ($PLAYER~ORE_HOLDS < $ore_req)
+				send "q  t*l2* t*l3* t*t1* c "
+				gosub :player~quikstats
+				if ($PLAYER~ORE_HOLDS < $ore_req)
+					setvar $switchboard~message "Not Enough ORE In Holds To Make Round Trip.  Needs "&$ore_req&".*"
+					gosub :switchboard~switchboard
+					send "*"
+					send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+					return
+
+				end
+			end
+
+			if ($PLAYER~TWARP_TYPE = "No")
+				setvar $switchboard~message "Must Have Twarp 1 or 2*"
+				gosub :switchboard~switchboard
+				send "*"
+				send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+				return
+			end
+
+			if ($PLAYER~unlimitedGame = 0)
+				gosub :TurnsRequired
+				if ($turnsRequired > currentturns)
+					setvar $switchboard~message "Not Enough Turns. "&$turnsRequired&", Required*"
+					gosub :switchboard~switchboard
+					send "*"
+					send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+					return
+				elseif ($turnsRequired <= currentturns)
+					setVar $tmp (currentturns - $turnsRequired)
+					if ($tmp <= $bot~bot_turn_limit)
+						setvar $switchboard~message "Proceeding Will Leave Fewer Than " & $bot~bot_turn_limit & " Turns!*"
+						gosub :switchboard~switchboard
+						send "*"
+						send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+						return
+					end
+				end
+			end
+
+		send " C R " & $MAP~stardock & "*"
+		setTextLineTrigger itsalive :itsalive "Items     Status  Trading % of max OnBoard"
+		setTextLineTrigger nosoupforme :nosoupforme "I have no information about a port in that sector"
+		pause
+		:nosoupforme
+			killAllTriggers
+			setvar $switchboard~message "StarDock appears to have been Blown Up!*"
+			gosub :switchboard~switchboard
+			send "q*"
+			send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
+			return
+		:itsalive
+			killAllTriggers
+			waitfor "(?="
+			setVar $msg ""
+			if ((currentalignment >= 1000) AND ($WeAreAdjDock = FALSE))
+				setVar $warpto $MAP~stardock
+				gosub :DoTwarp
+			elseif (($WeAreAdjDock = FALSE) AND ($player~RED_adj <> 0))
+				setVar $warpto $player~RED_adj
+				gosub :DoTwarp
+			else
+				send "q q q *  m " & $MAP~stardock & "*  *  P  S G Y G Q "
+			end
+			if ($msg = "")
+				waitfor "You leave the Galactic Bank."
+			else
+				setvar $switchboard~message "Unknown Problem Detected. Check TA!*"
+				gosub :switchboard~switchboard
+				send "*"
+				halt
+			end
+			gosub :PLAYER~quikstats
 
 :buytorps
 	killalltriggers
@@ -583,4 +655,5 @@ include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\findjumpsector\player"
 include "source\bot_includes\planet\getplanetinfo\planet"
