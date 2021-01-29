@@ -20,28 +20,17 @@
 :hunt
 	setVar $PLAYER~save TRUE
 	gosub :combat~init 
-
-    setvar $are_we_docking false
-    getwordpos " "&$bot~user_command_line&" " $pos " p "
-    if ($pos > 0)
-        setVar $are_we_docking TRUE
-    end
-
-    setvar $twarp_back false
-    getwordpos " "&$bot~user_command_line&" " $pos " back "
-    if ($pos > 0)
-        setVar $twarp_back TRUE
-    end
-
-    setvar $nosaveme false
-    getwordpos " "&$bot~user_command_line&" " $pos " nosaveme "
-    if ($pos > 0)
-        setVar $nosaveme TRUE
-    end
-
-    killalltriggers
     gosub :PLAYER~quikstats
 
+    if (($player~current_prompt = "Citadel") or ($planet~current_prompt = "Planet"))
+        if ($player~current_prompt = "Citadel")
+            send "q "
+        end
+        send "m * * * t * t 1* "
+        if ($player~current_prompt = "Citadel")
+            send "c  "
+        end
+    end
     setvar $start_sector $player~current_sector
 
     ################
@@ -59,6 +48,32 @@
         gosub :switchboard~switchboard
         halt
     end
+    
+
+    setvar $are_we_docking false
+    getwordpos " "&$bot~user_command_line&" " $pos " p "
+    if ($pos > 0)
+        setVar $are_we_docking TRUE
+    end
+
+    setvar $twarp_back false
+    getwordpos " "&$bot~user_command_line&" " $pos " back "
+    if ($pos > 0)
+        setVar $twarp_back TRUE
+        if ($player~ore_holds <= 10)
+            setvar $switchboard~message "Need more fuel ore on your ship if you want to twarp back!*"
+            gosub :switchboard~switchboard
+            halt
+        end
+
+    end
+
+    setvar $nosaveme false
+    getwordpos " "&$bot~user_command_line&" " $pos " nosaveme "
+    if ($pos > 0)
+        setVar $nosaveme TRUE
+    end
+
 
     ####################
     # check ship stats #
@@ -154,6 +169,8 @@
                     setvar $player~photons ($player~photons-1)
                     setvar $photoning_in true
                 else
+                    setvar $switchboard~message "Can't go any further passively.*"
+                    gosub :switchboard~switchboard
                     setvar $isSafe false
                 end
             end        
@@ -193,11 +210,7 @@
         end
     end
     gosub :PLAYER~quikstats
-    if ($PLAYER~CURRENT_SECTOR <> $PLAYER~destination)
-        setvar $switchboard~message "Hunt did not reach destination!*"
-    else
-        setvar $switchboard~message "Hunt completed.*"
-    end
+    setvar $switchboard~message "Hunt completed.*"
     gosub :switchboard~switchboard
 halt
 
