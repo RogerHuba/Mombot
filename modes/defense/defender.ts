@@ -1065,37 +1065,17 @@ return
 return
 
 :main~doMines
-	setVar $BOT~command "deploy"
-	setVar $BOT~user_command_line " mines 3"
-	setvar $bot~parm1 "mines"
-	setvar $bot~parm2 "3"
-
-	saveVar $BOT~command
-	saveVar $BOT~user_command_line
-	saveVar $bot~parm1 
-
-	load "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
-	setEventTrigger        minesend        :minesend "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
-	setdelaytrigger        minetime        :minetime  10000
-	pause
-
-	:minetime
-		killtrigger minesend
-		stop "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
-		gosub :player~quikstats
-	:minesend
-		killtrigger minetime
-		gosub :player~quikstats
-		if ($player~current_prompt <> "Citadel")
-			send " q q q * l " $PLANET~PLANET " * n n * j m * * * j c  *  "
-			gosub :player~quikstats
-			if ($player~current_prompt <> "Citadel")
-				setvar $switchboard~message "Not at correct prompt after mine deploy!  Maybe planet is gone?  Check please!*"
-				gosub :switchboard~switchboard
-				gosub :navigate~callsaveme
-			end
-		end
-
+	setvar $amount 1
+	if ($player~limpets >= 3)
+		setvar $amount 3
+	end
+	send " q q z n h 2 z " $amount "*  zc* h 1 z " $amount "*  zc* q q * l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+	gosub :player~quikstats
+	if ($player~current_prompt <> "Citadel")
+		setvar $switchboard~message "Not at correct prompt after mine deploy!  Maybe planet is gone?  Check please!*"
+		gosub :switchboard~switchboard
+		gosub :navigate~callsaveme
+	end
 return
 
 :check_for_photon_refurb
