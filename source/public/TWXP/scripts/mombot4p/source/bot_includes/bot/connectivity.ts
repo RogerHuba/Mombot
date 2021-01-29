@@ -22,7 +22,7 @@
 	# if the last line hasn't changed for the last two keep alive checks #
 	if ($last_prompt_seen = CURRENTLINE)
 		# at server game menu for some reason #
-		if (((CURRENTLINE = $game~game_menu_prompt) and ($game~game_menu_prompt <> "") and ($game~game_menu_prompt <> "0")) or (CURRENTLINE = "[Pause] - [Press Space or Enter to continue]") or (CURRENTLINE = "Enter your choice: ") or (CURRENTLINE = "Selection (? for menu): "))
+		if ((CURRENTLINE = $game~game_menu_prompt) or (CURRENTLINE = "[Pause] - [Press Space or Enter to continue]") or (CURRENTLINE = "Enter your choice: ") or (CURRENTLINE = "Selection (? for menu): "))
 			if ($relogging <> true)
 				setvar $relog_message "Stuck on baffling prompt: ["&CURRENTLINE&"], so I relogged.*"
 				savevar $relog_message
@@ -37,7 +37,7 @@
 	setvar $last_prompt_seen CURRENTLINE
 	send #27
 	killtrigger keepalive
-	setDelayTrigger     keepalive               :keepalive           20000
+	setDelayTrigger     keepalive               :keepalive           30000
 	pause
 #=================================== END KEEP ALIVE ==========================================
 
@@ -407,12 +407,6 @@ return
 
 	end
 
-	if (($menus~command_to_issue <> "") and ($menus~command_to_issue <> "0"))
-		setVar $BOT~user_command_line $menus~command_to_issue
-		setVar $menus~command_to_issue ""
-		saveVar $menus~command_to_issue
-		goto :USER_INTERFACE~runUserCommandLine
-	end
 return
 
 :moving
@@ -482,9 +476,28 @@ return
 						killtrigger 1
 						send "'{" $SWITCHBOARD~bot_name "} - Safely on Terra.*"
 					:done_landing_terra
+				elseif ($menus~landOnStardock = true)
+					setTextTrigger 		1	:landed_on_stardock	"<Shipyards> Your option (?)"
+					setDelayTrigger     2	:landing_timeout	5000
+					send "pss "
+					pause
+					:landing_timeout
+						killtrigger 2
+						send "'{" $SWITCHBOARD~bot_name "} - Could not land on Stardock!  Probably not in sector.*"
+						goto :done_landing_stardock
+					:landed_on_stardock
+						killtrigger 1
+						send "'{" $SWITCHBOARD~bot_name "} - Safely on Stardock.*"
+					:done_landing_stardock
 				end
 			end
 		end
 
+	if (($menus~command_to_issue <> "") and ($menus~command_to_issue <> "0"))
+		setVar $BOT~user_command_line $menus~command_to_issue
+		setVar $menus~command_to_issue ""
+		saveVar $menus~command_to_issue
+		goto :USER_INTERFACE~runUserCommandLine
+	end
 return
 

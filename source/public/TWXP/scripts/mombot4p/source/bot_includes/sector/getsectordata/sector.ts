@@ -21,7 +21,6 @@
 			end
 		end
 	end
-	:startover
 	setVar $sectorData ""
 	:sectorsline_cit_kill
 		setVar $line CURRENTANSILINE
@@ -65,7 +64,6 @@
 		goSub :getEmptyShips
 		goSub :getFakeTraders
 return
-
 
 include "source\bot_includes\sector\getemptyships\sector"
 include "source\bot_includes\sector\getfaketraders\sector"

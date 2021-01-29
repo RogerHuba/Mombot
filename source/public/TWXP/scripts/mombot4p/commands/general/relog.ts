@@ -48,6 +48,7 @@
 			gosub :relog_freeze_trigger
 			settextlinetrigger dead :dead "What do you want to name your ship? (30 letters)"
 			settexttrigger alive :alldone_relog "Command ["
+			settexttrigger aliveOnPlanet :alldone_relog "Planet command (?=help) [D]"
 			settexttrigger avoids :continueavoids "Do you wish to clear some avoids? (Y/N) [N]"
 			settexttrigger messages :continuemessages "[Pause]"
 			settexttrigger delete :continuedelete "[Pause] - Delete messages? (Y/N)"
@@ -72,9 +73,12 @@
 			killtrigger morepauses
 			killtrigger avoids
 			killtrigger messages
+			killtrigger alive
+			killtrigger aliveOnPlanet
 			killtrigger delete
 			gosub :relog_freeze_trigger
 			send "Z*  *  Z*  Z   A 9999*  Z*  /"
+#			send "N*  *  N*  N   A 9999*  N*  /"
 			setvar $switchboard~message "Auto-relog activated*"
 			gosub :switchboard~switchboard
 			setDelayTrigger 1 :didnotmakeittogame 10000

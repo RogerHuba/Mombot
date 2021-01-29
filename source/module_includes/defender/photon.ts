@@ -6,29 +6,23 @@
 	if ($bot~last_hit > 0)
 		setvar $sector $bot~last_hit
 	end
-	setVar $i 1
-	while (SECTOR.WARPSIN[$sector][$i] > 0)
-		setVar $tempAdj SECTOR.WARPSIN[$sector][$i]
-		getSectorParameter $tempAdj "FIGSEC" $isFigged
-		if ($isFigged = true)
-			setVar $adjsec $tempAdj
-			if ($adjacentphoton = true)
-				goto :fire_photon
-			else
-				if ($density = true)
-					send "p" $adjsec "*  y  "
-					if ($mode~allkeys = true)
-						send "c n 9 * q "
-						setvar $photon~is_all_keys false
-					end
-					gosub :densityDrop
-				else
-					send "p" $adjsec "*  y   p" $sector "*  y  "
+	setVar $adjsec $main~attack_sectors[$sector]
+	if ($adjsec > 0)
+		if ($adjacentphoton = true)
+			goto :fire_photon
+		else
+			if ($density = true)
+				send "p" $adjsec "*  y  "
+				if ($mode~allkeys = true)
+					send "c n 9 * q "
+					setvar $photon~is_all_keys false
 				end
-				return
+				gosub :densityDrop
+			else
+				send "p" $adjsec "*  y   p" $sector "*  y  "
 			end
+			return
 		end
-		add $i 1
 	end
 	setvar $switchboard~message "No Adjacent fig found!*"
 	#gosub :switchboard~switchboard
@@ -128,11 +122,14 @@ return
 	# if direct drop worked, do htorp #
 	###################################
 	if ($player~current_sector = $sector)
-			## if you make it to direct drop, mulch them.  Could be dangerous for corbo traps, though.
+		###########################################################################################
+		# if you make it to direct drop, mulch them.  Could be dangerous for corbo traps, though. #
+		###########################################################################################
+		send "q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
 
-			send "q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
-
-			## then holo torp in case they retreat
+		#######################################
+		# then holo torp in case they retreat #
+		#######################################
 		gosub :htorp
 	else
 		###################################################
@@ -158,21 +155,24 @@ return
 	setvar $found false
 	setvar $adjacent false
 	setvar $surround false
-	loadGlobal $bot~ansi_last_fighter_attack
+	setvar $spoof false
+
+	#########################################################
+	# attempting to limit spoof test for speed purposes     #
+	# leaving the lines here in case they work better later #
+	#########################################################
+
+	#loadGlobal $bot~ansi_last_fighter_attack
+	#getWord $bot~ansi_last_fighter_attack $ansi_spoof_test 1
+	#getWordPos $ansi_spoof_test $ansi_spoof_pos #27 & "[1;33m"
+	#if ($spoof_test <> "Deployed") OR ($ansi_spoof_pos <= 0)
+	
 	loadGlobal $bot~last_fighter_attack
 	getWord $bot~last_fighter_attack $spoof_test 1
-	getWord $bot~ansi_last_fighter_attack $ansi_spoof_test 1
-	getWordPos $ansi_spoof_test $ansi_spoof_pos #27 & "[1;33m"
-	setvar $spoof false
-	if ($spoof_test <> "Deployed") OR ($ansi_spoof_pos <= 0)
+	if ($spoof_test <> "Deployed")
 		setvar $spoof true
 		return
 	end
-
-	############################################################################################
-	# saving fighter line to look up ship for quasar hits                                      #
-	# the idea is to set the sector cannon to kill the type of ship that is hitting grid last. #
-	############################################################################################
 
 	#############################
 	# Torp only on sector entry #
@@ -181,11 +181,8 @@ return
 	# Get the sector number
 	getWord $bot~last_fighter_attack $sector 5
 	stripText $sector ":"
-	isNumber $result $sector
-	if ($result < 1)
-		return
-	end
-	if (($sector > SECTORS) OR ($sector <= 10))
+	isNumber $isANumber $sector
+	if (($isANumber <> true) OR ($sector > SECTORS) OR ($sector <= 10))
 		 return
 	end
 
@@ -198,12 +195,20 @@ return
 #		add $i 1
 #	end
 
+	#########################################
+	# ignore fighter hits in current sector #
+	#########################################
+	if ($sector = $player~current_sector)
+		return
+	end
+
 	getwordpos $adjacent_sectors $pos " "&$sector&" "
 	if ($pos > 0)
 		setvar $found true
 		setvar $adjacent true
 		goto :fire_adjacent
 	end
+
 
 	getwordpos $bot~last_fighter_attack $posretreat " retreated."
 	getwordpos $bot~last_fighter_attack $posdestroyed " DESTROYED "
@@ -223,6 +228,7 @@ return
 
 	if ($game~hasAliens = true)
 		setvar $alien false
+		loadGlobal $bot~ansi_last_fighter_attack
 		getText $bot~ansi_last_fighter_attack $alien_check ": " "'s"
 		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 		if ($pos > 0)
@@ -230,7 +236,7 @@ return
 			return
 		end
 	end
-	if ($paranoid)
+	if ($paranoid = true)
 		getSectorParameter $sector "LIMPSEC" $isLimped
 		if ($isLimped <> true)
 			return
@@ -286,7 +292,7 @@ return
 		setvar $adjacent true
 		goto :fire_adjacent
 	end
-	if ($paranoid)
+	if ($paranoid = true)
 		getSectorParameter $sector "LIMPSEC" $isLimped
 		if ($isLimped <> true)
 			return
@@ -456,7 +462,7 @@ return
 return
 
 :htorp
-	send "q szh* l " & $planet~planet & "* c "
+	send "q q q * szh* l " & $planet~planet & "* c "
 	setTextLineTrigger checkForHolo :continueCheckHolo "Select (H)olo Scan or (D)ensity Scan or (Q)uit?"
 	setTextLineTrigger checkForDens :photonedhtorp "Relative Density Scan"  
 	pause

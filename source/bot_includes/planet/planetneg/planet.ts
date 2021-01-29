@@ -369,8 +369,14 @@ send "'DEBUG: NAN on equtrading:" & $test5 & " equpercent:" $test6 "*"
 				setTextTrigger sellorg :sellorg "How many units of Organics"
 				setTextTrigger sellequ :sellequ "How many units of Equipment"
 				setTextTrigger donewithport :donewithport "Command [TL="
+				killtrigger notours
+				settexttrigger notours :notours "You don't own that planet!  Were you expecting us to invade it?"
 				pause
 
+			:notours	
+				send "*"
+				setvar $exit_message "We don't own this planet!"
+				pause
 			:sellfuel
 				killtrigger sellfuel
 				killtrigger sellorg
@@ -449,6 +455,7 @@ send "'DEBUG: NAN on equtrading:" & $test5 & " equpercent:" $test6 "*"
 				goto :sellproduct
 
 			:sellequ
+
 				killtrigger sellfuel
 				killtrigger sellorg
 				killtrigger sellequ

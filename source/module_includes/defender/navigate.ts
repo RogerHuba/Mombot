@@ -24,7 +24,7 @@
 			setVar $focus $que[$bottom]
 			getsectorparameter $focus "FIGSEC" $isFigged
 			getsectorparameter $focus "LIMPSEC" $isLimped
-			getsectorparameter $focus "BUBBLE" $isBubble
+			setvar $isBubble $main~friendly_sectors[$focus]
 			getsectorparameter $focus "MSLSEC" $isMsl
 			getsectorparameter $focus "ALIENS" $isAlienSpace
 
@@ -34,7 +34,8 @@
 				while (SECTOR.WARPSIN[$focus][$i] > 0)
 					setVar $tempAdj SECTOR.WARPSIN[$focus][$i]
 					getSectorParameter $tempAdj "FIGSEC" $isSecureFigged
-					if ($isSecureFigged <> true)
+					getsectorparameter $tempAdj "MSLSEC" $isMsl
+					if (($isSecureFigged <> true) OR ($isMsl = true))
 						setvar $issecure false
 					end
 					add $i 1
@@ -114,15 +115,29 @@ return
 			setVar $focus $que[$bottom]
 			getsectorparameter $focus "FIGSEC" $isFigged
 			getsectorparameter $focus "LIMPSEC" $isLimped
-			getsectorparameter $focus "BUBBLE" $isBubble
-			getsectorparameter $focus "MSLSEC" $isMsl
-			getsectorparameter $focus "ALIENS" $isAlienSpace
 
 			###############################################################
 			# if it's our bubble, the assumption is the sectors are clean #
 			###############################################################
+			setvar $isBubble $main~friendly_sectors[$focus]
+			getsectorparameter $focus "MSLSEC" $isMsl
+			getsectorparameter $focus "ALIENS" $isAlienSpace
 
-			if ((((($isFigged = true) and ($isLimped = true)) and ($isAlienSpace <> true) and ($isMsl <> true)) or ($isBubble = true)) and (sector.navhaz[$focus] <= 0))
+
+			###########################################################################
+			# Make sure limp sector is surrounded by our fighters and not next to MSL #
+			###########################################################################
+			setvar $issecure true
+			while (SECTOR.WARPSIN[$focus][$i] > 0)
+				setVar $tempAdj SECTOR.WARPSIN[$focus][$i]
+				getSectorParameter $tempAdj "FIGSEC" $isSecureFigged
+				getsectorparameter $tempAdj "MSLSEC" $isMsl
+				if (($isSecureFigged <> true) OR ($isMsl = true))
+					setvar $issecure false
+				end
+				add $i 1
+			end
+			if ((((($isFigged = true) and ($isLimped = true)) and ($issecure = true) and ($isAlienSpace <> true) and ($isMsl <> true)) or ($isBubble = true)) and (sector.navhaz[$focus] <= 0))
 				setVar $nearfig $focus
 				gosub :pwarp_away
 				send "s"
@@ -182,6 +197,12 @@ return
 return
 
 :runaway_if_needed
+	###################################################
+	# Don't run if you are in a bubble or farm sector #
+	###################################################
+	if ($main~friendly_sectors[$player~current_sector] = true)
+		return
+	end
 	if ((($sector~realTraderCount = $sector~corpieCount) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1)) or ($player~current_sector = $map~home_sector))
 		#############################################
 		# do nothing if there is no enemy in sector #
@@ -206,12 +227,17 @@ return
 			#################################################
 			# call saveme if there are no planets in sector #
 			#################################################
+			setvar $switchboard~message "It appears there are no planets in sector with me.  Calling saveme.*"
+			gosub :switchboard~switchboard
 			gosub :call
 		end
-		################################################
-		#  TODO                                        #
-		#for logic later to avoid only shielded planets#
-	    ################################################
+
+		######################################################################
+		# Only run from shielded planets - might want to make this an option #
+		######################################################################
+		if ($shieldedPlanetCount <= 1)
+			return
+		end
 
 		:runaway_again
 		gosub :navigate~navigate_away

@@ -13,11 +13,16 @@
 	loadvar $game~armid_cost
 	loadvar $game~photon_cost
 	loadvar $game~DISRUPTOR_COST
+	loadvar $bot~subspace
 	loadvar $bot~username
 	lowercase $bot~username
 	loadvar $game~MULTIPLE_PHOTONS
 	loadvar $bot~folder
 
+	###################################
+	# sets smart behavior for citkill #
+	###################################
+	setvar $player~smart true
 
 	setVar $settings~sentinel_cycle 15000
 	setvar $sentinel~CheckCLVDetail 1
@@ -25,6 +30,9 @@
 
 	setvar $check_history false
 	setarray $fire_history sectors
+	setarray $main~friendly_sectors sectors
+	setarray $main~attack_sectors sectors
+
 
 	setVar $START_FIG_HIT "Deployed Fighters Report Sector "
 	setVar $END_FIG_HIT   ":"
@@ -34,16 +42,16 @@
 	setvar $photon~shot 0
 
 
-	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f} {l} {a} {auto} {holo} {mines} {extern:11pm}  "
-	setVar $BOT~help[2]  $BOT~tab&"             "
-	setVar $BOT~help[3]  $BOT~tab&"         {f} - Photon fighter hits "
-	setVar $BOT~help[4]  $BOT~tab&"         {l} - Photon limpet hits "
-	setVar $BOT~help[5]  $BOT~tab&"         {a} - Photon armid hits "
-	setVar $BOT~help[6]  $BOT~tab&"      {holo} - holoscan on ss after photon "
-	setVar $BOT~help[7]  $BOT~tab&"    {secure} - will only escape to limped sectors "
-	setVar $BOT~help[8]  $BOT~tab&"  {paranoid} - will only drop to limped sectors "
-	setVar $BOT~help[9]  $BOT~tab&"    {extern} - stops defender 5 minutes before extern "
-	setVar $BOT~help[10] $BOT~tab&"               as defined by local system time "
+	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f|l|a} {auto} {holo} {mines} {density|adjacent|nophoton}"
+	setVar $BOT~help[2]  $BOT~tab&"              {saveme:bot} {multi:#} {switch} {capture} {holokill}"
+	setVar $BOT~help[3]  $BOT~tab&"              {slingshot} {sentinel} {secure|paranoid} {holo} {noescape}"
+	setVar $BOT~help[4]  $BOT~tab&"          "
+	setVar $BOT~help[5]  $BOT~tab&"         {f} - Photon fighter hits "
+	setVar $BOT~help[6]  $BOT~tab&"         {l} - Photon limpet hits "
+	setVar $BOT~help[7]  $BOT~tab&"         {a} - Photon armid hits "
+	setVar $BOT~help[8]  $BOT~tab&"      {holo} - holoscan on ss after photon "
+	setVar $BOT~help[9]  $BOT~tab&"    {secure} - will only escape to limped sectors "
+	setVar $BOT~help[10] $BOT~tab&"  {paranoid} - will only drop to limped sectors "
 	setVar $BOT~help[11] $BOT~tab&"   {density} - density photon option"
 	setVar $BOT~help[12] $BOT~tab&"  {adjacent} - adjacent photon option (default)"
 	setVar $BOT~help[13] $BOT~tab&"  {holokill} - holokill if possible"
@@ -73,7 +81,8 @@
 
 	setVar $PLAYER~save TRUE
 	gosub :combat~init 
-
+	gosub :prhunter~initialize
+	
 	loadGlobal $bot~last_fighter_attack
 	
 	getSectorParameter SECTORS "FIGSEC" $isFigged
@@ -87,6 +96,9 @@
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
+
+
+
 
 	gosub :PLAYER~quikstats
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
@@ -170,6 +182,14 @@
 	else
 		setvar $sentinel~broadcast false
 	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " prhunt"
+	if ($pos > 0)
+		setvar $prhunter~activate true
+	else
+		setvar $prhunter~activate false
+	end
+
 
 	getwordpos " "&$bot~user_command_line&" " $pos " allkeys "
 	if ($pos > 0)
@@ -352,10 +372,27 @@
 
 	gosub :PLAYER~getInfo
 	gosub :kill_defender_triggers
+
+	gosub :checkShipForDefenderStatus
+	if (($isDefender = true) and ($player~genesis > 0))
+		setVar $SWITCHBOARD~message "In a ship with defender odds so automatically turning on defender option.*"
+		gosub :SWITCHBOARD~switchboard
+		setvar $combat~defender true
+	end
+
 	send "q"
 	gosub :PLANET~getPlanetInfo	
-	send "t*t1* c "
+	send "t*t1* c x t Login**q "
 
+	####################################################################################################
+	# If atmosphere cannon isn't set, set it to 1% so make sure we can tell if someone lands on planet #
+	####################################################################################################
+	if ($planet~ATMOSPHERE_CANNON <= 0)
+		send "l a1* "
+		setVar $SWITCHBOARD~message "Defender automatically setting atmosphere canonon to 1% from 0%.*"
+		gosub :SWITCHBOARD~switchboard
+	end
+	
 	setvar $navigate~starting_planet $planet~planet
 
 
@@ -395,7 +432,11 @@
 	waitOn "Planet command"
 	send "c "
 
+	setvar $switchboard~message "Preloading sector data..  Please wait a couple seconds.*"
+	gosub :switchboard~switchboard
 	gosub :player~quikstats
+
+	gosub :refresh_sectors
 
 	gosub :check_for_photon_refurb
 
@@ -418,6 +459,8 @@
 
 	if ($main~saveme)
 		send "'" $main~saveme_bot " unlock*"
+		waiton " enters the game."
+		getText "[[START]]"&CURRENTLINE $main~saveme_user "[[START]]" " enters the game."
 		waiton "- Ship has been unlocked!"
 
 		send "'" $main~saveme_bot " saveme on " #34 $bot~username #34 "*"
@@ -436,12 +479,12 @@
 			gosub :switchboard~switchboard
 
 		if ($killing~switch)
-			send " e y "
+			gosub :killing~switchships
 	    	gosub :SHIP~getShipStats
 			setvar $killing~switch_ship_type $player~ship_type
 			setvar $killing~switch_ship_max_attack $ship~SHIP_MAX_ATTACK
 			setvar $killing~switch_ship_offensive_odds $SHIP~SHIP_OFFENSIVE_ODDS 
-			send " e y "
+			gosub :killing~switchships
 	    end
 	    gosub :SHIP~getShipStats
 	end
@@ -516,6 +559,9 @@
 	if ($combat~defender)
 		setVar $message $message&"*                   Defender mode on"
 	end
+	if ($prhunter~activate)
+		setVar $message $message&"*                   PR Hunter mode on"
+	end
 	if ($restock~refurb_in_sector = true)
 		setVar $message $message&"*                   Refurbing in sector "&$restock~refurb_sector
 	end
@@ -573,31 +619,6 @@
 			setvar $photon~is_all_keys true 
 		end
 		setvar $photon~found false
-		setTextTrigger 1 :pausing "Planet command (?="
-		setTextTrigger 2 :pausing "Computer command ["
-		setTextTrigger 3 :pausing "Corporate command ["
-		setTextTrigger 4 :pausing "Transfer To or From the Treasury (T/F)"
-		setTextTrigger 5 :pausing "Qcannon Control Type :"
-		setTextTrigger 6 :pausing "Beam to what sector? (U=Upgrade"
-
-		setTextLineTrigger 7  :scan "warps into the sector."
-		setTextLineTrigger 8  :scan " lifts off from"
-		setTextLineTrigger 9  :scan "Limpet mine in "&$player~current_sector
-		setTextLineTrigger 10 :scan "Deployed Fighters Report Sector "&$player~current_sector&":"
-		setTextLineTrigger 11 :scan "Quasar Cannon on"
-		setTextLineTrigger 12 :scan "Shipboard Computers The Interdictor Generator on"
-		setTextLineTrigger 13 :scan " is powering up weapons systems!"
-		settextlinetrigger 14 :scan " launches a wave of fighters at the "
-		settextlinetrigger 15 :scan	" launches a Genesis Torpedo into the sector!"
-		settextlinetrigger 16 :scan " appears from the planetary rubble."
-		setTextLineTrigger 17 :scan " exits the game."
-		setTextLineTrigger 18 :scan " enters the game."
-		setDelayTrigger	   19 :head_home_timeout 3600000
-		if ($sentinel~broadcast)
-			setdelaytrigger    20 :sentinel $settings~sentinel_cycle
-		end
-		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
-		
 
 		#############################################################################################
 		# Check for adjacent sectors in current location, for faster shooting if they come adjacent #
@@ -627,6 +648,41 @@
 		if ($fighter)
 			setTextTrigger 23 :attackSectorFighter "Deployed Fighters "
 		end
+
+
+		setTextTrigger 1 :pausing "Planet command (?="
+		setTextTrigger 2 :pausing "Computer command ["
+		setTextTrigger 3 :pausing "Corporate command ["
+		setTextTrigger 4 :pausing "Transfer To or From the Treasury (T/F)"
+		setTextTrigger 5 :pausing "Qcannon Control Type :"
+		setTextTrigger 6 :pausing "Beam to what sector? (U=Upgrade"
+
+		setTextLineTrigger 7  :scan "warps into the sector."
+		setTextLineTrigger 8  :scan " lifts off from"
+		setTextLineTrigger 9  :scan "Limpet mine in "&$player~current_sector
+		setTextLineTrigger 10 :scan "Deployed Fighters Report Sector "&$player~current_sector&":"
+		setTextLineTrigger 11 :scan "Quasar Cannon on"
+		setTextLineTrigger 12 :scan "Shipboard Computers The Interdictor Generator on"
+		setTextLineTrigger 13 :scan " is powering up weapons systems!"
+		settextlinetrigger 14 :scan " launches a wave of fighters at the "
+		settextlinetrigger 15 :scan	" launches a Genesis Torpedo into the sector!"
+		settextlinetrigger 16 :scan " appears from the planetary rubble."
+		setTextLineTrigger 17 :scan " exits the game."
+		setTextLineTrigger 18 :scan " enters the game."
+		setDelayTrigger	   19 :head_home_timeout 3600000
+		if ($sentinel~broadcast)
+			setdelaytrigger    20 :sentinel $settings~sentinel_cycle
+		end
+		setTextLineTrigger 24 :scan "Planetary TransWarp Drive Engaged!"
+		
+
+		if ($prhunter~activate = true)
+			#################################################################################################
+			# For searching and destroying passive gridders covering ports - expecting message from >prhunt #
+			# R Minotaur PORT GONE: 19806 class: BBS                                                        #
+			#################################################################################################
+			setTextLineTrigger 25 :validate_prhunt " PORT GONE: "
+		end
 		pause
 			
 
@@ -639,8 +695,8 @@
 			gosub :switchboard~switchboard
 		end
 
-		send "q"
 		gosub :player~quikstats
+		send "q "
 		gosub :PLANET~getPlanetInfo	
 		send "c "
 		waiton "Citadel command ("
@@ -671,6 +727,9 @@
 		if ($navigate~securePwarp)
 			setvar $description $description&"Secure "
 		end
+		if ($prhunter~activate)
+			setvar $description $description&"PR Hunter "
+		end
 		if ($photon~paranoid)
 			setvar $description $description&"Paranoid "
 		end
@@ -682,7 +741,23 @@
 			setvar $description " ("&$description&")"
 		end
 		setvar $switchboard~message $script_ver&$description&" is online and ready to fire.*"
+		setvar $switchboard~message $switchboard~message&"*       Defender Activity       *"
+		setvar $switchboard~message $switchboard~message&"-------------------------------*"
+		if ($photon~shot > 0)
+			setvar $switchboard~message $switchboard~message&"  Last shot at sector "&$photon~last_sector&"*"
+			setvar $switchboard~message $switchboard~message&"  Photon attacks launched "&$photon~shot&" times*"
+		else
+			setvar $switchboard~message $switchboard~message&"  No photons fired.*"
+		end
+		if ($killing~holokill)
+			setvar $switchboard~message $switchboard~message&"*  Planet holokills attempted "&$combat~holokill_count&" times *"
+		end
+		if ($prhunter~activate = true)
+			setvar $switchboard~message $switchboard~message&"*  PR Hunter holokills attempted "&$prhunter~total_victims&" times *"
+		end
 		gosub :switchboard~switchboard
+		gosub :refresh_sectors
+
 		setDelayTrigger	   announce_trigger :announce	1200000
 		goto :processing
 
@@ -710,9 +785,9 @@
 				send "p"&$map~home_sector&"*y "
 			end
 			if ($player~current_prompt = "Citadel")
-				send "q"
+				send "q "
 				gosub :PLANET~getPlanetInfo	
-				send "t*t1* c "
+				send "t * t 1* c  "
 				if (($planet~PLANET_FIGHTERS_MAX - $planet~planet_fighters) > ($ship~SHIP_FIGHTERS_MAX))
 					setvar $movefig~planetorsector "p"
 					gosub :movefig~run
@@ -720,7 +795,7 @@
 			end
 			gosub :player~quikstats
 			if ($player~current_prompt = "Citadel")		
-				send "q"
+				send "q "
 				gosub :PLANET~getPlanetInfo	
 				send "t*t1* c "
 				if ($planet~planet_fighters < $ship~SHIP_FIGHTERS_MAX)
@@ -740,6 +815,24 @@
 
 	halt
 
+:validate_prhunt
+	getWord currentline $is_subspace_message 1
+	getText currentline $prhunter~sector "PORT GONE:" " class: "
+	isNumber $isNumber $prhunter~sector
+	# TEMP FOR DEBUG ONLY - VALIDATION NEEDS TO BE HERE NORMALLY #
+	# setvar $is_subspace_message "R"
+	# DELETE THIS LINE ABOVE #
+
+	if (($is_subspace_message <> "R") or ($isNumber <> true))
+		setTextLineTrigger 25 :validate_prhunt " PORT GONE: "
+		pause
+	end
+	gosub :prhunter~hunt
+	gosub :killing~scan_for_targets
+	gosub :navigate~runaway_if_needed
+	gosub :restock~refurb_photons
+
+goto :processing
 
 #################################################################
 # Photon routines - fire photon, move away, restock, set cannon #
@@ -772,14 +865,7 @@
 		if ($photon~retreatfighter = true)
 			gosub :photon~retreatphoton
 		else
-			if (($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
-				goto :can_not_fire
-			end
-			getsectorparameter $photon~sector "BUBBLE" $isBubble
-			getsectorparameter $photon~sector "FARM" $isFarm
-			if (($isBubble = true) or ($isFarm = true))
-				setvar $switchboard~message "Can not fire into bubble or farm sector "&$photon~sector&"!*"
-				gosub :switchboard~switchboard
+			if (($main~friendly_sectors[$photon~sector] = true) or ($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
 				goto :can_not_fire
 			end
 			gosub :photon~photon
@@ -792,6 +878,7 @@
 		if ($photon~success = true)
 			setvar $photon~last_sector $photon~sector
 			setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
+		else
 			gosub :player~quikstats
 		end
 		gosub :check_for_target_change
@@ -813,16 +900,32 @@
 			gosub :killing~slingshot
 		elseif ($killing~holokill = true)
 			gosub :killing~doholokill
-			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
-				gosub :pwarp_direct_and_kill
-			end
-			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
-				gosub :killing~doholokill
-				gosub :pwarp_direct_and_kill
-			end
-			if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
-				gosub :killing~doholokill
-				gosub :pwarp_direct_and_kill
+			if ($killing~holokill_stuck <> true)
+				if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+					gosub :pwarp_direct_and_kill
+				end
+				if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+					gosub :killing~doholokill
+					gosub :pwarp_direct_and_kill
+				end
+				if (($photon~sector <> $MAP~stardock) AND ($photon~sector  > 10) AND (SECTOR.TRADERCOUNT[$photon~sector] > 0) AND ($combat~safePlanets = TRUE) and ($pwarp_success <> true))
+					gosub :killing~doholokill
+					gosub :pwarp_direct_and_kill
+				end
+			else
+				send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+				gosub :player~quikstats
+				if ($player~current_prompt = "Command")
+					# Stuck in sector probably without planet #
+					# TODO #
+					# Need to add logic to xport out of ship, and twarp to planet sector and land. #
+					# twarp or mow to $killing~before_holo_kill_sector so we don't lose planet     #
+				else
+					if ($player~current_sector <> $killing~before_holo_kill_sector)
+						gosub :killing~scan_for_targets
+					end
+				end
+
 			end
 		end
 		gosub :check_for_target_change
@@ -943,6 +1046,7 @@
 		add $i 1
 	end
 	killtrigger wait
+	killtrigger announce_trigger
 return
 
 
@@ -961,37 +1065,17 @@ return
 return
 
 :main~doMines
-	setVar $BOT~command "deploy"
-	setVar $BOT~user_command_line " mines 3"
-	setvar $bot~parm1 "mines"
-	setvar $bot~parm2 "3"
-
-	saveVar $BOT~command
-	saveVar $BOT~user_command_line
-	saveVar $bot~parm1 
-
-	load "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
-	setEventTrigger        minesend        :minesend "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
-	setdelaytrigger        minetime        :minetime  10000
-	pause
-
-	:minetime
-		killtrigger minesend
-		stop "scripts\"&$bot~mombot_directory&"\commands\grid\deploy.cts"
-		gosub :player~quikstats
-	:minesend
-		killtrigger minetime
-		gosub :player~quikstats
-		if ($player~current_prompt <> "Citadel")
-			send " q q q * l " $PLANET~PLANET " * n n * j m * * * j c  *  "
-			gosub :player~quikstats
-			if ($player~current_prompt <> "Citadel")
-				setvar $switchboard~message "Not at correct prompt after mine deploy!  Maybe planet is gone?  Check please!*"
-				gosub :switchboard~switchboard
-				gosub :navigate~callsaveme
-			end
-		end
-
+	setvar $amount 1
+	if ($player~limpets >= 3)
+		setvar $amount 3
+	end
+	send " q q * h 2" $amount "*  zc* h 1" $amount "*  zc* l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+	gosub :player~quikstats
+	if ($player~current_prompt <> "Citadel")
+		setvar $switchboard~message "Not at correct prompt after mine deploy!  Maybe planet is gone?  Check please!*"
+		gosub :switchboard~switchboard
+		gosub :navigate~callsaveme
+	end
 return
 
 :check_for_photon_refurb
@@ -999,7 +1083,11 @@ return
 	if ($bot~last_fighter_attack <> "")
 		gosub :killing~set_the_cannon
 	end
-	if (($player~photons < $photon~shooting_count) and ($nophoton <> true))
+	if ((($player~photons < $photon~shooting_count) and ($nophoton <> true)) or (($combat~defender = true) and ($player~genesis <= 0)) or (($restock~deploymines = true) and ($player~limpets <=0)))
+		if (($player~turns <= 0) and ($player~unlimitedGame <> true))
+			setvar $switchboard~message "No turns to refurb photons.  Skipping - might need to wait for top of the hour.*"
+			gosub :switchboard~switchboard
+		end
 		gosub :navigate~navigate_to_limp
 		gosub :killing~scan_for_targets
 		if ($killing~error = true)
@@ -1077,16 +1165,16 @@ return
 :can_not_fire
 	if ($photon~found = true)
 		if ($fire_history[$photon~sector] > 5)
-			setvar $switchboard~message "Fired more than 5 times into sector "&$photon~sector&".  That's too many.  Restart script if you want to keep photoning.*"
-			gosub :switchboard~switchboard
+			echo "*Fired more than 5 times into sector "&$photon~sector&".  That's too many.  Restart script if you want to keep photoning.*"
 		end
 		if ($photon~last_sector = $photon~sector)
-			setvar $switchboard~message "Can't fire into sector "&$photon~sector&" twice.*"
-			gosub :switchboard~switchboard
+			echo "*Can't fire into sector "&$photon~sector&" twice.*"
 		end
 		if ($photon~sector = $map~home_sector)
-			setvar $switchboard~message "Can not fire into home sector.*"
-			gosub :switchboard~switchboard
+			echo "*Can not fire into home sector.*"
+		end
+		if ($main~friendly_sectors[$photon~sector] = true)
+			echo "*Can not fire into bubble or farm sector "&$photon~sector&"!*"
 		end
 	end
 	gosub :killing~scan_for_targets
@@ -1096,6 +1184,88 @@ return
 	gosub :navigate~runaway_if_needed
 	goto :processing
 
+
+:refresh_sectors
+		setvar $i 1
+		while ($i <= sectors)
+			getsectorparameter $i "BUBBLE" $isBubble
+			getsectorparameter $i "FARM" $isFarm
+			if (($isFarm = true) OR ($isBubble = true))
+				setvar $friendly_sector[$i] true
+			else
+				setvar $friendly_sector[$i] false
+			end
+			if (($i = $map~stardock) OR ($i <= 10))
+				setvar $friendly_sector[$i] true
+				setSectorParameter $i "FIGSEC" false
+			end
+			setvar $foundSector false
+			setvar $main~attack_sectors[$i] 0
+			setvar $j 1
+			while ((SECTOR.WARPSIN[$i][$j] > 0) and ($foundSector = false))
+				setVar $tempAdj SECTOR.WARPSIN[$i][$j]
+				getSectorParameter $tempAdj "FIGSEC" $isFigged
+				if ($isFigged = true)
+					setvar $main~attack_sectors[$i] $tempAdj
+					setvar $foundSector true
+				end
+				add $j 1
+			end
+			add $i 1
+		end
+return
+
+:checkShipForDefenderStatus
+		setvar $shipname $player~SHIP_TYPE_LONG
+		setVar $isFound FALSE
+		setVar $s 1
+		setVar $isDefender FALSE
+		replacetext $shipname ";" "m"
+		striptext $shipname "30m"
+		striptext $shipname "31m"
+		striptext $shipname "32m"
+		striptext $shipname "33m"
+		striptext $shipname "34m"
+		striptext $shipname "35m"
+		striptext $shipname "36m"
+		striptext $shipname "37m"
+		striptext $shipname "38m"
+		striptext $shipname "39m"
+		striptext $shipname "40m"
+		striptext $shipname "41m"
+		striptext $shipname "42m"
+		striptext $shipname "43m"
+		striptext $shipname "44m"
+		striptext $shipname "45m"
+		striptext $shipname "46m"
+		striptext $shipname "47m"
+		striptext $shipname "[0;30;47m"
+		striptext $shipname "[32;40m"
+		striptext $shipname "[0;"
+		striptext $shipname "[1;"
+		striptext $shipname "[0m"
+		striptext $shipname "[1m"
+		striptext $shipname #13
+		striptext $shipname #27
+		striptext $shipname ""
+		striptext $shipname "["
+
+		if ($ship~shipCounter <= 0)
+			gosub :ship~loadShipInfo
+		end
+		while (($isFound = FALSE) AND ($s < $ship~shipCounter))
+			striptext $ship~shipList[$s] "["
+			trim $ship~shipList[$s]
+			getwordpos $shipname $pos $ship~shipList[$s]
+			#send "'["&$shipname&"]["&$ship~shipList[$s]&"]*"
+			if ($pos > 0)
+				#echo "*["&$shipname&"*][*"&$ship~shipList[$s]&"]*"
+				setVar $isFound TRUE
+				setVar $isDefender $ship~shipList[$s][8]
+			end
+			add $s 1
+		end
+return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
@@ -1104,6 +1274,9 @@ include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\combat\holokill\combat"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
+include "source\bot_includes\player\addfigtodata\player"
+include "source\bot_includes\player\getcourse\player"
+include "source\bot_includes\player\findjumpsector\player"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\combat\fastattack\combat"
@@ -1118,6 +1291,7 @@ include "source\module_includes\defender\restock"
 include "source\module_includes\defender\killing"
 include "source\module_includes\defender\aliens"
 include "source\module_includes\defender\sentinel"
+include "source\module_includes\defender\prhunter"
 include "source\bot_includes\external\htorp"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\external\movefig"

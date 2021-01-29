@@ -4,17 +4,17 @@
 
 
 	setVar $BOT~help[1]  $BOT~tab&"              PATP - Pay At The Pump               "
-	setVar $BOT~help[2]  $BOT~tab&"  patp [min port fuel] {upgrade} {buyhalf} {docim} {destroyports}"
-	setVar $BOT~help[3]  $BOT~tab&"       "
+	setVar $BOT~help[2]  $BOT~tab&"  patp {sector param|min fuel} {upgrade} {buyhalf} {docim} "
+	setVar $BOT~help[3]  $BOT~tab&"       {destroyports}"
 	setVar $BOT~help[4]  $BOT~tab&"        "
 	setVar $BOT~help[5]  $BOT~tab&"Options:"
-	setVar $BOT~help[6]  $BOT~tab&"    [min port fuel]  minimum fuel a port must have to visit it"
-	setVar $BOT~help[7]  $BOT~tab&"    [upgrade]        upgrades fuel in each port"
-	setVar $BOT~help[8]  $BOT~tab&"    [buyhalf]        empties ports halfway"
-	setVar $BOT~help[9]  $BOT~tab&"    [docim]          does cim check before patp"
-	setVar $BOT~help[10] $BOT~tab&"    [destroyports]   destroys every port it drains if you "
-	setVar $BOT~help[11] $BOT~tab&"    [bubble]         only visits bubble sectors  "
-	setVar $BOT~help[12] $BOT~tab&"                     have enough fighters"
+	setVar $BOT~help[6]  $BOT~tab&"    {sector param|min fuel} minimum fuel a port must have"
+	setVar $BOT~help[7]  $BOT~tab&"                  {upgrade} upgrades fuel in each port"
+	setVar $BOT~help[8]  $BOT~tab&"                  {buyhalf} empties ports halfway"
+	setVar $BOT~help[9]  $BOT~tab&"                    {docim} does cim check before patp"
+	setVar $BOT~help[10] $BOT~tab&"             {destroyports} destroys every port it drains"
+	setVar $BOT~help[11] $BOT~tab&"                   {bubble} only visits bubble sectors  "
+	setVar $BOT~help[12] $BOT~tab&"                            have enough fighters"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Pay At The Pump"
@@ -48,12 +48,21 @@
 		halt
 	end
 	lowerCase $bot~parm1
+	setvar $bot~parmameter ""
 	setVar $minimumFuel $bot~parm1
 	isNumber $number $minimumFuel
-	if ($number <> 1)
-		setVar $SWITCHBOARD~message "Minimum Port Fuel entered is not a number!*"
-		gosub :SWITCHBOARD~switchboard
-		halt
+	if ($number <> true)
+		setvar $bot~parmameter $bot~parm1
+		uppercase $bot~parmameter
+		setVar $minimumFuel $bot~parm2
+		isNumber $number $minimumFuel
+		if ($number <> true)
+			setvar $minimumfuel 1000
+		else
+			if ($minimumfuel <= 0)
+				setvar $minimumfuel 1000
+			end
+		end
 	end
 	if ($minimumFuel <  0)
 		setVar $SWITCHBOARD~message "Minimum Port Fuel must be greater than or equal to 0.*"
@@ -144,6 +153,12 @@
 			else
 				setVar $isBubble TRUE
 			end
+			if ($bot~parmameter <> "")
+				getsectorparameter $focus $bot~parmameter $isGoodSector
+			end
+			if (($bot~parmameter <> "") and ($isGoodSector <> true))
+				goto :notit
+			end
 			if ($docim = FALSE)
 				if (($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0) AND (SECTOR.EXPLORED[$focus] = "YES") AND (((PORT.FUEL[$focus] >= $minimumFuel) AND (PORT.BUYFUEL[$focus] = FALSE)) AND ($isBusted <> TRUE) AND ($isBubble = TRUE)))
 					send "cr"&$focus&"*q"
@@ -157,6 +172,7 @@
 				setVar $totalPortFuel PORT.FUEL[$focus]
 				goto :continueOn2
 			else
+				:notit
 				setVar $nearfig 0
 			end
 			# That wasn't it, so let's add all the adjacents to the que for future testing.

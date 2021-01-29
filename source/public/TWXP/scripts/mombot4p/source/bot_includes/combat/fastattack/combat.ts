@@ -11,7 +11,6 @@
 	if (($player~current_sector = stardock) or ($player~current_sector <= 10))
 		setvar $player~fedspace true
 	end
-	:checkingFigs
 		if ($player~fighters <= 0)
 			gosub :player~quikstats
 			if (($player~current_sector = 1) or (port.class[$player~current_sector] = 0) or ($player~current_sector = $map~stardock))

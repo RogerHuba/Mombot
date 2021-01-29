@@ -27,7 +27,10 @@
 		echo ansi_6 "*  No photons fired yet."
 	end
 	if ($killing~holokill)
-		echo ansi_6 "*  Holokills attempted " ansi_15 $combat~holokill_count ansi_6 " times "
+		echo ansi_6 "*  Planet holokills attempted " ansi_15 $combat~holokill_count ansi_6 " times "
+	end
+	if ($prhunter~activate = true)
+		echo ansi_6 "*  PR Hunter holokills attempted " ansi_15 $prhunter~total_victims ansi_6 " times *"
 	end
 	echo "**" ansi_15
 return
@@ -297,7 +300,6 @@ setVar $count 1
 	end
 
 return
-
 
 :CheckOnline
 	# sys_check

@@ -44,6 +44,8 @@
 			getLength $BOT~command&" " $BOT~commandLength
 			cutText $BOT~user_command_line $BOT~user_command_line $BOT~commandLength+1 9999
 			gosub :getParameters
+			setvar $bot~command_caller "self"
+			savevar $bot~command_caller
 			goto :command_processing
 		else
 			goto :BOT~wait_for_command
@@ -122,6 +124,7 @@
 :User_Access
 	gosub :BOT~bigdelay_killthetriggers
 	gosub :selfCommandPrompt
+	setvar $bot~command_caller "self"
 	lowercase $BOT~user_command_line
 	if ($BOT~user_command_line = "")
 		echo CURRENTANSILINE
@@ -928,9 +931,12 @@ goto :BOT~wait_for_command
 	lowerCase $user_name
 	while ($i <= $BOT~corpycount)
 		cutText $BOT~corpy[$i] $name 1 6
+		setvar $unstripped_name $name
 		stripText $name " "
 		lowerCase $name
 		if ($user_name = $name)
+			setvar $bot~command_caller $unstripped_name
+			savevar $bot~command_caller
 			setVar $authorization 1
 			return
 		end

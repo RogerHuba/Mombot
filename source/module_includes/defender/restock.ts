@@ -112,12 +112,16 @@
 
 		return
 	else
+		setVar $genesisCashNeeded 0 
+		setVar $limpetCashNeeded 0
+		setVar $armidCashNeeded 0
+		setVar $disruptorCashNeeded 0
+		if ($combat~defender = true)
+			setVar $genesisCashNeeded ((($SHIP~SHIP_GENESIS_MAX-$PLAYER~genesis)*$game~genesis_cost))
+		end
 		if ($deploymines = true)
 			setVar $limpetCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~LIMPETS)*$game~LIMPET_COST))
 			setVar $armidCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~ARMIDS)*$game~ARMID_COST))
-		else
-			setVar $limpetCashNeeded 0
-			setVar $armidCashNeeded 0
 		end
 		if ($killing~holokill)
 			setVar $photonCashNeeded ($photon~shooting_count*$game~photon_cost)
@@ -130,10 +134,8 @@
 		end
 		if ($deploydisruptors = true)
 			setVar $disruptorCashNeeded (10*$game~DISRUPTOR_COST)
-		else
-			setVar $disruptorCashNeeded 0
 		end
-		setVar $cashNeeded ($photonCashNeeded+$limpetCashNeeded+$armidCashNeeded+$disruptorCashNeeded+$game~LIMPET_REMOVAL_COST)
+		setVar $cashNeeded ($photonCashNeeded+$limpetCashNeeded+$armidCashNeeded+$disruptorCashNeeded+$genesisCashNeeded+$game~LIMPET_REMOVAL_COST)
 		setVar $furbing TRUE
 		if ($cashNeeded > currentcredits)
 			send "D" 
@@ -152,7 +154,7 @@
 		setVar $START_SECTOR currentsector
 		setVar $WeAreAdjDock FALSE
 		while ($i <= SECTOR.WARPCOUNT[$START_SECTOR])
-			setVar $adj_start SECTOR.WARPS[$START_SECTOR][$i]
+			setVar $adj_start SECTOR.WARPSIN[$START_SECTOR][$i]
 			if ($adj_start = $MAP~stardock)
 				setVar $WeAreAdjDock TRUE
 			end
@@ -160,9 +162,10 @@
 		end
 
 		if ((currentalignment < 1000) AND ($WeAreAdjDock = FALSE))
-			setVar $RED_adj 0
-			gosub :FindJumpSector
-			if ($RED_adj = 0)
+			setVar $player~RED_adj 0
+			setvar $player~target $map~stardock
+			gosub :player~FindJumpSector
+			if ($player~RED_adj = 0)
 				waitfor "Command [TL="
 				setvar $switchboard~message "Cannot Find Jump Sector Adjacent Dock*"
 				gosub :switchboard~switchboard
@@ -176,8 +179,8 @@
 			getdistance $dist1 $START_SECTOR $MAP~stardock
 			getdistance $dist2 $MAP~stardock $START_SECTOR
 		else
-			getdistance $dist1 $START_SECTOR $RED_adj
-			getdistance $dist2 $RED_adj $START_SECTOR
+			getdistance $dist1 $START_SECTOR $player~RED_adj
+			getdistance $dist2 $player~RED_adj $START_SECTOR
 		end
 		if (($dist1 < 0) or $dist2 < 0)
 			if (currentalignment >= 1000)
@@ -190,7 +193,7 @@
 				if ($WeAreAdjDock)
 					send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
 				else
-					send "^F" & $START_SECTOR & "*" & $RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+					send "^F" & $START_SECTOR & "*" & $player~RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
 				end
 			end
 			setTextLineTrigger noJoy :noJoy "*** Error - No route within"
@@ -215,7 +218,7 @@
 				if ((currentalignment >= 1000) OR ($WeAreAdjDock))
 					getdistance $dist1 $START_SECTOR $MAP~stardock
 				else
-					getdistance $dist1 $START_SECTOR $RED_adj
+					getdistance $dist1 $START_SECTOR $player~RED_adj
 				end
 		end
 			if ($dist1 <= 0)
@@ -296,8 +299,8 @@
 			if ((currentalignment >= 1000) AND ($WeAreAdjDock = FALSE))
 				setVar $warpto $MAP~stardock
 				gosub :DoTwarp
-			elseif (($WeAreAdjDock = FALSE) AND ($RED_adj <> 0))
-				setVar $warpto $RED_adj
+			elseif (($WeAreAdjDock = FALSE) AND ($player~RED_adj <> 0))
+				setVar $warpto $player~RED_adj
 				gosub :DoTwarp
 			else
 				send "q q q *  m " & $MAP~stardock & "*  *  P  S G Y G Q "
@@ -315,7 +318,11 @@
 			setVar $_Disrupt ""
 			setVar $_Limps ""
 			setVar $_Mines ""
-
+			setVar $_Genesis ""
+			
+			if ($combat~defender = true)
+				setVar $_Genesis "Max"
+			end
 			if ($deploymines = true)
 				setVar $_Limps "Max"
 				setVar $_Mines "Max"
@@ -323,7 +330,7 @@
 			if ($photon~shooting_count = 0)
 				setVar $_Photon ""
 			else
-				if ($killing~holokill)
+				if (($killing~holokill = true) and ($prhunter~activate <> true))
 					setVar $_Photon $photon~shooting_count
 				else
 					setVar $_Photon "Max"
@@ -449,49 +456,6 @@ return
 	send "y z * "
 	return
 
-:FindJumpSector
-	setVar $i 1
-	setVar $RED_adj 0
-	send "qq*"
-	while (SECTOR.WARPSIN[$MAP~stardock][$i] > 0)
-		setVar $RED_adj SECTOR.WARPSIN[$MAP~stardock][$i]
-		send "m " & $RED_adj & "* y"
-		setTextTrigger TwarpBlind 			:TwarpBlind "Do you want to make this jump blind? "
-		setTextTrigger TwarpLocked			:TwarpLocked "All Systems Ready, shall we engage? "
-		setTextLineTrigger TwarpVoided			:TwarpVoided "Danger Warning Overridden"
-		setTextLineTrigger TwarpAdj			:TwarpAdj "<Set NavPoint>"
-		pause
-		:TwarpAdj
-		killAllTriggers
-		send " * "
-		return
-
-		:TwarpVoided
-		killAllTriggers
-		send " N N "
-		goto :TryingNextAdj
-
-		:TwarpLocked
-		killAllTriggers
-		send " N "
-
-		goto :SectorLocked
-
-		:TwarpBlind
-		killAllTriggers
-		send " N "
-
-		:TryingNextAdj
-    	add $i 1
-	end
-
-	:NoAdjsFound
-		setVar $RED_adj 0
-		return
-
-	:SectorLocked
-		return
-
 
 :TurnsRequired
 	send "i"
@@ -502,7 +466,7 @@ return
 	killAllTriggers
 	getWord CURRENTLINE $turnsRequired_TPW 5
 
-	if ($RED_adj > 0)
+	if ($player~RED_adj > 0)
 		# twarp to jmp sector, then into SD sect, then twarp home
 		setVar $turnsRequired_temp ($turnsRequired_TPW * 3)
 		if ($_Tow > 0)
@@ -531,6 +495,18 @@ return
 :DoPurchases
 	send "|h "
 	waitfor "<Hardware Emporium>"
+	#=============================================== PURCHASE GENESIS
+	if ($_Genesis  <> "")
+		send "T "
+		waitfor "How many Genesis Torpedoes do you want"
+		if ($_Genesis  = "Max")
+			getText CURRENTLINE $buy "(Max" ")"
+			send $buy & "* "
+		else
+			send $buy $_Genesis & "* "
+		end
+		waitfor "<Hardware Emporium>"
+	end
 	#=============================================== PURCHASE LIMPS
 	if ($_Limps  <> "")
 		send "L "
