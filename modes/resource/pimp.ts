@@ -353,7 +353,7 @@ loadvar $map~backdoor
 				halt
 			end
 		end
-
+		send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
 
 		# check adj's for Dock.. if present, then we don't need a jump sector.
 		setVar $i 1
