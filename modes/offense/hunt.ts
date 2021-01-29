@@ -171,7 +171,7 @@
                     setvar $player~photons ($player~photons-1)
                     setvar $photoning_in true
                 else
-                    setvar $switchboard~message $switchboard~message&"Can't go any further passively. *"
+                    setvar $switchboard~message&"Can't go any further passively. *"
                     setvar $isSafe false
                 end
             end        
@@ -190,7 +190,7 @@
         end
         add $j 1
     end
-    if ($isSafe <> true)
+    if ($isSafe = true)
         gosub :scan_and_kill_if_possible
         if ($killing_error = true)
             if ($nosaveme <> true)
