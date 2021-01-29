@@ -333,6 +333,9 @@ loadvar $map~backdoor
 	killalltriggers
 	setvar $planet~planet $target
 	gosub :player~quikstats
+	
+	setvar $starting_sector $player~current_sector
+
 	send "d"
 	setTextLineTrigger 	figprompt 	:figprompt 		"Fighters:"
 	setTextLineTrigger 	nofigprompt :nofigprompt	"Warps to Sector(s) :"
@@ -542,7 +545,7 @@ loadvar $map~backdoor
 	GetWord CURRENTLINE $numdets 9
 	StripText $numdets ")"
 	send $numdets & "*"
-	send "Q Q M " & $player~current_sector & " * Y Y "
+	send "Q Q M " & $starting_sector & " * Y Y "
 	settexttrigger nofig :nofig "Do you want to make this jump blind?"
 	settexttrigger ready3 :ready3 "All Systems Ready, shall we engage?"
 	settexttrigger nofuel :nofuel "You do not have enough Fuel Ore to make the jump"
