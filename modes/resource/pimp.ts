@@ -454,7 +454,7 @@ loadvar $map~backdoor
 					gosub :switchboard~switchboard
 					send "*"
 					send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
-					return
+					halt
 
 				end
 			end
@@ -464,7 +464,7 @@ loadvar $map~backdoor
 				gosub :switchboard~switchboard
 				send "*"
 				send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
-				return
+				halt
 			end
 
 			if ($PLAYER~unlimitedGame = 0)
