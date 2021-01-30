@@ -75,15 +75,12 @@
 			splittext $current_time[1] $current_time_split ":"
 			splittext $open_time[1] $open_time_split ":"
 			# check if am and pm match #
-			echo "***  [" $current_time[1] "|" $open_time[1] "]  ***"
-			echo "***  [" $current_time[2] "|" $open_time[2] "]  ***"
 			if ($current_time[2] = $open_time[2])
 				setvar $hours_difference $open_time_split[1]-$current_time_split[1]
 			else
 				setvar $hours_difference ((12-$current_time_split[1])+$open_time_split[1])
 			end
 			setvar $minutes_until_game (($hours_difference*60)+$open_time_split[2]-$current_time_split[2])			
-			echo "***  [" $minutes_until_game "]  ***"
 			if ($minutes_until_game > 10)
 				killalltriggers
 				disconnect
