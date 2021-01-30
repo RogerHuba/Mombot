@@ -71,7 +71,7 @@
 			getText currentline $game_open_time "It will reopen at " "."
 			
 			splittext $game_current_time $current_time " " 
-			splittext $game_current_time $open_time " "
+			splittext $game_open_time $open_time " "
 			splittext $current_time[1] $current_time_split ":"
 			splittext $open_time[1] $open_time_split ":"
 			# check if am and pm match #
