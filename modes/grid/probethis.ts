@@ -39,6 +39,13 @@
 	setVar  $probethis_found     $bot~Folder&"/" & $datefile & ".txt"
 
 	
+# PARAM - PROBEDESTT VHH
+#	- last time a probe died there   - CLEARS SECTORSCAN
+#  SECTORSCAN 102
+#	- last time we scanned sector - must be safe - CLEARS PROBEDEST
+#
+#  - Should add guess empty - i.e. nothing - so look for haz.mines.ourlimps.beacons
+#
 	
 
 	if ($bot~parm1 <> "")
@@ -151,6 +158,40 @@
 	else
 		setvar $unexplored false
 	end
+
+	send "vctq"
+	setTextLineTrigger getv1 :getv1 "This game has been running for"
+	pause
+	:getv1
+		killalltriggers
+		getWord CURRENTLINE $days 7
+		add $days 1
+
+	waitfor "<Computer activated>"
+	setVar $add12 0
+	setTextLineTrigger getam :getam " AM "
+	setTextLineTrigger getpm :getpm " PM "
+	pause
+	:getpm
+		killalltriggers
+		setVar $add12 1
+	:getam 
+		killalltriggers
+
+	getWord CURRENTLINE $wholeTime 1
+	replaceText $wholeTime ":" " "
+	getWord $wholeTime $thehour 1
+	if ($add12 = 1)
+		add $thehour 12
+	end
+	setVar $PROBEDESTT $days & $thehour
+	setVar $SECTORSCAN $days & $thehour
+
+echo "PROBEDESTT" $PROBEDESTT "*"
+echo "PROBEDESTT" $PROBEDESTT "*"
+echo "PROBEDESTT" $PROBEDESTT "*"
+
+
 	if ($resume_last = true)
 		gosub :resumeTargets
 	else
@@ -192,9 +233,6 @@
 
 		:probeAgain
 		if ($player~eprobes <= 0)
-echo $player~credits " " $restock_active "*"
-echo $player~credits " " $restock_active "*"
-echo $player~credits " " $restock_active "*"
 			if (($player~credits > 100000) AND ($restock_active = TRUE))
 				gosub :restock
 			else
@@ -228,7 +266,10 @@ echo $player~credits " " $restock_active "*"
 		else
 			send "ez"&$destination&"*"
 			
-			settextlinetrigger 1 :next "Probe Self Destructs"
+			setVar $sectorHasPort 0
+			setVar $firstSector 1
+
+			settextlinetrigger 1 :selfdestructs "Probe Self Destructs"
 			settextlinetrigger 2 :destroyed "Probe Destroyed!"
 			settextlinetrigger 12 :noroute "No route within "
 			settextlinetrigger 3 :next "You are already in that sector!"
@@ -241,12 +282,14 @@ echo $player~credits " " $restock_active "*"
 			settextlinetrigger 10 :found_navhaz "NavHaz  :"
 			settextlinetrigger 13 :found_rylos "Ports   : Rylos, Class 0 (Special)"
 			settextlinetrigger 14 :found_alpha "Ports   : Alpha Centauri, Class 0 (Special)"
+			settextlinetrigger 15 :found_port  "Ports   : "
 			setTextLineTrigger 11 :therest ""
 		
 			pause
 		end
 
 		:found_rylos
+			setVar $sectorHasPort 1
 			if ($map~rylos = 0)
 
 				setVar $map~rylos $Last_Entering_Sector
@@ -256,6 +299,7 @@ echo $player~credits " " $restock_active "*"
 			end
 			pause
 		:found_alpha
+			setVar $sectorHasPort 1
 			if ($map~alpha_centauri = 0)
 
 				setVar $map~alpha_centauri $Last_Entering_Sector
@@ -277,7 +321,11 @@ echo $player~credits " " $restock_active "*"
 			end
 			setTextLineTrigger 11 :therest ""
 			pause
+		:found_port
+			setVar $sectorHasPort 1
 
+			settextlinetrigger 15 :found_port  "Ports   : "
+			pause
 		:found_planets
 			if ($broadcast_planets = TRUE)
 				setVar $subspaceAlertCurrentSector 1
@@ -319,8 +367,13 @@ echo $player~credits " " $restock_active "*"
 			settextlinetrigger 10 :found_navhaz "NavHaz  :"
 			pause
 
-	
+		#Entering Sector
         :get_info
+			if ($Last_Entering_Sector > 0)
+				setSectorParameter $Last_Entering_Sector "PROBEDESTT" ""
+				goSub :processScannedParam
+			end
+			
 			goSub :processEndOfSector
 			# Reset Log Vars
 			setVar $writeFileCurrentSector 0
@@ -353,6 +406,9 @@ echo $player~credits " " $restock_active "*"
 			setWindowContents gridder $window_content
 			goto :next
         :destroyed
+			##goSub :processScannedParam
+			# Sector Not Safe
+			setSectorParameter $Last_Entering_Sector "SECTORSCAN" ""
 			goSub :processEndOfSector
 			KillAllTriggers
 			if ($broadcast_destroyed = TRUE)
@@ -363,6 +419,7 @@ echo $player~credits " " $restock_active "*"
 				send "cv" $Last_Entering_Sector "*q"
 			end
 
+			setSectorParameter $Last_Entering_Sector "PROBEDESTT" $PROBEDESTT
 			goSub :processEndOfProbe
 
 			if ($Last_Entering_Sector = $destination) or ($void_active = FALSE)
@@ -371,8 +428,12 @@ echo $player~credits " " $restock_active "*"
 			else
 				goSub :probeAgain
 			end
+		:selfdestructs
+			goSub :processScannedParam
  		:next
 			KillAllTriggers
+
+
 			goSub :processEndOfSector
 			goSub :processEndOfProbe
 			setSectorParameter $destination "PTHISTARGZ" ""
@@ -389,6 +450,11 @@ echo $player~credits " " $restock_active "*"
 
 	goto :do_again
 
+:processScannedParam
+	
+	setSectorParameter $Last_Entering_Sector "PROBEDESTT" ""
+	setSectorParameter $Last_Entering_Sector "SECTORSCAN" $SECTORSCAN
+return
 :processEndOfProbe
 
 	if ($subspaceAlertAtEnd = 1)
@@ -414,7 +480,11 @@ return
 :processEndOfSector
 	# Self Destruct - Destroyed Message
 	if ($Last_Entering_Sector > 0)
+		if ($firstSector = 0)
 
+		else
+			setVar $firstSector 1
+		end
 		if ($reportedSectors[$Last_Entering_Sector] = 0)
 			setVar $reportedSectors[$Last_Entering_Sector] 1
 			
