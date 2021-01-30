@@ -1,3 +1,4 @@
+copy "..\..\..\..\..\mombot.*" "mombot.*"
 copy "..\..\..\..\..\modes\defense\ig.*" "modes\defense\ig.*"
 copy "..\..\..\..\..\modes\defense\saveme.*" "modes\defense\saveme.*"
 copy "..\..\..\..\..\modes\resource\lsd.*" "modes\resource\lsd.*"
