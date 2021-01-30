@@ -89,7 +89,7 @@
 				disconnect
 				setVar $timer 0
 				setTextOutTrigger logearly :endLogoffGame #32
-				setvar $timeToLogBackIn ($minutes_until_game-10)
+				setvar $timeToLogBackIn (($minutes_until_game*60)-10)
 				while ($timeToLogBackIn > 0)
 					gosub :calcTime
 					echo ANSI_10 #27 & "[1A" & #27 & "[K" & $hours ":" $minutes ":" $seconds " left before entering game " GAME " (" GAMENAME ") (10 minutes early)"&ANSI_15&" ["&ANSI_14&"Spacebar to relog"&ANSI_15&"]*"
