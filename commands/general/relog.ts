@@ -36,17 +36,20 @@
 			send "T*"
 			setTextTrigger showtoday :continueshowtoday "Show today's log?"
 			setDelayTrigger timedwaitForRelogDelay :enter 500
+			setDelayTrigger unfreezingTrigger :relog_attempt 20000
 			pause
 		:continueshowtoday
 			killtrigger timedwaitForRelogDelay
 			gosub :relog_freeze_trigger
 			send "*"
 			setTextTrigger pause2 :continuepause2 "[Pause]"
+			setDelayTrigger unfreezingTrigger :relog_attempt 20000
 			pause
 		:continuepause2
 			gosub :relog_freeze_trigger
 			send "*"
 			setTextTrigger password :continuepassword "A password is required to enter this game."
+			setDelayTrigger unfreezingTrigger :relog_attempt 20000
 			pause
 		:continuepassword
 			gosub :relog_freeze_trigger
@@ -57,18 +60,22 @@
 			settexttrigger messages :continuemessages "[Pause]"
 			settexttrigger delete :continuedelete "[Pause] - Delete messages? (Y/N)"
 			settexttrigger timed :timed_game_closed "Access to this game is limited.  Access modes are as follows:"
+			setDelayTrigger unfreezingTrigger :relog_attempt 20000
 			send $BOT~password & "**  *  *  "
 			pause
 		:timed_game_closed
 			killalltriggers
 			setDelayTrigger timedwaitForRelogDelay :enter 500
+			setDelayTrigger unfreezingTrigger :relog_attempt 20000
 			pause
 		:continuedelete
 			send "*  * "
 			pause
 		:continuemessages
 			send "  "
+			gosub :relog_freeze_trigger
 			settexttrigger messages :continuemessages "[Pause]"
+			setDelayTrigger unfreezingTrigger :relog_attempt 20000
 			pause
 		:continueavoids
 			send "* * "
