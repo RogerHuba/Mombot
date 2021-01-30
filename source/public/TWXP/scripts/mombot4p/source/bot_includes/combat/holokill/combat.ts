@@ -55,8 +55,12 @@
 		setvar $containsEnemyTrader FALSE
 		if ($sector~holotargetfound)
 			gosub :player~quikstats
-			if ($player~photons > 0)
-				send "c  p  y  " $sector "* * q "
+			if (($player~photons > 0) and (($photon_only = true) or ($photon_and_kill = true)))
+				send "c  p  y  " $test_sector "* * q "
+				if ($photon_only = true)
+					setVar $SWITCHBOARD~message "Photoned "&$sector~enemy_name&" in sector "&$test_Sector&"!  In photon only mode right now.*"
+					return
+				end
 			end
 			if (SECTOR.PLANETCOUNT[$test_sector] > 0)
 				setVar $p 1
@@ -83,6 +87,7 @@
 			else
 				if ($sector~target_in_defender_ship = true)
 					setVar $SWITCHBOARD~message "Cannot holokill - "&$sector~enemy_name&" is in a defender ship with planets under them.*"
+					return
 				else
 					setVar $SWITCHBOARD~message "Cannot holokill - check for planets or too many figs?*"
 					return
@@ -132,6 +137,8 @@
 				return
 			end
 			send "m * * * c "
+			setvar $player~startingLocation "Citadel"
+			setvar $player~current_prompt "Citadel"
 			if ($holocapture)
 				gosub :fastCapture
 				send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
@@ -153,10 +160,10 @@
 				if ($switch)
 					send " e y q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  "
 				else
-					send " q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  "
+					send " q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *   "
 				end
 			else
-				send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  "
+				send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *   "
 			end
 			if (($player~GENESIS > 0) and ($defender = true))
 				send "u y n.* c "
@@ -168,6 +175,9 @@
 				gosub :player~quikstats
 			end
 		
+			# setting these so kill scripts don't think they are in citadel #
+			setvar $player~startingLocation "Command"
+			setvar $player~current_prompt "Command"
 			if ($holocapture)
 				gosub :fastCapture
 			else
@@ -218,4 +228,6 @@
 	pause
 	:callend1
 return
+
+include "source\bot_includes\sector\getautosectordata\sector"
 
