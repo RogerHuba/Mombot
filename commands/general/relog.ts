@@ -81,6 +81,7 @@
 				setvar $hours_difference ((12-$current_time_split[1])+$open_time_split[1])
 			end
 			setvar $minutes_until_game (($hours_difference*60)+$open_time_split[2]-$current_time_split[2])			
+			echo "***  [" $minutes_until_game "]  ***"
 			if ($minutes_until_game > 10)
 				killalltriggers
 				disconnect
