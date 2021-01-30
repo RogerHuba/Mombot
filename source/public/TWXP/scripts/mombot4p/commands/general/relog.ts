@@ -31,18 +31,25 @@
 			killtrigger relog
 			killtrigger relog2
 			killtrigger firstpause
+			killtrigger timedwaitForRelogDelay
+			killtrigger showtoday
 			send "T*"
 			setTextTrigger showtoday :continueshowtoday "Show today's log?"
+			setDelayTrigger timedwaitForRelogDelay :enter 500
+			setDelayTrigger unfreezingTrigger :relog_attempt 20000
 			pause
 		:continueshowtoday
+			killtrigger timedwaitForRelogDelay
 			gosub :relog_freeze_trigger
 			send "*"
 			setTextTrigger pause2 :continuepause2 "[Pause]"
+			setDelayTrigger unfreezingTrigger :relog_attempt 20000
 			pause
 		:continuepause2
 			gosub :relog_freeze_trigger
 			send "*"
 			setTextTrigger password :continuepassword "A password is required to enter this game."
+			setDelayTrigger unfreezingTrigger :relog_attempt 20000
 			pause
 		:continuepassword
 			gosub :relog_freeze_trigger
@@ -52,14 +59,59 @@
 			settexttrigger avoids :continueavoids "Do you wish to clear some avoids? (Y/N) [N]"
 			settexttrigger messages :continuemessages "[Pause]"
 			settexttrigger delete :continuedelete "[Pause] - Delete messages? (Y/N)"
-			send $BOT~password & "*  *  *  *  "
+			settexttrigger timed :timed_game_closed "Access to this game is limited.  Access modes are as follows:"
+			setDelayTrigger unfreezingTrigger :relog_attempt 20000
+			send $BOT~password & "**  *  *  "
 			pause
+		:timed_game_closed
+			killalltriggers
+			waiton "Current time: "
+			getText currentline&"[END]" $game_current_time ":" "[END]"
+			waiton "It will reopen at "
+			getText currentline $game_open_time "It will reopen at " "."
+			
+			splittext $game_current_time $current_time " " 
+			splittext $game_open_time $open_time " "
+			splittext $current_time[1] $current_time_split ":"
+			splittext $open_time[1] $open_time_split ":"
+			# check if am and pm match #
+			if ($current_time[2] = $open_time[2])
+				setvar $hours_difference $open_time_split[1]-$current_time_split[1]
+			else
+				setvar $hours_difference ((12-$current_time_split[1])+$open_time_split[1])
+			end
+			setvar $minutes_until_game (($hours_difference*60)+$open_time_split[2]-$current_time_split[2])			
+			if ($minutes_until_game > 10)
+				killalltriggers
+				disconnect
+				setVar $timer 0
+				setTextOutTrigger logearly :endLogoffGame #32
+				setvar $timeToLogBackIn (($minutes_until_game-10)*60)
+				while ($timeToLogBackIn > 0)
+					gosub :calcTime
+					echo ANSI_10 #27 & "[1A" & #27 & "[K" & $hours ":" $minutes ":" $seconds " left before entering game " GAME " (" GAMENAME ") (10 minutes early)"&ANSI_15&" ["&ANSI_14&"Spacebar to relog"&ANSI_15&"]*"
+					setDelayTrigger timeBeforeRelog :relogTimer 1000
+					pause
+					:relogTimer
+						setVar $timeToLogBackIn $timeToLogBackIn-1
+				end
+				:endLogoffGame
+				killtrigger logearly
+				killtrigger timeBeforeRelog
+				goto :relog_attempt
+			else
+				setDelayTrigger timedwaitForRelogDelay :enter 500
+				setDelayTrigger unfreezingTrigger :relog_attempt 20000
+				pause
+			end
 		:continuedelete
 			send "*  * "
 			pause
 		:continuemessages
 			send "  "
+			gosub :relog_freeze_trigger
 			settexttrigger messages :continuemessages "[Pause]"
+			setDelayTrigger unfreezingTrigger :relog_attempt 20000
 			pause
 		:continueavoids
 			send "* * "
@@ -179,7 +231,32 @@ return
 	setDelayTrigger thedelay2 :thedelay 5000
 return
 
-
+:calcTime
+	setVar $hours 0
+	setVar $minutes 0
+	setVar $seconds 0
+	setVar $testTime $timeToLogBackIn
+	if ($testTime >= 3600)
+		setVar $hours ($testTime/3600)
+		setVar $testTime $testTime-($hours*3600)
+	end
+	if ($testTime >= 60)
+		setVar $minutes ($testTime/60)
+		setVar $testTime $testTime-($minutes*60)
+	end
+	if ($testTime >= 1)
+		setVar $seconds $testTime
+	end
+	if ($hours < 10)
+		setVar $hours "0"&$hours
+	end
+	if ($minutes < 10)
+		setVar $minutes "0"&$minutes
+	end
+	if ($seconds < 10)
+		setVar $seconds "0"&$seconds
+	end
+return
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
