@@ -32,6 +32,7 @@
 			killtrigger relog2
 			killtrigger firstpause
 			killtrigger timedwaitForRelogDelay
+			killtrigger showtoday
 			send "TTTTT*"
 			setTextTrigger showtoday :continueshowtoday "Show today's log?"
 			setDelayTrigger timedwaitForRelogDelay :enter 500
