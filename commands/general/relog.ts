@@ -65,9 +65,44 @@
 			pause
 		:timed_game_closed
 			killalltriggers
-			setDelayTrigger timedwaitForRelogDelay :enter 500
-			setDelayTrigger unfreezingTrigger :relog_attempt 20000
-			pause
+			waiton "Current time: "
+			getText currentline&"[END]" $game_current_time ":" "[END]"
+			waiton "It will reopen at "
+			getText currentline $game_open_time "It will reopen at " "."
+			
+			splittext $game_current_time $current_time " " 
+			splittext $game_current_time $open_time " "
+			splittext $current_time[1] $current_time_split ":"
+			splittext $open_time[1] $open_time_split ":"
+			# check if am and pm match #
+			if ($current_time[2] = $open_time[2])
+				setvar $hours_difference $open_time_split[1]-$current_time_split[1]
+			else
+				setvar $hours_difference ((12-$current_time_split[1])+$open_time_split[1])
+			end
+			setvar $minutes_until_game (($hours_difference*60)+$open_time_split[2]-$current_time_split[2])			
+			if ($minutes_until_game > 10)
+				killalltriggers
+				disconnect
+				setVar $timer 0
+				setTextOutTrigger logearly :endLogoffGame #32
+				while ($timeToLogBackIn > 0)
+					gosub :calcTime
+					echo ANSI_10 #27 & "[1A" & #27 & "[K" & $hours ":" $minutes ":" $seconds " left before entering game " GAME " (" GAMENAME ") "&ANSI_15&" ["&ANSI_14&"Spacebar to relog"&ANSI_15&"]*"
+					setDelayTrigger timeBeforeRelog :relogTimer 1000
+					pause
+					:relogTimer
+						setVar $timeToLogBackIn $timeToLogBackIn-1
+				end
+				:endLogoffGame
+				killtrigger logearly
+				killtrigger timeBeforeRelog
+				goto :relog_attempt
+			else
+				setDelayTrigger timedwaitForRelogDelay :enter 500
+				setDelayTrigger unfreezingTrigger :relog_attempt 20000
+				pause
+			end
 		:continuedelete
 			send "*  * "
 			pause
