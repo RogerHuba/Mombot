@@ -89,9 +89,10 @@
 				disconnect
 				setVar $timer 0
 				setTextOutTrigger logearly :endLogoffGame #32
+				setvar $timeToLogBackIn ($minutes_until_game-10)
 				while ($timeToLogBackIn > 0)
 					gosub :calcTime
-					echo ANSI_10 #27 & "[1A" & #27 & "[K" & $hours ":" $minutes ":" $seconds " left before entering game " GAME " (" GAMENAME ") "&ANSI_15&" ["&ANSI_14&"Spacebar to relog"&ANSI_15&"]*"
+					echo ANSI_10 #27 & "[1A" & #27 & "[K" & $hours ":" $minutes ":" $seconds " left before entering game " GAME " (" GAMENAME ") (10 minutes early)"&ANSI_15&" ["&ANSI_14&"Spacebar to relog"&ANSI_15&"]*"
 					setDelayTrigger timeBeforeRelog :relogTimer 1000
 					pause
 					:relogTimer
@@ -233,7 +234,32 @@ return
 	setDelayTrigger thedelay2 :thedelay 5000
 return
 
-
+:calcTime
+	setVar $hours 0
+	setVar $minutes 0
+	setVar $seconds 0
+	setVar $testTime $timeToLogBackIn
+	if ($testTime >= 3600)
+		setVar $hours ($testTime/3600)
+		setVar $testTime $testTime-($hours*3600)
+	end
+	if ($testTime >= 60)
+		setVar $minutes ($testTime/60)
+		setVar $testTime $testTime-($minutes*60)
+	end
+	if ($testTime >= 1)
+		setVar $seconds $testTime
+	end
+	if ($hours < 10)
+		setVar $hours "0"&$hours
+	end
+	if ($minutes < 10)
+		setVar $minutes "0"&$minutes
+	end
+	if ($seconds < 10)
+		setVar $seconds "0"&$seconds
+	end
+return
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
