@@ -31,7 +31,7 @@
 			killtrigger relog
 			killtrigger relog2
 			killtrigger firstpause
-			send "T*"
+			send "TTTTT*"
 			setTextTrigger showtoday :continueshowtoday "Show today's log?"
 			pause
 		:continueshowtoday
