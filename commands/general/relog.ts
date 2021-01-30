@@ -33,11 +33,12 @@
 			killtrigger firstpause
 			killtrigger timedwaitForRelogDelay
 			killtrigger showtoday
-			send "TTTTT*"
+			send "T*"
 			setTextTrigger showtoday :continueshowtoday "Show today's log?"
 			setDelayTrigger timedwaitForRelogDelay :enter 500
 			pause
 		:continueshowtoday
+			killtrigger timedwaitForRelogDelay
 			gosub :relog_freeze_trigger
 			send "*"
 			setTextTrigger pause2 :continuepause2 "[Pause]"
