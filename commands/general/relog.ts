@@ -52,7 +52,12 @@
 			settexttrigger avoids :continueavoids "Do you wish to clear some avoids? (Y/N) [N]"
 			settexttrigger messages :continuemessages "[Pause]"
 			settexttrigger delete :continuedelete "[Pause] - Delete messages? (Y/N)"
-			send $BOT~password & "*  *  *  *  "
+			settexttrigger timed :timed_game_closed "Access to this game is limited.  Access modes are as follows:"
+			send $BOT~password & "**  *  *  "
+			pause
+		:timed_game_closed
+			killalltriggers
+			setDelayTrigger timedwaitForRelogDelay :enter 500
 			pause
 		:continuedelete
 			send "*  * "
