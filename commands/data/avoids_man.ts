@@ -38,7 +38,6 @@
 	setVar $currentName "AV_" & $bot~parm2
 	setVar $found 0
 	
-	
 	gosub :PLAYER~quikstats
 
 	if ($bot~parm1 = "list")
@@ -89,8 +88,9 @@
 
 	if ($bot~parm3 <> "")
 		if ($bot~parm1 = "store")
+			goSub :manageNames
 			setVar $avoidsAdded 0
-			
+		
 			setVar $i 1
 			while ($i <= SECTORS)
 				getSectorParameter $i $bot~parm3 $v
