@@ -103,7 +103,7 @@
 					add $minute_difference 1
 					add $minute_hand 1
 					if ($minute_hand > 60)
-						setvar $minute_hand 1
+						setvar $minute_hand 0
 					end
 				end
 				if ($minute_difference > 60)
