@@ -483,16 +483,20 @@ goto :settriggers
 
 		:ta_check
 			getwordpos CURRENTLINE $pos "P indicates Trader is on a planet in that sector"
-			if ($pos > 0)
+			getwordpos CURRENTLINE $pos2 "Corporate command ["
+			if (($pos > 0) or ($pos2 > 0))
 				goto :done_ta
 			end
-			setvar $line CURRENTLINE
-			cutText $line $name 1 30
-			replacetext $line $name ""
-			trim $name
-			add $corp_count 1
-			setvar $corp_members[$corp_count] $name
-			getword $line $corp_members[$corp_count][1] 1
+			getlength currentline $length
+			if ($length > 30)
+				setvar $line CURRENTLINE
+				cutText $line $name 1 30
+				replacetext $line $name ""
+				trim $name
+				add $corp_count 1
+				setvar $corp_members[$corp_count] $name
+				getword $line $corp_members[$corp_count][1] 1
+			end
 		goto :ta_again
 
 	:done_ta
