@@ -108,6 +108,10 @@
 				end
 				if ($minute_difference > 60)
 					setvar $minute_difference ($minute_difference-60)
+				else
+					if ($minute_difference > 0)
+						setvar $hours_difference ($hours_difference-1)
+					end
 				end
 				setvar $minutes_until_game (($hours_difference*60)+$minute_difference)			
 			if ($minutes_until_game > 1)
