@@ -225,11 +225,17 @@ return
 :reloader
 	setVar $startingLocation $player~current_prompt
 	if ($startingLocation <> "Citadel") and ($startingLocation <> "Planet")
-		if ($planet~planet = 0)
-			setvar $switchboard~message "Must start at planet or cit prompt*"
+		if ($startingLocation <> "Command")
+			setvar $switchboard~message "Must start at Planet, Citadel, or Command prompt.*"
 			gosub :switchboard~switchboard
 			halt
 		else
+			if ($player~PLANET_SCANNER <> "Yes")
+				setVar $SWITCHBOARD~message "You can't run reloader from command prompt without planet scanner.  Start from planet instead.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
+
 			send "l* "
 			gosub :land_and_check
 
@@ -250,7 +256,9 @@ return
 			end
 		end
 	else
-		send "q "
+		if ($startingLocation = "Citadel")
+			send "q "
+		end
 		gosub :planet~getplanetinfo
 		send "q"
 	end
@@ -475,16 +483,22 @@ goto :settriggers
 
 		:ta_check
 			getwordpos CURRENTLINE $pos "P indicates Trader is on a planet in that sector"
-			if ($pos > 0)
+			getwordpos CURRENTLINE $pos2 "Corporate command ["
+			if (($pos > 0) or ($pos2 > 0))
 				goto :done_ta
 			end
-			setvar $line CURRENTLINE
-			cutText $line $name 1 30
-			replacetext $line $name ""
-			trim $name
-			add $corp_count 1
-			setvar $corp_members[$corp_count] $name
-			getword $line $corp_members[$corp_count][1] 1
+			getlength currentline $length
+			if ($length > 30)
+				setvar $line CURRENTLINE
+				cutText $line $name 1 30
+				replacetext $line $name ""
+				trim $name
+				add $corp_count 1
+				setvar $corp_members[$corp_count] $name
+				getword $line $corp_members[$corp_count][1] 1
+			else
+				goto :done_ta
+			end
 		goto :ta_again
 
 	:done_ta

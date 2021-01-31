@@ -1455,20 +1455,17 @@ goto :GoGo
 
 	Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
 	getdistance $dist1 $START_SECTOR $MAP~stardock
-
 	if ($dist1 <= 0)
-		setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
-		gosub :switchboard~switchboard
-		send "*"
-		halt
+		send "^f"&$START_SECTOR&"*"&$MAP~stardock&"*q"
+		waitOn "ENDINTERROG"
+		getdistance $dist1 $START_SECTOR $MAP~stardock
 	end
 
 	getdistance $dist2 $MAP~stardock $START_SECTOR
 	if ($dist2 <= 0)
-		setvar $switchboard~message "Insufficient Warp Data Plotting Return Course From Dock*"
-		gosub :switchboard~switchboard
-		send "*"
-		halt
+		send "^f"&$MAP~stardock&"*"&$START_SECTOR&"*q"
+		waitOn "ENDINTERROG"
+		getdistance $dist2 $MAP~stardock $START_SECTOR
 	end
 
 	setVar $ore_req (($dist1 + $dist2) * 3)

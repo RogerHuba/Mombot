@@ -75,21 +75,54 @@
 			splittext $current_time[1] $current_time_split ":"
 			splittext $open_time[1] $open_time_split ":"
 			# check if am and pm match #
-			if ($current_time[2] = $open_time[2])
-				setvar $hours_difference $open_time_split[1]-$current_time_split[1]
-			else
-				setvar $hours_difference ((12-$current_time_split[1])+$open_time_split[1])
+			setvar $foundTime false
+			setvar $current_hour $current_time_split[1]
+			setvar $open_hour $open_time_split[1]
+			setvar $current_minute $current_time_split[2]
+			setvar $open_minute $open_time_split[2]
+			lowercase $current_time[2]
+			if ($current_time[2] = "pm")
+				setvar $current_hour $current_hour+12
 			end
-			setvar $minutes_until_game (($hours_difference*60)+$open_time_split[2]-$current_time_split[2])			
-			if ($minutes_until_game > 10)
+			lowercase $open_time[2]
+			if ($open_time[2] = "pm")
+				setvar $open_hour $open_hour+12
+			end
+				setvar $hour_hand $current_hour
+				setvar $hours_difference 0
+				while ($hour_hand <> $open_hour)
+					add $hours_difference 1
+					add $hour_hand 1
+					if ($hour_hand > 24)
+						setvar $hour_hand 1
+					end
+				end
+				setvar $minute_hand $current_minute
+				setvar $minute_difference 0
+				while ($minute_hand <> $open_minute)
+					add $minute_difference 1
+					add $minute_hand 1
+					if ($minute_hand > 60)
+						setvar $minute_hand 0
+					end
+				end
+				if ($minute_difference > 60)
+					setvar $minute_difference ($minute_difference-60)
+				else
+					if ($minute_difference > 0)
+						setvar $hours_difference ($hours_difference-1)
+					end
+				end
+				setvar $minutes_until_game (($hours_difference*60)+$minute_difference)			
+			if ($minutes_until_game > 1)
 				killalltriggers
 				disconnect
 				setVar $timer 0
 				setTextOutTrigger logearly :endLogoffGame #32
-				setvar $timeToLogBackIn (($minutes_until_game-10)*60)
+				setvar $timeToLogBackIn (($minutes_until_game-1)*60)
 				while ($timeToLogBackIn > 0)
 					gosub :calcTime
-					echo ANSI_10 #27 & "[1A" & #27 & "[K" & $hours ":" $minutes ":" $seconds " left before entering game " GAME " (" GAMENAME ") (10 minutes early)"&ANSI_15&" ["&ANSI_14&"Spacebar to relog"&ANSI_15&"]*"
+					echo ANSI_10 #27 & "[1A" & #27 & "[K" & $hours ":" $minutes ":" $seconds " left before entering game " GAME " (" GAMENAME ") (1 minute early)"&ANSI_15&" ["&ANSI_14&"Spacebar to relog"&ANSI_15&"]*"
 					setDelayTrigger timeBeforeRelog :relogTimer 1000
 					pause
 					:relogTimer
