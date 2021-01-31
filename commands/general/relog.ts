@@ -75,27 +75,42 @@
 			splittext $current_time[1] $current_time_split ":"
 			splittext $open_time[1] $open_time_split ":"
 			# check if am and pm match #
-			if ($current_time[2] = $open_time[2])
-				####################################################################
-				# $current_time_split is array of hours and minutes, in that order #
-				####################################################################
-				setvar $current_hour $current_time_split[1]
-				setvar $open_hour $open_time_split[1]
-				setvar $current_minute $current_time_split[2]
-				setvar $open_minute $open_time_split[2]
-				if ($current_hour > $open_hour)
-					setvar $hours_difference (((12-$current_hour)+$open_hour)+12)
-					if ($current_minute > 0)
-						setvar $hours_difference ($hours_difference-1)
-					end
-				else
-					setvar $hours_difference ($open_hour-$current_hour)
-				end
-			else
-				setvar $hours_difference ((12-$current_hour)+$open_hour)
+			setvar $foundTime false
+			setvar $current_hour $current_time_split[1]
+			setvar $open_hour $open_time_split[1]
+			setvar $current_minute $current_time_split[2]
+			setvar $open_minute $open_time_split[2]
+			lowercase $current_time[2]
+			if ($current_time[2] = "pm")
+				setvar $current_hour $current_hour+12
 			end
-			setvar $minutes_until_game (($hours_difference*60)+$open_minute-$current_minute)			
-			if ($minutes_until_game > 10)
+			lowercase $open_time[2]
+			if ($open_time[2] = "pm")
+				setvar $open_hour $open_hour+12
+			end
+				setvar $hour_hand $current_hour
+				setvar $hours_difference 0
+				while ($hour_hand <> $open_hour)
+					add $hours_difference 1
+					add $hour_hand 1
+					if ($hour_hand > 24)
+						setvar $hour_hand 1
+					end
+				end
+				setvar $minute_hand $current_minute
+				setvar $minute_difference 0
+				while ($minute_hand <> $open_minute)
+					add $minute_difference 1
+					add $minute_hand 1
+					if ($minute_hand > 60)
+						setvar $minute_hand 1
+					end
+				end
+				if ($minute_difference > 60)
+					setvar $minute_difference ($minute_difference-60)
+				end
+				setvar $minutes_until_game (($hours_difference*60)+$minute_difference)			
+			if ($minutes_until_game > 1)
 				killalltriggers
 				disconnect
 				setVar $timer 0
