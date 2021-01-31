@@ -225,11 +225,17 @@ return
 :reloader
 	setVar $startingLocation $player~current_prompt
 	if ($startingLocation <> "Citadel") and ($startingLocation <> "Planet")
-		if ($planet~planet = 0)
-			setvar $switchboard~message "Must start at planet or cit prompt*"
+		if ($startingLocation <> "Command")
+			setvar $switchboard~message "Must start at Planet, Citadel, or Command prompt.*"
 			gosub :switchboard~switchboard
 			halt
 		else
+			if ($player~PLANET_SCANNER <> "Yes")
+				setVar $SWITCHBOARD~message "You can't run reloader from command prompt without planet scanner.  Start from planet instead.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
+
 			send "l* "
 			gosub :land_and_check
 
