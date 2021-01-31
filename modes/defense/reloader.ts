@@ -496,6 +496,8 @@ goto :settriggers
 				add $corp_count 1
 				setvar $corp_members[$corp_count] $name
 				getword $line $corp_members[$corp_count][1] 1
+			else
+				goto :done_ta
 			end
 		goto :ta_again
 
