@@ -79,15 +79,22 @@
 				####################################################################
 				# $current_time_split is array of hours and minutes, in that order #
 				####################################################################
-				if ($current_time_split[1] > $open_time_split[1])
-					setvar $hours_difference $current_time_split[1]-$open_time_split[1]
+				setvar $current_hour $current_time_split[1]
+				setvar $open_hour $open_time_split[1]
+				setvar $current_minute $current_time_split[2]
+				setvar $open_minute $open_time_split[2]
+				if ($current_hour > $open_hour)
+					setvar $hours_difference (((12-$current_hour)+$open_hour)+12)
+					if ($current_minute > 0)
+						setvar $hours_difference ($hours_difference-1)
+					end
 				else
-					setvar $hours_difference $open_time_split[1]-$current_time_split[1]
+					setvar $hours_difference ($open_hour-$current_hour)
 				end
 			else
-				setvar $hours_difference ((12-$current_time_split[1])+$open_time_split[1])
+				setvar $hours_difference ((12-$current_hour)+$open_hour)
 			end
-			setvar $minutes_until_game (($hours_difference*60)+$open_time_split[2]-$current_time_split[2])			
+			setvar $minutes_until_game (($hours_difference*60)+$open_minute-$current_minute)			
 			if ($minutes_until_game > 10)
 				killalltriggers
 				disconnect
