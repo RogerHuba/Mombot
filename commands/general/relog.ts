@@ -76,7 +76,11 @@
 			splittext $open_time[1] $open_time_split ":"
 			# check if am and pm match #
 			if ($current_time[2] = $open_time[2])
-				setvar $hours_difference $open_time_split[1]-$current_time_split[1]
+				if ($current_time[1] > $open_time[1])
+					setvar $hours_difference $current_time_split[1]-$open_time_split[1]
+				else
+					setvar $hours_difference $open_time_split[1]-$current_time_split[1]
+				end
 			else
 				setvar $hours_difference ((12-$current_time_split[1])+$open_time_split[1])
 			end
