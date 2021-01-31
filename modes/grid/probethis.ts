@@ -26,9 +26,10 @@
 	setVar $BOT~help[17] $BOT~tab&"     {aliens}  - Will broadcast aliens and alien space on ss (coming soon)"
 	setVar $BOT~help[18] $BOT~tab&"     {navhaz}  - Will broadcast navhaz"
 	setVar $BOT~help[19] $BOT~tab&"     {resume}  - Continue last run"
-	setVar $BOT~help[20] $BOT~tab&" "
-	setVar $BOT~help[21] $BOT~tab&"     Example: probethis uppedports restock novoid ss"
-	setVar $BOT~help[22] $BOT~tab&"     Items of interest are ALWAYS logged to mombot game directory"
+	setVar $BOT~help[20] $BOT~tab&"     {random}  - Will target sectors randomly vs most dist first"
+	setVar $BOT~help[21] $BOT~tab&" "
+	setVar $BOT~help[22] $BOT~tab&"     Example: probethis uppedports restock novoid ss"
+	setVar $BOT~help[23] $BOT~tab&"     Items of interest are ALWAYS logged to mombot game directory"
 	gosub :bot~helpfile
 	setVar $BOT~script_title "probethis - Eprobe explorer"
 	gosub :BOT~banner
@@ -87,6 +88,13 @@
 		setVar $resume_last TRUE
 	else
 		setVar $resume_last FALSE
+	end
+
+	getWordPos $bot~user_command_line $pos "random"
+	if ($pos > 0)
+		setVar $random_targetting TRUE
+	else
+		setVar $random_targetting FALSE
 	end
 
 	# added for fire - but it'll auto check bank for more creds
@@ -187,18 +195,15 @@
 	setVar $PROBEDESTT $days & $thehour
 	setVar $SECTORSCAN $days & $thehour
 
-echo "PROBEDESTT" $PROBEDESTT "*"
-echo "PROBEDESTT" $PROBEDESTT "*"
-echo "PROBEDESTT" $PROBEDESTT "*"
-
-
 	if ($resume_last = true)
 		gosub :resumeTargets
 	else
 		if ($bot~parmAM = "SMART")
 			goSub :getSmartTargeting
+		
 		else
-			gosub :getTargets
+			goSub :getTargets_dist
+			#gosub :getTargets
 		end
 	end
 	
@@ -228,8 +233,15 @@ echo "PROBEDESTT" $PROBEDESTT "*"
 	
 	:do_again
 		
-		getRnd $random 1 $databaseCount
-		getWord $randomSectors $destination $random
+		:getNextProbeTarget
+
+			if ($random_targetting = 1)
+				getRnd $random 1 $databaseCount
+				getWord $randomSectors $destination $random
+			else
+				getWord $randomSectors $destination 1
+			end
+
 
 		:probeAgain
 		if ($player~eprobes <= 0)
@@ -381,13 +393,17 @@ echo "PROBEDESTT" $PROBEDESTT "*"
 			setVar $reportCurrentSector ""
 
 			getWord CURRENTLINE $Last_Entering_Sector 5
+	
 			setVar $temp " "&$Last_Entering_Sector&" "
 			getwordpos $randomSectors $pos $temp 
 			if ($pos > 0)
 				#if eprobe sees a sector we were going to eprobe later, remove it as seen#
+				# this remove the param wasn't their previously - 
+				setSectorParameter $destination "PTHISTARGZ" ""
 				replaceText $randomSectors $temp " "
 				subtract $databasecount 1	
 			end
+
 			settextlinetrigger 4 :get_info "Probe entering sector :"
 			pause
 		:noroute
@@ -505,7 +521,8 @@ return
 	setVar $subspaceAlertCurrentSector 0
 	setVar $reportCurrentSector ""
 return
-:resumeTargets
+
+:resumeTargets_old
 
 	setVar $databasecount 0
 	setVar $randomSectors "  "
@@ -549,6 +566,68 @@ return
 		add $i 1
 	end
 return
+
+
+:resumeTargets
+
+	setArray $sectorsChecked SECTORS
+	setVar $databasecount 0
+	setVar $randomSectors "  "
+
+	getNearestWarps $nearArray CURRENTSECTOR
+	setVar $i $nearArray
+	while ($i >= 1)
+		setVar $focus $nearArray[$i]
+
+		if ($sectorsChecked[$focus] = 0)
+			setVar $sectorsChecked[$focus] 1
+			goSub :checkTargetSector_resume
+			
+		end
+		subtract $i 1
+	end
+echo "*# FINISHED GETNEAREST - ADDING SECTORS WITH NO PATH*"
+
+	# getNearestSectors doesn't guarantee all sectors - so do the rest - we probe them last
+	setVar $i 1
+	while ($i <= SECTORS)
+		setVar $focus $i
+		if ($sectorsChecked[$focus] = 0)
+
+			setVar $sectorsChecked[$focus] 1
+			goSub :checkTargetSector_resume
+			
+		end
+
+		add $i 1
+	end
+	
+return
+
+:checkTargetSector_resume
+	# $focus - Sector we are checking
+
+	getSectorParameter $focus "PTHISTARGZ" $isTrue
+	if ($isTrue = TRUE)
+
+		setVar $randomSectors $randomSectors&" "&$focus&"  "
+		setSectorParameter $focus "PTHISTARGZ" "1"
+		add $databasecount 1
+		
+		getCourse $path $player~current_sector $focus 
+		if ($path = "-1")
+		
+		else
+			setVar $j 2
+			while ($j <= $path)
+				setVar $sectorsChecked[$path[$j]] 1
+				add $j 1
+			end
+		end
+	end
+	
+return
+
 
 :getSmartTargeting
 	clearAllAvoids
@@ -613,7 +692,84 @@ return
 	end
 return
 
-:getTargets
+:getTargets_dist
+	# Furtherest from current location, terra or sd
+	# to closest - then the rest that aren't there.
+	# For random targets, we can use ssame daabase string
+	#   But jsutt select them randomly from it!
+	
+	setArray $sectorsChecked SECTORS
+	setVar $databasecount 0
+	setVar $randomSectors "  "
+
+	getNearestWarps $nearArray CURRENTSECTOR
+	setVar $i $nearArray
+	while ($i >= 1)
+		setVar $focus $nearArray[$i]
+		# - we can't have double ups here, so we can clear this now
+		setSectorParameter $focus "PTHISTARGZ" ""
+		
+		if ($sectorsChecked[$focus] = 0)
+			setVar $sectorsChecked[$focus] 1
+			goSub :checkTargetSector
+			
+		end
+		subtract $i 1
+	end
+echo "*# FINISHED GETNEAREST - ADDING SECTORS WITH NO PATH*"
+
+	# getNearestSectors doesn't guarantee all sectors - so do the rest - we probe them last
+	setVar $i 1
+	while ($i <= SECTORS)
+		setVar $focus $i
+		if ($sectorsChecked[$focus] = 0)
+
+			setSectorParameter $focus "PTHISTARGZ" ""
+			setVar $sectorsChecked[$focus] 1
+			goSub :checkTargetSector
+			
+		end
+
+		add $i 1
+	end
+	
+
+return
+
+:checkTargetSector
+	# $focus - Sector we are checking
+
+	if ($bot~parmAM = "ALL")
+			setVar $isTrue TRUE
+	else
+		getSectorParameter $focus $bot~parmAM $isTrue
+		if (($isTrue <> "0") and ($isTrue <> ""))
+			setVar $isTrue TRUE
+		else
+			setVar $isTrue FALSE
+		end
+	end
+	if (($isTrue = TRUE) and (((SECTOR.EXPLORED[$focus] <> "YES") and ($unexplored = true)) or ($unexplored = false)))
+
+		setVar $randomSectors $randomSectors&" "&$focus&"  "
+		setSectorParameter $focus "PTHISTARGZ" "1"
+		add $databasecount 1
+		
+		getCourse $path $player~current_sector $focus 
+		if ($path = "-1")
+		
+		else
+			setVar $j 2
+			while ($j <= $path)
+				setVar $sectorsChecked[$path[$j]] 1
+				add $j 1
+			end
+		end
+	end
+	
+return
+
+:getTargets_retired
 
 	setVar $databasecount 0
 	setVar $randomSectors "  "
@@ -627,7 +783,7 @@ return
 			if ($bot~parmAM = "ALL")
 				setVar $isTrue TRUE
 			else
-				getSectorParameter $i $bot~parmAM $isTrue
+				#getSectorParameter $i $bot~parmAM $isTrue
 				getSectorParameter $i $bot~parmAM $isTrue
 				if (($isTrue <> "0") and ($isTrue <> ""))
 					setVar $isTrue TRUE
