@@ -628,6 +628,12 @@ return
 				setVar $isTrue TRUE
 			else
 				getSectorParameter $i $bot~parmAM $isTrue
+				getSectorParameter $i $bot~parmAM $isTrue
+				if (($isTrue <> "0") and ($isTrue <> ""))
+					setVar $isTrue TRUE
+				else
+					setVar $isTrue FALSE
+				end
 			end
 			if (($isTrue = TRUE) and (((SECTOR.EXPLORED[$i] <> "YES") and ($unexplored = true)) or ($unexplored = false)))
 				setVar $randomSectors $randomSectors&" "&$i&"  "
