@@ -256,7 +256,9 @@ return
 			end
 		end
 	else
-		send "q "
+		if ($startingLocation = "Citadel")
+			send "q "
+		end
 		gosub :planet~getplanetinfo
 		send "q"
 	end
