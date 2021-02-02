@@ -71,9 +71,9 @@ return
 	SetTextOutTrigger   UpArrow2    :USER_INTERFACE~User_Access    #27&"[A"
 	SetTextOutTrigger   DownArrow2  :USER_INTERFACE~User_Access    #27&"[B"
 	SetTextOutTrigger   Tabkey      :USER_INTERFACE~Hotkey_Access  #9
-	SetTextOutTrigger   RightArrow  :USER_INTERFACE~Hotkey_Access  #27
 	SetTextOutTrigger   UpArrow3    :USER_INTERFACE~User_Access    (#27&#91&#53&#126)
 	SetTextOutTrigger   DownArrow3  :USER_INTERFACE~User_Access    (#27&#91&#54&#126)
+	SetTextOutTrigger   RightArrow  :USER_INTERFACE~Hotkey_Access  #27&#91
 #	SetTextOutTrigger   LeftArrow2  :USER_INTERFACE~Hotkey_Access  #30
 
 	setVar $USER_INTERFACE~authorization 0
