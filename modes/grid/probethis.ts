@@ -407,6 +407,7 @@
 			settextlinetrigger 4 :get_info "Probe entering sector :"
 			pause
 		:noroute
+		add in a new param with time for this
 			KillAllTriggers
 			send "n"
 			write $unreachableFile $destination 
