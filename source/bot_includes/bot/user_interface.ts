@@ -188,7 +188,7 @@ return
 		add $BOT~historyCount 1
 		getWordPos $BOT~historyString $pos "<<|HS|>>"
 	end
-   
+	echo "***[[[" IN SELF COMMAND  "]]]***"
 	gosub :BOT~bigdelay_killthetriggers
 	setVar $prompt ANSI_10&#27&"[255D"&#27&"[255B"&#27&"[K"&ANSI_4&"{"&ANSI_14&$BOT~mode&ANSI_4&"}"&ANSI_15&" "&$SWITCHBOARD~bot_name&ANSI_2&">"&ANSI_7
 	echo $prompt
