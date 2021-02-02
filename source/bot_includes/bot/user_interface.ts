@@ -202,8 +202,6 @@ return
 		pause
 	:getCharacter
 		getOutText $character
-		getCharCode $resultVar $character
-		echo "***[[[" $resultVar "]]]***"
 		setvar $found_enter_key false
 		if ($character = #13)
 			gosub :do_enter_key
