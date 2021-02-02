@@ -202,7 +202,7 @@ return
 		pause
 	:getCharacter
 		getOutText $character
-		getCharCode $character $resultVar
+		getCharCode $resultVar $character
 		echo "***[[[" $resultVar "]]]***"
 		setvar $found_enter_key false
 		if ($character = #13)
