@@ -457,7 +457,7 @@ return
 							echo $prompt $BOT~promptOutput
 						end
 					end
-				elseif (($character = #27&"[A") OR ($character = #28) OR ($character = (#27&#91&#53&#126)))
+				elseif (($character = #27&"[A") OR ($character = #28) OR ($character = (#27&#79&#65)))
 					if ($BOT~historyCount > 0)
 						if ($BOT~historyIndex <= 0)
 							setVar $BOT~currentPromptText $BOT~promptOutput
@@ -473,7 +473,7 @@ return
 						echo $prompt $BOT~history[$BOT~historyIndex]
 						setVar $BOT~promptOutput $BOT~history[$BOT~historyIndex]
 					end
-				elseif (($character = #27&"[B") OR ($character = #29) OR ($character = (#27&#91&#54&#126)))
+				elseif (($character = #27&"[B") OR ($character = #29) OR ($character = (#27&#79&#66)))
 					if ($BOT~historyCount > 0)
 						if ($BOT~historyIndex <= 0)
 							setVar $BOT~currentPromptText $BOT~promptOutput
@@ -513,8 +513,6 @@ return
 					striptext $character #27&"[D"
 					striptext $character #8
 					striptext $character #13
-					striptext $character #33
-					striptext $character #34
 					getLength $character $characterLength
 					goto :treatAsUsual
 				end

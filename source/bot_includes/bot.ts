@@ -71,8 +71,8 @@ return
 	SetTextOutTrigger   UpArrow2    :USER_INTERFACE~User_Access    #27&"[A"
 	SetTextOutTrigger   DownArrow2  :USER_INTERFACE~User_Access    #27&"[B"
 	SetTextOutTrigger   Tabkey      :USER_INTERFACE~Hotkey_Access  #9
-	SetTextOutTrigger   Pageup      :USER_INTERFACE~User_Access    (#27&#91&#53&#126)
-	SetTextOutTrigger   Pagedown    :USER_INTERFACE~User_Access    (#27&#91&#54&#126)
+	SetTextOutTrigger   Pageup      :USER_INTERFACE~User_Access    (#27&#79&#65)
+	SetTextOutTrigger   Pagedown    :USER_INTERFACE~User_Access    (#27&#79&#66)
 	SetTextOutTrigger   escapekey   :USER_INTERFACE~Hotkey_Access  #27
 
 	setVar $USER_INTERFACE~authorization 0
