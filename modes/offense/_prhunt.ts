@@ -846,10 +846,23 @@ return
 		killalltriggers
 
 return
+:setTimeLine
+	send "t"
+	setTextLineTrigger getam :getam " AM "
+	setTextLineTrigger getpm :getpm " PM "
+	pause
+	:getpm
+		killalltriggers
+		
+	:getam 
+		killalltriggers
+		setVar $timeLine CURRENTLINE
+
+return
 :setSectorList
 	
 	send "'Setting sector list of " $startTargetsi " targets*"
-
+	goSub :setTimeLine
 	setVar $targetList 0
 	setVar $targetListi 0
 	setVar $i 1
@@ -880,14 +893,21 @@ return
 			if ($first = 0)
 				#send "'Targets: " $startTargets[$gathered] "*"
 			end
+			setSectorParameter $startTargets[$gathered] "PORTBLKED" 0
 			goto :startportagain
 		:startportnook
 		:startportreallynotok
 			add $gathered 1
 			setVar $sectorBlocked[$startTargets[$gathered]] 1
 			killalltriggers
-			setVar $logentry " Missing On-Set (update cim?): " & $startTargets[$gathered]
-			goSub :writeLog
+			getSectorParameter $startTargets[$gathered] "PORTBLKED" $isBlocked
+			echo "$startTargets[$gathered]: " $startTargets[$gathered] " isblocked: "  $isBlocked "*"
+			if (($isBlocked = "0") or ($isBlocked = ""))
+				setVar $logentry " Missing On-Set (update cim?): " & $startTargets[$gathered]
+				setSectorParameter $startTargets[$gathered] "PORTBLKED" 1
+				goSub :writeLog
+			end
+			
 			goto :startportagain
 
 
@@ -1434,6 +1454,7 @@ return
 	gosub :SWITCHBOARD~switchboard
 	send "c"
 	waitfor "<Computer activated>"
+	
 	setVar $reportsWanted 200
 	setVar $x 11
 	setVar $total 0
@@ -1442,7 +1463,7 @@ return
 	:allBlockedNextWave
 	setVar $sendCount 0
 	setVar $sent 0
-
+ 
 	while ($x <= $sectors)
 		getSectorParameter $x "FIGSEC" $hasFig
 		if ((PORT.EXISTS[$x] = 1) and ($hasFig <> 1))
@@ -1510,7 +1531,7 @@ return
 :writeLog
 
 	getTime $time
-	write $prhunt_logfile $time & " " & $logentry
+	write $prhunt_logfile $time & " TW Time: " & $timeLine & " " & $logentry
 
 return
 
