@@ -821,41 +821,28 @@ if ($LTPEHL = 0)
 		divide $LTPEHL $planet~planettrade_ratio
 	end
 end
-setvar $TOECHO ""
-if ($FINALOFFER = 1) or ($planet~planetSHIP = "SHIP") and ($bot~worstprice = 1) and ($BUYSELL = "SELLING")
-	setvar $TOECHO ANSI_12 & "<<<  " & ANSI_11 & $PRODUCT & " MCIC = " & ANSI_14 & $MCIC
-	setvar $ANSILENGTH 28
-	if ($MCIC <> $UPPER_RANGE_MCIC)
-		setvar $TOECHO $TOECHO & ANSI_11 & " to " & ANSI_14 & $UPPER_RANGE_MCIC
-		setvar $ANSILENGTH 42
-	end
-	setvar $TOECHO $TOECHO & ANSI_12 & "  >>>"
-	replacetext $OUTTEXTSTRING "*" "[CR]"
-	if ($verbose_debug_mode = TRUE)
-		setvar $switchboard~message $toecho
-		gosub :bot~echo
-	end
-end
+#setvar $TOECHO ""
+#if ($FINALOFFER = 1) or ($planet~planetSHIP = "SHIP") and ($bot~worstprice = 1) and ($BUYSELL = "SELLING")#
+#	setvar $TOECHO ANSI_12 & "<<<  " & ANSI_11 & $PRODUCT & " MCIC = " & ANSI_14 & $MCIC
+#	setvar $ANSILENGTH 28
+#	if ($MCIC <> $UPPER_RANGE_MCIC)
+#		setvar $TOECHO $TOECHO & ANSI_11 & " to " & ANSI_14 & $UPPER_RANGE_MCIC
+#		setvar $ANSILENGTH 42
+#	end
+#	setvar $TOECHO $TOECHO & ANSI_12 & "  >>>"
+#	replacetext $OUTTEXTSTRING "*" "[CR]"
+#	if ($verbose_debug_mode = TRUE)
+#		setvar $switchboard~message $toecho
+#		gosub :bot~echo
+#	end
+#end
 if ($LHTEYH = 1) and ($LHTEYH[1][6] = 1)
 	if ($verbose_debug_mode = TRUE)
 		setvar $switchboard~message ANSI_12&"*   <<<  "&ANSI_14&"Exact .5 Anomaly Detected for this MCIC"&ANSI_12&"  >>>"
 		gosub :bot~echo
 	end
 end
-if ($FINALOFFER = 1)
-	getlength $TOECHO $ECHOLENGTH
-	subtract $ECHOLENGTH $ANSILENGTH
-	getlength CURRENTLINE $LINELENGTH
-	setvar $PADLENGTH ((80 -$LINELENGTH) -$ECHOLENGTH)
-	round $PADLENGTH 0
-	getDeafClients $botIsDeaf
-	if ($botIsDeaf)
-		setvar $switchboard~message "C"&#27&"[1A"&"  "&$toecho
-		gosub :bot~echo
-	else
-		echo #27&"[s"&#27&"["&$PADLENGTH&"C"&#27&"[1A"&$TOECHO&#27&"[u"&ANSI_5
-	end
-end
+
 if ($planet~planetSHIP = "PLANET") and ($planet~planettrade_ratio <> 1)
 	gosub :SUBPTRADENOT100
 	goto :223
