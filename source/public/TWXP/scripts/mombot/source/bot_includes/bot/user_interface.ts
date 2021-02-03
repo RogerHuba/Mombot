@@ -188,7 +188,6 @@ return
 		add $BOT~historyCount 1
 		getWordPos $BOT~historyString $pos "<<|HS|>>"
 	end
-   
 	gosub :BOT~bigdelay_killthetriggers
 	setVar $prompt ANSI_10&#27&"[255D"&#27&"[255B"&#27&"[K"&ANSI_4&"{"&ANSI_14&$BOT~mode&ANSI_4&"}"&ANSI_15&" "&$SWITCHBOARD~bot_name&ANSI_2&">"&ANSI_7
 	echo $prompt
@@ -458,7 +457,7 @@ return
 							echo $prompt $BOT~promptOutput
 						end
 					end
-				elseif (($character = #27&"[A") OR ($character = #28))
+				elseif (($character = #27&"[A") OR ($character = #28) OR ($character = (#27&#79&#65)))
 					if ($BOT~historyCount > 0)
 						if ($BOT~historyIndex <= 0)
 							setVar $BOT~currentPromptText $BOT~promptOutput
@@ -474,7 +473,7 @@ return
 						echo $prompt $BOT~history[$BOT~historyIndex]
 						setVar $BOT~promptOutput $BOT~history[$BOT~historyIndex]
 					end
-				elseif (($character = #27&"[B") OR ($character = #29))
+				elseif (($character = #27&"[B") OR ($character = #29) OR ($character = (#27&#79&#66)))
 					if ($BOT~historyCount > 0)
 						if ($BOT~historyIndex <= 0)
 							setVar $BOT~currentPromptText $BOT~promptOutput

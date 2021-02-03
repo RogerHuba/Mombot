@@ -114,15 +114,15 @@
 					end
 				end
 				setvar $minutes_until_game (($hours_difference*60)+$minute_difference)			
-			if ($minutes_until_game > 1)
+			if ($minutes_until_game > 2)
 				killalltriggers
 				disconnect
 				setVar $timer 0
 				setTextOutTrigger logearly :endLogoffGame #32
-				setvar $timeToLogBackIn (($minutes_until_game-1)*60)
+				setvar $timeToLogBackIn (($minutes_until_game-2)*60)
 				while ($timeToLogBackIn > 0)
 					gosub :calcTime
-					echo ANSI_10 #27 & "[1A" & #27 & "[K" & $hours ":" $minutes ":" $seconds " left before entering game " GAME " (" GAMENAME ") (1 minute early)"&ANSI_15&" ["&ANSI_14&"Spacebar to relog"&ANSI_15&"]*"
+					echo ANSI_10 #27 & "[1A" & #27 & "[K" & $hours ":" $minutes ":" $seconds " left before entering game " GAME " (" GAMENAME ") (2 minutes early)"&ANSI_15&" ["&ANSI_14&"Spacebar to relog"&ANSI_15&"]*"
 					setDelayTrigger timeBeforeRelog :relogTimer 1000
 					pause
 					:relogTimer

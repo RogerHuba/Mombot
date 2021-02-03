@@ -34,6 +34,7 @@ reqRecording
 	setVar $BOT~help[22]  $BOT~tab&"              2 or more hops away"	
 	setVar $BOT~help[23]  $BOT~tab&"[retrigger] - Keep hunting for targets"	
 	setVar $BOT~help[24]  $BOT~tab&" [densityx] - Density < 40 for xport in and deploy"
+	setVar $BOT~help[25]  $BOT~tab&"   [iglift] - sets and lifts IG self"
 		
 	gosub :bot~helpfile
 
@@ -257,6 +258,13 @@ reqRecording
 		setVar $densityx FALSE
 	end
 
+	getWordPos $bot~user_command_line $pos "iglift"
+	if ($pos > 0)
+		setVar $iglift TRUE
+	else
+		setVar $iglift FALSE
+	end
+
 
 
 	setVar $randomAttack TRUE
@@ -334,6 +342,9 @@ reqRecording
 	if ($density = 1) and ($densityx = 1)
 		setVar $message $message&"*          Density: Only shooting from 1 to 39."
 	end
+	if ($iglift = 1)
+		setVar $message $message&"*           IGLift: I will lift on landing and hold."
+	end
 	
 	if ($randomAttack)
 		setVar $message $message&"*   Attack Pattern: Random"
@@ -358,7 +369,9 @@ reqRecording
 		goSub :checkDefenders
 		goSub :setdefender
 	end
-
+	if ($iglift = 1)
+		goSub :liftAndCheckIG
+	end
 	gosub :player~quikstats
 	setVar $homeSector $player~current_sector
 	:startTargeting
@@ -500,6 +513,9 @@ reqRecording
 					if ($fastkill = true)	
 						setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
 					end
+					if ($iglift = 1)
+						setVar $send $send&"q q * * "
+					end
 				end
 
 				send $send
@@ -520,9 +536,21 @@ reqRecording
 						goSub :retrieveFigs
 					end
 				end
+				if ($iglift = 1)
+					if ($player~current_sector <> $dropSector)
+						send "'Planet did not arrive, resetting*"
+						goSub :resetIGLift
+
+					else
+						send "'IGLift Initiated! send reset command to re-enable PDROP (resetpdrop or -)*"
+						waitfor "resetpdrop"
+						goSub :waitforrestart
+						goSub :resetIGLift
+					end
+				end
 				if ($defender = 1)
 					if ($player~current_sector <> $dropSector)
-						send "'Did not land, resetting*"
+						send "'Planet did not arrive, resetting*"
 						goSub :resetdefender
 
 					else
@@ -548,10 +576,21 @@ reqRecording
 					killAllTriggers
 					goSub :liftDefenders
 				end
+				
 				goSub :getSectorLocation
 				if ($attackOnSight)
 					goSub :checkForVictims
 				end
+				if ($player~current_sector <> $gotoSector)
+					send "'Planet did not arrive, resetting*"
+					
+				else
+					send "'IGLift Initiated! send reset command to re-enable PDROP (resetpdrop or -)*"
+					waitfor "resetpdrop"
+					goSub :waitforrestart
+					goSub :resetIGLift
+				end
+
 				if ($defender = 1)
 					send "'Defender Initiated! send reset command to re-enable PDROP*"
 					goSub :waitforrestart
@@ -582,6 +621,13 @@ reqRecording
 				if ($attackOnSight)
 					goSub :checkForVictims
 				end
+				if ($iglift = 1) and ($gotoSector > 0)
+					send "'IGLift Initiated! send reset command to re-enable PDROP (resetpdrop or -)*"
+					waitfor "resetpdrop"
+					goSub :waitforrestart
+					goSub :resetIGLift
+				end
+
 				if ($defender = 1) and ($gotoSector > 0)
 					send "'Defender Initiated! send reset command to re-enable PDROP*"
 					goSub :waitforrestart
@@ -603,6 +649,12 @@ reqRecording
 				gosub :getSectorLocation
 				if ($attackOnSight)
 					goSub :checkForVictims
+				end
+				if ($iglift = 1) 
+					send "'IGLift Initiated! send reset command to re-enable PDROP (resetpdrop or -)*"
+					waitfor "resetpdrop"
+					goSub :waitforrestart
+					goSub :resetIGLift
 				end
 				if ($defender = 1)
 					send "'Defender Initiated! send reset command to re-enable PDROP*"
@@ -720,7 +772,9 @@ return
 		if ($dropftrs = true)
 			setvar $send $send & $moveFigMacro
 		end
-		if ($fastkill = true)
+		if ($iglift = 1)
+			setVar $send $send&"q q * *"
+		elseif ($fastkill = true)
 			setvar $send $send&"q q a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** q z n a y y "&$ship~SHIP_MAX_ATTACK&"* * z n q z n  l "&$planet~planet&"*  m  *** c  "
 		end
 		send $send
@@ -732,7 +786,11 @@ return
 		killAllTriggers
 		setVar $targetSectors[$randomTarget] 0
 		setSectorParameter $gotoSector "FIGSEC" FALSE
-		if ($dropFtrs = true)
+		if ($iglift = 1)
+			send "l" $planet~planet "* c "
+			waitfor "<Enter Citadel>"
+			gosub :player~quikstats
+		elseif ($dropFtrs = true)
 			# we can only try once and will retrieve figs once done
 		else
 			setVar $i 1
@@ -1536,7 +1594,33 @@ return
 return
 
 # ============================== END DEFENDER ROUTINES ==============================
+# ================= LIFT PDROP ========== #
+:resetIGLift
 
+	send "l" $planet~planet "*c"
+	waitfor "<Enter Citadel>"
+	gosub :player~quikstats
+return 
+:liftAndCheckIG
+
+	send "i"
+	setTextLineTrigger igLiftYes :igLiftYes "Interdictor ON : Yes"
+	setTextLineTrigger igLiftNo :igLiftNo "Interdictor ON : No"
+	setTextLineTrigger igLiftNoIG :igLiftNoIG "Credits        :"
+	pause
+	:igLiftNoIG
+		setvar $switchboard~message "Ship does not have IG. Exiting.*"
+		gosub :switchboard~switchboard
+	:igLiftNo
+		send "q q q * b y l" $planet~planet "* c "
+		waitfor "<Enter Citadel>"
+	:igLiftYes
+		killalltriggers
+	
+	gosub :player~quikstats
+return
+
+# ================ END LIFT PDROP ======= #
 :retrieveFigs_old
 	gosub :player~quikstats
 
@@ -1666,6 +1750,11 @@ return
 	gosub :getSectorLocation
 	if ($attackOnSight)
 		goSub :checkForVictims
+	end
+	if ($iglift = 1) 
+		send "'IGLift Initiated! send reset command to re-enable PDROP (resetpdrop or -)*"
+		waitfor "resetpdrop"
+		goSub :waitforrestart
 	end
 	if ($defender = 1)
 		send "'Defender Initiated! send reset command to re-enable PDROP*"
