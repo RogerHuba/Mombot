@@ -1,4 +1,4 @@
-	#gosub :BOT~loadVars
+	gosub :BOT~loadVars
 	loadVar $MAP~stardock
 	loadvar $SWITCHBOARD~bot_name 
 	loadvar $ship~ship_max_attack
@@ -19,7 +19,7 @@
 	setVar $BOT~help[13]  $BOT~tab&" {i1/i2/i3} - Indirect mow, void 1-3 sectors"
 	setVar $BOT~help[14]  $BOT~tab&" {holo} - holo scans every sector - no checks/pauses"
 	
-	#gosub :BOT~helpfile
+	gosub :BOT~helpfile
 
 
 	if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
@@ -29,7 +29,6 @@
 	if ($pos > 0)
 		replacetext $bot~parm1 "destination:" ""
 	end
-	if ($bot~parm1)
 	if ($bot~parm1 = "me")
 		if ($bot~command_caller = "self")
 			setVar $SWITCHBOARD~message "I don't think you need to mow to yourself.*"
@@ -542,8 +541,8 @@ return
 
 return
 #INCLUDES:
-#include "source\module_includes\bot\loadvars\bot"
-#include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\targeting\scanitcitkill\targeting"
 include "source\bot_includes\player\quikstats\player"
