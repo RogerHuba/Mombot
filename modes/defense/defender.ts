@@ -42,7 +42,7 @@
 	setvar $photon~shot 0
 
 
-	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f} {l} {a} {auto} {holo} {mines} {density|adjacent|nophoton}"
+	setVar $BOT~help[1]  $BOT~tab&"Grid defender {f} {l} {a} {auto} {holo} {mines} {adjacent|density|nophoton}"
 	setVar $BOT~help[2]  $BOT~tab&"              {saveme:bot} {multi:#} {switch} {capture} {holokill}"
 	setVar $BOT~help[3]  $BOT~tab&"              {slingshot} {sentinel} {secure|paranoid} {noescape}"
 	setVar $BOT~help[4]  $BOT~tab&"          "
