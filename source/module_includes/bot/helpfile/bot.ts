@@ -269,7 +269,7 @@ end
 				while ($i <= $fields)
 					setvar $user_command_line $user_command_line&" "&$fields[$i][2]
 					if ($i <= 8)
-						setvar $("parm"&$i) $fields[$i][2]
+						setvar $parm&$i $fields[$i][2]
 					end
 					add $i 1
 				end
