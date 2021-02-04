@@ -1,4 +1,4 @@
-	gosub :BOT~loadVars
+	#gosub :BOT~loadVars
 	loadVar $MAP~stardock
 	loadvar $SWITCHBOARD~bot_name 
 	loadvar $ship~ship_max_attack
@@ -542,7 +542,7 @@ return
 
 return
 #INCLUDES:
-include "source\module_includes\bot\loadvars\bot"
+#include "source\module_includes\bot\loadvars\bot"
 #include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\targeting\scanitcitkill\targeting"
