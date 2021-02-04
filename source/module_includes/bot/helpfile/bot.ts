@@ -349,6 +349,8 @@ return
 :booleanField30
 	setvar $field_index 30
 :booleanField
+	getMenuValue $fields[$field_index] $value
+	echo "["&$value&"]*"
 	setvar $currentValue $fields[$field_index][2]
 	if ($currentValue = false)
 		setvar $currentValue true
