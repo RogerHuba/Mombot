@@ -86,6 +86,7 @@ end
 							setvar $topOfFile false
 						else
 							if ($topOfFile = true)
+							echo "top of file: [" $help[$i] "]*"
 								# create field types and grab script name #
 								if ($i = 1)
 									getwordpos $help[$i] $pos "{"
