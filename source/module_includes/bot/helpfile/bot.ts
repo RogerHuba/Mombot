@@ -459,6 +459,24 @@ goto :menu_creation
 :multiField30
 	setvar $field_index 30
 :multiField
+	splitText $fields[$field_index] $options "|"
+	if ($options > 1)
+		setvar $k 1
+		while ($k <= $options)
+			if ($options[$k] = $fields[$field_index][2])
+				if ($k < $options)
+					setvar $displayValue $options[($k+1)]
+				else
+					setvar $displayValue $options[1]
+				end
+			end
+			add $k 1
+		end
+		setvar $fields[$field_index][2] $displayValue
+		setMenuValue $fields[$field_index] $displayValue
+	else
+
+	end
 
 goto :menu_creation
 
