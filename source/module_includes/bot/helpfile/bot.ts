@@ -237,23 +237,23 @@ end
 				addMenu "MENUSYSTEM" $fields[$i] ANSI_14&"Start!" "Z" :endMenuAndGo  "" FALSE
 
 				while ($i <= $fields)
-					if ($fields[$i][3] = "boolean")
+					if ($fields[$i][1] = "boolean")
 						if ($fields[$i][2] = true)
 							setvar $displayValue "Yes"
 						else
 							setvar $displayValue "No"
 						end
 					end
-					if ($fields[$i][3] = "multi")
+					if ($fields[$i][1] = "multi")
 						setvar $displayValue $fields[$i][2]
 					end
-					if ($fields[$i][3] = "string")
+					if ($fields[$i][1] = "string")
 						setvar $displayValue $fields[$i][2]
 						if ($displayValue = "")
 							setvar $displayValue "Not defined"
 						end
 					end
-					if ($fields[$i][3] = "number")
+					if ($fields[$i][1] = "number")
 						setvar $displayValue $fields[$i][2]
 					end
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_14&$fields[$i]&ANSI_2&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
@@ -269,22 +269,22 @@ end
 				setvar $user_command_line $command&" "
 				while ($i <= $fields)
 					trim $fields[$i][2]
-					if ((($fields[$i][3] <> "number") and ($fields[$i][2] = "0")) or (($fields[$i][3] = "string") and ($fields[$i][2] = "")))
+					if ((($fields[$i][1] <> "number") and ($fields[$i][2] = "0")) or (($fields[$i][1] = "string") and ($fields[$i][2] = "")))
 						#skip
 					else
-						if ($fields[$i][3] = "boolean")
+						if ($fields[$i][1] = "boolean")
 							if ($fields[$i][2] = true)
 								setvar $user_command_line $user_command_line&" "&$fields[$i]						
 								setvar $parm_value $fields[$i]
 							end
 						end
-						if (($fields[$i][3] = "string") or ($fields[$i][3] = "number"))
+						if (($fields[$i][1] = "string") or ($fields[$i][3] = "number"))
 							if ($fields[$i][2] = true)
 								setvar $user_command_line $user_command_line&" "&$fields[$i]&$fields[$i][2]
 								setvar $parm_value $fields[$i]&$fields[$i][2]
 							end
 						end
-						if ($fields[$i][3] = "multi")
+						if ($fields[$i][1] = "multi")
 							setvar $user_command_line $user_command_line&" "&$fields[$i][2]
 							setvar $parm_value $fields[$i][2]
 						end
