@@ -234,7 +234,7 @@ end
 				setvar $menu_system_keys[29] "u"
 				setvar $menu_system_keys[30] "v"
 				while ($i <= $fields)
-					addMenu "MENUSYSTEM" $fields[$i] $fields[$i]&" ("&$fields[$i][3]&")" $menu_system_keys[$i] ":"&$fields[$i][1]&"Field" $fields[$i][3] FALSE
+					addMenu "MENUSYSTEM" $fields[$i] $fields[$i]&" ("&$fields[$i][3]&")" $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					:menu_creation
 					add $i 1
 				end
@@ -243,15 +243,104 @@ end
 			end
 return
 
+:booleanField1
+	setvar $field_index 1
+	goto :booleanField
+:booleanField2
+	setvar $field_index 2
+	goto :booleanField
+:booleanField3
+	setvar $field_index 3
+	goto :booleanField
+:booleanField4
+	setvar $field_index 4
+	goto :booleanField
+:booleanField5
+	setvar $field_index 5
+	goto :booleanField
+:booleanField6
+	setvar $field_index 6
+	goto :booleanField
+:booleanField7
+	setvar $field_index 7
+	goto :booleanField
+:booleanField8
+	setvar $field_index 8
+	goto :booleanField
+:booleanField9
+	setvar $field_index 9
+	goto :booleanField
+:booleanField10
+	setvar $field_index 10
+	goto :booleanField
+:booleanField11
+	setvar $field_index 11
+	goto :booleanField
+:booleanField12
+	setvar $field_index 12
+	goto :booleanField
+:booleanField13
+	setvar $field_index 13
+	goto :booleanField
+:booleanField14
+	setvar $field_index 14
+	goto :booleanField
+:booleanField15
+	setvar $field_index 15
+	goto :booleanField
+:booleanField16
+	setvar $field_index 16
+	goto :booleanField
+:booleanField17
+	setvar $field_index 17
+	goto :booleanField
+:booleanField18
+	setvar $field_index 18
+	goto :booleanField
+:booleanField19
+	setvar $field_index 19
+	goto :booleanField
+:booleanField20
+	setvar $field_index 20
+	goto :booleanField
+:booleanField21
+	setvar $field_index 21
+	goto :booleanField
+:booleanField22
+	setvar $field_index 22
+	goto :booleanField
+:booleanField23
+	setvar $field_index 23
+	goto :booleanField
+:booleanField24
+	setvar $field_index 24
+	goto :booleanField
+:booleanField25
+	setvar $field_index 25
+	goto :booleanField
+:booleanField26
+	setvar $field_index 26
+	goto :booleanField
+:booleanField27
+	setvar $field_index 27
+	goto :booleanField
+:booleanField28
+	setvar $field_index 28
+	goto :booleanField
+:booleanField29
+	setvar $field_index 29
+	goto :booleanField
+:booleanField30
+	setvar $field_index 30
 :booleanField
-	setvar $currentValue $fields[$i][2]
+	setvar $currentValue $fields[$field_index][2]
 	if ($currentValue = false)
 		setvar $currentValue true
 	else
 		setvar $currentValue false
 	end
-	setvar $fields[$i][2] $currentValue
-	echo "boolean switch is:"&$fields[$i][2]&"*"
+	setvar $fields[$field_index][2] $currentValue
+	echo "boolean switch is:"&$fields[$field_index][2]&"*"
 goto :menu_creation
 
 :multiField
