@@ -474,8 +474,6 @@ goto :menu_creation
 		end
 		setvar $fields[$field_index][2] $displayValue
 		setMenuValue $fields[$field_index] $displayValue
-	else
-
 	end
 
 goto :menu_creation
@@ -571,6 +569,10 @@ goto :menu_creation
 	setvar $field_index 30
 :stringField
 
+	getInput $displayValue "Please enter a value for "&$fields[$field_index]&"."
+	setvar $fields[$field_index][2] $displayValue
+	setMenuValue $fields[$field_index] $displayValue
+
 goto :menu_creation
 
 :numberField1
@@ -663,6 +665,15 @@ goto :menu_creation
 :numberField30
 	setvar $field_index 30
 :numberField
+
+	getInput $displayValue "Please enter a value for "&$fields[$field_index]&"."
+	isNumber $isNumber $displayValue
+	if ($isNumber <> true)
+		echo "*Please enter a number value.*"
+		goto :numberField
+	end
+	setvar $fields[$field_index][2] $displayValue
+	setMenuValue $fields[$field_index] $displayValue
 
 goto :menu_creation
 
