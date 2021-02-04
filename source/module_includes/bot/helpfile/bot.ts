@@ -261,8 +261,19 @@ end
 					:menu_creation
 					add $i 1
 				end
+				addMenu "MENUSYSTEM" $fields[$i] ANSI_14&"Start!" "Z" :endMenuAndGo  "" FALSE
 				openMenu "MENUSYSTEM" true
-
+				:endMenuAndGo
+				setvar $i 1
+				setvar $user_command_line $command&" "
+				while ($i <= $fields)
+					setvar $user_command_line $user_command_line&" "&$fields[$i][2]
+					if ($i <= 8)
+						setvar $("parm"&$i) $fields[$i][2]
+					end
+					add $i 1
+				end
+				echo "Here is the command:" $user_command_line "*"
 			end
 return
 
@@ -571,11 +582,11 @@ goto :menu_creation
 
 	getInput $displayValue "Please enter a value for "&$fields[$field_index]&"."
 	if ($displayValue = "")
-		setvar $fields[$field_index][2] "Not defined"
+		setMenuValue $fields[$field_index] "Not defined"
 	else
-		setvar $fields[$field_index][2] $displayValue
+		setMenuValue $fields[$field_index] $displayValue
 	end
-	setMenuValue $fields[$field_index] $displayValue
+	setvar $fields[$field_index][2] $displayValue
 
 goto :menu_creation
 
