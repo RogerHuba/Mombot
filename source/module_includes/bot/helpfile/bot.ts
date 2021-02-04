@@ -260,7 +260,7 @@ end
 					if ($length < 50)
 						padleft $menu_field_display (50-$length)
 					end
-					addMenu "MENUSYSTEM" $fields[$i] ANSI_14&$fields[$i]&ANSI_2&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
+					addMenu "MENUSYSTEM" $fields[$i] ANSI_14&$menu_field_display&ANSI_2&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					setMenuValue $fields[$i] $displayValue
 					setMenuHelp $fields[$i] $fields[$i][3]
 					:menu_creation
