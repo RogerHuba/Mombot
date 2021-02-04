@@ -358,7 +358,7 @@ return
 		setvar $currentValue false
 	end
 	setvar $fields[$field_index][2] $currentValue
-	setMenuValue $fields[$i] $currentValue
+	setMenuValue $fields[$field_index] $currentValue
 goto :menu_creation
 
 :multiField
