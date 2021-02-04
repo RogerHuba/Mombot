@@ -195,8 +195,40 @@ end
 				setvar $i 1
 				addMenu "" "MENUSYSTEM" $command&" Settings" "." "" "Main" FALSE
 				echo "final field count: [" $fields "]*"
+				setarray $menu_system_keys 30
+				setvar $menu_system_keys 30
+				setvar $menu_system_keys[1] 1
+				setvar $menu_system_keys[2] 2
+				setvar $menu_system_keys[3] 3
+				setvar $menu_system_keys[4] 4
+				setvar $menu_system_keys[5] 5
+				setvar $menu_system_keys[6] 6
+				setvar $menu_system_keys[7] 7
+				setvar $menu_system_keys[8] 8
+				setvar $menu_system_keys[9] 9
+				setvar $menu_system_keys[10] "a"
+				setvar $menu_system_keys[11] "b"
+				setvar $menu_system_keys[12] "c"
+				setvar $menu_system_keys[13] "d"
+				setvar $menu_system_keys[14] "e"
+				setvar $menu_system_keys[15] "f"
+				setvar $menu_system_keys[16] "g"
+				setvar $menu_system_keys[17] "h"
+				setvar $menu_system_keys[18] "i"
+				setvar $menu_system_keys[19] "j"
+				setvar $menu_system_keys[20] "k"
+				setvar $menu_system_keys[21] "l"
+				setvar $menu_system_keys[22] "m"
+				setvar $menu_system_keys[23] "n"
+				setvar $menu_system_keys[24] "o"
+				setvar $menu_system_keys[25] "p"
+				setvar $menu_system_keys[26] "r"
+				setvar $menu_system_keys[27] "s"
+				setvar $menu_system_keys[28] "t"
+				setvar $menu_system_keys[29] "u"
+				setvar $menu_system_keys[30] "v"
 				while ($i <= $fields)
-					addMenu "MENUSYSTEM" $fields[$i] $fields[$i][3] $i ":"&$command&$i $fields[$i][3] FALSE
+					addMenu "MENUSYSTEM" $fields[$i] $fields[$i][3] $menu_system_keys[$i] ":"&$command&$i $fields[$i][3] FALSE
 					
 					add $i 1
 				end
