@@ -279,10 +279,8 @@ end
 							end
 						end
 						if (($fields[$i][1] = "string") or ($fields[$i][3] = "number"))
-							if ($fields[$i][2] = true)
-								setvar $user_command_line $user_command_line&" "&$fields[$i]&$fields[$i][2]
-								setvar $parm_value $fields[$i]&$fields[$i][2]
-							end
+							setvar $user_command_line $user_command_line&" "&$fields[$i]&$fields[$i][2]
+							setvar $parm_value $fields[$i]&$fields[$i][2]
 						end
 						if ($fields[$i][1] = "multi")
 							setvar $user_command_line $user_command_line&" "&$fields[$i][2]
