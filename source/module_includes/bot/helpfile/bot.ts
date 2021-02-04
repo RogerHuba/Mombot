@@ -132,7 +132,7 @@ end
 											setvar $field_type "boolean"
 											setvar $field_name $option
 											setvar $fields[$field_count][2] false
-										end
+										end 
 									end
 									setvar $fields[$field_count] $field_name
 									setvar $fields[$field_count][1] $field_type
