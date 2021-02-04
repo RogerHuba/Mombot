@@ -95,6 +95,7 @@ end
 									setvar $rest_of_string $help[$i]
 								end
 								getText $rest_of_string $option "{" "}"
+								setvar $fields 0
 								while ($option <> "")
 									###########################################
 									# remove the option found from the string #
@@ -129,7 +130,7 @@ end
 									end
 									setvar $fields[$field_count] $field_name
 									setvar $fields[$field_count][1] $field_type
-
+									add $fields 1
 									########################
 									# grab the next option #
 									########################
@@ -186,13 +187,14 @@ end
 					add $i 1
 				end
 
-				addMenu "" "BuyDown" "BuyDown Settings" "." "" "Main" FALSE
-				addMenu "BuyDown" "Product" "Product" "P" :Menu_Product "" FALSE
-				addMenu "BuyDown" "TurnLimit" "Turn limit" "T" :Menu_TurnLimit "" FALSE
-				addMenu "BuyDown" "Quantity" "Quantity" "U" :Menu_Quantity "" FALSE
-				addMenu "BuyDown" "Haggle" "Haggling" "H" :Menu_HaggleFactor "" FALSE
-				addMenu "BuyDown" "GO" "GO!" "G" :Menu_Go "" TRUE
-				openMenu "BuyDown" true
+				setvar $i 1
+				addMenu "" "MENUSYSTEM" $command&" Settings" "." "" "Main" FALSE
+				while ($i <= $fields)
+					addMenu "MENUSYSTEM" $fields[$i] $fields[$i][3] $i ":"&$command&$i "" FALSE
+					
+					add $i 1
+				end
+				openMenu "MENUSYSTEM" true
 
 			end
 return
