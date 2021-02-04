@@ -265,11 +265,18 @@ end
 				openMenu "MENUSYSTEM" true
 				:endMenuAndGo
 				setvar $i 1
+				setvar $parm_count 0 
 				setvar $user_command_line $command&" "
 				while ($i <= $fields)
-					setvar $user_command_line $user_command_line&" "&$fields[$i][2]
-					if ($i <= 8)
-						setvar $(parm&$i) $fields[$i][2]
+					trim $fields[$i][2]
+					if ((($fields[$i][3] <> "number") and ($fields[$i][2] = "0")) or (($fields[$i][3] = "string") and ($fields[$i][2] = "")))
+						#skip
+					else
+						setvar $user_command_line $user_command_line&" "&$fields[$i][2]
+						if ($parm_count <= 8)
+							add $parm_count 1
+							setvar $(parm&$parm_count) $fields[$i][2]
+						end
 					end
 					add $i 1
 				end
