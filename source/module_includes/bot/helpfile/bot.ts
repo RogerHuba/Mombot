@@ -293,7 +293,7 @@ end
 						end
 						if ($parm_count <= 8)
 							add $parm_count 1
-							setvar $(parm&$parm_count) $parm_value
+							setvar $("parm"&$parm_count) $parm_value
 						end
 					end
 					add $i 1
