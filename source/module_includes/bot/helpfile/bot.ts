@@ -112,7 +112,7 @@ end
 									if ($pos > 0)
 										setvar $field_type "multi"
 										setvar $field_name $option
-										splitText $fields[$j] $options "|"
+										splitText $fields[$field_count] $options "|"
 										# grab first option as default #
 										setvar $fields[$field_count][2] $options[1]
 									else
