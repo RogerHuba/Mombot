@@ -251,6 +251,8 @@ end
 						setvar $displayValue $fields[$i][2]
 					end
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_3&$fields[$i][3]&ANSI_2&" : "&ANSI_5&$displayValue $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
+					setMenuValue $fields[$i] $fields[$i][2]
+					setMenuHelp $fields[$i] $fields[$i][3]
 					:menu_creation
 					add $i 1
 				end
@@ -349,8 +351,6 @@ return
 :booleanField30
 	setvar $field_index 30
 :booleanField
-	getMenuValue $fields[$field_index] $value
-	echo "["&$value&"]*"
 	setvar $currentValue $fields[$field_index][2]
 	if ($currentValue = false)
 		setvar $currentValue true
@@ -358,6 +358,7 @@ return
 		setvar $currentValue false
 	end
 	setvar $fields[$field_index][2] $currentValue
+	setMenuValue $fields[$i] $fields[$field_index][2]
 	echo "boolean switch is:"&$fields[$field_index][2]&"*"
 goto :menu_creation
 
