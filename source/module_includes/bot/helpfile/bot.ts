@@ -157,6 +157,9 @@ end
 									setvar $j 1 
 									while ($j <= $field_count)
 										setvar $foundOption false
+										replacetext $fields[$j] "{" ""
+										replacetext $fields[$j] "}" ""
+										replacetext $fields[$j] "-" ""
 										getwordpos $fields[$j] $pos "|"
 										if ($pos > 0)
 											splitText $fields[$j] $options "|"
