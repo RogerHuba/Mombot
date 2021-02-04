@@ -358,8 +358,7 @@ return
 		setvar $currentValue false
 	end
 	setvar $fields[$field_index][2] $currentValue
-	setMenuValue $fields[$i] $fields[$field_index][2]
-	echo "boolean switch is:"&$fields[$field_index][2]&"*"
+	setMenuValue $fields[$i] $currentValue
 goto :menu_creation
 
 :multiField
