@@ -112,20 +112,26 @@ end
 									if ($pos > 0)
 										setvar $field_type "multi"
 										setvar $field_name $option
+										splitText $fields[$j] $options "|"
+										# grab first option as default #
+										setvar $fields[$field_count][2] $options[1]
 									else
 										getwordpos $option $pos ":"
 										if ($pos > 0)
 											getwordpos $option $pos ":#"
 											if ($pos > 0)
 												setvar $field_type "number"
+												setvar $fields[$field_count][2] 0
 											else
 												setvar $field_type "string"
+												setvar $fields[$field_count][2] ""
 											end
 											splitText $option $inputs
 											setvar $field_name $inputs[1]
 										else
 											setvar $field_type "boolean"
 											setvar $field_name $option
+											setvar $fields[$field_count][2] false
 										end
 									end
 									setvar $fields[$field_count] $field_name
@@ -228,7 +234,7 @@ end
 				setvar $menu_system_keys[29] "u"
 				setvar $menu_system_keys[30] "v"
 				while ($i <= $fields)
-					addMenu "MENUSYSTEM" $fields[$i] $fields[$i]&" ("&$fields[$i][3]&")" $menu_system_keys[$i] ":"&$command&$i $fields[$i][3] FALSE
+					addMenu "MENUSYSTEM" $fields[$i] $fields[$i]&" ("&$fields[$i][3]&")" $menu_system_keys[$i] ":"&$fields[$i][1]&"Field" $fields[$i][3] FALSE
 					echo "field type for " $fields[$i] " is [" $fields[$i][1] "]*"
 					add $i 1
 				end
@@ -237,7 +243,11 @@ end
 			end
 return
 
-:selectField
+:booleanField
+	setvar $booleanCheck $fields[$i][2]
+return
+
+:multiField
 
 return
 
@@ -245,7 +255,7 @@ return
 
 return
 
-:intField
+:numberField
 
 return
 
