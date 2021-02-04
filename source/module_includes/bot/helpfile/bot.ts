@@ -234,7 +234,7 @@ end
 				setvar $menu_system_keys[29] "v"
 				setvar $menu_system_keys[30] "w"
 
-				addMenu "MENUSYSTEM" $fields[$i] ANSI_14&"Start!" "Z" :endMenuAndGo  "" FALSE
+				addMenu "MENUSYSTEM" Start ANSI_14&"Start!" "Z" :endMenuAndGo  "" FALSE
 
 				while ($i <= $fields)
 					if ($fields[$i][1] = "boolean")
