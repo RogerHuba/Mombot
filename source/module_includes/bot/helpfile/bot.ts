@@ -69,6 +69,7 @@ end
 			setvar $i 1
 			if (($switchboard~self_command <> false) and (($bot~parm1 = "!") or ($bot~parm1 = "menu")))
 				setarray $fields 100 5
+				setvar $fields 0
 				setvar $field_count 0
 				setvar $isDone false
 				setvar $topOfFile true
@@ -95,7 +96,6 @@ end
 									setvar $rest_of_string $help[$i]
 								end
 								getText $rest_of_string $option "{" "}"
-								setvar $fields 0
 								while ($option <> "")
 									###########################################
 									# remove the option found from the string #
@@ -132,7 +132,6 @@ end
 									setvar $fields[$field_count][1] $field_type
 									echo "adding field: [" $fields[$field_count] "]*"
 									add $fields 1
-									echo "field count: [" $fields "]*"
 									########################
 									# grab the next option #
 									########################
