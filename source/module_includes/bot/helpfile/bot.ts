@@ -86,7 +86,6 @@ end
 							setvar $topOfFile false
 						else
 							if ($topOfFile = true)
-							echo "top of file: [" $help[$i] "]*"
 								# create field types and grab script name #
 								if ($i = 1)
 									getwordpos $help[$i] $pos "{"
@@ -131,6 +130,7 @@ end
 									end
 									setvar $fields[$field_count] $field_name
 									setvar $fields[$field_count][1] $field_type
+									echo "adding field: [" $fields[$field_count] "]*"
 									add $fields 1
 									########################
 									# grab the next option #
@@ -160,7 +160,7 @@ end
 									trim $help[$i]
 
 									setvar $j 1 
-									while ($j <= $field_count)
+									while ($j <= $fields)
 										setvar $foundOption false
 										getwordpos $fields[$j] $pos "|"
 										if ($pos > 0)
