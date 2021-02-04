@@ -244,14 +244,14 @@ end
 return
 
 :booleanField
-	echo "boolean switch is:"&$fields[$i][2]&"*"
 	setvar $currentValue $fields[$i][2]
 	if ($currentValue = false)
-		setvar $currentValue = true
+		setvar $currentValue true
 	else
-		setvar $currentValue = false
+		setvar $currentValue false
 	end
 	setvar $fields[$i][2] $currentValue
+	echo "boolean switch is:"&$fields[$i][2]&"*"
 goto :menu_creation
 
 :multiField
