@@ -234,23 +234,7 @@ end
 				setvar $menu_system_keys[29] "u"
 				setvar $menu_system_keys[30] "v"
 				while ($i <= $fields)
-					if ($fields[$i][1] = "boolean")
-						if ($fields[$i][2] = true)
-							setvar $displayValue "Yes"
-						else
-							setvar $displayValue "No"
-						end
-					end
-					if ($fields[$i][1] = "multi")
-						setvar $displayValue $fields[$i][2]
-					end
-					if ($fields[$i][1] = "string")
-						setvar $displayValue $fields[$i][2]
-					end
-					if ($fields[$i][1] = "number")
-						setvar $displayValue $fields[$i][2]
-					end
-					addMenu "MENUSYSTEM" $fields[$i] ANSI_3&$fields[$i]&ANSI_2&" : "&ANSI_14&$displayValue $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
+					addMenu "MENUSYSTEM" $fields[$i] ANSI_14&$fields[$i]&ANSI_2&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					#setMenuValue $fields[$i] $fields[$i][2]
 					setMenuHelp $fields[$i] $fields[$i][3]
 					:menu_creation
@@ -354,11 +338,13 @@ return
 	setvar $currentValue $fields[$field_index][2]
 	if ($currentValue = false)
 		setvar $currentValue true
+		setvar $displayValue "Yes"
 	else
 		setvar $currentValue false
+		setvar $displayValue "No"
 	end
 	setvar $fields[$field_index][2] $currentValue
-	setMenuValue $fields[$field_index] $currentValue
+	setMenuValue $fields[$field_index] $displayValue
 goto :menu_creation
 
 :multiField
