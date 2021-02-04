@@ -126,7 +126,7 @@ end
 												setvar $field_type "string"
 												setvar $fields[$field_count][2] ""
 											end
-											splitText $option $inputs
+											splitText $option $inputs ":"
 											setvar $field_name $inputs[1]
 										else
 											setvar $field_type "boolean"
@@ -272,10 +272,25 @@ end
 					if ((($fields[$i][3] <> "number") and ($fields[$i][2] = "0")) or (($fields[$i][3] = "string") and ($fields[$i][2] = "")))
 						#skip
 					else
-						setvar $user_command_line $user_command_line&" "&$fields[$i][2]
+						if ($fields[$i][3] = "boolean")
+							if ($fields[$i][2] = true)
+								setvar $user_command_line $user_command_line&" "&$fields[$i]						
+								setvar $parm_value $fields[$i]
+							end
+						end
+						if (($fields[$i][3] = "string") or ($fields[$i][3] = "number"))
+							if ($fields[$i][2] = true)
+								setvar $user_command_line $user_command_line&" "&$fields[$i]&$fields[$i][2]
+								setvar $parm_value $fields[$i]&$fields[$i][2]
+							end
+						end
+						if ($fields[$i][3] = "multi")
+							setvar $user_command_line $user_command_line&" "&$fields[$i][2]
+							setvar $parm_value $fields[$i][2]
+						end
 						if ($parm_count <= 8)
 							add $parm_count 1
-							setvar $(parm&$parm_count) $fields[$i][2]
+							setvar $(parm&$parm_count) $parm_value
 						end
 					end
 					add $i 1
