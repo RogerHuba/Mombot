@@ -136,7 +136,7 @@ end
 									end
 									setvar $fields[$field_count] $field_name
 									setvar $fields[$field_count][1] $field_type
-									echo "adding field: [" $fields[$field_count] "] with value of [" $fields[$field_count][2] "]*"
+									#echo "adding field: [" $fields[$field_count] "] with value of [" $fields[$field_count][2] "]*"
 									add $fields 1
 									########################
 									# grab the next option #
@@ -200,7 +200,6 @@ end
 
 				setvar $i 1
 				addMenu "" "MENUSYSTEM" $command&" Settings" "." "" "Main" FALSE
-				echo "final field count: [" $fields "]*"
 				setarray $menu_system_keys 30
 				setvar $menu_system_keys 30
 				setvar $menu_system_keys[1] 1
@@ -278,9 +277,9 @@ end
 								setvar $parm_value $fields[$i]
 							end
 						end
-						if (($fields[$i][1] = "string") or ($fields[$i][3] = "number"))
-							setvar $user_command_line $user_command_line&" "&$fields[$i]&$fields[$i][2]
-							setvar $parm_value $fields[$i]&$fields[$i][2]
+						if (($fields[$i][1] = "string") or ($fields[$i][1] = "number"))
+							setvar $user_command_line $user_command_line&" "&$fields[$i]&":"&$fields[$i][2]
+							setvar $parm_value $fields[$i]&":"&$fields[$i][2]
 						end
 						if ($fields[$i][1] = "multi")
 							setvar $user_command_line $user_command_line&" "&$fields[$i][2]
