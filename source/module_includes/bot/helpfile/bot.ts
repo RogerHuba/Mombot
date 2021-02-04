@@ -268,6 +268,7 @@ end
 				end
 				openMenu "MENUSYSTEM" true
 				:endMenuAndGo
+				closeMenu
 				setvar $i 1
 				setvar $parm_count 0 
 				setvar $user_command_line $command
@@ -297,7 +298,6 @@ end
 					end
 					add $i 1
 				end
-				pause
 				savevar $user_command_line
 				savevar $parm1
 				savevar $parm2
@@ -309,6 +309,7 @@ end
 				savevar $parm8
 				echo "Sending this command to the bot:" $user_command_line "*"
 				echo "Parameters:" $parm1 $parm2 $parm3 $parm4 $parm5 $parm6 $parm7 $parm8 "*"
+				pause
 			end
 return
 
