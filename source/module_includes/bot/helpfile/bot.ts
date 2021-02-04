@@ -234,25 +234,26 @@ end
 				setvar $menu_system_keys[29] "v"
 				setvar $menu_system_keys[30] "w"
 
+				addMenu "MENUSYSTEM" $fields[$i] ANSI_14&"Start!" "Z" :endMenuAndGo  "" FALSE
 
 				while ($i <= $fields)
-					if ($fields[$i][1] = "boolean")
+					if ($fields[$i][3] = "boolean")
 						if ($fields[$i][2] = true)
 							setvar $displayValue "Yes"
 						else
 							setvar $displayValue "No"
 						end
 					end
-					if ($fields[$i][1] = "multi")
+					if ($fields[$i][3] = "multi")
 						setvar $displayValue $fields[$i][2]
 					end
-					if ($fields[$i][1] = "string")
+					if ($fields[$i][3] = "string")
 						setvar $displayValue $fields[$i][2]
 						if ($displayValue = "")
 							setvar $displayValue "Not defined"
 						end
 					end
-					if ($fields[$i][1] = "number")
+					if ($fields[$i][3] = "number")
 						setvar $displayValue $fields[$i][2]
 					end
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_14&$fields[$i]&ANSI_2&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
@@ -261,7 +262,6 @@ end
 					:menu_creation
 					add $i 1
 				end
-				addMenu "MENUSYSTEM" $fields[$i] ANSI_14&"Start!" "Z" :endMenuAndGo  "" FALSE
 				openMenu "MENUSYSTEM" true
 				:endMenuAndGo
 				setvar $i 1
