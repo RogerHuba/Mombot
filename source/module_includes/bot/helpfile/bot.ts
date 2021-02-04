@@ -235,7 +235,7 @@ end
 				setvar $menu_system_keys[30] "v"
 				while ($i <= $fields)
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_14&$fields[$i]&ANSI_2&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
-					#setMenuValue $fields[$i] $fields[$i][2]
+					setMenuValue $fields[$i] $displayValue
 					setMenuHelp $fields[$i] $fields[$i][3]
 					:menu_creation
 					add $i 1
