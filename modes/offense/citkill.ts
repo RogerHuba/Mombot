@@ -1,6 +1,6 @@
 	logging off
 	gosub :BOT~loadVars
-
+	loadVar $GAME~LATENCY
 	setVar $BOT~help[1]  $BOT~tab&"citkill {"&#34&"player name"&#34&"|corp#} {sg} {dt}"
 	setVar $BOT~help[2]  $BOT~tab&"        {empty} {smart} {override}"
 	setVar $BOT~help[3]  $BOT~tab&"Citadel Killer destroys enemy ships from planet citadel."
@@ -15,7 +15,10 @@
 	setVar $BOT~help[12] $BOT~tab&"{empty}           - Will capture empty ships in sector"
 	setVar $BOT~help[13] $BOT~tab&"{smart}           - Notices changes in ship type/target"
 	setVar $BOT~help[14] $BOT~tab&"{override}        - Overrides safety on attacking defender bonus ships"
-	setVar $BOT~help[15] $BOT~tab&"{photon}          - Will fire photon to adjacent fig hits"
+	setVar $BOT~help[15] $BOT~tab&"{photon} (NA)     - Will fire photon to adjacent fig hits"
+	setVar $BOT~help[16] $BOT~tab&"{onetap}          - fire once only"
+	setVar $BOT~help[17] $BOT~tab&"{slowmo}          - Adds random pause between waves."
+	
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Citadel Killer"
@@ -91,6 +94,20 @@
 		else
 			setVar $player~shotgun FALSE
 		end
+		getWordPos $bot~user_command_line $pos "onetap"
+		if ($pos > 0)
+			setVar $player~onetap TRUE
+		else
+			setVar $player~onetap FALSE
+		end
+		
+		getWordPos $bot~user_command_line $pos "slowmo"
+		if ($pos > 0)
+			setVar $player~slowmo TRUE
+		else
+			setVar $player~slowmo FALSE
+		end
+		
 		loadvar $ship~CAP_FILE
 		fileExists $CAP_FILE_chk $ship~CAP_FILE
 		if ($CAP_FILE_chk)
@@ -187,9 +204,13 @@
 	else
 		setvar $player~override $override
 	end
+	
 	gosub :sector~getSectorData
+
 	if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+	
 		goSub :combat~fastCitadelAttack
+		
 		if ($player~fighters <= 0)
 			setvar $switchboard~message "Fighters are gone - halting.*"
 			gosub :switchboard~switchboard
@@ -197,6 +218,7 @@
 		end
 		goto :scanit_again
 	elseif (($sector~emptyShipCount > $sector~myShipCount) AND ($capEmptyShips = TRUE))
+	
 		setvar $player~startinglocation "Citadel"
 		gosub :combat~fastCapture
 		gosub :player~quikstats

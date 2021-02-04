@@ -435,15 +435,16 @@ goSub :checkAvoidedSectors
 	gosub :assemble_land_mac
 
 :select_boomsec
+
 	killAllTriggers
 	gosub :player~quikstats
-	
+
 	if ($xport_grid)
 		if ($boomsec > 0)
 			if ($player~ship_number = $ship1)
-				setVar $ship1_location $boomsec
-			else
 				setVar $ship2_location $boomsec
+			else
+				setVar $ship1_location $boomsec
 			end
 		end
 
@@ -496,15 +497,16 @@ goSub :checkAvoidedSectors
 	getWord $database $player~warpto $random
 	setvar $window_content "*      Targets left to hit:"&$databaseCount&"*"
 	gosub :setwindow
-	
+
 	if ($player~warpto = 0)
-		
 		gosub :player~quikstats
+		echo "halt restart*"
+		echo "halt restart*"
+		echo "halt restart*"
 		
 		setvar $switchboard~message "Database Cleared - Recalculating and Restarting...*"
 		gosub :switchboard~switchboard
 		goto :restart
-	
 	else
 		getDistance $distance $move[$player~warpto] $player~warpto
 		if ($distance <= 0)
@@ -514,18 +516,20 @@ goSub :checkAvoidedSectors
 		end
 		
 		if ($safeXport = true)
-	
+
 			if ($xport_ship = $ship1)
-				getDistance $xport_dist $player~warpto $ship1_location
+				getDistance $xport_dist $move[$player~warpto]  $ship1_location
 			else
-				getDistance $xport_dist $player~warpto $ship2_location
+				getDistance $xport_dist $move[$player~warpto]  $ship2_location
 			end
+
 			if (($xport_dist <= 0) or ($xport_dist > $xport_range))
 				setvar $switchboard~message "Return Xport to far - moving to next target*"
 				gosub :switchboard~switchboard
 				KillAllTriggers
 				replaceText $database " "&$player~warpto&" " " "
 				subtract $databaseCount 1
+	
 				goto :continueOn
 			end
 		end
@@ -538,9 +542,6 @@ goSub :checkAvoidedSectors
 			subtract $databaseCount 1
 			goto :continueOn
 		end
-		
-		
-
 	end
 
 :clearit
@@ -569,6 +570,10 @@ goSub :checkAvoidedSectors
 :hittingsec
 	KillAllTriggers
 	setVar $boomsec $move[$player~warpto]
+	echo "hittsec*"
+	echo "boomsec" $boomsec "*"
+	echo "$move[$player~warpto]" $move[$player~warpto] "*"
+	
 	
 	getSectorParameter $boomsec "FIGSEC"  $isFigged
 	getSectorParameter $boomsec "MINESEC" $isArmided
@@ -662,9 +667,12 @@ goSub :checkAvoidedSectors
 			end
 		end
 		if ((SECTOR.anomaly[$boomsec] = TRUE) and ($isLimped = FALSE))
+			send "'UGrid:Hitting Limp*"
 			setVar $imlimped TRUE
 		end
-		
+		if (($mineCount > 0) AND (($mineOwner <> "yours") AND ($mineOwner <> "belong to your Corp")))
+
+		end
 		send "m"
 		gosub :return_triggers
 		if (($distanceback = 1) and ($retreat = true))
@@ -699,6 +707,7 @@ goSub :checkAvoidedSectors
 						end
 					end
 					if ($xSlow = true)
+						send "cr" $boomsec "*q"
 						getRnd $delaytime 3000 6000
 						setDelayTrigger longPause :longPause $delaytime
 						pause
@@ -740,6 +749,7 @@ goSub :checkAvoidedSectors
 			send $output
 			write $GRIDDER_FILE DATE&"    "&$output
 		end
+
 		goto :select_boomsec
 	else
 		send "m"
@@ -1147,7 +1157,6 @@ halt
 	setVar $return_mac ""
 	if ($xport_grid)
 		goSub :assemble_mac
-
 		if ($player~ship_number = $ship1)
 			setVar $xport_ship $ship2
 		else
@@ -1780,6 +1789,12 @@ return
 		
 			if ($scanAnom = "Yes")
 				setVar $nAnom[$deni] 1
+				getSectorParameter $scanSector "LIMPSEC"  $isLimped
+				if ($isLimped = FALSE) or ($isLimped = "")
+					#setSectorParameter $scanSector "ENEMYLIMP" TRUE
+				end
+			else
+				setVar $nAnom[$deni] 0
 			end
 
 			if (($secDensity = 0) or ($secDensity = 100) or  ($secDensity = 5) or ($secDensity = 105)) and ($nAnom[$deni] = 0)
@@ -1810,7 +1825,7 @@ return
 	return
 
 
-
+ 
 halt
 
 #INCLUDES:
@@ -1821,6 +1836,7 @@ include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\planet\getplanetinfo\planet"
 include "source\bot_includes\player\findjumpsector\player"
 include "source\bot_includes\combat\holoscan\combat"
+include "source\bot_includes\combat\holokill\combat"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\combat\init\combat"
 
