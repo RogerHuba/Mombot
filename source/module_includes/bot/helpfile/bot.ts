@@ -273,7 +273,7 @@ end
 				setvar $user_command_line $command
 				while ($i <= $fields)
 					trim $fields[$i][2]
-					if ((($fields[$i][1] <> "number") and ($fields[$i][2] = "0")) or (($fields[$i][1] = "string") and ($fields[$i][2] = "")))
+					if ((($fields[$i][2] = "0")) or (($fields[$i][1] = "string") and ($fields[$i][2] = "")))
 						#skip
 					else
 						if ($fields[$i][1] = "boolean")
