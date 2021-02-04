@@ -153,13 +153,14 @@ end
 									trim $option 
 									getwordpos $help[$i] $pos "}"
 									cuttext $help[$i] $help[$i] $pos 9999
+									replacetext $help[$i] "{" ""
+									replacetext $help[$i] "}" ""
+									replacetext $help[$i] "-" ""
+									trim $help[$i]
 
 									setvar $j 1 
 									while ($j <= $field_count)
 										setvar $foundOption false
-										replacetext $fields[$j] "{" ""
-										replacetext $fields[$j] "}" ""
-										replacetext $fields[$j] "-" ""
 										getwordpos $fields[$j] $pos "|"
 										if ($pos > 0)
 											splitText $fields[$j] $options "|"
