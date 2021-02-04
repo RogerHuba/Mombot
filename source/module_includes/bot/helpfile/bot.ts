@@ -136,7 +136,7 @@ end
 									end
 									setvar $fields[$field_count] $field_name
 									setvar $fields[$field_count][1] $field_type
-									echo "adding field: [" $fields[$field_count] "]*"
+									echo "adding field: [" $fields[$field_count] "] with value of [" $fields[$field_count][2] "]*"
 									add $fields 1
 									########################
 									# grab the next option #
@@ -249,7 +249,7 @@ end
 					if ($fields[$i][1] = "string")
 						setvar $displayValue $fields[$i][2]
 						if ($displayValue = "")
-							setvar $displayValue "Empty"
+							setvar $displayValue "Not defined"
 						end
 					end
 					if ($fields[$i][1] = "number")
