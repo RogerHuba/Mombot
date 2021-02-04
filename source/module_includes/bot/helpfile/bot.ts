@@ -190,7 +190,7 @@ end
 				setvar $i 1
 				addMenu "" "MENUSYSTEM" $command&" Settings" "." "" "Main" FALSE
 				while ($i <= $fields)
-					addMenu "MENUSYSTEM" $field[$i] $field[$i] $i ":"&$command&$i "" FALSE
+					addMenu "MENUSYSTEM" $fields[$i] $fields[$i] $i ":"&$command&$i "" FALSE
 					
 					add $i 1
 				end
