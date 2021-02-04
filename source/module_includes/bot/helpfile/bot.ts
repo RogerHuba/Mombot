@@ -234,7 +234,26 @@ end
 				setvar $menu_system_keys[29] "u"
 				setvar $menu_system_keys[30] "v"
 				while ($i <= $fields)
-					addMenu "MENUSYSTEM" $fields[$i] $fields[$i]&" ("&$fields[$i][3]&")" $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
+					if ($fields[$i][1] = "boolean")
+						if ($fields[$i][2] = true)
+							setvar $displayValue "Yes"
+						else
+							setvar $displayValue "No"
+						end
+						addMenu "MENUSYSTEM" $fields[$i] $fields[$i][3]&" : "&$displayValue $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
+					end
+					if ($fields[$i][1] = "multi")
+						setvar $displayValue $fields[$i][2]
+						addMenu "MENUSYSTEM" $fields[$i] $fields[$i][3]&" : "&$displayValue $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
+					end
+					if ($fields[$i][1] = "string")
+						setvar $displayValue $fields[$i][2]
+						addMenu "MENUSYSTEM" $fields[$i] $fields[$i][3]&" : "&$displayValue $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
+					end
+					if ($fields[$i][1] = "number")
+						setvar $displayValue $fields[$i][2]
+						addMenu "MENUSYSTEM" $fields[$i] $fields[$i][3]&" : "&$displayValue $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
+					end
 					:menu_creation
 					add $i 1
 				end
