@@ -233,6 +233,24 @@ end
 				setvar $menu_system_keys[28] "t"
 				setvar $menu_system_keys[29] "u"
 				setvar $menu_system_keys[30] "v"
+
+				if ($fields[$i][1] = "boolean")
+					if ($fields[$i][2] = true)
+						setvar $displayValue "Yes"
+					else
+						setvar $displayValue "No"
+					end
+				end
+				if ($fields[$i][1] = "multi")
+					setvar $displayValue $fields[$i][2]
+				end
+				if ($fields[$i][1] = "string")
+					setvar $displayValue $fields[$i][2]
+				end
+				if ($fields[$i][1] = "number")
+					setvar $displayValue $fields[$i][2]
+				end
+
 				while ($i <= $fields)
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_14&$fields[$i]&ANSI_2&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					setMenuValue $fields[$i] $displayValue
@@ -347,14 +365,282 @@ return
 	setMenuValue $fields[$field_index] $displayValue
 goto :menu_creation
 
+
+:multiField1
+	setvar $field_index 1
+	goto :multiField
+:multiField2
+	setvar $field_index 2
+	goto :multiField
+:multiField3
+	setvar $field_index 3
+	goto :multiField
+:multiField4
+	setvar $field_index 4
+	goto :multiField
+:multiField5
+	setvar $field_index 5
+	goto :multiField
+:multiField6
+	setvar $field_index 6
+	goto :multiField
+:multiField7
+	setvar $field_index 7
+	goto :multiField
+:multiField8
+	setvar $field_index 8
+	goto :multiField
+:multiField9
+	setvar $field_index 9
+	goto :multiField
+:multiField10
+	setvar $field_index 10
+	goto :multiField
+:multiField11
+	setvar $field_index 11
+	goto :multiField
+:multiField12
+	setvar $field_index 12
+	goto :multiField
+:multiField13
+	setvar $field_index 13
+	goto :multiField
+:multiField14
+	setvar $field_index 14
+	goto :multiField
+:multiField15
+	setvar $field_index 15
+	goto :multiField
+:multiField16
+	setvar $field_index 16
+	goto :multiField
+:multiField17
+	setvar $field_index 17
+	goto :multiField
+:multiField18
+	setvar $field_index 18
+	goto :multiField
+:multiField19
+	setvar $field_index 19
+	goto :multiField
+:multiField20
+	setvar $field_index 20
+	goto :multiField
+:multiField21
+	setvar $field_index 21
+	goto :multiField
+:multiField22
+	setvar $field_index 22
+	goto :multiField
+:multiField23
+	setvar $field_index 23
+	goto :multiField
+:multiField24
+	setvar $field_index 24
+	goto :multiField
+:multiField25
+	setvar $field_index 25
+	goto :multiField
+:multiField26
+	setvar $field_index 26
+	goto :multiField
+:multiField27
+	setvar $field_index 27
+	goto :multiField
+:multiField28
+	setvar $field_index 28
+	goto :multiField
+:multiField29
+	setvar $field_index 29
+	goto :multiField
+:multiField30
+	setvar $field_index 30
 :multiField
 
 goto :menu_creation
 
+:stringField1
+	setvar $field_index 1
+	goto :stringField
+:stringField2
+	setvar $field_index 2
+	goto :stringField
+:stringField3
+	setvar $field_index 3
+	goto :stringField
+:stringField4
+	setvar $field_index 4
+	goto :stringField
+:stringField5
+	setvar $field_index 5
+	goto :stringField
+:stringField6
+	setvar $field_index 6
+	goto :stringField
+:stringField7
+	setvar $field_index 7
+	goto :stringField
+:stringField8
+	setvar $field_index 8
+	goto :stringField
+:stringField9
+	setvar $field_index 9
+	goto :stringField
+:stringField10
+	setvar $field_index 10
+	goto :stringField
+:stringField11
+	setvar $field_index 11
+	goto :stringField
+:stringField12
+	setvar $field_index 12
+	goto :stringField
+:stringField13
+	setvar $field_index 13
+	goto :stringField
+:stringField14
+	setvar $field_index 14
+	goto :stringField
+:stringField15
+	setvar $field_index 15
+	goto :stringField
+:stringField16
+	setvar $field_index 16
+	goto :stringField
+:stringField17
+	setvar $field_index 17
+	goto :stringField
+:stringField18
+	setvar $field_index 18
+	goto :stringField
+:stringField19
+	setvar $field_index 19
+	goto :stringField
+:stringField20
+	setvar $field_index 20
+	goto :stringField
+:stringField21
+	setvar $field_index 21
+	goto :stringField
+:stringField22
+	setvar $field_index 22
+	goto :stringField
+:stringField23
+	setvar $field_index 23
+	goto :stringField
+:stringField24
+	setvar $field_index 24
+	goto :stringField
+:stringField25
+	setvar $field_index 25
+	goto :stringField
+:stringField26
+	setvar $field_index 26
+	goto :stringField
+:stringField27
+	setvar $field_index 27
+	goto :stringField
+:stringField28
+	setvar $field_index 28
+	goto :stringField
+:stringField29
+	setvar $field_index 29
+	goto :stringField
+:stringField30
+	setvar $field_index 30
 :stringField
 
 goto :menu_creation
 
+:numberField1
+	setvar $field_index 1
+	goto :numberField
+:numberField2
+	setvar $field_index 2
+	goto :numberField
+:numberField3
+	setvar $field_index 3
+	goto :numberField
+:numberField4
+	setvar $field_index 4
+	goto :numberField
+:numberField5
+	setvar $field_index 5
+	goto :numberField
+:numberField6
+	setvar $field_index 6
+	goto :numberField
+:numberField7
+	setvar $field_index 7
+	goto :numberField
+:numberField8
+	setvar $field_index 8
+	goto :numberField
+:numberField9
+	setvar $field_index 9
+	goto :numberField
+:numberField10
+	setvar $field_index 10
+	goto :numberField
+:numberField11
+	setvar $field_index 11
+	goto :numberField
+:numberField12
+	setvar $field_index 12
+	goto :numberField
+:numberField13
+	setvar $field_index 13
+	goto :numberField
+:numberField14
+	setvar $field_index 14
+	goto :numberField
+:numberField15
+	setvar $field_index 15
+	goto :numberField
+:numberField16
+	setvar $field_index 16
+	goto :numberField
+:numberField17
+	setvar $field_index 17
+	goto :numberField
+:numberField18
+	setvar $field_index 18
+	goto :numberField
+:numberField19
+	setvar $field_index 19
+	goto :numberField
+:numberField20
+	setvar $field_index 20
+	goto :numberField
+:numberField21
+	setvar $field_index 21
+	goto :numberField
+:numberField22
+	setvar $field_index 22
+	goto :numberField
+:numberField23
+	setvar $field_index 23
+	goto :numberField
+:numberField24
+	setvar $field_index 24
+	goto :numberField
+:numberField25
+	setvar $field_index 25
+	goto :numberField
+:numberField26
+	setvar $field_index 26
+	goto :numberField
+:numberField27
+	setvar $field_index 27
+	goto :numberField
+:numberField28
+	setvar $field_index 28
+	goto :numberField
+:numberField29
+	setvar $field_index 29
+	goto :numberField
+:numberField30
+	setvar $field_index 30
 :numberField
 
 goto :menu_creation
