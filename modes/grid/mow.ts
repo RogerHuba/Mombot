@@ -25,6 +25,11 @@
 	if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
 		goto :wait_for_command
 	end
+	getwordpos $bot~parm1 $pos "destination:"
+	if ($pos > 0)
+		replacetext $bot~parm1 "destination:" ""
+	end
+	if ($bot~parm1)
 	if ($bot~parm1 = "me")
 		if ($bot~command_caller = "self")
 			setVar $SWITCHBOARD~message "I don't think you need to mow to yourself.*"
