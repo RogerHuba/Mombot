@@ -265,7 +265,7 @@ end
 				:endMenuAndGo
 				setvar $i 1
 				setvar $parm_count 0 
-				setvar $user_command_line $command&" "
+				setvar $user_command_line $command
 				while ($i <= $fields)
 					trim $fields[$i][2]
 					if ((($fields[$i][1] <> "number") and ($fields[$i][2] = "0")) or (($fields[$i][1] = "string") and ($fields[$i][2] = "")))
@@ -292,7 +292,7 @@ end
 					end
 					add $i 1
 				end
-				echo "Here is the command:" $user_command_line "*"
+				echo "Sending this command to the bot:" $user_command_line "*"
 			end
 return
 
