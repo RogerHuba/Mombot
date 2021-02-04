@@ -235,7 +235,7 @@ end
 				setvar $menu_system_keys[30] "v"
 				while ($i <= $fields)
 					addMenu "MENUSYSTEM" $fields[$i] $fields[$i]&" ("&$fields[$i][3]&")" $menu_system_keys[$i] ":"&$fields[$i][1]&"Field" $fields[$i][3] FALSE
-					echo "field type for " $fields[$i] " is [" $fields[$i][1] "]*"
+					:menu_creation
 					add $i 1
 				end
 				openMenu "MENUSYSTEM" true
@@ -244,20 +244,21 @@ end
 return
 
 :booleanField
-	setvar $booleanCheck $fields[$i][2]
-return
+	echo "boolean switch is:"&$fields[$i][2]&"*"
+	setvar $fields[$i][2] !$fields[$i][2]
+goto :menu_creation
 
 :multiField
 
-return
+goto :menu_creation
 
 :stringField
 
-return
+goto :menu_creation
 
 :numberField
 
-return
+goto :menu_creation
 
 include "source\module_includes\bot\displayhelp\bot"
 include "source\bot_includes\switchboard"
