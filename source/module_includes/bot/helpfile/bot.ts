@@ -248,6 +248,9 @@ end
 					end
 					if ($fields[$i][1] = "string")
 						setvar $displayValue $fields[$i][2]
+						if ($displayValue = "")
+							setvar $displayValue "Empty"
+						end
 					end
 					if ($fields[$i][1] = "number")
 						setvar $displayValue $fields[$i][2]
