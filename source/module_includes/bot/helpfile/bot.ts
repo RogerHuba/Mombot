@@ -298,6 +298,7 @@ end
 					add $i 1
 				end
 				echo "Sending this command to the bot:" $user_command_line "*"
+				echo "Parameters:" $parm1 $parm2 $parm3 $parm4 $parm5 $parm6 $parm7 $parm8 "*"
 			end
 return
 
