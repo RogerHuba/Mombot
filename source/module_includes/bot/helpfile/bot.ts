@@ -297,6 +297,16 @@ end
 					end
 					add $i 1
 				end
+				pause
+				savevar $user_command_line
+				savevar $parm1
+				savevar $parm2
+				savevar $parm3
+				savevar $parm4
+				savevar $parm5
+				savevar $parm6
+				savevar $parm7
+				savevar $parm8
 				echo "Sending this command to the bot:" $user_command_line "*"
 				echo "Parameters:" $parm1 $parm2 $parm3 $parm4 $parm5 $parm6 $parm7 $parm8 "*"
 			end
