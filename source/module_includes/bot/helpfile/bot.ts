@@ -293,7 +293,30 @@ end
 						end
 						if ($parm_count <= 8)
 							add $parm_count 1
-							setvar $("parm"&$parm_count) $parm_value
+							if ($parm_count = 1)
+								setvar $parm1 $parm_value
+							end
+							if ($parm_count = 2)
+								setvar $parm2 $parm_value
+							end
+							if ($parm_count = 3)
+								setvar $parm3 $parm_value
+							end
+							if ($parm_count = 4)
+								setvar $parm4 $parm_value
+							end
+							if ($parm_count = 5)
+								setvar $parm5 $parm_value
+							end
+							if ($parm_count = 6)
+								setvar $parm6 $parm_value
+							end
+							if ($parm_count = 7)
+								setvar $parm7 $parm_value
+							end
+							if ($parm_count = 8)
+								setvar $parm8 $parm_value
+							end
 						end
 					end
 					add $i 1
@@ -309,7 +332,6 @@ end
 				savevar $parm8
 				echo "Sending this command to the bot:" $user_command_line "*"
 				echo "Parameters:" $parm1 $parm2 $parm3 $parm4 $parm5 $parm6 $parm7 $parm8 "*"
-				pause
 			end
 return
 
