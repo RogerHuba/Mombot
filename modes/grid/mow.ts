@@ -19,7 +19,7 @@
 	setVar $BOT~help[13]  $BOT~tab&" {i1/i2/i3} - Indirect mow, void 1-3 sectors"
 	setVar $BOT~help[14]  $BOT~tab&" {holo} - holo scans every sector - no checks/pauses"
 	
-	gosub :BOT~helpfile
+	#gosub :BOT~helpfile
 
 
 	if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
@@ -521,7 +521,7 @@ return
 				if ($warp <> ">")
 					stripText $warp "("
 					stripText $warp ")"
-			echo $warp "*"
+					echo $warp "*"
 					if (($warp > 10) and ($y > 1))
 						if ($warp <> $PLAYER~destination)
 							send "cv" $warp "*q"
