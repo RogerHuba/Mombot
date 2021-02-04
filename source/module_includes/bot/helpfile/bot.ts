@@ -228,7 +228,7 @@ end
 				setvar $menu_system_keys[29] "u"
 				setvar $menu_system_keys[30] "v"
 				while ($i <= $fields)
-					addMenu "MENUSYSTEM" $fields[$i] $fields[$i][3] $menu_system_keys[$i] ":"&$command&$i $fields[$i][3] FALSE
+					addMenu "MENUSYSTEM" $fields[$i] $fields[$i]&" ("&$fields[$i][3]&")" $menu_system_keys[$i] ":"&$command&$i $fields[$i][3] FALSE
 					
 					add $i 1
 				end
