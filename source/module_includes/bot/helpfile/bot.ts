@@ -132,7 +132,7 @@ end
 									setvar $fields[$field_count][1] $field_type
 									echo "adding field: [" $fields[$field_count] "]*"
 									add $fields 1
-									echo "field count: ["$fields "]*"
+									echo "field count: [" $fields "]*"
 									########################
 									# grab the next option #
 									########################
@@ -195,7 +195,7 @@ end
 
 				setvar $i 1
 				addMenu "" "MENUSYSTEM" $command&" Settings" "." "" "Main" FALSE
-				echo "final field count: ["$fields "]*"
+				echo "final field count: [" $fields "]*"
 				while ($i <= $fields)
 					addMenu "MENUSYSTEM" $fields[$i] $fields[$i][3] $i ":"&$command&$i $fields[$i][3] FALSE
 					
