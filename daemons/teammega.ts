@@ -10,18 +10,21 @@
 	setArray $CURRENT_SHIP $MAX_BOTS
 	setArray $ORIGINAL_SHIP $MAX_BOTS
 
-
+ 
 	setVar $BOT~help[1] $BOT~tab&"Buydown and mega with multiple bots"
 	setVar $BOT~help[2] $BOT~tab&""
-	setVar $BOT~help[3] $BOT~tab&"teammega {minproduct} {stopturns}"
+	setVar $BOT~help[3] $BOT~tab&" teammega {minproduct} {stopturns} {half}"
 	setVar $BOT~help[4] $BOT~tab&""
-	setVar $BOT~help[5] $BOT~tab&"minproduct - default: 30000 100"
-	setVar $BOT~help[6] $BOT~tab&""
-	setVar $BOT~help[7] $BOT~tab&"Bots Buying: callin megabuy1 megabuy2"
-	setVar $BOT~help[8] $BOT~tab&"Bots Robbing: callin megarob1"
-	setVar $BOT~help[9] $BOT~tab&""
-	setVar $BOT~help[10] $BOT~tab&"Buying bots can be any alignment"
-	gosub :bot~helpfile
+	setVar $BOT~help[5] $BOT~tab&" minproduct - Port Min Prod Req (def:30000)"
+	setVar $BOT~help[6] $BOT~tab&" stopturns  - Turns to stop at (def: 100)"
+	setVar $BOT~help[7] $BOT~tab&" half       - Sells only half to port."
+	setVar $BOT~help[8] $BOT~tab&" swaprob    - Allow reds to buy down and"
+	setVar $BOT~help[9] $BOT~tab&"              swap ship. Soon, maybe?"
+	setVar $BOT~help[10] $BOT~tab&"Bots Buying: callin megabuy1 megabuy2"
+	setVar $BOT~help[11] $BOT~tab&"Bots Robbing: callin megarob1"
+	setVar $BOT~help[12] $BOT~tab&"Buying bots can be any alignment"
+	
+		gosub :bot~helpfile
 
 
 	
@@ -58,6 +61,14 @@
 	else
 		setvar $stopTurns 100
 	end
+
+	getWordPos $bot~user_command_line $pos "half"
+	if ($pos > 0)
+		setVar $sellHalf TRUE
+	else
+		setVar $sellHalf FALSE
+	end
+	
 	setVar $SWITCHBOARD~MESSAGE "Using ports with minimum " & $minimumProduct & " and stopping at roughly " & $stopTurns & " turns.*"
 	gosub :SWITCHBOARD~SWITCHBOARD
 
@@ -470,7 +481,11 @@ return
 
 :selloffproduct
 	:startSell
-	send "'"&$BOTS[$current_trader][3]&" neg o e*"
+	if ($sellHalf = TRUE)
+		send "'"&$BOTS[$current_trader][3]&" neg o e half*"
+	else
+		send "'"&$BOTS[$current_trader][3]&" neg o e*"
+	end
 	setTextLineTrigger 1 :good "] {"&$BOTS[$current_trader][3]&"} - Done with port"
 	setTextLineTrigger 2 :bad  "] {"&$BOTS[$current_trader][3]&"} - Nothing to sell"
 	pause
@@ -481,7 +496,7 @@ return
 	waitfor "Commerce report for"
 	waitfor "Equipment"
 	getWord CURRENTLINE $eonhand 3
-	if ($eonhand > 5000)
+	if ($eonhand > 20000)
 		setVar $SWITCHBOARD~MESSAGE "Neg fail detected! trying again*"
 		gosub :SWITCHBOARD~SWITCHBOARD
 		goto :startSell
