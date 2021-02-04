@@ -570,7 +570,11 @@ goto :menu_creation
 :stringField
 
 	getInput $displayValue "Please enter a value for "&$fields[$field_index]&"."
-	setvar $fields[$field_index][2] $displayValue
+	if ($displayValue = "")
+		setvar $fields[$field_index][2] "Not defined"
+	else
+		setvar $fields[$field_index][2] $displayValue
+	end
 	setMenuValue $fields[$field_index] $displayValue
 
 goto :menu_creation
