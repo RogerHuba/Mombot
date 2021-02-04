@@ -250,7 +250,7 @@ end
 					if ($fields[$i][1] = "number")
 						setvar $displayValue $fields[$i][2]
 					end
-					addMenu "MENUSYSTEM" $fields[$i] ANSI_3&$fields[$i]&ANSI_2&" : "&ANSI_14&$displayValue $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
+					addMenu "MENUSYSTEM" $fields[$i] ANSI_3&$fields[$i]&ANSI_2&" : "&ANSI_14&$displayValue $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i "" FALSE
 					setMenuValue $fields[$i] $fields[$i][2]
 					setMenuHelp $fields[$i] $fields[$i][3]
 					:menu_creation
