@@ -240,20 +240,17 @@ end
 						else
 							setvar $displayValue "No"
 						end
-						addMenu "MENUSYSTEM" $fields[$i] $fields[$i][3]&" : "&$displayValue $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					end
 					if ($fields[$i][1] = "multi")
 						setvar $displayValue $fields[$i][2]
-						addMenu "MENUSYSTEM" $fields[$i] $fields[$i][3]&" : "&$displayValue $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					end
 					if ($fields[$i][1] = "string")
 						setvar $displayValue $fields[$i][2]
-						addMenu "MENUSYSTEM" $fields[$i] $fields[$i][3]&" : "&$displayValue $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					end
 					if ($fields[$i][1] = "number")
 						setvar $displayValue $fields[$i][2]
-						addMenu "MENUSYSTEM" $fields[$i] $fields[$i][3]&" : "&$displayValue $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					end
+					addMenu "MENUSYSTEM" $fields[$i] ANSI_3&$fields[$i][3]&ANSI_2&" : "&ANSI_5&$displayValue $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					:menu_creation
 					add $i 1
 				end
