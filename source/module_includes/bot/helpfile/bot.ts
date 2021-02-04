@@ -255,6 +255,11 @@ end
 					if ($fields[$i][1] = "number")
 						setvar $displayValue $fields[$i][2]
 					end
+					setvar $menu_field_display $fields[$i]
+					getlength $menu_field_display $length
+					if ($length < 50)
+						padleft $menu_field_display (50-$length)
+					end
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_14&$fields[$i]&ANSI_2&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					setMenuValue $fields[$i] $displayValue
 					setMenuHelp $fields[$i] $fields[$i][3]
