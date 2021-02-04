@@ -670,7 +670,9 @@ goSub :checkAvoidedSectors
 			send "'UGrid:Hitting Limp*"
 			setVar $imlimped TRUE
 		end
-		
+		if (($mineCount > 0) AND (($mineOwner <> "yours") AND ($mineOwner <> "belong to your Corp")))
+
+		end
 		send "m"
 		gosub :return_triggers
 		if (($distanceback = 1) and ($retreat = true))
@@ -705,6 +707,7 @@ goSub :checkAvoidedSectors
 						end
 					end
 					if ($xSlow = true)
+						send "cr" $boomsec "*q"
 						getRnd $delaytime 3000 6000
 						setDelayTrigger longPause :longPause $delaytime
 						pause
@@ -1786,6 +1789,12 @@ return
 		
 			if ($scanAnom = "Yes")
 				setVar $nAnom[$deni] 1
+				getSectorParameter $scanSector "LIMPSEC"  $isLimped
+				if ($isLimped = FALSE) or ($isLimped = "")
+					#setSectorParameter $scanSector "ENEMYLIMP" TRUE
+				end
+			else
+				setVar $nAnom[$deni] 0
 			end
 
 			if (($secDensity = 0) or ($secDensity = 100) or  ($secDensity = 5) or ($secDensity = 105)) and ($nAnom[$deni] = 0)
