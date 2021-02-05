@@ -247,9 +247,9 @@ end
 				while ($i <= $fields)
 					if ($fields[$i][1] = "boolean")
 						if ($fields[$i][2] = true)
-							setvar $displayValue "Yes"
+							setvar $displayValue "On"
 						else
-							setvar $displayValue "No"
+							setvar $displayValue "Off"
 						end
 					end
 					if ($fields[$i][1] = "multi")
