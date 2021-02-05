@@ -6,21 +6,20 @@
 	loadVar $MAP~stardock
 	loadvar $bot~subspace
 
-	setVar $BOT~help[1]   $BOT~tab&"wander {auto|file|param} {share} {nearest}"
+	setVar $BOT~help[1]   $BOT~tab&"wander {file:pathtofile} {param:sectorparam} {share} {nearest}"
 	setVar $BOT~help[2]   $BOT~tab&"     Warps around the universe, attempting to be turn efficient."
 	setVar $BOT~help[3]   $BOT~tab&"     Turn efficiency goes away when it's an unlimited turn game."
-	setVar $BOT~help[4]   $BOT~tab&"     Requires twarp.                "
+	setVar $BOT~help[4]   $BOT~tab&"     Requires twarp. By default will auto calculate sectors.   "
 	setVar $BOT~help[5]   $BOT~tab&"                     "
-	setVar $BOT~help[6]   $BOT~tab&"           {auto} - automatically find grid sectors"
-	setVar $BOT~help[7]   $BOT~tab&"           {file} - path to target file"
-	setVar $BOT~help[8]   $BOT~tab&"          {param} - Will target sector marked with sector param."
-	setVar $BOT~help[9]   $BOT~tab&"          {share} - reports figged sectors over subspace"
-	setVar $BOT~help[10]  $BOT~tab&"        {nearest} - does nearest fig calc when possible"
-	setVar $BOT~help[11]  $BOT~tab&"                     "
-	setVar $BOT~help[12]  $BOT~tab&"                    Using UNFIGGED as param will target all"
-	setVar $BOT~help[13]  $BOT~tab&"                    sectors where FIGSEC is not true. "
-	setVar $BOT~help[14]  $BOT~tab&"          "
-	setVar $BOT~help[15]  $BOT~tab&"          Planet avoid options can be set in the bot menu"
+	setVar $BOT~help[6]   $BOT~tab&"  {file:pathtofile} - Target sectors listed in file"
+	setVar $BOT~help[7]   $BOT~tab&"{param:sectorparam} - Target sectors marked with sector param."
+	setVar $BOT~help[8]   $BOT~tab&"            {share} - Reports figged sectors over subspace"
+	setVar $BOT~help[9]   $BOT~tab&"          {nearest} - Does nearest fig calc when possible"
+	setVar $BOT~help[10]  $BOT~tab&"                     "
+	setVar $BOT~help[11]  $BOT~tab&"                    Using UNFIGGED as param will target all"
+	setVar $BOT~help[12]  $BOT~tab&"                    sectors where FIGSEC is not true. "
+	setVar $BOT~help[13]  $BOT~tab&"          "
+	setVar $BOT~help[14]  $BOT~tab&"          Planet avoid options can be set in the bot menu"
 	
 	gosub :bot~helpfile
 
@@ -114,25 +113,54 @@
 		setvar $nearest false
 	end
 
+	getWordPos " "&$bot~user_command_line&" " $pos " file:"
+	if ($pos > 0)
+		setvar $restock~refurb_in_sector true
+		getText $bot~user_command_line&" " $file "file:" " "
+		if ($file = 0)
+			setVar $SWITCHBOARD~message "File path is not valid.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " param:"
+	if ($pos > 0)
+		setvar $restock~refurb_in_sector true
+		getText $bot~user_command_line&" " $param "param:" " "
+		if ($param = 0)
+			setVar $SWITCHBOARD~message "Sector parameter entered is not valid.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
 
 	getWord $bot~user_command_line $bot~parm1 1 "EMPTY"
-	if (($bot~parm1 = "auto") OR ($bot~parm1 = "EMPTY"))
+	if (($file = "0") and ($param = "0"))
 	
 	else
 		setVar $gridTargets TRUE
 		setVar $target $bot~parm1
-		uppercase $target
-		fileexists $test $target
-		if ($test = FALSE)
+		uppercase $param
+		if ($file <> "0")
+			fileexists $test $file
+			if ($test = true)
+				readToArray $target $targetSectors
+			else
+				setVar $SWITCHBOARD~message " Grid target file: ["&$file&"] does not exist, shutting down..*"
+				gosub :SWITCHBOARD~switchboard
+				halt			
+			end
+		else
 			setvar $i 1
 			setvar $targetSectors 0 
 			setarray $targetSectors SECTORS
-			if ($target = "UNFIGGED")
+			if ($param = "UNFIGGED")
 				setvar $unfigged true
-				setvar $target "FIGSEC"
+				setvar $param "FIGSEC"
 			end
 			while ($i <= SECTORS) 
-				getSectorParameter $i $target $isTarget
+				getSectorParameter $i $param $isTarget
 				if ($unfigged = true)
 					if ($isTarget <> true)
 						add $targetSectors 1
@@ -147,12 +175,10 @@
 				add $i 1
 			end
 			if ($targetSectors <= 0)
-				setVar $SWITCHBOARD~message " Grid target file or sector parameter: ["&$target&"] does not exist, shutting down..*"
+				setVar $SWITCHBOARD~message " Sector parameter: ["&$param&"] does not exist, shutting down..*"
 				gosub :SWITCHBOARD~switchboard
 				halt
-			end
-		else
-			readToArray $target $targetSectors
+			end		
 		end
 	end
 
