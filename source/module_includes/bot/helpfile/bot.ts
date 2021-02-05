@@ -198,8 +198,11 @@ end
 					add $i 1
 				end
 
+				:show_menu_again
 				setvar $i 1
 				addMenu "" "MENUSYSTEM" "     :::"&$command&" settings::" "." "" "Main" FALSE
+				setMenuOptions "MENUSYSTEM" "?"
+				
 				setarray $menu_system_keys 30
 				setvar $menu_system_keys 30
 				setvar $menu_system_keys[1] 1
@@ -236,6 +239,7 @@ end
 				setvar $menu_field_display "Start!"
 				padright $menu_field_display 20
 				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
+				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "?" :show_menu_again  "" FALSE
 
 				while ($i <= $fields)
 					if ($fields[$i][1] = "boolean")
