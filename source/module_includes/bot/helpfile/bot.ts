@@ -124,6 +124,11 @@ end
 												setvar $field_type "number"
 												setvar $fields[$field_count][2] 0
 											else
+												getwordpos $option $pos #34
+												if ($pos > 0)
+													# mark as double quoted string #
+													setvar $fields[$field_count][5] true
+												end
 												setvar $field_type "string"
 												setvar $fields[$field_count][2] ""
 											end
@@ -324,13 +329,19 @@ end
 					else
 						if ($fields[$i][1] = "boolean")
 							if ($fields[$i][2] = true)
-								setvar $user_command_line $user_command_line&" "&$fields[$i]						
+								setvar $user_command_line $user_command_line&" "&$fields[$i]
 								setvar $parm_value $fields[$i]
 							end
 						end
 						if (($fields[$i][1] = "string") or ($fields[$i][1] = "number"))
-							setvar $user_command_line $user_command_line&" "&$fields[$i]&":"&$fields[$i][2]
-							setvar $parm_value $fields[$i]&":"&$fields[$i][2]
+							if ($fields[$i][5] = true)
+								# marked as double quoted string #
+								setvar $string_field #34&$fields[$i][2]&#34
+							else
+								setvar $string_field $fields[$i]&":"&$fields[$i][2]
+							end
+							setvar $user_command_line $user_command_line&" "&$string_field
+							setvar $parm_value $string_field
 						end
 						if ($fields[$i][1] = "multi")
 							setvar $user_command_line $user_command_line&" "&$fields[$i][2]
