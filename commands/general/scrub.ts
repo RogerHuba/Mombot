@@ -1,7 +1,12 @@
 gosub :BOT~loadVars
-if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
-	goto :wait_for_command
-end
+
+	setvar $bot~command "scrub"
+	setVar $BOT~help[1]  $BOT~tab&"scrub {seek} "
+	setVar $BOT~help[2]  $BOT~tab&"     "
+	setVar $BOT~help[3]  $BOT~tab&"   Gets rid of limpets off of your hull"
+	setVar $BOT~help[4]  $BOT~tab&"     "
+	setVar $BOT~help[5]  $BOT~tab&"   {seek} - twarp to class 9 or 0 port and back"
+	gosub :bot~helpfile
 
 :scrub
 	setVar $message ""
@@ -95,10 +100,6 @@ end
 		end
 
 :wait_for_command
-	setvar $bot~command "scrub"
-	setVar $BOT~help[1]  $BOT~tab&"scrub - gets rid of limpets off of your hull "
-	setVar $BOT~help[2]  $BOT~tab&"    {seek} - attempts to find class 9 or 0 port"
-	gosub :bot~helpfile
 halt
 
 
