@@ -201,7 +201,7 @@ end
 				:show_menu_again
 				setvar $i 1
 				addMenu "" "MENUSYSTEM" "     :::"&$command&" settings::" "." "" "Main" FALSE
-				setMenuOptions "MENUSYSTEM" "?"
+				setMenuOptions "MENUSYSTEM" false true false
 				
 				setarray $menu_system_keys 30
 				setvar $menu_system_keys 30
