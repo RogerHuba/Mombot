@@ -338,7 +338,7 @@ end
 								# marked as double quoted string #
 								setvar $string_field #34&$fields[$i][2]&#34
 							else
-								splittext $fields[$i] ":" $inputs
+								splittext $fields[$i] $inputs ":"
 								setvar $string_field $inputs[1]&":"&$fields[$i][2]
 							end
 							setvar $user_command_line $user_command_line&" "&$string_field
