@@ -1,9 +1,13 @@
 gosub :BOT~loadVars
-if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
-	goto :wait_for_command
-end
+	setvar $bot~command "refurb"
 
-:scrub
+	setVar $BOT~help[1]  $BOT~tab&"refurb {seek} "
+	setVar $BOT~help[2]  $BOT~tab&"     "
+	setVar $BOT~help[3]  $BOT~tab&"   Auto buys fighters and shields"
+	setVar $BOT~help[4]  $BOT~tab&"     "
+	setVar $BOT~help[5]  $BOT~tab&"   {seek} - twarp to class 9 or 0 port and back"
+	gosub :bot~helpfile
+
 	setVar $message ""
 	setVar $BOT~validPrompts "Citadel Command"
 	gosub :BOT~checkStartingPrompt
@@ -110,10 +114,6 @@ end
 		end
 
 :wait_for_command
-	setvar $bot~command "refurb"
-	setVar $BOT~help[1]  $BOT~tab&"refurb - Auto buys fighters and shields "
-	setVar $BOT~help[2]  $BOT~tab&"    {seek} - attempts to find class 9 or 0 port"
-	gosub :bot~helpfile
 halt
 
 
