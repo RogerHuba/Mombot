@@ -235,7 +235,7 @@ end
 
 				setvar $menu_field_display "Start!"
 				padright $menu_field_display 20
-				addMenu "MENUSYSTEM" Start ANSI_2&$menu_field_display "Z" :endMenuAndGo  "" FALSE
+				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
 
 				while ($i <= $fields)
 					if ($fields[$i][1] = "boolean")
