@@ -207,8 +207,8 @@ end
 				addMenu "" "MENUSYSTEM" ansi_15&":::  "&ansi_14&"["&ansi_15&"help - "&ansi_6&"+"&ansi_14&"]"&ansi_15&" -=[ "&ansi_6&$command_display&ansi_15&" ]=- "&ansi_14&"["&ansi_15&"refresh - "&ansi_6&"?"&ansi_14&"]"&ansi_15&"  ::" "." "" "Main" FALSE
 				setMenuOptions "MENUSYSTEM" false false false
 				
-				setarray $menu_system_keys 30
-				setvar $menu_system_keys 30
+				setarray $menu_system_keys 33
+				setvar $menu_system_keys 33
 				setvar $menu_system_keys[1] 1
 				setvar $menu_system_keys[2] 2
 				setvar $menu_system_keys[3] 3
@@ -224,21 +224,24 @@ end
 				setvar $menu_system_keys[13] "d"
 				setvar $menu_system_keys[14] "e"
 				setvar $menu_system_keys[15] "f"
-				setvar $menu_system_keys[16] "h"
-				setvar $menu_system_keys[17] "i"
-				setvar $menu_system_keys[18] "j"
-				setvar $menu_system_keys[19] "k"
-				setvar $menu_system_keys[20] "l"
-				setvar $menu_system_keys[21] "m"
-				setvar $menu_system_keys[22] "n"
-				setvar $menu_system_keys[23] "o"
-				setvar $menu_system_keys[24] "p"
-				setvar $menu_system_keys[25] "r"
-				setvar $menu_system_keys[26] "s"
-				setvar $menu_system_keys[27] "t"
-				setvar $menu_system_keys[28] "u"
-				setvar $menu_system_keys[29] "v"
-				setvar $menu_system_keys[30] "w"
+				setvar $menu_system_keys[16] "g"
+				setvar $menu_system_keys[17] "h"
+				setvar $menu_system_keys[18] "i"
+				setvar $menu_system_keys[19] "j"
+				setvar $menu_system_keys[20] "k"
+				setvar $menu_system_keys[21] "l"
+				setvar $menu_system_keys[22] "m"
+				setvar $menu_system_keys[23] "n"
+				setvar $menu_system_keys[24] "o"
+				setvar $menu_system_keys[25] "p"
+				setvar $menu_system_keys[26] "r"
+				setvar $menu_system_keys[27] "s"
+				setvar $menu_system_keys[28] "t"
+				setvar $menu_system_keys[29] "u"
+				setvar $menu_system_keys[30] "v"
+				setvar $menu_system_keys[31] "w"
+				setvar $menu_system_keys[32] "x"
+				setvar $menu_system_keys[33] "y"
 
 				setvar $menu_field_display "Start!"
 				padright $menu_field_display 25
