@@ -133,7 +133,7 @@ gosub :BOT~loadVars
 		else
 			send "b 0* c 0* q q q * "
 		end
-		if ($BOT~parm1 = "seek")
+		if ($seek = true)
 			gosub :PLAYER~quikstats
 			setVar $PLAYER~warpto $back
 			gosub :player~twarp
