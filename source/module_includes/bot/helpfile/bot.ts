@@ -127,7 +127,7 @@ end
 												setvar $fields[$field_count][2] ""
 											end
 											splitText $option $inputs ":"
-											setvar $field_name $inputs[1]
+											setvar $field_name $option
 										else
 											setvar $field_type "boolean"
 											setvar $field_name $option
@@ -183,7 +183,7 @@ end
 												add $k 1
 											end
 										else
-											echo "[" $option "][" $fields[$j] "]*"
+											#echo "[" $option "][" $fields[$j] "]*"
 											if ($option = $fields[$j])
 												setvar $fields[$j][3] $help[$i]
 											end
