@@ -271,7 +271,7 @@ end
 				closeMenu
 				setvar $i 1
 				setvar $parm_count 0 
-				setvar $user_command_line $command
+				setvar $user_command_line ""
 				while ($i <= $fields)
 					trim $fields[$i][2]
 					if ((($fields[$i][2] = "0")) or (($fields[$i][1] = "string") and ($fields[$i][2] = "")))
