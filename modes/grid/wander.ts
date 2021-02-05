@@ -6,7 +6,7 @@
 	loadVar $MAP~stardock
 	loadvar $bot~subspace
 
-	setVar $BOT~help[1]   $BOT~tab&"wander {file|sector param|auto} {share} {nearest}"
+	setVar $BOT~help[1]   $BOT~tab&"wander {auto|file|sector param} {share} {nearest}"
 	setVar $BOT~help[2]   $BOT~tab&"     Warps around the universe, attempting to be turn efficient."
 	setVar $BOT~help[3]   $BOT~tab&"     Turn efficiency goes away when it's an unlimited turn game."
 	setVar $BOT~help[4]   $BOT~tab&"     Requires twarp.                "
@@ -14,11 +14,11 @@
 	setVar $BOT~help[6]   $BOT~tab&"           {auto} - automatically find grid sectors"
 	setVar $BOT~help[7]   $BOT~tab&"           {file} - path to target file"
 	setVar $BOT~help[8]   $BOT~tab&"   {sector param} - Will target sector marked with sector param."
-	setVar $BOT~help[9]   $BOT~tab&"                     "
-	setVar $BOT~help[10]  $BOT~tab&"                    Using UNFIGGED as param will target all"
-	setVar $BOT~help[11]  $BOT~tab&"                    sectors where FIGSEC is not true. "
-	setVar $BOT~help[12]  $BOT~tab&"          {share} - reports figged sectors over subspace"
-	setVar $BOT~help[13]  $BOT~tab&"        {nearest} - does nearest fig calc when possible"
+	setVar $BOT~help[9]   $BOT~tab&"          {share} - reports figged sectors over subspace"
+	setVar $BOT~help[10]  $BOT~tab&"        {nearest} - does nearest fig calc when possible"
+	setVar $BOT~help[11]  $BOT~tab&"                     "
+	setVar $BOT~help[12]  $BOT~tab&"                    Using UNFIGGED as param will target all"
+	setVar $BOT~help[13]  $BOT~tab&"                    sectors where FIGSEC is not true. "
 	setVar $BOT~help[14]  $BOT~tab&"          "
 	setVar $BOT~help[15]  $BOT~tab&"          Planet avoid options can be set in the bot menu"
 	
