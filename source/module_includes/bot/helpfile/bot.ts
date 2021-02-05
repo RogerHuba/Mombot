@@ -243,11 +243,13 @@ end
 				setvar $menu_system_keys[32] "x"
 				setvar $menu_system_keys[33] "y"
 
-				setvar $menu_field_display "Start!"
-				padright $menu_field_display 25
-				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
-
+				setvar $longest 0
+				setvar $i 1
 				while ($i <= $fields)
+					getlength $fields[$i] $length
+					if ($length > $longest)
+						setvar $longest $length
+					end
 					if ($fields[$i][1] = "boolean")
 						if ($fields[$i][2] = true)
 							setvar $displayValue "On"
@@ -284,14 +286,16 @@ end
 						setvar $displayValue $fields[$i][2]
 					end
 					setvar $menu_field_display $fields[$i]
-					getlength $menu_field_display $length
-					padright $menu_field_display 25
+					padright $menu_field_display ($longest+1)
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_11&$menu_field_display&ANSI_14&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					setMenuValue $fields[$i] $displayValue
 					setMenuHelp $fields[$i] $fields[$i][3]
 					:menu_creation
 					add $i 1
 				end
+				setvar $menu_field_display "Start!"
+				padright $menu_field_display ($longest+1)
+				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
 				openMenu "MENUSYSTEM" true
 				:endMenuAndGo
 				closeMenu
