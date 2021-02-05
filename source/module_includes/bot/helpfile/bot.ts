@@ -587,7 +587,10 @@ goto :menu_creation
 				end
 				setvar $currentValue $options[$optionIndex]
 				splitText $fields[$field_index][3] $descriptions "|"
-				setvar $displayValue ansi_14&$descriptions[$optionIndex]
+				setvar $extra "("&$descriptions[$optionIndex]&")"
+				setvar $displayValue ansi_14"Set to "
+				padright $displayValue $field_padding
+				setvar $displayValue $displayValue&$extra
 			end
 			add $k 1
 		end
@@ -694,7 +697,7 @@ goto :menu_creation
 
 
 	if ($displayValue = "")
-		setvar $displayValue "Not defined"
+		setvar $displayValue "Not set"
 	else
 		setvar $displayValue ansi_14&$displayValue
 	end
