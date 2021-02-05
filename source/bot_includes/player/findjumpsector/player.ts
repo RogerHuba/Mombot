@@ -54,6 +54,7 @@
 
 	:TwarpLocked
 	gosub :killfindjumpsectors
+	send " * "
 	setvar $foundSector true
 	return
 
