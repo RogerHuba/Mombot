@@ -280,15 +280,13 @@ end
 								end
 								setvar $currentValue $options[$optionIndex]
 								splitText $fields[$i][3] $descriptions "|"
-								setvar $extra "("&$descriptions[$optionIndex]&")"
-								setvar $displayValue ansi_14&"Set to "
-								padright $displayValue $field_padding
-								setvar $displayValue $displayValue&$extra
 							end
 							add $k 1
 						end
-
-						setvar $displayValue ansi_14&$descriptions[$optionIndex]
+						setvar $extra "("&$descriptions[$optionIndex]&")"
+						setvar $displayValue ansi_14&"Set to "
+						padright $displayValue $field_padding
+						setvar $displayValue $displayValue&$extra
 					end
 					if ($fields[$i][1] = "string")
 						setvar $displayValue $fields[$i][2]
