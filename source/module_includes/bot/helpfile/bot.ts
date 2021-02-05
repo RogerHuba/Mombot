@@ -463,10 +463,10 @@ return
 	setvar $currentValue $fields[$field_index][2]
 	if ($currentValue = false)
 		setvar $currentValue true
-		setvar $displayValue ansi_14&$fields[$field_index][3]
+		setvar $displayValue ansi_14&"On ("&$fields[$field_index][3]&")"
 	else
 		setvar $currentValue false
-		setvar $displayValue "No"
+		setvar $displayValue "Off ("&$fields[$field_index][3]&")""
 	end
 	setvar $fields[$field_index][2] $currentValue
 	setMenuValue $fields[$field_index] $displayValue
@@ -679,7 +679,7 @@ goto :menu_creation
 
 	getInput $displayValue "Please enter a value for "&$fields[$field_index]&"."
 	if ($displayValue = "")
-		setMenuValue $fields[$field_index] "Not defined"
+		setMenuValue $fields[$field_index] "Not defined ("&$fields[$field_index][3]&")"
 	else
 		setMenuValue $fields[$field_index] ansi_14&$displayValue&" ("&$fields[$field_index][3]&")"
 	end
