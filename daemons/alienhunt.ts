@@ -11,7 +11,7 @@
 
 	setVar $BOT~help[1]  $BOT~tab&"alienhunt {corp} {sell} {refuel} {upgrade} {cannon} {return}"
 	setVar $BOT~help[2]  $BOT~tab&"          {passive} {buyfig} {buyshield} {patp} {home} "
-	setVar $BOT~help[3]  $BOT~tab&"          {"&#34&"ship filter"&#34&"}  "
+	setVar $BOT~help[3]  $BOT~tab&"          {"&#34&"ship_filter"&#34&"}  "
 	setVar $BOT~help[4]  $BOT~tab&"           "
 	setVar $BOT~help[5]  $BOT~tab&"Hunts down aliens and captures their ships.  "
 	setVar $BOT~help[6]  $BOT~tab&"Will automatically turn ships and planet personal."
@@ -31,7 +31,7 @@
 	setVar $BOT~help[20] $BOT~tab&"    {buyshield} - Auto buy shields when low.  Withdraws from citadel."
 	setVar $BOT~help[21] $BOT~tab&"         {patp} - When planet is less than 10% of fuel, run patp."
 	setVar $BOT~help[22] $BOT~tab&"         {home} - Move ships to starting sector instead of stardock."
-	setVar $BOT~help[23] $BOT~tab&"{"&#34&"ship filter"&#34&"} - move ships matching this home, stardock for the others"
+	setVar $BOT~help[23] $BOT~tab&"{"&#34&"ship_filter"&#34&"} - move ships matching this home, stardock for the others"
 	gosub :bot~helpfile
  
 	setVar $BOT~script_title "Alien Hunter"
