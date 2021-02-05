@@ -10,7 +10,7 @@ end
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ((CURRENTSECTOR = 1) OR (PORT.CLASS[CURRENTSECTOR] = 0) or (CURRENTSECTOR = $map~rylos) or (CURRENTSECTOR = $map~alpha_centauri))
 		if ($startingLocation = "Citadel")
-			send "q "
+			send "q t*t1* "
 			gosub :PLANET~getPlanetInfo
 			send "q "
 		end
@@ -20,7 +20,7 @@ end
 	else
 		if ($BOT~parm1 = "seek")
 			if ($startingLocation = "Citadel")
-				send "q "
+				send "q tnt"
 				gosub :PLANET~getPlanetInfo
 				send "c "
 			end
