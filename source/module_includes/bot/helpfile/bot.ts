@@ -466,7 +466,7 @@ return
 		setvar $displayValue ansi_14&"On ("&$fields[$field_index][3]&")"
 	else
 		setvar $currentValue false
-		setvar $displayValue "Off ("&$fields[$field_index][3]&")""
+		setvar $displayValue "Off ("&$fields[$field_index][3]&")"
 	end
 	setvar $fields[$field_index][2] $currentValue
 	setMenuValue $fields[$field_index] $displayValue
