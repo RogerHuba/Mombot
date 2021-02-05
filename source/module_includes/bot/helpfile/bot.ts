@@ -253,7 +253,23 @@ end
 						end
 					end
 					if ($fields[$i][1] = "multi")
-						setvar $displayValue $fields[$i][2]
+						splitText $fields[$i] $options "|"
+						setvar $k 1
+						while ($k <= $options)
+							if ($options[$k] = $fields[$i][2])
+								if ($k < $options)
+									setvar $optionIndex ($k+1)
+								else
+									setvar $optionIndex 1
+								end
+								setvar $currentValue $options[$optionIndex]
+								splitText $fields[$i][3] $descriptions "|"
+								setvar $displayValue $descriptions[$optionIndex]
+							end
+							add $k 1
+						end
+
+						setvar $displayValue $descriptions[$optionIndex]
 					end
 					if ($fields[$i][1] = "string")
 						setvar $displayValue $fields[$i][2]
@@ -546,9 +562,10 @@ goto :menu_creation
 					setvar $optionIndex 1
 				end
 				setvar $currentValue $options[$optionIndex]
+				splitText $fields[$field_index][3] $descriptions "|"
+				setvar $displayValue $descriptions[$optionIndex]
 			end
-			splitText $fields[$field_index][3] $descriptions "|"
-			setvar $displayValue $descriptions[$optionIndex]
+			add $k 1
 		end
 
 		setvar $fields[$field_index][2] $currentValue
