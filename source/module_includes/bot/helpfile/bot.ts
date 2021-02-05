@@ -261,9 +261,9 @@ end
 					setvar $extra "("&$fields[$i][3]&")"
 					if ($fields[$i][1] = "boolean")					
 						if ($fields[$i][2] = true)
-							setvar $displayValue "On"
+							setvar $displayValue ansi_14&"On"
 						else
-							setvar $displayValue "Off"
+							setvar $displayValue ansi_15&"Off"
 						end
 						padright $displayValue $field_padding
 						setvar $displayValue $displayValue&$extra
@@ -280,23 +280,23 @@ end
 								end
 								setvar $currentValue $options[$optionIndex]
 								splitText $fields[$i][3] $descriptions "|"
-								setvar $displayValue ansi_14&$descriptions[$optionIndex]
+								setvar $displayValue $descriptions[$optionIndex]
 							end
 							add $k 1
 						end
 
-						setvar $displayValue $descriptions[$optionIndex]
+						setvar $displayValue ansi_14&$descriptions[$optionIndex]
 					end
 					if ($fields[$i][1] = "string")
 						setvar $displayValue $fields[$i][2]
 						if ($displayValue = "")
-							setvar $displayValue "Not defined"
+							setvar $displayValue ansi_15&"Not defined"
 						end
 						padright $displayValue $field_padding
 						setvar $displayValue $displayValue&$extra
 					end
 					if ($fields[$i][1] = "number")
-						setvar $displayValue $fields[$i][2]
+						setvar $displayValue ansi_15&$fields[$i][2]
 						padright $displayValue $field_padding
 						setvar $displayValue $displayValue&$extra
 					end
