@@ -803,11 +803,17 @@ goto :menu_creation
 		goto :numberField
 	end
 	setvar $fields[$field_index][2] $displayValue
+
 	if ($displayValue = 0)
-		setMenuValue $fields[$field_index] $displayValue
+		setvar $displayValue ansi_15&$displayValue
 	else
-		setMenuValue $fields[$field_index] ansi_14&$displayValue&" ("&$fields[$field_index][3]&")"
+		setvar $displayValue ansi_14&$displayValue
 	end
+	setvar $extra "("&$fields[$field_index][3]&")"
+	padright $displayValue $field_padding
+	setvar $displayValue $displayValue&$extra
+
+	setMenuValue $fields[$field_index] $displayValue
 
 goto :menu_creation
 
