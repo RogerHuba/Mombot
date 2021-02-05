@@ -117,7 +117,8 @@ end
 										setvar $fields[$field_count][2] $options[1]
 									else
 										getwordpos $option $pos ":"
-										if ($pos > 0)
+										getwordpos $option $pos2 #34
+										if (($pos > 0) or ($pos2 > 0))
 											getwordpos $option $pos ":#"
 											if ($pos > 0)
 												setvar $field_type "number"
