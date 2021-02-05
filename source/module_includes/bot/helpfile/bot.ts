@@ -136,7 +136,7 @@ end
 									end
 									setvar $fields[$field_count] $field_name
 									setvar $fields[$field_count][1] $field_type
-									#echo "adding field: [" $fields[$field_count] "] with value of [" $fields[$field_count][2] "]*"
+									echo "adding field: [" $fields[$field_count] "] with value of [" $fields[$field_count][2] "]*"
 									add $fields 1
 									########################
 									# grab the next option #
