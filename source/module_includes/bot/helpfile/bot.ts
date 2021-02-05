@@ -256,13 +256,17 @@ end
 				padright $menu_field_display $longest
 				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
 				setvar $i 1
+				setvar $field_padding 15
 				while ($i <= $fields)
-					if ($fields[$i][1] = "boolean")
+					setvar $extra "("&$fields[$i][3]&")"
+					if ($fields[$i][1] = "boolean")					
 						if ($fields[$i][2] = true)
 							setvar $displayValue "On"
 						else
 							setvar $displayValue "Off"
 						end
+						padright $displayValue $field_padding
+						setvar $displayValue $displayValue&$extra
 					end
 					if ($fields[$i][1] = "multi")
 						splitText $fields[$i] $options "|"
@@ -276,7 +280,7 @@ end
 								end
 								setvar $currentValue $options[$optionIndex]
 								splitText $fields[$i][3] $descriptions "|"
-								setvar $displayValue $descriptions[$optionIndex]
+								setvar $displayValue ansi_14&$descriptions[$optionIndex]
 							end
 							add $k 1
 						end
@@ -288,10 +292,15 @@ end
 						if ($displayValue = "")
 							setvar $displayValue "Not defined"
 						end
+						padright $displayValue $field_padding
+						setvar $displayValue $displayValue&$extra
 					end
 					if ($fields[$i][1] = "number")
 						setvar $displayValue $fields[$i][2]
+						padright $displayValue $field_padding
+						setvar $displayValue $displayValue&$extra
 					end
+
 					setvar $menu_field_display $fields[$i]
 					padright $menu_field_display $longest
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_11&$menu_field_display&ANSI_14&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
@@ -463,12 +472,15 @@ return
 	setvar $currentValue $fields[$field_index][2]
 	if ($currentValue = false)
 		setvar $currentValue true
-		setvar $displayValue ansi_14&"On ("&$fields[$field_index][3]&")"
+		setvar $displayValue ansi_14&"On"
 	else
 		setvar $currentValue false
-		setvar $displayValue "Off ("&$fields[$field_index][3]&")"
+		setvar $displayValue "Off"
 	end
 	setvar $fields[$field_index][2] $currentValue
+	setvar $extra "("&$fields[$field_index][3]&")"
+	padright $displayValue $field_padding
+	setvar $displayValue $displayValue&$extra
 	setMenuValue $fields[$field_index] $displayValue
 goto :menu_creation
 
@@ -678,13 +690,19 @@ goto :menu_creation
 :stringField
 
 	getInput $displayValue "Please enter a value for "&$fields[$field_index]&"."
-	if ($displayValue = "")
-		setMenuValue $fields[$field_index] "Not defined ("&$fields[$field_index][3]&")"
-	else
-		setMenuValue $fields[$field_index] ansi_14&$displayValue&" ("&$fields[$field_index][3]&")"
-	end
 	setvar $fields[$field_index][2] $displayValue
 
+
+	if ($displayValue = "")
+		setvar $displayValue "Not defined"
+	else
+		setvar $displayValue ansi_14&$displayValue
+	end
+	setvar $extra "("&$fields[$field_index][3]&")"
+	padright $displayValue $field_padding
+	setvar $displayValue $displayValue&$extra
+
+	setMenuValue $fields[$field_index] $displayValue
 goto :menu_creation
 
 :numberField1
