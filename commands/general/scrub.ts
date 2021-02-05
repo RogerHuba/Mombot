@@ -20,7 +20,7 @@ end
 	else
 		if ($BOT~parm1 = "seek")
 			if ($startingLocation = "Citadel")
-				send "q tnt"
+				send "q t*t1* "
 				gosub :PLANET~getPlanetInfo
 				send "c "
 			end
