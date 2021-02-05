@@ -52,7 +52,7 @@ gosub :BOT~loadVars
 				gosub :player~twarp
 				gosub  :player~currentPrompt
 				if ($PLAYER~twarpSuccess = TRUE)
-					send "P  S G Y G Q s p"
+					send "P  S G YG Q s p"
 				else
 					setVar $SWITCHBOARD~message $PLAYER~msg&"*"
 					gosub :SWITCHBOARD~switchboard
