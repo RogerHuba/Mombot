@@ -256,7 +256,7 @@ end
 				padright $menu_field_display $longest
 				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
 				setvar $i 1
-				setvar $field_padding 15
+				setvar $field_padding 18
 				while ($i <= $fields)
 					setvar $extra "("&$fields[$i][3]&")"
 					if ($fields[$i][1] = "boolean")					
@@ -284,7 +284,7 @@ end
 							add $k 1
 						end
 						setvar $extra "("&$descriptions[$optionIndex]&")"
-						setvar $displayValue ansi_14&"Set to "
+						setvar $displayValue ansi_14&"Selected"
 						padright $displayValue $field_padding
 						setvar $displayValue $displayValue&$extra
 					end
@@ -589,7 +589,7 @@ goto :menu_creation
 				setvar $currentValue $options[$optionIndex]
 				splitText $fields[$field_index][3] $descriptions "|"
 				setvar $extra "("&$descriptions[$optionIndex]&")"
-				setvar $displayValue ansi_14&"Set to "
+				setvar $displayValue ansi_14&"Selected"
 				padright $displayValue $field_padding
 				setvar $displayValue $displayValue&$extra
 			end
