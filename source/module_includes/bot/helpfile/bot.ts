@@ -199,7 +199,7 @@ end
 				end
 
 				setvar $i 1
-				addMenu "" "MENUSYSTEM" "     :::  [help - +] -= "&$command&" =- [refresh - ?]  ::" "." "" "Main" FALSE
+				addMenu "" "MENUSYSTEM" ansi_8&"     :::  "&ansi_14&"["&ansi_15&"help - "&ansi_12&"+"&ansi_14&"]"&ansi_15&" -= "&ansi_6&$command&ansi_15&" =- "&ansi_14&"["&ansi_15&"refresh - "&ansi_12&"?"&ansi_14&"]"&ansi_8&"  ::" "." "" "Main" FALSE
 				setMenuOptions "MENUSYSTEM" false false false
 				
 				setarray $menu_system_keys 30
