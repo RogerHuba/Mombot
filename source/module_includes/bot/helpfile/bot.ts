@@ -454,7 +454,7 @@ return
 	setvar $currentValue $fields[$field_index][2]
 	if ($currentValue = false)
 		setvar $currentValue true
-		setvar $displayValue $fields[$field_index][3]
+		setvar $displayValue ansi_14&$fields[$field_index][3]
 	else
 		setvar $currentValue false
 		setvar $displayValue "No"
@@ -566,7 +566,7 @@ goto :menu_creation
 				end
 				setvar $currentValue $options[$optionIndex]
 				splitText $fields[$field_index][3] $descriptions "|"
-				setvar $displayValue $descriptions[$optionIndex]
+				setvar $displayValue ansi_14&$descriptions[$optionIndex]
 			end
 			add $k 1
 		end
@@ -672,7 +672,7 @@ goto :menu_creation
 	if ($displayValue = "")
 		setMenuValue $fields[$field_index] "Not defined"
 	else
-		setMenuValue $fields[$field_index] $displayValue
+		setMenuValue $fields[$field_index] ansi_14&$displayValue
 	end
 	setvar $fields[$field_index][2] $displayValue
 
@@ -776,7 +776,11 @@ goto :menu_creation
 		goto :numberField
 	end
 	setvar $fields[$field_index][2] $displayValue
-	setMenuValue $fields[$field_index] $displayValue
+	if ($displayValue = 0)
+		setMenuValue $fields[$field_index] $displayValue
+	else
+		setMenuValue $fields[$field_index] ansi_14&$displayValue
+	end
 
 goto :menu_creation
 
