@@ -147,15 +147,15 @@ gosub :BOT~loadVars
 			gosub :PLANET~landingSub
 		end
 		gosub :PLAYER~quikstats
-		if ($holdstobuy > 0)
+		if (($holdstobuy > 0) and ($holds = true))
 			format $holdstobuy $holdstobuy NUMBER
 			setvar $message $message&"   - "&$holdstobuy&" holds purchased.*"
 		end
-		if ($figstobuy > 0)
+		if (($figstobuy > 0) and ($holds = true))
 			format $figstobuy $figstobuy NUMBER
 			setvar $message $message&"   - "&$figstobuy&" fighters purchased.*"
 		end
-		if ($shieldstobuy > 0)
+		if (($shieldstobuy > 0) and ($holds = true))
 			format $shieldstobuy $shieldstobuy NUMBER
 			setvar $message $message&"   - "&$shieldstobuy&" shields purchased.*"
 		end
