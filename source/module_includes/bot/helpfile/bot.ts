@@ -280,7 +280,10 @@ end
 								end
 								setvar $currentValue $options[$optionIndex]
 								splitText $fields[$i][3] $descriptions "|"
-								setvar $displayValue $descriptions[$optionIndex]
+								setvar $extra "("&$descriptions[$optionIndex]&")"
+								setvar $displayValue ansi_14&"Set to "
+								padright $displayValue $field_padding
+								setvar $displayValue $displayValue&$extra
 							end
 							add $k 1
 						end
@@ -290,7 +293,7 @@ end
 					if ($fields[$i][1] = "string")
 						setvar $displayValue $fields[$i][2]
 						if ($displayValue = "")
-							setvar $displayValue ansi_15&"Not defined"
+							setvar $displayValue ansi_15&"Off"
 						end
 						padright $displayValue $field_padding
 						setvar $displayValue $displayValue&$extra
@@ -475,7 +478,7 @@ return
 		setvar $displayValue ansi_14&"On"
 	else
 		setvar $currentValue false
-		setvar $displayValue "Off"
+		setvar $displayValue ansi_15&"Off"
 	end
 	setvar $fields[$field_index][2] $currentValue
 	setvar $extra "("&$fields[$field_index][3]&")"
@@ -697,7 +700,7 @@ goto :menu_creation
 
 
 	if ($displayValue = "")
-		setvar $displayValue "Not set"
+		setvar $displayValue ansi_15&"Off"
 	else
 		setvar $displayValue ansi_14&$displayValue
 	end
