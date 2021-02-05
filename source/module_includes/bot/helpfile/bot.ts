@@ -199,7 +199,7 @@ end
 				end
 
 				setvar $i 1
-				addMenu "" "MENUSYSTEM" ":::"&$command&" settings::" "." "" "Main" FALSE
+				addMenu "" "MENUSYSTEM" "     :::"&$command&" settings::" "." "" "Main" FALSE
 				setarray $menu_system_keys 30
 				setvar $menu_system_keys 30
 				setvar $menu_system_keys[1] 1
