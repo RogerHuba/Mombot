@@ -589,7 +589,7 @@ goto :menu_creation
 				setvar $currentValue $options[$optionIndex]
 				splitText $fields[$field_index][3] $descriptions "|"
 				setvar $extra "("&$descriptions[$optionIndex]&")"
-				setvar $displayValue ansi_14&$fields[$field_index][2]
+				setvar $displayValue ansi_14&$currentValue
 				padright $displayValue $field_padding
 				setvar $displayValue $displayValue&$extra
 			end
