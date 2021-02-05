@@ -13,8 +13,8 @@
 
 	setVar $BOT~help[1]  $BOT~tab&" farm {farm:param} {f} {o} {e} {fig} {cash} {warp} {neg} {half}   "
 	setVar $BOT~help[2]  $BOT~tab&"      {shield} {colo} {coln} {upgrade} {port} {skipfuel}  "
-	setVar $BOT~help[3]  $BOT~tab&"      {skiporg} {skipequip} {build} {destoryports} {one}  "
-	setVar $BOT~help[4]  $BOT~tab&"      {nostrip} {noupgrades} {defense} {amtrak} {allplanets}  "
+	setVar $BOT~help[3]  $BOT~tab&"      {skiporg} {skipequip} {build} {destroyports} {one}  "
+	setVar $BOT~help[4]  $BOT~tab&"      {nostrip} {noupgrade} {defense} {amtrak} {allplanets}  "
 	setVar $BOT~help[5]  $BOT~tab&"      {planets} {balance} {movefig} {barricade} {armageddon} "
 	setVar $BOT~help[6]  $BOT~tab&"       "
 	setVar $BOT~help[7]  $BOT~tab&"  Options: "
