@@ -68,7 +68,7 @@ gosub :BOT~loadVars
 	setVar $message "No limpet on my ship.*"
 	setTextLineTrigger limpet   :markLimpet	 "After an intensive scanning search, they find and remove the Limpet"
 	setTextLineTrigger limpetno	 :markLimpetNo   "The port official frowns at you (you haven't the funds!) and storms"
-	setTextLineTrigger fighter  :buyfighters	"B  Fighters        :"
+	setTextLineTrigger fighter  :buyfighters	"A  Cargo holds     :"
 	pause
 	:markLimpet
 		setVar $message "Limpet scrubbed off of hull.*"
@@ -79,10 +79,12 @@ gosub :BOT~loadVars
 	:buyfighters
 		killalltriggers
 		if ($scrubonly <> TRUE)
+			getWord CURRENTLINE $holdsToBuy 10
+			waitOn " credits per fighter "
 			getWord CURRENTLINE $figsToBuy 8
 			waitOn " credits per point "
 			getWord CURRENTLINE $shieldsToBuy 9
-			send "b "&$figsToBuy&"* c "&$shieldsToBuy&"* q q q * "
+			send "a "&$holdsToBuy&"* b "&$figsToBuy&"* c "&$shieldsToBuy&"* q q q * "
 		else
 			send "b 0* c 0* q q q * "
 		end
@@ -100,6 +102,10 @@ gosub :BOT~loadVars
 			gosub :PLANET~landingSub
 		end
 		gosub :PLAYER~quikstats
+		if ($holdstobuy > 0)
+			format $holdstobuy $holdstobuy NUMBER
+			setvar $message $message&"   - "&$holdstobuy&" holds purchased.*"
+		end
 		if ($figstobuy > 0)
 			format $figstobuy $figstobuy NUMBER
 			setvar $message $message&"   - "&$figstobuy&" fighters purchased.*"
