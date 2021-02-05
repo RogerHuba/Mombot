@@ -1,19 +1,22 @@
 gosub :BOT~loadVars
 
 
-	setVar $BOT~help[1]  $BOT~tab&"    Rammars Legendary gridder converted to mombot"
-	setVar $BOT~help[2]  $BOT~tab&"    No more sectors have been gridded than with this... "
-	setVar $BOT~help[3]  $BOT~tab&"    No more players have died using it... "
-	setVar $BOT~help[4]  $BOT~tab&"    REFRESH FIG LIST!"
-	setVar $BOT~help[5]  $BOT~tab&"    "
-	setVar $BOT~help[6]  $BOT~tab&"    ramgrid [stop_turns] [stop_fighters] {saveme}"
-	setVar $BOT~help[7]  $BOT~tab&"       "
-	setVar $BOT~help[8]  $BOT~tab&" Options:"
-	setVar $BOT~help[9]  $BOT~tab&"    "
-	setVar $BOT~help[10]  $BOT~tab&"   [stop_turns]     stop when you get to these turns "
-	setVar $BOT~help[11]  $BOT~tab&"   [stop_fighters]  stop when you get to these fighters"
-	setVar $BOT~help[12]  $BOT~tab&"   {saveme}  when gridder is stuck it will call saveme to be safe"
-	setVar $BOT~help[13] $BOT~tab&"                   "
+	setVar $BOT~help[1]  $BOT~tab&"    ramgrid {stop_turns:#} {stop_fighters:#} {saveme}"
+	setVar $BOT~help[2]  $BOT~tab&"       "
+	setVar $BOT~help[3]  $BOT~tab&" Options:"
+	setVar $BOT~help[4]  $BOT~tab&"      {stop_turns:#} - stop when you get to these turns "
+	setVar $BOT~help[5]  $BOT~tab&"   {stop_fighters:#} - stop when you get to these fighters"
+	setVar $BOT~help[6]  $BOT~tab&"            {saveme} - call saveme if stuck"
+	setVar $BOT~help[7]  $BOT~tab&"     "
+	setVar $BOT~help[8]  $BOT~tab&"     Rammar's Legendary gridder converted to mombot"
+	setVar $BOT~help[9]  $BOT~tab&"     No more sectors have been gridded than with this... "
+	setVar $BOT~help[10] $BOT~tab&"     No more players have died using it... "
+	setVar $BOT~help[11] $BOT~tab&"               REFRESH YOUR FIGHTER LIST!"
+	setVar $BOT~help[12] $BOT~tab&"       "
+	setVar $BOT~help[13] $BOT~tab&"     Examples:              "
+	setVar $BOT~help[14] $BOT~tab&"        >ramgrid 100 100 saveme             "
+	setVar $BOT~help[15] $BOT~tab&"        >ramgrid stopturns:100 stopfighters:1000   "
+	setVar $BOT~help[16] $BOT~tab&"        >ramgrid stopfighters:50 stopturns:10 saveme "
 	
 	gosub :bot~helpfile
 
@@ -55,47 +58,85 @@ gosub :BOT~loadVars
 	killAllTriggers
 	setVar $minimum_turns 0
 	setVar $minimum_figs 0
-	setVar $saveme 0
+	setVar $saveme false
 
-	getWord $bot~user_command_line $bot~parm1 1
-	getWord $bot~user_command_line $bot~parm2 2
-	getWord $bot~user_command_line $bot~parm3 3
+	getwordpos $bot~user_command_line $pos "save"
+	if ($pos > 0)
+		setvar $saveme true
+	end
 
-	isNumber $test $bot~parm1
-	if ($test)
-		if ($bot~parm1 < 1)
+	getwordpos $bot~user_command_line $pos "stop_"
+	if ($pos > 0)
+		getwordpos " "&$bot~user_command_line&" " $pos "stop_fighters:"
+		if ($pos > 0)
+			getText $bot~user_command_line&" " $stop_fighters "stop_fighters:" " "
+			isNumber $test $stop_fighters
+			if ($test)
+				if ($stop_fighters < 50)
+					setVar $SWITCHBOARD~message "Stop Fighters must be a number greater than 49!.*"
+					gosub :SWITCHBOARD~switchboard
+					halt
+				else
+					setVar $minimum_figs $stop_fighters
+				end
+			else
+				setVar $SWITCHBOARD~message "Stop Fighters must be a number greater than 49!.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end			
+		end
+		getwordpos " "&$bot~user_command_line&" " $pos "stop_turns:"
+		if ($pos > 0)
+			getText $bot~user_command_line&" " $stop_turns "stop_turns:" " "
+			isNumber $test $stop_turns
+			if ($test)
+				if ($stop_turns < 1)
+					setVar $SWITCHBOARD~message "Stop Turns must be a number greater than zero!.*"
+					gosub :SWITCHBOARD~switchboard
+					halt
+				else
+					setVar $minimum_turns $stop_turns
+				end
+			else
+				setVar $SWITCHBOARD~message "Stop Turns must be a number greater than zero!.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end		
+		end
+
+	else
+		getWord $bot~user_command_line $bot~parm1 1
+		getWord $bot~user_command_line $bot~parm2 2
+		getWord $bot~user_command_line $bot~parm3 3
+
+		isNumber $test $bot~parm1
+		if ($test)
+			if ($bot~parm1 < 1)
+				setVar $SWITCHBOARD~message "Stop Turns must be a number greater than zero!.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			else
+				setVar $minimum_turns $bot~parm1
+			end
+		else
 			setVar $SWITCHBOARD~message "Stop Turns must be a number greater than zero!.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
-		else
-			 setVar $minimum_turns $bot~parm1
 		end
-	else
-		setVar $SWITCHBOARD~message "Stop Turns must be a number greater than zero!.*"
-		gosub :SWITCHBOARD~switchboard
-		halt
-	end
-
-
-
-	isNumber $test $bot~parm2
-	if ($test)
-		if ($bot~parm2 < 50)
+		isNumber $test $bot~parm2
+		if ($test)
+			if ($bot~parm2 < 50)
+				setVar $SWITCHBOARD~message "Stop Fighters must be a number greater than 49!.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			else
+				setVar $minimum_figs $bot~parm2
+			end
+		else
 			setVar $SWITCHBOARD~message "Stop Fighters must be a number greater than 49!.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
-		else
-			 setVar $minimum_figs $bot~parm2
 		end
-	else
-		setVar $SWITCHBOARD~message "Stop Fighters must be a number greater than 49!.*"
-		gosub :SWITCHBOARD~switchboard
-		halt
-	end
-	
-
-	if ($bot~parm3 = "saveme")
-		setVar $saveme 1
 	end
 
 	if (STARDOCK = 0)
@@ -144,7 +185,7 @@ gosub :BOT~loadVars
 	gosub :SWITCHBOARD~switchboard
 	setVar $SWITCHBOARD~message "Stopping at "& $minimum_turns & " turns and " & $minimum_figs & " fighters.*"
 	gosub :SWITCHBOARD~switchboard
-	if ($saveme = 1)
+	if ($saveme = true)
 		setVar $SWITCHBOARD~message "I will call SAVE ME when stuck!*"
 		gosub :SWITCHBOARD~switchboard
 	else
@@ -174,7 +215,7 @@ gosub :BOT~loadVars
 
 :Ended_Early
      send "r * * "
-	if ($saveme = 1)
+	if ($saveme = true)
 		gosub :callSaveMe
 		halt
 	end

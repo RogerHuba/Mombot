@@ -115,7 +115,6 @@
 
 	getWordPos " "&$bot~user_command_line&" " $pos " file:"
 	if ($pos > 0)
-		setvar $restock~refurb_in_sector true
 		getText $bot~user_command_line&" " $file "file:" " "
 		if ($file = 0)
 			setVar $SWITCHBOARD~message "File path is not valid.*"
@@ -126,7 +125,6 @@
 
 	getWordPos " "&$bot~user_command_line&" " $pos " param:"
 	if ($pos > 0)
-		setvar $restock~refurb_in_sector true
 		getText $bot~user_command_line&" " $param "param:" " "
 		if ($param = 0)
 			setVar $SWITCHBOARD~message "Sector parameter entered is not valid.*"
