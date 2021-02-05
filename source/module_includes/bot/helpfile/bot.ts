@@ -201,7 +201,7 @@ end
 				setvar $i 1
 				setvar $command_display $command
 				uppercase $command_display
-				addMenu "" "MENUSYSTEM" ansi_15&":::  "&ansi_14&"["&ansi_15&"help - "&ansi_9&"+"&ansi_14&"]"&ansi_15&" -=[ "&ansi_6&$command_display&ansi_15&" ]=- "&ansi_14&"["&ansi_15&"refresh - "&ansi_9&"?"&ansi_14&"]"&ansi_15&"  ::" "." "" "Main" FALSE
+				addMenu "" "MENUSYSTEM" ansi_15&":::  "&ansi_14&"["&ansi_15&"help - "&ansi_6&"+"&ansi_14&"]"&ansi_15&" -=[ "&ansi_6&$command_display&ansi_15&" ]=- "&ansi_14&"["&ansi_15&"refresh - "&ansi_6&"?"&ansi_14&"]"&ansi_15&"  ::" "." "" "Main" FALSE
 				setMenuOptions "MENUSYSTEM" false false false
 				
 				setarray $menu_system_keys 30
@@ -264,7 +264,7 @@ end
 					setvar $menu_field_display $fields[$i]
 					getlength $menu_field_display $length
 						padright $menu_field_display 20
-					addMenu "MENUSYSTEM" $fields[$i] ANSI_14&$menu_field_display&ANSI_2&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
+					addMenu "MENUSYSTEM" $fields[$i] ANSI_11&$menu_field_display&ANSI_14&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					setMenuValue $fields[$i] $displayValue
 					setMenuHelp $fields[$i] $fields[$i][3]
 					:menu_creation
