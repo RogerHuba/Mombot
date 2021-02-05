@@ -183,6 +183,7 @@ end
 												add $k 1
 											end
 										else
+											echo "[" $option "][" $fields[$j] "]*"
 											if ($option = $fields[$j])
 												setvar $fields[$j][3] $help[$i]
 											end
