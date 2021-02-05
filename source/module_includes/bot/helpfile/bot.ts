@@ -241,7 +241,7 @@ end
 				setvar $menu_system_keys[30] "w"
 
 				setvar $menu_field_display "Start!"
-				padright $menu_field_display 20
+				padright $menu_field_display 25
 				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
 
 				while ($i <= $fields)
@@ -282,7 +282,7 @@ end
 					end
 					setvar $menu_field_display $fields[$i]
 					getlength $menu_field_display $length
-					padright $menu_field_display 20
+					padright $menu_field_display 25
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_11&$menu_field_display&ANSI_14&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					setMenuValue $fields[$i] $displayValue
 					setMenuHelp $fields[$i] $fields[$i][3]
