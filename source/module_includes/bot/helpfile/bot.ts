@@ -251,6 +251,9 @@ end
 					end
 					add $i 1
 				end
+				setvar $menu_field_display "Start!"
+				padright $menu_field_display $longest
+				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
 				setvar $i 1
 				while ($i <= $fields)
 					if ($fields[$i][1] = "boolean")
@@ -296,9 +299,6 @@ end
 					:menu_creation
 					add $i 1
 				end
-				setvar $menu_field_display "Start!"
-				padright $menu_field_display $longest
-				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
 				openMenu "MENUSYSTEM" true
 				:endMenuAndGo
 				closeMenu
