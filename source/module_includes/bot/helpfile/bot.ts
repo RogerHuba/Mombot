@@ -201,7 +201,6 @@ end
 					add $i 1
 				end
 
-				setvar $i 1
 				setvar $command_display $command
 				uppercase $command_display
 				addMenu "" "MENUSYSTEM" ansi_15&":::  "&ansi_14&"["&ansi_15&"help - "&ansi_6&"+"&ansi_14&"]"&ansi_15&" -=[ "&ansi_6&$command_display&ansi_15&" ]=- "&ansi_14&"["&ansi_15&"refresh - "&ansi_6&"?"&ansi_14&"]"&ansi_15&"  ::" "." "" "Main" FALSE
@@ -250,6 +249,10 @@ end
 					if ($length > $longest)
 						setvar $longest $length
 					end
+					add $i 1
+				end
+				setvar $i 1
+				while ($i <= $fields)
 					if ($fields[$i][1] = "boolean")
 						if ($fields[$i][2] = true)
 							setvar $displayValue "On"
@@ -286,7 +289,7 @@ end
 						setvar $displayValue $fields[$i][2]
 					end
 					setvar $menu_field_display $fields[$i]
-					padright $menu_field_display ($longest+1)
+					padright $menu_field_display $longest
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_11&$menu_field_display&ANSI_14&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					setMenuValue $fields[$i] $displayValue
 					setMenuHelp $fields[$i] $fields[$i][3]
@@ -294,7 +297,7 @@ end
 					add $i 1
 				end
 				setvar $menu_field_display "Start!"
-				padright $menu_field_display ($longest+1)
+				padright $menu_field_display $longest
 				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
 				openMenu "MENUSYSTEM" true
 				:endMenuAndGo
@@ -360,8 +363,9 @@ end
 				savevar $parm6
 				savevar $parm7
 				savevar $parm8
-				echo "Sending this command to the bot:" $user_command_line "*"
-				echo "Parameters:" $parm1 $parm2 $parm3 $parm4 $parm5 $parm6 $parm7 $parm8 "*"
+				
+				#echo "Sending this command to the bot:" $user_command_line "*"
+				#echo "Parameters:" $parm1 $parm2 $parm3 $parm4 $parm5 $parm6 $parm7 $parm8 "*"
 			end
 return
 
