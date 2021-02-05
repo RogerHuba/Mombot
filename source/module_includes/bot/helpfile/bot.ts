@@ -175,7 +175,10 @@ end
 											while ($k <= $options)
 												trim $options[$k]
 												if ($options[$k] = $option)
-													setvar $fields[$j][3] $help[$i]
+													if ($fields[$j][3] = "0")
+														setvar $fields[$j][3] ""
+													end
+													setvar $fields[$j][3] $fields[$j][3]&$help[$i]&"|"
 												end
 												add $k 1
 											end
@@ -538,15 +541,24 @@ goto :menu_creation
 		while ($k <= $options)
 			if ($options[$k] = $fields[$field_index][2])
 				if ($k < $options)
-					setvar $displayValue $options[($k+1)]
+					setvar $currentValue $options[($k+1)]
 				else
-					setvar $displayValue $options[1]
+					setvar $currentValue $options[1]
 				end
+			end
+			splitText $fields[$field_index][3] $descriptions "|"
+			setvar $l 1
+			while ($l <= $descriptions)
+				if ($descriptions[$l] = $currentValue)
+					setvar $displayValue $descriptions[$l]
+				end
+				add $l 1
 			end
 			add $k 1
 		end
-		setvar $fields[$field_index][2] $displayValue
-		setMenuValue $fields[$field_index] $fields[$field_index][3]
+
+		setvar $fields[$field_index][2] $currentValue
+		setMenuValue $fields[$field_index] $displayValue
 	end
 
 goto :menu_creation
