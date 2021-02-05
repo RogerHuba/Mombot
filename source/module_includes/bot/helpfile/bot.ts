@@ -541,21 +541,14 @@ goto :menu_creation
 		while ($k <= $options)
 			if ($options[$k] = $fields[$field_index][2])
 				if ($k < $options)
-					setvar $currentValue $options[($k+1)]
+					setvar $optionIndex ($k+1)
 				else
-					setvar $currentValue $options[1]
+					setvar $optionIndex 1
 				end
+				setvar $currentValue $options[$optionIndex]
 			end
-			echo "[" $fields[$field_index][3] "]*"
 			splitText $fields[$field_index][3] $descriptions "|"
-			setvar $l 1
-			while ($l <= $descriptions)
-				if ($descriptions[$l] = $currentValue)
-					setvar $displayValue $descriptions[$l]
-				end
-				add $l 1
-			end
-			add $k 1
+			setvar $displayValue $descriptions[$optionIndex]
 		end
 
 		setvar $fields[$field_index][2] $currentValue
