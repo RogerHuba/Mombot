@@ -546,6 +546,7 @@ goto :menu_creation
 					setvar $currentValue $options[1]
 				end
 			end
+			echo "[" $fields[$field_index][3] "]*"
 			splitText $fields[$field_index][3] $descriptions "|"
 			setvar $l 1
 			while ($l <= $descriptions)
