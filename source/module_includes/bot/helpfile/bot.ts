@@ -432,7 +432,7 @@ return
 	setvar $currentValue $fields[$field_index][2]
 	if ($currentValue = false)
 		setvar $currentValue true
-		setvar $displayValue "Yes"
+		setvar $displayValue $fields[$field_index][3]
 	else
 		setvar $currentValue false
 		setvar $displayValue "No"
@@ -546,7 +546,7 @@ goto :menu_creation
 			add $k 1
 		end
 		setvar $fields[$field_index][2] $displayValue
-		setMenuValue $fields[$field_index] $displayValue
+		setMenuValue $fields[$field_index] $fields[$field_index][3]
 	end
 
 goto :menu_creation
