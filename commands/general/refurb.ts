@@ -17,25 +17,25 @@ gosub :BOT~loadVars
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 
 
-	getwordpos " "$bot~user_command_line&" " $pos " seek "
+	getwordpos " "&$bot~user_command_line&" " $pos " seek "
 	setvar $seek false
 	if ($pos > 0)
 		setvar $seek true
 	end
 
-	getwordpos " "$bot~user_command_line&" " $pos " h"
+	getwordpos " "&$bot~user_command_line&" " $pos " h"
 	setvar $holds false
 	if ($pos > 0)
 		setvar $holds true
 	end
 
-	getwordpos " "$bot~user_command_line&" " $pos " f"
+	getwordpos " "&$bot~user_command_line&" " $pos " f"
 	setvar $fighters false
 	if ($pos > 0)
 		setvar $fighters true
 	end
 
-	getwordpos " "$bot~user_command_line&" " $pos " sh"
+	getwordpos " "&$bot~user_command_line&" " $pos " sh"
 	setvar $shields false
 	if ($pos > 0)
 		setvar $shields true
