@@ -258,7 +258,7 @@ end
 						while ($k <= $options)
 							if ($options[$k] = $fields[$i][2])
 								if ($k < $options)
-									setvar $optionIndex ($k+1)
+									setvar $optionIndex $k
 								else
 									setvar $optionIndex 1
 								end
@@ -282,7 +282,7 @@ end
 					end
 					setvar $menu_field_display $fields[$i]
 					getlength $menu_field_display $length
-						padright $menu_field_display 20
+					padright $menu_field_display 20
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_11&$menu_field_display&ANSI_14&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					setMenuValue $fields[$i] $displayValue
 					setMenuHelp $fields[$i] $fields[$i][3]
