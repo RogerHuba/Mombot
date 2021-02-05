@@ -681,7 +681,7 @@ goto :menu_creation
 	if ($displayValue = "")
 		setMenuValue $fields[$field_index] "Not defined"
 	else
-		setMenuValue $fields[$field_index] ansi_14&$displayValue
+		setMenuValue $fields[$field_index] ansi_14&$displayValue&" ("&$fields[$field_index][3]&")"
 	end
 	setvar $fields[$field_index][2] $displayValue
 
@@ -788,7 +788,7 @@ goto :menu_creation
 	if ($displayValue = 0)
 		setMenuValue $fields[$field_index] $displayValue
 	else
-		setMenuValue $fields[$field_index] ansi_14&$displayValue
+		setMenuValue $fields[$field_index] ansi_14&$displayValue&" ("&$fields[$field_index][3]&")"
 	end
 
 goto :menu_creation
