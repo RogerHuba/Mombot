@@ -6,8 +6,8 @@
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-	setVar $BOT~help[1]    $BOT~tab&"  {delay:#} {drop|plock|foton} {kill} {direct} {return}"
-	setVar $BOT~help[2]    $BOT~tab&"  {figs:n} {offensive}  "
+	setVar $BOT~help[1]    $BOT~tab&"  ldrop {delay:#} {drop|plock|foton} {kill} {direct} "
+	setVar $BOT~help[2]    $BOT~tab&"        {return} {figs:n} {offensive}  "
 	setVar $BOT~help[3]    $BOT~tab&"      "
 	setVar $BOT~help[4]    $BOT~tab&"     {drop} - regular planet drop "
 	setVar $BOT~help[5]    $BOT~tab&"    {plock} - plocks sector and triggers directly "
