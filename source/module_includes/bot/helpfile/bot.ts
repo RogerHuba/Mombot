@@ -327,7 +327,7 @@ end
 					else
 						setvar $menu_field_display $fields[$i]
 					end
-					padright $menu_field_display $longest
+					padleft $menu_field_display $longest
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_11&$menu_field_display&ANSI_14&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					setMenuValue $fields[$i] $displayValue
 					setMenuHelp $fields[$i] $fields[$i][3]
