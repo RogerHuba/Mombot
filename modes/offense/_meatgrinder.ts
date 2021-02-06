@@ -4,9 +4,12 @@ logging off
 	gosub :BOT~loadVars
 	setvar $player~save true
 
-	setVar $BOT~help[1] $BOT~tab&"Meatgrinder tries to kill as fast as possible"
-	setVar $BOT~help[2] $BOT~tab&"    {turbo} - speed over accuracy"
-	setVar $BOT~help[3] $BOT~tab&"    {fedsafe} - If no longer fed safe, stop and hide"
+	setVar $BOT~help[1] $BOT~tab&"meatgrinder {turbo} {fedsafe}"
+	setVar $BOT~help[2] $BOT~tab&"     "
+	setVar $BOT~help[3] $BOT~tab&"    Meatgrinder tries to kill as fast as possible"
+	setVar $BOT~help[4] $BOT~tab&"     "
+	setVar $BOT~help[5] $BOT~tab&"    {turbo} - speed over accuracy"
+	setVar $BOT~help[6] $BOT~tab&"    {fedsafe} - If no longer fed safe, stop and hide"
 	gosub :bot~helpfile
 
 	getWordPos $BOT~user_command_line $pos "turbo"
