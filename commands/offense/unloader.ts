@@ -221,8 +221,16 @@
                     end
                 end
                 send $attackString
-                
-                goto :invadeRefurb
+                gosub :player~quikstats
+                if ($player~FIGHTERS > 0)
+                    gosub :claimOrDestroyPlanet
+                    goto :doneInvading
+                else
+                    setvar $switchboard~message "I launched " & $player~FIGHTERS & " at the planet @unloaddone.*"
+                    gosub :switchboard~switchboard
+                    goto :invadeRefurb
+                end
+              
             :keepInvading
                 killalltriggers
                 gosub :player~quikstats
@@ -243,7 +251,9 @@
                     gosub :claimOrDestroyPlanet
                     goto :doneInvading
                 else
-                    setvar $switchboard~message "I launched " & $player~FIGHTERS & " at the planet.*"
+                    setvar $switchboard~message "I launched " & $player~FIGHTERS & " at the planet @unloaddone.*"
+                    gosub :switchboard~switchboard
+                    
                 end
                 
             :invadeRefurb

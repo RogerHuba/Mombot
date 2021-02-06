@@ -10,18 +10,19 @@
 	setVar $BOT~help[8]  $BOT~tab&"         {empty} - Empty ships only"
 	setVar $BOT~help[9]  $BOT~tab&"        {onetap} - Fire once only"
 	setVar $BOT~help[10] $BOT~tab&"        {slowmo} - Adds random pause between waves."
-	setVar $BOT~help[11]  $BOT~tab&"         "
-	setVar $BOT~help[12]  $BOT~tab&"         Examples:"
-	setVar $BOT~help[13] $BOT~tab&"              >citcap "
-	setVar $BOT~help[14] $BOT~tab&"              >citcap "&#34&"player name"&#34&" "
-	setVar $BOT~help[15] $BOT~tab&"              >citcap 3"
+	setVar $BOT~help[11] $BOT~tab&"      {unloader} - Waits for unloader to finish b4 next attack."
+	setVar $BOT~help[12]  $BOT~tab&"         "
+	setVar $BOT~help[13]  $BOT~tab&"         Examples:"
+	setVar $BOT~help[14] $BOT~tab&"              >citcap "
+	setVar $BOT~help[15] $BOT~tab&"              >citcap "&#34&"player name"&#34&" "
+	setVar $BOT~help[16] $BOT~tab&"              >citcap 3"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Citadel Capper"
 	gosub :BOT~banner
 
 	loadVar $GAME~LATENCY
-	
+
 	setArray $shipList 	200
 	gosub :player~quikstats
 	gosub :player~getInfo
@@ -84,14 +85,21 @@
 	getWordPos $bot~user_command_line $pos "slowmo"
 	if ($pos > 0)
 		setVar $player~slowmo TRUE
+		setVar $player~onetap FALSE
 	else
 		setVar $player~slowmo FALSE
 	end
 	
-
+	getWordPos $bot~user_command_line $pos "unloader"
+	if ($pos > 0)
+		setVar $player~unloader TRUE
+	else
+		setVar $player~unloader FALSE
+	end
+	
 	gosub :player~quikstats
 	setVar $player~startingLocation $player~current_prompt
-	gosub :combat~init 
+	
 
 	if ($player~current_prompt <> "Citadel")
 		setvar $switchboard~message "Must start at the citadel prompt*"
