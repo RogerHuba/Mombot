@@ -1,7 +1,6 @@
 	:getCourse
 		setArray $mowCourse 80
 		setVar $sectors ""
-
 		if ($starting_point <= 0)
 			setVar $starting_point ""
 		end

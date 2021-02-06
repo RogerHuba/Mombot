@@ -4,28 +4,30 @@
 	loadvar $ship~ship_max_attack
 	loadvar $planet~planet
     
-	setVar $BOT~help[1]  $BOT~tab&"              <<<< mow >>>>"
-	setVar $BOT~help[2]  $BOT~tab&" "
-	setVar $BOT~help[3]  $BOT~tab&" mow [destination] {figs} {kill} {cap} {saveme} {p} {back}"
-	setVar $BOT~help[4]  $BOT~tab&"                   {personal} {backdoor} {i1/i2/i3} "
-	setVar $BOT~help[5]  $BOT~tab&"                    "
-	setVar $BOT~help[6]  $BOT~tab&" Options:"
-	setVar $BOT~help[7]  $BOT~tab&"        {p} - port ship immediately upon arrival."
-	setVar $BOT~help[8]  $BOT~tab&"     {kill} - attempt to kill immediately upon arrival."
-	setVar $BOT~help[9]  $BOT~tab&"      {cap} - attempt to capture immediately upon arrival."
-	setVar $BOT~help[10]  $BOT~tab&"   {saveme} - call saveme to be picked up at destination."
-	setVar $BOT~help[11]  $BOT~tab&"     {back} - twarp back to start sector after mow"
-	setVar $BOT~help[12]  $BOT~tab&"   {hoover} - attempts to pull fighters from sectors "
-	setVar $BOT~help[13]  $BOT~tab&" {personal} - drops personal fighters instead of corp  "
-	setVar $BOT~help[14]  $BOT~tab&" {backdoor} - mow to sector via backdoor"
-	setVar $BOT~help[15]  $BOT~tab&" {i1/i2/i3} - Indirect mow, void 1-3 sectors"
-	setVar $BOT~help[16]  $BOT~tab&" {holo} - holo scans every sector - no checks/pauses"
+	setVar $BOT~help[1]   $BOT~tab&" mow {destination:#} {figs} {kill} {cap} {saveme} {p} {back}"
+	setVar $BOT~help[2]   $BOT~tab&"                   {personal} {backdoor} {i1/i2/i3} "
+	setVar $BOT~help[3]   $BOT~tab&"                    "
+	setVar $BOT~help[4]   $BOT~tab&" Options:"
+	setVar $BOT~help[5]   $BOT~tab&"        {p} - port ship immediately upon arrival."
+	setVar $BOT~help[6]   $BOT~tab&"     {kill} - attempt to kill immediately upon arrival."
+	setVar $BOT~help[7]   $BOT~tab&"      {cap} - attempt to capture immediately upon arrival."
+	setVar $BOT~help[8]   $BOT~tab&"   {saveme} - call saveme to be picked up at destination."
+	setVar $BOT~help[9]   $BOT~tab&"     {back} - twarp back to start sector after mow"
+	setVar $BOT~help[10]  $BOT~tab&"   {hoover} - attempts to pull fighters from sectors "
+	setVar $BOT~help[11]  $BOT~tab&" {personal} - drops personal fighters instead of corp  "
+	setVar $BOT~help[12]  $BOT~tab&" {backdoor} - mow to sector via backdoor"
+	setVar $BOT~help[13]  $BOT~tab&" {i1/i2/i3} - Indirect mow, void 1-3 sectors"
+	setVar $BOT~help[14]  $BOT~tab&" {holo} - holo scans every sector - no checks/pauses"
 	
 	gosub :BOT~helpfile
 
 
 	if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
 		goto :wait_for_command
+	end
+	getwordpos $bot~parm1 $pos "destination:"
+	if ($pos > 0)
+		replacetext $bot~parm1 "destination:" ""
 	end
 	if ($bot~parm1 = "me")
 		if ($bot~command_caller = "self")
@@ -518,7 +520,7 @@ return
 				if ($warp <> ">")
 					stripText $warp "("
 					stripText $warp ")"
-			echo $warp "*"
+					echo $warp "*"
 					if (($warp > 10) and ($y > 1))
 						if ($warp <> $PLAYER~destination)
 							send "cv" $warp "*q"
