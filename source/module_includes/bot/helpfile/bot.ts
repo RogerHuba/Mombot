@@ -264,7 +264,7 @@ end
 				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
 				setvar $menu_field_display "Bot to control:"
 				padright $menu_field_display $longest
-				addMenu "MENUSYSTEM" Control ANSI_12&$menu_field_display ":" :changeBotName  $bot_to_control FALSE
+				addMenu "MENUSYSTEM" Control ANSI_12&$menu_field_display "0" :changeBotName  $bot_to_control FALSE
 				setvar $bot_to_control_display ansi_14&$bot_to_control
 				padright $bot_to_control_display $field_padding
 				setMenuValue Control $bot_to_control_display
@@ -396,7 +396,10 @@ end
 				savevar $parm6
 				savevar $parm7
 				savevar $parm8
-				
+				if ($bot_name <> $bot_to_control)
+					send "'"&$bot_to_control&" "&$user_command_line&"*"
+					halt
+				end
 				#echo "Sending this command to the bot:" $user_command_line "*"
 				#echo "Parameters:" $parm1 $parm2 $parm3 $parm4 $parm5 $parm6 $parm7 $parm8 "*"
 			end
