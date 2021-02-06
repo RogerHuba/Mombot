@@ -261,10 +261,10 @@ end
 				setvar $bot_to_control $bot_name
 				setvar $menu_field_display "Start!"
 				padright $menu_field_display $longest
-				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
+				addMenu "MENUSYSTEM" Start ANSI_12&"*"&$menu_field_display "Z" :endMenuAndGo  "" FALSE
 				setvar $menu_field_display "Bot to control:"
 				padright $menu_field_display $longest
-				addMenu "MENUSYSTEM" Control ANSI_12&$menu_field_display "0" :changeBotName  $bot_to_control FALSE
+				addMenu "MENUSYSTEM" Control ANSI_12&"*"&$menu_field_display&"*" "0" :changeBotName  $bot_to_control FALSE
 				setvar $bot_to_control_display ansi_14&$bot_to_control
 				padright $bot_to_control_display $field_padding
 				setMenuValue Control $bot_to_control_display
@@ -401,6 +401,11 @@ end
 					trim $user_command_line
 					send "'"&$bot_to_control&" "&$command&" "&$user_command_line&"*"
 					halt
+				else
+					loadVar $historyString
+					setVar $history[1] $user_command_line
+					setVar $historyString $history[1]&"<<|HS|>>"&$historyString
+					saveVar $historyString
 				end
 				#echo "Sending this command to the bot:" $user_command_line "*"
 				#echo "Parameters:" $parm1 $parm2 $parm3 $parm4 $parm5 $parm6 $parm7 $parm8 "*"
