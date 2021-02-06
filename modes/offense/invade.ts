@@ -182,7 +182,7 @@
 			if ($adj_start = $MAP~stardock)
 				setVar $WeAreAdjDock TRUE
 			end
-			add $i 1
+			add $i 1n
 		end
 
 		if ((currentalignment < 1000) AND ($WeAreAdjDock = FALSE))

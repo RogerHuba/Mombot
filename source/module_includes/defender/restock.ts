@@ -221,11 +221,17 @@
 					getdistance $dist1 $START_SECTOR $player~RED_adj
 				end
 		end
+			if ((currentalignment >= 1000) OR ($WeAreAdjDock))
+				getdistance $dist1 $START_SECTOR $MAP~stardock
+				getdistance $dist2 $MAP~stardock $START_SECTOR
+			else
+				getdistance $dist1 $START_SECTOR $player~RED_adj
+				getdistance $dist2 $player~RED_adj $START_SECTOR
+			end
 			if ($dist1 <= 0)
 				setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
 				gosub :switchboard~switchboard
 				send "*"
-				send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
 				return
 			end
 
@@ -234,7 +240,6 @@
 				setvar $switchboard~message "Insufficient Warp Data Plotting Return Course From Dock*"
 				gosub :switchboard~switchboard
 				send "*"
-				send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
 				return
 			end
 
@@ -247,7 +252,6 @@
 					setvar $switchboard~message "Not Enough ORE In Holds To Make Round Trip.  Needs "&$ore_req&".*"
 					gosub :switchboard~switchboard
 					send "*"
-					send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
 					return
 
 				end
@@ -257,7 +261,6 @@
 				setvar $switchboard~message "Must Have Twarp 1 or 2*"
 				gosub :switchboard~switchboard
 				send "*"
-				send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
 				return
 			end
 
@@ -267,7 +270,6 @@
 					setvar $switchboard~message "Not Enough Turns. "&$turnsRequired&", Required*"
 					gosub :switchboard~switchboard
 					send "*"
-					send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
 					return
 				elseif ($turnsRequired <= currentturns)
 					setVar $tmp (currentturns - $turnsRequired)
@@ -275,7 +277,6 @@
 						setvar $switchboard~message "Proceeding Will Leave Fewer Than " & $bot~bot_turn_limit & " Turns!*"
 						gosub :switchboard~switchboard
 						send "*"
-						send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
 						return
 					end
 				end
@@ -289,8 +290,6 @@
 			killAllTriggers
 			setvar $switchboard~message "StarDock appears to have been Blown Up!*"
 			gosub :switchboard~switchboard
-			send "q*"
-			send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
 			return
 		:itsalive
 			killAllTriggers

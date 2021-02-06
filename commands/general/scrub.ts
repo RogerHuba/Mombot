@@ -1,7 +1,12 @@
 gosub :BOT~loadVars
-if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
-	goto :wait_for_command
-end
+
+	setvar $bot~command "scrub"
+	setVar $BOT~help[1]  $BOT~tab&"scrub {seek} "
+	setVar $BOT~help[2]  $BOT~tab&"     "
+	setVar $BOT~help[3]  $BOT~tab&"   Gets rid of limpets off of your hull"
+	setVar $BOT~help[4]  $BOT~tab&"     "
+	setVar $BOT~help[5]  $BOT~tab&"   {seek} - twarp to class 9 or 0 port and back"
+	gosub :bot~helpfile
 
 :scrub
 	setVar $message ""
@@ -10,7 +15,7 @@ end
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ((CURRENTSECTOR = 1) OR (PORT.CLASS[CURRENTSECTOR] = 0) or (CURRENTSECTOR = $map~rylos) or (CURRENTSECTOR = $map~alpha_centauri))
 		if ($startingLocation = "Citadel")
-			send "q "
+			send "q t*t1* "
 			gosub :PLANET~getPlanetInfo
 			send "q "
 		end
@@ -20,7 +25,7 @@ end
 	else
 		if ($BOT~parm1 = "seek")
 			if ($startingLocation = "Citadel")
-				send "q "
+				send "q t*t1* "
 				gosub :PLANET~getPlanetInfo
 				send "c "
 			end
@@ -48,7 +53,7 @@ end
 				gosub :player~twarp
 				gosub  :player~currentPrompt
 				if ($PLAYER~twarpSuccess = TRUE)
-					send "P  S G Y G Q s p"
+					send "P  S G YG Q s p"
 				else
 					setVar $SWITCHBOARD~message $PLAYER~msg&"*"
 					gosub :SWITCHBOARD~switchboard
@@ -95,10 +100,6 @@ end
 		end
 
 :wait_for_command
-	setvar $bot~command "scrub"
-	setVar $BOT~help[1]  $BOT~tab&"scrub - gets rid of limpets off of your hull "
-	setVar $BOT~help[2]  $BOT~tab&"    {seek} - attempts to find class 9 or 0 port"
-	gosub :bot~helpfile
 halt
 
 
