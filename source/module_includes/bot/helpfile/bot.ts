@@ -258,9 +258,18 @@ end
 					end
 					add $i 1
 				end
+				setvar $bot_to_control $bot_name
 				setvar $menu_field_display "Start!"
 				padright $menu_field_display $longest
 				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
+				setvar $menu_field_display "Bot to control:"
+				padright $menu_field_display $longest
+				addMenu "MENUSYSTEM" Control ANSI_12&$menu_field_display ":" :changeBotName  $bot_to_control FALSE
+				setvar $bot_to_control_display ansi_14&$bot_to_control
+				padright $bot_to_control_display $field_padding
+				setMenuValue Control $bot_to_control_display
+
+
 				setvar $i 1
 				setvar $field_padding 18
 				while ($i <= $fields)
@@ -832,6 +841,21 @@ goto :menu_creation
 
 	setMenuValue $fields[$field_index] $displayValue
 
+goto :menu_creation
+
+
+:changeBotName
+	getInput $bot_to_control "What bot are you trying to control?"
+
+
+	if ($bot_to_control = "")
+		setvar $bot_to_control $bot_name
+		setvar $bot_to_control_display ansi_14&$bot_name
+	else
+		setvar $bot_to_control_display ansi_14&$bot_to_control
+	end
+	padright $bot_to_control_display $field_padding
+	setMenuValue Control $bot_to_control_display
 goto :menu_creation
 
 include "source\module_includes\bot\displayhelp\bot"
