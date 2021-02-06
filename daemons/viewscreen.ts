@@ -113,7 +113,7 @@ settextlinetrigger figHit :figHitProcess "of your fighters in sector"
 settextlinetrigger offFigHit :figHitProcess "Your fighters in sector"
 #settextlinetrigger entered :figHitProcess "Deployed Fighters Report Sector"
 
-setdelaytrigger    silentdelay :checksilent 900000
+#setdelaytrigger    silentdelay :checksilent 900000
 #settextlinetrigger limpet :limpetProcess "Limpet mine in "
 
 getDeafClients $BOT~botIsDeaf
