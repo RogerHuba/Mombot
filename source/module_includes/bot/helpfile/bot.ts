@@ -266,6 +266,7 @@ end
 				padright $menu_field_display $longest
 				addMenu "MENUSYSTEM" Control ANSI_12&$menu_field_display "0" :changeBotName  $bot_to_control FALSE
 				setvar $bot_to_control_display ansi_14&$bot_to_control
+				padright $bot_to_control_display $longest
 				setMenuValue Control $bot_to_control_display
 
 
