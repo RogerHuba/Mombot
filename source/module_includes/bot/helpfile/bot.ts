@@ -252,7 +252,11 @@ end
 				setvar $longest 0
 				setvar $i 1
 				while ($i <= $fields)
-					getlength $fields[$i] $length
+					if ($fields[$i][1] = "multi")
+						getlength "::select::" $length
+					else
+						getlength $fields[$i] $length
+					end
 					if ($length > $longest)
 						setvar $longest $length
 					end
@@ -261,19 +265,20 @@ end
 				setvar $bot_to_control $bot_name
 				setvar $menu_field_display "Start!"
 				padright $menu_field_display $longest
-				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
-				setvar $menu_field_display "Bot to control:"
+				addMenu "MENUSYSTEM" Start ANSI_15&$menu_field_display "Z" :endMenuAndGo  "" FALSE
+				setvar $menu_field_display "Bot"
 				padright $menu_field_display $longest
-				addMenu "MENUSYSTEM" Control ANSI_12&$menu_field_display "0" :changeBotName  $bot_to_control FALSE
+				setvar $menu_field_display $menu_field_display&" "&ansi_14&":"&ansi_15&" "
+				addMenu "MENUSYSTEM" Control ANSI_15&$menu_field_display "0" :changeBotName  $bot_to_control FALSE
 				setvar $bot_to_control_display ansi_14&$bot_to_control
-				padright $bot_to_control_display $field_padding
+				padright $bot_to_control_display $longest
 				setMenuValue Control $bot_to_control_display
 
 
 				setvar $i 1
 				setvar $field_padding 18
 				while ($i <= $fields)
-					setvar $extra "("&$fields[$i][3]&")"
+					setvar $extra $fields[$i][3]
 					if ($fields[$i][1] = "boolean")					
 						if ($fields[$i][2] = true)
 							setvar $displayValue ansi_14&"On"
@@ -298,7 +303,7 @@ end
 							end
 							add $k 1
 						end
-						setvar $extra "("&$descriptions[$optionIndex]&")"
+						setvar $extra ansi_15&"["&ansi_14&$descriptions[$optionIndex]&ansi_15&"]"&ansi_14
 						setvar $displayValue ansi_14&$fields[$i][2]
 						padright $displayValue $field_padding
 						setvar $displayValue $displayValue&$extra
@@ -317,8 +322,12 @@ end
 						setvar $displayValue $displayValue&$extra
 					end
 
-					setvar $menu_field_display $fields[$i]
-					padright $menu_field_display $longest
+					if ($fields[$i][1] = "multi")
+						setvar $menu_field_display "::select::"
+					else
+						setvar $menu_field_display $fields[$i]
+					end
+					padleft $menu_field_display $longest
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_11&$menu_field_display&ANSI_14&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					setMenuValue $fields[$i] $displayValue
 					setMenuHelp $fields[$i] $fields[$i][3]
@@ -396,11 +405,21 @@ end
 				savevar $parm6
 				savevar $parm7
 				savevar $parm8
+				trim $command
+				trim $user_command_line
 				if ($bot_name <> $bot_to_control)
-					trim $command
-					trim $user_command_line
-					send "'"&$bot_to_control&" "&$command&" "&$user_command_line&"*"
+					setvar $control_string "'"&$bot_to_control&" "&$command&" "&$user_command_line
+					send $control_string&"*"
+					loadVar $historyString
+					setVar $history[1] $control_string
+					setVar $historyString $history[1]&"<<|HS|>>"&$historyString
+					saveVar $historyString
 					halt
+				else
+					loadVar $historyString
+					setVar $history[1] $command&" "&$user_command_line
+					setVar $historyString $history[1]&"<<|HS|>>"&$historyString
+					saveVar $historyString
 				end
 				#echo "Sending this command to the bot:" $user_command_line "*"
 				#echo "Parameters:" $parm1 $parm2 $parm3 $parm4 $parm5 $parm6 $parm7 $parm8 "*"
@@ -506,7 +525,7 @@ return
 		setvar $displayValue ansi_15&"Off"
 	end
 	setvar $fields[$field_index][2] $currentValue
-	setvar $extra "("&$fields[$field_index][3]&")"
+	setvar $extra $fields[$field_index][3]
 	padright $displayValue $field_padding
 	setvar $displayValue $displayValue&$extra
 	setMenuValue $fields[$field_index] $displayValue
@@ -615,7 +634,7 @@ goto :menu_creation
 				end
 				setvar $currentValue $options[$optionIndex]
 				splitText $fields[$field_index][3] $descriptions "|"
-				setvar $extra "("&$descriptions[$optionIndex]&")"
+				setvar $extra ansi_15&"["&ansi_14&$descriptions[$optionIndex]&ansi_15&"]"&ansi_14
 				setvar $displayValue ansi_14&$currentValue
 				padright $displayValue $field_padding
 				setvar $displayValue $displayValue&$extra
@@ -729,7 +748,7 @@ goto :menu_creation
 	else
 		setvar $displayValue ansi_14&$displayValue
 	end
-	setvar $extra "("&$fields[$field_index][3]&")"
+	setvar $extra $fields[$field_index][3]
 	padright $displayValue $field_padding
 	setvar $displayValue $displayValue&$extra
 
@@ -840,7 +859,7 @@ goto :menu_creation
 	else
 		setvar $displayValue ansi_14&$displayValue
 	end
-	setvar $extra "("&$fields[$field_index][3]&")"
+	setvar $extra $fields[$field_index][3]
 	padright $displayValue $field_padding
 	setvar $displayValue $displayValue&$extra
 

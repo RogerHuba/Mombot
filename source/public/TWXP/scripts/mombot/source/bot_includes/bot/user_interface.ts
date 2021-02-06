@@ -917,7 +917,12 @@ return
 	end
 :runHotScript
 	load $BOT~HOTKEY_SCRIPTS[$i]
-	fileExists $chk $BOT~HOTKEY_SCRIPTS[$i]
+	getwordpos $BOT~HOTKEY_SCRIPTS[$i] $pos "scripts/"
+	if ($pos > 0)
+		fileExists $chk $BOT~HOTKEY_SCRIPTS[$i]
+	else
+		fileExists $chk "scripts/"&$BOT~HOTKEY_SCRIPTS[$i]
+	end
 	if ($chk <> true)
 		echo ANSI_4&"*"&$BOT~HOTKEY_SCRIPTS[$i]&" does not exist in specified location.  Please check your "&$BOT~SCRIPT_FILE&" file to make sure it is correct.*"&ANSI_7
 	end

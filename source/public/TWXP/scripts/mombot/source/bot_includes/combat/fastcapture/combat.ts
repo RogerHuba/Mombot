@@ -4,7 +4,7 @@
 	setVar $targetIsAlien FALSE
 	setVar $stillShields FALSE
 	setVar $ship_fighters 0
-
+	
 	loadvar $ship~SHIP_MAX_ATTACK
 	loadvar $SHIP~SHIP_OFFENSIVE_ODDS
 
@@ -15,7 +15,11 @@
 	if ((currentsector = stardock) or (currentsector <= 10))
 		setvar $player~fedspace true
 	end
-	setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j q * " 
+	if ($player~onetap = TRUE) or ($player~slowmo = TRUE)
+		setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j * c " 
+	else
+		setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j q * " 
+	end
 	:checkingFigs
 		if ($player~fighters <= 0)
 			gosub :player~quikstats
@@ -28,6 +32,7 @@
 			end
 		end
 		setVar $targetString "a "
+
 	if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($player~onlyAliens <> TRUE) and ($player~empty_ships_only <> true))
 		if ($player~fedspace <> true)
 			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
@@ -60,6 +65,7 @@
 	end
 
 	if ((($SECTOR~fakeTraderCount > 0) AND ($player~cappingAliens = TRUE)) AND ($player~isFound <> TRUE) and ($player~empty_ships_only <> true))
+		setVar $targetString "a "
 		if ($player~fedspace <> true)
 			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 			if ($beaconPos > 0)
@@ -84,7 +90,20 @@
 			
 		end
 	end
+	
 	if (($player~isFound = FALSE) AND ($SECTOR~emptyShipCount > 0) and ($player~fedspace <> true))
+		# Add this reset to TargetString - When a ship is defender and there are empty ships
+		# The block of code above (targetting players), accounts for these ships
+		# However, if player~isFound = FALSE, then it isn't ACTUALLY going to attack.
+		# It means we have already skipped these ships, before we get to target them.
+
+		setVar $targetString "a "
+		if ($player~fedspace <> true)
+			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
+			if ($beaconPos > 0)
+				setVar $targetString $targetString&"*"
+			end
+		end
 		if ($player~fedspace <> true)
 			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
 			if ($beaconPos > 0)
@@ -104,6 +123,11 @@
 		end
 	end
 	if ($player~isFound = FALSE)
+		if ($player~onetap = TRUE)			
+			setvar $switchboard~message "No Targets - One Tap Complete.*"
+			gosub :switchboard~switchboard
+			halt
+		end
 		setvar $switchboard~message "*You have no targets.*" 
 		gosub :bot~echo
 		goto :capstoppingPoint
@@ -342,6 +366,21 @@
 					setvar $sendAttack $sendAttack&$player~refurbString
 				end
 				send $sendAttack
+				if ($player~onetap = TRUE)
+					
+					setvar $switchboard~message "One tap complete.*"
+					gosub :switchboard~switchboard
+					halt
+				end
+				if ($player~slowmo = TRUE)
+					getRnd $slowRnd 10 25
+					setVar $slowBreak (($slowRnd * $GAME~LATENCY) + 1000)
+					setDelayTrigger citCapBreak :citCapBreak $slowBreak 
+					pause
+					:citCapBreak
+						killtrigger citCapBreak
+						return
+				end
 				if ($cap_points = 1)
 					setvar $i 1
 					setvar $burst ""
@@ -355,6 +394,7 @@
 					pause
 					:donelittleslower
 					gosub :player~quikstats
+					
 				end
 		:keepcapping
 		end

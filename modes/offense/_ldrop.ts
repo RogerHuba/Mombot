@@ -6,22 +6,19 @@
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-	setVar $BOT~help[1]    $BOT~tab&"[delay] {plock | foton} {kill} {direct} {return}"
-	setVar $BOT~help[2]    $BOT~tab&"        {figs:n} {offensive}"
+	setVar $BOT~help[1]    $BOT~tab&"  ldrop {delay:#} {drop|plock|foton} {kill} {direct} "
+	setVar $BOT~help[2]    $BOT~tab&"        {return} {figs:n} {offensive}  "
 	setVar $BOT~help[3]    $BOT~tab&"      "
-	setVar $BOT~help[4]    $BOT~tab&"    {plock} - plocks sector and triggers directly "
-	setVar $BOT~help[5]    $BOT~tab&"              or after {delay}.  if {return} is set  "
-	setVar $BOT~help[6]    $BOT~tab&"              plock cancels and returns after 5 seconds"
-	setVar $BOT~help[7]    $BOT~tab&"    {foton} - lands 1 sector away and starts density foton"
-	setVar $BOT~help[8]    $BOT~tab&"     {kill} - attempts to kill after drop (direct or plock)"
-	setVar $BOT~help[9]    $BOT~tab&" {holokill} - attempts to holokill after drop (direct or plock)"
-	setVar $BOT~help[10]   $BOT~tab&"   {direct} - try to drop directly into the sector"
-	setVar $BOT~help[11]   $BOT~tab&"   {return} - after drop, return to starting sector "
-	setVar $BOT~help[12]   $BOT~tab&"              and scan again"
-	setVar $BOT~help[13]   $BOT~tab&"    {delay} - how many milliseconds to wait before drop or plock"
-	setVar $BOT~help[14]   $BOT~tab&"   {figs:n} - drop this many figs to sector on landing"
-	setVar $BOT~help[15]   $BOT~tab&"{offensive} - make figs offensive, default defense."
-	setVar $BOT~help[16]   $BOT~tab&"              Will ship drop if started in command prompt."
+	setVar $BOT~help[4]    $BOT~tab&"     {drop} - regular planet drop "
+	setVar $BOT~help[5]    $BOT~tab&"    {plock} - plocks sector and triggers directly "
+	setVar $BOT~help[6]    $BOT~tab&"    {foton} - lands 1 sector away and starts density foton"
+	setVar $BOT~help[7]    $BOT~tab&"     {kill} - attempts to kill after drop (direct or plock)"
+	setVar $BOT~help[8]    $BOT~tab&" {holokill} - attempts to holokill after drop (direct or plock)"
+	setVar $BOT~help[9]    $BOT~tab&"   {direct} - try to drop directly into the sector"
+	setVar $BOT~help[10]   $BOT~tab&"   {return} - after drop, return to starting sector "
+	setVar $BOT~help[11]   $BOT~tab&"  {delay:#} - how many milliseconds to wait before drop or plock"
+	setVar $BOT~help[12]   $BOT~tab&"   {figs:n} - drop this many figs to sector on landing"
+	setVar $BOT~help[13]   $BOT~tab&"{offensive} - make figs offensive, default defense."
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Predictive Dropper"
@@ -53,6 +50,14 @@ if ($pos > 0)
 	end
 else
 	setVar $dropftrs FALSE
+end
+
+getWordPos $bot~user_command_line $pos "delay:"
+if ($pos > 0)
+	setVar $cline $bot~user_command_line & " "
+	getText $cline $delay "delay:" " "
+else
+	setVar $delay 0
 end
 
 getWordPos $bot~user_command_line $pos "avoid:"
@@ -123,23 +128,24 @@ else
 	setVar $return FALSE
 end
 
-isNumber $test $bot~parm1
-if ($test = TRUE)
-	setVar $delay $bot~parm1
-else
-	isNumber $test $bot~parm2
+if ($delay = false)
+	isNumber $test $bot~parm1
 	if ($test = TRUE)
-		setVar $delay $bot~parm2
+		setVar $delay $bot~parm1
 	else
-		isNumber $test $bot~parm3
+		isNumber $test $bot~parm2
 		if ($test = TRUE)
-			setVar $delay $bot~parm3
+			setVar $delay $bot~parm2
 		else
-			setVar $delay 0
+			isNumber $test $bot~parm3
+			if ($test = TRUE)
+				setVar $delay $bot~parm3
+			else
+				setVar $delay 0
+			end
 		end
 	end
 end
-
 
 		
 setVar $moveFigMacro ""

@@ -10,31 +10,41 @@ reqRecording
 	loadvar $switchboard~self_command
 	loadvar $ship~ship_max_attack
 
-	setVar $BOT~help[1]   $BOT~tab&"pdrop [on | off]{delay}{drop type}{trigger}{return}{kill} "
-	setVar $BOT~help[2]   $BOT~tab&"      "
-	setVar $BOT~help[3]   $BOT~tab&"    [delay] - delay before dropping in milliseconds"
-	setVar $BOT~help[4]   $BOT~tab&"[drop type] - [d]irect, [a]djacent, [s]urround, "
-	setvar $BOT~help[5]   $BOT~tab&"              [da] direct, then adjacent,"
-	setvar $BOT~help[6]   $BOT~tab&"              or [de] dead end drop"
-	setVar $BOT~help[7]   $BOT~tab&"    [delay] - delay before dropping in milliseconds"
-	setVar $BOT~help[8]   $BOT~tab&"  [trigger] - [f]igs, [fm] figs or mines,  "
-	setVar $BOT~help[9]   $BOT~tab&"              [m]ines, [uf] No-Fig Mines"
-	setVar $BOT~help[10]   $BOT~tab&"   [return] - will return planet home after 10 seconds"
-	setVar $BOT~help[11]  $BOT~tab&"     [kill] - checks for enemy, and kills if possible"
-	setVar $BOT~help[12]  $BOT~tab&" [fastkill] - does kill mac without checking"
-	setVar $BOT~help[13]  $BOT~tab&" [defender] - sets and lifts IG capable defender"
-	setVar $BOT~help[14]  $BOT~tab&"  [perfect] - Only drops adjacent when it is only option"
-	setVar $BOT~help[15]  $BOT~tab&"  [density] - Drops adjacent, runs density photon"
-	setVar $BOT~help[16]  $BOT~tab&"     [lock] - Locks on sector then halts"
-	setVar $BOT~help[17]  $BOT~tab&" [plockt:n] - How long plock holds till retrigger (ms)."
-	setVar $BOT~help[18]  $BOT~tab&"              If not specified it keeps waiting"	
-	setVar $BOT~help[19]  $BOT~tab&"   [figs:n] - drop this many figs to sector on landing"
-	setVar $BOT~help[20]  $BOT~tab&"[offensive] - make figs offensive, default defense."	
-	setVar $BOT~help[21]  $BOT~tab&"  [twohops] - for deadend drop, will make sure de is"	
-	setVar $BOT~help[22]  $BOT~tab&"              2 or more hops away"	
-	setVar $BOT~help[23]  $BOT~tab&"[retrigger] - Keep hunting for targets"	
-	setVar $BOT~help[24]  $BOT~tab&" [densityx] - Density < 40 for xport in and deploy"
-	setVar $BOT~help[25]  $BOT~tab&"   [iglift] - sets and lifts IG self"
+	setVar $BOT~help[1]   $BOT~tab&"pdrop {delay:#} {d|a|s|da|de} {fm|f|m|uf} {return} {kill} "
+	setVar $BOT~help[2]   $BOT~tab&"      {fastkill} {defender} {perfect} {density} {lock}"
+	setVar $BOT~help[3]   $BOT~tab&"      {plockt:#} {figs:#} {offensive} {twohops} {retrigger}"
+	setVar $BOT~help[4]   $BOT~tab&"      {densityx} {iglift}"
+	setVar $BOT~help[5]   $BOT~tab&"      "
+	setVar $BOT~help[6]   $BOT~tab&"  {delay:#} - delay before dropping in milliseconds"
+	setVar $BOT~help[7]   $BOT~tab&"        {d} - direct drop"
+	setVar $BOT~help[8]   $BOT~tab&"        {a} - adjacent drop"
+	setVar $BOT~help[9]   $BOT~tab&"        {s} - surround drop"
+	setVar $BOT~help[10]  $BOT~tab&"       {da} - direct, then adjacent drop"
+	setVar $BOT~help[11]  $BOT~tab&"       {de} - dead end drop"
+	setVar $BOT~help[12]  $BOT~tab&"       {fm} - trigger on fighter and mine hits"
+	setVar $BOT~help[13]  $BOT~tab&"        {f} - trigger on fighter hits only"
+	setVar $BOT~help[14]  $BOT~tab&"        {m} - trigger on mines only"
+	setVar $BOT~help[15]  $BOT~tab&"       {uf} - trigger on mines with no fighters"
+	setVar $BOT~help[16]  $BOT~tab&"   {return} - will return planet home after 10 seconds"
+	setVar $BOT~help[17]  $BOT~tab&"     {kill} - checks for enemy, and kills if possible"
+	setVar $BOT~help[18]  $BOT~tab&" {fastkill} - does kill mac without checking"
+	setVar $BOT~help[19]  $BOT~tab&" {defender} - sets and lifts IG capable defender"
+	setVar $BOT~help[20]  $BOT~tab&"  {perfect} - Only drops adjacent when it is only option"
+	setVar $BOT~help[21]  $BOT~tab&"  {density} - Drops adjacent, runs density photon"
+	setVar $BOT~help[22]  $BOT~tab&"     {lock} - Locks on sector then halts"
+	setVar $BOT~help[23]  $BOT~tab&" {plockt:#} - Plock delay before retrigger. Default is no retrigger."
+	setVar $BOT~help[24]  $BOT~tab&"   {figs:#} - drop this many figs to sector on landing"
+	setVar $BOT~help[25]  $BOT~tab&"{offensive} - make figs offensive, default defense."	
+	setVar $BOT~help[26]  $BOT~tab&"  {twohops} - deadend drop, make sure de 2 hops or more away"	
+	setVar $BOT~help[27]  $BOT~tab&"{retrigger} - Keep hunting for targets"	
+	setVar $BOT~help[28]  $BOT~tab&" {densityx} - Density < 40 for xport in and deploy"
+	setVar $BOT~help[29]  $BOT~tab&"   {iglift} - sets and lifts IG self"
+	setVar $BOT~help[30]  $BOT~tab&"    "
+	setVar $BOT~help[31]  $BOT~tab&"   Examples:"
+	setVar $BOT~help[32]  $BOT~tab&"      >pdrop delay:10000 d f return kill"
+	setVar $BOT~help[33]  $BOT~tab&"      >pdrop 1000 da fm "
+	setVar $BOT~help[34]  $BOT~tab&"      >pdrop a f kill"
+	
 		
 	gosub :bot~helpfile
 
@@ -79,18 +89,24 @@ reqRecording
 		setVar $mode "General"
 	        halt
 	end
-	if ($bot~parm1 <> "on")
-		send "'{" $bot~bot_name "} - Please use [on/off] {delay} {drop type} {trigger type} {kill} {return}*"
-		halt
-	end
 	gosub :ship~getshipstats
+
+
 	setvar $bot~user_command_line " "&$bot~user_command_line&" "
-	isNumber $test $bot~parm2
-	if ($test)
-		setVar $dropDelay $bot~parm2
+
+	getWordPos $bot~user_command_line $pos " delay:"
+	if ($pos > 0)
+		setVar $cline $bot~user_command_line & " "
+		getText $cline $dropDelay "delay:" " "
 	else
-		setVar $dropDelay 0
+		isNumber $test $bot~parm1
+		if ($test)
+			setVar $dropDelay $bot~parm1
+		else
+			setVar $dropDelay 0
+		end
 	end
+
 	getWordPos $bot~user_command_line $pos " d "
 	if ($pos > 0)
 		setVar $dropDescription "Direct"
