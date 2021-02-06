@@ -278,7 +278,7 @@ end
 				setvar $i 1
 				setvar $field_padding 18
 				while ($i <= $fields)
-					setvar $extra "("&$fields[$i][3]&")"
+					setvar $extra $fields[$i][3]
 					if ($fields[$i][1] = "boolean")					
 						if ($fields[$i][2] = true)
 							setvar $displayValue ansi_14&"On"
@@ -303,7 +303,7 @@ end
 							end
 							add $k 1
 						end
-						setvar $extra "("&$descriptions[$optionIndex]&")"
+						setvar $extra ansi_15&"["&ansi_14&$descriptions[$optionIndex]&ansi_15&"]"&ansi_14
 						setvar $displayValue ansi_14&$fields[$i][2]
 						padright $displayValue $field_padding
 						setvar $displayValue $displayValue&$extra
@@ -525,7 +525,7 @@ return
 		setvar $displayValue ansi_15&"Off"
 	end
 	setvar $fields[$field_index][2] $currentValue
-	setvar $extra "("&$fields[$field_index][3]&")"
+	setvar $extra $fields[$field_index][3]
 	padright $displayValue $field_padding
 	setvar $displayValue $displayValue&$extra
 	setMenuValue $fields[$field_index] $displayValue
@@ -634,7 +634,7 @@ goto :menu_creation
 				end
 				setvar $currentValue $options[$optionIndex]
 				splitText $fields[$field_index][3] $descriptions "|"
-				setvar $extra "("&$descriptions[$optionIndex]&")"
+				setvar $extra ansi_15&"["&ansi_14&$descriptions[$optionIndex]&ansi_15"]"&ansi_14
 				setvar $displayValue ansi_14&$currentValue
 				padright $displayValue $field_padding
 				setvar $displayValue $displayValue&$extra
@@ -748,7 +748,7 @@ goto :menu_creation
 	else
 		setvar $displayValue ansi_14&$displayValue
 	end
-	setvar $extra "("&$fields[$field_index][3]&")"
+	setvar $extra $fields[$field_index][3]
 	padright $displayValue $field_padding
 	setvar $displayValue $displayValue&$extra
 
@@ -859,7 +859,7 @@ goto :menu_creation
 	else
 		setvar $displayValue ansi_14&$displayValue
 	end
-	setvar $extra "("&$fields[$field_index][3]&")"
+	setvar $extra $fields[$field_index][3]
 	padright $displayValue $field_padding
 	setvar $displayValue $displayValue&$extra
 
