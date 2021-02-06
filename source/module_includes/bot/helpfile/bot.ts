@@ -397,7 +397,9 @@ end
 				savevar $parm7
 				savevar $parm8
 				if ($bot_name <> $bot_to_control)
-					send "'"&$bot_to_control&" "&$user_command_line&"*"
+					trim $command
+					trim $user_command_line
+					send "'"&$bot_to_control&" "&$command&" "&$user_command_line&"*"
 					halt
 				end
 				#echo "Sending this command to the bot:" $user_command_line "*"
