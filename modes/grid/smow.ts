@@ -71,37 +71,52 @@
         setVar $nextSafeSector $PLAYER~mowCourse[$j]
         send "sd"
         gosub :PLAYER~quikstats
-                setVar $safeDensityValue 0
-                if (PORT.EXISTS[$nextSafeSector] = TRUE)
-                    add $safeDensityValue 100
-                end
-                if ((SECTOR.FIGS.QUANTITY[$nextSafeSector] > 0) AND ((SECTOR.FIGS.OWNER[$nextSafeSector] = "yours") OR (SECTOR.FIGS.OWNER[$nextSafeSector] = "belong to your Corp")))
-                    add $safeDensityValue (SECTOR.FIGS.QUANTITY[$nextSafeSector] * 5)
-                end
-                if ((SECTOR.LIMPETS.QUANTITY[$nextSafeSector] > 0) AND ((SECTOR.LIMPETS.OWNER[$nextSafeSector] = "yours") OR (SECTOR.LIMPETS.OWNER[$nextSafeSector] = "belong to your Corp")) AND (SECTOR.ANOMALY[$nextSafeSector] = TRUE))
-                    add $safeDensityValue (SECTOR.LIMPETS.QUANTITY[$nextSafeSector] * 3)
-                end
-                if ((SECTOR.MINES.QUANTITY[$nextSafeSector] > 0) AND ((SECTOR.MINES.OWNER[$nextSafeSector] = "yours") OR (SECTOR.MINES.OWNER[$nextSafeSector] = "belong to your Corp")))
-                    add $safeDensityValue (SECTOR.MINES.QUANTITY[$nextSafeSector] * 2)
-                end
-                setVar $densitySafe ((SECTOR.DENSITY[$nextSafeSector] <= 0) OR (SECTOR.DENSITY[$nextSafeSector] = $safeDensityValue))
-                if ($densitySafe <> TRUE)
-                    if ($PLAYER~SCAN_TYPE = "Holo")
-                        send "sh"
-                        gosub :PLAYER~quikstats
-                    end    
-                    setVar $minesSafe ((SECTOR.MINES.QUANTITY[$nextSafeSector] <= 0) OR (((SECTOR.MINES.OWNER[$nextSafeSector] = "yours") OR (SECTOR.MINES.OWNER[$nextSafeSector] = "belong to your Corp"))))
-                    setVar $figsSafe  ((SECTOR.FIGS.QUANTITY[$nextSafeSector] <= 0) OR (((SECTOR.FIGS.OWNER[$nextSafeSector] = "yours") OR (SECTOR.FIGS.OWNER[$nextSafeSector] = "belong to your Corp"))))
-                    setVar $planet~planetSafe ((SECTOR.PLANETCOUNT[$nextSafeSector] <= 0) OR (($nextSafeSector = $MAP~stardock) OR ($nextSafeSector <= 10)))
-                    setVar $navHazSafe (SECTOR.NAVHAZ[$nextSafeSector] <= 0)
-                    setVar $player~limpetsSafe (SECTOR.ANOMALY[$nextSafeSector] = FALSE) OR ((((SECTOR.LIMPETS.OWNER[$nextSafeSector] = "yours") OR (SECTOR.LIMPETS.OWNER[$nextSafeSector] = "belong to your Corp"))))
-                end
-                if ($densitySafe OR ($player~limpetsSafe AND $figsSafe AND $minesSafe AND $navHazSafe AND $planet~planetSafe))
-                        send "m "&$PLAYER~mowCourse[$j]&"* "
-                else
-                        send "'{" $SWITCHBOARD~bot_name "} - Cannot safely move into sector "&$nextSafeSector&"*"
-                        goto :wait_for_command
-                end
+        setVar $safeDensityValue 0
+
+        getSectorParameter $nextSafeSector "FIGSEC"  $isFigged
+        getSectorParameter $nextSafeSector "MINESEC" $isArmided
+        getSectorParameter $nextSafeSector "LIMPSEC" $isLimped
+        
+        
+        if (PORT.EXISTS[$nextSafeSector] = TRUE)
+            setVar $safeDensityValue 100
+        else
+            setVar $safeDensityValue 0
+        end
+        if ($nextSafeSector < 11)
+            add $safeDensityValue 1
+        end
+       # database is to unreliable - most of the time it's only 1 fig! or we might not have seen fig
+       # when someone else gets it. We can store numbers in >update onday
+        if ($isFigged = TRUE)
+            add $safeDensityValue 5
+        end
+        if ((SECTOR.LIMPETS.QUANTITY[$nextSafeSector] > 0) AND ($isLimped = TRUE) AND (SECTOR.ANOMALY[$nextSafeSector] = TRUE))
+            add $safeDensityValue (SECTOR.LIMPETS.QUANTITY[$nextSafeSector] * 2)
+        end
+        if ((SECTOR.MINES.QUANTITY[$nextSafeSector] > 0) AND ($isArmided = TRUE))
+            add $safeDensityValue (SECTOR.MINES.QUANTITY[$nextSafeSector] * 10)
+        end
+        setVar $densitySafe ((SECTOR.DENSITY[$nextSafeSector] <= 0) OR (SECTOR.DENSITY[$nextSafeSector] = $safeDensityValue))
+        if ($densitySafe <> TRUE)
+            if ($PLAYER~SCAN_TYPE = "Holo")
+                send "sh"
+                gosub :PLAYER~quikstats
+            end    
+            setVar $minesSafe ((SECTOR.MINES.QUANTITY[$nextSafeSector] <= 0) OR (((SECTOR.MINES.OWNER[$nextSafeSector] = "yours") OR (SECTOR.MINES.OWNER[$nextSafeSector] = "belong to your Corp"))))
+            setVar $figsSafe  ((SECTOR.FIGS.QUANTITY[$nextSafeSector] <= 0) OR (((SECTOR.FIGS.OWNER[$nextSafeSector] = "yours") OR (SECTOR.FIGS.OWNER[$nextSafeSector] = "belong to your Corp"))))
+            setVar $planet~planetSafe ((SECTOR.PLANETCOUNT[$nextSafeSector] <= 0) OR (($nextSafeSector = $MAP~stardock) OR ($nextSafeSector <= 10)))
+            setVar $navHazSafe (SECTOR.NAVHAZ[$nextSafeSector] <= 0)
+            setVar $player~limpetsSafe (SECTOR.ANOMALY[$nextSafeSector] = FALSE) OR ((((SECTOR.LIMPETS.OWNER[$nextSafeSector] = "yours") OR (SECTOR.LIMPETS.OWNER[$nextSafeSector] = "belong to your Corp"))))
+        end
+        if ($densitySafe OR ($player~limpetsSafe AND $figsSafe AND $minesSafe AND $navHazSafe AND $planet~planetSafe))
+                send "m "&$PLAYER~mowCourse[$j]&"* "
+                setSectorParameter $PLAYER~mowCourse[$j] "FIGSEC" TRUE
+        else
+                send "'{" $SWITCHBOARD~bot_name "} - Cannot safely move into sector "&$nextSafeSector&"*"
+                goto :wait_for_command
+        end
+
         if (($figsToDrop > 0) AND ($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
             send "f "&$figsToDrop&" * c d "
             setVar $target $PLAYER~mowCourse[$j]
