@@ -400,7 +400,12 @@ end
 				trim $command
 				trim $user_command_line
 				if ($bot_name <> $bot_to_control)
-					send "'"&$bot_to_control&" "&$command&" "&$user_command_line&"*"
+					setvar $control_string "'"&$bot_to_control&" "&$command&" "&$user_command_line
+					send $control_string&"*"
+					loadVar $historyString
+					setVar $history[1] $control_string
+					setVar $historyString $history[1]&"<<|HS|>>"&$historyString
+					saveVar $historyString
 					halt
 				else
 					loadVar $historyString
