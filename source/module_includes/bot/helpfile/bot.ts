@@ -252,7 +252,11 @@ end
 				setvar $longest 0
 				setvar $i 1
 				while ($i <= $fields)
-					getlength $fields[$i] $length
+					if ($fields[$i][1] = "multi")
+						getlength "-:"&$fields[$i][2]&":-" $length
+					else
+						getlength $fields[$i] $length
+					end
 					if ($length > $longest)
 						setvar $longest $length
 					end
@@ -318,7 +322,11 @@ end
 						setvar $displayValue $displayValue&$extra
 					end
 
-					setvar $menu_field_display $fields[$i]
+					if ($fields[$i][1] = "multi")
+						setvar $menu_field_display "-:"&$fields[$i][2]&":-"
+					else
+						setvar $menu_field_display $fields[$i]
+					end
 					padright $menu_field_display $longest
 					addMenu "MENUSYSTEM" $fields[$i] ANSI_11&$menu_field_display&ANSI_14&" : " $menu_system_keys[$i] ":"&$fields[$i][1]&"Field"&$i $fields[$i][3] FALSE
 					setMenuValue $fields[$i] $displayValue
