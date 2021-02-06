@@ -6,7 +6,7 @@ loadVar $bot~Folder
 loadVar $game~photon_duration
 
 setVar $BOT~help[1]   $BOT~tab&" prhunt {foton|announce|checkports|fotonlist|prtargets}"
-setVar $BOT~help[2]   $BOT~tab&"        {bwarp} {4warp|5warp|6warp|3warp} {kill} {surround}"
+setVar $BOT~help[2]   $BOT~tab&"        {bwarp} {3warp|4warp|5warp|6warp} {kill} {surround}"
 setVar $BOT~help[3]   $BOT~tab&"        {pig} {direct} {retrigger} {lock:param} {holokill}"
 setVar $BOT~help[4]   $BOT~tab&"  "
 setVar $BOT~help[5]   $BOT~tab&" PRHunt - Port Report Hunter - Foton"
