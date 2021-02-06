@@ -283,7 +283,7 @@ end
 						if ($fields[$i][2] = true)
 							setvar $displayValue ansi_14&"On"
 						else
-							setvar $displayValue ansi_7&"Off"
+							setvar $displayValue ansi_15&"Off"
 						end
 						padright $displayValue $field_padding
 						setvar $displayValue $displayValue&$extra
@@ -311,13 +311,13 @@ end
 					if ($fields[$i][1] = "string")
 						setvar $displayValue $fields[$i][2]
 						if ($displayValue = "")
-							setvar $displayValue ansi_7&"Off"
+							setvar $displayValue ansi_15&"Off"
 						end
 						padright $displayValue $field_padding
 						setvar $displayValue $displayValue&$extra
 					end
 					if ($fields[$i][1] = "number")
-						setvar $displayValue ansi_7&$fields[$i][2]
+						setvar $displayValue ansi_15&$fields[$i][2]
 						padright $displayValue $field_padding
 						setvar $displayValue $displayValue&$extra
 					end
@@ -522,7 +522,7 @@ return
 		setvar $displayValue ansi_14&"On"
 	else
 		setvar $currentValue false
-		setvar $displayValue ansi_7&"Off"
+		setvar $displayValue ansi_15&"Off"
 	end
 	setvar $fields[$field_index][2] $currentValue
 	setvar $extra $fields[$field_index][3]
@@ -744,7 +744,7 @@ goto :menu_creation
 
 
 	if ($displayValue = "")
-		setvar $displayValue ansi_7&"Off"
+		setvar $displayValue ansi_15&"Off"
 	else
 		setvar $displayValue ansi_14&$displayValue
 	end
@@ -855,7 +855,7 @@ goto :menu_creation
 	setvar $fields[$field_index][2] $displayValue
 
 	if ($displayValue = 0)
-		setvar $displayValue ansi_7&$displayValue
+		setvar $displayValue ansi_15&$displayValue
 	else
 		setvar $displayValue ansi_14&$displayValue
 	end
