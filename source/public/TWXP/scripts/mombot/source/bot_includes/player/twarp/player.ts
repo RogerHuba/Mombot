@@ -55,7 +55,7 @@
 		end
 	end
 	if ($RED_adj <> 0)
-		goto :twarp_lock
+		send "* mz" $warpto "*"
 	end
 	if ($startingLocation = "Citadel")
 		send "q t*t1* q q * c u y q mz" $warpto "*"
@@ -147,3 +147,5 @@ return
 	killtrigger no_fuel
 return
 # ======================    END INTERNAL TWARP SUBROUTINE     ==========================
+
+include "source\bot_includes\player\findjumpsector\player"

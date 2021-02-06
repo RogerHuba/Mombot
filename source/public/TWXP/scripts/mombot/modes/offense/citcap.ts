@@ -6,18 +6,22 @@
 	setVar $BOT~help[4]  $BOT~tab&" {"&#34&"player name"&#34&"} - Player to target, name must be"
 	setVar $BOT~help[5]  $BOT~tab&"                   surrounded by double quotes"
 	setVar $BOT~help[6]  $BOT~tab&"         {corp#} - Corporation number to target"
-	setVar $BOT~help[7]  $BOT~tab&"      {override} - override to cap defender ships"
-	setVar $BOT~help[8]  $BOT~tab&"         "
-	setVar $BOT~help[9]  $BOT~tab&"         Examples:"
-	setVar $BOT~help[10] $BOT~tab&"              >citcap "
-	setVar $BOT~help[11] $BOT~tab&"              >citcap "&#34&"player name"&#34&" "
-	setVar $BOT~help[12] $BOT~tab&"              >citcap 3"
+	setVar $BOT~help[7]  $BOT~tab&"      {override} - Override to cap defender ships"
+	setVar $BOT~help[8]  $BOT~tab&"         {empty} - Empty ships only"
+	setVar $BOT~help[9]  $BOT~tab&"        {onetap} - Fire once only"
+	setVar $BOT~help[10] $BOT~tab&"        {slowmo} - Adds random pause between waves."
+	setVar $BOT~help[11]  $BOT~tab&"         "
+	setVar $BOT~help[12]  $BOT~tab&"         Examples:"
+	setVar $BOT~help[13] $BOT~tab&"              >citcap "
+	setVar $BOT~help[14] $BOT~tab&"              >citcap "&#34&"player name"&#34&" "
+	setVar $BOT~help[15] $BOT~tab&"              >citcap 3"
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Citadel Capper"
 	gosub :BOT~banner
 
-
+	loadVar $GAME~LATENCY
+	
 	setArray $shipList 	200
 	gosub :player~quikstats
 	gosub :player~getInfo
@@ -64,6 +68,26 @@
 	else
 		setVar $override FALSE
 	end
+	getWordPos $bot~user_command_line $pos "empty"
+	if ($pos > 0)
+		setVar $player~empty_ships_only TRUE
+	else
+		setVar $player~empty_ships_only FALSE
+	end
+	getWordPos $bot~user_command_line $pos "onetap"
+	if ($pos > 0)
+		setVar $player~onetap TRUE
+	else
+		setVar $player~onetap FALSE
+	end
+
+	getWordPos $bot~user_command_line $pos "slowmo"
+	if ($pos > 0)
+		setVar $player~slowmo TRUE
+	else
+		setVar $player~slowmo FALSE
+	end
+	
 
 	gosub :player~quikstats
 	setVar $player~startingLocation $player~current_prompt
@@ -96,14 +120,17 @@
 	format $planet~planet_fighters $formatted_fighters NUMBER
 	if ($targetingPerson)
 		setvar $switchboard~message "Citadel Capper Targeting "&$player~target&" :: Running on Planet "&$planet~planet&" :: "&$formatted_fighters&" Fighters available on surface.*"
-		gosub :switchboard~switchboard
 	elseif ($targetingCorp)
 		setvar $switchboard~message "Citadel Capper Targeting Corp "&$player~target&" :: Running on Planet"&$planet~planet&" :: "&$formatted_fighters&" Fighters available on surface.*"
-		gosub :switchboard~switchboard
 	else
 		setvar $switchboard~message "Citadel Capper :: Running on Planet "&$planet~planet&" :: "&$formatted_fighters&" Fighters available on surface.*"
-		gosub :switchboard~switchboard
 	end
+	
+
+	if ($player~onetap = TRUE)
+		setvar $switchboard~message  $switchboard~message & "*One Tap Preparing to fire*"
+	end
+	gosub :switchboard~switchboard
 	send "c  "
 
 	goto :scanit_cit_cap
@@ -184,9 +211,13 @@
 			setvar $switchboard~message "Enemy defender ship in sector!  Not attacking.  Override if you want to attempt to kill them.*"
 			gosub :switchboard~switchboard
 		end
-
+		if ($player~onetap = TRUE)
+			setvar $switchboard~message "One Tap mode was on, so exiting Citcap.*"
+			gosub :switchboard~switchboard
+			halt
+		end
 return
-
+ 
 
 
 #INCLUDES:

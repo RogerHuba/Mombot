@@ -1611,8 +1611,11 @@ return
 	:igLiftNoIG
 		setvar $switchboard~message "Ship does not have IG. Exiting.*"
 		gosub :switchboard~switchboard
+		halt
 	:igLiftNo
+		killalltriggers
 		send "q q q * b y l" $planet~planet "* c "
+		waitfor "Your Interdictor generator is now ON"
 		waitfor "<Enter Citadel>"
 	:igLiftYes
 		killalltriggers
