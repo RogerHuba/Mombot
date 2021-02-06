@@ -396,14 +396,14 @@ end
 				savevar $parm6
 				savevar $parm7
 				savevar $parm8
+				trim $command
+				trim $user_command_line
 				if ($bot_name <> $bot_to_control)
-					trim $command
-					trim $user_command_line
 					send "'"&$bot_to_control&" "&$command&" "&$user_command_line&"*"
 					halt
 				else
 					loadVar $historyString
-					setVar $history[1] $user_command_line
+					setVar $history[1] $command&" "&$user_command_line
 					setVar $historyString $history[1]&"<<|HS|>>"&$historyString
 					saveVar $historyString
 				end
