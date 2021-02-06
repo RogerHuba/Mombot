@@ -253,7 +253,7 @@ end
 				setvar $i 1
 				while ($i <= $fields)
 					if ($fields[$i][1] = "multi")
-						getlength "-:"&$fields[$i][2]&":-" $length
+						getlength "-:select:-" $length
 					else
 						getlength $fields[$i] $length
 					end
@@ -323,7 +323,7 @@ end
 					end
 
 					if ($fields[$i][1] = "multi")
-						setvar $menu_field_display "-:"&$fields[$i][2]&":-"
+						setvar $menu_field_display "-:select:-"
 					else
 						setvar $menu_field_display $fields[$i]
 					end
