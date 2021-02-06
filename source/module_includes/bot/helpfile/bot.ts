@@ -261,11 +261,11 @@ end
 				setvar $bot_to_control $bot_name
 				setvar $menu_field_display "Start!"
 				padright $menu_field_display $longest
-				addMenu "MENUSYSTEM" Start ANSI_12&$menu_field_display "Z" :endMenuAndGo  "" FALSE
+				addMenu "MENUSYSTEM" Start ANSI_15&$menu_field_display "Z" :endMenuAndGo  "" FALSE
 				setvar $menu_field_display "Bot to control"
 				padright $menu_field_display $longest
 				setvar $menu_field_display $menu_field_display&" "&ansi_14&":"&ansi_15&" "
-				addMenu "MENUSYSTEM" Control ANSI_12&$menu_field_display "0" :changeBotName  $bot_to_control FALSE
+				addMenu "MENUSYSTEM" Control ANSI_15&$menu_field_display "0" :changeBotName  $bot_to_control FALSE
 				setvar $bot_to_control_display ansi_14&$bot_to_control
 				padright $bot_to_control_display $longest
 				setMenuValue Control $bot_to_control_display
