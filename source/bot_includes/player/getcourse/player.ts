@@ -1,7 +1,7 @@
 	:getCourse
 		setArray $mowCourse 80
 		setVar $sectors ""
-		if ($starting_point <= 0)
+		if (($starting_point <= 0) and ($starting_point <> ""))
 			setVar $starting_point ""
 		end
 		setTextLineTrigger sectorlinetrig :sectorsline " > "
