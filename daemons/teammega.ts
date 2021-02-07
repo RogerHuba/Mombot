@@ -6,7 +6,10 @@
 	setVar $MIN_RED_EXP 0
 	setVar $MIN_RED_ALIGNMENT "-100"
 
-	setArray $BOTS $MAX_BOTS 3
+	########################################################################################
+	# Bots array structure - $bots[bot id][is bot potential robber][bot name][trader name] #
+	########################################################################################
+	setArray $BOTS $MAX_BOTS 4
 	setArray $CURRENT_SHIP $MAX_BOTS
 	setArray $ORIGINAL_SHIP $MAX_BOTS
 
@@ -184,8 +187,15 @@
 				send "'mega"&$i&"*"
 				waiton "} - You are logged into this bot. "
 				# bot name #
+				setvar $current_line currentline
 				gettext currentline $BOTS[$i][3] "{" "} - You are logged into this bot." 
-				setVar $SWITCHBOARD~MESSAGE "Bot name captured as: "&$BOTS[$i][3]&"*"
+				getword $current_line $isthisme 1
+				if ($isthisme = "R")
+					gettext $current_line $BOTS[$i][4] "R " "[" 
+				else
+					setvar $bots[$i][4] $player~TRADER_NAME					
+				end 
+				setVar $SWITCHBOARD~MESSAGE "Bot name captured as: "&$BOTS[$i][3]&" for "&$bots[$i][4]&"*"
 				gosub :SWITCHBOARD~SWITCHBOARD
 				if ($bot[$i][2] <> true)
 					# mark this person as a swappable ship #
