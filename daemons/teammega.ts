@@ -97,6 +97,10 @@
 	setVar $SWITCHBOARD~MESSAGE "This script assumes all bots are placed correctly before this script is run.*"
 	gosub :SWITCHBOARD~SWITCHBOARD
 
+	send "'all unlock*"
+	waiton "} - Ship has been unlocked!"
+
+	
 
 	send "q"
 	waitOn "Planet command (?"
