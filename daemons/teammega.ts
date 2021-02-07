@@ -100,6 +100,9 @@
 	send "'all unlock*"
 	waiton "} - Ship has been unlocked!"
 
+	setDelayTrigger    3 :waitforunlock 3000
+	pause
+	:waitforunlock
 	
 
 	send "q"
