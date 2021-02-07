@@ -2034,6 +2034,7 @@ halt
 		setVar $nextSafeSector $PLAYER~mowCourse[$j]
         send "sd"
         gosub :PLAYER~quikstats
+		:tryagainSmow
         setVar $safeDensityValue 0
 
         getSectorParameter $nextSafeSector "FIGSEC"  $isFigged
@@ -2058,6 +2059,13 @@ halt
 		if ((SECTOR.MINES.QUANTITY[$nextSafeSector] > 0) AND ($isArmided = TRUE))
 			add $safeDensityValue (SECTOR.MINES.QUANTITY[$nextSafeSector] * 10)
 		end
+		if (SECTOR.EXPLORED[$nextSafeSector] <> "YES")
+			send "sd"
+			send "sh"
+			gosub :PLAYER~quikstats
+			goto :tryagainSmow
+		end
+
 		setVar $densitySafe ((SECTOR.DENSITY[$nextSafeSector] <= 0) OR (SECTOR.DENSITY[$nextSafeSector] = $safeDensityValue))
 		
 		if ($densitySafe)
