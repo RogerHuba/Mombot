@@ -215,8 +215,8 @@
 		halt
 	end
 
-	if ($blue_count < 1)
-		setVar $SWITCHBOARD~MESSAGE "Found "&$blue_count&" buying bots. Need at least one megabuy.  Make sure all bots callin as megabuy1, megabuy2, etc.*"
+	if (($blue_count+$red_count) < 1)
+		setVar $SWITCHBOARD~MESSAGE "Found "&($blue_count+$red_count)&" mega bots. Need at least two mega bots.  Make sure all bots callin as mega1, mega2, etc.*"
 		gosub :SWITCHBOARD~SWITCHBOARD
 		halt
 	end
