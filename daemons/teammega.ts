@@ -30,6 +30,7 @@
 
 	
 	gosub :PLAYER~quikstats
+	gosub :player~getinfo
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation <> "Citadel")
 		setVar $SWITCHBOARD~MESSAGE "Team Mega must be run from Citadel prompt.*"
@@ -155,18 +156,18 @@
 			getWordPos $align $pos "-"
 			setVar $BOTS[$i] $i
 			if ($pos > 0)
-				add $red_count 1
-				#mark as potential robber#
-				setvar $BOTS[$i][2] true
-				if ($current_robber <> 0)
-					setvar $backup_robber $current_robber
-				end
-				setvar $current_robber $BOTS[$i]
 				if ($align > $MIN_RED_ALIGNMENT)
-					setVar $SWITCHBOARD~MESSAGE "mega"&$i&" needs alignment lower then " & $MIN_RED_ALIGNMENT & ".*"
+					add $blue_count 1
+					setVar $SWITCHBOARD~MESSAGE "mega"&$i&" needs alignment lower then " & $MIN_RED_ALIGNMENT & ".  Treating as a blue mega.*"
 					gosub :SWITCHBOARD~SWITCHBOARD
-					halt
 				else
+					add $red_count 1
+					#mark as potential robber#
+					setvar $BOTS[$i][2] true
+					if ($current_robber <> 0)
+						setvar $backup_robber $current_robber
+					end
+					setvar $current_robber $BOTS[$i]
 					setVar $SWITCHBOARD~MESSAGE "Found potential megarob robber!*"
 					gosub :SWITCHBOARD~SWITCHBOARD
 				end
@@ -670,5 +671,6 @@ return
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\getinfo\player"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\planet\getplanetinfo\planet"
