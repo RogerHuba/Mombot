@@ -26,7 +26,7 @@
 
 	setvar $triggerSector $bot~parm1
 	setvar $moveSector $bot~parm2
-	setvar $figsInSector 0
+	setVar $maxShipFighters $ships~SHIP_FIGHTERS_MAX
 
 	gosub :player~quikstats
 
@@ -71,20 +71,35 @@
 
 	gosub :ship~getshipstats
 	
-	send "q"
+	send "qmnt*"
 	
 	gosub :planet~getPlanetInfo
 	
-	setvar $PLANET $getPlanetInfo~PLANET
-	setvar $PLANET_FIGHTERS $$planet~PLANET_FIGHTERS     
+	setvar $PLANET $$planet~planet
+	setvar $PLANET_FIGHTERS $planet~PLANET_FIGHTERS     
 
 	if ($planet~planet_FIGHTERS < $dropFigs)
 		setVar $SWITCHBOARD~message "There are only " & $planet~planet_FIGHTERS & " fighters on the planet.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-		
-	send "mnt*c"
+	
+	setVar $moveFigMacro ""
+	setVar $moved 0
+
+	while ($moved < $dropFigs)
+		setVar $toMove ($dropFigs - $moved)
+		if ($toMove >= $maxShipFighters)
+			setVar $thisMove $maxShipFighters
+			setVar $moved ($moved + $thisMove)
+		else
+			setVar $thisMove $toMove
+			setVar $moved $moved + $thisMove
+		end
+			setVar $moveFigMacro $moveFigMacro & "q m n t* q fz " & $moved & "* * zc" & $dropftrsType & " * l" & $PLANET & " *m* t * ccq"
+	end
+
+	send "c"
 	waitfor "Citadel command (?=help)"
 	waiton "Deployed Fighters Report Sector "&$triggerSector&":"
 	send "p" & $moveSector & "*y  "
@@ -95,17 +110,30 @@
 		send "s"
 	end
 
-	if ($kill)
-		send "'In Kill*"
-		send "'"&$bot~bot_name&" citkill on*"
+	if (($kill) or ($cap))
+		gosub :checkForVictims
 	end
 
-	if ($cap)
-		send "'In Cap*"
-		send "'"&$bot~bot_name&" citcap on*"
-	end
+	halt
 
-halt
+	:checkForVictims
+		gosub :player~quikstats
+		send " s*  "
+		:scanit_again
+		setvar $player~startingLocation $player~current_prompt
+		gosub :sector~getSectorData
+		if ($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips))
+			if ($cap)
+				gosub :combat~fastCapture
+			else
+				goSub :combat~fastCitadelAttack
+			end
+			goto :scanit_again
+		elseif (($sector~emptyShipCount > $sector~myShipCount))
+			gosub :combat~fastCapture
+			goto :scanit_again
+		end
+	return	
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
@@ -115,3 +143,7 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\ship\loadshipinfo\ship"
