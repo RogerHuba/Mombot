@@ -156,7 +156,7 @@
 			getWord $line $turns 14
 
 			if (($turns < $stopTurns) AND ($PLAYER~UNLIMITED_GAME <> TRUE))
-				setVar $SWITCHBOARD~MESSAGE "megabuy"&$i&" does not have enough turns for buydowns.  Replace them with someone with turns.*"
+				setVar $SWITCHBOARD~MESSAGE "mega"&$i&" does not have enough turns for buydowns.  Replace them with someone with turns.*"
 				gosub :SWITCHBOARD~SWITCHBOARD
 				halt
 			end			
