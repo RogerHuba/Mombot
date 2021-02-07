@@ -283,7 +283,9 @@ while (true)
 			if (($do_backup_robber = true) and ($backup_robber <> "0"))
 				setvar $save_current_robber $current_robber
 				setvar $current_robber $backup_robber
+				gosub :switchrobberships
 				gosub :domega
+				gosub :switchrobberships
 				setvar $current_robber $save_current_robber
 			end
 			setvar $check $current_robber
@@ -495,7 +497,12 @@ return
 	end
 return
 
+:switchrobberships
+	setvar $switchto $bots[$save_current_robber][3]
+	goto :doswitch
 :switchships 
+	setvar $switchto $swapwithme
+	:doswitch
 	setvar $foundSwitchShip false
 	killtrigger 1
 	killtrigger 2
@@ -508,7 +515,7 @@ return
 		if ($foundSwitchShip = true)
 			send "*"
 		else
-			getwordpos CURRENTLINE $pos "Trade with "&$swapwithme
+			getwordpos CURRENTLINE $pos "Trade with "&$switchto
 			if ($pos > 0)
 				setvar $foundSwitchShip true
 				send "y"
