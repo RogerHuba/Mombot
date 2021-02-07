@@ -217,7 +217,7 @@
 	
 
 	if ($red_count < 1)
-		setVar $SWITCHBOARD~MESSAGE "Found "&$red_count&" reds. Need at least one red.  Make sure all bots callin as megarob1, megarob2, etc.*"
+		setVar $SWITCHBOARD~MESSAGE "Found "&$red_count&" reds. Need at least one red.  Make sure all bots callin as mega1, mega2, etc.*"
 		gosub :SWITCHBOARD~SWITCHBOARD
 		halt
 	end
