@@ -112,10 +112,10 @@
 	if ($planet~CITADEL < 4)
 		setVar $SWITCHBOARD~message "You must run Team Mega from at least a level 4 planet.*"
 		gosub :SWITCHBOARD~switchboard
-		#halt
+		halt
 	end
 	if (($planet~CITADEL_CREDITS + $PLAYER~CREDITS) < 5000000)
-		setVar $SWITCHBOARD~message "You must have at least 5 million credits in the citadel or on hand for Team Mega.*"
+		setVar $SWITCHBOARD~message "WARNING - You should have at least 5 million credits in the citadel or on hand for Team Mega.*"
 		gosub :SWITCHBOARD~switchboard
 		#halt
 	end
@@ -141,7 +141,7 @@
 		pause
 
 		:toomany	
-			setVar $SWITCHBOARD~MESSAGE "Too many bots responding to megabuy"&$i&".  Please fix bot teams so each blue is unique.*"
+			setVar $SWITCHBOARD~MESSAGE "Too many bots responding to mega"&$i&".  Please fix bot teams so each mega bot is unique.*"
 			gosub :SWITCHBOARD~SWITCHBOARD
 			halt
 
