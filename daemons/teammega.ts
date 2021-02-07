@@ -6,7 +6,10 @@
 	setVar $MIN_RED_EXP 0
 	setVar $MIN_RED_ALIGNMENT "-100"
 
-	setArray $BOTS $MAX_BOTS 3
+	########################################################################################
+	# Bots array structure - $bots[bot id][is bot potential robber][bot name][trader name] #
+	########################################################################################
+	setArray $BOTS $MAX_BOTS 4
 	setArray $CURRENT_SHIP $MAX_BOTS
 	setArray $ORIGINAL_SHIP $MAX_BOTS
 
@@ -27,6 +30,7 @@
 
 	
 	gosub :PLAYER~quikstats
+	gosub :player~getinfo
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation <> "Citadel")
 		setVar $SWITCHBOARD~MESSAGE "Team Mega must be run from Citadel prompt.*"
@@ -93,6 +97,13 @@
 	setVar $SWITCHBOARD~MESSAGE "This script assumes all bots are placed correctly before this script is run.*"
 	gosub :SWITCHBOARD~SWITCHBOARD
 
+	send "'all unlock*"
+	waiton "} - Ship has been unlocked!"
+
+	setDelayTrigger    3 :waitforunlock 3000
+	pause
+	:waitforunlock
+	
 
 	send "q"
 	waitOn "Planet command (?"
@@ -104,9 +115,9 @@
 		halt
 	end
 	if (($planet~CITADEL_CREDITS + $PLAYER~CREDITS) < 5000000)
-		setVar $SWITCHBOARD~message "You must have at least 5 million credits in the citadel or on hand for Team Mega.*"
+		setVar $SWITCHBOARD~message "WARNING - You should have at least 5 million credits in the citadel or on hand for Team Mega.*"
 		gosub :SWITCHBOARD~switchboard
-		halt
+		#halt
 	end
 
 
@@ -130,7 +141,7 @@
 		pause
 
 		:toomany	
-			setVar $SWITCHBOARD~MESSAGE "Too many bots responding to megabuy"&$i&".  Please fix bot teams so each blue is unique.*"
+			setVar $SWITCHBOARD~MESSAGE "Too many bots responding to mega"&$i&".  Please fix bot teams so each mega bot is unique.*"
 			gosub :SWITCHBOARD~SWITCHBOARD
 			halt
 
@@ -145,25 +156,25 @@
 			getWord $line $turns 14
 
 			if (($turns < $stopTurns) AND ($PLAYER~UNLIMITED_GAME <> TRUE))
-				setVar $SWITCHBOARD~MESSAGE "megabuy"&$i&" does not have enough turns for buydowns.  Replace them with someone with turns.*"
+				setVar $SWITCHBOARD~MESSAGE "mega"&$i&" does not have enough turns for buydowns.  Replace them with someone with turns.*"
 				gosub :SWITCHBOARD~SWITCHBOARD
 				halt
 			end			
 			getWordPos $align $pos "-"
 			setVar $BOTS[$i] $i
 			if ($pos > 0)
-				add $red_count 1
-				#mark as potential robber#
-				setvar $BOTS[$i][2] true
-				if ($current_robber <> 0)
-					setvar $backup_robber $current_robber
-				end
-				setvar $current_robber $BOTS[$i]
 				if ($align > $MIN_RED_ALIGNMENT)
-					setVar $SWITCHBOARD~MESSAGE "mega"&$i&" needs alignment lower then " & $MIN_RED_ALIGNMENT & ".*"
+					add $blue_count 1
+					setVar $SWITCHBOARD~MESSAGE "mega"&$i&" needs alignment lower then " & $MIN_RED_ALIGNMENT & ".  Treating as a blue mega.*"
 					gosub :SWITCHBOARD~SWITCHBOARD
-					halt
 				else
+					add $red_count 1
+					#mark as potential robber#
+					setvar $BOTS[$i][2] true
+					if ($current_robber <> 0)
+						setvar $backup_robber $current_robber
+					end
+					setvar $current_robber $BOTS[$i]
 					setVar $SWITCHBOARD~MESSAGE "Found potential megarob robber!*"
 					gosub :SWITCHBOARD~SWITCHBOARD
 				end
@@ -184,12 +195,19 @@
 				send "'mega"&$i&"*"
 				waiton "} - You are logged into this bot. "
 				# bot name #
+				setvar $current_line currentline
 				gettext currentline $BOTS[$i][3] "{" "} - You are logged into this bot." 
-				setVar $SWITCHBOARD~MESSAGE "Bot name captured as: "&$BOTS[$i][3]&"*"
+				getword $current_line $isthisme 1
+				if ($isthisme = "R")
+					gettext $current_line $BOTS[$i][4] "R " "[" 
+				else
+					setvar $bots[$i][4] $player~TRADER_NAME					
+				end 
+				setVar $SWITCHBOARD~MESSAGE "Bot name captured as: "&$BOTS[$i][3]&" for "&$bots[$i][4]&"*"
 				gosub :SWITCHBOARD~SWITCHBOARD
 				if ($bot[$i][2] <> true)
 					# mark this person as a swappable ship #
-					setvar $swapwithme $bots[$i][3]
+					setvar $swapwithme $bots[$i][4]
 				end
 			end
 			add $i 1
@@ -199,13 +217,13 @@
 	
 
 	if ($red_count < 1)
-		setVar $SWITCHBOARD~MESSAGE "Found "&$red_count&" reds. Need at least one red.  Make sure all bots callin as megarob1, megarob2, etc.*"
+		setVar $SWITCHBOARD~MESSAGE "Found "&$red_count&" reds. Need at least one red.  Make sure all bots callin as mega1, mega2, etc.*"
 		gosub :SWITCHBOARD~SWITCHBOARD
 		halt
 	end
 
-	if ($blue_count < 1)
-		setVar $SWITCHBOARD~MESSAGE "Found "&$blue_count&" buying bots. Need at least one megabuy.  Make sure all bots callin as megabuy1, megabuy2, etc.*"
+	if (($blue_count+$red_count) < 1)
+		setVar $SWITCHBOARD~MESSAGE "Found "&($blue_count+$red_count)&" mega bots. Need at least two mega bots.  Make sure all bots callin as mega1, mega2, etc.*"
 		gosub :SWITCHBOARD~SWITCHBOARD
 		halt
 	end
@@ -498,7 +516,7 @@ return
 return
 
 :switchrobberships
-	setvar $switchto $bots[$save_current_robber][3]
+	setvar $switchto $bots[$save_current_robber][4]
 	goto :doswitch
 :switchships 
 	setvar $switchto $swapwithme
@@ -660,5 +678,6 @@ return
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\player\getinfo\player"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\planet\getplanetinfo\planet"
