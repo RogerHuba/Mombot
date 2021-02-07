@@ -1,42 +1,33 @@
-reqRecording
-
+	reqRecording
 	gosub :BOT~loadVars
-
 	setVar $BOT~command "docktrap"
 	loadVar $BOT~bot_turn_limit
 	loadVar $MAP~stardock
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
 
-    setVar $BOT~help[1]   $BOT~tab&"docktrap [trigger sector] [move sector] {fig drop} {citkill} {citcap}"
-    setVar $BOT~help[2]   $BOT~tab&"              "
-    setVar $BOT~help[3]   $BOT~tab&"      Warps planet to move sector when enemy hits trigger "
-    setVar $BOT~help[4]   $BOT~tab&"      can drop fighters ."
-    setVar $BOT~help[5]   $BOT~tab&"         "
-    setVar $BOT~help[6]   $BOT~tab&"       Options:"
-    setVar $BOT~help[7]   $BOT~tab&"           {fig drop} - number of fighters to drop in sector"
-    setVar $BOT~help[8]   $BOT~tab&"           {citkill} - turns on citkill"
-    setVar $BOT~help[9]   $BOT~tab&"           {citcap} - turns on citcap"
-    setVar $BOT~help[10]   $BOT~tab&"         "
+    setVar $BOT~help[1]    $BOT~tab&"docktrap [trigger sector] [move sector] {figs:n} {kill} {cap}"
+    setVar $BOT~help[2]    $BOT~tab&"              "
+    setVar $BOT~help[3]    $BOT~tab&"      Warps planet to move sector when enemy hits trigger "
+    setVar $BOT~help[4]    $BOT~tab&"      can drop fighters ."
+    setVar $BOT~help[5]    $BOT~tab&"         "
+    setVar $BOT~help[6]    $BOT~tab&"       Options:"
+    setVar $BOT~help[7]    $BOT~tab&"           {figs:n} - drop this many figs to sector "
+    setVar $BOT~help[8]    $BOT~tab&"           {offensive} - make figs offensive, default defense."
+    setVar $BOT~help[9]    $BOT~tab&"           {kill} - turns on citkill"
+    setVar $BOT~help[10]   $BOT~tab&"           {cap} - turns on citcap"
     setVar $BOT~help[11]   $BOT~tab&"         "
-    setVar $BOT~help[12]   $BOT~tab&"       Examples: "
-    setVar $BOT~help[13]  $BOT~tab&"           >docktrap 362 1055"
-    setVar $BOT~help[14]  $BOT~tab&"           >docktrap 362 1055 100000 citkill return"
-    setVar $BOT~help[15]  $BOT~tab&"           >docktrap 362 1055 citcap"
+    setVar $BOT~help[12]   $BOT~tab&"         "
+    setVar $BOT~help[13]   $BOT~tab&"       Examples: "
+    setVar $BOT~help[14]   $BOT~tab&"           >docktrap 362 1055"
+    setVar $BOT~help[15]   $BOT~tab&"           >docktrap 362 1055 100000 citkill return"
+    setVar $BOT~help[16]   $BOT~tab&"           >docktrap 362 1055 citcap"
     gosub :bot~helpfile
-
-
-
-	loadVar $bot~command
-	getWord $bot~user_command_line $bot~parm1 1
-	getWord $bot~user_command_line $bot~parm2 2
-	getWord $bot~user_command_line $bot~parm3 3
-	getWord $bot~user_command_line $bot~parm4 4
-
 
 	setvar $triggerSector $bot~parm1
 	setvar $moveSector $bot~parm2
 	setvar $figsInSector 0
+
 	gosub :player~quikstats
 
 	setVar $startingLocation $player~current_prompt
@@ -47,61 +38,74 @@ reqRecording
 		halt
 	end
 
-	setvar $bot~user_command_line " "&$bot~user_command_line&" "
-	isNumber $test $bot~parm3
-	if ($test)
-		setVar $dropFigs $bot~parm2
-	else 
-		setVar $dropFigs FALSE
+	getWordPos $bot~user_command_line $pos "figs:"
+	if ($pos > 0)
+		setVar $dropftrs TRUE
+		setVar $cline $bot~user_command_line & " "
+		getText $cline $dropFigs "figs:" " "
+
+		getWordPos $bot~user_command_line $pos "offensive"
+		if ($pos > 0)
+			setVar $dropftrsType "o"
+		else
+			setVar $dropftrsType "d"
+		end
+	else
+		setVar $dropftrs FALSE
 	end
 
-	getWordPos $bot~user_command_line $pos " citkill "
-
+	getWordPos $bot~user_command_line $pos "kill"
 	if ($pos > 0)
-		setVar $citkill TRUE
+		setVar $kill TRUE
+	else
+		setVar $kill FALSE
 	end
 
-	getWordPos $bot~user_command_line $pos " citcap "
 
+	getWordPos $bot~user_command_line $pos "cap"
 	if ($pos > 0)
-		setVar $citcap TRUE
+		setVar $cap TRUE
+	else
+		setVar $cap FALSE
 	end
 
 	gosub :ship~getshipstats
 	
-	setvar $MAX_FIGHTERS $ship~SHIP_FIGHTERS_MAX
-
 	send "q"
 	
 	gosub :planet~getPlanetInfo
 	
 	setvar $PLANET $getPlanetInfo~PLANET
-	setvar $PLANET_FIGHTERS $getPlanetInfo~PLANET_FIGHTERS
+	setvar $PLANET_FIGHTERS $$planet~PLANET_FIGHTERS     
 
-	if ($PLAMET_FIGHTERS < $bot~parm3)
-		send "'{" $bot~bot_name "} - Not enough fighters on the planet*"
+	if ($planet~planet_FIGHTERS < $dropFigs)
+		setVar $SWITCHBOARD~message "There are only " & $planet~planet_FIGHTERS & " fighters on the planet.*"
+		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 		
 	send "mnt*c"
 	waitfor "Citadel command (?=help)"
 	waiton "Deployed Fighters Report Sector "&$triggerSector&":"
-	send "p" & $moveSector & "*y"
+	send "p" & $moveSector & "*y  "
 
-	if ($dropFigs)
-		while ($dropFigs > 0)
-			send "qq*  f " & $MAX_FIGHTERS & "*cd l " & $PLANET & "* c"
-			$figsInSector
-			$dropFigs = $dropFigs - ($MAX_FIGHTERS - 1)
-		end
+	if ($dropftrs)
+		send $moveFigMacro
+		gosub :player~quikstats
+		send "s"
 	end
 
-	if ($citkill)
-		#load citkill script
+	if ($kill)
+		send "'In Kill*"
+		send "'"&$bot~bot_name&" citkill on*"
 	end
-	if ($citcap)
-		#load citcap
-	end 
+
+	if ($cap)
+		send "'In Cap*"
+		send "'"&$bot~bot_name&" citcap on*"
+	end
+
+halt
 
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
