@@ -27,6 +27,7 @@
 	setVar $UNEXPLORED_FILE     $folder&"/unexplored.targets"
 	setVar $imlimped FALSE
 	setArray $move SECTORS
+	setArray $finalDestination SECTORS
 	setVar $checkedForInfo ""
 	setVar $grid_figs 1
 	setVar $attackretreat FALSE
@@ -73,6 +74,9 @@
 	setVar $BOT~help[36] $BOT~tab&"   - [xslow]       = Will put in a long pause between sectors   "
 	setVar $BOT~help[37] $BOT~tab&"                     to make it look like planet gridding  "
 	setVar $BOT~help[38] $BOT~tab&"   - [noholo]       = Only holos when density above 499/New Secs"
+	setVar $BOT~help[39] $BOT~tab&"   - [pscrub]       = Scrubs at origin class 0 port."
+	setVar $BOT~help[40] $BOT~tab&"   - [smow]         = Attempts to passive grid to dest if safe."
+	
 	gosub :bot~helpfile
 
 	
@@ -155,12 +159,30 @@
 	else
 		setVar $grid_avoid FALSE
 	end
-	getWordPos $bot~user_command_line $pos "scrub" 
+	getWordPos $bot~user_command_line $pos " scrub" 
 	if ($pos > 0)
 		setVar $autoclean TRUE
 	else
 		setVar $autoclean FALSE
 	end
+
+	getWordPos $bot~user_command_line $pos "pscrub" 
+	if ($pos > 0)
+		setVar $pscrub TRUE
+	else
+		setVar $pscrub FALSE
+	end
+
+	getWordPos $bot~user_command_line $pos "smow" 
+	if ($pos > 0)
+		setVar $do_smow TRUE
+	else
+		setVar $do_smow FALSE
+	end
+
+	
+
+
 	getWordPos $bot~user_command_line $pos "norefurb" 
 	if ($pos > 0)
 		setVar $refurb FALSE
@@ -334,13 +356,21 @@ goSub :checkAvoidedSectors
 
 	setVar $homesec $player~current_sector
 
-
+	# these are really just for xlimp in low turn games
+	# high turn we don't care.
+	setVar $ship1HasLimp 0
+	setVar $ship2HasLimp 0
+	setVar $ship1FuelOre 0
+	setVar $ship2FuelOre 0
+	
 :checkShip
 	gosub :SHIP~getShipStats
 	gosub :combat~init 
 
 	killAllTriggers
 	gosub :player~quikstats
+	setVar $ship1FuelOre $player~ORE_HOLDS
+	
 	send "c;"
 	waitFor "Offensive Odds:"
 	getWordPos CURRENTLINE $pos "Offensive"
@@ -433,6 +463,10 @@ goSub :checkAvoidedSectors
 	gosub :assemble_attack_mac
 	# land, take figs/fuel etc
 	gosub :assemble_land_mac
+	# land and not take fuel - xfurb lowturn stuff
+	gosub :assemble_nofuel_land_mac
+	# scrub on port if using
+	gosub :assemble_pscrub_mac
 
 :select_boomsec
 
@@ -442,8 +476,10 @@ goSub :checkAvoidedSectors
 	if ($xport_grid)
 		if ($boomsec > 0)
 			if ($player~ship_number = $ship1)
+				setVar $ship1FuelOre $player~ORE_HOLDS
 				setVar $ship2_location $boomsec
 			else
+				setVar $ship2FuelOre $player~ORE_HOLDS
 				setVar $ship1_location $boomsec
 			end
 		end
@@ -460,7 +496,9 @@ goSub :checkAvoidedSectors
 	end
 	setVar $limpetAfter $player~limpets
 	setVar $armidAfter $player~armids
-	if ($boomsec > 0)
+	# Add Xport_Grid = false flag here - because this compares limps of 2 diff ships or fails when not 
+	# limping
+	if ($boomsec > 0) and ($xport_grid = FALSE)
 		if (($limpetBefore > $limpetAfter) AND ($isLimped = FALSE))
 			setVar $limpetBefore $player~limpets
 			setVar $limpetAfter $limpetBefore
@@ -570,11 +608,8 @@ goSub :checkAvoidedSectors
 :hittingsec
 	KillAllTriggers
 	setVar $boomsec $move[$player~warpto]
-	echo "hittsec*"
-	echo "boomsec" $boomsec "*"
-	echo "$move[$player~warpto]" $move[$player~warpto] "*"
-	
-	
+	setVar $xSlowSkip 0
+
 	getSectorParameter $boomsec "FIGSEC"  $isFigged
 	getSectorParameter $boomsec "MINESEC" $isArmided
 	getSectorParameter $boomsec "LIMPSEC" $isLimped
@@ -610,6 +645,93 @@ goSub :checkAvoidedSectors
 		gosub :combat~holoscan
 	end
 
+	if ($do_smow = TRUE) and ($safeXport = TRUE)
+		setVar $orginal_warpto $player~warpto
+		setVar $smowDest $finalDestination[$player~warpto]
+		send "'attempting smow to "  $smowDest ", orig adj target: " $boomsec "*"
+		goSub :check_smow
+		
+		if ($smowDone = 1)
+			if ($player~current_sector <> $smowDest)
+				if ($player~ship_number = $ship1)
+					getDistance $xport_dist $nextSafeSector  $ship2_location
+				else
+					getDistance $xport_dist $nextSafeSector  $ship1_location
+				end
+				if (($xport_dist <= 0) or ($xport_dist > $xport_range))
+					:jumpToSmowCleanup
+				else
+					setvar $switchboard~message "Did Parial SMOW, will grid one and continue.*"
+					gosub :switchboard~switchboard
+
+					setVar $boomsec $nextSafeSector
+					setVar $player~warpto $player~current_sector
+					
+				end
+			elseif ($player~current_sector = $smowDest)
+				setVar $xSlowSkip 1
+				:jumpToSmowCleanup
+
+				# we gridded pasively at least one sector
+				gosub :player~quikstats
+				if ($player~ship_number = $ship1)
+					setVar $ship1FuelOre $player~ORE_HOLDS
+					setVar $ship1_location $player~CURRENT_SECTOR
+					getDistance $xport_dist $player~CURRENT_SECTOR  $ship2_location
+				else
+					setVar $ship2FuelOre $player~ORE_HOLDS
+					setVar $ship2_location $player~CURRENT_SECTOR
+					getDistance $xport_dist $player~CURRENT_SECTOR  $ship1_location
+				end
+				if (($xport_dist <= 0) or ($xport_dist > $xport_range))
+					setvar $switchboard~message "Return Xport to far after smow, twarping to original target.*"
+					gosub :switchboard~switchboard
+					KillAllTriggers
+					setVar $player~warpto $orginal_warpto
+					setVar $smowTwarp 1
+					gosub :doTwarp
+					gosub :player~quikstats
+					if ($player~ship_number = $ship1)
+						setVar $ship1FuelOre $player~ORE_HOLDS
+						setVar $ship1_location $boomsec
+					else
+						setVar $ship2FuelOre $player~ORE_HOLDS
+						setVar $ship2_location $boomsec
+					end
+				end
+
+				if ($pscrub = TRUE)
+						
+					//Opisite numbers as we've swapped ships and not Quikstat'd yet
+					if (($player~ship_number = $ship2) and ($ship1FuelOre < 120))
+						setVar $adjland_mac $land_mac
+					elseif (($player~ship_number = $ship1) and ($ship2FuelOre < 120))
+						setVar $adjland_mac $land_mac
+					else 
+						setVar $adjland_mac $nofuel_land_mac
+					end
+
+
+					#These if statements will be opitisite as we are actually scrubbing the limp
+					#from previous ship grid.
+					if ($player~ship_number = $ship2) and ($ship1HasLimp = 1)
+						send  $return_mac $mac $pscrub_mac $adjland_mac
+						setVar $ship1HasLimp 0
+					elseif ($player~ship_number = $ship1) and ($ship2HasLimp = 1)
+						send $return_mac $mac $pscrub_mac $adjland_mac
+						setVar $ship2HasLimp 0
+					else
+						send $return_mac $mac $adjland_mac
+					end
+					
+				else	
+					send $return_mac $mac $land_mac
+				end
+				setVar $coursesCompleted 0
+				goTo :smowSkip
+			end
+		end
+	end
 	killalltriggers
 	if ($combat~error = true)
 
@@ -653,6 +775,7 @@ goSub :checkAvoidedSectors
 				send $land_mac
 				setVar $avoidedSectorsUgrid $avoidedSectorsUgrid&" "&$boomsec&" "
 				saveVar $avoidedSectorsUgrid
+				
 				goto :select_boomsec
 			end
 		end
@@ -669,6 +792,12 @@ goSub :checkAvoidedSectors
 		if ((SECTOR.anomaly[$boomsec] = TRUE) and ($isLimped = FALSE))
 			send "'UGrid:Hitting Limp*"
 			setVar $imlimped TRUE
+		
+			if ($player~ship_number = $ship1)
+				setVar $ship1HasLimp 1
+			else
+				setVar $ship2HasLimp 1
+			end
 		end
 		if (($mineCount > 0) AND (($mineOwner <> "yours") AND ($mineOwner <> "belong to your Corp")))
 
@@ -694,8 +823,36 @@ goSub :checkAvoidedSectors
 						end
 					end
 					
-					send $boomsec $attack_mac $return_mac $mac $land_mac
+					if ($pscrub = TRUE)
+					
+						//Opisite numbers as we've swapped ships and not Quikstat'd yet
+						if (($player~ship_number = $ship2) and ($ship1FuelOre < 120))
+							setVar $adjland_mac $land_mac
+						elseif (($player~ship_number = $ship1) and ($ship2FuelOre < 120))
+							setVar $adjland_mac $land_mac
+						else 
+							setVar $adjland_mac $nofuel_land_mac
+						end
+
+
+						#These if statements will be opitisite as we are actually scrubbing the limp
+						#from previous ship grid.
+						if ($player~ship_number = $ship2) and ($ship1HasLimp = 1)
+							send $boomsec $attack_mac $return_mac $mac $pscrub_mac $adjland_mac
+							setVar $ship1HasLimp 0
+						elseif ($player~ship_number = $ship1) and ($ship2HasLimp = 1)
+							send $boomsec $attack_mac $return_mac $mac $pscrub_mac $adjland_mac
+							setVar $ship2HasLimp 0
+						else
+							send $boomsec $attack_mac $return_mac $mac $adjland_mac
+						end
+						
+					else	
+						send $boomsec $attack_mac $return_mac $mac $land_mac
+					end
+					setVar $coursesCompleted 0
 					send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
+					:smowSkip
 					goSub :densityScan
 
 					if ($nReporti > 0)
@@ -706,23 +863,30 @@ goSub :checkAvoidedSectors
 							add $nn 1
 						end
 					end
+					
 					if ($xSlow = true)
-						send "cr" $boomsec "*q"
-						getRnd $delaytime 3000 6000
-						setDelayTrigger longPause :longPause $delaytime
-						pause
-						:longPause
-							killtrigger longPause
+						if ($xSlowSkip = 1)
+							echo "* Skipping Delay as we did full passive smow*"
+						else
+							send "cr" $boomsec "*q"
+							getRnd $delaytime 3000 6000
+							setDelayTrigger longPause :longPause $delaytime
+							pause
+							:longPause
+								killtrigger longPause
+						end
 					end
 
 					
 				else
 					send $boomsec $attack_mac $mac $return_mac $land_mac
 					send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
+					setVar $coursesCompleted 0
 				end
 			else
 				send $boomsec $attack_mac $return_mac $land_mac
 				send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
+				setVar $coursesCompleted 0
 				goto :clearitagain
 			end
 		end
@@ -811,18 +975,26 @@ goSub :checkAvoidedSectors
 	echo ANSI_14 "* Loading target sectors..*" ANSI_7
 	setVar $perc 0
 	if ($gridTargets)
+		if ($coursesCompleted = 1) and ($safeXport = true)
+			setvar $switchboard~message "I've looped through this data twice with no new hits. Move ships home, refresh figs or try new origin.*"
+			gosub :switchboard~switchboard
+			halt
+		end
 		setVar $m 1
 		#send "^"
 		while ($m < $targetSectors)
 	        setVar $destination $targetSectors[$m]
-			gosub :getCourses
+			# moved below lower, to not replot places we've been
+			# gosub :getCourses
 			getSectorParameter $destination "FIGSEC"  $isFigged
 			if ($isFigged = "")
 				setVar $isFigged FALSE
 			end
+
 			getWordPos $avoidedSectorsUgrid $pos " "&$destination&" "
 			stripText $destination " "
 			if (($pos <= 0) AND (($isFigged <= 0) OR ($gridExistingOnly = TRUE)))
+				gosub :getCourses
 				setVar $i 1
 				setVar $isFound FALSE
 				while ((SECTOR.WARPSIN[$destination][$i] > 0) AND ($isFound = FALSE))
@@ -852,6 +1024,8 @@ goSub :checkAvoidedSectors
 								setVar $database $database&" "&$adjinf&" "
 								setVar $adjacentDatabase $adjacentDatabase&" "&$destination&" "
 								setVar $move[$adjinf] $destination
+								setVar $finalDestination[$adjinf] $targetSectors[$m]
+		echo "Adding Smow(used or not): land: " $destination " Smow: " $targetSectors[$m] "*"
 								setVar $isFound TRUE
 								add $databaseCount 1
 							end
@@ -870,7 +1044,7 @@ goSub :checkAvoidedSectors
 			add $m 1
 		end
 		#send "q "
-
+		setVar $coursesCompleted 1
 	elseif ($gridExistingOnly)
 		while ($targetSectorCount < SECTORS)
 			add $targetSectorCount 1
@@ -1080,6 +1254,7 @@ goSub :checkAvoidedSectors
 		end
 		halt
 	end
+	
 return
 
 
@@ -1128,8 +1303,14 @@ return
 	else
 		setVar $xport_ship $ship1
 	end		
+	if ($pscrub = TRUE)
+		setVar $return_mac "q q * * x "&$xport_ship&"*  *  " & $mac &  $homesec & "* y y * * " & $pscrub_mac & $land_mac
+	else
+		setVar $return_mac "q q * * x "&$xport_ship&"*  *  " & $mac &  $homesec & "* y y * * " & $land_mac
+	end
+	
 
-	setVar $return_mac "q q * * x "&$xport_ship&"*  *  " & $mac &  $homesec & "* y y * * " & $land_mac
+	
 
 	send $return_mac 
 	setvar $switchboard~message "We are done, ships back here safe and sound.*"	
@@ -1170,9 +1351,15 @@ halt
 	#setvar $return_mac $return_mac&"n 1 y y "
 return
 
+:assemble_pscrub_mac
+	setVar $pscrub_mac " p t y q "
+return 
 :assemble_land_mac
 	setVar $land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  * j m  * * *  t * t 1* c * "
-	#setVar $land_mac "l " & $planet~planet & "*  m  * * *  t * t 1*  c  "
+return
+
+:assemble_nofuel_land_mac
+	setVar $nofuel_land_mac "l j" & #8 & #8 & #8 & #8 & #8 & $planet~planet & "*  * j m  * * * c * "
 return
 
 # -=-=-=-=-=- return triggers -=-=-=-=-=-=-=-
@@ -1495,7 +1682,8 @@ return
 	setvar $paused false
 	setvar $photoned false
 	if ($player~warpto > 0)
-		if ($furbing = true)
+		if ($furbing = true) or ($smowTwarp  = 1)
+			setVar $smowTwarp 0
 			send "mz" & $player~warpto "*"
 		else
 			send "q  q  mz" & $player~warpto "*"
@@ -1827,7 +2015,72 @@ return
 
  
 halt
+:check_smow
+	setVar $smowDone 0
+	
+	setVar $PLAYER~destination $smowDest
+	setVar $PLAYER~starting_point 0
+	
+	setVar $figsToDrop 1
+	gosub :player~getCourse
+    if ($PLAYER~courseLength <= 0)
+        return
+    end
+	setVar $smowCount 0
+	setVar $j 3
+    setVar $result "q q q * "
+    setVar $isSafe TRUE
+    while (($j <= $PLAYER~courseLength) AND ($isSafe))
+		setVar $nextSafeSector $PLAYER~mowCourse[$j]
+        send "sd"
+        gosub :PLAYER~quikstats
+        setVar $safeDensityValue 0
 
+        getSectorParameter $nextSafeSector "FIGSEC"  $isFigged
+        getSectorParameter $nextSafeSector "MINESEC" $isArmided
+        getSectorParameter $nextSafeSector "LIMPSEC" $isLimped
+		if (PORT.EXISTS[$nextSafeSector] = TRUE)
+			setVar $safeDensityValue 100
+		else
+			setVar $safeDensityValue 0
+		end
+		if ($nextSafeSector < 11)
+			add $safeDensityValue 1
+		end
+		# database is to unreliable - most of the time it's only 1 fig! or we might not have seen fig
+		# when someone else gets it. We can store numbers in >update onday
+		if ($isFigged = TRUE)
+			add $safeDensityValue 5
+		end
+		if ((SECTOR.LIMPETS.QUANTITY[$nextSafeSector] > 0) AND ($isLimped = TRUE) AND (SECTOR.ANOMALY[$nextSafeSector] = TRUE))
+			add $safeDensityValue (SECTOR.LIMPETS.QUANTITY[$nextSafeSector] * 2)
+		end
+		if ((SECTOR.MINES.QUANTITY[$nextSafeSector] > 0) AND ($isArmided = TRUE))
+			add $safeDensityValue (SECTOR.MINES.QUANTITY[$nextSafeSector] * 10)
+		end
+		setVar $densitySafe ((SECTOR.DENSITY[$nextSafeSector] <= 0) OR (SECTOR.DENSITY[$nextSafeSector] = $safeDensityValue))
+		
+		if ($densitySafe)
+			send "m "&$PLAYER~mowCourse[$j]&"* "
+			setVar $smowDone 1
+			add $smowCount 0
+		else
+			if ($smowCount > 0)
+				send "'{" $SWITCHBOARD~bot_name "} - " & smowCount &" sectors gridded via SMOW "&$nextSafeSector&"*"
+				#goto :wait_for_command
+			end
+			return
+		end
+		 if (($figsToDrop > 0) AND ($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
+            send "f "&$figsToDrop&" * c d "
+            setVar $target $PLAYER~mowCourse[$j]
+			send "'<"&$bot~subspace&">[Figged:"&$PLAYER~mowCourse[$j]&"]<"&$bot~subspace&">* "
+            gosub :player~addfigtodata
+        end
+        add $j 1
+	end
+	gosub :PLAYER~quikstats
+return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
@@ -1839,4 +2092,5 @@ include "source\bot_includes\combat\holoscan\combat"
 include "source\bot_includes\combat\holokill\combat"
 include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\combat\init\combat"
-
+include "source\bot_includes\player\getcourse\player"
+include "source\bot_includes\player\addfigtodata\player"

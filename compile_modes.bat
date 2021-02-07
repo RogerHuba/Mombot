@@ -1,4 +1,4 @@
-for /r %%n in (*ramgrid.ts) do call :checkit "%%n" 
+for /r %%n in (*prhunt.ts) do call :checkit "%%n" 
 goto end
 
 :checkit

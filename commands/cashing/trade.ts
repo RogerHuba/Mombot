@@ -7,12 +7,12 @@ gosub :BOT~loadVars
 	setVar $BOT~help[4]  $BOT~tab&"       Best used with EP Haggle to get MCIC for buy/sell in megarob games."
 	setVar $BOT~help[5]  $BOT~tab&"        - Avoids trading small amounts of Fuel/Org to avoid experience."
 	setVar $BOT~help[6]  $BOT~tab&"       "
-	setVar $BOT~help[7]  $BOT~tab&"       trade {q}"
+	setVar $BOT~help[7]  $BOT~tab&"       trade {q} {mcic}"
 	setVar $BOT~help[8]  $BOT~tab&"       "
 	setVar $BOT~help[9]  $BOT~tab&" Options:"
 	setVar $BOT~help[10]  $BOT~tab&"    {q}       How much equipment to keep post trade. "
 	setVar $BOT~help[11]  $BOT~tab&"              - Default is 5"
-	setVar $BOT~help[12]  $BOT~tab&"        "
+	setVar $BOT~help[12]  $BOT~tab&"    {mcic}    Will just test MCIC and keep fuel."
 	setVar $BOT~help[12]  $BOT~tab&"       EP haggle will be used if it is running in the bot. "
 	
 	gosub :bot~helpfile
@@ -28,22 +28,28 @@ gosub :BOT~loadVars
 	getWord $bot~user_command_line $bot~parm1 1
 	getWord $bot~user_command_line $bot~parm2 2
 
-	
+	setVar $mciconly FALSE
 
-	if ($bot~parm1 <> "")
-		isNumber $test $bot~parm1
-		if ($test = FALSE)
-			setVar $SWITCHBOARD~message "Pleae enter a number for the equip to keep.*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		else
-			setVar $keepEquip $bot~parm1
+	if ($bot~parm1 = "mcic")
+		setVar $mciconly TRUE
+		setVar $keepEquip 30
+		setVar $SWITCHBOARD~message "MCIC Only Mode.*"
+		gosub :SWITCHBOARD~switchboard
+	else
+		if ($bot~parm1 <> "")
+			isNumber $test $bot~parm1
+			if ($test = FALSE)
+				setVar $SWITCHBOARD~message "Pleae enter a number for the equip to keep.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			else
+				setVar $keepEquip $bot~parm1
+			end
 		end
-	end
-	if ($keepEquip = 0)
-		#setVar $keepEquip 5
-	end
-	
+		if ($keepEquip = 0)
+			#setVar $keepEquip 5
+		end
+	end	
 
 
 	gosub :player~quikstats
@@ -79,54 +85,110 @@ gosub :BOT~loadVars
 	setVar $buyOrg 0
 	setVar $buyEquip 0
 
-	if (($player~ore_holds > 0) and (PORT.BUYFUEL[CURRENTSECTOR] = 1))
-		setVar $sellOre $player~ore_holds
-		setVar $virtFreeHolds ($virtFreeHolds + $sellOre)
-	end
+	if ($mciconly = FALSE)
+		if (($player~ore_holds > 0) and (PORT.BUYFUEL[CURRENTSECTOR] = 1))
+			setVar $sellOre $player~ore_holds
+			setVar $virtFreeHolds ($virtFreeHolds + $sellOre)
+		end
 
-	if (($player~organic_holds > 0) and (PORT.BUYORG[CURRENTSECTOR] = 1))
-		setVar $sellOrg $player~organic_holds
-		setVar $virtFreeHolds ($virtFreeHolds + $sellOrg)
-	end
+		if (($player~organic_holds > 0) and (PORT.BUYORG[CURRENTSECTOR] = 1))
+			setVar $sellOrg $player~organic_holds
+			setVar $virtFreeHolds ($virtFreeHolds + $sellOrg)
+		end
 
-	if (($player~equipment_holds > 0) and (PORT.BUYEQUIP[CURRENTSECTOR] = 1))
-		if ($player~equipment_holds <= $keepEquip)
-			setVar $sellEquip 1
-			setVar $virtFreeHolds ($virtFreeHolds + 1)
-		else
-			setVar $sellEquip ($player~equipment_holds - $keepEquip)
-			setVar $virtFreeHolds ($virtFreeHolds + $sellEquip)
+		if (($player~equipment_holds > 0) and (PORT.BUYEQUIP[CURRENTSECTOR] = 1))
+			if ($player~equipment_holds <= $keepEquip)
+				setVar $sellEquip 1
+				setVar $virtFreeHolds ($virtFreeHolds + 1)
+			else
+				setVar $sellEquip ($player~equipment_holds - $keepEquip)
+				setVar $virtFreeHolds ($virtFreeHolds + $sellEquip)
+			end
+			
 		end
 		
-	end
+		if ($virtFreeHolds > $keepEquip)
+		
+			if (PORT.BUYEQUIP[CURRENTSECTOR] = 0)
+				setVar $buyEquip ($virtFreeHolds - $keepEquip)
 
-	if ($virtFreeHolds > $keepEquip)
-	
-		if (PORT.BUYEQUIP[CURRENTSECTOR] = 0)
-			setVar $buyEquip ($virtFreeHolds - $keepEquip)
-
-		else
-			if (PORT.BUYORG[CURRENTSECTOR] = 0)
-				setVar $buyOrg ($virtFreeHolds - $keepEquip)
-				if ($buyOrg < $keepEquip)
-					setVar $buyOrg 0
-				end 
 			else
-				if (PORT.BUYFUEL[CURRENTSECTOR] = 0)
-					setVar $buyOre ($virtFreeHolds - $keepEquip)
-					if ($buyOre < $keepEquip)
-						setVar $buyOre 0
+				if (PORT.BUYORG[CURRENTSECTOR] = 0)
+					setVar $buyOrg ($virtFreeHolds - $keepEquip)
+					if ($buyOrg < $keepEquip)
+						setVar $buyOrg 0
 					end 
+				else
+					if (PORT.BUYFUEL[CURRENTSECTOR] = 0)
+						setVar $buyOre ($virtFreeHolds - $keepEquip)
+						if ($buyOre < $keepEquip)
+							setVar $buyOre 0
+						end 
+					end
+				end
+			end
+		else
+			if (($virtFreeHolds <= $keepEquip) and ($virtFreeHolds > 0))
+				if (PORT.BUYEQUIP[CURRENTSECTOR] = 0)
+					setVar $buyEquip 1
 				end
 			end
 		end
+		
 	else
-		if (($virtFreeHolds <= $keepEquip) and ($virtFreeHolds > 0))
-			if (PORT.BUYEQUIP[CURRENTSECTOR] = 0)
-				setVar $buyEquip 1
+		# MCIC Testing
+		#    We buy 5 or Sell 5 tops.
+		#    Top ore where we can
+		#    Always leave 30 holds for equipment management
+echo "TRADING: *"
+echo "$player~equipment_holds: " $$player~equipment_holds "*"
+echo "player~ore_holds: " $player~ore_holds "*"
+echo "sellEquip: " $sellEquip "*"
+echo "buyOre: " $buyOre "*"
+echo "buyOrg: " $buyOrg "*"
+echo "buyEquip: " $buyEquip "*"
+echo "virtFreeHolds: " $virtFreeHolds "*"
+
+
+		# They sell equipment - sell 5 max
+		if (($player~equipment_holds > 0) and (PORT.BUYEQUIP[CURRENTSECTOR] = 1))
+			if ($player~equipment_holds <= 5)
+				setVar $sellEquip $player~equipment_holds
+				setVar $virtFreeHolds ($virtFreeHolds + $player~equipment_holds)
+			else
+				setVar $sellEquip 5
+				setVar $virtFreeHolds ($virtFreeHolds + 5)
 			end
 		end
+
+		# they buy equipment, buy 5 max
+		if (PORT.BUYEQUIP[CURRENTSECTOR] = 0)
+			if ($virtFreeHolds < 5)
+				setvar $buyEquip $virtFreeHolds
+			else
+				setVar $buyEquip 5
+			end
+			setVar $virtFreeHolds ($virtFreeHolds - $buyEquip)
+		end
+		if (PORT.BUYFUEL[CURRENTSECTOR] = 0)
+			if ($virtFreeHolds > $keepEquip)
+				setVar $buyOre ($virtFreeHolds - $keepEquip)
+			end
+			#if ($buyOre < $keepEquip)
+			#	setVar $buyOre 0
+			#end 
+		end
+		
 	end
+echo "TRADING: *"
+echo "sellOre: " $sellOre "*"
+echo "sellOrg: " $sellOrg "*"
+echo "sellEquip: " $sellEquip "*"
+echo "buyOre: " $buyOre "*"
+echo "buyOrg: " $buyOrg "*"
+echo "buyEquip: " $buyEquip "*"
+echo "virtFreeHolds: " $virtFreeHolds "*"
+
 
 
 	setVar $trading ($sellOre + $sellOrg + $sellEquip + $buyOre + $buyOrg + $buyEquip)
