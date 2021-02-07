@@ -207,7 +207,7 @@
 				gosub :SWITCHBOARD~SWITCHBOARD
 				if ($bot[$i][2] <> true)
 					# mark this person as a swappable ship #
-					setvar $swapwithme $bots[$i][3]
+					setvar $swapwithme $bots[$i][4]
 				end
 			end
 			add $i 1
@@ -516,7 +516,7 @@ return
 return
 
 :switchrobberships
-	setvar $switchto $bots[$save_current_robber][3]
+	setvar $switchto $bots[$save_current_robber][4]
 	goto :doswitch
 :switchships 
 	setvar $switchto $swapwithme
