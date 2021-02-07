@@ -11,14 +11,16 @@
 	setArray $ORIGINAL_SHIP $MAX_BOTS
 
  
-	setVar $BOT~help[3] $BOT~tab&" teammega {minproduct:#} {stopturns:#} {half}"
-	setVar $BOT~help[4] $BOT~tab&"   "
-	setVar $BOT~help[1] $BOT~tab&" Buydown and mega with multiple bots"
-	setVar $BOT~help[2] $BOT~tab&"   "
-	setVar $BOT~help[5] $BOT~tab&" {minproduct:#} - Port Min Prod Req (def:30,000)"
-	setVar $BOT~help[6] $BOT~tab&"  {stopturns:#} - Turns to stop at (def: 100)"
-	setVar $BOT~help[7] $BOT~tab&"         {half} - Sells only half to port."
-	setVar $BOT~help[10] $BOT~tab&"Bots: callin mega1 mega2"
+	setVar $BOT~help[1]  $BOT~tab&" teammega {minproduct:#} {stopturns:#} {half}"
+	setVar $BOT~help[2]  $BOT~tab&"   "
+	setVar $BOT~help[3]  $BOT~tab&" Buydown and mega with multiple bots"
+	setVar $BOT~help[4]  $BOT~tab&"   "
+	setVar $BOT~help[5]  $BOT~tab&" {minproduct:#} - Port Min Prod Req (def:30,000)"
+	setVar $BOT~help[6]  $BOT~tab&"  {stopturns:#} - Turns to stop at (def: 100)"
+	setVar $BOT~help[7]  $BOT~tab&"         {half} - Sells only half to port."
+	setVar $BOT~help[8]  $BOT~tab&"         "
+	setVar $BOT~help[9]  $BOT~tab&"     Bots: callin mega1, mega2, etc."
+	setVar $BOT~help[10] $BOT~tab&"           script will find potential robbers"
 	
 		gosub :bot~helpfile
 
