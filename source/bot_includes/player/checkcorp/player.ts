@@ -32,5 +32,4 @@
 
 	:done_ta
 	send "q"
-	waiton "Citadel command ("
 return
