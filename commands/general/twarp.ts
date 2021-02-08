@@ -26,6 +26,21 @@ end
 			add $i 1
 		end
 	end
+	isNumber $test $bot~parm1
+	if ($test <> true)
+		# check for corpie name #
+		gosub :player~checkcorp
+		setvar $i 1
+		while ($i <= $player~corp_count)
+			lowercase $player~corp_members[$i]
+			getwordpos $player~corp_members[$i] $pos $bot~parm1
+			if ($pos > 0)
+				setvar $bot~parm1 $player~corp_members[$i][1]
+				goto :go_after_me
+			end
+			add $i 1
+		end
+	end
 	:go_after_me
 	setVar $player~warpto_p ""
 	setvar $player~save true
