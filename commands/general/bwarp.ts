@@ -8,7 +8,7 @@ end
 # ======================     START BWARP SUBROUTINES     =================
 :Bwarp
 :b
-	gosub :checkfortravelname
+	gosub :player~checkfortravelname
 
 	killalltriggers
 	if ($bot~parm1 <> $PLAYER~CURRENT_SECTOR)

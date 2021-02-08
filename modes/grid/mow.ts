@@ -29,7 +29,7 @@
 	if ($pos > 0)
 		replacetext $bot~parm1 "destination:" ""
 	end
-	gosub :checkfortravelname
+	gosub :player~checkfortravelname
 
 	gosub :PLAYER~quikstats
 	setVar $homeSector $PLAYER~CURRENT_SECTOR

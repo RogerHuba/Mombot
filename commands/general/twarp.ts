@@ -7,7 +7,7 @@ end
 # ======================     START TWARP SUBROUTINES     =================
 :twarp
 :t
-	gosub :checkfortravelname
+	gosub :player~checkfortravelname
 	setVar $player~warpto_p ""
 	setvar $player~save true
 	gosub :PLAYER~quikstats

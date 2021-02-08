@@ -19,7 +19,7 @@
 	setVar $bot~validPrompts "Citadel"
 	gosub :bot~checkstartingprompt
 
-	gosub :checkfortravelname
+	gosub :player~checkfortravelname
 
 	isNumber $test $bot~parm1
 	if (($test = FALSE) OR ($bot~parm1 = ""))
