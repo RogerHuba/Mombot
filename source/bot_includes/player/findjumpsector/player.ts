@@ -1,6 +1,10 @@
 :FindJumpSector
 	setVar $RED_adj 0
-	send "qq*"
+	if ($startingLocation = "Citadel")
+		send "qt*t1*q* "
+	else
+		send "qq* "
+	end
 
 	setvar $k 1
 	while (SECTOR.BACKDOORS[$target][$k] > 0)

@@ -16,7 +16,8 @@
 
 		:ta_check
 			getwordpos CURRENTLINE $pos "P indicates Trader is on a planet in that sector"
-			if ($pos > 0)
+			getwordpos CURRENTLINE $pos2 "Corporate command ["
+			if (($pos > 0) or ($pos2 > 0))
 				goto :done_ta
 			end
 			setvar $line CURRENTLINE
