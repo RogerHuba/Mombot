@@ -20,7 +20,6 @@ end
 			lowercase $player~corp_members[$i]
 			getwordpos $player~corp_members[$i] $pos $who_called_me
 			if ($pos > 0)
-				echo "[found " $who_called_me "]*"
 				setvar $bot~parm1 $player~corp_members[$i][1]
 				goto :go_after_me
 			end
@@ -36,7 +35,6 @@ end
 			lowercase $player~corp_members[$i]
 			getwordpos $player~corp_members[$i] $pos $bot~parm1
 			if ($pos > 0)
-				echo "[[found " $bot~parm1 "]]*"
 				setvar $bot~parm1 $player~corp_members[$i][1]
 				goto :go_after_me
 			end
