@@ -1,7 +1,7 @@
 gosub :BOT~loadVars
 
-	setvar $bot~command "switchships"
-	setVar $BOT~help[1]  $BOT~tab&"switchships {"&#34&"trader_name"&#34&"} "
+	setvar $bot~command "switch"
+	setVar $BOT~help[1]  $BOT~tab&"switch {"&#34&"trader_name"&#34&"} "
 	setVar $BOT~help[2]  $BOT~tab&"     "
 	setVar $BOT~help[3]  $BOT~tab&"   Switch ships with trader in citadel"
 	setVar $BOT~help[4]  $BOT~tab&"     "
