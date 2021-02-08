@@ -4,7 +4,7 @@
 :run
 :max
 
-	if ($noexp)
+	if ($noexp = "1")
 		setvar $noexp "noexp"
 	end
 	if ($type = "0")
