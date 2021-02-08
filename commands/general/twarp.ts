@@ -6,7 +6,7 @@ gosub :BOT~loadVars
 	setVar $BOT~help[4]  $BOT~tab&"        and safely as possible.   "
 	setVar $BOT~help[5]  $BOT~tab&"Options: "
 	setVar $BOT~help[6]  $BOT~tab&"           {sector:#} - sector to twarp to "
-	setVar $BOT~help[7]  $BOT~tab&"{"&#34&"trader_name"&#34&"} - trader to twarp to"
+	setVar $BOT~help[7]  $BOT~tab&"      {"&#34&"trader_name"&#34&"} - trader to twarp to"
 	setVar $BOT~help[8]  $BOT~tab&"    "
 	setVar $BOT~help[9]  $BOT~tab&"    Examples:"
 	setVar $BOT~help[10] $BOT~tab&"            >t 233    - normal twarp"
