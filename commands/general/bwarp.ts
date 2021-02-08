@@ -1,6 +1,6 @@
 gosub :BOT~loadVars
 
-	setVar $BOT~help[1]  $BOT~tab&"pwarp {sector:#} {"&#34&"trader_name"&#34&"} {p}"
+	setVar $BOT~help[1]  $BOT~tab&"bwarp {sector:#} {"&#34&"trader_name"&#34&"} {p}"
 	setVar $BOT~help[2]  $BOT~tab&"      "
 	setVar $BOT~help[3]  $BOT~tab&"        planet transports to sector"
 	setVar $BOT~help[4]  $BOT~tab&"       "
