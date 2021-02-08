@@ -30,4 +30,4 @@
 	setEventTrigger		portended		:portended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\port.cts"
 	pause
 	:portended
-return
+return 
