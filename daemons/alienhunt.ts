@@ -7,7 +7,7 @@
 
 	gosub :combat~init 
 
-
+ 
 
 	setVar $BOT~help[1]  $BOT~tab&"alienhunt {corp} {sell} {refuel} {upgrade} {cannon} {return}"
 	setVar $BOT~help[2]  $BOT~tab&"          {passive} {buyfig} {buyshield} {patp} {home} "

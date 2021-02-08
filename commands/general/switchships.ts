@@ -1,0 +1,61 @@
+gosub :BOT~loadVars
+
+	setvar $bot~command "switchships"
+	setVar $BOT~help[1]  $BOT~tab&"switchships {"&#34&"trader_name"&#34&"} "
+	setVar $BOT~help[2]  $BOT~tab&"     "
+	setVar $BOT~help[3]  $BOT~tab&"   Switch ships with trader in citadel"
+	setVar $BOT~help[4]  $BOT~tab&"     "
+	setVar $BOT~help[5]  $BOT~tab&"   {"&#34&"trader_name"&#34&"} - trader's name to trade ships with"
+	gosub :bot~helpfile
+
+	getWordPos $bot~user_command_line $pos #34
+	if ($pos > 0)
+		getText $bot~user_command_line $trader_name #34 #34
+		if ($trader_name = false)
+			setVar $SWITCHBOARD~message "Trader name entered wrong.*"
+			gosub :SWITCHBOARD~switchboard
+			halt			
+		end
+	end
+
+    gosub :switchships
+    if ($foundSwitchShip = true)
+        setvar $switchboard~message "Switched successfully!*"
+    else
+        setvar $switchboard~message "Could not find ship to switch with!*"
+    end
+    gosub :switchboard~switchboard
+    halt
+:switchships 
+	setvar $switchto $trader_name
+	:doswitch
+	setvar $foundSwitchShip false
+	killtrigger 1
+	killtrigger 2
+	setTextTrigger	1	:switchcheck	"Trade with "
+	setTextTrigger	2	:switchdone 	"Citadel treasury contains "
+	send " e"
+	pause
+
+	:switchcheck
+		if ($foundSwitchShip = true)
+			send "*"
+		else
+            setvar $current_line currentline
+            lowercase $current_line
+            lowercase $switchto
+            trim $switchto
+			getwordpos CURRENTLINE $pos "trade with "&$switchto
+			if ($pos > 0)
+				setvar $foundSwitchShip true
+				send "y"
+			else
+				send "*"
+			end		
+		end
+		setTextTrigger	1	:switchcheck	"Trade with "
+		pause
+	:switchdone
+		killtrigger 1
+		killtrigger 2	
+return
