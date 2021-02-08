@@ -6,6 +6,10 @@ gosub :BOT~loadVars
 	setVar $BOT~help[3]  $BOT~tab&"   Switch ships with trader in citadel"
 	setVar $BOT~help[4]  $BOT~tab&"     "
 	setVar $BOT~help[5]  $BOT~tab&"   {"&#34&"trader_name"&#34&"} - trader's name to trade ships with"
+	setVar $BOT~help[6]  $BOT~tab&"     "
+	setVar $BOT~help[7]  $BOT~tab&"     Examples:"
+	setVar $BOT~help[8]  $BOT~tab&"         >switch "&#34&"mind dagger"&#34&"  "
+	setVar $BOT~help[9]  $BOT~tab&"         >switch mind"
 	gosub :bot~helpfile
 
 	getWordPos $bot~user_command_line $pos #34

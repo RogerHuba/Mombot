@@ -205,7 +205,7 @@
 				end 
 				setVar $SWITCHBOARD~MESSAGE "Bot name captured as: "&$BOTS[$i][3]&" for "&$bots[$i][4]&"*"
 				gosub :SWITCHBOARD~SWITCHBOARD
-				if ($bot[$i][2] <> true)
+				if ($bots[$i][2] <> true)
 					# mark this person as a swappable ship #
 					setvar $swapwithme $bots[$i][4]
 				end
