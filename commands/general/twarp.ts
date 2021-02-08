@@ -14,9 +14,9 @@ gosub :BOT~loadVars
 	setVar $BOT~help[12] $BOT~tab&"            >t 233 p  - twarp, then port"
 	setVar $BOT~help[13] $BOT~tab&"         >t planet 12 - twarp to last known "
 	setVar $BOT~help[14] $BOT~tab&"                        location of planet 12 and land"
-	setVar $BOT~help[15] $BOT~tab&"         >t mind      - twarp to a corp member with mind"
+	setVar $BOT~help[15] $BOT~tab&"              >t mind - twarp to a corp member with mind"
 	setVar $BOT~help[16] $BOT~tab&"                        in their name"
-	setVar $BOT~help[17] $BOT~tab&"    >t "&#34&"mind dagger"&#34&"  - twarp to corp member"
+	setVar $BOT~help[17] $BOT~tab&"     >t "&#34&"mind dagger"&#34&" - twarp to corp member"
 	gosub :bot~helpfile
 
 
