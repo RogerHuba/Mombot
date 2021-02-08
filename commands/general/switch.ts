@@ -16,6 +16,8 @@ gosub :BOT~loadVars
 			gosub :SWITCHBOARD~switchboard
 			halt			
 		end
+	else
+		setvar $trader_name $bot~parm1
 	end
 
     gosub :switchships
