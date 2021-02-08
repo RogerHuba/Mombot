@@ -21,6 +21,12 @@
 	end
 	isNumber $test $bot~parm1
 	if ($test <> true)
+        getWordPos $bot~user_command_line $pos "sector:"
+        if ($pos > 0)
+            setVar $cline $bot~user_command_line & " "
+            getText $cline $bot~parm1 "sector:" " "
+            goto :go_after_me
+        end
         getWordPos $bot~user_command_line $pos #34
         if ($pos > 0)
             getText $bot~user_command_line $trader #34 #34
