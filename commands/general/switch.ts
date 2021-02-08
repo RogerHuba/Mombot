@@ -59,3 +59,7 @@ gosub :BOT~loadVars
 		killtrigger 1
 		killtrigger 2	
 return
+
+#includes
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
