@@ -79,9 +79,7 @@
 	end
 	getwordpos $bot~user_command_line $pos "noexp"
 	if ($pos > 0)
-		setvar $max~noexp true
-	else
-		setvar $max~noexp false
+		setvar $max~noexp "noexp"
 	end
 	getWordPos $bot~user_command_line $pos "sector:"
 	if ($pos > 0)
