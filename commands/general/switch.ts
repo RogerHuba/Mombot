@@ -45,7 +45,7 @@ gosub :BOT~loadVars
             lowercase $current_line
             lowercase $switchto
             trim $switchto
-			getwordpos CURRENTLINE $pos "trade with "&$switchto
+			getwordpos $current_line $pos "trade with "&$switchto
 			if ($pos > 0)
 				setvar $foundSwitchShip true
 				send "y"
