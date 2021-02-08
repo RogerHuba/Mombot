@@ -520,32 +520,10 @@ return
 	goto :doswitch
 :switchships 
 	setvar $switchto $swapwithme
+	
 	:doswitch
-	setvar $foundSwitchShip false
-	killtrigger 1
-	killtrigger 2
-	setTextTrigger	1	:switchcheck	"Trade with "
-	setTextTrigger	2	:switchdone 	"Citadel treasury contains "
-	send " e"
-	pause
-
-	:switchcheck
-		if ($foundSwitchShip = true)
-			send "*"
-		else
-			getwordpos CURRENTLINE $pos "Trade with "&$switchto
-			if ($pos > 0)
-				setvar $foundSwitchShip true
-				send "y"
-			else
-				send "*"
-			end		
-		end
-		setTextTrigger	1	:switchcheck	"Trade with "
-		pause
-	:switchdone
-		killtrigger 1
-		killtrigger 2	
+	send "'" $bots[$current_trader][3] " switch " $switchto "*"
+	waiton "} - Switched successfully!"
 return
 
 
