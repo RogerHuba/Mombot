@@ -484,6 +484,34 @@ return
 
 return
 
+:calcTime
+	setVar $hours 0
+	setVar $minutes 0
+	setVar $seconds 0
+	setVar $testTime $timeToLogBackIn
+	if ($testTime >= 3600)
+		setVar $hours ($testTime/3600)
+		setVar $testTime $testTime-($hours*3600)
+	end
+	if ($testTime >= 60)
+		setVar $minutes ($testTime/60)
+		setVar $testTime $testTime-($minutes*60)
+	end
+	if ($testTime >= 1)
+		setVar $seconds $testTime
+	end
+	if ($hours < 10)
+		setVar $hours "0"&$hours
+	end
+	if ($minutes < 10)
+		setVar $minutes "0"&$minutes
+	end
+	if ($seconds < 10)
+		setVar $seconds "0"&$seconds
+	end
+return
+
+
 :moving
 
 		echo #27 "[30D                        " #27 "[30D"
