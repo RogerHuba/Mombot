@@ -129,7 +129,7 @@
 			setVar $i 0
 			while ($i < 15)
 				add $i 1
-				send "l j" & #8 & $planet~planet & "* "
+				send "l j" #8 #8 $planet~planet "* "
 				#send " l " $PLANET~PLANET " * n n *  "
 			end
 			gosub :player~quikstats
@@ -144,7 +144,7 @@
 				setvar $player~current_prompt "Citadel"
 				if ($holocapture)
 					gosub :fastCapture
-					send "l j" & #8 & $planet~planet & "* j m * * * j c  *  "
+					send "l j" #8 #8 $planet~planet "* j m * * * j c  *  "
 					#send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
 					gosub :player~quikstats
 				else
