@@ -253,83 +253,8 @@ return
 	setDelayTrigger     4 :closed 		5000
 	setTextLineTrigger  5 :on_planet	"What do you want to name your home planet?"
 	settexttrigger      6 :wrong_name	"Sorry, you cannot use the name "
-	settexttrigger timed :timed_game_closed "Access to this game is limited.  Access modes are as follows:"
 	setTextTrigger      7 :back_in_game	"Command [TL"
 
-	:timed_game_closed
-			killalltriggers
-			waiton "Current time: "
-			getText currentline&"[END]" $game_current_time ":" "[END]"
-			waiton "It will reopen at "
-			getText currentline $game_open_time "It will reopen at " "."
-			
-			splittext $game_current_time $current_time " " 
-			splittext $game_open_time $open_time " "
-			splittext $current_time[1] $current_time_split ":"
-			splittext $open_time[1] $open_time_split ":"
-			# check if am and pm match #
-			setvar $foundTime false
-			setvar $current_hour $current_time_split[1]
-			setvar $open_hour $open_time_split[1]
-			setvar $current_minute $current_time_split[2]
-			setvar $open_minute $open_time_split[2]
-			lowercase $current_time[2]
-			if ($current_time[2] = "pm")
-				setvar $current_hour $current_hour+12
-			end
-			lowercase $open_time[2]
-			if ($open_time[2] = "pm")
-				setvar $open_hour $open_hour+12
-			end
-				setvar $hour_hand $current_hour
-				setvar $hours_difference 0
-				while ($hour_hand <> $open_hour)
-					add $hours_difference 1
-					add $hour_hand 1
-					if ($hour_hand > 24)
-						setvar $hour_hand 1
-					end
-				end
-				setvar $minute_hand $current_minute
-				setvar $minute_difference 0
-				while ($minute_hand <> $open_minute)
-					add $minute_difference 1
-					add $minute_hand 1
-					if ($minute_hand > 60)
-						setvar $minute_hand 0
-					end
-				end
-				if ($minute_difference > 60)
-					setvar $minute_difference ($minute_difference-60)
-				else
-					if ($minute_difference > 0)
-						setvar $hours_difference ($hours_difference-1)
-					end
-				end
-				setvar $minutes_until_game (($hours_difference*60)+$minute_difference)			
-			if ($minutes_until_game > 2)
-				killalltriggers
-				disconnect
-				setVar $timer 0
-				setTextOutTrigger logearly :endLogoffGame #32
-				setvar $timeToLogBackIn (($minutes_until_game-2)*60)
-				while ($timeToLogBackIn > 0)
-					gosub :calcTime
-					echo ANSI_10 #27 & "[1A" & #27 & "[K" & $hours ":" $minutes ":" $seconds " left before entering game " GAME " (" GAMENAME ") (2 minutes early)"&ANSI_15&" ["&ANSI_14&"Spacebar to relog"&ANSI_15&"]*"
-					setDelayTrigger timeBeforeRelog :relogTimer 1000
-					pause
-					:relogTimer
-						setVar $timeToLogBackIn $timeToLogBackIn-1
-				end
-				:endLogoffGame
-				killtrigger logearly
-				killtrigger timeBeforeRelog
-				goto :enter_new_game
-			else
-				setDelayTrigger timedwaitForRelogDelay :enter_new_game 500
-				setDelayTrigger unfreezingTrigger :enter_new_game 20000
-				pause
-			end
 
 	if ($newgame)
 		send "Y"&$BOT~password&"*"&$BOT~password&"*"
@@ -337,7 +262,7 @@ return
 		setTextTrigger 9 :newname	"Use (N)ew Name or (B)BS Name"
 		setTextTrigger 10 :noalias	"Choose a name carefully as you will have it for a while!"
 	else
-		send $BOT~password&"*"&$BOT~password&"**************"
+		send $BOT~password&"* * ************"
 		waiton "What do you want to name your ship? (30 letters)"
 		if ($menus~landOnTerra = true)		
 			send $BOT~startShipName&"*Y l "
@@ -483,34 +408,6 @@ return
 	end
 
 return
-
-:calcTime
-	setVar $hours 0
-	setVar $minutes 0
-	setVar $seconds 0
-	setVar $testTime $timeToLogBackIn
-	if ($testTime >= 3600)
-		setVar $hours ($testTime/3600)
-		setVar $testTime $testTime-($hours*3600)
-	end
-	if ($testTime >= 60)
-		setVar $minutes ($testTime/60)
-		setVar $testTime $testTime-($minutes*60)
-	end
-	if ($testTime >= 1)
-		setVar $seconds $testTime
-	end
-	if ($hours < 10)
-		setVar $hours "0"&$hours
-	end
-	if ($minutes < 10)
-		setVar $minutes "0"&$minutes
-	end
-	if ($seconds < 10)
-		setVar $seconds "0"&$seconds
-	end
-return
-
 
 :moving
 
