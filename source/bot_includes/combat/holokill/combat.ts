@@ -129,25 +129,30 @@
 			setVar $i 0
 			while ($i < 15)
 				add $i 1
-				send " l " $PLANET~PLANET " * n n *  "
+				send "l j" & #8 & $planet~planet & "* "
+				#send " l " $PLANET~PLANET " * n n *  "
 			end
 			gosub :player~quikstats
-			if (($player~current_prompt <> $test_sector))
-				send "'Possible splatter on a planet, check for pod.*"
+			if (($player~current_sector <> $test_sector))
+				setvar $switchboard~message "Possible splatter on a planet, check for pod.*"
+				gosub :switchboard~switchboard
 				return
 			end
-			send "m * * * c "
-			setvar $player~startingLocation "Citadel"
-			setvar $player~current_prompt "Citadel"
-			if ($holocapture)
-				gosub :fastCapture
-				send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+			if ($player~current_prompt = "Planet")
+				send "m * * * c "
+				setvar $player~startingLocation "Citadel"
+				setvar $player~current_prompt "Citadel"
+				if ($holocapture)
+					gosub :fastCapture
+					send "l j" & #8 & $planet~planet & "* j m * * * j c  *  "
+					#send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+					gosub :player~quikstats
+				else
+					goSub :fastCitadelAttack
+				end
+				send "p " $hkill_start_sector "* y "
 				gosub :player~quikstats
-			else
-				goSub :fastCitadelAttack
 			end
-			send "p " $hkill_start_sector "* y "
-			gosub :player~quikstats
 			if ($player~current_sector <> $hkill_start_sector)
 				gosub :callsaveme
 				setVar $SWITCHBOARD~message "After save me, resetting.*"
