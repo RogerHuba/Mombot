@@ -1,32 +1,31 @@
 gosub :BOT~loadVars
 
-if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
-	goto :wait_for_command
-end
+	setVar $BOT~help[1]  $BOT~tab&"twarp {sector:#} {"&#34&"trader_name"&#34&"} {p} "
+	setVar $BOT~help[2]  $BOT~tab&"      "
+	setVar $BOT~help[3]  $BOT~tab&"        transwarps to sector as quickly "
+	setVar $BOT~help[4]  $BOT~tab&"        and safely as possible.   "
+	setVar $BOT~help[5]  $BOT~tab&"      "
+	setVar $BOT~help[6]  $BOT~tab&"    Options: "
+	setVar $BOT~help[7]  $BOT~tab&"           {sector:#} - sector to twarp to "
+	setVar $BOT~help[8]  $BOT~tab&"      {"&#34&"trader_name"&#34&"} - trader to twarp to"
+	setVar $BOT~help[9]  $BOT~tab&"                  {p} - attempt to port after twarp"
+	setVar $BOT~help[10] $BOT~tab&"         "
+	setVar $BOT~help[11] $BOT~tab&"    Examples:"
+	setVar $BOT~help[12] $BOT~tab&"            >t 233    - normal twarp"
+	setVar $BOT~help[13] $BOT~tab&"            >t 233 12 - twarp, then land on planet 12"
+	setVar $BOT~help[14] $BOT~tab&"            >t 233 p  - twarp, then port"
+	setVar $BOT~help[15] $BOT~tab&"         >t planet 12 - twarp to last known "
+	setVar $BOT~help[16] $BOT~tab&"                        location of planet 12 and land"
+	setVar $BOT~help[17] $BOT~tab&"              >t mind - twarp to a corp member with mind"
+	setVar $BOT~help[18] $BOT~tab&"                        in their name"
+	setVar $BOT~help[19] $BOT~tab&"     >t "&#34&"mind dagger"&#34&" - twarp to corp member"
+	gosub :bot~helpfile
+
 
 # ======================     START TWARP SUBROUTINES     =================
 :twarp
 :t
-	if ($bot~parm1 = "me")
-		if ($bot~command_caller = "self")
-			setVar $SWITCHBOARD~message "I don't think you need to twarp to yourself.*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end
-		setvar $who_called_me $bot~command_caller
-		gosub :player~checkcorp
-		setvar $i 1
-		while ($i <= $player~corp_count)
-			lowercase $player~corp_members[$i]
-			getwordpos $player~corp_members[$i] $pos $who_called_me
-			if ($pos > 0)
-				setvar $bot~parm1 $player~corp_members[$i][1]
-				goto :go_after_me
-			end
-			add $i 1
-		end
-	end
-	:go_after_me
+	gosub :player~checkfortravelname
 	setVar $player~warpto_p ""
 	setvar $player~save true
 	gosub :PLAYER~quikstats
@@ -106,15 +105,6 @@ return
 
 
 :wait_for_command
-	setVar $BOT~help[1]  $BOT~tab&"twarp - transwarps to sector as quickly "
-	setVar $BOT~help[2]  $BOT~tab&"        and safely as possible.   "
-	setVar $BOT~help[3]  $BOT~tab&"Options: "
-	setVar $BOT~help[4]  $BOT~tab&"    t [sector] - normal transwarp"
-	setVar $BOT~help[5]  $BOT~tab&"    t [sector] {planet id} - transwarp, then land"
-	setVar $BOT~help[6]  $BOT~tab&"    t [sector] {p} - transwarp, then port"
-	setVar $BOT~help[7]  $BOT~tab&"    t planet {planet id} - transwarp to last known "
-	setVar $BOT~help[8]  $BOT~tab&"                           location of the planet id"
-	gosub :bot~helpfile
 halt
 
 
@@ -130,3 +120,4 @@ include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\planet\landingsub\planet"
 include "source\module_includes\bot\addfigtodata\bot"
+include "source\bot_includes\player\checkfortravelname\player"

@@ -940,7 +940,7 @@ goto :processing
 			goto :head_home
 		end
 		gosub :check_for_target_change
-		if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
+		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and ($player~limpets > 0) and ($restock~deploymines = true))
 			gosub :main~domines
 		end
 		gosub :check_for_target_change
@@ -1069,8 +1069,15 @@ return
 	setvar $amount 1
 	if ($player~limpets >= 3)
 		setvar $amount 3
+	end 
+	send " q q * "
+	if ($player~limpets > 0)
+		send "h 2" $amount "*  zc* "
 	end
-	send " q q * h 2" $amount "*  zc* h 1" $amount "*  zc* l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+	if ($player~armids > 0)
+		send "h 1" $amount "*  zc* "
+	end
+	send "l j" #8 #8  $planet~planet  "* j m * * * j c  *  "
 	gosub :player~quikstats
 	if ($player~current_prompt <> "Citadel")
 		setvar $switchboard~message "Not at correct prompt after mine deploy!  Maybe planet is gone?  Check please!*"
@@ -1084,7 +1091,7 @@ return
 	if ($bot~last_fighter_attack <> "")
 		gosub :killing~set_the_cannon
 	end
-	if ((($player~photons < $photon~shooting_count) and ($nophoton <> true)) or (($combat~defender = true) and ($player~genesis <= 0)) or (($restock~deploymines = true) and ($player~limpets <=0)))
+	if ((($player~photons < $photon~shooting_count) and ($nophoton <> true)) or (($combat~defender = true) and ($player~genesis <= 0)) or (($restock~deploymines = true) and ($player~limpets < $SHIP~SHIP_MINES_MAX)))
 		if (($player~turns <= 0) and ($player~unlimitedGame <> true))
 			setvar $switchboard~message "No turns to refurb photons.  Skipping - might need to wait for top of the hour.*"
 			gosub :switchboard~switchboard

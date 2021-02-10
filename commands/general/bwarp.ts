@@ -1,33 +1,29 @@
 gosub :BOT~loadVars
 
-if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
-	goto :wait_for_command
-end
+	setVar $BOT~help[1]  $BOT~tab&"bwarp {sector:#} {"&#34&"trader_name"&#34&"} {p}"
+	setVar $BOT~help[2]  $BOT~tab&"      "
+	setVar $BOT~help[3]  $BOT~tab&"        planet transports to sector"
+	setVar $BOT~help[4]  $BOT~tab&"       "
+	setVar $BOT~help[5]  $BOT~tab&"    Options: "
+	setVar $BOT~help[6]  $BOT~tab&"           {sector:#} - sector to bwarp to "
+	setVar $BOT~help[7]  $BOT~tab&"      {"&#34&"trader_name"&#34&"} - trader to bwarp to"
+	setVar $BOT~help[8]  $BOT~tab&"                  {p} - port after bwarping in "
+	setVar $BOT~help[9]  $BOT~tab&"         "
+	setVar $BOT~help[10] $BOT~tab&"    Examples:"
+	setVar $BOT~help[11] $BOT~tab&"               >b 233 - normal bwarp"
+	setVar $BOT~help[12] $BOT~tab&"             >b 233 p - bwarp to sector, and port "
+	setVar $BOT~help[13] $BOT~tab&"         >b planet 12 - bwarp to last known "
+	setVar $BOT~help[14] $BOT~tab&"                        location of planet 12 "
+	setVar $BOT~help[15] $BOT~tab&"              >b mind - bwarp to a corp member with mind"
+	setVar $BOT~help[16] $BOT~tab&"                        in their name"
+	setVar $BOT~help[17] $BOT~tab&"     >b "&#34&"mind dagger"&#34&" - bwarp to corp member"
+	gosub :bot~helpfile
 
 
 # ======================     START BWARP SUBROUTINES     =================
 :Bwarp
 :b
-	if ($bot~parm1 = "me")
-		if ($bot~command_caller = "self")
-			setVar $SWITCHBOARD~message "I don't think you need to bwarp to yourself.*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end
-		setvar $who_called_me $bot~command_caller
-		gosub :player~checkcorp
-		setvar $i 1
-		while ($i <= $player~corp_count)
-			lowercase $player~corp_members[$i]
-			getwordpos $player~corp_members[$i] $pos $who_called_me
-			if ($pos > 0)
-				setvar $bot~parm1 $player~corp_members[$i][1]
-				goto :go_after_me
-			end
-			add $i 1
-		end
-	end
-	:go_after_me
+	gosub :player~checkfortravelname
 
 	killalltriggers
 	if ($bot~parm1 <> $PLAYER~CURRENT_SECTOR)
@@ -81,14 +77,6 @@ return
 
 
 :wait_for_command
-	setVar $BOT~help[1]  $BOT~tab&"bwarp - planet transports to sector as quickly "
-	setVar $BOT~help[2]  $BOT~tab&"        and safely as possible.   "
-	setVar $BOT~help[3]  $BOT~tab&"Options: "
-	setVar $BOT~help[4]  $BOT~tab&"    t [sector] - normal bwarp"
-	setVar $BOT~help[5]  $BOT~tab&"    t [sector] {p} - bwarp, then port"
-	setVar $BOT~help[6]  $BOT~tab&"    t planet {planet id} - bwarp to last known "
-	setVar $BOT~help[7]  $BOT~tab&"                           location of the planet id"
-	gosub :bot~helpfile
 halt
 
 
@@ -102,4 +90,5 @@ include "source\bot_includes\player\quikstats\player"
 include "source\module_includes\bot\checkstartingprompt\bot"
 include "source\bot_includes\player\bwarp\player"
 include "source\bot_includes\player\checkcorp\player"
+include "source\bot_includes\player\checkfortravelname\player"
 

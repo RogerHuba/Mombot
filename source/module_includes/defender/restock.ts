@@ -112,6 +112,8 @@
 
 		return
 	else
+		:try_buying_furbs
+
 		setVar $genesisCashNeeded 0 
 		setVar $limpetCashNeeded 0
 		setVar $armidCashNeeded 0
@@ -137,7 +139,7 @@
 		end
 		setVar $cashNeeded ($photonCashNeeded+$limpetCashNeeded+$armidCashNeeded+$disruptorCashNeeded+$genesisCashNeeded+$game~LIMPET_REMOVAL_COST)
 		setVar $furbing TRUE
-		if ($cashNeeded > currentcredits)
+		if ($cashNeeded > $player~credits)
 			send "D" 
 			waitOn "Citadel treasury contains "
 			getWord CURRENTLINE $citadelCash 4
@@ -147,11 +149,11 @@
 				gosub :switchboard~switchboard
 				gosub :navigate~head_home
 			end
-			send "t f "&($cashNeeded-currentcredits)&"* "
+			send "t f "&($cashNeeded-$player~credits)&"* "
 		end
 		# check adj's for Dock.. if present, then we don't need a jump sector.
 		setVar $i 1
-		setVar $START_SECTOR currentsector
+		setVar $START_SECTOR $player~current_sector
 		setVar $WeAreAdjDock FALSE
 		while ($i <= SECTOR.WARPCOUNT[$START_SECTOR])
 			setVar $adj_start SECTOR.WARPSIN[$START_SECTOR][$i]
@@ -183,51 +185,48 @@
 			getdistance $dist2 $player~RED_adj $START_SECTOR
 		end
 		if (($dist1 < 0) or $dist2 < 0)
-			if (currentalignment >= 1000)
-				if ($WeAreAdjDock)
-					send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+			if ($player~alignment >= 1000)
+				if ($WeAreAdjDock = true)
+					setvar $player~starting_point $map~stardock
+					setvar $player~destination $start_sector
+					gosub :player~getcourse
+					setvar $dist1 1
+					setvar $dist2 $player~courseLength
 				else
-					send "^F" & $START_SECTOR & "*" & $MAP~stardock & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+					setvar $player~starting_point $start_sector
+					setvar $player~destination $map~stardock
+					gosub :player~getcourse
+					setvar $dist1 $player~courseLength
+
+					setvar $path_to_stardock $player~mowCourse
+
+					setvar $player~starting_point $map~stardock
+					setvar $player~destination $start_sector
+					gosub :player~getcourse
+					setvar $dist2 $player~courseLength
 				end
 			else
-				if ($WeAreAdjDock)
-					send "^F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+				if ($WeAreAdjDock = true)
+					setvar $player~starting_point $map~stardock
+					setvar $player~destination $start_sector
+					gosub :player~getcourse
+					setvar $dist1 1
+					setvar $dist2 $player~courseLength
 				else
-					send "^F" & $START_SECTOR & "*" & $player~RED_adj & "*F" & $MAP~stardock & "*" & $START_SECTOR & "*Q/ "
+					setvar $player~starting_point $start_sector
+					setvar $player~destination $player~RED_adj
+					gosub :player~getcourse
+					setvar $dist1 $player~courseLength
+
+					setvar $path_to_stardock $player~mowCourse
+
+					setvar $player~starting_point $map~stardock
+					setvar $player~destination $start_sector
+					gosub :player~getcourse
+					setvar $dist2 $player~courseLength
 				end
 			end
-			setTextLineTrigger noJoy :noJoy "*** Error - No route within"
-			setTextTrigger cont :cont "(?="
-			pause
-
-			:noJoy
-				killAllTriggers
-				setvar $switchboard~message "Cannot Find Path to StarDock!*"
-				gosub :switchboard~switchboard
-				send "*"
-				send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
-				return
-			:cont
-				killAllTriggers
-				setDelayTrigger Latency_Delay		:Latency_Delay 500
-				pause
-
-				:Latency_Delay
-
-				Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
-				if ((currentalignment >= 1000) OR ($WeAreAdjDock))
-					getdistance $dist1 $START_SECTOR $MAP~stardock
-				else
-					getdistance $dist1 $START_SECTOR $player~RED_adj
-				end
 		end
-			if ((currentalignment >= 1000) OR ($WeAreAdjDock))
-				getdistance $dist1 $START_SECTOR $MAP~stardock
-				getdistance $dist2 $MAP~stardock $START_SECTOR
-			else
-				getdistance $dist1 $START_SECTOR $player~RED_adj
-				getdistance $dist2 $player~RED_adj $START_SECTOR
-			end
 			if ($dist1 <= 0)
 				setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
 				gosub :switchboard~switchboard
@@ -244,8 +243,22 @@
 			end
 
 			setVar $ore_req (($dist1 + $dist2) * 3)
-
 			if ($PLAYER~ORE_HOLDS < $ore_req)
+
+				# Move planet closer #
+				setvar $i ($path_to_stardock-2)
+				while ($i > 3)
+					getSectorParameter $path_to_stardock[$i] "FIGSEC" $isFigged 
+					getSectorParameter $path_to_stardock[$i] "LIMPSEC" $isLimped 
+					if (($isFigged = true) and ($isLimped = true))
+						send "p" $path_to_stardock[$i] "* y "
+						gosub :player~quikstats
+						if ($player~current_sector = $path_to_stardock[$i])
+							goto :try_buying_furbs
+						end
+					end
+					subtract $i 1
+				end
 				send "q  t*l2* t*l3* t*t1* c "
 				gosub :player~quikstats
 				if ($PLAYER~ORE_HOLDS < $ore_req)
@@ -266,13 +279,13 @@
 
 			if ($PLAYER~unlimitedGame = 0)
 				gosub :TurnsRequired
-				if ($turnsRequired > currentturns)
+				if ($turnsRequired > $player~turns)
 					setvar $switchboard~message "Not Enough Turns. "&$turnsRequired&", Required*"
 					gosub :switchboard~switchboard
 					send "*"
 					return
-				elseif ($turnsRequired <= currentturns)
-					setVar $tmp (currentturns - $turnsRequired)
+				elseif ($turnsRequired <= $player~turns)
+					setVar $tmp ($player~turns - $turnsRequired)
 					if ($tmp <= $bot~bot_turn_limit)
 						setvar $switchboard~message "Proceeding Will Leave Fewer Than " & $bot~bot_turn_limit & " Turns!*"
 						gosub :switchboard~switchboard

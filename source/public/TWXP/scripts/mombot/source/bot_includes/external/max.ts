@@ -4,7 +4,7 @@
 :run
 :max
 
-	if ($noexp)
+	if ($noexp = "1")
 		setvar $noexp "noexp"
 	end
 	if ($type = "0")
@@ -30,4 +30,4 @@
 	setEventTrigger		portended		:portended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\port.cts"
 	pause
 	:portended
-return
+return 

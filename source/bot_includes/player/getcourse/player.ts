@@ -56,8 +56,10 @@
 			add $index 1
 			getWord $sectors $mowCourse[$index] $index
 		end
-		return
+		setvar $mowCourse $courseLength
+	return
 	:noPath
-
 		send "q '{" $SWITCHBOARD~bot_name "} - No path to that sector!*"
-		return
+		setvar $mowCourse 0
+		setvar $courseLength 0
+	return
