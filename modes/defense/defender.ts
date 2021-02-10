@@ -1070,7 +1070,14 @@ return
 	if ($player~limpets >= 3)
 		setvar $amount 3
 	end 
-	send " q q * h 2" $amount "*  zc* h 1" $amount "*  zc* l j" #8 #8  $planet~planet  "* j m * * * j c  *  "
+	send " q q * "
+	if ($player~limpets > 0)
+		send "h 2" $amount "*  zc* "
+	end
+	if ($player~armids > 0)
+		send "h 1" $amount "*  zc* "
+	end
+	send "l j" #8 #8  $planet~planet  "* j m * * * j c  *  "
 	gosub :player~quikstats
 	if ($player~current_prompt <> "Citadel")
 		setvar $switchboard~message "Not at correct prompt after mine deploy!  Maybe planet is gone?  Check please!*"
