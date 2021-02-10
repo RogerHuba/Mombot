@@ -940,7 +940,7 @@ goto :processing
 			goto :head_home
 		end
 		gosub :check_for_target_change
-		if (((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) or (SECTOR.MINES.QUANTITY[$player~current_sector] <= 0)) and ($player~limpets > 0) and ($restock~deploymines = true))
+		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and ($player~limpets > 0) and ($restock~deploymines = true))
 			gosub :main~domines
 		end
 		gosub :check_for_target_change
