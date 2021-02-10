@@ -112,6 +112,8 @@
 
 		return
 	else
+		:try_buying_furbs
+
 		setVar $genesisCashNeeded 0 
 		setVar $limpetCashNeeded 0
 		setVar $armidCashNeeded 0
@@ -196,6 +198,8 @@
 					gosub :player~getcourse
 					setvar $dist1 $player~courseLength
 
+					setvar $path_to_stardock $player~mowCourse
+
 					setvar $player~starting_point $map~stardock
 					setvar $player~destination $start_sector
 					gosub :player~getcourse
@@ -213,6 +217,8 @@
 					setvar $player~destination $player~RED_adj
 					gosub :player~getcourse
 					setvar $dist1 $player~courseLength
+
+					setvar $path_to_stardock $player~mowCourse
 
 					setvar $player~starting_point $map~stardock
 					setvar $player~destination $start_sector
@@ -237,8 +243,22 @@
 			end
 
 			setVar $ore_req (($dist1 + $dist2) * 3)
-
 			if ($PLAYER~ORE_HOLDS < $ore_req)
+
+				# Move planet closer #
+				setvar $i ($path_to_stardock-2)
+				while ($i > 3)
+					getSectorParameter $path_to_stardock[$i] "FIGSEC" $isFigged 
+					getSectorParameter $path_to_stardock[$i] "LIMPSEC" $isLimped 
+					if (($isFigged = true) and ($isLimped = true))
+						send "p" $path_to_stardock[$i] "* y "
+						gosub :player~quikstats
+						if ($player~current_sector = $path_to_stardock[$i])
+							goto :try_buying_furbs
+						end
+					end
+					subtract $i 1
+				end
 				send "q  t*l2* t*l3* t*t1* c "
 				gosub :player~quikstats
 				if ($PLAYER~ORE_HOLDS < $ore_req)
