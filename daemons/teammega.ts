@@ -27,6 +27,8 @@
 	
 		gosub :bot~helpfile
 
+	# for trader names #
+	gosub :combat~init
 
 	
 	gosub :PLAYER~quikstats
@@ -97,8 +99,6 @@
 	setVar $SWITCHBOARD~MESSAGE "This script assumes all bots are placed correctly before this script is run.*"
 	gosub :SWITCHBOARD~SWITCHBOARD
 
-	send "'all unlock*"
-	waiton "} - Ship has been unlocked!"
 
 	setDelayTrigger    3 :waitforunlock 3000
 	pause
@@ -203,8 +203,13 @@
 				else
 					setvar $bots[$i][4] $player~TRADER_NAME					
 				end 
+
+				send "'" $BOTS[$i][3] " unlock*"
+				waiton "{"$$BOTS[$i][3]"} - Ship has been unlocked!"
+
 				setVar $SWITCHBOARD~MESSAGE "Bot name captured as: "&$BOTS[$i][3]&" for "&$bots[$i][4]&"*"
 				gosub :SWITCHBOARD~SWITCHBOARD
+
 				if ($bots[$i][2] <> true)
 					# mark this person as a swappable ship #
 					setvar $swapwithme $bots[$i][4]
@@ -655,6 +660,7 @@ return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
+include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\getinfo\player"
 include "source\module_includes\bot\banner\bot"
