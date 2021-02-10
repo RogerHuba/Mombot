@@ -220,38 +220,7 @@
 					setvar $dist2 $player~courseLength
 				end
 			end
-			setTextLineTrigger noJoy :noJoy "*** Error - No route within"
-			setTextTrigger cont :cont "(?="
-			pause
-
-			:noJoy
-				killAllTriggers
-				setvar $switchboard~message "Cannot Find Path to StarDock!*"
-				gosub :switchboard~switchboard
-				send "*"
-				send " L Z" & #8 & $PLANET~PLANET & "* p  s  s * * c *"
-				return
-			:cont
-				killAllTriggers
-				setDelayTrigger Latency_Delay		:Latency_Delay 500
-				pause
-
-				:Latency_Delay
-
-				Echo "**" & ANSI_14 & "Please Stand By" & ANSI_15 & " - Calculating Distances...**"
-				if ((currentalignment >= 1000) OR ($WeAreAdjDock))
-					getdistance $dist1 $START_SECTOR $MAP~stardock
-				else
-					getdistance $dist1 $START_SECTOR $player~RED_adj
-				end
 		end
-			if ((currentalignment >= 1000) OR ($WeAreAdjDock))
-				getdistance $dist1 $START_SECTOR $MAP~stardock
-				getdistance $dist2 $MAP~stardock $START_SECTOR
-			else
-				getdistance $dist1 $START_SECTOR $player~RED_adj
-				getdistance $dist2 $player~RED_adj $START_SECTOR
-			end
 			if ($dist1 <= 0)
 				setvar $switchboard~message "Insufficient Warp Data Plotting Course to Dock*"
 				gosub :switchboard~switchboard
