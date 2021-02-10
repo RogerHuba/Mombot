@@ -1091,7 +1091,7 @@ return
 	if ($bot~last_fighter_attack <> "")
 		gosub :killing~set_the_cannon
 	end
-	if ((($player~photons < $photon~shooting_count) and ($nophoton <> true)) or (($combat~defender = true) and ($player~genesis <= 0)) or (($restock~deploymines = true) and ($player~limpets <=0)))
+	if ((($player~photons < $photon~shooting_count) and ($nophoton <> true)) or (($combat~defender = true) and ($player~genesis <= 0)) or (($restock~deploymines = true) and ($player~limpets < $SHIP~SHIP_MINES_MAX)))
 		if (($player~turns <= 0) and ($player~unlimitedGame <> true))
 			setvar $switchboard~message "No turns to refurb photons.  Skipping - might need to wait for top of the hour.*"
 			gosub :switchboard~switchboard
