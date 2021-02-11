@@ -824,8 +824,10 @@ return
 			gosub :load_the_module
 			if ($b < $bot~command_lines)
 				# the last script in the list has not loaded #
+				killtrigger loadended
 				setEventTrigger	loadended :loadended "SCRIPT STOPPED" $loaded
 				if ($bot~botIsOff <> TRUE)
+					killtrigger own_command
 					setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          "SNAP OUT OF IT"
 				end
 				pause
