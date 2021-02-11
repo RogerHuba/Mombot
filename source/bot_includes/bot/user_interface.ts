@@ -986,6 +986,7 @@ return
 			setVar $invalid TRUE
 		end
 		cutText $bot~command_lines[$b][9]&"  " $test 1 1
+		send "'[" $bot~command_lines[$b][9] "]*"
 		if ($charCode = "48")
 			setVar $i 10
 			goto :runHotScript

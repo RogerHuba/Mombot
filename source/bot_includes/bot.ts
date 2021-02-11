@@ -394,7 +394,7 @@ return
 		setVar $custom_commands[1] ":INTERNAL_COMMANDS~autokill"
 		setVar $custom_commands[2] ":INTERNAL_COMMANDS~autocap"
 		setVar $custom_commands[3] ":INTERNAL_COMMANDS~autorefurb"
-		setVar $custom_commands[4] ":INTERNAL_COMMANDS~surround"
+		setVar $custom_commands[4] "surround"
 		setVar $custom_commands[5] ":INTERNAL_COMMANDS~htorp"
 		setVar $custom_commands[6] ":INTERNAL_COMMANDS~twarpswitch"
 		setVar $custom_commands[7] ":INTERNAL_COMMANDS~kit"
@@ -402,10 +402,10 @@ return
 		setVar $custom_commands[9] ":INTERNAL_COMMANDS~hkill"
 		setVar $custom_commands[10] ":INTERNAL_COMMANDS~stopModules"
 		setVar $custom_commands[11] ":INTERNAL_COMMANDS~kit"
-		setVar $custom_commands[12] ":INTERNAL_COMMANDS~xenter"
+		setVar $custom_commands[12] "xenter"
 		setVar $custom_commands[13] ":INTERNAL_COMMANDS~mowswitch"
 		setVar $custom_commands[14] ":INTERNAL_COMMANDS~fotonswitch"
-		setVar $custom_commands[15] ":INTERNAL_COMMANDS~clear"
+		setVar $custom_commands[15] "clear"
 		setVar $custom_commands[16] ":MENUS~preferencesMenu"
 		setVar $custom_commands[17] ":INTERNAL_COMMANDS~dock_shopper"
 		setvar $i 1
@@ -423,7 +423,7 @@ return
 	setVar $internalCommandLists[5]  " surround exit xenter mow "
 	setVar $internalCommandLists[6]  " "
 	setVar $internalCommandLists[7]  " find pscan sector storeship setvar getvar "
-	setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow l m t b p port x shipstore w d finder xenter status pinfo holotorp"
+	setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow port shipstore finder xenter status pinfo holotorp"
 	setVar $internalCommandList     $internalCommandLists[1]&$internalCommandLists[2]&$internalCommandLists[3]&$internalCommandLists[4]&$internalCommandLists[5]&$internalCommandLists[6]&$internalCommandLists[7]
 	setArray $TYPES 7
 	setVar $TYPES[1] "General"
