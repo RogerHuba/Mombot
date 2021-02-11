@@ -1,4 +1,4 @@
-for /r %%n in (*twarp.ts) do call :checkit "%%n" 
+for /r %%n in (*clear.ts) do call :checkit "%%n" 
 goto end
 
 :checkit

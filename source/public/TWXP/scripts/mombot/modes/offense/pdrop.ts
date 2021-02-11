@@ -10,11 +10,11 @@ reqRecording
 	loadvar $switchboard~self_command
 	loadvar $ship~ship_max_attack
 
-	setVar $BOT~help[1]   $BOT~tab&"pdrop {delay:#} {d|a|s|da|de} {fm|f|m|uf} {return} {kill} "
-	setVar $BOT~help[2]   $BOT~tab&"      {fastkill} {defender} {perfect} {density} {lock}"
-	setVar $BOT~help[3]   $BOT~tab&"      {plockt:#} {figs:#} {offensive} {twohops} {retrigger}"
-	setVar $BOT~help[4]   $BOT~tab&"      {densityx} {iglift}"
-	setVar $BOT~help[5]   $BOT~tab&"      "
+	setVar $BOT~help[1]   $BOT~tab&"pdrop {delay:#} {d|a|s|da|de} {fm|f|m|uf} {return} {kill}     "
+	setVar $BOT~help[2]   $BOT~tab&"      {fastkill} {defender} {perfect} {density} {lock}        "
+	setVar $BOT~help[3]   $BOT~tab&"      {plockt:#} {figs:#} {offensive} {twohops} {retrigger}   "
+	setVar $BOT~help[4]   $BOT~tab&"      {densityx} {iglift}                                     "
+	setVar $BOT~help[5]   $BOT~tab&"        "
 	setVar $BOT~help[6]   $BOT~tab&"  {delay:#} - delay before dropping in milliseconds"
 	setVar $BOT~help[7]   $BOT~tab&"        {d} - direct drop"
 	setVar $BOT~help[8]   $BOT~tab&"        {a} - adjacent drop"
