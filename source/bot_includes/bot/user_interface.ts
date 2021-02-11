@@ -79,9 +79,6 @@
 		if (($bot~command = "bot") OR ($bot~command = "relog"))
 			goto :bot~wait_for_command
 		end
-#		getLength $bot~command_lines[$b][9] $length
-#		cutText $bot~command_lines[$b]&"          " $bot~command_lines[$b] $length+1 9999
-#		gosub :getParameters
 		gosub :check_for_multi_commands
 		goto :command_processing
 
@@ -113,10 +110,6 @@
 			if (($bot~command = "bot") OR ($bot~command = "relog"))
 				goto :BOT~wait_for_command
 			end
-			#getLength $bot~command $length
-			#cutText $bot~user_command_line & "          " $bot~user_command_line $length+1 9999
-			#echo "*"&ANSI_14&"["&ANSI_15&$bot~command_lines[$b]&ANSI_14&"]*"
-			#gosub :getParameters
 			gosub :check_for_multi_commands
 			goto :command_processing            
 		end
@@ -767,10 +760,56 @@ return
 			end
 			add $i 1
 		end
+		if ($bot~command_lines[$b][9] = "l")
+			setvar $bot~command_lines[$b][9] "land"
+		end
+		if ($bot~command_lines[$b][9] = "x")
+			setvar $bot~command_lines[$b][9] "xport"
+		end
+		if ($bot~command_lines[$b][9] = "qss")
+			setvar $bot~command_lines[$b][9] "status"
+		end
+		if ($bot~command_lines[$b][9] = "d")
+			setvar $bot~command_lines[$b][9] "dep"
+		end
+		if ($bot~command_lines[$b][9] = "w")
+			setvar $bot~command_lines[$b][9] "with"
+		end
+		if ($bot~command_lines[$b][9] = "k")
+			setvar $bot~command_lines[$b][9] "keep"
+		end
+		if ($bot~command_lines[$b][9] = "exit")
+			setvar $bot~command_lines[$b][9] "xenter"
+		end
+		if ($bot~command_lines[$b][9] = "cn")
+			setvar $bot~command_lines[$b][9] "cn9"
+		end
+		if ($bot~command_lines[$b][9] = "emx")
+			setvar $bot~command_lines[$b][9] "reset"
+		end
+		if ($bot~command_lines[$b][9] = "pinfo")
+			setvar $bot~command_lines[$b][9] "pscan"
+		end
+		if ($bot~command_lines[$b][9] = "shipstore")
+			setvar $bot~command_lines[$b][9] "storeship"
+		end
 		setVar $travelCommands "mow twarp bwarp pwarp smow m t b p "
 		#replacing planet id's with planet sector
 		getWordPos $travelCommands $pos $bot~command_lines[$b][9]
 		if ($pos > 0)
+			if ($bot~command_lines[$b][9] = "m")
+				setvar $bot~command_lines[$b][9] "mow"
+			end
+			if ($bot~command_lines[$b][9] = "p")
+				setvar $bot~command_lines[$b][9] "pwarp"
+			end
+			if ($bot~command_lines[$b][9] = "t")
+				setvar $bot~command_lines[$b][9] "twarp"
+			end
+			if ($bot~command_lines[$b][9] = "b")
+				setvar $bot~command_lines[$b][9] "bwarp"
+			end
+
 			getWordPos " "&$bot~command_lines[$b]&" " $pos " planet "
 			if ($pos > 0)
 				if ($bot~command_lines[$b][1] = "planet")
@@ -820,7 +859,9 @@ return
 				goto :BOT~wait_for_command
 			end
 		end
+		setvar $isFound false
 		if (($doesExist > 0) OR ($doesExistHidden > 0))
+			setvar $isFound true
 			gosub :load_the_module
 			if ($b < $bot~command_lines)
 				# the last script in the list has not loaded #
@@ -842,12 +883,15 @@ return
 		else
 			getWordPos $BOT~internalCommandList&$BOT~doubledCommandList $pos " "&$bot~command_lines[$b][9]&" "
 			if ($pos > 0)
+				setvar $isFound true
 				gosub :BOT~killthetriggers
-				goto ":INTERNAL_COMMANDS~"&$bot~command_lines[$b][9]
+				gosub ":INTERNAL_COMMANDS~"&$bot~command_lines[$b][9]
 			end
 		end
-		setVar $SWITCHBOARD~message $formatted_command&" is not a valid command.*"
-		gosub :SWITCHBOARD~switchboard
+		if ($isFound <> true)
+			setVar $SWITCHBOARD~message $formatted_command&" is not a valid command.*"
+			gosub :SWITCHBOARD~switchboard
+		end
 		add $b 1
 	end
 	goto :BOT~wait_for_command
