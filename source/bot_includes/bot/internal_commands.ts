@@ -179,6 +179,19 @@ goto :BOT~wait_for_command
 	end
 goto :BOT~wait_for_command
 #=========================== END PHOTON HOTKEY =======================================
+
+:kit
+	setVar $BOT~user_command_line "macro_kit"
+	goto :USER_INTERFACE~runUserCommandLine
+
+:dock_shopper
+	setVar $BOT~user_command_line "dock_shopper"
+	goto :USER_INTERFACE~runUserCommandLine
+
+:help
+	setVar $BOT~user_command_line "help "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
+	goto :USER_INTERFACE~runUserCommandLine
+
 	
 :sector
 :secto
@@ -372,6 +385,13 @@ goto :BOT~wait_for_command
 	end
 return
 #==================================== END LOG OFF SUB ========================================
+
+#===================================== SURROUND SUB =============================================================
+:surround
+	setVar $BOT~user_command_line "surround "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
+	goto :USER_INTERFACE~runUserCommandLine
+
+#========================== END SURROUND SUB ==============================================
 
 
 :emx
