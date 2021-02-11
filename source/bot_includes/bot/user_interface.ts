@@ -629,7 +629,7 @@ return
 	setVar $BOT~promptOutput ""
 	setVar $BOT~historyString ""
 	cutText $bot~user_command_line&"  " $checkForChat 1 1
-	if ($bot~command_lines[$b] <> "")
+	if ($bot~user_command_line <> "")
 		add $BOT~historyCount 1
 		if ($BOT~historyCount > 1)
 			setVar $i $BOT~historyMax
