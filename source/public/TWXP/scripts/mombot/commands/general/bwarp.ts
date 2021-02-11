@@ -23,7 +23,6 @@ gosub :BOT~loadVars
 # ======================     START BWARP SUBROUTINES     =================
 :Bwarp
 :b
-	gosub :player~checkfortravelname
 
 	killalltriggers
 	if ($bot~parm1 <> $PLAYER~CURRENT_SECTOR)
@@ -31,9 +30,11 @@ gosub :BOT~loadVars
 	else
 		gosub :PLAYER~quikstats
 	end
+
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $bot~validPrompts "Citadel"
 	gosub :bot~checkstartingprompt
+	gosub :player~checkfortravelname
 	gosub :travelProtections
 	gosub :player~bwarp
 	goto :wait_for_command

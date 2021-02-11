@@ -25,13 +25,13 @@ gosub :BOT~loadVars
 # ======================     START TWARP SUBROUTINES     =================
 :twarp
 :t
-	gosub :player~checkfortravelname
 	setVar $player~warpto_p ""
 	setvar $player~save true
 	gosub :PLAYER~quikstats
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $bot~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
 	gosub :bot~checkstartingprompt
+	gosub :player~checkfortravelname
 	if ($PLAYER~TWARP_TYPE = "No")
 		setVar $SWITCHBOARD~message "This ship does not have a transwarp drive!*"
 		gosub :SWITCHBOARD~switchboard

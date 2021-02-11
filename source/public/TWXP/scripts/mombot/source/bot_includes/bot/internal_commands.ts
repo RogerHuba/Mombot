@@ -394,60 +394,14 @@ return
 #========================== END SURROUND SUB ==============================================
 
 
-:emx
-:reset
-	disconnect
-	goto :BOT~wait_for_command
-:emq
-	send " q q q * p d 0* 0* 0* * *** * c q q q q q z 2 2 c q * z * *** * * "
-	goto :BOT~wait_for_command
-:lift
-	send "0* 0* 0* q q q q q z a 999* * * * "
-	goto :BOT~wait_for_command
-# ============================== START LOGIN (login) Sub ==============================
-:login
-	gosub :BOT~killthetriggers
-	gosub  :player~currentPrompt
-	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
-	setVar $BOT~validPrompts "Citadel Command"
-	gosub :BOT~checkStartingPrompt
-	if ($PLAYER~startingLocation = "Command")
-		send "t tLogin** q "
-	elseif ($PLAYER~startingLocation = "Citadel")
-		send "x tLogin** q "
-	end
-goto :BOT~wait_for_command
-# ============================== END LOGIN (login) Sub ==============================
-
-
-
-
-# ============================== START STORE SHIP ====================================
-:storeship
-:shipstore
-		gosub  :player~currentPrompt
-		setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
-		setVar $BOT~validPrompts "Command Citadel"
-		gosub :BOT~checkStartingPrompt
-		gosub :ship~savetheship
-		goto :BOT~wait_for_command
-# ================================== END STORE SHIP ==============================================
-
 
 :clear
 	setVar $BOT~user_command_line "clear "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
 	goto :USER_INTERFACE~runUserCommandLine
 
-
 :exit
 :xenter
 	setVar $BOT~user_command_line "xenter "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
-	goto :USER_INTERFACE~runUserCommandLine
-
-
-:pscan
-:pinfo
-	setVar $BOT~user_command_line "pscan "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
 	goto :USER_INTERFACE~runUserCommandLine
 
 #====================================SHUTDOWN MODULE SUB =====================================
@@ -456,13 +410,6 @@ goto :BOT~wait_for_command
 	savevar $bot~mode
 	goto :BOT~wait_for_command
 #===================================END SHUTDOWN MODULE SUB ==================================
-
-
-# ----- CN settings -----
-:cn
-:cn9
-	setVar $BOT~user_command_line "cn9 "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
-	goto :USER_INTERFACE~runUserCommandLine
 
 
 #============================== BOT PROMPT COMMUNICATION =================================
