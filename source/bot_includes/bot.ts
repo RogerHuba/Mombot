@@ -423,7 +423,7 @@ return
 	setVar $internalCommandLists[5]  " surround exit xenter mow "
 	setVar $internalCommandLists[6]  " "
 	setVar $internalCommandLists[7]  " find pscan sector storeship setvar getvar "
-	setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow l m t b p port x shipstore w d finder xenter status pinfo holotorp"
+	setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow port shipstore finder xenter status pinfo holotorp"
 	setVar $internalCommandList     $internalCommandLists[1]&$internalCommandLists[2]&$internalCommandLists[3]&$internalCommandLists[4]&$internalCommandLists[5]&$internalCommandLists[6]&$internalCommandLists[7]
 	setArray $TYPES 7
 	setVar $TYPES[1] "General"
