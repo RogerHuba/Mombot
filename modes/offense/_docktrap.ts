@@ -5,23 +5,24 @@
 	loadVar $MAP~stardock
 	loadvar $bot~subspace
 	loadvar $switchboard~self_command
-
-    setVar $BOT~help[1]    $BOT~tab&"docktrap [trigger sector] [move sector] {figs:n} {kill} {cap}"
-    setVar $BOT~help[2]    $BOT~tab&"              "
-    setVar $BOT~help[3]    $BOT~tab&"      Warps planet to move sector when enemy hits trigger "
-    setVar $BOT~help[4]    $BOT~tab&"      can drop fighters ."
-    setVar $BOT~help[5]    $BOT~tab&"         "
-    setVar $BOT~help[6]    $BOT~tab&"       Options:"
-    setVar $BOT~help[7]    $BOT~tab&"           {figs:n} - drop this many figs to sector "
-    setVar $BOT~help[8]    $BOT~tab&"           {offensive} - make figs offensive, default defense."
-    setVar $BOT~help[9]    $BOT~tab&"           {kill} - turns on citkill"
-    setVar $BOT~help[10]   $BOT~tab&"           {cap} - turns on citcap"
-    setVar $BOT~help[11]   $BOT~tab&"         "
-    setVar $BOT~help[12]   $BOT~tab&"         "
-    setVar $BOT~help[13]   $BOT~tab&"       Examples: "
-    setVar $BOT~help[14]   $BOT~tab&"           >docktrap 362 1055"
-    setVar $BOT~help[15]   $BOT~tab&"           >docktrap 362 1055 100000 citkill return"
-    setVar $BOT~help[16]   $BOT~tab&"           >docktrap 362 1055 citcap"
+	
+	setVar $BOT~help[1]   $BOT~tab&"docktrap {hit_sector:#} {move_sector:#} {figs:#} {kill}"
+	setVar $BOT~help[2]   $BOT~tab&"         {cap} {offensive}"	
+    setVar $BOT~help[3]   $BOT~tab&"        "
+    setVar $BOT~help[4]   $BOT~tab&"      Warps planet to move sector when enemy hits trigger "
+    setVar $BOT~help[5]   $BOT~tab&"      can drop fighters ."
+    setVar $BOT~help[6]   $BOT~tab&"         "
+    setVar $BOT~help[7]   $BOT~tab&" {hit_sector:#} - drop this many figs to sector "
+    setVar $BOT~help[8]   $BOT~tab&"{move_sector:#} - drop this many figs to sector "
+    setVar $BOT~help[9]   $BOT~tab&"       {figs:#} - drop this many figs to sector "
+    setVar $BOT~help[10]  $BOT~tab&"    {offensive} - make figs offensive, default defense."
+    setVar $BOT~help[11]  $BOT~tab&"         {kill} - turns on citkill"
+    setVar $BOT~help[12]  $BOT~tab&"          {cap} - turns on citcap"
+    setVar $BOT~help[13]  $BOT~tab&"         "
+    setVar $BOT~help[14]  $BOT~tab&"   Examples:"
+    setVar $BOT~help[15]  $BOT~tab&"      >docktrap 362 1055"
+    setVar $BOT~help[16]  $BOT~tab&"      >docktrap 362 1055 100000 citkill return"
+    setVar $BOT~help[17]  $BOT~tab&"      >docktrap 362 1055 citcap"
     gosub :bot~helpfile
 
 	setvar $triggerSector $bot~parm1
