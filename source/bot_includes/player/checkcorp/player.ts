@@ -21,13 +21,16 @@
 				goto :done_ta
 			end
 			setvar $line CURRENTLINE
-			cutText $line $name 1 30
-			replacetext $line $name ""
-			trim $name
-			add $corp_count 1
-			setvar $corp_members[$corp_count] $name
-			getword $line $corp_members[$corp_count][1] 1
-			replacetext $corp_members[$corp_count][1] "P" ""
+			trim $line
+			if ($line <> "")
+				cutText $line $name 1 30
+				replacetext $line $name ""
+				trim $name
+				add $corp_count 1
+				setvar $corp_members[$corp_count] $name
+				getword $line $corp_members[$corp_count][1] 1
+				replacetext $corp_members[$corp_count][1] "P" ""
+			end
 		goto :ta_again
 
 	:done_ta
