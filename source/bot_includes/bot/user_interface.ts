@@ -767,10 +767,25 @@ return
 			end
 			add $i 1
 		end
+		if ($bot~command_lines[$b][9] = "l")
+			setvar $bot~command_lines[$b][9] "land"
+		end
 		setVar $travelCommands "mow twarp bwarp pwarp smow m t b p "
 		#replacing planet id's with planet sector
 		getWordPos $travelCommands $pos $bot~command_lines[$b][9]
 		if ($pos > 0)
+			if ($bot~command_lines[$b][9] = "m")
+				setvar $bot~command_lines[$b][9] "mow"
+			end
+			if ($bot~command_lines[$b][9] = "p")
+				setvar $bot~command_lines[$b][9] "pwarp"
+			end
+			if ($bot~command_lines[$b][9] = "t")
+				setvar $bot~command_lines[$b][9] "twarp"
+			end
+			if ($bot~command_lines[$b][9] = "b")
+				setvar $bot~command_lines[$b][9] "bwarp"
+			end
 			getWordPos " "&$bot~command_lines[$b]&" " $pos " planet "
 			if ($pos > 0)
 				if ($bot~command_lines[$b][1] = "planet")
