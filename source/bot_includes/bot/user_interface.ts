@@ -652,6 +652,7 @@ return
 	setvar $b 1
 	while ($b <= $bot~command_lines)
 
+		send "' Trying to run [" $bot~command_lines[$b][9] "]*"
 		lowercase $bot~command_lines[$b][9]
 		:command_filtering
 		cutText $bot~command_lines[$b][9]&"  " $checkForChat 1 1
@@ -661,6 +662,7 @@ return
 		elseif ($checkForChat = "`")
 			goto :INTERNAL_COMMANDS~fed
 		end
+		send "' 2 Trying to run [" $bot~command_lines[$b][9] "]*"
 		saveVar $SWITCHBOARD~self_command
 		if ($bot~command_lines[$b][9] = "?")
 			setVar $bot~command_lines[$b][9] "help"
@@ -734,6 +736,7 @@ return
 			setvar $bot~command_lines[$b][1] "upgrade"
 			setvar $bot~command_lines[$b] $bot~command_lines[$b][1]&" "&$bot~command_lines[$b][2]&" "&$bot~command_lines[$b][3]&" "&$bot~command_lines[$b][4]&" "&$bot~command_lines[$b][5]&" "&$bot~command_lines[$b][6]&" "&$bot~command_lines[$b][7]&" "&$bot~command_lines[$b][8]&" "
 		end
+		send "' 3 Trying to run [" $bot~command_lines[$b][9] "]*"
 		if ($bot~command_lines[$b][9] = "f") or ($bot~command_lines[$b][9] = "fde") or ($bot~command_lines[$b][9] = "ufde") or ($bot~command_lines[$b][9] = "nf") or ($bot~command_lines[$b][9] = "uf") or ($bot~command_lines[$b][9] = "de") or ($bot~command_lines[$b][9] = "fp") or ($bot~command_lines[$b][9] = "fup") or ($bot~command_lines[$b][9] = "nfup")
 			setvar $bot~command_lines[$b][8] $bot~command_lines[$b][7]
 			setvar $bot~command_lines[$b][7] $bot~command_lines[$b][6]
@@ -791,8 +794,8 @@ return
 				end
 			end
 		end
+		send "' 4 Trying to run [" $bot~command_lines[$b][9] "]*"
 
-		send "' Trying to run [" $bot~command_lines[$b] "]*"
 		setVar $BOT~parm1 $bot~command_lines[$b][1]
 		setVar $BOT~parm2 $bot~command_lines[$b][2]
 		setVar $BOT~parm3 $bot~command_lines[$b][3]
