@@ -371,12 +371,12 @@ return
 			:surroundgrid
 				gosub :BOT~bigdelay_killthetriggers
 				
-				setVar $bot~command_lines[$b][9] "surround"
-				setVar $bot~command_lines[$b] " surround"
+				setVar $bot~command "surround"
+				setVar $bot~user_command_line " surround"
 				setVar $BOT~parm1 ""
 				saveVar $BOT~parm1
-				saveVar $bot~command_lines[$b][9]
-				saveVar $bot~command_lines[$b]
+				saveVar $bot~command
+				saveVar $bot~user_command_line
 				load "scripts\"&$bot~mombot_directory&"\commands\grid\surround.cts"
 				setEventTrigger		surroundended		:surroundended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\grid\surround.cts"
 				pause
@@ -445,13 +445,13 @@ return
 					if ($PLAYER~CURRENT_PROMPT = "Citadel")
 						getSectorParameter SECTOR.WARPS[CURRENTSECTOR][$sector] "FIGSEC" $isFigged
 						if ($isFigged)
-							setVar $bot~command_lines[$b] "p "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" scan"
+							setVar $bot~user_command_line "p "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" scan"
 							goto :runUserCommandLine
 						else				
 							if (($BOT~pgrid_bot <> "") and ($BOT~pgrid_bot <> 0))
 								send "'" & $BOT~pgrid_bot & " pgrid "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" d:" & SECTOR.DENSITY[SECTOR.WARPS[CURRENTSECTOR][$sector]] &" "&$BOT~pgrid_end_command "**"
 							else
-								setVar $bot~command_lines[$b] "pgrid "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" "&$BOT~pgrid_end_command
+								setVar $bot~user_command_line "pgrid "&SECTOR.WARPS[CURRENTSECTOR][$sector]&" "&$BOT~pgrid_end_command
 								goto :runUserCommandLine
 							end
 						end
@@ -471,7 +471,7 @@ return
 				getOutText $sector
 				gosub :BOT~bigdelay_killthetriggers
 				if (SECTOR.WARPS[CURRENTSECTOR][$sector] > 0)
-					setVar $bot~command_lines[$b] "photon "&SECTOR.WARPS[CURRENTSECTOR][$sector]
+					setVar $bot~user_command_line "photon "&SECTOR.WARPS[CURRENTSECTOR][$sector]
 					goto :runUserCommandLine
 				end
 				goto :donegriddingprompt
@@ -616,7 +616,7 @@ return
 
 :do_enter_key
 	echo #27&"[255D"&#27&"[255B"&#27&"[K"
-	setVar $bot~command_lines[$b] $BOT~promptOutput
+	setVar $bot~user_command_line $BOT~promptOutput
 	gosub :doAddHistory
 return
 # ======================     END SELF COMMAND PROMPT SUBROUTINE    ==========================
@@ -628,7 +628,7 @@ return
 	setVar $BOT~charPos 0
 	setVar $BOT~promptOutput ""
 	setVar $BOT~historyString ""
-	cutText $bot~command_lines[$b]&"  " $checkForChat 1 1
+	cutText $bot~user_command_line&"  " $checkForChat 1 1
 	if ($bot~command_lines[$b] <> "")
 		add $BOT~historyCount 1
 		if ($BOT~historyCount > 1)
@@ -641,7 +641,7 @@ return
 		end
 		#No need to cache fed chat
 		if ($checkForChat <> "`")
-			setVar $BOT~history[1] $bot~command_lines[$b]
+			setVar $BOT~history[1] $user_command_line
 			setVar $BOT~historyString $BOT~history[1]&"<<|HS|>>"&$BOT~historyString
 		end
 		saveVar $BOT~historyString
