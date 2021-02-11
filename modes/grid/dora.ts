@@ -75,6 +75,28 @@ if ($startingLocation <> "Command")
 	halt
 end
 
+getWordPos $bot~user_command_line $pos "kill"
+if ($pos > 0)
+	setVar $kill TRUE
+else
+	setVar $kill FALSE
+end
+
+setvar $sector~safe_attack_only true
+if ($kill = true)
+	loadvar $ship~CAP_FILE	
+	fileExists $CAP_FILE_chk $ship~CAP_FILE
+	if ($CAP_FILE_chk)
+		gosub :ship~loadshipinfo
+	else
+		gosub :ship~getShipCapStats
+		gosub :ship~loadShipInfo
+	end 
+
+	gosub :SHIP~getShipStats
+	gosub :combat~init 
+end
+
 if (($player~TWARP_TYPE = 1) or ($player~TWARP_TYPE = 2))
 	setVar $moveTwarp 1
 end
@@ -1543,8 +1565,15 @@ return
 		setVar $PLAYER~moveIntoSector $bestSector
 		gosub :PLAYER~moveIntoSector
 		setSectorParameter $bestSector "FIGSEC" TRUE
-		waitfor "Warps to S"
-		waitfor "Command ["
+		if ($kill = true)
+			gosub :sector~getAutoSectorData
+			if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
+				gosub :combat~fastattack
+			end
+		else
+			waitfor "Warps to S"
+			waitfor "Command ["		
+		end
 		gosub :player~quikstats
 		
 		setVar $chkSec $PLAYER~CURRENT_SECTOR
@@ -1559,8 +1588,8 @@ return
 			setArray $pathBack $maxPathBack
 			setVar $pathBacki 0
 			setArray $pathBackHasOptions $maxPathBack
-echo "WENT THROUGH A ONE WAY -PATH BACK EMPTED*"
-echo "Have had issues, leaving to highlight for debugging*"
+			echo "WENT THROUGH A ONE WAY -PATH BACK EMPTED*"
+			echo "Have had issues, leaving to highlight for debugging*"
 		end
 		add $stat_figsdown 1
 		add $stat_moves 1
@@ -1683,6 +1712,20 @@ return
 
 :holoScan
 	
+if ($kill = true)
+	setvar $before_holo_kill_sector $player~current_sector
+	gosub :combat~holokill
+	if (($sector~holotargetfound = true) and ($player~current_sector <> $before_holo_kill_sector))
+		setVar $PLAYER~WARPTO $before_holo_kill_sector
+		gosub :PLAYER~twarp
+		if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+			setvar $switchboard~message "Could not make it back to starting sector after holokill. - ["&$player~msg&"]*"
+		end
+	end
+	if ($switchboard~message <> "No targets found adjacent.*")
+		gosub :switchboard~switchboard
+	end
+else
 	send "sh"
 	waitfor "Long Range Scan"
 	setVar $hIndex 1
@@ -1715,7 +1758,7 @@ return
 				setVar $hData "     " & $hData & "*" & CURRENTLINE
 				goto :holoScanContinue
 			end
-
+end
 return
 
 
@@ -1846,3 +1889,13 @@ include "source\bot_includes\switchboard"
 include "source\bot_includes\player\moveintosector\player"
 include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\twarp\player"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\combat\holokill\combat"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\sector\getautosectordata\sector"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\ship\loadshipinfo\ship"
+include "source\bot_includes\ship\getshipcapstats\ship"
+include "source\bot_includes\ship\getshipstats\ship"
