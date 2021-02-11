@@ -820,7 +820,9 @@ return
 				goto :BOT~wait_for_command
 			end
 		end
+		setvar $isFound false
 		if (($doesExist > 0) OR ($doesExistHidden > 0))
+			setvar $isFound true
 			gosub :load_the_module
 			if ($b < $bot~command_lines)
 				# the last script in the list has not loaded #
@@ -842,12 +844,15 @@ return
 		else
 			getWordPos $BOT~internalCommandList&$BOT~doubledCommandList $pos " "&$bot~command_lines[$b][9]&" "
 			if ($pos > 0)
+				setvar $isFound true
 				gosub :BOT~killthetriggers
 				goto ":INTERNAL_COMMANDS~"&$bot~command_lines[$b][9]
 			end
 		end
-		setVar $SWITCHBOARD~message $formatted_command&" is not a valid command.*"
-		gosub :SWITCHBOARD~switchboard
+		if ($isFound <> true)
+			setVar $SWITCHBOARD~message $formatted_command&" is not a valid command.*"
+			gosub :SWITCHBOARD~switchboard
+		end
 		add $b 1
 	end
 	goto :BOT~wait_for_command
