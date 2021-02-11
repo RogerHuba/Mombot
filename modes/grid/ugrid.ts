@@ -79,6 +79,7 @@
 	
 	gosub :bot~helpfile
 
+	clearAllAvoids
 	
 	setAvoid $map~stardock
 	setAvoid 1
@@ -473,19 +474,6 @@ goSub :checkAvoidedSectors
 	killAllTriggers
 	gosub :player~quikstats
 
-	if ($xport_grid)
-		if ($boomsec > 0)
-			if ($player~ship_number = $ship1)
-				setVar $ship1FuelOre $player~ORE_HOLDS
-				setVar $ship2_location $boomsec
-			else
-				setVar $ship2FuelOre $player~ORE_HOLDS
-				setVar $ship1_location $boomsec
-			end
-		end
-
-	end
-
 	gosub :assemble_return_mac
 	if (($player~TWARP = "No") OR ($player~current_sector <> $homesec))
 			goto :callSaveMe
@@ -554,7 +542,6 @@ goSub :checkAvoidedSectors
 		end
 		
 		if ($safeXport = true)
-
 			if ($xport_ship = $ship1)
 				getDistance $xport_dist $move[$player~warpto]  $ship1_location
 			else
@@ -646,12 +633,13 @@ goSub :checkAvoidedSectors
 	end
 
 	if ($do_smow = TRUE) and ($safeXport = TRUE)
-		setVar $orginal_warpto $player~warpto
+		setVar $orginal_boomsec $boomsec
 		setVar $smowDest $finalDestination[$player~warpto]
 		send "'attempting smow to "  $smowDest ", orig adj target: " $boomsec "*"
 		goSub :check_smow
 		
 		if ($smowDone = 1)
+	
 			if ($player~current_sector <> $smowDest)
 				if ($player~ship_number = $ship1)
 					getDistance $xport_dist $nextSafeSector  $ship2_location
@@ -684,20 +672,15 @@ goSub :checkAvoidedSectors
 					getDistance $xport_dist $player~CURRENT_SECTOR  $ship1_location
 				end
 				if (($xport_dist <= 0) or ($xport_dist > $xport_range))
+		#		issue here is that sometimes we dont go to that original target
 					setvar $switchboard~message "Return Xport to far after smow, twarping to original target.*"
 					gosub :switchboard~switchboard
 					KillAllTriggers
-					setVar $player~warpto $orginal_warpto
+					setVar $player~warpto $orginal_boomsec
 					setVar $smowTwarp 1
 					gosub :doTwarp
 					gosub :player~quikstats
-					if ($player~ship_number = $ship1)
-						setVar $ship1FuelOre $player~ORE_HOLDS
-						setVar $ship1_location $boomsec
-					else
-						setVar $ship2FuelOre $player~ORE_HOLDS
-						setVar $ship2_location $boomsec
-					end
+					gosub :updateShipLocation
 				end
 
 				if ($pscrub = TRUE)
@@ -786,6 +769,8 @@ goSub :checkAvoidedSectors
 				setVar $avoidedSectorsUgrid $avoidedSectorsUgrid&" "&$boomsec&" "
 				saveVar $avoidedSectorsUgrid
 				send "'{" $bot~bot_name "} - Probable Enemy Limpet Detected - Sector " $boomsec ".*"
+				goSub :quikstats
+				goSub :updateShipLocation
 				goto :select_boomsec
 			end
 		end
@@ -822,10 +807,10 @@ goSub :checkAvoidedSectors
 							goSub :xportCleanup
 						end
 					end
-					
+					goSub :checkShipExists
 					if ($pscrub = TRUE)
 					
-						//Opisite numbers as we've swapped ships and not Quikstat'd yet
+						//Opisite numbers as we will swap ships when we export
 						if (($player~ship_number = $ship2) and ($ship1FuelOre < 120))
 							setVar $adjland_mac $land_mac
 						elseif (($player~ship_number = $ship1) and ($ship2FuelOre < 120))
@@ -850,6 +835,14 @@ goSub :checkAvoidedSectors
 					else	
 						send $boomsec $attack_mac $return_mac $mac $land_mac
 					end
+					if ($player~ship_number = $ship1)
+						setVar $ship1FuelOre $player~ORE_HOLDS
+						setVar $ship1_location $boomsec
+					else
+						setVar $ship2FuelOre $player~ORE_HOLDS
+						setVar $ship2_location $boomsec
+					end
+					setSectorParameter $boomsec "UGRIDDONE" TRUE
 					setVar $coursesCompleted 0
 					send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
 					:smowSkip
@@ -1019,13 +1012,14 @@ goSub :checkAvoidedSectors
 						getWordPos $adjacentDatabase $pos " "&$destination&" "
 						getWordPos $database $pos2 " "&$adjinf&" "
 						getWordPos $avoidedSectorsUgrid $pos3 " "&$adjinf&" "
+
 						if (($pos <= 0) AND ($pos3 <= 0) AND ($adjinf > 10) AND ($adjinf <> STARDOCK) AND ($isFigged > 0))
 							if (($adjinf <> $destination) AND ($pos2 <= 0))
 								setVar $database $database&" "&$adjinf&" "
 								setVar $adjacentDatabase $adjacentDatabase&" "&$destination&" "
 								setVar $move[$adjinf] $destination
 								setVar $finalDestination[$adjinf] $targetSectors[$m]
-		echo "Adding Smow(used or not): land: " $destination " Smow: " $targetSectors[$m] "*"
+		echo "Adding Smow(used or not): newtarget: " $destination " Smow: " $targetSectors[$m] "*"
 								setVar $isFound TRUE
 								add $databaseCount 1
 							end
@@ -1043,6 +1037,7 @@ goSub :checkAvoidedSectors
 			end
 			add $m 1
 		end
+		
 		#send "q "
 		setVar $coursesCompleted 1
 	elseif ($gridExistingOnly)
@@ -1460,7 +1455,6 @@ return
 #GETCOURSE SUB ###################################################################################################
 :getCourses
 	killalltriggers
-	
 
 	# Find the closest figged sector
 	getNearestWarps $nearArray $destination 
@@ -1468,9 +1462,10 @@ return
 	setVar $i 1
 	while ($i <= $nearArray)
 		getSectorParameter $nearArray[$i] "FIGSEC" $isFigged
-
+		
 		if ($isFigged = true)
 			getCourse $course $nearArray[$i] $destination 
+
 			if ($course = "-1")
 				send "/"
 				waitOn #179
@@ -1486,21 +1481,23 @@ return
 				echo ANSI_14 "Updating database...*" ANSI_7
 				send "^f"&$destination&"*"&$nearArray[$i]&"**q"
 				waitOn "ENDINTERROG"
+				#not sure why we are reversing this..
 				getCourse $course $destination $nearArray[$i]
 			end
 			getdistance $distance1 $nearArray[$i] $destination
 			getdistance $distance2 $destination $nearArray[$i]
+
 			if ($distance1 = $distance2)
-				setVar $index 1
-				while ($index <= $course)
+				setVar $lastUngriddSector $destination
+				setVar $index $course 
+
+				while ($index > 0)
 					getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
-					if ($isFigged <> true)
-						setVar $new_target $COURSE[$index]
+					if ($isFigged = TRUE)
+						setVar $new_target $lastUngriddSector
 						setvar $destination $new_target
 						echo "new:" $destination "*"
-						echo "new:" $destination "*"
-						echo "new:" $destination "*"
-						echo "new:" $destination "*"			
+								
 						setvar $j 1
 						while ($j <= $course)
 							echo " " & $course[$j] & " > "
@@ -1508,6 +1505,33 @@ return
 						end
 						echo "**"
 						return
+					else
+						setVar $lastUngriddSector $COURSE[$index]
+					end
+					subtract $index 1
+				end
+			end
+
+			if ($distance1 = 9999)
+				setVar $lastUngriddSector $destination
+				setVar $index 1
+
+				while ($index <= $course)
+					getSectorParameter $COURSE[$index] "FIGSEC" $isFigged
+
+					if ($isFigged = false)
+						setVar $new_target $lastUngriddSector
+						setvar $destination $new_target
+						echo "new:" $destination "*"		
+						setvar $j 1
+						while ($j <= $course)
+							echo " " & $course[$j] & " > "
+							add $j 1
+						end
+						echo "**"
+						return
+					else
+						setVar $lastUngriddSector $COURSE[$index]
 					end
 					add $index 1
 				end
@@ -2015,6 +2039,54 @@ return
 
  
 halt
+:updateShipLocation
+
+	if ($player~ship_number = $ship1)
+		setVar $ship1_location $player~current_sector
+		setVar $ship1FuelOre $player~ORE_HOLDS
+	else
+		setVar $ship2_location $player~current_sector
+		setVar $ship2FuelOre $player~ORE_HOLDS
+	end
+	
+return
+
+:checkShipExists
+	echo "$playership_number " $player~ship_number "*"
+	echo "$ship1 " $ship1 "*"
+	echo "$ship1_location " $ship1_location "*"
+	echo "$ship2 " $ship2 "*"
+	echo "$ship2_location " $ship2_location "*"
+	
+	if ($player~ship_number = $ship1)
+		setVar $target_ship $ship2
+		setVar $target_ship_location $ship2_location
+	else
+		setVar $target_ship $ship1
+		setVar $target_ship_location $ship1_location
+	end
+	echo "$target_ship " $target_ship "*"
+	echo "$target_ship_location " $target_ship_location "*"
+	padleft $target_ship 4
+	padleft $target_ship_location 6
+	send "*czq"
+	waitfor "<Active Ship Scan>"
+	
+	setTextLineTrigger shipExistsYes :shipExistsYes $target_ship & $target_ship_location & " "
+	setTextLineTrigger shipExistsNo :shipExistsNo "<Computer deactivated>"
+	pause
+		:shipExistsNo
+			killAllTriggers
+			setvar $switchboard~message "Ship " & $target_ship &  " is gone missing from " & $target_ship_location & "!! Returning and Halting!!!*"
+			gosub :switchboard~switchboard
+			send $homesec & "* y y * * " & $land_mac
+			halt
+		:shipExistsYes
+			killAllTriggers
+			echo "Found it!"
+	send "m"
+
+return
 :check_smow
 	setVar $smowDone 0
 	
@@ -2034,11 +2106,14 @@ halt
 		setVar $nextSafeSector $PLAYER~mowCourse[$j]
         send "sd"
         gosub :PLAYER~quikstats
+		goSub :updateShipLocation
+		:tryagainSmow
         setVar $safeDensityValue 0
-
+		
         getSectorParameter $nextSafeSector "FIGSEC"  $isFigged
         getSectorParameter $nextSafeSector "MINESEC" $isArmided
         getSectorParameter $nextSafeSector "LIMPSEC" $isLimped
+		
 		if (PORT.EXISTS[$nextSafeSector] = TRUE)
 			setVar $safeDensityValue 100
 		else
@@ -2051,6 +2126,7 @@ halt
 		# when someone else gets it. We can store numbers in >update onday
 		if ($isFigged = TRUE)
 			add $safeDensityValue 5
+			send "'Next Sector was already figged! Smow! " $nextSafeSector "*"
 		end
 		if ((SECTOR.LIMPETS.QUANTITY[$nextSafeSector] > 0) AND ($isLimped = TRUE) AND (SECTOR.ANOMALY[$nextSafeSector] = TRUE))
 			add $safeDensityValue (SECTOR.LIMPETS.QUANTITY[$nextSafeSector] * 2)
@@ -2058,15 +2134,24 @@ halt
 		if ((SECTOR.MINES.QUANTITY[$nextSafeSector] > 0) AND ($isArmided = TRUE))
 			add $safeDensityValue (SECTOR.MINES.QUANTITY[$nextSafeSector] * 10)
 		end
+		
+		if (SECTOR.EXPLORED[$nextSafeSector] <> "YES") and (SECTOR.DENSITY[$nextSafeSector] = 100)
+			send "sd"
+			send "sh"
+			gosub :PLAYER~quikstats
+			goto :tryagainSmow
+		end
+
 		setVar $densitySafe ((SECTOR.DENSITY[$nextSafeSector] <= 0) OR (SECTOR.DENSITY[$nextSafeSector] = $safeDensityValue))
 		
 		if ($densitySafe)
 			send "m "&$PLAYER~mowCourse[$j]&"* "
 			setVar $smowDone 1
-			add $smowCount 0
+			add $smowCount 1
+			setSectorParameter $PLAYER~mowCourse[$j] "UGRIDDONE" TRUE
 		else
 			if ($smowCount > 0)
-				send "'{" $SWITCHBOARD~bot_name "} - " & smowCount &" sectors gridded via SMOW "&$nextSafeSector&"*"
+				send "'{" $SWITCHBOARD~bot_name "} - " & $smowCount &" sectors gridded via SMOW "&$nextSafeSector&"*"
 				#goto :wait_for_command
 			end
 			return
@@ -2074,12 +2159,15 @@ halt
 		 if (($figsToDrop > 0) AND ($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock) AND ($j > 2))
             send "f "&$figsToDrop&" * c d "
             setVar $target $PLAYER~mowCourse[$j]
+			setVar $PLAYER~target $PLAYER~mowCourse[$j]
 			send "'<"&$bot~subspace&">[Figged:"&$PLAYER~mowCourse[$j]&"]<"&$bot~subspace&">* "
             gosub :player~addfigtodata
+			
         end
         add $j 1
 	end
 	gosub :PLAYER~quikstats
+	goSub :updateShipLocation
 return
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
