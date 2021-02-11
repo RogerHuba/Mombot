@@ -161,6 +161,16 @@
 
 	if (($kill) or ($cap))
 		gosub :checkForVictims
+		gosub :checkForVictims
+		gosub :checkForVictims
+		gosub :checkForVictims
+		gosub :checkForVictims
+		gosub :checkForVictims
+		gosub :checkForVictims
+		gosub :checkForVictims
+		gosub :checkForVictims
+		gosub :checkForVictims
+		gosub :checkForVictims
 	end
 	if ($returnHome)
 		killAllTriggers
