@@ -159,10 +159,11 @@
 	# $bot~command_lines[1][10] - not sure yet           #
 	######################################################
 
+	send "'[" $bot~user_command_line "]*"
+
 	setarray $bot~command_lines 10 10
 	setvar $bot~command_lines 0
 	getwordpos $bot~user_command_line $pos "|"
-	setvar $bot~commands 1
 	if ($pos > 0)
 		# multi commands given #
 		splittext $bot~user_command_line $bot~commands "|"
