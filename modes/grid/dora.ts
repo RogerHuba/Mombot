@@ -527,6 +527,9 @@ while ($iSaySo)
 		goto :topOfTheGridLoop
 	end
 
+	if ($player~current_sector = 0)
+		gosub :player~quikstats
+	end
 	# Log These like ftr grid and reload to not duplicate
 	setVar $explored[$PLAYER~CURRENT_SECTOR] 1
 	write $doraExploredFile $PLAYER~CURRENT_SECTOR
