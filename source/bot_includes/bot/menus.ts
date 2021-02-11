@@ -677,6 +677,7 @@ return
 		setVar $pagesExist FALSE
 	end
 	:NextShipPage
+		gosub :ship~loadShipInfo
 		setVar $shipsChanged FALSE
 		setVar $thisPage $i
 		setVar $menuCount 0

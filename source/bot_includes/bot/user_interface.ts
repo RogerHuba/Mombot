@@ -784,6 +784,18 @@ return
 		if ($bot~command_lines[$b][9] = "exit")
 			setvar $bot~command_lines[$b][9] "xenter"
 		end
+		if ($bot~command_lines[$b][9] = "cn")
+			setvar $bot~command_lines[$b][9] "cn9"
+		end
+		if ($bot~command_lines[$b][9] = "emx")
+			setvar $bot~command_lines[$b][9] "reset"
+		end
+		if ($bot~command_lines[$b][9] = "pinfo")
+			setvar $bot~command_lines[$b][9] "pscan"
+		end
+		if ($bot~command_lines[$b][9] = "shipstore")
+			setvar $bot~command_lines[$b][9] "storeship"
+		end
 		setVar $travelCommands "mow twarp bwarp pwarp smow m t b p "
 		#replacing planet id's with planet sector
 		getWordPos $travelCommands $pos $bot~command_lines[$b][9]
