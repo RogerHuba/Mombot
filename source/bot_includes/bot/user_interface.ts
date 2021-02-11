@@ -164,7 +164,7 @@
 	if ($pos > 0)
 		# multi commands given #
 		splittext $bot~user_command_line $bot~commands "|"
-		setvar $i b
+		setvar $b 1
 		setvar $bot~command_lines 0
 		while ($b <= $bot~commands)
 			getWord $BOT~commands[$b] $bot~command_lines[$b][9] 1
