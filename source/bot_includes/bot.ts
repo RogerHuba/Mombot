@@ -79,7 +79,7 @@ return
 		savevar $bot_team_name
 	end
 
-	#setEventTrigger     shutdownthemodule       :INTERNAL_COMMANDS~shutDown            "SCRIPT STOPPED"      $LAST_LOADED_MODULE
+	setEventTrigger     shutdownthemodule       :INTERNAL_COMMANDS~shutDown            "SCRIPT STOPPED"      $LAST_LOADED_MODULE
 	if ($botIsOff <> TRUE)
 		setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          $SWITCHBOARD~bot_name
 		setTextLineTrigger  own_command_team        :USER_INTERFACE~check_routing_team     $bot_team_name
