@@ -28,16 +28,16 @@
 		end
 		getWord $CURRENTLINE $radio_type 1
 		stripText $radio_type $temp_bot_name
-		setvar $bot~command_lines[$b] $CURRENTLINE
-		setVar $bot~command_lines[$b] $bot~command_lines[$b]&"              "
+		setvar $bot~user_command_line $CURRENTLINE
+		setVar $bot~user_command_line $bot~user_command_line&"              "
 		lowercase $bot~command_lines[$b]
 		if ($radio_type = "'")
 			getLength "'"&$temp_bot_name&" " $length
-			cutText $bot~command_lines[$b] $bot~command_lines[$b] $length+1 9999
+			cutText $bot~user_command_line $bot~user_command_line $length+1 9999
 			setVar $user_sec_level 9
-			getWord $CURRENTLINE $bot~command_lines[$b][9] 2
-			getWordPos $bot~command_lines[$b][9] $pos "'"
-			getWordPos $bot~command_lines[$b][9] $pos2 "`"
+			getWord $CURRENTLINE $bot~command 2
+			getWordPos $bot~command $pos "'"
+			getWordPos $bot~command $pos2 "`"
 			if ($pos = 1) OR ($pos2 = 1)
 				goto :BOT~wait_for_command
 			end
@@ -67,18 +67,17 @@
 			goto :BOT~wait_for_command
 		end
 
-		cutText $currentline $bot~command_lines[$b] 10 999
-		getWord $bot~command_lines[$b] $botname_chk 1
+		cutText $currentline $bot~user_command_line 10 999
+		getWord $bot~user_command_line $botname_chk 1
 		if ($botname_chk <> $temp_bot_name)
 			goto :BOT~wait_for_command
 		end
 		getLength $temp_bot_name&" " $length
-		cutText $bot~command_lines[$b]&"          " $bot~command_lines[$b] $length+1 9999
-		lowerCase $bot~command_lines[$b]
-		setVar $bot~command_lines[$b] $bot~command_lines[$b]&"              "
-		getWord $bot~command_lines[$b] $bot~command_lines[$b][9] 1
-		if (($bot~command_lines[$b][9] = "bot") OR ($bot~command_lines[$b][9] = "relog"))
-			goto :BOT~wait_for_command
+		cutText $bot~user_command_line&"          " $bot~user_command_line
+		setVar $bot~user_command_line $bot~user_command_line&"              "
+		getWord $bot~user_command_line $bot~command 1
+		if (($bot~command = "bot") OR ($bot~command = "relog"))
+			goto :bot~wait_for_command
 		end
 #		getLength $bot~command_lines[$b][9] $length
 #		cutText $bot~command_lines[$b]&"          " $bot~command_lines[$b] $length+1 9999
@@ -89,8 +88,8 @@
 	:page_command
 		cutText $currentline $user_name 3 6
 		stripText $user_name " "
-		cutText $currentline $bot~command_lines[$b] 10 999
-		getWordPos $bot~command_lines[$b] $pos $SWITCHBOARD~bot_name & ":" & $BOT~bot_password & ":" & $BOT~subspace
+		cutText $currentline $bot~user_command_line 10 999
+		getWordPos $bot~user_command_line $pos $SWITCHBOARD~bot_name & ":" & $BOT~bot_password & ":" & $BOT~subspace
 		if ($pos > 0)
 			add $BOT~corpycount 1
 			setVar $BOT~corpy[$BOT~corpycount] $user_name
@@ -102,20 +101,20 @@
 				echo "*"&ANSI_14&"["&ANSI_15&"Bad attempt to control bot through private message."&ANSI_14&"]*"
 				goto :BOT~wait_for_command
 			end
-			getWord $bot~command_lines[$b] $botname_chk 1
+			getWord $bot~user_command_line $botname_chk 1
 			if ($botname_chk <> $temp_bot_name)
 				goto :BOT~wait_for_command
 			end
 			getLength $temp_bot_name & " " $length
-			cutText $bot~command_lines[$b] & "          " $bot~command_lines[$b] $length+1 9999
-			lowerCase $bot~command_lines[$b]
-			setVar $bot~command_lines[$b] $bot~command_lines[$b] & "              "
-			getWord $bot~command_lines[$b] $bot~command_lines[$b][9] 1
-			if (($bot~command_lines[$b][9] = "bot") OR ($bot~command_lines[$b][9] = "relog"))
+			cutText $bot~user_command_line & "          " $bot~user_command_line $length+1 9999
+			lowerCase $bot~user_command_line
+			setVar $bot~user_command_line $bot~user_command_line & "              "
+			getWord $bot~user_command_line $bot~command 1
+			if (($bot~command = "bot") OR ($bot~command = "relog"))
 				goto :BOT~wait_for_command
 			end
-			#getLength $bot~command_lines[$b][9] $length
-			#cutText $bot~command_lines[$b] & "          " $bot~command_lines[$b] $length+1 9999
+			#getLength $bot~command $length
+			#cutText $bot~user_command_line & "          " $bot~user_command_line $length+1 9999
 			#echo "*"&ANSI_14&"["&ANSI_15&$bot~command_lines[$b]&ANSI_14&"]*"
 			#gosub :getParameters
 			gosub :check_for_multi_commands
@@ -130,14 +129,14 @@
 	gosub :selfCommandPrompt
 	setvar $bot~command_caller "self"
 	savevar $bot~command_caller
-	lowercase $bot~command_lines[$b]
-	if ($bot~command_lines[$b] = "")
+	lowercase $bot~user_command_line
+	if ($bot~user_command_line = "")
 		echo CURRENTANSILINE
 		goto :BOT~wait_for_command
 	end
 	setVar $SWITCHBOARD~self_command TRUE
 	:runUserCommandLine
-		setVar $bot~command_lines[$b] $bot~command_lines[$b]&"              "
+		setVar $bot~user_command_line $bot~user_command_line&"              "
 		setVar $authorization 9
 		setVar $user_sec_level 9
 
@@ -162,11 +161,11 @@
 
 	setarray $bot~command_lines 10 10
 	setvar $bot~command_lines 0
-	getwordpos $bot~command_lines[$b] $pos "|"
+	getwordpos $bot~user_command_line $pos "|"
 	setvar $bot~commands 1
 	if ($pos > 0)
 		# multi commands given #
-		splittext $bot~command_lines[$b] $bot~commands "|"
+		splittext $bot~user_command_line $bot~commands "|"
 		setvar $i b
 		while ($b <= $bot~commands)
 			getWord $BOT~commands[$b] $bot~command_lines[$b][9] 1
@@ -186,7 +185,7 @@
 		end			
 	else
 		setarray $bot~command_lines 1
-		setvar $bot~command_lines[1] $bot~command_lines[$b]
+		setvar $bot~command_lines[1] $bot~user_command_line
 		getWord $bot~command_lines[1] $bot~command_lines[1][9] 1
 		getLength $bot~command_lines[1][9]&" " $BOT~commandLength
 		getWordPos $bot~command_lines[1][9] $pos "'"
