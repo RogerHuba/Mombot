@@ -792,7 +792,7 @@ return
 			end
 		end
 
-
+		send "' Trying to run [" $bot~command_lines[$b] "]*"
 		setVar $BOT~parm1 $bot~command_lines[$b][1]
 		setVar $BOT~parm2 $bot~command_lines[$b][2]
 		setVar $BOT~parm3 $bot~command_lines[$b][3]
