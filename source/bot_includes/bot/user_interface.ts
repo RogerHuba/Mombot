@@ -834,6 +834,8 @@ return
 				end
 				pause
 				:loadended
+			else
+				goto :BOT~wait_for_command
 			end
 		else
 			getWordPos $BOT~internalCommandList&$BOT~doubledCommandList $pos " "&$bot~command_lines[$b][9]&" "
