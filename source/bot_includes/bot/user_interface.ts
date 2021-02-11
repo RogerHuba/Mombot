@@ -640,7 +640,7 @@ return
 		end
 		#No need to cache fed chat
 		if ($checkForChat <> "`")
-			setVar $BOT~history[1] $user_command_line
+			setVar $BOT~history[1] $bot~user_command_line
 			setVar $BOT~historyString $BOT~history[1]&"<<|HS|>>"&$BOT~historyString
 		end
 		saveVar $BOT~historyString
