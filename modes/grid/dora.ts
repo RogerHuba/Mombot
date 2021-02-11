@@ -723,7 +723,7 @@ return
 							add $stat_retreats 1
 							setVar $PLAYER~moveIntoSector $stackSector
 							gosub :PLAYER~moveIntoSector
-							gosub :player~quikstats
+							#gosub :player~quikstats
 							if (PORT.BUYORE[$PLAYER~CURRENT_SECTOR] = 0)
 								send "jy"
 								send "p t *  *  "
@@ -764,7 +764,7 @@ return
 						add $stat_retreats 1
 						setVar $PLAYER~moveIntoSector $stackSector
 						gosub :PLAYER~moveIntoSector
-						gosub :player~quikstats
+						#gosub :player~quikstats
 						goSub :checkPassingTrading
 	
 					else
@@ -804,14 +804,14 @@ return
 				setVar $PLAYER~moveIntoSector $newi[$i] 
 				gosub :PLAYER~moveIntoSector
 				setSectorParameter  $newi[$i] "FIGSEC" TRUE
-				gosub :player~quikstats
+				#gosub :player~quikstats
 				send "sd"
 				goSub :checkPassingTrading
 				add $stat_moves 1
 				add $stat_figsdown 1		
 				setVar $PLAYER~moveIntoSector $returnSector 
 				gosub :PLAYER~moveIntoSector
-				gosub :player~quikstats
+				#gosub :player~quikstats
 				add $stat_moves 1
 			end
 			add $i 1
@@ -1577,7 +1577,7 @@ return
 			waitfor "Warps to S"
 			waitfor "Command ["		
 		end
-		gosub :player~quikstats
+		#gosub :player~quikstats
 		
 		setVar $chkSec $PLAYER~CURRENT_SECTOR
 		setVar $adjSec $origin
