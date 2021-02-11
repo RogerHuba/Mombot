@@ -778,9 +778,6 @@ return
 		if ($bot~command_lines[$b][9] = "k")
 			setvar $bot~command_lines[$b][9] "keep"
 		end
-		if ($bot~command_lines[$b][9] = "shopper")
-			setvar $bot~command_lines[$b][9] "dock_shopper"
-		end
 		if ($bot~command_lines[$b][9] = "exit")
 			setvar $bot~command_lines[$b][9] "xenter"
 		end
