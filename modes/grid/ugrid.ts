@@ -2038,7 +2038,7 @@ return
 					if ($endSector > 0)
 						if (($secDensity > 499) and ($secDensity < 560) or ($secDensity > 499) and ($secDensity < 560))
 							add $densityAlertsi 1
-							setVar $densityAlerts[$densityAlertsi] "Potenial Attack Planet: " & $scanSector & " Current Sect: " & $endSector & " Den:" & $secDensity & "*"
+							setVar $densityAlerts[$densityAlertsi] "Potenial Attack Planet:" & $scanSector & " Current Sect:" & $endSector & " Den:" & $secDensity & "*"
 						else
 							add $nReporti 1
 							setVar $nReport[$nReporti] "Density Alert - Sec: " & $scanSector & " Density: " & $secDensity & " Anom:" & $scanAnom & " *"
