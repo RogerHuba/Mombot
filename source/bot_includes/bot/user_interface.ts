@@ -73,7 +73,7 @@
 			goto :BOT~wait_for_command
 		end
 		getLength $temp_bot_name&" " $length
-		cutText $bot~user_command_line&"          " $bot~user_command_line
+		cutText $bot~user_command_line&"          " $bot~user_command_line $length+1 9999
 		setVar $bot~user_command_line $bot~user_command_line&"              "
 		getWord $bot~user_command_line $bot~command 1
 		if (($bot~command = "bot") OR ($bot~command = "relog"))
