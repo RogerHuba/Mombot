@@ -481,6 +481,15 @@ else
 	readToArray $BOT~ARMID_FILE $allArmids
 end
 
+loadvar $ship~CAP_FILE	
+fileExists $CAP_FILE_chk $ship~CAP_FILE
+if ($CAP_FILE_chk)
+	gosub :ship~loadshipinfo
+else
+	gosub :ship~getShipCapStats
+	gosub :ship~loadShipInfo
+end 
+
 gosub :SHIP~getShipStats
 gosub :combat~init 
 
@@ -3738,7 +3747,10 @@ include "source\bot_includes\ship\getshipstats\ship"
 include "source\bot_includes\combat\holokill\combat"
 include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
-include "source\bot_includes\combat\fastattack\combat"
+include "source\bot_includes\ship\loadshipinfo\ship"
+include "source\bot_includes\ship\getshipcapstats\ship"
+include "source\bot_includes\ship\getshipstats\ship"
 
 
