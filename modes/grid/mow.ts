@@ -34,9 +34,6 @@
 	gosub :BOT~helpfile
 
 
-	if (($bot~parm1 = "?") or ($bot~parm1 = "help"))
-		goto :wait_for_command
-	end
 	getWordPos $bot~user_command_line $pos "destination:"
 	if ($pos > 0)
 		setVar $cline $bot~user_command_line & " "
@@ -49,13 +46,13 @@
 		getText $cline $bot~parm2 "figs:" " "
 	end
 
-	gosub :player~checkfortravelname
 
 	gosub :PLAYER~quikstats
 	setVar $homeSector $PLAYER~CURRENT_SECTOR
 	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $bot~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
 	gosub :bot~checkStartingPrompt
+	gosub :player~checkfortravelname
 
 		setVar $PLAYER~destination $bot~parm1
 		isNumber $number $PLAYER~destination
