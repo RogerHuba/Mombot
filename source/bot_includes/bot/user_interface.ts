@@ -821,7 +821,6 @@ return
 			end
 		end
 		if (($doesExist > 0) OR ($doesExistHidden > 0))
-			send "'  [" $b "] - it exists*"
 			gosub :load_the_module
 			if ($b < $bot~command_lines)
 				# the last script in the list has not loaded #
@@ -839,7 +838,6 @@ return
 				goto :BOT~wait_for_command
 			end
 		else
-			send "'  [" $b "] - it doesn't exist*"
 			getWordPos $BOT~internalCommandList&$BOT~doubledCommandList $pos " "&$bot~command_lines[$b][9]&" "
 			if ($pos > 0)
 				gosub :BOT~killthetriggers
