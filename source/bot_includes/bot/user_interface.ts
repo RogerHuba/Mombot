@@ -159,22 +159,20 @@
 	# $bot~command_lines[1][10] - not sure yet           #
 	######################################################
 
-	send "'[" $bot~user_command_line "]*"
-
 	setarray $bot~command_lines 10 10
-	setvar $bot~command_lines 0
 	getwordpos $bot~user_command_line $pos "|"
 	if ($pos > 0)
 		# multi commands given #
 		splittext $bot~user_command_line $bot~commands "|"
 		setvar $i b
+		setvar $bot~command_lines 0
 		while ($b <= $bot~commands)
 			getWord $BOT~commands[$b] $bot~command_lines[$b][9] 1
 			getLength $bot~command_lines[$b][9]&" " $BOT~commandLength
 			getWordPos $bot~command_lines[$b][9] $pos "'"
 			getWordPos $bot~command_lines[$b][9] $pos2 "`"
 			if ($pos <> 1) AND ($pos2 <> 1)
-				cutText $BOT~commands[$b] $BOT~commands[$b] $BOT~commandLength+1 9999
+				cutText $BOT~commands[$b]&"    " $BOT~commands[$b] $BOT~commandLength+1 9999
 			end
 			setvar $bot~command_lines[$b] $bot~commands[$b]
 			setvar $bot~command_lines[$b][9] $bot~command_lines[$b][9]
@@ -186,13 +184,14 @@
 		end			
 	else
 		setarray $bot~command_lines 1
+		setvar $bot~command_lines 1
 		setvar $bot~command_lines[1] $bot~user_command_line
 		getWord $bot~command_lines[1] $bot~command_lines[1][9] 1
 		getLength $bot~command_lines[1][9]&" " $BOT~commandLength
 		getWordPos $bot~command_lines[1][9] $pos "'"
 		getWordPos $bot~command_lines[1][9] $pos2 "`"
 		if ($pos <> 1) AND ($pos2 <> 1)
-			cutText $bot~command_lines[1] $bot~command_lines[1] $BOT~commandLength+1 9999
+			cutText $bot~command_lines[1]&"    " $bot~command_lines[1] $BOT~commandLength+1 9999
 		end
 		setvar $b 1
 		gosub :getParameters
