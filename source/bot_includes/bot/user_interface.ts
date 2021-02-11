@@ -160,12 +160,12 @@
 	# $bot~command_lines[1][10] - not sure yet           #
 	######################################################
 
+	setarray $bot~command_lines 10 10
+	setvar $bot~command_lines 0
 	getwordpos $bot~command_lines[$b] $pos "|"
 	setvar $bot~commands 1
 	if ($pos > 0)
 		# multi commands given #
-		setarray $bot~command_lines 10 10
-		setvar $bot~command_lines 0
 		splittext $bot~command_lines[$b] $bot~commands "|"
 		setvar $i b
 		while ($b <= $bot~commands)
@@ -181,6 +181,7 @@
 
 			setvar $bot~command_lines[$b] $bot~commands[$b]
 			gosub :getParameters
+			add $bot~command_lines 1
 			add $b 1
 		end			
 	else
