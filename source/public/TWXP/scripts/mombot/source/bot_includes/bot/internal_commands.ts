@@ -180,10 +180,6 @@ goto :BOT~wait_for_command
 goto :BOT~wait_for_command
 #=========================== END PHOTON HOTKEY =======================================
 
-:clear
-	setVar $BOT~user_command_line "clear "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
-	goto :USER_INTERFACE~runUserCommandLine
-
 :kit
 	setVar $BOT~user_command_line "macro_kit"
 	goto :USER_INTERFACE~runUserCommandLine
@@ -196,61 +192,18 @@ goto :BOT~wait_for_command
 	setVar $BOT~user_command_line "help "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
 	goto :USER_INTERFACE~runUserCommandLine
 
-:x
-:xport
-	setVar $BOT~user_command_line "xport "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
-	goto :USER_INTERFACE~runUserCommandLine
 	
-:mow
-:m
-	setVar $BOT~user_command_line "mow "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
-	goto :USER_INTERFACE~runUserCommandLine
-
-:land
-:l
-	setVar $BOT~user_command_line "land "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4
-	goto :USER_INTERFACE~runUserCommandLine
-
 :sector
 :secto
 :sect
 :sec
 	setVar $BOT~user_command_line "sector "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4
 	goto :USER_INTERFACE~runUserCommandLine
-:qss
-:status
-	setVar $BOT~user_command_line "status "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4
-	goto :USER_INTERFACE~runUserCommandLine
 
 :parm
 :parms
 :params
 	setVar $BOT~user_command_line "param "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4
-	goto :USER_INTERFACE~runUserCommandLine
-
-:t
-:twarp
-	setVar $BOT~user_command_line "twarp "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8	
-	goto :USER_INTERFACE~runUserCommandLine
-
-:b
-:bwarp
-	setVar $BOT~user_command_line "bwarp "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8	
-	goto :USER_INTERFACE~runUserCommandLine
-
-:p
-:pwarp
-	setVar $BOT~user_command_line "pwarp "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
-	goto :USER_INTERFACE~runUserCommandLine
-
-:d
-:dep
-	setVar $BOT~user_command_line "dep "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4
-	goto :USER_INTERFACE~runUserCommandLine
-
-:w
-:with
-	setVar $BOT~user_command_line "with "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4
 	goto :USER_INTERFACE~runUserCommandLine
 
 :holotorp
@@ -481,13 +434,15 @@ goto :BOT~wait_for_command
 # ================================== END STORE SHIP ==============================================
 
 
+:clear
+	setVar $BOT~user_command_line "clear "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
+	goto :USER_INTERFACE~runUserCommandLine
 
 
 :exit
 :xenter
 	setVar $BOT~user_command_line "xenter "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
-	goto :modules~xenter
-goto :BOT~wait_for_command
+	goto :USER_INTERFACE~runUserCommandLine
 
 
 :pscan
@@ -539,24 +494,6 @@ goto :BOT~wait_for_command
 	end
 	if (($BOT~parm1 <> "off") AND ($BOT~parm1 <> "on"))
 		setVar $SWITCHBOARD~message "That status option is unknown..*"
-	end
-	gosub :SWITCHBOARD~switchboard
-goto :BOT~wait_for_command
-:relog
-	setVar $SWITCHBOARD~message ""
-	if ($BOT~parm1 = "on")
-		setVar $SWITCHBOARD~message "Relog Active*"
-		setVar $BOT~doRelog TRUE
-		savevar $bot~dorelog
-	end
-	if ($BOT~parm1 = "off")
-		setVar $SWITCHBOARD~message "Relog Deactivated*"
-		setVar $BOT~doRelog FALSE
-		savevar $bot~dorelog
-	end
-	if (($BOT~parm1 <> "off") AND ($BOT~parm1 <> "on"))
-		setVar $SWITCHBOARD~message "Please use relog [on/off] format.*"
-		goto :BOT~wait_for_command
 	end
 	gosub :SWITCHBOARD~switchboard
 goto :BOT~wait_for_command

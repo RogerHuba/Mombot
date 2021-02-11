@@ -20,7 +20,7 @@ setVar $roll $player~CREDITS
 
 IF ($loc <> "Citadel")
      setvar $switchboard~message "Must be at the Citadel prompt (not " & $loc & ")*"
-     gosub :switchboard
+     gosub :switchboard~switchboard
      halt
 END
 

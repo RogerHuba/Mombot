@@ -781,6 +781,9 @@ return
 		if ($bot~command_lines[$b][9] = "shopper")
 			setvar $bot~command_lines[$b][9] "dock_shopper"
 		end
+		if ($bot~command_lines[$b][9] = "exit")
+			setvar $bot~command_lines[$b][9] "xenter"
+		end
 		setVar $travelCommands "mow twarp bwarp pwarp smow m t b p "
 		#replacing planet id's with planet sector
 		getWordPos $travelCommands $pos $bot~command_lines[$b][9]
@@ -986,7 +989,6 @@ return
 			setVar $invalid TRUE
 		end
 		cutText $bot~command_lines[$b][9]&"  " $test 1 1
-		send "'[" $bot~command_lines[$b][9] "]*"
 		if ($charCode = "48")
 			setVar $i 10
 			goto :runHotScript
