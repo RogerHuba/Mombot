@@ -21,7 +21,7 @@
     gosub :INVADER~start_invade_macro
 halt
 
-# includes:
+# includes :
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\invader"
