@@ -26,7 +26,9 @@
 
 	setvar $triggerSector $bot~parm1
 	setvar $moveSector $bot~parm2
-	setVar $maxShipFighters $ships~SHIP_FIGHTERS_MAX
+
+	gosub :ship~getShipStats
+	setVar $maxShipFighters $ship~SHIP_FIGHTERS_MAX
 
 	gosub :player~quikstats
 
@@ -74,8 +76,7 @@
 	send "qmnt*"
 	
 	gosub :planet~getPlanetInfo
-	
-	setvar $PLANET $$planet~planet
+	setvar $PLANET $planet~planet
 	setvar $PLANET_FIGHTERS $planet~PLANET_FIGHTERS     
 
 	if ($planet~planet_FIGHTERS < $dropFigs)
@@ -87,19 +88,22 @@
 	setVar $moveFigMacro ""
 	setVar $moved 0
 
-	while ($moved < $dropFigs)
-		setVar $toMove ($dropFigs - $moved)
-		if ($toMove >= $maxShipFighters)
-			setVar $thisMove $maxShipFighters
-			setVar $moved ($moved + $thisMove)
-		else
-			setVar $thisMove $toMove
-			setVar $moved $moved + $thisMove
-		end
+	:move
+		while ($moved < $dropFigs)
+			setVar $toMove ($dropFigs - $moved)
+			if ($toMove >= $maxShipFighters)
+				setVar $thisMove $maxShipFighters
+				setVar $moved ($moved + $thisMove)
+			else
+				setVar $thisMove $toMove
+				setVar $moved $moved + $thisMove
+			end
 			setVar $moveFigMacro $moveFigMacro & "q m n t* q fz " & $moved & "* * zc" & $dropftrsType & " * l" & $PLANET & " *m* t * ccq"
-	end
+		end
 
 	send "c"
+	setVar $SWITCHBOARD~message "running on planet: " & $PLANET & "*"
+	gosub :SWITCHBOARD~switchboard
 	waitfor "Citadel command (?=help)"
 	waiton "Deployed Fighters Report Sector "&$triggerSector&":"
 	send "p" & $moveSector & "*y  "
