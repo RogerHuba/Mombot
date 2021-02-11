@@ -2034,7 +2034,7 @@ return
 			else
 				getSectorParameter $scanSector "FIGSEC"  $isFigged
 				if ($isFigged = FALSE) or ($isFigged = "")
-					write $ugrd_density_file $nReport[$nReporti]
+					write $ugrd_density_file "Density Alert - Sec: " & $scanSector & " Density: " & $secDensity & " Anom:" & $scanAnom & " *"
 					if ($endSector > 0)
 						if (($secDensity > 499) and ($secDensity < 560) or ($secDensity > 499) and ($secDensity < 560))
 							add $densityAlertsi 1
