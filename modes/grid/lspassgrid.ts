@@ -227,6 +227,11 @@
 	end
 
 	
+	setvar $kill false
+	getWordPos $bot~user_command_line $pos "kill"
+	if ($pos > 0)
+		setVar $kill true
+	end
 
 	getWordPos $bot~user_command_line $pos "a1"
 	if ($pos > 0)
@@ -395,6 +400,20 @@
 		if ($player~equipment_holds > 0)
 		    send "   j   y   "
 		end
+	end
+
+	if ($kill = true)
+		loadvar $ship~CAP_FILE	
+		fileExists $CAP_FILE_chk $ship~CAP_FILE
+		if ($CAP_FILE_chk)
+			gosub :ship~loadshipinfo
+		else
+			gosub :ship~getShipCapStats
+			gosub :ship~loadShipInfo
+		end 
+
+		gosub :SHIP~getShipStats
+		gosub :combat~init 
 	end
 
 	write $LOG_FName "-------------------------{ " & $Stamp & " }-------------------------"
@@ -1627,25 +1646,43 @@
 	end
 	return
 :Do_Holo
-	setArray $HoloOutput 2000
-	setVar $Line_Pointer 1
-                	send "SzH*  "
-	setTextLineTrigger	TurnsGone		:TurnsGone		"Do you want instructions (Y/N) [N]?"
-	setTextLineTrigger	DoneScan		:DoneScan		"Warps to Sector(s) :"
+	# safe_attack_only makes sure holokill and in sector attack only happens when you can win the fight #
+	setvar $sector~safe_attack_only true
 
-	waiton "Long Range Scan"
-    :reset_trigger
-	setTextLineTrigger holo_line :holo_line
-	pause
-	:holo_line
-	setVar $HoloOutput[$Line_Pointer] CURRENTLINE
-	if ($Line_Pointer <= 2000)
-		add $Line_Pointer 1
+	if ($kill = true)
+		setvar $before_holo_kill_sector $player~current_sector
+		gosub :combat~holokill
+		if (($sector~holotargetfound = true) and ($player~current_sector <> $before_holo_kill_sector))
+			setVar $PLAYER~WARPTO $before_holo_kill_sector
+			gosub :PLAYER~twarp
+			if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+				setvar $switchboard~message "Could not make it back to starting sector after holokill. - ["&$player~msg&"]*"
+			end
+		end
+		if ($switchboard~message <> "No targets found adjacent.*")
+			gosub :switchboard~switchboard
+		end
+	else
+		setArray $HoloOutput 2000
+		setVar $Line_Pointer 1
+		send "SzH*  "
+		setTextLineTrigger	TurnsGone		:TurnsGone		"Do you want instructions (Y/N) [N]?"
+		setTextLineTrigger	DoneScan		:DoneScan		"Warps to Sector(s) :"
+
+		waiton "Long Range Scan"
+		:reset_trigger
+		setTextLineTrigger holo_line :holo_line
+		pause
+		:holo_line
+		setVar $HoloOutput[$Line_Pointer] CURRENTLINE
+		if ($Line_Pointer <= 2000)
+			add $Line_Pointer 1
+		end
+		goto :reset_trigger
+		:DoneScan
+		killAllTriggers
+		setVar $HoloOutput[$Line_Pointer] "ENDENDENDENDENDENDEND"
 	end
-	goto :reset_trigger
-	:DoneScan
-	killAllTriggers
-	setVar $HoloOutput[$Line_Pointer] "ENDENDENDENDENDENDEND"
 	return
 
 :Display_Holo
@@ -1739,3 +1776,12 @@ include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
 include "source\bot_includes\player\quikstats\player"
+include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\combat\holokill\combat"
+include "source\bot_includes\combat\init\combat"
+include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\combat\fastcitadelattack\combat"
+include "source\bot_includes\combat\fastcapture\combat"
+include "source\bot_includes\ship\loadshipinfo\ship"
+include "source\bot_includes\ship\getshipcapstats\ship"
+include "source\bot_includes\ship\getshipstats\ship"
