@@ -1,6 +1,9 @@
 # ============================== START STORE SHIP ====================================
 :storeship
 :shipstore
+
+gosub :BOT~loadVars
+
 		gosub  :player~currentPrompt
 		setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 		setVar $BOT~validPrompts "Command Citadel"
