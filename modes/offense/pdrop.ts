@@ -89,6 +89,16 @@ reqRecording
 		setVar $mode "General"
 	        halt
 	end
+
+	loadvar $ship~CAP_FILE	
+	fileExists $CAP_FILE_chk $ship~CAP_FILE
+	if ($CAP_FILE_chk)
+		gosub :ship~loadshipinfo
+	else
+		gosub :ship~getShipCapStats
+		gosub :ship~loadShipInfo
+	end 
+
 	gosub :ship~getshipstats
 
 
@@ -1797,10 +1807,13 @@ return
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"
-include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\combat\init\combat"
 include "source\bot_includes\sector\getsectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
-include "source\bot_includes\planet\getplanetinfo\planet"
+include "source\bot_includes\ship\loadshipinfo\ship"
+include "source\bot_includes\ship\getshipcapstats\ship"
+include "source\bot_includes\ship\getshipstats\ship"
