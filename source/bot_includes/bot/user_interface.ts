@@ -821,23 +821,23 @@ return
 			end
 		end
 		if (($doesExist > 0) OR ($doesExistHidden > 0))
-			send "'  [" $b "] - it exists*"
 			gosub :load_the_module
 			if ($b < $bot~command_lines)
 				# the last script in the list has not loaded #
 				setEventTrigger	loadended :loadended "SCRIPT STOPPED" $loaded
-#				if ($bot~botIsOff <> TRUE)
-#					setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          $SWITCHBOARD~bot_name
-#					setTextLineTrigger  own_command_team        :USER_INTERFACE~check_routing_team     $bot_team_name
-#					setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "You have a corporate memo from "
-#				end
+				if ($bot~botIsOff <> TRUE)
+					setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          "SNAP OUT OF IT"
+				end
 				pause
 				:loadended
+				if ($currentCategory = "Modes")
+					setVar $BOT~mode "General"
+					savevar $bot~mode
+				end
 			else
 				goto :BOT~wait_for_command
 			end
 		else
-			send "'  [" $b "] - it doesn't exist*"
 			getWordPos $BOT~internalCommandList&$BOT~doubledCommandList $pos " "&$bot~command_lines[$b][9]&" "
 			if ($pos > 0)
 				gosub :BOT~killthetriggers
