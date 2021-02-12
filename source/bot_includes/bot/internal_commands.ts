@@ -472,7 +472,8 @@ goto :BOT~wait_for_command
 	if ($PLAYER~CURRENT_PROMPT = "Citadel")
 		gosub :PLANET~landingSub
 	end
-	send "'{" & $SWITCHBOARD~bot_name & "} - Bot data refresh completed.*"
+	setvar $switchboard~message "Bot data refresh completed.*"
+	gosub :switchboard~switchboard
 goto :BOT~wait_for_command
 #========================== END REFRESH BOT SUB =================================================
 
