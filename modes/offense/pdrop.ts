@@ -611,10 +611,12 @@ reqRecording
 					send "'Planet did not arrive, resetting*"
 					
 				else
-					send "'IGLift Initiated! send reset command to re-enable PDROP (resetpdrop or -)*"
-					waitfor "resetpdrop"
-					goSub :waitforrestart
-					goSub :resetIGLift
+					if ($iglift = 1)
+						send "'IGLift Initiated! send reset command to re-enable PDROP (resetpdrop or -)*"
+						waitfor "resetpdrop"
+						goSub :waitforrestart
+						goSub :resetIGLift
+					end
 				end
 
 				if ($defender = 1)
