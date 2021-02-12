@@ -472,7 +472,8 @@ goto :BOT~wait_for_command
 	if ($PLAYER~CURRENT_PROMPT = "Citadel")
 		gosub :PLANET~landingSub
 	end
-	send "'{" & $SWITCHBOARD~bot_name & "} - Bot data refresh completed.*"
+	setvar $switchboard~message "Bot data refresh completed.*"
+	gosub :switchboard~switchboard
 goto :BOT~wait_for_command
 #========================== END REFRESH BOT SUB =================================================
 
@@ -506,17 +507,6 @@ goto :BOT~wait_for_command
 	goto :BOT~wait_for_command
 
 #####==========================================  BOT INTERNAL MENUS SECTION ===========================================#####
-
-# ========================================= SETVAR ======================================================
-:getvar
-	setVar $BOT~user_command_line "getvar "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
-	goto :USER_INTERFACE~runUserCommandLine
-
-:setvar
-	setVar $BOT~user_command_line "setvar "&$BOT~parm1&" "&$BOT~parm2&" "&$BOT~parm3&" "&$BOT~parm4&" "&$BOT~parm5&" "&$BOT~parm6&" "&$BOT~parm7&" "&$BOT~parm8
-	goto :USER_INTERFACE~runUserCommandLine
-
-# ======================================== END SETVAR ===================================================
 
 #=============================== AUTO KILL ==========================================
 :autoKill
