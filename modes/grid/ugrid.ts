@@ -399,7 +399,7 @@ goSub :checkAvoidedSectors
 	setVar $max_figs $player~fighters
 	waitFor "Transport Range:"
 	getWord CURRENTLINE $xport_range 6
-	setVar $minFuelOre (($xport_range * 2) * 3) + 12
+	setVar $minFuelOre (($xport_range * 4) * 3) + 12
 
 	gosub :player~quikstats
 	setVar $ship1 $player~ship_number
