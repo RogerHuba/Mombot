@@ -17,6 +17,8 @@
 	loadvar $game~armid_cost
 	loadVar $game~limpet_removal_cost
 	loadvar $bot~password
+	loadvar $bot~Folder
+
 	setVar $grid_limpets 3
 	setVar $grid_armids 3
 	setVar $refurb TRUE
@@ -35,6 +37,8 @@
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	getSectorParameter SECTORS "MINESEC" $isArmided
 	getSectorParameter SECTORS "LIMPSEC" $isLimped
+	
+	setVar  $ugrd_density_file     $bot~Folder&"/ugrid_denisy_reports.txt"
 
 	setVar $BOT~help[1] $BOT~tab&"ugrid [targeting] {figs} {armids} {limpets} {safety} {planets} {warp} {refurb} {scrub} {avoid) {aggressive} {clear} {ship2:#} "
 	setVar $BOT~help[2] $BOT~tab&"                "
@@ -395,6 +399,7 @@ goSub :checkAvoidedSectors
 	setVar $max_figs $player~fighters
 	waitFor "Transport Range:"
 	getWord CURRENTLINE $xport_range 6
+	setVar $minFuelOre (($xport_range * 2) * 3) + 12
 
 	gosub :player~quikstats
 	setVar $ship1 $player~ship_number
@@ -549,8 +554,9 @@ goSub :checkAvoidedSectors
 			end
 
 			if (($xport_dist <= 0) or ($xport_dist > $xport_range))
-				setvar $switchboard~message "Return Xport to far - moving to next target*"
-				gosub :switchboard~switchboard
+				#setvar $switchboard~message "Return Xport to far - moving to next target*"
+				#gosub :switchboard~switchboard
+				echo "Return Xport to far - moving to next target*"
 				KillAllTriggers
 				replaceText $database " "&$player~warpto&" " " "
 				subtract $databaseCount 1
@@ -635,7 +641,7 @@ goSub :checkAvoidedSectors
 	if ($do_smow = TRUE) and ($safeXport = TRUE)
 		setVar $orginal_boomsec $boomsec
 		setVar $smowDest $finalDestination[$player~warpto]
-		send "'attempting smow to "  $smowDest ", orig adj target: " $boomsec "*"
+		echo "attempting smow to "  $smowDest ", orig adj target: " $boomsec "*"
 		goSub :check_smow
 		
 		if ($smowDone = 1)
@@ -686,9 +692,9 @@ goSub :checkAvoidedSectors
 				if ($pscrub = TRUE)
 						
 					//Opisite numbers as we've swapped ships and not Quikstat'd yet
-					if (($player~ship_number = $ship2) and ($ship1FuelOre < 120))
+					if (($player~ship_number = $ship2) and ($ship1FuelOre < $minFuelOre))
 						setVar $adjland_mac $land_mac
-					elseif (($player~ship_number = $ship1) and ($ship2FuelOre < 120))
+					elseif (($player~ship_number = $ship1) and ($ship2FuelOre < $minFuelOre))
 						setVar $adjland_mac $land_mac
 					else 
 						setVar $adjland_mac $nofuel_land_mac
@@ -775,7 +781,7 @@ goSub :checkAvoidedSectors
 			end
 		end
 		if ((SECTOR.anomaly[$boomsec] = TRUE) and ($isLimped = FALSE))
-			send "'UGrid:Hitting Limp*"
+			echo "UGrid:Hitting Limp*"
 			setVar $imlimped TRUE
 		
 			if ($player~ship_number = $ship1)
@@ -807,6 +813,8 @@ goSub :checkAvoidedSectors
 							goSub :xportCleanup
 						end
 					end
+send "'Fig Owner:" & SECTOR.FIGS.OWNER[$boomsec] & " Gridding: " & $boomsec & " Current Sect:" & $player~current_sector &"*"
+
 					goSub :checkShipExists
 					if ($pscrub = TRUE)
 					
@@ -846,8 +854,19 @@ goSub :checkAvoidedSectors
 					setVar $coursesCompleted 0
 					send "'<"&$bot~subspace&">[Figged:"&$boomsec&"]<"&$bot~subspace&">* "
 					:smowSkip
+					setVar $endSector $boomsec
 					goSub :densityScan
-
+					setVar $endSector 0
+					setVar $densityAlerts 0
+	
+					if ($densityAlertsi > 0)
+						setVar $nn 1
+						while ($nn <= $densityAlertsi)
+							setvar $switchboard~message $densityAlerts[$nn]
+							gosub :switchboard~switchboard
+							add $nn 1
+						end
+					end	
 					if ($nReporti > 0)
 						setVar $nn 1
 						while ($nn <= $nReporti)
@@ -1956,7 +1975,8 @@ return
 	setVar $nHaz 0
 	setVar $nAnom 0
 	setVar $nNew 0
-	
+	setVar $densityAlerts 0
+	setVar $densityAlertsi 0
 		setDelayTrigger densityDelay :densityDelay 1000
 	:densityScanning
 		setTextLineTrigger densityScanLine :densityScanLine "Sector"
@@ -2014,8 +2034,19 @@ return
 			else
 				getSectorParameter $scanSector "FIGSEC"  $isFigged
 				if ($isFigged = FALSE) or ($isFigged = "")
-					add $nReporti 1
-					setVar $nReport[$nReporti] "Density Alert - Sec: " & $scanSector & " Density: " & $secDensity & " Anom:" & $scanAnom & " *"
+					write $ugrd_density_file "Density Alert - Sec: " & $scanSector & " Density: " & $secDensity & " Anom:" & $scanAnom & " *"
+					if ($endSector > 0)
+						if (($secDensity > 499) and ($secDensity < 560) or ($secDensity > 499) and ($secDensity < 560))
+							add $densityAlertsi 1
+							setVar $densityAlerts[$densityAlertsi] "Potenial Attack Planet:" & $scanSector & " Current Sect:" & $endSector & " Den:" & $secDensity & "*"
+						else
+							add $nReporti 1
+							setVar $nReport[$nReporti] "Density Alert - Sec: " & $scanSector & " Density: " & $secDensity & " Anom:" & $scanAnom & " *"
+						end
+					else
+						add $nReporti 1
+						setVar $nReport[$nReporti] "Density Alert - Sec: " & $scanSector & " Density: " & $secDensity & " Anom:" & $scanAnom & " *"
+					end
 					if ($secDensity > 499)
 						setVar $doHolo 1
 					end
