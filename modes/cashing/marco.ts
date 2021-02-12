@@ -141,8 +141,8 @@ if ($bot~parm1 = "trade")
 		halt
 	end
 	
-	if ($player~fighters < 100)
-		setvar $switchboard~message "Less than 100 figs - are you mad?*"
+	if ($player~fighters < 20)
+		setvar $switchboard~message "Less than 20 figs - are you mad?*"
 			gosub :switchboard~switchboard
 			halt
 	end
