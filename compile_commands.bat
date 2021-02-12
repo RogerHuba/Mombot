@@ -1,4 +1,4 @@
-for /r %%n in (*ice2021.ts) do call :checkit "%%n" 
+for /r %%n in (*hkill.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
