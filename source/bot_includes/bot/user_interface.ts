@@ -46,6 +46,10 @@
 			#gosub :getParameters
 			setvar $bot~command_caller "self"
 			savevar $bot~command_caller
+			savevar $switchboard~self_command
+			saveVar $BOT~user_command_line
+			load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
+			goto :BOT~wait_for_command
 			gosub :check_for_multi_commands
 			goto :command_processing
 		else
@@ -79,6 +83,10 @@
 		if (($bot~command = "bot") OR ($bot~command = "relog"))
 			goto :bot~wait_for_command
 		end
+		savevar $switchboard~self_command
+		saveVar $BOT~user_command_line
+		load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
+		goto :BOT~wait_for_command
 		gosub :check_for_multi_commands
 		goto :command_processing
 
@@ -110,8 +118,11 @@
 			if (($bot~command = "bot") OR ($bot~command = "relog"))
 				goto :BOT~wait_for_command
 			end
-			gosub :check_for_multi_commands
-			goto :command_processing            
+			savevar $switchboard~self_command
+			saveVar $BOT~user_command_line
+			load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
+			#gosub :check_for_multi_commands
+			#goto :command_processing            
 		end
 		goto :BOT~wait_for_command
 # ============================== END COMMAND ROUTING SUB ==============================
@@ -128,6 +139,11 @@
 		goto :BOT~wait_for_command
 	end
 	setVar $SWITCHBOARD~self_command TRUE
+	savevar $switchboard~self_command
+	saveVar $BOT~user_command_line
+	load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
+	goto :BOT~wait_for_command
+
 	:runUserCommandLine
 		setVar $bot~user_command_line $bot~user_command_line&"              "
 		setVar $authorization 9
