@@ -1,9 +1,9 @@
 	gosub :BOT~loadVars
 									
 
-	setVar $BOT~help[1]  $BOT~tab&"- dothis {param:xxx} {"&#34&"bot command"&#34&"}    " 
+	setVar $BOT~help[1]  $BOT~tab&"  dothis {param:xxx} {"&#34&"bot command"&#34&"}    " 
 	setVar $BOT~help[2]  $BOT~tab&"                                                            " 
-	setVar $BOT~help[3]  $BOT~tab&"    Visits sectors marked with sector param and does bot. " 
+	setVar $BOT~help[3]  $BOT~tab&"    Visits sectors marked with sector param and does bot  " 
 	setVar $BOT~help[4]  $BOT~tab&"    command.                                               " 
 	setVar $BOT~help[5]  $BOT~tab&"                                                            " 
 	setVar $BOT~help[6]  $BOT~tab&"          {param:xxx} - sector parameter to target         " 
