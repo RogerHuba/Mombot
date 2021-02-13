@@ -119,7 +119,6 @@
 		setVar $bottom 1
 		setVar $top 1
 		setVar $que[1] $PLAYER~CURRENT_SECTOR
-		setVar $checked[$PLAYER~CURRENT_SECTOR] 1
 		while ($bottom <= $top)
 			# Now, pull out the next sector in the que, and make it our focus
 			setVar $focus $que[$bottom]
