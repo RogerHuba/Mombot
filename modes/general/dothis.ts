@@ -107,7 +107,6 @@
 	gosub :PLAYER~quikstats
 	setVar $isDone FALSE
 	setVar $player~turnsTooLow FALSE
-    setarray $que sectors
 	while ($isDone <> TRUE)
 		loadVar $BOT~botIsDeaf
 		loadVar $BOT~silent_running
