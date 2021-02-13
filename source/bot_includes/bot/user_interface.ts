@@ -874,6 +874,11 @@ return
 			if ($b < $bot~command_lines)
 				# the last script in the list has not loaded #
 				killalltriggers
+				# setting own basic keep alive since bot will be out of commission while multi commands run #
+				setEventTrigger     relog                   :CONNECTIVITY~keepalive           "CONNECTION LOST"
+				setTextTrigger      online_watch            :keepalive             "Your session will be terminated in "
+				setDelayTrigger     keepalive               :keepalive                60000
+
 				setEventTrigger	loadended :loadended "SCRIPT STOPPED" $loaded
 				setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          "SNAP OUT OF IT"
 				pause
@@ -900,6 +905,15 @@ return
 		add $b 1
 	end
 	goto :BOT~wait_for_command
+
+:keepalive
+	send #27
+	killtrigger keepalive
+	killtrigger online_watch
+	setTextTrigger      online_watch            :keepalive             "Your session will be terminated in "
+	setDelayTrigger     keepalive               :keepalive                60000
+pause
+
 :formatCommand
 	cutText $bot~command_lines[$b][9]&" " $firstChar 1 1
 	cutText $bot~command_lines[$b][9]&" " $restOfCommand 2 999
