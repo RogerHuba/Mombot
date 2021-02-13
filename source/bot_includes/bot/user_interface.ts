@@ -649,12 +649,10 @@ return
 		cutText $bot~command_lines[$b][9]&"  " $checkForChat 1 1
 		cutText $bot~command_lines[$b][9]&"  " $checkForFinder 1 1
 		if ($checkForChat = "'")
-			cutText $bot~command_lines[$b][9] $bot~command_lines[$b][9] 2 9999
-			#setvar $bot~command_lines[$b] $bot~command_lines[$b][9]&" "&$bot~command_lines[$b]
+			cutText $bot~command_lines[$b] $bot~command_lines[$b] 2 9999
 			setvar $bot~command_lines[$b][9] "ss"
 		elseif ($checkForChat = "`")
-			cutText $bot~command_lines[$b][9] $bot~command_lines[$b][9] 2 9999
-			#setvar $bot~command_lines[$b] $bot~command_lines[$b][9]&" "&$bot~command_lines[$b]
+			cutText $bot~command_lines[$b] $bot~command_lines[$b] 2 9999
 			setvar $bot~command_lines[$b][9] "fed"
 		end
 		if ($bot~command_caller <> "self")
