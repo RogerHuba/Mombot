@@ -24,7 +24,7 @@
 	setVar $bot~CATAGORIES[3] "Daemons"
 
 
-
+setvar $bot~user_command_line "fakecommand "&$bot~user_command_line
 goto :USER_INTERFACE~runUserCommandLine
 
 halt
