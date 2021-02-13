@@ -1,27 +1,27 @@
 	gosub :BOT~loadVars
 									
 	setArray $INTERNALCOMMANDLISTS 7
-	setVar $internalCommandLists[1]  " stopall stop listall reset emq bot relog tow refresh login logoff unlock lift with dep callin about cn extern twarp bwarp pwarp relog help switchbot "
-	setVar $internalCommandLists[2]  " " 
-	setVar $internalCommandLists[3]  " hkill kill htorp "
-	setVar $internalCommandLists[4]  " refurb scrub "
-	setVar $internalCommandLists[5]  " surround exit xenter mow "
-	setVar $internalCommandLists[6]  " "
-	setVar $internalCommandLists[7]  " find pscan sector storeship setvar getvar "
-	setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow port shipstore finder xenter status pinfo holotorp"
-	setVar $internalCommandList     $internalCommandLists[1]&$internalCommandLists[2]&$internalCommandLists[3]&$internalCommandLists[4]&$internalCommandLists[5]&$internalCommandLists[6]&$internalCommandLists[7]
-	setArray $TYPES 7
-	setVar $TYPES[1] "General"
-	setVar $TYPES[2] "Defense"
-	setVar $TYPES[3] "Offense"
-	setVar $TYPES[4] "Resource"
-	setVar $TYPES[5] "Grid"
-	setVar $TYPES[6] "Cashing"
-	setVar $TYPES[7] "Data"
-	setArray $CATAGORIES 3
-	setVar $CATAGORIES[1] "Modes"
-	setVar $CATAGORIES[2] "Commands"
-	setVar $CATAGORIES[3] "Daemons"
+	setVar $bot~internalCommandLists[1]  " stopall stop listall reset emq bot relog tow refresh login logoff unlock lift with dep callin about cn extern twarp bwarp pwarp relog help switchbot "
+	setVar $bot~internalCommandLists[2]  " " 
+	setVar $bot~internalCommandLists[3]  " hkill kill htorp "
+	setVar $bot~internalCommandLists[4]  " refurb scrub "
+	setVar $bot~internalCommandLists[5]  " surround exit xenter mow "
+	setVar $bot~internalCommandLists[6]  " "
+	setVar $bot~internalCommandLists[7]  " find pscan sector storeship setvar getvar "
+	setVar $bot~doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow port shipstore finder xenter status pinfo holotorp"
+	setVar $bot~internalCommandList     $internalCommandLists[1]&$internalCommandLists[2]&$internalCommandLists[3]&$internalCommandLists[4]&$internalCommandLists[5]&$internalCommandLists[6]&$internalCommandLists[7]
+	setArray $bot~TYPES 7
+	setVar $bot~TYPES[1] "General"
+	setVar $bot~TYPES[2] "Defense"
+	setVar $bot~TYPES[3] "Offense"
+	setVar $bot~TYPES[4] "Resource"
+	setVar $bot~TYPES[5] "Grid"
+	setVar $bot~TYPES[6] "Cashing"
+	setVar $bot~TYPES[7] "Data"
+	setArray $bot~CATAGORIES 3
+	setVar $bot~CATAGORIES[1] "Modes"
+	setVar $bot~CATAGORIES[2] "Commands"
+	setVar $bot~CATAGORIES[3] "Daemons"
 
 
 	setVar $BOT~help[1]  $BOT~tab&"- dothis {param:xxx} {"&#34&"bot command"&#34&"}    " 
