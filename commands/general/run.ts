@@ -31,6 +31,14 @@ halt
 
 
 
+:load_watcher_variables
+	loadVar $SHIP~SHIP_MAX_ATTACK
+	loadVar $SHIP~SHIP_FIGHTERS_MAX
+	loadVar $SHIP~SHIP_OFFENSIVE_ODDS
+	loadVar $PLANET~PLANET
+	loadVar $PLAYER~CURRENT_SECTOR
+return
+
 
 :MAIN~module_vars
 	saveVar $bot~command
