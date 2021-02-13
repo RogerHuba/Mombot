@@ -46,10 +46,13 @@
 			#gosub :getParameters
 			setvar $bot~command_caller "self"
 			savevar $bot~command_caller
-			savevar $switchboard~self_command
-			saveVar $BOT~user_command_line
-			load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
-			goto :BOT~wait_for_command
+			getwordpos $bot~user_command_line $pos "|"
+			if ($pos > 0)
+				savevar $switchboard~self_command
+				saveVar $BOT~user_command_line
+				load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
+				goto :BOT~wait_for_command
+			end
 			gosub :check_for_multi_commands
 			goto :command_processing
 		else
@@ -83,10 +86,13 @@
 		if (($bot~command = "bot") OR ($bot~command = "relog"))
 			goto :bot~wait_for_command
 		end
-		savevar $switchboard~self_command
-		saveVar $BOT~user_command_line
-		load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
-		goto :BOT~wait_for_command
+		getwordpos $bot~user_command_line $pos "|"
+		if ($pos > 0)
+			savevar $switchboard~self_command
+			saveVar $BOT~user_command_line
+			load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
+			goto :BOT~wait_for_command
+		end
 		gosub :check_for_multi_commands
 		goto :command_processing
 
@@ -118,11 +124,15 @@
 			if (($bot~command = "bot") OR ($bot~command = "relog"))
 				goto :BOT~wait_for_command
 			end
-			savevar $switchboard~self_command
-			saveVar $BOT~user_command_line
-			load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
-			#gosub :check_for_multi_commands
-			#goto :command_processing            
+			getwordpos $bot~user_command_line $pos "|"
+			if ($pos > 0)
+				savevar $switchboard~self_command
+				saveVar $BOT~user_command_line
+				load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
+				goto :BOT~wait_for_command
+			end
+			gosub :check_for_multi_commands
+			goto :command_processing            
 		end
 		goto :BOT~wait_for_command
 # ============================== END COMMAND ROUTING SUB ==============================
@@ -139,11 +149,13 @@
 		goto :BOT~wait_for_command
 	end
 	setVar $SWITCHBOARD~self_command TRUE
-	savevar $switchboard~self_command
-	saveVar $BOT~user_command_line
-	load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
-	goto :BOT~wait_for_command
-
+	getwordpos $bot~user_command_line $pos "|"
+	if ($pos > 0)
+		savevar $switchboard~self_command
+		saveVar $BOT~user_command_line
+		load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
+		goto :BOT~wait_for_command
+	end
 	:runUserCommandLine
 		setVar $bot~user_command_line $bot~user_command_line&"              "
 		setVar $authorization 9
@@ -889,14 +901,8 @@ return
 			gosub :load_the_module
 			if ($b < $bot~command_lines)
 				# the last script in the list has not loaded #
-				killalltriggers
-				# setting own basic keep alive since bot will be out of commission while multi commands run #
-				setEventTrigger     relog                   :CONNECTIVITY~keepalive           "CONNECTION LOST"
-				setTextTrigger      online_watch            :keepalive             "Your session will be terminated in "
-				setDelayTrigger     keepalive               :keepalive                60000
-
+				killtrigger loadended
 				setEventTrigger	loadended :loadended "SCRIPT STOPPED" $loaded
-				setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          "SNAP OUT OF IT"
 				pause
 				:loadended
 				if ($currentCategory = "Modes")
@@ -921,14 +927,6 @@ return
 		add $b 1
 	end
 	goto :BOT~wait_for_command
-
-:keepalive
-	send #27
-	killtrigger keepalive
-	killtrigger online_watch
-	setTextTrigger      online_watch            :keepalive             "Your session will be terminated in "
-	setDelayTrigger     keepalive               :keepalive                60000
-pause
 
 :formatCommand
 	cutText $bot~command_lines[$b][9]&" " $firstChar 1 1
