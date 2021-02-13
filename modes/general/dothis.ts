@@ -99,6 +99,8 @@
             add $doitcount 1
             setvar $bot~user_command_line $bot_command
             goto :USER_INTERFACE~runUserCommandLine
+            :bot~wait_for_command
+
         end
     end
     halt
