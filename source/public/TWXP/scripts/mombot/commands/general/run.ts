@@ -1,20 +1,44 @@
-systemscript
-reqRecording
-# TWX Script            : Mind Over Matter Bot
-# Authors           : Mind Dagger / The Bounty Hunter / Lonestar / Hammer
-# Contributions/QA              : Misbehavin / DaCreeper / The Butcher
-# Description           : Allows Corpies to use you while AFK and a Self Helper
-# Credits           : Oz, Zentock, SupG, Dynarri, Cherokee, Alexio, Xide, Phx, Rincrast, Voltron, Traitor, Parrothead, PSI, Elder Prophet, Caretaker, Deign
+	gosub :BOT~loadVars
 
-setVar $bot~major_version   "4"
-setVar $bot~minor_version   "5beta"
-setvar $bot~default_bot_directory "mombot"
+	setArray $INTERNALCOMMANDLISTS 7
+	setVar $bot~internalCommandLists[1]  " stopall stop listall reset emq bot relog tow refresh login logoff unlock lift with dep callin about cn extern twarp bwarp pwarp relog help switchbot "
+	setVar $bot~internalCommandLists[2]  " " 
+	setVar $bot~internalCommandLists[3]  " hkill kill htorp "
+	setVar $bot~internalCommandLists[4]  " refurb scrub "
+	setVar $bot~internalCommandLists[5]  " surround exit xenter mow "
+	setVar $bot~internalCommandLists[6]  " "
+	setVar $bot~internalCommandLists[7]  " find pscan sector storeship setvar getvar "
+	setVar $bot~doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow port shipstore finder xenter status pinfo holotorp"
+	setVar $bot~internalCommandList     $bot~internalCommandLists[1]&$bot~internalCommandLists[2]&$bot~internalCommandLists[3]&bot~$internalCommandLists[4]&$bot~internalCommandLists[5]&$bot~internalCommandLists[6]&$bot~internalCommandLists[7]
+	setArray $bot~TYPES 7
+	setVar $bot~TYPES[1] "General"
+	setVar $bot~TYPES[2] "Defense"
+	setVar $bot~TYPES[3] "Offense"
+	setVar $bot~TYPES[4] "Resource"
+	setVar $bot~TYPES[5] "Grid"
+	setVar $bot~TYPES[6] "Cashing"
+	setVar $bot~TYPES[7] "Data"
+	setArray $bot~CATAGORIES 3
+	setVar $bot~CATAGORIES[1] "Modes"
+	setVar $bot~CATAGORIES[2] "Commands"
+	setVar $bot~CATAGORIES[3] "Daemons"
 
-savevar $bot~major_version
-savevar $bot~minor_version
 
-gosub :combat~init
-goto :BOT~load_bot
+
+goto :USER_INTERFACE~runUserCommandLine
+
+halt
+
+
+
+:bot~load_watcher_variables
+	loadVar $SHIP~SHIP_MAX_ATTACK
+	loadVar $SHIP~SHIP_FIGHTERS_MAX
+	loadVar $SHIP~SHIP_OFFENSIVE_ODDS
+	loadVar $PLANET~PLANET
+	loadVar $PLAYER~CURRENT_SECTOR
+return
+
 
 :MAIN~module_vars
 	saveVar $bot~command
@@ -35,7 +59,8 @@ goto :BOT~load_bot
 	gosub :MAIN~backwards_compatible
 return
 
-
+:bot~wait_for_command
+halt
 
 
 :MAIN~backwards_compatible
@@ -120,39 +145,8 @@ return
 
 return
 
-
-#INCLUDES:
-include "source\bot_includes\bot"
-include "source\bot_includes\bot\connectivity"
-include "source\bot_includes\bot\menus"
+#-=-=-=-=-includes-=-=-=-=-
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\bot\internal_commands"
 include "source\bot_includes\bot\user_interface"
-include "source\bot_includes\switchboard"
-include "source\module_includes\modules\clear\modules"
-include "source\module_includes\modules\xenter\modules"
-include "source\bot_includes\player\quikstats\player"
-include "source\bot_includes\player\currentprompt\player"
-include "source\bot_includes\player\startcnsettings\player"
-include "source\bot_includes\player\getinfo\player"
-include "source\bot_includes\player\moveintosector\player"
-include "source\bot_includes\ship\getshipcapstats\ship"
-include "source\bot_includes\ship\getshipstats\ship"
-include "source\bot_includes\ship\savetheship\ship"
-include "source\bot_includes\ship\loadshipinfo\ship"
-include "source\bot_includes\combat\fastattack\combat"
-include "source\bot_includes\combat\fastcapture\combat"
-include "source\bot_includes\combat\holokill\combat"
-include "source\bot_includes\combat\init\combat"
-include "source\bot_includes\planet\loadplanetinfo\planet"
-include "source\bot_includes\planet\landonplanetentercitadel\planet"
-include "source\bot_includes\planet\getplanetinfo\planet"
-include "source\bot_includes\planet\getplanetstats\planet"
-include "source\bot_includes\planet\landingsub\planet"
-include "source\bot_includes\sector\getsectordata\sector"
-include "source\bot_includes\map\displayadjacentgridansi\map"
-include "source\bot_includes\map\commas\map"
-include "source\bot_includes\map\displaysector\map"
-include "source\bot_includes\game\gamestats\game"
-
-
-
