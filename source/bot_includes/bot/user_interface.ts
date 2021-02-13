@@ -905,7 +905,6 @@ return
 :findCommand
 	setVar $BOT~ModuleCategory ""
 	setVar $i 1
-	send "'scripts\"&$bot~mombot_directory&"\"&$BOT~CATAGORIES[$i]&"\"&$bot~command_lines[$b][9]&".cts*"
 	while ($i <= 3)
 		setVar $j 1
 		while ($j <= 7)
