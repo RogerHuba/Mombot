@@ -65,6 +65,9 @@
 
     setArray $checked SECTORS
     setvar $doitcount 0
+    setvar $switchboard~message "Attempting to do this ("&$bot_command&") on all "&$parameter&" sectors.*"
+    gosub :switchboard~switchboard
+
     while (true)
         :try_the_next_target
         gosub :findNextTarget
