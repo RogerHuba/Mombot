@@ -63,10 +63,11 @@
         setvar $travelType "Ship"
     end
 
-    setArray $checked SECTORS
     setvar $doitcount 0
     setvar $switchboard~message "Attempting to do this ("&$bot_command&") on all "&$parameter&" sectors.*"
     gosub :switchboard~switchboard
+
+	setArray $checkedTargets SECTORS
 
     while (true)
         :try_the_next_target
@@ -107,6 +108,8 @@
 	gosub :PLAYER~quikstats
 	setVar $isDone FALSE
 	setVar $player~turnsTooLow FALSE
+    setArray $checked SECTORS
+	setArray $que SECTORS
 	while ($isDone <> TRUE)
 		loadVar $BOT~botIsDeaf
 		loadVar $BOT~silent_running
@@ -124,12 +127,13 @@
 			getSectorParameter $focus $parameter $isTarget
 			getSectorParameter $focus "FIGSEC" $isFigged
 			
-            if (($isTarget = true) and ($checked[$focus] <> true))
+            if (($isTarget = true) and ($checkedTargets[$focus] <> true))
                 # fig found 0 hops
                 setVar $nearestTarget $focus
-                setVar $checkedPorts[$nearestTarget] TRUE
+                setvar $checkedTargets[$focus] true
                 return
             else
+                setvar $checkedTargets[$focus] true
                 setVar $nearestTarget 0
             end
 
@@ -150,8 +154,7 @@
 			:gotoBottom
 			add $bottom 1
 		end	
-		setVar $SWITCHBOARD~message "Can't find anymore targets.*"
-		gosub :SWITCHBOARD~switchboard
+        # can't find anymore #
         setvar $nearestTarget "-1"
         return
     end
