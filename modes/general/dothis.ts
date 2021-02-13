@@ -1,5 +1,28 @@
 	gosub :BOT~loadVars
 									
+	setArray $INTERNALCOMMANDLISTS 7
+	setVar $internalCommandLists[1]  " stopall stop listall reset emq bot relog tow refresh login logoff unlock lift with dep callin about cn extern twarp bwarp pwarp relog help switchbot "
+	setVar $internalCommandLists[2]  " " 
+	setVar $internalCommandLists[3]  " hkill kill htorp "
+	setVar $internalCommandLists[4]  " refurb scrub "
+	setVar $internalCommandLists[5]  " surround exit xenter mow "
+	setVar $internalCommandLists[6]  " "
+	setVar $internalCommandLists[7]  " find pscan sector storeship setvar getvar "
+	setVar $doubledCommandList       " parm params parms qss sec sect secto cn9 logout emx smow port shipstore finder xenter status pinfo holotorp"
+	setVar $internalCommandList     $internalCommandLists[1]&$internalCommandLists[2]&$internalCommandLists[3]&$internalCommandLists[4]&$internalCommandLists[5]&$internalCommandLists[6]&$internalCommandLists[7]
+	setArray $TYPES 7
+	setVar $TYPES[1] "General"
+	setVar $TYPES[2] "Defense"
+	setVar $TYPES[3] "Offense"
+	setVar $TYPES[4] "Resource"
+	setVar $TYPES[5] "Grid"
+	setVar $TYPES[6] "Cashing"
+	setVar $TYPES[7] "Data"
+	setArray $CATAGORIES 3
+	setVar $CATAGORIES[1] "Modes"
+	setVar $CATAGORIES[2] "Commands"
+	setVar $CATAGORIES[3] "Daemons"
+
 
 	setVar $BOT~help[1]  $BOT~tab&"- dothis {param:xxx} {"&#34&"bot command"&#34&"}    " 
 	setVar $BOT~help[2]  $BOT~tab&"                                                            " 
