@@ -649,9 +649,19 @@ return
 		cutText $bot~command_lines[$b][9]&"  " $checkForChat 1 1
 		cutText $bot~command_lines[$b][9]&"  " $checkForFinder 1 1
 		if ($checkForChat = "'")
-			goto :INTERNAL_COMMANDS~ss
+			cutText $bot~command_lines[$b][9] $bot~command_lines[$b][9] 2 9999
+			setvar $bot~command_lines[$b] $bot~command_lines[$b][9]&" "&$bot~command_lines[$b]
+			setvar $bot~command_lines[$b][9] "ss"
 		elseif ($checkForChat = "`")
-			goto :INTERNAL_COMMANDS~fed
+			cutText $bot~command_lines[$b][9] $bot~command_lines[$b][9] 2 9999
+			setvar $bot~command_lines[$b] $bot~command_lines[$b][9]&" "&$bot~command_lines[$b]
+			setvar $bot~command_lines[$b][9] "fed"
+		end
+		if ($bot~command_caller <> "self")
+			if (($bot~command_lines[$b][9] = "ss") or ($bot~command_lines[$b][9] = "fed"))
+				# no speaking with bot unless it's the bot owner #
+				goto :bot~wait_for_command
+			end
 		end
 		saveVar $SWITCHBOARD~self_command
 		if ($bot~command_lines[$b][9] = "?")

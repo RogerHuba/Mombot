@@ -412,15 +412,6 @@ return
 #===================================END SHUTDOWN MODULE SUB ==================================
 
 
-#============================== BOT PROMPT COMMUNICATION =================================
-:ss
-	cutText $BOT~user_command_line $BOT~user_command_line 2 9999
-	send "'"&$BOT~user_command_line&"*"
-	goto :BOT~wait_for_command
-:fed
-	cutText $BOT~user_command_line $BOT~user_command_line 2 9999
-	send "`"&$BOT~user_command_line&"*"
-	goto :BOT~wait_for_command
 #============================ END BOT PROMPT COMMUNICATION ================================
 :about
 	gosub :menus~doSplashScreen
