@@ -172,3 +172,5 @@ include "source\bot_includes\player\pwarp\player"
 include "source\bot_includes\player\currentprompt\player"
 include "source\bot_includes\bot\internal_commands"
 include "source\bot_includes\bot\user_interface"
+include "source\bot_includes\bot"
+
