@@ -59,7 +59,8 @@ return
 	gosub :MAIN~backwards_compatible
 return
 
-
+:bot~wait_for_command
+halt
 
 
 :MAIN~backwards_compatible
