@@ -1623,6 +1623,7 @@ return
 					savevar $bot~startMacro
 					setvar $switchboard~message "Macro Complete*"
 					gosub :switchboard~switchboard
+					pause
 				end
 				gosub :connectivity~moving
 			elseif ($BOT~newGameDay1 = TRUE)
