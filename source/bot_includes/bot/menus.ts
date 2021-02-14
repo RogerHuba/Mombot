@@ -1313,7 +1313,7 @@ return
 	elseif ($start_mow_option = "i3")
 		setVar $qss[15] "Indirect Mow 3"
 	end
-	replacetext $bot~startMacro "*" #34
+	replacetext $bot~startMacro "*" #42
 	setVar $qss[16] $bot~startMacro
 	setVar $qss[17] ""
 	setVar $qss[18] ""
@@ -1557,13 +1557,13 @@ return
 
 		elseif ($chosen_option = "9")
 			getInput $BOT~startMacro "What macro should fire upon entry?"
-			replacetext $bot~startMacro "*" #34
+			replacetext $bot~startMacro "*" #42
 		elseif ($chosen_option = "Q")
 			stop $BOT~LAST_LOADED_MODULE
 			savevar $bot~LAST_LOADED_MODULE
 			halt
 		elseif ($chosen_option = "Z")
-			replacetext $bot~startMacro #34 "*"
+			replacetext $bot~startMacro #42 "*"
 			replacetext $bot~startMacro "^m" "*"
 			replacetext $bot~startMacro "^M" "*"
 			savevar $bot~startMacro
