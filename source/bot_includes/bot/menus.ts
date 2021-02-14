@@ -1567,9 +1567,9 @@ return
 			savevar $bot~LAST_LOADED_MODULE
 			halt
 		elseif ($chosen_option = "Z")
-			replacetext $bot~startMacro #42 #13
-			replacetext $bot~startMacro "^m" #13
-			replacetext $bot~startMacro "^M" #13
+			replacetext $bot~startMacro #42 "*"
+			replacetext $bot~startMacro "^m" "*"
+			replacetext $bot~startMacro "^M" "*"
 			savevar $bot~startMacro
 			:getMowSector
 			killalltriggers
