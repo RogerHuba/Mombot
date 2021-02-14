@@ -1224,6 +1224,7 @@ return
 		setVar $BOT~newGameOlder FALSE
 	end
 :preGameMenu
+	setvar $bot~startMacro "Z*  *  Z*  Z   A 9999*  Z*  "
 	setArray $h 26
 	setArray $qss 26
 	setVar $h[1]  "Bot Name:        "
@@ -1241,7 +1242,7 @@ return
 	setVar $h[13] "After login:     "
 	setVar $h[14] "Bot command to perform:"
 	setVar $h[15] "Mow Option       "
-	setVar $h[16] "                 "
+	setVar $h[16] "Login Macro:     "
 	setVar $h[17] "                 "
 	setVar $h[18] "                 "
 	setVar $h[19] "                 "
@@ -1312,7 +1313,7 @@ return
 	elseif ($start_mow_option = "i3")
 		setVar $qss[15] "Indirect Mow 3"
 	end
-	setVar $qss[16] ""
+	setVar $qss[16] $bot~startMacro
 	setVar $qss[17] ""
 	setVar $qss[18] ""
 	setVar $qss[19] ""
@@ -1349,6 +1350,7 @@ return
 		echo ANSI_10&#27&"[35m<"&#27&"[32mM"&#27&"[35m> "&ANSI_7&$qss_var[15]&"*"	
 	end
 	echo ANSI_10&#27&"[35m<"&#27&"[32m8"&#27&"[35m> "&ANSI_7&$qss_var[14]&"*"
+	echo ANSI_10&#27&"[35m<"&#27&"[32m9"&#27&"[35m> "&ANSI_7&$qss_var[15]&"*"
 	echo "*"
 	:getStartGameInput
 		getConsoleInput $chosen_option SINGLEKEY
@@ -1552,11 +1554,14 @@ return
 			setVar $command_to_issue $temp
 			savevar $command_to_issue
 
+		elseif ($chosen_option = "9")
+			getInput $BOT~startMacro "What macro should fire upon entry?"
 		elseif ($chosen_option = "Q")
 			stop $BOT~LAST_LOADED_MODULE
 			savevar $bot~LAST_LOADED_MODULE
 			halt
 		elseif ($chosen_option = "Z")
+			savevar $bot~startMacro
 			:getMowSector
 			killalltriggers
 			if ($mowToOther)
