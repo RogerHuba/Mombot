@@ -169,6 +169,10 @@
 			setDelayTrigger 1 :didnotmakeittogame 10000
 			gosub :player~quikstats
 			killtrigger 1
+			loadvar $bot~startMacro
+			if ($bot~startMacro <> "")
+				halt
+			end
 		:continuerelogmessage
 			gosub :PLAYER~quikstats
 			gosub :relog_freeze_trigger
