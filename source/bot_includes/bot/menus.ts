@@ -1242,7 +1242,7 @@ return
 	setVar $h[13] "After login:     "
 	setVar $h[14] "Bot command to perform:"
 	setVar $h[15] "Mow Option       "
-	setVar $h[16] "Login Macro:     "
+	setVar $h[16] "Macro to fire after login:"
 	setVar $h[17] "                 "
 	setVar $h[18] "                 "
 	setVar $h[19] "                 "
