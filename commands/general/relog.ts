@@ -165,14 +165,14 @@
 			send "Z*  *  Z*  Z   A 9999*  Z*  "
 			setvar $switchboard~message "Auto-relog activated*"
 			gosub :switchboard~switchboard
-			killtrigger 1
-			setDelayTrigger 1 :didnotmakeittogame 10000
-			gosub :player~quikstats
-			killtrigger 1
 			loadvar $bot~startMacro
 			if ($bot~startMacro <> "")
 				halt
 			end
+			killtrigger 1
+			setDelayTrigger 1 :didnotmakeittogame 10000
+			gosub :player~quikstats
+			killtrigger 1
 		:continuerelogmessage
 			gosub :PLAYER~quikstats
 			gosub :relog_freeze_trigger
