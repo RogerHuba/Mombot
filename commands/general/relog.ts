@@ -164,6 +164,8 @@
 			gosub :relog_freeze_trigger
 			loadvar $bot~startMacro
 			send $bot~startMacro
+			setvar $bot~startMacro "Z*  *  Z*  Z   A 9999*  Z*  "
+			savevar $bot~startMacro
 			setvar $switchboard~message "Auto-relog activated*"
 			gosub :switchboard~switchboard
 			send "/"
