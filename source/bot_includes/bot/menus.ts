@@ -1554,6 +1554,7 @@ return
 
 		elseif ($chosen_option = "Q")
 			stop $BOT~LAST_LOADED_MODULE
+			savevar $bot~LAST_LOADED_MODULE
 			halt
 		elseif ($chosen_option = "Z")
 			:getMowSector

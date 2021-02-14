@@ -78,7 +78,7 @@ return
 		setvar $bot_team_name $bot_name
 		savevar $bot_team_name
 	end
-
+	loadvar $LAST_LOADED_MODULE
 	setEventTrigger     shutdownthemodule       :INTERNAL_COMMANDS~shutDown            "SCRIPT STOPPED"      $LAST_LOADED_MODULE
 	if ($botIsOff <> TRUE)
 		setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          $SWITCHBOARD~bot_name
@@ -477,6 +477,7 @@ return
 	setVar  $MCIC_FILE              $folder&"/planet.nego"
 
 	setVar $LAST_LOADED_MODULE  ""
+	savevar $LAST_LOADED_MODULE
 	saveVar  $gconfig_file    
 	savevar  $folder       
 	saveVar  $CK_FIG_FILE            

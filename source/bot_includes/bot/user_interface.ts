@@ -997,6 +997,7 @@ return
 		setVar $BOT~LAST_LOADED_MODULE "scripts\"&$bot~mombot_directory&"\"&$BOT~ModuleCategory&$bot~command_lines[$b][9]&".cts"
 		setVar $BOT~mode $formatted_command
 		savevar $bot~mode
+		savevar $bot~LAST_LOADED_MODULE
 	end
 	setvar $loaded "scripts\"&$bot~mombot_directory&"\"&$BOT~ModuleCategory&$bot~command_lines[$b][9]&".cts"
 	stop $loaded

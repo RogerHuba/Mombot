@@ -118,6 +118,7 @@ goto :BOT~wait_for_command
 	setVar $BOT~mode "General"
 	savevar $bot~mode
 	setVar $BOT~LAST_LOADED_MODULE ""
+	savevar $bot~LAST_LOADED_MODULE
 	gosub :msgs_on
 	goto :BOT~wait_for_command
 # ================================= END GENERAL MODE RESET ==========================================
