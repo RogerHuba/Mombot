@@ -365,6 +365,7 @@
 			end
 		end
 	else
+
 		if ($xporting = false)
 			setVar $pgridString "'" & $pgridSector & "=saveme* " & $inCitadel & "m " & $pgridSector & $mac
 		else
