@@ -162,15 +162,16 @@
 			killtrigger aliveOnPlanet
 			killtrigger delete
 			gosub :relog_freeze_trigger
-			loadvar $bot~startMacro
-			send $bot~startMacro
-			setvar $bot~startMacro "Z*  *  Z*  Z   A 9999*  Z*  "
-			savevar $bot~startMacro
+			send "Z*  *  Z*  Z   A 9999*  Z*  "
 			setvar $switchboard~message "Auto-relog activated*"
 			gosub :switchboard~switchboard
 			send "/"
 			setDelayTrigger 1 :didnotmakeittogame 10000
 			waiton #179
+			loadvar $bot~startMacro
+			send $bot~startMacro
+			setvar $bot~startMacro ""
+			savevar $bot~startMacro
 		:continuerelogmessage
 			gosub :PLAYER~quikstats
 			gosub :relog_freeze_trigger

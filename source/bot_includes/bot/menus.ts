@@ -1223,7 +1223,7 @@ return
 		setVar $BOT~newGameDay1 FALSE
 		setVar $BOT~newGameOlder FALSE
 	end
-	setvar $bot~startMacro "Z*  *  Z*  Z   A 9999*  Z*  "
+	setvar $bot~startMacro ""
 :preGameMenu
 	setArray $h 26
 	setArray $qss 26
@@ -1313,8 +1313,12 @@ return
 	elseif ($start_mow_option = "i3")
 		setVar $qss[15] "Indirect Mow 3"
 	end
-	replacetext $bot~startMacro "*" #42
-	setVar $qss[16] $bot~startMacro
+	if (($bot~startMacro = "") or ($bot~startMacro = "0"))
+		setVar $qss[16] "None"
+	else
+		replacetext $bot~startMacro "*" #42
+		setVar $qss[16] $bot~startMacro
+	end
 	setVar $qss[17] ""
 	setVar $qss[18] ""
 	setVar $qss[19] ""
