@@ -1561,7 +1561,7 @@ return
 
 		elseif ($chosen_option = "9")
 			getInput $BOT~startMacro "What macro should fire upon entry?"
-			replacetext $bot~startMacro "*" #42
+			replacetext $bot~startMacro "*" #13
 		elseif ($chosen_option = "Q")
 			stop $BOT~LAST_LOADED_MODULE
 			savevar $bot~LAST_LOADED_MODULE
