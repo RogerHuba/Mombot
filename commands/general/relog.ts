@@ -161,7 +161,6 @@
 			killtrigger alive
 			killtrigger aliveOnPlanet
 			killtrigger delete
-			gosub :relog_freeze_trigger
 			send "Z*  *  Z*  Z   A 9999*  Z*  "
 			setvar $switchboard~message "Auto-relog activated*"
 			gosub :switchboard~switchboard
@@ -169,6 +168,7 @@
 			if ($bot~startMacro <> "")
 				halt
 			end
+			gosub :relog_freeze_trigger
 			killtrigger 1
 			setDelayTrigger 1 :didnotmakeittogame 10000
 			gosub :player~quikstats
