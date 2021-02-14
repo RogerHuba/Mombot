@@ -1616,6 +1616,12 @@ return
 				setEventTrigger		1		:relogended	"SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\relog.cts"
 				pause
 				:relogended
+				loadvar $bot~startMacro
+				if ($bot~startMacro <> "")
+					send $bot~startMacro
+					setvar $bot~startMacro ""
+					savevar $bot~startMacro
+				end
 				gosub :connectivity~moving
 			elseif ($BOT~newGameDay1 = TRUE)
 				setvar $connectivity~newgame true
