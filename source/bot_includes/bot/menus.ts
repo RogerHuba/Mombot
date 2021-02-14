@@ -1350,7 +1350,7 @@ return
 		echo ANSI_10&#27&"[35m<"&#27&"[32mM"&#27&"[35m> "&ANSI_7&$qss_var[15]&"*"	
 	end
 	echo ANSI_10&#27&"[35m<"&#27&"[32m8"&#27&"[35m> "&ANSI_7&$qss_var[14]&"*"
-	echo ANSI_10&#27&"[35m<"&#27&"[32m9"&#27&"[35m> "&ANSI_7&$qss_var[15]&"*"
+	echo ANSI_10&#27&"[35m<"&#27&"[32m9"&#27&"[35m> "&ANSI_7&$qss_var[16]&"*"
 	echo "*"
 	:getStartGameInput
 		getConsoleInput $chosen_option SINGLEKEY
