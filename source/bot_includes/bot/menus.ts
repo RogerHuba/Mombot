@@ -1561,15 +1561,15 @@ return
 
 		elseif ($chosen_option = "9")
 			getInput $BOT~startMacro "What macro should fire upon entry?"
-			replacetext $bot~startMacro "*" #13
+			replacetext $bot~startMacro "*" #42
 		elseif ($chosen_option = "Q")
 			stop $BOT~LAST_LOADED_MODULE
 			savevar $bot~LAST_LOADED_MODULE
 			halt
 		elseif ($chosen_option = "Z")
-			replacetext $bot~startMacro #42 "*"
-			replacetext $bot~startMacro "^m" "*"
-			replacetext $bot~startMacro "^M" "*"
+			replacetext $bot~startMacro #42 #13
+			replacetext $bot~startMacro "^m" #13
+			replacetext $bot~startMacro "^M" #13
 			savevar $bot~startMacro
 			:getMowSector
 			killalltriggers
