@@ -170,9 +170,12 @@
 			gosub :player~quikstats
 			killtrigger 1
 			loadvar $bot~startMacro
-			send $bot~startMacro
-			setvar $bot~startMacro ""
-			savevar $bot~startMacro
+			if ($bot~startMacro <> "")
+				send $bot~startMacro
+				setvar $bot~startMacro ""
+				savevar $bot~startMacro
+				halt
+			end
 		:continuerelogmessage
 			gosub :PLAYER~quikstats
 			gosub :relog_freeze_trigger
