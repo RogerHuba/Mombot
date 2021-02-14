@@ -1223,8 +1223,8 @@ return
 		setVar $BOT~newGameDay1 FALSE
 		setVar $BOT~newGameOlder FALSE
 	end
-:preGameMenu
 	setvar $bot~startMacro "Z*  *  Z*  Z   A 9999*  Z*  "
+:preGameMenu
 	setArray $h 26
 	setArray $qss 26
 	setVar $h[1]  "Bot Name:        "
