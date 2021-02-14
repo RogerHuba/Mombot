@@ -1567,9 +1567,8 @@ return
 			savevar $bot~LAST_LOADED_MODULE
 			halt
 		elseif ($chosen_option = "Z")
-			replacetext $bot~startMacro #42 "*"
-			replacetext $bot~startMacro "^m" "*"
-			replacetext $bot~startMacro "^M" "*"
+			replacetext $bot~startMacro "^m" #42
+			replacetext $bot~startMacro "^M" #42
 			savevar $bot~startMacro
 			:getMowSector
 			killalltriggers
@@ -1618,12 +1617,10 @@ return
 				:relogended
 				loadvar $bot~startMacro
 				if ($bot~startMacro <> "")
+					replacetext $bot~startMacro #42 "*"
 					send $bot~startMacro
 					setvar $bot~startMacro ""
 					savevar $bot~startMacro
-					setvar $switchboard~message "Macro Complete*"
-					gosub :switchboard~switchboard
-					pause
 				end
 				gosub :connectivity~moving
 			elseif ($BOT~newGameDay1 = TRUE)
