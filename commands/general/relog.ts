@@ -165,9 +165,10 @@
 			send "Z*  *  Z*  Z   A 9999*  Z*  "
 			setvar $switchboard~message "Auto-relog activated*"
 			gosub :switchboard~switchboard
-			send "/"
+			killtrigger 1
 			setDelayTrigger 1 :didnotmakeittogame 10000
-			waiton #179
+			gosub :player~quikstats
+			killtrigger 1
 			loadvar $bot~startMacro
 			send $bot~startMacro
 			setvar $bot~startMacro ""
