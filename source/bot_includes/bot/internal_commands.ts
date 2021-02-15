@@ -1,40 +1,32 @@
 # ============================== END MAIN BODY WAIT FOR COMMANDS SUB ==============================
 :loginmemo
-	getWordPos CURRENTANSILINE $pos (#27 & "[32mYou have a corporate memo from " & #27 & "[1;36m")
-	getwordpos currentansiline $pos2 ("[K[0;32mYou have a corporate memo from [1;36m")
-	if ($pos > 0)
-		getText CURRENTANSILINE $user_name (#27 & "[32mYou have a corporate memo from " & #27 & "[1;36m") (#27 & "[0;32m." & #13)
-		gosub :checklogin
-	elseif ($pos2 > 0)
-		getText CURRENTANSILINE $user_name ("[K[0;32mYou have a corporate memo from " & #27 & "[1;36m") (#27 & "[0;32m." & #13)
-		gosub :checklogin
-	end
-	:endloginmemo
+	getword currentline $word 1
+	if ($word <> "You")
 		killtrigger loginmemo
 		setTextLineTrigger	  loginmemo			   :loginmemo			"You have a corporate memo from "
 		pause
+	end
+	gettext currentline $user_name "You have a corporate memo from " "."
 
-
-		:checklogin
-			setVar $i 1
-			setVar $tempUsername $user_name
-			lowercase $tempUsername
-			lowerCase $user_name
-			while ($i <= $BOT~corpycount)
-				setVar $tempCorpy $BOT~corpy[$i]
-				lowerCase $tempCorpy
-				if ($tempCorpy = $tempUsername)
-					return
-				end
-				add $i 1
-			end
-			add $BOT~corpycount 1
-			setVar $BOT~corpy[$BOT~corpycount] $user_name
-			cutText $user_name $cut_user_name 1 6
-			stripText $cut_user_name " "
-			setVar $loggedin[$cut_user_name] 1
-			send "'["&$BOT~mode&"]{"&$SWITCHBOARD~bot_name&"} - User Verified - "&$user_name&"*"
-		return
+	setVar $i 1
+	setVar $tempUsername $user_name
+	lowercase $tempUsername
+	lowerCase $user_name
+	while ($i <= $BOT~corpycount)
+		setVar $tempCorpy $BOT~corpy[$i]
+		lowerCase $tempCorpy
+		if ($tempCorpy = $tempUsername)
+			return
+		end
+		add $i 1
+	end
+	add $BOT~corpycount 1
+	setVar $BOT~corpy[$BOT~corpycount] $user_name
+	cutText $user_name $cut_user_name 1 6
+	stripText $cut_user_name " "
+	setVar $loggedin[$cut_user_name] 1
+	send "'["&$BOT~mode&"]{"&$SWITCHBOARD~bot_name&"} - User Verified - "&$user_name&"*"
+return
 # ======================================= COMMAND ROUTING =========================================
 
 :stop
