@@ -7,7 +7,7 @@ reqRecording
 # Credits           : Oz, Zentock, SupG, Dynarri, Cherokee, Alexio, Xide, Phx, Rincrast, Voltron, Traitor, Parrothead, PSI, Elder Prophet, Caretaker, Deign
 
 setVar $bot~major_version   "4"
-setVar $bot~minor_version   "6debugbeta"
+setVar $bot~minor_version   "61beta"
 setvar $bot~default_bot_directory "mombot"
 
 savevar $bot~major_version
