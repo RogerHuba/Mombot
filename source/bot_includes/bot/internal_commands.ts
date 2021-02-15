@@ -1,11 +1,14 @@
 # ============================== END MAIN BODY WAIT FOR COMMANDS SUB ==============================
 :loginmemo
+	send "'I am in the loginmemo function*"
 	getword currentline $word 1
 	if ($word <> "You")
+		send "'I don't think the first word is you so going back to trigger.*"
 		killtrigger loginmemo
 		setTextLineTrigger	  loginmemo			   :loginmemo			"You have a corporate memo from "
 		pause
 	end
+	send "'grabbing username from memo.*"
 	gettext currentline $user_name "You have a corporate memo from " "."
 
 	setVar $i 1
@@ -16,7 +19,8 @@
 		setVar $tempCorpy $BOT~corpy[$i]
 		lowerCase $tempCorpy
 		if ($tempCorpy = $tempUsername)
-			return
+			send "'already added this user.*"
+			goto :bot~wait_for_command
 		end
 		add $i 1
 	end
@@ -26,7 +30,7 @@
 	stripText $cut_user_name " "
 	setVar $loggedin[$cut_user_name] 1
 	send "'["&$BOT~mode&"]{"&$SWITCHBOARD~bot_name&"} - User Verified - "&$user_name&"*"
-return
+goto :bot~wait_for_command
 # ======================================= COMMAND ROUTING =========================================
 
 :stop
