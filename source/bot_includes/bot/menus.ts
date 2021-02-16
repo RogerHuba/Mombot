@@ -1243,7 +1243,7 @@ return
 	setVar $h[14] "Bot command to perform:"
 	setVar $h[15] "Mow Option       "
 	setVar $h[16] "Macro to fire after login:"
-	setVar $h[17] "                 "
+	setVar $h[17] "Teammate names:  "
 	setVar $h[18] "                 "
 	setVar $h[19] "                 "
 	setVar $h[20] "                 "
@@ -1319,7 +1319,11 @@ return
 		replacetext $bot~startMacro "*" #42
 		setVar $qss[16] $bot~startMacro
 	end
-	setVar $qss[17] ""
+	if (($bot~teammates = "") or ($bot~teammates = "0"))
+		setVar $qss[17] "None"
+	else
+		setVar $qss[17] $bot~startMacro
+	end
 	setVar $qss[18] ""
 	setVar $qss[19] ""
 	setVar $qss[20] ""
@@ -1356,6 +1360,9 @@ return
 	end
 	echo ANSI_10&#27&"[35m<"&#27&"[32m8"&#27&"[35m> "&ANSI_7&$qss_var[14]&"*"
 	echo ANSI_10&#27&"[35m<"&#27&"[32m9"&#27&"[35m> "&ANSI_7&$qss_var[16]&"*"
+	if ($BOT~newGameDay1 = TRUE)
+		echo ANSI_10&#27&"[35m<"&#27&"[32mT"&#27&"[35m> "&ANSI_7&$qss_var[17]&"*"
+	end
 	echo "*"
 	:getStartGameInput
 		getConsoleInput $chosen_option SINGLEKEY
@@ -1562,6 +1569,8 @@ return
 		elseif ($chosen_option = "9")
 			getInput $BOT~startMacro "What macro should fire upon entry?"
 			replacetext $bot~startMacro "*" #42
+		elseif ($chosen_option = "T")
+			getInput $BOT~teammates "Enter teammate names (separated by commas)"
 		elseif ($chosen_option = "Q")
 			stop $BOT~LAST_LOADED_MODULE
 			savevar $bot~LAST_LOADED_MODULE
@@ -1637,6 +1646,15 @@ return
 		gosub :pregameStats
 		goto :pregameMenu
 :donePreGame
+	if (($bot~teammates <> "") and ($bot~teammates <> "0"))
+		splittext $bot~teammates $corp_list ","
+		setvar $i 1
+		while ($i <= $corp_list)
+			setvar $bot~corpy[$i] $corp_list[$i]
+			add $i 1
+		end
+		setvar $bot~corpyCount $corp_list
+	end
 	goto :BOT~getInitial_Settings
 
 return
