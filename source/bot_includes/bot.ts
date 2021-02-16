@@ -437,7 +437,7 @@ return
 	setVar $CATAGORIES[2] "Commands"
 	setVar $CATAGORIES[3] "Daemons"
 	setVar $corpycount 0
-	setArray $corpy 30
+	setArray $corpy 30 1
 # ============================== START BOT VARIABLES ============================
 	SetVar $gameStats       FALSE
 	SetVar $script_name		"Mind ()ver Matter Bot "
@@ -719,6 +719,61 @@ return
 		gosub :player~startCNsettings
 		gosub :PLAYER~quikstats
 		gosub :PLAYER~getInfo
+		if ($player~corp <> "0")
+			setvar $my_name $player~trader_name
+			cutText $my_name $my_name 1 6
+			lowercase $my_name
+			trim $my_name
+			setvar $switchboard~message "Logging corp mates automatically - "
+			if ($player~current_prompt = "Citadel")
+				send "xa"
+			else
+				send "ta"
+			end
+			waiton "    Corp Member Name                   Sector  Fighters Shields Mines  Credits"
+			waiton "------------------------------------------------------------------------------"
+			
+			:ta_again
+				setTextLineTrigger taline :ta_check
+				pause
+
+				:ta_check
+					getwordpos CURRENTLINE $pos "P indicates Trader is on a planet in that sector"
+					getwordpos CURRENTLINE $pos2 "Corporate command ["
+					if (($pos > 0) or ($pos2 > 0))
+						goto :done_ta
+					end
+					setvar $line CURRENTLINE
+					cutText $line $name 1 30
+					replacetext $line $name ""
+					trim $name
+					lowercase $name
+					if ($name <> $my_name)
+						add $corpyCount 1
+						setvar $corpy[$corpyCount] $name
+						getword $line $corpy[$corpyCount][1] 1
+						setvar $switchboard~message $switchboard~message&$name&", "					
+					end
+				goto :ta_again
+
+			:done_ta
+			send "q"
+			if ($player~current_prompt = "Citadel")
+				waiton "Citadel command ("
+			else
+				waiton "Command ["
+			end
+			if ($corpyCount > 0)
+				replacetext $switchboard~message $corpy[$corpyCount]&", " $corpy[$corpyCount] 
+				if ($corpyCount = 1)
+					setvar $switchboard~message $switchboard~message&" is added.*"
+				else
+					replacetext $switchboard~message $corpy[$corpyCount] "and "&$corpy[$corpyCount] 
+					setvar $switchboard~message $switchboard~message&" are added.*"
+				end
+				gosub :switchboard~switchboard
+			end
+		end
 		send "'{" $SWITCHBOARD~bot_name "} - is ACTIVE: Version - " & $BOT~major_version & "." & $BOT~minor_version " - type " #34 $SWITCHBOARD~bot_name " help" #34 " for command list*"
 		send "'{" $SWITCHBOARD~bot_name "} - to login - send a corporate memo*"
 		if (($username = "") or ($letter = "") or ($doRelog = FALSE))

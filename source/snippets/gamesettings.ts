@@ -64,8 +64,12 @@
 			if ($USER_FILE_chk)
 				readToArray $BOT_USER_FILE $corpy
 				setVar $corpyCount $corpy
-			else
-				setArray $corpy 1
+				# switch to bigger array for new corpies #
+				setvar $i 1
+				while ($i <= $corpyCount)
+					setvar $bot~corpy[$i] $corpy[$i] 
+					add $i 1
+				end
 			end
 			fileExists $CAP_FILE_chk $CAP_FILE
 			if ($CAP_FILE_chk)
