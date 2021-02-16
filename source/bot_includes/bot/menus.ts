@@ -1651,6 +1651,7 @@ return
 		setvar $i 1
 		while ($i <= $corp_list)
 			setvar $bot~corpy[$i] $corp_list[$i]
+			trim $bot~corpy[$i]
 			add $i 1
 		end
 		setvar $bot~corpyCount $corp_list
