@@ -323,6 +323,8 @@ return
 		readToArray $custom_commands_file $custom_commands
 	end
 
+	gosub :combat~init
+	
 	if (($exists1 = FALSE) OR ($exists2 = FALSE) OR ($exists3 = FALSE) OR ($hotkeys <> "255") OR ($custom_keys <> "33") OR ($custom_commands <> "33"))
 		delete $hotkeys_file
 		delete $custom_keys_file
@@ -723,7 +725,6 @@ return
 		if ($player~corp <> "0")
 			setvar $my_name $player~trader_name
 			cutText $my_name $my_name 1 6
-			lowercase $my_name
 			trim $my_name
 			setvar $switchboard~message "Logging corp mates automatically - "
 			if ($player~current_prompt = "Citadel")
@@ -751,7 +752,6 @@ return
 						cutText $line $name 1 30
 						replacetext $line $name ""
 						trim $name
-						lowercase $name
 						if ($name <> $my_name)
 							add $corpyCount 1
 							setvar $corpy[$corpyCount] $name
