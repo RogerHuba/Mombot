@@ -657,10 +657,6 @@ return
 					echo "* connected into the game to properly configure bot. "
 					echo "*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"
 				end
-			setDelayTrigger woah :keep_going2 1500
-			pause
-			pause
-			:keep_going2 
 	end
 
 
