@@ -767,27 +767,54 @@ return
 			else
 				waiton "Command ["
 			end
-			setvar $i 1
-			while ($i <= $corpyCount)
-				setvar $switchboard~message $switchboard~message&$corpy[$i]&", "					
-				add $i 1
-			end
-			if ($corpyCount > 0)
-				replacetext $switchboard~message $corpy[$corpyCount]&", " $corpy[$corpyCount] 
-				if ($corpyCount = 1)
-					setvar $switchboard~message $switchboard~message&" is added.*"
-				else
-					replacetext $switchboard~message $corpy[$corpyCount] "and "&$corpy[$corpyCount] 
-					setvar $switchboard~message $switchboard~message&" are added.*"
-				end
-				gosub :switchboard~switchboard
-			end
 		end
 		send "'{" $bot_name "} - is ACTIVE: Version - " & $BOT~major_version & "." & $BOT~minor_version " - type " #34 $bot_name " help" #34 " for command list*"
 		send "'{" $bot_name "} - to login - send a corporate memo*"
 		if (($username = "") or ($letter = "") or ($doRelog = FALSE))
 			send "'{" $bot_name "} - Auto Relog - Not Active*"
 			setVar $doRelog FALSE
+		end
+		fileExists $team_file_check $BOT_USER_FILE
+		if ($team_file_check)
+			setArray $corp_list 1
+			readToArray $BOT_USER_FILE $corp_list
+			setvar $i 1
+			while ($i <= $corp_list)
+				setvar $j 1
+				setvar $isFound false
+				while ($j <= $corpyCount)
+					setvar $corpy_lower $corpy[$j]
+					setvar $corp_list_lower $corp_list[$i]
+					lowercase $corpy_lower
+					lowercase $corp_list_lower
+					if ($corp_list_lower = $corpy_lower)
+						setvar $isFound true
+					end
+					add $j 1
+				end
+				if ($isFound <> true)
+					add $corpyCount 1
+					setvar $corpy[$corpyCount] $corp_list[$i]
+				end
+				add $i 1
+			end
+		end
+		delete $BOT_USER_FILE
+		setvar $i 1
+		while ($i <= $corpyCount)
+			setvar $switchboard~message $switchboard~message&$corpy[$i]&", "
+			write $BOT_USER_FILE $corpy[$i]	
+			add $i 1
+		end
+		if ($corpyCount > 0)
+			replacetext $switchboard~message $corpy[$corpyCount]&", " $corpy[$corpyCount] 
+			if ($corpyCount = 1)
+				setvar $switchboard~message $switchboard~message&" is added.*"
+			else
+				replacetext $switchboard~message $corpy[$corpyCount] "and "&$corpy[$corpyCount] 
+				setvar $switchboard~message $switchboard~message&" are added.*"
+			end
+			gosub :switchboard~switchboard
 		end
 
 		gosub :PLAYER~quikstats

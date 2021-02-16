@@ -1650,11 +1650,26 @@ return
 		splittext $bot~teammates $corp_list ","
 		setvar $i 1
 		while ($i <= $corp_list)
-			setvar $bot~corpy[$i] $corp_list[$i]
-			trim $bot~corpy[$i]
+			setvar $j 1
+			setvar $isFound false
+			trim $corp_list[$i]
+			while ($j <= $corpyCount)
+				trim $bot~corpy[$j]
+				setvar $corpy_lower $bot~corpy[$j]
+				setvar $corp_list_lower $corp_list[$i]
+				lowercase $corpy_lower
+				lowercase $corp_list_lower
+				if ($corp_list_lower = $corpy_lower)
+					setvar $isFound true
+				end
+				add $j 1
+			end
+			if ($isFound <> true)
+				add $corpyCount 1
+				setvar $bot~corpy[$corpyCount] $corp_list[$i]
+			end
 			add $i 1
 		end
-		setvar $bot~corpyCount $corp_list
 	end
 	goto :BOT~getInitial_Settings
 
