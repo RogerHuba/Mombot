@@ -1360,7 +1360,7 @@ return
 	end
 	echo ANSI_10&#27&"[35m<"&#27&"[32m8"&#27&"[35m> "&ANSI_7&$qss_var[14]&"*"
 	echo ANSI_10&#27&"[35m<"&#27&"[32m9"&#27&"[35m> "&ANSI_7&$qss_var[16]&"*"
-	if ($BOT~newGameDay1 = TRUE)
+	if ($BOT~newGameOlder <> TRUE)
 		echo ANSI_10&#27&"[35m<"&#27&"[32mT"&#27&"[35m> "&ANSI_7&$qss_var[17]&"*"
 	end
 	echo "*"
