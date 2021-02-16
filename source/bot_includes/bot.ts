@@ -324,7 +324,7 @@ return
 	end
 
 	gosub :combat~init
-	
+
 	if (($exists1 = FALSE) OR ($exists2 = FALSE) OR ($exists3 = FALSE) OR ($hotkeys <> "255") OR ($custom_keys <> "33") OR ($custom_commands <> "33"))
 		delete $hotkeys_file
 		delete $custom_keys_file
@@ -724,7 +724,7 @@ return
 		gosub :PLAYER~getInfo
 		if ($player~corp <> "0")
 			setvar $my_name $player~trader_name
-			cutText $my_name $my_name 1 6
+			#cutText $my_name $my_name 1 6
 			trim $my_name
 			setvar $switchboard~message "Logging corp mates automatically - "
 			if ($player~current_prompt = "Citadel")
