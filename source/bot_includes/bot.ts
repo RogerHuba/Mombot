@@ -613,7 +613,7 @@ return
 			echo "*  Getting intial settings for M()M Bot . . . *"
 			echo "*  Game is not set up for M()M Bot, doing that now. "
 			echo "*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"
-			setDelayTrigger woah :keep_going 500
+			setDelayTrigger woah :keep_going 200
 			pause
 			pause
 			:keep_going 
