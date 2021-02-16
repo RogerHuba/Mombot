@@ -741,7 +741,6 @@ return
 				:ta_check
 					getwordpos CURRENTLINE $pos "P indicates Trader is on a planet in that sector"
 					getwordpos CURRENTLINE $pos2 "Corporate command ["
-					getwordpos CURRENTLINE $pos2 "Corporate command ["
 					if (($pos > 0) or ($pos2 > 0))
 						goto :done_ta
 					end
@@ -759,9 +758,10 @@ return
 							getword $line $corpy[$corpyCount][1] 1
 							setvar $switchboard~message $switchboard~message&$name&", "					
 						end
+					else
+						goto :done_ta
 					end
-				goto :ta_again
-
+					goto :ta_again
 			:done_ta
 			send "q"
 			if ($player~current_prompt = "Citadel")
