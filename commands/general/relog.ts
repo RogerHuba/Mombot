@@ -88,32 +88,35 @@
 			if (($open_time[2] = "pm") and ($open_hour <> "12"))
 				setvar $open_hour $open_hour+12
 			end
-				setvar $hour_hand $current_hour
-				setvar $hours_difference 0
-				while ($hour_hand <> $open_hour)
-					add $hours_difference 1
-					add $hour_hand 1
-					if ($hour_hand > 24)
-						setvar $hour_hand 1
-					end
+			if (($current_time[2] = "pm") and ($current_hour <> "12"))
+				setvar $open_hour $open_hour+12
+			end
+			setvar $hour_hand $current_hour
+			setvar $hours_difference 0
+			while ($hour_hand <> $open_hour)
+				add $hours_difference 1
+				add $hour_hand 1
+				if ($hour_hand > 24)
+					setvar $hour_hand 1
 				end
-				setvar $minute_hand $current_minute
-				setvar $minute_difference 0
-				while ($minute_hand <> $open_minute)
-					add $minute_difference 1
-					add $minute_hand 1
-					if ($minute_hand > 60)
-						setvar $minute_hand 0
-					end
+			end
+			setvar $minute_hand $current_minute
+			setvar $minute_difference 0
+			while ($minute_hand <> $open_minute)
+				add $minute_difference 1
+				add $minute_hand 1
+				if ($minute_hand > 60)
+					setvar $minute_hand 0
 				end
-				if ($minute_difference > 60)
-					setvar $minute_difference ($minute_difference-60)
-				else
-					if ($minute_difference > 0)
-						setvar $hours_difference ($hours_difference-1)
-					end
+			end
+			if ($minute_difference > 60)
+				setvar $minute_difference ($minute_difference-60)
+			else
+				if ($minute_difference > 0)
+					setvar $hours_difference ($hours_difference-1)
 				end
-				setvar $minutes_until_game (($hours_difference*60)+$minute_difference)			
+			end
+			setvar $minutes_until_game (($hours_difference*60)+$minute_difference)			
 			if ($minutes_until_game > 2)
 				killalltriggers
 				disconnect
