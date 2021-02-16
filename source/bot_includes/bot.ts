@@ -717,6 +717,7 @@ return
 :run_bot
 	if ((($PLAYER~startingLocation = "Citadel") OR ($PLAYER~startingLocation = "Command")) AND ((CONNECTED = TRUE)))
 		gosub :player~startCNsettings
+		killalltriggers
 		gosub :PLAYER~quikstats
 		gosub :PLAYER~getInfo
 		if ($player~corp <> "0")
@@ -739,6 +740,7 @@ return
 
 				:ta_check
 					getwordpos CURRENTLINE $pos "P indicates Trader is on a planet in that sector"
+					getwordpos CURRENTLINE $pos2 "Corporate command ["
 					getwordpos CURRENTLINE $pos2 "Corporate command ["
 					if (($pos > 0) or ($pos2 > 0))
 						goto :done_ta
