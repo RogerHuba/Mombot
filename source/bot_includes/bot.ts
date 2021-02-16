@@ -744,15 +744,19 @@ return
 						goto :done_ta
 					end
 					setvar $line CURRENTLINE
-					cutText $line $name 1 30
-					replacetext $line $name ""
-					trim $name
-					lowercase $name
-					if ($name <> $my_name)
-						add $corpyCount 1
-						setvar $corpy[$corpyCount] $name
-						getword $line $corpy[$corpyCount][1] 1
-						setvar $switchboard~message $switchboard~message&$name&", "					
+					getlength currentline $length
+					if ($length > 30)
+						setvar $line CURRENTLINE
+						cutText $line $name 1 30
+						replacetext $line $name ""
+						trim $name
+						lowercase $name
+						if ($name <> $my_name)
+							add $corpyCount 1
+							setvar $corpy[$corpyCount] $name
+							getword $line $corpy[$corpyCount][1] 1
+							setvar $switchboard~message $switchboard~message&$name&", "					
+						end
 					end
 				goto :ta_again
 
