@@ -81,9 +81,6 @@
 			setvar $current_minute $current_time_split[2]
 			setvar $open_minute $open_time_split[2]
 			lowercase $current_time[2]
-			if ($current_time[2] = "pm")
-				setvar $current_hour $current_hour+12
-			end
 			lowercase $open_time[2]
 			if (($open_time[2] = "pm") and ($open_hour <> "12"))
 				setvar $open_hour $open_hour+12
