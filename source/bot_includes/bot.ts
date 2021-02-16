@@ -103,7 +103,7 @@ return
 	saveVar $command
 	saveVar $user_command_line
 	saveVar $bot_name
-	saveVar $bot_name
+	saveVar $switchboard~bot_name
 	saveVar $self_command
 	saveVar $SWITCHBOARD~self_command
 	saveVar $parm1
@@ -247,7 +247,7 @@ return
 	loadVar $PLAYER~surroundLimp
 	loadVar $PLAYER~surroundMine
 	loadVar $bot_name
-	setVar $bot_name $bot_name
+	setVar $switchboard~bot_name $bot_name
 	loadVar $PLAYER~surroundOverwrite
 	loadVar $PLAYER~surroundPassive
 	loadVar $PLAYER~surroundNormal
@@ -561,6 +561,7 @@ return
 		setVar $doRelog TRUE
 		saveVar $doRelog
 		read $gconfig_file $bot_name 1
+		setvar $switchboard~bot_name $bot_name
 		if (CONNECTED = TRUE)
 			gosub :PLAYER~quikstats      
 		end
