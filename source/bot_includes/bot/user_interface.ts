@@ -41,9 +41,6 @@
 			if ($pos = 1) OR ($pos2 = 1)
 				goto :BOT~wait_for_command
 			end
-			#getLength $bot~command_lines[$b][9]&" " $BOT~commandLength
-			#cutText $bot~command_lines[$b] $bot~command_lines[$b] $BOT~commandLength+1 9999
-			#gosub :getParameters
 			setvar $bot~command_caller "self"
 			savevar $bot~command_caller
 			getwordpos $bot~user_command_line $pos "|"
@@ -67,7 +64,6 @@
 			goto :BOT~wait_for_command
 		end
 		cutText $currentline $user_name 3 6
-		stripText $user_name " "
 
 		gosub :verify_user_status
 		if ($authorization = 0)
@@ -98,7 +94,6 @@
 
 	:page_command
 		cutText $currentline $user_name 3 6
-		stripText $user_name " "
 		cutText $currentline $bot~user_command_line 10 999
 		getWordPos $bot~user_command_line $pos $SWITCHBOARD~bot_name & ":" & $BOT~bot_password & ":" & $BOT~subspace
 		if ($pos > 0)
@@ -1101,7 +1096,6 @@ goto :BOT~wait_for_command
 	while ($i <= $BOT~corpycount)
 		cutText $BOT~corpy[$i] $name 1 6
 		setvar $unstripped_name $name
-		stripText $name " "
 		lowerCase $name
 		if ($user_name = $name)
 			setvar $bot~command_caller $unstripped_name
