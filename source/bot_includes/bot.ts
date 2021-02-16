@@ -81,6 +81,7 @@ return
 	loadvar $LAST_LOADED_MODULE
 	setEventTrigger     shutdownthemodule       :INTERNAL_COMMANDS~shutDown            "SCRIPT STOPPED"      $LAST_LOADED_MODULE
 	setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          $SWITCHBOARD~bot_name
+	setTextLineTrigger  own_command_too         :USER_INTERFACE~check_routing          $bot_name
 	setTextLineTrigger  own_command_team        :USER_INTERFACE~check_routing_team     $bot_team_name
 	setTextLineTrigger  own_command_all         :USER_INTERFACE~check_routing_all     "all"
 	setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "You have a corporate memo from "
