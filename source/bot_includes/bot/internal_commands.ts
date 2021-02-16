@@ -1,5 +1,6 @@
 # ============================== END MAIN BODY WAIT FOR COMMANDS SUB ==============================
 :loginmemo
+	echo "Entering loginmemo subroutine.*"
 	getword currentline $word 1
 	if ($word <> "You")
 		killtrigger loginmemo
@@ -7,6 +8,7 @@
 		pause
 	end
 	gettext currentline $user_name "You have a corporate memo from " "."
+	echo "Received memo from " $user_name "*"
 
 	setVar $i 1
 	setVar $tempUsername $user_name
@@ -15,6 +17,7 @@
 	while ($i <= $BOT~corpycount)
 		setVar $tempCorpy $BOT~corpy[$i]
 		lowerCase $tempCorpy
+		echo "already logged in " $user_name "*"
 		if ($tempCorpy = $tempUsername)
 			goto :bot~wait_for_command
 		end

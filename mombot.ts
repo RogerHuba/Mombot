@@ -32,6 +32,7 @@ goto :BOT~load_bot
 	saveVar $bot~parm8
 	saveVar $bot~bot_turn_limit
 	saveVar $player~unlimitedGame
+	savevar $bot~letter
 	gosub :MAIN~backwards_compatible
 return
 
@@ -117,7 +118,8 @@ return
 	saveVar $subspace
 	setVar $ptradesetting $game~ptradesetting
 	saveVar $ptradesetting
-
+	setvar $letter $bot~letter
+	savevar $letter
 return
 
 
