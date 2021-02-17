@@ -123,8 +123,9 @@ goto :BOT~wait_for_command
 	stripText $new_bot_team_name "^"
 	stripText $new_bot_team_name " "
 	lowerCase $new_bot_team_name
-	if ($new_bot_team_name = "")
-		setVar $SWITCHBOARD~message "Invalid team name entered, cannot join that one.*"
+	getLength $new_bot_team_name $targetLength 
+	if (($new_bot_team_name = "") or ($targetLength < 3))
+		setVar $SWITCHBOARD~message "Invalid team name entered, cannot join that one.  Must be more than 2 letters long.*"
 		gosub :SWITCHBOARD~switchboard
 		goto :BOT~wait_for_command		
 	else
