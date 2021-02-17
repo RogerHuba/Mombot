@@ -111,6 +111,7 @@ gosub :player~quikstats
 
 setvar $exp $player~experience
 setvar $sector player~current_sector
+gosub :checkforbluetrader
 
 if ($bot~bluehaggle)
 	setvar $tag "Blue Haggle"
