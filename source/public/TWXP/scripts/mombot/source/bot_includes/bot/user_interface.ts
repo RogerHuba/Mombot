@@ -5,7 +5,7 @@
 	setVar $temp_bot_name $BOT~bot_team_name
 	goto :do_routing
 :check_routing
-	setVar $temp_bot_name $SWITCHBOARD~bot_name
+	setVar $temp_bot_name $bot~bot_name
 :do_routing
 	setVar $currentline CURRENTLINE
 	setVar $currentansiline CURRENTANSILINE
@@ -13,9 +13,9 @@
 	getWord CURRENTLINE $routing 1
 	if ($routing = "'" & $temp_bot_name) 
 		goto :own_command
-	elseif (($routing = "R") AND ($BOT~botIsOff <> TRUE))
+	elseif ($routing = "R")
 		goto :command
-	elseif (($routing = "P") AND ($BOT~botIsOff <> TRUE))
+	elseif ($routing = "P")
 		goto :page_command
 	else
 		goto :BOT~wait_for_command
@@ -875,10 +875,6 @@ return
 				# the last script in the list has not loaded #
 				killtrigger loadended
 				setEventTrigger	loadended :loadended "SCRIPT STOPPED" $loaded
-				if ($bot~botIsOff <> TRUE)
-					killtrigger own_command
-					setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          "SNAP OUT OF IT"
-				end
 				pause
 				:loadended
 				if ($currentCategory = "Modes")
