@@ -15,7 +15,6 @@
 	if ($routing = "'" & $temp_bot_name) 
 		goto :own_command
 	elseif ($routing = "R")
-		send "'in subspace command*"
 		goto :command
 	elseif ($routing = "P")
 		goto :page_command
@@ -65,14 +64,12 @@
 		if (($pos <= 0) and ($pos2 <= 0))
 			goto :BOT~wait_for_command
 		end
-		send "'through ansi check*"
 		cutText $currentline $user_name 3 6
 
 		gosub :verify_user_status
 		if ($authorization = 0)
 			goto :BOT~wait_for_command
 		end
-		send "'through security check*"
 
 		cutText $currentline $bot~user_command_line 10 999
 		getWord $bot~user_command_line $botname_chk 1
@@ -1101,7 +1098,8 @@ goto :BOT~wait_for_command
 		cutText $BOT~corpy[$i] $name 1 6
 		setvar $unstripped_name $name
 		lowerCase $name
-		send "'[" $user_name "][" $name "]*"
+		trim $user_name
+		trim $name
 		if ($user_name = $name)
 			setvar $bot~command_caller $unstripped_name
 			savevar $bot~command_caller
