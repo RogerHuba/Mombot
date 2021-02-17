@@ -316,6 +316,14 @@ return
 	killalltriggers
 
 	# Testing this addition - Can we check briefly for our corp before mowing?
+	if (($newGame = true) and ($BOT~isCEO = TRUE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
+		gosub :BOT~killthetriggers
+		send "cn24"&$BOT~subspace&"* qqlt30*"
+		#Make Corp
+		send "tm" $BOT~corpName "*y" $BOT~corpPassword "*yq"
+		send "co*cq"
+		goto :resumeStartAfterCorpJoin
+	end
 	if (($newgame) and ($BOT~isCEO = FALSE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
 		setVar $skipJoin 0
 		setVar $attemps 0
