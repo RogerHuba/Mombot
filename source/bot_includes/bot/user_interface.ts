@@ -68,7 +68,7 @@
 
 		gosub :verify_user_status
 		if ($authorization = 0)
-			echo "*NOT AUTHORIZED*[" currentline "]*"
+			send "'NOT AUTHORIZED - [" currentline "]*"
 			waiton "GOAHEAD"
 			goto :BOT~wait_for_command
 		end
