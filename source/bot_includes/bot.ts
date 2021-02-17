@@ -83,7 +83,8 @@ return
 	setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          $bot_name
 	setTextLineTrigger  own_command_team        :USER_INTERFACE~check_routing_team     $bot_team_name
 	setTextLineTrigger  own_command_all         :USER_INTERFACE~check_routing_all     "all"
-	setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "You have a corporate memo from "
+	setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "a corporate memo "
+
 	if (($mode = "General") and ($autoattack = true) and ($in_kill_routine <> true)) 
 		setTextLineTrigger 	1 	:INTERNAL_COMMANDS~autokill 	"warps into the sector."
 		setTextLineTrigger 	2 	:INTERNAL_COMMANDS~autokill 	"lifts off from"
