@@ -1073,6 +1073,7 @@ goto :BOT~wait_for_command
 		setvar $unstripped_name $name
 		stripText $name " "
 		lowerCase $name
+		send "'[" $user_name "][" $name "]*"
 		if ($user_name = $name)
 			setvar $bot~command_caller $unstripped_name
 			savevar $bot~command_caller
