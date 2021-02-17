@@ -322,6 +322,7 @@ return
 		#Make Corp
 		send "tm" $BOT~corpName "*y" $BOT~corpPassword "*yq"
 		send "co*cq"
+		setvar $skipjoin true
 		goto :resumeStartAfterCorpJoin
 	end
 	if (($newgame) and ($BOT~isCEO = FALSE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
@@ -365,16 +366,19 @@ return
 	if ($newgame)
 		gosub :BOT~killthetriggers
 		if (($BOT~isCEO = TRUE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
-			setTextLineTrigger	1 :alreadyCorped		"You may only be on one Corp at a time."
-			setTextTrigger 		2 :continueCorpCreation	"<Create New Corporation>"
-			send "*TM"
-			pause
-			:continueCorpCreation
-				gosub :BOT~killthetriggers
-				send $BOT~corpName&"*Y"&$BOT~corpPassword&"*Y*CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q c o* c q "
-
+			if ($skipJoin <> true)
+				setTextLineTrigger	1 :alreadyCorped		"You may only be on one Corp at a time."
+				setTextTrigger 		2 :continueCorpCreation	"<Create New Corporation>"
+				send "*TM"
+				pause
+				:continueCorpCreation
+					gosub :BOT~killthetriggers
+					send $BOT~corpName&"*Y"&$BOT~corpPassword&"*Y*CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q c o* c q "
+			else
+				goto :AllDone
+			end
 		elseif (($BOT~isCEO = FALSE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
-			if ($skipJoin = 0)
+			if ($skipJoin <> true)
 				:checkForCorp
 					send "*TD"
 					gosub :PLAYER~quikstats
