@@ -6,7 +6,9 @@
 	goto :do_routing
 :check_routing
 	setVar $temp_bot_name $SWITCHBOARD~bot_name
+
 :do_routing
+	send "'I am seeing my bot name being called*"
 	setVar $currentline CURRENTLINE
 	setVar $currentansiline CURRENTANSILINE
 	gosub :BOT~killthetriggers
