@@ -12,11 +12,12 @@
 	setVar $currentansiline CURRENTANSILINE
 	gosub :BOT~killthetriggers
 	getWord CURRENTLINE $routing 1
+	getWord CURRENTLINE $check_for_bot_name 2
 	if ($routing = "'" & $temp_bot_name) 
 		goto :own_command
-	elseif ($routing = "R")
+	elseif (($routing = "R") and ($check_for_bot_name = $temp_bot_name))
 		goto :command
-	elseif ($routing = "P")
+	elseif (($routing = "P") and ($check_for_bot_name = $temp_bot_name))
 		goto :page_command
 	else
 		goto :BOT~wait_for_command
