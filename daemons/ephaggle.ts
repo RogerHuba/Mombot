@@ -1543,7 +1543,7 @@ gosub :bot~echo
 return
 
 :checkforbluetrader
-	if (($player~alignment >= 0) and ($player~experience > 800) and ($bot~worstprice <> true))
+	if (($player~alignment >= 0) and ($player~experience > 800) and ($player~experience < 1000) and ($bot~worstprice <> true))
 		setvar $bot~bluehaggle true
 		savevar $bot~bluehaggle
 	end
