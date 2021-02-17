@@ -14,9 +14,9 @@
 	getWord CURRENTLINE $routing 1
 	if ($routing = "'" & $temp_bot_name) 
 		goto :own_command
-	elseif (($routing = "R") AND ($BOT~botIsOff <> TRUE))
+	elseif ($routing = "R")
 		goto :command
-	elseif (($routing = "P") AND ($BOT~botIsOff <> TRUE))
+	elseif ($routing = "P")
 		goto :page_command
 	else
 		goto :BOT~wait_for_command
