@@ -7,7 +7,7 @@ reqRecording
 # Credits           : Oz, Zentock, SupG, Dynarri, Cherokee, Alexio, Xide, Phx, Rincrast, Voltron, Traitor, Parrothead, PSI, Elder Prophet, Caretaker, Deign
 
 setVar $bot~major_version   "4"
-setVar $bot~minor_version   "5beta"
+setVar $bot~minor_version   "7beta"
 setvar $bot~default_bot_directory "mombot"
 
 savevar $bot~major_version
@@ -32,6 +32,7 @@ goto :BOT~load_bot
 	saveVar $bot~parm8
 	saveVar $bot~bot_turn_limit
 	saveVar $player~unlimitedGame
+	savevar $bot~letter
 	gosub :MAIN~backwards_compatible
 return
 
@@ -117,7 +118,8 @@ return
 	saveVar $subspace
 	setVar $ptradesetting $game~ptradesetting
 	saveVar $ptradesetting
-
+	setvar $letter $bot~letter
+	savevar $letter
 return
 
 

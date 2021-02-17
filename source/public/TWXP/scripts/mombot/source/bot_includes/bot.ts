@@ -22,7 +22,7 @@ return
 :unfreezebot
 	echo "*Bot timed out, unfreezing..*"
 	setDeafClients false
-	send "'{" $SWITCHBOARD~bot_name "} - Bot frozen for over 100 seconds, resetting...*"
+	send "'{" $bot_name "} - Bot frozen for over 100 seconds, resetting...*"
 	goto :wait_for_command
 #==================================== END KILL TRIGGERS ======================================
 
@@ -78,14 +78,13 @@ return
 		setvar $bot_team_name $bot_name
 		savevar $bot_team_name
 	end
-
+	loadvar $LAST_LOADED_MODULE
 	setEventTrigger     shutdownthemodule       :INTERNAL_COMMANDS~shutDown            "SCRIPT STOPPED"      $LAST_LOADED_MODULE
-	if ($botIsOff <> TRUE)
-		setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          $SWITCHBOARD~bot_name
-		setTextLineTrigger  own_command_team        :USER_INTERFACE~check_routing_team     $bot_team_name
-		setTextLineTrigger  own_command_all         :USER_INTERFACE~check_routing_all     "all"
-		setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "You have a corporate memo from "
-	end
+	setTextLineTrigger  own_command             :USER_INTERFACE~check_routing          $bot_name
+	setTextLineTrigger  own_command_team        :USER_INTERFACE~check_routing_team     $bot_team_name
+	setTextLineTrigger  own_command_all         :USER_INTERFACE~check_routing_all     "all"
+	setTextLineTrigger  loginmemo               :INTERNAL_COMMANDS~loginmemo           "a corporate memo "
+
 	if (($mode = "General") and ($autoattack = true) and ($in_kill_routine <> true)) 
 		setTextLineTrigger 	1 	:INTERNAL_COMMANDS~autokill 	"warps into the sector."
 		setTextLineTrigger 	2 	:INTERNAL_COMMANDS~autokill 	"lifts off from"
@@ -103,8 +102,8 @@ return
 :save_the_variables
 	saveVar $command
 	saveVar $user_command_line
-	saveVar $SWITCHBOARD~bot_name
 	saveVar $bot_name
+	saveVar $switchboard~bot_name
 	saveVar $self_command
 	saveVar $SWITCHBOARD~self_command
 	saveVar $parm1
@@ -247,8 +246,8 @@ return
 	loadVar $PLAYER~surroundFigs
 	loadVar $PLAYER~surroundLimp
 	loadVar $PLAYER~surroundMine
-	loadVar $SWITCHBOARD~bot_name
-	setVar $bot_name $SWITCHBOARD~bot_name
+	loadVar $bot_name
+	setVar $switchboard~bot_name $bot_name
 	loadVar $PLAYER~surroundOverwrite
 	loadVar $PLAYER~surroundPassive
 	loadVar $PLAYER~surroundNormal
@@ -323,6 +322,8 @@ return
 		readToArray $custom_keys_file $custom_keys
 		readToArray $custom_commands_file $custom_commands
 	end
+
+	gosub :combat~init
 
 	if (($exists1 = FALSE) OR ($exists2 = FALSE) OR ($exists3 = FALSE) OR ($hotkeys <> "255") OR ($custom_keys <> "33") OR ($custom_commands <> "33"))
 		delete $hotkeys_file
@@ -438,7 +439,7 @@ return
 	setVar $CATAGORIES[2] "Commands"
 	setVar $CATAGORIES[3] "Daemons"
 	setVar $corpycount 0
-	setArray $corpy 30
+	setArray $corpy 30 1
 # ============================== START BOT VARIABLES ============================
 	SetVar $gameStats       FALSE
 	SetVar $script_name		"Mind ()ver Matter Bot "
@@ -477,6 +478,7 @@ return
 	setVar  $MCIC_FILE              $folder&"/planet.nego"
 
 	setVar $LAST_LOADED_MODULE  ""
+	savevar $LAST_LOADED_MODULE
 	saveVar  $gconfig_file    
 	savevar  $folder       
 	saveVar  $CK_FIG_FILE            
@@ -559,8 +561,13 @@ return
 		setVar $doRelog TRUE
 		saveVar $doRelog
 		read $gconfig_file $bot_name 1
+		setvar $switchboard~bot_name $bot_name
 		if (CONNECTED = TRUE)
 			gosub :PLAYER~quikstats      
+		end
+		if (CONNECTED = true)
+			gosub :player~quikstats
+			setvar $player~startingLocation $player~current_prompt
 		end
 		if ((($PLAYER~startingLocation = "Command") OR ($PLAYER~startingLocation = "Citadel")) AND (CONNECTED = TRUE))
 			if ($GAME~ptradesetting = 0)
@@ -607,7 +614,7 @@ return
 			echo "*  Getting intial settings for M()M Bot . . . *"
 			echo "*  Game is not set up for M()M Bot, doing that now. "
 			echo "*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"
-			setDelayTrigger woah :keep_going 500
+			setDelayTrigger woah :keep_going 200
 			pause
 			pause
 			:keep_going 
@@ -651,10 +658,6 @@ return
 					echo "* connected into the game to properly configure bot. "
 					echo "*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"
 				end
-			setDelayTrigger woah :keep_going2 1500
-			pause
-			pause
-			:keep_going2 
 	end
 
 
@@ -675,7 +678,7 @@ return
 		setVar $PLAYER~surroundAvoidAllPlanets TRUE
 	end
 	if ($bot_team_name = 0)
-		setVar $bot_team_name $SWITCHBOARD~bot_name
+		setVar $bot_team_name $bot_name
 	end
 	if ($password = 0)
 		setVar $password PASSWORD
@@ -700,7 +703,7 @@ return
 	end
 	gosub :save_the_variables
 
-	getFileList $startup_scripts "scripts\"&$mombot_directory&"\Startups\*.cts"
+	getFileList $startup_scripts "scripts\"&$mombot_directory&"\startups\*.cts"
 	setVar $i 1 
 	while ($i <= $startup_scripts)
 		stop "scripts\"&$mombot_directory&"\startups\"&$startup_scripts[$i]
@@ -717,16 +720,107 @@ return
 :run_bot
 	if ((($PLAYER~startingLocation = "Citadel") OR ($PLAYER~startingLocation = "Command")) AND ((CONNECTED = TRUE)))
 		gosub :player~startCNsettings
+		killalltriggers
 		gosub :PLAYER~quikstats
 		gosub :PLAYER~getInfo
-		send "'{" $SWITCHBOARD~bot_name "} - is ACTIVE: Version - " & $BOT~major_version & "." & $BOT~minor_version " - type " #34 $SWITCHBOARD~bot_name " help" #34 " for command list*"
-		send "'{" $SWITCHBOARD~bot_name "} - to login - send a corporate memo*"
+		if ($player~corp <> "0")
+			setvar $my_name $player~trader_name
+			trim $my_name
+			setvar $switchboard~message "Logging corp mates automatically - "
+			if ($player~current_prompt = "Citadel")
+				send "xa"
+			else
+				send "ta"
+			end
+			waiton "    Corp Member Name                   Sector  Fighters Shields Mines  Credits"
+			waiton "------------------------------------------------------------------------------"
+			
+			:ta_again
+				setTextLineTrigger taline :ta_check
+				pause
+
+				:ta_check
+					getwordpos CURRENTLINE $pos "P indicates Trader is on a planet in that sector"
+					getwordpos CURRENTLINE $pos2 "Corporate command ["
+					if (($pos > 0) or ($pos2 > 0))
+						goto :done_ta
+					end
+					setvar $line CURRENTLINE
+					getlength currentline $length
+					if ($length > 30)
+						setvar $line CURRENTLINE
+						cutText $line $name 1 30
+						replacetext $line $name ""
+						trim $name
+						if ($name <> $my_name)
+							add $corpyCount 1
+							setvar $corpy[$corpyCount] $name
+							getword $line $corpy[$corpyCount][1] 1
+						end
+					else
+						goto :done_ta
+					end
+					goto :ta_again
+			:done_ta
+			send "q"
+			if ($player~current_prompt = "Citadel")
+				waiton "Citadel command ("
+			else
+				waiton "Command ["
+			end
+		end
+		send "'{" $bot_name "} - is ACTIVE: Version - " & $BOT~major_version & "." & $BOT~minor_version " - type " #34 $bot_name " help" #34 " for command list*"
+		send "'{" $bot_name "} - to login - send a corporate memo*"
 		if (($username = "") or ($letter = "") or ($doRelog = FALSE))
-			send "'{" $SWITCHBOARD~bot_name "} - Auto Relog - Not Active*"
+			send "'{" $bot_name "} - Auto Relog - Not Active*"
 			setVar $doRelog FALSE
 		end
 
 		gosub :PLAYER~quikstats
+
+
+		fileExists $team_file_check $BOT_USER_FILE
+		if ($team_file_check)
+			setArray $corp_list 1
+			readToArray $BOT_USER_FILE $corp_list
+			setvar $i 1
+			while ($i <= $corp_list)
+				setvar $j 1
+				setvar $isFound false
+				while ($j <= $corpyCount)
+					setvar $corpy_lower $corpy[$j]
+					setvar $corp_list_lower $corp_list[$i]
+					lowercase $corpy_lower
+					lowercase $corp_list_lower
+					if ($corp_list_lower = $corpy_lower)
+						setvar $isFound true
+					end
+					add $j 1
+				end
+				if ($isFound <> true)
+					add $corpyCount 1
+					setvar $corpy[$corpyCount] $corp_list[$i]
+				end
+				add $i 1
+			end
+		end
+		delete $BOT_USER_FILE
+		setvar $i 1
+		while ($i <= $corpyCount)
+			setvar $switchboard~message $switchboard~message&$corpy[$i]&", "
+			write $BOT_USER_FILE $corpy[$i]	
+			add $i 1
+		end
+		if ($corpyCount > 0)
+			replacetext $switchboard~message $corpy[$corpyCount]&", " $corpy[$corpyCount] 
+			if ($corpyCount = 1)
+				setvar $switchboard~message $switchboard~message&" is added.*"
+			else
+				replacetext $switchboard~message $corpy[$corpyCount] "and "&$corpy[$corpyCount] 
+				setvar $switchboard~message $switchboard~message&" are added.*"
+			end
+			gosub :switchboard~switchboard
+		end
 
 		stop "scripts\"&$mombot_directory&"\daemons\ephaggle.cts"
 		stop "scripts\"&$mombot_directory&"\daemons\ephaggle.cts"
@@ -734,14 +828,39 @@ return
 		stop "scripts\"&$mombot_directory&"\daemons\ephaggle.cts"
 		load "scripts\"&$mombot_directory&"\daemons\ephaggle.cts"
 	else
-		echo "*{" $SWITCHBOARD~bot_name "} is ACTIVE: Version - "&$BOT~major_version&"."&$BOT~minor_version " - type " #34 $SWITCHBOARD~bot_name " help" #34 " for command list*"
+		fileExists $team_file_check $BOT_USER_FILE
+		if ($team_file_check)
+			setArray $corp_list 1
+			readToArray $BOT_USER_FILE $corp_list
+			setvar $i 1
+			while ($i <= $corp_list)
+				setvar $j 1
+				setvar $isFound false
+				while ($j <= $corpyCount)
+					setvar $corpy_lower $corpy[$j]
+					setvar $corp_list_lower $corp_list[$i]
+					lowercase $corpy_lower
+					lowercase $corp_list_lower
+					if ($corp_list_lower = $corpy_lower)
+						setvar $isFound true
+					end
+					add $j 1
+				end
+				if ($isFound <> true)
+					add $corpyCount 1
+					setvar $corpy[$corpyCount] $corp_list[$i]
+				end
+				add $i 1
+			end
+		end
+		echo "*{" $bot_name "} is ACTIVE: Version - "&$BOT~major_version&"."&$BOT~minor_version " - type " #34 $bot_name " help" #34 " for command list*"
 		if (($username = "") or ($letter = "") or ($doRelog = FALSE))
-			echo "{"&$SWITCHBOARD~bot_name&"} - Auto Relog - Not Active*"
+			echo "{"&$bot_name&"} - Auto Relog - Not Active*"
 			setVar $doRelog FALSE
 		end
-		echo "{"&$SWITCHBOARD~bot_name&"} - No EP Haggle is running because the bot was started offline.*"
+		echo "{"&$bot_name&"} - No EP Haggle is running because the bot was started offline.*"
 	end
-	saveVar $SWITCHBOARD~bot_name
+	saveVar $bot_name
 	:initiate_bot
 		loadVar $BOT~isShipDestroyed
 		if (CONNECTED <> TRUE)

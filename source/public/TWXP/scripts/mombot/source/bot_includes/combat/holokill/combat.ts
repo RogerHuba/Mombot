@@ -119,12 +119,12 @@
 		if ($slingshot)
 			if ($player~cit = true)
 				if ($switch)
-					send " e y q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  j R  *  '" $test_sector "=saveme* f  z  1  *  z  c  d  *   "
+					send " e y q m * * * q  m z "  $test_sector  "*     *   *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  j R  *  '" $test_sector "=saveme* f  z  1  *  z  c  d  *   "
 				else
-					send " q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  j R  *  '" $test_sector "=saveme* f  z  1  *  z  c  d  *   "
+					send " q m * * * q  m z "  $test_sector  "*     *   *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  j R  *  '" $test_sector "=saveme* f  z  1  *  z  c  d  *   "
 				end
 			else
-				send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  j R  *  '" $test_sector "=saveme* f  z  1  *  z  c  d  *   "
+				send " m z "  $test_sector  "*     *   *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  j R  *  '" $test_sector "=saveme* f  z  1  *  z  c  d  *   "
 			end
 			setVar $i 0
 			while ($i < 15)
@@ -163,12 +163,12 @@
 		else
 			if ($player~cit = true)
 				if ($switch)
-					send " e y q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  "
+					send " e y q m * * * q  m z "  $test_sector  "*     *     *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *  "
 				else
-					send " q m * * * q  m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *   "
+					send " q m * * * q  m z "  $test_sector  "*     *     *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *   "
 				end
 			else
-				send " m z "  $test_sector  " *  *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *   "
+				send " m z "  $test_sector  " *      *     *  z  a  " $SHIP~SHIP_MAX_ATTACK "*  z  a  " $SHIP~SHIP_MAX_ATTACK "*  R  *   "
 			end
 			if (($player~GENESIS > 0) and ($defender = true))
 				send "u y n.* c "

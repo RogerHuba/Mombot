@@ -1223,6 +1223,7 @@ return
 		setVar $BOT~newGameDay1 FALSE
 		setVar $BOT~newGameOlder FALSE
 	end
+	setvar $bot~startMacro ""
 :preGameMenu
 	setArray $h 26
 	setArray $qss 26
@@ -1241,8 +1242,8 @@ return
 	setVar $h[13] "After login:     "
 	setVar $h[14] "Bot command to perform:"
 	setVar $h[15] "Mow Option       "
-	setVar $h[16] "                 "
-	setVar $h[17] "                 "
+	setVar $h[16] "Macro to fire after login:"
+	setVar $h[17] "Teammate names:  "
 	setVar $h[18] "                 "
 	setVar $h[19] "                 "
 	setVar $h[20] "                 "
@@ -1312,8 +1313,17 @@ return
 	elseif ($start_mow_option = "i3")
 		setVar $qss[15] "Indirect Mow 3"
 	end
-	setVar $qss[16] ""
-	setVar $qss[17] ""
+	if (($bot~startMacro = "") or ($bot~startMacro = "0"))
+		setVar $qss[16] "None"
+	else
+		replacetext $bot~startMacro "*" #42
+		setVar $qss[16] $bot~startMacro
+	end
+	if (($bot~teammates = "") or ($bot~teammates = "0"))
+		setVar $qss[17] "None"
+	else
+		setVar $qss[17] $bot~startMacro
+	end
 	setVar $qss[18] ""
 	setVar $qss[19] ""
 	setVar $qss[20] ""
@@ -1349,6 +1359,10 @@ return
 		echo ANSI_10&#27&"[35m<"&#27&"[32mM"&#27&"[35m> "&ANSI_7&$qss_var[15]&"*"	
 	end
 	echo ANSI_10&#27&"[35m<"&#27&"[32m8"&#27&"[35m> "&ANSI_7&$qss_var[14]&"*"
+	echo ANSI_10&#27&"[35m<"&#27&"[32m9"&#27&"[35m> "&ANSI_7&$qss_var[16]&"*"
+	if ($BOT~newGameOlder <> TRUE)
+		echo ANSI_10&#27&"[35m<"&#27&"[32mT"&#27&"[35m> "&ANSI_7&$qss_var[17]&"*"
+	end
 	echo "*"
 	:getStartGameInput
 		getConsoleInput $chosen_option SINGLEKEY
@@ -1552,10 +1566,19 @@ return
 			setVar $command_to_issue $temp
 			savevar $command_to_issue
 
+		elseif ($chosen_option = "9")
+			getInput $BOT~startMacro "What macro should fire upon entry?"
+			replacetext $bot~startMacro "*" #42
+		elseif ($chosen_option = "T")
+			getInput $BOT~teammates "Enter teammate names (separated by commas)"
 		elseif ($chosen_option = "Q")
 			stop $BOT~LAST_LOADED_MODULE
+			savevar $bot~LAST_LOADED_MODULE
 			halt
 		elseif ($chosen_option = "Z")
+			replacetext $bot~startMacro "^m" #42
+			replacetext $bot~startMacro "^M" #42
+			savevar $bot~startMacro
 			:getMowSector
 			killalltriggers
 			if ($mowToOther)
@@ -1609,6 +1632,13 @@ return
 				setvar $connectivity~newgame false
 				gosub :connectivity~enter_new_game
 			end
+			loadvar $bot~startMacro
+			if ($bot~startMacro <> "")
+				replacetext $bot~startMacro #42 "*"
+				send $bot~startMacro
+				setvar $bot~startMacro ""
+				savevar $bot~startMacro
+			end
 			goto :donePreGame
 		else
 			goto :getStartGameInput
@@ -1616,6 +1646,31 @@ return
 		gosub :pregameStats
 		goto :pregameMenu
 :donePreGame
+	if (($bot~teammates <> "") and ($bot~teammates <> "0"))
+		splittext $bot~teammates $corp_list ","
+		setvar $i 1
+		while ($i <= $corp_list)
+			setvar $j 1
+			setvar $isFound false
+			trim $corp_list[$i]
+			while ($j <= $corpyCount)
+				trim $bot~corpy[$j]
+				setvar $corpy_lower $bot~corpy[$j]
+				setvar $corp_list_lower $corp_list[$i]
+				lowercase $corpy_lower
+				lowercase $corp_list_lower
+				if ($corp_list_lower = $corpy_lower)
+					setvar $isFound true
+				end
+				add $j 1
+			end
+			if ($isFound <> true)
+				add $corpyCount 1
+				setvar $bot~corpy[$corpyCount] $corp_list[$i]
+			end
+			add $i 1
+		end
+	end
 	goto :BOT~getInitial_Settings
 
 return

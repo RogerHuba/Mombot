@@ -5,7 +5,8 @@
 	setVar $temp_bot_name $BOT~bot_team_name
 	goto :do_routing
 :check_routing
-	setVar $temp_bot_name $bot~bot_name
+	setVar $temp_bot_name $SWITCHBOARD~bot_name
+
 :do_routing
 	setVar $currentline CURRENTLINE
 	setVar $currentansiline CURRENTANSILINE
@@ -41,11 +42,15 @@
 			if ($pos = 1) OR ($pos2 = 1)
 				goto :BOT~wait_for_command
 			end
-			#getLength $bot~command_lines[$b][9]&" " $BOT~commandLength
-			#cutText $bot~command_lines[$b] $bot~command_lines[$b] $BOT~commandLength+1 9999
-			#gosub :getParameters
 			setvar $bot~command_caller "self"
 			savevar $bot~command_caller
+			getwordpos $bot~user_command_line $pos "|"
+			if ($pos > 0)
+				savevar $switchboard~self_command
+				saveVar $BOT~user_command_line
+				load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
+				goto :BOT~wait_for_command
+			end
 			gosub :check_for_multi_commands
 			goto :command_processing
 		else
@@ -53,17 +58,13 @@
 		end
 
 	:command
-		send "' stating in command subroutine*"
-
 		setVar $ansi_line $currentansiline
 		getWordPos $ansi_line $pos "[36mR"
 		getwordPos $ansi_line $pos2 "[0;36mR"
 		if (($pos <= 0) and ($pos2 <= 0))
 			goto :BOT~wait_for_command
 		end
-		send "' made it through ansi check*"
 		cutText $currentline $user_name 3 6
-		stripText $user_name " "
 
 		gosub :verify_user_status
 		if ($authorization = 0)
@@ -82,12 +83,18 @@
 		if (($bot~command = "bot") OR ($bot~command = "relog"))
 			goto :bot~wait_for_command
 		end
+		getwordpos $bot~user_command_line $pos "|"
+		if ($pos > 0)
+			savevar $switchboard~self_command
+			saveVar $BOT~user_command_line
+			load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
+			goto :BOT~wait_for_command
+		end
 		gosub :check_for_multi_commands
 		goto :command_processing
 
 	:page_command
 		cutText $currentline $user_name 3 6
-		stripText $user_name " "
 		cutText $currentline $bot~user_command_line 10 999
 		getWordPos $bot~user_command_line $pos $SWITCHBOARD~bot_name & ":" & $BOT~bot_password & ":" & $BOT~subspace
 		if ($pos > 0)
@@ -113,6 +120,13 @@
 			if (($bot~command = "bot") OR ($bot~command = "relog"))
 				goto :BOT~wait_for_command
 			end
+			getwordpos $bot~user_command_line $pos "|"
+			if ($pos > 0)
+				savevar $switchboard~self_command
+				saveVar $BOT~user_command_line
+				load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
+				goto :BOT~wait_for_command
+			end
 			gosub :check_for_multi_commands
 			goto :command_processing            
 		end
@@ -131,6 +145,13 @@
 		goto :BOT~wait_for_command
 	end
 	setVar $SWITCHBOARD~self_command TRUE
+	getwordpos $bot~user_command_line $pos "|"
+	if ($pos > 0)
+		savevar $switchboard~self_command
+		saveVar $BOT~user_command_line
+		load "scripts\"&$bot~mombot_directory&"\commands\general\run.cts"
+		goto :BOT~wait_for_command
+	end
 	:runUserCommandLine
 		setVar $bot~user_command_line $bot~user_command_line&"              "
 		setVar $authorization 9
@@ -902,6 +923,7 @@ return
 		add $b 1
 	end
 	goto :BOT~wait_for_command
+
 :formatCommand
 	cutText $bot~command_lines[$b][9]&" " $firstChar 1 1
 	cutText $bot~command_lines[$b][9]&" " $restOfCommand 2 999
@@ -971,6 +993,7 @@ return
 		setVar $BOT~LAST_LOADED_MODULE "scripts\"&$bot~mombot_directory&"\"&$BOT~ModuleCategory&$bot~command_lines[$b][9]&".cts"
 		setVar $BOT~mode $formatted_command
 		savevar $bot~mode
+		savevar $bot~LAST_LOADED_MODULE
 	end
 	setvar $loaded "scripts\"&$bot~mombot_directory&"\"&$BOT~ModuleCategory&$bot~command_lines[$b][9]&".cts"
 	stop $loaded
@@ -1071,13 +1094,12 @@ goto :BOT~wait_for_command
 :verify_user_status
 	setVar $i 1
 	lowerCase $user_name
-	send "' before while loop: [" $user_name "][" $name "]*"
 	while ($i <= $BOT~corpycount)
 		cutText $BOT~corpy[$i] $name 1 6
 		setvar $unstripped_name $name
-		stripText $name " "
 		lowerCase $name
-		send "'[" $user_name "][" $name "]*"
+		trim $user_name
+		trim $name
 		if ($user_name = $name)
 			setvar $bot~command_caller $unstripped_name
 			savevar $bot~command_caller
