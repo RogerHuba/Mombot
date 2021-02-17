@@ -53,12 +53,15 @@
 		end
 
 	:command
+		send "' stating in command subroutine*"
+
 		setVar $ansi_line $currentansiline
 		getWordPos $ansi_line $pos "[36mR"
 		getwordPos $ansi_line $pos2 "[0;36mR"
 		if (($pos <= 0) and ($pos2 <= 0))
 			goto :BOT~wait_for_command
 		end
+		send "' made it through ansi check*"
 		cutText $currentline $user_name 3 6
 		stripText $user_name " "
 
@@ -1068,6 +1071,7 @@ goto :BOT~wait_for_command
 :verify_user_status
 	setVar $i 1
 	lowerCase $user_name
+	send "' before while loop: [" $user_name "][" $name "]*"
 	while ($i <= $BOT~corpycount)
 		cutText $BOT~corpy[$i] $name 1 6
 		setvar $unstripped_name $name
