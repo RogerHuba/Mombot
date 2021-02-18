@@ -219,6 +219,11 @@
 		if ($PLAYER~courseLength <= 0)
 			halt
 		end
+		if (($backdoorMow = true) and ($player~destination = $map~stardock))
+			# grab backdoor and save to bot variable if mowing to stardock backdoor #
+			setvar $map~backdoor $PLAYER~mowCourse[($player~courseLength-1)]
+			savevar $map~backdoor
+		end
 		setVar $j 3
 		setVar $result "q q q * "
 		while ($j <= $PLAYER~courseLength)

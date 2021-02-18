@@ -470,6 +470,7 @@ return
 				setEventTrigger		1		:mowended	"SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
 				pause
 				:mowended
+				loadvar $map~backdoor
 			end
 		else
 			if (($isNumber) and ($menus~xportToShip))
