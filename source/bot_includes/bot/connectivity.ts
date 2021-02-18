@@ -112,7 +112,7 @@
 					setTextTrigger		enter		:done_do_relog	"Would you like to start a new character in this game?"
 					setTextTrigger		v1enter		:v1enter "Enter your choice"
 					setTextLineTrigger      notopen		:game_not_open	"but this is a closed game."
-					send $BOT~letter&"   *   "
+					send $BOT~letter&"           * "
 					pause
 				else
 					setTextTrigger firstpause :firstpause "[Pause]"
@@ -171,7 +171,7 @@
 					setDelayTrigger		2	:new_game_delay2 1000
 					setTextTrigger		3	:tryAgainNewGameDay1	"Would you like to start a new character in this game?"
 					setTextLineTrigger      4       :tryAgainEnterGame	"but this is a closed game."
-					send $BOT~letter&"    *    "
+					send $BOT~letter&"           * "
 					pause
 
 
