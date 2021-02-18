@@ -107,6 +107,8 @@
 			gosub :killrelogtriggers
 
 			if ($newgame)
+				echo "**[" $twgsVersion "]**"
+				pause
 				if  ($twgsVersion = "1")
 					setTextTrigger		firstpause	:firstpause "[Pause]"
 					setTextTrigger		enter		:done_do_relog	"Would you like to start a new character in this game?"
