@@ -877,12 +877,12 @@
 					if (SECTOR.FIGS.QUANTITY[$Target] <> 0)
 						if ((SECTOR.FIGS.OWNER[$Target] <> "belong to your Corp") AND (SECTOR.FIGS.OWNER[$Target] <> "yours"))
 							#Trying Again, but this time ignoring $Target
-							setVar $Ignore $Target
+							setVar $Ignorethis $Target
 							setVar $idx 1
 							setVar $Target 10
 							setVar $Target_IDX 0
 							while ($idx <= SECTOR.WARPCOUNT[$player~CURRENT_SECTOR])
-								if ($Adj_Targets[$idx] < $Target) AND ($Target <> 0) AND (SECTOR.WARPS[$player~CURRENT_SECTOR][$idx] <> $Ignore)
+								if ($Adj_Targets[$idx] < $Target) AND ($Target <> 0) AND (SECTOR.WARPS[$player~CURRENT_SECTOR][$idx] <> $Ignorethis)
 									setVar $Target $Adj_Targets[$idx]
 									setVar $Target_IDX $idx
 								end
