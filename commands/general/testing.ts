@@ -24,8 +24,8 @@ gosub :BOT~banner
 
 setVar $podpeople[1] "mind"
 setVar $podpeople[2] "kane"
-setVar $podpeople[3] "far"
-setVar $podpeople[4] "skip"
+setVar $podpeople[3] "horns"
+setVar $podpeople[4] "matt"
 setVar $podpeoplei 4
 
 setVar $podpeopleok 0
