@@ -600,14 +600,25 @@
 					getWordPos $figsowner $whereowner "belong to"
 					getWordPos $figsowner $whereownercorp "belong to corp#"&$ignore
 					getWordPos $figsowner $whereownerplayer "belong to "&$ignore
-					if ($whereowner = 0)
+					if ($whereowner <= 0)
 						if (SECTOR.FIGS.QUANTITY[$adj] < $player~FIGHTERS)
 							subtract $currentDensity (SECTOR.FIGS.QUANTITY[$adj] * 5)
 						end
 					elseif (($whereownercorp > 0) OR ($whereownerplayer > 0))
 						if (SECTOR.FIGS.QUANTITY[$adj] < $player~FIGHTERS)
 							subtract $currentDensity (SECTOR.FIGS.QUANTITY[$adj] * 5)
+							if (SECTOR.ANOMOLY[$adj] = true)
+								subtract $currentDensity 4
+							end
 						end					
+					end
+					setVar $minesowner SECTOR.MINES.OWNER[$adj]
+					lowercase $minesowner
+					getWordPos $minesowner $whereowner "belong to"
+					getWordPos $minesowner $whereownercorp "belong to corp#"&$ignore
+					getWordPos $minesowner $whereownerplayer "belong to "&$ignore
+					if (($whereownercorp > 0) OR ($whereownerplayer > 0))
+							subtract $currentDensity (SECTOR.MINES.QUANTITY[$adj] * 10)
 					end
 					
 
