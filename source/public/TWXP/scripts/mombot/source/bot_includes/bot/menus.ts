@@ -201,6 +201,8 @@
 			write $BOT~gconfig_file $new_bot_name
 			setVar $SWITCHBOARD~bot_name $new_bot_name
 			saveVar $SWITCHBOARD~bot_name
+			setVar $bot~bot_name $new_bot_name
+			saveVar $bot~bot_name
 
 		elseif ($chosen_option = "P")
 			setvar $question "Please Enter your Game Password"
@@ -1143,7 +1145,7 @@ return
 	lowerCase $new_bot_name
 	if ($new_bot_name = "")
 		goto :add_game
-	end
+	end	
 	setVar $BOT~password PASSWORD
 	setVar $BOT~username LOGINNAME
 	setVar $BOT~letter GAME
@@ -1164,6 +1166,8 @@ return
 	write $BOT~gconfig_file $new_bot_name
 	setVar $SWITCHBOARD~bot_name $new_bot_name
 	saveVar $SWITCHBOARD~bot_name 
+	setVar $bot~bot_name $new_bot_name
+	saveVar $bot~bot_name 
 return
 # ============================== END STARTING IN A NEW GAME SUB ==============================
 
@@ -1381,8 +1385,10 @@ return
 			end
 			delete $BOT~gconfig_file
 			write $BOT~gconfig_file $new_bot_name
+			setVar $bot~bot_name $new_bot_name
 			setVar $SWITCHBOARD~bot_name $new_bot_name
 			saveVar $SWITCHBOARD~bot_name
+			savevar $bot~bot_name
 		elseif ($chosen_option = "P")
 			killalltriggers
 			getInput $BOT~password "Please Enter your Game Password"

@@ -112,7 +112,7 @@
 					setTextTrigger		enter		:done_do_relog	"Would you like to start a new character in this game?"
 					setTextTrigger		v1enter		:v1enter "Enter your choice"
 					setTextLineTrigger      notopen		:game_not_open	"but this is a closed game."
-					send $BOT~letter&" * "
+					send $BOT~letter&"                                           * "
 					pause
 				else
 					setTextTrigger firstpause :firstpause "[Pause]"
@@ -168,10 +168,10 @@
 		
 					setTextTrigger		v1Pause	:v1Pause "[Pause]"
 					setTextTrigger		v1Enter2 :v1Enter2 "Enter your choice"
-					setDelayTrigger		2	:new_game_delay2 2000
+					setDelayTrigger		2	:new_game_delay2 1000
 					setTextTrigger		3	:tryAgainNewGameDay1	"Would you like to start a new character in this game?"
 					setTextLineTrigger      4       :tryAgainEnterGame	"but this is a closed game."
-					send $BOT~letter&" * "
+					send $BOT~letter&"                                           * "
 					pause
 
 
@@ -316,6 +316,15 @@ return
 	killalltriggers
 
 	# Testing this addition - Can we check briefly for our corp before mowing?
+	if (($newGame = true) and ($BOT~isCEO = TRUE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
+		gosub :BOT~killthetriggers
+		send "cn24"&$BOT~subspace&"* qqlt30*"
+		#Make Corp
+		send "tm" $BOT~corpName "*y" $BOT~corpPassword "*yq"
+		send "co*cq"
+		setvar $skipjoin true
+		goto :resumeStartAfterCorpJoin
+	end
 	if (($newgame) and ($BOT~isCEO = FALSE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
 		setVar $skipJoin 0
 		setVar $attemps 0
@@ -357,16 +366,19 @@ return
 	if ($newgame)
 		gosub :BOT~killthetriggers
 		if (($BOT~isCEO = TRUE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
-			setTextLineTrigger	1 :alreadyCorped		"You may only be on one Corp at a time."
-			setTextTrigger 		2 :continueCorpCreation	"<Create New Corporation>"
-			send "*TM"
-			pause
-			:continueCorpCreation
-				gosub :BOT~killthetriggers
-				send $BOT~corpName&"*Y"&$BOT~corpPassword&"*Y*CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q c o* c q "
-
+			if ($skipJoin <> true)
+				setTextLineTrigger	1 :alreadyCorped		"You may only be on one Corp at a time."
+				setTextTrigger 		2 :continueCorpCreation	"<Create New Corporation>"
+				send "*TM"
+				pause
+				:continueCorpCreation
+					gosub :BOT~killthetriggers
+					send $BOT~corpName&"*Y"&$BOT~corpPassword&"*Y*CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q c o* c q "
+			else
+				goto :AllDone
+			end
 		elseif (($BOT~isCEO = FALSE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
-			if ($skipJoin = 0)
+			if ($skipJoin <> true)
 				:checkForCorp
 					send "*TD"
 					gosub :PLAYER~quikstats
@@ -458,6 +470,7 @@ return
 				setEventTrigger		1		:mowended	"SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\grid\mow.cts"
 				pause
 				:mowended
+				loadvar $map~backdoor
 			end
 		else
 			if (($isNumber) and ($menus~xportToShip))

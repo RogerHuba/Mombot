@@ -22,6 +22,7 @@
 			setvar $killing~error true
 			return
 		end
+	
 	end
 	if (($SECTOR~emptyShipCount + $SECTOR~fakeTraderCount + $SECTOR~realTraderCount) > 0)
 		setVar $i 0
@@ -48,6 +49,11 @@
 		end
 	
 	else
+		if ($player~onetap = TRUE)			
+			setvar $switchboard~message "No Targets - One Tap Complete.*"
+			gosub :switchboard~switchboard
+			halt
+		end
 		setvar $switchboard~message  ANSI_12&"*You have no targets.*"&ANSI_7
 		gosub :bot~echo
 		return
@@ -101,7 +107,13 @@
 			send " c "		
 		else
 			setVar $attackString ""
-			setVar $count 8
+			if ($player~onetap = TRUE)
+				setVar $count 1
+			elseif ($player~slowmo = TRUE)
+				setVar $count 2
+			else
+				setVar $count 8
+			end
 			while ($count > 0)
 				if ($player~shotgun)
 					setVar $attackString $attackString&"q "&$targetShotgun&$refurbString
@@ -115,8 +127,40 @@
 				subtract $count 1			
 			end
 			send " q "&$attackString&" c "
+			if ($player~onetap = TRUE)			
+				setvar $switchboard~message "One Tap Complete.*"
+				gosub :switchboard~switchboard
+				halt
+			end
+			if ($player~slowmo = TRUE)
+				getRnd $slowRnd 10 25
+				setVar $slowBreak (($slowRnd * $GAME~LATENCY) + 1000)
+				setDelayTrigger citKillBreak :citKillBreak $slowBreak 
+				pause
+				:citKillBreak
+					killtrigger citKillBreak
+					return
+			end
+			if ($player~unloader = TRUE)
+				setTextLineTrigger UnloaderWait :UnloaderWait "@unloaddone"
+				pause
+				:UnloaderWait
+					killtrigger UnloaderWait
+
+					setVar $slowBreak 400
+					setDelayTrigger unloaderBreak :unloaderBreak $slowBreak 
+					pause
+					:unloaderBreak
+						killtrigger unloaderBreak
+						return
+			end
 		end
 	else	
+		if ($player~onetap = TRUE)			
+			setvar $switchboard~message "No Targets - One Tap Complete.*"
+			gosub :switchboard~switchboard
+			halt
+		end
 		setvar $switchboard~message ANSI_12&"*You have no valid targets.*"&ANSI_7
 		gosub :bot~echo
 		return

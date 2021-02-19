@@ -917,8 +917,10 @@ return
 			end
 		end
 		if ($isFound <> true)
-			setVar $SWITCHBOARD~message $formatted_command&" is not a valid command.*"
-			gosub :SWITCHBOARD~switchboard
+			if ($temp_bot_name <> "all")
+				setVar $SWITCHBOARD~message $formatted_command&" is not a valid command.*"
+				gosub :SWITCHBOARD~switchboard
+			end
 		end
 		add $b 1
 	end
