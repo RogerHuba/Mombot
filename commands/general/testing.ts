@@ -3,7 +3,7 @@ loadvar $SWITCHBOARD~bot_name
 loadvar $bot~corppassword
 loadvar $player~corpnumber
 
-setVar $BOT~help[1]  $BOT~tab&"    fire2020 [command]"
+setVar $BOT~help[1]  $BOT~tab&"    ice2021 [command]"
 setVar $BOT~help[2]  $BOT~tab&"        "
 setVar $BOT~help[3]  $BOT~tab&"    buyfed    - 1.8 Mil cash - buys ship and fed com"
 setVar $BOT~help[4]  $BOT~tab&"    getore1   - Will make a planet, pause, pick up ore"
@@ -18,7 +18,7 @@ setVar $BOT~help[12] $BOT~tab&"    crazymow  - Mows to sectors start of game wit
 
 gosub :bot~helpfile
 
-setVar $BOT~script_title "FIRE2020 Utilities"
+setVar $BOT~script_title "ICE2021 Utilities"
 
 gosub :BOT~banner
 
@@ -309,7 +309,7 @@ return
     while ($podi <= $podpeoplei)
         if ($podpeopleok[$podi] = 1)
           
-            send "'" $podpeople[$podi] " fire2020 waitandmow " $ships[$y] "*" 
+            send "'" $podpeople[$podi] " ice2021 waitandmow " $ships[$y] "*" 
             add $y 1
         end
         add $podi 1
@@ -359,7 +359,7 @@ return
     # $podVictim - bot name of the person about to be podded
     # Assumes same sector
 
-    send "'" $podVictim " fire2020 preppod*"
+    send "'" $podVictim " ice2021 preppod*"
     setTextLineTrigger victimReady :victimReady "{" & $podVictim & "} - Ready to be podded."
     setDelayTrigger victimelost :victimelost 4000
     pause
