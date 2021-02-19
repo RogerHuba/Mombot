@@ -86,9 +86,17 @@ halt
         killalltriggers
         getWord CURRENTLINE $stardock 4
 
-    setVar $towship $bot~parm2
-    send "wn" $towship "*"
+    gosub :player~quikstats
 
+    setVar $towship $bot~parm2
+    send "x* " $towship "* * "
+
+    setVar $figsRequired 1000
+    gosub :player~quikstats
+	gosub :stripfig
+
+    send "wn" $player~SHIP_NUMBER "*"
+    setVar $towship $player~SHIP_NUMBER
     setDelayTrigger briefwait :briefwait 2000
     pause
     :briefwait
@@ -103,9 +111,6 @@ halt
     end
     
     send "x* " $towship "* * "
-    setVar $figsRequired 2000
-    gosub :player~quikstats
-	gosub :stripfig
    
     setVar $BOT~command "reboot"
     setVar $BOT~user_command_line " reboot "
