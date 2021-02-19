@@ -115,6 +115,7 @@ end
 			killalltriggers
 			add $gathered 1
 			add $totalFree 1
+			setSectorParameter $sent[$gathered] "PORTBLKED" 0
 			goto :allBlockedagain
 		:allBlockednook
 		:allBlockedreallynotok

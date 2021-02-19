@@ -1,6 +1,6 @@
 	gosub :BOT~loadVars
 
-	setVar $BOT~help[1] $BOT~tab&"PXED - Photon, Xport, Enter, Defend, Xport"
+	setVar $BOT~help[1] $BOT~tab&"PXEDX - Photon, Xport, Enter, Defend, Xport"
 	setVar $BOT~help[2] $BOT~tab&"       Used to launch a Photon into an adjacent Sector then immediately"
 	setVar $BOT~help[3] $BOT~tab&"       Export into another Ship and Enter Photon'd Sector; then launches"
 	setVar $BOT~help[4] $BOT~tab&"       a Genesis Torpedo."
