@@ -565,6 +565,9 @@
 
 
 		:refilter
+		if ($player~current_sector = 0)
+			gosub :player~quikstats
+		end
 		setVar $i 1
 		while ($i <= SECTOR.WARPCOUNT[$player~CURRENT_SECTOR])
 			setVar $adj SECTOR.WARPS[$player~CURRENT_SECTOR][$i]
