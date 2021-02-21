@@ -11,7 +11,7 @@
 	setVar $BOT~help[8]    $BOT~tab&"           >decash                 "
 	setVar $BOT~help[9]    $BOT~tab&"           >decash 100k            "
 	setVar $BOT~help[10]   $BOT~tab&"           >decash 100k mind       "
-	setVar $BOT~help[11]   $BOT~tab&"           >decash 100k "&#34&"mind dagger&#34&"      "
+	setVar $BOT~help[11]   $BOT~tab&"           >decash 100k "&#34&"mind dagger"&#34&"      "
 	setVar $BOT~help[12]   $BOT~tab&"                 "
 	setVar $BOT~help[13]   $BOT~tab&"  Defaults are 500k and first corp member in sector   "
 	gosub :bot~helpfile
