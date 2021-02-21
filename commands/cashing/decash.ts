@@ -1,5 +1,22 @@
 	gosub :BOT~loadVars
-		
+	
+
+    setVar $BOT~help[1]    $BOT~tab&"  decash {cash:#} {"&#34&"trader name"&#34&"}        "
+	setVar $BOT~help[2]    $BOT~tab&"      "
+	setVar $BOT~help[3]    $BOT~tab&"   {cash:#} - amount to leave on the trader "
+	setVar $BOT~help[4]    $BOT~tab&"{"&#34&"trader name"&#34&"} - trader to decash"
+	setVar $BOT~help[5]    $BOT~tab&"      "
+	setVar $BOT~help[6]    $BOT~tab&"     Examples:                     "
+	setVar $BOT~help[7]    $BOT~tab&"                                   "
+	setVar $BOT~help[8]    $BOT~tab&"           >decash                 "
+	setVar $BOT~help[9]    $BOT~tab&"           >decash 100k            "
+	setVar $BOT~help[10]   $BOT~tab&"           >decash 100k mind       "
+	setVar $BOT~help[11]   $BOT~tab&"           >decash 100k "&#34&"mind dagger&#34&"      "
+	setVar $BOT~help[12]   $BOT~tab&"                 "
+	setVar $BOT~help[13]   $BOT~tab&"  Defaults are 500k and first corp member in sector   "
+	gosub :bot~helpfile
+
+
 	setVar $BOT~help[1] $BOT~tab&"Attempts to take credits off of a corp member in sector."
 	gosub :bot~helpfile
 
@@ -19,23 +36,23 @@
 	else
         isNumber $test $bot~parm1
         if (($test = TRUE) and ($bot~parm1 <> "0"))
-            setVar $cash_to_grab $bot~parm1
+            setVar $cash_to_leave $bot~parm1
     		setvar $trader_name $bot~parm2
         else
     		setvar $trader_name $bot~parm1
             isNumber $test $bot~parm2
             if (($test = TRUE) and ($bot~parm2 <> "0"))
-                setVar $cash_to_grab $bot~parm2
+                setVar $cash_to_leave $bot~parm2
             end
         end
 	end
 
-    if ($cash_to_grab <> "0")
+    if ($cash_to_leave <> "0")
         getWordPos $bot~user_command_line $pos "cash:"
         if ($pos > 0)
-            getText " "&$bot~user_command_line&" " $cash_to_grab "cash:" " "
+            getText " "&$bot~user_command_line&" " $cash_to_leave "cash:" " "
         else
-            setVar $cash_to_grab 500000
+            setVar $cash_to_leave 500000
         end
     end
 
@@ -64,8 +81,8 @@
 		getText CurrentLine $DECASH " has " "."
 		stripText $DECASH ","
 		stripText $DECASH " "
-		if ($DECASH > 500000)
-			setVar $DECASH ($DECASH - 500000)
+		if ($DECASH > $cash_to_leave)
+			setVar $DECASH ($DECASH - $cash_to_leave)
 			send $DECASH & "*"
 		else
 			setVar $DECASH 0
@@ -75,7 +92,6 @@
 		killAllTriggers
 		send "   * *    "
         if ($found_cash = true)
-            # You have 1,979,499 credits, and Galaga has 99,175. #
             setvar $switchboard~message "Took "&$decash&" credits from "&$decash_target&".*"
         else
             setvar $switchboard~message "Couldn't find a trader to grab cash from in this sector.  Wrong name?*"
