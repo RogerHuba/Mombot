@@ -17,9 +17,6 @@
 	gosub :bot~helpfile
 
 
-	setVar $BOT~help[1] $BOT~tab&"Attempts to take credits off of a corp member in sector."
-	gosub :bot~helpfile
-
 	gosub :PLAYER~quikstats
 	setVar $BOT~validPrompts "Command"
 	gosub :BOT~checkStartingPrompt
