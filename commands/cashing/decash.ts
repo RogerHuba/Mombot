@@ -43,6 +43,7 @@
         setvar $trader_name ""
     end
 
+        setvar $found_cash false
  		send "t"
         waiton "Corporate command ["
         send "c"
@@ -56,6 +57,7 @@
             send "*"
             pause
 		:THERE
+        setvar $found_cash true
 		send "YF"
 		waitfor "credits, and"
 		getText CurrentLine $decash_target "credits, and " " has "
@@ -72,10 +74,13 @@
 		:NOTTHERE
 		killAllTriggers
 		send "   * *    "
-        # You have 1,979,499 credits, and Galaga has 99,175. #
-        setvar $switchboard~message "Took "&$decash&" credits from "&$decash_target&".*"
+        if ($found_cash = true)
+            # You have 1,979,499 credits, and Galaga has 99,175. #
+            setvar $switchboard~message "Took "&$decash&" credits from "&$decash_target&".*"
+        else
+            setvar $switchboard~message "Couldn't find a trader to grab cash from in this sector.  Wrong name?*"
+        end
         gosub :switchboard~switchboard
-
 halt
 
 # includes:
