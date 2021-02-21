@@ -73,7 +73,7 @@
 		killAllTriggers
 		send "   * *    "
         # You have 1,979,499 credits, and Galaga has 99,175. #
-        setvar $switchboard~message "Took "&$decash&" credits from "&$decash_target&"."
+        setvar $switchboard~message "Took "&$decash&" credits from "&$decash_target&".*"
         gosub :switchboard~switchboard
 
 halt
