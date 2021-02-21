@@ -569,20 +569,36 @@ return
 	setVar $fuelrounds 0
 	isNumber $isNumber2 $bot~parm2
 	isNumber $isNumber3 $bot~parm3
+	isNumber $isNumber4 $bot~parm4
+	isNumber $isNumber5 $bot~parm5
+	setVar $buydownRoundsFromParam 999999
 	if ($isNumber2)
 		if ($bot~parm2 > 0)
 			setVar $buydownRoundsFromParam $bot~parm2
 		else
 			setVar $buydownRoundsFromParam 999999
 		end
-	elseif ($isNumber3)
+	end
+	if ($isNumber3)
 		if ($bot~parm3 > 0)
 			setVar $buydownRoundsFromParam $bot~parm3
 		else
 			setVar $buydownRoundsFromParam 999999
 		end
-	else
-		setVar $buydownRoundsFromParam 999999
+	end
+	if ($isNumber4)
+		if ($bot~parm4 > 0)
+			setVar $buydownRoundsFromParam $bot~parm4
+		else
+			setVar $buydownRoundsFromParam 999999
+		end
+	end
+	if ($isNumber5)
+		if ($bot~parm5 > 0)
+			setVar $buydownRoundsFromParam $bot~parm5
+		else
+			setVar $buydownRoundsFromParam 999999
+		end
 	end
 	getwordpos " "&$bot~user_command_line&" " $pos " twarp "
 	setvar $twarpbuy false
@@ -741,7 +757,7 @@ return
 
 
 	gosub :player~getinfo
-	if ($mowbuy = true)
+	if (($mowbuy = true) or ($twarpbuy = true))
 		gosub :clearAdjacent
 	else
 		gosub :voidAdjacent
