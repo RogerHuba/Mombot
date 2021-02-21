@@ -1,19 +1,19 @@
 	gosub :BOT~loadVars
 	
 
-    setVar $BOT~help[1]    $BOT~tab&"  decash {cash:#} {"&#34&"trader name"&#34&"}        "
+    setVar $BOT~help[1]    $BOT~tab&"  decash {cash:#} {"&#34&"trader name"&#34&"}   "
 	setVar $BOT~help[2]    $BOT~tab&"      "
-	setVar $BOT~help[3]    $BOT~tab&"   {cash:#} - amount to leave on the trader "
-	setVar $BOT~help[4]    $BOT~tab&"{"&#34&"trader name"&#34&"} - trader to decash"
+	setVar $BOT~help[3]    $BOT~tab&"       {cash:#} - amount to leave on the trader "
+	setVar $BOT~help[4]    $BOT~tab&"{"&#34&"trader name"&#34&"} - trader to decash  "
 	setVar $BOT~help[5]    $BOT~tab&"      "
 	setVar $BOT~help[6]    $BOT~tab&"     Examples:                     "
 	setVar $BOT~help[7]    $BOT~tab&"                                   "
 	setVar $BOT~help[8]    $BOT~tab&"           >decash                 "
 	setVar $BOT~help[9]    $BOT~tab&"           >decash 100k            "
 	setVar $BOT~help[10]   $BOT~tab&"           >decash 100k mind       "
-	setVar $BOT~help[11]   $BOT~tab&"           >decash 100k "&#34&"mind dagger"&#34&"      "
+	setVar $BOT~help[11]   $BOT~tab&"           >decash 100k "&#34&"mind dagger"&#34&"  "
 	setVar $BOT~help[12]   $BOT~tab&"                 "
-	setVar $BOT~help[13]   $BOT~tab&"  Defaults are 500k and first corp member in sector   "
+	setVar $BOT~help[13]   $BOT~tab&"  Defaults are 500k and first corp member in sector "
 	gosub :bot~helpfile
 
 
@@ -47,7 +47,7 @@
         end
 	end
 
-    if ($cash_to_leave <> "0")
+    if ($cash_to_leave = "0")
         getWordPos $bot~user_command_line $pos "cash:"
         if ($pos > 0)
             getText " "&$bot~user_command_line&" " $cash_to_leave "cash:" " "
