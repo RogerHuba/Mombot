@@ -584,7 +584,11 @@
 		setVar $message $message&"*                   Paranoid"
 	end
 	if ($restock~deploymines)
-		setVar $message $message&"*                   Deploy "&$deploy_mine_count&" limpets and armids"
+		if ($deploy_mine_count = 1)
+			setVar $message $message&"*                   Deploy "&$deploy_mine_count&" limpet and armid mine"
+		else
+			setVar $message $message&"*                   Deploy "&$deploy_mine_count&" limpet and armid mines"
+		end
 	end
 	if ($sentinel~broadcast)
 		setVar $message $message&"*                   Sentinel mode on"
