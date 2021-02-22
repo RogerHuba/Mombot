@@ -1256,6 +1256,16 @@ return
 			setvar $foundSector false
 			setvar $main~attack_sectors[$i] 0
 			setvar $j 1
+			while ((SECTOR.BACKDOORS[$i][$j] > 0) and ($foundSector = false))
+				setVar $tempAdj SECTOR.BACKDOORS[$i][$j]
+				getSectorParameter $tempAdj "FIGSEC" $isFigged
+				if ($isFigged = true)
+					setvar $main~attack_sectors[$i] $tempAdj
+					setvar $foundSector true
+				end
+				add $j 1
+			end
+			setvar $j 1
 			while ((SECTOR.WARPSIN[$i][$j] > 0) and ($foundSector = false))
 				setVar $tempAdj SECTOR.WARPSIN[$i][$j]
 				getSectorParameter $tempAdj "FIGSEC" $isFigged
