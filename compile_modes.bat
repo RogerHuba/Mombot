@@ -1,4 +1,4 @@
-for /r %%n in (*lspassgrid.ts) do call :checkit "%%n" 
+for /r %%n in (*runaway.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
