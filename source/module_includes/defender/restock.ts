@@ -155,9 +155,16 @@
 			getWord CURRENTLINE $citadelCash 4
 			stripText $citadelCash ","
 			if (($citadelCash+currentcredits) < $cashNeeded)
-				setvar $switchboard~message "Not enough cash ("&$cashNeeded&") for restock in treasury or on hand.*"
-				gosub :switchboard~switchboard
-				gosub :navigate~head_home
+				setVar $genesisCashNeeded 0 
+				setVar $limpetCashNeeded 0
+				setVar $armidCashNeeded 0
+				setVar $disruptorCashNeeded 0
+				setVar $cashNeeded (($photon~shooting_count*$game~photon_cost)+$game~LIMPET_REMOVAL_COST)
+				if (($citadelCash+currentcredits) < $cashNeeded)
+					setvar $switchboard~message "Not enough cash ("&$cashNeeded&") for restock in treasury or on hand.*"
+					gosub :switchboard~switchboard
+					gosub :navigate~head_home
+				end
 			end
 			send "t f "&($cashNeeded-$player~credits)&"* "
 		end
@@ -517,6 +524,25 @@ return
 :DoPurchases
 	send "|h "
 	waitfor "<Hardware Emporium>"
+	#=============================================== PURCHASE PHOTONS
+	if ($_Photon  <> "")
+		setTextTrigger canhouse :canhouse "How many Photon Missiles do you want"
+		setTextTrigger canthouse :canthouse "<Hardware Emporium> So what are you looking for"
+		send "P "
+		pause
+		:canhouse
+			killAllTriggers
+			if ($_Photon  = "Max")
+				getText CURRENTLINE $buy "(Max" ")"
+				send $buy & "* "
+				setvar $ship~photon_max $buy
+			else
+				send $_Photon & "* "
+			end
+			waitfor "<Hardware Emporium>"
+		:canthouse
+			killAllTriggers
+	end
 	#=============================================== PURCHASE GENESIS
 	if ($_Genesis  <> "")
 		send "T "
@@ -553,25 +579,6 @@ return
 			send $_Mines & "* "
 		end
 		waitfor "<Hardware Emporium>"
-	end
-	#=============================================== PURCHASE PHOTONS
-	if ($_Photon  <> "")
-		setTextTrigger canhouse :canhouse "How many Photon Missiles do you want"
-		setTextTrigger canthouse :canthouse "<Hardware Emporium> So what are you looking for"
-		send "P "
-		pause
-		:canhouse
-			killAllTriggers
-			if ($_Photon  = "Max")
-				getText CURRENTLINE $buy "(Max" ")"
-				send $buy & "* "
-				setvar $ship~photon_max $buy
-			else
-				send $_Photon & "* "
-			end
-			waitfor "<Hardware Emporium>"
-		:canthouse
-			killAllTriggers
 	end
 	#=============================================== PURCHASE DISRUPTORS
 	if ($_Disrupt  <> "")
