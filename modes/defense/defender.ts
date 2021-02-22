@@ -1096,6 +1096,12 @@ return
 return
 
 :main~doMines
+
+
+	################################################################################
+	# TODO add fighter deployment as well - and for empty sectors drop 2 fighters, #
+	# 9 armids (100 density) or 20 fighters (100 density                           #
+	################################################################################
 	setvar $limpet_amount $deploy_mine_count
 	setvar $armid_amount $deploy_mine_count
 	if ($player~limpets < $deploy_mine_count)
