@@ -44,7 +44,7 @@
 
 	setVar $BOT~help[1]  $BOT~tab&"Grid defender {adjacent|density|nophoton} {f} {l} {a} {auto} {holo} {mines} "
 	setVar $BOT~help[2]  $BOT~tab&"              {saveme:bot} {multi:#} {switch} {capture} {secure|paranoid}"
-	setVar $BOT~help[3]  $BOT~tab&"              {stay|holokill|slingshot} {sentinel} {noescape}"
+	setVar $BOT~help[3]  $BOT~tab&"              {stay|holokill|slingshot} {sentinel} {noescape} {mines:#}"
 	setVar $BOT~help[4]  $BOT~tab&"          "
 	setVar $BOT~help[5]  $BOT~tab&"         {f} - Trigger on fighter hits"
 	setVar $BOT~help[6]  $BOT~tab&"         {l} - Trigger on limpet hits"
@@ -67,12 +67,13 @@
 	setVar $BOT~help[23] $BOT~tab&"    {switch} - will switch into saveme bots ship before kill "
 	setVar $BOT~help[24] $BOT~tab&"  {sentinel} - turns on sentinel mode "
 	setVar $BOT~help[25] $BOT~tab&"  {defender} - pops a planet during holokill "
-	setVar $BOT~help[26] $BOT~tab&"           "
-	setVar $BOT~help[27] $BOT~tab&"        Examples: "
-	setVar $BOT~help[28] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[29] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[30] $BOT~tab&"             >defender f density adjacent secure"
-	setVar $BOT~help[31] $BOT~tab&"             >defender secure saveme:hunt"
+	setVar $BOT~help[26] $BOT~tab&"   {mines:#} - how many mines to deploy "
+	setVar $BOT~help[27] $BOT~tab&"           "
+	setVar $BOT~help[28] $BOT~tab&"        Examples: "
+	setVar $BOT~help[29] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[30] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[31] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[32] $BOT~tab&"             >defender secure saveme:hunt"
 
 	gosub :bot~helpfile
 
@@ -261,6 +262,22 @@
 
 	getwordpos " "&$bot~user_command_line&" " $pos " mine"
 	if ($pos > 0)
+		getWordPos " "&$bot~user_command_line&" " $pos " mines:"
+		if ($pos > 0)
+			getText $bot~user_command_line&" " $deploy_mine_count "mines:" " "
+			isNumber $test $deploy_mine_count
+			if ($test <> true)
+				setVar $SWITCHBOARD~message "Number of mines to deploy should be a number.*"
+				gosub :switchboard~switchboard
+				halt
+			end
+		end
+		if ($deploy_mine_count = 0)
+			setvar $deploy_mine_count 3
+		end
+		if ($deploy_mine_count > $SHIP~SHIP_MINES_MAX)
+			setvar $deploy_mine_count $SHIP~SHIP_MINES_MAX
+		end
 		setvar $restock~deploymines true
 	else
 		setvar $restock~deploymines false
@@ -1079,16 +1096,20 @@ return
 return
 
 :main~doMines
-	setvar $amount 1
-	if ($player~limpets >= 3)
-		setvar $amount 3
+	setvar $limpet_amount $deploy_mine_count
+	setvar $armid_amount $deploy_mine_count
+	if ($player~limpets < $deploy_mine_count)
+		setvar $limpet_amount $player~limpets
+	end 
+	if ($player~armids < $deploy_mine_count)
+		setvar $armid_amount $player~armids
 	end 
 	send " q q * "
-	if ($player~limpets > 0)
-		send "h 2" $amount "*  zc* "
+	if ($limpet_amount > 0)
+		send "h 2" $limpet_amount "*  zc* "
 	end
-	if ($player~armids > 0)
-		send "h 1" $amount "*  zc* "
+	if ($armid_amount > 0)
+		send "h 1" $armid_amount "*  zc* "
 	end
 	send "l j" #8 #8  $planet~planet  "* j m * * * j c  *  "
 	gosub :player~quikstats
@@ -1104,7 +1125,7 @@ return
 	if ($bot~last_fighter_attack <> "")
 		gosub :killing~set_the_cannon
 	end
-	if ((($player~photons < $photon~shooting_count) and ($nophoton <> true)) or (($combat~defender = true) and ($player~genesis <= 0)) or (($restock~deploymines = true) and ($player~limpets < $SHIP~SHIP_MINES_MAX)))
+	if ((($player~photons < $photon~shooting_count) and ($nophoton <> true)) or (($combat~defender = true) and ($player~genesis <= 0)) or (($restock~deploymines = true) and (($player~limpets < $deploy_mine_count) and ($player~armids < $deploy_mine_count) and ($ship~SHIP_MINES_MAX > 0))))
 		if (($player~turns <= 0) and ($player~unlimitedGame <> true))
 			setvar $switchboard~message "No turns to refurb photons.  Skipping - might need to wait for top of the hour.*"
 			gosub :switchboard~switchboard
