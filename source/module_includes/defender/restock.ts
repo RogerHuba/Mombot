@@ -113,7 +113,7 @@
 		return
 	else
 		:try_buying_furbs
-
+		gosub :player~quikstats
 		setVar $genesisCashNeeded 0 
 		setVar $limpetCashNeeded 0
 		setVar $armidCashNeeded 0
@@ -121,17 +121,27 @@
 		if ($combat~defender = true)
 			setVar $genesisCashNeeded ((($SHIP~SHIP_GENESIS_MAX-$PLAYER~genesis)*$game~genesis_cost))
 		end
-		if ($deploymines = true)
+		if (($deploymines = true) and (($player~limpets < $deploy_mine_count) and ($player~armids < $deploy_mine_count) and ($ship~SHIP_MINES_MAX > 0)))
 			setVar $limpetCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~LIMPETS)*$game~LIMPET_COST))
 			setVar $armidCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~ARMIDS)*$game~ARMID_COST))
 		end
 		if ($killing~holokill)
 			setVar $photonCashNeeded ($photon~shooting_count*$game~photon_cost)
 		else
-			if ($photon~shooting_count > 5)
-				setVar $photonCashNeeded ($photon~shooting_count*$game~photon_cost)
+			###############################################################################
+			# before the first furb, defender won't know how many photons a ship can hold #
+			###############################################################################
+			if ($ship~photon_max > 0)
+				setVar $photonCashNeeded ($ship~photon_max*$game~photon_cost)
+				if ($photon~shooting_count > $ship~photon_max)
+					setvar $photon~shooting_count $ship~photon_max
+				end
 			else
-				setVar $photonCashNeeded (5*$game~photon_cost)
+				if ($photon~shooting_count > 5)
+					setVar $photonCashNeeded ($photon~shooting_count*$game~photon_cost)
+				else
+					setVar $photonCashNeeded (5*$game~photon_cost)
+				end
 			end
 		end
 		if ($deploydisruptors = true)
@@ -555,6 +565,7 @@ return
 			if ($_Photon  = "Max")
 				getText CURRENTLINE $buy "(Max" ")"
 				send $buy & "* "
+				setvar $ship~photon_max $buy
 			else
 				send $_Photon & "* "
 			end
@@ -569,6 +580,7 @@ return
 		if ($_Disrupt  = "Max")
 			getText CURRENTLINE $buy "(Max" ")"
 			send $buy & "* "
+			setvar $ship~disruptor_max $buy
 		else
 			send $_Disrupt & "* "
 		end

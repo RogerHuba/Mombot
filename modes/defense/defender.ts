@@ -856,9 +856,6 @@
 	getWord currentline $is_subspace_message 1
 	getText currentline $prhunter~sector "PORT GONE:" " class: "
 	isNumber $isNumber $prhunter~sector
-	# TEMP FOR DEBUG ONLY - VALIDATION NEEDS TO BE HERE NORMALLY #
-	# setvar $is_subspace_message "R"
-	# DELETE THIS LINE ABOVE #
 
 	if (($is_subspace_message <> "R") or ($isNumber <> true))
 		setTextLineTrigger 25 :validate_prhunt " PORT GONE: "
