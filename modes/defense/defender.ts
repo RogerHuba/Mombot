@@ -260,6 +260,16 @@
 		setvar $killing~capture false
 	end
 
+    fileExists $SHIP~cap_file_chk $SHIP~cap_file
+    if ($SHIP~cap_file_chk <> TRUE)
+        gosub :SHIP~getShipCapStats
+    else
+		gosub :ship~loadShipInfo
+    end
+
+    gosub :SHIP~getShipStats
+
+
 	getwordpos " "&$bot~user_command_line&" " $pos " mine"
 	if ($pos > 0)
 		getWordPos " "&$bot~user_command_line&" " $pos " mines:"
@@ -424,14 +434,6 @@
 	# need to add a check here to make sure no nav haz or enemy limpets in starting sector before furbing #
 	#######################################################################################################
     
-    fileExists $SHIP~cap_file_chk $SHIP~cap_file
-    if ($SHIP~cap_file_chk <> TRUE)
-        gosub :SHIP~getShipCapStats
-    else
-		gosub :ship~loadShipInfo
-    end
-
-    gosub :SHIP~getShipStats
 
 	setvar $navigate~starting_ship_type $player~ship_type
 	setvar $navigate~starting_ship_max_attack $ship~SHIP_MAX_ATTACK
