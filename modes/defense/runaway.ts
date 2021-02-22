@@ -64,9 +64,9 @@
 			gosub :displayProgress
 		else
 			getSectorParameter $run_count "FIGSEC" $isFigged
-			getDistance $rundist $runsec $run_count
+			getDistance $rundist $player~current_sector $run_count
 			if ($rundist < 0)
-				setvar $player~starting_point $runsec
+				setvar $player~starting_point $player~current_sector
 				setvar $player~destination $run_count
 				gosub :player~getcourse
 				setvar $rundist $player~courseLength
@@ -107,9 +107,9 @@
 		if (SECTOR.WARPCOUNT[$run_count] <> 1]
 			gosub :displayProgress
 		else
-			getDistance $rundist $runsec $run_count
+			getDistance $rundist $player~current_sector $run_count
 			if ($rundist < 0)
-				setvar $player~starting_point $runsec
+				setvar $player~starting_point $player~current_sector
 				setvar $player~destination $run_count
 				gosub :player~getcourse
 				setvar $rundist $player~courseLength
@@ -165,7 +165,7 @@ goto :getsettings
 	if ($player~CURRENT_SECTOR <> $player~warpto)
 		goto :run_pwarp
 	end
-	setVar $runsec $player~CURRENT_SECTOR
+	setVar $player~current_sector $player~CURRENT_SECTOR
 	goto :getsettings
 
 :getNewRunAwaySector
