@@ -7,7 +7,11 @@
 	end	
 
 :scan_for_targets
+
 	killalltriggers
+	if ($nokill = true)
+		return
+	end
 	if ($photon~is_all_keys)
 		send "c n 9 * q "
 	end

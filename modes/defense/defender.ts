@@ -299,6 +299,12 @@
 		setvar $aliens~sell false
 	end
 
+	getwordpos " "&$bot~user_command_line&" " $pos "nokill"
+	if ($pos > 0)
+		setvar $killing~nokill true
+	else
+		setvar $killing~nokill false
+	end
 
 	getWordPos " "&$bot~user_command_line&" " $pos " multi:"
 	setvar $photon~multi false
@@ -523,27 +529,34 @@
 	if ($photon~density)
 		setVar $message $message&"*                   Density Photon"
 	end
-	if ($killing~holokill)
-		if ($killing~capture)
-			setVar $message $message&"*                   Holocap"
-		else
-			setVar $message $message&"*                   Holokill"
+	if ($nophoton = true)
+		setVar $message $message&"*                   Don't Photon"
+	end
+	if ($killing~nokill = true)
+		setVar $message $message&"*                   Don't Kill"
+	else
+		if ($killing~holokill)
+			if ($killing~capture)
+				setVar $message $message&"*                   Holocap"
+			else
+				setVar $message $message&"*                   Holokill"
+			end
 		end
-	end
-	if ($killing~slingshot)
-		setVar $message $message&"*                   Slingshot"
-	end
-	if ($killing~switch)
-		setVar $message $message&"*                   Switch ships"
+		if ($killing~slingshot)
+			setVar $message $message&"*                   Slingshot"
+		end
+		if ($killing~switch)
+			setVar $message $message&"*                   Switch ships"
+		end	
+		if ($killing~capture)
+			setVar $message $message&"*                   Capture"
+		end
 	end
 	if ($holo)
 		setVar $message $message&"*                   Holo Report"
 	end
 	if ($killing~auto)
 		setVar $message $message&"*                   Cannon Reset"
-	end
-	if ($killing~capture)
-		setVar $message $message&"*                   Capture"
 	end
 	if ($navigate~securePwarp)
 		setVar $message $message&"*                   Secure"

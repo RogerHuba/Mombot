@@ -203,6 +203,8 @@ return
 	if ($main~friendly_sectors[$player~current_sector] = true)
 		return
 	end
+	gosub :sector~getSectorData
+	setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
 	if ((($sector~realTraderCount = $sector~corpieCount) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1)) or ($player~current_sector = $map~home_sector))
 		#############################################
 		# do nothing if there is no enemy in sector #
