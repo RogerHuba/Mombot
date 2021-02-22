@@ -1255,6 +1255,9 @@ return
 			end
 			setvar $foundSector false
 			setvar $main~attack_sectors[$i] 0
+			####################################################
+			# Always pick a backdoor attack sector if possible #
+			####################################################
 			setvar $j 1
 			while ((SECTOR.BACKDOORS[$i][$j] > 0) and ($foundSector = false))
 				setVar $tempAdj SECTOR.BACKDOORS[$i][$j]
