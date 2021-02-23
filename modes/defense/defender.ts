@@ -1237,6 +1237,8 @@ return
 
 
 :refresh_sectors
+		setvar $backdoorAttackCount 0
+		setvar $randomAttackCount 0
 		setvar $i 1
 		while ($i <= sectors)
 			getsectorparameter $i "BUBBLE" $isBubble
@@ -1261,22 +1263,34 @@ return
 				getSectorParameter $tempAdj "FIGSEC" $isFigged
 				if ($isFigged = true)
 					setvar $main~attack_sectors[$i] $tempAdj
+					add $backdoorAttackCount 1
 					setvar $foundSector true
 				end
 				add $j 1
 			end
-			setvar $j 1
-			while ((SECTOR.WARPSIN[$i][$j] > 0) and ($foundSector = false))
-				setVar $tempAdj SECTOR.WARPSIN[$i][$j]
-				getSectorParameter $tempAdj "FIGSEC" $isFigged
-				if ($isFigged = true)
-					setvar $main~attack_sectors[$i] $tempAdj
-					setvar $foundSector true
+			if ($foundSector = false)
+				setarray $targets 7
+				setvar $targetCount 0
+				setvar $j 1
+				while (SECTOR.WARPSIN[$i][$j] > 0)
+					setVar $tempAdj SECTOR.WARPSIN[$i][$j]
+					getSectorParameter $tempAdj "FIGSEC" $isFigged
+					if ($isFigged = true)
+						add $targetCount 1
+						setvar $targets[$targetCount] $tempAdj
+					end
+					add $j 1
 				end
-				add $j 1
+				if ($targetCount > 0)
+					getRnd $randomTarget 1 $targetCount
+					setvar $main~attack_sectors[$i] $targets[$randomTarget]
+					add $randomAttackCount 1
+				end
 			end
 			add $i 1
 		end
+		setvar $switchboard~message "Found "&$backdoorAttackCount&" backdoor attack vectors, and "&$randomAttackCount&" random attack vectors.*"
+		gosub :switchboard~switchboard
 return
 
 :checkShipForDefenderStatus
