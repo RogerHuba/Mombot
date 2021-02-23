@@ -628,7 +628,7 @@
 		setVar $message $message&"*                   Will stop after "&$photon~limit&" photons fired"
 	end
 	if ($minimumTarget > 1)
-		setVar $message $message&"*                   Only will attack sectors with "&$minimumTarget&" options minumum"
+		setVar $message $message&"*                   Consider sectors with "&$minimumTarget&" options minumum"
 	end
 	setVar $message $message&"*                                                "
 	format $backdoorAttackCount $backdoorAttackCount NUMBER
