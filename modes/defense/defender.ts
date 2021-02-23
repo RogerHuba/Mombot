@@ -633,8 +633,8 @@
 	setVar $message $message&"*                                                "
 	format $backdoorAttackCount $backdoorAttackCount NUMBER
 	format $randomAttackCount $randomAttackCount NUMBER
-	setvar $message $message&"*                   "&$backdoorAttackCount&" backdoor attack vectors                "
-	setvar $message $message&"*                   "&$randomAttackCount&" random attack vectors                   "
+	setvar $message $message&"*                   "&$backdoorAttackCount&" backdoor attack vectors       "
+	setvar $message $message&"*                   "&$randomAttackCount&" random attack vectors           "
 	setVar $message $message&"*                                              "
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	setvar $switchboard~message $message
