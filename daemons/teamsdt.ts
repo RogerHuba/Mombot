@@ -109,6 +109,18 @@
 		gosub :switchboard~switchboard
 	END
 
+	setvar $backdoor false
+	getWordPos " "&$bot~user_command_line&" " $pos " treasury:"
+	if ($pos > 0)
+		getText $bot~user_command_line $treasury "treasury:" " "
+		if ($treasury = 0)
+			setVar $SWITCHBOARD~message "Invalid treasury value!  Halting.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+		replaceText $bot~user_command_line " treasury:"&$treasury " "
+	end
+
 	setVar $custom_furb FALSE
 	getWordPos $bot~user_command_line $pos ":"
 	if ($pos > 0)
@@ -696,7 +708,17 @@
 				pause
 
 			:done
+				if ($treasury <> "0")
+					send "'red"&$red_id&" land "&$treasury&"*"
+					waiton "In Cit - Planet "&$treasury
+					settexttrigger deposit :donetreasury " credits deposited into citadel"
+					settexttrigger withdrawal :donetreasury " credits taken from citadel"
+					send "'red"&$red_id&" keep 500000*"
+					pause
+					:donetreasury
+				end
 				killalltriggers
+				
 				#send "'Quick Nap before resuming!*"
 				setdelaytrigger naptime :naptime 500
 				pause
@@ -769,9 +791,17 @@ return
 			goto :done
 	end
 	if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
-		send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&" blow:red"&$red_id&" *"
+		if ($treasury = "0")
+			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&" blow:red"&$red_id&" *"
+		else
+			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&" blow:red"&$red_id&" nodecash *"
+		end
 	else
-		send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" blow:red"&$red_id&" *"
+		if ($treasury = "0")
+			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" blow:red"&$red_id&" *"
+		else
+			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" blow:red"&$red_id&" nodecash *"
+		end
 	end
 	settexttrigger nofig :nofig "No fighter down at that ship number, drop a fig."
 	settexttrigger furb1 :furb1 "- Furb delivered"
