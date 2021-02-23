@@ -145,6 +145,11 @@
 		halt	
 	end
 
+	isNumber $is_a_number6 $bot~parm6
+	isNumber $is_a_number5 $bot~parm5
+	if ((($bot~parm5 = "0") or ($is_a_number5 <> true)) and (($bot~parm6 = "0") or ($is_a_number6 <> true)))
+		setvar $twoship true
+	end
 	if ($twoship = TRUE)
 		isNumber $is_a_number $bot~parm3
 		if ($is_a_number)
@@ -411,6 +416,8 @@
 			while ($i <= $NUMBER_CASHING_SHIPS)
 				if ($SHIPS[$i][3] <> TRUE)
 					setVar $SWITCHBOARD~MESSAGE "Ship: " & $SHIPS[$i] & " not avaliable!  HALTING*"
+					gosub :SWITCHBOARD~SWITCHBOARD
+					halt
 				end
 				add $i 1
 			end
