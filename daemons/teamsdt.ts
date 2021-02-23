@@ -145,9 +145,10 @@
 		halt	
 	end
 
-	isNumber $is_a_number6 $bot~parm6
+	isNumber $is_a_number4 $bot~parm4
 	isNumber $is_a_number5 $bot~parm5
-	if ((($bot~parm5 = "0") or ($is_a_number5 <> true)) and (($bot~parm6 = "0") or ($is_a_number6 <> true)))
+	isNumber $is_a_number6 $bot~parm6
+	if ((($bot~parm4 <> "0") and ($is_a_number4 = true)) and (($bot~parm5 = "0") or ($is_a_number5 <> true)) and (($bot~parm6 = "0") or ($is_a_number6 <> true)))
 		setvar $twoship true
 	end
 	if ($twoship = TRUE)

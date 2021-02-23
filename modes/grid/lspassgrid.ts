@@ -23,7 +23,7 @@
 	#                                   - Density Scanner (at least)
 	#									- More Than 10 Fighters
 	#									- More than 10,000 creds (for buying fuel)
-	#                                   - have _ck_callsaveme.cts in scripts
+	#                                   - have "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts" in scripts
 	#									- ZTM not required, but CIM will need to be updated
 	#								      periodically.
 	#
@@ -315,6 +315,12 @@
 	getWordPos $bot~user_command_line $pos "paranoid"
 	if ($pos > 0)
 		setVar $twarp_safety 2
+	end
+
+	setVar $refurb false
+	getWordPos " "&$bot~user_command_line&" " $pos " refurb "
+	if ($pos > 0)
+		setVar $refurb true
 	end
 
 	setVar $TRACKER FALSE
@@ -1218,11 +1224,11 @@
 			if ($spoofy <> "Your") AND ($spoofy <> "You") AND ($spoofy <> "An") AND ($spoofy <> "Quasar")
 				goto :help_me_jmp
 			end
-			stop _ck_callsaveme
-			stop _ck_callsaveme
+			stop "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts"
+			stop "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts"
 			send "   N   Y  *  N   *   R   *   Q   Q   Q   Z   N   *   R   *   "
 			waitFor "Command [TL="
-			load _ck_callsaveme
+			load "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts"
 			waitFor "Message sent on sub-space channel"
 			halt
 		:help_me_jmp
@@ -1281,7 +1287,7 @@
 	        send " r *  *  p d 0* 0* 0* * *** * c q q q q q z 2 2 c q * z * *** * * "
 			gosub :player~quikstats
 			if ($PLAYER~CURRENT_PROMPT = "Command")
-				load "_ck_callsaveme.cts"
+				load "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts"
 				halt
 			else
 				Echo "**" & $TAGLINEc & " " & "Hmmm..  I seem to be stuck.***"
@@ -1309,7 +1315,11 @@
 		
 		if ($player~FIGHTERS <= 10)
 			Echo "**" & $TAGLINEc & " " & "Fighter Level is Critically Low (Less Than 10)**"
-			Halt
+			if (($refurb = true) and ($player~credits > 1000))
+				gosub :refurb
+			else
+				Halt		
+			end
 		end
 	end
 
@@ -1783,6 +1793,29 @@ return
 
 	
 
+return
+
+:refurb
+	setVar $BOT~command "refurb"
+	setVar $BOT~user_command_line " refurb seek "
+	setvar $bot~parm1 $seek
+	setvar $bot~parm2 ""
+	setvar $bot~parm3 ""
+	setvar $bot~parm4 ""
+	setvar $bot~parm5 ""
+	setvar $bot~parm6 ""
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	savevar $bot~parm1
+	savevar $bot~parm2
+	savevar $bot~parm3
+	savevar $bot~parm4
+	savevar $bot~parm5
+	savevar $bot~parm6
+	load "scripts\"&$bot~mombot_directory&"\commands\general\refurb.cts"
+	setEventTrigger        refurbend        :refurbend "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\refurb.cts"
+	pause
+	:refurbend
 return
 
 
