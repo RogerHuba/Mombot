@@ -43,39 +43,40 @@
 
 
 	setVar $BOT~help[1]  $BOT~tab&"Grid defender {adjacent|density|nophoton} {f} {l} {a} {auto} {holo} {mines} "
-	setVar $BOT~help[2]  $BOT~tab&"              {saveme:bot} {multi:#} {switch} {capture} {secure|paranoid}"
-	setVar $BOT~help[3]  $BOT~tab&"              {stay|holokill|slingshot} {sentinel} {noescape} {mines:#}"
-	setVar $BOT~help[4]  $BOT~tab&"              {limit:#}                                                   "
+	setVar $BOT~help[2]  $BOT~tab&"              {saveme:bot} {multi:#} {switch} {capture} {secure|paranoid}   "
+	setVar $BOT~help[3]  $BOT~tab&"              {stay|holokill|slingshot} {sentinel} {noescape} {mines:#}     "
+	setVar $BOT~help[4]  $BOT~tab&"              {limit:#} {mintargets:#}                                      "
 	setVar $BOT~help[5]  $BOT~tab&"          "
-	setVar $BOT~help[6]  $BOT~tab&"         {f} - Trigger on fighter hits"
-	setVar $BOT~help[7]  $BOT~tab&"         {l} - Trigger on limpet hits"
-	setVar $BOT~help[8]  $BOT~tab&"         {a} - Trigger on armid hits"
-	setVar $BOT~help[9]  $BOT~tab&"      {holo} - holoscan on ss after photon "
-	setVar $BOT~help[10] $BOT~tab&"    {secure} - will only escape to limped sectors "
-	setVar $BOT~help[11] $BOT~tab&"  {paranoid} - will only drop to limped sectors "
-	setVar $BOT~help[12] $BOT~tab&"  {adjacent} - adjacent photon option - default"
-	setVar $BOT~help[13] $BOT~tab&"   {density} - density photon option"
-	setVar $BOT~help[14] $BOT~tab&"  {nophoton} - will not fire photon"
-	setVar $BOT~help[15] $BOT~tab&"      {stay} - won't leave sector to kill"
-	setVar $BOT~help[16] $BOT~tab&"  {holokill} - holokill if target is seen"
-	setVar $BOT~help[17] $BOT~tab&" {slingshot} - pgrid holokill if target is seen"
-	setVar $BOT~help[18] $BOT~tab&"  {noescape} - will not retreat from attack sector"
-	setVar $BOT~help[19] $BOT~tab&"      {auto} - Will reset cannon damages automatically"
-	setVar $BOT~help[20] $BOT~tab&"   {capture} - capture instead of kill "
-	setVar $BOT~help[21] $BOT~tab&"     {mines} - auto deploy mines as you go "
-	setVar $BOT~help[22] $BOT~tab&"{saveme:bot} - define saveme bot for your planet "
-	setVar $BOT~help[23] $BOT~tab&"   {multi:#} - how many photons to shoot (multi photon games) "
-	setVar $BOT~help[24] $BOT~tab&"    {switch} - will switch into saveme bots ship before kill "
-	setVar $BOT~help[25] $BOT~tab&"  {sentinel} - turns on sentinel mode "
-	setVar $BOT~help[26] $BOT~tab&"  {defender} - pops a planet during holokill "
-	setVar $BOT~help[27] $BOT~tab&"   {mines:#} - how many mines to deploy "
-	setVar $BOT~help[28] $BOT~tab&"   {limit:#} - how many photons to shoot before stopping "
-	setVar $BOT~help[29] $BOT~tab&"           "
-	setVar $BOT~help[30] $BOT~tab&"        Examples: "
-	setVar $BOT~help[31] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[32] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[33] $BOT~tab&"             >defender f density adjacent secure"
-	setVar $BOT~help[34] $BOT~tab&"             >defender secure saveme:hunt"
+	setVar $BOT~help[6]  $BOT~tab&"           {f} - Trigger on fighter hits"
+	setVar $BOT~help[7]  $BOT~tab&"           {l} - Trigger on limpet hits"
+	setVar $BOT~help[8]  $BOT~tab&"           {a} - Trigger on armid hits"
+	setVar $BOT~help[9]  $BOT~tab&"        {holo} - holoscan on ss after photon "
+	setVar $BOT~help[10] $BOT~tab&"      {secure} - will only escape to limped sectors "
+	setVar $BOT~help[11] $BOT~tab&"    {paranoid} - will only drop to limped sectors "
+	setVar $BOT~help[12] $BOT~tab&"    {adjacent} - adjacent photon option - default"
+	setVar $BOT~help[13] $BOT~tab&"     {density} - density photon option"
+	setVar $BOT~help[14] $BOT~tab&"    {nophoton} - will not fire photon"
+	setVar $BOT~help[15] $BOT~tab&"        {stay} - won't leave sector to kill"
+	setVar $BOT~help[16] $BOT~tab&"    {holokill} - holokill if target is seen"
+	setVar $BOT~help[17] $BOT~tab&"   {slingshot} - pgrid holokill if target is seen"
+	setVar $BOT~help[18] $BOT~tab&"    {noescape} - will not retreat from attack sector"
+	setVar $BOT~help[19] $BOT~tab&"        {auto} - Will reset cannon damages automatically"
+	setVar $BOT~help[20] $BOT~tab&"     {capture} - capture instead of kill "
+	setVar $BOT~help[21] $BOT~tab&"       {mines} - auto deploy mines as you go "
+	setVar $BOT~help[22] $BOT~tab&"  {saveme:bot} - define saveme bot for your planet "
+	setVar $BOT~help[23] $BOT~tab&"     {multi:#} - how many photons to shoot (multi photon games) "
+	setVar $BOT~help[24] $BOT~tab&"      {switch} - will switch into saveme bots ship before kill "
+	setVar $BOT~help[25] $BOT~tab&"    {sentinel} - turns on sentinel mode "
+	setVar $BOT~help[26] $BOT~tab&"    {defender} - pops a planet during holokill "
+	setVar $BOT~help[27] $BOT~tab&"     {mines:#} - how many mines to deploy "
+	setVar $BOT~help[28] $BOT~tab&"     {limit:#} - how many photons to shoot before stopping "
+	setVar $BOT~help[29] $BOT~tab&"{mintargets:#} - only fires if there are this many options "
+	setVar $BOT~help[30] $BOT~tab&"           "
+	setVar $BOT~help[31] $BOT~tab&"        Examples: "
+	setVar $BOT~help[32] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[33] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[34] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[35] $BOT~tab&"             >defender secure saveme:hunt"
 
 	gosub :bot~helpfile
 
@@ -377,6 +378,17 @@
 		end
 	end
 
+	setvar $minimumTarget 0
+	getWordPos " "&$bot~user_command_line&" " $pos " mintargets:"
+	if ($pos > 0)
+		getText $bot~user_command_line&" " $minimumTarget "mintargets:" " "
+		if ($minimumTarget = 0)
+			setVar $SWITCHBOARD~message "Minimum attack targets is not valid.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
+
 	getWordPos " "&$bot~user_command_line&" " $pos " furbsec:"
 	if ($pos > 0)
 		setvar $restock~refurb_in_sector true
@@ -613,7 +625,10 @@
 		setVar $message $message&"*                   Refurbing in sector "&$restock~refurb_sector
 	end
 	if ($photon~limit > 0)
-		setVar $message $message&"*                   Will stop after "&$photon~limit&" photons fired."
+		setVar $message $message&"*                   Will stop after "&$photon~limit&" photons fired"
+	end
+	if ($minimumTarget > 0)
+		setVar $message $message&"*                   Only will attack sectors with "&$minimumTarget&" options"
 	end
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	setvar $switchboard~message $message
@@ -1305,9 +1320,11 @@ return
 					add $j 1
 				end
 				if ($targetCount > 0)
-					getRnd $randomTarget 1 $targetCount
-					setvar $main~attack_sectors[$i] $targets[$randomTarget]
-					add $randomAttackCount 1
+					if ($targetCount >= $minimumTarget)
+						getRnd $randomTarget 1 $targetCount
+						setvar $main~attack_sectors[$i] $targets[$randomTarget]
+						add $randomAttackCount 1
+					end
 				end
 			end
 			add $i 1
