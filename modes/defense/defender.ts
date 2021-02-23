@@ -631,7 +631,7 @@
 		setVar $message $message&"*                   Only will attack sectors with "&$minimumTarget&" options minumum"
 	end
 	setVar $message $message&"*                                                "
-	setvar $message $message&"*   -= Found "&$backdoorAttackCount&" backdoor attack vectors, and "&$randomAttackCount&" random attack vectors =-*"
+	setvar $message $message&"*   -= Found "&$backdoorAttackCount&" backdoor options, and "&$randomAttackCount&" random options =-*"
 	setVar $message $message&"*                                              "
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	setvar $switchboard~message $message
