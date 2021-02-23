@@ -628,8 +628,11 @@
 		setVar $message $message&"*                   Will stop after "&$photon~limit&" photons fired"
 	end
 	if ($minimumTarget > 0)
-		setVar $message $message&"*                   Only will attack sectors with "&$minimumTarget&" options"
+		setVar $message $message&"*                   Only will attack sectors with "&$minimumTarget&" options minumum"
 	end
+	setVar $message $message&"*                                                "
+	setvar $message $message&"*   -= Found "&$backdoorAttackCount&" backdoor attack vectors, and "&$randomAttackCount&" random attack vectors =-*"
+	setVar $message $message&"*                                              "
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	setvar $switchboard~message $message
 	gosub :switchboard~switchboard
@@ -1329,8 +1332,6 @@ return
 			end
 			add $i 1
 		end
-		setvar $switchboard~message "Found "&$backdoorAttackCount&" backdoor attack vectors, and "&$randomAttackCount&" random attack vectors.*"
-		gosub :switchboard~switchboard
 return
 
 :checkShipForDefenderStatus
