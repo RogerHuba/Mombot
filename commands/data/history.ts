@@ -1,7 +1,7 @@
 	logging off
 	gosub :BOT~loadVars
 
-	setVar $BOT~help[1]  $BOT~tab&" history {limit#}"
+	setVar $BOT~help[1]  $BOT~tab&" history {limit:#}"
 	setVar $BOT~help[2]  $BOT~tab&"   "
 	setVar $BOT~help[3]  $BOT~tab&"     Displays the most recent self commands"
 	setVar $BOT~help[4]  $BOT~tab&"     this bot has given."
@@ -31,19 +31,37 @@
 	isNumber $isnumber $bot~parm1
 	if ($isnumber = true)
 		setvar $history_limit $bot~parm1
+	else
+		setvar $filter $bot~parm1
 	end
 	if ($history_limit = 0)
 		setvar $history_limit $BOT~historyCount
+	else
+		setvar $filter $bot~parm2
+	end
+	if ($filter = "0")
+		setvar $i $history_limit
+		setvar $switchboard~message $switchboard~message&"Displaying last "&$history_limit&" commands:*"
+		while ($i >= 1)
+			if ($history[($i+$place)] <> "0")
+				setvar $switchboard~message $switchboard~message&$history[($i+$place)]&"*"
+			end
+			subtract $i 1
+		end
+	else
+		setvar $i $history_limit
+		setvar $switchboard~message $switchboard~message&"Displaying last commands matching ["&$filter&"]:*"
+		while ($i >= 1)
+			if ($history[($i+$place)] <> "0")
+				getwordpos $history[($i+$place)] $pos $filter 
+				if ($pos > 0)
+					setvar $switchboard~message $switchboard~message&$history[($i+$place)]&"*"
+				end
+			end
+			subtract $i 1
+		end	
 	end
 
-	setvar $i $history_limit
-	setvar $switchboard~message $switchboard~message&"Displaying last "&$history_limit&" commands:*"
-	while ($i >= 1)
-		if ($history[($i+$place)] <> "0")
-			setvar $switchboard~message $switchboard~message&$history[($i+$place)]&"*"
-		end
-		subtract $i 1
-	end
 
 	gosub :switchboard~switchboard
 halt
