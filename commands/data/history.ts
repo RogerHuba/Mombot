@@ -45,6 +45,7 @@
 	else
 		setvar $filter $bot~parm2
 	end
+	send "'[" $filter "]*"
 	if ($filter = "0")
 		setvar $i $history_limit
 		setvar $switchboard~message $switchboard~message&"Displaying last "&$history_limit&" commands:*"
