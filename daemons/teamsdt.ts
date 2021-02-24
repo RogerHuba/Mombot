@@ -111,8 +111,8 @@
 
 	getWordPos " "&$bot~user_command_line&" " $pos " treasury:"
 	if ($pos > 0)
-		getText $bot~user_command_line $treasury "treasury:" " "
-		if ($treasury = 0)
+		getText " "&$bot~user_command_line&" " $treasury "treasury:" " "
+		if ($treasury = "")
 			setVar $SWITCHBOARD~message "Invalid treasury value!  Halting.*"
 			gosub :switchboard~switchboard
 			halt
@@ -706,7 +706,7 @@
 
 			:done
 				if ($treasury <> "0")
-					send "'red"&$red_id&" land "&$treasury&"*"
+					send "'red" $red_id " land " $treasury "*"
 					waiton "In Cit - Planet "&$treasury
 					settexttrigger deposit :donetreasury " credits deposited into citadel"
 					settexttrigger withdrawal :donetreasury " credits taken from citadel"
