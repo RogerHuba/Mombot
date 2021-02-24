@@ -109,6 +109,7 @@
 		gosub :switchboard~switchboard
 	END
 
+	setvar $treasury ""
 	getWordPos " "&$bot~user_command_line&" " $pos " treasury:"
 	if ($pos > 0)
 		getText " "&$bot~user_command_line&" " $treasury "treasury:" " "
@@ -539,7 +540,7 @@
 				setVar $orders[1][2] ""
 				setVar $orders[2][2] ""
 			end
-			if ($treasury <> "0")
+			if ($treasury <> "")
 				send "'red"&$orders[1]&" lift *"
 			end
 			if ($ephaggle = 0)
@@ -705,7 +706,7 @@
 				pause
 
 			:done
-				if ($treasury <> "0")
+				if ($treasury <> "")
 					send "'red" $red_id " land " $treasury "*"
 					waiton "In Cit - Planet "&$treasury
 					settexttrigger deposit :donetreasury " credits deposited into citadel"
@@ -788,13 +789,13 @@ return
 			goto :done
 	end
 	if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
-		if ($treasury = "0")
+		if ($treasury = "")
 			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&" blow:red"&$red_id&" *"
 		else
 			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&" blow:red"&$red_id&" nodecash *"
 		end
 	else
-		if ($treasury = "0")
+		if ($treasury = "")
 			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" blow:red"&$red_id&" *"
 		else
 			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" blow:red"&$red_id&" nodecash *"
