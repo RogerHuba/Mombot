@@ -58,7 +58,7 @@
 		setvar $count 0
 		setvar $i $BOT~historyCount
 		setvar $switchboard~message $switchboard~message&"Displaying last commands matching ["&$filter&"]:*"
-		while (($i >= 1) and ($count >= $history_limit))
+		while (($i >= 1) and ($count <= $history_limit))
 			if ($history[($i+$place)] <> "0")
 				getwordpos $history[($i+$place)] $pos $filter 
 				if ($pos > 0)
