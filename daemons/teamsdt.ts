@@ -109,7 +109,6 @@
 		gosub :switchboard~switchboard
 	END
 
-	setvar $backdoor false
 	getWordPos " "&$bot~user_command_line&" " $pos " treasury:"
 	if ($pos > 0)
 		getText $bot~user_command_line $treasury "treasury:" " "
@@ -481,15 +480,10 @@
 					end
 				add $j 1
 			end
-			if ($ephaggle = 1)
-				send "'red"&$i&" ephaggle planet*"
-				waitfor "EP Perfect Haggle loaded"
-			else
-				send "'red"&$i&" stop ephaggle*"
-				setDelayTrigger stopep2 :stopep2 1000 
-				pause
-				:stopep2
-			end
+			send "'red"&$i&" stop ephaggle*"
+			setDelayTrigger stopep2 :stopep2 1000 
+			pause
+			:stopep2
 			send "'red"&$i&" watcher*"
 			setDelayTrigger watchstop :watchstop 1000 
 			pause
