@@ -627,7 +627,7 @@
 		setVar $message $message&"*                   Defender mode on"
 	end
 	if ($sector~safe_attack_only = true)
-		setVar $message $message&"*                   Only attacks if it can win when attacking outside of sector"
+		setVar $message $message&"*                   Only attacks outside of sector if odds are good"
 	end
 	if ($prhunter~activate = true)
 		setVar $message $message&"*                   PR Hunter mode on"
