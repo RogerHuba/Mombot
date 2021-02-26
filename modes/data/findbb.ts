@@ -339,12 +339,14 @@ halt
 :determineNormalSpace
 	send "c"
 	send "v0*yy"
+	clearallavoids
 
 	killalltriggers
 	setVar $i 1
 	while ($i <= $bubblei)
 		
 		send "v" $bubbleDoors[$i] "*"
+		setAvoid $bubbleDoors[$i]
 		add $i 1
 	end
 
@@ -352,43 +354,53 @@ halt
 	while ($i <= $tunnelsi)
 		send "v" $tunnelDoors1[$i] "*"
 		send "v" $tunnelDoors2[$i] "*"
+		setAvoid $tunnelDoors1[$i]
+		setAvoid $tunnelDoors2[$i]
 		add $i 1
 	end
 
 	setVar $i 11
 	setVar $plotc 1
 	while ($i <= SECTORS)
-	
-		
-		send "f1*" $i "** "
-		add $plotC 1
-		if ($plotC = 51)
-			send "^q"
-			:moreplotinfo
-			setTextLineTrigger plotCourseError :plotCourseError "Error - No route within"
-			setTextLineTrigger plotCoursePath :plotCoursePath "The shortest path"
-			setTextLineTrigger plotCourseNext :plotCourseNext "ENDINTERROG"
-			pause
-			:plotCourseError 
-				killalltriggers
-				goto :moreplotinfo
-			:plotCoursePath
-				killalltriggers
-				getWord CURRENTLINE $nsec 13
-				setVar $normalSectors[$nsec] 1
-				goto :moreplotinfo
-			:plotCourseNext
-				killalltriggers
-			setVar $plotc 1
-			if ($i = SECTORS)
-				goto :wedonecounting
+		getCourse $dist 1 $i
+		if ($dist = "-1")
+			send "f1*" $i "** "
+			add $plotC 1
+			if ($plotC = 51)
+				send "^q"
+				:moreplotinfo
+				setTextLineTrigger plotCourseError :plotCourseError "Error - No route within"
+				setTextLineTrigger plotCoursePath :plotCoursePath "The shortest path"
+				setTextLineTrigger plotCourseNext :plotCourseNext "ENDINTERROG"
+				pause
+				:plotCourseError 
+					killalltriggers
+					goto :moreplotinfo
+				:plotCoursePath
+					killalltriggers
+					getWord CURRENTLINE $nsec 13
+					setVar $normalSectors[$nsec] 1
+					goto :moreplotinfo
+				:plotCourseNext
+					killalltriggers
+				setVar $plotc 1
+				if ($i = SECTORS)
+					goto :wedonecounting
+				end
 			end
+		else
+			setVar $normalSectors[$i] 1
 		end
 		add $i 1
 		if ($i = SECTORS)
-			send "f1*" $i "** "
-			send "^q"
-			goto :moreplotinfo
+			getCourse $dist 1 $i
+			if ($dist = "-1")
+				send "f1*" $i "** "
+				send "^q"
+				goto :moreplotinfo
+			else
+				setVar $normalSectors[$i] 1
+			end
 		end
 	end
 
@@ -931,6 +943,7 @@ return
 :goCrazy
 	
 	send "v0*yyq"
+	clearallavoids
 	waitfor "Computer deactivated>"
 	
 	setVar $BOT~command "mow"
