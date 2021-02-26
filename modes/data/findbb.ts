@@ -298,17 +298,23 @@ echo "Entering DO PLOTS*"
 			setVar $x 1
 			while ($x <= $bubblei)
 				echo "*############# VOIDING KNOWN DOORS #############"
-				send "v" $bubbleDoors[$x] "*"
-				setAvoid $bubbleDoors[$x]
+				if ($bubbleDoors[$x] > 0)
+					send "v" $bubbleDoors[$x] "*"
+					setAvoid $bubbleDoors[$x]
+				end
 				add $x 1
 			end
 			setVar $x 1
 			while ($x <= $tunnelsi)
 				echo "*############# VOIDING KNOWN TUnNEL DOORS #############"
-				send "v" $tunnelDoors1[$x] "*"
-				send "v" $tunnelDoors2[$x] "*"
-				setAvoid $tunnelDoors1[$x]
-				setAvoid $tunnelDoors2[$x]
+				if ($tunnelDoors1[$x] > 0)
+					setAvoid $tunnelDoors1[$x]
+					send "v" $tunnelDoors1[$x] "*"
+				end
+				if ($tunnelDoors2[$x] > 0)
+					send "v" $tunnelDoors2[$x] "*"
+					setAvoid $tunnelDoors2[$x]
+				end
 				add $x 1
 			end
 			
