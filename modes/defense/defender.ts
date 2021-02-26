@@ -549,14 +549,14 @@
 
 	setVar $message $script_ver&" Currently Running On Planet "&$planet~planet&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 	if ($fighter)
-		setVar $message $message&"*                 On Fighter Hit: Yes"
+		setVar $message $message&"*             On Fighter Hit: Yes"
 	else
-		setVar $message $message&"*                 On Fighter Hit: No"
+		setVar $message $message&"*             On Fighter Hit: No"
 	end
 	if ($limpet)
-		setVar $message $message&"*                  On Limpet Hit: Yes"
+		setVar $message $message&"*             On Limpet Hit: Yes"
 	else
-		setVar $message $message&"*                  On Limpet Hit: No"
+		setVar $message $message&"*             On Limpet Hit: No"
 	end
 	if ($armid)
 		setVar $message $message&"*             On Armid Hit: Yes"
