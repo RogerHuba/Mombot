@@ -554,24 +554,24 @@
 		setVar $message $message&"*             On Fighter Hit: No"
 	end
 	if ($limpet)
-		setVar $message $message&"*             On Limpet Hit: Yes"
+		setVar $message $message&"*              On Limpet Hit: Yes"
 	else
-		setVar $message $message&"*             On Limpet Hit: No"
+		setVar $message $message&"*              On Limpet Hit: No"
 	end
 	if ($armid)
-		setVar $message $message&"*             On Armid Hit: Yes"
+		setVar $message $message&"*               On Armid Hit: Yes"
 	else
-		setVar $message $message&"*             On Armid Hit: No"
+		setVar $message $message&"*               On Armid Hit: No"
 	end
 	if ($main~saveme)
-		setVar $message $message&"*             Saveme bot: "&$main~saveme_bot
+		setVar $message $message&"*                 Saveme bot: "&$main~saveme_bot
 	end
-		setVar $message $message&"*             Home Sector: "&$map~home_sector
+	setVar $message $message&"*                Home Sector: "&$map~home_sector
 	format $planet~planet_fighters $formatted_fighters NUMBER
-		setVar $message $message&"*             Auto Kill: "&$formatted_fighters&" Fighters"
-		setVar $message $message&"*                    "
-		setVar $message $message&"*                  Modes"
-		setVar $message $message&"*                 -------"
+	setVar $message $message&"*                  Auto Kill: "&$formatted_fighters&" Fighters"
+	setVar $message $message&"*                    "
+	setVar $message $message&"*                  Modes"
+	setVar $message $message&"*                 -------"
 	if ($photon~adjacentphoton)
 		setVar $message $message&"*             Adjacent Photon"
 	end
