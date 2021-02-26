@@ -865,7 +865,7 @@
 				gosub :restock~refurb_photons
 				send "p"&$map~home_sector&"*y "
 			end
-			if ($photon~shot >= $photon~limit)
+			if (($photon~shot >= $photon~limit) and ($photon~limit > 0))
 				setvar $switchboard~message "Photon limit reached.  Shutting down.*"
 				gosub :switchboard~switchboard
 				halt
@@ -964,7 +964,7 @@ goto :processing
 		else
 			gosub :player~quikstats
 		end
-		if ($photon~shot >= $photon~limit)
+		if (($photon~shot >= $photon~limit) and ($photon~limit > 0))
 			###################################################################
 			# for when you only want to shoot a certain number of photons afk #
 			###################################################################

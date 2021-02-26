@@ -258,67 +258,54 @@ return
 :doplotsFunction
 	send "c"
 	send "v0*yy"
-	clearallavoids
 echo "Entering DO PLOTS*"
 	while ($go = 1)
 
-		getCourse $dist 1 $cSector
-		if ($dist = "-1")
-			send "f1*" $cSector "*"
-			setTextLineTrigger badplot :badplot "Error - No route within"
-			setTextLineTrigger goodplot :goodplot "The shortest path "
-			pause
-			:badplot
-				killalltriggers
-				send "n"
-				goto :again
-			:goodPlot
-				killalltriggers
-				getWord CURRENTLINE $dist 4
-				STRIPTEXT $dist "("
-		end
-
-		if ($dist > 15)
-			setVar $foundBubble 0
-			goSub :checkBubble
-			if ($foundBubble = 0)
-			//	goSub :checkTunnel
+		send "f1*" $cSector "*"
+		
+		setTextLineTrigger badplot :badplot "Error - No route within"
+		setTextLineTrigger goodplot :goodplot "The shortest path "
+		pause
+		:badplot
+			killalltriggers
+			send "n"
+			goto :again
+		:goodPlot
+			killalltriggers
+			getWord CURRENTLINE $dist 4
+			STRIPTEXT $dist "("
+			if ($dist > 15)
+				setVar $foundBubble 0
+				goSub :checkBubble
 				if ($foundBubble = 0)
-					echo "*#######################################################"
-					echo "*######## NO SOLUTION FOR:  " $cSector " ###############"
-					echo "*#######################################################"
+				//	goSub :checkTunnel
+					if ($foundBubble = 0)
+						echo "*#######################################################"
+						echo "*######## NO SOLUTION FOR:  " $cSector " ###############"
+						echo "*#######################################################"
+					else
+						
+					end
 				else
-					
+					if ($goCrazy = 1)
+						goSub :goCrazy
+					end
 				end
-			else
-				if ($goCrazy = 1)
-					goSub :goCrazy
-				end
-			end
-			setVar $x 1
-			while ($x <= $bubblei)
-				echo "*############# VOIDING KNOWN DOORS #############"
-				if ($bubbleDoors[$x] > 0)
+				setVar $x 1
+				while ($x <= $bubblei)
+					echo "*############# VOIDING KNOWN DOORS #############"
 					send "v" $bubbleDoors[$x] "*"
-					setAvoid $bubbleDoors[$x]
+					add $x 1
 				end
-				add $x 1
-			end
-			setVar $x 1
-			while ($x <= $tunnelsi)
-				echo "*############# VOIDING KNOWN TUnNEL DOORS #############"
-				if ($tunnelDoors1[$x] > 0)
-					setAvoid $tunnelDoors1[$x]
+				setVar $x 1
+				while ($x <= $tunnelsi)
+					echo "*############# VOIDING KNOWN TUnNEL DOORS #############"
 					send "v" $tunnelDoors1[$x] "*"
-				end
-				if ($tunnelDoors2[$x] > 0)
 					send "v" $tunnelDoors2[$x] "*"
-					setAvoid $tunnelDoors2[$x]
+					add $x 1
 				end
-				add $x 1
+				
 			end
-			
-		end
 
 		:again
 			
@@ -345,73 +332,56 @@ halt
 :determineNormalSpace
 	send "c"
 	send "v0*yy"
-	clearallavoids
 
 	killalltriggers
 	setVar $i 1
 	while ($i <= $bubblei)
-		if ($bubbleDoors[$i] > 0)
-			send "v" $bubbleDoors[$i] "*"
-			setAvoid $bubbleDoors[$i]
-		end
+		
+		send "v" $bubbleDoors[$i] "*"
 		add $i 1
 	end
 
 	setVar $i 1
 	while ($i <= $tunnelsi)
-		if ($tunnelDoors1[$i] > 0)
-			setAvoid $tunnelDoors1[$i]
-			send "v" $tunnelDoors1[$i] "*"
-		end
-		if ($tunnelDoors2[$i] > 0)
-			send "v" $tunnelDoors2[$i] "*"
-			setAvoid $tunnelDoors2[$i]
-		end
+		send "v" $tunnelDoors1[$i] "*"
+		send "v" $tunnelDoors2[$i] "*"
 		add $i 1
 	end
 
 	setVar $i 11
 	setVar $plotc 1
 	while ($i <= SECTORS)
-		getCourse $dist 1 $i
-		if ($dist = "-1")
-			send "f1*" $i "** "
-			add $plotC 1
-			if ($plotC = 51)
-				send "^q"
-				:moreplotinfo
-				setTextLineTrigger plotCourseError :plotCourseError "Error - No route within"
-				setTextLineTrigger plotCoursePath :plotCoursePath "The shortest path"
-				setTextLineTrigger plotCourseNext :plotCourseNext "ENDINTERROG"
-				pause
-				:plotCourseError 
-					killalltriggers
-					goto :moreplotinfo
-				:plotCoursePath
-					killalltriggers
-					getWord CURRENTLINE $nsec 13
-					setVar $normalSectors[$nsec] 1
-					goto :moreplotinfo
-				:plotCourseNext
-					killalltriggers
-				setVar $plotc 1
-				if ($i = SECTORS)
-					goto :wedonecounting
-				end
+	
+		
+		send "f1*" $i "** "
+		add $plotC 1
+		if ($plotC = 51)
+			send "^q"
+			:moreplotinfo
+			setTextLineTrigger plotCourseError :plotCourseError "Error - No route within"
+			setTextLineTrigger plotCoursePath :plotCoursePath "The shortest path"
+			setTextLineTrigger plotCourseNext :plotCourseNext "ENDINTERROG"
+			pause
+			:plotCourseError 
+				killalltriggers
+				goto :moreplotinfo
+			:plotCoursePath
+				killalltriggers
+				getWord CURRENTLINE $nsec 13
+				setVar $normalSectors[$nsec] 1
+				goto :moreplotinfo
+			:plotCourseNext
+				killalltriggers
+			setVar $plotc 1
+			if ($i = SECTORS)
+				goto :wedonecounting
 			end
-		else
-			setVar $normalSectors[$i] 1
 		end
 		add $i 1
 		if ($i = SECTORS)
-			getCourse $dist 1 $i
-			if ($dist = "-1")
-				send "f1*" $i "** "
-				send "^q"
-				goto :moreplotinfo
-			else
-				setVar $normalSectors[$i] 1
-			end
+			send "f1*" $i "** "
+			send "^q"
+			goto :moreplotinfo
 		end
 	end
 
@@ -589,54 +559,51 @@ return
 	setVar $coursei 1
 	setVar $logText ""
 	setVar $log 0
-	getCourse $coursei 1 $cSector
-	if ($coursei = "-1")
-		send "f1*" $cSector "*"
-		waitfor "at is the destination sect"
-		:checkGoing
-		setTextLineTrigger startlog :startlog "shortest path"
-		setTextTrigger endlog :endlog "Computer command ["
-		setTextLineTrigger goodline :goodline ""
-		
-		pause
-		:startlog
-			killalltriggers
-			setVar $log 1
-			goto :checkGoing
-		:goodline
-			killalltriggers
-			if ($log = 1) and (CURRENTLINE <> "")
-				cuttext CURRENTLINE $firstchar 1 1
-				if ($firstchar = "1") or ($firstchar = " ")
-					setVar $logText $logText & CURRENTLINE
-				end
+	send "f1*" $cSector "*"
+	waitfor "at is the destination sect"
+
+	:checkGoing
+	setTextLineTrigger startlog :startlog "shortest path"
+	setTextTrigger endlog :endlog "Computer command ["
+	setTextLineTrigger goodline :goodline ""
+	
+	pause
+	:startlog
+		killalltriggers
+		setVar $log 1
+		goto :checkGoing
+	:goodline
+		killalltriggers
+		if ($log = 1) and (CURRENTLINE <> "")
+			cuttext CURRENTLINE $firstchar 1 1
+			if ($firstchar = "1") or ($firstchar = " ")
+				setVar $logText $logText & CURRENTLINE
 			end
-			goto :checkGoing
-		:endlog
-			killalltriggers
-			
-		setVar $logText $logText & " end"
-
-		setVar $y 1
-		getWord $logTEXT $stuff $y
-
-		while ($stuff <> "end")
-			
-			STRIPTEXT $stuff "("
-			STRIPTEXT $stuff ")"
-
-			if (($stuff <> ">") and ($stuff <> "end"))
-				setVar $course[$coursei] $stuff
-				add $coursei 1
-			end
-
-			add $y 1
-			getWord $logTEXT $stuff $y
 		end
-		setVar $stopLookingAt ($coursei - 4)
-	else
-		setvar $stopLookingAt ($coursei - 4)
-	end	
+		goto :checkGoing
+	:endlog
+		killalltriggers
+		
+	setVar $logText $logText & " end"
+
+	setVar $y 1
+	getWord $logTEXT $stuff $y
+
+	while ($stuff <> "end")
+		
+		STRIPTEXT $stuff "("
+		STRIPTEXT $stuff ")"
+
+		if (($stuff <> ">") and ($stuff <> "end"))
+			setVar $course[$coursei] $stuff
+			add $coursei 1
+		end
+
+		add $y 1
+		getWord $logTEXT $stuff $y
+	end
+	setVar $stopLookingAt ($coursei - 4)
+	
 	
 	setVar $y 3
 	setVar $lastPlot ($coursei - 1)
@@ -650,7 +617,7 @@ return
 		send "v" $course[$y] "*"
 		send "f1*" $course[$lastPlot] "** "
 		send "v0*yy"
-		clearallavoids
+		
 		add $y 1
 	end
 	:checkLapB
@@ -812,51 +779,48 @@ return
 
 	setVar $logText ""
 	setVar $log 0
-	getCourse $coursei 1 $cSector
-	if ($coursei = "-1")
-		send "f1*" $cSector "*"
-		waitfor "at is the destination sect"
+	send "f1*" $cSector "*"
+	waitfor "at is the destination sect"
 
-		:checkGoing2
-		setTextLineTrigger startlog2 :startlog2 "shortest path"
-		setTextTrigger endlog2 :endlog2 "Computer command ["
-		setTextLineTrigger goodline2 :goodline2 ""
-		
-		pause
-		:startlog2
-			killalltriggers
-			setVar $log 1
-			goto :checkGoing2
-		:goodline2
-			killalltriggers
-			if ($log = 1) and (CURRENTLINE <> "")
-				cuttext CURRENTLINE $firstchar 1 1
-				if ($firstchar = "1") or ($firstchar = " ")
-					setVar $logText $logText & CURRENTLINE
-				end
+	:checkGoing2
+	setTextLineTrigger startlog2 :startlog2 "shortest path"
+	setTextTrigger endlog2 :endlog2 "Computer command ["
+	setTextLineTrigger goodline2 :goodline2 ""
+	
+	pause
+	:startlog2
+		killalltriggers
+		setVar $log 1
+		goto :checkGoing2
+	:goodline2
+		killalltriggers
+		if ($log = 1) and (CURRENTLINE <> "")
+			cuttext CURRENTLINE $firstchar 1 1
+			if ($firstchar = "1") or ($firstchar = " ")
+				setVar $logText $logText & CURRENTLINE
 			end
-			
-			goto :checkGoing2
-		:endlog2
-			killalltriggers
-			
-		setVar $logText $logText & " end"
-		setVar $y 1
-		getWord $logTEXT $stuff $y
-
-		while ($stuff <> "end")
-			
-			STRIPTEXT $stuff "("
-			STRIPTEXT $stuff ")"
-
-			if (($stuff <> ">") and ($stuff <> "end"))
-				setVar $course[$coursei] $stuff
-				add $coursei 1
-			end
-
-			add $y 1
-			getWord $logTEXT $stuff $y
 		end
+		
+		goto :checkGoing2
+	:endlog2
+		killalltriggers
+		
+	setVar $logText $logText & " end"
+	setVar $y 1
+	getWord $logTEXT $stuff $y
+
+	while ($stuff <> "end")
+		
+		STRIPTEXT $stuff "("
+		STRIPTEXT $stuff ")"
+
+		if (($stuff <> ">") and ($stuff <> "end"))
+			setVar $course[$coursei] $stuff
+			add $coursei 1
+		end
+
+		add $y 1
+		getWord $logTEXT $stuff $y
 	end
 return
 
@@ -960,7 +924,6 @@ return
 :goCrazy
 	
 	send "v0*yyq"
-	clearallavoids
 	waitfor "Computer deactivated>"
 	
 	setVar $BOT~command "mow"
