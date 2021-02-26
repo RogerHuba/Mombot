@@ -578,8 +578,8 @@ return
 	setVar $coursei 1
 	setVar $logText ""
 	setVar $log 0
-	getCourse $course 1 $cSector
-	if ($course = "-1")
+	getCourse $coursei 1 $cSector
+	if ($coursei = "-1")
 		send "f1*" $cSector "*"
 		waitfor "at is the destination sect"
 		:checkGoing
@@ -624,8 +624,7 @@ return
 		end
 		setVar $stopLookingAt ($coursei - 4)
 	else
-		setvar $stopLookingAt ($course - 4)
-		setvar $coursei $course
+		setvar $stopLookingAt ($coursei - 4)
 	end	
 	
 	setVar $y 3
@@ -802,8 +801,8 @@ return
 
 	setVar $logText ""
 	setVar $log 0
-	getCourse $course 1 $cSector
-	if ($course = "-1")
+	getCourse $coursei 1 $cSector
+	if ($coursei = "-1")
 		send "f1*" $cSector "*"
 		waitfor "at is the destination sect"
 
@@ -847,15 +846,12 @@ return
 			add $y 1
 			getWord $logTEXT $stuff $y
 		end
-	else
-		setvar $coursei $course
 	end
 return
 
 :getCourse
 
 	setVar $course ""
-	setarray $course
 	setVar $coursei 1
 	
 	setVar $logText ""
