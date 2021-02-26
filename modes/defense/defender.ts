@@ -564,11 +564,11 @@
 		setVar $message $message&"*             On Armid Hit: No"
 	end
 	if ($main~saveme)
-		setVar $message $message&"*               Saveme bot: "&$main~saveme_bot
+		setVar $message $message&"*             Saveme bot: "&$main~saveme_bot
 	end
-	setVar $message $message&"*              Home Sector: "&$map~home_sector
+		setVar $message $message&"*             Home Sector: "&$map~home_sector
 	format $planet~planet_fighters $formatted_fighters NUMBER
-	setVar $message $message&"*                Auto Kill: "&$formatted_fighters&" Fighters"
+		setVar $message $message&"*             Auto Kill: "&$formatted_fighters&" Fighters"
 		setVar $message $message&"*                    "
 		setVar $message $message&"*                  Modes"
 		setVar $message $message&"*                 -------"
