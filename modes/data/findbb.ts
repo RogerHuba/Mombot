@@ -578,51 +578,55 @@ return
 	setVar $coursei 1
 	setVar $logText ""
 	setVar $log 0
-	send "f1*" $cSector "*"
-	waitfor "at is the destination sect"
-
-	:checkGoing
-	setTextLineTrigger startlog :startlog "shortest path"
-	setTextTrigger endlog :endlog "Computer command ["
-	setTextLineTrigger goodline :goodline ""
-	
-	pause
-	:startlog
-		killalltriggers
-		setVar $log 1
-		goto :checkGoing
-	:goodline
-		killalltriggers
-		if ($log = 1) and (CURRENTLINE <> "")
-			cuttext CURRENTLINE $firstchar 1 1
-			if ($firstchar = "1") or ($firstchar = " ")
-				setVar $logText $logText & CURRENTLINE
+	getCourse $course 1 $cSector
+	if ($course = "-1")
+		send "f1*" $cSector "*"
+		waitfor "at is the destination sect"
+		:checkGoing
+		setTextLineTrigger startlog :startlog "shortest path"
+		setTextTrigger endlog :endlog "Computer command ["
+		setTextLineTrigger goodline :goodline ""
+		
+		pause
+		:startlog
+			killalltriggers
+			setVar $log 1
+			goto :checkGoing
+		:goodline
+			killalltriggers
+			if ($log = 1) and (CURRENTLINE <> "")
+				cuttext CURRENTLINE $firstchar 1 1
+				if ($firstchar = "1") or ($firstchar = " ")
+					setVar $logText $logText & CURRENTLINE
+				end
 			end
-		end
-		goto :checkGoing
-	:endlog
-		killalltriggers
-		
-	setVar $logText $logText & " end"
+			goto :checkGoing
+		:endlog
+			killalltriggers
+			
+		setVar $logText $logText & " end"
 
-	setVar $y 1
-	getWord $logTEXT $stuff $y
-
-	while ($stuff <> "end")
-		
-		STRIPTEXT $stuff "("
-		STRIPTEXT $stuff ")"
-
-		if (($stuff <> ">") and ($stuff <> "end"))
-			setVar $course[$coursei] $stuff
-			add $coursei 1
-		end
-
-		add $y 1
+		setVar $y 1
 		getWord $logTEXT $stuff $y
-	end
-	setVar $stopLookingAt ($coursei - 4)
-	
+
+		while ($stuff <> "end")
+			
+			STRIPTEXT $stuff "("
+			STRIPTEXT $stuff ")"
+
+			if (($stuff <> ">") and ($stuff <> "end"))
+				setVar $course[$coursei] $stuff
+				add $coursei 1
+			end
+
+			add $y 1
+			getWord $logTEXT $stuff $y
+		end
+		setVar $stopLookingAt ($coursei - 4)
+	else
+		setvar $stopLookingAt ($course - 4)
+		setvar $coursei $course
+	end	
 	
 	setVar $y 3
 	setVar $lastPlot ($coursei - 1)
@@ -636,7 +640,7 @@ return
 		send "v" $course[$y] "*"
 		send "f1*" $course[$lastPlot] "** "
 		send "v0*yy"
-		
+		clearallavoids
 		add $y 1
 	end
 	:checkLapB
@@ -798,48 +802,53 @@ return
 
 	setVar $logText ""
 	setVar $log 0
-	send "f1*" $cSector "*"
-	waitfor "at is the destination sect"
+	getCourse $course 1 $cSector
+	if ($course = "-1")
+		send "f1*" $cSector "*"
+		waitfor "at is the destination sect"
 
-	:checkGoing2
-	setTextLineTrigger startlog2 :startlog2 "shortest path"
-	setTextTrigger endlog2 :endlog2 "Computer command ["
-	setTextLineTrigger goodline2 :goodline2 ""
-	
-	pause
-	:startlog2
-		killalltriggers
-		setVar $log 1
-		goto :checkGoing2
-	:goodline2
-		killalltriggers
-		if ($log = 1) and (CURRENTLINE <> "")
-			cuttext CURRENTLINE $firstchar 1 1
-			if ($firstchar = "1") or ($firstchar = " ")
-				setVar $logText $logText & CURRENTLINE
+		:checkGoing2
+		setTextLineTrigger startlog2 :startlog2 "shortest path"
+		setTextTrigger endlog2 :endlog2 "Computer command ["
+		setTextLineTrigger goodline2 :goodline2 ""
+		
+		pause
+		:startlog2
+			killalltriggers
+			setVar $log 1
+			goto :checkGoing2
+		:goodline2
+			killalltriggers
+			if ($log = 1) and (CURRENTLINE <> "")
+				cuttext CURRENTLINE $firstchar 1 1
+				if ($firstchar = "1") or ($firstchar = " ")
+					setVar $logText $logText & CURRENTLINE
+				end
 			end
-		end
-		
-		goto :checkGoing2
-	:endlog2
-		killalltriggers
-		
-	setVar $logText $logText & " end"
-	setVar $y 1
-	getWord $logTEXT $stuff $y
-
-	while ($stuff <> "end")
-		
-		STRIPTEXT $stuff "("
-		STRIPTEXT $stuff ")"
-
-		if (($stuff <> ">") and ($stuff <> "end"))
-			setVar $course[$coursei] $stuff
-			add $coursei 1
-		end
-
-		add $y 1
+			
+			goto :checkGoing2
+		:endlog2
+			killalltriggers
+			
+		setVar $logText $logText & " end"
+		setVar $y 1
 		getWord $logTEXT $stuff $y
+
+		while ($stuff <> "end")
+			
+			STRIPTEXT $stuff "("
+			STRIPTEXT $stuff ")"
+
+			if (($stuff <> ">") and ($stuff <> "end"))
+				setVar $course[$coursei] $stuff
+				add $coursei 1
+			end
+
+			add $y 1
+			getWord $logTEXT $stuff $y
+		end
+	else
+		setvar $coursei $course
 	end
 return
 
