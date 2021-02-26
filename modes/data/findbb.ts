@@ -258,54 +258,61 @@ return
 :doplotsFunction
 	send "c"
 	send "v0*yy"
+	clearallavoids
 echo "Entering DO PLOTS*"
 	while ($go = 1)
 
-		send "f1*" $cSector "*"
-		
-		setTextLineTrigger badplot :badplot "Error - No route within"
-		setTextLineTrigger goodplot :goodplot "The shortest path "
-		pause
-		:badplot
-			killalltriggers
-			send "n"
-			goto :again
-		:goodPlot
-			killalltriggers
-			getWord CURRENTLINE $dist 4
-			STRIPTEXT $dist "("
-			if ($dist > 15)
-				setVar $foundBubble 0
-				goSub :checkBubble
+		getCourse $dist 1 $cSector
+		if ($dist = "-1")
+			send "f1*" $cSector "*"
+			setTextLineTrigger badplot :badplot "Error - No route within"
+			setTextLineTrigger goodplot :goodplot "The shortest path "
+			pause
+			:badplot
+				killalltriggers
+				send "n"
+				goto :again
+			:goodPlot
+				killalltriggers
+				getWord CURRENTLINE $dist 4
+				STRIPTEXT $dist "("
+		end
+
+		if ($dist > 15)
+			setVar $foundBubble 0
+			goSub :checkBubble
+			if ($foundBubble = 0)
+			//	goSub :checkTunnel
 				if ($foundBubble = 0)
-				//	goSub :checkTunnel
-					if ($foundBubble = 0)
-						echo "*#######################################################"
-						echo "*######## NO SOLUTION FOR:  " $cSector " ###############"
-						echo "*#######################################################"
-					else
-						
-					end
+					echo "*#######################################################"
+					echo "*######## NO SOLUTION FOR:  " $cSector " ###############"
+					echo "*#######################################################"
 				else
-					if ($goCrazy = 1)
-						goSub :goCrazy
-					end
+					
 				end
-				setVar $x 1
-				while ($x <= $bubblei)
-					echo "*############# VOIDING KNOWN DOORS #############"
-					send "v" $bubbleDoors[$x] "*"
-					add $x 1
+			else
+				if ($goCrazy = 1)
+					goSub :goCrazy
 				end
-				setVar $x 1
-				while ($x <= $tunnelsi)
-					echo "*############# VOIDING KNOWN TUnNEL DOORS #############"
-					send "v" $tunnelDoors1[$x] "*"
-					send "v" $tunnelDoors2[$x] "*"
-					add $x 1
-				end
-				
 			end
+			setVar $x 1
+			while ($x <= $bubblei)
+				echo "*############# VOIDING KNOWN DOORS #############"
+				send "v" $bubbleDoors[$x] "*"
+				setAvoid $bubbleDoors[$x]
+				add $x 1
+			end
+			setVar $x 1
+			while ($x <= $tunnelsi)
+				echo "*############# VOIDING KNOWN TUnNEL DOORS #############"
+				send "v" $tunnelDoors1[$x] "*"
+				send "v" $tunnelDoors2[$x] "*"
+				setAvoid $tunnelDoors1[$x]
+				setAvoid $tunnelDoors2[$x]
+				add $x 1
+			end
+			
+		end
 
 		:again
 			
