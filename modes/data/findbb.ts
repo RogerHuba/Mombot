@@ -855,6 +855,7 @@ return
 :getCourse
 
 	setVar $course ""
+	setarray $course
 	setVar $coursei 1
 	
 	setVar $logText ""
