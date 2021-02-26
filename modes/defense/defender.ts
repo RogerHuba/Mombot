@@ -559,94 +559,94 @@
 		setVar $message $message&"*                  On Limpet Hit: No"
 	end
 	if ($armid)
-		setVar $message $message&"*                   On Armid Hit: Yes"
+		setVar $message $message&"*             On Armid Hit: Yes"
 	else
-		setVar $message $message&"*                   On Armid Hit: No"
+		setVar $message $message&"*             On Armid Hit: No"
 	end
 	if ($main~saveme)
-		setVar $message $message&"*                     Saveme bot: "&$main~saveme_bot
+		setVar $message $message&"*               Saveme bot: "&$main~saveme_bot
 	end
-	setVar $message $message&"*                    Home Sector: "&$map~home_sector
+	setVar $message $message&"*              Home Sector: "&$map~home_sector
 	format $planet~planet_fighters $formatted_fighters NUMBER
-	setVar $message $message&"*                      Auto Kill: "&$formatted_fighters&" Fighters"
-		setVar $message $message&"*                          "
-		setVar $message $message&"*                        Modes"
-		setVar $message $message&"*                       -------"
+	setVar $message $message&"*                Auto Kill: "&$formatted_fighters&" Fighters"
+		setVar $message $message&"*                    "
+		setVar $message $message&"*                  Modes"
+		setVar $message $message&"*                 -------"
 	if ($photon~adjacentphoton)
-		setVar $message $message&"*                   Adjacent Photon"
+		setVar $message $message&"*             Adjacent Photon"
 	end
 	if ($photon~density)
-		setVar $message $message&"*                   Density Photon"
+		setVar $message $message&"*             Density Photon"
 	end
 	if ($nophoton = true)
-		setVar $message $message&"*                   Don't Photon"
+		setVar $message $message&"*             Don't Photon"
 	end
 	if ($killing~nokill = true)
-		setVar $message $message&"*                   Don't Kill"
+		setVar $message $message&"*             Don't Kill"
 	else
 		if ($killing~holokill)
 			if ($killing~capture)
-				setVar $message $message&"*                   Holocap"
+				setVar $message $message&"*             Holocap"
 			else
-				setVar $message $message&"*                   Holokill"
+				setVar $message $message&"*             Holokill"
 			end
 		end
 		if ($killing~slingshot)
-			setVar $message $message&"*                   Slingshot"
+			setVar $message $message&"*             Slingshot"
 		end
 		if ($killing~switch)
-			setVar $message $message&"*                   Switch ships"
+			setVar $message $message&"*             Switch ships"
 		end	
 		if ($killing~capture)
-			setVar $message $message&"*                   Capture"
+			setVar $message $message&"*             Capture"
 		end
 	end
 	if ($holo)
-		setVar $message $message&"*                   Holo Report"
+		setVar $message $message&"*             Holo Report"
 	end
 	if ($killing~auto)
-		setVar $message $message&"*                   Cannon Reset"
+		setVar $message $message&"*             Cannon Reset"
 	end
 	if ($navigate~securePwarp)
-		setVar $message $message&"*                   Secure"
+		setVar $message $message&"*             Secure"
 	end
 	if ($photon~paranoid)
-		setVar $message $message&"*                   Paranoid"
+		setVar $message $message&"*             Paranoid"
 	end
 	if ($restock~deploymines)
 		if ($deploy_mine_count = 1)
-			setVar $message $message&"*                   Deploy "&$deploy_mine_count&" limpet and armid mine"
+			setVar $message $message&"*             Deploy "&$deploy_mine_count&" limpet and armid mine"
 		else
-			setVar $message $message&"*                   Deploy "&$deploy_mine_count&" limpet and armid mines"
+			setVar $message $message&"*             Deploy "&$deploy_mine_count&" limpet and armid mines"
 		end
 	end
 	if ($sentinel~broadcast = true)
-		setVar $message $message&"*                   Sentinel mode on"
+		setVar $message $message&"*             Sentinel mode on"
 	end
 	if ($combat~defender = true)
-		setVar $message $message&"*                   Defender mode on"
+		setVar $message $message&"*             Defender mode on"
 	end
 	if ($sector~safe_attack_only = true)
-		setVar $message $message&"*                   Only attacks outside of sector if odds are good"
+		setVar $message $message&"*             Only attacks outside of sector if odds good"
 	end
 	if ($prhunter~activate = true)
-		setVar $message $message&"*                   PR Hunter mode on"
+		setVar $message $message&"*             PR Hunter mode on"
 	end
 	if ($restock~refurb_in_sector = true)
-		setVar $message $message&"*                   Refurbing in sector "&$restock~refurb_sector
+		setVar $message $message&"*             Refurbing in sector "&$restock~refurb_sector
 	end
 	if ($photon~limit > 0)
-		setVar $message $message&"*                   Will stop after "&$photon~limit&" photons fired"
+		setVar $message $message&"*             Will stop after "&$photon~limit&" photons fired"
 	end
 	if ($minimumTarget > 1)
-		setVar $message $message&"*                   Consider sectors with "&$minimumTarget&" options minumum"
+		setVar $message $message&"*             Consider sectors with "&$minimumTarget&" options minumum"
 	end
-	setVar $message $message&"*                                                "
+	setVar $message $message&"*                                          "
 	format $backdoorAttackCount $backdoorAttackCount NUMBER
 	format $randomAttackCount $randomAttackCount NUMBER
-	setvar $message $message&"*                   "&$backdoorAttackCount&" backdoor attack vectors       "
-	setvar $message $message&"*                   "&$randomAttackCount&" random attack vectors           "
-	setVar $message $message&"*                                              "
+	setvar $message $message&"*             "&$backdoorAttackCount&" backdoor attack vectors       "
+	setvar $message $message&"*             "&$randomAttackCount&" random attack vectors           "
+	setVar $message $message&"*                                        "
 	setVar $message $message&"*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-**"	
 	setvar $switchboard~message $message
 	gosub :switchboard~switchboard
