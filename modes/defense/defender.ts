@@ -45,7 +45,7 @@
 	setVar $BOT~help[1]  $BOT~tab&"Grid defender {adjacent|density|nophoton} {f} {l} {a} {auto} {holo} {mines} "
 	setVar $BOT~help[2]  $BOT~tab&"              {saveme:bot} {multi:#} {switch} {capture} {secure|paranoid}   "
 	setVar $BOT~help[3]  $BOT~tab&"              {stay|holokill|slingshot} {sentinel} {noescape} {mines:#}     "
-	setVar $BOT~help[4]  $BOT~tab&"              {limit:#} {mintargets:#}                                      "
+	setVar $BOT~help[4]  $BOT~tab&"              {limit:#} {mintargets:#} {safe}                               "
 	setVar $BOT~help[5]  $BOT~tab&"          "
 	setVar $BOT~help[6]  $BOT~tab&"           {f} - Trigger on fighter hits"
 	setVar $BOT~help[7]  $BOT~tab&"           {l} - Trigger on limpet hits"
@@ -71,12 +71,13 @@
 	setVar $BOT~help[27] $BOT~tab&"     {mines:#} - how many mines to deploy "
 	setVar $BOT~help[28] $BOT~tab&"     {limit:#} - how many photons to shoot before stopping "
 	setVar $BOT~help[29] $BOT~tab&"{mintargets:#} - only fires if there are this many options "
-	setVar $BOT~help[30] $BOT~tab&"           "
-	setVar $BOT~help[31] $BOT~tab&"        Examples: "
-	setVar $BOT~help[32] $BOT~tab&"             >defender f l a holo "
-	setVar $BOT~help[33] $BOT~tab&"             >defender f l a density  "
-	setVar $BOT~help[34] $BOT~tab&"             >defender f density adjacent secure"
-	setVar $BOT~help[35] $BOT~tab&"             >defender secure saveme:hunt"
+	setVar $BOT~help[30] $BOT~tab&"        {safe} - only attacks outside of sector if odds are good "
+	setVar $BOT~help[31] $BOT~tab&"           "
+	setVar $BOT~help[32] $BOT~tab&"        Examples: "
+	setVar $BOT~help[33] $BOT~tab&"             >defender f l a holo "
+	setVar $BOT~help[34] $BOT~tab&"             >defender f l a density  "
+	setVar $BOT~help[35] $BOT~tab&"             >defender f density adjacent secure"
+	setVar $BOT~help[36] $BOT~tab&"             >defender secure saveme:hunt"
 
 	gosub :bot~helpfile
 
@@ -215,6 +216,13 @@
 		setvar $killing~switch true
 	else
 		setvar $killing~switch false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " safe "
+	if ($pos > 0)
+		setvar $sector~safe_attack_only true
+	else
+		setvar $sector~safe_attack_only false
 	end
 
 	getwordpos " "&$bot~user_command_line&" " $pos " alien"
@@ -612,13 +620,16 @@
 			setVar $message $message&"*                   Deploy "&$deploy_mine_count&" limpet and armid mines"
 		end
 	end
-	if ($sentinel~broadcast)
+	if ($sentinel~broadcast = true)
 		setVar $message $message&"*                   Sentinel mode on"
 	end
-	if ($combat~defender)
+	if ($combat~defender = true)
 		setVar $message $message&"*                   Defender mode on"
 	end
-	if ($prhunter~activate)
+	if ($sector~safe_attack_only = true)
+		setVar $message $message&"*                   Only attacks if it can win when attacking outside of sector"
+	end
+	if ($prhunter~activate = true)
 		setVar $message $message&"*                   PR Hunter mode on"
 	end
 	if ($restock~refurb_in_sector = true)
