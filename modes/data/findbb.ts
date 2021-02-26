@@ -350,18 +350,23 @@ halt
 	killalltriggers
 	setVar $i 1
 	while ($i <= $bubblei)
-		
-		send "v" $bubbleDoors[$i] "*"
-		setAvoid $bubbleDoors[$i]
+		if ($bubbleDoors[$i] > 0)
+			send "v" $bubbleDoors[$i] "*"
+			setAvoid $bubbleDoors[$i]
+		end
 		add $i 1
 	end
 
 	setVar $i 1
 	while ($i <= $tunnelsi)
-		send "v" $tunnelDoors1[$i] "*"
-		send "v" $tunnelDoors2[$i] "*"
-		setAvoid $tunnelDoors1[$i]
-		setAvoid $tunnelDoors2[$i]
+		if ($tunnelDoors1[$i] > 0)
+			setAvoid $tunnelDoors1[$i]
+			send "v" $tunnelDoors1[$i] "*"
+		end
+		if ($tunnelDoors2[$i] > 0)
+			send "v" $tunnelDoors2[$i] "*"
+			setAvoid $tunnelDoors2[$i]
+		end
 		add $i 1
 	end
 
