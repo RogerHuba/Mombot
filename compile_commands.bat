@@ -1,4 +1,4 @@
-for /r %%n in (*decash.ts) do call :checkit "%%n" 
+for /r %%n in (*history.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
