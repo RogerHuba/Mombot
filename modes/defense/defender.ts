@@ -448,6 +448,8 @@
 		setvar $combat~defender true
 	end
 
+	gosub :keep
+
 	send "q"
 	gosub :PLANET~getPlanetInfo	
 	send "t*t1* c x t Login**q "
