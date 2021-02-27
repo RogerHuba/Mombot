@@ -751,7 +751,6 @@
 		settextlinetrigger 16 :scan " appears from the planetary rubble."
 		setTextLineTrigger 17 :scan " exits the game."
 		setTextLineTrigger 18 :scan " enters the game."
-		setDelayTrigger	   19 :head_home_timeout 3600000
 		if ($sentinel~broadcast)
 			setdelaytrigger    20 :sentinel $settings~sentinel_cycle
 		end
@@ -845,51 +844,44 @@
 
 		:head_home_timeout
 			gosub :kill_defender_triggers
-			if ($player~current_sector <> $map~home_sector)
-				setvar $switchboard~message "No activity in an hour, so heading home.*"
-				gosub :switchboard~switchboard
-			else
-				setDelayTrigger	   announce_trigger :announce	1200000
-				goto :processing
-			end
+			setDelayTrigger	   announce_trigger :announce	1200000
+			goto :processing
 		:head_home 
 			gosub :kill_defender_triggers
 			gosub :player~quikstats
 			if ($player~current_sector <> $map~home_sector)
 				gosub :navigate~navigate_to_limp
 				gosub :killing~scan_for_targets
-				if ($killing~error = true)
-					goto :head_home
-				end
+				gosub :checkkillstatus
 				gosub :navigate~runaway_if_needed
 				gosub :restock~refurb_photons
-				send "p"&$map~home_sector&"*y "
+				#send "p"&$map~home_sector&"*y "
 			end
 			if (($photon~shot >= $photon~limit) and ($photon~limit > 0))
 				setvar $switchboard~message "Photon limit reached.  Shutting down.*"
 				gosub :switchboard~switchboard
-				halt
+				setvar $nophoton true
 			end
-			if ($player~current_prompt = "Citadel")
-				send "q "
-				gosub :PLANET~getPlanetInfo	
-				send "t * t 1* c  "
-				if (($planet~PLANET_FIGHTERS_MAX - $planet~planet_fighters) > ($ship~SHIP_FIGHTERS_MAX))
-					setvar $movefig~planetorsector "p"
-					gosub :movefig~run
-				end
-			end
-			gosub :player~quikstats
-			if ($player~current_prompt = "Citadel")		
-				send "q "
-				gosub :PLANET~getPlanetInfo	
-				send "t*t1* c "
-				if ($planet~planet_fighters < $ship~SHIP_FIGHTERS_MAX)
-					setvar $switchboard~message "Even after grabbing figs from sector, not enough fighters.  Shutting down..*"
-					gosub :switchboard~switchboard
-					halt
-				end
-			end
+#			if ($player~current_prompt = "Citadel")
+#				send "q "
+#				gosub :PLANET~getPlanetInfo	
+#				send "t * t 1* c  "
+#				if (($planet~PLANET_FIGHTERS_MAX - $planet~planet_fighters) > ($ship~SHIP_FIGHTERS_MAX))
+#					setvar $movefig~planetorsector "p"
+#					gosub :movefig~run
+#				end
+#			end
+#			gosub :player~quikstats
+#			if ($player~current_prompt = "Citadel")		
+#				send "q "
+#				gosub :PLANET~getPlanetInfo	
+#				send "t*t1* c "
+#				if ($planet~planet_fighters < $ship~SHIP_FIGHTERS_MAX)
+#					setvar $switchboard~message "Even after grabbing figs from sector, not enough fighters.  Shutting down..*"
+#					gosub :switchboard~switchboard
+#					halt
+#				end
+#			end
 			gosub :waitbeforecheck
 			loadGlobal $bot~last_fighter_attack
 			if ($bot~last_fighter_attack <> "")
@@ -968,19 +960,17 @@ goto :processing
 			###################################################################
 			# for when you only want to shoot a certain number of photons afk #
 			###################################################################
-			goto :head_home
+			setvar $switchboard~message "Past the photon limit.  Shutting down photon mode.*"
+			gosub :switchboard~switchboard
+			setvar $nophoton true
 		end
 		gosub :check_for_target_change
 		gosub :killing~scan_for_targets
-		if ($killing~error = true)
-			goto :head_home
-		end
+		gosub :checkkillstatus
 		gosub :check_for_target_change
 		if ($player~current_sector = $bot~last_hit)
 			gosub :killing~scan_for_targets
-			if ($killing~error = true)
-				goto :head_home
-			end			
+			gosub :checkkillstatus
 		end
 		#############################################
 		# holoscan sector to see if victim is there #
@@ -1024,9 +1014,7 @@ goto :processing
 
 		gosub :check_for_target_change
 		gosub :killing~scan_for_targets
-		if ($killing~error = true)
-			goto :head_home
-		end
+		gosub :checkkillstatus
 		gosub :check_for_target_change
 		if ((SECTOR.LIMPETS.QUANTITY[$player~current_sector] <= 0) and ($player~limpets > 0) and ($restock~deploymines = true))
 			gosub :main~domines
@@ -1036,9 +1024,7 @@ goto :processing
 			gosub :navigate~navigate_away
 			gosub :player~quikstats
 			gosub :killing~scan_for_targets
-			if ($killing~error = true)
-				goto :head_home
-			end
+			gosub :checkkillstatus
 			gosub :navigate~runaway_if_needed
 		end
 		####################
@@ -1090,9 +1076,7 @@ goto :processing
 	end
 	gosub :kill_defender_triggers
 	gosub :killing~checkForVictims
-	if ($killing~error = true)
-		goto :head_home
-	end
+	gosub :checkkillstatus
 
 	################################################################
 	# after attempting to kill, need to move no matter the outcome #
@@ -1196,9 +1180,7 @@ return
 		end
 		gosub :navigate~navigate_to_limp
 		gosub :killing~scan_for_targets
-		if ($killing~error = true)
-			goto :head_home
-		end
+		gosub :checkkillstatus
 		gosub :navigate~runaway_if_needed
 		gosub :restock~refurb_photons
 		if ($player~photons < $photon~shooting_count)
@@ -1227,9 +1209,7 @@ return
 		killtrigger 3
 		setvar $pwarp_success true
 		gosub :killing~scan_for_targets
-		if ($killing~error = true)
-			goto :head_home
-		end
+		gosub :checkkillstatus
 return
 
 :waitbeforecheck
@@ -1284,9 +1264,7 @@ return
 		end
 	end
 	gosub :killing~scan_for_targets
-	if ($killing~error = true)
-		goto :head_home
-	end
+	gosub :checkkillstatus
 	gosub :navigate~runaway_if_needed
 	goto :processing
 
@@ -1316,7 +1294,8 @@ return
 			while ((SECTOR.BACKDOORS[$i][$j] > 0) and ($foundSector = false))
 				setVar $tempAdj SECTOR.BACKDOORS[$i][$j]
 				getSectorParameter $tempAdj "FIGSEC" $isFigged
-				if ($isFigged = true)
+				getSectorParameter $tempAdj "LIMPSEC" $isLimped
+				if (($isFigged = true) and ((($photon~paranoid = true) and ($isLimped = true)) or ($photon~paranoid = false)))
 					setvar $main~attack_sectors[$i] $tempAdj
 					add $backdoorAttackCount 1
 					setvar $foundSector true
@@ -1330,7 +1309,8 @@ return
 				while (SECTOR.WARPSIN[$i][$j] > 0)
 					setVar $tempAdj SECTOR.WARPSIN[$i][$j]
 					getSectorParameter $tempAdj "FIGSEC" $isFigged
-					if ($isFigged = true)
+					getSectorParameter $tempAdj "LIMPSEC" $isLimped
+					if (($isFigged = true) and ((($photon~paranoid = true) and ($isLimped = true)) or ($photon~paranoid = false)))
 						add $targetCount 1
 						setvar $targets[$targetCount] $tempAdj
 					end
@@ -1346,6 +1326,14 @@ return
 			end
 			add $i 1
 		end
+return
+
+:checkkillstatus
+	if ($killing~error = true)
+		setvar $switchboard~message "Killing error - turning off kill mode.*"
+		gosub :switchboard~switchboard
+		setvar $killing~nokill true
+	end
 return
 
 :checkShipForDefenderStatus

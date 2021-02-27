@@ -711,6 +711,7 @@
 					waiton "In Cit - Planet "&$treasury
 					settexttrigger deposit :donetreasury " credits deposited into citadel"
 					settexttrigger withdrawal :donetreasury " credits taken from citadel"
+					settexttrigger noneed :donetreasury "- No transaction required"
 					send "'red"&$red_id&" keep 500000*"
 					pause
 					:donetreasury
