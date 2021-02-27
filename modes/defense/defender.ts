@@ -115,7 +115,11 @@
 	end
 	setvar $map~home_sector $player~current_sector
 
+
 	gosub :player~startCNsettings
+
+
+
 
 	getwordpos " "&$bot~user_command_line&" " $pos " f "
 	if ($pos > 0)
@@ -855,7 +859,7 @@
 				gosub :checkkillstatus
 				gosub :navigate~runaway_if_needed
 				gosub :restock~refurb_photons
-				#send "p"&$map~home_sector&"*y "
+				gosub :keep
 			end
 			if (($photon~shot >= $photon~limit) and ($photon~limit > 0))
 				setvar $switchboard~message "Photon limit reached.  Shutting down.*"
@@ -1183,8 +1187,15 @@ return
 		gosub :checkkillstatus
 		gosub :navigate~runaway_if_needed
 		gosub :restock~refurb_photons
+		gosub :keep
 		if ($player~photons < $photon~shooting_count)
-			setvar $switchboard~message "This ship does not have enough to photons to shoot "&$photon~shooting_count&" times.  Either out of money or this ship doesn't hold that many.*"
+			if (($photon~shooting_count > 1) and ($player~photons > 0))
+				setvar $switchboard~message "This ship does not have enough to photons to shoot "&$photon~shooting_count&" times. Setting photon firing count to 1.*"
+				setvar $photon~shooting_count 1
+			else
+				setvar $switchboard~message "This ship does not have enough to photons to shoot "&$photon~shooting_count&" times.  Either out of money or this ship doesn't hold that many.  Shutting down photon mode.*"
+				setvar $nophoton true
+			end
 			gosub :switchboard~switchboard
 		end
 	end
@@ -1387,6 +1398,30 @@ return
 			add $s 1
 		end
 return
+
+:keep
+	setVar $BOT~command "keep"
+	setVar $BOT~user_command_line " keep 20000"
+	setVar $BOT~parm1 20000
+	setVar $BOT~parm2 ""
+	setVar $BOT~parm3 ""
+	setVar $BOT~parm4 ""
+	setVar $BOT~parm5 ""
+	setVar $BOT~parm6 ""
+	saveVar $BOT~parm1
+	saveVar $BOT~parm2
+	saveVar $BOT~parm3
+	saveVar $BOT~parm4
+	saveVar $BOT~parm5
+	saveVar $BOT~parm6
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	load "scripts\"&$bot~mombot_directory&"\commands\general\keep.cts"
+	setEventTrigger		keepended		:keepended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\keep.cts"
+	pause
+	:keepended
+return
+
 #INCLUDES:
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
