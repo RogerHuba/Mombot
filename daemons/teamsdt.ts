@@ -702,10 +702,10 @@
 
 			:xport
 				send "'red"&$red_id&" x "&$xport_ship&"*"
-				settexttrigger xport :done  "- Xport complete."
+				settexttrigger xport :donexport  "- Xport complete."
 				pause
 
-			:done
+			:donexport
 				if ($treasury <> "")
 					send "'red" $red_id " land " $treasury "*"
 					waiton "In Cit - Planet "&$treasury
@@ -772,10 +772,10 @@ return
 
 :x
 	send "'red"&$red_id&" x "&$xport_ship&"*"
-	settexttrigger xport :done  "- Xport complete."
+	settexttrigger xport :donex  "- Xport complete."
 	pause
 
-	:done
+	:donex
 		killalltriggers
 return
 
