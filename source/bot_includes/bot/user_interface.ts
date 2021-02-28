@@ -753,7 +753,7 @@ return
 		if ($bot~command_lines[$b][9] = "upgrade") or ($bot~command_lines[$b][9] = "max")
 			if ($bot~command_lines[$b][1] = "port")
 				setVar $bot~command_lines[$b][9] $bot~command_lines[$b][1]
-			elseif($bot~command_lines[$b][1] = "planet")
+			elseif ($bot~command_lines[$b][1] = "planet")
 				setVar $bot~command_lines[$b][9] $bot~command_lines[$b][1]
 			else
 				setVar $bot~command_lines[$b][9] "port"
