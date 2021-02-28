@@ -46,7 +46,7 @@
 	setVar $BOT~help[3]    $BOT~tab&"     {ewarp}  - Will refurb torps and atomics by ewarp "
 	setVar $BOT~help[4]    $BOT~tab&"                This is NOT safe."         
 	setVar $BOT~help[5]    $BOT~tab&"       "
-	setVar $BOT~help[6]    $BOT~tab&"   {create:}  - List of planet types to make.  First word"
+	setVar $BOT~help[6]    $BOT~tab&"   {create:}  - List of planet types to make.  Any unique word"
 	setVar $BOT~help[7]    $BOT~tab&"                of planet types separated by commas and no spaces."
 	setVar $BOT~help[8]    $BOT~tab&"                Default will use keeper planets in preferences."
 	setVar $BOT~help[9]    $BOT~tab&"                "
@@ -187,7 +187,9 @@ halt
   pause
 
   :Bust_TestPlanet
-  getWord CURRENTLINE $Type 11
+  #(Class K-J, ICE Star) 
+  gettext currentline $type ", " ")"
+  #getWord CURRENTLINE $Type 11
   stripText $Type ")"
   lowercase $type
   
@@ -223,13 +225,11 @@ else
   # see if we want it
   setVar $i 1
   while ($i <= $WantedPlanets)
-    if ($WantedPlanets[$i] = $Type)
-      setVar $SWITCHBOARD~message "Made "&$WantedPlanets[$i]&" planet!.*"
+    getwordpos $type $pos $wantedPlanets[$i]
+    if ($pos > 0)
+      setVar $SWITCHBOARD~message "Made "&$type&" planet!.*"
       gosub :SWITCHBOARD~switchboard
       goto :Bust_Wanted
-    else
-      #setVar $SWITCHBOARD~message "Looking for "&$WantedPlanets[$i]&", but found "&$Type&" instead.*"
-      #gosub :SWITCHBOARD~switchboard
     end
     add $i 1
   end
