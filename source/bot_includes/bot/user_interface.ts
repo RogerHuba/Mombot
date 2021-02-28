@@ -715,7 +715,7 @@ return
 		if ($bot~command_lines[$b][9] = "figmove") or ($bot~command_lines[$b][9] = "movefigs")
 			setVar $bot~command_lines[$b][9] "movefig"	
 		end
-		if ($bot~command_lines[$b][9] = "build") or ($bot~command_lines[$b][9] = "create")
+		if ($bot~command_lines[$b][9] = "build") or ($bot~command_lines[$b][9] = "create") or ($bot~command_lines[$b][9] = "make")
 			#setVar $bot~command_lines[$b][9] $bot~command_lines[$b][1]
 			#setvar $bot~command_lines[$b][1] "create"
 			if ($bot~command_lines[$b][1] = "port")
