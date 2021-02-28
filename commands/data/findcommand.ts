@@ -24,7 +24,7 @@ end
 
 	setvar $directories "cashing data defense general grid offense resource"
 	setvar $i 1
-    setvar $switchboard~message "All external bot commands matching the filter of "&$display_filter&": *    *    "
+    setvar $switchboard~message "All external bot commands matching the filter of "&$display_filter&": *    *    *"
 	getword $directories $directory $i "JUNK"
 	while ($directory <> "JUNK")
 		setvar $folder "scripts\"&$bot~mombot_directory&"\commands\"&$directory&"\"
@@ -41,6 +41,10 @@ end
 	setvar $folder "scripts\"&$bot~mombot_directory&"\daemons\"
 	getFileList $scriptList $folder&$filter&".ts"
 	gosub :reconfigure_scripts
+    if ($switchboard~self_command >= 1)
+        setvar $bot~only_help true
+    end
+    setvar $switchboard~message $switchboard~message&"   *"
     gosub :switchboard~switchboard
 
 halt
