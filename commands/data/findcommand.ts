@@ -28,18 +28,18 @@ end
 	getword $directories $directory $i "JUNK"
 	while ($directory <> "JUNK")
 		setvar $folder "scripts\"&$bot~mombot_directory&"\commands\"&$directory&"\"
-		getFileList $scriptList $folder&$filter&".ts"
+		getFileList $scriptList $folder&$filter&".cts"
 		gosub :reconfigure_scripts
 
 		setvar $folder "scripts\"&$bot~mombot_directory&"\modes\"&$directory&"\"
-		getFileList $scriptList $folder&$filter&".ts"
+		getFileList $scriptList $folder&$filter&".cts"
 		gosub :reconfigure_scripts
 
 		add $i 1
 		getword $directories $directory $i "JUNK"
 	end
 	setvar $folder "scripts\"&$bot~mombot_directory&"\daemons\"
-	getFileList $scriptList $folder&$filter&".ts"
+	getFileList $scriptList $folder&$filter&".cts"
 	gosub :reconfigure_scripts
     if ($switchboard~self_command >= 1)
         setvar $bot~only_help true
