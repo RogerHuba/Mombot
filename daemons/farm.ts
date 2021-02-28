@@ -596,6 +596,7 @@
 			replacetext $line "<" " "
 			replacetext $line ">" " "
 			striptext $line ","
+			striptext $line "."
 			add $planet~planetCount 1
 			getWord $line $planet~planets[$planet~planetCount] 1
 		end
@@ -947,6 +948,7 @@ return
 							waitOn "Citadel treasury contains "
 							getWord CURRENTLINE $planet~CITADELCash 4
 							stripText $planet~CITADELCash ","
+							stripText $planet~CITADELCash "."
 							if ($planet~CITADELCash > 0)
 								if ($planet~CITADELCash > 999999999) or (($planet~CITADELCash +  $PLAYER~CREDITS) > 999999999)
 									setVar $planet~CITADELCash (999999999 - $PLAYER~CREDITS)
@@ -1351,6 +1353,7 @@ return
 			getTExt CURRENTLINE $BUY "? (" "max"
 			striptext $buy " "
 			striptext $buy ","
+			striptext $buy "."
 			if ((PORT.BUYFUEL[$player~current_sector] = FALSE) AND ($skipfuel <> TRUE))
 				send $buy & "* *  "
 			else
@@ -1362,6 +1365,7 @@ return
 			getTExt CURRENTLINE $BUY "? (" "max"
 			striptext $buy " "
 			striptext $buy ","
+			striptext $buy "."
 			if ((PORT.BUYORG[$player~current_sector] = TRUE) AND ($skiporg <> TRUE))
 				send $buy & "* *  "
 			else
@@ -1373,6 +1377,7 @@ return
 			getTExt CURRENTLINE $BUY "? (" "max"
 			striptext $buy " "
 			striptext $buy ","
+			striptext $buy "."
 			if ((PORT.BUYEQUIP[$player~current_sector] = TRUE) AND ($skipequip <> TRUE))
 				send $buy & "* * l "&$planet~planet&"* c "
 			else
@@ -1535,16 +1540,19 @@ return
 	getText CURRENTLINE $BUY "(Max" ") ["
 	stripText $BUY " "
 	stripText $BUY ","
+	stripText $BUY "."
 	send $BUY & "* T "
 	waitfor "How many Genesis Torpedoes do you want"
 	getText CURRENTLINE $BUY "(Max" ") ["
 	stripText $BUY " "
 	stripText $BUY ","
+	stripText $BUY "."
 	send $BUY & "* Q S P C "
 	waitfor "How many shield armor points do you want to buy"
 	getText CURRENTLINE $BUY "(Max" ") ["
 	stripText $BUY " "
 	stripText $BUY ","
+	stripText $BUY "."
 	send $BUY & "* "
 
 	if ($MOW)

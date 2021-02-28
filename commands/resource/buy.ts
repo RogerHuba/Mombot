@@ -47,6 +47,7 @@ return
 				killAllTriggers
 				getWord CURRENTLINE $nCredits 3
 				stripText $nCredits ","
+				stripText $nCredits "."
 				
 				if ($nCredits = $cCredits)
 					setVar $report 1
@@ -71,6 +72,7 @@ return
 	:buyfirstoffer
 		getWord CURRENTLINE $offer 5
 		striptext $offer ","
+		striptext $offer "."
 
 		gosub :swathoff
 		if ($swathoff = 0)
@@ -128,6 +130,7 @@ return
 		setVar $old_counter $counter
 		getWord CURRENTLINE $offer 5
 		striptext $offer ","
+		striptext $offer "."
 		setVar $offer_pct $offer
 		multiply $offer_pct 1000
 		divide $offer_pct $old_offer
@@ -147,6 +150,7 @@ return
 		setVar $old_counter $counter
 		getWord CURRENTLINE $offer 5
 		striptext $offer ","
+		striptext $offer "."
 		setVar $offer_change $offer
 		subtract $offer_change $old_offer
 		subtract $offer_change 1
@@ -174,6 +178,7 @@ return
 		killalltriggers
 		getWord CURRENTLINE $player~credits 3
 		stripText $player~credits ","
+		stripText $player~credits "."
 		setVar $oldempty $empty
 		getWord CURRENTLINE $empty 6
 		if ($oldempty = $empty)

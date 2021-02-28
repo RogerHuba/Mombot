@@ -533,6 +533,8 @@
 			getWord CURRENTLINE $sfigs 6
 			stripText $pfigs ","
 			stripText $sfigs ","
+			stripText $pfigs "."
+			stripText $sfigs "."
 			setVar $ourFigsAvailable ($pfigs + $sfigs)
 
 

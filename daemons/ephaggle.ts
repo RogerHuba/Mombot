@@ -165,12 +165,14 @@ getword CURRENTLINE $RANK 1
 if ($RANK = "Rank")
 	getword CURRENTLINE $player~experience 5
 	striptext $player~experience ","
+	striptext $player~experience "."
 	gosub :checkforbluetrader
 	goto :50
 end
 setvar $TEMP CURRENTLINE & #179
 gettext $TEMP $TEMP "Exp" #179
 striptext $TEMP ","
+striptext $TEMP "."
 striptext $TEMP " "
 isnumber $YN $TEMP
 if ($YN = 1)
@@ -314,6 +316,7 @@ pause
 killalltriggers
 getword CURRENTLINE $holds_to_trade 2
 striptext $holds_to_trade ","
+striptext $holds_to_trade "."
 settextlinetrigger BUYOFFER :INITOFFER "We'll buy them for"
 settextlinetrigger SELLOFFER :INITOFFER "We'll sell them for"
 pause
@@ -346,6 +349,7 @@ pause
 
 :PARSEINITOFFER
 striptext $OFFER ","
+striptext $OFFER "."
 striptext $OFFER "["
 striptext $OFFER "]"
 striptext $OFFER "?"
@@ -635,6 +639,7 @@ pause
 
 :PARSECOUNTEROFFER
 striptext $OFFER ","
+striptext $OFFER "."
 add $BID 1
 round $BID
 setvar $BID[$BID] $OFFER

@@ -322,6 +322,7 @@ return
 			killAllTriggers
 			getWord CURRENTLINE $nCredits 3
 			stripText $nCredits ","
+			stripText $nCredits "."
 			
 			if ($nCredits = $cCredits)
 				setVar $report 1

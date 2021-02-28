@@ -77,6 +77,7 @@
 		getText CurrentLine $decash_target "credits, and " " has "
 		getText CurrentLine $DECASH " has " "."
 		stripText $DECASH ","
+		stripText $DECASH "."
 		stripText $DECASH " "
 		if ($DECASH > $cash_to_leave)
 			setVar $DECASH ($DECASH - $cash_to_leave)
