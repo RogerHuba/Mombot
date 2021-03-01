@@ -102,6 +102,15 @@ if ($bot~parm1 = "upgrade")
   if ($startingLocation = "Command")
     setvar $planet~planet $planet_to_upgrade
     gosub :PLANET~landingsub
+    gosub :player~quikstats
+    if ($player~current_prompt = "Citadel")
+      send "q"
+    end
+    if ($player~current_prompt = "Command")
+      setvar $switchboard~message "Wrong planet number to upgrade.  Halting.*"
+      gosub :switchboard~switchboard
+      halt
+    end
   end
 end
 gosub :PLANET~loadplanetInfo
