@@ -160,7 +160,7 @@
 				goto :notit
 			end
 			if (($bot~parmameter <> "") and ($isGoodSector = true))
-				if ($checkedPorts[$focus] <> TRUE)
+				if ($checkedPorts[$focus] = TRUE)
 					goto :notit
 				end
 				setVar $NearFig $focus
