@@ -71,6 +71,7 @@
 
 gosub :player~quikstats
 setVar $startingLocation $PLAYER~CURRENT_PROMPT
+
 if ($startingLocation = "Command")
 
 elseif ($startingLocation = "Citadel")
@@ -86,6 +87,17 @@ else
 	setVar $SWITCHBOARD~message "Have to be on Command, Planet, or Citadel prompt to start upgrader.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
+end
+if ($bot~parm1 = "upgrade")
+  isNumber $test $bot~parm3
+  if ($test = true)
+    if ($bot~parm3 > 0)
+      setvar $planet_to_upgrade $bot~parm3
+    end
+  end
+  if ($planet_to_upgrade = 0)
+    setvar $planet_to_upgrade $planet~planet
+  end
 end
 
 gosub :PLANET~loadplanetInfo
@@ -142,14 +154,23 @@ if ($bot~parm1 = "create")
   gosub :planet~make_planet_array
 
   gosub :makeplanet
-  if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
-    setvar $planet~planet $startingPlanet
-    gosub :PLANET~landingsub
-  end
+end
+if ($bot~parm1 = "upgrade")
+  # upgrade this planet
+  setVar $PlanetUpgrade~PlanetID $planet_to_upgrade
+  setVar $PlanetUpgrade~Sector $player~current_sector
+  setVar $PlanetUpgrade~Seek false
+  gosub :PlanetUpgrade~PlanetUpgrade
 end
 
-#TODO UPGRADE PLANETS
+
 #TODO DESTROY/BLOW PLANETS
+
+if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
+  setvar $planet~planet $startingPlanet
+  gosub :PLANET~landingsub
+end
+
 halt
 
 :MakePlanet
@@ -409,6 +430,7 @@ end
 include "source\pack2_includes\playerInfo"
 include "source\pack2_includes\warp"
 include "source\pack2_includes\seekProduct"
+include "source\pack2_includes\planetupgrade"
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\bot_includes\player\quikstats\player"
