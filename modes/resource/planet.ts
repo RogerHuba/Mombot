@@ -99,7 +99,10 @@ if ($bot~parm1 = "upgrade")
     setvar $planet_to_upgrade $planet~planet
   end
 end
-
+if ($startingLocation = "Command")
+  setvar $planet~planet $planet_to_upgrade
+  gosub :PLANET~landingsub
+end
 gosub :PLANET~loadplanetInfo
 
 getWordPos " "&$bot~user_command_line&" " $pos "ewarp"
