@@ -160,6 +160,7 @@ if ($bot~parm1 = "upgrade")
   setVar $PlanetUpgrade~PlanetID $planet_to_upgrade
   setVar $PlanetUpgrade~Sector $player~current_sector
   setVar $PlanetUpgrade~Seek false
+  send "*"
   gosub :PlanetUpgrade~PlanetUpgrade
 end
 
