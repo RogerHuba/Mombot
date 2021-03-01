@@ -101,6 +101,7 @@ if ($bot~parm1 = "upgrade")
   end
   if ($startingLocation = "Command")
     setvar $planet~planet $planet_to_upgrade
+    send "jy"
     gosub :PLANET~landingsub
     gosub :player~quikstats
     if ($player~current_prompt = "Citadel")
