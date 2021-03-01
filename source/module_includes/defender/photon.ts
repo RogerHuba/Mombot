@@ -384,7 +384,7 @@ return
 			goto :alldone
 		elseif ($density[$w] <> $dens[$w])
 			setVar $diff ($density[$w] - $dens[$w])
-			if ($diff <> 0)
+			if (($diff = 40) or ($diff = 2))
 				gosub :do_action
 				goto :dtorp_end
 			else

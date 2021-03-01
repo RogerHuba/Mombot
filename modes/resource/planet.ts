@@ -76,15 +76,16 @@ if ($startingLocation = "Command")
   #nothing
 elseif ($startingLocation = "Citadel")
 	send "q"
+  gosub :PLANET~getPlanetInfo
+  setvar $startingPlanet $planet~planet
 elseif ($startingLocation = "Planet")
-  #nothing
+  gosub :PLANET~getPlanetInfo
+  setvar $startingPlanet $planet~planet
 else
 	setVar $SWITCHBOARD~message "Have to be on Command, Planet, or Citadel prompt to start upgrader.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
 end
-gosub :PLANET~getPlanetInfo
-setvar $startingPlanet $planet~planet
 if ($bot~parm1 <> "upgrade")
   send "q"
 end
@@ -99,7 +100,6 @@ if ($bot~parm1 = "upgrade")
     setvar $planet_to_upgrade $planet~planet
   end
   if ($startingLocation = "Command")
-    ECHO "*[[ABOUT TO LAND]] planet [" $planet_to_upgrade "]*"
     setvar $planet~planet $planet_to_upgrade
     gosub :PLANET~landingsub
   end
