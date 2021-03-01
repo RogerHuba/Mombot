@@ -98,10 +98,10 @@ if ($bot~parm1 = "upgrade")
   if ($planet_to_upgrade = 0)
     setvar $planet_to_upgrade $planet~planet
   end
-end
-if ($startingLocation = "Command")
-  setvar $planet~planet $planet_to_upgrade
-  gosub :PLANET~landingsub
+  if ($startingLocation = "Command")
+    setvar $planet~planet $planet_to_upgrade
+    gosub :PLANET~landingsub
+  end
 end
 gosub :PLANET~loadplanetInfo
 
@@ -173,6 +173,8 @@ end
 if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
   setvar $planet~planet $startingPlanet
   gosub :PLANET~landingsub
+else
+  send "qqqqq** "
 end
 
 halt
