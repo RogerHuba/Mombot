@@ -73,20 +73,20 @@ gosub :player~quikstats
 setVar $startingLocation $PLAYER~CURRENT_PROMPT
 
 if ($startingLocation = "Command")
-
+  #nothing
 elseif ($startingLocation = "Citadel")
 	send "q"
-	gosub :PLANET~getPlanetInfo
-	setvar $startingPlanet $planet~planet
-	send "q"
 elseif ($startingLocation = "Planet")
-	gosub :PLANET~getPlanetInfo
-	setvar $startingPlanet $planet~planet
-	send "q"
+  #nothing
 else
 	setVar $SWITCHBOARD~message "Have to be on Command, Planet, or Citadel prompt to start upgrader.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
+end
+gosub :PLANET~getPlanetInfo
+setvar $startingPlanet $planet~planet
+if ($bot~parm1 <> "upgrade")
+  send "q"
 end
 if ($bot~parm1 = "upgrade")
   isNumber $test $bot~parm3
