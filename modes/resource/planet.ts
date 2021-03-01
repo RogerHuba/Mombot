@@ -66,7 +66,7 @@
 	loadVar $MAP~STARDOCK 
 	loadvar $bot~folder
 	loadvar $game~MAX_PLANETS_PER_SECTOR
-	loadvar $planet_file
+	loadvar $planet~planet_file
 
 
 gosub :player~quikstats
@@ -83,8 +83,8 @@ else
 	gosub :SWITCHBOARD~switchboard
 	halt
 end
-gosub :getPlanetInfo
-setvar $startingPlanet $planet
+gosub :PLANET~getPlanetInfo
+setvar $startingPlanet $planet~planet
 if ($bot~parm1 <> "upgrade")
   send "q"
 end
@@ -96,14 +96,15 @@ if ($bot~parm1 = "upgrade")
     end
   end
   if ($planet_to_upgrade = 0)
-    setvar $planet_to_upgrade $planet
+    setvar $planet_to_upgrade $planet~planet
   end
   if ($startingLocation = "Command")
-    setvar $planet $planet_to_upgrade
-    gosub :landingsub
+    ECHO "*[[ABOUT TO LAND]] planet [" $planet_to_upgrade "]*"
+    setvar $planet~planet $planet_to_upgrade
+    gosub :PLANET~landingsub
   end
 end
-gosub :loadplanetInfo
+gosub :PLANET~loadplanetInfo
 
 getWordPos " "&$bot~user_command_line&" " $pos "ewarp"
 setvar $warptype "T"
@@ -127,8 +128,8 @@ if ($bot~parm1 = "create")
     setVar $i 1
     setVar $foundPlanet FALSE
     setVar $isAKeeper FALSE
-    while (($i <= $planetcounter) AND ($foundPlanet = FALSE))
-      if ($planetList[$i][7] = true)
+    while (($i <= $planet~planetcounter) AND ($foundPlanet = FALSE))
+      if ($planet~planetList[$i][7] = true)
         setVar $isAKeeper TRUE
       end
       add $i 1
@@ -154,7 +155,7 @@ if ($bot~parm1 = "create")
     end
   end
 
-  gosub :make_planet_array
+  gosub :planet~make_planet_array
 
   gosub :makeplanet
 end
@@ -171,8 +172,8 @@ end
 #TODO DESTROY/BLOW PLANETS
 
 if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
-  setvar $planet $startingPlanet
-  gosub :landingsub
+  setvar $planet~planet $startingPlanet
+  gosub :PLANET~landingsub
 else
   send "qqqqq** "
 end
@@ -221,20 +222,20 @@ halt
   lowercase $type
   
 if ($wantedplanets[1] = 0)
-	setvar $planet_type $type
-	lowercase $planet_type
-	striptext $planet_type ")"
-	#echo $planet_type&"*"
+	setvar $planet~planet_type $type
+	lowercase $planet~planet_type
+	striptext $planet~planet_type ")"
+	#echo $planet~planet_type&"*"
 
 	setVar $i 1
 	setVar $foundPlanet FALSE
 	setVar $isAKeeper FALSE
-	while (($i <= $planetcounter) AND ($foundPlanet = FALSE))
-		lowercase $planetList[$i]
-		lowercase $planet_type
-		getWordPos $planetList[$i] $pos $planet_type
+	while (($i <= $planet~planetcounter) AND ($foundPlanet = FALSE))
+		lowercase $planet~planetList[$i]
+		lowercase $planet~planet_type
+		getWordPos $planet~planetList[$i] $pos $planet~planet_type
 		if ($pos > 0)
-			setVar $isAKeeper $planetList[$i][7]
+			setVar $isAKeeper $planet~planetList[$i][7]
 			setVar $foundPlanet TRUE
 		end
 		add $i 1
@@ -291,18 +292,18 @@ end
   # give it a nice name
 
 if ($custom_planet_name = "")
-	getRnd $planet_pointer 1 1000
-	setVar $first_part $planet_names[$planet_pointer]
+	getRnd $planet~planet_pointer 1 1000
+	setVar $first_part $planet~planet_names[$planet~planet_pointer]
 	getWord $first_part $first_half 1
-	getRnd $planet_pointer 1 1000
-	setVar $second_part $planet_names[$planet_pointer]
+	getRnd $planet~planet_pointer 1 1000
+	setVar $second_part $planet~planet_names[$planet~planet_pointer]
 	getRnd $flip_a_coin 1 2
 	getWord $second_part $last_half $flip_a_coin
 	if (($last_half = "")  OR ($last_half = "0"))
 		getWord $second_part $last_half 1
 	end
-	setVar $planetLabel $first_half&" "&$last_half
-	setVar $name $planetLabel
+	setVar $planet~planetLabel $first_half&" "&$last_half
+	setVar $name $planet~planetLabel
 else
 	setvar $name $custom_planet_name
 end
