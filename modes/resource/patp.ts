@@ -159,10 +159,7 @@
 			if (($bot~parmameter <> "") and ($isGoodSector <> true))
 				goto :notit
 			end
-			if (($bot~parmameter <> "") and ($isGoodSector = true))
-				if ($checkedPorts[$focus] = TRUE)
-					goto :notit
-				end
+			if (($bot~parmameter <> "") and ($isGoodSector = true) and ($checkedPorts[$focus] <> TRUE))
 				setVar $NearFig $focus
 				setVar $checkedPorts[$NearFig] TRUE
 				setVar $totalPortFuel PORT.FUEL[$focus]
