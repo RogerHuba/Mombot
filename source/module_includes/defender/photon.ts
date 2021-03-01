@@ -236,12 +236,12 @@ return
 			return
 		end
 	end
-	if ($paranoid = true)
-		getSectorParameter $sector "LIMPSEC" $isLimped
-		if ($isLimped <> true)
-			return
-		end
-	end
+#	if ($paranoid = true)
+#		getSectorParameter $sector "LIMPSEC" $isLimped
+#		if ($isLimped <> true)
+#			return
+#		end
+#	end
 	setvar $found true
 return
 
