@@ -956,6 +956,7 @@ goto :processing
 			gosub :photon~retreatphoton
 		else
 			if (($main~friendly_sectors[$photon~sector] = true) or ($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
+				gosub :check_for_gridding_in_a_line
 				goto :can_not_fire
 			end
 			if ($main~attack_sectors[$photon~sector] > 0)
