@@ -969,10 +969,12 @@ goto :processing
 					setvar $switchboard~message "Detecting gridding in a row.  Only one possible target.  Attempting density photon.*"
 					gosub :switchboard~switchboard
 					setvar $photon~found true
+					setvar $saved $photon~density
 					setvar $photon~density true
 					setvar $photon~long true
 					getword $photon~adjacent_to_last_attack_sectors $photon~sector 1
 					gosub :photon~photon
+					setvar $photon~density $saved
 				elseif ($pos > 0)
 					setvar $switchboard~message "They seem to be gridding in a line.  Time to pdrop them?*"
 					gosub :switchboard~switchboard
