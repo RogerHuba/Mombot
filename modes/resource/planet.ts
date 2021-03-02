@@ -88,7 +88,7 @@ else
 	halt
 end
 if ($bot~parm1 <> "upgrade")
-  send "q"
+  send "q** "
 end
 if ($bot~parm1 = "upgrade")
   isNumber $test $bot~parm3
