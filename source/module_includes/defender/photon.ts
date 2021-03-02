@@ -24,7 +24,7 @@
 			return
 		end
 	end
-	setvar $switchboard~message "No Adjacent fig found!*"
+	echo "*[No valid Adjacent fig found!]*"
 	#gosub :switchboard~switchboard
 return
 :fire_adjacent

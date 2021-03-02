@@ -684,6 +684,10 @@
 	setDelayTrigger	   announce_trigger :announce	1200000
 
 	:processing
+		if ($reprocess_sectors = true)
+			gosub :refresh_sectors
+			setvar $reprocess_sectors false
+		end
 		gosub :kill_defender_triggers
 		if ($planet~planet_fighters < ($planet~planet_fighters_max/3))
 			if ($buyfig = true)
@@ -949,7 +953,19 @@ goto :processing
 			if (($main~friendly_sectors[$photon~sector] = true) or ($fire_history[$photon~sector] > 5) or ($photon~last_sector = $photon~sector) or ($photon~sector = $map~home_sector))
 				goto :can_not_fire
 			end
-			gosub :photon~photon
+			if ($main~attack_sectors[$photon~sector] > 0)
+				gosub :photon~photon
+			else
+				gosub :check_for_target_change
+				gosub :killing~scan_for_targets
+				gosub :checkkillstatus
+				gosub :check_for_target_change
+				if ($player~current_sector = $bot~last_hit)
+					gosub :killing~scan_for_targets
+					gosub :checkkillstatus
+				end
+				goto :processing
+			end
 		end
 		killalltriggers
 		:done_firing
@@ -959,6 +975,7 @@ goto :processing
 		if ($photon~success = true)
 			setvar $photon~last_sector $photon~sector
 			setvar $fire_history[$photon~sector] ($fire_history[$photon~sector] + 1) 
+			setvar $reprocess_sectors true
 		else
 			gosub :player~quikstats
 		end
