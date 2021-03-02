@@ -40,10 +40,10 @@
 
 
 	gosub :BOT~loadVars
-
-	setVar $BOT~help[1]    $BOT~tab&"planet {make|destroy|upgrade} {ewarp} {create:} {"&#34&"custom planet name"&#34&"} "
-	setVar $BOT~help[2]    $BOT~tab&"       "
-	setVar $BOT~help[3]    $BOT~tab&"     {ewarp}  - Will refurb torps and atomics by ewarp "
+ 
+	setVar $BOT~help[1]    $BOT~tab&"planet {make|destroy|upgrade} {ewarp} {create:}               "
+	setVar $BOT~help[2]    $BOT~tab&"       {"&#34&"custom planet name"&#34&"}                     "
+	setVar $BOT~help[3]    $BOT~tab&"     {ewarp}  - Will refurb torps and atomics by ewarp        "
 	setVar $BOT~help[4]    $BOT~tab&"                This is NOT safe."         
 	setVar $BOT~help[5]    $BOT~tab&"       "
 	setVar $BOT~help[6]    $BOT~tab&"   {create:}  - List of planet types to make.  Any unique word"

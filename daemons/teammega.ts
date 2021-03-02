@@ -1,6 +1,7 @@
 	logging off
 	gosub :BOT~loadVars
 	loadvar $game~port_max
+	loadvar $game~mbbs
 
 	setVar $MAX_BOTS 15
 	setVar $MIN_RED_EXP 0
@@ -345,8 +346,11 @@ return
 	setvar $do_backup_robber false
 	:megaagain
 	setvar $evilbot $BOTS[$current_robber][3]
-	send "'"&$evilBot&" mega*"
-	
+	if ($game~mbbs = true)
+		send "'"&$evilBot&" mega*"
+	else
+		send "'"&$evilBot&" rob*"
+	end	
 	setTextLineTrigger 1 :mrBusted "[Busted"
 	setTextLineTrigger 2 :mrBusted2 "Fake Busted"
 	setTextLineTrigger 3 :mrshort "Port is short"
