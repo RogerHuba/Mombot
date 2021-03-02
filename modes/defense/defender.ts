@@ -960,26 +960,9 @@ goto :processing
 			end
 			if ($main~attack_sectors[$photon~sector] > 0)
 				gosub :photon~photon
-				getwordpos $photon~adjacent_to_last_attack_sectors $pos " "&$photon~sector&" "
-				if (($pos > 0) and ($photon~adjacent_to_last_attack_sectors_count = 1))
-					############################################
-					# if attacked to sectors in a row and only #
-					# one possible attack, do density          #
-					############################################
-					setvar $switchboard~message "Detecting gridding in a row.  Only one possible target.  Attempting density photon.*"
-					gosub :switchboard~switchboard
-					setvar $photon~found true
-					setvar $saved $photon~density
-					setvar $photon~density true
-					setvar $photon~long true
-					getword $photon~adjacent_to_last_attack_sectors $photon~sector 1
-					gosub :photon~photon
-					setvar $photon~density $saved
-				elseif ($pos > 0)
-					setvar $switchboard~message "They seem to be gridding in a line.  Time to pdrop them?*"
-					gosub :switchboard~switchboard
-				end
+				gosub :check_for_gridding_in_a_line
 			else
+				gosub :check_for_gridding_in_a_line
 				gosub :check_for_target_change
 				gosub :killing~scan_for_targets
 				gosub :checkkillstatus
@@ -1169,7 +1152,27 @@ goto :processing
 	killtrigger announce_trigger
 return
 
-
+:check_for_gridding_in_a_line
+	getwordpos $photon~adjacent_to_last_attack_sectors $pos " "&$photon~sector&" "
+	if (($pos > 0) and ($photon~adjacent_to_last_attack_sectors_count = 1))
+		############################################
+		# if attacked to sectors in a row and only #
+		# one possible attack, do density          #
+		############################################
+		setvar $switchboard~message "Detecting gridding in a row.  Only one possible target.  Attempting density photon.*"
+		gosub :switchboard~switchboard
+		setvar $photon~found true
+		setvar $saved $photon~density
+		setvar $photon~density true
+		setvar $photon~long true
+		getword $photon~adjacent_to_last_attack_sectors $photon~sector 1
+		gosub :photon~photon
+		setvar $photon~density $saved
+	elseif ($pos > 0)
+		setvar $switchboard~message "They seem to be gridding in a line.  Time to pdrop them?*"
+		gosub :switchboard~switchboard
+	end
+return
 
 :doHolo
 	setVar $BOT~command "holo"
