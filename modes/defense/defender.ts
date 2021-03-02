@@ -684,10 +684,6 @@
 	setDelayTrigger	   announce_trigger :announce	1200000
 
 	:processing
-		if ($reprocess_sectors = true)
-			gosub :refresh_sectors
-			setvar $reprocess_sectors false
-		end
 		gosub :kill_defender_triggers
 		if ($planet~planet_fighters < ($planet~planet_fighters_max/3))
 			if ($buyfig = true)
@@ -723,21 +719,30 @@
 			add $i 1
 		end
 		if ($photon~sector > 0)
+			if ($reprocess_sectors = true)
+				gosub :refresh_sectors
+				setvar $reprocess_sectors false
+			end
 			setVar $i 1
+			setvar $photon~adjacent_to_last_attack_sectors_count 0
 			setvar $photon~adjacent_to_last_attack_sectors " "
 			while (SECTOR.WARPS[$photon~sector][$i] > 0)
-				setvar $photon~adjacent_to_last_attack_sectors " "&$photon~adjacent_to_last_attack_sectors&SECTOR.WARPS[$photon~sector][$i]&" "
+				getsectorparameter SECTOR.WARPS[$photon~sector][$i] "FIGSEC" $isFigged
+				if ($isFigged = true)
+					add $photon~adjacent_to_last_attack_sectors_count 1
+					setvar $photon~adjacent_to_last_attack_sectors " "&$photon~adjacent_to_last_attack_sectors&SECTOR.WARPS[$photon~sector][$i]&" "
+				end
 				add $i 1
 			end
 		end
 
-		if ($limpet)
+		if ($limpet = true)
 			setTextTrigger 21 :attackSectorLimpet "Limpet mine in "
 		end
-		if ($armid)
+		if ($armid = true)
 			setTextTrigger 22 :attackSectorMine "Your mines in "
 		end
-		if ($fighter)
+		if ($fighter = true)
 			setTextTrigger 23 :attackSectorFighter "Deployed Fighters "
 		end
 
@@ -955,6 +960,23 @@ goto :processing
 			end
 			if ($main~attack_sectors[$photon~sector] > 0)
 				gosub :photon~photon
+				getwordpos $photon~adjacent_to_last_attack_sectors $pos " "&$photon~sector&" "
+				if (($pos > 0) and ($photon~adjacent_to_last_attack_sectors_count = 1))
+					############################################
+					# if attacked to sectors in a row and only #
+					# one possible attack, do density          #
+					############################################
+					setvar $switchboard~message "Detecting gridding in a row.  Only one possible target.  Attempting density photon.*"
+					gosub :switchboard~switchboard
+					setvar $photon~found true
+					setvar $photon~density true
+					setvar $photon~long true
+					getword $photon~adjacent_to_last_attack_sectors $photon~sector 1
+					gosub :photon~photon
+				elseif ($pos > 0)
+					setvar $switchboard~message "They seem to be gridding in a line.  Time to pdrop them?*"
+					gosub :switchboard~switchboard
+				end
 			else
 				gosub :check_for_target_change
 				gosub :killing~scan_for_targets
@@ -1304,6 +1326,14 @@ return
 		setvar $randomAttackCount 0
 		setvar $i 1
 		while ($i <= sectors)
+			###############################################################################
+			# when photon has been fired, only adjust sectors pointing to the missing fig #
+			###############################################################################
+			if ($photon~sector > 0)
+				if ($main~attack_sectors[$i] <> $photon~sector)
+					goto :skip_refresh_sector
+				end
+			end
 			getsectorparameter $i "BUBBLE" $isBubble
 			getsectorparameter $i "FARM" $isFarm
 			if (($isFarm = true) OR ($isBubble = true))
@@ -1354,6 +1384,7 @@ return
 					end
 				end
 			end
+			:skip_refresh_sector
 			add $i 1
 		end
 return
