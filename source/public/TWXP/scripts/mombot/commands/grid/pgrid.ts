@@ -304,6 +304,7 @@
 			killtrigger denscheck2
 			getWord CURRENTLINE $pgridDensity 4
 			stripText $pgridDensity ","
+			stripText $pgridDensity "."
 			pause
 		:getDensityPgrid2
 			killtrigger denscheck
@@ -311,6 +312,7 @@
 			killtrigger denscheck2
 			getWord CURRENTLINE $pgridDensity 5
 			stripText $pgridDensity ","
+			stripText $pgridDensity "."
 			pause
 		:doneDensityCheck
 			killalltriggers
