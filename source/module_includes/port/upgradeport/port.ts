@@ -61,13 +61,13 @@
 		gosub :switchboard~switchboard
 		halt
 	end
-	setvar $class PORT.CLASS[currentsector] 
+	setvar $class PORT.CLASS[$PLAYER~CURRENT_SECTOR] 
 	if (($class = "0") or ($class = "9"))
 		setvar $switchboard~message "Can't upgrade a class "&$class&" port.*"
 		gosub :switchboard~switchboard
 		halt
 	end
-	setvar $under_construction (PORT.BUILDTIME[currentsector] > 0)
+	setvar $under_construction (PORT.BUILDTIME[$PLAYER~CURRENT_SECTOR] > 0)
 	if ($under_construction = true)
 		setvar $switchboard~message "Can't upgrade a port that's under construction.*"
 		gosub :switchboard~switchboard
@@ -85,6 +85,7 @@
 		if ($startingLocation = "Citadel")
 			send "q"
 		end
+		gosub :player~quikstats
 		gosub :PLANET~getPlanetInfo
 		if ($PLANET~CITADEL > 0)
 			send "cs* "

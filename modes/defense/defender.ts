@@ -1023,7 +1023,7 @@ goto :processing
 					gosub :pwarp_direct_and_kill
 				end
 			else
-				send " l " $PLANET~PLANET " * n n * j m * * * j c  *  "
+				send "l j" #8 #8  $planet~planet  "* n n * j m * * * j c  *  "
 				gosub :player~quikstats
 				if ($player~current_prompt = "Command")
 					# Stuck in sector probably without planet #
