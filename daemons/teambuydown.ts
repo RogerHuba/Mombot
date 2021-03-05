@@ -293,7 +293,7 @@ return
 
 :startbuydown
 	setvar $nextbot $BOTS[$current_trader][3]
-    getwordpos $align "-" $pos
+    getwordpos $align $pos "-"
     if ($pos > 0)
         send "'" $nextbot " buy " $type " b *"
     else
