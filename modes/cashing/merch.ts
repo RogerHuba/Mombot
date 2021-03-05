@@ -181,8 +181,8 @@
 			end
 			# If this sector is our xxB, we're done!
 			getSectorParameter $focus "BUSTED" $isBusted
-			setvar $validOrgPort ((($sellingOrg) AND ($planet~planet_organics > 500) AND (PORT.BUYORG[$focus]) and (((PORT.PERCENTORG[$focus] > 50) and (port.org[$focus] > $half_port_max) and ($sellhalf = true)) or ($sellhalf <> true)) AND (PORT.ORG[$focus] >= $minimumFuel))
-			setvar $validEquipPort ((($sellingEquip) AND ($planet~planet_equipment > 500) AND (PORT.BUYEQUIP[$focus]) AND (((PORT.PERCENTEQUIP[$focus] > 50) and ($sellhalf = true) and (port.equip[$focus] > $half_port_max)) or ($sellhalf <>true)) and (PORT.EQUIP[$focus] >= $minimumFuel))
+			setvar $validOrgPort ((($sellingOrg) AND ($planet~planet_organics > 500) AND (PORT.BUYORG[$focus]) and (((PORT.PERCENTORG[$focus] > 50) and (port.org[$focus] > $half_port_max) and ($sellhalf = true)) or ($sellhalf <> true)) AND (PORT.ORG[$focus] >= $minimumFuel)))
+			setvar $validEquipPort ((($sellingEquip) AND ($planet~planet_equipment > 500) AND (PORT.BUYEQUIP[$focus]) AND (((PORT.PERCENTEQUIP[$focus] > 50) and ($sellhalf = true) and (port.equip[$focus] > $half_port_max)) or ($sellhalf <>true)) and (PORT.EQUIP[$focus] >= $minimumFuel)))
 			setvar $validBuyFuelPort (($buyFuel = true) and (PORT.FUEL[$focus] >= $minimumFuel) and (PORT.BUYFUEL[$focus] = false) and (($planet~planet_fuel_max - $planet~planet_fuel) >= $game~port_max))
 			setvar $validBuyOrgPort (($buyOrg = true) and (PORT.ORG[$focus] >= $minimumFuel) and (PORT.BUYORG[$focus] = false) and (($planet~planet_organics_max - $planet~planet_organics) >= $game~port_max))
 			setvar $validBuyEquipPort (($buyEquip = true) and (PORT.EQUIP[$focus] >= $minimumFuel) and (PORT.BUYEQUIP[$focus] = false) and (($planet~planet_equipment_max - $planet~planet_equipment) >= $game~port_max))
