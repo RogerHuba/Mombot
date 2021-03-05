@@ -293,8 +293,12 @@ return
 
 :startbuydown
 	setvar $nextbot $BOTS[$current_trader][3]
-	send "'" $nextbot " buy " $type " s *"
-
+    getwordpos $align "-" $pos
+    if ($pos > 0)
+        send "'" $nextbot " buy " $type " b *"
+    else
+        send "'" $nextbot " buy " $type " s *"
+    end
 	setTextLineTrigger 1 :startDock1 " docks at"
 	setTextLineTrigger 2 :startDock2 "Commerce report for"
 	setDelayTrigger    3 :startDockDelay 5000
