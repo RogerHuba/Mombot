@@ -269,7 +269,12 @@ halt
 		getWord $line $credits 10
 		getWord $line $ship 12
 		getWord $line $turns 14
-
+        getwordpos $align $pos "-"
+        if ($pos > 0)
+    		setvar $BOTS[$check][2] true
+        else
+        	setvar $BOTS[$check][2] false
+        end
 		setvar $BOTS[$check][1] $turns
 return
 
@@ -293,8 +298,7 @@ return
 
 :startbuydown
 	setvar $nextbot $BOTS[$current_trader][3]
-    getwordpos $align $pos "-"
-    if ($pos > 0)
+    if ($BOTS[$current_trader][2] = true)
         send "'" $nextbot " buy " $type " b *"
     else
         send "'" $nextbot " buy " $type " s *"
