@@ -245,7 +245,7 @@ while (true)
         end
 
         gosub :findbestcandidates
-        setvar $check $current_robber
+        setvar $check $current_trader
         gosub :checkin
 	end
 end
