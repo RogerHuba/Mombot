@@ -57,7 +57,7 @@
 	getWordPos $bot~user_command_line $pos "max:"
 	if ($pos > 0)
 		setVar $cline $bot~user_command_line & " "
-		getText $cline $delay "max:" " "
+		getText $cline $max "max:" " "
 	else
 		setVar $max $game~port_max
 	end
