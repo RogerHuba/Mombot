@@ -232,7 +232,7 @@ while (true)
 
         if (PORT.BUYORG[$PLAYER~CURRENT_SECTOR] = false)
             setvar $type "o"
-            gosub :startbuydownorg
+            gosub :startbuydown
         end
 
         setvar $check $current_trader
