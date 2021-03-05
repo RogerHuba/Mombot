@@ -1,4 +1,4 @@
-for /r %%n in (*planet.ts) do call :checkit "%%n" 
+for /r %%n in (*merch.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
