@@ -9,7 +9,7 @@
 	setVar $BOT~help[2]  $BOT~tab&"           and/or equipment.       "
 	setVar $BOT~help[3]  $BOT~tab&"       "
 	setVar $BOT~help[4]  $BOT~tab&" merch {sector param} {min port product} [o | e] ({neg}otiate OR {hold}byhold)  "
-	setVar $BOT~help[5]  $BOT~tab&"       {buyfuel} {docim}  "
+	setVar $BOT~help[5]  $BOT~tab&"       {buyfuel} {docim} {max:#}  "
 	setVar $BOT~help[6]  $BOT~tab&"       "
 	setVar $BOT~help[7]  $BOT~tab&"Options:"
 	setVar $BOT~help[8]  $BOT~tab&"    {neg/hold}   Determines planet negotiate or hold "
@@ -20,6 +20,7 @@
 	setVar $BOT~help[13] $BOT~tab&"      {buyorg}   Buys all the org in selling ports "
 	setVar $BOT~help[14] $BOT~tab&"    {buyequip}   Buys all the equip in selling ports "
 	setVar $BOT~help[15] $BOT~tab&"        {half}   sell half of port (neg only for now) "
+	setVar $BOT~help[16] $BOT~tab&"       {max:#}   max product port can have "
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Merchant"
@@ -51,7 +52,15 @@
 		gosub :switchboard~switchboard
 		halt
 	end
-	
+	loadvar $game~port_max
+
+	getWordPos $bot~user_command_line $pos "max:"
+	if ($pos > 0)
+		setVar $cline $bot~user_command_line & " "
+		getText $cline $delay "max:" " "
+	else
+		setVar $max $game~port_max
+	end
 	getWordPos $bot~user_command_line $pos "hold"
 	if ($pos > 0)
 		setVar $planet~planetNegotiate FALSE
@@ -147,7 +156,6 @@
 		setvar $switchboard~message "Planet Merchant CIM Port Data Complete - Comms Back On*"
 		gosub :switchboard~switchboard
 	end
-	loadvar $game~port_max
 	setvar $half_port_max $game~port_max
 	divide $half_port_max 2
 	while ((($sellingOrg) AND ($planet~planet_organics >= 500)) OR (($sellingEquip) AND ($planet~planet_equipment >= 500)))
@@ -181,8 +189,8 @@
 			end
 			# If this sector is our xxB, we're done!
 			getSectorParameter $focus "BUSTED" $isBusted
-			setvar $validOrgPort ((($sellingOrg) AND ($planet~planet_organics > 500) AND (PORT.BUYORG[$focus]) and (((PORT.PERCENTORG[$focus] > 50) and (port.org[$focus] > $half_port_max) and ($sellhalf = true)) or ($sellhalf <> true)) AND (PORT.ORG[$focus] >= $minimumFuel)))
-			setvar $validEquipPort ((($sellingEquip) AND ($planet~planet_equipment > 500) AND (PORT.BUYEQUIP[$focus]) AND (((PORT.PERCENTEQUIP[$focus] > 50) and ($sellhalf = true) and (port.equip[$focus] > $half_port_max)) or ($sellhalf <>true)) and (PORT.EQUIP[$focus] >= $minimumFuel)))
+			setvar $validOrgPort ((($sellingOrg) AND ($planet~planet_organics > 500) AND (PORT.BUYORG[$focus]) and (((PORT.PERCENTORG[$focus] > 50) and (port.org[$focus] > $half_port_max) and ($sellhalf = true)) or ($sellhalf <> true)) and (port.org[$focus] <= $max) AND (PORT.ORG[$focus] >= $minimumFuel)))
+			setvar $validEquipPort ((($sellingEquip) AND ($planet~planet_equipment > 500) AND (PORT.BUYEQUIP[$focus]) AND (((PORT.PERCENTEQUIP[$focus] > 50) and ($sellhalf = true) and (port.equip[$focus] > $half_port_max)) or ($sellhalf <>true)) and (port.equip[$focus] <= $max) and (PORT.EQUIP[$focus] >= $minimumFuel)))
 			setvar $validBuyFuelPort (($buyFuel = true) and (PORT.FUEL[$focus] >= $minimumFuel) and (PORT.BUYFUEL[$focus] = false) and (($planet~planet_fuel_max - $planet~planet_fuel) >= $game~port_max))
 			setvar $validBuyOrgPort (($buyOrg = true) and (PORT.ORG[$focus] >= $minimumFuel) and (PORT.BUYORG[$focus] = false) and (($planet~planet_organics_max - $planet~planet_organics) >= $game~port_max))
 			setvar $validBuyEquipPort (($buyEquip = true) and (PORT.EQUIP[$focus] >= $minimumFuel) and (PORT.BUYEQUIP[$focus] = false) and (($planet~planet_equipment_max - $planet~planet_equipment) >= $game~port_max))
