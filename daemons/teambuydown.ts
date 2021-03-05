@@ -187,9 +187,6 @@
 					setvar $bots[$i][4] $player~TRADER_NAME					
 				end 
 
-				send "'" $BOTS[$i][3] " unlock*"
-				waiton "{"&$BOTS[$i][3]&"} - Ship has been unlocked!"
-
 				setVar $SWITCHBOARD~MESSAGE "Bot name captured as: "&$BOTS[$i][3]&" for "&$bots[$i][4]&"*"
 				gosub :SWITCHBOARD~SWITCHBOARD
 
