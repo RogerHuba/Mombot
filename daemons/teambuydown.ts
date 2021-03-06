@@ -298,11 +298,11 @@ return
 
 :startbuydown
 	setvar $nextbot $BOTS[$current_trader][3]
-    if ($BOTS[$current_trader][2] = true)
-        send "'" $nextbot " buy " $type " b *"
-    else
+#    if ($BOTS[$current_trader][2] = true)
+#        send "'" $nextbot " buy " $type " b *"
+#    else
         send "'" $nextbot " buy " $type " s *"
-    end
+#    end
 	setTextLineTrigger 1 :startDock1 " docks at"
 	setTextLineTrigger 2 :startDock2 "Commerce report for"
 	setDelayTrigger    3 :startDockDelay 5000
