@@ -510,7 +510,7 @@ if ($nearfig > 0)
 		send "cr"&$NearFig&"*q"
 		gosub :PLAYER~quikstats
 		setSectorParameter $NearFig "FIGSEC" TRUE
-		if ((PORT.EXISTS[$NearFig] = TRUE) AND (PORT.CLASS[$NearFig] > 0) AND (SECTOR.EXPLORED[$NearFig] = "YES") AND (PORT.EQUIP[$NearFig] >= $minimumProduct))
+		if ((PORT.EXISTS[$NearFig] = TRUE) AND (PORT.CLASS[$NearFig] > 0) AND (SECTOR.EXPLORED[$NearFig] = "YES") AND ((PORT.EQUIP[$NearFig] >= $minimumProduct) or (PORT.ORG[$NearFig] >= $minimumProduct) or (PORT.FUEL[$NearFig] >= $minimumProduct)))
 			setvar $go_to_next_port false
 		else
 			setvar $go_to_next_port true
