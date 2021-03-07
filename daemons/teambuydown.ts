@@ -242,30 +242,33 @@ while (true)
 	gosub :findports
 	gosub :pwarptoport
 	if ($go_to_next_port = false)
-        gosub :findbestcandidates
-        if (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = false)
-            setvar $type "e"
-            gosub :startbuydown
+        if ($equip = true)
+            gosub :findbestcandidates
+            if (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = false)
+                setvar $type "e"
+                gosub :startbuydown
+            end
+
+            setvar $check $current_trader
+            gosub :checkin
         end
+        if ($org = true)
+            gosub :findbestcandidates
+            if (PORT.BUYORG[$PLAYER~CURRENT_SECTOR] = false)
+                setvar $type "o"
+                gosub :startbuydown
+            end
 
-        setvar $check $current_trader
-        gosub :checkin
-        gosub :findbestcandidates
-
-        if (PORT.BUYORG[$PLAYER~CURRENT_SECTOR] = false)
-            setvar $type "o"
-            gosub :startbuydown
+            setvar $check $current_trader
+            gosub :checkin
         end
-
-        setvar $check $current_trader
-        gosub :checkin
-        gosub :findbestcandidates
-
-        if (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = false)
-            setvar $type "f"
-            gosub :startbuydown
+        if ($fuel = true)
+            gosub :findbestcandidates
+            if (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = false)
+                setvar $type "f"
+                gosub :startbuydown
+            end
         end
-
         gosub :findbestcandidates
         setvar $check $current_trader
         gosub :checkin
