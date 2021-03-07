@@ -15,16 +15,18 @@
 	setArray $ORIGINAL_SHIP $MAX_BOTS
 
  
-	setVar $BOT~help[1]  $BOT~tab&" teambuydown {minproduct:#} {stopturns:#} {half}"
+	setVar $BOT~help[1]  $BOT~tab&" teambuydown {minproduct:#} {stopturns:#} {f} {o} {e}"
 	setVar $BOT~help[2]  $BOT~tab&"   "
 	setVar $BOT~help[3]  $BOT~tab&" Buydown with multiple bots"
 	setVar $BOT~help[4]  $BOT~tab&"   "
 	setVar $BOT~help[5]  $BOT~tab&" {minproduct:#} - Port Min Prod Req (def:30,000)"
 	setVar $BOT~help[6]  $BOT~tab&"  {stopturns:#} - Turns to stop at (def: 100)"
-	setVar $BOT~help[7]  $BOT~tab&"         {half} - Sells only half to port."
-	setVar $BOT~help[8]  $BOT~tab&"         "
-	setVar $BOT~help[9]  $BOT~tab&"     Bots: callin buy1, buy2, etc."
-	setVar $BOT~help[10] $BOT~tab&"           script will find potential robbers"
+	setVar $BOT~help[7]  $BOT~tab&"            {f} - Buys fuel"
+	setVar $BOT~help[8]  $BOT~tab&"            {o} - Buys organics"
+	setVar $BOT~help[9]  $BOT~tab&"            {e} - Buye equipment"
+	setVar $BOT~help[10] $BOT~tab&"         "
+	setVar $BOT~help[11] $BOT~tab&"     Bots: callin buy1, buy2, etc."
+	setVar $BOT~help[12] $BOT~tab&"           default is buying fuel and equip"
 	
 		gosub :bot~helpfile
 
@@ -59,6 +61,26 @@
 	else
 		setVar $stopTurns 0
 	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " f "
+	if ($pos > 0)
+        setvar $fuel true
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " o "
+	if ($pos > 0)
+        setvar $org true
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " e "
+	if ($pos > 0)
+        setvar $equip true
+	end
+
+    if (($fuel <> true) and ($org <> true) and ($equip <> true))
+        setvar $fuel true
+        setvar $equip true
+    end
 
 	if ($minimumProduct <= 0)
 		isNumber $test $bot~parm1
