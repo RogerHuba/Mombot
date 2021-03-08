@@ -474,7 +474,7 @@ return
 					if ((((PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0))) and ((($isGoodSeller = true) and (($planet~PLANET_EQUIPMENT_MAX - $planet~PLANET_EQUIPMENT) >= $game~port_max))))
 						send "cr"&$focus&"*q"
 						gosub :PLAYER~quikstats
-						if ((PORT.EQUIP[$focus] >= $minimumProduct) or (PORT.FUEL[$focus] >= $minimumProduct) or (PORT.ORG[$focus] >= $minimumProduct))
+						if (((PORT.EQUIP[$focus] >= $minimumProduct) and ($equip = true)) or ((PORT.FUEL[$focus] >= $minimumProduct) and ($fuel = true)) or ((PORT.ORG[$focus] >= $minimumProduct) and ($org = true)))
 							# fig found 0 hops
 							setVar $NearFig $focus
 							setVar $checkedPorts[$NearFig] TRUE
