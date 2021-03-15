@@ -3,7 +3,7 @@
 	setvar $success false
 	setVar $adjsec 0
 	loadGlobal $bot~last_hit
-	if ($bot~last_hit > 0)
+	if (($bot~last_hit > 0) and ($density <> true))
 		setvar $sector $bot~last_hit
 	end
 
