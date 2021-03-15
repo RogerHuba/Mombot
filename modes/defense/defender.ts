@@ -960,9 +960,22 @@ goto :processing
 				goto :can_not_fire
 			end
 			if ($main~attack_sectors[$photon~sector] > 0)
-				gosub :photon~photon
-				gosub :check_for_gridding_in_a_line
+				:try_another_shot_at_photon
+					gosub :photon~photon
+					gosub :check_for_gridding_in_a_line
 			else
+				setvar $j 1
+				while (SECTOR.WARPSIN[$photon~sector][$j] > 0)
+					setVar $tempAdj SECTOR.WARPSIN[$photon~sector][$j]
+					getSectorParameter $tempAdj "FIGSEC" $isFigged
+					getSectorParameter $tempAdj "LIMPSEC" $isLimped
+					if (($isFigged = true) and ((($photon~paranoid = true) and ($isLimped = true)) or ($photon~paranoid = false)))
+						setvar $main~attack_sectors[$photon~sector] $tempAdj
+						goto :try_another_shot_at_photon
+					end
+					add $j 1
+				end
+
 				gosub :check_for_gridding_in_a_line
 				gosub :check_for_target_change
 				gosub :killing~scan_for_targets
