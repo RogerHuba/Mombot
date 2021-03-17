@@ -1167,24 +1167,30 @@ goto :processing
 return
 
 :check_for_gridding_in_a_line
+	setvar $in_a_line false
 	getwordpos $photon~adjacent_to_last_attack_sectors $pos " "&$photon~sector&" "
 	if (($pos > 0) and ($photon~adjacent_to_last_attack_sectors_count = 1))
 		############################################
 		# if attacked to sectors in a row and only #
 		# one possible attack, do density          #
 		############################################
-		setvar $switchboard~message "Detecting gridding in a row.  Only one possible target.  Attempting density photon.*"
-		gosub :switchboard~switchboard
-		setvar $photon~found true
-		setvar $saved $photon~density
-		setvar $photon~density true
-		setvar $photon~long true
+#		setvar $photon~found true
+#		setvar $saved $photon~density
+#		setvar $photon~density true
+#		setvar $photon~long true
 		getword $photon~adjacent_to_last_attack_sectors $photon~sector 1
-		gosub :photon~photon
-		setvar $photon~density $saved
+#		gosub :photon~photon
+#		setvar $photon~density $saved
+		setvar $in_a_line true
+		send "p " $main~attack_sectors[$photon~sector] "*y "
+		setvar $switchboard~message "Detecting gridding in a row.  Only one possible target.  Attempting adjacent photon.*"
+		gosub :switchboard~switchboard
+		gosub :player~quikstats
+		goto :processing
 	elseif ($pos > 0)
 		setvar $switchboard~message "They seem to be gridding in a line.  Time to pdrop them?*"
 		gosub :switchboard~switchboard
+		setvar $in_a_line true
 	end
 return
 
