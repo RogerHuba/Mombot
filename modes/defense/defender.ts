@@ -1182,11 +1182,13 @@ return
 #		gosub :photon~photon
 #		setvar $photon~density $saved
 		setvar $in_a_line true
-		send "p " $main~attack_sectors[$photon~sector] "*y "
-		setvar $switchboard~message "Detecting gridding in a row.  Only one possible target.  Attempting adjacent photon.*"
-		gosub :switchboard~switchboard
-		gosub :player~quikstats
-		goto :processing
+		if ($main~attack_sectors[$photon~sector] > 0)
+			send "p " $main~attack_sectors[$photon~sector] "*y "
+			setvar $switchboard~message "Detecting gridding in a row.  Only one possible target.  Attempting adjacent photon.*"
+			gosub :switchboard~switchboard
+			gosub :player~quikstats
+			goto :processing
+		end
 	elseif ($pos > 0)
 		setvar $switchboard~message "They seem to be gridding in a line.  Time to pdrop them?*"
 		gosub :switchboard~switchboard
