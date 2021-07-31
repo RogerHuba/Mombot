@@ -1533,7 +1533,7 @@ goto :GoGo
 			setvar $switchboard~message "Must Have Twarp 1 or 2*"
 			gosub :switchboard~switchboard
 			send "*"
-			halt
+			return
 		end
 
 		if ($PLAYER~unlimitedGame = 0)

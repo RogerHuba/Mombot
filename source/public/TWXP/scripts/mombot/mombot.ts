@@ -109,7 +109,13 @@ return
 	setVar $bot_turn_limit $bot~bot_turn_limit
 	saveVar $bot_turn_limit
 	setVar $steal_factor $game~steal_factor
+	setVar $rob_factor $game~rob_factor
+	setVar $actual_steal_factor $game~actual_steal_factor
+	setVar $actual_rob_factor $game~actual_rob_factor
+	saveVar $actual_steal_factor
+	saveVar $actual_rob_factor
 	saveVar $steal_factor
+	saveVar $rob_factor
 	setVar $password $bot~password
 	saveVar $password
 	setVar $mode $bot~mode
