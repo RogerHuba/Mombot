@@ -1,6 +1,6 @@
 :find
 :near
-	setVar $near $bot~parm1
+	setVar $near $bot~parm1 
 	setVar $source $bot~parm2
 
 	isNumber $number $source

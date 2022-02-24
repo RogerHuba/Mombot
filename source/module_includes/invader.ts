@@ -23,6 +23,7 @@
 #
 :check_invade_macro_params
 	LOADVAR $GAME~LATENCY
+	
 	killalltriggers
 	setArray $scan_array 1000
 	gosub :PLAYER~quikstats
@@ -52,13 +53,14 @@
 	else
 		setVar $massWait FALSE
 		#VALIDATION OF PHOTONS
-		if ($PLAYER~PHOTONS <= 0)
+		if ($PLAYER~PHOTONS <= 0) and ($bot~command <> "xlk")
 			setVar $SWITCHBOARD~message "This command requires a photon*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
 	end
 
+	
 	setVar $doEndMac FALSE
 	getWordPos $bot~user_command_line $pos "mac:"
 	if ($pos > 0)
@@ -82,10 +84,16 @@
 		end
 	end
 
+	getWordPos $bot~user_command_line $pos "die"
+	if ($pos > 0)
+		setVar $pleaseDie 1
+
+	end
+
 	#VALIDATION OF XPORT SHIP
 	# # PE PED PEL PELK PEX PXE PXED PXEDX PXEL PXELK PXEX 
 	isNumber $test $bot~parm2
-	if ((($test = FALSE) or ($bot~parm2 = 0)) AND ($bot~command <> "pe") AND ($bot~command <> "ped"))
+	if ((($test = FALSE) or ($bot~parm2 = 0)) AND ($bot~command <> "pe") AND ($bot~command <> "pem") AND ($bot~command <> "ped"))
 		setVar $SWITCHBOARD~message "Parameter 2 invalid*"
 		gosub :SWITCHBOARD~switchboard
 		halt
@@ -93,14 +101,20 @@
 
 	cutText $bot~command $twoLetters 1 2
 
-	if ($twoLetters = "px")
+	if ($twoLetters = "px") 
 		if ($PLAYER~SHIP_NUMBER = $bot~parm2)
 			setVar $SWITCHBOARD~message "Your currently in your export ship, Photon XPort will not work.*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
 	end
-
+	if ($twoLetters = "xl") 
+		if ($PLAYER~SHIP_NUMBER = $bot~parm1)
+			setVar $SWITCHBOARD~message "Your currently in your export ship, XPort will not work.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+	end
 	if (($bot~command = "pxex") or ($bot~command = "pxedx") or ($bot~command = "pedx") or ($bot~command = "pex"))
 		# Return Retreat - returns a moment later to drain sector cannon
 #This needs to instead of random pausing before shooting, to some how test ship still exits
@@ -135,7 +149,15 @@
 			replaceText $xkillWords ":" " "
 			getWord $xkillWords $xkillFigs 1 10000
 			getWord $xkillWords $xkillWaves 2 10
-			
+
+			getWordPos $cline $pos " n "
+			if ($pos > 0)
+				setVar $xkilln TRUE
+			end
+			getWordPos $cline $pos " nn "
+			if ($pos > 0)
+				setVar $xkillnn TRUE
+			end
 		end
 	end
 
@@ -155,7 +177,7 @@
 		
 	end
 
-	if ($bot~command = "pxelk") or ($bot~command = "pelk")
+	if ($bot~command = "pxelk") or ($bot~command = "pelk") or ($bot~command = "xlk")
 		setVar $fullsend FALSE
 		getWordPos $bot~user_command_line $pos "kkkk"
 		if ($pos > 0)
@@ -164,7 +186,7 @@
 		end
 	end
 	
-	if ($bot~command = "pxelk") or ($bot~command = "pelk") or ($bot~command = "pel") or ($bot~command = "pxel")
+	if ($bot~command = "pxelk") or ($bot~command = "pelk") or ($bot~command = "pel") or ($bot~command = "pxel")  or ($bot~command = "xlk")
 		getWordPos $bot~user_command_line $pos "xscape:"
 		if ($pos > 0)
 			setVar $xscape TRUE
@@ -172,7 +194,15 @@
 			getText $cline $xscapeShip "xscape:" " "
 			goSub :xscapeMac
 		else
-			setVar $xscape FALSE
+			getWordPos $bot~user_command_line $pos "xscape"
+			if ($bot~command = "pxelk") or ($bot~command = "pxel")  or ($bot~command = "xlk")
+				setVar $xscape TRUE
+				setVar $xscapeShip $PLAYER~SHIP_NUMBER
+				
+				goSub :xscapeMac
+			else
+				setVar $xscape FALSE
+			end
 		end
 
 	end
@@ -216,6 +246,18 @@
 			halt
 		end
 	end
+
+	isNumber $test $bot~parm2
+	if (($test = FALSE) or ($bot~parm2 = 0))
+		if ($bot~command = "xlk")
+			setVar $SWITCHBOARD~message "Planet Parameter in-valid*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+	end
+
+	
+
 	#VALIDATION OF ATTACK SECTOR
 	isNumber $test $bot~parm1
 	if ($test = FALSE)
@@ -223,26 +265,31 @@
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
-	if (($bot~parm1 > 10) AND ($bot~parm1 <= SECTORS) AND ($bot~parm1 <> $MAP~STARDOCK))
-	else
-		setVar $SWITCHBOARD~message "Invalid attack sector entered*"
-		gosub :SWITCHBOARD~switchboard
-		halt
-	end
-	#MAKE SURE ATTACK SECTOR IS ADJACENT
-	setVar $i 1
-	setVar $isFound false
-	while (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] > 0)
-		if (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] = $bot~parm1)
-			setVar $isFound TRUE
+	if ($bot~command <> "xlk")
+		if (($bot~parm1 > 10) AND ($bot~parm1 <= SECTORS) AND ($bot~parm1 <> $MAP~STARDOCK))
+			
+		else
+			setVar $SWITCHBOARD~message "Invalid attack sector entered*"
+			gosub :SWITCHBOARD~switchboard
+			halt
 		end
-		add $i 1
+		#MAKE SURE ATTACK SECTOR IS ADJACENT
+		setVar $i 1
+		setVar $isFound false
+		while (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] > 0)
+			if (SECTOR.WARPS[$PLAYER~CURRENT_SECTOR][$i] = $bot~parm1)
+				setVar $isFound TRUE
+			end
+			add $i 1
+		end
+		if ($isFound = FALSE)
+			setVar $SWITCHBOARD~message "Cannot continue.  Sector not Adjacent, aborting..*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
 	end
-	if ($isFound = FALSE)
-		setVar $SWITCHBOARD~message "Cannot continue.  Sector not Adjacent, aborting..*"
-		gosub :SWITCHBOARD~switchboard
-		halt
-	end
+	
+	
 	getWordPos " "&$bot~user_command_line&" " $pos "speed"
 	if ($pos > 0)
 		setVar $speed TRUE
@@ -260,16 +307,28 @@
 			gosub :PLANET~getPlanetInfo
 			send "  C C  "
 	end
-	setVar $enter   "m  "&$bot~parm1&"*"
-	if ($towShip = TRUE)
-		setVar $enter $towShipMac & $enter
+	
+	if ($bot~command = "xlk")
+		setVar $enter   " "
+	
+		setVar $xport   "x   "&$bot~parm1&"*  q  z  n  "
+		setVar $photon  "  q "
+	else
+		setVar $enter   "m  "&$bot~parm1&"*"
+		if ($towShip = TRUE)
+			setVar $enter $towShipMac & $enter
+		end
+		setVar $xport   "x   "&$bot~parm2&"*  q  z  n  "
+		setVar $photon  "  p y"&$bot~parm1&"*  q  "
 	end
-	setVar $xport   "x   "&$bot~parm2&"*  q  z  n  "
+	
 	setVar $xport_back   "x   "&$starting_ship&"*  q  z  n  "
-	setVar $photon  "  p y"&$bot~parm1&"*  q  "
+	
 return
 
 :start_invade_macro
+
+
 	if ($massWait = TRUE)
 		if ($PLAYER~startingLocation = "Citadel")
 			setVar $mac_starting " q  q  "
@@ -301,7 +360,16 @@ return
 		# while not true - we want to land on our citadel if we get podded
 		setVar $ends_in_sector      TRUE
 	elseif ($bot~command = "pxelk")
-		setVar $mac_ending       "LT" & #8 & #8 & $bot~parm3&"*  *  a"&$SHIP~SHIP_MAX_ATTACK&"*"
+		setVar $mac_ending       "LT" & #8 & #8 & $bot~parm3&"*  *  a z "&$SHIP~SHIP_MAX_ATTACK&"*"
+		if ($fullsend = TRUE)
+			goSub :fullSendAttack
+			setVar $mac_ending $mac_ending & $fullsendMacro
+		end
+
+		# while not true - we want to land on our citadel if we get podded
+		setVar $ends_in_sector      TRUE
+	elseif ($bot~command = "xlk")
+		setVar $mac_ending       "LT" & #8 & #8 & $bot~parm2&"*  *  a z "&$SHIP~SHIP_MAX_ATTACK&"*"
 		if ($fullsend = TRUE)
 			goSub :fullSendAttack
 			setVar $mac_ending $mac_ending & $fullsendMacro
@@ -310,7 +378,7 @@ return
 		# while not true - we want to land on our citadel if we get podded
 		setVar $ends_in_sector      TRUE
 	elseif ($bot~command = "pelk")
-		setVar $mac_ending       "LT" & #8 & #8 & $bot~parm2&"*  *  a"&$SHIP~SHIP_MAX_ATTACK&"*"
+		setVar $mac_ending       "LT" & #8 & #8 & $bot~parm2&"*  *  a z "&$SHIP~SHIP_MAX_ATTACK&"*"
 		if ($fullsend = TRUE)
 			goSub :fullSendAttack
 			setVar $mac_ending $mac_ending & $fullsendMacro
@@ -334,7 +402,7 @@ return
 	if ($xscape = TRUE)
 		setVar $mac_ending $mac_ending&$xscapeMac
 	elseif (($PLAYER~startingLocation = "Citadel") AND ($ends_in_sector = TRUE))
-		setVar $mac_ending $mac_ending&"LT" & #8 & #8 &  $PLANET~PLANET&" * c"
+		setVar $mac_ending $mac_ending&"LT" & #8 & #8 &  $PLANET~PLANET&" * c * "
 	end
 	if ($doEndMac = TRUE)
 		setVar $mac_ending $mac_ending&$endMac
@@ -342,7 +410,9 @@ return
 	setVar $mac_ending $mac_ending&"@"
 
 	if ($massWait = FALSE)
-
+		if ($bot~command = "xlk")
+			goto :jumptoxlk
+		end
 		#CHECK THE CLOCK TO OPTIMIZE PHOTON FIRING
 		send "  t"
 		waitfor ", 2"
@@ -353,6 +423,7 @@ return
 			getWord CURRENTLINE $currentTime 1
 			waitfor "Computer"
 			if ($initTime <> $currentTime)
+				:jumptoxlk
 				if ($speed = TRUE)
 					send $mac_starting&$speed_invade_macro&$mac_ending
 				else
@@ -364,6 +435,8 @@ return
 	else
 		setVar $firstMassEntry TRUE
 		:replayMassYouDumb
+
+	
 		if ($bot~command = "pxex") or ($bot~command = "pex")  or ($bot~command = "pxel")  or ($bot~command = "pxed")  or ($bot~command = "pxedx") 
 			setVar $SWITCHBOARD~message "Mass Attack Waiting for photon shot Target: " & $bot~parm1 & " Ship: " & $bot~parm2 
 			if ($massRetrigger = TRUE)
@@ -381,6 +454,10 @@ return
 			end
 			gosub :SWITCHBOARD~switchboard
 		end
+			if ($GAME~LATENCY = 0)
+				setVar $GAME~LATENCY 200
+			end
+
 		setDelayTrigger MassTimeOut :MassTimeOut 300000
 		:photonWaitAgain
 		setTextLineTrigger PhotonFired :PhotonFired "launched a Photon Torpedo!"
@@ -392,6 +469,7 @@ return
 			halt
 
 		:PhotonFired
+
 			killalltriggers
 			##[K[1;36mWerewolf[0;32m just launched a Photon Torpedo!
 			getText CURRENTANSILINE $testword "[0;32m just launched a " " Torpedo!"
@@ -407,6 +485,10 @@ return
 				goto :photonWaitAgain
 			else
 				// We want to make sure other person get's in and we don't time it perfectly to get shot 
+				if ($GAME~LATENCY = 0)
+					setVar $GAME~LATENCY 200
+				end
+
 				setVar $delmin ($GAME~LATENCY + 30)
 				setVar $delmax ($delmin + 70)
 				getRnd $delaytime $delmin $delmax
@@ -472,8 +554,13 @@ return
 			end
 		end
 		if ($bot~command = "pxex") or ($bot~command = "pxedx")
-			setVar $shipEnemySector $bot~parm2
+			if ($towShip = TRUE)
+				setVar $shipEnemySector $towShipNum
+			else
+				setVar $shipEnemySector $bot~parm2
+			end
 			setVar $shipOurSector $PLAYER~SHIP_NUMBER
+
 		else
 			setVar $shipEnemySector $PLAYER~SHIP_NUMBER
 			setVar $shipOurSector $bot~parm2
@@ -484,6 +571,9 @@ return
 		
 		# wait roughly 2 latencys for the citkill person to lift and start attacking ship
 		setVar $delmin (2 * $GAME~LATENCY)
+		if ($delmin = 0)
+			setVar $delmin 150
+		end
 		setVar $delmax ($delmin + 70)
 
 		getRnd $delaytime $delmin $delmax
@@ -541,11 +631,17 @@ return
 				
 				else
 					echo ANSI_12 "*You have no targets.*" ANSI_7
-					return
+					
 				end
 				
 				setVar $n 1
 				while ($n <= $xkillWaves)
+					if ($xkilln = TRUE) and ($n = 3)
+						setVar $nnnn $nnnn & "n"
+					end
+					if ($xkillnn = TRUE) and ($n = 3)
+						setVar $nnnn $nnnn & "n"
+					end
 					setVar $attackMac $attackMac & "z n q z n a " & $nnnn & " y y " & $xkillFigs & "* * "
 					add $n 1
 				end
@@ -578,7 +674,9 @@ return
 
 		
 	end
-
+	if ($pleaseDie = 1)
+		send "m0* * *  m0* * *  m0* * *  m0* * *  m0* * * "
+	end
 	if ($meatgrinder = TRUE)
 		goSub :meatgrinder
 	end

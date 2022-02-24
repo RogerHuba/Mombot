@@ -117,7 +117,8 @@ if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
 	setvar $planet~planet $startingPlanet
 	gosub :PLANET~landingsub
 end
-
+setVar $SWITCHBOARD~message "Upgrader is complete.*"
+gosub :SWITCHBOARD~switchboard
 halt
 
 :disconnected

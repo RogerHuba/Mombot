@@ -102,6 +102,12 @@
 	else
 		setvar $auto false
 	end
+	getwordpos " "&$bot~user_command_line&" " $pos " spam "
+	if ($pos > 0)
+		setvar $spam true
+	else
+		setvar $spam false
+	end
 :start_cit_fill
 	setvar $switchboard~message "Citadel Ship Re-Filler :: Powering Up!*"
 	gosub :switchboard~switchboard
@@ -127,6 +133,32 @@
 	if ($auto = true)
 		setvar $switchboard~message " Doing auto refill every five minutes.*"
 		gosub :switchboard~switchboard
+	end
+	if ($spam = TRUE)
+		waitfor "ammer lifts off from"
+		setVar $spamCount 1
+		setVar $spamReload "q q * tfy*z16000* * tfy*z16000* * l" & $planet~planet &  "* m * * * c "
+
+		:spamAgain
+		send $spamReload 
+		setDelayTrigger spamspam :spamspam 200
+		setTextTrigger spamstop :spamstop "spam stop"
+		pause
+		:spamspam
+			killtrigger spamspam
+			send $spamReload 
+			add $spamCount 1
+			if ($spamCount > 30)
+				send "^q"
+				waitfor "ENDINTERROG"
+				setVar $spamCount 1
+			end
+			setDelayTrigger spamspam :spamspam 200
+			pause
+		:spamstop
+			send "'halting the spam*"
+			halt
+
 	end
 	goto :reloadfigme
 
@@ -188,6 +220,7 @@ killalltriggers
 		echo ANSI_12 "*No corpie to refurb.*" ANSI_7
 		goto :settriggers
 	end 
+	
 	setVar $reloadNow "f "&$targetString&" * z"&$figsToRefill&"* "
 
 	setvar $refillstring "q t "&$reloadNow&" * l " & $planet~planet & "* m * * *  "

@@ -136,7 +136,7 @@
 			killtrigger time_to_move_2
 			killtrigger time_to_move_3
 			
-			send "p"&$move_sector&"*y ny q q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
+			send "p20*y p"&$move_sector&"*y ny q q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
 			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
 			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
 			send " q z n a y y " $SHIP~SHIP_MAX_ATTACK "* * z n q z n  l " $planet~planet "*  m  *** "
@@ -170,9 +170,9 @@
 				end
 				gosub :PLAYER~quikstats
 			end	
-			setVar $SWITCHBOARD~message "Kill mode shutting down because there are too few fighters left.  Getting ready to blow the planet..*"
-			gosub :SWITCHBOARD~switchboard
-			goto :arm_the_tripmine
+			#setVar $SWITCHBOARD~message "Kill mode shutting down because there are too few fighters left.  Getting ready to blow the planet..*"
+			#gosub :SWITCHBOARD~switchboard
+			#goto :arm_the_tripmine
 			
 			
 			halt

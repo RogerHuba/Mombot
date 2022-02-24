@@ -36,7 +36,7 @@ if ($pos)
         setVar $location $player~current_prompt
         if ($location <> "Command")
                setVar $SWITCHBOARD~message "Pelase start at command prompt!*"
-		gosub :switchboard~switchboard
+			gosub :switchboard~switchboard
                halt
         end
 
@@ -55,6 +55,40 @@ else
 	setVar $SWITCHBOARD~message "Control port should be a port currently reporting.*"
 	gosub :switchboard~switchboard
 	halt
+end
+
+gosub :player~quikstats
+if ($PLAYER~CURRENT_PROMPT = "Command")
+	send "vctq"
+	setTextLineTrigger getv1 :getv1 "This game has been running for"
+	pause
+	:getv1
+		killalltriggers
+		getWord CURRENTLINE $days 7
+		add $days 1
+
+	waitfor "<Computer activated>"
+	setVar $add12 0
+	setTextLineTrigger getam :getam " AM "
+	setTextLineTrigger getpm :getpm " PM "
+	pause
+	:getpm
+		killalltriggers
+		setVar $add12 1
+	:getam 
+		killalltriggers
+
+	getWord CURRENTLINE $wholeTime 1
+	replaceText $wholeTime ":" " "
+	getWord $wholeTime $thehour 1
+	if ($add12 = 1)
+		add $thehour 12
+	end
+	setVar $portgonet $days & $thehour
+else
+	setVar $SWITCHBOARD~message "Please run from command prompt so we can determine game time for blkd stamp.*"
+	gosub :switchboard~switchboard
+		halt
 end
 
 setVar $maxClasses 1
@@ -172,6 +206,8 @@ while ($i <= SECTORS)
 	if (PORT.EXISTS[$i] = TRUE)
 		getSectorParameter $i "FIGSEC" $hasFig
 		getSectorParameter $i "PORTDEST" $portGone
+		getSectorParameter $i "PORTBLKED" $portBlkedAlready
+
 		if (($hasFig <> 1) and ($portGone <> 1))
 			goSub :checkPort
 			if ((($checksOut = 1) or ($allports = 1)) and (PORT.CLASS[$i] <> 0))
@@ -184,8 +220,16 @@ while ($i <= SECTORS)
 					write "port_targets2.txt" $i & " " & $ports[PORT.CLASS[$i]] 
 					setvar $results $results& $i & " [" & $ports[PORT.CLASS[$i]]  & "] "
 					setSectorParameter $i "TARGETS" 1
+					if (($portBlkedAlready = 0) or ($portBlkedAlready = ""))
+						setSectorParameter $i "PORTBLKED" 1
+						setSectorParameter $i "PORTBLKEDT" $portgonet
+					end
 					add $found 1
 				end
+			end
+		else
+			if (($hasFig = 1) and ($portGone = 0))
+				setSectorParameter $i "PORTBLKED" 0
 			end
 		end
 	end

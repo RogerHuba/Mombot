@@ -132,7 +132,7 @@ pause
 	if ($orgtosell > $planetorg)
 		setVar $orgtosell $planetorg
 	end
- 
+
 	if ($_ck_pnego_equiptosell = "-1")
 		setVar $equiptosell 0
 	elseif ($_ck_pnego_equiptosell = "max")

@@ -1,6 +1,8 @@
 	logging off
 	reqRecording
 	gosub :BOT~loadVars
+clearallavoids
+clearallavoids
 
 :load_script
 	loadVar $bot~bot_name
@@ -992,59 +994,71 @@ send "'Fig Owner:" & SECTOR.FIGS.OWNER[$boomsec] & " Gridding: " & $boomsec & " 
 			gosub :switchboard~switchboard
 			halt
 		end
+		echo "$targetSectors " $targetSectors "*"
+		echo "$targetSectors " $targetSectors "*"
+		echo "$targetSectors " $targetSectors "*"
 		setVar $m 1
 		#send "^"
 		while ($m < $targetSectors)
 	        setVar $destination $targetSectors[$m]
-			# moved below lower, to not replot places we've been
-			# gosub :getCourses
-			getSectorParameter $destination "FIGSEC"  $isFigged
-			if ($isFigged = "")
-				setVar $isFigged FALSE
-			end
+			if ($destination > 10)
+				
+	echo "$targetSector  " $targetSectors[$m] "*"
+	echo "$targetSector " $targetSectors[$m] "*"
+	echo "$targetSector " $targetSectors[$m] "*"
+				# moved below lower, to not replot places we've been
+				# gosub :getCourses
+				getSectorParameter $destination "FIGSEC"  $isFigged
+				if ($isFigged = "")
+					setVar $isFigged FALSE
+				end
 
-			getWordPos $avoidedSectorsUgrid $pos " "&$destination&" "
-			stripText $destination " "
-			if (($pos <= 0) AND (($isFigged <= 0) OR ($gridExistingOnly = TRUE)))
-				gosub :getCourses
-				setVar $i 1
-				setVar $isFound FALSE
-				while ((SECTOR.WARPSIN[$destination][$i] > 0) AND ($isFound = FALSE))
-					setVar $adjinf SECTOR.WARPSIN[$destination][$i]
-					getSectorParameter $adjinf "FIGSEC"  $isFigged
-					getSectorParameter $adjinf "MINESEC" $isArmided
-					getSectorParameter $adjinf "LIMPSEC" $isLimped
-					if ($isFigged = "")
-						setVar $isFigged FALSE
-					end
-					if ($isLimped = "")
-						setVar $isLimped FALSE
-					end
-					if ($isArmided = "")
-						setVar $isArmided FALSE
-					end
-					if (($ultraSafeLimpet = TRUE) AND ($isLimped = FALSE))
-						#Do Nothing
-					elseif (($ultraSafeArmid = TRUE) AND ($isArmided = FALSE))
-						#Do Nothing
-					else
-						getWordPos $adjacentDatabase $pos " "&$destination&" "
-						getWordPos $database $pos2 " "&$adjinf&" "
-						getWordPos $avoidedSectorsUgrid $pos3 " "&$adjinf&" "
+				getWordPos $avoidedSectorsUgrid $pos " "&$destination&" "
+				stripText $destination " "
+				if (($pos <= 0) AND (($isFigged <= 0) OR ($gridExistingOnly = TRUE)))
+					gosub :getCourses
+					setVar $i 1
+					setVar $isFound FALSE
+					while ((SECTOR.WARPSIN[$destination][$i] > 0) AND ($isFound = FALSE))
+						setVar $adjinf SECTOR.WARPSIN[$destination][$i]
+						getSectorParameter $adjinf "FIGSEC"  $isFigged
+						getSectorParameter $adjinf "MINESEC" $isArmided
+						getSectorParameter $adjinf "LIMPSEC" $isLimped
+						if ($isFigged = "")
+							setVar $isFigged FALSE
+						end
+						if ($isLimped = "")
+							setVar $isLimped FALSE
+						end
+						if ($isArmided = "")
+							setVar $isArmided FALSE
+						end
+						if (($ultraSafeLimpet = TRUE) AND ($isLimped = FALSE))
+							#Do Nothing
+						elseif (($ultraSafeArmid = TRUE) AND ($isArmided = FALSE))
+							#Do Nothing
+						else
+							getWordPos $adjacentDatabase $pos " "&$destination&" "
+							getWordPos $database $pos2 " "&$adjinf&" "
+							getWordPos $avoidedSectorsUgrid $pos3 " "&$adjinf&" "
+	echo "$destination " $destination "*"
+	echo "$$adjinf " $adjinf "*"
 
-						if (($pos <= 0) AND ($pos3 <= 0) AND ($adjinf > 10) AND ($adjinf <> STARDOCK) AND ($isFigged > 0))
-							if (($adjinf <> $destination) AND ($pos2 <= 0))
-								setVar $database $database&" "&$adjinf&" "
-								setVar $adjacentDatabase $adjacentDatabase&" "&$destination&" "
-								setVar $move[$adjinf] $destination
-								setVar $finalDestination[$adjinf] $targetSectors[$m]
-		echo "Adding Smow(used or not): newtarget: " $destination " Smow: " $targetSectors[$m] "*"
-								setVar $isFound TRUE
-								add $databaseCount 1
+
+							if (($pos <= 0) AND ($pos3 <= 0) AND ($adjinf > 10) AND ($adjinf <> STARDOCK) AND ($isFigged > 0))
+								if (($adjinf <> $destination) AND ($pos2 <= 0))
+									setVar $database $database&" "&$adjinf&" "
+									setVar $adjacentDatabase $adjacentDatabase&" "&$destination&" "
+									setVar $move[$adjinf] $destination
+									setVar $finalDestination[$adjinf] $targetSectors[$m]
+			echo "Adding Smow(used or not): newtarget: " $destination " Smow: " $targetSectors[$m] "*"
+									setVar $isFound TRUE
+									add $databaseCount 1
+								end
 							end
 						end
+						add $i 1
 					end
-					add $i 1
 				end
 			end
 			setVar $percTest (($m * 100) / SECTORS)
@@ -1478,10 +1492,13 @@ return
 	# Find the closest figged sector
 	getNearestWarps $nearArray $destination 
 	setvar $new_target $destination
+echo "$destination " $destination "*"
+echo "$destination " $destination "*"
 	setVar $i 1
 	while ($i <= $nearArray)
 		getSectorParameter $nearArray[$i] "FIGSEC" $isFigged
 		
+		echo " " $i " $nearArray[$i] " $nearArray[$i] "*"
 		if ($isFigged = true)
 			getCourse $course $nearArray[$i] $destination 
 

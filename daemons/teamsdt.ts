@@ -6,7 +6,7 @@
 	setVar $FURB_SHIP "g"
 
 	setVar $MAX_RED_BOTS 5
-	setVar $MIN_RED_EXP 1500
+	setVar $MIN_RED_EXP 600
 	setVar $MIN_RED_ALIGNMENT "-100"
 
 	setVar $twoship FALSE

@@ -246,6 +246,56 @@ else
 	end
 end
 
+#################################################
+##     NEW STUFF TESTING
+
+# t - EP - h "internal" - "n" no haggle
+setVar $haggle "t"
+
+getWordPos $bot~user_command_line $pos "int"
+if ($pos > 0)
+	setVar $haggle "h"
+	setVar $msg $msg&"Using internal haggle*"
+end
+getWordPos $bot~user_command_line $pos "nohag"
+if ($pos > 0)
+	setVar $haggle "n"
+	setVar $msg $msg&"Using no haggle routine*"
+end
+if ($haggle = "t")
+	setVar $msg $msg&"Using EP haggle routine*"
+end
+setVar $doSelfTopOff 0
+
+getWordPos " "&$bot~user_command_line&" " $pos " top:"
+if ($pos > 0)
+	getText " "&$bot~user_command_line&" " $topoffSector " top:" " "
+	echo $topoffSector
+	isNumber $test $topoffSector
+	if ($test)
+	
+		if ($PLAYER~TWARP_TYPE = "No") or ($PLAYER~TWARP_TYPE = 0)
+			setVar $SWITCHBOARD~message "This ship does not have a transwarp drive, can not TWARP top Off!*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		setVar $doSelfTopOff 1
+		setVar $msg $msg&"Topping off figs at " & $topoffSector & "*"
+	else
+		setVar $SWITCHBOARD~message "Top Off sector should be a number.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+
+end
+
+## first trade we will avoid sectors - then remove
+
+setVar $avoidSectorTest 1
+
+######
+
 
 setvar $switchboard~message $msg
 	gosub :switchboard~switchboard
@@ -373,6 +423,7 @@ while ($i <= SECTORS)
 	add $i 1
 end
 
+
 listActiveScripts $scripts
 setVar $foundep 0
 setVar $a 1
@@ -385,7 +436,12 @@ end
 
 setvar $switchboard~message "Pause for effect....*"
 gosub :switchboard~switchboard
-if ($foundep = 0)
+if ($haggle = "h") or ($haggle = "n")
+	if ($foundep = 1)
+		stop "ephaggle"
+	end
+end
+if ($foundep = 0) and ($haggle = "t")
 	send "'" $BOT~BOT_NAME " ephaggle*"
 end
 
@@ -436,7 +492,22 @@ while ($iSaySo)
 		gosub :subreport
 		halt
 	end
-	if (($player~FIGHTERS < 21) and ($ice = 0))
+	if (($doSelfTopOff = 1) and ($player~FIGHTERS < 41) and ($ice = 0))
+		
+		if (PORT.EXISTS[CURRENTSECTOR] = TRUE)
+			if (PORT.BUYFUEL[CURRENTSECTOR] = FALSE)
+
+				gosub :functionDoTopOff
+			end
+		end
+		if (($player~FIGHTERS < 11) and ($ice = 0))
+			setVar $SWITCHBOARD~message "Could not locate a port to top off fuel and get more figs, halting*"
+			gosub :SWITCHBOARD~switchboard
+			clearAllAvoids
+			gosub :subreport
+			halt
+		end
+	elseif (($player~FIGHTERS < 21) and ($ice = 0))
 		setVar $SWITCHBOARD~message "Need more than 20 figs*"
 		gosub :SWITCHBOARD~switchboard
 		clearAllAvoids
@@ -568,8 +639,8 @@ halt
 		# only get paths of singles when no ppt'ing
 		if (($pptTradingOption <> "none") or (($gridPriority = "ports") and (($cl = 4) or ($cl = 5) or ((($cl = 2) or ($cl = 1)) and ($nWarps[$i] > 2)))))
 			if ((($nWarps[$i] = 1) and ($nNew[$i] = 1)) or (($nDensity[$i] = 100) and ($nNew[$i] = 1)))
-				send "cf" $nSector[$i] "*" $PLAYER~CURRENT_SECTOR "*q"
-				waitfor "omputer deactivated"
+			#	send "cf" $nSector[$i] "*" $PLAYER~CURRENT_SECTOR "*q"
+			#	waitfor "omputer deactivated"
 			end
 		else
 			# Unsure if I want to test 1 ways..
@@ -976,15 +1047,17 @@ return
 			setVar $prepptc $player~credits
 
 			setVar $BOT~command "ppt"
-			setVar $BOT~user_command_line $tradePort &" p:50 k:10"
+			setVar $BOT~user_command_line $tradePort & " " & $haggle &" p:50 k:10"
 			setVar $BOT~parm1 $tradePort
-			setVar $BOT~parm2 "p:50"
-			setVar $BOT~parm3 "k:10"
+			setVar $BOT~parm2 $haggle
+			setVar $BOT~parm3 "p:50"
+			setVar $BOT~parm4 "k:10"
 
 			saveVar $BOT~parm1
 			saveVar $BOT~parm2
 			saveVar $BOT~parm3
-			
+			saveVar $BOT~parm4
+
 			saveVar $BOT~command
 			saveVar $BOT~user_command_line
 	
@@ -1046,13 +1119,30 @@ return
 			setVar $keepquant 5
 		end
 	end
+
 	setVar $pretradec $player~credits
 	setVar $BOT~command "trade"
-	setVar $BOT~user_command_line $keepquant
 	setVar $BOT~parm1 $keepquant
+	setVar $BOT~parm2 ""
+	if ($haggle = "h")
+		setVar $BOT~parm2 "int"
+	elseif ($haggle = "n")
+		setVar $BOT~parm2 "nohag"
+	end
 	
+	setVar $BOT~user_command_line $keepquant & " " & $BOT~parm2
 	saveVar $BOT~parm1
+	saveVar $BOT~parm2
 	
+	if ($avoidSectorTest = 1)
+		setVar $avoidSectorTest  0
+	else
+		setVar $BOT~parm3 "aoverride"
+		saveVar $BOT~parm3
+		setVar $BOT~user_command_line $BOT~user_command_line & " " & $BOT~parm3
+	end
+
+
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
 	load "scripts\"&$bot~mombot_directory&"\commands\cashing\trade.cts"
@@ -1880,7 +1970,56 @@ return
 return
 
 
+:functionDoTopOff
+	send "cf*" $topoffSector "*"
+	send "f" $topoffSector "*" $player~CURRENT_SECTOR "*q"
+	setTextLineTrigger topOffCourse1 :topOffCourse1 "The shortest path "
+	pause
+	:topOffCourse1
+		killAllTriggers
+		getWord CURRENTLINE $dist1 4
+		setTextLineTrigger topOffCourse2 :topOffCourse2 "The shortest path "
+		pause
+		:topOffCourse2
+		killAllTriggers
+		getWord CURRENTLINE $dist2 4
+		stripText $dist1 "("
+		stripText $dist2 "("
+		setvar $totore (($dist1 + $dist2) * 3)
+	echo "totore: " $totore	
+		if ($player~ORE_HOLDS < $totore)
+			send "jy p t " $totore "* * 0* 0* "
+		end
+	setVar $returnSector $player~CURRENT_SECTOR
+	setVar $player~warpto $topoffSector
+	gosub :player~twarp
+	if ($player~twarpSuccess = FALSE)
+		setVar $SWITCHBOARD~message "Can't make it to Terra.  Halting.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
 
+	gosub :player~quikstats
+	setVar $currentFigs $player~FIGHTERS
+
+	gosub :player~topoff
+	gosub :player~quikstats
+
+	if ($player~FIGHTERS = $currentFigs)
+		setVar $SWITCHBOARD~message "I didn't gain fighters while doing top off...  Halting.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+	setVar $player~warpto $returnSector
+	gosub :player~twarp
+	if ($player~twarpSuccess = FALSE)
+		setVar $SWITCHBOARD~message "Can't make it to Terra.  Halting.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+	gosub :player~quikstats
 
 
 return
@@ -1902,3 +2041,4 @@ include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\ship\loadshipinfo\ship"
 include "source\bot_includes\ship\getshipcapstats\ship"
 include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\player\topoff\player"

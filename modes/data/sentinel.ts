@@ -49,6 +49,7 @@
 # get defaults
 #loadVar $SentinelSaved
 
+setVar $sentinel_speed 0
 
 setVar $sentinel_PerformCIM 0
 setVar $sentinel_PerformCLV 1
@@ -70,6 +71,11 @@ if (($bot~parm1 = "cim") or ($bot~parm2 = "cim") or ($bot~parm3 = "cim"))
 end
 if (($bot~parm1 = "clv") or ($bot~parm2 = "clv") or ($bot~parm3 = "clv"))
 	setVar $sentinel_PerformCLV 1
+end
+getWordPos $bot~user_command_line $pos "speed"
+if ($pos > 0)
+  setVar $sentinel_speed 1
+
 end
 
 setvar $cycleerror 0
@@ -184,9 +190,13 @@ if ($sentinel_PerformCIM)
   gosub :CheckCIM
 end
 
-setDelayTrigger cycleDelay :activate $sentinel_CycleTime
-pause
-
+if ($sentinel_speed = 1)
+   setDelayTrigger cycleDelay :activate 200
+  pause
+else
+  setDelayTrigger cycleDelay :activate $sentinel_CycleTime
+  pause
+end
 
 :sub_SetMenu
   if ($sentinel_PerformCIM)

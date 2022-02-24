@@ -22,8 +22,8 @@ loadVar $PLAYER~unlimitedGame
 
 setVar $BOT~help[1]  $BOT~tab&"       Marco Polo - Trade Route for PPTing"
 setVar $BOT~help[2]  $BOT~tab&"       "
-setVar $BOT~help[3]  $BOT~tab&" macro [trade/report] {turns} {filename.txt} "
-setVar $BOT~help[4]  $BOT~tab&"                      "
+setVar $BOT~help[3]  $BOT~tab&" macro [trade/report] {turns} {filename.txt} {int} "
+setVar $BOT~help[4]  $BOT~tab&"                       {nohag}"
 setVar $BOT~help[5]  $BOT~tab&" trade  - indicates bot will trade the route"
 setVar $BOT~help[6]  $BOT~tab&" report - indicates bot will write route to file"
 setVar $BOT~help[7]  $BOT~tab&" "
@@ -32,6 +32,9 @@ setVar $BOT~help[9]  $BOT~tab&"                  route or for writing to share."
 setVar $BOT~help[10]  $BOT~tab&"  "
 setVar $BOT~help[11]  $BOT~tab&" {turns}       - Compulsary when trade option used "
 setVar $BOT~help[12]  $BOT~tab&"                 stops trading when reaching turns"
+setVar $BOT~help[13]  $BOT~tab&"  "
+setVar $BOT~help[13]  $BOT~tab&"  {int}        - Use internal haggle (quicker)"
+setVar $BOT~help[13]  $BOT~tab&"  {nohag}      - No Haggling"
 setVar $BOT~help[13]  $BOT~tab&"  "
 setVar $BOT~help[14]  $BOT~tab&"  Marco requires pairs to have one ore seller."
 setVar $BOT~help[15]  $BOT~tab&"  Please update CIM Ports/Warps and Figs."
@@ -174,6 +177,26 @@ if ($bot~parm1 = "trade")
 	end
 	
 
+# t - EP - h "internal" - "n" no haggle
+setVar $haggle "t"
+setVar $msg ""
+getWordPos $bot~user_command_line $pos "int"
+if ($pos > 0)
+	setVar $haggle "h"
+	setVar $msg $msg&"Using internal haggle*"
+end
+getWordPos $bot~user_command_line $pos "nohag"
+if ($pos > 0)
+	setVar $haggle "n"
+	setVar $msg $msg&"Using no haggle routine*"
+end
+if ($haggle = "t")
+	setVar $msg $msg&"Using EP haggle routine*"
+end
+
+	
+setvar $switchboard~message $msg
+gosub :switchboard~switchboard
 
 	listActiveScripts $scripts
 	setVar $foundep 0
@@ -185,10 +208,17 @@ if ($bot~parm1 = "trade")
 		add $a 1
 	end
 
-
-	if ($foundep = 0)
+	setvar $switchboard~message "Pause for effect....*"
+	gosub :switchboard~switchboard
+	if ($haggle = "h") or ($haggle = "n")
+		if ($foundep = 1)
+			stop "ephaggle"
+		end
+	end
+	if ($foundep = 0) and ($haggle = "t")
 		send "'" $BOT~BOT_NAME " ephaggle*"
 	end
+
 
 	setDelayTrigger delay :startPause 1000
 	pause
@@ -288,17 +318,36 @@ while ($loopi <= $portPairsi)
 	end
 	if ($PLAYER~CURRENT_SECTOR <> $pairsec)
 		# Check second port has fig
-		send "m" $sec "*yn"
-		setTextLineTrigger checkPair2LockYes :checkPair2LockYes "Locating beam pinpointed, TransWarp"
-		setTextLineTrigger checkPair2LockNo :checkPair2LockNo "No locating beam found for sector"
-		pause
-		:checkPair2LockNo
-			killAllTriggers
-			setVar $SWITCHBOARD~message "Sector missing fig, moving onto next.*"
-			gosub :SWITCHBOARD~switchboard
-			goto :nextLoop
-		:checkPair2LockYes
-			killAllTriggers
+		if ($sec <> $PLAYER~CURRENT_SECTOR)
+
+			setVar $nextSector $sec
+			goSub :checkIsNextDoor
+			if ($isNextDoor)
+				getSectorParameter $dSector "FIGSEC" $hasFig
+				if ($hasFig = "")
+					setVar $hasFig 0
+				end
+				if ($hasfig = 0)
+					killAllTriggers
+					setVar $SWITCHBOARD~message "Sector missing fig, moving onto next.*"
+					gosub :SWITCHBOARD~switchboard
+					goto :nextLoop
+				end
+
+			else
+				send "m" $sec "*yn"
+				setTextLineTrigger checkPair2LockYes :checkPair2LockYes "Locating beam pinpointed, TransWarp"
+				setTextLineTrigger checkPair2LockNo :checkPair2LockNo "No locating beam found for sector"
+				pause
+				:checkPair2LockNo
+					killAllTriggers
+					setVar $SWITCHBOARD~message "Sector missing fig, moving onto next.*"
+					gosub :SWITCHBOARD~switchboard
+					goto :nextLoop
+				:checkPair2LockYes
+					killAllTriggers
+			end
+		end
 		# move us in - this is ok if first sector
 		setVar $player~warpto $pairsec
 		gosub :player~twarp
@@ -307,6 +356,8 @@ while ($loopi <= $portPairsi)
 			gosub :SWITCHBOARD~switchboard
 			goto :nextLoop
 		end
+		
+		
 		gosub :player~quikstats
 
 	end
@@ -464,10 +515,21 @@ halt
 return
 
 :doTrade
-	waitfor "Agreed,"
-	setTextLineTrigger tradeFin :tradeFin "empty cargo holds"
-	pause
-	:tradeFin
+	if (($haggle = "t") or ($haggle = "h"))
+		
+		
+		if ($haggle = "t")
+			waitfor "Agreed,"
+			setTextLineTrigger tradeFin :tradeFin "empty cargo holds"
+			pause
+			:tradeFin
+				
+		elseif ($haggle = "h")
+			gosub :PLAYER~startHaggle
+		end
+	else
+		send "  *  "
+	end
 return
 
 
@@ -492,20 +554,25 @@ return
 
 	if (($portPairs[$loopi][3] = 1) and ($portPairs[$loopi][4] = 1))
 		setVar $BOT~parm1 $tradeSec
-		setVar $BOT~parm2 "ore:" & $PLAYER~TOTAL_HOLDS
-		setVar $BOT~parm3 ""
+		setVar $BOT~parm2 $haggle
+		setVar $BOT~parm3 "ore:" & $PLAYER~TOTAL_HOLDS
+		setVar $BOT~parm4 ""
+
 	else
 		setVar $BOT~parm1 $tradeSec
-		setVar $BOT~parm2 "twarp"
-		setVar $BOT~parm3 "ore:" & $PLAYER~TOTAL_HOLDS
+		setVar $BOT~parm2 $haggle
+		setVar $BOT~parm3 "twarp"
+		setVar $BOT~parm4 "ore:" & $PLAYER~TOTAL_HOLDS
+		
 	end
 	setVar $BOT~command "ppt"
-	setVar $BOT~user_command_line $tradeSec &" "& $BOT~parm2 & " " & $BOT~parm3
+	setVar $BOT~user_command_line $tradeSec &" "& $BOT~parm2 & " " & $BOT~parm3 & " " & $BOT~parm4
 
 
 	saveVar $BOT~parm1
 	saveVar $BOT~parm2
 	saveVar $BOT~parm3
+	saveVar $BOT~parm4
 	
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
@@ -766,7 +833,23 @@ return
 	echo "**"
 return
 
+:checkIsNextDoor
+	# $nextSector
+	# $isNextDoor
+	setVar $isNextDoor 0
+	setVar $isNexti 1
+	while ($isNexti<= SECTOR.WARPCOUNT[$nextSector])
+		
+		echo SECTOR.WARPS[CURRENTSECTOR][$isNexti] " " $nextSector "*"
 
+		if (SECTOR.WARPS[CURRENTSECTOR][$isNexti] = $nextSector)
+
+			setVar $isNextDoor 1
+		end
+		
+		add $isNexti 1
+	end
+return
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 
@@ -774,4 +857,4 @@ include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\moveintosector\player"
 include "source\bot_includes\player\twarp\player"
 include "source\bot_includes\player\isephaggle\player"
-
+include "source\bot_includes\player\starthaggle\player"

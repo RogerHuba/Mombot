@@ -1,7 +1,9 @@
 logging off
 gosub :BOT~loadVars
 
-	setVar $BOT~help[1]  $BOT~tab&"    Fills all empty ships with fighters from sector.        " 
+	setVar $BOT~help[1]  $BOT~tab&"FillShips - Fills all empty ships with fighters from sector. " 
+	setVar $BOT~help[2]  $BOT~tab&"       fillships {quantity} "
+	setVar $BOT~help[3]  $BOT~tab&"       {quantity} - optional max per ship    " 
 	gosub :bot~helpfile
 
 :emptyships
@@ -25,6 +27,11 @@ gosub :BOT~loadVars
 		gosub :planet~getplanetinfo
 		send "q "
 	end
+	isNumber $test $bot~parm1
+	if ($test = TRUE) and ($bot~parm1 <> 0)
+		setVar $figQuant $bot~parm1
+	end
+
 	send "'{" $switchboard~bot_name "} - Ship Filler starting up!  Starting ship scan..*"
 	:tryshipscan
 		send "wnq*@"
@@ -79,14 +86,44 @@ halt
 	:do_topoff_again
 		killalltriggers
 		send " F"
-		waitOn "Your ship can support up to"
-		getWord CURRENTLINE $ftrs_to_leave 10
-		stripText $ftrs_to_leave ","
-		stripText $ftrs_to_leave " "
-		if ($ftrs_to_leave < 1)
-			setVar $ftrs_to_leave 1
+		if ($figQuant > 0)
+			setVar $temp_figQuant $figQuant
+			waitOn " fighters available."
+			getWord CURRENTLINE $figs_avail 3
+			stripText $figs_avail ","
+			stripText $figs_avail " "
+			waitOn "Your ship can support up to"
+			getWord CURRENTLINE $ftrs_to_leave 10
+			stripText $ftrs_to_leave ","
+			stripText $ftrs_to_leave " "
+			
+			getWord CURRENTLINE $figs_supported 7
+			stripText $figs_supported ","
+			stripText $figs_supported " "	
+			
+			if ($figs_supported < $temp_figQuant)
+				#we can't hold this many - reset
+				send " " & ($figs_avail - $PLAYER~fighters) & " * C D" 
+				goto :skipRest
+			end
+			setVar $ftrs_to_leave ($figs_avail - $temp_figQuant)
+			if ($ftrs_to_leave < 1)
+				setVar $ftrs_to_leave 1
+			end
+			
+		else
+			waitOn "Your ship can support up to"
+			getWord CURRENTLINE $ftrs_to_leave 10
+			stripText $ftrs_to_leave ","
+			stripText $ftrs_to_leave " "
+			if ($ftrs_to_leave < 1)
+				setVar $ftrs_to_leave 1
+			end
 		end
+		
+		
 		send " " & $ftrs_to_leave & " * C D"
+		:skipRest
 		setTextLineTrigger topoff_success :topoff_success "Done. You have "
 		setTextLineTrigger topoff_failure1 :do_topoff_again "You don't have that many fighters available."
 		setTextLineTrigger topoff_failure2 :do_topoff_again "Too many fighters in your fleet!  You are limited to"

@@ -141,7 +141,7 @@ if ($mode = "pdrop")
 		waitFor "Figs Per Attack:"
 		getWord CURRENTLINE $maxFigAttack 5
 		
-		setVar $maxFigAttack 20000
+		setVar $maxFigAttack 50000
 		setVar $moveFigMacro ""
 		setVar $moved 0
 
@@ -574,7 +574,7 @@ echo "#" $foundSecs[$x][1] " " $foundSecs[$x][2] " " $distAvg[$player~corp] " #"
 				gosub :getTime
 				setVar $time " "&$hour & ":" & $minute & ":" & $second & ":" & $msec & "  "
 				echo  "#" $time "#*"
-				setdelaytrigger waithere2 :nowdrop2 2000
+				setdelaytrigger waithere2 :nowdrop2 5000
 				setPrecision 0
 				pause
 				:nowdrop2

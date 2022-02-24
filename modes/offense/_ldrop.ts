@@ -35,8 +35,8 @@ gosub :player~quikstats
 
 setArray $dropSector 1000
 
-
 getWordPos $bot~user_command_line $pos "figs:"
+
 if ($pos > 0)
 	setVar $dropftrs TRUE
 	setVar $cline $bot~user_command_line & " "
@@ -65,7 +65,7 @@ if ($pos > 0)
 	setVar $cline $bot~user_command_line & " "
 	getText $cline $avoid_sector "avoid:" " "
 else
-	setVar $dropftrs FALSE
+	setVar $avoid_sector FALSE
 end
 
 getWordPos $bot~user_command_line $pos "plock"
@@ -127,7 +127,7 @@ if ($pos > 0)
 else
 	setVar $return FALSE
 end
-
+# ldrop 150 kill figs:100000
 if ($delay = false)
 	isNumber $test $bot~parm1
 	if ($test = TRUE)
@@ -147,6 +147,11 @@ if ($delay = false)
 	end
 end
 
+echo $delay "*"
+echo $delay "*"
+echo $delay "*"
+
+
 		
 setVar $moveFigMacro ""
 
@@ -163,11 +168,13 @@ setVar $moveFigMacro ""
 		setvar $planetdrop true
 	end
 	if ($planetdrop = true)
+
 		send "q"
 		gosub :planet~getPlanetInfo
 		
 		
 		if ($dropftrs)
+
 			send "c"
 			send "c;q"
 			setTextLineTrigger shipMaxFtrs :shipMaxFtrs "Max Fighters:"

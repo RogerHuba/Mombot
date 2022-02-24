@@ -124,6 +124,9 @@ end
 			goto :photonTow
 	elseif (($bot~parm2 = "p") or ($bot~parm2 = ""))
 	        goto :foton
+	elseif (($bot~parm2 = "b") or ($bot~parm2 = ""))
+			setVar $temp_bwarp 1
+	        goto :foton
 	elseif (($isnum = 1) or ($self = true))
 		if ($self)
 			setvar $bot~parm1 $player~current_sector
@@ -884,7 +887,10 @@ end
 
 	gosub :planet~getplanetinfo
 	send "c"
-
+	if ($temp_bwarp = 1)
+		send "qtnt1*c"
+		gosub :player~quikstats
+	end
 :foton_get_figs
 	send "*"
 	waitFor "Citadel command (?="
@@ -921,11 +927,36 @@ end
 			:delaywalkTrigger
 			add $delaywalk 100
 	end
-	send "p" $adjsec "*y c p y " $sector "**q"
-	setTextLineTrigger	wrong	:foton_wrong	"That is not an adjacent sector"
-	setTextLineTrigger	gotem	:foton_gotem	"Photon Missile launched into sector"
-	setTextLineTrigger	wrong2	:foton_wrong2	"The Feds do not permit Photon Torpedos"
-	pause
+	if ($temp_bwarp = 1)
+
+		killAllTriggers
+		send " B " & $adjsec & "*  C  Q  y  * "
+		send " c  p  y  "&$Sector&"**Q az100* * "
+		setDelayTrigger	boton_DELAY		:boton_DELAY 500
+		pause
+		:boton_DELAY
+			send "'{" $bot~bot_name "} - Foton Fired - Sector => " $sector "!*"
+			send "'{" $bot~bot_name "} - ONe Shot Deal - heading home - reload ore/photon and put on cit.*"
+			gosub :player~quikstats
+			if ($PLAYER~CURRENT_PROMPT <> "Command")
+				send (" p d 0* 0* 0* * *** * c q q q q q z 2 2 c q * z * *** * * '" & $TagLineB & " Attempting To Reach Correct Prompt...*")
+				setTextLineTrigger	EMQ_COMPLETE	:EMQ_DELAY "Attempting To Reach Correct Prompt..."
+				setDelayTrigger 	EMQ_DELAY		:EMQ_DELAY 3000
+				pause
+				:EMQ_DELAY
+					killAllTriggers
+			end
+			send "m" $home_sector2 "*yyl" $planet~planet "*c"
+			send "'{" $bot~bot_name "} Maybe back in planet.. maybe not.. hahahahaha. I'm dead right?! Halting*"
+			halt
+		
+	else
+		send "p" $adjsec "*y c p y " $sector "**q"
+		setTextLineTrigger	wrong	:foton_wrong	"That is not an adjacent sector"
+		setTextLineTrigger	gotem	:foton_gotem	"Photon Missile launched into sector"
+		setTextLineTrigger	wrong2	:foton_wrong2	"The Feds do not permit Photon Torpedos"
+		pause
+	end
 
 :foton_wrong2
 	killtrigger gotem
@@ -987,10 +1018,41 @@ end
 	setVar $i 1
 	while (SECTOR.WARPS[$Sector][$i] > 0)
 		setVar $tempAdj SECTOR.WARPS[$Sector][$i]
-                getSectorParameter $tempAdj "FIGSEC" $isFigged
-                if ($isFigged)
-			setVar $adjsec $tempAdj
-			return
+        getSectorParameter $tempAdj "FIGSEC" $isFigged
+        if ($isFigged)
+			
+			if ($temp_bwarp = 1)
+				setVar $b 1
+				while (SECTOR.WARPS[$tempAdj][$b] > 0)
+					if ((SECTOR.WARPS[$tempAdj][$b] <> $Sector) and (SECTOR.WARPS[$tempAdj][$b] > 10) and (SECTOR.WARPS[$tempAdj][$b] <> STARDOCK))
+						setVar $tempAdj2 SECTOR.WARPS[$tempAdj][$b]
+						getSectorParameter $tempAdj2 "FIGSEC" $isFigged
+						if ($isFigged)
+							
+							
+							// check twoway
+							setVar $g 1
+							setVar $found 0
+							while (SECTOR.WARPS[$tempAdj2][$g] > 0) 
+								if (SECTOR.WARPS[$tempAdj2][$g] = $tempAdj)
+									setVar $found 1
+								end
+								add $g 1
+							end
+							if ($found = 1)
+								setVar $adjsec $tempAdj2
+								setVar $Sector $tempAdj
+								return
+							end
+						end
+					end
+					add $b 1
+				end
+			else
+				setVar $adjsec $tempAdj
+				return
+			end
+			
 		end
 		add $i 1
 	end
@@ -1080,6 +1142,20 @@ end
 	setVar $startingLocation $player~current_prompt
 	if ($startingLocation = "Citadel")
 		goto :surround_foton_start
+	elseif ($startingLocation <> "Command")
+		setVar $surroundCom 1
+		if (($player~TWARP_TYPE = 1) or ($player~TWARP_TYPE = 2))
+			If ($player~ORE_HOLDS < 60)
+				setVar $SWITCHBOARD~message "No fuel ore onboard/warp.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+			end
+		else
+			setVar $SWITCHBOARD~message "Need twarp!.*"
+				gosub :SWITCHBOARD~switchboard
+				halt
+		end
+		goto :surround_foton_start
 	else
 		send "'{" $bot~bot_name "} - Must Start at Citadel.*"
 		halt
@@ -1087,17 +1163,22 @@ end
 
 :surround_foton_start
 	setVar $home_sector2 $player~current_sector
+
 	if ($player~photons <= 0)
 		goto :foton_out_of_fotons
 	end
-	send "q"
+	if ($surroundCom = 1)
+		
+	else
+		send "q"
 
-	gosub :planet~getplanetinfo
-	send "c"
+		gosub :planet~getplanetinfo
+		send "c"
+		:surround_foton_get_figs
+			send "*"
+			waitFor "Citadel command (?="
+	end
 
-:surround_foton_get_figs
-	send "*"
-	waitFor "Citadel command (?="
 
 
 :surround_foton_go

@@ -20,7 +20,7 @@ setVar $BOT~help[1]  $BOT~tab&"    Finds Big Bubbles and Big Tunnels"
 setVar $BOT~help[2]  $BOT~tab&"        "
 setVar $BOT~help[3]  $BOT~tab&"    Self Mapping - NO ZTM Required - Day 0"
 setVar $BOT~help[4]  $BOT~tab&"     "
-setVar $BOT~help[5]  $BOT~tab&"    findbb {all} {calcsecs} {report}"
+setVar $BOT~help[5]  $BOT~tab&"    findbb [maxbubbles] {distgreater} {all} {calcsecs} {report} {ztmcalc}"
 setVar $BOT~help[6]  $BOT~tab&" Options:"
 setVar $BOT~help[7]  $BOT~tab&"    {all}        Finds Bubbles, Reports approx Size and"
 setVar $BOT~help[8]  $BOT~tab&"                 calculates what sectors in or out of a "
@@ -29,8 +29,8 @@ setVar $BOT~help[10] $BOT~tab&"                 "
 setVar $BOT~help[11] $BOT~tab&"    {calcsecs}   Calcs what sectors in or out of bubbles."
 setVar $BOT~help[12] $BOT~tab&"                 Writes to sector param WHICHBUB."
 setVar $BOT~help[13] $BOT~tab&"    {report}     Reports findings previously"
-setVar $BOT~help[14] $BOT~tab&"    "
-setVar $BOT~help[15] $BOT~tab&"    Ham: Add report sectors for each bubble"
+setVar $BOT~help[14] $BOT~tab&"    {ztmcalc}    Calc bubble interior off known data"
+setVar $BOT~help[15] $BOT~tab&"    [maxbubbles] How many to find"
 setVar $BOT~help[16] $BOT~tab&"    "
 setVar $BOT~help[17] $BOT~tab&"    Default findbb just calcs bubbles, reports to subspace and"
 setVar $BOT~help[18] $BOT~tab&"    does guestimate."
@@ -51,13 +51,49 @@ if ($startingLocation <> "Command")
 	halt
 end
 
+setVar $bubblesToFind $bot~parm1
+	
+isNumber $test $bubblesToFind
+if ($test = 0)
+	setVar $SWITCHBOARD~message "Max Bubbles must be a number*"
+	gosub :SWITCHBOARD~switchboard
+	halt
+else
 
+end
 
+setVar $minWarpDist $bot~parm2
+if ($minWarpDist <> "") and ($minWarpDist <> 0)
+	isNumber $test $minWarpDist
+	if ($test = 1)
+		
+
+	end
+else
+	setVar $minWarpDist 18
+end
+
+setVar $SWITCHBOARD~message "Warp Distance greater than: " & $minWarpDist & "*"
+gosub :SWITCHBOARD~switchboard
+
+setVar $routeOrder 0
+
+setVar $routeOrder[1] 9
+setVar $routeOrder[2] 10
+setVar $routeOrder[3] 11
+setVar $routeOrder[4] 12
+setVar $routeOrder[5] 8
+setVar $routeOrder[6] 7
+setVar $routeOrder[7] 6
+setVar $routeOrder[8] 13
+setVar $routeOrder[9] 14
+setVar $routeOrder[10] 15
+setVar $routeOrder[11] 16
 
 setVar $doplots 1
 setVar $doGuestimate 1
 setVar $doSectorSorter 0
-setVar $SWITCHBOARD~message "Finding bubbles and doing guestimate.*"
+setVar $SWITCHBOARD~message "Finding " & $bubblesToFind & " bubbles and doing guestimate.*"
 
 getWordPos $bot~user_command_line $pos "all"
 if ($pos > 0)
@@ -71,6 +107,16 @@ if ($pos > 0)
 	setVar $doGuestimate 0
 	setVar $doSectorSorter 1
 	setVar $SWITCHBOARD~message "Only completing sectors in or out of a bubble.*"
+end
+
+
+getWordPos $bot~user_command_line $pos "ztmcalc"
+if ($pos > 0)
+	setVar $doplots 0
+	setVar $doGuestimate 0
+	setVar $doSectorSorter 0
+	setvar $doztmcalc 1
+	setVar $SWITCHBOARD~message "Calc bubbles sectors off ZTM data.*"
 end
 
 getWordPos $bot~user_command_line $pos "plotsonly"
@@ -111,7 +157,7 @@ gosub :SWITCHBOARD~switchboard
 
 
 
-setVar $bubblesToFind 8
+
 
 setVar $bubbleDoors 0
 setVar $bubbleDoorsCount 0
@@ -165,6 +211,9 @@ if ($doSectorSorter = 1)
 	goSub :plotAllSectorsToBubble
 end			
 
+if ($doztmcalc = 1)
+	gosub :plotAllSectorsToBubbleztm
+end
 halt
 
 :getDoors
@@ -256,6 +305,12 @@ return
 return
 
 :doplotsFunction
+getTime $test "'The time is :' h:m:s, ' the date is :' d:m:yyyy'"
+echo $test
+echo $test
+echo $test
+echo $test
+echo $test
 	send "c"
 	send "v0*yy"
 echo "Entering DO PLOTS*"
@@ -274,19 +329,36 @@ echo "Entering DO PLOTS*"
 			killalltriggers
 			getWord CURRENTLINE $dist 4
 			STRIPTEXT $dist "("
-			if ($dist > 15)
+			if ($dist > $minWarpDist)
 				setVar $foundBubble 0
 				goSub :checkBubble
 				if ($foundBubble = 0)
-				//	goSub :checkTunnel
+					goSub :checkTunnel
 					if ($foundBubble = 0)
 						echo "*#######################################################"
 						echo "*######## NO SOLUTION FOR:  " $cSector " ###############"
 						echo "*#######################################################"
+						getTime $test "'The time is :' h:m:s, ' the date is :' d:m:yyyy'"
+echo $test
+echo $test
+echo $test
+echo $test
+echo $test
 					else
-						
+						getTime $test "'The time is :' h:m:s, ' the date is :' d:m:yyyy'"
+echo $test
+echo $test
+echo $test
+echo $test
+echo $test
 					end
 				else
+				getTime $test "'The time is :' h:m:s, ' the date is :' d:m:yyyy'"
+echo $test
+echo $test
+echo $test
+echo $test
+echo $test
 					if ($goCrazy = 1)
 						goSub :goCrazy
 					end
@@ -323,6 +395,8 @@ echo "Entering DO PLOTS*"
 
 	end
 	send "q * * "
+	getTime $test "'The time at end is :' h:m:s, ' the date is :' d:m:yyyy'"
+echo $test
 return
 
 halt
@@ -602,10 +676,10 @@ return
 		add $y 1
 		getWord $logTEXT $stuff $y
 	end
-	setVar $stopLookingAt ($coursei - 4)
+	setVar $stopLookingAt ($coursei - 3)
 	
 	
-	setVar $y 3
+	setVar $y 5
 	setVar $lastPlot ($coursei - 1)
 
 	while ($y < $coursei)
@@ -633,7 +707,7 @@ return
 			goto :waitLapBub
 		:checkplotblockBub
 			killalltriggers
-			setVar $bubbleDoorAt ($totalRec + 3)
+			setVar $bubbleDoorAt ($totalRec + 5)
 			
 			echo "*############# FOUND DOOR " $course[$bubbleDoorAt] " #############"
 			setVar $msg "[Found Big Bubble] Door: " & $course[$bubbleDoorAt] & " Internal Sec:" & $course[$lastPlot] & "*"
@@ -659,7 +733,78 @@ return
 #setVar $tunnelDoors2 0
 #setVar $tunnelEnds 0
 #setVar $tunnelsi 0
+:resetRouteOrder
+	setVar $routeOrder 0
 
+	setVar $routeOrder[1] 9
+	setVar $routeOrder[2] 10
+	setVar $routeOrder[3] 11
+	setVar $routeOrder[4] 12
+	setVar $routeOrder[5] 8
+	setVar $routeOrder[6] 7
+	setVar $routeOrder[7] 6
+	setVar $routeOrder[8] 13
+	setVar $routeOrder[9] 14
+	setVar $routeOrder[10] 15
+	setVar $routeOrder[11] 16
+
+return
+
+:getCheckOrder
+
+# Need max dist
+# Then order from likely to unlikely
+	goSub :resetRouteOrder
+	if ($MaxDistance > 19)
+		setVar $RouteStop 11
+	elseif ($MaxDistance = 18)
+		setVar $RouteStop 10 
+	elseif ($MaxDistance = 17)
+		setVar $RouteStop 9
+	elseif ($MaxDistance = 16)
+		setVar $RouteStop 8 
+	elseif ($MaxDistance = 15)
+		setVar $RouteStop 7 
+	elseif ($MaxDistance < 10)
+		setVar $routeOrder[1] 4
+		setVar $routeOrder[2] 5
+		setVar $routeOrder[3] 6
+		setVar $routeOrder[4] 7
+		if ($MaxDistance = 9)
+			setVar $RouteStop 4
+		elseif ($MaxDistance = 8)
+			setVar $RouteStop 2
+		elseif ($MaxDistance = 7)
+			setVar $RouteStop 3	
+		elseif ($MaxDistance = 6)
+			setVar $RouteStop 1
+		end
+	elseif ($MaxDistance < 15)
+		setVar $routeOrder[1] 6
+		setVar $routeOrder[2] 7
+		setVar $routeOrder[3] 8
+		setVar $routeOrder[4] 9
+		setVar $routeOrder[5] 10
+		setVar $routeOrder[6] 11
+		setVar $routeOrder[7] 12
+		if ($MaxDistance = 14)
+			setVar $RouteStop 7
+		elseif ($MaxDistance = 13)
+			setVar $RouteStop 6
+		elseif ($MaxDistance = 12)
+			setVar $RouteStop 5	
+		elseif ($MaxDistance = 11)
+			setVar $RouteStop 4
+		elseif ($MaxDistance = 10)
+			setVar $RouteStop 3
+
+		end
+	end
+return
+
+:checktunnelMassBlock
+
+return
 
 :checkTunnel
 
@@ -670,22 +815,25 @@ echo "Checking TunnelTarget: " $tunnelTarget
 	setVar $coursei 1
 	goSub :getCourseArray
 
-	# How many to avoid in first path
-	setVar $stopLookingAt2 ($coursei - 4)
-	setVar $route1i 1
+	# Which sectors to inclde
+	setVar $RouteStop 0
 	setVar $route1 0
-	while ($route1i < $coursei)
-		setVar $route1[$route1i] $course[$route1i]
-	echo "adding " $course[$route1i] "*"
-		add $route1i 1
+	setVar $MaxDistance $coursei
+	goSub :getCheckOrder
+	setvar $firstRouteStop $RouteStop
+	setVar $routeMake 1
+	while ($routeMake <= $firstRouteStop)
+		setVar $route1[$routeMake] $course[$routeOrder[$routeMake]]
+		add $routeMake 1
 	end
-	# got our route X1 X2 X3 x4 X5. .. X19
-	# we want to void each spot - then replot to X19, then void each of it's plots
-	
 
-	setVar $r 4
+
+	# How many to avoid in first path
+	setVar $stopLookingAt2 $RouteStop
+	
+	setVar $r 1
 echo "Searching from  " $r " to " $stopLookingAt2 "*"
-	while ($r < $route1i)
+	while ($r <= $firstRouteStop)
 
 		setVar $voidSec $route1[$r]
 		send "v" $voidSec "*"
@@ -693,21 +841,31 @@ echo "Searching from  " $r " to " $stopLookingAt2 "*"
 		setVar $course ""
 		setVar $coursei 1
 		goSub :getCourseArray
-		# we are going to search from $y to %stopLoockingAt
-		setVar $stopLookingAt ($coursei - 4)
+
 		setVar $lastPlot ($coursei - 1)
-		setVar $y 5
+		setVar $RouteStop2 0
+		setVar $route2 0
+		setVar $MaxDistance $coursei
+		goSub :getCheckOrder
+		setvar $secondRouteStop $RouteStop
+		setVar $routeMake 1
+		while ($routeMake <= $secondRouteStop)
+			setVar $route2[$routeMake] $course[$routeOrder[$routeMake]]
+			add $routeMake 1
+		end
 
+		setVar $y 1
 
-echo "VOID SEARCH FROM $y" $y " to " $coursei "*"
 		
-		while ($y < $coursei)
-			if ($y = $stopLookingAt)
+echo "VOID SEARCH FROM $y" $y " to " $secondRouteStop "*"
+		
+		while ($y <= $secondRouteStop)
+			if ($y = $secondRouteStop)
 				# to close to end point - assume fail?
 				send "^q"
 				goto :checkLap
 			end 
-			send "v" $course[$y] "*"
+			send "v" $route2[$y] "*"
 			send "f1*" $course[$lastPlot] "** "
 			send "v0*yy"
 			send "v" $voidSec "*"
@@ -727,8 +885,8 @@ echo "VOID SEARCH FROM $y" $y " to " $coursei "*"
 				goto :waitLap
 			:checkplotblock2
 				killalltriggers
-				
-				setVar $bubbleTwoAt ($totalRec + 5)
+				add $totalRec 1
+				setVar $bubbleTwoAt $routeOrder[$totalRec]
 				echo "*############# FOUND FIRST DOOR " $voidSec " #############"
 				echo "*############# FOUND SECOND DOOR " $course[$bubbleTwoAt] " #############"
 				setVar $msg "[Found Big Tunnel] Door 1: " & $voidSec & " Door 2: " & $course[$bubbleTwoAt] & " Internal Sec:" & $tunnelTarget & "*"
@@ -1294,6 +1452,182 @@ return
 	setSectorParameter $lastSector "WHICHBUB" $bub
 return
 
+
+
+
+:plotAllSectorsToBubbleztm
+	
+	  clearAllAvoids
+
+	setArray $sFilter SECTORS
+	setArray $bIndex SECTORS
+	setArray $allSectors SECTORS
+	setVar $totalBubs 0
+	setVar $totalBubsReport 0
+
+	setVar $allDoors 0
+	setVar $allDoorsi 0
+	goSub :getDoors
+
+	setVar $i 1
+	while ($i <= 20)
+		setVar $allDoors[$i] 99999
+		add $i 1
+	end
+	
+	setVar $i 11
+	while ($i < SECTORS)
+		setSectorParameter $i "WHICHBUB" ""
+		setSectorParameter $i "NOTBUB" ""
+		add $i 1
+	end
+	
+	setVar $i 1
+	while ($i <= $bubblei)
+		add $allDoorsi 2
+		add $totalBubs 1
+		setVar $totalBubsReport[$totalBubs] "B:" & $bubbleDoors[$i]
+		setVar $y ((($totalBubs - 1) *2) + 1)
+		setVar $allDoors[$y] $bubbleDoors[$i]
+		setVar $y2 ($y+1)
+		setVar $allDoors[$y2] 99999
+		setVar $bIndex[$bubbleDoors[$i]] $totalBubs
+		setVar $sFilter[$bubbleDoors[$i]] 1
+		add $i 1
+	end
+
+	setVar $i 1
+	while ($i <= $tunnelsi)
+		add $totalBubs 1
+		add $allDoorsi 2
+		setVar $y ((($totalBubs - 1) * 2) + 1)
+
+		setVar $y2 ($y+1)
+		setVar $allDoors[$y] $tunnelDoors1[$i]
+		setVar $allDoors[$y2] $tunnelDoors2[$i]
+		setVar $bIndex[$tunnelDoors1[$i]] $totalBubs
+		setVar $sFilter[$tunnelDoors1[$i]] 1
+		setVar $bIndex[$tunnelDoors2[$i]] $totalBubs
+		setVar $sFilter[$tunnelDoors2[$i]] 1
+		setVar $totalBubsReport[$totalBubs] "T:" & $tunnelDoors1[$i] & " " & $tunnelDoors2[$i]
+		add $i 1
+	end
+
+	setVar $mindisttodoor 99
+	setVar $i 1
+	while ($i <= $allDoorsi)
+	//echo "$allDoors[$i] " $allDoors[$i] "*"
+		if ($allDoors[$i] > 0) and ($allDoors[$i] <= SECTORS)
+			getcourse $course 1 $allDoors[$i]
+			echo $i " " $allDoors[$i] " dist: " $course "*"
+			if ($course < $mindisttodoor)
+				setVar $mindisttodoor $course
+			end
+		end
+		add $i 1
+	end
+
+	echo "min dist to door: " $mindisttodoor "*"
+
+
+
+
+	getAllCourses $courses 1
+	setVar $a 1
+	while ($a <= SECTORS)
+
+		// This sector is furtherer than closest door
+		if ($a >= $mindisttodoor)
+			
+			// echo "*" $a ", Course:"
+			setVar $b $mindisttodoor
+			// Loop thru path from min distance
+			while ($b <= ($courses[$a] + 1))
+			//	echo "  " $courses[$a][$b]
+
+				// check if it's a current door.
+				setVar $i 1
+				while ($i <= $allDoorsi)
+					if ($courses[$a][$b] = $allDoors[$i])
+						// found
+						setVar $t ($i + 1)
+						setVar $bub ($t/2)
+						setVar $lastSector $a
+						// echo " (Found " $bub " door adding)"
+						goSub :addDoor
+						setVar $i 100
+						setVar $b 100
+					end
+					add $i 1
+				end
+				add $b 1
+			end
+			
+
+		end
+		
+		
+		add $a 1
+	end
+
+	
+	setVar $i 11
+	while ($i < SECTORS)
+		getSectorParameter $i "WHICHBUB" $test
+		if ($test = "")
+			setVar $test 0
+		end
+		if ($test = 0)
+			setSectorParameter $i "NOTBUB" "1"
+		end
+		add $i 1
+	end
+
+	setVar $i 1
+	while ($i <= 20)
+		if ($allDoors[$i] <= SECTORS)
+			if ($i <=2)
+				setVar $bub 1
+			elseif ($i <=4)
+				setVar $bub 2
+			elseif ($i <=6)
+				setVar $bub 3
+			elseif ($i <=8)
+				setVar $bub 4
+			elseif ($i <=10)
+				setVar $bub 5
+			elseif ($i <=12)
+				setVar $bub 6
+			elseif ($i <=14)
+				setVar $bub 7
+			elseif ($i <=16)
+				setVar $bub 8
+			elseif ($i <=18)
+				setVar $bub 9
+			elseif ($i <=20)
+				setVar $bub 10
+			end
+			setSectorParameter $allDoors[$i] "BUBCOUNT" $bubbleCounts[$i]
+			setSectorParameter $allDoors[$i] "BUBINDEX" $bub
+		end
+		add $i 1
+	end
+
+
+	setVar $i 1
+	setVar $rep  "BUBBLE SECTOR         SECTOR COUNT*"
+	while ($i <= 10)
+		
+		setvar $rep $rep & $totalBubsReport[$i] &  "            "  & $bubbleCounts[$i] &  "*"
+		add $i 1
+	end
+	setVar $SWITCHBOARD~message $rep
+	gosub :SWITCHBOARD~switchboard
+	halt
+
+	
+
+return
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 include "source\module_includes\bot\banner\bot"

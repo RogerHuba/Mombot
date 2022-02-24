@@ -3,7 +3,7 @@ gosub :BOT~loadVars
  #ppt explore
 
  #prioritise good ports - i.e. those selling ore
- # make decision where to go
+ # make decision where to dgo
  #   check surround and grid other priorites: SSB SBS 
  #   check surround grid sub priorities - i.e. BSB BBS - we probably have ecess of those anyway - maybe if more than X warps, go in, density, see if worth holodin, holo, and com back
 
@@ -150,7 +150,13 @@ gosub :BOT~loadVars
 	else
 		setVar $finishore 0
 	end
-	
+
+	setVar $avoidsOveride 0
+	getWordPos $bot~user_command_line $pos "aoverride"
+	if ($pos > 0)
+		setVar $avoidsOveride 1
+
+	end
 	
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation <> "Command")

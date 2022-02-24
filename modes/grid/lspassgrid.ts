@@ -976,9 +976,10 @@
 								if (($Flag = 0) AND ($CHKD[$w_adj] <> 1) AND ($skipWarp = 0))
 									setVar $CHKD[$w_adj] 1
 									if ($NextRequiresReport = 1)
-								
+										getSectorParameter $w_adj "PORTBLKED" $blocked 
+										
 										setVar $portOk 0
-										if (PORT.EXISTS[$w_adj] = 1)
+										if (PORT.EXISTS[$w_adj] = 1) and (($blocked = 0) or ($blocked = ""))
 											send "cr" $w_adj "*q"
 											waitfor "Computer activate"
 											setTextLineTrigger portexists :portexists "Commerce report for"

@@ -3,7 +3,7 @@ setVar $noreset 0
 setVar $fizzletime 20000
 
 goSub :startUp
-gosub :killscripts
+#gosub :killscripts
 gosub :loadarray
 
 
@@ -126,14 +126,21 @@ halt
 		setDelayTrigger		fizzle	:fizzle	$fizzletime
 	end
 
+
+  
 	setTextLineTrigger	FigHit	:FigHit	"Deployed Fighters Report Sector"
 	setTextLineTrigger      fffstop :fffstop "FFF STOP"
 	setDelayTrigger		BANNER	:BANNER	300000
+	setDelayTrigger keep_alive :keep_alive 30000
 	pause
         HALT
 
 
-
+:keep_alive
+	send #27
+	killtrigger keep_alive
+	setDelayTrigger keep_alive :keep_alive 30000	
+	pause
 
 :fffstop
 	send "'Exiting fff and starting bot....*"
@@ -272,7 +279,7 @@ return
 			
 		send "h"
 		send "'*" & $stuff & "**"
-	goto :startbot
+	#goto :startbot
 
 :findSafeSector
 	
