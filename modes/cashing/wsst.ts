@@ -16,17 +16,19 @@
 
 	setVar $BOT~help[1]   $BOT~tab&"World Sell-Steal-Transport "
 	setVar $BOT~help[2]   $BOT~tab&" - wsst [ship2] {cash dropoff} {f} {s} {safe|passive} {furbpoint} "
-	setVar $BOT~help[3]   $BOT~tab&"   Options: "
-	setVar $BOT~help[4]   $BOT~tab&"     {cash dropoff} - if started from planet citadel  "
-	setVar $BOT~help[5]   $BOT~tab&"     {f}            - buy fighters"
-	setVar $BOT~help[6]   $BOT~tab&"     {s}            - buy shields "
-	setVar $BOT~help[7]   $BOT~tab&"     {safe}         - Will not mow to locations, scans and moves"
-	setVar $BOT~help[8]   $BOT~tab&"     {passive}      - Will be safe, as well as avoid any enemy fighters "
-	setVar $BOT~help[9]   $BOT~tab&"     {furbpoint}    - Terra, Dock (default), Alpha, Rylos "
-	setVar $BOT~help[10]  $BOT~tab&"     {limp}         - Will lay 3 limps/sector if Furbing at Dock. "
-	setVar $BOT~help[11]  $BOT~tab&"     {armid}        - Will lay 3 armids/sector if Furbing at Dock. "
-	setVar $BOT~help[12]  $BOT~tab&"     {quiet}        - Will not braodcast BUSTED msg's on SubSpace  "
-	setVar $BOT~help[13]  $BOT~tab&"     {x100}         - Will Drop 100 Fighters per sector "
+	setVar $BOT~help[3]   $BOT~tab&"        {twarp} "
+	setVar $BOT~help[4]   $BOT~tab&"   Options: "
+	setVar $BOT~help[5]   $BOT~tab&"     {cash dropoff} - if started from planet citadel  "
+	setVar $BOT~help[6]   $BOT~tab&"     {f}            - buy fighters"
+	setVar $BOT~help[7]   $BOT~tab&"     {s}            - buy shields "
+	setVar $BOT~help[8]   $BOT~tab&"     {safe}         - Will not mow to locations, scans and moves"
+	setVar $BOT~help[9]   $BOT~tab&"     {passive}      - Will be safe, as well as avoid any enemy fighters "
+	setVar $BOT~help[10]  $BOT~tab&"     {furbpoint}    - Terra, Dock (default), Alpha, Rylos "
+	setVar $BOT~help[11]  $BOT~tab&"     {twarp}        - Twarp furb to dock "
+	setVar $BOT~help[12]  $BOT~tab&"     {limp}         - Will lay 3 limps/sector if Furbing at Dock. "
+	setVar $BOT~help[13]  $BOT~tab&"     {armid}        - Will lay 3 armids/sector if Furbing at Dock. "
+	setVar $BOT~help[14]  $BOT~tab&"     {quiet}        - Will not braodcast BUSTED msg's on SubSpace  "
+	setVar $BOT~help[15]  $BOT~tab&"     {x100}         - Will Drop 100 Fighters per sector "
 
 	gosub :bot~helpfile
 
@@ -649,7 +651,7 @@ return
 
 	setvar $twarp_refurb_success false
 	setVar $refurbPort $FURBING
-	if (($player~twarp_type <> "No") and ($refurbPort = $map~stardock))
+	if (($twarpfurb = true) and ($player~twarp_type <> "No") and ($refurbPort = $map~stardock))
 
 		gosub :twarprefurb
 		gosub :player~quikstats
@@ -1194,6 +1196,12 @@ return
 
 	gosub :player~quikstats
 	
+	setvar $twarpfurb false
+	getwordpos " "&$bot~user_command_line&" " $pos " twarp "
+	if ($pos > 0)
+		setvar $twarpfurb true
+	end
+
 	setVar $DROPLIMPS (" " & $bot~user_command_line & " ")
 	lowercase $DROPLIMPS
 	getWordPos $DROPLIMPS $pos " limp "
@@ -1525,7 +1533,7 @@ goto :GoGo
 			setvar $switchboard~message "Must Have Twarp 1 or 2*"
 			gosub :switchboard~switchboard
 			send "*"
-			halt
+			return
 		end
 
 		if ($PLAYER~unlimitedGame = 0)

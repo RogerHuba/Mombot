@@ -34,8 +34,8 @@
 				while (SECTOR.WARPSIN[$focus][$i] > 0)
 					setVar $tempAdj SECTOR.WARPSIN[$focus][$i]
 					getSectorParameter $tempAdj "FIGSEC" $isSecureFigged
-					getsectorparameter $tempAdj "MSLSEC" $isMsl
-					if (($isSecureFigged <> true) OR ($isMsl = true))
+					getsectorparameter $tempAdj "MSLSEC" $isSecureMsl
+					if (($isSecureFigged <> true) OR ($isSecureMsl = true))
 						setvar $issecure false
 					end
 					add $i 1
@@ -115,7 +115,7 @@ return
 			setVar $focus $que[$bottom]
 			getsectorparameter $focus "FIGSEC" $isFigged
 			getsectorparameter $focus "LIMPSEC" $isLimped
-
+			
 			###############################################################
 			# if it's our bubble, the assumption is the sectors are clean #
 			###############################################################
@@ -128,11 +128,11 @@ return
 			# Make sure limp sector is surrounded by our fighters and not next to MSL #
 			###########################################################################
 			setvar $issecure true
-			while (SECTOR.WARPSIN[$focus][$i] > 0)
+			while ((SECTOR.WARPSIN[$focus][$i] > 0) and ($issecure = true))
 				setVar $tempAdj SECTOR.WARPSIN[$focus][$i]
 				getSectorParameter $tempAdj "FIGSEC" $isSecureFigged
-				getsectorparameter $tempAdj "MSLSEC" $isMsl
-				if (($isSecureFigged <> true) OR ($isMsl = true))
+				getsectorparameter $tempAdj "MSLSEC" $isSecureMsl
+				if (($isSecureFigged <> true) OR ($isSecureMsl = true))
 					setvar $issecure false
 				end
 				add $i 1
@@ -203,6 +203,8 @@ return
 	if ($main~friendly_sectors[$player~current_sector] = true)
 		return
 	end
+	gosub :sector~getSectorData
+	setvar $planet_count SECTOR.PLANETCOUNT[$player~current_sector]
 	if ((($sector~realTraderCount = $sector~corpieCount) and (SECTOR.PLANETCOUNT[$player~current_sector] = 1)) or ($player~current_sector = $map~home_sector))
 		#############################################
 		# do nothing if there is no enemy in sector #

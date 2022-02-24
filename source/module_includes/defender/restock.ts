@@ -113,7 +113,7 @@
 		return
 	else
 		:try_buying_furbs
-
+		gosub :player~quikstats
 		setVar $genesisCashNeeded 0 
 		setVar $limpetCashNeeded 0
 		setVar $armidCashNeeded 0
@@ -121,17 +121,27 @@
 		if ($combat~defender = true)
 			setVar $genesisCashNeeded ((($SHIP~SHIP_GENESIS_MAX-$PLAYER~genesis)*$game~genesis_cost))
 		end
-		if ($deploymines = true)
+		if (($deploymines = true) and (($player~limpets < $deploy_mine_count) and ($player~armids < $deploy_mine_count) and ($ship~SHIP_MINES_MAX > 0)))
 			setVar $limpetCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~LIMPETS)*$game~LIMPET_COST))
 			setVar $armidCashNeeded ((($SHIP~SHIP_MINES_MAX-$PLAYER~ARMIDS)*$game~ARMID_COST))
 		end
 		if ($killing~holokill)
 			setVar $photonCashNeeded ($photon~shooting_count*$game~photon_cost)
 		else
-			if ($photon~shooting_count > 5)
-				setVar $photonCashNeeded ($photon~shooting_count*$game~photon_cost)
+			###############################################################################
+			# before the first furb, defender won't know how many photons a ship can hold #
+			###############################################################################
+			if ($ship~photon_max > 0)
+				setVar $photonCashNeeded ($ship~photon_max*$game~photon_cost)
+				if ($photon~shooting_count > $ship~photon_max)
+					setvar $photon~shooting_count $ship~photon_max
+				end
 			else
-				setVar $photonCashNeeded (5*$game~photon_cost)
+				if ($photon~shooting_count > 5)
+					setVar $photonCashNeeded ($photon~shooting_count*$game~photon_cost)
+				else
+					setVar $photonCashNeeded (5*$game~photon_cost)
+				end
 			end
 		end
 		if ($deploydisruptors = true)
@@ -145,9 +155,16 @@
 			getWord CURRENTLINE $citadelCash 4
 			stripText $citadelCash ","
 			if (($citadelCash+currentcredits) < $cashNeeded)
-				setvar $switchboard~message "Not enough cash ("&$cashNeeded&") for restock in treasury or on hand.*"
-				gosub :switchboard~switchboard
-				gosub :navigate~head_home
+				setVar $genesisCashNeeded 0 
+				setVar $limpetCashNeeded 0
+				setVar $armidCashNeeded 0
+				setVar $disruptorCashNeeded 0
+				setVar $cashNeeded (($photon~shooting_count*$game~photon_cost)+$game~LIMPET_REMOVAL_COST)
+				if (($citadelCash+currentcredits) < $cashNeeded)
+					setvar $switchboard~message "Not enough cash ("&$cashNeeded&") for restock in treasury or on hand.*"
+					gosub :switchboard~switchboard
+					gosub :navigate~head_home
+				end
 			end
 			send "t f "&($cashNeeded-$player~credits)&"* "
 		end
@@ -507,6 +524,25 @@ return
 :DoPurchases
 	send "|h "
 	waitfor "<Hardware Emporium>"
+	#=============================================== PURCHASE PHOTONS
+	if ($_Photon  <> "")
+		setTextTrigger canhouse :canhouse "How many Photon Missiles do you want"
+		setTextTrigger canthouse :canthouse "<Hardware Emporium> So what are you looking for"
+		send "P "
+		pause
+		:canhouse
+			killAllTriggers
+			if ($_Photon  = "Max")
+				getText CURRENTLINE $buy "(Max" ")"
+				send $buy & "* "
+				setvar $ship~photon_max $buy
+			else
+				send $_Photon & "* "
+			end
+			waitfor "<Hardware Emporium>"
+		:canthouse
+			killAllTriggers
+	end
 	#=============================================== PURCHASE GENESIS
 	if ($_Genesis  <> "")
 		send "T "
@@ -544,24 +580,6 @@ return
 		end
 		waitfor "<Hardware Emporium>"
 	end
-	#=============================================== PURCHASE PHOTONS
-	if ($_Photon  <> "")
-		setTextTrigger canhouse :canhouse "How many Photon Missiles do you want"
-		setTextTrigger canthouse :canthouse "<Hardware Emporium> So what are you looking for"
-		send "P "
-		pause
-		:canhouse
-			killAllTriggers
-			if ($_Photon  = "Max")
-				getText CURRENTLINE $buy "(Max" ")"
-				send $buy & "* "
-			else
-				send $_Photon & "* "
-			end
-			waitfor "<Hardware Emporium>"
-		:canthouse
-			killAllTriggers
-	end
 	#=============================================== PURCHASE DISRUPTORS
 	if ($_Disrupt  <> "")
 		send "S "
@@ -569,6 +587,7 @@ return
 		if ($_Disrupt  = "Max")
 			getText CURRENTLINE $buy "(Max" ")"
 			send $buy & "* "
+			setvar $ship~disruptor_max $buy
 		else
 			send $_Disrupt & "* "
 		end

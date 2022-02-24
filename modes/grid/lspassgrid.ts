@@ -23,7 +23,7 @@
 	#                                   - Density Scanner (at least)
 	#									- More Than 10 Fighters
 	#									- More than 10,000 creds (for buying fuel)
-	#                                   - have _ck_callsaveme.cts in scripts
+	#                                   - have "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts" in scripts
 	#									- ZTM not required, but CIM will need to be updated
 	#								      periodically.
 	#
@@ -54,28 +54,30 @@
 	setVar $BOT~help[2]  $BOT~tab&"       "
 	setVar $BOT~help[3]  $BOT~tab&" lspassgrid [stopturns] {a1/a2/a3} {l1/l2/l3} {ports}"
 	setVar $BOT~help[4]  $BOT~tab&"            {holo} {trade} {restock} {filter} {ignore:}"
-	setVar $BOT~help[5]  $BOT~tab&" Options:"
-	setVar $BOT~help[6]  $BOT~tab&"    [stopturns]     Passive Grid Stops at here"
-	setVar $BOT~help[7]  $BOT~tab&"	   {a1/a2/a3}      Drop 1/2/3 Armid Mines"
-	setVar $BOT~help[8]  $BOT~tab&"	   {l1/l2/l3}      Drop 1/2/3 Limpet Mines"
-	setVar $BOT~help[9]  $BOT~tab&"    {ports}         Grabs port reports"
-	setVar $BOT~help[10]  $BOT~tab&"    {holo}         Holo Scans to ensure sectors safe"
-	setVar $BOT~help[11]  $BOT~tab&"    {trade}        Will trade ports looking for Equ MCIC"
-	setVar $BOT~help[12]  $BOT~tab&"                   Requires EP Haggle or equiv"
-	setVar $BOT~help[13]  $BOT~tab&"    {safe}         Twarps to Limpet sectors only"
-	setVar $BOT~help[14]  $BOT~tab&"    {paranoid}     Twarp to Limpet and Mines only"
-	setVar $BOT~help[15]  $BOT~tab&"    {nextreport}   Next sector requires an adj port report."
-	setVar $BOT~help[16]  $BOT~tab&"    {restock}      Buys more Limpets and Mines."
-	setVar $BOT~help[17]  $BOT~tab&"    {filter}       Filters mines/armids/planets to detect"
-	setVar $BOT~help[18]  $BOT~tab&"                   safe sectors. run >limps >armids 1st"
-	setVar $BOT~help[19]  $BOT~tab&"    {ignorea}      Uses holo scan to passive grid alien figs"
-	setVar $BOT~help[20]  $BOT~tab&"    {resume}       Roughly resumes last run"
-	setVar $BOT~help[21]  $BOT~tab&"    {ignore:}      Ignore corp or trader fighters"
-	setVar $BOT~help[22]  $BOT~tab&"    {skip:}        Skips sectors with this param !=0 !=''"
-	setVar $BOT~help[23]  $BOT~tab&"    {lock:PARAM=n} Lock grid to this param - WHICHBUB=2"
-	setVar $BOT~help[24]  $BOT~tab&"    {twenty}       Drop 20 fighters in density 0 sectors"
-	setVar $BOT~help[25]  $BOT~tab&"    Doesn't require ZTM but works better"
-	setVar $BOT~help[26]  $BOT~tab&"    Works best with T-Warp to reroute"
+	setVar $BOT~help[5]  $BOT~tab&"            {refurb}                                    "
+	setVar $BOT~help[6]  $BOT~tab&" Options:"
+	setVar $BOT~help[7]  $BOT~tab&"    [stopturns]     Passive Grid Stops at here"
+	setVar $BOT~help[8]  $BOT~tab&"	   {a1/a2/a3}      Drop 1/2/3 Armid Mines"
+	setVar $BOT~help[9]  $BOT~tab&"	   {l1/l2/l3}      Drop 1/2/3 Limpet Mines"
+	setVar $BOT~help[10] $BOT~tab&"    {ports}         Grabs port reports"
+	setVar $BOT~help[11]  $BOT~tab&"    {holo}         Holo Scans to ensure sectors safe"
+	setVar $BOT~help[12]  $BOT~tab&"    {trade}        Will trade ports looking for Equ MCIC"
+	setVar $BOT~help[13]  $BOT~tab&"                   Requires EP Haggle or equiv"
+	setVar $BOT~help[14]  $BOT~tab&"    {safe}         Twarps to Limpet sectors only"
+	setVar $BOT~help[15]  $BOT~tab&"    {paranoid}     Twarp to Limpet and Mines only"
+	setVar $BOT~help[16]  $BOT~tab&"    {nextreport}   Next sector requires an adj port report."
+	setVar $BOT~help[17]  $BOT~tab&"    {restock}      Buys more Limpets and Mines."
+	setVar $BOT~help[18]  $BOT~tab&"    {filter}       Filters mines/armids/planets to detect"
+	setVar $BOT~help[19]  $BOT~tab&"                   safe sectors. run >limps >armids 1st"
+	setVar $BOT~help[20]  $BOT~tab&"    {ignorea}      Uses holo scan to passive grid alien figs"
+	setVar $BOT~help[21]  $BOT~tab&"    {resume}       Roughly resumes last run"
+	setVar $BOT~help[22]  $BOT~tab&"    {ignore:}      Ignore corp or trader fighters"
+	setVar $BOT~help[23]  $BOT~tab&"    {skip:}        Skips sectors with this param !=0 !=''"
+	setVar $BOT~help[24]  $BOT~tab&"    {lock:PARAM=n} Lock grid to this param - WHICHBUB=2"
+	setVar $BOT~help[25]  $BOT~tab&"    {twenty}       Drop 20 fighters in density 0 sectors"
+	setVar $BOT~help[26]  $BOT~tab&"    {refurb}       uses >refurb seek command to buy figs"
+	setVar $BOT~help[27]  $BOT~tab&"    Doesn't require ZTM but works better"
+	setVar $BOT~help[28]  $BOT~tab&"    Works best with T-Warp to reroute"
 
 	gosub :bot~helpfile
 
@@ -315,6 +317,12 @@
 	getWordPos $bot~user_command_line $pos "paranoid"
 	if ($pos > 0)
 		setVar $twarp_safety 2
+	end
+
+	setVar $refurb false
+	getWordPos " "&$bot~user_command_line&" " $pos " refurb "
+	if ($pos > 0)
+		setVar $refurb true
 	end
 
 	setVar $TRACKER FALSE
@@ -565,6 +573,9 @@
 
 
 		:refilter
+		if ($player~current_sector = 0)
+			gosub :player~quikstats
+		end
 		setVar $i 1
 		while ($i <= SECTOR.WARPCOUNT[$player~CURRENT_SECTOR])
 			setVar $adj SECTOR.WARPS[$player~CURRENT_SECTOR][$i]
@@ -600,14 +611,25 @@
 					getWordPos $figsowner $whereowner "belong to"
 					getWordPos $figsowner $whereownercorp "belong to corp#"&$ignore
 					getWordPos $figsowner $whereownerplayer "belong to "&$ignore
-					if ($whereowner = 0)
+					if ($whereowner <= 0)
 						if (SECTOR.FIGS.QUANTITY[$adj] < $player~FIGHTERS)
 							subtract $currentDensity (SECTOR.FIGS.QUANTITY[$adj] * 5)
 						end
 					elseif (($whereownercorp > 0) OR ($whereownerplayer > 0))
 						if (SECTOR.FIGS.QUANTITY[$adj] < $player~FIGHTERS)
 							subtract $currentDensity (SECTOR.FIGS.QUANTITY[$adj] * 5)
+							if (SECTOR.ANOMOLY[$adj] = true)
+								subtract $currentDensity 4
+							end
 						end					
+					end
+					setVar $minesowner SECTOR.MINES.OWNER[$adj]
+					lowercase $minesowner
+					getWordPos $minesowner $whereowner "belong to"
+					getWordPos $minesowner $whereownercorp "belong to corp#"&$ignore
+					getWordPos $minesowner $whereownerplayer "belong to "&$ignore
+					if (($whereownercorp > 0) OR ($whereownerplayer > 0))
+							subtract $currentDensity (SECTOR.MINES.QUANTITY[$adj] * 10)
 					end
 					
 
@@ -866,12 +888,12 @@
 					if (SECTOR.FIGS.QUANTITY[$Target] <> 0)
 						if ((SECTOR.FIGS.OWNER[$Target] <> "belong to your Corp") AND (SECTOR.FIGS.OWNER[$Target] <> "yours"))
 							#Trying Again, but this time ignoring $Target
-							setVar $Ignore $Target
+							setVar $Ignorethis $Target
 							setVar $idx 1
 							setVar $Target 10
 							setVar $Target_IDX 0
 							while ($idx <= SECTOR.WARPCOUNT[$player~CURRENT_SECTOR])
-								if ($Adj_Targets[$idx] < $Target) AND ($Target <> 0) AND (SECTOR.WARPS[$player~CURRENT_SECTOR][$idx] <> $Ignore)
+								if ($Adj_Targets[$idx] < $Target) AND ($Target <> 0) AND (SECTOR.WARPS[$player~CURRENT_SECTOR][$idx] <> $Ignorethis)
 									setVar $Target $Adj_Targets[$idx]
 									setVar $Target_IDX $idx
 								end
@@ -1205,11 +1227,11 @@
 			if ($spoofy <> "Your") AND ($spoofy <> "You") AND ($spoofy <> "An") AND ($spoofy <> "Quasar")
 				goto :help_me_jmp
 			end
-			stop _ck_callsaveme
-			stop _ck_callsaveme
+			stop "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts"
+			stop "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts"
 			send "   N   Y  *  N   *   R   *   Q   Q   Q   Z   N   *   R   *   "
 			waitFor "Command [TL="
-			load _ck_callsaveme
+			load "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts"
 			waitFor "Message sent on sub-space channel"
 			halt
 		:help_me_jmp
@@ -1268,7 +1290,7 @@
 	        send " r *  *  p d 0* 0* 0* * *** * c q q q q q z 2 2 c q * z * *** * * "
 			gosub :player~quikstats
 			if ($PLAYER~CURRENT_PROMPT = "Command")
-				load "_ck_callsaveme.cts"
+				load "scripts\"&$bot~mombot_directory&"\commands\defense\call.cts"
 				halt
 			else
 				Echo "**" & $TAGLINEc & " " & "Hmmm..  I seem to be stuck.***"
@@ -1296,7 +1318,11 @@
 		
 		if ($player~FIGHTERS <= 10)
 			Echo "**" & $TAGLINEc & " " & "Fighter Level is Critically Low (Less Than 10)**"
-			Halt
+			if (($refurb = true) and ($player~credits > 1000))
+				gosub :refurb
+			else
+				Halt		
+			end
 		end
 	end
 
@@ -1770,6 +1796,29 @@ return
 
 	
 
+return
+
+:refurb
+	setVar $BOT~command "refurb"
+	setVar $BOT~user_command_line " refurb seek "
+	setvar $bot~parm1 $seek
+	setvar $bot~parm2 ""
+	setvar $bot~parm3 ""
+	setvar $bot~parm4 ""
+	setvar $bot~parm5 ""
+	setvar $bot~parm6 ""
+	saveVar $BOT~command
+	saveVar $BOT~user_command_line
+	savevar $bot~parm1
+	savevar $bot~parm2
+	savevar $bot~parm3
+	savevar $bot~parm4
+	savevar $bot~parm5
+	savevar $bot~parm6
+	load "scripts\"&$bot~mombot_directory&"\commands\general\refurb.cts"
+	setEventTrigger        refurbend        :refurbend "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\general\refurb.cts"
+	pause
+	:refurbend
 return
 
 

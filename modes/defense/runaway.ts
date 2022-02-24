@@ -1,48 +1,37 @@
-loadVar $switchboard~bot_name
-loadVar $bot~user_command_line
-loadVar $bot~parm1
-loadVar $bot~parm2
-loadVar $bot~parm3
-loadVar $bot~parm4
-loadVar $bot~parm5
-loadVar $bot~parm6
-loadVar $bot~parm7
-loadVar $bot~parm8
-
+	gosub :BOT~loadVars
+	
 	setVar $START_FIG_HIT "Deployed Fighters Report Sector "
 	setVar $END_FIG_HIT   ":"
         setVar $ALIEN_ANSI    #27 & "[1;36m" & #27 & "["
         setVar $START_FIG_HIT_OWNER ":"
 	setVar $END_FIG_HIT_OWNER "'s"
 
+    setVar $BOT~help[1]    $BOT~tab&"  runaway  {firstrun:#} {evac} "
+	setVar $BOT~help[2]    $BOT~tab&"      "
+	setVar $BOT~help[3]    $BOT~tab&"  Attempts to run away when enemy gets too close "
+	gosub :bot~helpfile
+
+
+	gosub :PLAYER~quikstats
+	setVar $BOT~validPrompts "Citadel"
+	gosub :BOT~checkStartingPrompt
+	setVar $startingLocation $player~CURRENT_PROMPT
+
+
 		
 #============================== RUNAWAY (RUNAWAY) ==============================
 :runaway
-	setVar $FIG_FILE 		"_MOM_" & GAMENAME & ".figs"
 		
 	gosub :player~quikstats
 	setVar $startingLocation $player~CURRENT_PROMPT
-	if ($bot~parm1 <> "on") and ($bot~parm1 <> "off")
-		send "'{" $switchboard~bot_name "} - Please use - Runaway [on/off] format*"
-		halt
-	end
 
-	if ($bot~parm1 = "on")
-		if ($startingLocation <> "Citadel")
-			send "'{" $switchboard~bot_name "} - Runaway must start at Citadel prompt*"
-			halt
-		end
-		send "'{" $switchboard~bot_name "} - Activating Runaway*"
-		goto :load_runaway
-	else
-		send "'{" $switchboard~bot_name "} - Please use - Runaway [on/off] format**"
-		halt
-	end
+	setvar $switchboard~message "Activating Runaway*"
+	gosub :switchboard~switchboard
 
 :load_runaway
-	isNumber $test $bot~parm2
+	isNumber $test $bot~parm1
 	if ($test)
-		setVar $firstrun $bot~parm2
+		setVar $firstrun $bot~parm1
 	else
 		setVar $firstrun 0
 	end
@@ -55,12 +44,12 @@ loadVar $bot~parm8
 
 	send "s*"
 	waitFor "<Scan Sector>"
-	waitFor "(?="
-	setVar $runsec $player~CURRENT_SECTOR
 
 
 :set_flee_data
-	send "'{" $switchboard~bot_name "} - Runaway initiated - Mapping...*"
+	setvar $switchboard~message "Runaway initiated - Mapping...*"
+	gosub :switchboard~switchboard
+
 	setVar $run_count 1
 	setVar $run_database_count 0
 	setVar $sectiona SECTORS
@@ -72,51 +61,37 @@ loadVar $bot~parm8
 :start_run_count
 	while ($run_count <= SECTORS)
 		if (SECTOR.WARPCOUNT[$run_count] <> 2)
-				if ($echo_count = $sectiona)
-					echo ansi_13 #178
-					setVar $echo_count 1
-				else
-					add $echo_count 1
-				end
+			gosub :displayProgress
 		else
 			getSectorParameter $run_count "FIGSEC" $isFigged
-			getDistance $rundist $runsec $run_count
+			getDistance $rundist $player~current_sector $run_count
+			if ($rundist < 0)
+				setvar $player~starting_point $player~current_sector
+				setvar $player~destination $run_count
+				gosub :player~getcourse
+				setvar $rundist $player~courseLength
+			end
 			if (($rundist < 4) OR ($rundist > 12) OR ($isFigged < 1))
-					if ($echo_count = $sectiona)
-						echo ansi_13 #178
-						setVar $echo_count 1
-					else
-						add $echo_count 1
-					end
+					gosub :displayProgress
 			else
 				setvar $adjrunsec1 SECTOR.WARPS[$run_count][1]
 				setVar $adjrunsec2 SECTOR.WARPS[$run_count][2]
 				getSectorParameter $adjrunsec1 "FIGSEC" $isFiggedAdj1
 				getSectorParameter $adjrunsec2 "FIGSEC" $isFiggedAdj2
 				if ((SECTOR.WARPCOUNT[$adjrunsec1] = 1) OR (SECTOR.WARPCOUNT[$adjrunsec2] = 1) OR ($isFiggedAdj1 < 1) OR ($isFiggedAdj2 < 1))
-					if ($echo_count = $sectiona)
-						echo ansi_13 #178
-						setVar $echo_count 1
-					else
-						add $echo_count 1
-					end
-				end
-				add $run_database_count 1
-				if ($echo_count = $sectiona)
-					echo ansi_13 #178
-					setVar $echo_count 1
+					gosub :displayProgress
 				else
-					add $echo_count 1
+					gosub :displayProgress
+					add $run_database_count 1
+					setVar $run_database[$run_database_count]  $run_count				
 				end
-				setVar $run_database[$run_database_count]  $run_count
-
 			end		
 		end
 		add $run_count 1
 	end
 	if ($run_database_count < 20)
-		send "'{" $switchboard~bot_name "} - Runaway list too short - ReMapping...*"
-		waitFor "Message sent on"
+		setvar $switchboard~message "Runaway list too short - Remapping...*"
+		gosub :switchboard~switchboard
 	else
 		goto :end_map
 	end
@@ -130,75 +105,52 @@ loadVar $bot~parm8
 	while ($run_count <= SECTORS)
 		
 		if (SECTOR.WARPCOUNT[$run_count] <> 1]
-				if ($echo_count = $sectiona)
-					echo ansi_13 #178
-					setVar $echo_count 1
-				else
-					add $echo_count 1
-				end
-
+			gosub :displayProgress
 		else
-			getDistance $rundist $runsec $run_count
+			getDistance $rundist $player~current_sector $run_count
+			if ($rundist < 0)
+				setvar $player~starting_point $player~current_sector
+				setvar $player~destination $run_count
+				gosub :player~getcourse
+				setvar $rundist $player~courseLength
+			end
 			getSectorParameter $run_count "FIGSEC" $isFigged
 			
 			if ($rundist < 4)
-					if ($echo_count = $sectiona)
-						echo ansi_13 #178
-						setVar $echo_count 1
-					else
-						add $echo_count 1
-					end
+				gosub :displayProgress
 			elseif ($rundist > 12)
-					if ($echo_count = $sectiona)
-						echo ansi_13 #178
-						setVar $echo_count 1
-					else
-						add $echo_count 1
-					end
+				gosub :displayProgress
 			elseif ($isFigged < 1)
-					if ($echo_count = $sectiona)
-						echo ansi_13 #178
-						setVar $echo_count 1
-					else
-						add $echo_count 1
-					end
+				gosub :displayProgress
 			else
 				setvar $adjrunsec1 SECTOR.WARPS[$run_count][1]
 				getSectorParameter $run_count "FIGSEC" $isFiggedAdj1
 				if ($isFiggedAdj1 < 1)
-						if ($echo_count = $sectiona)
-							echo ansi_13 #178
-							setVar $echo_count 1
-						else
-							add $echo_count 1
-						end
+					gosub :displayProgress
 				else
 					add $run_database_count 1
-					if ($echo_count = $sectiona)
-						echo ansi_13 #178
-						setVar $echo_count 1
-					else
-						add $echo_count 1
-					end
-					setVar $run_database[$run_database_count]  $run_count
-					
+					gosub :displayProgress
+					setVar $run_database[$run_database_count]  $run_count				
 				end
 			end
 		end
 		add $run_count 1
 	end
 :end_map
-	if ($doEvacuate)
-		send "'{" $switchboard~bot_name "} - Runaway/Evacuate Multiple Planets Mode - " $run_database_count " flee sectors plotted.*"
-	else
-		send "'{" $switchboard~bot_name "} - Runaway - " $run_database_count " flee sectors plotted.*"
-	end
-	goto :getsettings
+
+if ($doEvacuate)
+	setvar $switchboard~message "Runaway/Evacuate Multiple Planets Mode - "&$run_database_count&" flee sectors plotted.*"
+else
+	setvar $switchboard~message "Runaway - "&$run_database_count&" flee sectors plotted.*"
+end
+gosub :switchboard~switchboard
+
+goto :getsettings
 
 :run_pwarp
-	if ($firstrun <> 0)
+	if ($firstrun = true)
 		setVar $player~warpto $firstrun
-		setVar $firstrun 0
+		setVar $firstrun false
 	else
 		gosub :getNewRunAwaySector
 	end
@@ -213,7 +165,7 @@ loadVar $bot~parm8
 	if ($player~CURRENT_SECTOR <> $player~warpto)
 		goto :run_pwarp
 	end
-	setVar $runsec $player~CURRENT_SECTOR
+	setVar $player~current_sector $player~CURRENT_SECTOR
 	goto :getsettings
 
 :getNewRunAwaySector
@@ -224,6 +176,15 @@ loadVar $bot~parm8
 	end
 return
 #============================== END RUNAWAY (RUNAWAY) SUB ==============================
+
+:displayProgress
+	if ($echo_count = $sectiona)
+		echo ansi_13 #178
+		setVar $echo_count 1
+	else
+		add $echo_count 1
+	end
+return
 
 :getsettings
 	killalltriggers
@@ -236,12 +197,18 @@ return
 	if ($isValid <> TRUE)
 		goto :getsettings
 	end
-	#getWord CURRENTLINE $fighit 5
-	#stripText $fighit ":"
-	#isNumber $test $fighit
 	getDistance $dist $dropSector $player~CURRENT_SECTOR
-	echo "[" $dist "]*"
+	if ($dist < 0)
+		setvar $player~starting_point $dropSector
+		setvar $player~destination $player~CURRENT_SECTOR
+		gosub :player~getcourse
+		setvar $dist $player~courseLength
+	end
+
+	echo "[" $dist " hops away]*"
 	if ($dist <= 2)
+		setvar $switchboard~message "Enemy fighter hit 2 or less hops away - running away!*"
+		gosub :switchboard~switchboard
 		goto :run_pwarp
 	end
 	goto :getsettings
@@ -251,24 +218,26 @@ return
 		gosub :player~quikstats
 		setVar $startingLocation $player~CURRENT_PROMPT
 		if (($startingLocation <> "Citadel") AND ($startingLocation <> "Command"))
-			send "'{" $switchboard~bot_name "} - Must start from Citadel or Command Prompt*"
+			setvar $switchboard~message "Must start from Citadel or Command Prompt*"
+			gosub :switchboard~switchboard
 			halt
 		end
 		if (($bot~parm1 = "s") and ($stardock <> 0))
-			setvar $bot~parm1 $stardock
+			setvar $bot~parm1 $map~stardock
 		end
 		if (($bot~parm1 = "r") and ($rylos <> 0))
-			setvar $bot~parm1 $rylos
+			setvar $bot~parm1 $map~rylos
 		end
 		if (($bot~parm1 = "a") and ($alpha_centauri <> 0))
-			setvar $bot~parm1 $alpha_centauri
+			setvar $bot~parm1 $map~alpha_centauri
 		end
 		if (($bot~parm1 = "h") and ($home_sector <> 0))
-			setvar $bot~parm1 $home_sector
+			setvar $bot~parm1 $map~home_sector
 		end
 		setvar $target_sector $bot~parm1
 	:evac_run	
-		send "'{" $switchboard~bot_name "} - Starting Planet Evacuation to sector: "&$target_sector&".*"
+		setvar $switchboard~message "Starting Planet Evacuation to sector: "&$target_sector&".*"
+		gosub :switchboard~switchboard
 		setvar $evac_home $player~CURRENT_SECTOR
 		if ($startingLocation = "Citadel")
 			send "qq"
@@ -384,3 +353,8 @@ return
 
 include "source\bot_includes\player\quikstats\player"
 include "source\bot_includes\player\pwarp\player"
+include "source\module_includes\bot\loadvars\bot"
+include "source\module_includes\bot\helpfile\bot"
+include "source\module_includes\bot\checkstartingprompt\bot"
+include "source\bot_includes\player\getcourse\player"
+

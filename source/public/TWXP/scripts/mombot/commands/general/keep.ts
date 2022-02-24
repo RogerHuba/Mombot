@@ -71,6 +71,7 @@ halt
 :checkBalance
 setVar $treasLine CURRENTLINE
 replaceText $treasLine "," ""
+replaceText $treasLine "." ""
 getWord $treasLine $roll 3
 getWord $treasLine $balance 9
 killTrigger treas

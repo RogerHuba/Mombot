@@ -9,16 +9,18 @@
 	setVar $BOT~help[2]  $BOT~tab&"           and/or equipment.       "
 	setVar $BOT~help[3]  $BOT~tab&"       "
 	setVar $BOT~help[4]  $BOT~tab&" merch {sector param} {min port product} [o | e] ({neg}otiate OR {hold}byhold)  "
-	setVar $BOT~help[5]  $BOT~tab&"       {buyfuel} {docim}  "
+	setVar $BOT~help[5]  $BOT~tab&"       {buyfuel} {docim} {max:#}  "
 	setVar $BOT~help[6]  $BOT~tab&"       "
 	setVar $BOT~help[7]  $BOT~tab&"Options:"
 	setVar $BOT~help[8]  $BOT~tab&"    {neg/hold}   Determines planet negotiate or hold "
 	setVar $BOT~help[9]  $BOT~tab&"                 selling approach"
 	setVar $BOT~help[10] $BOT~tab&"     {skipcim}   Uses current cim data and skips searching"
 	setVar $BOT~help[11] $BOT~tab&"       {docim}   Does cim check before starting and skips searching"
-	setVar $BOT~help[12] $BOT~tab&"     {buyfuel}   Buys all the fuel in fuel selling ports "
-	setVar $BOT~help[13] $BOT~tab&"                 on route  "
-	setVar $BOT~help[14] $BOT~tab&"        {half}   sell half of port (neg only for now) "
+	setVar $BOT~help[12] $BOT~tab&"     {buyfuel}   Buys all the fuel in selling ports "
+	setVar $BOT~help[13] $BOT~tab&"      {buyorg}   Buys all the org in selling ports "
+	setVar $BOT~help[14] $BOT~tab&"    {buyequip}   Buys all the equip in selling ports "
+	setVar $BOT~help[15] $BOT~tab&"        {half}   sell half of port (neg only for now) "
+	setVar $BOT~help[16] $BOT~tab&"       {max:#}   max product port can have "
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Planet Merchant"
@@ -50,7 +52,15 @@
 		gosub :switchboard~switchboard
 		halt
 	end
-	
+	loadvar $game~port_max
+
+	getWordPos $bot~user_command_line $pos "max:"
+	if ($pos > 0)
+		setVar $cline $bot~user_command_line & " "
+		getText $cline $max "max:" " "
+	else
+		setVar $max $game~port_max
+	end
 	getWordPos $bot~user_command_line $pos "hold"
 	if ($pos > 0)
 		setVar $planet~planetNegotiate FALSE
@@ -78,11 +88,25 @@
 	
 	getWordPos $bot~user_command_line&" " $pos " buyfuel "
 	if ($pos > 0)
-		setVar $buyFuel TRUE
+		setVar $buyfuel TRUE
 	else
-		setVar $buyFuel FALSE
+		setVar $buyfuel FALSE
 	end
 	
+	getWordPos $bot~user_command_line&" " $pos " buyorg "
+	if ($pos > 0)
+		setVar $buyorg TRUE
+	else
+		setVar $buyorg FALSE
+	end
+
+	getWordPos $bot~user_command_line&" " $pos " buyequip "
+	if ($pos > 0)
+		setVar $buyequip TRUE
+	else
+		setVar $buyequip FALSE
+	end
+
 	if (($sellingOrg = FALSE) AND ($sellingEquip = FALSE))
 		setvar $switchboard~message "Please pick [o]rganics and/or [e]quipment to sell.  merch [min product] {o} {e} {docim} {skipcim} {negotiate/hold}*"
 		gosub :switchboard~switchboard
@@ -132,7 +156,6 @@
 		setvar $switchboard~message "Planet Merchant CIM Port Data Complete - Comms Back On*"
 		gosub :switchboard~switchboard
 	end
-	loadvar $game~port_max
 	setvar $half_port_max $game~port_max
 	divide $half_port_max 2
 	while ((($sellingOrg) AND ($planet~planet_organics >= 500)) OR (($sellingEquip) AND ($planet~planet_equipment >= 500)))
@@ -166,7 +189,12 @@
 			end
 			# If this sector is our xxB, we're done!
 			getSectorParameter $focus "BUSTED" $isBusted
-			if (($isBusted <> TRUE) AND ($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = true) AND ((($sellingOrg) AND ($planet~planet_organics > 500) AND (PORT.BUYORG[$focus]) and (((PORT.PERCENTORG[$focus] > 50) and (port.org[$focus] > $half_port_max) and ($sellhalf = true)) or ($sellhalf <> true)) AND (PORT.ORG[$focus] >= $minimumFuel)) OR (($sellingEquip) AND ($planet~planet_equipment > 500) AND (PORT.BUYEQUIP[$focus]) AND (((PORT.PERCENTEQUIP[$focus] > 50) and ($sellhalf = true) and (port.equip[$focus] > $half_port_max)) or ($sellhalf <>true)) and (PORT.EQUIP[$focus] >= $minimumFuel))))
+			setvar $validOrgPort ((($sellingOrg) AND ($planet~planet_organics > 500) AND (PORT.BUYORG[$focus]) and (((PORT.PERCENTORG[$focus] > 50) and (port.org[$focus] > $half_port_max) and ($sellhalf = true)) or ($sellhalf <> true)) and (port.org[$focus] <= $max) AND (PORT.ORG[$focus] >= $minimumFuel)))
+			setvar $validEquipPort ((($sellingEquip) AND ($planet~planet_equipment > 500) AND (PORT.BUYEQUIP[$focus]) AND (((PORT.PERCENTEQUIP[$focus] > 50) and ($sellhalf = true) and (port.equip[$focus] > $half_port_max)) or ($sellhalf <>true)) and (port.equip[$focus] <= $max) and (PORT.EQUIP[$focus] >= $minimumFuel)))
+			setvar $validBuyFuelPort (($buyFuel = true) and (PORT.FUEL[$focus] >= $minimumFuel) and (PORT.BUYFUEL[$focus] = false) and (($planet~planet_fuel_max - $planet~planet_fuel) >= $game~port_max))
+			setvar $validBuyOrgPort (($buyOrg = true) and (PORT.ORG[$focus] >= $minimumFuel) and (PORT.BUYORG[$focus] = false) and (($planet~planet_organics_max - $planet~planet_organics) >= $game~port_max))
+			setvar $validBuyEquipPort (($buyEquip = true) and (PORT.EQUIP[$focus] >= $minimumFuel) and (PORT.BUYEQUIP[$focus] = false) and (($planet~planet_equipment_max - $planet~planet_equipment) >= $game~port_max))
+			if (($isBusted <> TRUE) AND ($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = true) AND ($validOrgPort = true) OR ($validEquipPort = true) OR ($validBuyFuelPort = true) OR ($validBuyOrgPort = true) OR ($validBuyEquipPort = true))
 				# fig found 0 hops
 				setVar $NearFig $focus
 				setVar $checkedPorts[$NearFig] TRUE
@@ -252,8 +280,22 @@
 					if (($sellingorg) and (port.org[$nearfig] > $minimumfuel))
 						setVar $checkedPorts[$NearFig] false
 					end
-					if (($buyFuel = TRUE) AND (PORT.BUYFUEL[$NearFig] = FALSE))
+					if (($buyFuel = TRUE) AND (PORT.BUYFUEL[$NearFig] = FALSE) and (port.fuel[$nearfig] >= $minimumfuel))
 						setVar $PLAYER~buyobject "f"
+						setVar $PLAYER~buytype "s"
+						setVar $PLAYER~buydownRoundsFromParam $player~turnsToEmpty
+						gosub :player~buy
+						gosub :PLAYER~quikstats
+					end
+					if (($buyOrg = TRUE) AND (PORT.BUYORG[$NearFig] = FALSE) and (port.org[$nearfig] >= $minimumfuel))
+						setVar $PLAYER~buyobject "o"
+						setVar $PLAYER~buytype "s"
+						setVar $PLAYER~buydownRoundsFromParam $player~turnsToEmpty
+						gosub :player~buy
+						gosub :PLAYER~quikstats
+					end
+					if (($buyEquip = TRUE) AND (PORT.BUYEQUIP[$NearFig] = FALSE) and (port.equip[$nearfig] >= $minimumfuel))
+						setVar $PLAYER~buyobject "e"
 						setVar $PLAYER~buytype "s"
 						setVar $PLAYER~buydownRoundsFromParam $player~turnsToEmpty
 						gosub :player~buy
@@ -307,7 +349,7 @@
 									end
 									subtract $player~turnsToEmptyFuel 1
 									add $totalOrganicHolds $player~total_holds
-									waitOn "³Turns"
+									waitOn "ï¿½Turns"
 							end
 						end
 						send "l "&$planet~planet&"* t n l 1* t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* q jy "
@@ -316,7 +358,7 @@
 							send "l " $planet~planet "*  t  *  * 2*  q P * *"
 							gosub :player~starthaggle
 							send "0 * 0 *  /"
-							waitOn "³Turns"
+							waitOn "ï¿½Turns"
 							if ($ni <> TRUE)
 								subtract $player~turnsSellingProduct 1
 							end
@@ -342,7 +384,7 @@
 								end
 								subtract $player~turnsToEmptyFuel 1
 								add $totalEquipmentHolds $player~total_holds
-								waitOn "³Turns"
+								waitOn "ï¿½Turns"
 							end
 						end
 						send "l "&$planet~planet&"* t n l 1* t nl 2* t n l 3* s n l 1* s n l 2* s n l 3* q jy "
@@ -354,7 +396,7 @@
 								subtract $player~turnsSellingProduct 1
 							end
 							add $totalEquipmentHolds $player~total_holds
-							waitOn "³Turns"
+							waitOn "ï¿½Turns"
 						end
 					end
 				end

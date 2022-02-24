@@ -47,6 +47,7 @@ return
 				killAllTriggers
 				getWord CURRENTLINE $nCredits 3
 				stripText $nCredits ","
+				stripText $nCredits "."
 				
 				if ($nCredits = $cCredits)
 					setVar $report 1
@@ -71,6 +72,7 @@ return
 	:buyfirstoffer
 		getWord CURRENTLINE $offer 5
 		striptext $offer ","
+		striptext $offer "."
 
 		gosub :swathoff
 		if ($swathoff = 0)
@@ -128,6 +130,7 @@ return
 		setVar $old_counter $counter
 		getWord CURRENTLINE $offer 5
 		striptext $offer ","
+		striptext $offer "."
 		setVar $offer_pct $offer
 		multiply $offer_pct 1000
 		divide $offer_pct $old_offer
@@ -147,6 +150,7 @@ return
 		setVar $old_counter $counter
 		getWord CURRENTLINE $offer 5
 		striptext $offer ","
+		striptext $offer "."
 		setVar $offer_change $offer
 		subtract $offer_change $old_offer
 		subtract $offer_change 1
@@ -174,6 +178,7 @@ return
 		killalltriggers
 		getWord CURRENTLINE $player~credits 3
 		stripText $player~credits ","
+		stripText $player~credits "."
 		setVar $oldempty $empty
 		getWord CURRENTLINE $empty 6
 		if ($oldempty = $empty)
@@ -484,30 +489,31 @@ return
 	gosub :BOT~loadVars
 		
 	setVar $BOT~help[1]  $BOT~tab&"BUY - Buy Product from port in Sector or Fighters and/or"
-	setVar $BOT~help[2]  $BOT~tab&"      shields from Rylos or Alpha"
-	setVar $BOT~help[3]  $BOT~tab&"      "
-	setVar $BOT~help[4]  $BOT~tab&"  buy {sector to buy from) [product] {mode} {cycles} {twarp} {mow} {paranoid}"
-	setVar $BOT~help[5]  $BOT~tab&"  -  [product] = [f]uel or [o]rg or [e]quip"
-	setVar $BOT~help[6]  $BOT~tab&"  -     [mode] = [b]est or [s]peed or [w]orst - default is speed"
-	setVar $BOT~help[7]  $BOT~tab&"  -   [cycles] = number of cycles             - default is max" 
-	setVar $BOT~help[8]  $BOT~tab&"  - [override] = allows product buydowns with less than 200 holds" 
-	setVar $BOT~help[9]  $BOT~tab&"     "
-	setVar $BOT~help[10] $BOT~tab&"  buy [hardware] {amount}"
-	setVar $BOT~help[11] $BOT~tab&"  - [hardware] = [fig]hters or [sh]ields or [m]ines"
-	setVar $BOT~help[12] $BOT~tab&"  -   [amount] = number to purchase, default is maximum"
-	setVar $BOT~help[13] $BOT~tab&"      "
-	setVar $BOT~help[14] $BOT~tab&"  -    [twarp] = twarp to port and back"
-	setVar $BOT~help[15] $BOT~tab&"  -      [mow] = mow to port and back"
-	setVar $BOT~help[16] $BOT~tab&"      "
-	setVar $BOT~help[17] $BOT~tab&"  - [paranoid] = make sure both sectors have corp limpets and armids"
-	setVar $BOT~help[18] $BOT~tab&"  -     [safe] = make sure both sectors have corp limpets "
-	setVar $BOT~help[19] $BOT~tab&"      "
+	setVar $BOT~help[2]  $BOT~tab&"      shields from Rylos or Alpha          "
+	setVar $BOT~help[3]  $BOT~tab&"                                         "
+	setVar $BOT~help[4]  $BOT~tab&"  buy {sector to buy from) [product] {mode} "
+	setvar $bot~help[5]  $bot~tab&"      {cycles} {twarp} {mow} {paranoid}"
+	setVar $BOT~help[6]  $BOT~tab&"  [product] - [f]uel or [o]rg or [e]quip"
+	setVar $BOT~help[7]  $BOT~tab&"     [mode] - [b]est or [s]peed or [w]orst -default [s]  "
+	setVar $BOT~help[8]  $BOT~tab&"   [cycles] - number of cycles             -default max   " 
+	setVar $BOT~help[9]  $BOT~tab&" [override] - allows product buydowns with less holds" 
+	setVar $BOT~help[10] $BOT~tab&"     "
+	setVar $BOT~help[11] $BOT~tab&"  buy [hardware] {amount}"
+	setVar $BOT~help[12] $BOT~tab&"   [hardware] - [fig]hters or [sh]ields or [m]ines"
+	setVar $BOT~help[13] $BOT~tab&"     [amount] - number to purchase, default is maximum"
+	setVar $BOT~help[14] $BOT~tab&"      "
+	setVar $BOT~help[15] $BOT~tab&"      [twarp] - twarp to port and back"
+	setVar $BOT~help[16] $BOT~tab&"        [mow] - mow to port and back"
+	setVar $BOT~help[17] $BOT~tab&"      "
+	setVar $BOT~help[18] $BOT~tab&"   [paranoid] - make sure sectors have limps/armids"
+	setVar $BOT~help[19] $BOT~tab&"       [safe] - make sure both sectors have limps "
 	setVar $BOT~help[20] $BOT~tab&"      "
-	setVar $BOT~help[21] $BOT~tab&"  -   If you choose sector outside current sector, twarp  "
-	setVar $BOT~help[22] $BOT~tab&"  -   will be used if ship has it, otherwise mow will be used  "
-	setVar $BOT~help[23] $BOT~tab&"      "
-	setVar $BOT~help[24] $BOT~tab&"  Originally written by Cherokee.     "
-	setVar $BOT~help[25] $BOT~tab&"  Now integrated with EP Haggle if it is running "
+	setVar $BOT~help[21] $BOT~tab&"      "
+	setVar $BOT~help[22] $BOT~tab&"  If you choose sector outside current sector, twarp  "
+	setVar $BOT~help[23] $BOT~tab&"  will be used if ship has it, otherwise mow will be used  "
+	setVar $BOT~help[24] $BOT~tab&"      "
+	setVar $BOT~help[25] $BOT~tab&"  Originally written by Cherokee.     "
+	setVar $BOT~help[26] $BOT~tab&"  Now integrated with EP Haggle if it is running "
 	gosub :bot~helpfile
 	
 
@@ -569,20 +575,36 @@ return
 	setVar $fuelrounds 0
 	isNumber $isNumber2 $bot~parm2
 	isNumber $isNumber3 $bot~parm3
+	isNumber $isNumber4 $bot~parm4
+	isNumber $isNumber5 $bot~parm5
+	setVar $buydownRoundsFromParam 999999
 	if ($isNumber2)
 		if ($bot~parm2 > 0)
 			setVar $buydownRoundsFromParam $bot~parm2
 		else
 			setVar $buydownRoundsFromParam 999999
 		end
-	elseif ($isNumber3)
+	end
+	if ($isNumber3)
 		if ($bot~parm3 > 0)
 			setVar $buydownRoundsFromParam $bot~parm3
 		else
 			setVar $buydownRoundsFromParam 999999
 		end
-	else
-		setVar $buydownRoundsFromParam 999999
+	end
+	if ($isNumber4)
+		if ($bot~parm4 > 0)
+			setVar $buydownRoundsFromParam $bot~parm4
+		else
+			setVar $buydownRoundsFromParam 999999
+		end
+	end
+	if ($isNumber5)
+		if ($bot~parm5 > 0)
+			setVar $buydownRoundsFromParam $bot~parm5
+		else
+			setVar $buydownRoundsFromParam 999999
+		end
 	end
 	getwordpos " "&$bot~user_command_line&" " $pos " twarp "
 	setvar $twarpbuy false
@@ -741,7 +763,7 @@ return
 
 
 	gosub :player~getinfo
-	if ($mowbuy = true)
+	if (($mowbuy = true) or ($twarpbuy = true))
 		gosub :clearAdjacent
 	else
 		gosub :voidAdjacent

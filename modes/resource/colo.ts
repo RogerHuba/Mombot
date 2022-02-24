@@ -159,11 +159,11 @@ goto :Start_Up_Routines
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
-		send " j y l " $planet~planet "*  t * t 1 " ($colo_fuel+$camo_holds) "*  "
+		send " j y l j" #8 #8  $planet~planet  "* n n *  t * t 1 " ($colo_fuel+$camo_holds) "*  "
 	else
 		if ($doubleOre = TRUE)
 			
-			send " j y l " $planet~planet "*  "
+			send " j y l j" #8 #8  $planet~planet  "* n n *  "
 			if ($doubleOreGet = TRUE)
 				setVar $doubleOreGet FALSE
 				send "t * t 1 " $colo_fuel "*  "
@@ -173,12 +173,12 @@ goto :Start_Up_Routines
 			end
 		else
 			if ($colo_type = "p")
-				send " j y " $portBurst " l " $planet~planet "*  "
+				send " j y " $portBurst " l j" #8 #8  $planet~planet  "* n n *  "
 				if ($BWARP)
 					send " t  n   l   1   " $leave_ore " *  "
 				end
 			else
-				send " j y l " $planet~planet "*  t * t 1 " $colo_fuel "*  "
+				send " j y l j" #8 #8  $planet~planet  "* n n *  t * t 1 " $colo_fuel "*  "
 			end
 		end
 	end

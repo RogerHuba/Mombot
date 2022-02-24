@@ -241,7 +241,7 @@ setVar $debugdelay 0
         gosub :stealdump
         setVar $player~turns $init_turns
         subtract $player~turns $player~turns_used
-        if ($player~turns > 10)
+        if ($player~turns > $bot~bot_turn_limit)
                gosub :xport
                goto :sdtLoop
         else

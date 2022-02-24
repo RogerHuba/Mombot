@@ -1,4 +1,4 @@
-for /r %%n in (*dothis.ts) do call :checkit "%%n" 
+for /r %%n in (*wsst.ts) do call :checkit "%%n" 
 goto end
 
 :checkit

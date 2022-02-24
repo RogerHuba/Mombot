@@ -133,6 +133,7 @@
 				waitOn "Your ship can support up to"
 				getWord CURRENTLINE $ftrs_to_leave 10
 				stripText $ftrs_to_leave ","
+				stripText $ftrs_to_leave "."
 				stripText $ftrs_to_leave " "
 				if ($ftrs_to_leave < 1)
 					setVar $ftrs_to_leave 1

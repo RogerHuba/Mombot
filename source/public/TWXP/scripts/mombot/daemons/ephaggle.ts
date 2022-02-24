@@ -111,6 +111,7 @@ gosub :player~quikstats
 
 setvar $exp $player~experience
 setvar $sector player~current_sector
+gosub :checkforbluetrader
 
 if ($bot~bluehaggle)
 	setvar $tag "Blue Haggle"
@@ -164,15 +165,19 @@ getword CURRENTLINE $RANK 1
 if ($RANK = "Rank")
 	getword CURRENTLINE $player~experience 5
 	striptext $player~experience ","
+	striptext $player~experience "."
+	gosub :checkforbluetrader
 	goto :50
 end
 setvar $TEMP CURRENTLINE & #179
 gettext $TEMP $TEMP "Exp" #179
 striptext $TEMP ","
+striptext $TEMP "."
 striptext $TEMP " "
 isnumber $YN $TEMP
 if ($YN = 1)
 	setvar $player~experience $TEMP
+	gosub :checkforbluetrader
 end
 
 :50
@@ -205,6 +210,7 @@ end
 
 :56
 round $player~experience 0
+gosub :checkforbluetrader
 settextlinetrigger TRACKEXP :TRACKEXP "experience point(s)"
 pause
 
@@ -245,6 +251,7 @@ if ($verbose_debug_mode = TRUE)
 end
 add $player~experience $player~experience_increase
 round $player~experience 0
+gosub :checkforbluetrader
 pause
 
 :PRODUCTINFO
@@ -309,6 +316,7 @@ pause
 killalltriggers
 getword CURRENTLINE $holds_to_trade 2
 striptext $holds_to_trade ","
+striptext $holds_to_trade "."
 settextlinetrigger BUYOFFER :INITOFFER "We'll buy them for"
 settextlinetrigger SELLOFFER :INITOFFER "We'll sell them for"
 pause
@@ -341,6 +349,7 @@ pause
 
 :PARSEINITOFFER
 striptext $OFFER ","
+striptext $OFFER "."
 striptext $OFFER "["
 striptext $OFFER "]"
 striptext $OFFER "?"
@@ -608,6 +617,7 @@ killtrigger "GREATTRADE"
 getword CURRENTLINE $player~experience_increase 7
 add $player~experience $player~experience_increase
 round $player~experience 0
+gosub :checkforbluetrader
 pause
 
 :FINALOFFER
@@ -629,6 +639,7 @@ pause
 
 :PARSECOUNTEROFFER
 striptext $OFFER ","
+striptext $OFFER "."
 add $BID 1
 round $BID
 setvar $BID[$BID] $OFFER
@@ -1537,6 +1548,12 @@ setvar $switchboard~message ANSI_11&"COMPLETE**Data saved in the TWX Proxy folde
 gosub :bot~echo
 return
 
+:checkforbluetrader
+	if (($player~alignment >= 0) and ($player~experience > 800) and ($player~experience < 1000) and ($bot~worstprice <> true))
+		setvar $bot~bluehaggle true
+		savevar $bot~bluehaggle
+	end
+return
 
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"

@@ -715,10 +715,12 @@ return
 		if ($bot~command_lines[$b][9] = "figmove") or ($bot~command_lines[$b][9] = "movefigs")
 			setVar $bot~command_lines[$b][9] "movefig"	
 		end
-		if ($bot~command_lines[$b][9] = "build") or ($bot~command_lines[$b][9] = "create")
-			setVar $bot~command_lines[$b][9] $bot~command_lines[$b][1]
-			setvar $bot~command_lines[$b][1] "create"
+		if ($bot~command_lines[$b][9] = "build") or ($bot~command_lines[$b][9] = "create") or ($bot~command_lines[$b][9] = "make")
+			#setVar $bot~command_lines[$b][9] $bot~command_lines[$b][1]
+			#setvar $bot~command_lines[$b][1] "create"
 			if ($bot~command_lines[$b][1] = "port")
+				setVar $bot~command_lines[$b][9] $bot~command_lines[$b][1]
+			elseif ($bot~command_lines[$b][1] = "planet")
 				setVar $bot~command_lines[$b][9] $bot~command_lines[$b][1]
 			else
 				setVar $bot~command_lines[$b][9] "port"
@@ -734,16 +736,24 @@ return
 			setvar $bot~command_lines[$b] $bot~command_lines[$b][1]&" "&$bot~command_lines[$b][2]&" "&$bot~command_lines[$b][3]&" "&$bot~command_lines[$b][4]&" "&$bot~command_lines[$b][5]&" "&$bot~command_lines[$b][6]&" "&$bot~command_lines[$b][7]&" "&$bot~command_lines[$b][8]&" "
 		end
 		if ($bot~command_lines[$b][9] = "kill") or ($bot~command_lines[$b][9] = "destroy") or ($bot~command_lines[$b][9] = "blow")
-			#setVar $bot~command_lines[$b][9] $bot~command_lines[$b][1]
-			#setvar $bot~command_lines[$b][1] "kill"
 			if ($bot~command_lines[$b][1] = "port")
 				setVar $bot~command_lines[$b][9] $bot~command_lines[$b][1]
 				setvar $bot~command_lines[$b][1] "kill"
-				setvar $bot~command_lines[$b] $bot~command_lines[$b][1]&" "&$bot~command_lines[$b][2]&" "&$bot~command_lines[$b][3]&" "&$bot~command_lines[$b][4]&" "&$bot~command_lines[$b][5]&" "&$bot~command_lines[$b][6]&" "&$bot~command_lines[$b][7]&" "&$bot~command_lines[$b][8]&" "
+			elseif ($bot~command_lines[$b][1] = "planet")
+				setVar $bot~command_lines[$b][9] $bot~command_lines[$b][1]
+				setvar $bot~command_lines[$b][1] "kill"
+			else
+				##########################################
+				# default should be regular kill command #
+				##########################################
+				setVar $bot~command_lines[$b][9] "kill"
 			end
+			setvar $bot~command_lines[$b] $bot~command_lines[$b][1]&" "&$bot~command_lines[$b][2]&" "&$bot~command_lines[$b][3]&" "&$bot~command_lines[$b][4]&" "&$bot~command_lines[$b][5]&" "&$bot~command_lines[$b][6]&" "&$bot~command_lines[$b][7]&" "&$bot~command_lines[$b][8]&" "
 		end
 		if ($bot~command_lines[$b][9] = "upgrade") or ($bot~command_lines[$b][9] = "max")
 			if ($bot~command_lines[$b][1] = "port")
+				setVar $bot~command_lines[$b][9] $bot~command_lines[$b][1]
+			elseif ($bot~command_lines[$b][1] = "planet")
 				setVar $bot~command_lines[$b][9] $bot~command_lines[$b][1]
 			else
 				setVar $bot~command_lines[$b][9] "port"
@@ -917,8 +927,10 @@ return
 			end
 		end
 		if ($isFound <> true)
-			setVar $SWITCHBOARD~message $formatted_command&" is not a valid command.*"
-			gosub :SWITCHBOARD~switchboard
+			if ($temp_bot_name <> "all")
+				setVar $SWITCHBOARD~message $formatted_command&" is not a valid command.*"
+				gosub :SWITCHBOARD~switchboard
+			end
 		end
 		add $b 1
 	end

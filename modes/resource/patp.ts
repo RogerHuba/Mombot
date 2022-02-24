@@ -159,6 +159,12 @@
 			if (($bot~parmameter <> "") and ($isGoodSector <> true))
 				goto :notit
 			end
+			if (($bot~parmameter <> "") and ($isGoodSector = true) and ($checkedPorts[$focus] <> TRUE))
+				setVar $NearFig $focus
+				setVar $checkedPorts[$NearFig] TRUE
+				setVar $totalPortFuel PORT.FUEL[$focus]
+				goto :continueOn2
+			end
 			if ($docim = FALSE)
 				if (($checkedPorts[$focus] <> TRUE) AND (PORT.EXISTS[$focus] = TRUE) AND (PORT.CLASS[$focus] > 0) AND (SECTOR.EXPLORED[$focus] = "YES") AND (((PORT.FUEL[$focus] >= $minimumFuel) AND (PORT.BUYFUEL[$focus] = FALSE)) AND ($isBusted <> TRUE) AND ($isBubble = TRUE)))
 					send "cr"&$focus&"*q"

@@ -3,7 +3,7 @@ loadvar $SWITCHBOARD~bot_name
 loadvar $bot~corppassword
 loadvar $player~corpnumber
 
-setVar $BOT~help[1]  $BOT~tab&"    fire2020 [command]"
+setVar $BOT~help[1]  $BOT~tab&"    ice2021 [command]"
 setVar $BOT~help[2]  $BOT~tab&"        "
 setVar $BOT~help[3]  $BOT~tab&"    buyfed    - 1.8 Mil cash - buys ship and fed com"
 setVar $BOT~help[4]  $BOT~tab&"    getore1   - Will make a planet, pause, pick up ore"
@@ -18,14 +18,14 @@ setVar $BOT~help[12] $BOT~tab&"    crazymow  - Mows to sectors start of game wit
 
 gosub :bot~helpfile
 
-setVar $BOT~script_title "FIRE2020 Utilities"
+setVar $BOT~script_title "ICE2021 Utilities"
 
 gosub :BOT~banner
 
 setVar $podpeople[1] "mind"
 setVar $podpeople[2] "kane"
-setVar $podpeople[3] "far"
-setVar $podpeople[4] "skip"
+setVar $podpeople[3] "horns"
+setVar $podpeople[4] "matt"
 setVar $podpeoplei 4
 
 setVar $podpeopleok 0
@@ -86,9 +86,17 @@ halt
         killalltriggers
         getWord CURRENTLINE $stardock 4
 
-    setVar $towship $bot~parm2
-    send "wn" $towship "*"
+    gosub :player~quikstats
 
+    setVar $towship $bot~parm2
+    send "x* " $towship "* * "
+
+    setVar $figsRequired 1000
+    gosub :player~quikstats
+	gosub :stripfig
+
+    send "wn" $player~SHIP_NUMBER "*"
+    setVar $towship $player~SHIP_NUMBER
     setDelayTrigger briefwait :briefwait 2000
     pause
     :briefwait
@@ -103,9 +111,6 @@ halt
     end
     
     send "x* " $towship "* * "
-    setVar $figsRequired 2000
-    gosub :player~quikstats
-	gosub :stripfig
    
     setVar $BOT~command "reboot"
     setVar $BOT~user_command_line " reboot "
@@ -309,7 +314,7 @@ return
     while ($podi <= $podpeoplei)
         if ($podpeopleok[$podi] = 1)
           
-            send "'" $podpeople[$podi] " fire2020 waitandmow " $ships[$y] "*" 
+            send "'" $podpeople[$podi] " ice2021 waitandmow " $ships[$y] "*" 
             add $y 1
         end
         add $podi 1
@@ -359,7 +364,7 @@ return
     # $podVictim - bot name of the person about to be podded
     # Assumes same sector
 
-    send "'" $podVictim " fire2020 preppod*"
+    send "'" $podVictim " ice2021 preppod*"
     setTextLineTrigger victimReady :victimReady "{" & $podVictim & "} - Ready to be podded."
     setDelayTrigger victimelost :victimelost 4000
     pause

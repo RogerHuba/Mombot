@@ -261,12 +261,16 @@
 			getWord CURRENTLINE $steal_factor 2
 			stripText $steal_factor "Factor="
 			stripText $steal_factor "%"
+			setvar $actual_steal_factor $steal_factor
+			savevar $actual_steal_factor
 			saveVar $STEAL_FACTOR
 			pause
 		:findRobFactor
 			getWord CURRENTLINE $rob_factor 2
 			stripText $rob_factor "Factor="
 			stripText $rob_factor "%"
+			setvar $actual_rob_factor $rob_factor
+			savevar $actual_rob_factor
 			saveVar $rob_factor
 			pause
 		:findPortMax

@@ -3,10 +3,12 @@
 	setvar $success false
 	setVar $adjsec 0
 	loadGlobal $bot~last_hit
-	if ($bot~last_hit > 0)
+	if (($bot~last_hit > 0) and ($density <> true))
 		setvar $sector $bot~last_hit
 	end
+
 	setVar $adjsec $main~attack_sectors[$sector]
+
 	if ($adjsec > 0)
 		if ($adjacentphoton = true)
 			goto :fire_photon
@@ -24,8 +26,6 @@
 			return
 		end
 	end
-	setvar $switchboard~message "No Adjacent fig found!*"
-	#gosub :switchboard~switchboard
 return
 :fire_adjacent
 	killalltriggers
@@ -236,12 +236,12 @@ return
 			return
 		end
 	end
-	if ($paranoid = true)
-		getSectorParameter $sector "LIMPSEC" $isLimped
-		if ($isLimped <> true)
-			return
-		end
-	end
+#	if ($paranoid = true)
+#		getSectorParameter $sector "LIMPSEC" $isLimped
+#		if ($isLimped <> true)
+#			return
+#		end
+#	end
 	setvar $found true
 return
 
@@ -300,49 +300,18 @@ return
 	end
 return
 
-:densityDrop_old
-
-	waitfor "Citadel command"
-	
-	setVar $BOT~command "density"
-	setVar $BOT~user_command_line " density photon attack:"&$sector&" density:2 "
-	setVar $BOT~parm1 "photon"
-	setVar $BOT~parm2 ""
-	saveVar $BOT~parm1
-	saveVar $BOT~parm2
-	saveVar $BOT~command
-	saveVar $BOT~user_command_line
-	load "scripts\"&$bot~mombot_directory&"\modes\offense\density.cts"
-	setEventTrigger        densityended        :densityended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\modes\offense\density.cts"
-	setdelaytrigger        densitytime        :densitytime  120000
-	pause
-	:densitytime
-		killtrigger densityended
-		stop "scripts\"&$bot~mombot_directory&"\modes\offense\density.cts"
-	:densityended
-		killtrigger densitytime
-		gosub :player~quikstats
-		if ($player~current_prompt <> "Citadel")
-			send " q q q * l " $PLANET~PLANET " * n n * j m * * * j c  *  "
-			gosub :player~quikstats
-			if ($player~current_prompt <> "Citadel")		
-				setvar $switchboard~message "Not at correct prompt after density!  Maybe planet is gone?  Check please!*"
-				gosub :switchboard~switchboard
-				gosub :navigate~callsaveme
-			end
-		end
-return
-
 :densityDrop
 	waitfor "Citadel command"
 	send "q m * * * q  * * "
-	send "fz 3500* * zco * "
+	#send "fz 3500* * zcd * "
 	setVar $checks 0
-
+	if ($long = true)
+		setvar $density_stop_count 120
+		setvar $long false
+	else
+		setvar $density_stop_count 40
+	end
 	:check_dens
-		
-		
-
 		setVar $mm 0
 		setVar $i 1
 		send "sz*"
@@ -370,7 +339,7 @@ return
 		pause
 	:allDone
 		killTrigger getSec
-		if ($checks > 40)
+		if ($checks > $density_stop_count)
 			goto :manual_stop
 		end
 		gosub :firechk
@@ -384,7 +353,7 @@ return
 			goto :alldone
 		elseif ($density[$w] <> $dens[$w])
 			setVar $diff ($density[$w] - $dens[$w])
-			if ($diff <> 0)
+			if (($diff > 0) and ($diff < 500))
 				gosub :do_action
 				goto :dtorp_end
 			else
@@ -406,7 +375,6 @@ return
 		killtrigger alldone
 		killtrigger donelook
 		killtrigger manual_stop
-		setTextLineTrigger dtop_dtorp :manual_stop $bot~bot_name & " foton off"
 		setTextLineTrigger getSec :looksec "Sector"
 		setTextTrigger donelook :donelook "Command [TL="
 		
@@ -432,16 +400,9 @@ return
 
 	:dtorp_end
 		killalltriggers
-		setvar $switchboard~message "Foton Missle Fired into sector => " & $adj[$w] & "*"
+		setvar $switchboard~message "Photon Missle Fired into sector => " & $adj[$w] & "*"
 		gosub :switchboard~switchboard
 		gosub :player~quikstats
-		if ($Player~Photons < 1)
-			setVar $SWITCHBOARD~message "No Photons on Board - Exiting!!*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end
-
-
 		return
 	:do_action
 		send " c  p  y  " $adj[$w] "**q   l " $PLANET~PLANET " * n n * j m * * * j c  *  "

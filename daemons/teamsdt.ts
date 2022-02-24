@@ -109,6 +109,18 @@
 		gosub :switchboard~switchboard
 	END
 
+	setvar $treasury ""
+	getWordPos " "&$bot~user_command_line&" " $pos " treasury:"
+	if ($pos > 0)
+		getText " "&$bot~user_command_line&" " $treasury "treasury:" " "
+		if ($treasury = "")
+			setVar $SWITCHBOARD~message "Invalid treasury value!  Halting.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+		replaceText $bot~user_command_line " treasury:"&$treasury " "
+	end
+
 	setVar $custom_furb FALSE
 	getWordPos $bot~user_command_line $pos ":"
 	if ($pos > 0)
@@ -145,6 +157,12 @@
 		halt	
 	end
 
+	isNumber $is_a_number4 $bot~parm4
+	isNumber $is_a_number5 $bot~parm5
+	isNumber $is_a_number6 $bot~parm6
+	if ((($bot~parm4 <> "0") and ($is_a_number4 = true)) and (($bot~parm5 = "0") or ($is_a_number5 <> true)) and (($bot~parm6 = "0") or ($is_a_number6 <> true)))
+		setvar $twoship true
+	end
 	if ($twoship = TRUE)
 		isNumber $is_a_number $bot~parm3
 		if ($is_a_number)
@@ -411,6 +429,8 @@
 			while ($i <= $NUMBER_CASHING_SHIPS)
 				if ($SHIPS[$i][3] <> TRUE)
 					setVar $SWITCHBOARD~MESSAGE "Ship: " & $SHIPS[$i] & " not avaliable!  HALTING*"
+					gosub :SWITCHBOARD~SWITCHBOARD
+					halt
 				end
 				add $i 1
 			end
@@ -461,15 +481,10 @@
 					end
 				add $j 1
 			end
-			if ($ephaggle = 1)
-				send "'red"&$i&" ephaggle planet*"
-				waitfor "EP Perfect Haggle loaded"
-			else
-				send "'red"&$i&" stop ephaggle*"
-				setDelayTrigger stopep2 :stopep2 1000 
-				pause
-				:stopep2
-			end
+			send "'red"&$i&" stop ephaggle*"
+			setDelayTrigger stopep2 :stopep2 1000 
+			pause
+			:stopep2
 			send "'red"&$i&" watcher*"
 			setDelayTrigger watchstop :watchstop 1000 
 			pause
@@ -524,6 +539,9 @@
 			if ($orders[1][2] = "0")
 				setVar $orders[1][2] ""
 				setVar $orders[2][2] ""
+			end
+			if ($treasury <> "")
+				send "'red"&$orders[1]&" lift *"
 			end
 			if ($ephaggle = 0)
 				send "'red"&$orders[1]&" sdt "&$orders[1][1]&" "&$orders[2][1]&" "&$orders[1][2]&" "&$orders[2][2]&" noavoid*"
@@ -684,11 +702,22 @@
 
 			:xport
 				send "'red"&$red_id&" x "&$xport_ship&"*"
-				settexttrigger xport :done  "- Xport complete."
+				settexttrigger xport :donexport  "- Xport complete."
 				pause
 
-			:done
+			:donexport
+				if ($treasury <> "")
+					send "'red" $red_id " land " $treasury "*"
+					waiton "In Cit - Planet "&$treasury
+					settexttrigger deposit :donetreasury " credits deposited into citadel"
+					settexttrigger withdrawal :donetreasury " credits taken from citadel"
+					settexttrigger noneed :donetreasury "- No transaction required"
+					send "'red"&$red_id&" keep 500000*"
+					pause
+					:donetreasury
+				end
 				killalltriggers
+				
 				#send "'Quick Nap before resuming!*"
 				setdelaytrigger naptime :naptime 500
 				pause
@@ -743,10 +772,10 @@ return
 
 :x
 	send "'red"&$red_id&" x "&$xport_ship&"*"
-	settexttrigger xport :done  "- Xport complete."
+	settexttrigger xport :donex  "- Xport complete."
 	pause
 
-	:done
+	:donex
 		killalltriggers
 return
 
@@ -761,9 +790,17 @@ return
 			goto :done
 	end
 	if (($bust_planet <> "") AND ($bust_planet <> "0") AND ($planet~planetfuel = TRUE))
-		send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&" blow:red"&$red_id&" *"
+		if ($treasury = "")
+			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&" blow:red"&$red_id&" *"
+		else
+			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" planet:"&$bust_planet&" blow:red"&$red_id&" nodecash *"
+		end
 	else
-		send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" blow:red"&$red_id&" *"
+		if ($treasury = "")
+			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" blow:red"&$red_id&" *"
+		else
+			send "'blue1 furb "&$bust_ship&" "&$FURB_HOLDS&" "&$FURB_SHIP&" blow:red"&$red_id&" nodecash *"
+		end
 	end
 	settexttrigger nofig :nofig "No fighter down at that ship number, drop a fig."
 	settexttrigger furb1 :furb1 "- Furb delivered"
