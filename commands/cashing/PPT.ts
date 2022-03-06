@@ -84,6 +84,12 @@ gosub :BOT~loadVars
 		getText " "&$bot~user_command_line&" " $tradingMinPer "p:" " "
 		isNumber $test $tradingMinPer
 		if ($test)
+			if ($tradingMinPer > 40)
+				setVar $tradingMinPer2 ($tradingMinPer - 20)
+			else
+				setVar $tradingMinPer2 $tradingMinPer
+
+			end
 			
 		else
 			setVar $SWITCHBOARD~message "Trading min should be a number.*"
@@ -93,6 +99,7 @@ gosub :BOT~loadVars
 
 	else
 		setVar $tradingMinPer 50
+		setVar $tradingMinPer2 40
 	end
 
 	if ($tradingMinPer > 90)
@@ -686,13 +693,13 @@ return
 		
 		setVar $cPerc1 (($cQuant1/$sec1_maxprod1) * 100)
 		setVar $cPerc2 (($cQuant2/$sec1_maxprod2) * 100)
-		if ($cPerc1 < $tradingMinPer) or ($cPerc2 < $tradingMinPer)
+		if ($cPerc1 < $tradingMinPer2) or ($cPerc2 < $tradingMinPer)
 			setVar $port1Ok 0
 		end
 	else
 		setVar $cPerc1 (($cQuant1/$sec2_maxprod1) * 100)
 		setVar $cPerc2 (($cQuant2/$sec2_maxprod2) * 100)
-		if ($cPerc1 < $tradingMinPer) or ($cPerc2 < $tradingMinPer)
+		if ($cPerc1 < $tradingMinPer2) or ($cPerc2 < $tradingMinPer)
 			setVar $port2Ok 0
 		end
 	end

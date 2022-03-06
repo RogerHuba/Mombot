@@ -317,7 +317,17 @@ return
 	#send "nse"
 	#waitfor "Beacon  : FedSpace, FedLaw Enforced"
 	
-
+	if ($menus~quickAction = true)
+		if (($menus~command_to_issue <> "") and ($menus~command_to_issue <> "0"))
+			setVar $BOT~user_command_line $menus~command_to_issue
+			setVar $menus~command_to_issue ""
+			saveVar $menus~command_to_issue
+			setvar $menus~quickAction false
+			savevar $menus~quickAction
+			goto :USER_INTERFACE~runUserCommandLine
+			return
+		end
+	end
 	# Testing this addition - Can we check briefly for our corp before mowing?
 	if (($newGame = true) and ($BOT~isCEO = TRUE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
 		gosub :BOT~killthetriggers
@@ -633,6 +643,6 @@ return
 		add $y 1
 		getWord $logTEXT $stuff $y
 	end
-	setVar $lastSeci (>$coursei - 1)
+	setVar $lastSeci ($coursei - 1)
 	setVar $lastSecin $course[$lastSeci]
 return

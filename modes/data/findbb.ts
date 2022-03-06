@@ -90,6 +90,26 @@ setVar $routeOrder[9] 14
 setVar $routeOrder[10] 15
 setVar $routeOrder[11] 16
 
+
+# NEW ROUTINE GLOBALS
+    setVar $useCim 1
+    setVar $nearestWarp 4
+
+	setVar $courseIsClosed 1
+
+	setVar $validBubble 0
+	setVar $validTunnel 0
+
+	setVar $testGroupA 0
+	setVar $testGroupB 0
+	setVar $groupAi 1
+	setVar $groupBi 1
+	setVar $groupABlocked 0
+	setVar $groupBBlocked 0
+	setvar $firsthalf 0
+	setVar $secondhalf 0
+
+# END NEW ROUTINE GLOBALS 
 setVar $doplots 1
 setVar $doGuestimate 1
 setVar $doSectorSorter 0
@@ -313,6 +333,7 @@ echo $test
 echo $test
 	send "c"
 	send "v0*yy"
+    
 echo "Entering DO PLOTS*"
 	while ($go = 1)
 
@@ -629,105 +650,60 @@ return
 
 :checkBubble
 
-	setVar $course ""
-	setVar $coursei 1
-	setVar $logText ""
-	setVar $log 0
-	send "f1*" $cSector "*"
-	waitfor "at is the destination sect"
+echo "Checking Bubble: " $cSector
 
-	:checkGoing
-	setTextLineTrigger startlog :startlog "shortest path"
-	setTextTrigger endlog :endlog "Computer command ["
-	setTextLineTrigger goodline :goodline ""
+	# nearest warp to sector 1 we will test (could potenially be first none fed or even second value
+	setVar $nearestWarp 4
+
+	setVar $courseIsClosed 1
+    setVar $foundBubble 0
+
+	setVar $testGroupA 0
+	setVar $testGroupB 0
+	setVar $groupAi 1
+	setVar $groupBi 1
+	setVar $groupABlocked 0
+	setVar $groupBBlocked 0
+	setvar $firsthalf 0
+	setVar $secondhalf 0
 	
-	pause
-	:startlog
-		killalltriggers
-		setVar $log 1
-		goto :checkGoing
-	:goodline
-		killalltriggers
-		if ($log = 1) and (CURRENTLINE <> "")
-			cuttext CURRENTLINE $firstchar 1 1
-			if ($firstchar = "1") or ($firstchar = " ")
-				setVar $logText $logText & CURRENTLINE
-			end
-		end
-		goto :checkGoing
-	:endlog
-		killalltriggers
-		
-	setVar $logText $logText & " end"
+	setVar $clearAvoidsOk 1
+	# we should have already confirmed it's a real tunnel and cleared avoids
+	goSub :confirmIsValidBubble
+    if ($validBubble = 0)
+        echo "Bubble was not valid, moving on!"
+        return
+    else
+        echo "bubble is valid!"
+    end
+	setVar $doorfound 0
+	goSub :checkOneEndOfTunnel
 
-	setVar $y 1
-	getWord $logTEXT $stuff $y
-
-	while ($stuff <> "end")
-		
-		STRIPTEXT $stuff "("
-		STRIPTEXT $stuff ")"
-
-		if (($stuff <> ">") and ($stuff <> "end"))
-			setVar $course[$coursei] $stuff
-			add $coursei 1
-		end
-
-		add $y 1
-		getWord $logTEXT $stuff $y
+	if ($doorfound = 0)
+		echo "Thats a bust, move on!"
+		return
 	end
-	setVar $stopLookingAt ($coursei - 3)
+	setVar $firstDoor $doorfound
 	
+	setVar $bubbleDoorAt ($totalRec + 5)
+			
+	echo "*############# FOUND DOOR " $firstdoor " #############"
+	setVar $msg "[Found Big Bubble] Door: " & $firstdoor & " Internal Sec:" & $cSector & "*"
+	setVar $plotsReport $plotsReport & $msg 
+	setSectorParameter $firstdoor "BUBBLEDOOR" 1
+	setSectorParameter $firstdoor "BUBBLEINT" $cSector
 	
-	setVar $y 5
-	setVar $lastPlot ($coursei - 1)
+	add $bubblei 1
+	setVar $bubbleDoors[$bubblei] $firstdoor
+	setVar $bubbleEnds[$bubblei] $cSector
+	setVar $foundBubble 1
 
-	while ($y < $coursei)
-		if ($y = $stopLookingAt)
-			# to close to end point - assume fail?
-			send "^q"
-			goto :checkLapB
-		end 
-		send "v" $course[$y] "*"
-		send "f1*" $course[$lastPlot] "** "
-		send "v0*yy"
-		
-		add $y 1
-	end
-	:checkLapB
-		setVar $totalRec 0
-		:waitLapBub
-		setTextLineTrigger checkplotblockBub :checkplotblockBub "Error - No route within"
-		setTextLineTrigger checkplotpathBub :checkplotpathBub "The shortest path"
-		setTextLineTrigger bubbleNotFoundBub :bubbleNotFoundBub "ENDINTERROG"
-		pause
-		:checkplotpathBub
-			killalltriggers
-			add $totalRec 1
-			goto :waitLapBub
-		:checkplotblockBub
-			killalltriggers
-			setVar $bubbleDoorAt ($totalRec + 5)
-			
-			echo "*############# FOUND DOOR " $course[$bubbleDoorAt] " #############"
-			setVar $msg "[Found Big Bubble] Door: " & $course[$bubbleDoorAt] & " Internal Sec:" & $course[$lastPlot] & "*"
-			setVar $plotsReport $plotsReport & $msg 
-			setSectorParameter $course[$bubbleDoorAt] "BUBBLEDOOR" 1
-			setSectorParameter $course[$bubbleDoorAt] "BUBBLEINT" $course[$lastPlot]
-			
-			add $bubblei 1
-			setVar $bubbleDoors[$bubblei] $course[$bubbleDoorAt]
-			setVar $bubbleEnds[$bubblei] $course[$lastPlot]
-			setVar $foundBubble 1
+	send "^q"
+	waitfor "ENDINTERROG"
+	send "'" $msg
 
-			
-			waitfor "ENDINTERROG"
-			send "'" $msg
-			return
-		:bubbleNotFoundBub
-			killalltriggers
-	
 return
+
 
 #setVar $tunnelDoors1 0
 #setVar $tunnelDoors2 0
@@ -802,15 +778,60 @@ return
 	end
 return
 
-:checktunnelMassBlock
+:checktunnel
 
+    setVar $clearAvoidsOk 0
+    setVar $tunnelTarget $cSector
+    setVar $foundBubble 0
+    echo "Checking TunnelTarget: " $tunnelTarget
+    goSub :confirmIsValidTunnel
+    if ($validTunnel = 1)
+        echo "**# Sector " $cSector " is a valid tunnel *"
+    else
+        echo "**# Sector " $cSector " is NOT a valid tunnel *"
+        return
+    end
+
+    setVar $firstDoor 0
+    setVar $secondDoor 0
+
+    
+    goSub :checkTunnelDivide
+
+    echo "Tunnel Doors are: " $firstDoor " and " $secondDoor "*"
+
+    if ($firstDoor = 0) or ($secondDoor = 0)
+
+        return
+    end
+
+    setVar $bubbleTwoAt $routeOrder[$totalRec]
+    echo "*############# FOUND FIRST DOOR " $secondDoor " #############"
+    echo "*############# FOUND SECOND DOOR " $firstDoor " #############"
+    setVar $msg "[Found Big Tunnel] Door 1: " & $secondDoor & " Door 2: " & $firstDoor & " Internal Sec:" & $tunnelTarget & "*"
+    setVar $plotsReport $plotsReport & $msg 
+    
+
+    setVar $foundBubble 1
+    add $tunnelsi 1
+    setVar $tunnelDoors1[$tunnelsi] $secondDoor
+    setVar $tunnelDoors2[$tunnelsi] $firstDoor
+    setVar $tunnelEnds[$tunnelsi] $tunnelTarget
+    setSectorParameter $secondDoor "TUNNELDOOR" $tunnelsi
+    setSectorParameter $firstDoor "TUNNELDOOR" $tunnelsi
+    setSectorParameter $secondDoor "TUNNELINT" $tunnelTarget
+    setSectorParameter $firstDoor "TUNNELINT" $tunnelTarget
+    send "^q"
+    waitfor "ENDINTERROG"
+    send "'" $msg
+    send "v0*yy"
 return
 
-:checkTunnel
+:checkTunnel_olldddd
 
 	# the sector we think might be a in a tunnel
 	setVar $tunnelTarget $cSector
-echo "Checking TunnelTarget: " $tunnelTarget
+
 	setVar $course ""
 	setVar $coursei 1
 	goSub :getCourseArray
@@ -929,6 +950,7 @@ echo "Failed to find tunnel"
 	
 return
 
+
 :getCourseArray
 	# 1 to Dest $cSector
 	setVar $course ""
@@ -941,11 +963,17 @@ return
 	waitfor "at is the destination sect"
 
 	:checkGoing2
+	setTextLineTrigger NoRoute2 :NoRoute2 "Error - No route within"
 	setTextLineTrigger startlog2 :startlog2 "shortest path"
 	setTextTrigger endlog2 :endlog2 "Computer command ["
 	setTextLineTrigger goodline2 :goodline2 ""
 	
 	pause
+	:NoRoute2
+		killAllTriggers
+		send "n"
+		setVar $coursei 0
+		return
 	:startlog2
 		killalltriggers
 		setVar $log 1
@@ -981,6 +1009,8 @@ return
 		getWord $logTEXT $stuff $y
 	end
 return
+
+
 
 :getCourse
 
@@ -1626,6 +1656,424 @@ return
 	halt
 
 	
+#### NEW  TUNNEL BubbLE routines #######################
+
+:confirmIsValidBubble
+
+	setVar $validTunnel 0
+	setVar $course ""
+	setVar $coursei 1
+	goSub :getCourseArray
+
+	goSub :blockCourse
+
+	goSub :testCourseOpen
+	if ($courseIsClosed = 1)
+		setVar $validBubble 1
+	else
+		setVar $validBubble 0
+	end
+	send "v0*yy"
+
+return
+
+
+:confirmIsValidTunnel
+    setVar $courseIsClosed 0
+	setVar $validTunnel 0
+	setVar $course ""
+	setVar $coursei 1
+	goSub :getCourseArray
+
+	goSub :blockCourse
+
+	setVar $course ""
+	setVar $coursei 1
+	goSub :getCourseArray
+	if ($coursei = 0)
+		setVar $validTunnel 0
+		send "v0*yy"
+		return
+	end
+	goSub :blockCourse
+
+	
+	goSub :testCourseOpen
+	if ($courseIsClosed = 1)
+		setVar $validTunnel 1
+	else
+		setVar $validTunnel 0
+	end
+	send "v0*yy"
+
+return
+
+:blockCourse 
+
+	setVar $endBlockCourse ($coursei - 4)
+	if ($useCim = 1)
+		send "^"
+	end
+	setVar $yy $nearestWarp
+	while ($yy <= $endBlockCourse)
+		if ($useCim = 1)
+			send "s" $course[$yy] "*"
+		else
+			send "v" $course[$yy] "*"
+		end
+		add $yy 1
+	end	
+	if ($useCim = 1)
+		send "q"
+	end
+
+return
+
+:unBlockCourse
+
+
+return
+
+:checkTunnelDivide
+
+echo "Checking TunnelTarget: " $cSector
+
+	# nearest warp to sector 1 we will test (could potenially be first none fed or even second value
+	setVar $nearestWarp 4
+
+	setVar $courseIsClosed 1
+
+
+	setVar $testGroupA 0
+	setVar $testGroupB 0
+	setVar $groupAi 1
+	setVar $groupBi 1
+	setVar $groupABlocked 0
+	setVar $groupBBlocked 0
+	setvar $firsthalf 0
+	setVar $secondhalf 0
+
+#### PLOT AND BLOCK FIRST END OF TUNNEL 
+####        We don't know what sector it is, but assume blocking warps 4 to Endish will block it
+	setVar $course ""
+	setVar $coursei 1
+	goSub :getCourseArray
+
+	setVar $CourseA 1
+	setVar $CourseALength $coursei
+	setVar $yy 1
+	while ($yy <= $CourseALength)
+		setVar $CourseA[$yy] $course[$yy]
+
+		add $yy 1
+	end
+	
+	setVar $endBlockCourseA ($CourseALength - 4)
+	
+	if ($useCim = 1)
+		send "^"
+	end
+
+	setVar $yy $nearestWarp
+	while ($yy <= $endBlockCourseA)
+		if ($useCim = 1)
+			send "s" $CourseA[$yy] "*"
+		else
+			send "v" $CourseA[$yy] "*"
+		end
+		add $yy 1
+		
+	end	
+
+    if ($useCim = 1)
+		send "q"
+	end
+
+## ONE END IS NOW BLOCKED
+## LETS fIND THE OTHER END DOOR
+
+	setVar $doorfound 0
+	goSub :checkOneEndOfTunnel
+
+	if ($doorfound = 0)
+		echo "Thats a bust, move on!"
+		return
+	end
+	setVar $firstDoor $doorfound
+
+	#Clear all voids and block known door
+	send "v0*yy"
+	send "v" $firstDoor "*"
+
+	setVar $doorfound 0
+	goSub :checkOneEndOfTunnel
+
+	if ($doorfound = 0)
+		echo "Thats a bust, move on!"
+		return
+	end
+	setVar $secondDoor $doorfound
+
+	
+
+return
+
+
+:checkOneEndOfTunnel
+
+	# means we are doing a tunnel and need to replot, else it's a bubble and we already have course
+	if ($clearAvoidsOk = 0)
+		setVar $course ""
+		setVar $coursei 1
+		goSub :getCourseArray
+	end
+
+	setVar $CourseB 1
+	setVar $CourseBLength $coursei
+	setVar $yy 1
+	while ($yy < $CourseBLength)
+		setVar $CourseB[$yy] $course[$yy]
+echo $CourseB[$yy] "*"
+		add $yy 1
+	end
+
+	
+	setVar $testCourse 0
+	### length of Course B - Minus Nearest warp, and 3 hops out
+	setVar $testCourseLength ($CourseBLength - (3 + $nearestWarp))
+
+	echo "Course we will be testing*"
+	echo "   Of len: " $testCourseLength "**"
+
+	setVar $yy 1
+	while ($yy <= $testCourseLength)
+		setVar $spot (($yy + $nearestWarp) - 1)
+		setVar $testCourse[$yy] $CourseB[$spot]
+		echo $CourseB[$spot] "*"
+		add $yy 1
+	end
+
+	
+
+	:MainTestLoop
+
+	goSub :StartTheTest
+	setVar $yy 1
+
+	if ($groupABlocked = 1)
+		echo "**### GROUP A WAS BLOCKED - USING THESE**"
+		if ($firsthalf = 1)
+			#FOUND IT
+			echo "*FOuND SECOND PLOT: "
+			echo $testCourse[1] "**"
+			setVar $doorfound $testCourse[1]
+			return
+		else
+			
+
+			setVar $testCourseLength $firsthalf
+			setVar $testCourse 0
+			while ($yy <= $testCourseLength)
+				echo "new :" $testGroupA[$yy] "*"
+				setVar $testCourse[$yy] $testGroupA[$yy]
+				add $yy 1
+			end
+		end
+	else
+		echo "**### GROUP B WAS BLOCKED - USING THESE**"
+		if ($secondhalf = 1)
+			#FOUND IT
+			echo "*FOuND SECOND PLOT: "
+			echo $testGroupB[1] "**"
+			setVar $doorfound $testGroupB[1]
+			return
+		else
+			
+			setVar $testCourseLength $secondhalf
+			setVar $testCourse 0
+			while ($yy <= $testCourseLength)
+				echo "new :" $testGroupB[$yy] "*"
+				setVar $testCourse[$yy] $testGroupB[$yy]
+				add $yy 1
+			end
+		end
+	end
+
+	goto :MainTestLoop
+
+halt
+
+:StartTheTest
+
+	#### Pass In
+	####   $testCourseLength
+	####   $TestCourse
+
+	setVar $testGroupA 0
+	setVar $testGroupB 0
+	setVar $groupAi 1
+	setVar $groupBi 1
+	setVar $groupABlocked 0
+	setVar $groupBBlocked 0
+
+	##setVar $numToTest ($CourseBLength - (3 + $nearestWarp))
+	##echo "###" $numToTest
+	setvar $firsthalf $testCourseLength/2
+	setVar $secondhalf ($testCourseLength - $firsthalf)
+
+echo "First Half**"
+	while ($groupAi <= $firsthalf)
+		echo $testCourse[$groupAi] "*"
+		setVar $testGroupA[$groupAi] $testCourse[$groupAi]
+		add $groupAi 1
+	end
+echo "**"
+echo "second half**"
+	setVar $yy $groupAi
+	while ($yy <= $testCourseLength)
+		echo $testCourse[$yy] "*"
+		setVar $testGroupB[$groupBi] $testCourse[$yy]
+		add $yy 1
+		add $groupBi 1
+	end
+
+	if ($useCim = 1)
+		send "^"
+	end
+
+	setVar $yy 1
+	while ($yy < $groupAi)
+		if ($useCim = 1)
+			send "s" $testGroupA[$yy] "*"
+		else
+			send "v" $testGroupA[$yy] "*"
+		end
+		add $yy 1
+	end	
+
+	if ($useCim = 1)
+		send "q"
+	end
+	
+	setVar $testCourseSector $cSector
+	goSub :testCourseOpen
+	setVar $groupABlocked $courseIsClosed
+	echo "######### *"
+	echo "Group A Blocked: " $groupABlocked "*"
+	echo "########## *"
+
+	if ($clearAvoidsOk = 1)
+		# For bubbles - we can just clear all
+		send "v0*yy"
+	else
+		
+		if ($useCim = 1)
+			send "^"
+		end
+		setVar $yy 1
+		while ($yy < $groupAi)
+			
+			if ($useCim = 1)
+				send "c" $testGroupA[$yy] "*"
+			else
+				send "v0*yn" $testGroupA[$yy] "*"
+			end
+			add $yy 1
+			
+		end	
+		if ($useCim = 1)
+			send "q"
+		end
+	end
+
+    if ($groupABlocked = 1)
+        return
+    end
+
+	
+	if ($useCim = 1)
+		send "^"
+	end
+	setVar $yy 1
+	while ($yy < $groupBi)
+		if ($useCim = 1)
+			send "s" $testGroupB[$yy] "*"
+		else
+			send "v" $testGroupB[$yy] "*"
+		end
+		
+		add $yy 1
+		
+	end	
+	if ($useCim = 1)
+		send "q"
+	end
+
+	goSub :testCourseOpen
+	setVar $groupBBlocked $courseIsClosed
+
+	if ($groupABlocked = 1)
+		#Sector is in this one
+		echo "Sector block is in Group A"
+	else
+		echo "Sector block is in Group B"
+	end
+
+	if ($clearAvoidsOk = 1)
+		# For bubbles - we can just clear all
+		send "v0*yy"
+		
+	else
+		
+		if ($useCim = 1)
+			send "^"
+		end
+		setVar $yy 1
+		while ($yy < $groupBi)
+		if ($useCim = 1)
+				send "c" $testGroupB[$yy] "*"
+			else
+				send "v0*yn" $testGroupB[$yy] "*"
+			end
+			
+			add $yy 1
+			
+		end	
+
+		if ($useCim = 1)
+			send "q"
+		end
+	end
+return
+
+halt
+
+:testCourseOpen
+	setVar $courseIsClosed 1
+	send "f1*" $cSector "**"
+	waitfor "at is the destination sect"
+
+	
+	setTextLineTrigger testCourseOpenShort :testCourseOpenShort "he shortest path"
+	setTextLineTrigger testCourseOpenClosed :testCourseOpenClosed "Error - No route within"
+	
+	pause
+	:testCourseOpenShort
+		killAllTriggers
+		echo "######### *"
+echo " COURSE OPEN*"
+echo "########## *"
+		setVar $courseIsClosed 0
+		return
+	:testCourseOpenClosed
+		setVar $courseIsClosed 1
+			echo "######### *"
+echo " COURSE CLOSED*"
+echo "########## *"
+		killalltriggers
+		return
+	
+return
 
 return
 include "source\module_includes\bot\loadvars\bot"

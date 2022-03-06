@@ -18,7 +18,26 @@
 #     - normal move through one way - did the m to no where, at 12 -
 
 
+
+
+# add tunnel option
+# cehck the "Get back inside" is using twarp options
+# block doors via void, and then plot out from door sector - really should have just inside door tunnel
+# topoff can't be door sector
+# script to make door defence
+# test testing ports
+# test speed on real server
+# send out MArco Ports - they dump cash
+#
+# - findbb - needs to make bubble doors with a param
+# -   Dora needs to mark sector with same param
+# -   
+
 gosub :BOT~loadVars
+
+
+setVar $debug 1
+
 
 loadVar $game~port_max
 loadVar $game~ptradesetting
@@ -55,7 +74,14 @@ setVar $BOT~help[17]  $BOT~tab&" - {mcicsell}  - Test XXS ports for MCIC "
 setVar $BOT~help[18]  $BOT~tab&" - {mcicbuy}   - Test XXB ports for MCIC "
 setVar $BOT~help[19]  $BOT~tab&" - {mcicboth}  - Test all ports for MCIC "
 setVar $BOT~help[20]  $BOT~tab&" "
-setVar $BOT~help[21]  $BOT~tab&" - {deldata }  Deletes explored sectors "
+setVar $BOT~help[21]  $BOT~tab&" - {deldata}  Deletes explored sectors "
+setVar $BOT~help[22]  $BOT~tab&" - {top:[sector]}  Sector to twarp back to reload figs "
+setVar $BOT~help[23]  $BOT~tab&" - {bubble:[door]:[internal]}  Fill bubble mode "
+setVar $BOT~help[24]  $BOT~tab&"              Script will lock itself to the bubble"
+setVar $BOT~help[25]  $BOT~tab&"              requires the door and a internal sector"
+setVar $BOT~help[26]  $BOT~tab&"              to plot courses to ensure it stays in bubble."
+setVar $BOT~help[27]  $BOT~tab&"              Assumes no ZTM data as it is a day 1 script"
+setVar $BOT~help[28]  $BOT~tab&" - {tunnel:[door1]:[door2]:[internal]}  Tunnel mode "
 
 
 gosub :BOT~helpfile
@@ -290,6 +316,126 @@ if ($pos > 0)
 
 end
 
+# output PPT pairs to corp mates
+setVar $alertPPT 1
+
+
+
+if ($alertPPT = 1)
+	setVar $pptPortUsed SECTORS
+	setVar $portsClass5 0
+	setVar $portsClass2 0
+	setVar $portsClass5i 0
+	setVar $portsClass2i 0
+
+	setVar $portsClass4 0
+	setVar $portsClass1 0
+	setVar $portsClass4i 0
+	setVar $portsClass1i 0
+
+	# to save popping out ports and reshuffling arrays
+	# i'll just keep a curose on where we are at in the 
+	# various arrays.
+	setVar $portsCurrent5i 0
+	setVar $portsCurrent2i 0
+	setVar $portsCurrent4i 0
+	setVar $portsCurrent1i 0
+end
+
+
+# fill sectors - meaning we won't do adj trades, our goal is to fill out the grid
+setVar $fillbubble 0
+setVar $fillBubbleDoor 0
+setVar $fillBubbleInt 0
+setVar $fillBubbleIsTunnel 0
+getWordPos " "&$bot~user_command_line&" " $pos " bubble:"
+if ($pos > 0)
+	getText " "&$bot~user_command_line&" " $bubbleinfo " bubble:" " "
+	echo $bubbleinfo
+	replaceText $bubbleinfo ":" " "
+	getWord $bubbleinfo $fillBubbleDoor 1
+	getWord $bubbleinfo $fillBubbleInt 2
+	if ($debug = 1)
+		echo "Fill Bubble Door is: " $fillBubbleDoor "*"
+		echo "Fill Bubble Internal is: " $fillBubbleInt "*"
+	end
+	isNumber $test $fillBubbleDoor
+	if ($test) and ($fillBubbleDoor > 10)
+		isNumber $test $fillBubbleInt
+		if ($test) and ($fillBubbleInt > 10)
+			setVar $fillbubble 1
+			
+			setVar $msg $msg&"Fill Bubble Mode activate. Door: " & $fillBubbleDoor & " Int: " & $fillBubbleInt & "*"
+		else
+			setVar $SWITCHBOARD~message "Bubble Interior Sector is not a number above 10.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		
+		
+	else
+		setVar $SWITCHBOARD~message "Bubble Door Sector is not a number above 10.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+end
+
+getWordPos " "&$bot~user_command_line&" " $pos " tunnel:"
+if ($pos > 0)
+	getText " "&$bot~user_command_line&" " $bubbleinfo " tunnel:" " "
+	echo $bubbleinfo
+	replaceText $bubbleinfo ":" " "
+	getWord $bubbleinfo $fillBubbleDoor 1
+	getWord $bubbleinfo $fillBubbleDoor2 2
+	getWord $bubbleinfo $fillBubbleInt 3
+	setVar $fillBubbleIsTunnel 1
+	if ($debug = 1)
+		echo "Fill Tunnel Door 1: " $fillBubbleDoor "*"
+		echo "Fill Tunnel Door 2: " $fillBubbleDoor2 "*"
+		echo "Fill Tunnel Internal is: " $fillBubbleInt "*"
+	end
+	isNumber $test $fillBubbleDoor
+	if ($test) and ($fillBubbleDoor > 10)
+		isNumber $test $fillBubbleDoor2
+		if ($test = false)
+			setVar $SWITCHBOARD~message "Tunnel Door 2 Sector is not a number above 10.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		isNumber $test $fillBubbleInt
+		if ($test) and ($fillBubbleInt > 10)
+			setVar $fillbubble 1
+			
+			setVar $msg $msg&"Fill Bubble Mode activate. Tunnel Door 1: " & $fillBubbleDoor & " Door 2: " & $fillBubbleDoor2 & " Int: " & $fillBubbleInt & "*"
+		else
+			setVar $SWITCHBOARD~message "Bubble Interior Sector is not a number above 10.*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+		
+		
+	else
+		setVar $SWITCHBOARD~message "Tunnel Door 1 Sector is not a number above 10.*"
+		gosub :SWITCHBOARD~switchboard
+		halt
+	end
+
+
+end
+
+
+# twarp options - bassically, we hit a dead end, we should twarp somewhere if we can
+
+# Sector to land
+setVar $twarpOption 0
+# Adjacent Sector
+setVar $twarpOptionAdj 0
+setVar $twarpOptioni 0
+if (($fillbubble = 1) and ($deleteData = 0))
+	goSub :loadTwarpOption
+end
+
 ## first trade we will avoid sectors - then remove
 
 setVar $avoidSectorTest 1
@@ -381,6 +527,7 @@ if ($figlchk = 1)
 		echo "*###########"
 		echo "*# DELETED #"
 		echo "*###########"
+		goSub :clearTwarpOption
 		setvar $switchboard~message "Deleting Previous Data.*"
 		gosub :switchboard~switchboard
 		delete $doraExploredFile
@@ -398,6 +545,8 @@ if ($figlchk = 1)
 	end
 end
 
+setVar $whichBubble 0
+setVar $maxWhichBubble 0
 # Block Tunnel Bubble Doors
 setVar $i 11
 while ($i <= SECTORS)
@@ -408,6 +557,21 @@ while ($i <= SECTORS)
 		if ($blockSec > 0)
 			setVar $explored[$i] 1
 			echo "Blocking Bubble Door: " $i "*"
+			if ($fillbubble = 1)
+				getSectorParameter $i "WHICHBUB" $whichbubTemp
+				if ($whichbubTemp = "")
+					setVar $whichbubTemp 0
+				
+				end
+				if ($whichbubTemp > 0)
+					if ($whichbubTemp > $maxWhichBubble)
+						setVar $maxWhichBubble $whichbubTemp
+					end
+					if ($i = $fillBubbleDoor)
+						setVar $whichbubble $whichbubTemp
+					end
+				end
+			end
 		end
 	end
 
@@ -417,13 +581,44 @@ while ($i <= SECTORS)
 		if ($blockSec > 0)
 			setVar $explored[$i] 1
 			echo "Blocking Tunnel Door: " $i "*"
+			if ($fillbubble = 1)
+				getSectorParameter $i "WHICHBUB" $whichbubTemp
+				if ($whichbubTemp = "")
+					setVar $whichbubTemp 0
+				end
+				if ($whichbubTemp > 0)
+					if (($i = $fillBubbleDoor) or ($i = $fillBubbleDoor2))
+						setVar $whichbubble $whichbubTemp
+					end
+					
+					if ($whichbubTemp > $maxWhichBubble)
+						setVar $maxWhichBubble $whichbubTemp
+					end
+					
+				end
+			end
 		end
 	end
 	
 	add $i 1
 end
 
-
+if (($fillbubble = 1) and ($whichbubble = 0))
+	setVar $whichBubble ($maxWhichBubble + 1)
+	if ($fillBubbleIsTunnel)
+		setSectorParameter $fillBubbleDoor "WHICHBUB" $whichBubble
+		setSectorParameter $fillBubbleDoor2 "WHICHBUB" $whichBubble
+	else
+		setSectorParameter $fillBubbleDoor "WHICHBUB" $whichBubble
+	end
+end
+if ($fillbubble = 1)
+	echo "$whichBubble: " $whichBubble "*"
+	echo "$whichBubble: " $whichBubble "*"
+	echo "$whichBubble: " $whichBubble "*"
+	echo "$whichBubble: " $whichBubble "*"
+	
+end
 listActiveScripts $scripts
 setVar $foundep 0
 setVar $a 1
@@ -457,9 +652,82 @@ gosub :player~quikstats
 
 gosub :setVoidSectors
 
+if ($fillbubble = 1)
+
+	setvar $switchboard~message "Voiding Door(s) and testing location*"
+	gosub :switchboard~switchboard
+	if ($topoffSector > 1)
+		if ($topoffSector = $fillBubbleDoor)
+			setvar $switchboard~message "Top Off sector can not be a Bubble/Tunnel Door*"
+			gosub :switchboard~switchboard
+			halt
+		end
+
+		if ($topoffSector = $fillBubbleDoor2)
+			setvar $switchboard~message "Top Off sector can not be a Bubble/Tunnel Door*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
+	if (CURRENTSECTOR = $fillBubbleDoor)
+		setvar $switchboard~message "Can't start from door, please start inside the bubble*"
+		gosub :switchboard~switchboard
+		halt
+	end
+
+	if ($fillBubbleIsTunnel = 1)
+		if (CURRENTSECTOR = $fillBubbleDoor2)
+			setvar $switchboard~message "Can't start from door 2, please start inside the bubble*"
+			gosub :switchboard~switchboard
+			halt
+		end
+	end
+	send "cv" $fillBubbleDoor "*q"
+	if ($fillBubbleIsTunnel = 1)
+		send "cv" $fillBubbleDoor2 "*q"
+	end
+	
+	setVar $bubbleChecks 0
+
+	:bubbleChecksAgain
+	if ($bubbleChecks = 0)
+		setVar $bubbleChecks 1
+	#check internal
+		send "cf*" $fillBubbleInt "*q"
+	else
+		setVar $bubbleChecks 2
+		send "cf1*" $fillBubbleInt "*q"
+	end
+	waitfor "t is the destination sect"
+	setTextLineTrigger checkIntGood :checkIntGood "he shortest path"
+	setTextLineTrigger checkIntBad :checkIntBad "No route within"
+	pause
+	:checkIntBad
+		
+		killalltriggers
+		if ($bubbleChecks = 1)
+			send "yq"
+			setvar $switchboard~message "Either you are not in bubble or the internal sector isnt! Halting*"
+			gosub :switchboard~switchboard
+			halt
+		else
+			send "nq"
+			goto :doneBubbleChecks
+		end
+	:checkIntGood
+		killalltriggers
+		if ($bubbleChecks = 1)
+			goto :bubbleChecksAgain
+		else
+			setvar $switchboard~message "Either you are not in bubble or the internal sector isnt! Halting*"
+			gosub :switchboard~switchboard
+			halt
+		end
+		:doneBubbleChecks
+end
 
 
-
+ 
 ######################### MAIN LOOP
 # Log Explored sectors so script can re-start
 
@@ -468,6 +736,12 @@ setVar $skipport 0
 setVar $iSaySo 1
 while ($iSaySo)
 	:topOfTheGridLoop
+	if ($fillbubble = 1)
+		setSectorParameter CURRENTSECTOR "WHICHBUB" $whichBubble
+	end
+if ($debug = 1)
+	echo "DEBUG: 	topOfTheGridLoop*"
+end
 	setVar $freshSectors 0
 	setVar $freshSectorsi 0
 	setVar $freshSectorsNewPorts 0
@@ -522,6 +796,9 @@ while ($iSaySo)
 
 	# check Trades
 	if ((($pptTradingOption <> "none") or ($testMcicSell = 1) or ($testMcicBuy = 1)) and (PORT.EXISTS[$PLAYER~CURRENT_SECTOR]) and ($skipNextTrade = 0))
+if ($debug = 1)
+	echo "DEBUG: 	check Trades*"
+end
 		if ($freshSectorsNewPorts > 0)
 			goSub :holoScan
 			setVar $doneHolo 1
@@ -554,7 +831,12 @@ while ($iSaySo)
 				if (($danger = 0) and ($explored[$dSector] = 0))
 					if (($hasFig = 0) and ($dSector <> $PLAYER~CURRENT_SECTOR))
 						add $safeSectors 1
-						
+						if ($moveTwarp = 1)
+							setVar $twarpOrigin $originSector
+							setVar $twarpAdj $dSector
+							goSub :addTwarpOption
+
+						end
 					end
 				end
 				add $i 1
@@ -584,7 +866,13 @@ while ($iSaySo)
 	end
 
 	# Trading Done
-	
+	if ($debug = 1)
+		echo "DEBUG: chcking fresh sectors*"
+	end
+	if ($alertPPT = 1)
+		goSub :checkPPTAlerts
+	end
+
 	if (($freshSectorsNewPorts > 0) and ($doneHolo = 0))
 		goSub :holoScan
 		goSub :updateFreshSectors
@@ -608,7 +896,9 @@ while ($iSaySo)
 	
 	if ($gridSectorPostTwarp > 0)
 		# means we got something from previous options
-
+if ($debug = 1)
+	echo "DEBUG: $gridSectprPostTwarp*"
+end
 		setVar $player~warpto $gridSector
 		gosub :player~twarp
 		add $stat_moves 1
@@ -628,7 +918,9 @@ clearAllAvoids
 halt
 
 :updateFreshSectors
-	
+if ($debug = 1)
+	echo "DEBUG: 	updateFreshSectors*"
+end
 	# just get all ports and single sectors plots back
 	# this is to make sure we don't go down a 1 way whether navigating or ppt
 	
@@ -655,7 +947,9 @@ return
 
 
 :getNextWarp
-	
+if ($debug = 1)
+	echo "DEBUG: 	:getNextWarp*"
+end	
 	# COLLECT DATA - Some used in one routine and not the other
 	setVar $i 1
 	setVar $safeSectors 0
@@ -694,6 +988,11 @@ return
 			if (($hasFig = 0) or ($hasFig = ""))
 				add $safeSectors 1
 				setVar $safes[$safeSectors] $dSector
+				if ($moveTwarp = 1)
+					setVar $twarpOrigin CURRENTSECTOR
+					setVar $twarpAdj $dSector
+					goSub :addTwarpOption
+				end
 			end
 		end
 		add $i 1
@@ -712,7 +1011,8 @@ return
 			end
 
 			goSub :getBestSectorFromList
-			if ($newOptions > 1)
+			# we aren't going to infill when we are using fillbubble
+			if ($newOptions > 1) and ($fillbubble = 0)
 				goSub :goGridOtherOptions
 			end
 		end
@@ -729,56 +1029,145 @@ return
 			# we don't have a SELL ore pair, lets get a Buy Ore Pair port
 			
 			goSub :getBestSectorFromList
-			if ($newOptions > 1)
+			if ($newOptions > 1) and ($fillbubble = 0)
 				goSub :goGridOtherOptions
 			end
 		else
-			# going to grid the buys now anyway - may remove this later
-			# just testing ot see if we can increase number of trades post
-			# - taking note, we are using the best sector routine to sort these
-			# so need to save and restore
-			setVar $temp_$bestSector $bestSector
-			goSub :getBestSectorFromList
-			#restore it, and grid them all
-			setVar $bestSector $temp_$bestSector
-			if ($newOptions > 0)
-				goSub :goGridOtherOptions
+			# only if we aren't filling
+			if ($fillbubble = 0)
+				# going to grid the buys now anyway - may remove this later
+				# just testing ot see if we can increase number of trades post
+				# - taking note, we are using the best sector routine to sort these
+				# so need to save and restore
+				setVar $temp_$bestSector $bestSector
+				goSub :getBestSectorFromList
+				#restore it, and grid them all
+				setVar $bestSector $temp_$bestSector
+				if ($newOptions > 0)
+					goSub :goGridOtherOptions
+				end
 			end
-
 		end
 		if ($bestSector = 0)
 			# found no ports we wanted, lets just go best warps
 			goSub :getBestWarps
 		end	
-
+		if ($fillbubble = 1)
+			goSub :goGridSingleDeadEnds
+		end
 	else
+	# goSub :goGridSingleDeadEnds
+	
 		goSub :getBestWarps
+		if ($fillbubble = 1)
+			goSub :goGridSingleDeadEnds
+		end
 	end
 
 	if ($bestSector = 0)
+		#means we didn't find a new sector to go to
 
+if ($debug = 1)
+	echo "DEBUG: No Best Sector - Trying Twarp Options*"
+end
+		setVar $twarpOptionSuccess 0
+		goSub :useTwarpOption
+		if ($twarpOptionSuccess = 1)
+			if ($debug = 1)
+				echo "DEBUG: Found a TWARP options*"
+			end
 
-
-		goSub :checkOptions
-		if ($safeOptionsBack = 0)
-			setVar $SWITCHBOARD~message "Currently No safe path back - if have TWARP then we could move else where using DB *"
-			gosub :SWITCHBOARD~switchboard 
-			halt
 		else
+
+			goSub :checkOptions
+			if ($safeOptionsBack = 0)
+				setVar $SWITCHBOARD~message "Currently No safe path back - if have TWARP then we could move else where using DB *"
+				gosub :SWITCHBOARD~switchboard 
+				halt
+			else
+				
+				setVar $chkSec $PLAYER~CURRENT_SECTOR
+				setVar $adjSec $safeOptionsBackDirect
+				goSub :checkAdj
+				if (($moveTwarp = 1) and ($isAdj = 0))
+					:jumpagain
+					setVar $player~warpto $safeOptionsBackDirect
+					gosub :player~twarp
+					gosub :player~quikstats
+					if ($player~twarpSuccess = TRUE)
+	if ($debug = 1)
+		echo "DEBUG: $safeOptionsBackDirect TWARP Success *"
+	end	
+						setVar $twarpRemoveSector $safeOptionsBackDirect
+						goSub :removeTwarpOption
+
+						add $stat_moves 1
+						setVar $toStackSector $safeOptionsBackDirect
+						goSub :moveStackToOption
+					else
+	if ($debug = 1)
+		echo "DEBUG: $safeOptionsBackDirect TWARP fail *"
+	end	
+						setVar $pathi 1
+						setVar $c_pathBacki $pathBacki
+						while ($pathi <= $c_pathBacki)
+							
+							setVar $stackSector $pathBack[1]
+							goSub :popPath 
+							getSectorParameter $stackSector "FIGSEC" $hasFig
+							if ($hasFig = "")
+								setVar $hasFig 0
+							end
+							if ($hasFig = 1)
+
+								setVar $adjSec $stackSector
+								goSub :checkAdj
+								if ($isAdj = 0)
+									setVar $SWITCHBOARD~message "Next Sector on walk back was not adjacent.. halting*"
+									gosub :SWITCHBOARD~switchboard
+									halt
+								end
+								add $stat_moves 1
+								add $stat_retreats 1
+								setVar $PLAYER~moveIntoSector $stackSector
+								gosub :PLAYER~moveIntoSector
+	if ($debug = 1)
+		echo "DEBUG: Moving into sector as walking back *"
+	end	
+								setVar $twarpRemoveSector $stackSector
+								goSub :removeTwarpOption
+						
+								gosub :player~quikstats
+								
+								if (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 0) AND (PORT.EXISTS[CURRENTSECTOR] = TRUE)
+	if ($debug = 1)
+		echo "DEBUG: Grabbing Fuel and attempting direct route *"
+	end	
+
+									send "jy"
+									send "p t *  *  "
+									gosub :player~quikstats	
+									goto :jumpagain
+								else
+									goSub :checkPassingTrading
+								end
+								
+								
 			
-			setVar $chkSec $PLAYER~CURRENT_SECTOR
-			setVar $adjSec $safeOptionsBackDirect
-			goSub :checkAdj
-			if (($moveTwarp = 1) and ($isAdj = 0))
-				:jumpagain
-				setVar $player~warpto $safeOptionsBackDirect
-				gosub :player~twarp
-				gosub :player~quikstats
-				if ($player~twarpSuccess = TRUE)
-					add $stat_moves 1
-					setVar $toStackSector $safeOptionsBackDirect
-					goSub :moveStackToOption
-				else
+							else
+								setVar $SWITCHBOARD~message "Paths blocked finding a safe sector.*"
+								gosub :SWITCHBOARD~switchboard
+								halt
+							end
+
+							if ($stackSector = $safeOptionsBackDirect)
+								setVar $pathi 30001
+								return
+							end
+							add $pathi 1
+						end
+					end
+				else				
 					setVar $pathi 1
 					setVar $c_pathBacki $pathBacki
 					while ($pathi <= $c_pathBacki)
@@ -790,21 +1179,21 @@ return
 							setVar $hasFig 0
 						end
 						if ($hasFig = 1)
+							setVar $adjSec $stackSector
+							goSub :checkAdj
+							if ($isAdj = 0)
+								setVar $SWITCHBOARD~message "Next Sector on walk back was not adjacent.. halting*"
+								gosub :SWITCHBOARD~switchboard
+								halt
+							end
 							add $stat_moves 1
 							add $stat_retreats 1
 							setVar $PLAYER~moveIntoSector $stackSector
 							gosub :PLAYER~moveIntoSector
-							#gosub :player~quikstats
-							if (PORT.BUYORE[$PLAYER~CURRENT_SECTOR] = 0)
-								send "jy"
-								send "p t *  *  "
-								gosub :player~quikstats	
-								goto :jumpagain
-							else
-								goSub :checkPassingTrading
-							end
-							
-							
+							setVar $twarpRemoveSector $stackSector
+							goSub :removeTwarpOption
+							gosub :player~quikstats
+							goSub :checkPassingTrading
 		
 						else
 							setVar $SWITCHBOARD~message "Paths blocked finding a safe sector.*"
@@ -819,48 +1208,80 @@ return
 						add $pathi 1
 					end
 				end
-			else				
-				setVar $pathi 1
-				setVar $c_pathBacki $pathBacki
-				while ($pathi <= $c_pathBacki)
-					
-					setVar $stackSector $pathBack[1]
-					goSub :popPath 
-					getSectorParameter $stackSector "FIGSEC" $hasFig
-					if ($hasFig = "")
-						setVar $hasFig 0
-					end
-					if ($hasFig = 1)
-						add $stat_moves 1
-						add $stat_retreats 1
-						setVar $PLAYER~moveIntoSector $stackSector
-						gosub :PLAYER~moveIntoSector
-						#gosub :player~quikstats
-						goSub :checkPassingTrading
-	
-					else
-						setVar $SWITCHBOARD~message "Paths blocked finding a safe sector.*"
-						gosub :SWITCHBOARD~switchboard
-						halt
-					end
-
-					if ($stackSector = $safeOptionsBackDirect)
-						setVar $pathi 30001
-						return
-					end
-					add $pathi 1
-				end
 			end
-		end
 
+
+
+		end
+	
 		 
 	else
 		# log warps back
 	end
 
 return
-:goGridOtherOptions
 
+:goGridSingleDeadEnds
+	if ($debug = 1)
+		echo "DEBUG: 	:goGridSingleDeadEnds*"
+	end	
+	setVar $returnSector $PLAYER~CURRENT_SECTOR
+	setVar $dei 1
+	while ($dei <= $safeSectors)
+		if ($safes[$dei] <> $bestSector)
+			if ($warpCount[$safes[$dei]] = 1)
+				setVar $doReturn 0
+
+				if (SECTOR.WARPS[$safes[$dei]][1] = $returnSector)
+					echo "DEBUG: 	:goGridSingleDeadEnds   Sector is adjacent from TWX DB*"
+					setVar $doReturn 1
+				else
+					send "cf" $safes[$dei] "*" $returnSector "*q"
+					waitfor "t is the destination sect"
+					setTextLineTrigger checkReturnSuccess :checkReturnSuccess "he shortest path"
+					setTextLineTrigger checkReturnFail :checkReturnFail "No route within"
+					pause
+					:pathbad
+						killalltriggers
+						send "yq"
+						goto :goGridSingleNext
+					:checkReturnSuccess
+						killalltriggers
+						getWord CURRENTLINE $deDist 4
+						striptext $deDist "("
+						if ($deDist = 1)
+							setVar $doReturn 1
+						end
+				end
+				if ($doReturn = 1)
+					setVar $PLAYER~moveIntoSector $safes[$dei] 
+					gosub :PLAYER~moveIntoSector
+					setSectorParameter  $safes[$dei] "FIGSEC" TRUE
+					setVar $twarpRemoveSector $safes[$dei] 
+					goSub :removeTwarpOption
+					gosub :player~quikstats
+					send "sd"
+					goSub :checkPassingTrading
+					add $stat_moves 1
+					add $stat_figsdown 1		
+					setVar $PLAYER~moveIntoSector $returnSector 
+					gosub :PLAYER~moveIntoSector
+					gosub :player~quikstats
+					add $stat_moves 1
+				end
+			end
+			
+		end
+		:goGridSingleNext
+		add $dei 1
+	end
+	
+return
+
+:goGridOtherOptions
+if ($debug = 1)
+	echo "DEBUG: 	:goGridOtherOptions*"
+end	
 	setVar $returnSector $PLAYER~CURRENT_SECTOR
 
 	if ($moveTwarp = 11) 
@@ -875,6 +1296,9 @@ return
 				setVar $PLAYER~moveIntoSector $newi[$i] 
 				gosub :PLAYER~moveIntoSector
 				setSectorParameter  $newi[$i] "FIGSEC" TRUE
+				setVar $twarpRemoveSector $newi[$i] 
+				goSub :removeTwarpOption
+
 				#gosub :player~quikstats
 				send "sd"
 				goSub :checkPassingTrading
@@ -906,7 +1330,13 @@ return
 return
 
 :getBestSectorFromList
-
+if ($debug = 1)
+	echo "DEBUG: 	:getBestSectorFromList*"
+end	
+	# takes array of chkOption Sectors - picks the one with most warps
+	# Checks it isn't one way - Assuming we aren't using "fill sector" 
+	#         - Need to add in option for "no plotting", as in v1 we don't plot
+	#           as it ruins speed.
 	
 	setVar $newOptions 0
 	setVar $newi 0
@@ -916,7 +1346,7 @@ return
 		setVar $chkSec $chkOption[$i]
 		setVar $adjSec $PLAYER~CURRENT_SECTOR
 		goSub :checkAdj
-		if ($isAdj = 1)
+		if (($isAdj = 1) or ($fillbubble = 1))
 			add $newOptions 1
 			setVar $newi[$newOptions] $chkSec
 		else
@@ -942,6 +1372,9 @@ return
 
 
 :getBestWarps
+if ($debug = 1)
+	echo "DEBUG: 	:getBestWarps*"
+end	
 	setVar $i 1
 	setVar $denCount 0
 	setVar $bestSector 0
@@ -957,7 +1390,9 @@ return
 
 
 :checkTrade
-	
+if ($debug = 1)
+	echo "DEBUG: 	:checkTrade*"
+end		
 	# $pptTradingOption
 	#  "all" all pairs  (which still excludes fuel<>org
 	#  "org" all Org-Equ
@@ -1108,7 +1543,9 @@ return
 return
 
 :doSingleTrade
-	
+if ($debug = 1)
+	echo "DEBUG: 	:doSingleTrade*"
+end			
 	
 	if (($testMcicBuy = 0) and ($testMcicSell = 0))
 		setVar $keepquant 0
@@ -1134,14 +1571,20 @@ return
 	saveVar $BOT~parm1
 	saveVar $BOT~parm2
 	
+	
 	if ($avoidSectorTest = 1)
 		setVar $avoidSectorTest  0
+		setVar $BOT~parm3 "silent"
+		saveVar $BOT~parm3
+		setVar $BOT~user_command_line $BOT~user_command_line & " " & $BOT~parm3
 	else
 		setVar $BOT~parm3 "aoverride"
 		saveVar $BOT~parm3
-		setVar $BOT~user_command_line $BOT~user_command_line & " " & $BOT~parm3
+		setVar $BOT~parm4 "silent"
+		saveVar $BOT~parm4
+		setVar $BOT~user_command_line $BOT~user_command_line & " " & $BOT~parm3 & " " & $BOT~parm4
 	end
-
+	
 
 	saveVar $BOT~command
 	saveVar $BOT~user_command_line
@@ -1157,6 +1600,20 @@ return
 		goto :backtradewait
 	:tradeended
 		killalltriggers
+
+	setVar $BOT~user_command_line "ss"
+	saveVar $BOT~user_command_line
+	setVar $BOT~parm1 "ss"
+	saveVar $BOT~parm1
+
+	setVar $BOT~parm2 ""
+	setVar $BOT~parm3 ""
+	setVar $BOT~parm4 ""
+	saveVar $BOT~parm2
+	saveVar $BOT~parm3
+	saveVar $BOT~parm4
+	setvar $BOT~silent_running 0
+	saveVar $BOT~silent_running
 	add $stat_trades 1
 	gosub :player~quikstats
 
@@ -1222,71 +1679,221 @@ return
 return
 
 :checkPassingTrading
-	# for sectors we've explored/tested MCIC - do we want to trade
-	if ($singleTrades = 1)
-		setVar $doQuickTrade 0
+	if ($fillbubble = 1)
+		setSectorParameter CURRENTSECTOR "WHICHBUB" $whichBubble
+	end
+	if (PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = 0)
+		return
+	end
+if ($debug = 1)
+	echo "DEBUG: 	:checkPassingTrading*"
+end	
+	if ($fillbubble = 1)
+		goSub :checkBubbleTrade
+	else
+		# for sectors we've explored/tested MCIC - do we want to trade
+		if ($singleTrades = 1)
+			setVar $doQuickTrade 0
 
-		if (($player~ORE_HOLDS > 40) and (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 1))
-			setVar $doQuickTrade 1
-		elseif (($player~ORGANIC_HOLDS > 40) and (PORT.BUYORG[$PLAYER~CURRENT_SECTOR] = 1))
-			setVar $doQuickTrade 1
-		elseif (($player~EQUIPMENT_HOLDS > 40) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 1))
-			setVar $doQuickTrade 1
-		end
-		if ($doQuickTrade = 1)
-			goSub :doSingleTrade
+			if (($player~ORE_HOLDS > 40) and (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 1))
+				setVar $doQuickTrade 1
+			elseif (($player~ORGANIC_HOLDS > 40) and (PORT.BUYORG[$PLAYER~CURRENT_SECTOR] = 1))
+				setVar $doQuickTrade 1
+			elseif (($player~EQUIPMENT_HOLDS > 40) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 1))
+				setVar $doQuickTrade 1
+			end
+			if ($doQuickTrade = 1)
+				goSub :doSingleTrade
+			end
 		end
 	end
+	
 	
 return
 
 :checkSingleTrading
-	setVar $doQuickTrade 0
-	setVar $empty_holds ($PLAYER~TOTAL_HOLDS - ($player~ORE_HOLDS + $player~ORGANIC_HOLDS + $player~EQUIPMENT_HOLDS + $PLAYER~COLONIST_HOLDS))
 
-	if ($singleTrades = 1)
+	
+if ($debug = 1)
+	echo "DEBUG: 	:checkSingleTrading*"
+end	
+	if ($fillbubble = 1)
+		goSub :checkBubbleTrade
+	else
 		setVar $doQuickTrade 0
+		setVar $empty_holds ($PLAYER~TOTAL_HOLDS - ($player~ORE_HOLDS + $player~ORGANIC_HOLDS + $player~EQUIPMENT_HOLDS + $PLAYER~COLONIST_HOLDS))
 
-		if (($player~ORE_HOLDS > 40) and (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 1))
+		if ($singleTrades = 1)
+			setVar $doQuickTrade 0
+
+			if (($player~ORE_HOLDS > 40) and (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 1))
+				setVar $doQuickTrade 1
+			elseif (($player~ORGANIC_HOLDS > 40) and (PORT.BUYORG[$PLAYER~CURRENT_SECTOR] = 1))
+				setVar $doQuickTrade 1
+			elseif (($player~EQUIPMENT_HOLDS > 40) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 1))
+				setVar $doQuickTrade 1
+			elseif (((PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 0) or (PORT.BUYORG[$PLAYER~CURRENT_SECTOR] = 0) or (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 0)) and ($empty_holds > 10))
+				setVar $doQuickTrade 1
+			end
+			
+		end
+		getSectorParameter $PLAYER~CURRENT_SECTOR "EQUIPMENTH" $doneMCIC
+		if ($doneMCIC = "")
+			setVar $doneMCIC 0
+		end
+	#echo "$singleTrades: " $singleTrades " $doneMCIC:" $doneMCIC " $testMcicBuy:" $testMcicBuy "PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] : " PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR]  " $player~EQUIPMENT_HOLDS: " $player~EQUIPMENT_HOLDS "*"
+		# if we haven't done MCIC, and it buys equip, and we are testing eqip, and we have at least one hold
+		# TEST BUY PORT
+		if (($doneMCIC = 0) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 1) and ($testMcicBuy = 1) and ($player~EQUIPMENT_HOLDS > 0))
 			setVar $doQuickTrade 1
-		elseif (($player~ORGANIC_HOLDS > 40) and (PORT.BUYORG[$PLAYER~CURRENT_SECTOR] = 1))
-			setVar $doQuickTrade 1
-		elseif (($player~EQUIPMENT_HOLDS > 40) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 1))
-			setVar $doQuickTrade 1
-		elseif (((PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 0) or (PORT.BUYORG[$PLAYER~CURRENT_SECTOR] = 0) or (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 0)) and ($empty_holds > 10))
+		end
+		# TEST SELL PORT
+		if (($doneMCIC = 0) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 0) and ($testMcicSell = 1) and ($empty_holds > 0))
 			setVar $doQuickTrade 1
 		end
 		
+		# OUT OF EQUIP BUY IT
+		if (($testMcicBuy = 1) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 0) and ($player~EQUIPMENT_HOLDS < 2))
+			setVar $doQuickTrade 1
+		end
+		
+		# NEED TO FREE UP EQUIP
+		if (($testMcicSell = 1) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 1) and ($empty_holds < 2) and ($player~EQUIPMENT_HOLDS > 0))
+			setVar $doQuickTrade 1
+		end
+		
+		if ($doQuickTrade = 1)
+			goSub :doSingleTrade
+		end
 	end
+return
+
+:checkBubbleTrade
+
+	if (PORT.EXISTS[$PLAYER~CURRENT_SECTOR] = 0)
+		return
+	end
+
+if ($debug = 1)
+	echo "DEBUG: 	:checkBubbleTrade*"
+end	
 	getSectorParameter $PLAYER~CURRENT_SECTOR "EQUIPMENTH" $doneMCIC
 	if ($doneMCIC = "")
 		setVar $doneMCIC 0
 	end
-#echo "$singleTrades: " $singleTrades " $doneMCIC:" $doneMCIC " $testMcicBuy:" $testMcicBuy "PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] : " PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR]  " $player~EQUIPMENT_HOLDS: " $player~EQUIPMENT_HOLDS "*"
-	# if we haven't done MCIC, and it buys equip, and we are testing eqip, and we have at least one hold
-	# TEST BUY PORT
-	if (($doneMCIC = 0) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 1) and ($testMcicBuy = 1) and ($player~EQUIPMENT_HOLDS > 0))
-		setVar $doQuickTrade 1
-	end
-	# TEST SELL PORT
-	if (($doneMCIC = 0) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 0) and ($testMcicSell = 1) and ($empty_holds > 0))
-		setVar $doQuickTrade 1
-	end
-	
-	# OUT OF EQUIP BUY IT
-	if (($testMcicBuy = 1) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 0) and ($player~EQUIPMENT_HOLDS < 2))
-		setVar $doQuickTrade 1
-	end
-	
-	# NEED TO FREE UP EQUIP
-	if (($testMcicSell = 1) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 1) and ($empty_holds < 2) and ($player~EQUIPMENT_HOLDS > 0))
-		setVar $doQuickTrade 1
-	end
-	
-	if ($doQuickTrade = 1)
-		goSub :doSingleTrade
-	end
 
+	#### Cmmenting out and trying trade mcicbuy
+	if (1 = 2)
+		
+		setVar $empty_holds ($player~total_holds - ($player~ore_holds + $player~organic_holds + $player~equipment_holds + $player~colonist_holds))
+	if ($debug = 1)
+		echo "DEBUG: 	$doneMCIC : " $doneMCIC "*"
+		echo "DEBUG: 	$PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR]  : " PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR]  "*"
+		echo "DEBUG: 	$PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR]  : " PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR]  "*"
+		echo "DEBUG: 	$empty_holds : " $empty_holds "*"
+		echo "DEBUG: 	$player~ORE_HOLDS : " $player~ORE_HOLDS "*"
+		echo "DEBUG: 	$player~EQUIPMENT_HOLDS : " $player~EQUIPMENT_HOLDS "*"
+		echo "DEBUG: 	$testMcicBuy : " $testMcicBuy "*"
+		echo "DEBUG: 	$doneMCIC : " $doneMCIC "*"
+	end	
+
+		if ($testMcicBuy = 1)
+			if ($player~equipment_holds = 0)
+				if ($debug = 1)
+					echo "DEBUG: 	No equipment attempting to buy if a SXS*"
+				end
+				if (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 0)
+
+					if (($empty_holds < 30) and (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 0))
+						send "jy "
+						setVar $fuel_buy ($player~total_holds - 50)
+						send "p t " $fuel_buy "* * "
+						if (PORT.BUYORG[$PLAYER~CURRENT_SECTOR] = 0)
+							send "0*"
+						end
+						send "25* * "
+					end
+
+				end
+				return
+			end
+		end
+		#first check we have some equipemnt and/or empty holds - we need to make sure we have say 30 holds for equipment sells/buys
+		#the rest should be ore
+
+		# TEST BUY PORT
+		setVar $doQuickTrade 0
+		if (($doneMCIC = 0) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 1) and ($testMcicBuy = 1) and ($player~EQUIPMENT_HOLDS > 0))
+			setVar $doQuickTrade 1
+		end
+		# OUT OF EQUIP BUY IT
+		if (($testMcicBuy = 1) and (PORT.BUYEQUIP[$PLAYER~CURRENT_SECTOR] = 0) and ($player~EQUIPMENT_HOLDS < 10) and ($player~EMPTY_HOLDS > 9))
+			setVar $doQuickTrade 1
+		end
+
+		if ((PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 0) and ($empty_holds > 90))
+			if ($testMcicBuy = 0)
+				send "j y p t * * 0* 0*"
+				gosub :player~quikstats
+				return
+			else
+				setVar $doQuickTrade 1
+			end
+		end
+	else
+		setVar $doQuickTrade 1
+	end
+ 
+	if ($doQuickTrade = 1)
+		# keeping fuel topped up and testing equipment
+		setVar $keepquant ($player~equipment_holds - 5)
+		setVar $BOT~command "trade"
+		setVar $BOT~user_command_line " mcicbuy"
+		setVar $BOT~parm1 "mcicbuy"
+		
+		
+		saveVar $BOT~parm1
+	
+		
+		if ($avoidSectorTest = 1)
+			setVar $avoidSectorTest  0
+			setVar $BOT~parm2 "silent"
+			saveVar $BOT~parm2
+			setVar $BOT~user_command_line $BOT~user_command_line & " " & $BOT~parm2
+		else
+			setVar $BOT~parm2 "aoverride"
+			saveVar $BOT~parm2
+			setVar $BOT~parm3 "silent"
+			saveVar $BOT~parm3
+			setVar $BOT~user_command_line $BOT~user_command_line & " " & $BOT~parm2 & " " & $BOT~parm3
+		end
+		
+		saveVar $BOT~command
+		saveVar $BOT~user_command_line
+		load "scripts\"&$bot~mombot_directory&"\commands\cashing\trade.cts"
+		
+		setEventTrigger        tradeended2        :tradeended2 "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\cashing\trade.cts"
+		pause
+		
+		:tradeended2
+			killalltriggers
+			gosub :player~quikstats
+
+		setVar $BOT~user_command_line "ss"
+		saveVar $BOT~user_command_line
+		setVar $BOT~parm1 "ss"
+		saveVar $BOT~parm1
+		
+		setVar $BOT~parm2 ""
+		setVar $BOT~parm3 ""
+		setVar $BOT~parm4 ""
+		saveVar $BOT~parm2
+		saveVar $BOT~parm3
+		saveVar $BOT~parm4
+		setvar $BOT~silent_running 0
+		saveVar $BOT~silent_running
+	end
+		
 return
 
 :restock
@@ -1648,7 +2255,13 @@ return
 
 ########################### GRID NEXT SECTOR
 :gridNextSector
+if ($debug = 1)
+	echo "DEBUG: 	:gridNextSector best sec:" $bestSector " kill: " $kill "*"
+end	
+	## We might not be using these - but remove it anyway
 
+	setVar $twarpRemoveSector $bestSector
+	goSub :removeTwarpOption
 	if (($bestSector < 11) or ($bestSector = $stardock))
 		send "m" $bestSector "**"
 		add $stat_moves 1
@@ -1663,12 +2276,14 @@ return
 			if (($sector~realTraderCount > ($sector~corpieCount + $sector~defenderShips)))
 				gosub :combat~fastattack
 			end
+			
 		else
 			waitfor "Warps to S"
 			waitfor "Command ["		
 		end
-		#gosub :player~quikstats
 		
+		#gosub :player~quikstats
+	
 		setVar $chkSec $PLAYER~CURRENT_SECTOR
 		setVar $adjSec $origin
 		goSub :checkAdj
@@ -1677,19 +2292,53 @@ return
 			goSub :pushPath
 			
 		else
+		# check adj relies on "plotting", we aren't plotting, so check this AFTER we arrive
 			# We just went through a one way - reset path back
 			setArray $pathBack $maxPathBack
 			setVar $pathBacki 0
 			setArray $pathBackHasOptions $maxPathBack
 			echo "WENT THROUGH A ONE WAY -PATH BACK EMPTED*"
 			echo "Have had issues, leaving to highlight for debugging*"
+			if ($fillbubble = 1)
+				# we are doing fill area - so let's see if we can plot a course back to door
+				send "cf*" $fillBubbleInt "*q"
+				waitfor "What is the starting secto"
+				setTextLineTrigger fillPlotChkBad :fillPlotChkBad "No route within "
+				setTextLineTrigger fillPlotChkGood :fillPlotChkGood "he shortest path"
+				pause
+				:fillPlotChkBad 
+					send "nq"
+					# lets get back in
+					echo "*We have exited the bubble.. Attempting to Twarp Back in"
+					goSub :useTwarpOption
+					if ($twarpOptionSuccess = 0)
+						setVar $SWITCHBOARD~message "We have left the bubble and I can't get back - Reposition and type - GO GO GO (nospaces).*"
+						gosub :SWITCHBOARD~switchboard
+						waitfor "GOGOGO"
+					end
+				:fillPlotChkGood
+				killAllTriggers
+				# ok, we good, continue
+
+			
+
+			end
 		end
 		add $stat_figsdown 1
 		add $stat_moves 1
 	end
-	
+	if (PORT.EXISTS[CURRENTSECTOR] = TRUE)
+		if (PORT.BUYFUEL[CURRENTSECTOR] = 0)
+			if (($pptTradingOption = "none") and ($testMcicBuy = 0))
+				if ($player~ORE_HOLDS < 100)
+					send "jy p t * * 0* 0* "
+				end
+			end
+		end
+	end
 return
 
+#
 ############# PATH Stack
 
 :moveStackToOption
@@ -1718,6 +2367,9 @@ return
 
 	while ($ii <= $pathBacki)
 		if ($pathBackHasOptions[$ii] = 1)
+if ($debug = 1)
+	echo "DEBUG: checkOptions    SafeOptions BackDirect: "  $pathBack[$ii] "*"
+end
 			setVar $safeOptionsBackDirect $pathBack[$ii]
 			setVar $safeOptionsBack 1
 			setVar $ii 30001
@@ -1804,7 +2456,9 @@ return
 ###### END PATH STac
 
 :holoScan
-	
+	if ($debug = 1)
+		echo "DEBUG: HoloScan*"
+	end
 if ($kill = true)
 	setvar $before_holo_kill_sector $player~current_sector
 	gosub :combat~holokill
@@ -1819,11 +2473,11 @@ if ($kill = true)
 		gosub :switchboard~switchboard
 	end
 else
-	send "sh"
+	send "sh^q"
 	waitfor "Long Range Scan"
 	setVar $hIndex 1
 	setVar $hData ""
-
+#: ENDINTERROG
 	:holoSectorStart
 		setTextLineTrigger holoScanFirstSector :holoScanFirstSector "Sector  :"
 		pause
@@ -1840,7 +2494,7 @@ else
 
 			killtrigger holoScanDetails
 			getWord CURRENTLINE $firstword 1
-			if ($firstword = "Warps")
+			if ($firstword = "Command")
 				return
 			elseif ($firstword = "Sector")
 				setVar $holoData[$hIndex] $hData
@@ -1852,6 +2506,10 @@ else
 				goto :holoScanContinue
 			end
 end
+
+if ($debug = 1)
+		echo "DEBUG: Exit HoloScan*"
+	end
 return
 
 
@@ -1969,6 +2627,47 @@ return
 
 return
 
+:topOffFuel
+	# Pass in $totore
+	if ($debug = 1)
+		echo "DEBUG:    $topOffFuel*"
+	end
+	gosub :player~quikstats
+
+	echo "totore: " $totore	
+	if ($totore < $player~ORE_HOLDS)
+		setVar $empty_holds ($player~total_holds - ($player~ore_holds + $player~organic_holds + $player~equipment_holds + $player~colonist_holds))
+		setVar $required_ore ($totore - $player~ORE_HOLDS)
+		if ($debug = 1)
+			echo "DEBUG: $totore: " $totore "*"
+			echo "DEBUG: $empty_holds: " $empty_holds "*"
+			echo "DEBUG: $required_ore: " $required_ore "*"
+			
+		end
+		if ($empty_holds < $required_ore)
+			send "jy p t * * 0* 0* "
+		else
+			send "p t "
+
+			if (PORT.BUYORG[CURRENTSECTOR] = 1) and ($player~organic_holds > 0)
+				send "* * "
+			end
+			
+			if (PORT.BUYEQUIP[CURRENTSECTOR] = 1) and ($player~equipment_holds > 0)
+				if ($testMcicBuy = 1)
+					send "0* "
+				else
+					send "* * "
+				end
+			end
+			if ($testMcicBuy = 1)
+				send $required_ore "* * 0* 0* "
+			else
+				send "* * 0* 0* "
+			end
+		end
+	end
+return
 
 :functionDoTopOff
 	send "cf*" $topoffSector "*"
@@ -1986,15 +2685,15 @@ return
 		stripText $dist1 "("
 		stripText $dist2 "("
 		setvar $totore (($dist1 + $dist2) * 3)
-	echo "totore: " $totore	
-		if ($player~ORE_HOLDS < $totore)
-			send "jy p t " $totore "* * 0* 0* "
-		end
+		gosub :player~quikstats
+
+		goSub :topOffFuel
+		
 	setVar $returnSector $player~CURRENT_SECTOR
 	setVar $player~warpto $topoffSector
 	gosub :player~twarp
 	if ($player~twarpSuccess = FALSE)
-		setVar $SWITCHBOARD~message "Can't make it to Terra.  Halting.*"
+		setVar $SWITCHBOARD~message "Did not make it to top off sector... Halting*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
@@ -2014,15 +2713,354 @@ return
 	setVar $player~warpto $returnSector
 	gosub :player~twarp
 	if ($player~twarpSuccess = FALSE)
-		setVar $SWITCHBOARD~message "Can't make it to Terra.  Halting.*"
+		setVar $SWITCHBOARD~message "Can't make it back from Top Off sector.. Halting.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 
 	gosub :player~quikstats
+	#if ($fillbubble = 1)
+	#	send "p t * * 0* 0* "
+	#else
+		
+	#	send " p t " $totore "* * 0* 0* "
+		
+	#end
+return
 
+:useTwarpOption
+	if ($debug = 1)
+		echo "DEBUG: useTwarpOption*"
+	end
+
+	setVar $twarpOptionSuccess 0
+	gosub :player~quikstats
+	goSub :getTwarpOption
+	if ($twarpDest = 0)
+		return
+	end
+
+	setVar $lowOre 0
+	if ($player~ORE_HOLDS < 90)
+		send "cf*" $twarpDest "*q"
+		waitfor "at is the destination se"
+		setTextLineTrigger utoGetDistance :utoGetDistance "The shortest path ("
+		setTextLineTrigger utoNoDistance :utonoDistance  "No route within"
+		pause
+		:utonoDistance
+			killAllTriggers
+			send "nq"
+			#just making a figure up as we can't plot
+			setVar $oreNeeded 90
+			goto :utoCalcOre
+		:utoGetDistance
+			killalltriggers
+			getWord CURRENTLINE $hopDist 4
+			striptext $hopDist "("
+			setVar $oreNeeded ($hopDist * 3)
+		:utoCalcOre
+		if ($oreNeeded > $player~ore_holds)
+			if (PORT.BUYFUEL[$PLAYER~CURRENT_SECTOR] = 0) AND (PORT.EXISTS[CURRENTSECTOR] = TRUE)
+				
+				goSub :topOffFuel
+				gosub :player~quikstats	
+				setVar $lowOre 0
+			else
+				setVar $lowOre 1
+			end
+		end
+
+	end
+
+	if ($lowOre = 1)
+		getNearestWarps $nearArray CURRENTSECTOR
+		setVar $neari 1
+		while ($neari <= $nearArray)
+			setVar $focus $nearArray[$neari]
+			if (PORT.BUYFUEL[$focus] = 0) AND (PORT.EXISTS[$focus] = TRUE)
+				getCourse $courseToFuel CURRENTSECTOR $focus
+				if ($courseToFuel < 1)
+
+				else
+					setVar $coursei 1
+					setVar $courseSafe 1
+					while ($coursei <= $courseToFuel)
+						getSectorParameter $courseToFuel[$coursei] "FIGSEC" $hasFig
+						if ($hasFig = 0)
+							setVar $courseSafe 0
+						end
+						add $coursei 1
+					end
+					if ($courseSafe = 1)
+						echo "**We can mow to :" $focus " safely to get fuel - testing*"
+
+					end
+				end
+			end
+			add $neari 1
+		end
+		echo "**########### NOT ENOUGH FUEL ######*"
+		echo "* ### GEt Fuel, and type FUEL_GO! with no _ to continue*"
+		waitfor "FUELGO!"
+	end
+
+	setVar $player~warpto $twarpDest
+	gosub :player~twarp
+	gosub :player~quikstats
+	setVar $twarpRemoveSector $twarpDest
+
+	if ($player~twarpSuccess = TRUE)
+		add $stat_moves 1
+		# Clear Stack of paths
+		setArray $pathBack $maxPathBack
+		setVar $pathBacki 0
+		setArray $pathBackHasOptions $maxPathBack
+		setVar $twarpOptionSuccess 1
+	else
+
+		setVar $SWITCHBOARD~message "Twarp to next safe destination failed - halting!*"
+		gosub :SWITCHBOARD~switchboard 
+		halt
+	end
 
 return
+:storeTwarpOptions
+	# Takes the $newi array of new options and stores them for later twarp
+	setVar $i 1
+	while ($i <= $newOptions)
+		if ($newi[$i] <> $bestSector)
+			setVar $twarpOrigin $PLAYER~CURRENT_SECTOR
+			setVar $twarpAdj $newi[$i] 
+		end
+		add $i 1
+	end
+return
+
+
+:getTwarpOption
+	#	returns		$twarpDest  	-- place to land -- if 0, out of options
+	#				$twarpDestAdj 
+	setVar $twarpDest 0
+	setVar $twarpDestAdj 0
+
+	if ($debug = 1)
+		echo "DEBUG:  getTwarpOption     $twarpOptioni: " $twarpOptioni "*"
+	end
+
+	if ($twarpOptioni = 0)
+		# no options
+		return
+	end
+
+	setVar $foundValid 0
+	setVar $twarpChki $twarpOptioni
+	while ($twarpChki > 0)
+		if ($twarpOption[$twarpChki] = 0) and ($foundValid = 0)
+			subtract $twarpOptioni 1
+		end
+		if ($twarpOption[$twarpChki] > 0)
+			# really don't think $foundValid is required.. but..
+			setVar $foundValid 1
+			
+			setVar $twarpDest $twarpOption[$twarpChki]
+			setVar $twarpDestAdj $twarpOptionAdj[$twarpChki]
+			if ($debug = 1)
+				echo "DEBUG: Found an option twarpDest: " $twarpDestAdj " twarpDest " $twarpDestAdj "*"
+			end
+			# remove this as a option
+			setVar $twarpOption[$twarpChki] 0
+			setVar $twarpOptionAdj[$twarpChki] 0
+			return
+		end
+		subtract $twarpChki 1
+	end
+
+return
+
+:addTwarpOption
+	# Takes 	$twarpOrigin  -- Where we'll land and probably currently are
+	#			 $twarpAdj - Adjacent Sector we think is safe.
+	
+	if ($debug = 1)
+		echo "DEBUG: :addTwarpOption    $twarpOrigin: #" $twarpOrigin "# $twarpAdj: #" $twarpAdj "#*" 
+	end
+	setVar $twarpOptionPresent 0
+	goSub :chkExistsTwarpOption
+	if ($twarpOptionPresent = 0)
+		if ($debug = 1)
+			echo "DEBUG: ADDED $twarpOrigin: " $twarpOrigin  " $twarpAdj : " $twarpAdj "*" 
+		end
+		add $twarpOptioni 1
+		setVar $twarpOption[$twarpOptioni] $twarpOrigin
+		setVar $twarpOptionAdj[$twarpOptioni] $twarpAdj
+		setSectorParameter $twarpOptionAdj[$twarpOptioni] "TWARPOPT" $twarpOrigin
+	end
+
+return
+
+:chkExistsTwarpOption
+	# Takes 	$twarpAdj
+	# Returns	$twarpOptionPresent 
+
+	if ($debug = 1)
+		echo "DEBUG: chkExistsTwarpOption   $twarpAdj " $twarpAdj " *"
+	end
+
+	setVar $twarpOptionPresent 0
+
+	setVar $twarpChki 1
+	while ($twarpChki <= $twarpOptioni)
+
+	if ($debug = 2)
+		echo "TwarpChki: " $twarpChki " adj: " $twarpOptionAdj[$twarpChki]   " twarpAdj: " $twarpAdj "*"
+	end
+		if ($twarpOptionAdj[$twarpChki] = $twarpAdj)
+			setVar $twarpOptionPresent 1
+			if ($debug = 1)
+				echo "DEBUG: chkExistsTwarpOption   $twarpOptionPresent " $twarpOptionPresent " *"
+			end
+			return
+		end
+		add $twarpChki 1
+	end
+return
+
+:removeTwarpOption
+	# Takes $twarpRemoveSector
+
+	if ($debug = 1)
+		echo "DEBUG: removeTwarpOption   $twarpRemoveSector " $twarpRemoveSector " *"
+	end
+
+	setVar $twarpChki 1
+	while ($twarpChki <= $twarpOptioni)
+		if ($twarpOptionAdj[$twarpChki] = $twarpRemoveSector)
+			
+			setSectorParameter $twarpOptionAdj[$twarpChki] "TWARPOPT" 0
+			setVar $twarpOption[$twarpChki] 0
+			setVar $twarpOptionAdj[$twarpChki] 0
+			if ($debug = 1)
+				echo "Removed " $twarpRemoveSector " from list*"
+			end
+			return
+		end
+		add $twarpChki 1
+	end
+
+return
+
+:clearTwarpOption
+	
+	setVar $tt 11
+	while ($tt <= SECTORS)
+		
+		getSectorParameter $tt "TWARPOPT" $hasOpt 
+		if ($hasOpt = "")
+			setVar $hasOpt 0
+		end
+		if ($hasOpt > 10)
+			setSectorParameter $tt "TWARPOPT" 0
+		end
+		add $tt 1
+	end
+return
+:loadTwarpOption
+	setVar $twarpOption 0
+	setVar $twarpOptionAdj 0
+	setVar $twarpOptioni 0
+	setVar $tt 11
+	while ($tt <= SECTORS)
+		
+		getSectorParameter $tt "TWARPOPT" $hasOpt 
+		if ($hasOpt = "")
+			setVar $hasOpt 0
+		end
+		if ($hasOpt > 10)
+			add $twarpOptioni 1
+			setVar $twarpOption[$twarpOptioni] $hasOpt
+			setVar $twarpOptionAdj[$twarpOptioni] $tt
+			if ($debug = 1)
+				echo "DEBUG: TWARPOPTION added Adj: " $tt " Land:  " $hasOpt "*"
+			end
+		end
+		add $tt 1
+	end
+return
+
+
+
+:checkPPTAlerts
+	if (PORT.EXISTS[CURRENTSECTOR] = TRUE)
+		if ($pptPortUsed[CURRENTSECTOR] = 0)
+			setVar $cport PORT.CLASS[CURRENTSECTOR]
+			
+			if ($cport = 5)
+				add $portsClass5i 1
+				setVar $portsClass5[$portsClass5i] CURRENTSECTOR
+				# check for 5 2 pair
+				setVar $pptCheckType 1
+				gosub :checkPairReady
+				setVar $pptPortUsed[CURRENTSECTOR] 1
+			elseif ($cport = 2)
+				add $portsClass2i 1
+				setVar $portsClass2[$portsClass2i] CURRENTSECTOR
+				# check for 5 2 pair
+				setVar $pptCheckType 1
+				gosub :checkPairReady
+				setVar $pptPortUsed[CURRENTSECTOR] 1
+			elseif ($cport = 4)
+				add $portsClass4i 1
+				setVar $portsClass4[$portsClass4i] CURRENTSECTOR
+				# check for 4 1 pair
+				setVar $pptCheckType 2
+				gosub :checkPairReady
+				setVar $pptPortUsed[CURRENTSECTOR] 1
+			elseif ($cport = 1)
+				add $portsClass1i 1
+				setVar $portsClass1[$portsClass1i] CURRENTSECTOR
+				# check for 4 1 pair
+				setVar $pptCheckType 2
+				gosub :checkPairReady
+				setVar $pptPortUsed[CURRENTSECTOR] 1
+			end
+			
+		end
+	end
+
+return
+
+:checkPairReady
+
+	setVar $doAnnouncement 0
+	if ($pptCheckType = 1)
+		setVar $diff1 ($portsClass5i - $portsCurrent5i)
+		setVar $diff2 ($portsClass2i - $portsCurrent2i)
+		if (($diff1 > 0) and ($diff2 > 0))
+			# both ports are ready!
+			add $portsCurrent5i 1
+			add $portsCurrent2i 1
+			setVar $pptAnnouncement "TWARPPPTPAIR:" & $portsClass5[$portsCurrent5i] & "_" 
+			setVar $pptAnnouncement $pptAnnouncement & $portsClass2[$portsCurrent2i] & "_3_3"  & ":ENDPAIR"
+			setVar $doAnnouncement 1
+		end
+	else
+		setVar $diff1 ($portsClass4i - $portsCurrent4i)
+		setVar $diff2 ($portsClass1i - $portsCurrent1i)
+		if (($diff1 > 0) and ($diff2 > 0))
+			# both ports are ready!
+			add $portsCurrent4i 1
+			add $portsCurrent1i 1
+			setVar $pptAnnouncement "TWARPPPTPAIR:" & $portsClass4[$portsCurrent4i] & "_" 
+			setVar $pptAnnouncement $pptAnnouncement & $portsClass1[$portsCurrent1i] & "_3_3"  & ":ENDPAIR"
+			setVar $doAnnouncement 1
+		end
+	end
+	if ($doAnnouncement = 1)
+		setVar $SWITCHBOARD~message $pptAnnouncement & "*"
+		gosub :SWITCHBOARD~switchboard
+	end
+return
+
 
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\banner\bot"

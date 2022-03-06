@@ -467,8 +467,10 @@ return
 	setVar $firstSecOut 0
 	setVar $lastSecin 0
 
-    send "*CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q c o* c q q q zn *"
+    send "*CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q "
 	
+	# not in corp no point changing ship
+	#send "c o* c q q q zn *"
 	gosub :quickstart_getcourse
 
 	

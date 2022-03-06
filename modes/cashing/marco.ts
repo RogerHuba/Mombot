@@ -26,7 +26,7 @@ setVar $BOT~help[3]  $BOT~tab&" macro [trade/report] {turns} {filename.txt} {int
 setVar $BOT~help[4]  $BOT~tab&"                       {nohag}"
 setVar $BOT~help[5]  $BOT~tab&" trade  - indicates bot will trade the route"
 setVar $BOT~help[6]  $BOT~tab&" report - indicates bot will write route to file"
-setVar $BOT~help[7]  $BOT~tab&" "
+setVar $BOT~help[7]  $BOT~tab&" poll   - polls and waits for trade options"
 setVar $BOT~help[8]  $BOT~tab&" {filename.txt} - can either be used as a source"
 setVar $BOT~help[9]  $BOT~tab&"                  route or for writing to share."
 setVar $BOT~help[10]  $BOT~tab&"  "
@@ -91,7 +91,7 @@ setVar $ports[8] BBB
 gosub :player~isEpHaggle
 
 
-if (($bot~parm1 <> "trade") and ($bot~parm1 <> "report"))
+if (($bot~parm1 <> "trade") and ($bot~parm1 <> "report") and ($bot~parm1 <> "poll"))
 	setVar $SWITCHBOARD~message "First parameter should be trade or report.*"
 	gosub :SWITCHBOARD~switchboard
 	halt
@@ -104,8 +104,13 @@ if ($bot~parm3 = 0)
 	setVar $bot~parm3 ""
 end
 
-if ($bot~parm1 = "trade")
-	setVar $mode "trade"
+if ($bot~parm1 = "trade") or ($bot~parm1 = "poll")
+	if ($bot~parm1 = "poll")
+		setVar $mode "poll"
+	else
+		setVar $mode "trade"
+	end
+	
 	if ($player~unlimitedGame = FALSE)
 		isNumber $test $bot~parm2
 		if ($test)
@@ -177,26 +182,26 @@ if ($bot~parm1 = "trade")
 	end
 	
 
-# t - EP - h "internal" - "n" no haggle
-setVar $haggle "t"
-setVar $msg ""
-getWordPos $bot~user_command_line $pos "int"
-if ($pos > 0)
-	setVar $haggle "h"
-	setVar $msg $msg&"Using internal haggle*"
-end
-getWordPos $bot~user_command_line $pos "nohag"
-if ($pos > 0)
-	setVar $haggle "n"
-	setVar $msg $msg&"Using no haggle routine*"
-end
-if ($haggle = "t")
-	setVar $msg $msg&"Using EP haggle routine*"
-end
+	# t - EP - h "internal" - "n" no haggle
+	setVar $haggle "t"
+	setVar $msg ""
+	getWordPos $bot~user_command_line $pos "int"
+	if ($pos > 0)
+		setVar $haggle "h"
+		setVar $msg $msg&"Using internal haggle*"
+	end
+	getWordPos $bot~user_command_line $pos "nohag"
+	if ($pos > 0)
+		setVar $haggle "n"
+		setVar $msg $msg&"Using no haggle routine*"
+	end
+	if ($haggle = "t")
+		setVar $msg $msg&"Using EP haggle routine*"
+	end
 
-	
-setvar $switchboard~message $msg
-gosub :switchboard~switchboard
+		
+	setvar $switchboard~message $msg
+	gosub :switchboard~switchboard
 
 	listActiveScripts $scripts
 	setVar $foundep 0
@@ -223,43 +228,48 @@ gosub :switchboard~switchboard
 	setDelayTrigger delay :startPause 1000
 	pause
 	:startPause
+		killtrigger startPause
 
-	if ($bot~parm3 <> "")
-		setVar $trademode "file" 
-		setVar $fread $BOT~FOLDER & "/" & $bot~parm3
-		fileExists $exists $fread
-		if ($exists)
-			setArray $pairlist SECTORS
-			setVar $i 1
-			setVar $pairi 1
-			read $fread $pair $i
-			while ($pair <> EOF)
-				
-				if ($pair <> "")
-					setVar $pairlist[$pairi] $pair
-					add $pairi 1
-				end
-				add $i 1
+	if ($mode = "trade")	
+		if ($bot~parm3 <> "")
+			setVar $trademode "file" 
+			setVar $fread $BOT~FOLDER & "/" & $bot~parm3
+			fileExists $exists $fread
+			if ($exists)
+				setArray $pairlist SECTORS
+				setVar $i 1
+				setVar $pairi 1
 				read $fread $pair $i
+				while ($pair <> EOF)
+					
+					if ($pair <> "")
+						setVar $pairlist[$pairi] $pair
+						add $pairi 1
+					end
+					add $i 1
+					read $fread $pair $i
+				end
+				setVar $totalPairs ($pairi - 1)
 			end
-			setVar $totalPairs ($pairi - 1)
+			setVar $i 1
+			setVar $portPairsi 0
+			while ($i <= $totalPairs)
+				add $portPairsi 1
+				getWord $pairlist[$portPairsi] $portPairs[$i][1] 1
+				getWord $pairlist[$portPairsi] $portPairs[$i][2] 2
+				getWord $pairlist[$portPairsi] $portPairs[$i][3] 3
+				getWord $pairlist[$portPairsi] $portPairs[$i][4] 4
+				echo $pairlist[$portPairsi] "*"
+				add $i 1
+			end
+			echo "total pairs: " $totalPairs "*"
+			
+		else
+			setVar $trademode "self"
+			goSub :getPairs
 		end
-		setVar $i 1
-		setVar $portPairsi 0
-		while ($i <= $totalPairs)
-			add $portPairsi 1
-			getWord $pairlist[$portPairsi] $portPairs[$i][1] 1
-			getWord $pairlist[$portPairsi] $portPairs[$i][2] 2
-			getWord $pairlist[$portPairsi] $portPairs[$i][3] 3
-			getWord $pairlist[$portPairsi] $portPairs[$i][4] 4
-			echo $pairlist[$portPairsi] "*"
-			add $i 1
-		end
-		echo "total pairs: " $totalPairs "*"
-		
 	else
-		setVar $trademode "self"
-		goSub :getPairs
+		goSub :loadPollTrades
 	end
 else
 	
@@ -286,13 +296,16 @@ else
 	halt
 end
 
+setVar $debug 1
 
 
-
-
+:restartLoop
 
 setVar $loopi 1
 while ($loopi <= $portPairsi)
+	if ($debug = 1)
+		echo "DEBUG: Top of Loop*"
+	end
 	setVar $sec $portPairs[$loopi][1]
 	setVar $pairsec $portPairs[$loopi][2]
 	setVar $skip FALSE
@@ -328,7 +341,7 @@ while ($loopi <= $portPairsi)
 					setVar $hasFig 0
 				end
 				if ($hasfig = 0)
-					killAllTriggers
+					###killAllTriggers
 					setVar $SWITCHBOARD~message "Sector missing fig, moving onto next.*"
 					gosub :SWITCHBOARD~switchboard
 					goto :nextLoop
@@ -340,12 +353,14 @@ while ($loopi <= $portPairsi)
 				setTextLineTrigger checkPair2LockNo :checkPair2LockNo "No locating beam found for sector"
 				pause
 				:checkPair2LockNo
-					killAllTriggers
+					killtrigger checkPair2LockYes
+					killtrigger checkPair2LockNo
 					setVar $SWITCHBOARD~message "Sector missing fig, moving onto next.*"
 					gosub :SWITCHBOARD~switchboard
 					goto :nextLoop
 				:checkPair2LockYes
-					killAllTriggers
+					killtrigger checkPair2LockYes
+					killtrigger checkPair2LockNo
 			end
 		end
 		# move us in - this is ok if first sector
@@ -364,12 +379,19 @@ while ($loopi <= $portPairsi)
 	
 	goSub :checkDist
 	send "d"
-	waitfor "Warps to Sect"
+	
+	setTextLineTrigger warps1 :warps1 "Warps to Sect"
+	pause
+	:warps1
+
 	if ($cashPause = 1)
 		if (PORT.EXISTS[CURRENTSECTOR] = TRUE)
 			if (PORT.BUYFUEL[CURRENTSECTOR] = FALSE)
 				send "'[atm:" $switchboard~BOT_NAME "=" CURRENTSECTOR "]*"
-				waitfor "[atmdone]"
+				setTextLineTrigger atm1 :atm1 "[atmdone]"
+				pause
+				:atm1
+
 				send "'[atm]Spend it wisely, I'm out here risking my hide for peanuts!*"
 				setVar $cashPause 0
 			end
@@ -392,12 +414,16 @@ while ($loopi <= $portPairsi)
 		end
 		gosub :player~quikstats
 		send "d"
-		waitfor "Warps to Sect"
+		setTextLineTrigger warps2 :warps2 "Warps to Sect"
+		pause
+		:warps2
 		if ($cashPause = 1)
 			if (PORT.EXISTS[CURRENTSECTOR] = TRUE)
 				if (PORT.BUYFUEL[CURRENTSECTOR] = FALSE)
 					send "'[atm:" $switchboard~BOT_NAME "=" CURRENTSECTOR "]*"
-					waitfor "[atmdone]"
+					setTextLineTrigger atm2 :atm2 "[atmdone]"
+					pause
+					:atm2
 					send "'[atm]Spend it wisely, I'm out here risking my hide for peanuts!*"
 					setVar $cashPause 0
 				end
@@ -422,6 +448,13 @@ while ($loopi <= $portPairsi)
 	
 	:nextLoop
 	add $loopi 1
+end
+if ($mode = "poll")
+	setVar $portPairs 0
+	setVar $portPairsi 0
+	setVar $loopi 1
+	goSub :pollForPorts
+	goSub :restartLoop
 end
 
 halt
@@ -448,8 +481,11 @@ halt
 	setVar $sellOreQuant ($player~ORE_HOLDS - $oreReq)
 
 	send "p   t"
-	waitfor "Commerce report for"
 	
+	setTextLineTrigger Commerce1 :Commerce1 "Commerce report for"
+	pause
+	:Commerce1
+
 	setTextLineTrigger checkCash :checkCash "empty cargo holds"
 	setTextLineTrigger portFail :portFail "ou don't have anything they want, and they don't have anything you can b"
 	pause
@@ -458,9 +494,9 @@ halt
 		gosub :SWITCHBOARD~switchboard
 		halt
 	:checkCash
-		killAllTriggers
-
-	killalltriggers
+		killtrigger checkCash
+		killtrigger portFail
+	
 	:tradeloop
 	setTextTrigger sell1 :sell1 "How many holds of Fuel Ore do you want to sell"
 	setTextTrigger sell2 :sell2 "How many holds of Organics do you want to sell"
@@ -472,28 +508,29 @@ halt
 	pause
 
 	:sell1
-		killalltriggers
+		goSub :killTradeLoopTriggers
+
 		send $sellOreQuant "*"
 		goSub :doTrade
 		goto :tradeloop
 	:sell2
-		killalltriggers
+		goSub :killTradeLoopTriggers
 		send "*"
 		goSub :doTrade
 		goto :tradeloop	
 		
 	:sell3
-		killalltriggers
+		goSub :killTradeLoopTriggers
 		send "*"
 		goSub :doTrade
 		goto :tradeloop
 		
 	:buy1
-		killalltriggers
+		goSub :killTradeLoopTriggers
 		gosub :noTrade
 		goto :tradeloop
 	:buy2
-		killalltriggers
+		goSub :killTradeLoopTriggers
 		if ($productToBuy = "org")
 			send "*"
 		else
@@ -501,7 +538,7 @@ halt
 		end
 		goto :tradeloop
 	:buy3
-		killalltriggers
+		goSub :killTradeLoopTriggers
 		if ($productToBuy = "equip")
 			send "*"
 		else
@@ -510,8 +547,18 @@ halt
 		goto :tradeloop
 
 	:tradeloopdone
-		killalltriggers
+		goSub :killTradeLoopTriggers
 
+return
+
+:killTradeLoopTriggers
+	killtrigger sell1
+	killtrigger sell2
+	killtrigger sell3
+	killtrigger buy1
+	killtrigger buy2
+	killtrigger buy3
+	killtrigger tradeloopdone
 return
 
 :doTrade
@@ -519,11 +566,14 @@ return
 		
 		
 		if ($haggle = "t")
-			waitfor "Agreed,"
+			setTextLineTrigger agreed1 :agreed1 "Agreed,"
+			pause
+			:agreed1
+			
 			setTextLineTrigger tradeFin :tradeFin "empty cargo holds"
 			pause
 			:tradeFin
-				
+				killtrigger tradeFin
 		elseif ($haggle = "h")
 			gosub :PLAYER~startHaggle
 		end
@@ -535,7 +585,10 @@ return
 
 :noTrade
 	send "0*"
-	waitfor "empty cargo holds."
+	
+	setTextLineTrigger empty1 :empty1 "empty cargo holds."
+	pause
+	:empty1
 return
 
 
@@ -584,12 +637,17 @@ return
 	setEventTrigger        pptended        :pptended "SCRIPT STOPPED" "scripts\"&$bot~mombot_directory&"\commands\cashing\ppt.cts"
 	pause
 	:pptPauseForCash
-			killalltriggers
+			killtrigger pptPauseForCash
+			killtrigger pptMove
+			killtrigger pptended
+			
 			setVar $cashPause 1
 			send "'[atm:ack] Will pause at next SXB post trading.*"
 			goto :backpptwait
 	:pptMove
-		killalltriggers
+		killtrigger pptPauseForCash
+		killtrigger pptMove
+		killtrigger pptended
 		if ($PLAYER~Turns < $halt_turns)  AND ($player~unlimitedGame = FALSE)
 			stop "scripts\"&$bot~mombot_directory&"\commands\cashing\ppt.cts"
 			setVar $SWITCHBOARD~message "Turns are low, halting!*"
@@ -598,7 +656,15 @@ return
 		end
 		goto :backpptwait
 	:pptended
-		killalltriggers
+		killtrigger pptPauseForCash
+		killtrigger pptMove
+		killtrigger pptended
+		setVar $pptSec1  $portPairs[$loopi][1]
+		goSub :removePPTOption
+		setVar $pptSec1  $portPairs[$loopi][2]
+		goSub :removePPTOption
+		
+
 	gosub :player~quikstats
 	
 
@@ -611,12 +677,15 @@ return
 	setTextLineTrigger pathbad1 :pathbad1 "No route within"
 	pause
 	:pathbad1
-		killalltriggers
+		killtrigger pathgood1
+		killtrigger pathbad1
+		
 		send "yq"
 		setVar $plot 0
 		goto :tryagainplot
 	:pathgood1
-		killalltriggers
+		killtrigger pathgood1
+		killtrigger pathbad1
 		
 		getWord CURRENTLINE $dist2 4 
 		stripText $dist2 "("
@@ -626,12 +695,14 @@ return
 	setTextLineTrigger pathbad2 :pathbad2 "No route within"
 	pause
 	:pathbad2
-		killalltriggers
+		killtrigger pathgood2
+		killtrigger pathbad2
 		send "yq"
 		setVar $plot 0
 		goto :tryagainplot
 	:pathgood2
-		killalltriggers
+		killtrigger pathgood2
+		killtrigger pathbad2
 		
 		getWord CURRENTLINE $dist1 4 
 		stripText $dist1 "("
@@ -850,6 +921,106 @@ return
 		add $isNexti 1
 	end
 return
+
+:pollForPorts
+	killtrigger pptOptionSaveTrigger
+	setVar $SWITCHBOARD~message "Marco - Waiting for PPT options..*"
+	gosub :SWITCHBOARD~switchboard
+	:pptOptionBackWaiting
+	setTextLineTrigger pptOptionWaitTrigger :pptOptionWaitTrigger "TWARPPPTPAIR:"
+	setDelayTrigger pptOptionAnnouce :pptOptionAnnouce 30000
+	pause
+	:pptOptionAnnouce
+		killtrigger pptOptionAnnouce
+		killtrigger pptOptionWaitTrigger
+		setVar $SWITCHBOARD~message "Marco - Waiting for PPT options..*"
+		gosub :SWITCHBOARD~switchboard
+		goto :pptOptionBackWaiting
+	:pptOptionWaitTrigger
+		killtrigger pptOptionAnnouce
+		killtrigger pptOptionWaitTrigger
+		
+		goSub :setPPTOptionTriggers
+		goSub :processOptionLine
+		
+return
+
+:processOptionLine
+	# blahblah TWARPPPTPAIR:SECTOR_SECTOR_DIST_DIST:ENDPAIR
+
+	getText CURRENTLINE $pptinfo "TWARPPPTPAIR:" ":ENDPAIR"
+	replaceText $pptinfo "_" " "
+	add $portPairsi 1
+	getWord $pptinfo $portPairs[$portPairsi][1] 1
+	getWord $pptinfo $portPairs[$portPairsi][2] 2
+	getWord $pptinfo $portPairs[$portPairsi][3] 3
+	getWord $pptinfo $portPairs[$portPairsi][4] 4
+
+	# save to sector var
+	setVar $pptOptInfo ($portPairs[$portPairsi][2] & "_" & $portPairs[$portPairsi][3] & "_" & $portPairs[$portPairsi][4])
+	setSectorParameter  $portPairs[$portPairsi][1] "PPTOPT1" 1
+	setSectorParameter  $portPairs[$portPairsi][1] "PPTOPTINFO" $pptOptInfo
+	echo "PAir Added: portPairsi" $portPairsi " loopi:" $loopi " $pptoptinfo: " $pptOptInfo "*"
+return
+
+:setPPTOptionTriggers
+	# in theory this adds the trigger and moves on
+	setTextLineTrigger pptOptionSaveTrigger :pptOptionSaveTrigger "TWARPPPTPAIR:"
+	
+return
+
+:pptOptionSaveTrigger
+		killtrigger pptOptionSaveTrigger
+		goSub :processOptionLine
+		setTextLineTrigger pptOptionSaveTrigger :pptOptionSaveTrigger "TWARPPPTPAIR:"
+		pause
+return
+
+:removePPTOption
+
+	setSectorParameter $pptSec1 "PPTOPT1" ""
+	setSectorParameter $pptSec1 "PPTOPTINFO" ""
+return
+
+:loadPollTrades
+	# load poll trades - i.e. those storedin params
+	# Returns array with 4 vars
+	#    port1 port2 port1to2dist port2to1dist
+
+	setVar $pptOptions 0
+	setVar $pptOptioni 0
+	setVar $tt 11
+	while ($tt <= SECTORS)
+		
+		getSectorParameter $tt "PPTOPT1" $hasOpt 
+		if ($hasOpt = "")
+			setVar $hasOpt 0
+		end
+		if ($hasOpt > 10)
+			getSectorParameter $tt "PPTOPTINFO" $pptOptInfo 
+			#PPTOPTINFO SSSSS_D1_D2 i.e. 4504_10_12
+			replaceText $pptOptInfo "_" " "
+			getWord $pptOptInfo $pptPort2 1
+			getWord $pptOptInfo $pptDist1 2
+			getWord $pptOptInfo $pptDist2 3
+			
+			add $pptOptioni 1
+			setVar $pptOptions[$pptOptioni][1] $tt
+			setVar $pptOptions[$pptOptioni][2] $pptPort2
+			setVar $pptOptions[$pptOptioni][3] $pptDist1
+			setVar $pptOptions[$pptOptioni][4] $pptDist2
+			
+			if ($debug = 1)
+				echo "DEBUG: pptOPTION pptPort1: " $tt " pptPort2:  " $pptPort2 " pptDist1: " $pptDist1 " pptDist2:  " $pptDist2 "*"
+			end
+		end
+		add $tt 1
+	end
+
+return
+
+
+
 include "source\module_includes\bot\loadvars\bot"
 include "source\module_includes\bot\helpfile\bot"
 

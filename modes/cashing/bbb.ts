@@ -5,7 +5,7 @@ gosub :BOT~loadVars
 	setVar $BOT~help[1]  $BOT~tab&"       Buys minimum Ore/Org/Equip and dumps to planet "
 	setVar $BOT~help[2]  $BOT~tab&"       of jets to gain experience from a SSS Port.  "
 	setVar $BOT~help[3]  $BOT~tab&"       "
-	setVar $BOT~help[4]  $BOT~tab&" bbb [expstop] {upport}"
+	setVar $BOT~help[4]  $BOT~tab&" bbb [expstop] {upport} {[fuel_q] [org_q] [equ_q] [rounds] o} "
 	setVar $BOT~help[5]  $BOT~tab&"       "
 	setVar $BOT~help[6]  $BOT~tab&" Options:"
 	setVar $BOT~help[7]  $BOT~tab&"    [expstop]     STOP when you get to this exp."
@@ -122,7 +122,16 @@ if ($useplanet = TRUE)
 	stripText $pnum "#"
 	send "q"
 end
-
+echo "o_ore: " $o_ore "*"
+echo "o_org: " $o_org "*"
+echo "o_equ: " $o_equ "*"
+echo "o_rounds: " $o_rounds "*"
+echo "useplanet: " $useplanet "*"
+echo "override: " $override "*"
+echo "org_holds: " $org_holds "*"
+echo "rebuy: " $rebuy "*"
+echo "org_holds: " $org_holds "*"
+echo "halt_exp: " $halt_exp "*"
 gosub :PLAYER~voidAdjacent
 
 
@@ -224,11 +233,13 @@ while ($y < $trips)
 		if ($useplanet = TRUE)
 			send "l" $pnum "*tnl1*tnl2*tnl3*q"
 			add $o_rounds_done 1
-			if ($o_rounds_done >= $o_rounds)
-				setvar $switchboard~message "Buydowns complete.*"
-				gosub :switchboard~switchboard
-				send "l" $pnum "*c*"
-				halt
+			if ($override = 1)
+				if ($o_rounds_done >= $o_rounds)
+					setvar $switchboard~message "Buydowns complete.*"
+					gosub :switchboard~switchboard
+					send "l" $pnum "*c*"
+					halt
+				end
 			end
 		else
 			send "j  y  *  "
@@ -326,7 +337,17 @@ while ($y < $trips)
 			setsectorparameter $PLAYER~current_sector "EQUIPMENTH" $HIGHPRODUCTIVITY
 		end
 	end
-
+echo "o_ore: " $o_ore "*"
+echo "o_org: " $o_org "*"
+echo "o_equ: " $o_equ "*"
+echo "o_rounds: " $o_rounds "*"
+echo "o_rounds_done: " $o_rounds_done "*"
+echo "useplanet: " $useplanet "*"
+echo "override: " $override "*"
+echo "org_holds: " $org_holds "*"
+echo "rebuy: " $rebuy "*"
+echo "org_holds: " $org_holds "*"
+echo "halt_exp: " $halt_exp "*"
 end
 
 

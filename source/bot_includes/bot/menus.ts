@@ -1296,6 +1296,8 @@ return
 		setVar $qss[13] "Land on Terra"
 	elseif ($landOnStardock)
 		setVar $qss[13] "Land on Stardock"
+	elseif ($quickAction)
+		setVar $qss[13] "Quick Start (enter option 8)"
 	else
 		setVar $qss[13] "Nothing"
 	end
@@ -1454,90 +1456,41 @@ return
 				setVar $BOT~startGameDelay $temp
 			end
 		elseif ($chosen_option = "7")
-			if ($xportToShip)
+			
+			if ($quickAction)
+				goSub :clearAfterLoginVars
 				setVar $qss[12] "Nothing"
-				setvar $BOT~mowToDock FALSE
-				setVar $mowToAlpha FALSE
-				setVar $mowToRylos FALSE
-				setvar $xportToShip false
-				setVar $mowToOther FALSE
-				setVar $landOnTerra false
-				setVar $landOnStardock false
-				setVar $mowDestination ""
 				setvar $do_nothing TRUE
-				setVar $fmowToDock FALSE
-			elseif (($BOT~mowToDock = false) and ($mowToAlpha = false) and ($fmowToDock = false) and ($mowToRylos = false) and ($mowToOther = false) and ($xportToShip = false) and ($landOnTerra = false) and ($landOnStardock = false))
+			elseif (($BOT~mowToDock = false) and ($mowToAlpha = false) and ($fmowToDock = false) and ($mowToRylos = false) and ($mowToOther = false) and ($xportToShip = false) and ($landOnTerra = false) and ($landOnStardock = false) and ($quickAction = false))
+				goSub :clearAfterLoginVars
 				setVar $qss[12] "Land on Terra"
-				setvar $do_nothing FALSE
-				setvar $BOT~mowToDock FALSE
-				setVar $mowToAlpha false
-				setVar $mowToRylos FALSE
-				setVar $mowToOther FALSE
-				setvar $xportToShip false
 				setVar $landOnTerra true
-				setVar $landOnStardock false
-				setVar $mowDestination ""	
-				setVar $fmowToDock FALSE	
 			elseif ($landOnTerra)
+				goSub :clearAfterLoginVars
 				setVar $qss[12] "Land on Stardock"
-				setvar $BOT~mowToDock FALSE
-				setVar $mowToAlpha FALSE
-				setVar $mowToRylos FALSE
-				setVar $mowToOther FALSE
-				setvar $xportToShip false
-				setVar $landOnTerra false
 				setVar $landOnStardock true
-				setVar $mowDestination ""
-				setvar $do_nothing false
-				setVar $fmowToDock FALSE
 			elseif ($landOnStardock)
+				goSub :clearAfterLoginVars
 				setVar $qss[12] "Mow To Custom TA"
-				setvar $BOT~mowToDock FALSE
-				setVar $mowToAlpha FALSE
-				setVar $mowToRylos FALSE
 				setVar $mowToOther TRUE
-				setvar $xportToShip false
-				setVar $landOnTerra false
-				setVar $landOnStardock false
-				setVar $mowDestination ""
-				setvar $do_nothing false
-				setVar $fmowToDock FALSE
 			elseif ($mowToOther)
+				goSub :clearAfterLoginVars
 				setVar $qss[12] "Mow to Stardock"
 				setvar $BOT~mowToDock TRUE
-				setVar $mowToAlpha FALSE
-				setVar $mowToRylos FALSE
-				setvar $xportToShip false
-				setVar $mowToOther FALSE
-				setVar $landOnTerra false
-				setVar $landOnStardock false
-				setvar $do_nothing false
-				setVar $fmowToDock FALSE
 				setVar $mowDestination $MAP~stardock
 			elseif ($BOT~mowToDock)
+				goSub :clearAfterLoginVars
 				setVar $qss[12] "Fuel Mow to Stardock"
-				setvar $BOT~mowToDock FALSE
-				setVar $mowToAlpha FALSE
-				setVar $mowToRylos FALSE
-				setvar $xportToShip false
-				setVar $mowToOther FALSE
-				setVar $landOnTerra false
-				setVar $landOnStardock false
-				setvar $do_nothing false
 				setVar $fmowToDock TRUE
 				setVar $mowDestination $MAP~stardock
 			elseif ($fmowToDock)
+				goSub :clearAfterLoginVars
 				setVar $qss[12] "Xport to Ship"
 				setvar $xportToShip TRUE
-				setVar $mowToAlpha FALSE
-				setVar $mowToRylos FALSE
-				setVar $mowToOther FALSE
-				setVar $landOnTerra false
-				setVar $landOnStardock false
-				setVar $bot~mowToDock  FALSE
-				setVar $mowDestination ""
-				setvar $do_nothing false
-				setVar $fmowToDock FALSE
+			elseif ($xportToShip)
+				goSub :clearAfterLoginVars
+				setVar $qss[12] "Quick Start (enter option 8)"
+				setvar $quickAction TRUE
 			end
 			savevar $xportToShip 
 			savevar $fmowToDock
@@ -1548,6 +1501,7 @@ return
 			savevar $landOnTerra
 			savevar $landOnStardock
 			savevar $do_nothing
+			savevar $quickAction
 		elseif ($chosen_option = "M")
 
 			if ($start_mow_option = "i3")
@@ -1701,6 +1655,19 @@ return
 		end
 		add $qss_count 1
 	end
+return
+:clearAfterLoginVars
+	setvar $BOT~mowToDock FALSE
+	setVar $mowToAlpha FALSE
+	setVar $mowToRylos FALSE
+	setvar $xportToShip false
+	setVar $mowToOther FALSE
+	setVar $landOnTerra false
+	setVar $landOnStardock false
+	setVar $mowDestination ""
+	setvar $do_nothing FALSE
+	setVar $fmowToDock FALSE
+	setVar $quickAction FALSE
 return
 # ========================== END PREGAME MENU =========================================
 :doSplashScreen
