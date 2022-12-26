@@ -811,9 +811,9 @@ return
 			write $BOT_USER_FILE $corpy[$i]	
 			add $i 1
 		end
-		if ($corpyCount > 0)
+		if ($corpyCount > 1)
 			replacetext $switchboard~message $corpy[$corpyCount]&", " $corpy[$corpyCount] 
-			if ($corpyCount = 1)
+			if ($corpyCount = 2)
 				setvar $switchboard~message $switchboard~message&" is added.*"
 			else
 				replacetext $switchboard~message $corpy[$corpyCount] "and "&$corpy[$corpyCount] 
