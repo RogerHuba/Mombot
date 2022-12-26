@@ -670,7 +670,7 @@ return
 	setvar $b 1
 	while ($b <= $bot~command_lines)
 		lowercase $bot~command_lines[$b][9]
-		send "'"&$bot~command_lines[$b][9]&"*"
+		send "'"&$bot~command_lines[$b]&"*"
 
 		:command_filtering
 		cutText $bot~command_lines[$b][9]&"  " $checkForChat 1 1
