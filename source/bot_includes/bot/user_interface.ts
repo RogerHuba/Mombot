@@ -207,6 +207,8 @@
 		getLength $bot~command_lines[1][9]&" " $BOT~commandLength
 		getWordPos $bot~command_lines[1][9] $pos "'"
 		getWordPos $bot~command_lines[1][9] $pos2 "`"
+		send "'"&$bot~command_lines[1][9]&"*"
+
 		if ($pos <> 1) AND ($pos2 <> 1)
 			cutText $bot~command_lines[1]&"    " $bot~command_lines[1] $BOT~commandLength+1 9999
 		end
@@ -669,7 +671,6 @@ return
 	setvar $b 1
 	while ($b <= $bot~command_lines)
 		lowercase $bot~command_lines[$b][9]
-		send "'"&$bot~command_lines[$b]&"*"
 
 		:command_filtering
 		cutText $bot~command_lines[$b][9]&"  " $checkForChat 1 1
