@@ -815,7 +815,7 @@ return
 			replacetext $switchboard~message $corpy[$corpyCount]&", " $corpy[$corpyCount] 
 			if ($corpyCount = 1)
 				setvar $switchboard~message $switchboard~message&" is added.*"
-			else if ($corpyCount = 2)
+			elseif ($corpyCount = 2)
 				replacetext $switchboard~message ", "&$corpy[$corpyCount] " and "&$corpy[$corpyCount] 
 				setvar $switchboard~message $switchboard~message&" are added.*"
 			else
