@@ -11,7 +11,7 @@ loadGlobal $bot~last_fighter_attack
 loadvar $bot~mombot_directory
 if ($bot~last_fighter_attack = 0)
 	setvar $bot~last_fighter_attack 1
-	saveGlobal $bot~last_fighter_attack
+	#saveGlobal $bot~last_fighter_attack
 end
 setSectorParameter 1 "MSLSEC" TRUE
 setSectorParameter 2 "MSLSEC" TRUE
