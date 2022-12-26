@@ -140,6 +140,8 @@
 	setvar $bot~command_caller "self"
 	savevar $bot~command_caller
 	lowercase $bot~user_command_line
+	send "'user command before any processing:"&$bot~user_command_line&"*"
+
 	if ($bot~user_command_line = "")
 		echo CURRENTANSILINE
 		goto :BOT~wait_for_command
@@ -154,6 +156,7 @@
 	end
 	:runUserCommandLine
 		setVar $bot~user_command_line $bot~user_command_line&"              "
+		send "'user command before multi processing:"&$bot~user_command_line&"*"
 		setVar $authorization 9
 		setVar $user_sec_level 9
 
