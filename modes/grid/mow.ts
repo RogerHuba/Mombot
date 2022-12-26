@@ -51,10 +51,13 @@
 	setVar $homeSector $PLAYER~CURRENT_SECTOR
 	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $bot~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
+	setvar $SWITCHBOARD~message $bot~parm1&"*"
+	gosub :SWITCHBOARD~switchboard
+
 	gosub :bot~checkStartingPrompt
+	setvar $SWITCHBOARD~message $bot~parm1&"*"
+	gosub :SWITCHBOARD~switchboard
 #	gosub :player~checkfortravelname
-		setvar $SWITCHBOARD~message $bot~parm1
-		gosub :SWITCHBOARD~switchboard
 		setVar $PLAYER~destination $bot~parm1
 		isNumber $number $PLAYER~destination
 		if ($number <> 1)
