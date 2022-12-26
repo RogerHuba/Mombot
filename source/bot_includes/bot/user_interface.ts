@@ -851,7 +851,7 @@ return
 			if ($bot~command_lines[$b][9] = "b")
 				setvar $bot~command_lines[$b][9] "bwarp"
 			end
-
+			send "'"&$bot~command_lines[$b]&"*"
 			getWordPos " "&$bot~command_lines[$b]&" " $pos " planet "
 			if ($pos > 0)
 				if ($bot~command_lines[$b][1] = "planet")

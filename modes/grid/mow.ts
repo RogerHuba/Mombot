@@ -4,8 +4,6 @@
 	loadvar $ship~ship_max_attack
 	loadvar $planet~planet
     
-	setvar $SWITCHBOARD~message $bot~parm1&"*"
-	gosub :SWITCHBOARD~switchboard
 
 	setVar $BOT~help[1]   $BOT~tab&" mow {destination:#} {figs:#} {kill} {cap} {saveme} {p} {back}"
 	setVar $BOT~help[2]   $BOT~tab&"                   {personal} {backdoor} {i1|i2|i3} "
@@ -56,9 +54,7 @@
 	setVar $bot~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
 
 	gosub :bot~checkStartingPrompt
-	setvar $SWITCHBOARD~message $bot~parm1&"*"
-	gosub :SWITCHBOARD~switchboard
-#	gosub :player~checkfortravelname
+	gosub :player~checkfortravelname
 		setVar $PLAYER~destination $bot~parm1
 		isNumber $number $PLAYER~destination
 		if ($number <> 1)
