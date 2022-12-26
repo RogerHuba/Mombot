@@ -5,7 +5,7 @@ gosub :BOT~loadVars
 	setVar $BOT~help[1]  $BOT~tab&"       Buys minimum Ore/Org/Equip and dumps to planet "
 	setVar $BOT~help[2]  $BOT~tab&"       of jets to gain experience from a SSS Port.  "
 	setVar $BOT~help[3]  $BOT~tab&"       "
-	setVar $BOT~help[4]  $BOT~tab&" bbb [expstop] {upport}"
+	setVar $BOT~help[4]  $BOT~tab&" bbb [expstop] {upport} {[fuel_q] [org_q] [equ_q] [rounds] o} "
 	setVar $BOT~help[5]  $BOT~tab&"       "
 	setVar $BOT~help[6]  $BOT~tab&" Options:"
 	setVar $BOT~help[7]  $BOT~tab&"    [expstop]     STOP when you get to this exp."
@@ -33,7 +33,7 @@ gosub :BOT~loadVars
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation = "Command")
 		setVar $useplanet FALSE
-	elseif ($startingLocation = "Planet")  
+	elseif ($startingLocation = "Planet") or ($startingLocation = "Citadel")  
 		setVar $useplanet TRUE
 	else
 		setVar $SWITCHBOARD~message "Start at command or planet prompt.*"
@@ -73,6 +73,29 @@ gosub :BOT~loadVars
 		setVar $rebuy 0
 	end
 
+	getWordPos $bot~user_command_line $pos "o"
+	if ($pos > 0)
+		setVar $o_ore $bot~parm3
+		setVar $o_org $bot~parm4
+		setVar $o_equ $bot~parm5
+		setVar $o_rounds $bot~parm6
+		setVar $o_rounds_done 0
+		setVar $override 1
+		if ($startingLocation <> "Planet") and ($startingLocation <> "Citadel")
+			setvar $switchboard~message "Must start override from planet.*"
+			gosub :switchboard~switchboard
+			halt
+		end
+		if ($startingLocation = "Citadel")
+			send "q"
+		end
+		setvar $switchboard~message "Overriding product quantities.*"
+		gosub :switchboard~switchboard
+		setVar $rebuy 0
+	else
+		setVar $rebuy 0
+	end
+
 	if ($useplanet = TRUE)
 		send "snl1*snl2*snl3*tnl1*tnl2*tnl3*"
 	else
@@ -99,7 +122,16 @@ if ($useplanet = TRUE)
 	stripText $pnum "#"
 	send "q"
 end
-
+echo "o_ore: " $o_ore "*"
+echo "o_org: " $o_org "*"
+echo "o_equ: " $o_equ "*"
+echo "o_rounds: " $o_rounds "*"
+echo "useplanet: " $useplanet "*"
+echo "override: " $override "*"
+echo "org_holds: " $org_holds "*"
+echo "rebuy: " $rebuy "*"
+echo "org_holds: " $org_holds "*"
+echo "halt_exp: " $halt_exp "*"
 gosub :PLAYER~voidAdjacent
 
 
@@ -124,15 +156,18 @@ while ($y < $trips)
 	:ore1
 		killalltriggers
 		getWord CURRENTLINE $oreLeft 5
+		getWord CURRENTLINE $oreTrade 3
 		goto :portwaitagain
 	:org1
 		killalltriggers
 		getWord CURRENTLINE $orgLeft 4
+		getWord CURRENTLINE $orgTrade 2
 		goto :portwaitagain
 	:equ1
 		killalltriggers
 		getWord CURRENTLINE $equipLeft 4
-		
+		getWord CURRENTLINE $equipTrade 2
+
 	striptext $oreLeft "%"
 	striptext $orgLeft "%"
 	striptext $equipLeft "%"
@@ -148,34 +183,68 @@ while ($y < $trips)
 	end
 
 	setVar $quant 0
-	gosub :weareselling
-	
-	send $oreholds "*"
-	gosub :PLAYER~startHaggle
-	
+	if ($oreTrade = "Selling")
+		gosub :weareselling
+		if ($override = 1)
+			send $o_ore "*"
+		else
+			send $oreholds "*"
+		end
+		gosub :PLAYER~startHaggle
+	end
+
 	setVar $cred2 $PLAYER~nCredits
-	send $org_holds "*"
-	gosub :PLAYER~startHaggle
+	if ($orgTrade = "Selling")
+		gosub :weareselling
+		if ($override = 1)
+			send $o_org "*"
+		else
+			send $org_holds "*"
+		end
+		gosub :PLAYER~startHaggle
+	end
+	
 
 	setVar $cred3 $PLAYER~nCredits
-	send $equip_holds "*"
-	gosub :PLAYER~startHaggle
+	if ($equipTrade = "Selling")
+		gosub :weareselling
+		if ($override = 1)
+			send $o_equ "*"
+		else
+			send $equip_holds "*"
+		end
+		gosub :PLAYER~startHaggle
+	end
+	
+	
 
 	setVar $cred4 $PLAYER~nCredits
-	goSub :checkSizing
+	if ($override = 0)
+		goSub :checkSizing
+	end
 	gosub :player~quikstats
 	
 
 	setVar $totalholds ($oreholds + $org_holds + $equip_holds)
 	setVar $empty_holds ($PLAYER~TOTAL_HOLDS - ($player~ORE_HOLDS + $player~ORGANIC_HOLDS + $player~EQUIPMENT_HOLDS + $PLAYER~COLONIST_HOLDS))
 	
-	if ($empty_holds < $totalholds)
+	if (($empty_holds < $totalholds) or ($override = 1))
 
 		if ($useplanet = TRUE)
 			send "l" $pnum "*tnl1*tnl2*tnl3*q"
+			add $o_rounds_done 1
+			if ($override = 1)
+				if ($o_rounds_done >= $o_rounds)
+					setvar $switchboard~message "Buydowns complete.*"
+					gosub :switchboard~switchboard
+					send "l" $pnum "*c*"
+					halt
+				end
+			end
 		else
 			send "j  y  *  "
 		end 
+		
 	end
 	
 	
@@ -268,7 +337,17 @@ while ($y < $trips)
 			setsectorparameter $PLAYER~current_sector "EQUIPMENTH" $HIGHPRODUCTIVITY
 		end
 	end
-
+echo "o_ore: " $o_ore "*"
+echo "o_org: " $o_org "*"
+echo "o_equ: " $o_equ "*"
+echo "o_rounds: " $o_rounds "*"
+echo "o_rounds_done: " $o_rounds_done "*"
+echo "useplanet: " $useplanet "*"
+echo "override: " $override "*"
+echo "org_holds: " $org_holds "*"
+echo "rebuy: " $rebuy "*"
+echo "org_holds: " $org_holds "*"
+echo "halt_exp: " $halt_exp "*"
 end
 
 

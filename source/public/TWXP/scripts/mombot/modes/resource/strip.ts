@@ -17,37 +17,59 @@
 	setVar $BOT~help[10] $BOT~tab&"           {ec}   - Strip equipment colonists"
 	setVar $BOT~help[11] $BOT~tab&"          {fig}   - Strip fighters"
 	setVar $BOT~help[12] $BOT~tab&"          {turbo} - Does in a macro burst"
+	setVar $BOT~help[13] $BOT~tab&"              {w} - Grab full holds only"
+	setVar $BOT~help[14] $BOT~tab&"       {fillship} - Fills ship to max figs, no dump, from command"
 	gosub :bot~helpfile
 
 
 	gosub :PLAYER~quikstats
-	setVar $startingLocation $PLAYER~CURRENT_PROMPT
-	if (($startingLocation <> "Citadel") AND ($startingLocation <> "Planet"))
-		setVar $SWITCHBOARD~message "Planet Stripper must be started from Citadel or Planet prompt*"
-		gosub :SWITCHBOARD~switchboard
-		halt
-	end
+
+	setVar $doJet 0
+	
 	isNumber $test $bot~parm1
 	if (($test = FALSE) AND ($bot~parm1 <> "all"))
 		setVar $SWITCHBOARD~message "Invalid planet. Please enter a planet number or 'all'.*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
+	
+	if ($bot~parm2 = "fillship")
+		setVar $fillship TRUE
+	else
+		setVar $fillship FALSE
+	end
+
+	setVar $startingLocation $PLAYER~CURRENT_PROMPT
+	if (($startingLocation <> "Citadel") AND ($startingLocation <> "Planet"))
+		if (($startingLocation = "Command") and ($fillship = TRUE))	
+			setVar $emptyFighters TRUE
+			goto :fillShipJump
+		else
+			setVar $SWITCHBOARD~message "Planet Stripper must be started from Citadel or Planet prompt*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+		end
+	end
+	
+	
 	getWordPos " "&$bot~user_command_line&" " $pos " f "
 	if ($pos > 0)
 		setVar $emptyFuel TRUE
+		setVar $doJet 1
 	else
 		setVar $emptyFuel FALSE
 	end
 	getWordPos " "&$bot~user_command_line&" " $pos " o "
 	if ($pos > 0)
 		setVar $emptyOrganics TRUE
+		setVar $doJet 1
 	else
 		setVar $emptyOrganics FALSE
 	end
 	getWordPos " "&$bot~user_command_line&" " $pos " e "
 	if ($pos > 0)
 		setVar $emptyEquipment TRUE
+		setVar $doJet 1
 	else
 		setVar $emptyEquipment FALSE
 	end
@@ -55,26 +77,32 @@
 	getWordPos " "&$bot~user_command_line&" " $pos " c1 "
 	if ($pos > 0)
 		setVar $emptyFuelColonists TRUE
+		setVar $doJet 1
 	end
 	getWordPos " "&$bot~user_command_line&" " $pos " c2 "
 	if ($pos > 0)
 		setVar $emptyOrganicColonists TRUE
+		setVar $doJet 1
 	end
 	getWordPos " "&$bot~user_command_line&" " $pos " c3 "
 	if ($pos > 0)
 		setVar $emptyEquipmentColonists TRUE
+		setVar $doJet 1
 	end
 	getWordPos " "&$bot~user_command_line&" " $pos " fc "
 	if ($pos > 0)
 		setVar $emptyFuelColonists TRUE
+		setVar $doJet 1
 	end
 	getWordPos " "&$bot~user_command_line&" " $pos " oc "
 	if ($pos > 0)
 		setVar $emptyOrganicColonists TRUE
+		setVar $doJet 1
 	end
 	getWordPos " "&$bot~user_command_line&" " $pos " ec "
 	if ($pos > 0)
 		setVar $emptyEquipmentColonists TRUE
+		setVar $doJet 1
 	end
 	getWordPos " "&$bot~user_command_line&" " $pos " turbo "
 	if ($pos > 0)
@@ -100,12 +128,25 @@
 	if ($pos > 0)
 		setVar $SWITCHBOARD~self_command TRUE
 	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " w "
+	if ($pos > 0)
+		setVar $wholeUnitsOnly TRUE
+	else
+		setVar $wholeUnitsOnly FALSE
+	end
+	
 	
 	if ($startingLocation = "Citadel")
 		send "q "
 	end
 	gosub :PLANET~getPlanetInfo
-	send "q ** jy "
+	if ($doJet = 1)
+		send "q ** jy "
+	else
+		send "q ** "
+	end
+	
     gosub :PLAYER~quikstats
 
     setVar $player~total_holds $player~total_holds
@@ -119,6 +160,7 @@
 		end
 		halt
 	end
+	:fillShipJump
 	gosub :countPlanets
 
 :startUpMessage
@@ -136,31 +178,32 @@
 	setVar $countOrganics 0
 	setVar $countEquipment 0
 	setVar $countColonists 0
-	:lookUpPlanetStats
-		send "l "&$planet~planetToFill&"*"
-		killtrigger wrongPlanet
-		killtrigger badPlanet
-		killtrigger goodPlanet
-		setTextLineTrigger wrongPlanet :badPlanet "That planet is not in this sector."
-		setTextLineTrigger badPlanet :badPlanet "Invalid registry number, landing aborted."
-		setTextLineTrigger goodPlanet :goodPlanet "Claimed by:"
-		pause
-	:badPlanet
-		killtrigger wrongPlanet
-		killtrigger badPlanet
-		killtrigger goodPlanet
-		send "q*"
-		setVar $SWITCHBOARD~message "Planet #"&$planet~planetToFill&" is not valid for this sector*"
-		gosub :SWITCHBOARD~switchboard
-		halt	
-	:goodPlanet
-		killtrigger wrongPlanet
-		killtrigger badPlanet
-		if ($emptyFighters)
-			send "m*l* "
-		end
-		send " q "
-
+	if ($fillship = FALSE)
+		:lookUpPlanetStats
+			send "l "&$planet~planetToFill&"*"
+			killtrigger wrongPlanet
+			killtrigger badPlanet
+			killtrigger goodPlanet
+			setTextLineTrigger wrongPlanet :badPlanet "That planet is not in this sector."
+			setTextLineTrigger badPlanet :badPlanet "Invalid registry number, landing aborted."
+			setTextLineTrigger goodPlanet :goodPlanet "Claimed by:"
+			pause
+		:badPlanet
+			killtrigger wrongPlanet
+			killtrigger badPlanet
+			killtrigger goodPlanet
+			send "q*"
+			setVar $SWITCHBOARD~message "Planet #"&$planet~planetToFill&" is not valid for this sector*"
+			gosub :SWITCHBOARD~switchboard
+			halt	
+		:goodPlanet
+			killtrigger wrongPlanet
+			killtrigger badPlanet
+			if ($emptyFighters)
+				send "m*l* "
+			end
+			send " q "
+	end
 	while ($i <= $planet~planetCount)
 		if ($planet~planetToFill <> $planet~planets[$i])
 			gosub :PLAYER~quikstats
@@ -217,41 +260,53 @@
 					killtrigger emptyEmpty
 					killtrigger fullFill
 					killtrigger empty
-					send "l j"&#8&$planet~planets[$i]&"* jm ** *x q l j"&#8&$planet~planetToFill&"* jm*jl*x q "
-					setTextTrigger success :tryFighters "The Fighters join your battle force."
-					setTextTrigger emptyEmpty :doneWithThisPlanet "There isn't room on the planet"
-					setTextTrigger fullFill :doneWithThisPlanet "They don't have room for that many "
-					setTextTrigger empty :doneWithThisPlanet "How many Fighters do you want to take (0 Max) [0]"
-					pause
+					if ($fillship = FALSE)
+						send "l j"&#8&$planet~planets[$i]&"* jm ** *x q l j"&#8&$planet~planetToFill&"* jm*jl*x q "
+						setTextTrigger success :tryFighters "The Fighters join your battle force."
+						setTextTrigger emptyEmpty :doneWithThisPlanet "There isn't room on the planet"
+						setTextTrigger fullFill :doneWithThisPlanet "They don't have room for that many "
+						setTextTrigger empty :doneWithThisPlanet "How many Fighters do you want to take (0 Max) [0]"
+						pause
+					else
+						send "l j"&#8&$planet~planets[$i]&"* jm ** *x q "
+						waitfor "How many Fighters do you want to take"
+					end
+					
 				end
 				:doneWithThisPlanet			
 		end
 		add $i 1
 	end
-	:lookUpPlanetStats2
-		gosub :PLAYER~quikstats
-		send "l "&$planet~planetToFill&"*jm ** * "
-		killAllTriggers
-		setTextLineTrigger wrongPlanet :badPlanet2 "That planet is not in this sector."
-		setTextLineTrigger badPlanet :badPlanet2 "Invalid registry number, landing aborted."
-		setTextLineTrigger goodPlanet :goodPlanet2 "Claimed by:"
-		pause
-	:badPlanet2
-		killAllTriggers
-		send "q*"
-		setVar $SWITCHBOARD~message "Planet #"&$planet~planetToFill&" is not valid for this sector*"
-		gosub :SWITCHBOARD~switchboard
-		halt	
-	:goodPlanet2
-		killAllTriggers
-		send "q "
-		send "l "&$planet~planetToFill&"*m* * * c * "
-		gosub :endReport
-		send "/"
-		waitOn #179
+	if ($fillship = FALSE)
+		:lookUpPlanetStats2
+			gosub :PLAYER~quikstats
+			send "l "&$planet~planetToFill&"*jm ** * "
+			killAllTriggers
+			setTextLineTrigger wrongPlanet :badPlanet2 "That planet is not in this sector."
+			setTextLineTrigger badPlanet :badPlanet2 "Invalid registry number, landing aborted."
+			setTextLineTrigger goodPlanet :goodPlanet2 "Claimed by:"
+			pause
+		:badPlanet2
+			killAllTriggers
+			send "q*"
+			setVar $SWITCHBOARD~message "Planet #"&$planet~planetToFill&" is not valid for this sector*"
+			gosub :SWITCHBOARD~switchboard
+			halt	
+		:goodPlanet2
+			killAllTriggers
+			send "q "
+			send "l "&$planet~planetToFill&"*m* * * c * "
+			gosub :endReport
+			send "/"
+			waitOn #179
+			setVar $SWITCHBOARD~message "Planet Stripper Shutting Down*"
+			gosub :SWITCHBOARD~switchboard
+			halt
+	else
 		setVar $SWITCHBOARD~message "Planet Stripper Shutting Down*"
 		gosub :SWITCHBOARD~switchboard
 		halt
+	end
 
 :clearScreen
 	echo #27 & "[2J"
@@ -272,7 +327,11 @@
 			goto :lookUpPlanetStats2
 		end
 		if (($player~total_holds > $amount_to_strip) AND ($amount_to_strip > 0))
-			setVar $get $amount_to_strip
+			if ($wholeUnitsOnly = 1)
+				setVar $get 0
+			else
+				setVar $get $amount_to_strip
+			end
 		else
 			if ($amount_to_strip <= 0)
 				setVar $get 0

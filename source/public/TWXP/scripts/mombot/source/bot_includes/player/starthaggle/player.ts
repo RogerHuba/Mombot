@@ -22,7 +22,7 @@ else
 		killtrigger strade
 		killtrigger go
 		killtrigger done
-		gosub :setConnectionTriggers
+		#gosub :setConnectionTriggers
 		SetTextTrigger ptrade :bunits "do you want to buy ["
 		SetTextTrigger strade :sunits "do you want to sell ["
 		setTextLineTrigger go :finishhaggle "Agreed, "
@@ -48,6 +48,7 @@ return
 	goto :units
 
 :haggle
+		setVar $haggleCountError 0
 		setVar $ni 0
 		setVar $midhag "-1"
 		setVar $nocred 0
@@ -56,7 +57,7 @@ return
 		killtrigger donehaggling
 	killtrigger donhag
 	killtrigger offerme
-		gosub :setConnectionTriggers
+		#gosub :setConnectionTriggers
 		setTextTrigger donehag :done_haggle "Command [TL="
 		SetTextTrigger donehaggling :done_haggle "empty cargo holds."
 		SetTextTrigger offerme :offerme "] ?"
@@ -71,24 +72,34 @@ return
 		setVar $orig_offer $offer
 
 :rehaggle
+		add $haggleCountError 1
+		
 		killtrigger 1
-	killtrigger 0
+		killtrigger 0
 		killtrigger 2
 		killtrigger 3
-		setVar $offer (($orig_offer * $multiplier) / 100)
-		send $offer "*"
-		add $midhag 1
-		waitFor $offer
-		IF ($multiplier > 100)
-		   subtract $multiplier 1
-		ELSE
-		   add $multiplier 1
-		END
-		gosub :setConnectionTriggers
+		killtrigger 4
+		if ($haggleCountError > 10)
+			send "*"
+		else
+						setVar $offer (($orig_offer * $multiplier) / 100)
+			send $offer "*"
+			add $midhag 1
+			waitFor $offer
+			IF ($multiplier > 100)
+			subtract $multiplier 1
+			ELSE
+			add $multiplier 1
+			END
+		end
+		
+		
+		#gosub :setConnectionTriggers
 		send "@"
 		waiton "Average Interval Lag:"
 		setTextTrigger 0 :done_haggle "How many holds of"
 		setTextTrigger 1 :rehaggle "Your offer"
+		setTextTrigger 4 :rehaggleFinal "Our final offer is"
 		setTextTrigger 2 :donehag "We're not interested."
 		setTextTrigger 3 :nocreds "You only have"
 		pause
@@ -107,11 +118,31 @@ return
 		killtrigger 1
 		killtrigger 2
 		killtrigger 3
+		killtrigger 4
 		killtrigger rehaggle
 		killtrigger donehaggling
 		killtrigger offerme
 	killalltriggers
 return
+
+:rehaggleFinal
+	# our final offer we are going to take some more juice off this to make sure it goes throu
+	IF ($multiplier > 100)
+		if ($offer < 1000)
+			subtract $multiplier 5
+		else
+			subtract $multiplier 1
+		end
+		
+	ELSE
+	if ($offer < 1000)
+			add $multiplier 5
+		else
+			add $multiplier 1
+		end
+		
+	END
+	goto :rehaggle
 
 include "source\bot_includes\player\isephaggle\player"
 

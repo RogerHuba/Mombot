@@ -314,11 +314,24 @@ return
 		pause
 	:back_in_game
 	killalltriggers
-
+	#send "nse"
+	#waitfor "Beacon  : FedSpace, FedLaw Enforced"
+	
+	if ($menus~quickAction = true)
+		if (($menus~command_to_issue <> "") and ($menus~command_to_issue <> "0"))
+			setVar $BOT~user_command_line $menus~command_to_issue
+			setVar $menus~command_to_issue ""
+			saveVar $menus~command_to_issue
+			setvar $menus~quickAction false
+			savevar $menus~quickAction
+			goto :USER_INTERFACE~runUserCommandLine
+			return
+		end
+	end
 	# Testing this addition - Can we check briefly for our corp before mowing?
 	if (($newGame = true) and ($BOT~isCEO = TRUE) AND ($BOT~corpName <> "") AND ($BOT~corpPassword <> ""))
 		gosub :BOT~killthetriggers
-		send "cn24"&$BOT~subspace&"* qqlt30*"
+		send "cn24"&$BOT~subspace&"* qq"
 		#Make Corp
 		send "tm" $BOT~corpName "*y" $BOT~corpPassword "*yq"
 		send "co*cq"
@@ -514,3 +527,122 @@ return
 	end
 return
 
+
+:doStart1
+	setVar $firstSecOut 0
+	setVar $lastSecin 0
+
+    send "*CN24"&$BOT~subspace&"* Q Q Q ZN* ^Q c o* c q q q zn *"
+	send "nsn"
+	gosub :quickstart_getcourse
+	
+	:todock
+		killAllTriggers
+
+        getWord CURRENTLINE $hops 4
+        getWord CURRENTLINE $stardock 13
+        echo "stardock:" $stardock
+		setTextLineTrigger todockpath :todockpath ">" 
+		pause
+		:todockpath 
+		killAllTriggers
+        setVar $sdpath CURRENTLINE
+        
+		stripText $sdpath "("
+		stripText $sdpath ")"
+		replaceText $sdpath " > " " "
+        stripText $hops "("
+        
+        
+        # lots of attacks
+        setVar $result $result&"nseza40* * za40* * za40* * za40* * za40* * za40* * ^q"
+
+        send $result
+
+        send "p s h t2* q q u y n .* u y n .* "
+        send "p n 2n* * * * * * * p n 3n* * * * * * * p n 4n* * * * * * * p n 5n* * * * * * * "
+        send "^q"
+        waitfor "ENDINTERROG"
+        # blow the pd
+         send "p a y 40* * nsey * "
+
+        send "cv0*yyq"
+        # #join corp get set
+        send "tmYOur Mom!*yno1234*yq"
+        waitfor "Enter Corp password"
+        # 
+        send "p s s p b 10* q q q "
+        goSub :dosurround
+        #getcash from Number 2
+        :test2
+        send "psgw*q"
+        
+        send " s b y ye"
+        setTextLineTrigger noCanDo :noCanDo "You can not afford it"
+        setTextTrigger wegotit :wegotit "Want to buy it?"
+        pause
+        :noCanDo
+            killAllTriggers
+            ECHO "NOT ENOUGH CASH!! NOT ENOUGHT CASH!! FAIL!"
+            halt
+        :wegotit
+            send "yThe Photon Pooper**p b 99*q q h r d p 1* "
+
+            GoSub :startPhoton
+        # get pod - > p a y 40^M ^M ns e y 
+return
+
+:quickstart_getcourse
+	# 1 to Dest $cSector
+	setVar $course ""
+	setVar $coursei 1
+
+	setVar $logText ""
+	setVar $log 0
+
+	:checkGoing2
+	setTextLineTrigger startlog2 :startlog2 "shortest path"
+	setTextTrigger endlog2 :endlog2 "Computer command ["
+	setTextLineTrigger goodline2 :goodline2 ""
+	
+	pause
+	:startlog2
+		killalltriggers
+		setVar $log 1
+		goto :checkGoing2
+	:goodline2
+		killalltriggers
+		if ($log = 1) and (CURRENTLINE <> "")
+			cuttext CURRENTLINE $firstchar 1 1
+			if ($firstchar = "1") or ($firstchar = " ")
+				setVar $logText $logText & CURRENTLINE
+			end
+		end
+		
+		goto :checkGoing2
+	:endlog2
+		killalltriggers
+		
+	setVar $logText $logText & " end"
+	setVar $y 1
+	getWord $logTEXT $stuff $y
+
+	while ($stuff <> "end")
+		
+		STRIPTEXT $stuff "("
+		STRIPTEXT $stuff ")"
+
+		if (($stuff <> ">") and ($stuff <> "end"))
+			if (($firstSecOut = 0) and ($stuff > 0))
+				setVar $firstSecOut $stuff
+			end
+			setVar $course[$coursei] $stuff
+			add $coursei 1
+		end
+
+		add $y 1
+		getWord $logTEXT $stuff $y
+	end
+	setVar $lastSeci ($coursei - 1)
+	setVar $lastSecin $course[$lastSeci]
+return

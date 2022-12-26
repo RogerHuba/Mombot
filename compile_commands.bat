@@ -1,4 +1,4 @@
-for /r %%n in (*port.ts) do call :checkit "%%n" 
+for /r %%n in (*refurb.ts) do call :checkit "%%n" 
 goto end
 
 :checkit
