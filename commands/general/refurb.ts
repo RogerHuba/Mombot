@@ -121,7 +121,10 @@ gosub :BOT~loadVars
 			waitOn " credits per point "
 			getWord CURRENTLINE $shieldsToBuy 9
 			if ($holds = true)
-				send "a "&$holdsToBuy&"* y "
+				send "a "&$holdsToBuy&"* "
+				if ($holdsToBuy > 0)
+					send "y "
+				end
 			end
 			if ($fighters = true)
 				send "b "&$figsToBuy&"* "
