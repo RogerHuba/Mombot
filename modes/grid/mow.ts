@@ -52,9 +52,7 @@
 	setVar $bot~startingLocation $PLAYER~CURRENT_PROMPT
 	setVar $bot~validPrompts "Command <Underground> Do How Corporate Citadel Planet Computer Terra <StarDock> <FedPolice> <Tavern> <Libram <Galactic <Hardware <Shipyards>"
 	gosub :bot~checkStartingPrompt
-	echo $bot~parm1&"*"
-	gosub :player~checkfortravelname
-	echo $bot~parm1&"*"
+#	gosub :player~checkfortravelname
 
 		setVar $PLAYER~destination $bot~parm1
 		isNumber $number $PLAYER~destination
