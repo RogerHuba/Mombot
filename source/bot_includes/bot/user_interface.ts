@@ -140,8 +140,6 @@
 	setvar $bot~command_caller "self"
 	savevar $bot~command_caller
 	lowercase $bot~user_command_line
-	send "'user command before any processing:"&$bot~user_command_line&"*"
-
 	if ($bot~user_command_line = "")
 		echo CURRENTANSILINE
 		goto :BOT~wait_for_command
@@ -156,7 +154,6 @@
 	end
 	:runUserCommandLine
 		setVar $bot~user_command_line $bot~user_command_line&"              "
-		send "'user command before multi processing:"&$bot~user_command_line&"*"
 		setVar $authorization 9
 		setVar $user_sec_level 9
 
@@ -206,12 +203,10 @@
 		setarray $bot~command_lines 1
 		setvar $bot~command_lines 1
 		setvar $bot~command_lines[1] $bot~user_command_line
-		send "'processing command line:"&$bot~command_lines[1]&"*"
 		getWord $bot~command_lines[1] $bot~command_lines[1][9] 1
 		getLength $bot~command_lines[1][9]&" " $BOT~commandLength
 		getWordPos $bot~command_lines[1][9] $pos "'"
 		getWordPos $bot~command_lines[1][9] $pos2 "`"
-
 		if ($pos <> 1) AND ($pos2 <> 1)
 			cutText $bot~command_lines[1]&"    " $bot~command_lines[1] $BOT~commandLength+1 9999
 		end
@@ -674,8 +669,6 @@ return
 	setvar $b 1
 	while ($b <= $bot~command_lines)
 		lowercase $bot~command_lines[$b][9]
-		send "'"&$bot~command_lines[$b]&"*"
-
 		:command_filtering
 		cutText $bot~command_lines[$b][9]&"  " $checkForChat 1 1
 		cutText $bot~command_lines[$b][9]&"  " $checkForFinder 1 1
@@ -858,6 +851,7 @@ return
 			if ($bot~command_lines[$b][9] = "b")
 				setvar $bot~command_lines[$b][9] "bwarp"
 			end
+
 			getWordPos " "&$bot~command_lines[$b]&" " $pos " planet "
 			if ($pos > 0)
 				if ($bot~command_lines[$b][1] = "planet")
