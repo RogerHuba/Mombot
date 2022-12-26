@@ -58,6 +58,8 @@
 		setVar $planet~_ck_pnego_orgtosell "max"
 		setVar $planet~_ck_pnego_equiptosell "max"
 	else
+	
+
 		setvar $amount "max"
 		if ($half = true)
 			loadvar $game~port_max
@@ -65,6 +67,17 @@
 			divide $half_port_max 2
 			setvar $amount $half_port_max
 		end
+		getWordCount $bot~user_command_line $numWords
+		
+		getWord $bot~user_command_line $mayQuant $numWords
+		isNumber $test $mayQuant
+		
+		if ($test = 1)  
+			if ($mayQuant > 100)
+				setvar $amount $mayQuant
+			end
+		end
+		
 		getwordpos " "&$bot~user_command_line&" " $pos " f "
 		if ($pos > 0)
 			setVar $planet~_ck_pnego_fueltosell $amount

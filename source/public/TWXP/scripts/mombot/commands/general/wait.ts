@@ -34,8 +34,10 @@
 
 killtrigger delay
 setDelayTrigger delay :done_waiting $milliseconds
+setTextOutTrigger manual_go :manual_go "-"
 pause
 :done_waiting
+:manual_go
 halt
 
 

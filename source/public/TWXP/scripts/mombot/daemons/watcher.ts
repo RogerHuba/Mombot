@@ -10,8 +10,8 @@ loadvar $bot~bot_name
 loadGlobal $bot~last_fighter_attack
 loadvar $bot~mombot_directory
 if ($bot~last_fighter_attack = 0)
-	setvar $bot~last_fighter_attack ""
-	saveGlobal $bot~last_fighter_attack
+	setvar $bot~last_fighter_attack 1
+	#saveGlobal $bot~last_fighter_attack
 end
 setSectorParameter 1 "MSLSEC" TRUE
 setSectorParameter 2 "MSLSEC" TRUE
@@ -63,6 +63,7 @@ setTextLineTrigger foundbigtunnel :foundbigtunnel "[Found Big Tunnel]"
 setTextLineTrigger ferrengihitcorp :ferrengihitcorp "Your Corp's fighters in sector "
 setTextLineTrigger ferrengihitpers :ferrengihitpers "Your fighters in sector "
 pause
+
 
 :foundbigbubble
 	getText CURRENTLINE $bsec " Door: " " Internal Sec:"

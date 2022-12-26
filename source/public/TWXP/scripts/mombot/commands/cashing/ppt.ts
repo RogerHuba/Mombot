@@ -3,7 +3,7 @@ gosub :BOT~loadVars
  #ppt explore
 
  #prioritise good ports - i.e. those selling ore
- # make decision where to go
+ # make decision where to dgo
  #   check surround and grid other priorites: SSB SBS 
  #   check surround grid sub priorities - i.e. BSB BBS - we probably have ecess of those anyway - maybe if more than X warps, go in, density, see if worth holodin, holo, and com back
 
@@ -84,6 +84,12 @@ gosub :BOT~loadVars
 		getText " "&$bot~user_command_line&" " $tradingMinPer "p:" " "
 		isNumber $test $tradingMinPer
 		if ($test)
+			if ($tradingMinPer > 40)
+				setVar $tradingMinPer2 ($tradingMinPer - 20)
+			else
+				setVar $tradingMinPer2 $tradingMinPer
+
+			end
 			
 		else
 			setVar $SWITCHBOARD~message "Trading min should be a number.*"
@@ -93,6 +99,7 @@ gosub :BOT~loadVars
 
 	else
 		setVar $tradingMinPer 50
+		setVar $tradingMinPer2 40
 	end
 
 	if ($tradingMinPer > 90)
@@ -150,7 +157,13 @@ gosub :BOT~loadVars
 	else
 		setVar $finishore 0
 	end
-	
+
+	setVar $avoidsOveride 0
+	getWordPos $bot~user_command_line $pos "aoverride"
+	if ($pos > 0)
+		setVar $avoidsOveride 1
+
+	end
 	
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation <> "Command")
@@ -680,13 +693,13 @@ return
 		
 		setVar $cPerc1 (($cQuant1/$sec1_maxprod1) * 100)
 		setVar $cPerc2 (($cQuant2/$sec1_maxprod2) * 100)
-		if ($cPerc1 < $tradingMinPer) or ($cPerc2 < $tradingMinPer)
+		if ($cPerc1 < $tradingMinPer2) or ($cPerc2 < $tradingMinPer)
 			setVar $port1Ok 0
 		end
 	else
 		setVar $cPerc1 (($cQuant1/$sec2_maxprod1) * 100)
 		setVar $cPerc2 (($cQuant2/$sec2_maxprod2) * 100)
-		if ($cPerc1 < $tradingMinPer) or ($cPerc2 < $tradingMinPer)
+		if ($cPerc1 < $tradingMinPer2) or ($cPerc2 < $tradingMinPer)
 			setVar $port2Ok 0
 		end
 	end

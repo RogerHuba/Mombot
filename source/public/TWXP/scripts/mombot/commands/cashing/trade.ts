@@ -13,7 +13,8 @@ gosub :BOT~loadVars
 	setVar $BOT~help[10]  $BOT~tab&"    {q}       How much equipment to keep post trade. "
 	setVar $BOT~help[11]  $BOT~tab&"              - Default is 5"
 	setVar $BOT~help[12]  $BOT~tab&"    {mcic}    Will just test MCIC and keep fuel."
-	setVar $BOT~help[12]  $BOT~tab&"       EP haggle will be used if it is running in the bot. "
+	setVar $BOT~help[13]  $BOT~tab&"       EP haggle will be used if it is running in the bot. "
+	setVar $BOT~help[14]  $BOT~tab&"    {int}     use internal haggle instead of EP (no MCIC) "
 	
 	gosub :bot~helpfile
 
@@ -51,6 +52,25 @@ gosub :BOT~loadVars
 		end
 	end	
 
+
+	getWordPos $bot~user_command_line $pos "int"
+	if ($pos > 0)
+		setVar $haggle "h"
+		
+	end
+	getWordPos $bot~user_command_line $pos "nohag"
+	if ($pos > 0)
+		setVar $haggle "n"
+		
+	end
+
+	
+	setVar $avoidsOveride 0
+	getWordPos $bot~user_command_line $pos "aoverride"
+	if ($pos > 0)
+		setVar $avoidsOveride 1
+	end
+	
 
 	gosub :player~quikstats
 	
@@ -193,9 +213,13 @@ echo "virtFreeHolds: " $virtFreeHolds "*"
 
 	setVar $trading ($sellOre + $sellOrg + $sellEquip + $buyOre + $buyOrg + $buyEquip)
 	if ($trading > 0)
-		gosub :voidadjacent
+		if ($avoidsOveride = 0)
+			gosub :voidadjacent
+		end
 		goSub :portandtrade
-		gosub :clearadjacent
+		if ($avoidsOveride = 0)
+			gosub :clearadjacent
+		end
 	else
 		setVar $SWITCHBOARD~message "Nothing to trade; have a nice day!*"
 		gosub :SWITCHBOARD~switchboard
@@ -209,7 +233,7 @@ halt
 :portandtrade
 	
 	//
-	setVar $report 0
+	setVar $report 0 
 	send "p   t"
 	waitfor "Commerce report for"
 	
@@ -332,6 +356,8 @@ return
 	elseif ($haggle = "h")
 	
 		gosub :PLAYER~startHaggle
+	else
+		send "  *  "
 	end
 	
 return
