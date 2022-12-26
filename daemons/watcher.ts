@@ -3,7 +3,7 @@ systemscript
 ###########################################
 #Making sure default MSL variables are set#
 ###########################################
-echo "Initializing watcher*";
+echo "Initializing watcher*"
 loadVar $MAP~stardock
 loadvar $bot~subspace
 loadvar $bot~bot_password
@@ -29,6 +29,7 @@ setSectorParameter 10 "MSLSEC" TRUE
 if ($MAP~stardock > 0)
 	setSectorParameter $MAP~stardock "MSLSEC" TRUE
 end
+echo "Before triggers*"
 
 
 setTextLineTrigger  federase        :fedEraseFig        "The Federation We destroyed your Corp's "
@@ -65,8 +66,9 @@ setTextLineTrigger foundbigbubble :foundbigbubble "[Found Big Bubble]"
 setTextLineTrigger foundbigtunnel :foundbigtunnel "[Found Big Tunnel]"
 setTextLineTrigger ferrengihitcorp :ferrengihitcorp "Your Corp's fighters in sector "
 setTextLineTrigger ferrengihitpers :ferrengihitpers "Your fighters in sector "
+echo "After triggers*"
 pause
-pause
+
 
 :foundbigbubble
 	getText CURRENTLINE $bsec " Door: " " Internal Sec:"
