@@ -203,6 +203,7 @@
 		setarray $bot~command_lines 1
 		setvar $bot~command_lines 1
 		setvar $bot~command_lines[1] $bot~user_command_line
+		send "'processing command line:"&$bot~command_lines[1]&"*"
 		getWord $bot~command_lines[1] $bot~command_lines[1][9] 1
 		getLength $bot~command_lines[1][9]&" " $BOT~commandLength
 		getWordPos $bot~command_lines[1][9] $pos "'"
