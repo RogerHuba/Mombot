@@ -752,7 +752,7 @@ return
 						cutText $line $name 1 30
 						replacetext $line $name ""
 						trim $name
-						if ($name <> $my_name)
+						if (($name <> $my_name) and ($name <> ""))
 							add $corpyCount 1
 							setvar $corpy[$corpyCount] $name
 							getword $line $corpy[$corpyCount][1] 1
