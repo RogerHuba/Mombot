@@ -16,7 +16,7 @@
         setVar $PLAYER~destination $parm1
         isNumber $number $PLAYER~destination
         if ($number <> 1)
-            setVar $SWITCHBOARD~message "Sector entered is not a number, cannot mow!*"
+            setVar $SWITCHBOARD~message "Sector "&$PLAYER~destination&" entered is not a number, cannot mow!*"
             gosub :SWITCHBOARD~switchboard
             halt
         elseif (($PLAYER~destination <= 0) OR ($PLAYER~destination > SECTORS))
