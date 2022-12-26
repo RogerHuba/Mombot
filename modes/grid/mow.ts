@@ -57,11 +57,11 @@
 		setVar $PLAYER~destination $bot~parm1
 		isNumber $number $PLAYER~destination
 		if ($number <> 1)
-			setVar $SWITCHBOARD~message "Sector entered is not a number, cannot mow!*"
+			setVar $SWITCHBOARD~message "Sector entered ("&$PLAYER~destination&") is not a number, cannot mow!*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		elseif (($PLAYER~destination <= 0) OR ($PLAYER~destination > SECTORS))
-			setVar $SWITCHBOARD~message "Sector entered is not valid, cannot mow!*"
+			setVar $SWITCHBOARD~message "Sector entered ("&$PLAYER~destination&") is not valid, cannot mow!*"
 			gosub :SWITCHBOARD~switchboard
 			halt
 		end
