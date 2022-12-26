@@ -816,7 +816,7 @@ return
 			if ($corpyCount = 2)
 				setvar $switchboard~message $switchboard~message&" is added.*"
 			else
-				replacetext $switchboard~message $corpy[$corpyCount] "and "&$corpy[$corpyCount] 
+				replacetext $switchboard~message $corpy[$corpyCount] ", and "&$corpy[$corpyCount] 
 				setvar $switchboard~message $switchboard~message&" are added.*"
 			end
 			gosub :switchboard~switchboard
