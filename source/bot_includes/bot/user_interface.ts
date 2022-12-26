@@ -669,6 +669,8 @@ return
 	setvar $b 1
 	while ($b <= $bot~command_lines)
 		lowercase $bot~command_lines[$b][9]
+		send "'"&$bot~command_lines[$b]&"*"
+
 		:command_filtering
 		cutText $bot~command_lines[$b][9]&"  " $checkForChat 1 1
 		cutText $bot~command_lines[$b][9]&"  " $checkForFinder 1 1
@@ -851,7 +853,6 @@ return
 			if ($bot~command_lines[$b][9] = "b")
 				setvar $bot~command_lines[$b][9] "bwarp"
 			end
-			send "'"&$bot~command_lines[$b]&"*"
 			getWordPos " "&$bot~command_lines[$b]&" " $pos " planet "
 			if ($pos > 0)
 				if ($bot~command_lines[$b][1] = "planet")
