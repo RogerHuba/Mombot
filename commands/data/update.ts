@@ -5,7 +5,7 @@
 	loadVar $bot~LIMP_FILE
 	loadVar $bot~ARMID_FILE
 
-	setVar $BOT~help[1]  $BOT~tab&" update {figs} {limps} {armids} {cim}"
+	setVar $BOT~help[1]  $BOT~tab&" update {figs} {limps} {armids} {cim} {warps}"
 	setVar $BOT~help[2]  $BOT~tab&"   "
 	setVar $BOT~help[3]  $BOT~tab&"     Checks deployment lists and sets sector"
 	setVar $BOT~help[4]  $BOT~tab&"     parameters.  Shows differences since last"
@@ -43,21 +43,21 @@
 # ============================== START REFRESH LIMPETS (LIMPS) ==============================
 	
 
-	getwordpos " "&$bot~user_command_line&" " $pos " f"
+	getwordpos " "&$bot~user_command_line&" " $pos " figs "
 	if ($pos > 0)
 		setvar $fighter true
 	else
 		setvar $fighter false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " l"
+	getwordpos " "&$bot~user_command_line&" " $pos " limps "
 	if ($pos > 0)
 		setvar $limpet true
 	else
 		setvar $limpet false
 	end
 
-	getwordpos " "&$bot~user_command_line&" " $pos " ar"
+	getwordpos " "&$bot~user_command_line&" " $pos " armids "
 	getwordpos " "&$bot~user_command_line&" " $pos2 "mine"
 	if (($pos > 0) or ($pos2 > 0))
 		setvar $armid true
@@ -70,6 +70,13 @@
 		setvar $cim true
 	else
 		setvar $cim false
+	end
+
+	getwordpos " "&$bot~user_command_line&" " $pos " warps "
+	if ($pos > 0)
+		setvar $warps true
+	else
+		setvar $warps false
 	end
 
 	if (($fighter <> true) and ($armid <> true) and ($limpet <> true))
@@ -111,6 +118,8 @@
 			gosub :limpets~update
 		end
 		gosub :PLAYER~turnOnAnsi
+		if ($all or $warps)
+			gosub :warps~update
 		if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
 			gosub :PLANET~landingsub
 		end
@@ -153,6 +162,7 @@ include "source\module_includes\update\limpets"
 include "source\module_includes\update\fighters"
 include "source\module_includes\update\armids"
 include "source\module_includes\update\cim"
+include "source\module_includes\update\warps"
 include "source\bot_includes\player\formatnumberforspaces\player"
 include "source\bot_includes\player\formatpercentagesforspaces\player"
 
