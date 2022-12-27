@@ -1016,7 +1016,7 @@ return
 :Hotkey_Access
 	gosub :BOT~bigdelay_killthetriggers
 	setVar $SWITCHBOARD~self_command TRUE
-	setVar $bot~command_lines[$b][9] ""
+	setVar $bot~command_lines[1][9] ""
 	setVar $invalid FALSE
 	setVar $BOT~parm1 ""
 	setVar $BOT~parm2 ""
@@ -1035,7 +1035,7 @@ return
 		gosub :BOT~killthetriggers
 		setVar $temp $BOT~hotkeys[$charCode]
 		if (($temp <> "0") AND ($temp <> ""))
-			setVar $bot~command_lines[$b][9] $BOT~custom_commands[$temp]
+			setVar $bot~command_lines[1][9] $BOT~custom_commands[$temp]
 		else
 			setVar $invalid TRUE
 		end
@@ -1050,9 +1050,9 @@ return
 			setVar $i ($charCode-48)
 			goto :runHotScript
 		elseif (($test = ":") AND ($invalid = FALSE))
-			goto $bot~command_lines[$b][9]
+			goto $bot~command_lines[1][9]
 		elseif ($invalid = FALSE)
-			setVar $bot~command_lines[$b] $bot~command_lines[$b][9]
+			setVar $bot~command_lines[1] $bot~command_lines[1][9]
 			goto :runUserCommandLine
 		end
 		echo #27 "[10D          " #27 "[10D"
