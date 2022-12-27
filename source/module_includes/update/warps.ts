@@ -1,6 +1,6 @@
 # ======================     START REFRESH WARPS (WARPS) SUBROUTINE    ==========================
 :update
-	setVar $SWITCHBOARD~message "Loading current warp report. . .*"
+	setVar $SWITCHBOARD~message "Stand By - CIMMING Warp Data . . .*"
 	gosub :SWITCHBOARD~switchboard
 
 	:readWarpList
