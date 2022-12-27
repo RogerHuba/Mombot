@@ -341,7 +341,7 @@
 								subtract $player~turnsSellingProduct 1
 								add $totalFuelHolds $player~total_holds
 							end
-							waitOn "³Turns"
+							waitOn "ï¿½Turns"
 						end
 					end
 					if ((PORT.BUYORG[$NearFig] = TRUE) AND ($sellingOrg))
@@ -366,7 +366,7 @@
 								subtract $player~turnsSellingProduct 1
 								add $totalOrganicHolds $player~total_holds
 							end
-							waitOn "³Turns"
+							waitOn "ï¿½Turns"
 						end
 					end
 					if ((PORT.BUYEQUIP[$NearFig] = TRUE) AND ($sellingEquip))
@@ -386,7 +386,7 @@
 									subtract $player~turnsSellingProduct 1
 									add $totalEquipmentHolds $player~total_holds
 								end
-								waitOn "³Turns"
+								waitOn "ï¿½Turns"
 							end
 						end
 					end
@@ -395,7 +395,8 @@
 					end
 					gosub :PLAYER~quikstats
 				end
-					if (PORT.BUYEQUIP[$NearFig] = FALSE)
+				gosub :PLAYER~quikstats
+				if (PORT.BUYEQUIP[$NearFig] = FALSE)
 						setVar $PLAYER~buyobject "e"
 						if ($nohaggle)
 							setVar $PLAYER~buytype "s"
