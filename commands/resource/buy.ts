@@ -3,7 +3,7 @@
 #=================================QUIKSTATS================================================
 # ===========================  START SWATH DISABLING SUBROUTINE  =================
 :swathoff
-	loadglobal $swathoff
+	loadvar $swathoff
 	if ($swathoff = FALSE)
 		setTextTrigger swathison :swathison "Command [TL="
 		setDelayTrigger swathisoff :swathisoff 2000
@@ -19,7 +19,7 @@
 		:swathisoff
 		killalltriggers
 		setVar $swathoff TRUE
-		saveglobal $swathoff
+		savevar $swathoff
 	end
 return
 # ==========================   END SWATH DISABLING SUBROUTINE  =================
