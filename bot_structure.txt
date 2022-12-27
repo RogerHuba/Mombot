@@ -214,9 +214,8 @@ twx\scripts\"&$bot~mombot_directory&"\Daemons
 	watcher
 
 twx\scripts\"&$bot~mombot_directory&"\Startups
-	mcic
-	online
-	stats
+	ephaggle
 	watcher
 	viewscreen
-
+	ep_no_mugging
+	
