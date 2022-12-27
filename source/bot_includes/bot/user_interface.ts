@@ -1039,12 +1039,12 @@ return
 		else
 			setVar $invalid TRUE
 		end
-		cutText $bot~command_lines[$b][9]&"  " $test 1 1
+		cutText $bot~command_lines[1][9]&"  " $test 1 1
 		if ($charCode = "48")
 			setVar $i 10
 			goto :runHotScript
 		elseif ($charCode = "63")
-			setVar $bot~command_lines[$b] "help"
+			setVar $bot~command_lines[1] "help"
 			goto :runUserCommandLine
 		elseif (($charCode >= 49) AND ($charCode <= 57))
 			setVar $i ($charCode-48)
