@@ -37,6 +37,7 @@
 	getwordpos " "&$bot~user_command_line&" " $pos " figs "
 	if ($pos > 0)
 		setvar $fighter true
+		setvar $lift_needed true
 	else
 		setvar $fighter false
 	end
@@ -44,6 +45,7 @@
 	getwordpos " "&$bot~user_command_line&" " $pos " limps "
 	if ($pos > 0)
 		setvar $limpet true
+		setvar $lift_needed true
 	else
 		setvar $limpet false
 	end
@@ -52,6 +54,7 @@
 	getwordpos " "&$bot~user_command_line&" " $pos2 "mine"
 	if (($pos > 0) or ($pos2 > 0))
 		setvar $armid true
+		setvar $lift_needed true
 	else
 		setvar $armid false
 	end
@@ -75,69 +78,71 @@
 	# 	setvar $all true
 	# end
 
+	
 	gosub  :player~currentPrompt
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
 	if ($startingLocation = "Command")
 
-	elseif ($startingLocation = "Citadel")
+	elseif ($startingLocation = "Citadel") and ($lift_needed = true)
 		send "q"
 		gosub :PLANET~getPlanetInfo
 		send "q"
-	elseif ($startingLocation = "Planet")
+	elseif ($startingLocation = "Planet") and ($lift_needed = true)
 		gosub :PLANET~getPlanetInfo
 		send "q"
-	else
+	elseif ($lift_needed = true)
 		setVar $SWITCHBOARD~message "Unknown Prompt*"
 		gosub :SWITCHBOARD~switchboard
 		halt
 	end
 
-	
+	gosub :PLAYER~turnOffAnsi
+
+	if ($all or $fighter)
+		gosub :fighters~update
+	end
+	if ($all or $armid)
+		gosub :armids~update
+	end
+	if ($all or $limpet)
+		gosub :limpets~update
+	end
 	if ($cim)
+		if (($startingLocation = "Citadel") OR ($startingLocation = "Planet")) and ($lift_needed = true)
+			gosub :PLANET~landingsub
+		end
 		gosub :cim~update
-		if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
-			gosub :PLANET~landingsub
+	end
+	if ($warps)
+		if ($all or $figs or $armids or $limsp) and ($cim <> true)
+			if (($startingLocation = "Citadel") OR ($startingLocation = "Planet")) and ($lift_needed = true)
+				gosub :PLANET~landingsub
+			end
 		end
-	else
-		gosub :PLAYER~turnOffAnsi
-		if ($all or $fighter)
-			gosub :fighters~update
-		end
-		if ($all or $armid)
-			gosub :armids~update
-		end
-		if ($all or $limpet)
-			gosub :limpets~update
-		end
-		gosub :PLAYER~turnOnAnsi
-		if ($all or $warps)
-			gosub :warps~update
-		if (($startingLocation = "Citadel") OR ($startingLocation = "Planet"))
-			gosub :PLANET~landingsub
-		end
-
-		setvar $switchboard~message ""
-		if ($all or $fighter)
-			gosub :fighters~report
-		end
-		if ($all or $armid)
-			gosub :armids~report
-		end
-		if ($all or $limpet)
-			gosub :limpets~report
-		end
-		if ($SWITCHBOARD~self_command = FALSE)
-			setVar $SWITCHBOARD~self_command 2
-		end
-
-		gosub :SWITCHBOARD~switchboard
+		gosub :warps~update
+	end
+	gosub :PLAYER~turnOnAnsi
+	if (($startingLocation = "Citadel") OR ($startingLocation = "Planet")) and ($lift_needed = true)
+		gosub :PLANET~landingsub
 	end
 
-
+	setvar $switchboard~message ""
+	if ($all or $fighter)
+		gosub :fighters~report
+	end
+	if ($all or $armid)
+		gosub :armids~report
+	end
+	if ($all or $limpet)
+		gosub :limpets~report
+	end
+	if ($SWITCHBOARD~self_command = FALSE)
+		setVar $SWITCHBOARD~self_command 2
+	end
+		gosub :SWITCHBOARD~switchboard
 
 halt
 #===================================== END REFRESH LIMPS ========================================
-
 
 
 #INCLUDES:

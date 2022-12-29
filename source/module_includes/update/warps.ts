@@ -6,7 +6,8 @@
 	:readWarpList
 		send "^iq"
 		setTextLineTrigger done :done "ENDINTERROG"
-return
+:done
+	return
 
 # ======================     END REFRESH WARPS (WARPS) SUBROUTINE    ==========================
 
