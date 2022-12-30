@@ -752,7 +752,7 @@ return
 						cutText $line $name 1 30
 						replacetext $line $name ""
 						trim $name
-						if ($name <> $my_name)
+						if (($name <> $my_name) and ($name <> ""))
 							add $corpyCount 1
 							setvar $corpy[$corpyCount] $name
 							getword $line $corpy[$corpyCount][1] 1
@@ -811,10 +811,13 @@ return
 			write $BOT_USER_FILE $corpy[$i]	
 			add $i 1
 		end
-		if ($corpyCount > 1)
+		if ($corpyCount > 0)
 			replacetext $switchboard~message $corpy[$corpyCount]&", " $corpy[$corpyCount] 
-			if ($corpyCount = 2)
+			if ($corpyCount = 1)
 				setvar $switchboard~message $switchboard~message&" is added.*"
+			elseif ($corpyCount = 2)
+				replacetext $switchboard~message ", "&$corpy[$corpyCount] " and "&$corpy[$corpyCount] 
+				setvar $switchboard~message $switchboard~message&" are added.*"
 			else
 				replacetext $switchboard~message $corpy[$corpyCount] "and "&$corpy[$corpyCount] 
 				setvar $switchboard~message $switchboard~message&" are added.*"

@@ -1,5 +1,5 @@
 # ===========================  START SWATH DISABLING SUBROUTINE  =================
-loadglobal $swathoff
+loadvar $swathoff
 :swathoff
 	if ($swathoff = FALSE)
 		setTextTrigger swathison :swathison "Command [TL="
@@ -18,7 +18,7 @@ loadglobal $swathoff
 		killtrigger swathisoff
 		killtrigger swathison
 		setVar $swathoff TRUE
-        saveglobal $swathoff
+        savevar $swathoff
 	end
 return
 # ==========================   END SWATH DISABLING SUBROUTINE  =================

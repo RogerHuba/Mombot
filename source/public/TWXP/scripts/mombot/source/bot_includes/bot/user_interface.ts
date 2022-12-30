@@ -235,9 +235,9 @@ return
 			isNumber $is_a_number $test_value
 			if ($is_a_number = true)
 				if ($test_value <> 0)
-					replaceText $bot~command_lines[$b] $test_value&"k" $test_value&"000"
-					replaceText $bot~command_lines[$b] $test_value&"m" $test_value&"000000"
-					replaceText $bot~command_lines[$b] $test_value&"b" $test_value&"000000000"
+					replaceText $bot~command_lines[$b] $test_value&"k" ($test_value*1000)
+					replaceText $bot~command_lines[$b] $test_value&"m" ($test_value*1000000)
+					replaceText $bot~command_lines[$b] $test_value&"b" ($test_value*1000000000)
 				end
 			end
 		end
@@ -1016,7 +1016,7 @@ return
 :Hotkey_Access
 	gosub :BOT~bigdelay_killthetriggers
 	setVar $SWITCHBOARD~self_command TRUE
-	setVar $bot~command_lines[$b][9] ""
+	setVar $bot~user_command_line ""
 	setVar $invalid FALSE
 	setVar $BOT~parm1 ""
 	setVar $BOT~parm2 ""
@@ -1035,24 +1035,23 @@ return
 		gosub :BOT~killthetriggers
 		setVar $temp $BOT~hotkeys[$charCode]
 		if (($temp <> "0") AND ($temp <> ""))
-			setVar $bot~command_lines[$b][9] $BOT~custom_commands[$temp]
+			setVar $bot~user_command_line $BOT~custom_commands[$temp]
 		else
 			setVar $invalid TRUE
 		end
-		cutText $bot~command_lines[$b][9]&"  " $test 1 1
+		cutText $bot~user_command_line&"  " $test 1 1
 		if ($charCode = "48")
 			setVar $i 10
 			goto :runHotScript
 		elseif ($charCode = "63")
-			setVar $bot~command_lines[$b] "help"
+			setVar $bot~user_command_line "help"
 			goto :runUserCommandLine
 		elseif (($charCode >= 49) AND ($charCode <= 57))
 			setVar $i ($charCode-48)
 			goto :runHotScript
 		elseif (($test = ":") AND ($invalid = FALSE))
-			goto $bot~command_lines[$b][9]
+			goto $bot~user_command_line
 		elseif ($invalid = FALSE)
-			setVar $bot~command_lines[$b] $bot~command_lines[$b][9]
 			goto :runUserCommandLine
 		end
 		echo #27 "[10D          " #27 "[10D"
