@@ -237,7 +237,7 @@ return
 				if ($test_value <> 0)
 					replaceText $bot~command_lines[$b] $test_value&"k" ($test_value*1000)
 					replaceText $bot~command_lines[$b] $test_value&"m" ($test_value*1000000)
-					replaceText $bot~command_lines[$b] $test_value&"b" ($test_value*000000000)
+					replaceText $bot~command_lines[$b] $test_value&"b" ($test_value*1000000000)
 				end
 			end
 		end
