@@ -13,7 +13,7 @@ gosub :BOT~loadVars
 #trade individuals when can/test MCIC
 
 #swhen stuck, find nearest 5-6 warp?
-
+	setvar $bot~script_version "1.1"
 
 	setVar $BOT~help[1]  $BOT~tab&"       Scans and offers available PPT trades to adj sectors "
 	setVar $BOT~help[2]  $BOT~tab&"       Aimed at Day 1 use - the only time to use PPT!"
