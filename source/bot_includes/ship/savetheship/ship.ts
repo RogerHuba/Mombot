@@ -90,7 +90,7 @@
 		setvar $switchboard~message $ship_name&" added to bot's ship file.*"
 		gosub :switchboard~switchboard
 		send "q"
-		gosub :loadShipInfo
+		# gosub :loadShipInfo
 return
 
 :process_ship_line
