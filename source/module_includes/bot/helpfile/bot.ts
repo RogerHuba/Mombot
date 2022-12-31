@@ -3,6 +3,9 @@ setvar $only_help false
 if (($parm1 = "help") or ($parm1 = "?"))
 	setvar $only_help true
 end
+if (($parm1 = "version") or ($parm1 = "ver") or ($parm1 = "-v"))
+	goto :version_display
+end
 if (($switchboard~self_command <> false) and (($bot~parm1 = "!") or ($bot~parm1 = "menu")))
 	goto :self_menu
 end
@@ -882,6 +885,15 @@ goto :menu_creation
 	setMenuValue Control $bot_to_control_display
 goto :menu_creation
 
+
+:version_display
+	if (($script_version <> "") and ($script_version <> "0"))
+		setvar $switchboard~message "This version of "&$command&" is "&$script_version&".*"
+	else
+		setvar $switchboard~message "This is the first version of this script since we've been tracking it.*"	
+	end
+	gosub :switchboard~switchboard
+halt
 include "source\module_includes\bot\displayhelp\bot"
 include "source\bot_includes\switchboard"
 
