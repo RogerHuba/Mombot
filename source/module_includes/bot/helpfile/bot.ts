@@ -887,11 +887,10 @@ goto :menu_creation
 
 
 :version_display
-	if (($script_version <> "") and ($script_version <> "0"))
-		setvar $switchboard~message "This version of "&$command&" is "&$script_version&".*"
-	else
-		setvar $switchboard~message "This is the first version of this script since we've been tracking it.*"	
+	if (($script_version = "") or ($script_version = "0"))
+		setvar $script_version "1.0"
 	end
+	setvar $switchboard~message "["&$command&" "&$script_version&"]*"	
 	gosub :switchboard~switchboard
 halt
 include "source\module_includes\bot\displayhelp\bot"
