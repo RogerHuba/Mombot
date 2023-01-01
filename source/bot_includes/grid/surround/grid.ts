@@ -27,8 +27,8 @@
 				send "* " 
 		end
 		killtrigger surroundsector
-		setTextTrigger surroundsector :continuesurroundsector "[" & $player~current_sector & "]"
-		pause
+		#setTextTrigger surroundsector :continuesurroundsector "[" & $player~current_sector & "]"
+		#pause
 		:continuesurroundsector
 		if ($already_checked_ship <> TRUE)
 			gosub :SHIP~getShipStats
