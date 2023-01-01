@@ -289,7 +289,7 @@
 				getText $ship_fighters&"ENDOFLINE" $ship_fighters "-" "ENDOFLINE"
 				stripText $ship_fighters ","
 
-				echo ANSI_15&"*["&$ship_fighters&"]**["&$SHIP~shipList[$type_count]&"]*"
+				echo ANSI_15&"*shipfighters["&$ship_fighters&"]**shiptype["&$SHIP~shipList[$type_count]&"]*"
 				
 
 				setVar $ship_shield_percent 0
