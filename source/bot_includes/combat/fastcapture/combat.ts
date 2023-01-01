@@ -152,6 +152,7 @@
 			setVar $player~lasttarget ""
 			setvar $firstLoop true
 			setvar $last_shield_percentage 0
+			setvar $added_attack 2
 		while ($player~fighters > 0)
 			killalltriggers
 			setVar $stillShields FALSE
@@ -373,7 +374,10 @@
 				end
 				#echo ANSI_15&"sendattack: z"&$cap_points&"*  "
 				if (($last_shield_percentage = $shieldperc) and ($shieldperc > 0))
-					setvar $cap_points $cap_points+2
+					setvar $cap_points $cap_points+$added_attack
+					setvar $added_attack $added_attack+2
+				else
+					setvar $added_attack 2
 				end
 				setvar $last_shield_percentage $shieldperc
 				setVar $sendAttack "z"&$cap_points&"*  "
