@@ -372,6 +372,10 @@
 					setVar $cap_points $max_figs
 				end
 				#echo ANSI_15&"sendattack: z"&$cap_points&"*  "
+				if (($last_shield_percentage = $shieldperc) and ($shieldperc > 0))
+					setvar $cap_points $cap_points+2
+				end
+				setvar $last_shield_percentage $shieldperc
 				setVar $sendAttack "z"&$cap_points&"*  "
 
 				
@@ -398,10 +402,6 @@
 						return
 				end
 				if ($cap_points = 1)
-					if (($last_shield_percentage = $shieldperc) and ($shieldperc > 0))
-						setvar $cap_points 10
-					end
-					setvar $last_shield_percentage $shieldperc
 					setvar $i 1
 					setvar $burst ""
 					while ($i <= 3)
