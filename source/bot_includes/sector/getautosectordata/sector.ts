@@ -77,7 +77,7 @@
 				goSub :getFakeTraders
 				setVar $c 1
 				setvar $player~isFound false
-				#echo "*Number of real traders: " $realTraderCount " in sector " $player~current_sector "*"
+				echo "*Number of real traders: " $fakeTraderCount " in sector " $player~current_sector "*"
 				while (($c <= $realTraderCount) AND ($player~isFound = FALSE))
 					if (($player~traders[$c][1]) = ($player~CORP))
 						#ignore

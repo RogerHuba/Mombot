@@ -16,10 +16,11 @@
 			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
 			send "* " 
 		else
-			send "szh" 
-			settextlinetrigger surroundscan :donesurroundscan "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
+			send " szh"
 			settexttrigger surroundscanfail :donesurroundscan "Do you want instructions (Y/N) [N]?"
-			pause
+			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
+			gosub :sector~getAutoSectorData
+
 			:donesurroundscan
 				killtrigger surroundscan
 				killtrigger surroundscanfail
