@@ -52,7 +52,7 @@
 		end
 		setVar $c 1
 		while (($c <= $SECTOR~realTraderCount) AND ($player~isFound = FALSE))
-			echo ANSI_15&"*"&$player~traders[$c]&"[]"&$player~traders[$c][1]&"[]"&$player~traders[$c][2]&"*"
+			#echo ANSI_15&"*"&$player~traders[$c]&"[]"&$player~traders[$c][1]&"[]"&$player~traders[$c][2]&"*"
 			if (($player~fedspace = true) AND ($player~traders[$c][2] = TRUE))
 				setVar $targetString $targetString&"* "
 			elseif (($player~traders[$c][1] = $player~CORP) OR ($player~traders[$c][1] = 100000))
@@ -160,7 +160,7 @@
 				setTextTrigger  foundcaptarget  :foundcaptarget  "(Y/N) [N]? Y"
 				setTextTrigger checkcaptarget :checkcaptarget "Yes"
 				setTextLineTrigger noctarget    :nocappingtargets "Do you want instructions (Y/N) [N]?"
-				echo ANSI_15&$targetString&"*"
+				#echo ANSI_15&$targetString&"*"
 				send $targetString
 				pause
 				pause
@@ -218,8 +218,8 @@
 					cutText $thistarget $thistarget 1 $end_of_line_pos
 						
 				end
-				echo ANSI_15&"*["&$thistarget&"]*"
-				echo ANSI_15&"*["&$player~lasttarget&"]*"
+				#echo ANSI_15&"*["&$thistarget&"]*"
+				#echo ANSI_15&"*["&$player~lasttarget&"]*"
 				if (($thisTarget = $player~lasttarget) and ($firstLoop <> true))
 					setVar $isSameTarget TRUE
 					getwordpos $thisTarget $ourshippos " ["&$player~CORP&"]'s unmanned "
@@ -250,9 +250,9 @@
 					getwordpos $cap_ship_info $unman2 "s' unmanned "
 					if (($unman > 0) or ($unman2 > 0))
 						setVar $unmanned true
-						echo ANSI_15&"*[unmanned]*"
+						#echo ANSI_15&"*[unmanned]*"
 					else
-						echo ANSI_15&"*[manned]*"
+						#echo ANSI_15&"*[manned]*"
 						setVar $unmanned false
 					end
 					if (($is_ship > 0) AND ($SHIP~shipList[$type_count] <> "0"))
@@ -278,7 +278,7 @@
 				killtrigger wrongtarget
 				#Attack Hammer's <<**DRAT**>> (3,406-10,000) (Y/N) [N]? Yes
 				getText $cap_ship_info $cap_info $SHIP~shipList[$type_count] "(Y/N)"
-				echo ANSI_15&"*["&$cap_ship_info&"]**["&$cap_info&"]*"
+				#echo ANSI_15&"*["&$cap_ship_info&"]**["&$cap_info&"]*"
 				if ($cap_info <> "")
 					#[ (8,714-9,951) ]
 					getText $cap_info $ship_fighters " (" ")"
@@ -288,7 +288,7 @@
 				getText $ship_fighters&"ENDOFLINE" $ship_fighters "-" "ENDOFLINE"
 				stripText $ship_fighters ","
 
-				echo ANSI_15&"*["&$ship_fighters&"]**["&$SHIP~shipList[$type_count]&"]*"
+				#echo ANSI_15&"*["&$ship_fighters&"]**["&$SHIP~shipList[$type_count]&"]*"
 				
 
 				setVar $ship_shield_percent 0
@@ -330,10 +330,10 @@
 				if ($ship_fighters = "")
 					setVar $ship_fighters 1
 				end
-				echo ANSI_15&"*["&$defodds&"]*"
-				echo ANSI_15&"*["&$ship_fighters&"]*"
+				#echo ANSI_15&"*["&$defodds&"]*"
+				#echo ANSI_15&"*["&$ship_fighters&"]*"
 				setVar $cap_points (($shieldPoints + $ship_fighters) * $defodds)
-				echo ANSI_15&"*Cap Points: ["&$cap_points&"]*"
+				#echo ANSI_15&"*Cap Points: ["&$cap_points&"]*"
 				if ((($player~defenderCapping = TRUE) AND ($unmanned <> true)) AND ($targetIsAlien = TRUE))
 					if ($stillShields = TRUE)
 						if ($ship_fighters > 750)
@@ -349,7 +349,7 @@
 						end
 					end
 				else
-					echo ANSI_15&"*["&$own_odds&"]*"
+					#echo ANSI_15&"*["&$own_odds&"]*"
 					setVar $cap_points ($cap_points / $own_odds)
 				end
 				if ($unmanned = true)
@@ -361,7 +361,7 @@
 				elseif ($cap_points > $max_figs)
 					setVar $cap_points $max_figs
 				end
-				echo ANSI_15&"sendattack: z"&$cap_points&"*  "
+				#echo ANSI_15&"sendattack: z"&$cap_points&"*  "
 				setVar $sendAttack "z"&$cap_points&"*  "
 
 				
@@ -370,7 +370,7 @@
 				elseif (($player~refurbString <> "") and ($player~refurbString <> "0"))
 					setvar $sendAttack $sendAttack&$player~refurbString
 				end
-				echo ANSI_15&"sendattack: "&$sendAttack&"*"
+				#echo ANSI_15&"sendattack: "&$sendAttack&"*"
 				send $sendAttack
 				if ($player~onetap = TRUE)
 					
@@ -395,7 +395,7 @@
 						setVar $player~fighters ($player~fighters-$cap_points)
 						add $i 1
 					end
-					ECHO "["&$burst&"]"
+					#echo "["&$burst&"]"
 					send $burst
 					setdelaytrigger littleslower :donelittleslower 10
 					pause
