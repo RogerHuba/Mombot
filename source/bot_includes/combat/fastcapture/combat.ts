@@ -371,7 +371,7 @@
 					setvar $sendAttack $sendAttack&$player~refurbString
 				end
 				echo ANSI_15&"sendattack: "&$sendAttack&"*"
-				#send $sendAttack
+				send $sendAttack
 				if ($player~onetap = TRUE)
 					
 					setvar $switchboard~message "One tap complete.*"
