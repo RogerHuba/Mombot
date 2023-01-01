@@ -159,7 +159,7 @@
 				setTextLineTrigger noctarget    :nocappingtargets "Do you want instructions (Y/N) [N]?"
 				setvar $switchboard~message $targetString&"*"
 				gosub :switchboard~switchboard
-				send $targetString
+				#send $targetString
 				pause
 				pause
 			:checkcaptarget
