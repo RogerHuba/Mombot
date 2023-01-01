@@ -341,8 +341,8 @@
 				if ($ship_fighters = "")
 					setVar $ship_fighters 1
 				end
-				echo ANSI_15&"*["&$defodds&"]*"
-				echo ANSI_15&"*["&$ship_fighters&"]*"
+				#echo ANSI_15&"*["&$defodds&"]*"
+				#echo ANSI_15&"*["&$ship_fighters&"]*"
 				setVar $cap_points (($shieldPoints + $ship_fighters) * $defodds)
 				#echo ANSI_15&"*Cap Points: ["&$cap_points&"]*"
 				if ((($player~defenderCapping = TRUE) AND ($unmanned <> true)) AND ($targetIsAlien = TRUE))
