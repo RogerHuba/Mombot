@@ -374,8 +374,8 @@
 					setVar $cap_points $max_figs
 				end
 				#echo ANSI_15&"sendattack: z"&$cap_points&"*  "
-				echo "shieldperc:["&$shieldperc&"]*"
-				if (($last_shield_percentage = $shieldperc) and ($shieldperc > 0))
+				#echo "shieldperc:["&$shieldperc&"]*"
+				if ((($last_shield_percentage = $shieldperc) and ($shieldperc > 0)) or ($shieldperc > 30)) 
 					setvar $cap_points $cap_points+$added_attack
 					setvar $added_attack $added_attack+2
 				else
