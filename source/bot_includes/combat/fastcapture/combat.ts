@@ -157,7 +157,8 @@
 				setTextTrigger  foundcaptarget  :foundcaptarget  "(Y/N) [N]? Y"
 				setTextTrigger checkcaptarget :checkcaptarget "Yes"
 				setTextLineTrigger noctarget    :nocappingtargets "Do you want instructions (Y/N) [N]?"
-				echo "*[" $targetString "]*"
+				setvar $switchboard~message $targetString&"*"
+				gosub :switchboard~switchboard
 				send $targetString
 				pause
 				pause
@@ -262,8 +263,8 @@
 				end
 
 				#  if you don't know the ship, just guess weakest with most shield.  Probably blow it up, but better than doing nothing #
-				#setVar $SWITCHBOARD~message "Unknown ship type, cannot calculate attack.  I'm going to guess. ["&$cap_ship_info&"]*" 
-				#gosub :bot~echo
+				setVar $SWITCHBOARD~message "Unknown ship type, cannot calculate attack.  I'm going to guess. ["&$cap_ship_info&"]*" 
+				gosub :bot~echo
 				setvar $shieldpoints 16000
 				setVar $defodds 5
 			:send_attack
