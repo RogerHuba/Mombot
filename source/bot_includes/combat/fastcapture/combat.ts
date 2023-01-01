@@ -160,8 +160,7 @@
 				setTextTrigger  foundcaptarget  :foundcaptarget  "(Y/N) [N]? Y"
 				setTextTrigger checkcaptarget :checkcaptarget "Yes"
 				setTextLineTrigger noctarget    :nocappingtargets "Do you want instructions (Y/N) [N]?"
-				setvar $switchboard~message $targetString&"*"
-				gosub :switchboard~switchboard
+				echo ANSI_15&$targetString&"*"
 				send $targetString
 				pause
 				pause
@@ -396,6 +395,7 @@
 						setVar $player~fighters ($player~fighters-$cap_points)
 						add $i 1
 					end
+					ECHO "["&$burst&"]"
 					send $burst
 					setdelaytrigger littleslower :donelittleslower 10
 					pause
