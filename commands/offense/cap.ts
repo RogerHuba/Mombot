@@ -26,9 +26,6 @@ logging off
 #============================== START AUTO CAPTURE =======================================
 :autoCap
 :cap
-setVar $SWITCHBOARD~message "starting external cap.*" 
-gosub :SWITCHBOARD~switchboard
-
 	gosub :PLAYER~quikstats
 	setVar $PLAYER~startingLocation $PLAYER~CURRENT_PROMPT
 	if ($PLAYER~startingLocation <> "Command")

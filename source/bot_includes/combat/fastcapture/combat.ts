@@ -1,7 +1,5 @@
 # [Attack Captain Wilson (60,000-45,000) (Y/N) [N]? Yes] #
 :fastCapture
-setVar $SWITCHBOARD~message "in fast capture.*" 
-gosub :SWITCHBOARD~switchboard
 
 	setVar $player~isFound FALSE
 	setVar $targetIsAlien FALSE
@@ -25,8 +23,6 @@ gosub :SWITCHBOARD~switchboard
 			setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j q * " 
 		end
 	end
-	setVar $SWITCHBOARD~message "before checking figs.*" 
-	gosub :SWITCHBOARD~switchboard
 
 	:checkingFigs
 		if ($player~fighters <= 0)
@@ -41,8 +37,6 @@ gosub :SWITCHBOARD~switchboard
 		end
 		setVar $targetString "a "
 
-		setVar $SWITCHBOARD~message "before sector check.*" 
-		gosub :SWITCHBOARD~switchboard
 	
 	if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($player~onlyAliens <> TRUE) and ($player~empty_ships_only <> true))
 		if ($player~fedspace <> true)
@@ -168,7 +162,7 @@ gosub :SWITCHBOARD~switchboard
 				setTextLineTrigger noctarget    :nocappingtargets "Do you want instructions (Y/N) [N]?"
 				setvar $switchboard~message $targetString&"*"
 				gosub :switchboard~switchboard
-				#send $targetString
+				send $targetString
 				pause
 				pause
 			:checkcaptarget
@@ -252,8 +246,6 @@ gosub :SWITCHBOARD~switchboard
 				end
 				while ($type_count < $SHIP~shipcounter)
 					add $type_count 1
-					#echo "*["&$cap_ship_info&"]*"
-					#echo "*["&$SHIP~shipList[$type_count]&"]*"
 					getWordPos $cap_ship_info $is_ship $SHIP~shipList[$type_count]
 					getWordPos $cap_ship_info $unman "'s unmanned "
 					getwordpos $cap_ship_info $unman2 "s' unmanned "
@@ -271,7 +263,6 @@ gosub :SWITCHBOARD~switchboard
 					end
 				end
 
-				#  if you don't know the ship, just guess weakest with most shield.  Probably blow it up, but better than doing nothing #
 				setVar $SWITCHBOARD~message "Unknown ship type, cannot calculate attack.  I'm going to guess. ["&$cap_ship_info&"]*" 
 				gosub :bot~echo
 				setvar $shieldpoints 16000
@@ -377,6 +368,8 @@ gosub :SWITCHBOARD~switchboard
 				elseif (($player~refurbString <> "") and ($player~refurbString <> "0"))
 					setvar $sendAttack $sendAttack&$player~refurbString
 				end
+				setvar $switchboard~message $sendAttack&"*"
+				gosub :Switchboard~switchboard
 				send $sendAttack
 				if ($player~onetap = TRUE)
 					
