@@ -52,7 +52,7 @@
 		end
 		setVar $c 1
 		while (($c <= $SECTOR~realTraderCount) AND ($player~isFound = FALSE))
-			#echo "*"&$player~traders[$c]&"[]"&$player~traders[$c][1]&"[]"&$player~traders[$c][2]&"*"
+			echo "*"&$player~traders[$c]&"[]"&$player~traders[$c][1]&"[]"&$player~traders[$c][2]&"*"
 			if (($player~fedspace = true) AND ($player~traders[$c][2] = TRUE))
 				setVar $targetString $targetString&"* "
 			elseif (($player~traders[$c][1] = $player~CORP) OR ($player~traders[$c][1] = 100000))
@@ -219,8 +219,8 @@
 					cutText $thistarget $thistarget 1 $end_of_line_pos
 						
 				end
-				#echo "*["&$thistarget&"]*"
-				#echo "*["&$player~lasttarget&"]*"
+				echo "*["&$thistarget&"]*"
+				echo "*["&$player~lasttarget&"]*"
 				if (($thisTarget = $player~lasttarget) and ($firstLoop <> true))
 					setVar $isSameTarget TRUE
 					getwordpos $thisTarget $ourshippos " ["&$player~CORP&"]'s unmanned "
@@ -251,9 +251,9 @@
 					getwordpos $cap_ship_info $unman2 "s' unmanned "
 					if (($unman > 0) or ($unman2 > 0))
 						setVar $unmanned true
-						#echo "*[unmanned]*"
+						echo "*[unmanned]*"
 					else
-						#echo "*[manned]*"
+						echo "*[manned]*"
 						setVar $unmanned false
 					end
 					if (($is_ship > 0) AND ($SHIP~shipList[$type_count] <> "0"))
@@ -279,7 +279,7 @@
 				killtrigger wrongtarget
 				#Attack Hammer's <<**DRAT**>> (3,406-10,000) (Y/N) [N]? Yes
 				getText $cap_ship_info $cap_info $SHIP~shipList[$type_count] "(Y/N)"
-				#echo "*["&$cap_ship_info&"]**["&$cap_info&"]*"
+				echo "*["&$cap_ship_info&"]**["&$cap_info&"]*"
 				if ($cap_info <> "")
 					#[ (8,714-9,951) ]
 					getText $cap_info $ship_fighters " (" ")"
@@ -289,7 +289,7 @@
 				getText $ship_fighters&"ENDOFLINE" $ship_fighters "-" "ENDOFLINE"
 				stripText $ship_fighters ","
 
-				#echo "*["&$ship_fighters&"]**["&$SHIP~shipList[$type_count]&"]*"
+				echo "*["&$ship_fighters&"]**["&$SHIP~shipList[$type_count]&"]*"
 				
 
 				setVar $ship_shield_percent 0
@@ -331,10 +331,10 @@
 				if ($ship_fighters = "")
 					setVar $ship_fighters 1
 				end
-				#echo "*["&$defodds&"]*"
-				#echo "*["&$ship_fighters&"]*"
+				echo "*["&$defodds&"]*"
+				echo "*["&$ship_fighters&"]*"
 				setVar $cap_points (($shieldPoints + $ship_fighters) * $defodds)
-				#echo "*Cap Points: ["&$cap_points&"]*"
+				echo "*Cap Points: ["&$cap_points&"]*"
 				if ((($player~defenderCapping = TRUE) AND ($unmanned <> true)) AND ($targetIsAlien = TRUE))
 					if ($stillShields = TRUE)
 						if ($ship_fighters > 750)
@@ -350,7 +350,7 @@
 						end
 					end
 				else
-					#echo "*["&$own_odds&"]*"
+					echo "*["&$own_odds&"]*"
 					setVar $cap_points ($cap_points / $own_odds)
 				end
 				if ($unmanned = true)
