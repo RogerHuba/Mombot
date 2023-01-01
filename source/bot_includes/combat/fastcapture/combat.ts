@@ -339,7 +339,7 @@
 						if ($ship_fighters > 750)
 							 setVar $cap_points (($shieldPoints / $own_odds) + ($cap_points/100))
 						else
-							setVar $cap_points ($shieldPoints+1)
+							setVar $cap_points (($shieldPoints / $own_odds) + 1)
 						end
 					else
 						if ($ship_fighters > 750)
