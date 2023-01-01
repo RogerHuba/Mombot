@@ -1,5 +1,8 @@
 # [Attack Captain Wilson (60,000-45,000) (Y/N) [N]? Yes] #
 :fastCapture
+setVar $SWITCHBOARD~message "in fast capture.*" 
+gosub :SWITCHBOARD~switchboard
+
 	setVar $player~isFound FALSE
 	setVar $targetIsAlien FALSE
 	setVar $stillShields FALSE
@@ -22,6 +25,9 @@
 			setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j q * " 
 		end
 	end
+	setVar $SWITCHBOARD~message "before checking figs.*" 
+	gosub :SWITCHBOARD~switchboard
+
 	:checkingFigs
 		if ($player~fighters <= 0)
 			gosub :player~quikstats
@@ -35,6 +41,9 @@
 		end
 		setVar $targetString "a "
 
+		setVar $SWITCHBOARD~message "before sector check.*" 
+		gosub :SWITCHBOARD~switchboard
+	
 	if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($player~onlyAliens <> TRUE) and ($player~empty_ships_only <> true))
 		if ($player~fedspace <> true)
 			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
