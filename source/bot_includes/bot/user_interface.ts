@@ -963,6 +963,8 @@ return
 					return
 				end
 			else
+				echo ansi_15&"scripts\"&$bot~mombot_directory&"\"&$BOT~CATAGORIES[$i]&"\"&$BOT~TYPES[$j]&"\"&$bot~command_lines[$b][9]&".cts"
+
 				fileExists $doesExist "scripts\"&$bot~mombot_directory&"\"&$BOT~CATAGORIES[$i]&"\"&$BOT~TYPES[$j]&"\"&$bot~command_lines[$b][9]&".cts"
 				fileExists $doesExistHidden "scripts\"&$bot~mombot_directory&"\"&$BOT~CATAGORIES[$i]&"\"&$BOT~TYPES[$j]&"\_"&$bot~command_lines[$b][9]&".cts"
 				if (($doesExist) OR ($doesExistHidden))
