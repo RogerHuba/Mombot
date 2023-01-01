@@ -363,7 +363,7 @@
 					setVar $cap_points $max_figs
 				end
 				echo "sendattack: z"&$cap_points&"*  "
-				setVar $sendAttack "z"&$cap_points&"*  "
+				#setVar $sendAttack "z"&$cap_points&"*  "
 
 				
 				if ($player~startingLocation = "Citadel")
