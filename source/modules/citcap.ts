@@ -544,7 +544,7 @@ return
 		goSub :getFakeTraders
 return
 
-:fastCapture
+:fastCaptureOld
 	killalltriggers
 	setVar $refurbString "l j"&#8&$PLANET&"* m*** "
 	setVar $isFound FALSE
@@ -902,7 +902,7 @@ return
 
 :checkForCappingVictimsFromCitadel
 	gosub :getSectorData
-	goSub :fastCapture
+	goSub :fastCaptureOld
 	if ($isFound)
 		gosub :quikstats
 		goto :checkForCappingVictimsFromCitadel

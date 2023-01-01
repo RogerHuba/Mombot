@@ -278,7 +278,7 @@
 		goSub :fastCitadelAttack
 		goto :scanit_again
 	elseif (($emptyShipCount > $myShipCount) AND ($capEmptyShips = TRUE))
-		gosub :fastCapture
+		gosub :fastCaptureOld
 		goto :scanit_again
 	end
 	goto :halt
@@ -872,7 +872,7 @@ return
 return
 # ==============================  END PLANET INFO SUBROUTINE  =================
 
-:fastCapture
+:fastCaptureOld
 	killalltriggers
 	setVar $refurbString "l j"&#8&$PLANET&"* m*** "
 	setVar $isFound FALSE
