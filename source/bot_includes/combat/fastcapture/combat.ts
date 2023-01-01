@@ -348,7 +348,7 @@
 				if ((($player~defenderCapping = TRUE) AND ($unmanned <> true)) AND ($targetIsAlien = TRUE))
 					if ($stillShields = TRUE)
 						if ($ship_fighters > 750)
-							 setVar $cap_points ($shieldPoints + $cap_points)
+							setVar $cap_points (($shieldPoints / $own_odds) + ($cap_points/100))
 						else
 							setVar $cap_points (($shieldPoints / $own_odds) + 1)
 						end
