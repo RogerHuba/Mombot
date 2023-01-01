@@ -281,12 +281,18 @@
 				getText $cap_ship_info $cap_info $SHIP~shipList[$type_count] "(Y/N)"
 				#echo ANSI_15&"*["&$cap_ship_info&"]**["&$cap_info&"]*"
 				if ($cap_info <> "")
-					#[ (8,714-9,951) ]
-					echo "capinfo:"&$cap_info&"*"
+					#[ (8,714-9,951) ]  4,201-0)  
+					getwordpos $cap_info $pos " ("
+					if ($pos <= 0) 
+							setvar $cap_info " ("&$cap_info
+					end
 					getText $cap_info $ship_fighters " (" ")"
 				else
 					#(104,209-3,967) (Y/N) [N]
-					echo "capshipinfo:"&$cap_ship_info&"*"
+					getwordpos $cap_ship_info $pos " ("
+					if ($pos <= 0) 
+							setvar $cap_ship_info " ("&$cap_ship_info
+					end
 					getText $cap_ship_info $ship_fighters " (" ") (Y/N)"
 				end
 				getText $ship_fighters&"ENDOFLINE" $ship_fighters "-" "ENDOFLINE"
