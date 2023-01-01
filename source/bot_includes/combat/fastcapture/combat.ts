@@ -282,6 +282,7 @@
 				#echo ANSI_15&"*["&$cap_ship_info&"]**["&$cap_info&"]*"
 				if ($cap_info <> "")
 					#[ (8,714-9,951) ]
+					echo "capinfo:"&$cap_info&"*"
 					getText $cap_info $ship_fighters " (" ")"
 				else
 					#(104,209-3,967) (Y/N) [N]
