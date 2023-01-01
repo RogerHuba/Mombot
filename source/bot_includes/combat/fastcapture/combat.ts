@@ -15,10 +15,12 @@
 	if ((currentsector = stardock) or (currentsector <= 10))
 		setvar $player~fedspace true
 	end
-	if ($player~onetap = TRUE) or ($player~slowmo = TRUE)
-		setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j * c " 
-	else
-		setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j q * " 
+	if ($player~startingLocation = "Citadel")
+		if ($player~onetap = TRUE) or ($player~slowmo = TRUE)
+			setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j * c " 
+		else
+			setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j q * " 
+		end
 	end
 	:checkingFigs
 		if ($player~fighters <= 0)
