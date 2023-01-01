@@ -1,5 +1,6 @@
 # [Attack Captain Wilson (60,000-45,000) (Y/N) [N]? Yes] #
 :fastCapture
+
 	setVar $player~isFound FALSE
 	setVar $targetIsAlien FALSE
 	setVar $stillShields FALSE
@@ -15,11 +16,14 @@
 	if ((currentsector = stardock) or (currentsector <= 10))
 		setvar $player~fedspace true
 	end
-	if ($player~onetap = TRUE) or ($player~slowmo = TRUE)
-		setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j * c " 
-	else
-		setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j q * " 
+	if ($player~startingLocation = "Citadel")
+		if ($player~onetap = TRUE) or ($player~slowmo = TRUE)
+			setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j * c " 
+		else
+			setVar $refurbString " l "&$PLANET~PLANET&" * n n * j m * * * j q * " 
+		end
 	end
+
 	:checkingFigs
 		if ($player~fighters <= 0)
 			gosub :player~quikstats
@@ -33,6 +37,7 @@
 		end
 		setVar $targetString "a "
 
+	
 	if (($SECTOR~realTraderCount > $SECTOR~corpieCount) AND ($player~onlyAliens <> TRUE) and ($player~empty_ships_only <> true))
 		if ($player~fedspace <> true)
 			getWordPos $SECTOR~sectorData $beaconPos "[0m[35mBeacon  [1;33m:"
@@ -47,7 +52,7 @@
 		end
 		setVar $c 1
 		while (($c <= $SECTOR~realTraderCount) AND ($player~isFound = FALSE))
-			#echo "*"&$player~traders[$c]&"[]"&$player~traders[$c][1]&"[]"&$player~traders[$c][2]&"*"
+			#echo ANSI_15&"*"&$player~traders[$c]&"[]"&$player~traders[$c][1]&"[]"&$player~traders[$c][2]&"*"
 			if (($player~fedspace = true) AND ($player~traders[$c][2] = TRUE))
 				setVar $targetString $targetString&"* "
 			elseif (($player~traders[$c][1] = $player~CORP) OR ($player~traders[$c][1] = 100000))
@@ -155,7 +160,7 @@
 				setTextTrigger  foundcaptarget  :foundcaptarget  "(Y/N) [N]? Y"
 				setTextTrigger checkcaptarget :checkcaptarget "Yes"
 				setTextLineTrigger noctarget    :nocappingtargets "Do you want instructions (Y/N) [N]?"
-				#echo "*[" $targetString "]*"
+				#echo ANSI_15&$targetString&"*"
 				send $targetString
 				pause
 				pause
@@ -213,8 +218,8 @@
 					cutText $thistarget $thistarget 1 $end_of_line_pos
 						
 				end
-				#echo "*["&$thistarget&"]*"
-				#echo "*["&$player~lasttarget&"]*"
+				#echo ANSI_15&"*["&$thistarget&"]*"
+				#echo ANSI_15&"*["&$player~lasttarget&"]*"
 				if (($thisTarget = $player~lasttarget) and ($firstLoop <> true))
 					setVar $isSameTarget TRUE
 					getwordpos $thisTarget $ourshippos " ["&$player~CORP&"]'s unmanned "
@@ -240,16 +245,14 @@
 				end
 				while ($type_count < $SHIP~shipcounter)
 					add $type_count 1
-					#echo "*["&$cap_ship_info&"]*"
-					#echo "*["&$SHIP~shipList[$type_count]&"]*"
 					getWordPos $cap_ship_info $is_ship $SHIP~shipList[$type_count]
 					getWordPos $cap_ship_info $unman "'s unmanned "
 					getwordpos $cap_ship_info $unman2 "s' unmanned "
 					if (($unman > 0) or ($unman2 > 0))
 						setVar $unmanned true
-						#echo "*[unmanned]*"
+						#echo ANSI_15&"*[unmanned]*"
 					else
-						#echo "*[manned]*"
+						#echo ANSI_15&"*[manned]*"
 						setVar $unmanned false
 					end
 					if (($is_ship > 0) AND ($SHIP~shipList[$type_count] <> "0"))
@@ -259,9 +262,8 @@
 					end
 				end
 
-				#  if you don't know the ship, just guess weakest with most shield.  Probably blow it up, but better than doing nothing #
 				setVar $SWITCHBOARD~message "Unknown ship type, cannot calculate attack.  I'm going to guess. ["&$cap_ship_info&"]*" 
-				gosub :SWITCHBOARD~switchboard
+				gosub :bot~echo
 				setvar $shieldpoints 16000
 				setVar $defodds 5
 			:send_attack
@@ -276,7 +278,7 @@
 				killtrigger wrongtarget
 				#Attack Hammer's <<**DRAT**>> (3,406-10,000) (Y/N) [N]? Yes
 				getText $cap_ship_info $cap_info $SHIP~shipList[$type_count] "(Y/N)"
-				#echo "*["&$cap_ship_info&"]**["&$cap_info&"]*"
+				#echo ANSI_15&"*["&$cap_ship_info&"]**["&$cap_info&"]*"
 				if ($cap_info <> "")
 					#[ (8,714-9,951) ]
 					getText $cap_info $ship_fighters " (" ")"
@@ -286,7 +288,7 @@
 				getText $ship_fighters&"ENDOFLINE" $ship_fighters "-" "ENDOFLINE"
 				stripText $ship_fighters ","
 
-				#echo "*["&$ship_fighters&"]**["&$SHIP~shipList[$type_count]&"]*"
+				#echo ANSI_15&"*["&$ship_fighters&"]**["&$SHIP~shipList[$type_count]&"]*"
 				
 
 				setVar $ship_shield_percent 0
@@ -328,10 +330,10 @@
 				if ($ship_fighters = "")
 					setVar $ship_fighters 1
 				end
-				#echo "*["&$defodds&"]*"
-				#echo "*["&$ship_fighters&"]*"
+				#echo ANSI_15&"*["&$defodds&"]*"
+				#echo ANSI_15&"*["&$ship_fighters&"]*"
 				setVar $cap_points (($shieldPoints + $ship_fighters) * $defodds)
-				#echo "*Cap Points: ["&$cap_points&"]*"
+				#echo ANSI_15&"*Cap Points: ["&$cap_points&"]*"
 				if ((($player~defenderCapping = TRUE) AND ($unmanned <> true)) AND ($targetIsAlien = TRUE))
 					if ($stillShields = TRUE)
 						if ($ship_fighters > 750)
@@ -347,7 +349,7 @@
 						end
 					end
 				else
-					#echo "*["&$own_odds&"]*"
+					#echo ANSI_15&"*["&$own_odds&"]*"
 					setVar $cap_points ($cap_points / $own_odds)
 				end
 				if ($unmanned = true)
@@ -359,12 +361,16 @@
 				elseif ($cap_points > $max_figs)
 					setVar $cap_points $max_figs
 				end
+				#echo ANSI_15&"sendattack: z"&$cap_points&"*  "
 				setVar $sendAttack "z"&$cap_points&"*  "
+
+				
 				if ($player~startingLocation = "Citadel")
 					setvar $sendAttack $sendAttack&$refurbString
 				elseif (($player~refurbString <> "") and ($player~refurbString <> "0"))
 					setvar $sendAttack $sendAttack&$player~refurbString
 				end
+				#echo ANSI_15&"sendattack: "&$sendAttack&"*"
 				send $sendAttack
 				if ($player~onetap = TRUE)
 					
@@ -389,6 +395,7 @@
 						setVar $player~fighters ($player~fighters-$cap_points)
 						add $i 1
 					end
+					#echo "["&$burst&"]"
 					send $burst
 					setdelaytrigger littleslower :donelittleslower 10
 					pause

@@ -1,0 +1,1 @@
+Sector   Density   NavHaz   Filtered    Time         Date

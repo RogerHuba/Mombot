@@ -1,0 +1,25 @@
+                     
+   
+                 <<<< update >>>>
+   
+      update {figs} {limps} {armids} {cim} {warps}
+        
+          Checks deployment lists and sets sector
+          parameters.  Shows differences since last
+          update
+          
+          {figs} - fighter refresh
+         {limps} - limpet refresh, including active
+        {armids} - armid refresh
+           {cim} - will refresh port report
+           - optional: [upgrade level]
+         {warps} - will refresh warp info
+                                                 
+          Examples:
+                 >update figs limps armids
+                 >update figs cim warps
+                 >update all
+                 >update cim warps
+                 >figs
+                 >limps
+                 >cim 10000

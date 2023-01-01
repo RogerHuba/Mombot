@@ -597,6 +597,7 @@ goto :BOT~wait_for_command
 	end
 	setVar $lastTarget ""
 	setVar $thisTarget ""
+
 	goSub :SECTOR~getSectorData
 	goSub :combat~fastCapture
 	
