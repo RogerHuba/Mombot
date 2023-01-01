@@ -151,6 +151,7 @@
 			setVar $ship_fighters 0
 			setVar $player~lasttarget ""
 			setvar $firstLoop true
+			setvar $last_shield_percentage 0
 		while ($player~fighters > 0)
 			killalltriggers
 			setVar $stillShields FALSE
@@ -256,7 +257,7 @@
 						setVar $unmanned false
 					end
 					if (($is_ship > 0) AND ($SHIP~shipList[$type_count] <> "0"))
-						getWord $SHIP~ship[$SHIP~shipList[$type_count]] $player~shields 1
+						getWord $SHIP~ship[$SHIP~shipList[$type_count]] $shieldpoints 1
 						getWord $SHIP~ship[$SHIP~shipList[$type_count]] $defodds 2
 						goto :send_attack
 					end
@@ -306,7 +307,8 @@
 			:combat_scan
 				getWord CURRENTLINE $shieldperc 7
 				stripText $shieldperc "%"
-				setVar $shieldPoints (($player~shields * $shieldperc) / 100)
+				setvar $last_shield_percentage $shieldperc
+				setVar $shieldPoints (($shieldpoints * $shieldperc) / 100)
 				setVar $stillShields TRUE
 				pause
 				pause
@@ -337,7 +339,7 @@
 				if ((($player~defenderCapping = TRUE) AND ($unmanned <> true)) AND ($targetIsAlien = TRUE))
 					if ($stillShields = TRUE)
 						if ($ship_fighters > 750)
-							 setVar $cap_points (($shieldPoints / $own_odds) + ($cap_points/100))
+							 setVar $cap_points ($shieldPoints + $cap_points)
 						else
 							setVar $cap_points (($shieldPoints / $own_odds) + 1)
 						end
@@ -388,6 +390,9 @@
 						return
 				end
 				if ($cap_points = 1)
+					if (($last_shield_percentage = $shieldperc) and ($shieldperc > 0))
+						setvar $cap_points 10
+					end
 					setvar $i 1
 					setvar $burst ""
 					while ($i <= 3)
