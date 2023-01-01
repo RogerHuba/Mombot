@@ -157,7 +157,7 @@
 				setTextTrigger  foundcaptarget  :foundcaptarget  "(Y/N) [N]? Y"
 				setTextTrigger checkcaptarget :checkcaptarget "Yes"
 				setTextLineTrigger noctarget    :nocappingtargets "Do you want instructions (Y/N) [N]?"
-				#echo "*[" $targetString "]*"
+				echo "*[" $targetString "]*"
 				send $targetString
 				pause
 				pause
