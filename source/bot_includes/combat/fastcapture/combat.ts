@@ -153,9 +153,9 @@
 			setvar $firstLoop true
 			setvar $last_shield_percentage 0
 			setvar $added_attack 2
-			setvar $shieldperc 0
 		while ($player~fighters > 0)
 			killalltriggers
+			setvar $shieldperc 0
 			setVar $stillShields FALSE
 			setVar $isSameTarget FALSE
 			:cgoahead
