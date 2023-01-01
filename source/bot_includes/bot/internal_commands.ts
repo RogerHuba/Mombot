@@ -597,7 +597,12 @@ goto :BOT~wait_for_command
 	end
 	setVar $lastTarget ""
 	setVar $thisTarget ""
+	setVar $SWITCHBOARD~message "before sector data.*" 
+	gosub :SWITCHBOARD~switchboard
+
 	goSub :SECTOR~getSectorData
+	setVar $SWITCHBOARD~message "before fast capture.*" 
+	gosub :SWITCHBOARD~switchboard
 	goSub :combat~fastCapture
 	
 	goto :BOT~wait_for_command
