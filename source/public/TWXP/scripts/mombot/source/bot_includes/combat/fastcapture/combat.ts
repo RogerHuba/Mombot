@@ -151,6 +151,7 @@
 			setVar $ship_fighters 0
 			setVar $player~lasttarget ""
 			setvar $firstLoop true
+			setvar $last_shield_percentage 0
 		while ($player~fighters > 0)
 			killalltriggers
 			setVar $stillShields FALSE
@@ -256,7 +257,7 @@
 						setVar $unmanned false
 					end
 					if (($is_ship > 0) AND ($SHIP~shipList[$type_count] <> "0"))
-						getWord $SHIP~ship[$SHIP~shipList[$type_count]] $player~shields 1
+						getWord $SHIP~ship[$SHIP~shipList[$type_count]] $shieldpoints 1
 						getWord $SHIP~ship[$SHIP~shipList[$type_count]] $defodds 2
 						goto :send_attack
 					end
@@ -280,15 +281,24 @@
 				getText $cap_ship_info $cap_info $SHIP~shipList[$type_count] "(Y/N)"
 				#echo ANSI_15&"*["&$cap_ship_info&"]**["&$cap_info&"]*"
 				if ($cap_info <> "")
-					#[ (8,714-9,951) ]
+					#[ (8,714-9,951) ]  4,201-0)  
+					getwordpos $cap_info $pos " ("
+					if ($pos <= 0) 
+							setvar $cap_info " ("&$cap_info
+					end
 					getText $cap_info $ship_fighters " (" ")"
 				else
+					#(104,209-3,967) (Y/N) [N]
+					getwordpos $cap_ship_info $pos " ("
+					if ($pos <= 0) 
+							setvar $cap_ship_info " ("&$cap_ship_info
+					end
 					getText $cap_ship_info $ship_fighters " (" ") (Y/N)"
 				end
 				getText $ship_fighters&"ENDOFLINE" $ship_fighters "-" "ENDOFLINE"
 				stripText $ship_fighters ","
 
-				#echo ANSI_15&"*["&$ship_fighters&"]**["&$SHIP~shipList[$type_count]&"]*"
+				echo ANSI_15&"*shipfighters["&$ship_fighters&"]**shiptype["&$SHIP~shipList[$type_count]&"]*"
 				
 
 				setVar $ship_shield_percent 0
@@ -306,7 +316,8 @@
 			:combat_scan
 				getWord CURRENTLINE $shieldperc 7
 				stripText $shieldperc "%"
-				setVar $shieldPoints (($player~shields * $shieldperc) / 100)
+				setvar $last_shield_percentage $shieldperc
+				setVar $shieldPoints (($shieldpoints * $shieldperc) / 100)
 				setVar $stillShields TRUE
 				pause
 				pause
@@ -337,16 +348,16 @@
 				if ((($player~defenderCapping = TRUE) AND ($unmanned <> true)) AND ($targetIsAlien = TRUE))
 					if ($stillShields = TRUE)
 						if ($ship_fighters > 750)
-							 setVar $cap_points (($shieldPoints / $own_odds) + ($cap_points/100))
+							setVar $cap_points (($shieldPoints / $own_odds) + ($cap_points/100))
 						else
-							setVar $cap_points ($shieldPoints+1)
+							setVar $cap_points (($shieldPoints / $own_odds) + 1)
 						end
 					else
-						if ($ship_fighters > 750)
-							 setVar $cap_points (($cap_points / $own_odds) - ($cap_points/70))
-						else
+						#if ($ship_fighters > 10000)
+						#	 setVar $cap_points (($cap_points / $own_odds) - ($cap_points/70))
+						#else
 							setVar $cap_points 1
-						end
+						#end
 					end
 				else
 					#echo ANSI_15&"*["&$own_odds&"]*"
@@ -388,6 +399,9 @@
 						return
 				end
 				if ($cap_points = 1)
+					if (($last_shield_percentage = $shieldperc) and ($shieldperc > 0))
+						setvar $cap_points 10
+					end
 					setvar $i 1
 					setvar $burst ""
 					while ($i <= 3)
