@@ -362,16 +362,16 @@
 				elseif ($cap_points > $max_figs)
 					setVar $cap_points $max_figs
 				end
+				echo "sendattack: z"&$cap_points&"*  "
 				setVar $sendAttack "z"&$cap_points&"*  "
-				setvar $switchboard~message "before:"&$sendAttack&"*"
-				gosub :Switchboard~switchboard
+
+				
 				if ($player~startingLocation = "Citadel")
 					setvar $sendAttack $sendAttack&$refurbString
 				elseif (($player~refurbString <> "") and ($player~refurbString <> "0"))
 					setvar $sendAttack $sendAttack&$player~refurbString
 				end
-				setvar $switchboard~message "after:"&$sendAttack&"*"
-				gosub :Switchboard~switchboard
+				echo "sendattack: "&$sendAttack&"*"
 				send $sendAttack
 				if ($player~onetap = TRUE)
 					
