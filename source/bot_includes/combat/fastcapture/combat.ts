@@ -134,7 +134,7 @@
 			halt
 		end
 		setvar $switchboard~message "*You have no targets.*" 
-		gosub :bot~echo ANSI_15&
+		gosub :bot~echo
 		goto :capstoppingPoint
 	else
 		if ($player~startingLocation = "Citadel")
@@ -264,7 +264,7 @@
 				end
 
 				setVar $SWITCHBOARD~message "Unknown ship type, cannot calculate attack.  I'm going to guess. ["&$cap_ship_info&"]*" 
-				gosub :bot~echo ANSI_15&
+				gosub :bot~echo
 				setvar $shieldpoints 16000
 				setVar $defodds 5
 			:send_attack
@@ -318,7 +318,7 @@
 					pause
 				end
 				setvar $switchboard~message "*They attacked me, switching to 1 fighter attacks.*"
-				gosub :bot~echo ANSI_15&
+				gosub :bot~echo
 				setVar $ship_fighters 1
 			:cap_it
 				killtrigger combat_scan
