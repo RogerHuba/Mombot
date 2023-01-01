@@ -284,6 +284,8 @@
 					#[ (8,714-9,951) ]
 					getText $cap_info $ship_fighters " (" ")"
 				else
+					#(104,209-3,967) (Y/N) [N]
+					echo "capshipinfo:"&$cap_ship_info&"*"
 					getText $cap_ship_info $ship_fighters " (" ") (Y/N)"
 				end
 				getText $ship_fighters&"ENDOFLINE" $ship_fighters "-" "ENDOFLINE"
