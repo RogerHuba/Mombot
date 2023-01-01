@@ -316,7 +316,6 @@
 			:combat_scan
 				getWord CURRENTLINE $shieldperc 7
 				stripText $shieldperc "%"
-				setvar $last_shield_percentage $shieldperc
 				setVar $shieldPoints (($shieldpoints * $shieldperc) / 100)
 				setVar $stillShields TRUE
 				pause
@@ -402,6 +401,7 @@
 					if (($last_shield_percentage = $shieldperc) and ($shieldperc > 0))
 						setvar $cap_points 10
 					end
+					setvar $last_shield_percentage $shieldperc
 					setvar $i 1
 					setvar $burst ""
 					while ($i <= 3)
