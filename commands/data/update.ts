@@ -4,6 +4,8 @@
 	loadVar $bot~ARMID_COUNT_FILE
 	loadVar $bot~LIMP_FILE
 	loadVar $bot~ARMID_FILE
+	setVar $BOT~script_title "Update"
+	setVar $BOT~script_version "1.0.1"
 
 	setVar $BOT~help[1]  $BOT~tab&" update {figs} {limps} {armids} {cim} {warps}"
 	setVar $BOT~help[2]  $BOT~tab&"   "
@@ -28,9 +30,7 @@
 	setVar $BOT~help[21] $BOT~tab&"            >cim 10000"
 
 	gosub :bot~helpfile
-
-	setVar $BOT~script_title "Update"
-	setVar $BOT~script_version "1.0.1"
+	
 	gosub :BOT~banner
 
 # ============================== START REFRESH LIMPETS (LIMPS) ==============================
