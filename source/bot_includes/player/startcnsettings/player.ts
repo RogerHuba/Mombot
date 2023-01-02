@@ -25,6 +25,7 @@
 	:cncalmostdone
 		gosub :getCNC
 	:cncdone
+			killalltriggers
 			send "QQ"
 			killtrigger 1
 			killtrigger 2
