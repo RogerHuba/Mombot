@@ -824,7 +824,7 @@ return
 			end
 			gosub :switchboard~switchboard
 		end
-		setvar $ephaggle "scripts\"&$mombot_directory&"\startup\ephaggle.cts"
+		setvar $ephaggle "scripts\"&$mombot_directory&"\startups\ephaggle.cts"
 		fileExists $ephaggleExists $ephaggle
 		if ($ephaggleExists)
 #			stop $ephaggle
