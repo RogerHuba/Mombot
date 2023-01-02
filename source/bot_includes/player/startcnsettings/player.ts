@@ -23,13 +23,15 @@
 		saveVar $BOT~subspace
 		pause
 	:cncalmostdone
+		killalltriggers
 		gosub :getCNC
 	:cncdone
-			send "QQ"
+			killalltriggers
 			killtrigger 1
 			killtrigger 2
 			SetTextTrigger 1 :subStartCNcontinue "Command [TL="
 			SetTextTrigger 2 :subStartCNcontinue "Citadel command (?=help)"
+			send "*Q"
 			pause
 			:subStartCNcontinue
 			killtrigger 1
