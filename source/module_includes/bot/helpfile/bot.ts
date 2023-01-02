@@ -890,7 +890,10 @@ goto :menu_creation
 	if (($script_version = "") or ($script_version = "0"))
 		setvar $script_version "1.0"
 	end
-	setvar $switchboard~message "["&$command&" "&$script_version&"]*"	
+	if ($script_title = "")
+		setVar $script_title $command
+	end
+	setvar $switchboard~message "["&$script_title&" "&$script_version&"]*"	
 	gosub :switchboard~switchboard
 halt
 include "source\module_includes\bot\displayhelp\bot"
