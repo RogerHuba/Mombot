@@ -89,7 +89,7 @@
 	gosub :combat~init 
 	gosub :prhunter~initialize
 	
-	loadGlobal $bot~last_fighter_attack
+	loadVar $bot~last_fighter_attack
 	
 	getSectorParameter SECTORS "FIGSEC" $isFigged
 	if (($MAP~stardock = 0) OR ($MAP~stardock = ""))
@@ -898,7 +898,7 @@
 #				end
 #			end
 			gosub :waitbeforecheck
-			loadGlobal $bot~last_fighter_attack
+			loadVar $bot~last_fighter_attack
 			if ($bot~last_fighter_attack <> "")
 				gosub :killing~set_the_cannon
 			end
@@ -1077,7 +1077,7 @@ goto :processing
 		gosub :player~quikstats
 		gosub :check_for_photon_refurb
 		gosub :waitbeforecheck
-		loadGlobal $bot~last_fighter_attack
+		loadVar $bot~last_fighter_attack
 		if ($bot~last_fighter_attack <> "")
 			gosub :killing~set_the_cannon
 		end
@@ -1241,7 +1241,7 @@ return
 return
 
 :check_for_photon_refurb
-	loadGlobal $bot~last_fighter_attack
+	loadVar $bot~last_fighter_attack
 	if ($bot~last_fighter_attack <> "")
 		gosub :killing~set_the_cannon
 	end
@@ -1301,9 +1301,9 @@ return
 :check_for_target_change
 	if ($player~photons > 0)
 		gosub :waitbeforecheck
-		loadGlobal $bot~last_hit
+		loadVar $bot~last_hit
 		if (($photon~sector <> $bot~last_hit) and ($bot~last_hit <> 0) and ($player~current_sector <> $bot~last_hit))
-			loadGlobal $bot~last_hit_type
+			loadVar $bot~last_hit_type
 			if ($bot~last_hit_type = "limpet")
 				gosub :photon~limpet_spoof
 			elseif ($bot~last_hit_type = "armid")
