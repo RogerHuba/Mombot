@@ -890,7 +890,7 @@ goto :menu_creation
 	if (($script_version = "") or ($script_version = "0"))
 		setvar $script_version "1.0"
 	end
-	if ($script_title = "")
+	if (($script_title = "") or ($script_title = "0"))
 		setVar $script_title $command
 	end
 	setvar $switchboard~message "["&$script_title&" "&$script_version&"]*"	
