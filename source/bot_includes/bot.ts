@@ -824,17 +824,17 @@ return
 			end
 			gosub :switchboard~switchboard
 		end
-#		setvar $ephaggle "scripts\"&$mombot_directory&"\startup\ephaggle.cts"
-#		fileExists $ephaggleExists $ephaggle
-#		if ($ephaggleExists)
+		setvar $ephaggle "scripts\"&$mombot_directory&"\startup\ephaggle.cts"
+		fileExists $ephaggleExists $ephaggle
+		if ($ephaggleExists)
 #			stop $ephaggle
 #			stop $ephaggle
 #			stop $ephaggle
 #			stop $ephaggle
 #			load $ephaggle
-#		else
-#			echo "{"&$bot_name&"} - No EP Haggle is running ep haggle does not exist at [" $ephaggle "].*"
-#		end
+		else
+			echo "{"&$bot_name&"} - No EP Haggle is running ep haggle does not exist at [" $ephaggle "].*"
+		end
 	else
 		fileExists $team_file_check $BOT_USER_FILE
 		if ($team_file_check)
