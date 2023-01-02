@@ -703,19 +703,6 @@ return
 	end
 	gosub :save_the_variables
 
-	getFileList $startup_scripts "scripts\"&$mombot_directory&"\startups\*.cts"
-	setVar $i 1 
-	while ($i <= $startup_scripts)
-		stop "scripts\"&$mombot_directory&"\startups\"&$startup_scripts[$i]
-		stop "scripts\"&$mombot_directory&"\startups\"&$startup_scripts[$i]
-		stop "scripts\"&$mombot_directory&"\startups\"&$startup_scripts[$i]
-		stop "scripts\"&$mombot_directory&"\startups\"&$startup_scripts[$i]
-		setVar $BOT~command $startup_scripts[$i]
-		replacetext $BOT~command ".cts" ""
-		saveVar $BOT~command
-		load "scripts\"&$mombot_directory&"\startups\"&$startup_scripts[$i]
-		add $i 1
-	end
 
 :run_bot
 	if ((($PLAYER~startingLocation = "Citadel") OR ($PLAYER~startingLocation = "Command")) AND ((CONNECTED = TRUE)))
@@ -769,6 +756,21 @@ return
 				waiton "Command ["
 			end
 		end
+
+		getFileList $startup_scripts "scripts\"&$mombot_directory&"\startups\*.cts"
+		setVar $i 1 
+		while ($i <= $startup_scripts)
+			stop "scripts\"&$mombot_directory&"\startups\"&$startup_scripts[$i]
+			stop "scripts\"&$mombot_directory&"\startups\"&$startup_scripts[$i]
+			stop "scripts\"&$mombot_directory&"\startups\"&$startup_scripts[$i]
+			stop "scripts\"&$mombot_directory&"\startups\"&$startup_scripts[$i]
+			setVar $BOT~command $startup_scripts[$i]
+			replacetext $BOT~command ".cts" ""
+			saveVar $BOT~command
+			load "scripts\"&$mombot_directory&"\startups\"&$startup_scripts[$i]
+			add $i 1
+		end
+	
 		send "'{" $bot_name "} - is ACTIVE: Version - " & $BOT~major_version & "." & $BOT~minor_version " - type " #34 $bot_name " help" #34 " for command list*"
 		send "'{" $bot_name "} - to login - send a corporate memo*"
 		if (($username = "") or ($letter = "") or ($doRelog = FALSE))
