@@ -144,4 +144,5 @@
 return
 
 include "source\bot_includes\ship\getshipstats\ship"
+include "source\bot_includes\combat\holokill\combat"
 
