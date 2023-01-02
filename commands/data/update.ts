@@ -30,6 +30,7 @@
 	gosub :bot~helpfile
 
 	setVar $BOT~script_title "Update"
+	setVar $BOT~script_version "1.0.1"
 	gosub :BOT~banner
 
 # ============================== START REFRESH LIMPETS (LIMPS) ==============================
