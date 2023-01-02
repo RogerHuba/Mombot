@@ -81,9 +81,7 @@
 			setVar $temp CURRENTLINE
 			stripText $temp #42
 			setVar $limpetOutput $limpetOutput&"             "&$temp&"*"
-			killtrigger unfreezingTrigger
-                	setDelayTrigger unfreezingTrigger :unfreezebot 10000
-      			setTextLineTrigger corporate 		:markLimpet 		" Corp"
+   			setTextLineTrigger corporate 		:markLimpet 		" Corp"
 			setTextLineTrigger personal 		:markLimpet		"Personal "
 			pause
 		:doneCheckingLimps

@@ -2,7 +2,7 @@
 	killalltriggers
 	setvar $success false
 	setVar $adjsec 0
-	loadGlobal $bot~last_hit
+	loadVar $bot~last_hit
 	if (($bot~last_hit > 0) and ($density <> true))
 		setvar $sector $bot~last_hit
 	end
@@ -162,12 +162,12 @@ return
 	# leaving the lines here in case they work better later #
 	#########################################################
 
-	#loadGlobal $bot~ansi_last_fighter_attack
+	#loadVar $bot~ansi_last_fighter_attack
 	#getWord $bot~ansi_last_fighter_attack $ansi_spoof_test 1
 	#getWordPos $ansi_spoof_test $ansi_spoof_pos #27 & "[1;33m"
 	#if ($spoof_test <> "Deployed") OR ($ansi_spoof_pos <= 0)
 	
-	loadGlobal $bot~last_fighter_attack
+	loadVar $bot~last_fighter_attack
 	getWord $bot~last_fighter_attack $spoof_test 1
 	if ($spoof_test <> "Deployed")
 		setvar $spoof true
@@ -228,7 +228,7 @@ return
 
 	if ($game~hasAliens = true)
 		setvar $alien false
-		loadGlobal $bot~ansi_last_fighter_attack
+		loadVar $bot~ansi_last_fighter_attack
 		getText $bot~ansi_last_fighter_attack $alien_check ": " "'s"
 		getWordPos $alien_check $pos #27 & "[1;36m" & #27 & "["
 		if ($pos > 0)
@@ -248,7 +248,7 @@ return
 :limpet_spoof
 	setvar $found false
 	setvar $adjacent false
-	loadGlobal $bot~last_limpet_attack
+	loadVar $bot~last_limpet_attack
 	cutText $bot~last_limpet_attack&"      " $ck 1 6
 	setvar $spoof false
 	if ($ck <> "Limpet")
@@ -267,8 +267,8 @@ return
 :armid_spoof
 	setvar $found false
 	setvar $adjacent false
-	loadGlobal $bot~last_armid_attack
-	loadGlobal $bot~ansi_last_armid_attack
+	loadVar $bot~last_armid_attack
+	loadVar $bot~ansi_last_armid_attack
 	cutText $bot~last_armid_attack&"    " $ck 1 4
 	setvar $spoof false
 	if ($ck <> "Your")

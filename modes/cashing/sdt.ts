@@ -195,11 +195,11 @@ setVar $debugdelay 0
         send "'{" $switchboard~bot_name "} - Starting with Credits: " & $init_credits & " Exp: " & $init_exp & " Turns: " & $init_turns & ".*"
         send "*"
         waitFor "(?=Help)?"
-        loadglobal $ship[$current_ship].voids
+        loadVar $ship[$current_ship].voids
         if ((($ship[$current_ship].voids <> "set") and ($noavoid = true)) or ($noavoid <> true))
 	        gosub :voidAdjacent
 	        setVar $ship[$current_ship].voids "set"
-	        saveglobal $ship[$current_ship].voids
+	        saveVar $ship[$current_ship].voids
 	    end
         gosub :checkPlanet
         gosub :checkPort
@@ -222,11 +222,11 @@ setVar $debugdelay 0
         setVar $holds[$current_ship] $holds
         send "*"
         waitFor "(?=Help)?"
-        loadglobal $ship[$current_ship].voids
+        loadVar $ship[$current_ship].voids
         if ($ship[$current_ship].voids <> "set")
 	        gosub :voidAdjacent
 	        setVar $ship[$current_ship].voids "set"
-	        saveglobal $ship[$current_ship].voids
+	        saveVar $ship[$current_ship].voids
 	    end
         gosub :checkPlanet
         gosub :checkPort
@@ -1474,7 +1474,7 @@ setVar $debugdelay 0
         return
         
 :swathoff
-	loadglobal $swathoff
+	loadVar $swathoff
     if ($swathoff = 0)
         setTextTrigger swathison :swathison "Command [TL="
         setDelayTrigger swathisoff :swathisoff 2000
@@ -1484,13 +1484,13 @@ setVar $debugdelay 0
         killalltriggers
         setVar $message "Detected SWATH Autohaggle"
         setVar $swathoff 0
-        saveglobal $swathoff
+        saveVar $swathoff
         return
 
         :swathisoff
         killalltriggers
         setVar $swathoff 1
-        saveglobal $swathoff
+        saveVar $swathoff
     end
     return
     
@@ -1545,7 +1545,7 @@ setVar $debugdelay 0
 		    return
 		end
 		setvar $ship[$current_ship].voids ""
-		saveglobal $ship[$current_ship].voids 
+		saveVar $ship[$current_ship].voids 
 	end
 :player~quikstats
 

@@ -152,8 +152,10 @@
 			setVar $player~lasttarget ""
 			setvar $firstLoop true
 			setvar $last_shield_percentage 0
+			setvar $added_attack 2
 		while ($player~fighters > 0)
 			killalltriggers
+			setvar $shieldperc 0
 			setVar $stillShields FALSE
 			setVar $isSameTarget FALSE
 			:cgoahead
@@ -316,7 +318,6 @@
 			:combat_scan
 				getWord CURRENTLINE $shieldperc 7
 				stripText $shieldperc "%"
-				setvar $last_shield_percentage $shieldperc
 				setVar $shieldPoints (($shieldpoints * $shieldperc) / 100)
 				setVar $stillShields TRUE
 				pause
@@ -347,7 +348,7 @@
 				#echo ANSI_15&"*Cap Points: ["&$cap_points&"]*"
 				if ((($player~defenderCapping = TRUE) AND ($unmanned <> true)) AND ($targetIsAlien = TRUE))
 					if ($stillShields = TRUE)
-						if ($ship_fighters > 750)
+						if ($ship_fighters > 3500)
 							setVar $cap_points (($shieldPoints / $own_odds) + ($cap_points/100))
 						else
 							setVar $cap_points (($shieldPoints / $own_odds) + 1)
@@ -373,6 +374,14 @@
 					setVar $cap_points $max_figs
 				end
 				#echo ANSI_15&"sendattack: z"&$cap_points&"*  "
+				#echo "shieldperc:["&$shieldperc&"]*"
+				if ((($last_shield_percentage = $shieldperc) and ($shieldperc > 0)) or ($shieldperc > 30)) 
+					setvar $cap_points $cap_points+$added_attack
+					setvar $added_attack $added_attack+2
+				else
+					setvar $added_attack 2
+				end
+				setvar $last_shield_percentage $shieldperc
 				setVar $sendAttack "z"&$cap_points&"*  "
 
 				
@@ -399,9 +408,6 @@
 						return
 				end
 				if ($cap_points = 1)
-					if (($last_shield_percentage = $shieldperc) and ($shieldperc > 0))
-						setvar $cap_points 10
-					end
 					setvar $i 1
 					setvar $burst ""
 					while ($i <= 3)

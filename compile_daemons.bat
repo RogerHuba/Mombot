@@ -1,4 +1,4 @@
-for /r %%n in (*watcher.ts) do call :checkit "%%n" 
+for /r %%n in (*alienhunt.ts) do call :checkit "%%n" 
 copy daemons\watcher.cts startups\watcher.cts
 copy daemons\chat.cts startups\chat.cts
 copy daemons\viewscreen.cts startups\viewscreen.cts

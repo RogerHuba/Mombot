@@ -117,8 +117,8 @@
 return
 
 :set_the_cannon
-	loadGlobal $bot~last_fighter_attack
-	loadGlobal $bot~ansi_last_fighter_attack
+	loadVar $bot~last_fighter_attack
+	loadVar $bot~ansi_last_fighter_attack
 	setvar $alien false
 	if ($game~hasAliens = true)
 		getText $bot~ansi_last_fighter_attack $alien_check ": " "'s"

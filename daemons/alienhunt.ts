@@ -6,6 +6,8 @@
 	loadvar $game~port_max
 
 	gosub :combat~init 
+	#for auto kill on surround
+	setvar $grid~kill true
 
  
 
@@ -311,6 +313,11 @@
 
 		gosub :attackandmoveship
 
+		loadvar $bot~last_alien_hit_sector
+		if (($lastSectorAttacked > 0) and ($bot~last_alien_hit_sector > 0) and ($bot~last_alien_hit_sector <> $lastSectorAttacked))
+			setvar $dropSector $bot~last_alien_hit_sector
+			gosub :go_to_drop_sector
+		end
 		setvar $switchboard~message "* Waiting for something to hunt..*"
 		gosub :bot~echo 
 
@@ -498,6 +505,7 @@ return
 			end
 			if ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
 				setVar $targetsFound TRUE
+				setvar $lastSectorAttacked $player~current_sector
 				goSub :combat~fastCapture
 			end
 		end
@@ -679,6 +687,7 @@ include "source\module_includes\bot\disconnecttriggers\bot"
 include "source\bot_includes\grid\surround\grid"
 include "source\bot_includes\planet\landingsub\planet"
 include "source\bot_includes\sector\getsectordata\sector"
+include "source\bot_includes\sector\getautosectordata\sector"
 include "source\bot_includes\combat\fastcitadelattack\combat"
 include "source\bot_includes\combat\fastcapture\combat"
 include "source\bot_includes\planet\landonplanetentercitadel\planet"

@@ -7,11 +7,11 @@ loadVar $MAP~stardock
 loadvar $bot~subspace
 loadvar $bot~bot_password
 loadvar $bot~bot_name
-loadGlobal $bot~last_fighter_attack
+loadVar $bot~last_fighter_attack
 loadvar $bot~mombot_directory
 if ($bot~last_fighter_attack = 0)
 	setvar $bot~last_fighter_attack 1
-	#saveGlobal $bot~last_fighter_attack
+	#saveVar $bot~last_fighter_attack
 end
 setSectorParameter 1 "MSLSEC" TRUE
 setSectorParameter 2 "MSLSEC" TRUE
@@ -209,8 +209,8 @@ pause
 				setVar $target $fig_hit
 				setvar $bot~last_fighter_hit $fig_hit
 				setvar $bot~last_hit $fig_hit
-				saveGlobal $bot~last_fighter_hit
-				saveGlobal $bot~last_hit
+				saveVar $bot~last_fighter_hit
+				saveVar $bot~last_hit
 				gosub :removefigfromdata
 			end
 		end
@@ -250,13 +250,13 @@ pause
 		if ($test = TRUE)
 			if (($limp_hit <= SECTORS) AND ($limp_hit > 0))
 				setvar $bot~last_limpet_attack $line
-				saveGlobal $bot~last_limpet_attack
+				saveVar $bot~last_limpet_attack
 				setvar $bot~last_hit_type "limpet"
-				saveGlobal $bot~last_hit_type
+				saveVar $bot~last_hit_type
 				setvar $bot~last_limpet_hit $limp_hit
 				setvar $bot~last_hit $limp_hit
-				saveGlobal $bot~last_hit
-				saveGlobal $bot~last_limpet_hit
+				saveVar $bot~last_hit
+				saveVar $bot~last_limpet_hit
 			end
 		end
 	end
@@ -281,14 +281,14 @@ pause
 			if (($mine_hit <= SECTORS) AND ($mine_hit > 0))
 				setvar $bot~last_armid_attack $line
 				setvar $bot~ansi_last_armid_attack $ansi_line
-				saveGlobal $bot~last_armid_attack
-				saveGlobal $bot~ansi_last_armid_attack
+				saveVar $bot~last_armid_attack
+				saveVar $bot~ansi_last_armid_attack
 				setvar $bot~last_hit_type "armid"
-				saveGlobal $bot~last_hit_type
+				saveVar $bot~last_hit_type
 				setvar $bot~last_armid_hit $mine_hit
 				setvar $bot~last_hit $mine_hit
-				saveGlobal $bot~last_hit
-				saveGlobal $bot~last_armid_hit
+				saveVar $bot~last_hit
+				saveVar $bot~last_armid_hit
 			end
 		end
 	end
@@ -314,15 +314,15 @@ pause
 		if ($test = TRUE)
 			if (($fighit <= SECTORS) AND ($fighit > 0))
 				setvar $bot~last_hit_type "fighter"
-				saveGlobal $bot~last_hit_type
+				saveVar $bot~last_hit_type
 				setvar $bot~last_fighter_attack $line
-				saveGlobal $bot~last_fighter_attack
+				saveVar $bot~last_fighter_attack
 				setvar $bot~ansi_last_fighter_attack $ansi_line
-				saveGlobal $bot~ansi_last_fighter_attack
+				saveVar $bot~ansi_last_fighter_attack
 				setvar $bot~last_fighter_hit $fighit
 				setvar $bot~last_hit $fighit
-				saveGlobal $bot~last_hit
-				saveGlobal $bot~last_fighter_hit
+				saveVar $bot~last_hit
+				saveVar $bot~last_fighter_hit
 			end
 		end
 	end

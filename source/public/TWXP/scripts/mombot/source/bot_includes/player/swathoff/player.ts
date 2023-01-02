@@ -11,7 +11,7 @@ loadvar $swathoff
 		killtrigger swathison
 		setVar $swathOffMessage "Detected SWATH Autohaggle"
 		setVar $swathoff FALSE
-        saveglobal $swathoff
+        saveVar $swathoff
 		return
 
 		:swathisoff

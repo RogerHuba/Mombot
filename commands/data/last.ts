@@ -37,7 +37,7 @@
 		setvar $hit true
 	end
 
-	loadGlobal $bot~last_hit
+	loadVar $bot~last_hit
 	if ($bot~last_hit = 0)
 		setvar $switchboard~message "There is no record of any sector hits.*"
 		gosub :SWITCHBOARD~switchboard
@@ -60,7 +60,7 @@
 		setVar $SWITCHBOARD~message $SWITCHBOARD~message&"     *     *"
 	else
 		if ($fig)
-			loadGlobal $bot~last_fighter_hit
+			loadVar $bot~last_fighter_hit
 			if ($bot~last_fighter_hit = 0)
 				setvar $switchboard~message $switchboard~message&"No fighter hit sector recorded.*"
 			else
@@ -81,7 +81,7 @@
 			end
 		end
 		if ($limp)
-			loadGlobal $bot~last_limpet_hit
+			loadVar $bot~last_limpet_hit
 			if ($bot~last_limpet_hit = 0)
 				setvar $switchboard~message $switchboard~message&"No limpet hit sector recorded.*"
 			else
@@ -102,7 +102,7 @@
 			end
 		end
 		if ($armid)
-			loadGlobal $bot~last_armid_hit
+			loadVar $bot~last_armid_hit
 			if ($bot~last_armid_hit = 0)
 				setvar $switchboard~message $switchboard~message&"No armid hit sector recorded.*"
 			else
