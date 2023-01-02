@@ -313,6 +313,11 @@
 
 		gosub :attackandmoveship
 
+		loadvar $bot~last_alien_hit_sector
+		if (($lastSectorAttacked > 0) and ($bot~last_alien_hit_sector <> $lastSectorAttacked))
+			setvar $dropSector $bot~last_alien_hit_sector
+			gosub :go_to_drop_sector
+		end
 		setvar $switchboard~message "* Waiting for something to hunt..*"
 		gosub :bot~echo 
 
@@ -500,6 +505,7 @@ return
 			end
 			if ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
 				setVar $targetsFound TRUE
+				setvar $lastSectorAttacked $player~current_sector
 				goSub :combat~fastCapture
 			end
 		end
