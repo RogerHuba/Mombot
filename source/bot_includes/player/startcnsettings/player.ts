@@ -23,6 +23,7 @@
 		saveVar $BOT~subspace
 		pause
 	:cncalmostdone
+		killalltriggers
 		gosub :getCNC
 	:cncdone
 			killalltriggers
