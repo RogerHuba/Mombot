@@ -26,7 +26,7 @@
 		gosub :getCNC
 	:cncdone
 			killalltriggers
-			send "QQ"
+			send "QQ*"
 			killtrigger 1
 			killtrigger 2
 			SetTextTrigger 1 :subStartCNcontinue "Command [TL="
