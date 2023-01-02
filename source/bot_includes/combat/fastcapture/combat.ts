@@ -375,11 +375,16 @@
 				end
 				#echo ANSI_15&"sendattack: z"&$cap_points&"*  "
 				#echo "shieldperc:["&$shieldperc&"]*"
-				if ((($last_shield_percentage = $shieldperc) and ($shieldperc > 0)) or ($shieldperc > 30)) 
+				if ((($last_shield_percentage = $shieldperc) and ($shieldperc > 0))) 
 					setvar $cap_points $cap_points+$added_attack
 					setvar $added_attack $added_attack+2
 				else
-					setvar $added_attack 2
+					if (($last_shield_percentage > 0) and ($shieldperc > 0))
+						setvar $shield_difference ($last_shield_percentage - $shieldperc)
+						setvar $cap_points (($cap_points/$shield_difference) * ($shieldperc-1))
+					else
+						setvar $added_attack 2				
+					end
 				end
 				setvar $last_shield_percentage $shieldperc
 				setVar $sendAttack "z"&$cap_points&"*  "
