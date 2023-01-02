@@ -719,6 +719,7 @@ return
 
 :run_bot
 	if ((($PLAYER~startingLocation = "Citadel") OR ($PLAYER~startingLocation = "Command")) AND ((CONNECTED = TRUE)))
+		gosub :PLAYER~quikstats
 		gosub :player~startCNsettings
 		killalltriggers
 		gosub :PLAYER~quikstats
