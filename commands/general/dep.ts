@@ -2,11 +2,11 @@
 	setVar $BOT~script_title "Deposit"
 	setVar $BOT~script_version "1.0.0"
 
-	setVar $BOT~help[1]  $BOT~tab&" with {cash to withdrawl}"
+	setVar $BOT~help[1]  $BOT~tab&" dep {cash_to_deposit:n}"
 	setVar $BOT~help[2]  $BOT~tab&"   "
 	setVar $BOT~help[3]  $BOT~tab&"  	Deposits cash to citadel treasury."
 	setVar $BOT~help[4]  $BOT~tab&"     "
-	setVar $BOT~help[5]  $BOT~tab&"     {cash to deposit} - Cash amount to deposit (max is default)"
+	setVar $BOT~help[5]  $BOT~tab&"     {cash_to_deposit:n} - Cash amount to deposit (max is default)"
 	setVar $BOT~help[6]  $BOT~tab&"                                            "
 	setVar $BOT~help[7]  $BOT~tab&"     Examples:"
 	setVar $BOT~help[8]  $BOT~tab&"            >dep 500k"
@@ -68,7 +68,7 @@
 		if (($test = FALSE) and ($bot~parm1 <> ""))
 			setVar $SWITCHBOARD~message "Cash entered is not a number, try again.*" 
 			gosub :SWITCHBOARD~switchboard
-			goto :wait_for_command  
+			halt
 		end
 	return
 
