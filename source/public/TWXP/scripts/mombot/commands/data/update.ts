@@ -41,19 +41,16 @@
 		setvar $armid true
 		setvar $cim true
 		setvar $warp true
-		setvar $lift_needed true
 	end
 	
 	getwordpos " "&$bot~user_command_line&" " $pos " figs "
 	if ($pos > 0)
 		setvar $fighter true
-		setvar $lift_needed true
 	end
 
 	getwordpos " "&$bot~user_command_line&" " $pos " limps "
 	if ($pos > 0)
 		setvar $limpet true
-		setvar $lift_needed true
 	end
 
 	getwordpos " "&$bot~user_command_line&" " $pos " armids "
@@ -77,11 +74,14 @@
 		setvar $fighter true
 		setvar $limpet true
 		setvar $armid true
-		setvar $lift_needed true
 	end
 
 	gosub  :player~currentPrompt
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
+	if (($startingLocation = "Planet") or ($startingLocation = "Citadel")) and (($fighters) or ($limpet) or ($armid))
+		setvar $lift_needed true
+	end
+	
 	if ($startingLocation = "Command")
 
 	elseif ($startingLocation = "Citadel") and ($lift_needed)
