@@ -16,19 +16,35 @@
 			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
 			send "* " 
 		else
-			send " szh"
-			settexttrigger surroundscanfail :donesurroundscan "Do you want instructions (Y/N) [N]?"
-			waiton "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
-			gosub :sector~getAutoSectorData
-
-			:donesurroundscan
-				killtrigger surroundscan
-				killtrigger surroundscanfail
-				send "* " 
+			if ($kill = true)
+				setvar $sector~safe_attack_only true
+				setvar $before_holo_kill_sector $player~current_sector
+				gosub :combat~holokill
+				if (($sector~holotargetfound = true) and ($player~current_sector <> $before_holo_kill_sector))
+					setVar $PLAYER~WARPTO $before_holo_kill_sector
+					gosub :PLAYER~twarp
+					if (($PLAYER~twarpSuccess = FALSE) and ($player~msg <> "Already in that sector!"))
+						setvar $switchboard~message "Could not make it back to starting sector after holokill. - ["&$player~msg&"]*"
+					end
+				end
+				if ($switchboard~message <> "No targets found adjacent.*")
+					gosub :switchboard~switchboard
+				end
+				goto :continuesurroundsector
+			else
+				send "szh" 
+				settextlinetrigger surroundscan :donesurroundscan "Select (H)olo Scan or (D)ensity Scan or (Q)uit? [D] H"
+				settexttrigger surroundscanfail :donesurroundscan "Do you want instructions (Y/N) [N]?"
+				pause
+				:donesurroundscan
+					killtrigger surroundscan
+					killtrigger surroundscanfail
+					send "* " 
+			end
 		end
 		killtrigger surroundsector
-		#setTextTrigger surroundsector :continuesurroundsector "[" & $player~current_sector & "]"
-		#pause
+		setTextTrigger surroundsector :continuesurroundsector "[" & $player~current_sector & "]"
+		pause
 		:continuesurroundsector
 		if ($already_checked_ship <> TRUE)
 			gosub :SHIP~getShipStats

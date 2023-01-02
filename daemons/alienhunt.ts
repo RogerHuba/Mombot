@@ -6,6 +6,8 @@
 	loadvar $game~port_max
 
 	gosub :combat~init 
+	#for auto kill on surround
+	setvar $grid~kill true
 
  
 
