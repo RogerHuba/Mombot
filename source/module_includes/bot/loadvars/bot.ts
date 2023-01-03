@@ -35,6 +35,8 @@
 	loadvar $settings~override
 	loadvar $PLAYER~dropOffensive
 	loadvar $PLAYER~dropToll
+	loadvar $major_version
+	loadvar $minor_version
 	if ($player~dropOffensive = true)
 		setvar $player~fighter_deploy_type "o"
 	else
