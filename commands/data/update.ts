@@ -79,7 +79,7 @@
 
 	gosub  :player~currentPrompt
 	setVar $startingLocation $PLAYER~CURRENT_PROMPT
-	if (($startingLocation = "Planet") or ($startingLocation = "Citadel")) and (($fighters) or ($limpet) or ($armid))
+	if (($startingLocation = "Planet") or ($startingLocation = "Citadel")) and (($fighter) or ($limpet) or ($armid))
 		setvar $lift_needed true
 	end
 	
