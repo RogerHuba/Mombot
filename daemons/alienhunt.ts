@@ -391,7 +391,10 @@
 		getText CURRENTLINE $dropSector $START_FIG_HIT $END_FIG_HIT
 		getText CURRENTANSILINE $alien_check $START_FIG_HIT_OWNER $END_FIG_HIT_OWNER
 		getWordPos $alien_check $apos $ALIEN_ANSI
-		getWordPos $CURRENTLINE $alien_type_match $filteraliens
+		setvar $fighter_line CURRENTLINE
+		lowercase $fighter_line
+		lowercase $filteraliens
+		getWordPos $fighter_line $alien_type_match $filteraliens
 		if ((($apos <= 0) OR ($radio <> "D")) or ($alien_type_match > 0))
 			setTextLineTrigger fig :checkFighter "Deployed Fighters Report Sector"
 			pause
