@@ -34,7 +34,7 @@
 	setVar $BOT~help[21] $BOT~tab&"         {patp} - When planet is less than 10% of fuel, run patp."
 	setVar $BOT~help[22] $BOT~tab&"         {home} - Move ships to starting sector instead of stardock."
 	setVar $BOT~help[23] $BOT~tab&"{"&#34&"ship_filter"&#34&"} - move ships matching this home, stardock for the others"
-	setVar $BOT~help[24] $BOT~tab&"{"&#34&"alien_filter"&#34&"} - only attack aliens matching this text"
+	setVar $BOT~help[24] $BOT~tab&"{"&#34&"alien_filter"&#34&"} - ignore aliens matching this text"
 	gosub :bot~helpfile
  
 	setVar $BOT~script_title "Alien Hunter"
@@ -185,7 +185,7 @@
 			gosub :SWITCHBOARD~switchboard
 			halt			
 		else
-			setVar $SWITCHBOARD~message "Only attacking aliens matching: ["&$filteraliens&"].*"
+			setVar $SWITCHBOARD~message "Ignoring aliens matching: ["&$filteraliens&"].*"
 			gosub :SWITCHBOARD~switchboard
 		end
 	end
@@ -392,7 +392,7 @@
 		getText CURRENTANSILINE $alien_check $START_FIG_HIT_OWNER $END_FIG_HIT_OWNER
 		getWordPos $alien_check $apos $ALIEN_ANSI
 		getWordPos $CURRENTLINE $alien_type_match $filteraliens
-		if ((($apos <= 0) OR ($radio <> "D")) or ($alien_type_match <= 0))
+		if ((($apos <= 0) OR ($radio <> "D")) or ($alien_type_match > 0))
 			setTextLineTrigger fig :checkFighter "Deployed Fighters Report Sector"
 			pause
 		end
