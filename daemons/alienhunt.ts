@@ -13,7 +13,7 @@
 
 	setVar $BOT~help[1]  $BOT~tab&"alienhunt {corp} {sell} {refuel} {upgrade} {cannon} {return}"
 	setVar $BOT~help[2]  $BOT~tab&"          {passive} {buyfig} {buyshield} {patp} {home} "
-	setVar $BOT~help[3]  $BOT~tab&"          {"&#34&"ship_filter"&#34&"}  "
+	setVar $BOT~help[3]  $BOT~tab&"          {"&#34&"ship_filter"&#34&"} {"&#34&"alien_filter"&#34&"} "
 	setVar $BOT~help[4]  $BOT~tab&"           "
 	setVar $BOT~help[5]  $BOT~tab&"Hunts down aliens and captures their ships.  "
 	setVar $BOT~help[6]  $BOT~tab&"Will automatically turn ships and planet personal."
@@ -34,6 +34,7 @@
 	setVar $BOT~help[21] $BOT~tab&"         {patp} - When planet is less than 10% of fuel, run patp."
 	setVar $BOT~help[22] $BOT~tab&"         {home} - Move ships to starting sector instead of stardock."
 	setVar $BOT~help[23] $BOT~tab&"{"&#34&"ship_filter"&#34&"} - move ships matching this home, stardock for the others"
+	setVar $BOT~help[24] $BOT~tab&"{"&#34&"alien_filter"&#34&"} - only attack aliens matching this text"
 	gosub :bot~helpfile
  
 	setVar $BOT~script_title "Alien Hunter"
@@ -163,6 +164,7 @@
 	getWordPos $bot~user_command_line $pos #34
 	if ($pos > 0)
 		getText $bot~user_command_line $filterships #34 #34
+		replaceText $bot~user_command_line #34&$filterships&#34 " "
 		if ($filterships = false)
 			setVar $SWITCHBOARD~message "Invalid ship filter entered.*"
 			gosub :SWITCHBOARD~switchboard
@@ -173,6 +175,20 @@
 		end
 	end
 
+	setvar $filteraliens ""
+	getWordPos $bot~user_command_line $pos #34
+	if ($pos > 0)
+		getText $bot~user_command_line $filteraliens #34 #34
+		replaceText $bot~user_command_line #34&$filteraliens&#34 " "
+		if ($filteraliens = false)
+			setVar $SWITCHBOARD~message "Invalid alien filter entered.*"
+			gosub :SWITCHBOARD~switchboard
+			halt			
+		else
+			setVar $SWITCHBOARD~message "Only attacking aliens matching: ["&$filteraliens&"].*"
+			gosub :SWITCHBOARD~switchboard
+		end
+	end
 
 
 	
@@ -375,10 +391,12 @@
 		getText CURRENTLINE $dropSector $START_FIG_HIT $END_FIG_HIT
 		getText CURRENTANSILINE $alien_check $START_FIG_HIT_OWNER $END_FIG_HIT_OWNER
 		getWordPos $alien_check $apos $ALIEN_ANSI
-		if (($apos <= 0) OR ($radio <> "D"))
+		getWordPos $CURRENTLINE $alien_type_match $filteraliens
+		if ((($apos <= 0) OR ($radio <> "D")) or ($alien_type_match <= 0))
 			setTextLineTrigger fig :checkFighter "Deployed Fighters Report Sector"
 			pause
 		end
+
 	:go_to_drop_sector
 		killAllTriggers
 		if ($dropSector <> $player~current_sector)
