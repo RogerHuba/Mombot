@@ -379,7 +379,7 @@
 				if ((($last_shield_percentage = $shieldperc) and ($shieldperc > 0))) 
 					setvar $cap_points $cap_points+$added_attack
 					setvar $added_attack $added_attack+2
-					setvar $cummulative_added_attack $cummulative_added_attack+cap_points
+					setvar $cummulative_added_attack $cummulative_added_attack+$cap_points
 				else
 					if (($last_shield_percentage > 0) and ($shieldperc > 0))
 						setvar $shield_difference ($last_shield_percentage - $shieldperc)
