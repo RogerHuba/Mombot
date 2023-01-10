@@ -153,6 +153,7 @@
 			setvar $firstLoop true
 			setvar $last_shield_percentage 0
 			setvar $added_attack 2
+			setvar $cummulative_added_attack 0
 		while ($player~fighters > 0)
 			killalltriggers
 			setvar $shieldperc 0
@@ -378,10 +379,12 @@
 				if ((($last_shield_percentage = $shieldperc) and ($shieldperc > 0))) 
 					setvar $cap_points $cap_points+$added_attack
 					setvar $added_attack $added_attack+2
+					setvar $cummulative_added_attack $cummulative_added_attack+cap_points
 				else
 					if (($last_shield_percentage > 0) and ($shieldperc > 0))
 						setvar $shield_difference ($last_shield_percentage - $shieldperc)
-						setvar $cap_points (($added_attack/$shield_difference) * ($shieldperc))
+						setvar $cap_points (($cummulative_added_attack/$shield_difference) * ($shieldperc))
+						setvar $cummulative_added_attack 0
 					else
 						setvar $added_attack 2				
 					end
