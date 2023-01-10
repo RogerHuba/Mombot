@@ -385,7 +385,7 @@
 						setvar $shield_difference ($last_shield_percentage - $shieldperc)
 						if ($shieldperc > 1)
 							setvar $a_little_extra (($cummulative_added_attack/$shield_difference)/2)
-							setvar $cap_points ((($cummulative_added_attack/$shield_difference) * ($shieldperc-1))+$a_little_extra)
+							setvar $cap_points ((($cummulative_added_attack/$shield_difference) * $shieldperc)-$a_little_extra)
 							setvar $cummulative_added_attack 0
 						end
 					else
