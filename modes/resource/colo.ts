@@ -1,59 +1,306 @@
 	logging off
 	gosub :BOT~loadVars
 	setVar $BOT~script_title "Colonizer"
-	setVar $BOT~script_version "1.0.0"
+	setVar $BOT~script_version "2.0.0"
 
-
-	setVar $BOT~help[1]  $BOT~tab&" colo {r|s|m|t|p} {sector|cycles|min_colos|delay} {t|b} {f} {c:#} {all} "
+	setVar $BOT~help[1]  $BOT~tab&" colo {s|r|m|t|e} {sector|cycles|min_colos|delay} {p} {b} {f} {c:#}"
 	setVar $BOT~help[2]  $BOT~tab&"    "
 	setVar $BOT~help[3]  $BOT~tab&"     Gets colos from Terra  "
 	setVar $BOT~help[4]  $BOT~tab&"    "
-	setVar $BOT~help[5]  $BOT~tab&"     {s} - Speed  - Define [cycles] to grab colos (default max)(no fuse protection)"
-	setVar $BOT~help[6]  $BOT~tab&"     {r} - Red - Define [sector] close to terra."
-	setVar $BOT~help[7]  $BOT~tab&"     {e} - Express  - Express Warp Colonizing (no protections)"
-	setVar $BOT~help[8]  $BOT~tab&"     {m} - Milk - Defind [min colos] before grab (default 0)"
-	setVar $BOT~help[9]  $BOT~tab&"     {t} - Timed - Define [delay] time to wait each cycle (default 15 seconds)"
-	setVar $BOT~help[10]  $BOT~tab&"    {p} - Ports for fuel to colonize"
-	setVar $BOT~help[11] $BOT~tab&"     {t} - Twarp(default)"
-	setVar $BOT~help[12] $BOT~tab&"     {b} - Bwarp"
-	setVar $BOT~help[13] $BOT~tab&"     {f} - Fuel every 2nd trip (NOTE: [S]speed [B]warp Mode Only)"
-	setVar $BOT~help[14] $BOT~tab&"   {c:#} - Camo holds (example: c:3 adds 3 holds extra fuel)"
-	setVar $BOT~help[15] $BOT~tab&"   {all} - Will attempt to fill up all planets in the sector"	
-	setVar $BOT~help[16] $BOT~tab&"        Examples: "
-	setVar $BOT~help[17] $BOT~tab&"             >colo r 7363 "
-	setVar $BOT~help[18] $BOT~tab&"             >colo s b "
-	setVar $BOT~help[19] $BOT~tab&"             >colo m 25 b"
-	setVar $BOT~help[20] $BOT~tab&"             >colo s b f"
-	setVar $BOT~help[21] $BOT~tab&"             >colo e"
+	setVar $BOT~help[5]  $BOT~tab&"       {s} - Speed  - Define [cycles] to grab colos (default max)(no fuse protection)"
+	setVar $BOT~help[6]  $BOT~tab&"       {r} - Red - Define [sector] close to terra."
+	setVar $BOT~help[7]  $BOT~tab&"       {e} - Express  - Express Warp Colonizing (no protections)"
+	setVar $BOT~help[8]  $BOT~tab&"       {m} - Milk - Defind [min colos] before grab (default 0)"
+	setVar $BOT~help[9]  $BOT~tab&"       {t} - Timed - Define [delay] time to wait each cycle (default 15 seconds)"
+	setVar $BOT~help[10] $BOT~tab&"   {2ship} - 2 Ship - Define [2nd ship] for colonization."
+	setVar $BOT~help[11] $BOT~tab&"       {p} - Ports for fuel to colonize"
+	setVar $BOT~help[12] $BOT~tab&" {buyfuel} - If [p] selected, will buy full hold and drop extra on planet"
+	setVar $BOT~help[13] $BOT~tab&"       {b} - Bwarp"
+	setVar $BOT~help[14] $BOT~tab&"       {f} - Fuel every 2nd trip (NOTE: [S]speed [B]warp Mode Only)"
+	setVar $BOT~help[15] $BOT~tab&"     {c:#} - Camo holds (example: c:3 adds 3 holds extra fuel)"
+	setVar $BOT~help[16] $BOT~tab&"     {all} - Will attempt to fill all planets owned by you in the sector."
+	setVar $BOT~help[17] $BOT~tab&"          Examples: "
+	setVar $BOT~help[18] $BOT~tab&"               >colo r 7363 "
+	setVar $BOT~help[19] $BOT~tab&"               >colo s b "
+	setVar $BOT~help[20] $BOT~tab&"               >colo m 25 b"
+	setVar $BOT~help[21] $BOT~tab&"               >colo s b f"
+	setVar $BOT~help[22] $BOT~tab&"               >colo e"
+
+   # TODO: Add logic to recognize when product colos are more than 1/2 full.
+   # TODO: Add an overfill command
+   # TODO: Add in a safe option to check for twarp / bwarp
+   # TODO: Add in option to check for major fig / shield loss if express
 
 	gosub :bot~helpfile
 	gosub :BOT~banner
 
+	gosub :PLAYER~quikstats
+	setVar $ship1 $PLAYER~SHIP_NUMBER
+	setVar $startingLocation $PLAYER~CURRENT_PROMPT
+	if (($startingLocation <> "Citadel") and ($startingLocation <> "Planet"))
+		setVar $SWITCHBOARD~message "You must run Colonizer command from Citadel or Planet prompt.*"
+		gosub :SWITCHBOARD~switchboard
+		HALT
+	end
 
-	# ======================     START COLO (COLO) SUBROUTINE    ==========================
-	goto :Start_Up_Routines
-	:colo_next
-		setvar $colo_sector $PLAYER~CURRENT_SECTOR
-		setvar $mcol_holds $player~total_holds
+	getWord $bot~user_command_line $bot~parm2 2
 
-		if ($colo_type = "e"
-			setVar $SWITCHBOARD~message "Express Colonizer not implemented yet. Coming Soon.*"
+	getWordPos " "&$bot~user_command_line&" " $pos " s "
+	if ($pos > 0)
+		setVar $speed_colo TRUE
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " r "
+	if ($pos > 0)
+		setVar $red_colo TRUE
+		setVar $twarp TRUE
+		isNumber $test $bot~parm2
+		if (($test) and ($bot~parm2 <= SECTORS) and ($bot~parm2 > 0))
+			setVar $red_jump_sector $bot~parm2
+		else
+			setVar $SWITCHBOARD~message "For Red Colonizer, second parameter muse be jump point to Terra!.*"
 			gosub :SWITCHBOARD~switchboard
-			halt
+			HALT
+		end
+	end
 
-		if ($colo_type = "r")
-			if ($bot~parm2 <= 0)
-				setVar $SWITCHBOARD~message "No jump sector defined for red colo. Halting.*"
-				gosub :SWITCHBOARD~switchboard
-				halt
+	getWordPos " "&$bot~user_command_line&" " $pos " m "
+	if ($pos > 0)
+		setVar $milk_colo TRUE
+		isNumber $test $bot~parm2
+		if ($test)
+			setVar $min_colo $bot~parm2
+		else
+			setVar $SWITCHBOARD~message "For Milker Colonizer, second parameter bust be min colos to pick up!*"
+			gosub :SWITCHBOARD~switchboard
+			HALT
+		end
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " t "
+	if ($pos > 0)
+		setVar $timed_colo TRUE
+		isNumber $test $bot~parm2
+		if ($test)
+			setVar $delay $bot~parm2
+		else
+			setVar $SWITCHBOARD~message "For Timer Colonizer, second parameter bust be the delay for pickup in seconds!!*"
+			gosub :SWITCHBOARD~switchboard
+			HALT
+		end
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " e "
+	if ($pos > 0)
+		setVar $express_colo TRUE
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " 2ship "
+	if ($pos > 0)
+		setVar $2ship_colo TRUE
+		isNumber $test $bot~parm2
+		if (($test) and ($bot~parm2 > 0))
+			setVar $ship2 $bot~parm2
+		else
+			setVar $SWITCHBOARD~message "For 2 Ship Colonizer, second parameter bust be the second ship.!*"
+			gosub :SWITCHBOARD~switchboard
+			HALT
+		end
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " b "
+	if ($pos > 0)
+		setVar $Bwarp TRUE
+		setVar $Twarp FALSE
+		getWordPos " "&$bot~user_command_line&" " $pos " f "
+		if ($pos > 0)
+			setVar $doubleOre TRUE
+			setVar $doubleOreGet TRUE
+		else
+			setVar $doubleOre FALSE
+		end
+	else
+		setVar $Twarp TRUE
+		setVar $Bwarp FALSE
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " c:"
+	if ($pos > 0)
+		getText " "&$bot~user_command_line&" " $camo_holds "c:" " "
+		isNumber $test $camo_holds
+		if ($test)
+			setVar $camoHolds TRUE
+		else
+			send "'{" $SWITCHBOARD~bot_name "} - Invalid camo holds entered*"
+		end
+	else
+		setVar $camoHolds FALSE
+	end
+
+	if (($speed_colo = FALSE) AND ($milk_colo = FALSE) AND ($timed_colo = FALSE) AND ($red_colo = FALSE) AND ($express_colo = FALSE) AND ($2ship_colo = FALSE))
+		setVar $SWITCHBOARD~message "Please use Colonizer options of [s]peed, [m]ilk, [r]ed, [t]imed, [e]xpress, or [2ship]*"
+		gosub :SWITCHBOARD~switchboard
+		HALT
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " all "
+	if ($pos > 0)
+		setVar $all_planets TRUE
+	end
+
+	getWordPos " "&$bot~user_command_line&" " $pos " p "
+	if ($pos > 0)
+		setVar $source_port TRUE
+		getWordPos " "&$bot~user_command_line&" " $pos " buyfuel "
+		if ($pos > 0)
+			setVar $allore TRUE
+		else
+			setVar $allore FALSE
+		end
+	end
+
+	if (($source_port) and (PORT.EXISTS[CURRENTSECTOR] = 0))
+		setVar $SWITCHBOARD~message "No port here to buy fuel ore.*"
+		gosub :SWITCHBOARD~switchboard
+		HALT
+	end
+
+	if (($source_port) and (PORT.BUYFUEL[CURRENTSECTOR] = 1))
+		setVar $SWITCHBOARD~message "Port must sell fuel to use Port for Colonizing.*"
+		gosub :SWITCHBOARD~switchboard
+		HALT
+	end
+
+	if (($PLAYER~alignment < 1000) AND (($red_colo = FALSE) and ($express_colo = FALSE) and ($2ship_colo = FALSE)))
+		setVar $SWITCHBOARD~message "Alignment is to low to colo for Direct Warp Colonizing.*"
+		gosub :SWITCHBOARD~switchboard
+		HALT
+	elseif ($PLAYER~TWARP_TYPE <> "1") and ($PLAYER~TWARP_TYPE <> "2")
+		setVar $SWITCHBOARD~message "Must have Type 1 or 2 Twarp for Colonizer*"
+		gosub :SWITCHBOARD~switchboard
+		HALT
+	end
+
+	if ($startingLocation = "Citadel")
+		send "Q"
+	end
+
+	gosub :PLANET~getPlanetNumber
+	setVar $planet $PLANET~PLANET
+	send " t n l 1* t n l 2* t n l 3* s n l 1* s n l 2* s n l 3* q c u y q f 1* cd"
+	gosub :SHIP~getShipStats
+
+# ******************************************************************************************
+	:express_colonizer
+		if (($express_colo) or ($2ship_colo))
+			if ($all_planets)
+				gosub :PLANET~countPlanets
+			else
+				setVar $planet~planets[1] $planet~planet
+				setVar $planet~planetCount 1
 			end
-			setVar $PLAYER~starting_point $bot~parm2
+			gosub :PLAYER~getInfo
+			gosub :SHIP~getShipStats
+			setVar $PLAYER~destination 1
+			gosub :player~getCourse
+			setVar $j 2
+			setVar $result "q * "
+			if ($2ship_colo)
+				setVar $result $result&"w n "&$ship2&"*"
+			end
+			while ($j <= $PLAYER~courseLength)
+				if ($PLAYER~mowCourse[$j] <> $PLAYER~CURRENT_SECTOR)
+					setVar $result $result&"m  "&$PLAYER~mowCourse[$j]&"*  "
+					if (($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock))
+						setVar $result $result&"za  "&$SHIP~SHIP_MAX_ATTACK&"* *  "
+					end
+			end
+				add $j 1
+			end
+			setVar $to_mow $result
+
+			setVar $PLAYER~starting_point 1
+			setVar $PLAYER~destination $PLAYER~CURRENT_SECTOR
+			gosub :player~getCourse
+			setVar $j 2
+			setVar $result ""
+			while ($j <= $PLAYER~courseLength)
+				if ($PLAYER~mowCourse[$j] <> $PLAYER~starting_point)
+					setVar $result $result&"m    "&$PLAYER~mowCourse[$j]&"*             "
+					if (($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock))
+						setVar $result $result&"za  "&$SHIP~SHIP_MAX_ATTACK&"* *           "
+					end
+				end
+			add $j 1
+			end
+			setVar $from_mow $result
+			setVar $i 1
+			while ($i <= $planet~planetCount)
+				setVar $colo_prod 1
+				while ($colo_prod < 4)
+					setVar $planet~planet $planet~planets[$i]
+					if ($2ship_colo)
+						setVar $coloBurst $to_mow&"    l 1 * * *  x  "&$ship2&"* *   l 1 * * * w n  "&$ship1&"*"&$from_mow&" l "&$planet~planet&"* s * * "&$colo_prod&"* "&"q x "&$ship1&"* * l "&$planet~planet&"* s * * "&$colo_prod&"*"
+					else
+						setVar $coloBurst $to_mow&"    l 1* * * "&$from_mow&" l "&$planet~planet&"* s * * "&$colo_prod&"*"
+					end
+
+					send $coloBurst
+					setTextLineTrigger 33 :morespeed "The Colonists disembark"
+					setTextLineTrigger 34 :next_item_speed "There isn't room on the planet"
+					setTextLineTrigger 35 :donespeed "There aren't that many on Terra!"
+					pause
+
+					:donespeed
+						killtrigger 33
+						killtrigger 34
+						if ($startingLocation = "Citadel")
+							send "c "
+						end
+						setVar $SWITCHBOARD~message "Terra is empty. Colonizer shutting down.*"
+						gosub :SWITCHBOARD~switchboard
+						halt
+					:next_item_speed
+						killtrigger 33
+						killtrigger 35
+						#CHANGE ITEM TO NEXT
+						add $colo_prod 1
+						if ($colo_prod >= 4)
+							setVar $SWITCHBOARD~message "Planet "&$planet~planet&" is full of colonists, no more can be added.*"
+							gosub :SWITCHBOARD~switchboard
+						end
+					:morespeed
+						killtrigger 33
+						killtrigger 34
+						killtrigger 35
+
+				end
+				add $i 1
+			end
+			HALT
+		end
+# ******************************************************************************************
+
+# ******************************************************************************************
+	:red_colonizer
+		if (($colo_type = "r") and ($twarp))
+			if ($all_planets)
+				gosub :PLANET~countPlanets
+				HALT
+			else
+				setVar $planet~planets[1] $planet~planet
+				setVar $planet~planetCount 1
+			end
+			gosub :PLAYER~getInfo
+			gosub :SHIP~getShipStats
+
+			setVar $PLAYER~starting_point $red_jump_sector
 			setVar $PLAYER~destination 1
 			gosub :player~getCourse
 			setVar $j 2
 			setVar $result ""
 			while ($j <= $PLAYER~courseLength)
-				if ($PLAYER~mowCourse[$j] <> $PLAYER~CURRENT_SECTOR)
+				if ($PLAYER~mowCourse[$j] <> $red_jump_sector)
 					setVar $result $result&"m    "&$PLAYER~mowCourse[$j]&"*               "
 					if (($PLAYER~mowCourse[$j] > 10) AND ($PLAYER~mowCourse[$j] <> $MAP~stardock))
 						setVar $result $result&"za  "&$SHIP~SHIP_MAX_ATTACK&"* *             "
@@ -63,8 +310,9 @@
 			end
 			setVar $to_mow $result
 			setvar $no_twarp false
-			if ($colo_sector <> $bot~parm2)
-				send "cf" $colo_sector "*"&$bot~parm2&"*q"
+
+			if ($PLAYER~CURRENT_SECTOR <> $red_jump_sector)
+				send "cf"&$PLAYER~CURRENT_SECTOR&"*"&$red_jump_sector&"*q"
 				waitfor "The shortest path"
 				getword CURRENTLINE $colo_hops1 4
 				striptext $colo_hops1 "("
@@ -75,49 +323,37 @@
 				setvar $colo_hops1 0
 				setvar $no_twarp true
 			end
-		else
-			send "cf" $colo_sector "*1*q"
+		if (($colo_type = "r") and ($bwarp))
+			send "cf"&$red_jump_sector&"*1*q"
 			waitfor "The shortest path"
 			getword CURRENTLINE $colo_hops1 4
 			striptext $colo_hops1 "("
 			setVar $colo_fuel1 ($colo_hops1 * 3)
 		end
-		send "cf1*" $colo_sector "*q"
+		send "cf1*"&$PLAYER~CURRENT_SECTOR&"*q"
 		waitfor "The shortest path"
 		getword CURRENTLINE $colo_hops2 4
 		striptext $colo_hops2 "("
 		setVar $colo_fuel2 ($colo_hops2 * 3)
-		if ($BWARP)
-			if ($colo_hops1 > $planet~planet_TRANSPORT)
-				setVar $SWITCHBOARD~message "B-Warp on planet not upgraded enough for B-warp Colo*"
-				gosub :SWITCHBOARD~switchboard
-				halt
-			end
-			#ham setvar $colo_fuel $colo_fuel2
-			if ($doubleOre = TRUE)
-				
-				setvar $colo_fuel ($colo_fuel2 * 2)
-			else
-				setvar $colo_fuel $colo_fuel2
-			end
-			setvar $colo_get ($mcol_holds - $colo_fuel1)
-			setVar $PLAYER~TURNSPerCycle (1+$PLAYER~TURNS_PER_WARP+1+1)
-		else
-			setvar $colo_fuel ($colo_fuel1 + $colo_fuel2)
-			setvar $colo_get ($mcol_holds - $colo_fuel1)
-			setVar $PLAYER~TURNSPerCycle ($PLAYER~TURNS_PER_WARP+$PLAYER~TURNS_PER_WARP+1+1)
+		if ($colo_hops1 > $planet~planet_TRANSPORT)
+			setVar $SWITCHBOARD~message "B-Warp on planet not upgraded enough for B-warp Colo*"
+			gosub :SWITCHBOARD~switchboard
+			halt
 		end
+		if ($doubleOre = TRUE)
+			
+			setvar $colo_fuel ($colo_fuel2 * 2)
+		else
+			setvar $colo_fuel $colo_fuel2
+		end
+		setvar $colo_get ($mcol_holds - $colo_fuel1)
+		setVar $PLAYER~TURNSPerCycle (1+$PLAYER~TURNS_PER_WARP+1+1)
 
-		### Speed Port - Work out max cycles
-		# ASsumption is that even with bwarp we are just using fuel from port.
-		# else why else do it?
+# ******************************************************************************************
 
-		if ($colo_type = "p")
+		if ($source_port)
 			if ($BWARP)
-				# Fuel THere
 				setvar $fuel_req ($colo_hops1 * 10)
-				
-				# plus back
 				add $fuel_req $colo_fuel2
 			else
 				setvar $fuel_req ($colo_fuel1 + $colo_fuel2)
@@ -127,25 +363,18 @@
 			waitfor "Fuel Ore"
 			getword CURRENTLINE $fuel_avail 4
 			if ($allore = TRUE)
-				# buying a full load each trip
 				setvar $max_trips ($fuel_avail/$mcol_holds)
 				setvar $portbuy $mcol_holds
 			else
-				# buying just what is required
 				setvar $max_trips ($fuel_avail/$fuel_req)
 				setvar $portbuy $fuel_req
 			end
-
-			# BWARP Only
 			setvar $leave_ore ($portbuy - $colo_fuel2)
-			# user has chosen a max trips
 			if ($colo_misc > 0)
-				# just bring it down to max trips
 				if ($colo_misc > $max_trips)
 					setVar $colo_misc $max_trips
 				end
 			else
-				#user did not choose but we will choose for them to not run out of fuel
 				setVar $colo_misc $max_trips
 			end
 
@@ -161,10 +390,8 @@
 			end
 		end
 
-	### 
-
 	:colo_land
-		if ($camoHolds = TRUE)
+		if ($camoHolds)
 			if (($camo_holds + $colo_fuel) >= $player~total_holds)
 				setVar $SWITCHBOARD~message "Too many camo holds for this ship.*"
 				gosub :SWITCHBOARD~switchboard
@@ -172,7 +399,7 @@
 			end
 			send " j y l j" #8 #8  $planet~planet  "* n n *  t * t 1 " ($colo_fuel+$camo_holds) "*  "
 		else
-			if ($doubleOre = TRUE)
+			if ($doubleOre)
 				
 				send " j y l j" #8 #8  $planet~planet  "* n n *  "
 				if ($doubleOreGet = TRUE)
@@ -824,114 +1051,22 @@
 					end
 			end
 		end
-
-
 	# ======================     END COLO MILKER (colo) SUBROUTINE     ==========================
 	halt
 
-	:Start_Up_Routines
-		getWordPos " "&$bot~user_command_line&" " $pos " b "
-		if ($pos > 0)
-			setVar $Bwarp TRUE
-			getWordPos " "&$bot~user_command_line&" " $pos " f "
-			if ($pos > 0)
-				setVar $doubleOre TRUE
-				setVar $doubleOreGet TRUE
-			else
-				setVar $doubleOre FALSE
-			end
-		else
-			setVar $Bwarp FALSE
-		end
-
-		getWordPos " "&$bot~user_command_line&" " $pos " allore "
-		if ($pos > 0)
-			setVar $allore TRUE
-		else
-			setVar $allore FALSE
-		end
-
-		getWordPos " "&$bot~user_command_line&" " $pos " c:"
-		if ($pos > 0)
-			getText " "&$bot~user_command_line&" " $camo_holds "c:" " "
-			isNumber $test $camo_holds
-			if ($test)
-				setVar $camoHolds TRUE
-			else
-				send "'{" $SWITCHBOARD~bot_name "} - Invalid camo holds entered*"
-			end
-
-		else
-			setVar $camoHolds FALSE
-		end
-
-	# ======================     START COLO  (COLO) SUBROUTINE    ==========================
-	:colo_setup
-		gosub :PLAYER~quikstats
-		getWord $bot~user_command_line $bot~parm1 1
-		getWord $bot~user_command_line $bot~parm2 2
-		getWord $bot~user_command_line $bot~parm3 3
-		getWord $bot~user_command_line $bot~parm4 4
-		getWord $bot~user_command_line $bot~parm5 5
-		getWord $bot~user_command_line $bot~parm6 6
-
-		setVar $startingLocation $PLAYER~CURRENT_PROMPT
-		if (($startingLocation <> "Citadel") AND ($startingLocation <> "Planet"))
-			setVar $SWITCHBOARD~message "Colo must be run from Planet or Citadel prompt*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end
-		
-		if (($bot~parm1 <> "s") AND ($bot~parm1 <> "m") AND ($bot~parm1 <> "t") AND ($bot~parm1 <> "r") AND ($bot~parm1 <> "p"))
-			setVar $SWITCHBOARD~message "Please use colo [s]peed, [m]ilk, [r]ed, [t]imed*, or speed [p]ort*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end
-		
-		
-		setVar $colo_type $bot~parm1
-		if (($colo_type = "p") and (PORT.EXISTS[CURRENTSECTOR] = 0))
-			setVar $SWITCHBOARD~message "No port here to buy fuel ore.*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end
-		if (($colo_type = "p") and (PORT.BUYFUEL[CURRENTSECTOR] = 1))
-			setVar $SWITCHBOARD~message "Port must sell fuel to use speed port colo.*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end
-		if (($PLAYER~alignment < 1000) AND ($colo_type <> "r"))
-			setVar $SWITCHBOARD~message "Alignment is to low to colo for blue colo. Try colo r for red colo.*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		elseif ($PLAYER~TWARP_TYPE <> "1") and ($PLAYER~TWARP_TYPE <> "2")
-			setVar $SWITCHBOARD~message "Must have Type 1 or 2 Twarp for Colo*"
-			gosub :SWITCHBOARD~switchboard
-			halt
-		end
-		isNumber $test $bot~parm2
-		if ($test <> TRUE)
-			setVar $bot~parm2 0
-		end
-		Setvar $colo_misc $bot~parm2
-	# ======================     END COLO (COLO) SUBROUTINE     ==========================
-		setVar $colo_prod 1
-		setVar $colo_delay 1000
-		if ($startingLocation = "Citadel")
-			send "Q"
-		end
-		gosub :PLANET~getPlanetInfo
-		send " t n l 1* t n l 2* t n l 3* s n l 1* s n l 2* s n l 3* q c u y q f 1* cd "
-		gosub :PLAYER~getInfo
-		goto :colo_next
 
 	#INCLUDES:
+	
 	include "source\module_includes\bot\loadvars\bot"
 	include "source\module_includes\bot\helpfile\bot"
 	include "source\module_includes\bot\banner\bot"
+
+	include "source\bot_includes\player\currentprompt\player"
 	include "source\bot_includes\player\getcourse\player"
 	include "source\bot_includes\player\quikstats\player"
-	include "source\bot_includes\planet\getplanetinfo\planet"
-	include "source\bot_includes\planet\countplanets\planet"
 	include "source\bot_includes\player\getinfo\player"
+
+	include "source\bot_includes\planet\getplanetnumber\planet"
+	include "source\bot_includes\planet\countplanets\planet"
+
 	include "source\bot_includes\ship\getshipstats\ship"
