@@ -20,12 +20,12 @@
 	:keepCountingarmids
 		killtrigger corporate
 		killtrigger personal
-		killtrigger doneCountingFigs
-		killtrigger doneNoFigs
-		setTextLineTrigger corporate 		:corpCountarmids 	" Corp"
-		setTextLineTrigger personal 		:personalCountarmids	"Personal "
-		setTextLineTrigger doneCountingFigs	:doneCountingarmids 	"Total"
-		setTextLineTrigger doneNoFigs 		:doneCountingarmids 	"No mines deployed"
+		killtrigger doneCountingArmids
+		killtrigger doneNoArmids
+		setTextLineTrigger corporate 			:corpCountarmids 	" Corp"
+		setTextLineTrigger personal 			:personalCountarmids	"Personal "
+		setTextLineTrigger doneCountingArmids	:doneCountingarmids 	"Total"
+		setTextLineTrigger doneNoArmids 		:doneCountingarmids 	"No mines deployed"
 		pause
 	:personalCountarmids
 		add $count 1
@@ -62,8 +62,8 @@
 	:doneCountingarmids
 		killtrigger corporate
 		killtrigger personal
-		killtrigger doneCountingFigs
-		killtrigger doneNoFigs
+		killtrigger doneCountingArmids
+		killtrigger doneNoArmids
 
 		while ($i <= SECTORS)
 			getWordPos $personalOutput $pos " "&$i&" "

@@ -233,23 +233,24 @@ end
   
   # update window
   # setWindowContents worldTrade "Op: Trading*Cash: " & $credits
-  
-  if ($SectorB < 600) or (SECTORS > 5000)
-    send $SectorB "*"
-  else
-    send $SectorB
-  end
-  
+  # setTextTrigger Mines :MinePrompt "Mined Sector:"
+  # if ($SectorB < 600) or (SECTORS > 5000)
+    send $SectorB&"**"
+    waitFor "Command [TL="
+  #else
+  #  send $SectorB
+  #end
+
   if ($FirstRun = 1)
     setVar $FirstRun 0
-    
+    waitFor "Command [TL="
     if (($Haggle~HaggleFactor = 0) or ($bot~nohaggle = true)) // burst haggle, abort on all keys
       setVar $DisplayOFF 1
       send "cn 9 qq"
     end
 
     if ($SectorB <> STARDOCK) and ($SectorB > 10) and ($DropFigs = 1)
-      send "f1*ct"
+      send "* f1*ct"
     end
     
     waitOn "Warping to Sector " & $SectorB
@@ -353,11 +354,12 @@ end
     return
   end
   
-  if ($SectorA < 600) or (SECTORS > 5000)
-    send $SectorA "*"
-  else
-    send $SectorA
-  end
+  # if ($SectorA < 600) or (SECTORS > 5000)
+    send $SectorA&"**"
+    waitFor "Command [TL="
+   # else
+  #  send $SectorA
+  # end
   
   # update window
   # setWindowContents worldTrade "Op: Trading*Cash: " & $credits

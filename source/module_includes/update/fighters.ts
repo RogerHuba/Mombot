@@ -136,19 +136,26 @@
 				if ($tempWarpCount > 0) and ($tempWarpCountOut > 0)
 					if ($tempWarpCount = 1)
 						add $1sCount 1
+						# echo "**DE: "&$1sCount&"**"
 					elseif ($tempWarpCount = 2)
 						add $2sCount 1
+						# echo "**2S: " & $2sCount & "**"
 					elseif ($tempWarpCount = 3)
 						add $3sCount 1
+						# echo "**3s: " & $3sCount & "**"
 					elseif ($tempWarpCount = 4)
 						add $4sCount 1
+						# echo "**4s: " & $4sCount & "**"
 					elseif ($tempWarpCount = 5)
 						add $5sCount 1
+						# echo "**5s: " & $5sCount & "**"
 					elseif ($tempWarpCount = 6)
 						add $6sCount 1
+						# echo "**6s: " & $6sCount & "**"
 					end
 				else
 					add $?scount 1
+					echo "**Unknown: " & $?sCount & "**"
 				end
 
 			else
@@ -223,45 +230,42 @@ return
 	if ($gridFuelBuyChange > 0)
 		setVar $gridFuelBuyChange "+"&$gridFuelBuyChange
 	end
-	
-	setVar $inputVariable $1scount
+	setVar $player~inputVariable $1scount
 	gosub :player~formatNumberForSpaces
-	setVar $1scountformatted $outputVariable
-	setVar $inputVariable $2scount
+	setVar $1scountformatted $player~outputVariable
+	setVar $player~inputVariable $2scount
 	gosub :player~formatNumberForSpaces
-	setVar $2scountformatted $outputVariable
-	setVar $inputVariable $3scount
+	setVar $2scountformatted $player~outputVariable
+	setVar $player~inputVariable $3scount
 	gosub :player~formatNumberForSpaces
-	setVar $3scountformatted $outputVariable
-	setVar $inputVariable $4scount
+	setVar $3scountformatted $player~outputVariable
+	setVar $player~inputVariable $4scount
 	gosub :player~formatNumberForSpaces
-	setVar $4scountformatted $outputVariable
-	setVar $inputVariable $5scount
+	setVar $4scountformatted $player~outputVariable
+	setVar $player~inputVariable $5scount
 	gosub :player~formatNumberForSpaces
-	setVar $5scountformatted $outputVariable
-	setVar $inputVariable $6scount
+	setVar $5scountformatted $player~outputVariable
+	setVar $player~inputVariable $6scount
 	gosub :player~formatNumberForSpaces
-	setVar $6scountformatted $outputVariable
-
-	setVar $inputVariable $1percent
+	setVar $6scountformatted $player~outputVariable
+	setVar $player~inputVariable $1percent
 	gosub :player~formatPercentagesForSpaces
-	setVar $1percentformatted $outputVariable
-	setVar $inputVariable $2percent
+	setVar $1percentformatted $player~outputVariable
+	setVar $player~inputVariable $2percent
 	gosub :player~formatPercentagesForSpaces
-	setVar $2percentformatted $outputVariable
-	setVar $inputVariable $3percent
+	setVar $2percentformatted $player~outputVariable
+	setVar $player~inputVariable $3percent
 	gosub :player~formatPercentagesForSpaces
-	setVar $3percentformatted $outputVariable
-	setVar $inputVariable $4percent
+	setVar $3percentformatted $player~outputVariable
+	setVar $player~inputVariable $4percent
 	gosub :player~formatPercentagesForSpaces
-	setVar $4percentformatted $outputVariable
-	setVar $inputVariable $5percent
+	setVar $4percentformatted $player~outputVariable
+	setVar $player~inputVariable $5percent
 	gosub :player~formatPercentagesForSpaces
-	setVar $5percentformatted $outputVariable
-	setVar $inputVariable $6percent
+	setVar $5percentformatted $player~outputVariable
+	setVar $player~inputVariable $6percent
 	gosub :player~formatPercentagesForSpaces
-	setVar $6percentformatted $outputVariable
-
+	setVar $6percentformatted $player~outputVariable
 	setvar $switchboard~message $switchboard~message&"          - Fighter Grid Report -*          - "&$count&" sectors, "&$personalCount&" personal. ("&$percent&"%) ("&$gridChange&" Change)*          - T: "&$tollCount&"  O: "&$offCount&"  D:"&$defCount&"*          - DE: "&$1sCountformatted&""&$1percentformatted&" 2S: "&$2sCountformatted&""&$2percentformatted&" 3S: "&$3sCountformatted&""&$3percentformatted&"*          - 4S: "&$4sCountformatted&""&$4percentformatted&" 5S: "&$5sCountformatted&""&$5percentformatted&" 6S: "&$6sCountformatted&""&$6percentformatted&"*          - Upgraded Sxx: "&$upgradedFuelCount&" ("&$gridFuelChange&" Change)*          - Upgraded xBx: "&$upgradedOrgCount&" ("&$gridOrgChange&" Change)*          - Upgraded xxB: "&$upgradedEquipCount&" ("&$gridEquipChange&" Change)*          - Upgraded xxS: "&$upgradedEquipSellCount&" ("&$gridEquipSellChange&" Change)*          - Upgraded Bxx: "&$upgradedFuelBuyCount&" ("&$gridFuelBuyChange&" Change)**"
 
 return
