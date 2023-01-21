@@ -234,12 +234,11 @@ end
   # update window
   # setWindowContents worldTrade "Op: Trading*Cash: " & $credits
   # setTextTrigger Mines :MinePrompt "Mined Sector:"
-  # if ($SectorB < 600) or (SECTORS > 5000)
+  if ($SectorB < 600) or (SECTORS > 5000)
     send $SectorB&"**"
-    waitFor "Command [TL="
-  #else
-  #  send $SectorB
-  #end
+  else
+    send $SectorB
+  end
 
   if ($FirstRun = 1)
     setVar $FirstRun 0
@@ -354,12 +353,11 @@ end
     return
   end
   
-  # if ($SectorA < 600) or (SECTORS > 5000)
+  if ($SectorA < 600) or (SECTORS > 5000)
     send $SectorA&"**"
-    waitFor "Command [TL="
-   # else
-  #  send $SectorA
-  # end
+  else
+    send $SectorA
+  end
   
   # update window
   # setWindowContents worldTrade "Op: Trading*Cash: " & $credits
