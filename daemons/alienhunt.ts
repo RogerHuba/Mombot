@@ -492,14 +492,9 @@ return
 	if ($player~surroundPassive = true)
 		gosub :dscan~run		
 	end
-	send "q "
-	gosub :PLANET~getPlanetInfo
-	gosub :setwindow
-	send "q "
+	send "q q "
 	gosub :grid~surround
-	send "l "&$planet~planet&"* m*** c "
-	setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
-	gosub :SWITCHBOARD~switchboard
+	send "l "&$planet~planet&"*  c "
 	setvar $switchboard~message "* " & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
 	gosub :bot~echo
 
@@ -546,9 +541,10 @@ return
 		else
 			setVar $startingSector CURRENTSECTOR		
 		end
-		if (($PLAYER~SHIELDS < ($SHIP~SHIP_SHIELD_MAX-9)) and ($planet~planet_shields > 360))
-			setVar $player~shields_needed ($SHIP~SHIP_SHIELD_MAX - $PLAYER~SHIELDS)
-			setVar $planet~planet_shields_to_take ($player~shields_needed/10)
+		setVar $player~shields_needed ($SHIP~SHIP_SHIELD_MAX - $PLAYER~SHIELDS)
+		setVar $planet~planet_shields_to_take ($player~shields_needed/10)
+			
+		if (($planet~planet_shields_to_take > 0) and ($planet~planet_shields > 360))
 			send "gf"&$planet~planet_shields_to_take&"*"
 		end
 
