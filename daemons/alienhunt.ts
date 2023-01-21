@@ -495,6 +495,8 @@ return
 	send "q q "
 	gosub :grid~surround
 	send "l "&$planet~planet&"*  c "
+	setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
+	gosub :SWITCHBOARD~switchboard
 	setvar $switchboard~message "* " & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
 	gosub :bot~echo
 
