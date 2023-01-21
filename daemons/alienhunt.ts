@@ -492,9 +492,12 @@ return
 	if ($player~surroundPassive = true)
 		gosub :dscan~run		
 	end
-	send "q q "
+	send "q "
+	gosub :PLANET~getPlanetInfo
+	gosub :setwindow
+	send "q "
 	gosub :grid~surround
-	send "l "&$planet~planet&"*  c "
+	send "l "&$planet~planet&"* m*** c "
 	setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
 	gosub :SWITCHBOARD~switchboard
 	setvar $switchboard~message "* " & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
