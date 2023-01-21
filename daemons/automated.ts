@@ -12,7 +12,7 @@
 
  
 
-	setVar $BOT~help[1]  $BOT~tab&"alienhunt {corp} {sell} {refuel} {upgrade} {cannon} {return}"
+	setVar $BOT~help[1]  $BOT~tab&"automated {corp} {sell} {refuel} {upgrade} {cannon} {return}"
 	setVar $BOT~help[2]  $BOT~tab&"          {passive} {buyfig} {buyshield} {patp} {home} "
 	setVar $BOT~help[3]  $BOT~tab&"          {"&#34&"ship_filter"&#34&"} {"&#34&"alien_filter"&#34&"} "
 	setVar $BOT~help[4]  $BOT~tab&"           "
@@ -304,12 +304,11 @@
 				gosub :with~run
 				gosub :buyfig~run
 				gosub :dep~run
-			end
-            if (CURRENTFIGHTERS < $SHIP~SHIP_FIGHTERS_MAX)
+			else
 				setVar $SWITCHBOARD~message "Not enough fighters to continue the hunt.*"
 				gosub :switchboard~switchboard
 				gosub :gohome
-            end
+			end
 		end
 		if ($return = true)
 			send "p"&$homeSector&"*y"
@@ -405,10 +404,7 @@
 	:go_to_drop_sector
 		killAllTriggers
 		if ($dropSector <> $player~current_sector)
-			if ($cannon = true)
-                send "*ls0* la0*  "
-            end
-            send "p " $dropSector "*y"
+			send "*ls0* la0*  p " $dropSector "*y"
 			setTextLineTrigger pwarpNotOk :pwarpTryAdjacent "You do not have any fighters in Sector "
 			setTextLineTrigger pwarpOk :pwarpConfirmed " Planetary TransWarp Drive Engaged! "
 			setTextLineTrigger pwarpOk2 :pwarpConfirmed "You are already in that sector!"
@@ -472,7 +468,7 @@ return
 	if ($targetCount <= 0)
 		setvar $switchboard~message " No Targets..*"
 		gosub :bot~echo 
-		setVar $targetSectors[1] $dropSector
+		setVar $targetSectors[1] $CURRENT_LOCATION
 	end
 
 return
@@ -539,18 +535,13 @@ return
 		if ($player~current_prompt = "Command")
 			gosub :PLANET~landingSub
 		end
-		if ($targetsFound = true)
-			send "q m*** c "
-			gosub :PLAYER~quikstats
-			setVar $startingSector $PLAYER~CURRENT_SECTOR
+		send "q m*** c "
+		gosub :PLAYER~quikstats
+		setVar $startingSector $PLAYER~CURRENT_SECTOR
+		if (($PLAYER~SHIELDS < $SHIP~SHIP_SHIELD_MAX) and ($planet~planet_shields > 360))
 			setVar $player~shields_needed ($SHIP~SHIP_SHIELD_MAX - $PLAYER~SHIELDS)
 			setVar $planet~planet_shields_to_take ($player~shields_needed/10)
-				
-			if (($planet~planet_shields_to_take > 0) and ($planet~planet_shields > 360))
-				send "gf"&$planet~planet_shields_to_take&"*"
-			end
-		else
-			setVar $startingSector CURRENTSECTOR		
+			send "gf"&$planet~planet_shields_to_take&"*"
 		end
 
 		if ($targetsFound = TRUE)
