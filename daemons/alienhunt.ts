@@ -506,7 +506,7 @@ return
 return
 
 :attackandmoveship
-		gosub :PLAYER~currentprompt
+		gosub :PLAYER~quikstats
 		setvar $startingLocation $player~current_prompt
 		if ($player~current_prompt = "Command")
 			gosub :PLANET~landingSub		
