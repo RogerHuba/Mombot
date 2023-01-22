@@ -1,5 +1,6 @@
 	gosub :BOT~loadVars
-									loadVar $MAP~STARDOCK
+	
+    loadVar $MAP~STARDOCK
 	loadVar $MAP~home_sector
 	loadvar $ship~cap_file
 	loadvar $planet~planet_file
@@ -303,11 +304,12 @@
 				gosub :with~run
 				gosub :buyfig~run
 				gosub :dep~run
-			else
+			end
+            if (CURRENTFIGHTERS < $SHIP~SHIP_FIGHTERS_MAX)
 				setVar $SWITCHBOARD~message "Not enough fighters to continue the hunt.*"
 				gosub :switchboard~switchboard
 				gosub :gohome
-			end
+            end
 		end
 		if ($return = true)
 			send "p"&$homeSector&"*y"
@@ -403,7 +405,10 @@
 	:go_to_drop_sector
 		killAllTriggers
 		if ($dropSector <> $player~current_sector)
-			send "*ls0* la0*  p " $dropSector "*y"
+			if ($cannon = true)
+                send "*ls0* la0*  "
+            end
+            send "p " $dropSector "*y"
 			setTextLineTrigger pwarpNotOk :pwarpTryAdjacent "You do not have any fighters in Sector "
 			setTextLineTrigger pwarpOk :pwarpConfirmed " Planetary TransWarp Drive Engaged! "
 			setTextLineTrigger pwarpOk2 :pwarpConfirmed "You are already in that sector!"
@@ -467,7 +472,7 @@ return
 	if ($targetCount <= 0)
 		setvar $switchboard~message " No Targets..*"
 		gosub :bot~echo 
-		setVar $targetSectors[1] $CURRENT_LOCATION
+		setVar $targetSectors[1] $dropSector
 	end
 
 return
@@ -492,9 +497,9 @@ return
 	gosub :setwindow
 	send "q "
 	gosub :grid~surround
-	send "l "&$planet~planet&"* m*** c "
 	setVar $SWITCHBOARD~message "Surrounded sector "&$PLAYER~CURRENT_SECTOR&".*"
 	gosub :SWITCHBOARD~switchboard
+	send "l "&$planet~planet&"* m*** c "
 	setvar $switchboard~message "* " & ANSI_14 & $PLAYER~surroundOutput & "*" & ANSI_7
 	gosub :bot~echo
 
@@ -534,13 +539,18 @@ return
 		if ($player~current_prompt = "Command")
 			gosub :PLANET~landingSub
 		end
-		send "q m*** c "
-		gosub :PLAYER~quikstats
-		setVar $startingSector $PLAYER~CURRENT_SECTOR
-		if (($PLAYER~SHIELDS < $SHIP~SHIP_SHIELD_MAX) and ($planet~planet_shields > 360))
+		if ($targetsFound = true)
+			send "q m*** c "
+			gosub :PLAYER~quikstats
+			setVar $startingSector $PLAYER~CURRENT_SECTOR
 			setVar $player~shields_needed ($SHIP~SHIP_SHIELD_MAX - $PLAYER~SHIELDS)
 			setVar $planet~planet_shields_to_take ($player~shields_needed/10)
-			send "gf"&$planet~planet_shields_to_take&"*"
+				
+			if (($planet~planet_shields_to_take > 0) and ($planet~planet_shields > 360))
+				send "gf"&$planet~planet_shields_to_take&"*"
+			end
+		else
+			setVar $startingSector CURRENTSECTOR		
 		end
 
 		if ($targetsFound = TRUE)
