@@ -276,7 +276,7 @@ return
 		killtrigger 8
 		killtrigger 9
 		killtrigger 10
-		send "*N"&$BOT~username&"*Y"&$BOT~startShipName&"*Y * "
+		send "*N"&$BOT~username&"*Y"&$BOT~startShipName&"*Y"
 		pause
 	:newname
 		killtrigger 8
@@ -288,7 +288,7 @@ return
 		killtrigger 8
 		killtrigger 9
 		killtrigger 10
-		send $BOT~startShipName&"*Y * "
+		send $BOT~startShipName&"*Y"
 		pause
 	:wrong_name
 		killalltriggers
