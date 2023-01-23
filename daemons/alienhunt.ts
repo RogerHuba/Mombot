@@ -516,13 +516,6 @@ return
 		setvar $SECTOR~fakeTraderCount 1
 		setVar $targetsFound FALSE
 		while ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
-			gosub :PLAYER~quikstats
-			setvar $player~startingLocation $player~current_prompt
-			if ($player~current_prompt = "Command")
-				gosub :PLANET~landingSub		
-				gosub :PLAYER~currentprompt
-				setvar $player~startingLocation $player~current_prompt
-			end
 			goSub :SECTOR~getSectorData			
 			if ($SECTOR~realTraderCount > $SECTOR~corpieCount)
 				setvar $targetsFound true
@@ -534,11 +527,18 @@ return
 				setvar $lastSectorAttacked $player~current_sector
 				goSub :combat~fastCapture
 			end
+			gosub :PLAYER~quikstats
+			setvar $player~startingLocation $player~current_prompt
+			if ($player~current_prompt = "Command")
+				gosub :PLANET~landingSub		
+				gosub :PLAYER~currentprompt
+				setvar $player~startingLocation $player~current_prompt
+			end
 		end
-		gosub :PLAYER~quikstats
-		if ($player~current_prompt = "Command")
-			gosub :PLANET~landingSub
-		end
+#		gosub :PLAYER~quikstats
+#		if ($player~current_prompt = "Command")
+#			gosub :PLANET~landingSub
+#		end
 		if ($targetsFound = true)
 			send "q m*** c "
 			gosub :PLAYER~quikstats
