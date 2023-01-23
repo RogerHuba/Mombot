@@ -232,7 +232,7 @@
 		setVar $SWITCHBOARD~message "Turning off quasar cannons.*"
 		gosub :SWITCHBOARD~switchboard
 	end
-	gosub :PLAYER~currentprompt
+	gosub :PLAYER~quikstats
 	if ($PLAYER~CURRENT_PROMPT = "Citadel")
 		if ($corp <> true)
 			setVar $SWITCHBOARD~message "Made ship and planet personal for convenience. Turning off military reaction.*"
@@ -516,7 +516,7 @@ return
 		setvar $SECTOR~fakeTraderCount 1
 		setVar $targetsFound FALSE
 		while ($SECTOR~fakeTraderCount > $SECTOR~federalCount)
-			gosub :PLAYER~currentprompt
+			gosub :PLAYER~quikstats
 			setvar $player~startingLocation $player~current_prompt
 			if ($player~current_prompt = "Command")
 				gosub :PLANET~landingSub		
@@ -535,7 +535,7 @@ return
 				goSub :combat~fastCapture
 			end
 		end
-		gosub :PLAYER~currentprompt
+		gosub :PLAYER~quikstats
 		if ($player~current_prompt = "Command")
 			gosub :PLANET~landingSub
 		end
@@ -595,7 +595,7 @@ return
 						gosub :PLANET~landingSub
 					end
 				end
-				gosub :PLAYER~currentprompt
+				gosub :PLAYER~quikstats
 				if ($player~current_prompt = "Command")
 					gosub :PLANET~landingSub
 				end
